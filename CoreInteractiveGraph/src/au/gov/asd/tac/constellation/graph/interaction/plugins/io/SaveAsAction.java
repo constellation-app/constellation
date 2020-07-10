@@ -185,7 +185,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
 
     public boolean isSaved() {
         return isSaved;
-    } 
+    }
 
     @Override
     public void actionPerformed(final ActionEvent e) {

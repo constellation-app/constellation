@@ -82,7 +82,7 @@ public class NormalisingGraphEdit implements GraphEdit {
     }
 
     @Override
-    public void addTransaction(final int sourceVertex, 
+    public void addTransaction(final int sourceVertex,
             final int destinationVertex, final boolean directed, final int transaction) {
 
         Vertex currentSource = vertices.get(sourceVertex);
@@ -110,7 +110,7 @@ public class NormalisingGraphEdit implements GraphEdit {
     }
 
     @Override
-    public void removeTransaction(final int sourceVertex, 
+    public void removeTransaction(final int sourceVertex,
             final int destinationVertex, final boolean directed, final int transaction) {
         Transaction currentTransaction = transactions.get(transaction);
         if (currentTransaction == null) {
@@ -139,7 +139,7 @@ public class NormalisingGraphEdit implements GraphEdit {
     }
 
     @Override
-    public void setTransactionSourceVertex(final int transaction, 
+    public void setTransactionSourceVertex(final int transaction,
             final int oldSourceVertex, final int newSourceVertex, final boolean reverseTransaction) {
 
         Vertex newSource = vertices.get(newSourceVertex);
@@ -158,19 +158,19 @@ public class NormalisingGraphEdit implements GraphEdit {
     }
 
     @Override
-    public void setTransactionDestinationVertex(final int transaction, 
-            final int oldDestinationVertex, final int newDestinationVertex,final boolean reverseTransaction) {
+    public void setTransactionDestinationVertex(final int transaction,
+            final int oldDestinationVertex, final int newDestinationVertex, final boolean reverseTransaction) {
         throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
-    public void addAttribute(final GraphElementType elementType, final String attributeType, final String label, 
+    public void addAttribute(final GraphElementType elementType, final String attributeType, final String label,
             final String description, final Object defaultValue, final String attributeMergerId, final int attribute) {
         throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
-    public void removeAttribute(final GraphElementType elementType, final String attributeType, final String label, 
+    public void removeAttribute(final GraphElementType elementType, final String attributeType, final String label,
             final String description, final Object defaultValue, final String attributeMergerId, final int attribute) {
         throw new UnsupportedOperationException(NOT_SUPPORTED);
     }

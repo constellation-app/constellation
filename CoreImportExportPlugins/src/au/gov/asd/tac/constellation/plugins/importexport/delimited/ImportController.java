@@ -122,14 +122,14 @@ public class ImportController {
 
         keys = new HashSet<>();
     }
-    
+
     /**
      * Common handling of user alerts/dialogs for the Delimited File Importer.
-     * 
+     *
      * @param header Text to place in header bar (immediately below title bar).
      * @param message Main message to display.
-     * @param alertType Type of alert being displayed, range from undefined, info through
-     *                  to warnings and errors.
+     * @param alertType Type of alert being displayed, range from undefined,
+     * info through to warnings and errors.
      */
     public void displayAlert(String header, String message, Alert.AlertType alertType) {
         final Alert dialog;
@@ -139,7 +139,7 @@ public class ImportController {
         dialog.setContentText(message);
         dialog.showAndWait();
     }
-    
+
     public DelimitedFileImporterStage getStage() {
         return stage;
     }
@@ -479,8 +479,7 @@ public class ImportController {
                 displayAlert("Invalid file selected", warningMsg, Alert.AlertType.WARNING);
                 files.remove(sampleFile);
                 stage.getSourcePane().removeFile(sampleFile);
-            }
-            catch (IOException ex) {
+            } catch (IOException ex) {
                 final String warningMsg = "The following file could not be parsed and has been excluded from the import set:\n  " + sampleFile.getPath();
                 LOGGER.log(Level.INFO, warningMsg);
                 displayAlert("Invalid file selected", warningMsg, Alert.AlertType.WARNING);

@@ -196,8 +196,8 @@ public class SourcePane extends GridPane {
             files.removeAll(selectedFiles);
             fileListView.setItems(files);
             importController.setFiles(files, null);
-            if (files.isEmpty()) {	
-                SourcePane.this.importFileParserComboBox.setDisable(false);	
+            if (files.isEmpty()) {
+                SourcePane.this.importFileParserComboBox.setDisable(false);
             }
         });
 
@@ -268,9 +268,13 @@ public class SourcePane extends GridPane {
             parametersPane.getChildren().add(pluginParametersPane);
         }
     }
-    
-    /** Allow a file to be removed from fileListView. This would be triggered by code in InputController if the file
-     * was found to be missing or invalid - these checks are triggered when a new file is selected in the fileListView.
+
+    /**
+     * Allow a file to be removed from fileListView. This would be triggered by
+     * code in InputController if the file was found to be missing or invalid -
+     * these checks are triggered when a new file is selected in the
+     * fileListView.
+     *
      * @param file The file to remove.
      */
     public void removeFile(File file) {

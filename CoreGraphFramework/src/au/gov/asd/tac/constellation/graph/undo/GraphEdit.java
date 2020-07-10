@@ -56,7 +56,7 @@ public interface GraphEdit {
      * transaction to be reversed to ensure that the source vertex is not
      * greater than the destination vertex (undirected transactions only).
      */
-    public void setTransactionSourceVertex(final int transaction, final int oldSourceVertex, 
+    public void setTransactionSourceVertex(final int transaction, final int oldSourceVertex,
             final int newSourceVertex, final boolean reverseTransaction);
 
     /**
@@ -72,13 +72,13 @@ public interface GraphEdit {
      * transaction to be reversed to ensure that the source vertex is not
      * greater than the destination vertex (undirected transactions only).
      */
-    public void setTransactionDestinationVertex(final int transaction, 
+    public void setTransactionDestinationVertex(final int transaction,
             final int oldDestinationVertex, final int newDestinationVertex, final boolean reverseTransaction);
 
-    public void addAttribute(final GraphElementType elementType, final String attributeType, final String label, 
+    public void addAttribute(final GraphElementType elementType, final String attributeType, final String label,
             final String description, final Object defaultValue, final String attributeMergerId, final int attribute);
 
-    public void removeAttribute(final GraphElementType elementType, final String attributeType, final String label, 
+    public void removeAttribute(final GraphElementType elementType, final String attributeType, final String label,
             final String description, final Object defaultValue, final String attributeMergerId, final int attribute);
 
     public void updateAttributeName(final int attribute, final String oldName, final String newName);

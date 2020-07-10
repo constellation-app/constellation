@@ -59,7 +59,7 @@ public final class ArrangeInGridAction extends AbstractAction {
     @Override
     public void actionPerformed(final ActionEvent e) {
         PluginExecutor.startWith(ArrangementPluginRegistry.GRID_COMPOSITE)
-                      .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
-                      .executeWriteLater(context.getGraph(), Bundle.CTL_ArrangeInGridAction());
+                .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
+                .executeWriteLater(context.getGraph(), Bundle.CTL_ArrangeInGridAction());
     }
 }

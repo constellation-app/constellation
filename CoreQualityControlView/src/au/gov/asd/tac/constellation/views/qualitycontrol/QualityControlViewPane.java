@@ -302,8 +302,8 @@ public final class QualityControlViewPane extends BorderPane {
                 qualityTable.setItems(FXCollections.observableArrayList(state.getQualityControlEvents()));
             }
 
-            final String displayName = graphId != null && GraphNode.getGraphNode(graphId) != null 
-                    ? GraphNode.getGraphNode(graphId).getDisplayName() 
+            final String displayName = graphId != null && GraphNode.getGraphNode(graphId) != null
+                    ? GraphNode.getGraphNode(graphId).getDisplayName()
                     : "a graph";
             qualityTable.setPlaceholder(wrappedLabel(String.format(Bundle.MSG_SelectSomething(), displayName)));
 

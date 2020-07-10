@@ -44,7 +44,7 @@ public class UndoGraphEdit implements GraphEdit {
     @Override
     public void addChild(final GraphEdit childEdit) {
         int childIndex = state.addObject(childEdit);
-        UndoGraphEditOperation.EXECUTE_CHILD.addOperation(state, state.getCurrentAttribute(), 
+        UndoGraphEditOperation.EXECUTE_CHILD.addOperation(state, state.getCurrentAttribute(),
                 state.getCurrentId(), state.getCurrentInt(), state.getCurrentLong(), childIndex);
     }
 
@@ -70,7 +70,7 @@ public class UndoGraphEdit implements GraphEdit {
         }
         int oldIndex = state.addObject(oldKeys);
         int newIndex = state.addObject(newKeys);
-        UndoGraphEditOperation.SET_PRIMARY_KEY.addOperation(state, elementType.ordinal(), 
+        UndoGraphEditOperation.SET_PRIMARY_KEY.addOperation(state, elementType.ordinal(),
                 oldIndex, state.getCurrentInt(), state.getCurrentLong(), newIndex);
     }
 
@@ -79,7 +79,7 @@ public class UndoGraphEdit implements GraphEdit {
         if (VERBOSE) {
             System.out.println("addVertex(" + vertex + ")");
         }
-        UndoGraphEditOperation.ADD_VERTEX.addOperation(state, state.getCurrentAttribute(), 
+        UndoGraphEditOperation.ADD_VERTEX.addOperation(state, state.getCurrentAttribute(),
                 vertex, state.getCurrentInt(), state.getCurrentLong(), state.getCurrentObject());
     }
 
@@ -88,7 +88,7 @@ public class UndoGraphEdit implements GraphEdit {
         if (VERBOSE) {
             System.out.println("removeVertex(" + vertex + ")");
         }
-        UndoGraphEditOperation.REMOVE_VERTEX.addOperation(state, state.getCurrentAttribute(), 
+        UndoGraphEditOperation.REMOVE_VERTEX.addOperation(state, state.getCurrentAttribute(),
                 vertex, state.getCurrentInt(), state.getCurrentLong(), state.getCurrentObject());
     }
 
@@ -98,10 +98,10 @@ public class UndoGraphEdit implements GraphEdit {
             System.out.println("addTransaction(" + sourceVertex + ", " + destinationVertex + ", " + directed + ", " + transaction + ")");
         }
         if (directed) {
-            UndoGraphEditOperation.ADD_DIRECTED_TRANSACTION.addOperation(state, state.getCurrentAttribute(), 
+            UndoGraphEditOperation.ADD_DIRECTED_TRANSACTION.addOperation(state, state.getCurrentAttribute(),
                     transaction, destinationVertex, state.getCurrentLong(), sourceVertex);
         } else {
-            UndoGraphEditOperation.ADD_UNDIRECTED_TRANSACTION.addOperation(state, state.getCurrentAttribute(), 
+            UndoGraphEditOperation.ADD_UNDIRECTED_TRANSACTION.addOperation(state, state.getCurrentAttribute(),
                     transaction, destinationVertex, state.getCurrentLong(), sourceVertex);
         }
     }
@@ -112,10 +112,10 @@ public class UndoGraphEdit implements GraphEdit {
             System.out.println("removeTransaction(" + sourceVertex + ", " + destinationVertex + ", " + directed + ", " + transaction + ")");
         }
         if (directed) {
-            UndoGraphEditOperation.REMOVE_DIRECTED_TRANSACTION.addOperation(state, state.getCurrentAttribute(), 
+            UndoGraphEditOperation.REMOVE_DIRECTED_TRANSACTION.addOperation(state, state.getCurrentAttribute(),
                     transaction, destinationVertex, state.getCurrentLong(), sourceVertex);
         } else {
-            UndoGraphEditOperation.REMOVE_UNDIRECTED_TRANSACTION.addOperation(state, state.getCurrentAttribute(), 
+            UndoGraphEditOperation.REMOVE_UNDIRECTED_TRANSACTION.addOperation(state, state.getCurrentAttribute(),
                     transaction, destinationVertex, state.getCurrentLong(), sourceVertex);
         }
     }
@@ -128,7 +128,7 @@ public class UndoGraphEdit implements GraphEdit {
         // If the reverse transaction has been set then set this means that the transaction source and destination vertices will need 
         //to be swapped to ensure that the source vertex is not greater than the destination vertex.
         // If this is the case then set the high bit of the transaction id so that the undo step knowns to adjust to handle this case.
-        UndoGraphEditOperation.SET_TRANSACTION_SOURCE_VERTEX.addOperation(state, state.getCurrentAttribute(), 
+        UndoGraphEditOperation.SET_TRANSACTION_SOURCE_VERTEX.addOperation(state, state.getCurrentAttribute(),
                 transaction | (reverseTransaction ? 0x80000000 : 0), oldSourceVertex ^ newSourceVertex, state.getCurrentLong(), state.getCurrentObject());
     }
 
@@ -141,33 +141,33 @@ public class UndoGraphEdit implements GraphEdit {
         // If the reverse transaction has been set then set this means that the transaction source and destination vertices will need 
         // to be swapped to ensure that the source vertex is not greater than the destination vertex.
         // If this is the case then set the high bit of the transaction id so that the undo step knowns to adjust to handle this case.
-        UndoGraphEditOperation.SET_TRANSACTION_DESTINATION_VERTEX.addOperation(state, state.getCurrentAttribute(), 
+        UndoGraphEditOperation.SET_TRANSACTION_DESTINATION_VERTEX.addOperation(state, state.getCurrentAttribute(),
                 transaction | (reverseTransaction ? 0x80000000 : 0), oldDestinationVertex ^ newDestinationVertex, state.getCurrentLong(), state.getCurrentObject());
     }
 
     @Override
-    public void addAttribute(final GraphElementType elementType, final String attributeType, final String label, 
+    public void addAttribute(final GraphElementType elementType, final String attributeType, final String label,
             final String description, final Object defaultValue, final String attributeMergerId, final int attribute) {
         if (VERBOSE) {
-            System.out.println("addAttribute(" + elementType + ", " + attributeType + ", " + 
-                    label + ", " + description + ", " + defaultValue + ", " + attribute + ")");
+            System.out.println("addAttribute(" + elementType + ", " + attributeType + ", "
+                    + label + ", " + description + ", " + defaultValue + ", " + attribute + ")");
         }
         Object[] params = new Object[]{elementType, attributeType, label, description, defaultValue, attributeMergerId};
         int paramsIndex = state.addObject(params);
-        UndoGraphEditOperation.ADD_ATTRIBUTE.addOperation(state, attribute, 
+        UndoGraphEditOperation.ADD_ATTRIBUTE.addOperation(state, attribute,
                 state.getCurrentId(), state.getCurrentInt(), state.getCurrentLong(), paramsIndex);
     }
 
     @Override
-    public void removeAttribute(final GraphElementType elementType, final String attributeType, final String label, 
+    public void removeAttribute(final GraphElementType elementType, final String attributeType, final String label,
             final String description, final Object defaultValue, final String attributeMergerId, final int attribute) {
         if (VERBOSE) {
-            System.out.println("removeAttribute(" + elementType + ", " + attributeType + ", " + 
-                    label + ", " + description + ", " + defaultValue + ", " + attribute + ")");
+            System.out.println("removeAttribute(" + elementType + ", " + attributeType + ", "
+                    + label + ", " + description + ", " + defaultValue + ", " + attribute + ")");
         }
         Object[] params = new Object[]{elementType, attributeType, label, description, defaultValue, attributeMergerId};
         int paramsIndex = state.addObject(params);
-        UndoGraphEditOperation.REMOVE_ATTRIBUTE.addOperation(state, attribute, state.getCurrentId(), 
+        UndoGraphEditOperation.REMOVE_ATTRIBUTE.addOperation(state, attribute, state.getCurrentId(),
                 state.getCurrentInt(), state.getCurrentLong(), paramsIndex);
     }
 
@@ -178,7 +178,7 @@ public class UndoGraphEdit implements GraphEdit {
         }
         int oldIndex = state.addObject(oldName);
         int newIndex = state.addObject(newName);
-        UndoGraphEditOperation.UPDATE_ATTRIBUTE_NAME.addOperation(state, attribute, 
+        UndoGraphEditOperation.UPDATE_ATTRIBUTE_NAME.addOperation(state, attribute,
                 state.getCurrentId(), oldIndex, state.getCurrentLong(), newIndex);
     }
 
@@ -189,7 +189,7 @@ public class UndoGraphEdit implements GraphEdit {
         }
         int oldIndex = state.addObject(oldDescription);
         int newIndex = state.addObject(newDescription);
-        UndoGraphEditOperation.UPDATE_ATTRIBUTE_DESCRIPTION.addOperation(state, attribute, 
+        UndoGraphEditOperation.UPDATE_ATTRIBUTE_DESCRIPTION.addOperation(state, attribute,
                 state.getCurrentId(), oldIndex, state.getCurrentLong(), newIndex);
     }
 
@@ -200,7 +200,7 @@ public class UndoGraphEdit implements GraphEdit {
         }
         int oldIndex = state.addObject(oldDefault);
         int newIndex = state.addObject(newDefault);
-        UndoGraphEditOperation.UPDATE_ATTRIBUTE_DEFAULT_VALUE.addOperation(state, attribute, 
+        UndoGraphEditOperation.UPDATE_ATTRIBUTE_DEFAULT_VALUE.addOperation(state, attribute,
                 state.getCurrentId(), oldIndex, state.getCurrentLong(), newIndex);
     }
 
@@ -209,7 +209,7 @@ public class UndoGraphEdit implements GraphEdit {
         if (VERBOSE) {
             System.out.println("setByteValue(" + attribute + ", " + id + ", " + oldValue + ", " + newValue);
         }
-        UndoGraphEditOperation.SET_BYTE_VALUE.addOperation(state, attribute, id, 
+        UndoGraphEditOperation.SET_BYTE_VALUE.addOperation(state, attribute, id,
                 newValue ^ oldValue, state.getCurrentLong(), state.getCurrentObject());
     }
 
@@ -218,7 +218,7 @@ public class UndoGraphEdit implements GraphEdit {
         if (VERBOSE) {
             System.out.println("setShortValue(" + attribute + ", " + id + ", " + oldValue + ", " + newValue + ")");
         }
-        UndoGraphEditOperation.SET_SHORT_VALUE.addOperation(state, attribute, id, 
+        UndoGraphEditOperation.SET_SHORT_VALUE.addOperation(state, attribute, id,
                 newValue ^ oldValue, state.getCurrentLong(), state.getCurrentObject());
     }
 
@@ -227,7 +227,7 @@ public class UndoGraphEdit implements GraphEdit {
         if (VERBOSE) {
             System.out.println("setIntValue(" + attribute + ", " + id + ", " + oldValue + ", " + newValue + ")");
         }
-        UndoGraphEditOperation.SET_INT_VALUE.addOperation(state, attribute, id, 
+        UndoGraphEditOperation.SET_INT_VALUE.addOperation(state, attribute, id,
                 newValue - oldValue, state.getCurrentLong(), state.getCurrentObject());
     }
 
@@ -236,7 +236,7 @@ public class UndoGraphEdit implements GraphEdit {
         if (VERBOSE) {
             System.out.println("setLongValue(" + attribute + ", " + id + ", " + oldValue + ", " + newValue + ")");
         }
-        UndoGraphEditOperation.SET_LONG_VALUE.addOperation(state, attribute, id, 
+        UndoGraphEditOperation.SET_LONG_VALUE.addOperation(state, attribute, id,
                 state.getCurrentInt(), newValue - oldValue, state.getCurrentObject());
     }
 
@@ -245,7 +245,7 @@ public class UndoGraphEdit implements GraphEdit {
         if (VERBOSE) {
             System.out.println("setFloatValue(" + attribute + ", " + id + ", " + oldValue + ", " + newValue + ")");
         }
-        UndoGraphEditOperation.SET_FLOAT_VALUE.addOperation(state, attribute, id, 
+        UndoGraphEditOperation.SET_FLOAT_VALUE.addOperation(state, attribute, id,
                 Float.floatToRawIntBits(oldValue) ^ Float.floatToRawIntBits(newValue), 0, 0);
     }
 
@@ -254,7 +254,7 @@ public class UndoGraphEdit implements GraphEdit {
         if (VERBOSE) {
             System.out.println("setDoubleValue(" + attribute + ", " + id + ", " + oldValue + ", " + newValue + ")");
         }
-        UndoGraphEditOperation.SET_DOUBLE_VALUE.addOperation(state, attribute, id, 
+        UndoGraphEditOperation.SET_DOUBLE_VALUE.addOperation(state, attribute, id,
                 0, Double.doubleToRawLongBits(oldValue) ^ Double.doubleToRawLongBits(newValue), 0);
     }
 
@@ -264,10 +264,10 @@ public class UndoGraphEdit implements GraphEdit {
             System.out.println("setBooleanValue(" + attribute + ", " + id + ", " + oldValue + ", " + newValue + ")");
         }
         if (newValue) {
-            UndoGraphEditOperation.SET_BOOLEAN_VALUE_TRUE.addOperation(state, attribute, id, 
+            UndoGraphEditOperation.SET_BOOLEAN_VALUE_TRUE.addOperation(state, attribute, id,
                     state.getCurrentInt(), state.getCurrentLong(), state.getCurrentObject());
         } else {
-            UndoGraphEditOperation.SET_BOOLEAN_VALUE_FALSE.addOperation(state, attribute, id, 
+            UndoGraphEditOperation.SET_BOOLEAN_VALUE_FALSE.addOperation(state, attribute, id,
                     state.getCurrentInt(), state.getCurrentLong(), state.getCurrentObject());
         }
     }
@@ -277,7 +277,7 @@ public class UndoGraphEdit implements GraphEdit {
         if (VERBOSE) {
             System.out.println("setCharValue(" + attribute + ", " + id + ", " + oldValue + ", " + newValue + ")");
         }
-        UndoGraphEditOperation.SET_CHAR_VALUE.addOperation(state, attribute, id, 
+        UndoGraphEditOperation.SET_CHAR_VALUE.addOperation(state, attribute, id,
                 oldValue ^ newValue, state.getCurrentLong(), state.getCurrentObject());
     }
 
@@ -305,7 +305,7 @@ public class UndoGraphEdit implements GraphEdit {
             System.out.println("setAttributeIndexType(" + attribute + ", " + oldValue + ", " + newValue + ")");
         }
         int delta = newValue.ordinal() - oldValue.ordinal();
-        UndoGraphEditOperation.SET_ATTRIBUTE_INDEX_TYPE.addOperation(state, attribute, 
+        UndoGraphEditOperation.SET_ATTRIBUTE_INDEX_TYPE.addOperation(state, attribute,
                 state.getCurrentId(), state.getCurrentInt(), state.getCurrentLong(), delta);
     }
 
@@ -315,7 +315,7 @@ public class UndoGraphEdit implements GraphEdit {
             System.out.println("executeGraphOperation()");
         }
         int objectIndex = state.addObject(operation);
-        UndoGraphEditOperation.EXECUTE_GRAPH_OPERATION.addOperation(state, state.getCurrentAttribute(), 
+        UndoGraphEditOperation.EXECUTE_GRAPH_OPERATION.addOperation(state, state.getCurrentAttribute(),
                 state.getCurrentId(), state.getCurrentInt(), state.getCurrentLong(), objectIndex);
     }
 
