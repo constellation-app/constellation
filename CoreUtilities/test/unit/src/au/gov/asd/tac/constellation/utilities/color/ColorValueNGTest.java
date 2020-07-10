@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.utilities.color;
 
-import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;

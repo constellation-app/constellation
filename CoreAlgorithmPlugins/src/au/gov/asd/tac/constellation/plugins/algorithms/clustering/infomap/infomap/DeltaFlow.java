@@ -47,7 +47,7 @@ public class DeltaFlow {
         return module;
     }
 
-    public void setModule(int module) {
+    public void setModule(final int module) {
         this.module = module;
     }
 
@@ -55,7 +55,7 @@ public class DeltaFlow {
         return deltaExit;
     }
 
-    public void setDeltaExit(double deltaExit) {
+    public void setDeltaExit(final double deltaExit) {
         this.deltaExit = deltaExit;
     }
 
@@ -63,7 +63,7 @@ public class DeltaFlow {
         return deltaEnter;
     }
 
-    public void setDeltaEnter(double deltaEnter) {
+    public void setDeltaEnter(final double deltaEnter) {
         this.deltaEnter = deltaEnter;
     }
 }

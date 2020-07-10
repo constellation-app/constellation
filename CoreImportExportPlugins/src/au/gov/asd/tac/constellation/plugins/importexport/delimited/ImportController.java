@@ -49,6 +49,9 @@ import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import org.apache.commons.collections.CollectionUtils;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.util.NbPreferences;
 
 /**
@@ -161,14 +164,14 @@ public class ImportController {
         this.files.addAll(files);
 
         if (currentParameters != null) {
-            List<InputSource> inputSources = new ArrayList<>();
-            for (File file : files) {
+            final List<InputSource> inputSources = new ArrayList<>();
+            for (final File file : files) {
                 inputSources.add(new InputSource(file));
             }
             importFileParser.updateParameters(currentParameters, inputSources);
         }
 
-        if (sampleFile == null && files != null && !files.isEmpty()) {
+        if (sampleFile == null && CollectionUtils.isNotEmpty(files)) {
             this.sampleFile = files.get(0);
         } else {
             this.sampleFile = sampleFile;

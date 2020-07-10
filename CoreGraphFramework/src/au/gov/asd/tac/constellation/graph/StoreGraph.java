@@ -2058,13 +2058,12 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
             // iterate over each segment and grab the values
             AttributeDescription attributeDescription = null;
-            int attributeId = 1;
             int segmentCount = 0;
             for (final String ruleSegment : ruleSegments) {
                 segmentCount++;
                 switch (segmentCount) {
                     case 1: {
-                        attributeId = getAttribute(elementType, ruleSegment);
+                        final int attributeId = getAttribute(elementType, ruleSegment);
                         if (attributeId != Graph.NOT_FOUND) {
                             attributeDescription = attributeDescriptions[attributeId];
                         }

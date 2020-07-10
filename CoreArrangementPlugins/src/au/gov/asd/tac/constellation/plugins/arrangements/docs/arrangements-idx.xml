@@ -3,7 +3,7 @@
 <index version="2.0">
     <indexitem text="Grid" target="au.gov.asd.tac.constellation.plugins.arrangements.grid"/>
     <indexitem text="Grid (General)" target="au.gov.asd.tac.constellation.plugins.arrangements.gridGeneral"/>
-    <indexitem text="Hierarchical" target="au.gov.asd.tac.constellation.plugins.arrangements.hierarchical"/>
+    <indexitem text="Hierarchical" target="au.gov.asd.tac.constellation.plugins.arrangements.hierarchical.HierarchicalAction"/>
     <indexitem text="Tree" target="au.gov.asd.tac.constellation.plugins.arrangements.tree"/>
     <indexitem text="Circle" target="au.gov.asd.tac.constellation.plugins.arrangements.circle"/>
     <indexitem text="Scatter 3D" target="au.gov.asd.tac.constellation.plugins.arrangements.scatter3d"/>
@@ -13,5 +13,5 @@
     <indexitem text="Expand Graph" target="au.gov.asd.tac.constellation.plugins.arrangements.expandGraph"/>
     <indexitem text="Layer by Time" target="au.gov.asd.tac.constellation.plugins.arrangements.layerByTime"/>
     <indexitem text="Clusters on Hilbert Curve" target="au.gov.asd.tac.constellation.plugins.arrangements.clustersOnHilbertCurve"/>
-    <indexitem text="Bubble Tree" target="au.gov.asd.tac.constellation.plugins.arrangements.bubbleTree"/>
+    <indexitem text="Bubble Tree" target="au.gov.asd.tac.constellation.plugins.arrangements.trees.BubbleTreeAction"/>
 </index>

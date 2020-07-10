@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 /**
  * A collection of utilities for interrogation of all available
@@ -309,7 +310,7 @@ public class SchemaVertexTypeUtilities {
     public static List<ExtractedVertexType> extractVertexTypes(final String text, final List<ExtractedVertexType> previouslyExtracted) {
         final List<ExtractedVertexType> extractedTypes = new ArrayList<>();
 
-        if (previouslyExtracted != null && !previouslyExtracted.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(previouslyExtracted)) {
             extractedTypes.addAll(previouslyExtracted);
         }
 
