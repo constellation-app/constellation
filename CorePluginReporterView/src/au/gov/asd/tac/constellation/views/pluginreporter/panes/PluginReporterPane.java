@@ -284,9 +284,7 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
     public synchronized void setGraphReport(GraphReport graphReport) {
         this.graphReport = graphReport;
         reportBoxHeight = -1;
-        if (pluginReporterTopComponent.shouldUpdate()) {
-            updateReports(true);
-        }
+        updateReports(true);
     }
 
     private PluginReportFilter defaultReportFilter = new PluginReportFilter() {
