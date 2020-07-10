@@ -115,15 +115,18 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
 
         return params;
     }
-    
+
     /**
-     * Build up an import summary dialog detailing successful and unsuccessful file imports.
-     * 
+     * Build up an import summary dialog detailing successful and unsuccessful
+     * file imports.
+     *
      * @param title Title to add to status dialog
-     * @param importedRows Number of rows successfully imported (from valid files)
+     * @param importedRows Number of rows successfully imported (from valid
+     * files)
      * @param validFilenames List of filenames that were imported from
-     * @param invalidFilenames List of files that couldn't be opened/parsed. We try to limit this possibility by pre-screening
-     *                         files during the initial file selection.
+     * @param invalidFilenames List of files that couldn't be opened/parsed. We
+     * try to limit this possibility by pre-screening files during the initial
+     * file selection.
      */
     private void displaySummaryAlert(final int importedRows, final List<String> validFilenames, final List<String> invalidFilenames) {
         Platform.runLater(() -> {
@@ -135,7 +138,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
             if (importedRows > 0) {
                 // At least 1 row was successfully imported. List all successful file imports, as well as any files that there were
                 // issues for. If there were any files with issues use a warning dialog.
-                
+
                 header = "Imported " + importedRows + " rows of data from " + validFilenames.size() + " files";
                 message = "The following file(s) contained data:";
                 for (final String filename : validFilenames) {
@@ -167,7 +170,6 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
         });
     }
 
-
     @Override
     protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         final ImportFileParser parser = (ImportFileParser) parameters.getParameters().get(PARSER_PARAMETER_ID).getObjectValue();
@@ -186,7 +188,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
         for (final File file : files) {
             interaction.setProgress(0, 0, "Reading File: " + file.getName(), true);
             List<String[]> data = null;
-            
+
             try {
                 data = parser.parse(new InputSource(file), parserParameters);
                 importRows = importRows + data.size() - 1;
@@ -202,7 +204,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                 invalidFiles.add(file.getPath());
             }
 
-            if (data != null) { 
+            if (data != null) {
                 for (final ImportDefinition definition : definitions) {
                     if (definition.getDefinitions(AttributeType.SOURCE_VERTEX).isEmpty()) {
                         if (!definition.getDefinitions(AttributeType.DESTINATION_VERTEX).isEmpty()) {
@@ -221,8 +223,8 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
             }
         }
         LOGGER.log(Level.INFO, "Imported {0} rows of data. {1} files contained data. {2} files were ignored.", new Object[]{importRows, validFiles.size(), invalidFiles.size()});
-        displaySummaryAlert(importRows, validFiles, invalidFiles);        
-        
+        displaySummaryAlert(importRows, validFiles, invalidFiles);
+
         ConstellationLoggerHelper.importPropertyBuilder(
                 this,
                 GraphRecordStoreUtilities.getVertices(graph, false, false, false).getAll(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL),

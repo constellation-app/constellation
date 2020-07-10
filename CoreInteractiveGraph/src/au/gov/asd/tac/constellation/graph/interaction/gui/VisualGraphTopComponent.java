@@ -639,10 +639,10 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
             if (o.equals(DISCARD)) {
                 savable.setModified(false);
-            } else if (o.equals(SAVE)){
+            } else if (o.equals(SAVE)) {
                 try {
                     savable.handleSave();
-                    if (!savable.isSaved()){
+                    if (!savable.isSaved()) {
                         return false;
                     }
                 } catch (IOException ex) {
@@ -908,6 +908,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         public boolean isSaved() {
             return isSaved;
         }
+
         /**
          * register the instance if in modified state
          */

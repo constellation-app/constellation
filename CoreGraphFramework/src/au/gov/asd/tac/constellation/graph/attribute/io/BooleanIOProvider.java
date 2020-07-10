@@ -41,15 +41,15 @@ public class BooleanIOProvider extends AbstractGraphIOProvider {
     }
 
     @Override
-    public void readObject(final int attributeId, final int elementId, final JsonNode jnode, 
-            final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, 
+    public void readObject(final int attributeId, final int elementId, final JsonNode jnode,
+            final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap,
             final GraphByteReader byteReader, final ImmutableObjectCache cache) throws IOException {
         final boolean attributeValue = jnode.booleanValue();
         graph.setBooleanValue(attributeId, elementId, attributeValue);
     }
 
     @Override
-    public void writeObject(final Attribute attribute, final int elementId, final JsonGenerator jsonGenerator, 
+    public void writeObject(final Attribute attribute, final int elementId, final JsonGenerator jsonGenerator,
             final GraphReadMethods graph, final GraphByteWriter byteWriter, final boolean verbose) throws IOException {
         if (verbose || !graph.isDefaultValue(attribute.getId(), elementId)) {
             final boolean attributeValue = graph.getBooleanValue(attribute.getId(), elementId);

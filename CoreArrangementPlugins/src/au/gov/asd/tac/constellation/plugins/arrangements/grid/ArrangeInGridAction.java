@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.grid;
 
-import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
@@ -59,7 +58,7 @@ public final class ArrangeInGridAction extends AbstractAction {
     @Override
     public void actionPerformed(final ActionEvent e) {
         PluginExecutor.startWith(ArrangementPluginRegistry.GRID_COMPOSITE)
-                      .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
-                      .executeWriteLater(context.getGraph(), Bundle.CTL_ArrangeInGridAction());
+                .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
+                .executeWriteLater(context.getGraph(), Bundle.CTL_ArrangeInGridAction());
     }
 }

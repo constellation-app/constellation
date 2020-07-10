@@ -1200,14 +1200,21 @@ public class GraphRecordStoreUtilities {
                     final String ekey = entry.getKey();
                     final Object evalue = entry.getValue();
                     final String key;
-                    if (TX_SRC.equals(ekey)) {
-                        key = SOURCE + ID;
-                    } else if (TX_DST.equals(ekey)) {
-                        key = DESTINATION + ID;
-                    } else if (TX_DIR.equals(ekey)) {
-                        key = TRANSACTION + DIRECTED_KEY;
-                    } else {
+                    if (null == ekey) {
                         key = TRANSACTION + ekey;
+                    } else switch (ekey) {
+                        case TX_SRC:
+                            key = SOURCE + ID;
+                            break;
+                        case TX_DST:
+                            key = DESTINATION + ID;
+                            break;
+                        case TX_DIR:
+                            key = TRANSACTION + DIRECTED_KEY;
+                            break;
+                        default:
+                            key = TRANSACTION + ekey;
+                            break;
                     }
                     rs.set(key, evalue != null ? evalue.toString() : null);
                 });

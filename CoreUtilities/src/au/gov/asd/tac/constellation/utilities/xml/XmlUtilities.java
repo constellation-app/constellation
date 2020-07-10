@@ -134,12 +134,10 @@ public class XmlUtilities {
      * document into XML.
      */
     public void write(final Document document, final OutputStream outputStream) throws IOException, TransformerException {
-        try {
+        try (outputStream) {
             final Source source = new DOMSource(document);
             final Result result = new StreamResult(outputStream);
             transformer.transform(source, result);
-        } finally {
-            outputStream.close();
         }
     }
 

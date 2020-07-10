@@ -24,6 +24,6 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 @FunctionalInterface
 public interface MonitorListener {
 
-    public void monitorUpdated(final MonitorManager monitorManager, final Monitor monitor, 
-            final GraphReadMethods graph, final boolean newGraph,final int updateCount);
+    public void monitorUpdated(final MonitorManager monitorManager, final Monitor monitor,
+            final GraphReadMethods graph, final boolean newGraph, final int updateCount);
 }

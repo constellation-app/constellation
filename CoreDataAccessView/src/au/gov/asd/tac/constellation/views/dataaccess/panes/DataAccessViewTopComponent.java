@@ -114,12 +114,12 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
         PreferenceUtilites.removePreferenceChangeListener(ApplicationPreferenceKeys.OUTPUT2_PREFERENCE, this);
         QualityControlAutoVetter.getInstance().removeObserver(dataAccessViewPane);
     }
-    
+
     @Override
     protected void componentShowing() {
         super.componentShowing();
         handleNewGraph(GraphManager.getDefault().getActiveGraph());
-    }    
+    }
 
     @Override
     protected void handleNewGraph(final Graph graph) {

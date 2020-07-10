@@ -15,9 +15,9 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms.sna.metrics;
 
-import au.gov.asd.tac.constellation.plugins.algorithms.AlgorithmPluginRegistry;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.algorithms.AlgorithmPluginRegistry;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import org.openide.awt.ActionID;

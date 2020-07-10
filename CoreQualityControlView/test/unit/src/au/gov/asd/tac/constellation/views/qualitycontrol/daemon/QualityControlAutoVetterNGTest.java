@@ -25,11 +25,11 @@ import org.testng.annotations.Test;
 
 /**
  * Quality Control Auto Vetter Test
- * 
+ *
  * @author arcturus
  */
 public class QualityControlAutoVetterNGTest {
-    
+
     public QualityControlAutoVetterNGTest() {
     }
 
@@ -50,16 +50,17 @@ public class QualityControlAutoVetterNGTest {
     }
 
     /**
-     * Test of updateQualityControlState method, of class QualityControlAutoVetter.
+     * Test of updateQualityControlState method, of class
+     * QualityControlAutoVetter.
      */
     @Test
     public void testUpdateQualityControlStateWithNoGraph() {
         final Graph graph = null;
-        
+
         final QualityControlState stateBefore = QualityControlAutoVetter.getInstance().getQualityControlState();
         QualityControlAutoVetter.updateQualityControlState(graph);
         final QualityControlState stateAfter = QualityControlAutoVetter.getInstance().getQualityControlState();
-        
+
         assertEquals(stateBefore, stateAfter);
     }
 
@@ -72,5 +73,5 @@ public class QualityControlAutoVetterNGTest {
         final QualityControlAutoVetter instance2 = QualityControlAutoVetter.getInstance();
         assertEquals(instance1, instance2);
     }
-    
+
 }

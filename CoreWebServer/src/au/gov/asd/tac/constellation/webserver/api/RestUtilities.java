@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.webserver.api;
 
-import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.BooleanObjectAttributeDescription;
@@ -27,6 +26,7 @@ import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescri
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttributeDescription;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 /**

@@ -111,7 +111,7 @@ public class ByteObjectAttributeDescription extends AbstractObjectAttributeDescr
 
     @Override
     public double getDouble(final int id) {
-        return data[id] != null ? ((Byte) data[id]).byteValue() : 0.0;
+        return data[id] != null ? ((Byte) data[id]) : 0.0;
     }
 
     @Override

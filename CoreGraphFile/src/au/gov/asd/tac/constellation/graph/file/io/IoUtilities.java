@@ -351,14 +351,15 @@ public final class IoUtilities {
         // Ensure that the special attributes are at the beginning of the names.
 
         private static String specialCaseSortName(final String name) {
-            if (name.equals("_from")) {
-                return "\u0000";
-            } else if (name.equals("_to")) {
-                return "\u0001";
-            } else if (name.equals("_directed")) {
-                return "\u0002";
-            } else {
-                return name.toLowerCase();
+            switch (name) {
+                case "_from":
+                    return "\u0000";
+                case "_to":
+                    return "\u0001";
+                case "_directed":
+                    return "\u0002";
+                default:
+                    return name.toLowerCase();
             }
         }
 

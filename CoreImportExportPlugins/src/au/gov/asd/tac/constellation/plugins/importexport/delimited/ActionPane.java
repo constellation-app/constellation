@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -64,27 +63,21 @@ public class ActionPane extends BorderPane {
         setRight(runBox);
 
         Button cancelButton = new Button("Cancel");
-        cancelButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent t) {
-                importController.cancelImport();
-            }
+        cancelButton.setOnAction((ActionEvent t) -> {
+            importController.cancelImport();
         });
 
         Button importButton = new Button("Import");
-        importButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent t) {
-                try {
-                    importController.processImport();
-                } catch (final IOException | PluginException ex) {
-                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-                    displayAlert("Import Failed", ex.getLocalizedMessage(), false);
-                } catch (final InterruptedException ex) {
-                    Thread.currentThread().interrupt();
-                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-                    displayAlert("import Failed", ex.getLocalizedMessage(), false);
-                }
+        importButton.setOnAction((ActionEvent t) -> {
+            try {
+                importController.processImport();
+            } catch (final IOException | PluginException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+                displayAlert("Import Failed", ex.getLocalizedMessage(), false);
+            } catch (final InterruptedException ex) {
+                Thread.currentThread().interrupt();
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+                displayAlert("import Failed", ex.getLocalizedMessage(), false);
             }
         });
 

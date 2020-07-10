@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.graph.schema.visual.attribute.compatibility;
 
-import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;

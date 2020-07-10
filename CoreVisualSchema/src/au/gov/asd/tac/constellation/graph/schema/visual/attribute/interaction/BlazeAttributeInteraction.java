@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.graph.schema.visual.attribute.interaction;
 
-import au.gov.asd.tac.constellation.graph.schema.visual.attribute.BlazeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.AbstractAttributeInteraction;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.BlazeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Blaze;
 import java.util.Arrays;
 import java.util.List;

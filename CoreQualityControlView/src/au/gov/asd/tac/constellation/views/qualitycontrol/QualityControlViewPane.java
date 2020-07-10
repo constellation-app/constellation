@@ -193,117 +193,105 @@ public final class QualityControlViewPane extends BorderPane {
                 });
             }
 
-            identifierColumn.setCellFactory(new Callback<TableColumn<QualityControlEvent, QualityControlEvent>, TableCell<QualityControlEvent, QualityControlEvent>>() {
-                @Override
-                public TableCell<QualityControlEvent, QualityControlEvent> call(TableColumn<QualityControlEvent, QualityControlEvent> p) {
-                    final TableCell<QualityControlEvent, QualityControlEvent> cell = new TableCell<QualityControlEvent, QualityControlEvent>() {
-                        @Override
-                        public void updateItem(final QualityControlEvent item, final boolean empty) {
-                            super.updateItem(item, empty);
-                            if (item != null) {
-                                setText(item.getIdentifier());
-                                setStyle(qualityStyle(item.getQuality()));
-                            }
+            identifierColumn.setCellFactory((TableColumn<QualityControlEvent, QualityControlEvent> p) -> {
+                final TableCell<QualityControlEvent, QualityControlEvent> cell = new TableCell<QualityControlEvent, QualityControlEvent>() {
+                    @Override
+                    public void updateItem(final QualityControlEvent item, final boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item != null) {
+                            setText(item.getIdentifier());
+                            setStyle(qualityStyle(item.getQuality()));
                         }
-                    };
-
-                    cell.setOnMouseClicked(value -> {
-                        if (value.getClickCount() == 2) {
-                            @SuppressWarnings("unchecked") //sourceCell will be a Table cell of quality control events which extends from object type
-                            final TableCell<QualityControlEvent, QualityControlEvent> sourceCell = (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource();
-                            showRuleDialog(qualityTable, sourceCell);
-                        }
-                    });
-
-                    return cell;
-                }
+                    }
+                };
+                
+                cell.setOnMouseClicked(value -> {
+                    if (value.getClickCount() == 2) {
+                        @SuppressWarnings("unchecked") //sourceCell will be a Table cell of quality control events which extends from object type
+                        final TableCell<QualityControlEvent, QualityControlEvent> sourceCell = (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource();
+                        showRuleDialog(qualityTable, sourceCell);
+                    }
+                });
+                
+                return cell;
             });
 
-            typeColumn.setCellFactory(new Callback<TableColumn<QualityControlEvent, QualityControlEvent>, TableCell<QualityControlEvent, QualityControlEvent>>() {
-                @Override
-                public TableCell<QualityControlEvent, QualityControlEvent> call(TableColumn<QualityControlEvent, QualityControlEvent> p) {
-                    final TableCell<QualityControlEvent, QualityControlEvent> cell = new TableCell<QualityControlEvent, QualityControlEvent>() {
-                        @Override
-                        public void updateItem(final QualityControlEvent item, final boolean empty) {
-                            super.updateItem(item, empty);
-                            if (item != null) {
-                                setText(item.getType());
-                                setStyle(qualityStyle(item.getQuality()));
-                            }
+            typeColumn.setCellFactory((TableColumn<QualityControlEvent, QualityControlEvent> p) -> {
+                final TableCell<QualityControlEvent, QualityControlEvent> cell = new TableCell<QualityControlEvent, QualityControlEvent>() {
+                    @Override
+                    public void updateItem(final QualityControlEvent item, final boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item != null) {
+                            setText(item.getType());
+                            setStyle(qualityStyle(item.getQuality()));
                         }
-                    };
-
-                    cell.setOnMouseClicked(value -> {
-                        if (value.getClickCount() == 2) {
-                            @SuppressWarnings("unchecked") //sourceCell will be a Table cell of quality control events which extends from object type
-                            final TableCell<QualityControlEvent, QualityControlEvent> sourceCell = (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource();
-                            showRuleDialog(qualityTable, sourceCell);
-                        }
-                    });
-
-                    return cell;
-                }
+                    }
+                };
+                
+                cell.setOnMouseClicked(value -> {
+                    if (value.getClickCount() == 2) {
+                        @SuppressWarnings("unchecked") //sourceCell will be a Table cell of quality control events which extends from object type
+                        final TableCell<QualityControlEvent, QualityControlEvent> sourceCell = (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource();
+                        showRuleDialog(qualityTable, sourceCell);
+                    }
+                });
+                
+                return cell;
             });
 
-            qualityColumn.setCellFactory(new Callback<TableColumn<QualityControlEvent, QualityControlEvent>, TableCell<QualityControlEvent, QualityControlEvent>>() {
-                @Override
-                public TableCell<QualityControlEvent, QualityControlEvent> call(TableColumn<QualityControlEvent, QualityControlEvent> p) {
-                    final TableCell<QualityControlEvent, QualityControlEvent> cell = new TableCell<QualityControlEvent, QualityControlEvent>() {
-                        @Override
-                        public void updateItem(final QualityControlEvent item, final boolean empty) {
-                            super.updateItem(item, empty);
-                            if (item != null) {
-                                setText(item.getQuality() == 0 ? Bundle.MSG_NotApplicable() : String.valueOf(item.getQuality()));
-                                setAlignment(item.getQuality() == 0 ? Pos.CENTER : Pos.CENTER_RIGHT);
-                                setStyle(qualityStyle(item.getQuality()));
-                            }
+            qualityColumn.setCellFactory((TableColumn<QualityControlEvent, QualityControlEvent> p) -> {
+                final TableCell<QualityControlEvent, QualityControlEvent> cell = new TableCell<QualityControlEvent, QualityControlEvent>() {
+                    @Override
+                    public void updateItem(final QualityControlEvent item, final boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item != null) {
+                            setText(item.getQuality() == 0 ? Bundle.MSG_NotApplicable() : String.valueOf(item.getQuality()));
+                            setAlignment(item.getQuality() == 0 ? Pos.CENTER : Pos.CENTER_RIGHT);
+                            setStyle(qualityStyle(item.getQuality()));
                         }
-                    };
-
-                    cell.setOnMouseClicked(value -> {
-                        if (value.getClickCount() == 2) {
-                            @SuppressWarnings("unchecked") //sourceCell will be a Table cell of quality control events which extends from object type
-                            final TableCell<QualityControlEvent, QualityControlEvent> sourceCell = (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource();
-                            showRuleDialog(qualityTable, sourceCell);
-                        }
-                    });
-
-                    return cell;
-                }
+                    }
+                };
+                
+                cell.setOnMouseClicked(value -> {
+                    if (value.getClickCount() == 2) {
+                        @SuppressWarnings("unchecked") //sourceCell will be a Table cell of quality control events which extends from object type
+                        final TableCell<QualityControlEvent, QualityControlEvent> sourceCell = (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource();
+                        showRuleDialog(qualityTable, sourceCell);
+                    }
+                });
+                
+                return cell;
             });
 
-            reasonColumn.setCellFactory(new Callback<TableColumn<QualityControlEvent, QualityControlEvent>, TableCell<QualityControlEvent, QualityControlEvent>>() {
-                @Override
-                public TableCell<QualityControlEvent, QualityControlEvent> call(TableColumn<QualityControlEvent, QualityControlEvent> p) {
-                    final TableCell<QualityControlEvent, QualityControlEvent> cell = new TableCell<QualityControlEvent, QualityControlEvent>() {
-                        @Override
-                        public void updateItem(final QualityControlEvent item, final boolean empty) {
-                            super.updateItem(item, empty);
-                            if (item != null) {
-                                setText(item.getReasons());
-                                setStyle(qualityStyle(item.getQuality()));
-                            }
+            reasonColumn.setCellFactory((TableColumn<QualityControlEvent, QualityControlEvent> p) -> {
+                final TableCell<QualityControlEvent, QualityControlEvent> cell = new TableCell<QualityControlEvent, QualityControlEvent>() {
+                    @Override
+                    public void updateItem(final QualityControlEvent item, final boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item != null) {
+                            setText(item.getReasons());
+                            setStyle(qualityStyle(item.getQuality()));
                         }
-                    };
-
-                    cell.setOnMouseClicked(value -> {
-                        if (value.getClickCount() == 2) {
-                            @SuppressWarnings("unchecked") //sourceCell will be a Table cell of quality control events which extends from object type
-                            final TableCell<QualityControlEvent, QualityControlEvent> sourceCell = (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource();
-                            showRuleDialog(qualityTable, sourceCell);
-                        }
-                    });
-
-                    return cell;
-                }
+                    }
+                };
+                
+                cell.setOnMouseClicked(value -> {
+                    if (value.getClickCount() == 2) {
+                        @SuppressWarnings("unchecked") //sourceCell will be a Table cell of quality control events which extends from object type
+                        final TableCell<QualityControlEvent, QualityControlEvent> sourceCell = (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource();
+                        showRuleDialog(qualityTable, sourceCell);
+                    }
+                });
+                
+                return cell;
             });
 
             if (state != null) {
                 qualityTable.setItems(FXCollections.observableArrayList(state.getQualityControlEvents()));
             }
 
-            final String displayName = graphId != null && GraphNode.getGraphNode(graphId) != null 
-                    ? GraphNode.getGraphNode(graphId).getDisplayName() 
+            final String displayName = graphId != null && GraphNode.getGraphNode(graphId) != null
+                    ? GraphNode.getGraphNode(graphId).getDisplayName()
                     : "a graph";
             qualityTable.setPlaceholder(wrappedLabel(String.format(Bundle.MSG_SelectSomething(), displayName)));
 

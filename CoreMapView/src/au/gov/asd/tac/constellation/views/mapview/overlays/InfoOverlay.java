@@ -54,13 +54,13 @@ public class InfoOverlay extends MapOverlay implements MapEventListener {
     private float panToBroadcasted = minimumTransparency;
     private float zoomByBroadcasted = minimumTransparency;
     private float zoomToBroadcasted = minimumTransparency;
-    
+
     public InfoOverlay() {
         this.enabled = true;
     }
 
     @Override
-    public void initialise(final MapViewTileRenderer renderer, 
+    public void initialise(final MapViewTileRenderer renderer,
             final UnfoldingMap map, final EventDispatcher eventDispatcher) {
         super.initialise(renderer, map, eventDispatcher);
 
@@ -98,7 +98,7 @@ public class InfoOverlay extends MapOverlay implements MapEventListener {
         // draw zoom info
         final String zoom = String.valueOf(map.getZoomLevel());
         drawLabeledValue("Zoom", zoom, x + 60, yOffset, valueBoxShortWidth);
-        drawStepBar(map.getZoomLevel(), x + 95, yOffset + 5, 
+        drawStepBar(map.getZoomLevel(), x + 95, yOffset + 5,
                 ((MapProvider) map.mapDisplay.getMapProvider()).zoomLevels());
 
         // draw separator
@@ -215,7 +215,7 @@ public class InfoOverlay extends MapOverlay implements MapEventListener {
         return getName();
     }
 
-    protected void drawLabeledEvent(final String label, final float listeningValue, 
+    protected void drawLabeledEvent(final String label, final float listeningValue,
             final float broadcastingValue, final float x, final float y, final float valueBoxWidth) {
         final int alphaSend = (int) PApplet.map(broadcastingValue, 0, 1, 0, 255);
         drawEvent(x, y + 4, valueBoxWidth, renderer.color(eventBoxColorSendingOn, alphaSend));
