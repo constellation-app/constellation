@@ -87,7 +87,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
 
     private static final String INTERACTIVE_DISABLED = "Interactive - Disabled";
     private static final String INTERACTIVE_ENABLED = "Interactive - Enabled";
-    
+
     private final Lookup.Result<GraphNode> result;
     private GraphNode graphNode;
     private Graph graph;
@@ -445,7 +445,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
             return;
         }
         Dimension d;
-        int sizeDifference = nestedTrussesHeight - nestedTrussButton.getHeight();
+        final int sizeDifference = nestedTrussesHeight - nestedTrussButton.getHeight();
 
         nestedTrussPane.setSize(200, 0);
         nestedTrussPane.setMinimumSize(new Dimension(nestedTrussPane.getMinimumSize().width, 0));
@@ -464,7 +464,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
 
         // The grandparent of this TopComponent is the netbeans level JPanel we need to resize when in 'sliding/docked+minimised' mode. The parent of this TopComponent represents a tab, which we are not
         // interested in since it will be resized along with the JPanel
-        Container grandParentContainer = getParent().getParent();
+        final Container grandParentContainer = getParent().getParent();
         grandParentContainer.setSize(grandParentContainer.getWidth(), grandParentContainer.getHeight() - sizeDifference);
         d = grandParentContainer.getPreferredSize();
         d.height -= sizeDifference;
@@ -478,7 +478,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
             return;
         }
         Dimension d;
-        int sizeDifference = nestedTrussesHeight - nestedTrussButton.getHeight();
+        final int sizeDifference = nestedTrussesHeight - nestedTrussButton.getHeight();
 
         nestedTrussPane.setSize(200, nestedTrussesHeight);
         nestedTrussPane.setMinimumSize(new Dimension(nestedTrussPane.getMinimumSize().width, nestedTrussesHeight));
@@ -496,7 +496,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
         setMinimumSize(d);
 
         // resize the grandparent of this top component
-        Container grandParentContainer = getParent().getParent();
+        final Container grandParentContainer = getParent().getParent();
         grandParentContainer.setSize(grandParentContainer.getWidth(), grandParentContainer.getHeight() + sizeDifference);
         d = grandParentContainer.getPreferredSize();
         d.height += sizeDifference;
@@ -549,7 +549,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
 
             graphNode = node;
             graph = graphNode.getGraph();
-            ReadableGraph rg = graph.getReadableGraph();
+            final ReadableGraph rg = graph.getReadableGraph();
             try {
                 final int stateAttr = ClusteringConcept.MetaAttribute.K_TRUSS_CLUSTERING_STATE.get(rg);
                 state = stateAttr != Graph.NOT_FOUND ? (KTrussState) rg.getObjectValue(stateAttr, 0) : null;
@@ -592,7 +592,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
 
         long smc;
         final long mc;
-        ReadableGraph rg = graph.getReadableGraph();
+        final ReadableGraph rg = graph.getReadableGraph();
         try {
 
             // Retrieve the k-truss state attribute, attribute mod counter, and structural mod counter from the graph
@@ -650,16 +650,16 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
             }
 
             // Set the labels for the step slider
-            Hashtable<Integer, JComponent> labelTable = stepSlider.createStandardLabels(stepSlider.getMajorTickSpacing(), 2);
-            JLabel firstLabel = (JLabel) labelTable.get(2);
+            final Hashtable<Integer, JComponent> labelTable = stepSlider.createStandardLabels(stepSlider.getMajorTickSpacing(), 2);
+            final JLabel firstLabel = (JLabel) labelTable.get(2);
             firstLabel.setText("all");
-            Font labelFont = firstLabel.getFont();
-            Font labelBoldFont = labelFont.deriveFont(Font.BOLD | labelFont.getStyle());
+            final Font labelFont = firstLabel.getFont();
+            final Font labelBoldFont = labelFont.deriveFont(Font.BOLD | labelFont.getStyle());
 
             // Bold the labels which have significant values of k
-            Iterator<?> iter = labelTable.keySet().iterator();
+            final Iterator<?> iter = labelTable.keySet().iterator();
             while (iter.hasNext()) {
-                int key = (Integer) iter.next();
+                final int key = (Integer) iter.next();
                 if (state.isKTrussExtant(key)) {
                     ((JLabel) labelTable.get(key)).setFont(labelBoldFont);
                 }
@@ -732,7 +732,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
         // Determine if interactive is enabled, if it isn't, then overlay colours need to be removed.
         // This is used to revert the graph display when the component is closed and was previously
         // set to interactive.
-        boolean interactive = state.getInteractive();
+        final boolean interactive = state.getInteractive();
         interactiveButton.setText(interactive ? INTERACTIVE_ENABLED : INTERACTIVE_DISABLED);
         if (!interactive) {
             final RemoveOverlayColors removeColors = new RemoveOverlayColors();
@@ -752,7 +752,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
             return;
         }
 
-        boolean wasColored = state.getNestedTrussesColored();
+        final boolean wasColored = state.getNestedTrussesColored();
         state.toggleNestedTrussesColored();
 
         final SimpleEditPlugin colourPlugin;
@@ -801,7 +801,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
 
         private final KTrussState state;
 
-        public ColorTrusses(KTrussState state) {
+        public ColorTrusses(final KTrussState state) {
             this.state = state;
         }
 
@@ -814,16 +814,16 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
 
             // Retrieve (or if not extant, create) the node and transaction attributes pertaining to k-trusses and selection.
-            int vxKTrussAttr = ClusteringConcept.VertexAttribute.K_TRUSS_CLUSTER.ensure(graph);
-            int txKTrussAttr = ClusteringConcept.TransactionAttribute.K_TRUSS_CLUSTER.ensure(graph);
-            int vxOverlayColorAttr = ClusteringConcept.VertexAttribute.K_TRUSS_COLOUR.ensure(graph);
-            int txOverlayColorAttr = ClusteringConcept.TransactionAttribute.K_TRUSS_COLOUR.ensure(graph);
-            int vxColorRef = VisualConcept.GraphAttribute.NODE_COLOR_REFERENCE.ensure(graph);
-            int txColorRef = VisualConcept.GraphAttribute.TRANSACTION_COLOR_REFERENCE.ensure(graph);
+            final int vxKTrussAttr = ClusteringConcept.VertexAttribute.K_TRUSS_CLUSTER.ensure(graph);
+            final int txKTrussAttr = ClusteringConcept.TransactionAttribute.K_TRUSS_CLUSTER.ensure(graph);
+            final int vxOverlayColorAttr = ClusteringConcept.VertexAttribute.K_TRUSS_COLOUR.ensure(graph);
+            final int txOverlayColorAttr = ClusteringConcept.TransactionAttribute.K_TRUSS_COLOUR.ensure(graph);
+            final int vxColorRef = VisualConcept.GraphAttribute.NODE_COLOR_REFERENCE.ensure(graph);
+            final int txColorRef = VisualConcept.GraphAttribute.TRANSACTION_COLOR_REFERENCE.ensure(graph);
             graph.setStringValue(vxColorRef, 0, ClusteringConcept.VertexAttribute.K_TRUSS_COLOUR.getName());
             graph.setStringValue(txColorRef, 0, ClusteringConcept.TransactionAttribute.K_TRUSS_COLOUR.getName());
 
-            ConstellationColor[] colors = ConstellationColor.createPalettePhi(state.getNumUniqueValuesOfK() + 2, 0, 0.5f, 0.95f);
+            final ConstellationColor[] colors = ConstellationColor.createPalettePhi(state.getNumUniqueValuesOfK() + 2, 0, 0.5f, 0.95f);
             colors[0] = colors[colors.length - 1];
 
             // Determine and set the overlay color for each vertex
@@ -837,8 +837,8 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
             // Determine and set the overlay color for each transaction
             for (int i = 0; i < graph.getTransactionCount(); i++) {
                 // Determine if we should display the current transaction based on its own k-truss attribute
-                int txID = graph.getTransaction(i);
-                int k = graph.getIntValue(txKTrussAttr, txID);
+                final int txID = graph.getTransaction(i);
+                final int k = graph.getIntValue(txKTrussAttr, txID);
                 final int colorIndex = state.getIndexOfKTruss(k);
                 graph.setObjectValue(txOverlayColorAttr, txID, colors[colorIndex + 1]);
             }
@@ -850,7 +850,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
 
         private final KTrussState state;
 
-        public Select(KTrussState state) {
+        public Select(final KTrussState state) {
             this.state = state;
         }
 
@@ -863,21 +863,21 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
 
             // Retrieve (or if not extant, create) the node and transaction attributes pertaining to k-trusses and selection.
-            int vxKTrussAttr = ClusteringConcept.VertexAttribute.K_TRUSS_CLUSTER.ensure(graph);
-            int txKTrussAttr = ClusteringConcept.TransactionAttribute.K_TRUSS_CLUSTER.ensure(graph);
+            final int vxKTrussAttr = ClusteringConcept.VertexAttribute.K_TRUSS_CLUSTER.ensure(graph);
+            final int txKTrussAttr = ClusteringConcept.TransactionAttribute.K_TRUSS_CLUSTER.ensure(graph);
 
-            int txSelectedAttr = VisualConcept.TransactionAttribute.SELECTED.get(graph);
-            int vxSelectedAttr = VisualConcept.VertexAttribute.SELECTED.get(graph);
+            final int txSelectedAttr = VisualConcept.TransactionAttribute.SELECTED.get(graph);
+            final int vxSelectedAttr = VisualConcept.VertexAttribute.SELECTED.get(graph);
 
             // Retrieve the current value of K from the KTrussState
-            int currentK = state.getCurrentK();
+            final int currentK = state.getCurrentK();
 
             // Update the selection of the graph's nodes
             for (int i = 0; i < graph.getVertexCount(); i++) {
                 // Determine if we should select the current vertex based on its own k-truss attribute
-                int vxID = graph.getVertex(i);
-                int k = graph.getIntValue(vxKTrussAttr, vxID);
-                boolean selectCurrentVertex = k >= currentK;
+                final int vxID = graph.getVertex(i);
+                final int k = graph.getIntValue(vxKTrussAttr, vxID);
+                final boolean selectCurrentVertex = k >= currentK;
                 // Select (or deselect) the vertex
                 graph.setBooleanValue(vxSelectedAttr, vxID, selectCurrentVertex);
             }
@@ -885,9 +885,9 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
             // Update the selection of the graph's transactions
             for (int i = 0; i < graph.getTransactionCount(); i++) {
                 // Determine if we should display the current transaction based on its own k-truss attribute
-                int txID = graph.getTransaction(i);
-                int k = graph.getIntValue(txKTrussAttr, txID);
-                boolean selectCurrentTransaction = k >= currentK;
+                final int txID = graph.getTransaction(i);
+                final int k = graph.getIntValue(txKTrussAttr, txID);
+                final boolean selectCurrentTransaction = k >= currentK;
                 // Select (or deselect) the vertex
                 graph.setBooleanValue(txSelectedAttr, txID, selectCurrentTransaction);
             }
@@ -912,28 +912,28 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
 
             // Retrieve (or if not extant, create) the node and transaction attributes pertaining to k-trusses, and visibility/dimming.
-            int vxKTrussAttr = ClusteringConcept.VertexAttribute.K_TRUSS_CLUSTER.ensure(graph);
-            int txKTrussAttr = ClusteringConcept.TransactionAttribute.K_TRUSS_CLUSTER.ensure(graph);
+            final int vxKTrussAttr = ClusteringConcept.VertexAttribute.K_TRUSS_CLUSTER.ensure(graph);
+            final int txKTrussAttr = ClusteringConcept.TransactionAttribute.K_TRUSS_CLUSTER.ensure(graph);
 
-            int vxDimmedAttr = VisualConcept.VertexAttribute.DIMMED.ensure(graph);
-            int txDimmedAttr = VisualConcept.TransactionAttribute.DIMMED.ensure(graph);
+            final int vxDimmedAttr = VisualConcept.VertexAttribute.DIMMED.ensure(graph);
+            final int txDimmedAttr = VisualConcept.TransactionAttribute.DIMMED.ensure(graph);
 
-            int vxVisibilityAttr = VisualConcept.VertexAttribute.VISIBILITY.ensure(graph);
-            int txVisibilityAttr = VisualConcept.TransactionAttribute.VISIBILITY.ensure(graph);
+            final int vxVisibilityAttr = VisualConcept.VertexAttribute.VISIBILITY.ensure(graph);
+            final int txVisibilityAttr = VisualConcept.TransactionAttribute.VISIBILITY.ensure(graph);
 
             // Retrieve the display options from the KTrussState
-            int currentK = state.getInteractive() ? state.getCurrentK() : 0;
-            boolean dim = state.getExcludedElementsDimmed();
-            boolean displayOptionHasToggled = state.hasDisplayOptionToggled();
-            boolean interactive = state.getInteractive();
+            final int currentK = state.getInteractive() ? state.getCurrentK() : 0;
+            final boolean dim = state.getExcludedElementsDimmed();
+            final boolean displayOptionHasToggled = state.hasDisplayOptionToggled();
+            final boolean interactive = state.getInteractive();
 
             // Update the display of the graph's nodes
             for (int i = 0; i < graph.getVertexCount(); i++) {
                 // Determine if we should display the current vertex based on its own k-truss attribute
-                int vxID = graph.getVertex(i);
-                int k = graph.getIntValue(vxKTrussAttr, vxID);
+                final int vxID = graph.getVertex(i);
+                final int k = graph.getIntValue(vxKTrussAttr, vxID);
                 // Only display K-Truss visuals if interactive is set
-                boolean displayCurrentVertex = ((k >= currentK) || (!interactive));
+                final boolean displayCurrentVertex = ((k >= currentK) || (!interactive));
 
                 // Update the relevant attributes which affect the display of the vertex
                 if (dim) {
@@ -952,10 +952,10 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
             // Update the display of the graph's transactions
             for (int i = 0; i < graph.getTransactionCount(); i++) {
                 // Determine if we should display the current transaction based on its own k-truss attribute
-                int txID = graph.getTransaction(i);
-                int k = graph.getIntValue(txKTrussAttr, txID);
+                final int txID = graph.getTransaction(i);
+                final int k = graph.getIntValue(txKTrussAttr, txID);
                 // Only display K-Truss visuals if interactive is set
-                boolean displayCurrentTransaction = ((k >= currentK) || (!interactive));
+                final boolean displayCurrentTransaction = ((k >= currentK) || (!interactive));
 
                 // Update the relevant attributes which affect the display of the transaction
                 if (dim) {

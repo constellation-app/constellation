@@ -15,9 +15,9 @@
  */
 package au.gov.asd.tac.constellation.views.namedselection.state;
 
-import au.gov.asd.tac.constellation.views.namedselection.NamedSelection;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
+import au.gov.asd.tac.constellation.views.namedselection.NamedSelection;
 import au.gov.asd.tac.constellation.views.namedselection.NamedSelectionManager;
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -42,7 +42,7 @@ public final class NamedSelectionState {
     private BitSet allocated;
     private boolean isDimOthers;
     private boolean isSelectResults;
-    private ArrayList<NamedSelection> namedSelections;
+    private final ArrayList<NamedSelection> namedSelections;
 
     /**
      * Construct a new NamedSelectionState.

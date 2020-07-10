@@ -42,19 +42,19 @@ public class SP2Traverse {
         final int selectedNodeAttrId = VisualConcept.VertexAttribute.SELECTED.get(graph);
         final int selectedTransactionAttrId = VisualConcept.TransactionAttribute.SELECTED.get(graph);
 
-        BitSet update = new BitSet(vxCount);
-        BitSet[] receivedFrom = new BitSet[vxCount]; // this keeps track of what information a node has received
-        BitSet[] sendBuffer = new BitSet[vxCount];   // each turn, this stores all the information a node is receiving
-        int[] ecc = new int[vxCount];
-        BitSet turn = new BitSet(vxCount);
-        BitSet newUpdate = new BitSet(vxCount);
-        BitSet goal = new BitSet(vxCount);
-        BitSet[] pathed = new BitSet[vxCount];
+        final BitSet update = new BitSet(vxCount);
+        final BitSet[] receivedFrom = new BitSet[vxCount]; // this keeps track of what information a node has received
+        final BitSet[] sendBuffer = new BitSet[vxCount];   // each turn, this stores all the information a node is receiving
+        final int[] ecc = new int[vxCount];
+        final BitSet turn = new BitSet(vxCount);
+        final BitSet newUpdate = new BitSet(vxCount);
+        final BitSet goal = new BitSet(vxCount);
+        final BitSet[] pathed = new BitSet[vxCount];
 
-        BitSet[] connectedTo = FindSubgraphs.traverse(graph);
+        final BitSet[] connectedTo = FindSubgraphs.traverse(graph);
 
-        BitSet check = new BitSet(vxCount); // used if a seed only has one neighbour, skipping that hop
-        BitSet seeds = new BitSet(vxCount); // used to store all the seeds
+        final BitSet check = new BitSet(vxCount); // used if a seed only has one neighbour, skipping that hop
+        final BitSet seeds = new BitSet(vxCount); // used to store all the seeds
 
         if (selectedNodeAttrId == Graph.NOT_FOUND || selectedTransactionAttrId == Graph.NOT_FOUND) {
             return;
@@ -169,13 +169,13 @@ public class SP2Traverse {
                     if (success) {
                         for (int g = goal.nextSetBit(0); g >= 0; g = goal.nextSetBit(g + 1)) {
                             for (int src = receivedFrom[g].nextSetBit(0); src >= 0; src = receivedFrom[g].nextSetBit(src + 1)) {
-                                int srcId = graph.getVertex(src);
+                                final int srcId = graph.getVertex(src);
                                 pathed[src].set(two, true);
                                 boolean removeFromCheck = false;
                                 for (int neighbourPosition = 0; neighbourPosition < graph.getVertexNeighbourCount(srcId); neighbourPosition++) {
-                                    int dstId = graph.getVertexNeighbour(srcId, neighbourPosition);
-                                    int dst = graph.getVertexPosition(dstId);
-                                    int lxId = graph.getLink(srcId, dstId);
+                                    final int dstId = graph.getVertexNeighbour(srcId, neighbourPosition);
+                                    final int dst = graph.getVertexPosition(dstId);
+                                    final int lxId = graph.getLink(srcId, dstId);
                                     if (check.get(src) && (graph.getBooleanValue(selectedNodeAttrId, dstId) && graph.getVertexNeighbourCount(dstId) == 1)) {
                                         graph.setBooleanValue(selectedNodeAttrId, srcId, true);
                                         graph.setBooleanValue(selectedNodeAttrId, dstId, true);
@@ -209,9 +209,9 @@ public class SP2Traverse {
 
                     // for each neighbour, check if there is any new information it needs to receive
                     for (int src = update.nextSetBit(0); src >= 0; src = update.nextSetBit(src + 1)) {
-                        int vxId = graph.getVertex(src);
+                        final int vxId = graph.getVertex(src);
                         for (int neighbourPosition = 0; neighbourPosition < graph.getVertexNeighbourCount(vxId); neighbourPosition++) {
-                            int dst = graph.getVertexPosition(graph.getVertexNeighbour(vxId, neighbourPosition));
+                            final int dst = graph.getVertexPosition(graph.getVertexNeighbour(vxId, neighbourPosition));
                             if (!receivedFrom[src].equals(receivedFrom[dst])) {
                                 sendBuffer[dst].or(diff(receivedFrom[src], receivedFrom[dst]));
                                 turn.or(sendBuffer[dst]);
@@ -241,9 +241,9 @@ public class SP2Traverse {
      * @param two bitset two
      * @return
      */
-    private static BitSet diff(BitSet one, BitSet two) {
-        BitSet o = new BitSet(one.length());
-        BitSet t = new BitSet(two.length());
+    private static BitSet diff(final BitSet one, final BitSet two) {
+        final BitSet o = new BitSet(one.length());
+        final BitSet t = new BitSet(two.length());
         o.or(one);
         t.or(two);
         o.andNot(t);

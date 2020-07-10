@@ -20,8 +20,8 @@ import java.util.Arrays;
 
 /**
  * A hash set that holds primitive integers instead of Integer objects for
- * speed. The hash set has a capacity and it is assumed that all entries
- * will be in the range 0 &lt;= x &lt; capacity.
+ * speed. The hash set has a capacity and it is assumed that all entries will be
+ * in the range 0 &lt;= x &lt; capacity.
  *
  * @author sirius
  */
@@ -46,10 +46,10 @@ public abstract class IntHashSet implements Serializable {
      * this set.
      */
     protected abstract boolean equals(int element1, int element2);
-    private int[] buckets;
-    private int[] next;
-    private int[] prev;
-    private int[] hashCache;
+    private final int[] buckets;
+    private final int[] next;
+    private final int[] prev;
+    private final int[] hashCache;
 
     public IntHashSet(final int capacity) {
         buckets = new int[capacity];

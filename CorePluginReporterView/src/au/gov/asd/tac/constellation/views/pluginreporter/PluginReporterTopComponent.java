@@ -66,7 +66,7 @@ import org.openide.windows.TopComponent;
 })
 public final class PluginReporterTopComponent extends JavaFxTopComponent<PluginReporterPane> implements GraphReportListener {
 
-    private PluginReporterPane reporterPane;
+    private final PluginReporterPane reporterPane;
 
     public PluginReporterTopComponent() {
         initComponents();
@@ -128,12 +128,12 @@ public final class PluginReporterTopComponent extends JavaFxTopComponent<PluginR
     void readProperties(java.util.Properties p) {
         // Required for @ConvertAsProperties, intentionally left blank
     }
-    
+
     @Override
     protected void componentShowing() {
         super.componentShowing();
         handleNewGraph(GraphManager.getDefault().getActiveGraph());
-    }  
+    }
 
     @Override
     protected void handleNewGraph(final Graph graph) {

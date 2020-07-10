@@ -115,7 +115,7 @@ public class DijkstraServices {
             final CyclicBarrier distanceBarrier = new CyclicBarrier(neededThreadsDistance + 1);
 
             try {
-                ThreadedQuery[] distanceWorker = new ThreadedQuery[neededThreadsDistance];
+                final ThreadedQuery[] distanceWorker = new ThreadedQuery[neededThreadsDistance];
 
                 // Create the requisite number of workers:
                 for (int i = 0; i < neededThreadsDistance; i++) {
@@ -125,7 +125,7 @@ public class DijkstraServices {
                     distanceWorker[i] = new ThreadedQuery(distanceBarrier, this, "Distance", i, workloadLBound, workloadUBound);
 
                     // Start the worker now that it knows its workload:
-                    Thread t = new Thread(distanceWorker[i]);
+                    final Thread t = new Thread(distanceWorker[i]);
                     t.start();
                 }
             } finally {
@@ -149,7 +149,7 @@ public class DijkstraServices {
             final CyclicBarrier pathBarrier = new CyclicBarrier(neededThreadsPath + 1);
 
             try {
-                ThreadedQuery[] pathWorker = new ThreadedQuery[neededThreadsPath];
+                final ThreadedQuery[] pathWorker = new ThreadedQuery[neededThreadsPath];
 
                 // Create the requisite number of workers:
                 for (int i = 0; i < neededThreadsPath; i++) {
@@ -159,7 +159,7 @@ public class DijkstraServices {
                     pathWorker[i] = new ThreadedQuery(pathBarrier, this, "Path", i, workloadLBound, workloadUBound);
 
                     // Start the worker now that it knows its workload:
-                    Thread t = new Thread(pathWorker[i]);
+                    final Thread t = new Thread(pathWorker[i]);
                     t.start();
                 }
             } finally {
@@ -196,8 +196,8 @@ public class DijkstraServices {
             //For each path, get the first vertex and establish which link it corresponds to
             for (ArrayList<Integer> path : vertex.getValue()) {
                 for (int i = 0; i < path.size(); i++) {
-                    int currNode = path.get(i);
-                    int nextNode;
+                    final int currNode = path.get(i);
+                    final int nextNode;
 
                     //Select Current Node
                     graph.setBooleanValue(vxSelectedAttr, currNode, true);
@@ -352,7 +352,7 @@ public class DijkstraServices {
          */
         private void queryDistance() throws InterruptedException {
             //Get a list of all the vertices in the graph
-            List<Integer> vertices = Collections.synchronizedList(new ArrayList<>());
+            final List<Integer> vertices = Collections.synchronizedList(new ArrayList<>());
             synchronized (vertices) {
                 for (int i = 0; i < graph.getVertexCount(); i++) {
                     vertices.add(graph.getVertex(i));
@@ -361,20 +361,20 @@ public class DijkstraServices {
 
             //Loop over each vertex that is selected on the graph and determine the vertices
             //connected to it and their distances
-            for (int vertex : Collections.synchronizedList(parent.selectedVertices)) {
+            for (final int vertex : Collections.synchronizedList(parent.selectedVertices)) {
                 //Collection of distances for the current vertex
-                ConcurrentHashMap<Integer, Double> distances = new ConcurrentHashMap<>();
+                final ConcurrentHashMap<Integer, Double> distances = new ConcurrentHashMap<>();
 
                 //Holds number of hops from the current vertex to connected vertices
-                ConcurrentHashMap<Tuple<Integer, Integer>, Double> weights = null; // Map: (source,dest) -> edge weight
+                final ConcurrentHashMap<Tuple<Integer, Integer>, Double> weights = null; // Map: (source,dest) -> edge weight
 
                 //Begin Dijkstra's Algorithm
-                FibonacciHeap<Integer> priorityQueue = new FibonacciHeap<>();
+                final FibonacciHeap<Integer> priorityQueue = new FibonacciHeap<>();
                 synchronized (priorityQueue) {
-                    ConcurrentHashMap<Integer, FibonacciHeap.Entry<Integer>> entries = new ConcurrentHashMap<>();
+                    final ConcurrentHashMap<Integer, FibonacciHeap.Entry<Integer>> entries = new ConcurrentHashMap<>();
 
                     synchronized (entries) {
-                        for (int node : Collections.synchronizedList(vertices)) {
+                        for (final int node : Collections.synchronizedList(vertices)) {
                             entries.put(node, priorityQueue.enqueue(node, Double.POSITIVE_INFINITY));
                         }
 
@@ -385,7 +385,7 @@ public class DijkstraServices {
                                 throw new InterruptedException();
                             }
 
-                            FibonacciHeap.Entry<Integer> curr = priorityQueue.dequeueMin();
+                            final FibonacciHeap.Entry<Integer> curr = priorityQueue.dequeueMin();
 
                             synchronized (curr) {
                                 if (curr.getPriority() == Double.POSITIVE_INFINITY) {// if the dist is inf should be ok to break cos must be in different connected component else would be less than inf.
@@ -404,17 +404,17 @@ public class DijkstraServices {
                                         getNeighboursIgnoreDirection(neighbours, graph, id);
                                     }
 
-                                    for (int n : neighbours) {
+                                    for (final int n : neighbours) {
                                         if (Collections.synchronizedMap(distances).containsKey(n)) {
                                             continue;
                                         } else if (n == vertex) {
                                             break;
                                         }
                                         final double pathCost = curr.getPriority() + getWeight(curr.getValue(), n, weights);
-                                        FibonacciHeap.Entry<Integer> neigh = entries.get(n);
+                                        final FibonacciHeap.Entry<Integer> neigh = entries.get(n);
                                         if (pathCost < neigh.getPriority()) {
                                             priorityQueue.decreaseKey(neigh, pathCost);
-                                            Set<Integer> tmp = Collections.synchronizedSet(new HashSet<>());
+                                            final Set<Integer> tmp = Collections.synchronizedSet(new HashSet<>());
                                             synchronized (tmp) {
                                                 Collections.synchronizedSet(tmp).add(curr.getValue());
                                                 if (parent.lookupMap.containsKey(n)) {
@@ -437,7 +437,7 @@ public class DijkstraServices {
                     //If it does, add them to the collection
                     int count = 0;
                     synchronized (distances) {
-                        for (int vertexEntry : Collections.synchronizedList(parent.selectedVertices)) {
+                        for (final int vertexEntry : Collections.synchronizedList(parent.selectedVertices)) {
                             if (distances.containsKey(vertexEntry) && vertexEntry != vertex) {
                                 count++;
                             }
@@ -464,7 +464,7 @@ public class DijkstraServices {
 
                 if (!followDirection || (followDirection && pivottedVertex == selectedVertices.get(0))) {
                     //Set each selected vertex as a target
-                    for (int vertex : parent.collection.get(pivottedVertex).keySet()) {
+                    for (final int vertex : parent.collection.get(pivottedVertex).keySet()) {
                         //Check to make sure this vertex is selected, otherwise skip it
                         if (!parent.selectedVertices.contains(vertex) || pivottedVertex == vertex) {
                             continue;
@@ -507,7 +507,7 @@ public class DijkstraServices {
                                         findPath(pivottedVertex, vertex, parent.collection.get(pivottedVertex).get(vertex).intValue(), localPath, shortestPaths); // We can ignore the returned list as it returns to our shortestPath list
                                     }
                                     //Now we have a list of the shortest paths from the vertex to our connected target vertex we need to inject our target vertex into the path as a starting point
-                                    for (ArrayList<Integer> list : shortestPaths) {
+                                    for (final ArrayList<Integer> list : shortestPaths) {
                                         synchronized (list) {
                                             list.add(0, vertex);
                                         }
@@ -565,7 +565,7 @@ public class DijkstraServices {
                     //Make sure the originating vertex has an entry in our map so we can transverse it
                     if (parent.lookupMap.containsKey(previous)) {
                         //We need to get all the neigbouring vertices that belong to our current vertex
-                        for (int currentNode : parent.lookupMap.get(previous)) {
+                        for (final int currentNode : parent.lookupMap.get(previous)) {
                             //Check that we are heading in the right direction, ie. our current vertex should have a distance of our original count - 1 otherwise its not the right path
                             if (parent.collection.get(target).containsKey(currentNode) && parent.collection.get(target).get(currentNode).intValue() == (count - 1)) {
                                 //Add our vertex to the current path and recursively call findPath using this vertex as the originating, decrement count

@@ -46,7 +46,7 @@ public final class Transaction extends Group {
 
     private boolean isSelected = false;
 
-    private Line transactionLine = new Line();
+    private final Line transactionLine = new Line();
     private ArrowHead north = null;
     private ArrowHead south = null;
 

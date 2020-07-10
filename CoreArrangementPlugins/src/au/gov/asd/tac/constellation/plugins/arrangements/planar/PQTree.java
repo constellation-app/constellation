@@ -33,7 +33,7 @@ class PQTree {
     private PQNode root;
     private PQNode pertinentRoot;
     private int currentNumber;
-    private List<Set<PQNode>> leaves;
+    final private List<Set<PQNode>> leaves;
     private PQNode directionIndicatorLocation = null;
     private int numPertinentLeaves;
 

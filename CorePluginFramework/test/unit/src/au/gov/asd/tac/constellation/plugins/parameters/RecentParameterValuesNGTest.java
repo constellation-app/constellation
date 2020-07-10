@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.plugins.parameters;
 
-import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
-import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValuesKey;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
