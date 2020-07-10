@@ -21,12 +21,16 @@ import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.ImportFileParser;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPane;
+import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.InputSource;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -34,6 +38,7 @@ import javafx.event.ActionEvent;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -63,16 +68,17 @@ import javafx.stage.FileChooser.ExtensionFilter;
 public class SourcePane extends GridPane {
 
     private static File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
+    private static final Logger LOGGER = Logger.getLogger(SourcePane.class.getName());
 
     private final ComboBox<ImportDestination<?>> graphComboBox;
     private final ComboBox<ImportFileParser> importFileParserComboBox;
     private final CheckBox schemaCheckBox;
     private final Pane parametersPane = new Pane();
+    private final ListView<File> fileListView = new ListView<>();
 
     //    private final ImportController importController;
     public SourcePane(final ImportController importController) {
 
-//        this.importController = importController;
         setMinHeight(USE_PREF_SIZE);
         setMinWidth(0);
         setPadding(new Insets(5));
@@ -94,7 +100,6 @@ public class SourcePane extends GridPane {
         Label fileLabel = new Label("Files:");
         GridPane.setConstraints(fileLabel, 0, 0, 1, 1, HPos.LEFT, VPos.TOP);
 
-        final ListView<File> fileListView = new ListView<>();
         fileListView.setMinHeight(0);
         fileListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         fileListView.setMaxWidth(Double.MAX_VALUE);
@@ -146,6 +151,7 @@ public class SourcePane extends GridPane {
                     fileChooser.setSelectedExtensionFilter(extensionFilter);
                 }
             }
+            fileChooser.getExtensionFilters().add(new ExtensionFilter("All Files", "*.*"));
 
             List<File> newFiles = fileChooser.showOpenMultipleDialog(SourcePane.this.getScene().getWindow());
 
@@ -154,11 +160,24 @@ public class SourcePane extends GridPane {
                     DEFAULT_DIRECTORY = newFiles.get(0).getParentFile();
                     SourcePane.this.importFileParserComboBox.setDisable(true);
                 }
-                ObservableList<File> files = FXCollections.observableArrayList(fileListView.getItems());
-                for (File file : newFiles) {
-                    if (!files.contains(file)) {
+                final ObservableList<File> files = FXCollections.observableArrayList(fileListView.getItems());
+                String warningMsg = "The following files could not be parsed and have been excluded from import set:";
+                boolean foundInvalidFile = false;
+                for (final File file : newFiles) {
+                    // Iterate over files and attempt to parse/preview, if a failure is detected don't add the file to the
+                    // set of files to import.
+                    try {
+                        parser.preview(new InputSource(file), null, 100);
                         files.add(file);
+                    } catch (IOException ex) {
+                        foundInvalidFile = true;
+                        LOGGER.log(Level.INFO, "Unable to parse the file {0}, excluding from import set.", new Object[]{file.toString()});
+                        warningMsg = warningMsg + "\n    " + file.toString();
                     }
+                }
+                // If at least one file was found to be invalid then raise a dialog to indicate to user of import failures.
+                if (foundInvalidFile) {
+                    importController.displayAlert("Invalid file(s) found", warningMsg, Alert.AlertType.WARNING);
                 }
                 fileListView.setItems(files);
                 if (!newFiles.isEmpty()) {
@@ -177,9 +196,8 @@ public class SourcePane extends GridPane {
             files.removeAll(selectedFiles);
             fileListView.setItems(files);
             importController.setFiles(files, null);
-
-            if (files.isEmpty()) {
-                SourcePane.this.importFileParserComboBox.setDisable(false);
+            if (files.isEmpty()) {	
+                SourcePane.this.importFileParserComboBox.setDisable(false);	
             }
         });
 
@@ -238,8 +256,6 @@ public class SourcePane extends GridPane {
 
         final ToolBar optionsBox = new ToolBar();
         optionsBox.setMinWidth(0);
-//        optionsBox.setHgap(10);
-//        optionsBox.setVgap(10);
         GridPane.setConstraints(optionsBox, 0, 1, 3, 1);
         optionsBox.getItems().addAll(destinationLabel, graphComboBox, importFileParserLabel, importFileParserComboBox, schemaLabel, schemaCheckBox);
         getChildren().add(optionsBox);
@@ -251,6 +267,16 @@ public class SourcePane extends GridPane {
             PluginParametersPane pluginParametersPane = PluginParametersPane.buildPane(parameters, null);
             parametersPane.getChildren().add(pluginParametersPane);
         }
+    }
+    
+    /** Allow a file to be removed from fileListView. This would be triggered by code in InputController if the file
+     * was found to be missing or invalid - these checks are triggered when a new file is selected in the fileListView.
+     * @param file The file to remove.
+     */
+    public void removeFile(File file) {
+        final ObservableList<File> files = fileListView.getItems();
+        files.remove(file);
+        fileListView.setItems(files);
     }
 
     /**
