@@ -56,10 +56,10 @@ public class MDSChoicePanel extends javax.swing.JPanel {
     public MDSChoiceParameters getParameters() {
         final LinkWeight linkWeight = (LinkWeight) linkWeightsCombo.getSelectedItem();
         final int weightAttribute = attributeSelectionPanel.getAttributeId();
-        final float scale = ((Float) scaleSpinner.getValue()).floatValue();
-        final int iterationsPerStageTrial = ((Integer) iterationsSpinner.getValue()).intValue();
-        final int maxTrialsPerStage = ((Integer) maxTrialsSpinner.getValue()).intValue();
-        final int minTrialsPerStage = ((Integer) minTrialsSpinner.getValue()).intValue();
+        final float scale = ((Float) scaleSpinner.getValue());
+        final int iterationsPerStageTrial = ((Integer) iterationsSpinner.getValue());
+        final int maxTrialsPerStage = ((Integer) maxTrialsSpinner.getValue());
+        final int minTrialsPerStage = ((Integer) minTrialsSpinner.getValue());
         final boolean avoidOverlap = avoidOverlapCheck.isSelected();
         final int overlapAvoidance = Integer.parseInt((String) avoidanceCombo.getSelectedItem());
 

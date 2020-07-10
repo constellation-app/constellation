@@ -461,14 +461,18 @@ public final class TableViewPane extends BorderPane {
 
         columnIndex.forEach(columnTuple -> {
             final String columnHeading = columnTuple.getFirst();
-            if ("source.".equals(columnHeading)) {
-                columnCheckboxesSource.add(getColumnVisibility(columnTuple));
-
-            } else if ("destination.".equals(columnHeading)) {
-                columnCheckboxesDestination.add(getColumnVisibility(columnTuple));
-
-            } else if ("transaction.".equals(columnHeading)) {
-                columnCheckboxesTransaction.add(getColumnVisibility(columnTuple));
+            if (null != columnHeading) switch (columnHeading) {
+                case "source.":
+                    columnCheckboxesSource.add(getColumnVisibility(columnTuple));
+                    break;
+                case "destination.":
+                    columnCheckboxesDestination.add(getColumnVisibility(columnTuple));
+                    break;
+                case "transaction.":
+                    columnCheckboxesTransaction.add(getColumnVisibility(columnTuple));
+                    break;
+                default:
+                    break;
             }
         });
 

@@ -372,12 +372,7 @@ public class RunPane extends BorderPane implements KeyListener {
         int columnIndex = 0;
         for (final String columnLabel : columnLabels) {
             final ImportTableColumn column = new ImportTableColumn(columnLabel, columnIndex);
-            column.setCellValueFactory(new Callback<CellDataFeatures<TableRow, CellValue>, ObservableValue<CellValue>>() {
-                @Override
-                public ObservableValue<CellValue> call(CellDataFeatures<TableRow, CellValue> p) {
-                    return p.getValue().getProperty(column.getColumnIndex());
-                }
-            });
+            column.setCellValueFactory((CellDataFeatures<TableRow, CellValue> p) -> p.getValue().getProperty(column.getColumnIndex()));
             column.setCellFactory(new Callback<TableColumn<TableRow, CellValue>, TableCell<TableRow, CellValue>>() {
                 @Override
                 public TableCell<TableRow, CellValue> call(TableColumn<TableRow, CellValue> p) {

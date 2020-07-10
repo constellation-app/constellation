@@ -108,38 +108,26 @@ public class ConfigurationPane extends AnchorPane {
         final Tab tab = new Tab();
         tab.setGraphic(label);
 
-        tab.setOnClosed(new EventHandler<Event>() {
-            @Override
-            public void handle(Event event) {
-                importController.updateDisplayedAttributes();
-            }
+        tab.setOnClosed((Event event) -> {
+            importController.updateDisplayedAttributes();
         });
 
-        label.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                if (event.getClickCount() == 2) {
-                    final TextField field = new TextField(label.getText());
-                    field.setOnAction(new EventHandler<ActionEvent>() {
-                        @Override
-                        public void handle(ActionEvent event) {
-                            label.setText(field.getText());
-                            tab.setGraphic(label);
-                        }
-                    });
-                    field.focusedProperty().addListener(new ChangeListener<Boolean>() {
-                        @Override
-                        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                            if (!newValue) {
-                                label.setText(field.getText());
-                                tab.setGraphic(label);
-                            }
-                        }
-                    });
-                    tab.setGraphic(field);
-                    field.selectAll();
-                    field.requestFocus();
-                }
+        label.setOnMouseClicked((MouseEvent event) -> {
+            if (event.getClickCount() == 2) {
+                final TextField field = new TextField(label.getText());
+                field.setOnAction((ActionEvent event1) -> {
+                    label.setText(field.getText());
+                    tab.setGraphic(label);
+                });
+                field.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                    if (!newValue) {
+                        label.setText(field.getText());
+                        tab.setGraphic(label);
+                    }
+                });
+                tab.setGraphic(field);
+                field.selectAll();
+                field.requestFocus();
             }
         });
 

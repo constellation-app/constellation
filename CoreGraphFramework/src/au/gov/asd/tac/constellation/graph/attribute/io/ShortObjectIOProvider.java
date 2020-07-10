@@ -54,7 +54,7 @@ public class ShortObjectIOProvider extends AbstractGraphIOProvider {
         if (verbose || !graph.isDefaultValue(attribute.getId(), elementId)) {
             final Short attributeValue = graph.getObjectValue(attribute.getId(), elementId);
             if (attributeValue != null) {
-                jsonGenerator.writeNumberField(attribute.getName(), attributeValue.shortValue());
+                jsonGenerator.writeNumberField(attribute.getName(), attributeValue);
             } else {
                 jsonGenerator.writeNullField(attribute.getName());
             }

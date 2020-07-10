@@ -201,7 +201,7 @@ public class AttributeEditorPanel extends BorderPane {
         this.topComponent = parent;
 
         titledPaneHeadingsContainer = new VBox();
-        for (int i = 0; i < HEADING_TITLES.length; i++) {
+        for (final String heading : HEADING_TITLES) {
             VBox temp = new VBox();
             temp.setPadding(Insets.EMPTY);
             valueTitledPaneContainers.add(temp);

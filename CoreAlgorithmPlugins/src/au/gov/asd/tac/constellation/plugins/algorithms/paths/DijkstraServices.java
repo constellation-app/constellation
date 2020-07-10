@@ -322,14 +322,18 @@ public class DijkstraServices {
         @Override
         public void run() {
             try {
-                if (type.equals("Distance")) {
-                    Thread.currentThread().setName("Find.FindServices.Thread.Distance." + threadID);
-                    queryDistance();
-                } else if (type.equals("Path")) {
-                    Thread.currentThread().setName("Find.FindServices.Thread.Path." + threadID);
-                    queryPath();
-                } else {
+                switch (type) {
+                    case "Distance":
+                        Thread.currentThread().setName("Find.FindServices.Thread.Distance." + threadID);
+                        queryDistance();
+                        break;
+                    case "Path":
+                        Thread.currentThread().setName("Find.FindServices.Thread.Path." + threadID);
+                        queryPath();
+                        break;
                     //Not Handled
+                    default:
+                        break;
                 }
             } catch (InterruptedException e) {
                 Exceptions.printStackTrace(e);

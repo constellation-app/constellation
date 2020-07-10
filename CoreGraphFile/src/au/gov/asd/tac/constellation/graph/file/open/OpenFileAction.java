@@ -140,8 +140,8 @@ public class OpenFileAction implements ActionListener {
             } catch (UserCancelException ex) {
                 return;
             }
-            for (int i = 0; i < files.length; i++) {
-                OpenFile.openFile(files[i], -1);
+            for (File file : files) {
+                OpenFile.openFile(file, -1);
             }
         } finally {
             running = false;

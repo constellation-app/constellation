@@ -111,21 +111,15 @@ public class NewAttributeDialog extends Stage {
         root.setBottom(buttonPane);
 
         Button okButton = new Button("Ok");
-        okButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                attribute = new NewAttribute(elementType, typeBox.getSelectionModel().getSelectedItem(), labelText.getText(), descriptionText.getText());
-                NewAttributeDialog.this.hide();
-            }
+        okButton.setOnAction((ActionEvent event) -> {
+            attribute = new NewAttribute(elementType, typeBox.getSelectionModel().getSelectedItem(), labelText.getText(), descriptionText.getText());
+            NewAttributeDialog.this.hide();
         });
         buttonPane.getChildren().add(okButton);
 
         Button cancelButton = new Button("Cancel");
-        cancelButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                NewAttributeDialog.this.hide();
-            }
+        cancelButton.setOnAction((ActionEvent event) -> {
+            NewAttributeDialog.this.hide();
         });
         buttonPane.getChildren().add(cancelButton);
     }

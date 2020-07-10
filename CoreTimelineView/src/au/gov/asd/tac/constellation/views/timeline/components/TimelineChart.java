@@ -256,13 +256,10 @@ public class TimelineChart extends XYChart<Number, Number> {
 
         // Install event handlers:
         //  Handles zooming for the timeline:
-        setOnScroll(new EventHandler<ScrollEvent>() {
-            @Override
-            public void handle(final ScrollEvent t) {
-                final double mouseX = t.getX();
-                performZoom(t, mouseX);
-                t.consume();
-            }
+        setOnScroll((final ScrollEvent t) -> {
+            final double mouseX = t.getX();
+            performZoom(t, mouseX);
+            t.consume();
         });
         //  Recognise mouse presses:
         setOnMousePressed(timelineMouseHandler);
@@ -652,11 +649,8 @@ public class TimelineChart extends XYChart<Number, Number> {
             // fade out old item:
             final FadeTransition ft = new FadeTransition(Duration.millis(500), child);
             ft.setToValue(0);
-            ft.setOnFinished(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(final ActionEvent actionEvent) {
-                    getPlotChildren().remove(child);
-                }
+            ft.setOnFinished((final ActionEvent actionEvent) -> {
+                getPlotChildren().remove(child);
             });
             ft.play();
         } else {
@@ -705,11 +699,8 @@ public class TimelineChart extends XYChart<Number, Number> {
             // fade out old item:
             final FadeTransition ft = new FadeTransition(Duration.millis(500), child);
             ft.setToValue(0);
-            ft.setOnFinished(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(final ActionEvent actionEvent) {
-                    getPlotChildren().clear();
-                }
+            ft.setOnFinished((final ActionEvent actionEvent) -> {
+                getPlotChildren().clear();
             });
             ft.play();
         } else {

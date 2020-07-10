@@ -186,7 +186,7 @@ public class CollFrame extends javax.swing.JFrame {
     private void drawButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_drawButtonActionPerformed
     {//GEN-HEADEREND:event_drawButtonActionPerformed
         infoLabel.setText("");
-        final int n = ((Integer) nSpinner.getModel().getValue()).intValue();
+        final int n = ((Integer) nSpinner.getModel().getValue());
         ((CirclePanel) drawPanel).redo(n);
         drawPanel.repaint();
     }//GEN-LAST:event_drawButtonActionPerformed

@@ -104,11 +104,12 @@ public final class GraphJsonReader {
     }
 
     public Graph readGraphZip(final String name, InputStream bin, final IoProgress progress) throws IOException, GraphParseException {
-        progress.start(100);
-        progress.progress("Reading file: " + name);
-
-        byteReader = new GraphByteReader(bin);
-        bin.close();
+        try (bin) {
+            progress.start(100);
+            progress.progress("Reading file: " + name);
+            
+            byteReader = new GraphByteReader(bin);
+        }
 
         try {
             // Get the graph first.
