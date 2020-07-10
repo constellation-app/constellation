@@ -55,6 +55,7 @@ import org.openide.util.NbBundle;
 public class ArrangeInHierarchyAction extends AbstractAction {
 
     private final GraphNode context;
+    private static final String HELP_LOCATION = "au.gov.asd.tac.constellation.plugins.arrangements.hierarchical.HierarchicalAction";
 
     public ArrangeInHierarchyAction(final GraphNode context) {
         this.context = context;
@@ -74,7 +75,7 @@ public class ArrangeInHierarchyAction extends AbstractAction {
 
                     final SelectNamedSelectionPanel ssp = new SelectNamedSelectionPanel(nsState.getNamedSelections(), "Select a named selection to represent the top of the hierarchy.");
                     final DialogDescriptor dd = new DialogDescriptor(ssp, Bundle.CTL_ArrangeInHierarchyAction());
-                    dd.setHelpCtx(new HelpCtx("au.gov.asd.tac.constellation.plugins.arrangements.hierarchical.HierarchicalAction"));
+                    dd.setHelpCtx(new HelpCtx(HELP_LOCATION));
                     final Object result = DialogDisplayer.getDefault().notify(dd);
                     if (result == DialogDescriptor.OK_OPTION) {
                         final long selectionId = ssp.getNamedSelectionId();
