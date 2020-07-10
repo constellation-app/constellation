@@ -122,13 +122,24 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                     final ArrayNode params = httpMethod.putArray("parameters");
                     rs.createParameters().getParameters().entrySet().forEach(entry -> {
                         final PluginParameter<?> pp = entry.getValue();
+
+                        if (pp.getName().toLowerCase(Locale.US).contains("(body)")) {
+                            final ObjectNode requestBody = httpMethod.putObject("requestBody");
+                            requestBody.put(DESCRIPTION, pp.getDescription());
+                            requestBody.put("required", false); //fix in the other ticket
+                            final ObjectNode content = requestBody.putObject("content");
+                            final ObjectNode mime = content.putObject(RestServiceUtilities.APPLICATION_JSON);
+                            final ObjectNode schema = mime.putObject(SCHEMA);
+                            schema.put("type", "object");
+                        } else {
                         final ObjectNode param = params.addObject();
                         param.put("name", pp.getId());
-                        param.put("in", pp.getName().toLowerCase(Locale.US).contains("(body)") ? "body" : "query");
+                            param.put("in", "query");
                         param.put("required", false); // TODO Hard-code this until PluginParameters grows a required field.
                         param.put(DESCRIPTION, pp.getDescription());
                         final ObjectNode schema = param.putObject(SCHEMA);
                         schema.put("type", pp.getType().getId());
+                        }
                     });
 
                     // Add the required CONSTELLATION secret header parameter.
