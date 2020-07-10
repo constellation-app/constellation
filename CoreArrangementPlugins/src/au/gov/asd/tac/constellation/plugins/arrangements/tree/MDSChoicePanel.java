@@ -44,7 +44,7 @@ public class MDSChoicePanel extends javax.swing.JPanel {
         maxTrialsSpinner.setValue(params.maxTrialsPerStage);
         minTrialsSpinner.setValue(params.minTrialsPerStage);
         avoidOverlapCheck.setSelected(params.tryToAvoidOverlap);
-        avoidanceCombo.setSelectedItem(Integer.valueOf(params.overlapAvoidance).toString());
+        avoidanceCombo.setSelectedItem(Integer.toString(params.overlapAvoidance));
     }
 
     public void setGraph(final Graph graph) {

@@ -417,7 +417,7 @@ public class IOUtilitiesNGTest {
         in.addAll(Arrays.asList(strings));
         final String[] expected = {"_from", "_to", "_aardvark", "_id", "first", "Second", "third", "Zlast"};
         Collections.sort(in, new IoUtilities.LCComparator());
-        assertArrayEquals("Sort ignore case", expected, in.toArray(new String[0]));
+        assertArrayEquals("Sort ignore case", expected, in.toArray(new String[in.size()]));
     }
 
     @Test
