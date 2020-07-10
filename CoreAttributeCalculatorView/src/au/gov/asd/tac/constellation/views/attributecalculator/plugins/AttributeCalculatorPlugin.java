@@ -78,6 +78,8 @@ public final class AttributeCalculatorPlugin extends SimpleEditPlugin {
 
     private static final String NON_WORD_OR_SCRIPT_START_PATTERN = "(\\A|\\W)(";
 
+    private static final String OBLITERATOR = "/au/gov/asd/tac/constellation/views/attributecalculator/resources/obliterator.py";
+
     private static final Logger LOGGER = Logger.getLogger(AttributeCalculatorPlugin.class.getName());
 
     public AttributeCalculatorPlugin(final GraphElementType elementType, final String editAttribute, final String editAttributeType, final String language, final String script, boolean selectedOnly, boolean completeWithSchema) {
@@ -113,7 +115,7 @@ public final class AttributeCalculatorPlugin extends SimpleEditPlugin {
 
         Reader r = null;
         try {
-            InputStream f = AttributeCalculatorPlugin.class.getResource("resources/obliterator.py").openStream();
+            InputStream f = AttributeCalculatorPlugin.class.getResource(OBLITERATOR).openStream();
             LOGGER.log(Level.INFO, "input stream={0}", f);
             r = new InputStreamReader(f, StandardCharsets.UTF_8.name());
         } catch (IOException ex) {
