@@ -40,8 +40,8 @@ import org.lwjgl.vulkan.VkSubmitInfo;
 
 
 public class CVKCommandBuffer {
-    private VkCommandBuffer vkCommandBuffer;
-    private CVKDevice cvkDevice;
+    private VkCommandBuffer vkCommandBuffer = null;
+    private CVKDevice cvkDevice = null;
 
 
     private CVKCommandBuffer() {}
@@ -52,10 +52,17 @@ public class CVKCommandBuffer {
     @SuppressWarnings("deprecation")
     @Override
     public void finalize() throws Throwable {		
-        vkFreeCommandBuffers(cvkDevice.GetDevice(), cvkDevice.GetCommandPoolHandle(), vkCommandBuffer);
+        Destroy();
         super.finalize();
     }
 
+    public void Destroy(){
+        if(vkCommandBuffer != null){
+            vkFreeCommandBuffers(cvkDevice.GetDevice(), cvkDevice.GetCommandPoolHandle(), vkCommandBuffer);
+            vkCommandBuffer = null;
+        }
+    }
+    
     public int Begin(int flags) {	
         VerifyInRenderThread();
         

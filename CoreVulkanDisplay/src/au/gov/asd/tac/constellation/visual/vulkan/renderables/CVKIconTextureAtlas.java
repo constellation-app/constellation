@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.visual.vulkan.CVKBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKCommandBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKImage;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKRenderer;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKLOGGER;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.checkVKret;
@@ -67,6 +68,7 @@ import static org.lwjgl.vulkan.VK10.vkCreateSampler;
 import static org.lwjgl.vulkan.VK10.vkDestroyImageView;
 import static org.lwjgl.vulkan.VK10.vkDestroySampler;
 import org.lwjgl.vulkan.VkBufferImageCopy;
+import org.lwjgl.vulkan.VkCommandBufferInheritanceInfo;
 import org.lwjgl.vulkan.VkExtent3D;
 import org.lwjgl.vulkan.VkImageViewCreateInfo;
 import org.lwjgl.vulkan.VkSamplerCreateInfo;
@@ -124,8 +126,41 @@ public class CVKIconTextureAtlas extends CVKRenderable {
     
     public long GetAtlasImageViewHandle() { return hAtlasImageView; }
     public long GetAtlasSamplerHandle() { return hAtlasSampler; }
+
+    @Override
+    public int DeviceInitialised(CVKDevice cvkDevice) {
+        return VK_SUCCESS;
+    }   
     
+    @Override
+    public int GetVertexCount(){ return 0; }
     
+    @Override
+    public int RecordCommandBuffer(CVKSwapChain cvkSwapChain, VkCommandBufferInheritanceInfo inheritanceInfo, int index){
+        return VK_SUCCESS;            
+    }
+    
+    @Override
+    public void Display(MemoryStack stack, CVKRenderer cvkRenderer, CVKSwapChain cvkSwapChain, int frameIndex) {
+        //assert(commandBuffers != null);
+        //VkCommandBuffer vkCommandBuffer = commandBuffers.get(frameIndex);
+        //cvkRenderer.ExecuteCommandBuffer(stack, frame, vkCommandBuffer);
+    }
+    
+    @Override
+    public int DisplayUpdate(CVKSwapChain cvkSwapChain, int imageIndex) {
+        return VK_SUCCESS;
+    }
+    
+    @Override
+    public int SwapChainRecreated(CVKSwapChain cvkSwapChain) {
+        return VK_SUCCESS;
+    }
+        
+    @Override
+    public void IncrementDescriptorTypeRequirements(int descriptorTypeCounts[]) {
+    }
+        
     // This could be replaced with a templated Pair type
     private class IndexedConstellationIcon {
         public final int index;
@@ -437,8 +472,8 @@ public class CVKIconTextureAtlas extends CVKRenderable {
         return ret;
     }
     
-    
-    private void Destroy() {
+    @Override
+    public void Destroy() {
         if (hAtlasImageView != VK_NULL_HANDLE) {
             vkDestroyImageView(cvkDevice.GetDevice(), hAtlasImageView, null);
             hAtlasImageView = VK_NULL_HANDLE;

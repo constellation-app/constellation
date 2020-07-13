@@ -220,12 +220,9 @@ public class CVKAxesRenderable extends CVKRenderable {
     public int DestroyPipeline(CVKSwapChain cvkSwapChain) {
         int ret = VK_SUCCESS;
         
-        // Destory the command buffers
+        // Destroy the command buffers          
         if (null != commandBuffers && commandBuffers.size() > 0) {
-            for(int i = 0; i < commandBuffers.size(); ++i) {
-                vkFreeCommandBuffers(cvkDevice.GetDevice(), cvkDevice.GetCommandPoolHandle(), commandBuffers.get(i).GetVKCommandBuffer());
-            }
-            commandBuffers = null;
+            commandBuffers.clear();
         }
         
         if (null != vertUniformBuffers && vertUniformBuffers.size() > 0) {
@@ -666,7 +663,7 @@ public class CVKAxesRenderable extends CVKRenderable {
     }    
     
     @Override
-    public void Display(MemoryStack stack, CVKFrame frame, CVKRenderer cvkRenderer, CVKSwapChain cvkSwapChain, int frameIndex) {
+    public void Display(MemoryStack stack, CVKRenderer cvkRenderer, CVKSwapChain cvkSwapChain, int frameIndex) {
     }
     
     @Override

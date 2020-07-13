@@ -160,8 +160,7 @@ public class CVKRenderer implements ComponentListener {
         
         return ret;
     }
-    
-    
+       
     protected int RecreateSwapChain() {
         VerifyInRenderThread();
         
@@ -176,17 +175,7 @@ public class CVKRenderer implements ComponentListener {
                     cvkSwapChain.Destroy();
                 }
                 cvkSwapChain = newSwapChain;
-                swapChainNeedsRecreation = false;
-                
-                if (cvkFrames != null) {
-                    cvkFrames.forEach(frame -> {
-                        frame.Deinit();
-                    });
-                }
-                cvkFrames = new ArrayList<>(cvkSwapChain.GetImageCount());
-                for (int i = 0; i < cvkSwapChain.GetImageCount(); ++i) {
-                    cvkFrames.add(new CVKFrame(cvkDevice.GetDevice()));
-                }
+                swapChainNeedsRecreation = false;                
                 
                 // Update the parent (CVKVisualProcessor) so it can update the shared viewport and frustum
                 parent.SwapChainRecreated(cvkDevice, cvkSwapChain);
@@ -229,32 +218,7 @@ public class CVKRenderer implements ComponentListener {
         cvkInstance = null;
         super.finalize();
     }
-    
-    /**
-     * 
-     * API calls in this method are asynchronous and need to be synchronised.
-     * 
-     * @param frame
-     * @param pImageIndex
-     * @return
-     */
-    protected int AcquireImageFromSwapchain(CVKFrame frame, IntBuffer pImageIndex) {
-        CVKAssert(cvkDevice.GetDevice() != null);
-        CVKAssert(cvkSwapChain.GetSwapChainHandle() != VK_NULL_HANDLE);
-        CVKAssert(frame.GetImageAcquireSemaphoreHandle() != VK_NULL_HANDLE);
-        CVKAssert(pImageIndex != null);
-        
-        int ret;            
-        ret = vkAcquireNextImageKHR(cvkDevice.GetDevice(),
-                                    cvkSwapChain.GetSwapChainHandle(),
-                                    UINT64_MAX,
-                                    frame.GetImageAcquireSemaphoreHandle(),
-                                    VK_NULL_HANDLE,
-                                    pImageIndex);        
-        
-        return ret;        
-    }
-    
+       
     /**
      * Records/updates the Primary Command Buffer and all its Secondary Command Buffers
      * 
@@ -307,7 +271,7 @@ public class CVKRenderer implements ComponentListener {
             
         // Loop through renderables and record their buffers
         for (int r = 0; r < renderables.size(); ++r) {
-            if (renderables.get(r).IsDirty()){
+            if (renderables.get(r).IsDirty() && renderables.get(r).GetVertexCount() > 0){
                 renderables.get(r).RecordCommandBuffer(cvkSwapChain, inheritanceInfo, index);
 
                 // TODO Hydra: may be more efficient to add all the visible command buffers to a master list then 
