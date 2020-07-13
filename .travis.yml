@@ -6,6 +6,7 @@ cache:
 
 env:
   - RUNNER_IMAGE="constellationapplication/netbeans-runner:11.3"
+#TODO update this to 12 when the docker tag is pushed  
 
 # Disable shallow clone for SCM SonarCloud analysis
 git:

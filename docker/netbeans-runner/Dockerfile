@@ -1,7 +1,7 @@
 FROM ubuntu:bionic
 
 LABEL \
-  IMAGE="netbeans-runner:11.3" \
+  IMAGE="netbeans-runner:12" \
   SOURCE="ubuntu:bionic"
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -12,6 +12,7 @@ RUN apt-get -y update \
     unzip \
     wget \
     python3 \
+    git \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -25,10 +26,10 @@ RUN wget -q "https://cdn.azul.com/zulu/bin/${ZULU_VERSION}.tar.gz" \
     && mv "${ZULU_VERSION}" /usr/java/ \
     && rm "${ZULU_VERSION}.tar.gz"
 
-ENV NETBEANS_VERSION="11.3" \
+ENV NETBEANS_VERSION="12.0" \
     NETBEANS_HOME="/usr/local/netbeans" \
     NETBEANS_HELP_GITHUB="https://github.com/constellation-app/third-party-dependencies/blob/master/NetBeans%20Help"
-ENV NETBEANS_CHECKSUM="ae828836138b5a4156d58df24dd4053be58018cb6b5beb179cb0f4cd8b5db72d2a7356a434d01157aacb78d228732950cf4e3a0b6c725da8e053b6ccd91075d6  netbeans-${NETBEANS_VERSION}-bin.zip"
+ENV NETBEANS_CHECKSUM="91030c9628a08acd85f1a58a7f71eec2e57dc85841c1c475cc6311335b5d8cdc10c1198274b9668b7f61a28d04b07661247dc1c3e36b8e29214aec3748e499e4  netbeans-${NETBEANS_VERSION}-bin.zip"
 
 COPY common.xml.modified ./
 
