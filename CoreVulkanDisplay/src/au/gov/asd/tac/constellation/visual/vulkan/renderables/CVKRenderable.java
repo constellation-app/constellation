@@ -17,28 +17,23 @@ package au.gov.asd.tac.constellation.visual.vulkan.renderables;
 
 
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
-import au.gov.asd.tac.constellation.visual.vulkan.CVKFrame;
-import au.gov.asd.tac.constellation.visual.vulkan.CVKRenderer;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
-import org.lwjgl.system.MemoryStack;
+import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkCommandBufferInheritanceInfo;
 
 public abstract class CVKRenderable{
-
-    public abstract int SwapChainRecreated(CVKSwapChain cvkSwapChain);
-    public abstract int DisplayUpdate(CVKSwapChain cvkSwapChain, int frameIndex);
-    public abstract void IncrementDescriptorTypeRequirements(int descriptorTypeCounts[]);  
-    
-    public abstract void Display(MemoryStack stack, CVKFrame frame, CVKRenderer cvkRenderer, CVKSwapChain cvkSwapChain, int frameIndex);
-    public abstract int RecordCommandBuffer(CVKSwapChain cvkSwapChain, VkCommandBufferInheritanceInfo inheritanceInfo, int index);
-    public abstract VkCommandBuffer GetCommandBuffer(int index);
-    public abstract int InitCommandBuffer(CVKSwapChain cvkSwapChain);
-    public abstract int GetVertexCount();
-    public abstract boolean IsDirty();
-    public abstract int DeviceInitialised(CVKDevice cvkDevice);
-    
-    public abstract boolean NeedsCompleteHalt();
+    public int SwapChainRecreated(CVKSwapChain cvkSwapChain) { return VK_SUCCESS; }
+    public int DisplayUpdate(CVKSwapChain cvkSwapChain, int frameIndex) { return VK_SUCCESS; }
+    public void IncrementDescriptorTypeRequirements(int descriptorTypeCounts[]) {}        
+    public int RecordCommandBuffer(CVKSwapChain cvkSwapChain, VkCommandBufferInheritanceInfo inheritanceInfo, int index) { return VK_SUCCESS; }
+    public VkCommandBuffer GetCommandBuffer(int index) { return null; }
+    public int InitCommandBuffer(CVKSwapChain cvkSwapChain) { return VK_SUCCESS; }
+    public int GetVertexCount() { return 0; }
+    public boolean IsDirty() { return false; }
+    public int DeviceInitialised(CVKDevice cvkDevice) { return VK_SUCCESS; }    
+    public boolean SharedResourcesNeedUpdating() { return false; }
+    public int RecreateSharedResources(CVKSwapChain cvkSwapChain) { return VK_SUCCESS; }
 
 
     /**

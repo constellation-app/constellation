@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan;
 
+import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKIconTextureAtlas;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
@@ -313,9 +314,9 @@ public class CVKVisualProcessor extends VisualProcessor {
      * Signal that the update phase of this processor has been completed (by the
      * {@link GLRenderer}).
      */
-    final void signalUpdateComplete() {
-        updating = false;
-    }
+//    final void signalUpdateComplete() {
+//        updating = false;
+//    }
 
     /**
      * Query whether or not this processor is currently in its update phase.
@@ -327,9 +328,9 @@ public class CVKVisualProcessor extends VisualProcessor {
      *
      * @return Whether or not this processor is currently in its updating phase.
      */
-    final boolean isUpdating() {
-        return updating;
-    }
+//    final boolean isUpdating() {
+//        return updating;
+//    }
 
     /**
      * Add the specified {@link GLRenderable} to this processor's renderer. If
@@ -687,8 +688,13 @@ public class CVKVisualProcessor extends VisualProcessor {
         // for each class.
         assert(cvkDevice != null && cvkDevice.GetDevice() != null);
         
-        // Initialise the shared atlas texture
-        cvkIconTextureAtlas = new CVKIconTextureAtlas(cvkDevice);        
+        // Initialise the shared atlas texture.  It extends renderable so it gets the call
+        // for updating shared resouces.  We could have a seperate render event listener but
+        // that seems like overkill for a single class.  For as long as it's a renderable it
+        // should be the first renderable so it gets updated before any of the objects that 
+        // depend on it.
+        cvkIconTextureAtlas = new CVKIconTextureAtlas(cvkDevice);
+        cvkRenderer.AddRenderable(cvkIconTextureAtlas);
         
         // Static as the shader and descriptor layout doesn't change per instance of renderable or over the course of the program
         ret = CVKAxesRenderable.LoadShaders(cvkDevice);

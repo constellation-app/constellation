@@ -81,6 +81,7 @@ public class PluginsNodeProvider implements SchemaViewNodeProvider {
         pane = new VBox();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void setContent(final Tab tab) {
         final Map<String, String> pluginNames = new TreeMap<>();

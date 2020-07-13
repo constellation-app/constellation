@@ -13,16 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.visual.vulkan;
+package au.gov.asd.tac.constellation.visual.vulkan.renderables;
 
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3i;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKRenderer.debugging;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKBuffer;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKCommandBuffer;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKImage;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKLOGGER;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.checkVKret;
 import java.awt.image.BufferedImage;
+import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.debugging;
 import static java.awt.image.BufferedImage.TYPE_4BYTE_ABGR;
 import java.awt.image.DataBufferByte;
 import java.nio.ByteBuffer;
@@ -30,7 +35,6 @@ import java.nio.LongBuffer;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
 import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.vulkan.VK10.VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE;
@@ -68,7 +72,7 @@ import org.lwjgl.vulkan.VkImageViewCreateInfo;
 import org.lwjgl.vulkan.VkSamplerCreateInfo;
 
 
-public class CVKIconTextureAtlas {
+public class CVKIconTextureAtlas extends CVKRenderable {
     public static final int ICON_WIDTH = 256;
     public static final int ICON_HEIGHT = 256;
     public static final int ICON_COMPONENTS = 4; //ARGB, 1 byte each
@@ -148,13 +152,7 @@ public class CVKIconTextureAtlas {
         }        
     }
     
-    
-    private void Destroy() {
-        vkDestroyImageView(cvkDevice.GetDevice(), cvkAtlasImage.GetImageHandle(), null);
-        cvkAtlasImage.Destroy();
-        vkDestroySampler(cvkDevice.GetDevice(), hAtlasSampler, null);    
-    }
-    
+      
     public int AddIcon(final String label) {
         final Integer iconIndex = loadedIcons.get(label);
         if (iconIndex == null) {
@@ -439,10 +437,26 @@ public class CVKIconTextureAtlas {
         return ret;
     }
     
-    private void DestroyAtlas() {
-        
-    }
     
+    private void Destroy() {
+        if (hAtlasImageView != VK_NULL_HANDLE) {
+            vkDestroyImageView(cvkDevice.GetDevice(), hAtlasImageView, null);
+            hAtlasImageView = VK_NULL_HANDLE;
+        }
+        
+        if (cvkAtlasImage != null) {
+            cvkAtlasImage.Destroy();
+            cvkAtlasImage = null;            
+        }
+
+        if (hAtlasSampler != VK_NULL_HANDLE) {
+            vkDestroySampler(cvkDevice.GetDevice(), hAtlasSampler, null);    
+            hAtlasSampler = VK_NULL_HANDLE;
+        }
+        
+        lastTransferedIconCount = 0;
+    }
+        
     
     public int Init() {
         assert(lastTransferedIconCount == 0);
@@ -469,45 +483,52 @@ public class CVKIconTextureAtlas {
         return ret;
     }
     
-    public boolean NeedsCompleteHalt() {
+    @Override
+    public int RecreateSharedResources(CVKSwapChain cvkSwapChain) {
+        Destroy();
+        return Init();
+    }
+    
+    @Override
+    public boolean SharedResourcesNeedUpdating() {
         return loadedIcons.size() > lastTransferedIconCount;
     }
     
-    public int DisplayUpdate() {
-        int ret = VK_SUCCESS;
-        
-        // TODO_TT: This needs to be synchronised
-        // Maybe not, I think the icon cache is only ever added to.  In C++ I'd worry about
-        // relocations invalidating pointers but I don't think that's an issue in Java. Also
-        // this wasn't synchronised in GLTools
-        
-        if (loadedIcons.size() > lastTransferedIconCount) {
-//            final int nIcons = loadedIcons.size();
-//            final List<ConstellationIcon> iconList = new ArrayList<>(nIcons);
-//            for (int i = 0; i < nIcons; i++) {
-//                iconList.add(null);
-//            }
-
-            // We're only interested icons we haven't consumed yet
-            //List<IndexedConstellationIcon> newIcons = new ArrayList<>();
-            List<IndexedConstellationIcon> allIcons = new ArrayList<>();
-            loadedIcons.entrySet().forEach(entry -> {                
-                //if (entry.getValue() > lastTransferedIconIndex) {
-                //    newIcons.add(new IndexedConstellationIcon(entry.getValue(), IconManager.getIcon(entry.getKey()))); 
-                //}
-                allIcons.add(new IndexedConstellationIcon(entry.getValue(), IconManager.getIcon(entry.getKey()))); 
-            });
-            
-            //TODO_TT: we have to wait until all of the renderer's swap chain frames are waiting,
-            // otherwise we will be ripping out the atlas image, view and sampler from under any
-            // in flight frames.
-            DestroyAtlas();
-            
-            ret = AddIconsToAtlas(allIcons);
-            checkVKret(ret);
-            lastTransferedIconCount = loadedIcons.size();
-        }
-        
-        return ret;
-    } 
+//    public int DisplayUpdate() {
+//        int ret = VK_SUCCESS;
+//        
+//        // TODO_TT: This needs to be synchronised
+//        // Maybe not, I think the icon cache is only ever added to.  In C++ I'd worry about
+//        // relocations invalidating pointers but I don't think that's an issue in Java. Also
+//        // this wasn't synchronised in GLTools
+//        
+//        if (loadedIcons.size() > lastTransferedIconCount) {
+////            final int nIcons = loadedIcons.size();
+////            final List<ConstellationIcon> iconList = new ArrayList<>(nIcons);
+////            for (int i = 0; i < nIcons; i++) {
+////                iconList.add(null);
+////            }
+//
+//            // We're only interested icons we haven't consumed yet
+//            //List<IndexedConstellationIcon> newIcons = new ArrayList<>();
+//            List<IndexedConstellationIcon> allIcons = new ArrayList<>();
+//            loadedIcons.entrySet().forEach(entry -> {                
+//                //if (entry.getValue() > lastTransferedIconIndex) {
+//                //    newIcons.add(new IndexedConstellationIcon(entry.getValue(), IconManager.getIcon(entry.getKey()))); 
+//                //}
+//                allIcons.add(new IndexedConstellationIcon(entry.getValue(), IconManager.getIcon(entry.getKey()))); 
+//            });
+//            
+//            //TODO_TT: we have to wait until all of the renderer's swap chain frames are waiting,
+//            // otherwise we will be ripping out the atlas image, view and sampler from under any
+//            // in flight frames.
+//            DestroyAtlas();
+//            
+//            ret = AddIconsToAtlas(allIcons);
+//            checkVKret(ret);
+//            lastTransferedIconCount = loadedIcons.size();
+//        }
+//        
+//        return ret;
+//    } 
 }

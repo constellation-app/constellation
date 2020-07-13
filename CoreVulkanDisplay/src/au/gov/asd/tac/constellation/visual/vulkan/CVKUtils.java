@@ -39,8 +39,8 @@ import static org.lwjgl.vulkan.KHRWin32Surface.VK_KHR_WIN32_SURFACE_EXTENSION_NA
 import static org.lwjgl.vulkan.KHRXlibSurface.VK_KHR_XLIB_SURFACE_EXTENSION_NAME;
 import static org.lwjgl.vulkan.VK10.*;
 import org.lwjgl.vulkan.VkLayerProperties;
-import org.lwjgl.BufferUtils;
 import au.gov.asd.tac.constellation.visual.vulkan.maths.*;
+import org.lwjgl.system.MemoryUtil;
 import org.lwjgl.vulkan.VkClearColorValue;
 import org.lwjgl.vulkan.VkClearValue;
 
@@ -59,6 +59,9 @@ public class CVKUtils {
     // as a proxy for the IDE's console window (as prints to stdout aren't appearing).
     public final static Logger CVKLOGGER = CreateNamedFileLogger("CVK");
     public final static Level DEFAULT_LOG_LEVEL = Level.INFO;    
+    
+    // Enable this for additional logging, thread verification and other checks
+    public static boolean debugging = true;
     
     
     public static class MinimalLogFormatter extends Formatter {
@@ -324,7 +327,7 @@ public class CVKUtils {
                 assert(exprResult);
             } else {
                 CVKLOGGER.warning("Assertion failure");
-                LogStackTrace(Level.WARNING);                //TODO_TT: get callstack and log
+                LogStackTrace(Level.WARNING);
             }
         }
     }
@@ -340,7 +343,7 @@ public class CVKUtils {
         InputStream source = refClass.getResourceAsStream(resourceName);
         byte[] allBytes = source.readAllBytes();
         
-        ByteBuffer buffer = BufferUtils.createByteBuffer(allBytes.length);
+        ByteBuffer buffer = MemoryUtil.memAlloc(allBytes.length);
         buffer.put(allBytes);
         buffer.flip();
         return buffer;          

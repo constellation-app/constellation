@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan;
 
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKRenderer.debugging;
+import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.debugging;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.*;
 import com.google.common.primitives.Ints;
 import java.nio.IntBuffer;

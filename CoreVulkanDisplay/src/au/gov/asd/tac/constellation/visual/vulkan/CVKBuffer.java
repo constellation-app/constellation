@@ -18,10 +18,10 @@ package au.gov.asd.tac.constellation.visual.vulkan;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.checkVKret;
 import java.nio.ByteBuffer;
 import java.nio.LongBuffer;
-import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryStack.stackPush;
+import org.lwjgl.system.MemoryUtil;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
 import static org.lwjgl.vulkan.VK10.VK_SHARING_MODE_EXCLUSIVE;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
@@ -42,12 +42,13 @@ public class CVKBuffer {
     final static int COPY_SIZE = 4096; //candidate for profiling
     
     //TODO_TT: how do free these in Java, finalize() is deprecated
-    protected LongBuffer pBuffer = BufferUtils.createLongBuffer(1);
-    protected LongBuffer pBufferMemory = BufferUtils.createLongBuffer(1);
+    protected LongBuffer pBuffer = MemoryUtil.memAllocLong(1);
+    protected LongBuffer pBufferMemory = MemoryUtil.memAllocLong(1);
     protected CVKDevice cvkDevice = null;
     protected long bufferSize = 0;
     
-    protected CVKBuffer() { }
+    // Use the static Create() method instead of direct construction
+    private CVKBuffer() { }
     
     public long GetBufferHandle() { return pBuffer.get(0); }
     public long GetMemoryBufferHandle() { return pBufferMemory.get(0); }
@@ -100,35 +101,24 @@ public class CVKBuffer {
             vkMapMemory(cvkDevice.GetDevice(), GetMemoryBufferHandle(), 0, bufferSize, 0, data);
             {                
                 ByteBuffer dest = data.getByteBuffer(0, (int)bufferSize);
-                BufferUtils.zeroBuffer(dest);
-//                long written = 0;
-//                byte zeroes[] = new byte[COPY_SIZE];
-//                while (written < bufferSize) {
-//                    if ((written + COPY_SIZE) <= bufferSize) {
-//                        // The second argument is the offset into the source array not the destination.  The
-//                        // nio buffer types walk their position with each put so we don't need to specify an
-//                        // destination offset.
-//                        dest.put(zeroes, 0, COPY_SIZE);
-//                        written += COPY_SIZE;
-//                    } else {
-//                        long remaining = bufferSize - written;
-//                        dest.put(zeroes, 0, (int)remaining);
-//                        written += remaining;                        
-//                    }
-//                }
+                MemoryUtil.memSet(dest, 0);
             }
             vkUnmapMemory(cvkDevice.GetDevice(), GetMemoryBufferHandle());
         }
     }
     
     public void Destroy() {
-        if (pBuffer.get(0) != VK_NULL_HANDLE) {
+        if (pBuffer != null && pBuffer.get(0) != VK_NULL_HANDLE) {
             vkDestroyBuffer(cvkDevice.GetDevice(), pBuffer.get(0), null);
             pBuffer.put(0, VK_NULL_HANDLE);
+            MemoryUtil.memFree(pBuffer);
+            pBuffer = null;
         }
-        if (pBufferMemory.get(0) != VK_NULL_HANDLE) {
+        if (pBufferMemory != null && pBufferMemory.get(0) != VK_NULL_HANDLE) {
             vkFreeMemory(cvkDevice.GetDevice(), pBufferMemory.get(0), null);
             pBufferMemory.put(0, VK_NULL_HANDLE);
+            MemoryUtil.memFree(pBufferMemory);
+            pBufferMemory = null;            
         }        
     }
     

@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.visual.vulkan.renderables;
 
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
-import au.gov.asd.tac.constellation.visual.vulkan.CVKFrame;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKRenderer;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKShaderUtils;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKShaderUtils.SPIRV;
@@ -615,17 +614,10 @@ public class CVKAxesRenderable extends CVKRenderable {
 //            }
         }        
         return ret;
-    }    
+    }       
     
     @Override
-    public void Display(MemoryStack stack, CVKFrame frame, CVKRenderer cvkRenderer, CVKSwapChain cvkSwapChain, int frameIndex) {
-        //assert(commandBuffer != null);
-        //VkCommandBuffer vkCommandBuffer = commandBuffer;
-        //cvkRenderer.ExecuteCommandBuffer(stack, frame, vkCommandBuffer);
-    }
-    
-    @Override
-    public boolean NeedsCompleteHalt() {
+    public boolean SharedResourcesNeedUpdating() {
         return false;
     }
     
