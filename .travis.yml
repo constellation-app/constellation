@@ -5,8 +5,7 @@ cache:
     - ${HOME}/.ivy2/cache
 
 env:
-  - RUNNER_IMAGE="constellationapplication/netbeans-runner:11.3"
-#TODO update this to 12 when the docker tag is pushed  
+  - RUNNER_IMAGE="constellationapplication/netbeans-runner:12"
 
 # Disable shallow clone for SCM SonarCloud analysis
 git:
