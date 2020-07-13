@@ -77,6 +77,7 @@ import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.UINT64_MAX;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VerifyInRenderThread;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.checkVKret;
 import static org.lwjgl.vulkan.KHRSwapchain.vkAcquireNextImageKHR;
+import static org.lwjgl.vulkan.KHRSwapchain.vkDestroySwapchainKHR;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
 import static org.lwjgl.vulkan.VK10.VK_FENCE_CREATE_SIGNALED_BIT;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
@@ -86,8 +87,13 @@ import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.vkCreateDescriptorPool;
 import static org.lwjgl.vulkan.VK10.vkCreateFence;
 import static org.lwjgl.vulkan.VK10.vkCreateSemaphore;
+import static org.lwjgl.vulkan.VK10.vkDestroyDescriptorPool;
 import static org.lwjgl.vulkan.VK10.vkDestroyFence;
+import static org.lwjgl.vulkan.VK10.vkDestroyFramebuffer;
+import static org.lwjgl.vulkan.VK10.vkDestroyImageView;
+import static org.lwjgl.vulkan.VK10.vkDestroyRenderPass;
 import static org.lwjgl.vulkan.VK10.vkDestroySemaphore;
+import static org.lwjgl.vulkan.VK10.vkFreeCommandBuffers;
 import static org.lwjgl.vulkan.VK10.vkResetFences;
 import static org.lwjgl.vulkan.VK10.vkWaitForFences;
 import org.lwjgl.vulkan.VkDescriptorPoolCreateInfo;
@@ -111,24 +117,23 @@ import org.lwjgl.vulkan.VkSemaphoreCreateInfo;
  * resources and updating the next set before the first has been presented.
  */
 public class CVKSwapChain {
-    protected final CVKDevice cvkDevice;
-    protected final CVKRenderer cvkRenderer; //TODO_TT: only used for verification, Javafy this away?
-    protected long hSwapChainHandle = VK_NULL_HANDLE;
-    protected long hRenderPassHandle = VK_NULL_HANDLE;
-    protected long hDescriptorPool = VK_NULL_HANDLE;
-    protected int imageCount = 0;
-    protected List<Long> imageHandles = null;
-    protected List<Long> imageViewHandles = null;
-    protected List<Long> framebufferHandles = null;
-    protected List<Long> imageAcquisitionHandles = null;
-    protected List<Long> commandExecutionHandles = null;
-    protected List<Long> renderFenceHandles = null;
-    protected int nextImageAcquisitionIndex = 0;
-    protected List<VkCommandBuffer> commandBuffers = null;
-    protected VkExtent2D vkCurrentImageExtent = VkExtent2D.malloc().set(0,0);    
+    private CVKDevice cvkDevice;
+    private long hSwapChainHandle = VK_NULL_HANDLE;
+    private long hRenderPassHandle = VK_NULL_HANDLE;
+    private long hDescriptorPool = VK_NULL_HANDLE;
+    private int imageCount = 0;
+    private List<Long> imageHandles = null;
+    private List<Long> imageViewHandles = null;
+    private List<Long> framebufferHandles = null;
+    private List<Long> imageAcquisitionHandles = null;
+    private List<Long> commandExecutionHandles = null;
+    private List<Long> renderFenceHandles = null;
+    private int nextImageAcquisitionIndex = 0;
+    private List<VkCommandBuffer> commandBuffers = null;
+    private final VkExtent2D vkCurrentImageExtent = VkExtent2D.malloc().set(0,0);    
     
     // How big is the pool now?  The actual counts used to sized the pool are multiplied by the number of images in the chain
-    protected int poolDescriptorTypeCounts[] = new int[11];
+    private final int poolDescriptorTypeCounts[] = new int[11];
     
     public int GetImageCount() { return imageCount; }
     public long GetSwapChainHandle() { return hSwapChainHandle; }
@@ -139,9 +144,8 @@ public class CVKSwapChain {
     public long GetFence(int imageIndex) { return renderFenceHandles.get(imageIndex); }
     
     
-    public CVKSwapChain(CVKDevice device, CVKRenderer renderer) {
+    public CVKSwapChain(CVKDevice device) {
         cvkDevice = device;
-        cvkRenderer = renderer;
     }
     
     
@@ -162,24 +166,34 @@ public class CVKSwapChain {
             // Do we need a descriptor pool?
             ret = InitVKDescriptorPool(stack, poolDescriptorTypeCounts);
             if (VkFailed(ret)) return ret;
-            
-            // pipeline?
         }
         EndLogSection("Init SwapChain");   
         return ret;
     }
 
     
-    public void Deinit() {
-        StartLogSection("Deinit SwapChain");        
+    public void Destroy() {
+        StartLogSection("Destroy SwapChain");        
         
-        ReleaseVKDescriptorPool();
-        ReleaseVKCommandBuffers();       
-        ReleaseVKFrameBuffer();      
-        ReleaseVKRenderPass();    
-        ReleaseVKSwapChain();
+        DestroyVKDescriptorPool();
+        DestroyVKCommandBuffers();       
+        DestroyVKFrameBuffer();      
+        DestroyVKRenderPass();    
+        DestroyVKSwapChain();
+        
+        CVKAssert(cvkDevice == null);
+        CVKAssert(hSwapChainHandle == VK_NULL_HANDLE);
+        CVKAssert(hRenderPassHandle == VK_NULL_HANDLE);
+        CVKAssert(hDescriptorPool == VK_NULL_HANDLE);
+        CVKAssert(imageHandles.isEmpty());
+        CVKAssert(imageViewHandles.isEmpty());
+        CVKAssert(framebufferHandles.isEmpty());
+        CVKAssert(imageAcquisitionHandles.isEmpty());
+        CVKAssert(commandExecutionHandles.isEmpty());
+        CVKAssert(renderFenceHandles.isEmpty());
+        CVKAssert(commandBuffers.isEmpty());
       
-        EndLogSection("Deinit SwapChain");   
+        EndLogSection("Destroy SwapChain");   
     }
     
     /**
@@ -206,7 +220,7 @@ public class CVKSwapChain {
      * <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html#_wsi_swapchain">Swapchain
      * reference</a>
      */
-    protected int InitVKSwapChain(MemoryStack stack) {
+    private int InitVKSwapChain(MemoryStack stack) {
         int ret;
         
         // Update the ideal extent for our backbuffer as it may have changed
@@ -331,7 +345,7 @@ public class CVKSwapChain {
      * @param stack
      * @return
      */
-    protected int InitVKFrameBuffer(MemoryStack stack) {
+    private int InitVKFrameBuffer(MemoryStack stack) {
         CVKAssert(vkCurrentImageExtent.width() > 0);
         CVKAssert(vkCurrentImageExtent.height() > 0);
         
@@ -371,7 +385,7 @@ public class CVKSwapChain {
      * @param stack
      * @return 
      */
-    protected int InitVKRenderPass(MemoryStack stack) {
+    private int InitVKRenderPass(MemoryStack stack) {
         CVKAssert(cvkDevice.GetDevice() != null);
         CVKAssert(cvkDevice.GetSurfaceFormat() != VK_FORMAT_NONE);
         
@@ -425,7 +439,7 @@ public class CVKSwapChain {
     } 
     
     
-    protected int InitVKCommandBuffers(MemoryStack stack) {
+    private int InitVKCommandBuffers(MemoryStack stack) {
         CVKAssert(cvkDevice.GetDevice() != null);
         CVKAssert(cvkDevice.GetCommandPoolHandle() != VK_NULL_HANDLE);   
         CVKAssert(imageCount > 0);
@@ -473,21 +487,21 @@ public class CVKSwapChain {
         // desiredPoolDescriptorTypeCounts is only set if the current requirements
         // exceed what we can allocate in the current pool.
         if (embiggen) {
-            ReleaseVKDescriptorPool();
+            DestroyVKDescriptorPool();
             InitVKDescriptorPool(stackPush(), descriptorTypeCounts);
         }
     }
     
     
-    protected int GetNumberOfDescripterTypes() {
-        int allTypesCount = 0;
-        for (int i = 0; i < 11; ++i) {
-            if (poolDescriptorTypeCounts[i] > 0) {
-                ++allTypesCount;
-            }
-        }
-        return allTypesCount;
-    }
+//    private int GetNumberOfDescripterTypes() {
+//        int allTypesCount = 0;
+//        for (int i = 0; i < 11; ++i) {
+//            if (poolDescriptorTypeCounts[i] > 0) {
+//                ++allTypesCount;
+//            }
+//        }
+//        return allTypesCount;
+//    }
 
     
     /**
@@ -500,7 +514,7 @@ public class CVKSwapChain {
      */
     private static final int MIN_POOL_PERTYPE_SIZE = 10; 
     private static final float POOL_GROWTH_FACTOR = 1.5f;
-    protected int CalculateDescriptorPoolSizeForType(int type, int current, int desired) {
+    private int CalculateDescriptorPoolSizeForType(int type, int current, int desired) {
         // ignore type for now, same strategy for all types
         int size = desired;
         if (size > current) {
@@ -631,13 +645,42 @@ public class CVKSwapChain {
     }
     
     
-    protected void ReleaseVKDescriptorPool() {}
-    protected void ReleaseVKCommandBuffers() {}       
-    protected void ReleaseVKFrameBuffer() {}      
-    protected void ReleaseVKRenderPass() {}    
-    protected void ReleaseVKSwapChain() {
-
-        for(int i = 0; i < imageCount; ++i) {
+    private void DestroyVKDescriptorPool() {
+        vkDestroyDescriptorPool(cvkDevice.GetDevice(), hDescriptorPool, null);
+        hDescriptorPool = VK_NULL_HANDLE;
+        CVKLOGGER.info("Destroyed descriptor pool");
+    }
+    
+    
+    private void DestroyVKCommandBuffers() {
+        try (MemoryStack stack = stackPush()) {
+            PointerBuffer pCommandBuffers = stack.mallocPointer(commandBuffers.size());
+            for (int i = 0; i < imageCount; ++i) {
+                pCommandBuffers.put(commandBuffers.get(i).address());
+            }
+            vkFreeCommandBuffers(cvkDevice.GetDevice(), cvkDevice.GetCommandPoolHandle(), pCommandBuffers);
+            commandBuffers.clear();
+            CVKLOGGER.info("Destroyed command buffers for all images");
+        }        
+    }  
+    
+    private void DestroyVKFrameBuffer() {
+        for (int i = 0; i < imageCount; ++i) {
+            vkDestroyFramebuffer(cvkDevice.GetDevice(), framebufferHandles.get(i), null);
+            CVKLOGGER.info(String.format("Destroyed frame buffer for image %d", i));
+        }
+        framebufferHandles.clear();
+    }  
+   
+    private void DestroyVKRenderPass() {
+        vkDestroyRenderPass(cvkDevice.GetDevice(), hRenderPassHandle, null);
+        hRenderPassHandle = VK_NULL_HANDLE;
+        CVKLOGGER.info("Destroyed render pass");
+    }   
+    
+    private void DestroyVKSwapChain() {
+        // Destroy synchronisation objects
+        for (int i = 0; i < imageCount; ++i) {
             if (imageAcquisitionHandles.get(i) != VK_NULL_HANDLE) {
                 vkDestroySemaphore(cvkDevice.GetDevice(), imageAcquisitionHandles.get(i), null);
                 imageAcquisitionHandles.set(i, VK_NULL_HANDLE);
@@ -650,10 +693,30 @@ public class CVKSwapChain {
                 vkDestroyFence(cvkDevice.GetDevice(), renderFenceHandles.get(i), null);
                 renderFenceHandles.set(i, VK_NULL_HANDLE);
             }
+            CVKLOGGER.info(String.format("Destroyed synchronisation objects for image %d", i));
         }
         imageAcquisitionHandles.clear();
         commandExecutionHandles.clear();
         renderFenceHandles.clear();
+                
+        // The swapchain creates its own images but we create the image views for each one, destroy those now
+        for (int i = 0; i < imageCount; ++i) {
+            vkDestroyImageView(cvkDevice.GetDevice(), imageViewHandles.get(i), null);
+            imageViewHandles.set(i, VK_NULL_HANDLE);
+            CVKLOGGER.info(String.format("Destroyed image view for image %d", i));
+        }
+        imageViewHandles.clear();
+
+        // Clear our list of images, we don't destroy these as the swapchain objects owns their memory
+        imageHandles.clear();
+        
+        // Finally, destroy the swapchain
+        vkDestroySwapchainKHR(cvkDevice.GetDevice(), hSwapChainHandle, null);
+        hSwapChainHandle = VK_NULL_HANDLE;
+        CVKLOGGER.info("Destroyed swapchain");
+        
+        // Clear our reference to the device
+        cvkDevice = null;
     }
     
     

@@ -168,12 +168,12 @@ public class CVKRenderer implements ComponentListener {
         int ret = VK_NOT_READY;
         if (parent.surfaceReady()) {
             cvkDevice.WaitIdle();
-            CVKSwapChain newSwapChain = new CVKSwapChain(cvkDevice, this);                                 
+            CVKSwapChain newSwapChain = new CVKSwapChain(cvkDevice);                                 
             ret = newSwapChain.Init(desiredPoolDescriptorTypeCounts);
             desiredPoolDescriptorTypeCounts.ResetDirty();
             if (VkSucceeded(ret)) {
                 if (cvkSwapChain != null) {
-                    cvkSwapChain.Deinit();
+                    cvkSwapChain.Destroy();
                 }
                 cvkSwapChain = newSwapChain;
                 swapChainNeedsRecreation = false;
