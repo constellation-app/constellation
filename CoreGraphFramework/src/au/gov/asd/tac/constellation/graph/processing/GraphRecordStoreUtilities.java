@@ -1200,7 +1200,7 @@ public class GraphRecordStoreUtilities {
                     final String ekey = entry.getKey();
                     final Object evalue = entry.getValue();
                     final String key;
-                    if (null == ekey) {
+                    if (ekey == null) {
                         key = TRANSACTION + ekey;
                     } else switch (ekey) {
                         case TX_SRC:
