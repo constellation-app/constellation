@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan.renderables;
 
-import au.gov.asd.tac.constellation.visual.Renderable;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKFrame;
@@ -27,9 +26,12 @@ import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkCommandBufferInheritanceInfo;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKCommandBuffer;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
 
-public abstract class CVKRenderable implements Renderable{
-
+public abstract class CVKRenderable {
+    protected CVKVisualProcessor parent;
+    protected CVKDevice cvkDevice = null;
+    
     protected long pipelineLayout = 0;
     protected long graphicsPipeline = 0;
     protected List<CVKCommandBuffer> commandBuffers = null;
@@ -43,6 +45,7 @@ public abstract class CVKRenderable implements Renderable{
     protected List<CVKBuffer> vertBuffers = null;
     
     protected boolean isDirty = true;
+    protected boolean isInitialised = false;
     
     /*
         Cleanup
@@ -68,7 +71,7 @@ public abstract class CVKRenderable implements Renderable{
     public abstract int DisplayUpdate(CVKSwapChain cvkSwapChain, int frameIndex);
     public abstract void IncrementDescriptorTypeRequirements(int descriptorTypeCounts[]);     
     
-    public abstract void Display(MemoryStack stack, CVKFrame frame, CVKRenderer cvkRenderer, CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex);
+    public abstract void Display(MemoryStack stack, CVKFrame frame, CVKRenderer cvkRenderer, CVKSwapChain cvkSwapChain, int frameIndex);
 
     public abstract int RecordCommandBuffer(CVKSwapChain cvkSwapChain, VkCommandBufferInheritanceInfo inheritanceInfo, int index);
 
@@ -80,7 +83,7 @@ public abstract class CVKRenderable implements Renderable{
     /*
         Return true if this renderable needs to be updated
     */
-    public abstract boolean IsDirty(){ return isDirty; }
+    public boolean IsDirty(){ return isDirty; }
 
     public abstract int DeviceInitialised(CVKDevice cvkDevice);
     

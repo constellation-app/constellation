@@ -144,8 +144,6 @@ public class CVKFPSRenderable extends CVKRenderable {
     protected static long hFragmentShader = VK_NULL_HANDLE;
     protected static long hDescriptorLayout = VK_NULL_HANDLE;    
     
-    protected final CVKVisualProcessor parent;
-    protected CVKDevice cvkDevice = null;
     protected final Vector3f bottomRightCorner = new Vector3f();
     protected float pyScale = 0;
     protected float pxScale = 0;         
@@ -297,7 +295,7 @@ public class CVKFPSRenderable extends CVKRenderable {
     
     
     public CVKFPSRenderable(CVKVisualProcessor visualProcessor) {
-        cvkScene = visualProcessor;
+        parent = visualProcessor;
         
         currentFPS = new ArrayList();
         currentFPS.add(7);
@@ -306,6 +304,11 @@ public class CVKFPSRenderable extends CVKRenderable {
         currentFPS.add(0);  // unused
     }
     
+    @Override
+    public void Destroy() {
+        DestroyPipeline(null);
+    }
+        
     @Override
     public int GetVertexCount(){ return 2; }
   
@@ -496,7 +499,6 @@ public class CVKFPSRenderable extends CVKRenderable {
     }
     
     
-    @Override
     public int InitCommandBuffer(CVKSwapChain cvkSwapChain){
         int ret = VK_SUCCESS;
         int imageCount = cvkSwapChain.GetImageCount();
@@ -1022,11 +1024,6 @@ public class CVKFPSRenderable extends CVKRenderable {
         // SimpleIcon.fs
         ++descriptorTypeCounts[VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER];
     } 
-    
-    @Override
-    public int GetVertexCount() {
-        return 2;
-    }
     
     @Override
     public void Display(MemoryStack stack, CVKFrame frame, CVKRenderer cvkRenderer, CVKSwapChain cvkSwapChain, int frameIndex) {

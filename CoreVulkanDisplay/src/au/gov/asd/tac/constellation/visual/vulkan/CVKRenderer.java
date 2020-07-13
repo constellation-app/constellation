@@ -310,7 +310,7 @@ public class CVKRenderer implements ComponentListener {
 
             //vkWaitForFences(cvkDevice.GetDevice(), frame.GetRenderFence(), true, UINT64_MAX);
             if (renderables.get(r).IsDirty()){
-                renderables.get(r).RecordCommandBuffer(cvkDevice, cvkSwapChain, inheritanceInfo, index);
+                renderables.get(r).RecordCommandBuffer(cvkSwapChain, inheritanceInfo, index);
 
                 // TODO Hydra: may be more efficient to add all the visible command buffers to a master list then 
                 // call the following line once with the whole list

@@ -218,6 +218,11 @@ public class CVKVisualProcessor extends VisualProcessor {
         //canvas.removeGLEventListener(renderer);
     }
 
+//    @Override
+//    protected void notifyParentAdded() {
+//        
+//    }
+
     private final class GLExportToImageOperation implements VisualOperation {
 
         private final File file;
@@ -709,7 +714,11 @@ public class CVKVisualProcessor extends VisualProcessor {
         }        
         
 
-        CVKAxesRenderable cvkAxes = new CVKAxesRenderable(this);        
+        CVKAxesRenderable cvkAxes = new CVKAxesRenderable(this);
+        ret = cvkAxes.Init(cvkDevice);
+        if (VkFailed(ret)) {
+            return ret;
+        }  
         cvkRenderer.AddRenderable(cvkAxes);
                 
         CVKFPSRenderable cvkFPS = new CVKFPSRenderable(this);
