@@ -17,9 +17,9 @@ package au.gov.asd.tac.constellation.visual.vulkan;
 
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.checkVKret;
 import java.nio.LongBuffer;
-import org.lwjgl.BufferUtils;
 import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryStack.stackPush;
+import org.lwjgl.system.MemoryUtil;
 import static org.lwjgl.vulkan.VK10.VK_ACCESS_COLOR_ATTACHMENT_READ_BIT;
 import static org.lwjgl.vulkan.VK10.VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT;
@@ -68,17 +68,17 @@ import org.lwjgl.vulkan.VkMemoryAllocateInfo;
 import org.lwjgl.vulkan.VkMemoryRequirements;
 
 public class CVKImage {
-    private LongBuffer pImage = BufferUtils.createLongBuffer(1);
-    private LongBuffer pImageMemory = BufferUtils.createLongBuffer(1);
-    private CVKDevice cvkDevice = null;
-    private int width       = 0;
-    private int height      = 0;
-    private int layers      = 0;
-    private int format      = 0;
-    private int tiling      = 0;
-    private int usage       = 0;
-    private int properties  = 0;   
-    private int aspectMask  = 0;
+    private LongBuffer pImage       = MemoryUtil.memAllocLong(1);
+    private LongBuffer pImageMemory = MemoryUtil.memAllocLong(1);
+    private CVKDevice cvkDevice     = null;
+    private int width               = 0;
+    private int height              = 0;
+    private int layers              = 0;
+    private int format              = 0;
+    private int tiling              = 0;
+    private int usage               = 0;
+    private int properties          = 0;   
+    private int aspectMask          = 0;
     
     private CVKImage() {}
     
@@ -86,27 +86,15 @@ public class CVKImage {
     public long GetMemoryImageHandle() { return pImageMemory.get(0); }
     public int GetFormat() { return format; }
     public int GetAspectMask() { return aspectMask; }
-    
-//    public void Set(CVKDevice cvkDevice, ByteBuffer pBytes, int size) {
-//        try (MemoryStack stack = stackPush()) {
-//            PointerBuffer data = stack.mallocPointer(1);
-//            vkMapMemory(cvkDevice.GetDevice(), GetMemoryBufferHandle(), 0, size, 0, data);
-//            {
-//                ByteBuffer dest = data.getByteBuffer(0, (int)size);
-//                pBytes.limit((int)size);
-//                dest.put(pBytes);
-//                pBytes.limit(pBytes.capacity()).rewind();
-//            }
-//            vkUnmapMemory(cvkDevice.GetDevice(), GetMemoryBufferHandle());
-//        }
-//    }
-    
+      
     public void Destroy() {
         if (pImage.get(0) != VK_NULL_HANDLE) {
             vkDestroyImage(cvkDevice.GetDevice(), pImage.get(0), null);
+            pImage.put(0, VK_NULL_HANDLE);
         }
         if (pImageMemory.get(0) != VK_NULL_HANDLE) {
             vkFreeMemory(cvkDevice.GetDevice(), pImageMemory.get(0), null);
+            pImageMemory.put(0, VK_NULL_HANDLE);
         }
     }
     

@@ -16,11 +16,11 @@
 package au.gov.asd.tac.constellation.visual.vulkan;
 
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKMissingEnums.VkFormat.VK_FORMAT_NONE;
+import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKAssert;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.EndLogSection;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.StartLogSection;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkFailed;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkSucceeded;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.checkVKret;
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.util.ArrayList;
@@ -47,7 +47,6 @@ import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_UNDEFINED;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_VIEW_TYPE_2D;
-import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_BIND_POINT_GRAPHICS;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SAMPLE_COUNT_1_BIT;
@@ -74,12 +73,28 @@ import org.lwjgl.vulkan.VkSubpassDescription;
 import org.lwjgl.vulkan.VkSurfaceCapabilitiesKHR;
 import org.lwjgl.vulkan.VkSwapchainCreateInfoKHR;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKLOGGER;
+import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.UINT64_MAX;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VerifyInRenderThread;
+import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.checkVKret;
+import static org.lwjgl.vulkan.KHRSwapchain.vkAcquireNextImageKHR;
+import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
+import static org.lwjgl.vulkan.VK10.VK_FENCE_CREATE_SIGNALED_BIT;
+import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.vkCreateDescriptorPool;
+import static org.lwjgl.vulkan.VK10.vkCreateFence;
+import static org.lwjgl.vulkan.VK10.vkCreateSemaphore;
+import static org.lwjgl.vulkan.VK10.vkDestroyFence;
+import static org.lwjgl.vulkan.VK10.vkDestroySemaphore;
+import static org.lwjgl.vulkan.VK10.vkResetFences;
+import static org.lwjgl.vulkan.VK10.vkWaitForFences;
 import org.lwjgl.vulkan.VkDescriptorPoolCreateInfo;
 import org.lwjgl.vulkan.VkDescriptorPoolSize;
 import org.lwjgl.vulkan.VkExtent2D;
+import org.lwjgl.vulkan.VkFenceCreateInfo;
+import org.lwjgl.vulkan.VkSemaphoreCreateInfo;
 
 /**
  * This class owns the presentable Vulkan swapchain.  It is a collection of presentable
@@ -102,9 +117,13 @@ public class CVKSwapChain {
     protected long hRenderPassHandle = VK_NULL_HANDLE;
     protected long hDescriptorPool = VK_NULL_HANDLE;
     protected int imageCount = 0;
-    protected List<Long> swapChainImageHandles = null;
-    protected List<Long> swapChainImageViewHandles = null;
-    protected List<Long> swapChainFramebufferHandles = null;
+    protected List<Long> imageHandles = null;
+    protected List<Long> imageViewHandles = null;
+    protected List<Long> framebufferHandles = null;
+    protected List<Long> imageAcquisitionHandles = null;
+    protected List<Long> commandExecutionHandles = null;
+    protected List<Long> renderFenceHandles = null;
+    protected int nextImageAcquisitionIndex = 0;
     protected List<VkCommandBuffer> commandBuffers = null;
     protected VkExtent2D vkCurrentImageExtent = VkExtent2D.malloc().set(0,0);    
     
@@ -115,8 +134,9 @@ public class CVKSwapChain {
     public long GetSwapChainHandle() { return hSwapChainHandle; }
     public long GetRenderPassHandle() { return hRenderPassHandle; }
     public long GetDescriptorPoolHandle() { return hDescriptorPool; }
-    public long GetFrameBufferHandle(int image) { return swapChainFramebufferHandles.get(image); }
-    public VkCommandBuffer GetCommandBuffer(int index) { return commandBuffers.get(index); }
+    public long GetFrameBufferHandle(int imageIndex) { return framebufferHandles.get(imageIndex); }
+    public VkCommandBuffer GetCommandBuffer(int imageIndex) { return commandBuffers.get(imageIndex); }
+    public long GetFence(int imageIndex) { return renderFenceHandles.get(imageIndex); }
     
     
     public CVKSwapChain(CVKDevice device, CVKRenderer renderer) {
@@ -234,7 +254,7 @@ public class CVKSwapChain {
         ret = vkGetSwapchainImagesKHR(cvkDevice.GetDevice(), hSwapChainHandle, pImageCount, null);
         if (VkFailed(ret)) return ret;
         //TODO_TT: exception?
-        assert(imageCount == pImageCount.get(0));
+        CVKAssert(imageCount == pImageCount.get(0));
 
         // Get the handles for each image
         LongBuffer pSwapchainImageHandles = stack.mallocLong(imageCount);
@@ -242,11 +262,14 @@ public class CVKSwapChain {
         if (VkFailed(ret)) return ret;
 
         // Store the native handle for each image and create a view for it
-        swapChainImageHandles = new ArrayList<>(imageCount);
-        swapChainImageViewHandles = new ArrayList<>();
-        for(int i = 0;i < pSwapchainImageHandles.capacity();i++) {
+        imageHandles = new ArrayList<>(imageCount);
+        imageViewHandles = new ArrayList<>();
+        imageAcquisitionHandles = new ArrayList();
+        commandExecutionHandles = new ArrayList();
+        renderFenceHandles = new ArrayList();
+        for(int i = 0; i < imageCount; ++i) {
             long swapChainImageHandle = pSwapchainImageHandles.get(i);
-            swapChainImageHandles.add(swapChainImageHandle);
+            imageHandles.add(swapChainImageHandle);
             
             // Create an image view for this image
             VkImageViewCreateInfo imageViewCreateInfo = VkImageViewCreateInfo.callocStack(stack);
@@ -273,7 +296,32 @@ public class CVKSwapChain {
                                     null, //allocation callbacks
                                     pImageView);
             if (VkFailed(ret)) { return ret; }            
-            swapChainImageViewHandles.add(pImageView.get(0));            
+            imageViewHandles.add(pImageView.get(0));      
+            
+            // Create synchronisation objects, we recreate these each time the swapchain is recreated
+            // which is probably excessive, though it's theoretically possible the recreated swapchain
+            // could have a different number of images to its precursor (though probably impossible in
+            // reality).
+            LongBuffer pSemaphore = stack.mallocLong(1);               
+            VkSemaphoreCreateInfo semaphoreInfo = VkSemaphoreCreateInfo.callocStack(stack);
+            semaphoreInfo.sType(VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO);
+            ret = vkCreateSemaphore(cvkDevice.GetDevice(), semaphoreInfo, null, pSemaphore);
+            if (VkFailed(ret)) { return ret; }   
+            imageAcquisitionHandles.add(pSemaphore.get(0));
+            pSemaphore.put(0, 0);
+            ret = vkCreateSemaphore(cvkDevice.GetDevice(), semaphoreInfo, null, pSemaphore);
+            if (VkFailed(ret)) { return ret; }   
+            commandExecutionHandles.add(pSemaphore.get(0));
+            
+            // Render fence, CPU-GPU synch.  Created signalled so we can wait on it during the very
+            // first frame before anything has been sent to the GPU and have it just return immediately.
+            VkFenceCreateInfo fenceInfo = VkFenceCreateInfo.callocStack(stack);
+            fenceInfo.sType(VK_STRUCTURE_TYPE_FENCE_CREATE_INFO);
+            fenceInfo.flags(VK_FENCE_CREATE_SIGNALED_BIT);
+            LongBuffer pFence = stack.mallocLong(1);
+            ret = vkCreateFence(cvkDevice.GetDevice(), fenceInfo, null, pFence);
+            if (VkFailed(ret)) { return ret; }   
+            renderFenceHandles.add(pFence.get(0));
         }
         return ret;
     }   
@@ -284,8 +332,8 @@ public class CVKSwapChain {
      * @return
      */
     protected int InitVKFrameBuffer(MemoryStack stack) {
-        assert(vkCurrentImageExtent.width() > 0);
-        assert(vkCurrentImageExtent.height() > 0);
+        CVKAssert(vkCurrentImageExtent.width() > 0);
+        CVKAssert(vkCurrentImageExtent.height() > 0);
         
         int ret = VK_SUCCESS;
         LongBuffer attachments = stack.mallocLong(1);
@@ -298,16 +346,16 @@ public class CVKSwapChain {
         framebufferInfo.height(vkCurrentImageExtent.height());
         framebufferInfo.layers(1);
         
-        swapChainFramebufferHandles = new ArrayList<>(imageCount);
+        framebufferHandles = new ArrayList<>(imageCount);
 
-        for (long imageView : swapChainImageViewHandles) {
+        for (long imageView : imageViewHandles) {
             attachments.put(0, imageView);
             framebufferInfo.pAttachments(attachments);
             ret = vkCreateFramebuffer(cvkDevice.GetDevice(), 
                                       framebufferInfo, 
                                       null, //allocation callbacks
                                       pFramebuffer);
-            swapChainFramebufferHandles.add(pFramebuffer.get(0));
+            framebufferHandles.add(pFramebuffer.get(0));
         }
         
         return ret;
@@ -324,8 +372,8 @@ public class CVKSwapChain {
      * @return 
      */
     protected int InitVKRenderPass(MemoryStack stack) {
-        assert(cvkDevice.GetDevice() != null);
-        assert(cvkDevice.GetSurfaceFormat() != VK_FORMAT_NONE);
+        CVKAssert(cvkDevice.GetDevice() != null);
+        CVKAssert(cvkDevice.GetSurfaceFormat() != VK_FORMAT_NONE);
         
         int ret;      
         
@@ -378,11 +426,11 @@ public class CVKSwapChain {
     
     
     protected int InitVKCommandBuffers(MemoryStack stack) {
-        assert(cvkDevice.GetDevice() != null);
-        assert(cvkDevice.GetCommandPoolHandle() != VK_NULL_HANDLE);   
-        assert(imageCount > 0);
-        assert(vkCurrentImageExtent.width() > 0);
-        assert(vkCurrentImageExtent.height() > 0);
+        CVKAssert(cvkDevice.GetDevice() != null);
+        CVKAssert(cvkDevice.GetCommandPoolHandle() != VK_NULL_HANDLE);   
+        CVKAssert(imageCount > 0);
+        CVKAssert(vkCurrentImageExtent.width() > 0);
+        CVKAssert(vkCurrentImageExtent.height() > 0);
         
         int ret;
                 
@@ -408,9 +456,11 @@ public class CVKSwapChain {
     }
        
     
-    public void DescriptorTypeRequirementsUpdated(CVKSynchronizedDescriptorTypeCounts descriptorTypeCounts) {
+    //TODO_TT: instead of recreating the descriptor pool, simply add a new one.  Figure out what we do when
+    // a node is removed from the scene.
+    public void UpdateDescriptorTypeRequirements(CVKSynchronizedDescriptorTypeCounts descriptorTypeCounts) {
         VerifyInRenderThread();
-        assert(poolDescriptorTypeCounts.length == 11);
+        CVKAssert(poolDescriptorTypeCounts.length == 11);
                 
         // If this was set, it is now out of date as descriptorTypeCounts is current        
         boolean embiggen = false;
@@ -465,7 +515,7 @@ public class CVKSwapChain {
     
     public int InitVKDescriptorPool(MemoryStack stack, CVKSynchronizedDescriptorTypeCounts desiredPoolDescriptorTypeCounts) {
         VerifyInRenderThread();
-        assert(desiredPoolDescriptorTypeCounts != null);
+        CVKAssert(desiredPoolDescriptorTypeCounts != null);
         
         int ret = VK_SUCCESS;
         
@@ -507,6 +557,7 @@ public class CVKSwapChain {
             
             VkDescriptorPoolCreateInfo poolInfo = VkDescriptorPoolCreateInfo.callocStack(stack);
             poolInfo.sType(VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO);
+            poolInfo.flags(VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT);
             poolInfo.pPoolSizes(pPoolSizes);
             poolInfo.maxSets(imageCount);
 
@@ -515,10 +566,68 @@ public class CVKSwapChain {
             checkVKret(ret);
             hDescriptorPool = pDescriptorPool.get(0);
             
-            assert(hDescriptorPool != VK_NULL_HANDLE);
+            CVKAssert(hDescriptorPool != VK_NULL_HANDLE);
         } 
 
         return ret;
+    }
+    
+    
+    public int WaitOnFence(int imageIndex) {
+        int ret;
+        ret = vkWaitForFences(cvkDevice.GetDevice(), 
+                              renderFenceHandles.get(imageIndex), 
+                              true, //wait on first or all fences, only one fence in this case
+                              Long.MAX_VALUE); //timeout
+        if (VkFailed(ret)) return ret;
+        ret = vkResetFences(cvkDevice.GetDevice(), renderFenceHandles.get(imageIndex));
+        return ret;        
+    }
+    
+    
+    /**
+     *
+     * Get the first available image acquire semaphore and bind it to the image
+     * index returned.The image at imageIndex may still be in use by the 
+     * presentation engine so the semaphore bound to this image must be used 
+     * before executing commands into it.
+     * 
+     * @param stack
+     * @param pImageIndex
+     * @param pImageAcquiredSemaphore
+     * @return
+     */
+    public int AcquireNextImage(MemoryStack stack, IntBuffer pImageIndex, LongBuffer pImageAcquiredSemaphore) {
+        CVKAssert(cvkDevice.GetDevice() != null);
+        CVKAssert(GetSwapChainHandle() != VK_NULL_HANDLE);
+        CVKAssert(pImageIndex != null);       
+        CVKAssert(pImageAcquiredSemaphore != null);
+        CVKAssert(imageAcquisitionHandles.size() > 0);
+        
+        // This semaphore is waited on by the command buffer queue submit.  That means on successive calls
+        // to AcquireNextImage for the same image we return now, the semaphore is garaunteed to be in the
+        // signalled state.
+        long imageAcquiredSemaphore = imageAcquisitionHandles.get(nextImageAcquisitionIndex);        
+        pImageAcquiredSemaphore.put(0, imageAcquiredSemaphore);
+        nextImageAcquisitionIndex = (++nextImageAcquisitionIndex) % imageCount;
+        
+        int ret;        
+        ret = vkAcquireNextImageKHR(cvkDevice.GetDevice(),
+                                    hSwapChainHandle,
+                                    UINT64_MAX, //timeout
+                                    imageAcquiredSemaphore,
+                                    VK_NULL_HANDLE,
+                                    pImageIndex);        
+                
+        return ret;
+    }
+    
+    
+    public int GetCommandBufferExecutedSemaphore(final int imageIndex, LongBuffer pCommandExecutionSemaphore) {
+        CVKAssert(imageIndex >= 0 && imageIndex < imageCount);
+        long hCommandExecutionSemaphore = commandExecutionHandles.get(imageIndex);
+        pCommandExecutionSemaphore.put(0, hCommandExecutionSemaphore);
+        return VK_SUCCESS;
     }
     
     
@@ -526,7 +635,26 @@ public class CVKSwapChain {
     protected void ReleaseVKCommandBuffers() {}       
     protected void ReleaseVKFrameBuffer() {}      
     protected void ReleaseVKRenderPass() {}    
-    protected void ReleaseVKSwapChain() {}
+    protected void ReleaseVKSwapChain() {
+
+        for(int i = 0; i < imageCount; ++i) {
+            if (imageAcquisitionHandles.get(i) != VK_NULL_HANDLE) {
+                vkDestroySemaphore(cvkDevice.GetDevice(), imageAcquisitionHandles.get(i), null);
+                imageAcquisitionHandles.set(i, VK_NULL_HANDLE);
+            }
+            if (commandExecutionHandles.get(i) != VK_NULL_HANDLE) {
+                vkDestroySemaphore(cvkDevice.GetDevice(), commandExecutionHandles.get(i), null);
+                commandExecutionHandles.set(i, VK_NULL_HANDLE);
+            }
+            if (renderFenceHandles.get(i) != VK_NULL_HANDLE) {
+                vkDestroyFence(cvkDevice.GetDevice(), renderFenceHandles.get(i), null);
+                renderFenceHandles.set(i, VK_NULL_HANDLE);
+            }
+        }
+        imageAcquisitionHandles.clear();
+        commandExecutionHandles.clear();
+        renderFenceHandles.clear();
+    }
     
     
     public boolean NeedsResize() {

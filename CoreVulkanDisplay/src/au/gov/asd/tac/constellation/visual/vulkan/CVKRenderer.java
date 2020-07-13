@@ -49,6 +49,8 @@ import org.lwjgl.vulkan.VkSubmitInfo;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKLOGGER;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.UINT64_MAX;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VerifyInRenderThread;
+import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.debugging;
+import java.nio.LongBuffer;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import static org.lwjgl.vulkan.KHRSwapchain.VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
@@ -85,11 +87,9 @@ public class CVKRenderer implements ComponentListener {
     protected CVKInstance cvkInstance = null;
     protected CVKDevice cvkDevice = null;
     protected CVKSwapChain cvkSwapChain = null;
-    protected int currentFrame = 0;
-    protected List<CVKFrame> cvkFrames = null;
+    public int currentFrame = 0;
            
-    protected boolean swapChainNeedsRecreation = true;
-    protected static boolean debugging = true;    
+    protected boolean swapChainNeedsRecreation = true;     
     private final CVKVisualProcessor parent;  
     
     // Descriptor pools are owned by the swapchain but because the lifetime of
@@ -259,16 +259,16 @@ public class CVKRenderer implements ComponentListener {
      * Records/updates the Primary Command Buffer and all its Secondary Command Buffers
      * 
      * @param stack
-     * @param frame
-     * @param primaryCommandBuffer
      * @param index - index to get the current frame/image/command buffer
      * @return 
      */
-    protected int RecordCommandBuffer(MemoryStack stack, CVKFrame frame, VkCommandBuffer primaryCommandBuffer, int index){
+    protected int RecordCommandBuffer(MemoryStack stack, int index){
         VerifyInRenderThread();
-        assert(cvkSwapChain.GetFrameBufferHandle(index) != VK_NULL_HANDLE);
+        CVKAssert(cvkSwapChain.GetFrameBufferHandle(index) != VK_NULL_HANDLE);
     
         int ret = VK_SUCCESS;
+        
+        VkCommandBuffer primaryCommandBuffer = cvkSwapChain.GetCommandBuffer(index);
            
         VkCommandBufferBeginInfo beginInfo = VkCommandBufferBeginInfo.callocStack(stack);
         beginInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO);
@@ -307,8 +307,6 @@ public class CVKRenderer implements ComponentListener {
             
         // Loop through renderables and record their buffers
         for (int r = 0; r < renderables.size(); ++r) {
-
-            //vkWaitForFences(cvkDevice.GetDevice(), frame.GetRenderFence(), true, UINT64_MAX);
             if (renderables.get(r).IsDirty()){
                 renderables.get(r).RecordCommandBuffer(cvkSwapChain, inheritanceInfo, index);
 
@@ -316,13 +314,14 @@ public class CVKRenderer implements ComponentListener {
                 // call the following line once with the whole list
                 vkCmdExecuteCommands(primaryCommandBuffer, renderables.get(r).GetCommandBuffer(index));
             }
-            //vkResetFences(cvkDevice.GetDevice(), frame.GetRenderFence());
         }
         
         vkCmdEndRenderPass(primaryCommandBuffer);
         checkVKret(vkEndCommandBuffer(primaryCommandBuffer)); 
     
-        Debug_UpdateRGB();
+        if (debugging) {
+            Debug_UpdateRGB();
+        }
         
         return ret; 
     }
@@ -332,29 +331,31 @@ public class CVKRenderer implements ComponentListener {
      * API calls in this method are asynchronous and need to be synchronised.
      * 
      * @param stack
-     * @param frame
+     * @param pImageAcquiredSemaphore
+     * @param pCommandBufferExecutedSemaphore
      * @param commandBuffer
      * @return
      */
-    public int ExecuteCommandBuffer(MemoryStack stack, CVKFrame frame, VkCommandBuffer commandBuffer) {
-        int ret;
-        
-        CVKAssert(frame != null);
+    public int ExecuteCommandBuffer(MemoryStack stack, 
+                                    LongBuffer pImageAcquiredSemaphore, 
+                                    LongBuffer pCommandBufferExecutedSemaphore, 
+                                    VkCommandBuffer commandBuffer,
+                                    long hRenderFence) {
+        CVKAssert(pImageAcquiredSemaphore != null && pImageAcquiredSemaphore.get(0) != VK_NULL_HANDLE);
+        CVKAssert(pCommandBufferExecutedSemaphore != null && pCommandBufferExecutedSemaphore.get(0) != VK_NULL_HANDLE);
         CVKAssert(commandBuffer != null);
         
         VkSubmitInfo submitInfo = VkSubmitInfo.callocStack(stack);
         submitInfo.sType(VK_STRUCTURE_TYPE_SUBMIT_INFO);
         submitInfo.pCommandBuffers(stack.pointers(commandBuffer));
-        submitInfo.pWaitSemaphores(stack.longs(frame.GetImageAcquireSemaphoreHandle()));
+        submitInfo.pWaitSemaphores(pImageAcquiredSemaphore);
         submitInfo.waitSemaphoreCount(1);
         submitInfo.pWaitDstStageMask(stack.ints(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT));
-        submitInfo.pSignalSemaphores(stack.longs(frame.GetRenderFinishedSemaphoreHandle()));   
+        submitInfo.pSignalSemaphores(pCommandBufferExecutedSemaphore);   
         
-        ret = vkQueueSubmit(cvkDevice.GetQueue(), 
-                            submitInfo, 
-                            frame.GetRenderFence());
-        
-        return ret;        
+        return vkQueueSubmit(cvkDevice.GetQueue(), 
+                             submitInfo, 
+                             hRenderFence);    
     }
     
     /**
@@ -362,141 +363,225 @@ public class CVKRenderer implements ComponentListener {
      * API calls in this method are asynchronous and need to be synchronised.
      * 
      * @param stack
-     * @param frame
+     * @param pCommandExecutionSemaphore
      * @param imageIndex
      * @return
      */
-    protected int ReturnImageToSwapchainAndPresent(MemoryStack stack, CVKFrame frame, int imageIndex) {
-        int ret;
-        
+    protected int ReturnImageToSwapchainAndPresent(MemoryStack stack, LongBuffer pCommandExecutionSemaphore, int imageIndex) {
         CVKAssert(cvkDevice.GetQueue() != null);
         
         VkPresentInfoKHR presentInfo = VkPresentInfoKHR.callocStack(stack);
         presentInfo.sType(VK_STRUCTURE_TYPE_PRESENT_INFO_KHR);
-        presentInfo.pWaitSemaphores(stack.longs(frame.GetRenderFinishedSemaphoreHandle()));
+        presentInfo.pWaitSemaphores(pCommandExecutionSemaphore);
         presentInfo.swapchainCount(1);
         presentInfo.pSwapchains(stack.longs(cvkSwapChain.GetSwapChainHandle()));
-        presentInfo.pImageIndices(stack.ints(imageIndex));
-        
-        ret = vkQueuePresentKHR(cvkDevice.GetQueue(), presentInfo);
-        
-        return ret;
+        presentInfo.pImageIndices(stack.ints(imageIndex));        
+        return vkQueuePresentKHR(cvkDevice.GetQueue(), presentInfo);
     }
 
+
+    /**
+     * No parrellisation of CPU/GPU, eg only one swap chain image and set of command buffers
+     * <table cellspacing="2" cellpadding="1" border="1" align="center">
+     * <tr><td>CPU</td><td>Prepare image 0</td><td></td><td>Prepare image 0</td><td></td></tr>
+     * <tr><td>GPU</td><td></td><td>Present image 0</td><td></td><td>Present image 0</td></tr>
+     * </table>
+     * <p>
+     * 2 swapchain images with synchronisation of CPU preparation and GPU execution/presentation
+     * <table cellspacing="2" cellpadding="1" border="1" align="center">
+     * <tr><td>CPU</td><td>Prepare image 0</td><td>Prepare image 1</td><td>Prepare image 0</td><td>Prepare image 1</td></tr>
+     * <tr><td>GPU</td><td>Present image 1</td><td>Present image 0</td><td>Present image 1</td><td>Present image 0</td></tr>
+     * </table>
+     * <p>
+     * 
+     * <h1>SYNCHRONISATION</h1>
+     * There are several points that need to be synchronised:
+     * <p>
+     * 1. Acquiring the next available image from the swap chain.  The image the swap chain
+     *    returns to us depends on the state of the images in flight and the policy used to
+     *    create the swap chain.  See the initialisation of CVKDevice.selectedPresentationMode
+     *    for more details.
+     *    vkAcquireNextImageKHR will return immediately with the index of the image that will be
+     *    acquired for rendering and presenting, but the image itself may not be ready yet to be
+     *    rendered to or presented.  For that we need to provide either a fence or semaphore to
+     *    vkAcquireNextImageKHR that will be signaled when the image is ready.  We can pass that
+     *    semaphore into vkQueueSubmit when we submit our command buffers so the execution of
+     *    commands waits until the image is ready.
+     * <p>
+     * 2. Presenting an image.  vkQueuePresentKHR adds an acquired image to the presentation queue
+     *    which once drained unacquires the image and returns it to the swapchain.  Before we 
+     *    enqueue an image into the presentation queue we need to ensure our rendering (execution
+     *    of command buffers) has completed.
+     * 
+     * Frame 0:
+     * 1. acquire image index 0  (get imageAcquisitionSemaphore 0)
+     * 2. wait on that image 0 being ready
+     * 3. execute command buffer 0 (return imageAcquisitionSemaphore 0 and get commandBufferExecutedSemaphore 0)
+     * 4. wait for command buffer 0 to execute
+     * 5. present image 0
+     * 
+     * !Problem: commandBufferExecutedSemaphore is never returned.  Maybe it never needs to be returned as we
+     * have to wait for imageAcquisitionSemaphore 0 which implies commandBufferExecutedSemaphore 0 will have 
+     * already been signaled.  If that is the case then we only need logic for the image acquisition semaphore.
+     * We could bind them together, like the CVKFrame concept.
+     * 
+     * Frame 1:
+     * 1. acquire image index 1
+     * 2. wait on that image 1 being ready
+     * 3. execute command buffer 1
+     * 4. wait for command buffer 1 to execute
+     * 5. present image 1
+     * 
+     * Frame 2
+     * 
+     * 0. wait on imageAcquisitionSemaphore 0, is this necessary?
+     * 1. acquire image index 0 
+     * 2. wait on that image 0 being ready
+     * 3. execute command buffer 0
+     * 4. wait for command buffer 0 to execute
+     * 5. present image 0
+     * 
+     * Commands may be enqueued in order but without synchronisation they can be processed and
+     * complete in any order.  We often require a particular state before an operation occurs,
+     * for example we require an image is transitioned to the destination transfer optimal 
+     * state before we copy data into it.  In order to enforce required states we use pipeline
+     * barriers.  VkImageMemoryBarrier is the type of barrier we use in the previous example,
+     * not only does this barrier block latter commands until our destination stage is reached,
+     * it is also responsible for the transition from source to destination state.
+     * 
+     * Pipeline barriers (image transitions).  
+     * 
+     * 
+     */
     public void Display() {
+        int ret;
+        
+        // Sychronisation
+        
+        //
+        
+        // 1.  Acquire next available image from the swap chain.
+        
+        
         //CVKLOGGER.log(Level.INFO, Thread.currentThread().getName());
                
-        //==================================
-        // TODO_TT: currentFrame looks wrong, it should be set to the imageIndex
-        // that is acquired and not incremented I think, the acquire should do 
-        // the cycling.
-        // Except...we wait on a renderfence to acquire the next image.  Needs
-        // some thought.
-        //==================================
-        
-        if (CVKUtils.renderThreadID != 0) {
-            VerifyInRenderThread();
-        } else {
-            CVKUtils.renderThreadID = Thread.currentThread().getId();
+        // Our render thread should be the AWT thread that owns the canvas, whose
+        // surface is our render target.  Being called by any other thread will 
+        // lead to resource contention and deadlock (seen during development when
+        // user events were handled immediately rather than enqueueing them for
+        // the render thread to handle).
+        if (debugging) {
+            if (CVKUtils.renderThreadID != 0) {
+                VerifyInRenderThread();
+            } else {
+                CVKUtils.renderThreadID = Thread.currentThread().getId();
+            }
         }
         
-        
-        // If the surface is not ready RecreateSwapChain won't have reset this flag
-        int ret;
+        if (cvkSwapChain != null) {
+            // Process updates enqueued by other threads
+            if (!pendingUpdates.isEmpty()) {
+                final List<CVKRendererUpdateTask> tasks = new ArrayList<>();
+                pendingUpdates.drainTo(tasks);
+                tasks.forEach(task -> {
+                    task.Run();
+                });                        
+            }
+            
+            if (desiredPoolDescriptorTypeCounts.IsDirty()) {
+                cvkSwapChain.UpdateDescriptorTypeRequirements(desiredPoolDescriptorTypeCounts);
+                desiredPoolDescriptorTypeCounts.ResetDirty();
+            }            
+            
+            // If any renderable holds a resource shared across frames then to
+            // recreate it we need to a complete halt, that is we need all in
+            // flight images to have been presented and all fences available.
+            // Note the one liner was created by Netbeans, I am not convinced it's
+            // very clear.
+            boolean updateSharedResources = false;
+            for (int i = 0; (i < renderables.size()) && (updateSharedResources == false); ++ i) {
+                updateSharedResources = renderables.get(i).SharedResourcesNeedUpdating();
+            }
+                      
+            if (updateSharedResources) {
+                cvkDevice.WaitIdle();
+                for (int i = 0; i < renderables.size(); ++ i) {
+                    CVKRenderable r = renderables.get(i);
+                    if (r.SharedResourcesNeedUpdating()) {
+                        ret = r.RecreateSharedResources(cvkSwapChain);
+                        checkVKret(ret); 
+                    }
+                }
+            }           
+        }
+   
+        // If the surface is not ready RecreateSwapChain won't have reset this flag        
         if (cvkSwapChain != null && !swapChainNeedsRecreation) {
                     
-            try (MemoryStack stack = stackPush()) {
+            try (MemoryStack stack = stackPush()) {                
+                // The swapchain decides which image we should render to based on the
+                // mode we created with.
                 IntBuffer pImageIndex = stack.mallocInt(1);
-                CVKAssert(currentFrame < cvkFrames.size());
-                CVKFrame frame = cvkFrames.get(currentFrame);
-                
-                // If any renderable holds a resource shared across frames then to
-                // recreate it we need to a complete halt, that is we need all in
-                // flight images to have been presented and all fences available.
-                // Note the one liner was created by Netbeans, I am not convinced it's
-                // very clear.
-                boolean needFullHalt = false;
-                needFullHalt = renderables.stream().map(el -> el.NeedsCompleteHalt()).reduce(needFullHalt, (accumulator, _item) -> accumulator | _item);
-                
-                // Wait on either all fences, or just the one for the frame we want to use.
-                needFullHalt = false;
-                if (needFullHalt) {
-                    cvkFrames.forEach(f -> {
-                        f.WaitResetRenderFence();
-                    });
-                } else {
-                    ret = frame.WaitResetRenderFence();
-                }
-  
-                // Wait for fence to signal that all command buffers are ready
-
-                
-                ret = AcquireImageFromSwapchain(frame, pImageIndex);
+                LongBuffer pImageAcquisitionSemaphore = stack.mallocLong(1);
+                ret = cvkSwapChain.AcquireNextImage(stack, pImageIndex, pImageAcquisitionSemaphore);
                 if (ret == CVKMissingEnums.VkResult.VK_SUBOPTIMAL_KHR.Value()
                  || ret == CVKMissingEnums.VkResult.VK_ERROR_OUT_OF_DATE_KHR.Value()) {
                     swapChainNeedsRecreation = true;
                 } else {
-                    checkVKret(ret);
-                    
+                    checkVKret(ret);                    
                     int imageIndex = pImageIndex.get(0);
-     //                CVKLOGGER.log(Level.INFO, "Displaying image {0}", imageIndex);
-     
-                    // TODO_TT: does this mean rebuilding the swapchain?
-                    if (desiredPoolDescriptorTypeCounts.IsDirty()) {
-                        cvkSwapChain.DescriptorTypeRequirementsUpdated(desiredPoolDescriptorTypeCounts);
-                        desiredPoolDescriptorTypeCounts.ResetDirty();
-                    }
-                         
-
+                    
+                    // The two semaphores tell us when an image is ready and when we've finished writing 
+                    // to our command buffers, they don't tell us when the GPU is finished with the command
+                    // buffers.  For that we need a fence, this is a synchronisation structure that is 
+                    // device writable and host readable.
+                    ret = cvkSwapChain.WaitOnFence(imageIndex);
+                    checkVKret(ret); 
+                              
                     // Update everything that needs updating - drawables 
                     for (int i = 0; VkSucceeded(ret) && (i < renderables.size()); ++i) {
                         ret = renderables.get(i).DisplayUpdate(cvkSwapChain, imageIndex);
+                        checkVKret(ret); 
                     }                    
                     
-                    // TODO ERROR needing to wait for fence here
-                    RecordCommandBuffer(stack, frame, cvkSwapChain.GetCommandBuffer(imageIndex), imageIndex);
-                                      
-                    // TODO_TT: simplify queues, renderEventListeners and this could be merged
-                    // Process updates queue by other threads
-                    if (!pendingUpdates.isEmpty()) {
-                        final List<CVKRendererUpdateTask> tasks = new ArrayList<>();
-                        pendingUpdates.drainTo(tasks);
-                        tasks.forEach(task -> {
-                            task.Run();
-                        });                        
-                    }
-                    
-                    parent.signalUpdateComplete();     
-                    
-                    //renderEventListeners.forEach(listener->{
-                    //       listener.Display(stack, frame, this, cvkDevice, cvkSwapChain, imageIndex);
-                    //    });
-                    
-                    // Reset the fences
-                    //vkResetFences(cvkDevice.GetDevice(), frame.GetRenderFence());
-                    
+                    // Record each renderables commands into secondary buffers and add them to the
+                    // primary command buffer.
+                    ret = RecordCommandBuffer(stack, imageIndex);
+                    checkVKret(ret); 
+                                                         
+//                    parent.signalUpdateComplete();    
+                    // This will wait for the image at imageIndex to be acquired then submit
+                    // our primary command buffer to the execution queue.  Once executed 
+                    // hCommandBufferExecutedSemaphore will be signaled and we can present.
+                    LongBuffer pCommandExecutionSemaphore = stack.mallocLong(1);
+                    ret = cvkSwapChain.GetCommandBufferExecutedSemaphore(imageIndex, pCommandExecutionSemaphore);
+                    checkVKret(ret);
                     ret = ExecuteCommandBuffer(stack, 
-                               frame, 
-                               cvkSwapChain.GetCommandBuffer(imageIndex));
+                                               pImageAcquisitionSemaphore, 
+                                               pCommandExecutionSemaphore,
+                                               cvkSwapChain.GetCommandBuffer(imageIndex),
+                                               cvkSwapChain.GetFence(imageIndex));
                     checkVKret(ret);             
                     
-
-                     ret = ReturnImageToSwapchainAndPresent(stack,
-                                                            frame,
-                                                            imageIndex);
-                     if (ret == CVKMissingEnums.VkResult.VK_SUBOPTIMAL_KHR.Value()
-                      || ret == CVKMissingEnums.VkResult.VK_ERROR_OUT_OF_DATE_KHR.Value()) {
-                         swapChainNeedsRecreation = true;
-                     } else {
-                         checkVKret(ret);
-                     }                    
+                    // Render fences synchronise CPU-GPU access to shared memory.  The
+                    // fence we want to use will be in the signalled state as either it
+                    // was just created (we create them in the signalled state) or the 
+                    // GPU will have signalled it's finished with.  We now reset it to
+                    // the unsignalled state prior to ReturnImageToSwapchainAndPresent 
+                    // so that we can wait on the GPU to signal it again.
+                    //frame.ResetRenderFence();
+                    ret = ReturnImageToSwapchainAndPresent(stack,
+                                                           pCommandExecutionSemaphore,
+                                                           imageIndex);
+                    if (ret == CVKMissingEnums.VkResult.VK_SUBOPTIMAL_KHR.Value()
+                     || ret == CVKMissingEnums.VkResult.VK_ERROR_OUT_OF_DATE_KHR.Value()) {
+                        swapChainNeedsRecreation = true;
+                    } else {
+                        checkVKret(ret);
+                    }                    
         
-
-                     // Move the frame index to the next cab off the rank
-                     currentFrame = (++currentFrame) % MAX_FRAMES_IN_FLIGHT;
-
-                     // Display all the drawables/renderables
-     //                CVKLOGGER.log(Level.INFO, "Frame {0}", frameNumber++);                    
+                    // Move the frame index to the next cab off the rank
+                    currentFrame = (++currentFrame) % MAX_FRAMES_IN_FLIGHT;                  
                 }
             }
         }
@@ -506,6 +591,7 @@ public class CVKRenderer implements ComponentListener {
         // render fence has been the reset and the semaphores will be in the 
         // signalled state, so we just destroy them without waiting.
         if (cvkSwapChain == null || swapChainNeedsRecreation) {
+
             RecreateSwapChain();
         }        
         

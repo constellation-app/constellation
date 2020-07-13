@@ -133,6 +133,7 @@ public class SplitNodesPlugin extends RecordStoreQueryPlugin implements DataAcce
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void editResultStore(final RecordStore result, final String left, final String right, final RecordStore query, final String linkType) {
         final HashMap<SchemaVertexType, String> types = new HashMap<>();
         final List<SchemaVertexType> leftVertexTypesMatches = new ArrayList<>(SchemaVertexTypeUtilities.matchVertexTypes(left));

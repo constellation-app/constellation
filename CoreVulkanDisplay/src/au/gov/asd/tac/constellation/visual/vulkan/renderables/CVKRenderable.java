@@ -89,6 +89,9 @@ public abstract class CVKRenderable {
     
     public abstract boolean NeedsCompleteHalt();
 
+    public boolean SharedResourcesNeedUpdating() { return false; }
+    public int RecreateSharedResources(CVKSwapChain cvkSwapChain) { return VK_SUCCESS; }
+
 
     /**
      * Tasks that implement CVKRenderableUpdateTask are created in the VisualProcessor

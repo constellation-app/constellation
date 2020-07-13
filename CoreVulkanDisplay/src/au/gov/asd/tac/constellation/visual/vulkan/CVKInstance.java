@@ -157,6 +157,14 @@ public class CVKInstance {
             handler.flush();
         }
         
+        // DELETE AFTER DEBUGGING
+//        boolean isCmdBuffer = false;
+//        if (callbackMsg.contains("type = VK_OBJECT_TYPE_COMMAND_BUFFER")) {
+//            isCmdBuffer = true;
+//        } else {
+//            isCmdBuffer = false;
+//        }
+        
         // TODO_TT: this has to be false because...
         return VK_FALSE;
     }                
