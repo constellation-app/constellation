@@ -27,6 +27,7 @@
                 <package>au.gov.asd.tac.constellation.visual.vulkan</package>
                 <package>au.gov.asd.tac.constellation.visual.vulkan.maths</package>
                 <package>au.gov.asd.tac.constellation.visual.vulkan.renderables</package>
+                <package>au.gov.asd.tac.constellation.visual.vulkan.resourcetypes</package>
             </public-packages>
         </data>
     </configuration>

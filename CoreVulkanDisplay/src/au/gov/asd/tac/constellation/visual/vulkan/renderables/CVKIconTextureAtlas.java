@@ -19,16 +19,16 @@ import au.gov.asd.tac.constellation.utilities.graphics.Vector3i;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
-import au.gov.asd.tac.constellation.visual.vulkan.CVKBuffer;
-import au.gov.asd.tac.constellation.visual.vulkan.CVKCommandBuffer;
+import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKBuffer;
+import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKCommandBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
-import au.gov.asd.tac.constellation.visual.vulkan.CVKImage;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKLOGGER;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.checkVKret;
 import java.awt.image.BufferedImage;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.debugging;
 import static java.awt.image.BufferedImage.TYPE_4BYTE_ABGR;
+import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKImage;
 import java.awt.image.DataBufferByte;
 import java.nio.ByteBuffer;
 import java.nio.LongBuffer;
@@ -51,24 +51,19 @@ import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_UNDEFINED;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_TILING_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_SAMPLED_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_TRANSFER_DST_BIT;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_VIEW_TYPE_2D_ARRAY;
 import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
 import static org.lwjgl.vulkan.VK10.VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
 import static org.lwjgl.vulkan.VK10.VK_SAMPLER_MIPMAP_MODE_LINEAR;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkCmdCopyBufferToImage;
-import static org.lwjgl.vulkan.VK10.vkCreateImageView;
 import static org.lwjgl.vulkan.VK10.vkCreateSampler;
-import static org.lwjgl.vulkan.VK10.vkDestroyImageView;
 import static org.lwjgl.vulkan.VK10.vkDestroySampler;
 import org.lwjgl.vulkan.VkBufferImageCopy;
 import org.lwjgl.vulkan.VkExtent3D;
-import org.lwjgl.vulkan.VkImageViewCreateInfo;
 import org.lwjgl.vulkan.VkSamplerCreateInfo;
 
 
@@ -108,21 +103,16 @@ public class CVKIconTextureAtlas extends CVKRenderable {
     public static final String TRANSPARENT_ICON = DefaultIconProvider.TRANSPARENT.getExtendedName();
     
     
-    // Rather than a shared drawable like the GL renderer uses we'll just access this as a singleton.
-    //private static final CVKIconTextureAtlas instance = new CVKIconTextureAtlas();
-           
     // Instance members
     private final CVKDevice cvkDevice;
     private CVKImage cvkAtlasImage = null;
     private long hAtlasSampler = VK_NULL_HANDLE;
-    private long hAtlasImageView = VK_NULL_HANDLE;
     private final LinkedHashMap<String, Integer> loadedIcons = new LinkedHashMap<>();
-//    private boolean requiresReload = false;
     private int maxIcons = Short.MAX_VALUE; //replace this with a calculated value
     private int lastTransferedIconCount = 0;
     
     
-    public long GetAtlasImageViewHandle() { return hAtlasImageView; }
+    public long GetAtlasImageViewHandle() { return cvkAtlasImage.GetImageViewHandle(); }
     public long GetAtlasSamplerHandle() { return hAtlasSampler; }
     
     
@@ -265,7 +255,8 @@ public class CVKIconTextureAtlas extends CVKRenderable {
                                             VK_FORMAT_R8G8B8A8_SRGB, //non-linear format to give more fidelity to the hues we are most able to perceive
                                             VK_IMAGE_TILING_OPTIMAL, //we usually sample rectangles rather than long straight lines
                                             VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
-                                            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);              
+                                            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+                                            VK_IMAGE_ASPECT_COLOR_BIT);              
             
            // Command to copy pixels and transition formats
             CVKCommandBuffer cvkCopyCmd = CVKCommandBuffer.Create(cvkDevice, VK_COMMAND_BUFFER_LEVEL_PRIMARY);
@@ -390,23 +381,6 @@ public class CVKIconTextureAtlas extends CVKRenderable {
             
             // We've finished with the staging buffer
             iconStagingBuffers.forEach(el -> {el.Destroy();});
-  
-            // Image view
-            VkImageViewCreateInfo vkViewInfo = VkImageViewCreateInfo.callocStack(stack);
-            vkViewInfo.sType(VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO);
-            vkViewInfo.image(cvkAtlasImage.GetImageHandle());
-            vkViewInfo.viewType(VK_IMAGE_VIEW_TYPE_2D_ARRAY);
-            vkViewInfo.format(cvkAtlasImage.GetFormat());
-            vkViewInfo.subresourceRange().aspectMask(cvkAtlasImage.GetAspectMask());
-            vkViewInfo.subresourceRange().baseMipLevel(0);
-            vkViewInfo.subresourceRange().levelCount(1);
-            vkViewInfo.subresourceRange().baseArrayLayer(0);
-            vkViewInfo.subresourceRange().layerCount(requiredLayers);
-
-            LongBuffer pImageView = stack.mallocLong(1);
-            ret = vkCreateImageView(cvkDevice.GetDevice(), vkViewInfo, null, pImageView);
-            checkVKret(ret);
-            hAtlasImageView = pImageView.get(0);   
             
             // Create a sampler to match the image.  Note the sampler allows us to sample
             // an image but isn't tied to a specific image, note the lack of image or 
@@ -439,11 +413,6 @@ public class CVKIconTextureAtlas extends CVKRenderable {
     
     
     private void Destroy() {
-        if (hAtlasImageView != VK_NULL_HANDLE) {
-            vkDestroyImageView(cvkDevice.GetDevice(), hAtlasImageView, null);
-            hAtlasImageView = VK_NULL_HANDLE;
-        }
-        
         if (cvkAtlasImage != null) {
             cvkAtlasImage.Destroy();
             cvkAtlasImage = null;            
@@ -462,12 +431,6 @@ public class CVKIconTextureAtlas extends CVKRenderable {
         assert(lastTransferedIconCount == 0);
         assert(cvkAtlasImage == null);
         assert(hAtlasSampler == VK_NULL_HANDLE);
-        assert(hAtlasImageView == VK_NULL_HANDLE);
-        
-//        final Set<String> iconNames = IconManager.getIconNames(false);
-//        CVKLOGGER.info("\n====ALL ICONS====");
-//        iconNames.forEach(el -> {CVKLOGGER.info(el);});
-//        CVKLOGGER.info("");
         
         int ret = VK_SUCCESS;
         if (loadedIcons.size() > 0) {
@@ -492,43 +455,5 @@ public class CVKIconTextureAtlas extends CVKRenderable {
     @Override
     public boolean SharedResourcesNeedUpdating() {
         return loadedIcons.size() > lastTransferedIconCount;
-    }
-    
-//    public int DisplayUpdate() {
-//        int ret = VK_SUCCESS;
-//        
-//        // TODO_TT: This needs to be synchronised
-//        // Maybe not, I think the icon cache is only ever added to.  In C++ I'd worry about
-//        // relocations invalidating pointers but I don't think that's an issue in Java. Also
-//        // this wasn't synchronised in GLTools
-//        
-//        if (loadedIcons.size() > lastTransferedIconCount) {
-////            final int nIcons = loadedIcons.size();
-////            final List<ConstellationIcon> iconList = new ArrayList<>(nIcons);
-////            for (int i = 0; i < nIcons; i++) {
-////                iconList.add(null);
-////            }
-//
-//            // We're only interested icons we haven't consumed yet
-//            //List<IndexedConstellationIcon> newIcons = new ArrayList<>();
-//            List<IndexedConstellationIcon> allIcons = new ArrayList<>();
-//            loadedIcons.entrySet().forEach(entry -> {                
-//                //if (entry.getValue() > lastTransferedIconIndex) {
-//                //    newIcons.add(new IndexedConstellationIcon(entry.getValue(), IconManager.getIcon(entry.getKey()))); 
-//                //}
-//                allIcons.add(new IndexedConstellationIcon(entry.getValue(), IconManager.getIcon(entry.getKey()))); 
-//            });
-//            
-//            //TODO_TT: we have to wait until all of the renderer's swap chain frames are waiting,
-//            // otherwise we will be ripping out the atlas image, view and sampler from under any
-//            // in flight frames.
-//            DestroyAtlas();
-//            
-//            ret = AddIconsToAtlas(allIcons);
-//            checkVKret(ret);
-//            lastTransferedIconCount = loadedIcons.size();
-//        }
-//        
-//        return ret;
-//    } 
+    }   
 }

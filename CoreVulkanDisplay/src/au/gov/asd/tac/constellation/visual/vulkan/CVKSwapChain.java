@@ -76,10 +76,20 @@ import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKLOGGER;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.UINT64_MAX;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VerifyInRenderThread;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.checkVKret;
+import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKImage;
 import static org.lwjgl.vulkan.KHRSwapchain.vkAcquireNextImageKHR;
 import static org.lwjgl.vulkan.KHRSwapchain.vkDestroySwapchainKHR;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
 import static org.lwjgl.vulkan.VK10.VK_FENCE_CREATE_SIGNALED_BIT;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_D24_UNORM_S8_UINT;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_D32_SFLOAT;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_D32_SFLOAT_S8_UINT;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_UNDEFINED;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_DEPTH_BIT;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_TILING_OPTIMAL;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
@@ -94,12 +104,14 @@ import static org.lwjgl.vulkan.VK10.vkDestroyImageView;
 import static org.lwjgl.vulkan.VK10.vkDestroyRenderPass;
 import static org.lwjgl.vulkan.VK10.vkDestroySemaphore;
 import static org.lwjgl.vulkan.VK10.vkFreeCommandBuffers;
+import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceFormatProperties;
 import static org.lwjgl.vulkan.VK10.vkResetFences;
 import static org.lwjgl.vulkan.VK10.vkWaitForFences;
 import org.lwjgl.vulkan.VkDescriptorPoolCreateInfo;
 import org.lwjgl.vulkan.VkDescriptorPoolSize;
 import org.lwjgl.vulkan.VkExtent2D;
 import org.lwjgl.vulkan.VkFenceCreateInfo;
+import org.lwjgl.vulkan.VkFormatProperties;
 import org.lwjgl.vulkan.VkSemaphoreCreateInfo;
 
 /**
@@ -118,6 +130,7 @@ import org.lwjgl.vulkan.VkSemaphoreCreateInfo;
  */
 public class CVKSwapChain {
     private CVKDevice cvkDevice;
+    private CVKImage cvkDepthImage = null;
     private long hSwapChainHandle = VK_NULL_HANDLE;
     private long hRenderPassHandle = VK_NULL_HANDLE;
     private long hDescriptorPool = VK_NULL_HANDLE;
@@ -182,6 +195,7 @@ public class CVKSwapChain {
         DestroyVKSwapChain();
         
         CVKAssert(cvkDevice == null);
+        CVKAssert(cvkDepthImage == null);
         CVKAssert(hSwapChainHandle == VK_NULL_HANDLE);
         CVKAssert(hRenderPassHandle == VK_NULL_HANDLE);
         CVKAssert(hDescriptorPool == VK_NULL_HANDLE);
@@ -278,9 +292,9 @@ public class CVKSwapChain {
         // Store the native handle for each image and create a view for it
         imageHandles = new ArrayList<>(imageCount);
         imageViewHandles = new ArrayList<>();
-        imageAcquisitionHandles = new ArrayList();
-        commandExecutionHandles = new ArrayList();
-        renderFenceHandles = new ArrayList();
+        imageAcquisitionHandles = new ArrayList<>();
+        commandExecutionHandles = new ArrayList<>();
+        renderFenceHandles = new ArrayList<>();
         for(int i = 0; i < imageCount; ++i) {
             long swapChainImageHandle = pSwapchainImageHandles.get(i);
             imageHandles.add(swapChainImageHandle);
@@ -337,6 +351,43 @@ public class CVKSwapChain {
             if (VkFailed(ret)) { return ret; }   
             renderFenceHandles.add(pFence.get(0));
         }
+        
+        // Figure out the best depth format our device supports
+        int depthFormat = VK_FORMAT_UNDEFINED;
+        VkFormatProperties vkFormatProperties = VkFormatProperties.callocStack(stack);
+        IntBuffer possibleDepthFormats = stack.ints(VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT);
+        for (int i = 0; i < possibleDepthFormats.capacity(); ++i) {
+            vkGetPhysicalDeviceFormatProperties(cvkDevice.GetPhysicalDevice(),
+                                                possibleDepthFormats.get(i),
+                                                vkFormatProperties);
+            if ((vkFormatProperties.optimalTilingFeatures() & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT) != 0) {
+                depthFormat = possibleDepthFormats.get(i);
+                break;
+            }
+        }
+        if (depthFormat == VK_FORMAT_UNDEFINED) {
+            CVKLOGGER.severe("Failed to find supported detpth format");
+            throw new RuntimeException("Failed to find supported detpth format");
+        }
+        
+        // Depth attachment.  It has:
+        // * the same extents as the colour images
+        // * a single layer 
+        // * best format determined in the block above
+        // * optimal tiling (square kernel vs linear row) for performance
+        // * depth/stencil usage
+        // * device local, the fastest memory type, not host readable/writable 
+        //   but the gpu is the only thing that writes and then reads depth.
+        cvkDepthImage = CVKImage.Create(cvkDevice, 
+                                        vkCurrentImageExtent.width(),
+                                        vkCurrentImageExtent.height(), 
+                                        1, 
+                                        depthFormat, 
+                                        VK_IMAGE_TILING_OPTIMAL, 
+                                        VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, 
+                                        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+                                        VK_IMAGE_ASPECT_DEPTH_BIT);
+        
         return ret;
     }   
     
@@ -709,6 +760,10 @@ public class CVKSwapChain {
 
         // Clear our list of images, we don't destroy these as the swapchain objects owns their memory
         imageHandles.clear();
+        
+        // Destroy the depth attachment
+        cvkDepthImage.Destroy();
+        cvkDepthImage = null;
         
         // Finally, destroy the swapchain
         vkDestroySwapchainKHR(cvkDevice.GetDevice(), hSwapChainHandle, null);

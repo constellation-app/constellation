@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.visual.vulkan;
+package au.gov.asd.tac.constellation.visual.vulkan.resourcetypes;
 
+import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.checkVKret;
 import java.nio.LongBuffer;
 import org.lwjgl.system.MemoryStack;
@@ -42,6 +43,7 @@ import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_UNDEFINED;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_TYPE_2D;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_VIEW_TYPE_2D_ARRAY;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
@@ -52,25 +54,30 @@ import static org.lwjgl.vulkan.VK10.VK_QUEUE_FAMILY_IGNORED;
 import static org.lwjgl.vulkan.VK10.VK_SAMPLE_COUNT_1_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SHARING_MODE_EXCLUSIVE;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkAllocateMemory;
+import static org.lwjgl.vulkan.VK10.vkCreateImageView;
 import static org.lwjgl.vulkan.VK10.vkBindImageMemory;
 import static org.lwjgl.vulkan.VK10.vkCmdPipelineBarrier;
 import static org.lwjgl.vulkan.VK10.vkCreateImage;
 import static org.lwjgl.vulkan.VK10.vkDestroyImage;
+import static org.lwjgl.vulkan.VK10.vkDestroyImageView;
 import static org.lwjgl.vulkan.VK10.vkFreeMemory;
 import static org.lwjgl.vulkan.VK10.vkGetImageMemoryRequirements;
 import org.lwjgl.vulkan.VkImageCreateInfo;
 import org.lwjgl.vulkan.VkImageMemoryBarrier;
+import org.lwjgl.vulkan.VkImageViewCreateInfo;
 import org.lwjgl.vulkan.VkMemoryAllocateInfo;
 import org.lwjgl.vulkan.VkMemoryRequirements;
 
 public class CVKImage {
-    private LongBuffer pImage       = MemoryUtil.memAllocLong(1);
-    private LongBuffer pImageMemory = MemoryUtil.memAllocLong(1);
     private CVKDevice cvkDevice     = null;
+    private LongBuffer pImage       = MemoryUtil.memAllocLong(1);
+    private LongBuffer pImageView   = MemoryUtil.memAllocLong(1);
+    private LongBuffer pImageMemory = MemoryUtil.memAllocLong(1);    
     private int width               = 0;
     private int height              = 0;
     private int layers              = 0;
@@ -78,11 +85,12 @@ public class CVKImage {
     private int tiling              = 0;
     private int usage               = 0;
     private int properties          = 0;   
-    private int aspectMask          = 0;
+    private int aspectMask          = 0;   
     
     private CVKImage() {}
     
     public long GetImageHandle() { return pImage.get(0); }
+    public long GetImageViewHandle() { return pImageView.get(0); }
     public long GetMemoryImageHandle() { return pImageMemory.get(0); }
     public int GetFormat() { return format; }
     public int GetAspectMask() { return aspectMask; }
@@ -92,10 +100,15 @@ public class CVKImage {
             vkDestroyImage(cvkDevice.GetDevice(), pImage.get(0), null);
             pImage.put(0, VK_NULL_HANDLE);
         }
+        if (pImageView.get(0) != VK_NULL_HANDLE) {
+            vkDestroyImageView(cvkDevice.GetDevice(), pImageView.get(0), null);
+            pImageView.put(0, VK_NULL_HANDLE);
+        }        
         if (pImageMemory.get(0) != VK_NULL_HANDLE) {
             vkFreeMemory(cvkDevice.GetDevice(), pImageMemory.get(0), null);
             pImageMemory.put(0, VK_NULL_HANDLE);
         }
+        cvkDevice = null;
     }
     
     @SuppressWarnings("deprecation")
@@ -213,7 +226,8 @@ public class CVKImage {
                                     int format,
                                     int tiling,
                                     int usage, 
-                                    int properties) {
+                                    int properties,
+                                    int aspectMask) {
         assert(cvkDevice != null);
         assert(cvkDevice.GetDevice() != null);
         assert(layers >= 1);
@@ -227,9 +241,11 @@ public class CVKImage {
         cvkImage.format     = format;
         cvkImage.tiling     = tiling;
         cvkImage.usage      = usage; 
-        cvkImage.properties = properties;                      
+        cvkImage.properties = properties;
+        cvkImage.aspectMask = aspectMask;
          
         try(MemoryStack stack = stackPush()) {
+            // Create the image, this is an opaque type we can't read or write
             VkImageCreateInfo vkImageInfo = VkImageCreateInfo.callocStack(stack);
             vkImageInfo.sType(VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO);
             vkImageInfo.imageType(VK_IMAGE_TYPE_2D);
@@ -249,6 +265,7 @@ public class CVKImage {
             checkVKret(ret);
             assert(cvkImage.pImage.get(0) != VK_NULL_HANDLE);
 
+            // The image isn't backed by memory, do that now
             VkMemoryRequirements memRequirements = VkMemoryRequirements.mallocStack(stack);
             vkGetImageMemoryRequirements(cvkDevice.GetDevice(), cvkImage.pImage.get(0), memRequirements);
 
@@ -262,6 +279,21 @@ public class CVKImage {
             }
 
             vkBindImageMemory(cvkDevice.GetDevice(), cvkImage.pImage.get(0), cvkImage.pImageMemory.get(0), 0);
+            
+            // Create an image view that can be used to read and write this image
+            VkImageViewCreateInfo vkViewInfo = VkImageViewCreateInfo.callocStack(stack);
+            vkViewInfo.sType(VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO);
+            vkViewInfo.image(cvkImage.GetImageHandle());
+            vkViewInfo.viewType(VK_IMAGE_VIEW_TYPE_2D_ARRAY);
+            vkViewInfo.format(cvkImage.GetFormat());
+            vkViewInfo.subresourceRange().aspectMask(cvkImage.GetAspectMask());
+            vkViewInfo.subresourceRange().baseMipLevel(0);
+            vkViewInfo.subresourceRange().levelCount(1);
+            vkViewInfo.subresourceRange().baseArrayLayer(0);
+            vkViewInfo.subresourceRange().layerCount(layers);
+
+            ret = vkCreateImageView(cvkDevice.GetDevice(), vkViewInfo, null, cvkImage.pImageView);
+            checkVKret(ret);           
             
             return cvkImage;
         } catch (Exception e) {

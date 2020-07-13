@@ -87,7 +87,8 @@ public class CVKDevice {
     // Getters
     public VkExtent2D GetCurrentSurfaceExtent() { return vkCurrentSurfaceExtent; }
     public long GetCommandPoolHandle() { return hCommandPoolHandle; }
-    public VkDevice GetDevice() { return vkDevice; }    
+    public VkDevice GetDevice() { return vkDevice; }   
+    public VkPhysicalDevice GetPhysicalDevice() { return vkPhysicalDevice; }
     public VkQueue GetQueue() { return vkQueue; }
     public VkSurfaceCapabilitiesKHR GetSurfaceCapabilities() { return vkSurfaceCapabilities; }
     public long GetSurfaceHandle() { return hSurfaceHandle; }
