@@ -128,7 +128,7 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                         if (pp.getName().toLowerCase(Locale.ENGLISH).contains("(body)")) {
                             final ObjectNode requestBody = httpMethod.putObject("requestBody");
                             requestBody.put(DESCRIPTION, pp.getName().replace("(body)", " - ") + pp.getDescription());
-                            requestBody.put(REQUIRED, false); //fix in the other ticket
+                            requestBody.put(REQUIRED, false); //TODO Remove hard-code in #633
                             final ObjectNode content = requestBody.putObject("content");
                             final ObjectNode mime = content.putObject(RestServiceUtilities.APPLICATION_JSON);
                             final ObjectNode schema = mime.putObject(SCHEMA);
