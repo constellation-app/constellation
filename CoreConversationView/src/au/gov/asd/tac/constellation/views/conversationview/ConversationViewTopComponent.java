@@ -112,6 +112,16 @@ public final class ConversationViewTopComponent extends JavaFxTopComponent<Conve
         conversation.getGraphUpdateManager().setManaged(false);
     }
 
+    @Override
+    protected void componentActivated() {
+        conversation.getGraphUpdateManager().setManaged(needsUpdate());
+    }
+
+    @Override
+    protected void componentDeactivated() {
+        conversation.getGraphUpdateManager().setManaged(needsUpdate());
+    }
+
     void writeProperties(java.util.Properties p) {
         // Required for @ConvertAsProperties
     }

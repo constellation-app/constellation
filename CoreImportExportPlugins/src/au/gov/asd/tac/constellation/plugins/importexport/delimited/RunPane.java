@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -62,6 +61,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * A RunPane displays the UI necessary to allow the user to drag and drop
@@ -371,12 +371,7 @@ public class RunPane extends BorderPane implements KeyListener {
         int columnIndex = 0;
         for (final String columnLabel : columnLabels) {
             final ImportTableColumn column = new ImportTableColumn(columnLabel, columnIndex);
-            column.setCellValueFactory(new Callback<CellDataFeatures<TableRow, CellValue>, ObservableValue<CellValue>>() {
-                @Override
-                public ObservableValue<CellValue> call(CellDataFeatures<TableRow, CellValue> p) {
-                    return p.getValue().getProperty(column.getColumnIndex());
-                }
-            });
+            column.setCellValueFactory((CellDataFeatures<TableRow, CellValue> p) -> p.getValue().getProperty(column.getColumnIndex()));
             column.setCellFactory(new Callback<TableColumn<TableRow, CellValue>, TableCell<TableRow, CellValue>>() {
                 @Override
                 public TableCell<TableRow, CellValue> call(TableColumn<TableRow, CellValue> p) {
@@ -390,7 +385,7 @@ public class RunPane extends BorderPane implements KeyListener {
             }
 
             // Show the column heading
-            if (columnLabel == null || columnLabel.length() == 0) {
+            if (StringUtils.isBlank(columnLabel)) {
                 column.setPrefWidth(50);
             } else {
                 column.setPrefWidth(columnLabel.length() * 12.1); // the magic number
@@ -457,7 +452,7 @@ public class RunPane extends BorderPane implements KeyListener {
     public ImportDefinition createDefinition() {
 
         RowFilter rf = rowFilter;
-        if (filter == null || filter.isEmpty()) {
+        if (StringUtils.isBlank(filter)) {
             rf = null;
         } else {
             rf.setColumns(currentColumnLabels);

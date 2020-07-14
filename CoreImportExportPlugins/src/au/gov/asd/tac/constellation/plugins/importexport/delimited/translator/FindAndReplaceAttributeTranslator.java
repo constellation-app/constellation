@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -81,7 +82,7 @@ public class FindAndReplaceAttributeTranslator extends AttributeTranslator {
 
     @Override
     public void setParameterValues(final PluginParameters parameters, final String values) {
-        final String[] vals = values.split("\n");
+        final String[] vals = values.split(SeparatorConstants.NEWLINE);
         parameters.getParameters().get(FIND_PARAMETER_ID).setStringValue(vals[0]);
         parameters.getParameters().get(REPLACE_PARAMETER_ID).setStringValue(vals[1]);
     }

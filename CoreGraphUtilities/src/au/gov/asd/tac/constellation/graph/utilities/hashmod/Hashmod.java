@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.collections.CollectionUtils;
 
 /**
  * A text hashmod based on a supplied CSV file. Will modify attributes specified
@@ -73,7 +74,7 @@ public class Hashmod {
     }
 
     public String[] getCSVFileHeaders() {
-        if (data != null && !data.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(data)) {
             return data.get(0);
         }
         return null;
@@ -98,7 +99,7 @@ public class Hashmod {
 
     public HashMap<String, Integer> getCSVKeys() {
         final HashMap<String, Integer> keys = new HashMap<>();
-        if (data != null && !data.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(data)) {
             for (int i = 1; i < data.size(); i++) {
                 final String[] row = getCSVRow(i);
                 if (row[0] != null) {
@@ -126,14 +127,14 @@ public class Hashmod {
     }
 
     public List<String[]> getCSVFileData() {
-        if (data != null && !data.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(data)) {
             return data;
         }
         return null;
     }
 
     public String getValueFromKey(final String key, final int value) {
-        if (data != null && !data.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(data)) {
             for (int i = 1; i < data.size(); i++) {
                 final String[] row = getCSVRow(i);
                 if (row[0].equalsIgnoreCase(key)) {
@@ -151,7 +152,7 @@ public class Hashmod {
         if (key == null) {
             return false;
         }
-        if (data != null && !data.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(data)) {
             for (int i = 1; i < data.size(); i++) {
                 final String[] row = getCSVRow(i);
                 if (row[0].equalsIgnoreCase(key)) {

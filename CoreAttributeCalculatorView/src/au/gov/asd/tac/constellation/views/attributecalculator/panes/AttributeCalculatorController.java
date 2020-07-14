@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.attributecalculator.panes;
 
-import au.gov.asd.tac.constellation.views.attributecalculator.plugins.AttributeCalculatorPlugin;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.DateAttributeDescription;
@@ -24,13 +23,14 @@ import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.LocalDateTimeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.TimeAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.TransactionTypeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.VertexTypeAttributeDescription;
-import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.IconAttributeDescription;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.views.attributecalculator.AttributeCalculatorTopComponent;
+import au.gov.asd.tac.constellation.views.attributecalculator.plugins.AttributeCalculatorPlugin;
 import java.util.Arrays;
 import java.util.List;
 import org.openide.awt.StatusDisplayer;

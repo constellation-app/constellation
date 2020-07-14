@@ -15,9 +15,6 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction;
 
-import au.gov.asd.tac.constellation.graph.interaction.plugins.select.BoxSelectionPlugin;
-import au.gov.asd.tac.constellation.graph.interaction.plugins.draw.CreateTransactionPlugin;
-import au.gov.asd.tac.constellation.graph.interaction.plugins.draw.CreateVertexPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.DragElementsPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.CopyToClipboardPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.CopyToNewGraphPlugin;
@@ -36,12 +33,15 @@ import au.gov.asd.tac.constellation.graph.interaction.plugins.display.SetDrawFla
 import au.gov.asd.tac.constellation.graph.interaction.plugins.display.SetVisibleAboveThresholdPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.display.ToggleDisplayModePlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.display.ToggleDrawFlagPlugin;
-import au.gov.asd.tac.constellation.graph.interaction.plugins.select.PointSelectionPlugin;
+import au.gov.asd.tac.constellation.graph.interaction.plugins.draw.CreateTransactionPlugin;
+import au.gov.asd.tac.constellation.graph.interaction.plugins.draw.CreateVertexPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.draw.ToggleDrawDirectedPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.draw.ToggleSelectionModePlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.io.AutosaveGraphPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.io.CloseGraphPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.io.SaveGraphPlugin;
+import au.gov.asd.tac.constellation.graph.interaction.plugins.select.BoxSelectionPlugin;
+import au.gov.asd.tac.constellation.graph.interaction.plugins.select.PointSelectionPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.PreviousViewPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.ResetViewPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.RotateCameraPlugin;

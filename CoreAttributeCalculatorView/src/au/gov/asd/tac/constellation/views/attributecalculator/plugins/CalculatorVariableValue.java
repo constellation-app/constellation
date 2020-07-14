@@ -15,9 +15,9 @@
  */
 package au.gov.asd.tac.constellation.views.attributecalculator.plugins;
 
-import au.gov.asd.tac.constellation.views.attributecalculator.utilities.AbstractCalculatorValue;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.views.attributecalculator.utilities.AbstractCalculatorValue;
 
 /**
  *

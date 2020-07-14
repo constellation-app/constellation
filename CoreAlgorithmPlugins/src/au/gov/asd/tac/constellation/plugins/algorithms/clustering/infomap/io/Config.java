@@ -168,7 +168,7 @@ public final class Config {
         return networkFile;
     }
 
-    public void setNetworkFile(String networkFile) {
+    public void setNetworkFile(final String networkFile) {
         this.networkFile = networkFile;
     }
 
@@ -176,7 +176,7 @@ public final class Config {
         return includeSelfLinks;
     }
 
-    public void setIncludeSelfLinks(boolean includeSelfLinks) {
+    public void setIncludeSelfLinks(final boolean includeSelfLinks) {
         this.includeSelfLinks = includeSelfLinks;
     }
 
@@ -184,7 +184,7 @@ public final class Config {
         return clusterDataFile;
     }
 
-    public void setClusterDataFile(String clusterDataFile) {
+    public void setClusterDataFile(final String clusterDataFile) {
         this.clusterDataFile = clusterDataFile;
     }
 
@@ -192,7 +192,7 @@ public final class Config {
         return noInfomap;
     }
 
-    public void setNoInfomap(boolean noInfomap) {
+    public void setNoInfomap(final boolean noInfomap) {
         this.noInfomap = noInfomap;
     }
 
@@ -200,7 +200,7 @@ public final class Config {
         return twoLevel;
     }
 
-    public void setTwoLevel(boolean twoLevel) {
+    public void setTwoLevel(final boolean twoLevel) {
         this.twoLevel = twoLevel;
     }
 
@@ -208,7 +208,7 @@ public final class Config {
         return directed;
     }
 
-    public void setDirected(boolean directed) {
+    public void setDirected(final boolean directed) {
         this.directed = directed;
     }
 
@@ -216,7 +216,7 @@ public final class Config {
         return undirdir;
     }
 
-    public void setUndirdir(boolean undirdir) {
+    public void setUndirdir(final boolean undirdir) {
         this.undirdir = undirdir;
     }
 
@@ -224,7 +224,7 @@ public final class Config {
         return outdirdir;
     }
 
-    public void setOutdirdir(boolean outdirdir) {
+    public void setOutdirdir(final boolean outdirdir) {
         this.outdirdir = outdirdir;
     }
 
@@ -232,7 +232,7 @@ public final class Config {
         return rawdir;
     }
 
-    public void setRawdir(boolean rawdir) {
+    public void setRawdir(final boolean rawdir) {
         this.rawdir = rawdir;
     }
 
@@ -240,7 +240,7 @@ public final class Config {
         return recordedTeleportation;
     }
 
-    public void setRecordedTeleportation(boolean recordedTeleportation) {
+    public void setRecordedTeleportation(final boolean recordedTeleportation) {
         this.recordedTeleportation = recordedTeleportation;
     }
 
@@ -248,7 +248,7 @@ public final class Config {
         return teleportToNodes;
     }
 
-    public void setTeleportToNodes(boolean teleportToNodes) {
+    public void setTeleportToNodes(final boolean teleportToNodes) {
         this.teleportToNodes = teleportToNodes;
     }
 
@@ -256,7 +256,7 @@ public final class Config {
         return teleportationProbability;
     }
 
-    public void setTeleportationProbability(double teleportationProbability) {
+    public void setTeleportationProbability(final double teleportationProbability) {
         this.teleportationProbability = teleportationProbability;
     }
 
@@ -264,7 +264,7 @@ public final class Config {
         return selfTeleportationProbability;
     }
 
-    public void setSelfTeleportationProbability(double selfTeleportationProbability) {
+    public void setSelfTeleportationProbability(final double selfTeleportationProbability) {
         this.selfTeleportationProbability = selfTeleportationProbability;
     }
 
@@ -272,7 +272,7 @@ public final class Config {
         return seedToRandomNumberGenerator;
     }
 
-    public void setSeedToRandomNumberGenerator(long seedToRandomNumberGenerator) {
+    public void setSeedToRandomNumberGenerator(final long seedToRandomNumberGenerator) {
         this.seedToRandomNumberGenerator = seedToRandomNumberGenerator;
     }
 
@@ -280,7 +280,7 @@ public final class Config {
         return numTrials;
     }
 
-    public void setNumTrials(int numTrials) {
+    public void setNumTrials(final int numTrials) {
         this.numTrials = numTrials;
     }
 
@@ -288,7 +288,7 @@ public final class Config {
         return minimumCodelengthImprovement;
     }
 
-    public void setMinimumCodelengthImprovement(double minimumCodelengthImprovement) {
+    public void setMinimumCodelengthImprovement(final double minimumCodelengthImprovement) {
         this.minimumCodelengthImprovement = minimumCodelengthImprovement;
     }
 
@@ -296,7 +296,7 @@ public final class Config {
         return randomizeCoreLoopLimit;
     }
 
-    public void setRandomizeCoreLoopLimit(boolean randomizeCoreLoopLimit) {
+    public void setRandomizeCoreLoopLimit(final boolean randomizeCoreLoopLimit) {
         this.randomizeCoreLoopLimit = randomizeCoreLoopLimit;
     }
 
@@ -304,7 +304,7 @@ public final class Config {
         return coreLoopLimit;
     }
 
-    public void setCoreLoopLimit(int coreLoopLimit) {
+    public void setCoreLoopLimit(final int coreLoopLimit) {
         this.coreLoopLimit = coreLoopLimit;
     }
 
@@ -312,7 +312,7 @@ public final class Config {
         return levelAggregationLimit;
     }
 
-    public void setLevelAggregationLimit(int levelAggregationLimit) {
+    public void setLevelAggregationLimit(final int levelAggregationLimit) {
         this.levelAggregationLimit = levelAggregationLimit;
     }
 
@@ -320,7 +320,7 @@ public final class Config {
         return tuneIterationLimit;
     }
 
-    public void setTuneIterationLimit(int tuneIterationLimit) {
+    public void setTuneIterationLimit(final int tuneIterationLimit) {
         this.tuneIterationLimit = tuneIterationLimit;
     }
 
@@ -328,7 +328,7 @@ public final class Config {
         return minimumRelativeTuneIterationImprovement;
     }
 
-    public void setMinimumRelativeTuneIterationImprovement(double minimumRelativeTuneIterationImprovement) {
+    public void setMinimumRelativeTuneIterationImprovement(final double minimumRelativeTuneIterationImprovement) {
         this.minimumRelativeTuneIterationImprovement = minimumRelativeTuneIterationImprovement;
     }
 
@@ -336,7 +336,7 @@ public final class Config {
         return fastCoarseTunePartition;
     }
 
-    public void setFastCoarseTunePartition(boolean fastCoarseTunePartition) {
+    public void setFastCoarseTunePartition(final boolean fastCoarseTunePartition) {
         this.fastCoarseTunePartition = fastCoarseTunePartition;
     }
 
@@ -344,7 +344,7 @@ public final class Config {
         return alternateCoarseTuneLevel;
     }
 
-    public void setAlternateCoarseTuneLevel(boolean alternateCoarseTuneLevel) {
+    public void setAlternateCoarseTuneLevel(final boolean alternateCoarseTuneLevel) {
         this.alternateCoarseTuneLevel = alternateCoarseTuneLevel;
     }
 
@@ -352,7 +352,7 @@ public final class Config {
         return coarseTuneLevel;
     }
 
-    public void setCoarseTuneLevel(int coarseTuneLevel) {
+    public void setCoarseTuneLevel(final int coarseTuneLevel) {
         this.coarseTuneLevel = coarseTuneLevel;
     }
 
@@ -360,7 +360,7 @@ public final class Config {
         return fastHierarchicalSolution;
     }
 
-    public void setFastHierarchicalSolution(int fastHierarchicalSolution) {
+    public void setFastHierarchicalSolution(final int fastHierarchicalSolution) {
         this.fastHierarchicalSolution = fastHierarchicalSolution;
     }
 
@@ -368,7 +368,7 @@ public final class Config {
         return outDirectory;
     }
 
-    public void setOutDirectory(String outDirectory) {
+    public void setOutDirectory(final String outDirectory) {
         this.outDirectory = outDirectory;
     }
 
@@ -376,7 +376,7 @@ public final class Config {
         return printTree;
     }
 
-    public void setPrintTree(boolean printTree) {
+    public void setPrintTree(final boolean printTree) {
         this.printTree = printTree;
     }
 
@@ -384,7 +384,7 @@ public final class Config {
         return printMap;
     }
 
-    public void setPrintMap(boolean printMap) {
+    public void setPrintMap(final boolean printMap) {
         this.printMap = printMap;
     }
 
@@ -392,7 +392,7 @@ public final class Config {
         return printClu;
     }
 
-    public void setPrintClu(boolean printClu) {
+    public void setPrintClu(final boolean printClu) {
         this.printClu = printClu;
     }
 
@@ -400,7 +400,7 @@ public final class Config {
         return printNodeRanks;
     }
 
-    public void setPrintNodeRanks(boolean printNodeRanks) {
+    public void setPrintNodeRanks(final boolean printNodeRanks) {
         this.printNodeRanks = printNodeRanks;
     }
 
@@ -408,7 +408,7 @@ public final class Config {
         return printFlowNetwork;
     }
 
-    public void setPrintFlowNetwork(boolean printFlowNetwork) {
+    public void setPrintFlowNetwork(final boolean printFlowNetwork) {
         this.printFlowNetwork = printFlowNetwork;
     }
 
@@ -416,7 +416,7 @@ public final class Config {
         return printBinaryTree;
     }
 
-    public void setPrintBinaryTree(boolean printBinaryTree) {
+    public void setPrintBinaryTree(final boolean printBinaryTree) {
         this.printBinaryTree = printBinaryTree;
     }
 
@@ -424,7 +424,7 @@ public final class Config {
         return printBinaryFlowTree;
     }
 
-    public void setPrintBinaryFlowTree(boolean printBinaryFlowTree) {
+    public void setPrintBinaryFlowTree(final boolean printBinaryFlowTree) {
         this.printBinaryFlowTree = printBinaryFlowTree;
     }
 
@@ -432,7 +432,7 @@ public final class Config {
         return noFileOutput;
     }
 
-    public void setNoFileOutput(boolean noFileOutput) {
+    public void setNoFileOutput(final boolean noFileOutput) {
         this.noFileOutput = noFileOutput;
     }
 
@@ -440,7 +440,7 @@ public final class Config {
         return verbosity;
     }
 
-    public void setVerbosity(int verbosity) {
+    public void setVerbosity(final int verbosity) {
         this.verbosity = verbosity;
     }
 
@@ -448,7 +448,7 @@ public final class Config {
         return verboseNumberPrecision;
     }
 
-    public void setVerboseNumberPrecision(int verboseNumberPrecision) {
+    public void setVerboseNumberPrecision(final int verboseNumberPrecision) {
         this.verboseNumberPrecision = verboseNumberPrecision;
     }
 
@@ -456,7 +456,7 @@ public final class Config {
         return connectionType;
     }
 
-    public void setConnectionType(ConnectionType connectionType) {
+    public void setConnectionType(final ConnectionType connectionType) {
         this.connectionType = connectionType;
     }
 }

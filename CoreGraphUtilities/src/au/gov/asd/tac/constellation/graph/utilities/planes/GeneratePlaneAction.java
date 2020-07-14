@@ -15,11 +15,11 @@
  */
 package au.gov.asd.tac.constellation.graph.utilities.planes;
 
-import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Plane;
-import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.PlaneState;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Plane;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.PlaneState;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;

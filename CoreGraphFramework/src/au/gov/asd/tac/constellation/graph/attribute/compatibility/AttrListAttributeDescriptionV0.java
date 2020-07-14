@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.attribute.AbstractAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import java.util.Arrays;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
  * This describes a type of attribute whose values are lists of the names of

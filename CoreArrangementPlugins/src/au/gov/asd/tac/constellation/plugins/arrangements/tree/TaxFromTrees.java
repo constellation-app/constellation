@@ -15,9 +15,9 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.tree;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomy;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomy;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -151,7 +151,7 @@ public class TaxFromTrees {
 //            {
 //                debug(" %d ", j);
 //            }
-//            debug("\n");
+//            debug(SeparatorConstants.NEWLINE);
 //        }
         return new GraphTaxonomy(graph, members, nodeToTaxa);
     }

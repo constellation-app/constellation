@@ -29,7 +29,7 @@ public interface ReadableGraph extends GraphReadMethods, AutoCloseable {
      * point on.
      */
     public void release();
-    
+
     @Override
     public default void close() {
         release();

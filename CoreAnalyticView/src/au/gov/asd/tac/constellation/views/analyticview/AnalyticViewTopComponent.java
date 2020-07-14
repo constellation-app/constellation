@@ -86,20 +86,24 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
 
         // analytic view specific listeners
         addStructureChangeHandler(graph -> {
-            if (!suppressed) {
+            if (needsUpdate() && !suppressed) {
                 analyticViewPane.getConfigurationPane().saveState();
             }
         });
         addAttributeValueChangeHandler(AnalyticViewConcept.MetaAttribute.ANALYTIC_VIEW_STATE, graph -> {
-            if (!suppressed) {
+            if (needsUpdate() && !suppressed) {
                 analyticViewPane.getConfigurationPane().saveState();
             }
         });
         addAttributeValueChangeHandler(VisualConcept.VertexAttribute.SELECTED, graph -> {
-            analyticController.selectOnInternalVisualisations(GraphElementType.VERTEX, graph);
+            if (needsUpdate()) {
+                analyticController.selectOnInternalVisualisations(GraphElementType.VERTEX, graph);
+            }
         });
         addAttributeValueChangeHandler(VisualConcept.TransactionAttribute.SELECTED, graph -> {
-            analyticController.selectOnInternalVisualisations(GraphElementType.TRANSACTION, graph);
+            if (needsUpdate()) {
+                analyticController.selectOnInternalVisualisations(GraphElementType.TRANSACTION, graph);
+            }
         });
         addIgnoredEvent(AnalyticController.SELECT_ON_GRAPH_PLUGIN_NAME);
 
@@ -116,7 +120,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
         });
         prerequisiteAttributes.forEach((attribute, plugins) -> {
             addAttributeValueChangeHandler(attribute, graph -> {
-                if (!suppressed) {
+                if (needsUpdate() && !suppressed) {
                     plugins.forEach(plugin -> {
                         final PluginParameters updatedParameters = plugin.createParameters().copy();
                         plugin.onPrerequisiteAttributeChange(graph, updatedParameters);
@@ -163,6 +167,9 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
 
     @Override
     protected void handleNewGraph(final Graph graph) {
+        if (!needsUpdate()) {
+            return;
+        }
         if (analyticViewPane != null) {
             analyticViewPane.setIsRunnable(graph != null);
             analyticViewPane.reset();
@@ -177,11 +184,22 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
 
     @Override
     protected void handleGraphOpened(final Graph graph) {
-        analyticViewPane.getConfigurationPane().updateState(false);
+        if (needsUpdate()) {
+            analyticViewPane.getConfigurationPane().updateState(false);
+        }
     }
 
     @Override
     protected void handleComponentOpened() {
+        if (needsUpdate()) {
+            analyticViewPane.getConfigurationPane().updateState(false);
+        }
+    }
+
+    @Override
+    protected void componentShowing() {
+        super.componentShowing();
+        analyticViewPane.reset();
         analyticViewPane.getConfigurationPane().updateState(false);
     }
 

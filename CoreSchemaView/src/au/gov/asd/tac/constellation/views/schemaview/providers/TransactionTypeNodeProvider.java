@@ -194,8 +194,8 @@ public class TransactionTypeNodeProvider implements SchemaViewNodeProvider, Grap
                 || isFilterMatchText(treeItem.getHierachy())
                 || !(treeItem.getProperties().keySet().isEmpty())
                 && treeItem.getProperties().keySet().stream().anyMatch(property
-                -> property != null && isFilterMatchText(property.toString())
-        );
+                        -> property != null && isFilterMatchText(property)
+                );
     }
 
     private boolean isFilterMatchText(final String propertyValue) {
@@ -268,7 +268,7 @@ public class TransactionTypeNodeProvider implements SchemaViewNodeProvider, Grap
                         gridPosition++;
                         Label propertyLabel = new Label(propertyValue.toString());
                         propertyLabel.setWrapText(true);
-                        grid.add(boldLabel(property + ":"), 0, gridPosition);
+                        grid.add(boldLabel(property + SeparatorConstants.COLON), 0, gridPosition);
                         grid.add(propertyLabel, 1, gridPosition);
                     }
                 }
@@ -276,9 +276,9 @@ public class TransactionTypeNodeProvider implements SchemaViewNodeProvider, Grap
                     final Integer column = GridPane.getColumnIndex(child);
                     final Integer row = GridPane.getRowIndex(child);
                     if ((column > 0 && row != null && child instanceof Label) && isFilterMatchText(((Label) child).getText())) {
-                            child.getStyleClass().add("schemaview-highlight-blue");
-                        }
+                        child.getStyleClass().add("schemaview-highlight-blue");
                     }
+                }
                 detailsView.getChildren().addAll(colorRectangle, grid);
             }
         });
@@ -370,15 +370,15 @@ public class TransactionTypeNodeProvider implements SchemaViewNodeProvider, Grap
                     for (final SchemaTransactionType transactionType : transactionTypes) {
                         if ((transactionType.getSuperType() == transactionType) && (isFilterMatchCurrentNode(transactionType) || filterText.getText().isEmpty())) {
                             children.add(createNode(transactionType));
-                            }
                         }
+                    }
                 } else {
                     for (final SchemaTransactionType transactionType : transactionTypes) {
                         if ((transactionType.getSuperType() == value && transactionType != value) && (isFilterMatchCurrentNode(transactionType) || filterText.getText().isEmpty())) {
                             children.add(createNode(transactionType));
-                            }
                         }
                     }
+                }
                 return children;
             }
         };

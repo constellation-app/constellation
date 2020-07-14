@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.HashMap;
+import org.apache.commons.collections4.CollectionUtils;
 
 /**
  * This class provides the arrangement of a single tree (undirected), drawn
@@ -227,7 +228,7 @@ public final class CircTreeArranger implements Arranger {
         // Find adjacent vertices to work on.
         final ArrayList<VxInfo> children = orderedChildren.get(vxId);
 
-        if (children == null || children.isEmpty()) {
+        if (CollectionUtils.isEmpty(children)) {
             fullRadii[vxId] = selfRadius;
 
             return selfRadius;
@@ -383,7 +384,7 @@ public final class CircTreeArranger implements Arranger {
         // Get adjacent vertices to work on.
         final ArrayList<VxInfo> children = orderedChildren.get(vxId);
 
-        if (children == null || children.isEmpty()) {
+        if (CollectionUtils.isEmpty(children)) {
             // Position us in centre.
             graph.setFloatValue(xAttr, vxId, ourLocX);
             graph.setFloatValue(yAttr, vxId, ourLocY);

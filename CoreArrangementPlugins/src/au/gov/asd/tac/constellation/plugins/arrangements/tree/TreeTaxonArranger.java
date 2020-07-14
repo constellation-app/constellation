@@ -15,12 +15,12 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.tree;
 
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.plugins.arrangements.AbstractInclusionGraph.Connections;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomy;
 import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomyArranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.subgraph.InducedSubgraph;
-import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -84,7 +84,7 @@ public class TreeTaxonArranger extends GraphTaxonomyArranger {
 //            {
 //                Debug.debug(" %d(%d)", k, taxByNeighbours.getTaxa().get(k).size());
 //            }
-//            Debug.debug("\n");
+//            Debug.debug(SeparatorConstants.NEWLINE);
         }
 
 //        System.out.printf("Trees: %d\n", taxByTrees.getTaxa().size());

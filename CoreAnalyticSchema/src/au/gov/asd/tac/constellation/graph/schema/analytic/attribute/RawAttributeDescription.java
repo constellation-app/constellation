@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.graph.schema.analytic.attribute;
 import au.gov.asd.tac.constellation.graph.attribute.AbstractObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.objects.RawData;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -45,11 +46,11 @@ public class RawAttributeDescription extends AbstractObjectAttributeDescription<
     }
 
     @Override
-    protected RawData convertFromString(final String string) {
-        if (string == null || string.isBlank()) {
+    protected RawData convertFromString(final String originalString) {
+        if (StringUtils.isBlank(originalString)) {
             return getDefault();
         } else {
-            return new RawData(string);
+            return new RawData(originalString);
         }
     }
 }

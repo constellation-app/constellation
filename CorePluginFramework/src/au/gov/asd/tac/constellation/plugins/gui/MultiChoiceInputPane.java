@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -157,8 +158,8 @@ public class MultiChoiceInputPane extends HBox {
             protected void invalidated() {
                 // Strip out newlines
                 String txt = get();
-                if (txt != null && txt.contains("\n")) {
-                    txt = txt.replace("\n", "");
+                if (txt != null && txt.contains(SeparatorConstants.NEWLINE)) {
+                    txt = txt.replace(SeparatorConstants.NEWLINE, "");
                     set(txt);
                 }
             }

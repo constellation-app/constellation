@@ -28,6 +28,7 @@ import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.tree.T
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.Lcg;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.Logf;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.Resizer;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -332,7 +333,7 @@ public abstract class InfomapBase {
         final boolean verbose = subLevel == 0;
 
         if (verbose) {
-            Logf.printf("%s", config.getVerbosity() == 0 ? "Finding " : "\n");
+            Logf.printf("%s", config.getVerbosity() == 0 ? "Finding " : SeparatorConstants.NEWLINE);
         }
 
         double minHierarchicalCodelength = hierarchicalCodelength;
@@ -428,7 +429,7 @@ public abstract class InfomapBase {
             } else {
                 Logf.printf("Trying to find fast hierarchy... ");
                 if (config.getVerbosity() > 1) {
-                    Logf.printf("\n");
+                    Logf.printf(SeparatorConstants.NEWLINE);
                 }
             }
         }
@@ -480,7 +481,7 @@ public abstract class InfomapBase {
                     Logf.printf("found %d modules in %d loops with hierarchical codelength %f + %f = %f%s",
                             getNumDynamicModules(), numOptimizationLoops,
                             indexCodelength, workingHierarchicalCodelength - indexCodelength, workingHierarchicalCodelength,
-                            acceptSolution ? "\n" : ", discarding the solution.\n");
+                            acceptSolution ? SeparatorConstants.NEWLINE : ", discarding the solution.\n");
                 }
             }
 

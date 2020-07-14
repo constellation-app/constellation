@@ -24,6 +24,7 @@ import java.time.Period;
 import java.time.format.DateTimeParseException;
 import java.util.Objects;
 import java.util.TimeZone;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -150,7 +151,7 @@ public class DateTimeRangeParameterType extends PluginParameterType<DateTimeRang
 
         @Override
         public boolean setStringValue(final String s) {
-            final DateTimeRange newdtr = s == null || s.isEmpty() ? null : DateTimeRange.parse(s);
+            final DateTimeRange newdtr = StringUtils.isBlank(s) ? null : DateTimeRange.parse(s);
 
             return set(newdtr);
         }

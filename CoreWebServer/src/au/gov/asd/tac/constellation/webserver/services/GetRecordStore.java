@@ -28,6 +28,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
 import au.gov.asd.tac.constellation.utilities.gui.IoProgress;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.webserver.api.RestUtilities;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
@@ -234,6 +235,6 @@ public class GetRecordStore extends RestService {
     private static String keyedName(final String attrWithType) {
         final int ix = attrWithType.lastIndexOf('<');
 
-        return attrWithType.substring(0, ix) + "|" + attrWithType.substring(ix + 1, attrWithType.length() - 1);
+        return attrWithType.substring(0, ix) + SeparatorConstants.PIPE + attrWithType.substring(ix + 1, attrWithType.length() - 1);
     }
 }

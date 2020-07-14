@@ -30,6 +30,7 @@ import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -223,7 +224,7 @@ public final class DateTimeAttributeDescriptionV0 extends AbstractAttributeDescr
      * @return A Calendar representing the input datetime.
      */
     public static long parseDateTime(final String dt, final TimeZone tz) {
-        if (dt == null || dt.isEmpty()) {
+        if (StringUtils.isBlank(dt)) {
             return NULL_VALUE;
         }
 
