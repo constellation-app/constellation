@@ -7,6 +7,7 @@ package au.gov.asd.tac.constellation.views.notes;
 
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 /**
@@ -16,7 +17,9 @@ import javafx.scene.layout.VBox;
 public class NotesViewPane extends BorderPane {
 
     private final NotesViewController controller;
-    private final VBox layersViewPane;
+    private final HBox MainNotesPane;
+    private final VBox UserNotesPane;
+    private final VBox AutoNotesPane;
 
 //    Create buttons and panes to show notes
 //    TODO tabs to show both Auto and User generated notes
@@ -28,15 +31,20 @@ public class NotesViewPane extends BorderPane {
         this.controller = controller;
 
         // placeholder label for content example
-        final Label visibleText = new Label("This should be visible");
-
+        final Label userText = new Label("User Notes Here");
+        final Label autoText = new Label("Auto Notes Here");
+        
+        this.UserNotesPane = new VBox(5, userText);
+        this.AutoNotesPane = new VBox(5, autoText);
+        this.MainNotesPane = new HBox(5, UserNotesPane, AutoNotesPane);
+        
         // add layers grid and options to pane
-        this.layersViewPane = new VBox(5, visibleText);
+//        this.UserNotesPane = new VBox(5, visibleText);
 
         // create layout bindings
-        layersViewPane.prefWidthProperty().bind(this.widthProperty());
+//        MainNotesPane.prefWidthProperty().bind(this.widthProperty());
 
-        this.setCenter(layersViewPane);
+        this.setCenter(MainNotesPane);
     }
 
     public NotesViewController getController() {
