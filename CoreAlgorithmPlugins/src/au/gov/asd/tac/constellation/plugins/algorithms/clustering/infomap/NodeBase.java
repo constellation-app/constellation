@@ -86,7 +86,7 @@ public class NodeBase {
         return index;
     }
 
-    public void setIndex(int index) {
+    public void setIndex(final int index) {
         this.index = index;
     }
 
@@ -94,7 +94,7 @@ public class NodeBase {
         return originalIndex;
     }
 
-    public void setOriginalIndex(int originalIndex) {
+    public void setOriginalIndex(final int originalIndex) {
         this.originalIndex = originalIndex;
     }
 
@@ -102,7 +102,7 @@ public class NodeBase {
         return parent;
     }
 
-    public void setParent(NodeBase parent) {
+    public void setParent(final NodeBase parent) {
         this.parent = parent;
     }
 
@@ -110,7 +110,7 @@ public class NodeBase {
         return firstChild;
     }
 
-    public void setFirstChild(NodeBase firstChild) {
+    public void setFirstChild(final NodeBase firstChild) {
         this.firstChild = firstChild;
     }
 
@@ -118,7 +118,7 @@ public class NodeBase {
         return codelength;
     }
 
-    public void setCodelength(double codelength) {
+    public void setCodelength(final double codelength) {
         this.codelength = codelength;
     }
 
@@ -143,7 +143,7 @@ public class NodeBase {
         childDegree = 0;
     }
 
-    public Edge<NodeBase> addOutEdge(final NodeBase target, double weight, double flow) {
+    public Edge<NodeBase> addOutEdge(final NodeBase target, final double weight, final double flow) {
         final Edge<NodeBase> edge = new Edge<>(this, target, weight, flow);
         outEdges.add(edge);
         target.inEdges.add(edge);
@@ -245,7 +245,7 @@ public class NodeBase {
         return numLeafMembers;
     }
 
-    public void setNumLeafNodes(int value) {
+    public void setNumLeafNodes(final int value) {
         numLeafMembers = value;
     }
 
@@ -289,7 +289,7 @@ public class NodeBase {
      *
      * @return
      */
-    private static int getNodeBaseid(NodeBase n) {
+    private static int getNodeBaseid(final NodeBase n) {
         return n == null ? -1 : n.id;
     }
 

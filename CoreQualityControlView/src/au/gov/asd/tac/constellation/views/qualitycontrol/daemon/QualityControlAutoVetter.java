@@ -82,7 +82,7 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
     public void init() {
         initWithRefresh(false);
     }
-    
+
     /**
      * Add a listener for the current open graph, if any
      *

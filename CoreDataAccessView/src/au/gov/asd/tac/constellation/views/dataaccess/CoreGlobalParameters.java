@@ -53,7 +53,7 @@ public class CoreGlobalParameters extends GlobalParameters {
     private static final int DATETIME_RANGE_PARAMETER_ID_INDEX = 1;
     public static final String DATETIME_RANGE_PARAMETER_ID = PluginParameter.buildId(CoreGlobalParameters.class, "datetime_range");
     public static final PluginParameter DATETIME_RANGE_PARAMETER = DateTimeRangeParameterType.build(DATETIME_RANGE_PARAMETER_ID);
-    
+
     @Override
     public List<PositionalPluginParameter> getParameterList(final PluginParameters previous) {
         if (CORE_GLOBAL_PARAMETER_IDS == null) {

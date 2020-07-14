@@ -122,6 +122,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import org.apache.commons.collections4.CollectionUtils;
 import org.openide.util.NbPreferences;
 
 /**
@@ -174,7 +175,7 @@ public class AttributeEditorPanel extends BorderPane {
     private final TooltipPane tooltipPane = new TooltipPane();
 
     private void addCopyHandlersToListView(final ListView<Object> newList, final AttributeData attribute) {
-        MenuItem copyItem = new MenuItem("Copy");
+        final MenuItem copyItem = new MenuItem("Copy");
         copyItem.setOnAction((ActionEvent event) -> {
             copySelectedItems(newList, attribute.getDataType());
         });
@@ -200,7 +201,7 @@ public class AttributeEditorPanel extends BorderPane {
         this.topComponent = parent;
 
         titledPaneHeadingsContainer = new VBox();
-        for (int i = 0; i < HEADING_TITLES.length; i++) {
+        for (final String heading : HEADING_TITLES) {
             VBox temp = new VBox();
             temp.setPadding(Insets.EMPTY);
             valueTitledPaneContainers.add(temp);
@@ -223,7 +224,7 @@ public class AttributeEditorPanel extends BorderPane {
                 titledPaneHeadingsContainer.getChildren().add(headerPane);
             }
 
-            BorderPane borderPane = new BorderPane();
+            final BorderPane borderPane = new BorderPane();
 
             completeWithSchemaItem.setStyle("-fx-fill: white;");
             completeWithSchemaItem.setSelected(false);
@@ -366,7 +367,7 @@ public class AttributeEditorPanel extends BorderPane {
                             for (final SchemaAttribute attribute : schemaFactory.getRegisteredAttributes(elementType).values()) {
                                 if (attribute.get(rg) == Graph.NOT_FOUND) {
                                     final Collection<SchemaConcept> concepts = SchemaConceptUtilities.getAttributeConcepts(attribute);
-                                    if (concepts == null || concepts.isEmpty()) {
+                                    if (CollectionUtils.isEmpty(concepts)) {
                                         otherAttributes.add(attribute);
                                     } else {
                                         for (final SchemaConcept concept : concepts) {
@@ -488,7 +489,7 @@ public class AttributeEditorPanel extends BorderPane {
      * @return a new TitledPane.
      */
     public TitledPane createAttributeTitlePane(final AttributeData attribute, final Object[] values, final double longestTitledWidth, final boolean hidden) {
-        String attributeTitle = attribute.getAttributeName();
+        final String attributeTitle = attribute.getAttributeName();
         final int spacing = 5;
         final int buttonSize = 45;
         final GridPane gridPane = new GridPane();
@@ -553,18 +554,18 @@ public class AttributeEditorPanel extends BorderPane {
             createMultiValuePane(attribute, attributePane, values);
         }
 
-        Text attributeTitleText = createAttributeTitleLabel(attributeTitle);
+        final Text attributeTitleText = createAttributeTitleLabel(attributeTitle);
         attributeTitleText.getStyleClass().add("attributeName");
         attributeTitleText.setTextAlignment(TextAlignment.RIGHT);
 
         //Value TextField
-        Node attributeValueNode = createAttributeValueNode(values, attribute, attributePane, multiValue);
+        final Node attributeValueNode = createAttributeValueNode(values, attribute, attributePane, multiValue);
 
         //Edit Button
-        Button editButton = new Button("Edit");
+        final Button editButton = new Button("Edit");
         editButton.setAlignment(Pos.CENTER);
         editButton.setMinWidth(buttonSize);
-        AttributeValueEditorFactory<?> editorFactory = AttributeValueEditorFactory.getEditFactory(attribute.getDataType());
+        final AttributeValueEditorFactory<?> editorFactory = AttributeValueEditorFactory.getEditFactory(attribute.getDataType());
         if (editorFactory == null || values == null) {
             editButton.setDisable(true);
         } else {
@@ -579,17 +580,17 @@ public class AttributeEditorPanel extends BorderPane {
         editButton.addEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, Event::consume);
 
         //Title
-        ColumnConstraints titleConstraint = new ColumnConstraints(titleWidth);
+        final ColumnConstraints titleConstraint = new ColumnConstraints(titleWidth);
         titleConstraint.setHalignment(HPos.RIGHT);
 
         //Value
-        ColumnConstraints valueConstraint = new ColumnConstraints();
+        final ColumnConstraints valueConstraint = new ColumnConstraints();
         valueConstraint.setHalignment(HPos.CENTER);
         valueConstraint.setHgrow(Priority.ALWAYS);
         valueConstraint.setFillWidth(true);
 
         //EditButton
-        ColumnConstraints editConstraint = new ColumnConstraints(buttonSize);
+        final ColumnConstraints editConstraint = new ColumnConstraints(buttonSize);
         editConstraint.setHalignment(HPos.RIGHT);
 
         gridPane.getColumnConstraints().addAll(titleConstraint, valueConstraint, editConstraint);
@@ -622,14 +623,14 @@ public class AttributeEditorPanel extends BorderPane {
         if (state != null) {
             Platform.runLater(() -> {
                 clearHeaderTitledPanes();
-                for (GraphElementType type : state.getGraphElements()) {
-                    double longestTitleWidth = calcLongestTitle(state.getAttributeNames().get(type));
+                for (final GraphElementType type : state.getGraphElements()) {
+                    final double longestTitleWidth = calcLongestTitle(state.getAttributeNames().get(type));
                     populateContentContainer(state, type, longestTitleWidth);
                 }
 
                 for (int i = 0; i < titledPaneHeadingsContainer.getChildren().size(); i++) {
-                    TitledPane tp = (TitledPane) titledPaneHeadingsContainer.getChildren().get(i);
-                    int count = ((VBox) tp.getContent()).getChildren().size();
+                    final TitledPane tp = (TitledPane) titledPaneHeadingsContainer.getChildren().get(i);
+                    final int count = ((VBox) tp.getContent()).getChildren().size();
                     final int totalAttrs = state.getAttributeCounts().get(ELEMENT_TYPES[i]);
                     final String attrCountDisplay = totalAttrs == count ? String.format(HEADING_TITLES[i], totalAttrs, "") : String.format(HEADING_TITLES[i], totalAttrs, String.format(HIDDEN_ATTRIBUTES_INFORMATION, totalAttrs - count));
                     headingTitleProperties[i].setValue(attrCountDisplay);
@@ -666,7 +667,7 @@ public class AttributeEditorPanel extends BorderPane {
         }
         final ListView<Object> listView = createListView(attribute, listData);
         final boolean moreToLoad = values.length > VISIBLE_ROWS;
-        int visibleRow = moreToLoad ? VISIBLE_ROWS : listData.size();
+        final int visibleRow = moreToLoad ? VISIBLE_ROWS : listData.size();
         listView.setPrefHeight((CELL_HEIGHT * visibleRow) + 2); // +2 because if it is == then there is still a scrollbar.
         multiValuePane.setPrefHeight((CELL_HEIGHT * visibleRow) + 1);
         multiValuePane.setContent(listView);
@@ -675,7 +676,7 @@ public class AttributeEditorPanel extends BorderPane {
         dataAndMoreButtonBox.setPadding(new Insets(0, 0, 5, 0));
         dataAndMoreButtonBox.getChildren().add(multiValuePane);
         if (moreToLoad) {
-            Button loadMoreButton = createLoadMoreButton(dataAndMoreButtonBox, attribute);
+            final Button loadMoreButton = createLoadMoreButton(dataAndMoreButtonBox, attribute);
             dataAndMoreButtonBox.getChildren().add(loadMoreButton);
         }
         dataAndMoreButtonBox.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
@@ -722,9 +723,9 @@ public class AttributeEditorPanel extends BorderPane {
     }
 
     private void copySelectedItems(final ListView<Object> list, final String dataType) {
-        ObservableList<Object> selectedItems = list.getSelectionModel().getSelectedItems();
-        AbstractAttributeInteraction<?> interaction = AbstractAttributeInteraction.getInteraction(dataType);
-        StringBuilder buffer = new StringBuilder();
+        final ObservableList<Object> selectedItems = list.getSelectionModel().getSelectedItems();
+        final AbstractAttributeInteraction<?> interaction = AbstractAttributeInteraction.getInteraction(dataType);
+        final StringBuilder buffer = new StringBuilder();
         selectedItems.stream().map(item -> {
             if (item == null) {
                 buffer.append(NO_VALUE_TEXT);
@@ -747,9 +748,8 @@ public class AttributeEditorPanel extends BorderPane {
      * workaround)
      */
     private void populateContentContainer(final AttributeState state, final GraphElementType type, final double longestTitleWidth) {
-        int elementTypeIndex;
-        boolean hidden = false;
-//make into enum?
+        final int elementTypeIndex;
+        //make into enum?
         switch (type) {
             case GRAPH:
                 elementTypeIndex = 0;
@@ -765,21 +765,21 @@ public class AttributeEditorPanel extends BorderPane {
                 break;
         }
         if (elementTypeIndex > -1 && state != null) {
-            ArrayList<AttributeData> attributeDataList = state.getAttributeNames().get(type);
+            final ArrayList<AttributeData> attributeDataList = state.getAttributeNames().get(type);
             if (attributeDataList != null) {
-                VBox header = valueTitledPaneContainers.get(elementTypeIndex);
-                String hiddenAttributes = prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTES, "");
-                List<String> hiddenAttrList = StringUtilities.splitLabelsWithEscapeCharacters(hiddenAttributes, AttributePreferenceKey.SPLIT_CHAR_SET);
-                Set<String> hiddenAttrSet = new HashSet<>(hiddenAttrList);
+                final VBox header = valueTitledPaneContainers.get(elementTypeIndex);
+                final String hiddenAttributes = prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTES, "");
+                final List<String> hiddenAttrList = StringUtilities.splitLabelsWithEscapeCharacters(hiddenAttributes, AttributePreferenceKey.SPLIT_CHAR_SET);
+                final Set<String> hiddenAttrSet = new HashSet<>(hiddenAttrList);
 
                 currentAttributeNames.put(type, new ArrayList<>());
-                List<String> attrNameList = currentAttributeNames.get(type);
+                final List<String> attrNameList = currentAttributeNames.get(type);
 
-                for (AttributeData data : attributeDataList) {
-                    hidden = hiddenAttrSet.contains(data.getElementType().toString() + data.getAttributeName());
-                    Object[] values = state.getAttributeValues().get(type.getLabel() + data.getAttributeName());
+                for (final AttributeData data : attributeDataList) {
+                    final boolean hidden = hiddenAttrSet.contains(data.getElementType().toString() + data.getAttributeName());
+                    final Object[] values = state.getAttributeValues().get(type.getLabel() + data.getAttributeName());
                     attrNameList.add(data.getAttributeName());
-                    TitledPane attribute = createAttributeTitlePane(data, values, longestTitleWidth, hidden);
+                    final TitledPane attribute = createAttributeTitlePane(data, values, longestTitleWidth, hidden);
                     attribute.setMinWidth(0);
                     attribute.maxWidthProperty().bind(header.widthProperty());
 
@@ -792,15 +792,15 @@ public class AttributeEditorPanel extends BorderPane {
     public void resetPanel() {
         Platform.runLater(() -> {
             clearHeaderTitledPanes();
-            for (Node n : titledPaneHeadingsContainer.getChildren()) {
-                TitledPane tp = (TitledPane) n;
+            for (final Node n : titledPaneHeadingsContainer.getChildren()) {
+                final TitledPane tp = (TitledPane) n;
                 tp.setExpanded(false);
             }
         });
     }
 
     private void clearHeaderTitledPanes() {
-        for (VBox box : valueTitledPaneContainers) {
+        for (final VBox box : valueTitledPaneContainers) {
             box.getChildren().clear();
 
         }
@@ -808,7 +808,7 @@ public class AttributeEditorPanel extends BorderPane {
     }
 
     private void deleteAttributeAction(final GraphElementType elementType, final String attributeName) {
-        SimpleEditPlugin deleteAttributePlugin = new SimpleEditPlugin() {
+        final SimpleEditPlugin deleteAttributePlugin = new SimpleEditPlugin() {
 
             @Override
             public String getName() {
@@ -912,7 +912,7 @@ public class AttributeEditorPanel extends BorderPane {
         double maxWidth = 0;
         double currWidth = 0;
         if (attributeData != null) {
-            for (AttributeData data : attributeData) {
+            for (final AttributeData data : attributeData) {
                 currWidth = getTextWidth(data.getAttributeName());
                 if (maxWidth < currWidth) {
                     maxWidth = currWidth;
@@ -936,11 +936,11 @@ public class AttributeEditorPanel extends BorderPane {
 
     private Node createAttributeValueNode(final Object[] values, final AttributeData attribute, final AttributeTitledPane parent, final boolean multiValue) {
 
-        boolean noneSelected = values == null;
-        boolean isNull = !noneSelected && (values[0] == null);
+        final boolean noneSelected = values == null;
+        final boolean isNull = !noneSelected && (values[0] == null);
         parent.setAttribute(attribute);
 
-        AbstractAttributeInteraction<?> interaction = AbstractAttributeInteraction.getInteraction(attribute.getDataType());
+        final AbstractAttributeInteraction<?> interaction = AbstractAttributeInteraction.getInteraction(attribute.getDataType());
 
         final String displayText;
         final List<Node> displayNodes;
@@ -969,13 +969,13 @@ public class AttributeEditorPanel extends BorderPane {
             return attributeValueText;
         }
 
-        GridPane gridPane = new GridPane();
+        final GridPane gridPane = new GridPane();
         gridPane.setAlignment(Pos.CENTER_RIGHT);
         gridPane.setPadding(Insets.EMPTY);
         gridPane.setHgap(CELL_ITEM_SPACING);
-        ColumnConstraints displayNodeConstraint = new ColumnConstraints(CELL_ITEM_HEIGHT);
+        final ColumnConstraints displayNodeConstraint = new ColumnConstraints(CELL_ITEM_HEIGHT);
         displayNodeConstraint.setHalignment(HPos.LEFT);
-        ColumnConstraints displayTextConstraint = new ColumnConstraints();
+        final ColumnConstraints displayTextConstraint = new ColumnConstraints();
         displayTextConstraint.setHalignment(HPos.RIGHT);
         displayTextConstraint.setHgrow(Priority.ALWAYS);
         displayTextConstraint.setFillWidth(true);
@@ -1004,7 +1004,7 @@ public class AttributeEditorPanel extends BorderPane {
         public void updateItem(Object item, boolean empty) {
             super.updateItem(item, empty);
 
-            AbstractAttributeInteraction<?> interaction = AbstractAttributeInteraction.getInteraction(attrDataType);
+            final AbstractAttributeInteraction<?> interaction = AbstractAttributeInteraction.getInteraction(attrDataType);
             final String displayText;
             final List<Node> displayNodes;
             if (item == null) {
@@ -1015,9 +1015,9 @@ public class AttributeEditorPanel extends BorderPane {
                 displayNodes = interaction.getDisplayNodes(item, -1, CELL_HEIGHT - 1);
             }
 
-            GridPane gridPane = new GridPane();
+            final GridPane gridPane = new GridPane();
             gridPane.setHgap(CELL_ITEM_SPACING);
-            ColumnConstraints displayNodeConstraint = new ColumnConstraints(CELL_HEIGHT - 1);
+            final ColumnConstraints displayNodeConstraint = new ColumnConstraints(CELL_HEIGHT - 1);
             displayNodeConstraint.setHalignment(HPos.CENTER);
 
             for (int i = 0; i < displayNodes.size(); i++) {

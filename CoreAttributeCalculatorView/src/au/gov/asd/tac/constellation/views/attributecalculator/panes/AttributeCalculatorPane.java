@@ -119,6 +119,8 @@ public final class AttributeCalculatorPane extends GridPane {
     private static final String TRANSACTION_ATTRIBUTES = "Transaction Attributes";
     private static final String COMPLETE_SCRIPTS_CATEGORY = "Complete Scripts";
 
+    private static final int CALCULATOR_PANE_SIZE = 225;
+
     public AttributeCalculatorPane(final AttributeCalculatorController controller) {
 
         setPadding(new Insets(5, 5, 5, 5));
@@ -140,6 +142,8 @@ public final class AttributeCalculatorPane extends GridPane {
         bottomRow.setMaxHeight(USE_PREF_SIZE);
         bottomRow.setFillHeight(false);
         getRowConstraints().addAll(topRow, bottomRow);
+
+        calculatorControls.setMinWidth(CALCULATOR_PANE_SIZE);
 
         helpSideBarScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         helpSideBarScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
@@ -181,7 +185,7 @@ public final class AttributeCalculatorPane extends GridPane {
         });
         elementTypeComboBox.setButtonCell(elementTypeComboBox.getCellFactory().call(null));
 
-        elementTypeComboBox.setMinWidth(220);
+        elementTypeComboBox.setMinWidth(CALCULATOR_PANE_SIZE);
         elementTypeComboBox.setOnAction((ActionEvent event) -> {
             final GraphElementType elementType = elementTypeComboBox.getSelectionModel().getSelectedItem();
             attributeTypes = elementType == GraphElementType.VERTEX ? vertexAttributeTypes : transactionAttributeTypes;
@@ -195,7 +199,7 @@ public final class AttributeCalculatorPane extends GridPane {
         calculatorControls.getChildren().add(attributeLabel);
 
         attributeComboBox.setEditable(true);
-        attributeComboBox.setMinWidth(220);
+        attributeComboBox.setMinWidth(CALCULATOR_PANE_SIZE);
         attributeComboBox.getEditor().textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
             String a = attributeComboBox.getEditor().getText();
             Attribute attribute = attributeTypes.get(a);
@@ -237,7 +241,7 @@ public final class AttributeCalculatorPane extends GridPane {
             }
         });
         attributeTypeComboBox.getStyleClass().add(JavafxStyleManager.UNEDITABLE_COMBOBOX);
-        attributeTypeComboBox.setMinWidth(220);
+        attributeTypeComboBox.setMinWidth(CALCULATOR_PANE_SIZE);
         AttributeCalculatorController.ATTRIBUTE_TYPES.sort((String o1, String o2) -> {
             return o1.compareTo(o2);
         });
@@ -250,7 +254,7 @@ public final class AttributeCalculatorPane extends GridPane {
         insertLabel.setLabelFor(insertComboBox);
         calculatorControls.getChildren().add(insertLabel);
 
-        insertComboBox.setMinWidth(220);
+        insertComboBox.setMinWidth(CALCULATOR_PANE_SIZE);
         insertComboBox.getStyleClass().add(JavafxStyleManager.UNEDITABLE_COMBOBOX);
         insertComboBox.setOnAction((ActionEvent event) -> {
             InsertListCategory current = insertComboBox.getSelectionModel().getSelectedItem();
@@ -306,7 +310,7 @@ public final class AttributeCalculatorPane extends GridPane {
                 scriptTextArea.requestFocus();
             }
         });
-        variablesListView.setMinWidth(220);
+        variablesListView.setMinWidth(CALCULATOR_PANE_SIZE);
         variablesListView.setMaxWidth(Double.MAX_VALUE);
         variablesListView.setMinHeight(160);
         variablesListView.setMaxHeight(Double.MAX_VALUE);

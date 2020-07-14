@@ -185,7 +185,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
 
     public boolean isSaved() {
         return isSaved;
-    } 
+    }
 
     @Override
     public void actionPerformed(final ActionEvent e) {
@@ -415,11 +415,8 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
     }
 
     private LookupListener createLookupListener() {
-        return WeakListeners.create(LookupListener.class, new LookupListener() {
-            @Override
-            public void resultChanged(final LookupEvent ev) {
-                isDirty = true;
-            }
+        return WeakListeners.create(LookupListener.class, (LookupListener) (final LookupEvent ev) -> {
+            isDirty = true;
         }, lkpInfo);
     }
 

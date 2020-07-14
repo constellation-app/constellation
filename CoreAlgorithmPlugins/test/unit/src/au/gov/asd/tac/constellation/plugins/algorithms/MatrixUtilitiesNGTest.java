@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms;
 
-import au.gov.asd.tac.constellation.plugins.algorithms.MatrixUtilities;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;

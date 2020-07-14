@@ -54,6 +54,7 @@ import org.openide.util.NbBundle;
 @NbBundle.Messages("CTL_ArrangeInBubbleTreeAction=Bubble Tree 3D")
 public class ArrangeInBubbleTreeAction extends AbstractAction {
 
+    private static final String HELP_LOCATION = "au.gov.asd.tac.constellation.plugins.arrangements.trees.BubbleTreeAction";
     private final GraphNode context;
 
     public ArrangeInBubbleTreeAction(final GraphNode context) {
@@ -74,7 +75,7 @@ public class ArrangeInBubbleTreeAction extends AbstractAction {
 
                     final SelectNamedSelectionPanel ssp = new SelectNamedSelectionPanel(nsState.getNamedSelections(), "Select a named selection to represent the tree roots.");
                     final DialogDescriptor dd = new DialogDescriptor(ssp, Bundle.CTL_ArrangeInBubbleTreeAction());
-                    dd.setHelpCtx(new HelpCtx("au.gov.asd.tac.constellation.plugins.arrangements.trees.BubbleTreeAction"));
+                    dd.setHelpCtx(new HelpCtx(HELP_LOCATION));
                     final Object result = DialogDisplayer.getDefault().notify(dd);
                     if (result == DialogDescriptor.OK_OPTION) {
                         final long selectionId = ssp.getNamedSelectionId();

@@ -81,9 +81,7 @@ public class RecordStoreQueryPluginNGTest {
         try {
             instance.read(graph, interaction, parameters);
             instance.query(interaction, parameters);
-        } catch (InterruptedException ex) {
-            fail(ex.getLocalizedMessage());
-        } catch (PluginException ex) {
+        } catch (InterruptedException | PluginException ex) {
             fail(ex.getLocalizedMessage());
         }
         final RecordStore result = instance.getResult();
@@ -155,9 +153,7 @@ public class RecordStoreQueryPluginNGTest {
             assertEquals(query.get(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.X), "40.0");
             assertEquals(query.get(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.Y), "40.0");
             assertEquals(query.get(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.Z), "40.0");
-        } catch (InterruptedException ex) {
-            fail(ex.getLocalizedMessage());
-        } catch (PluginException ex) {
+        } catch (InterruptedException | PluginException ex) {
             fail(ex.getLocalizedMessage());
         }
     }

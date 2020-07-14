@@ -72,35 +72,35 @@ public class KTrussStateIOProvider extends AbstractGraphIOProvider {
 
             final int version = jnode.has(VERSION) ? jnode.get(VERSION).asInt() : 0;
 
-            long modificationCounter = jnode.get(MODCOUNT).asLong();
-            long strucModificationCount = jnode.get(STRUCMODCOUNT).asLong();
-            int currentK = jnode.get(CURRENTK).asInt();
-            int highestK = jnode.get(HIGHESTK).asInt();
+            final long modificationCounter = jnode.get(MODCOUNT).asLong();
+            final long strucModificationCount = jnode.get(STRUCMODCOUNT).asLong();
+            final int currentK = jnode.get(CURRENTK).asInt();
+            final int highestK = jnode.get(HIGHESTK).asInt();
 
-            boolean excludedElementsDimmed = jnode.get(DIMMED).asBoolean();
-            int displayOptionToggles = jnode.get(TOGGLES).asInt();
-            boolean[] extantKTrusses = new boolean[jnode.get(EXTANT_SIZE).asInt()];
+            final boolean excludedElementsDimmed = jnode.get(DIMMED).asBoolean();
+            final int displayOptionToggles = jnode.get(TOGGLES).asInt();
+            final boolean[] extantKTrusses = new boolean[jnode.get(EXTANT_SIZE).asInt()];
             Iterator<JsonNode> iter = jnode.get(EXTANT).iterator();
             int index = 0;
             while (iter.hasNext()) {
                 extantKTrusses[index++] = iter.next().asBoolean();
             }
 
-            int[] kTrussToIndex = new int[jnode.get(TRUSSTOINDEX_SIZE).asInt()];
+            final int[] kTrussToIndex = new int[jnode.get(TRUSSTOINDEX_SIZE).asInt()];
             iter = jnode.get(TRUSSTOINDEX).iterator();
             index = 0;
             while (iter.hasNext()) {
                 kTrussToIndex[index++] = iter.next().asInt();
             }
 
-            int[] indexToKTruss = new int[jnode.get(INDEXTOTRUSS_SIZE).asInt()];
+            final int[] indexToKTruss = new int[jnode.get(INDEXTOTRUSS_SIZE).asInt()];
             iter = jnode.get(INDEXTOTRUSS).iterator();
             index = 0;
             while (iter.hasNext()) {
                 indexToKTruss[index++] = iter.next().asInt();
             }
 
-            Map<Integer, Integer> nodeToComponent = new HashMap<>();
+            final Map<Integer, Integer> nodeToComponent = new HashMap<>();
             iter = jnode.get(NODETOCOMP).iterator();
             while (iter.hasNext()) {
                 final int vxID = iter.next().asInt();
@@ -108,7 +108,7 @@ public class KTrussStateIOProvider extends AbstractGraphIOProvider {
                 nodeToComponent.put(vertexMap.get(vxID), component);
             }
 
-            Map<Integer, Integer> linkToComponent = new HashMap<>();
+            final Map<Integer, Integer> linkToComponent = new HashMap<>();
             iter = jnode.get(LINKTOCOMP).iterator();
             while (iter.hasNext()) {
                 final int lxID;
@@ -121,30 +121,30 @@ public class KTrussStateIOProvider extends AbstractGraphIOProvider {
                 linkToComponent.put(lxID, component);
             }
 
-            Map<Integer, Integer> componentTree = new HashMap<>();
+            final Map<Integer, Integer> componentTree = new HashMap<>();
             iter = jnode.get(COMPTREE).iterator();
             while (iter.hasNext()) {
                 componentTree.put(iter.next().asInt(), iter.next().asInt());
             }
 
-            Map<Integer, Integer> componentSizes = new HashMap<>();
+            final Map<Integer, Integer> componentSizes = new HashMap<>();
             iter = jnode.get(COMPSIZES).iterator();
             while (iter.hasNext()) {
                 componentSizes.put(iter.next().asInt(), iter.next().asInt());
             }
 
-            boolean isNestedTrussesVisible = jnode.get(NESTEDVIS).asBoolean();
-            int highestComponentNum = jnode.get(HIGHCOMP).asInt();
-            int totalVerts = jnode.get(TOTALVERTS).asInt();
-            int totalVertsInTrusses = jnode.get(TOTALTRUSSVERTS).asInt();
-            boolean drawAllComponents = jnode.get(DRAWALL).asBoolean();
-            boolean nestedTrussesColored = jnode.get(NESTEDCOLORED).asBoolean();
+            final boolean isNestedTrussesVisible = jnode.get(NESTEDVIS).asBoolean();
+            final int highestComponentNum = jnode.get(HIGHCOMP).asInt();
+            final int totalVerts = jnode.get(TOTALVERTS).asInt();
+            final int totalVertsInTrusses = jnode.get(TOTALTRUSSVERTS).asInt();
+            final boolean drawAllComponents = jnode.get(DRAWALL).asBoolean();
+            final boolean nestedTrussesColored = jnode.get(NESTEDCOLORED).asBoolean();
             boolean interactive = true;
             if (jnode.has(INTERACTIVE)) {
                 interactive = jnode.get(INTERACTIVE).asBoolean();
             }
 
-            KTrussState state = new KTrussState(modificationCounter, strucModificationCount, currentK, highestK, excludedElementsDimmed, displayOptionToggles, extantKTrusses, kTrussToIndex, indexToKTruss, nodeToComponent, linkToComponent, componentTree, componentSizes, isNestedTrussesVisible, highestComponentNum, totalVerts, totalVertsInTrusses, drawAllComponents, nestedTrussesColored, interactive);
+            final KTrussState state = new KTrussState(modificationCounter, strucModificationCount, currentK, highestK, excludedElementsDimmed, displayOptionToggles, extantKTrusses, kTrussToIndex, indexToKTruss, nodeToComponent, linkToComponent, componentTree, componentSizes, isNestedTrussesVisible, highestComponentNum, totalVerts, totalVertsInTrusses, drawAllComponents, nestedTrussesColored, interactive);
 
             graph.setObjectValue(attributeId, elementId, state);
         }
@@ -153,7 +153,7 @@ public class KTrussStateIOProvider extends AbstractGraphIOProvider {
     @Override
     public void writeObject(final Attribute attr, final int elementId, final JsonGenerator jsonGenerator, final GraphReadMethods graph, final GraphByteWriter byteWriter, final boolean verbose) throws IOException {
         if (verbose || !graph.isDefaultValue(attr.getId(), elementId)) {
-            KTrussState state = (KTrussState) graph.getObjectValue(attr.getId(), elementId);
+            final KTrussState state = (KTrussState) graph.getObjectValue(attr.getId(), elementId);
             if (state == null) {
                 jsonGenerator.writeNullField(attr.getName());
             } else {
@@ -168,7 +168,7 @@ public class KTrussStateIOProvider extends AbstractGraphIOProvider {
                 jsonGenerator.writeBooleanField(DIMMED, state.getExcludedElementsDimmed());
                 jsonGenerator.writeNumberField(TOGGLES, state.getDisplayOptionToggles());
 
-                boolean[] extantKTrusses = state.getExtantKTrusses();
+                final boolean[] extantKTrusses = state.getExtantKTrusses();
                 jsonGenerator.writeNumberField(EXTANT_SIZE, extantKTrusses.length);
                 jsonGenerator.writeArrayFieldStart(EXTANT);
                 for (int i = 0; i < extantKTrusses.length; i++) {
@@ -176,7 +176,7 @@ public class KTrussStateIOProvider extends AbstractGraphIOProvider {
                 }
                 jsonGenerator.writeEndArray();
 
-                int[] kTrussToIndex = state.getkTrussToIndex();
+                final int[] kTrussToIndex = state.getkTrussToIndex();
                 jsonGenerator.writeNumberField(TRUSSTOINDEX_SIZE, kTrussToIndex.length);
                 jsonGenerator.writeArrayFieldStart(TRUSSTOINDEX);
                 for (int i = 0; i < kTrussToIndex.length; i++) {
@@ -184,7 +184,7 @@ public class KTrussStateIOProvider extends AbstractGraphIOProvider {
                 }
                 jsonGenerator.writeEndArray();
 
-                int[] indexToKTruss = state.getIndexToKTruss();
+                final int[] indexToKTruss = state.getIndexToKTruss();
                 jsonGenerator.writeNumberField(INDEXTOTRUSS_SIZE, indexToKTruss.length);
                 jsonGenerator.writeArrayFieldStart(INDEXTOTRUSS);
                 for (int i = 0; i < indexToKTruss.length; i++) {
@@ -195,7 +195,7 @@ public class KTrussStateIOProvider extends AbstractGraphIOProvider {
                 Iterator<Map.Entry<Integer, Integer>> iter = state.getNodeToComponent().entrySet().iterator();
                 jsonGenerator.writeArrayFieldStart(NODETOCOMP);
                 while (iter.hasNext()) {
-                    Map.Entry<Integer, Integer> entry = iter.next();
+                    final Map.Entry<Integer, Integer> entry = iter.next();
                     final int vxID = entry.getKey();
                     if (graph.vertexExists(vxID)) {
                         jsonGenerator.writeNumber(vxID);
@@ -207,7 +207,7 @@ public class KTrussStateIOProvider extends AbstractGraphIOProvider {
                 iter = state.getLinkToComponent().entrySet().iterator();
                 jsonGenerator.writeArrayFieldStart(LINKTOCOMP);
                 while (iter.hasNext()) {
-                    Map.Entry<Integer, Integer> entry = iter.next();
+                    final Map.Entry<Integer, Integer> entry = iter.next();
                     final int lxID = entry.getKey();
                     if (graph.linkExists(lxID)) {
                         final int txID = graph.getLinkTransaction(lxID, 0);
@@ -220,7 +220,7 @@ public class KTrussStateIOProvider extends AbstractGraphIOProvider {
                 iter = state.getComponentTree().entrySet().iterator();
                 jsonGenerator.writeArrayFieldStart(COMPTREE);
                 while (iter.hasNext()) {
-                    Map.Entry<Integer, Integer> entry = iter.next();
+                    final Map.Entry<Integer, Integer> entry = iter.next();
                     jsonGenerator.writeNumber(entry.getKey());
                     jsonGenerator.writeNumber(entry.getValue());
                 }
@@ -229,7 +229,7 @@ public class KTrussStateIOProvider extends AbstractGraphIOProvider {
                 iter = state.getComponentSizes().entrySet().iterator();
                 jsonGenerator.writeArrayFieldStart(COMPSIZES);
                 while (iter.hasNext()) {
-                    Map.Entry<Integer, Integer> entry = iter.next();
+                    final Map.Entry<Integer, Integer> entry = iter.next();
                     jsonGenerator.writeNumber(entry.getKey());
                     jsonGenerator.writeNumber(entry.getValue());
                 }

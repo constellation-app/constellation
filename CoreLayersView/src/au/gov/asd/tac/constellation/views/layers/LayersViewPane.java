@@ -114,7 +114,6 @@ public class LayersViewPane extends BorderPane {
             } else {
                 setLayers(List.copyOf(layers));
             }
-            controller.submit();
             controller.execute();
 
             event.consume();
@@ -155,7 +154,6 @@ public class LayersViewPane extends BorderPane {
             final Node source = (Node) e.getSource();
             final LayerDescription layer = layers.get(GridPane.getRowIndex(source) - 1);
             layer.setCurrentLayerVisibility(!layer.getCurrentLayerVisibility());
-            controller.submit();
             controller.execute();
             controller.writeState();
         });

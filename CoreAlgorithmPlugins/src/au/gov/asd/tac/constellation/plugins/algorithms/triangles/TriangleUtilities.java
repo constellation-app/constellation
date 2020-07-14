@@ -33,10 +33,10 @@ public class TriangleUtilities {
      */
     public static Tuple<Tuple<BitSet[], float[]>, Float> getTriangles(final GraphReadMethods graph) {
         final int vxCount = graph.getVertexCount();
-        BitSet[] allNeighbours = new BitSet[vxCount];
+        final BitSet[] allNeighbours = new BitSet[vxCount];
         float[] scores = new float[vxCount];
-        BitSet update = new BitSet(vxCount);
-        BitSet[] triangleNeighbours = new BitSet[vxCount];
+        final BitSet update = new BitSet(vxCount);
+        final BitSet[] triangleNeighbours = new BitSet[vxCount];
         float triangles = 0;
 
         // initialise variables
@@ -50,7 +50,7 @@ public class TriangleUtilities {
             final int vxId = graph.getVertex(vxPosition);
 
             // collect neighbours
-            BitSet neighbours = new BitSet(vxCount);
+            final BitSet neighbours = new BitSet(vxCount);
             for (int neighbourPosition = 0; neighbourPosition < graph.getVertexNeighbourCount(vxId); neighbourPosition++) {
                 final int nxId = graph.getVertexNeighbour(vxId, neighbourPosition);
                 final int nxPosition = graph.getVertexPosition(nxId);
@@ -73,7 +73,7 @@ public class TriangleUtilities {
                 // are these two vertices connected?
                 if (allNeighbours[one].get(two) && allNeighbours[two].get(one)) {
                     // determine common neighbours between them, each one is a triangle
-                    BitSet intersection = new BitSet(vxCount);
+                    final BitSet intersection = new BitSet(vxCount);
                     intersection.or(allNeighbours[one]);
                     intersection.and(allNeighbours[two]);
                     for (int three = intersection.nextSetBit(two); three >= two; three = intersection.nextSetBit(three + 1)) {
@@ -101,8 +101,8 @@ public class TriangleUtilities {
      */
     public static Tuple<Float, Float> countTrianglesTriplets(final GraphReadMethods graph) {
         final int vxCount = graph.getVertexCount();
-        BitSet[] allNeighbours = new BitSet[vxCount];
-        BitSet update = new BitSet(vxCount);
+        final BitSet[] allNeighbours = new BitSet[vxCount];
+        final BitSet update = new BitSet(vxCount);
         Float triangles = 0f;
         Float triplets = 0f;
 
@@ -115,7 +115,7 @@ public class TriangleUtilities {
             final int vxId = graph.getVertex(vxPosition);
 
             // collect neighbours
-            BitSet neighbours = new BitSet(vxCount);
+            final BitSet neighbours = new BitSet(vxCount);
             for (int neighbourPosition = 0; neighbourPosition < graph.getVertexNeighbourCount(vxId); neighbourPosition++) {
                 final int nxId = graph.getVertexNeighbour(vxId, neighbourPosition);
                 final int nxPosition = graph.getVertexPosition(nxId);
@@ -135,13 +135,13 @@ public class TriangleUtilities {
                 // are these two vertices connected?
                 if (allNeighbours[one].get(two) && allNeighbours[two].get(one)) {
                     // determine common neighbours between them, each one is a triangle
-                    BitSet intersection = new BitSet(vxCount);
+                    final BitSet intersection = new BitSet(vxCount);
                     intersection.or(allNeighbours[one]);
                     intersection.and(allNeighbours[two]);
                     for (int three = intersection.nextSetBit(two); three >= two; three = intersection.nextSetBit(three + 1)) {
                         triangles += 1;
                     }
-                    BitSet union = new BitSet(vxCount);
+                    final BitSet union = new BitSet(vxCount);
                     union.or(allNeighbours[one]);
                     union.or(allNeighbours[two]);
                     union.set(one, false);

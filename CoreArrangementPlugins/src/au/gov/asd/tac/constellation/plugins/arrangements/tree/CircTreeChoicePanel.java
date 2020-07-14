@@ -15,9 +15,9 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.tree;
 
-import au.gov.asd.tac.constellation.graph.utilities.widgets.AttributeSelectionPanel;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.utilities.widgets.AttributeSelectionPanel;
 import java.util.Collection;
 import java.util.Collections;
 import javax.swing.JPanel;

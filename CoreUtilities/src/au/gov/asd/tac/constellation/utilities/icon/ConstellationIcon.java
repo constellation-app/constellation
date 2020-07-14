@@ -31,6 +31,7 @@ import javafx.scene.image.Image;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -436,7 +437,7 @@ public class ConstellationIcon {
         }
 
         public Builder addAliases(final List<String> aliases) {
-            if (aliases != null && !aliases.isEmpty()) {
+            if (CollectionUtils.isNotEmpty(aliases)) {
                 this.aliases.addAll(aliases);
             }
             return this;
@@ -450,7 +451,7 @@ public class ConstellationIcon {
         }
 
         public Builder addCategories(final List<String> categories) {
-            if (categories != null && !categories.isEmpty()) {
+            if (CollectionUtils.isNotEmpty(categories)) {
                 this.categories.addAll(categories);
             }
             return this;

@@ -65,7 +65,7 @@ import java.util.Objects;
 public final class GraphVisualAccess implements VisualAccess {
 
     //TODO: Determine whether this field is needed
-    private int[] visualAttributes = new int[VisualProperty.values().length];
+    private final int[] visualAttributes = new int[VisualProperty.values().length];
 
     private int graphBackgroundColor = Graph.NOT_FOUND;
     private int graphHighlightColor = Graph.NOT_FOUND;

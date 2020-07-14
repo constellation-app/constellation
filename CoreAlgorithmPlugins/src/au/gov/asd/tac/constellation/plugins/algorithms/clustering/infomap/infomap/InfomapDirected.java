@@ -33,7 +33,7 @@ public class InfomapDirected extends InfomapGreedy {
     public final double alpha;
     public final double beta;
 
-    public InfomapDirected(final Config config, GraphReadMethods rg) {
+    public InfomapDirected(final Config config, final GraphReadMethods rg) {
         super(config, new NodeFactoryDirected(), rg);
 
         alpha = config.getTeleportationProbability();

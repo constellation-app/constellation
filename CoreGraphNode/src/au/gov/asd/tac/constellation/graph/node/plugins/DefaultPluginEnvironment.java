@@ -54,7 +54,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
     private static final String THREAD_POOL_NAME = "Default Plugin Environment";
 
     private final ExecutorService pluginExecutor = Executors.newCachedThreadPool();
-    
+
     private static final String GRAPH_NULL_WARNING_MESSAGE = "{0} plugin was executed on a graph which was null";
 
     @Override
@@ -63,7 +63,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
         if (graph == null) {
             LOGGER.log(Level.FINE, GRAPH_NULL_WARNING_MESSAGE, plugin.getName());
         }
-        
+
         return pluginExecutor.submit(() -> {
             Thread.currentThread().setName(THREAD_POOL_NAME);
 
@@ -179,7 +179,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
         if (graph == null) {
             LOGGER.log(Level.FINE, GRAPH_NULL_WARNING_MESSAGE, plugin.getName());
         }
-        
+
         final ThreadConstraints callingConstraints = ThreadConstraints.getConstraints();
         final int silentCount = callingConstraints.getSilentCount();
         final boolean alwaysSilent = callingConstraints.isAlwaysSilent();
@@ -250,7 +250,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
         if (graph == null) {
             LOGGER.log(Level.FINE, GRAPH_NULL_WARNING_MESSAGE, plugin.getName());
         }
-        
+
         final ThreadConstraints callingConstraints = ThreadConstraints.getConstraints();
         final int silentCount = callingConstraints.getSilentCount();
         final boolean alwaysSilent = callingConstraints.isAlwaysSilent();
@@ -311,7 +311,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
         if (graph == null) {
             LOGGER.log(Level.FINE, GRAPH_NULL_WARNING_MESSAGE, plugin.getName());
         }
-        
+
         final ThreadConstraints callingConstraints = ThreadConstraints.getConstraints();
         final int silentCount = callingConstraints.getSilentCount();
         final boolean alwaysSilent = callingConstraints.isAlwaysSilent();

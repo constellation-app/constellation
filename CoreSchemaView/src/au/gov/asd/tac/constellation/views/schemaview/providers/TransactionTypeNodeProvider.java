@@ -194,7 +194,7 @@ public class TransactionTypeNodeProvider implements SchemaViewNodeProvider, Grap
                 || isFilterMatchText(treeItem.getHierachy())
                 || !(treeItem.getProperties().keySet().isEmpty())
                 && treeItem.getProperties().keySet().stream().anyMatch(property
-                        -> property != null && isFilterMatchText(property.toString())
+                        -> property != null && isFilterMatchText(property)
                 );
     }
 

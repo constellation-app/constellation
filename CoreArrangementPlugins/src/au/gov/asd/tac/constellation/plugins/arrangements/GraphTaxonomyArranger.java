@@ -15,13 +15,13 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.arrangements.grid.GridArranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.grid.GridChoiceParameters;
 import au.gov.asd.tac.constellation.plugins.arrangements.subgraph.SubgraphFactory;
+import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
 import java.util.Map;
 import java.util.Set;
 

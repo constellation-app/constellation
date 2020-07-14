@@ -102,7 +102,7 @@ public class DirectedShortestPathsPlugin extends SimpleEditPlugin {
                 graph.setBooleanValue(VisualConcept.TransactionAttribute.SELECTED.get(graph), txId, false);
             }
 
-            int vxSelectedAttr = VisualConcept.VertexAttribute.SELECTED.get(graph);
+            final int vxSelectedAttr = VisualConcept.VertexAttribute.SELECTED.get(graph);
             if (vxSelectedAttr != Graph.NOT_FOUND) {
                 final int vxCount = graph.getVertexCount();
                 for (int position = 0; position < vxCount; position++) {
@@ -124,7 +124,7 @@ public class DirectedShortestPathsPlugin extends SimpleEditPlugin {
                     verticesToPath.add(0, sourceVertex);
                 }
 
-                DijkstraServices ds = new DijkstraServices(graph, verticesToPath, true);
+                final DijkstraServices ds = new DijkstraServices(graph, verticesToPath, true);
                 ds.queryPaths(true);
             }
         }

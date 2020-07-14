@@ -41,15 +41,15 @@ public class VertexAttributeNameIOProvider extends AbstractGraphIOProvider {
     }
 
     @Override
-    public void readObject(final int attributeId, final int elementId, final JsonNode jnode, 
-            final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, 
+    public void readObject(final int attributeId, final int elementId, final JsonNode jnode,
+            final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap,
             final GraphByteReader byteReader, final ImmutableObjectCache cache) throws IOException {
         final String attributeValue = jnode.isNull() ? null : jnode.textValue();
         graph.setStringValue(attributeId, elementId, cache.deduplicate(attributeValue));
     }
 
     @Override
-    public void writeObject(final Attribute attr, final int elementId, final JsonGenerator jsonGenerator, 
+    public void writeObject(final Attribute attr, final int elementId, final JsonGenerator jsonGenerator,
             final GraphReadMethods graph, final GraphByteWriter byteWriter, final boolean verbose) throws IOException {
         if (verbose || !graph.isDefaultValue(attr.getId(), elementId)) {
             final String attributeValue = graph.getStringValue(attr.getId(), elementId);

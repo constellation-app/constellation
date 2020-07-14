@@ -53,7 +53,7 @@ public class TreeData {
         leafNodes.add(node);
     }
 
-    public void addEdge(int sourceIndex, int targetIndex, final double weight, final double flow) {
+    public void addEdge(final int sourceIndex, final int targetIndex, final double weight, final double flow) {
         final NodeBase source = leafNodes.get(sourceIndex);
         final NodeBase target = leafNodes.get(targetIndex);
         source.addOutEdge(target, weight, flow);

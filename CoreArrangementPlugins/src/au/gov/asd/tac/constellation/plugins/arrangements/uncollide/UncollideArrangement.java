@@ -22,13 +22,13 @@ import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
-import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
 import au.gov.asd.tac.constellation.plugins.arrangements.uncollide.d2.BoundingBox2D;
 import au.gov.asd.tac.constellation.plugins.arrangements.uncollide.d2.Orb2D;
 import au.gov.asd.tac.constellation.plugins.arrangements.uncollide.d2.QuadTree;
 import au.gov.asd.tac.constellation.plugins.arrangements.uncollide.d3.BoundingBox3D;
 import au.gov.asd.tac.constellation.plugins.arrangements.uncollide.d3.Octree;
 import au.gov.asd.tac.constellation.plugins.arrangements.uncollide.d3.Orb3D;
+import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
 
 public class UncollideArrangement implements Arranger {
 

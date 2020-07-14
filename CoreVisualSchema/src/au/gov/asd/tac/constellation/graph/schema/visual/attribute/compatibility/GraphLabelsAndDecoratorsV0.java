@@ -150,7 +150,7 @@ public final class GraphLabelsAndDecoratorsV0 implements Serializable {
      * @return The node bottom labels.
      */
     public GraphLabelV0[] getBottomLabels() {
-        return bottomLabels.toArray(new GraphLabelV0[0]);
+        return bottomLabels.toArray(new GraphLabelV0[bottomLabels.size()]);
     }
 
     /**
@@ -203,7 +203,7 @@ public final class GraphLabelsAndDecoratorsV0 implements Serializable {
      * @return The node top labels.
      */
     public GraphLabelV0[] getTopLabels() {
-        return topLabels.toArray(new GraphLabelV0[0]);
+        return topLabels.toArray(new GraphLabelV0[topLabels.size()]);
     }
 
     /**
@@ -238,7 +238,7 @@ public final class GraphLabelsAndDecoratorsV0 implements Serializable {
      * @return The connection labels.
      */
     public GraphLabelV0[] getConnectionLabels() {
-        return connLabels.toArray(new GraphLabelV0[0]);
+        return connLabels.toArray(new GraphLabelV0[connLabels.size()]);
     }
 
     /**
