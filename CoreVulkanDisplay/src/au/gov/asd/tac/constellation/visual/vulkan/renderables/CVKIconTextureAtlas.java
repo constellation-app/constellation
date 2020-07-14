@@ -63,6 +63,7 @@ import static org.lwjgl.vulkan.VK10.vkCmdCopyBufferToImage;
 import static org.lwjgl.vulkan.VK10.vkCreateSampler;
 import static org.lwjgl.vulkan.VK10.vkDestroySampler;
 import org.lwjgl.vulkan.VkBufferImageCopy;
+import org.lwjgl.vulkan.VkCommandBufferInheritanceInfo;
 import org.lwjgl.vulkan.VkExtent3D;
 import org.lwjgl.vulkan.VkSamplerCreateInfo;
 
@@ -114,8 +115,34 @@ public class CVKIconTextureAtlas extends CVKRenderable {
     
     public long GetAtlasImageViewHandle() { return cvkAtlasImage.GetImageViewHandle(); }
     public long GetAtlasSamplerHandle() { return hAtlasSampler; }
+
+    @Override
+    public int DeviceInitialised(CVKDevice cvkDevice) {
+        return VK_SUCCESS;
+    }   
     
+    @Override
+    public int GetVertexCount(){ return 0; }
     
+    @Override
+    public int RecordCommandBuffer(CVKSwapChain cvkSwapChain, VkCommandBufferInheritanceInfo inheritanceInfo, int index){
+        return VK_SUCCESS;            
+    }   
+    
+    @Override
+    public int DisplayUpdate(CVKSwapChain cvkSwapChain, int imageIndex) {
+        return VK_SUCCESS;
+    }
+    
+    @Override
+    public int SwapChainRecreated(CVKSwapChain cvkSwapChain) {
+        return VK_SUCCESS;
+    }
+        
+    @Override
+    public void IncrementDescriptorTypeRequirements(int descriptorTypeCounts[]) {
+    }
+        
     // This could be replaced with a templated Pair type
     private class IndexedConstellationIcon {
         public final int index;
@@ -260,6 +287,7 @@ public class CVKIconTextureAtlas extends CVKRenderable {
             
            // Command to copy pixels and transition formats
             CVKCommandBuffer cvkCopyCmd = CVKCommandBuffer.Create(cvkDevice, VK_COMMAND_BUFFER_LEVEL_PRIMARY);
+            cvkCopyCmd.DEBUGNAME = "CVKIconTextureAtlas cvkCopyCmd";
             ret = cvkCopyCmd.Begin(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
             checkVKret(ret);            
             
@@ -377,7 +405,8 @@ public class CVKIconTextureAtlas extends CVKRenderable {
             
             // Ok nothing has actually happened yet, time to execute the transitions and copy
             ret = cvkCopyCmd.EndAndSubmit();
-            checkVKret(ret);       
+            checkVKret(ret);    
+            cvkCopyCmd.Destroy();
             
             // We've finished with the staging buffer
             iconStagingBuffers.forEach(el -> {el.Destroy();});
@@ -411,8 +440,8 @@ public class CVKIconTextureAtlas extends CVKRenderable {
         return ret;
     }
     
-    
-    private void Destroy() {
+    @Override
+    public void Destroy() {
         if (cvkAtlasImage != null) {
             cvkAtlasImage.Destroy();
             cvkAtlasImage = null;            
@@ -431,6 +460,12 @@ public class CVKIconTextureAtlas extends CVKRenderable {
         assert(lastTransferedIconCount == 0);
         assert(cvkAtlasImage == null);
         assert(hAtlasSampler == VK_NULL_HANDLE);
+
+        
+//        final Set<String> iconNames = IconManager.getIconNames(false);
+//        CVKLOGGER.info("\n====ALL ICONS====");
+//        iconNames.forEach(el -> {CVKLOGGER.info(el);});
+//        CVKLOGGER.info("");
         
         int ret = VK_SUCCESS;
         if (loadedIcons.size() > 0) {

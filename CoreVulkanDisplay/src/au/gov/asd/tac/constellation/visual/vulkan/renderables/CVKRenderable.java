@@ -15,23 +15,75 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan.renderables;
 
-
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKRenderer;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
-import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
+import java.util.List;
+import org.lwjgl.PointerBuffer;
+import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkCommandBufferInheritanceInfo;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
+import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKBuffer;
+import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKCommandBuffer;
+import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 
-public abstract class CVKRenderable{
-    public int SwapChainRecreated(CVKSwapChain cvkSwapChain) { return VK_SUCCESS; }
-    public int DisplayUpdate(CVKSwapChain cvkSwapChain, int frameIndex) { return VK_SUCCESS; }
-    public void IncrementDescriptorTypeRequirements(int descriptorTypeCounts[]) {}        
-    public int RecordCommandBuffer(CVKSwapChain cvkSwapChain, VkCommandBufferInheritanceInfo inheritanceInfo, int index) { return VK_SUCCESS; }
-    public VkCommandBuffer GetCommandBuffer(int index) { return null; }
-    public int InitCommandBuffer(CVKSwapChain cvkSwapChain) { return VK_SUCCESS; }
-    public int GetVertexCount() { return 0; }
-    public boolean IsDirty() { return false; }
-    public int DeviceInitialised(CVKDevice cvkDevice) { return VK_SUCCESS; }    
+public abstract class CVKRenderable {
+    protected CVKVisualProcessor parent;
+    protected CVKDevice cvkDevice = null;
+    
+    protected long pipelineLayout = 0;
+    protected long graphicsPipeline = 0;
+    protected List<CVKCommandBuffer> commandBuffers = null;
+    protected PointerBuffer handlePointer;
+    
+    protected long vertexBuffer = 0;
+    protected long vertexBufferMemory = 0;
+        
+    protected List<CVKBuffer> vertUniformBuffers = null;
+    protected List<CVKBuffer> geomUniformBuffers = null;
+    protected List<CVKBuffer> vertBuffers = null;
+    
+    protected boolean isDirty = true;
+    protected boolean isInitialised = false;
+    
+    /*
+        Cleanup
+    */
+    public abstract void Destroy();
+    
+    /*
+        Returns the command buffer for the current Image being sent
+        to the GFX drivers
+    */
+    public VkCommandBuffer GetCommandBuffer(int index)
+    {
+        assert(index < commandBuffers.size());
+        return commandBuffers.get(index).GetVKCommandBuffer(); 
+    }
+    
+    /*
+        Returns the handle to the graphics pipeline for this renderable
+    */
+    public long GetGraphicsPipeline(){return graphicsPipeline; }
+   
+    public abstract int SwapChainRecreated(CVKSwapChain cvkSwapChain);
+    public abstract int DisplayUpdate(CVKSwapChain cvkSwapChain, int frameIndex);
+    public abstract void IncrementDescriptorTypeRequirements(int descriptorTypeCounts[]);        
+    public abstract int RecordCommandBuffer(CVKSwapChain cvkSwapChain, VkCommandBufferInheritanceInfo inheritanceInfo, int index);
+
+    /*
+        Returns the number of vertices used in the vertex buffer
+    */
+    public abstract int GetVertexCount();
+
+    /*
+        Return true if this renderable needs to be updated
+    */
+    public boolean IsDirty(){ return isDirty; }
+
+    public abstract int DeviceInitialised(CVKDevice cvkDevice);
+    
     public boolean SharedResourcesNeedUpdating() { return false; }
     public int RecreateSharedResources(CVKSwapChain cvkSwapChain) { return VK_SUCCESS; }
 

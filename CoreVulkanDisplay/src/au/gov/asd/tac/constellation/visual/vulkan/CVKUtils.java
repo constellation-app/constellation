@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan;
 
+import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.beans.Beans;
 import java.io.File;
 import java.io.IOException;
@@ -39,7 +40,6 @@ import static org.lwjgl.vulkan.KHRWin32Surface.VK_KHR_WIN32_SURFACE_EXTENSION_NA
 import static org.lwjgl.vulkan.KHRXlibSurface.VK_KHR_XLIB_SURFACE_EXTENSION_NAME;
 import static org.lwjgl.vulkan.VK10.*;
 import org.lwjgl.vulkan.VkLayerProperties;
-import au.gov.asd.tac.constellation.visual.vulkan.maths.*;
 import org.lwjgl.system.MemoryUtil;
 import org.lwjgl.vulkan.VkClearColorValue;
 import org.lwjgl.vulkan.VkClearValue;
@@ -353,7 +353,7 @@ public class CVKUtils {
     public static boolean VkSucceeded(int ret) { return ret == VK_SUCCESS; }
     public static boolean VkFailed(int ret) { return !VkSucceeded(ret); }
     
-    public static VkClearValue getClearValueColor(Vec3f clearColor){
+    public static VkClearValue getClearValueColor(Vector3f clearColor){
     	
     	VkClearValue clearValues = VkClearValue.calloc();
         clearValues.color()

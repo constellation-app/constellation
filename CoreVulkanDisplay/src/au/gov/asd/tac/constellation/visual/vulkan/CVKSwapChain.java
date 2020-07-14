@@ -704,6 +704,7 @@ public class CVKSwapChain {
     
     
     private void DestroyVKCommandBuffers() {
+        VerifyInRenderThread();
         try (MemoryStack stack = stackPush()) {
             PointerBuffer pCommandBuffers = stack.mallocPointer(commandBuffers.size());
             for (int i = 0; i < imageCount; ++i) {

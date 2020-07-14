@@ -160,8 +160,7 @@ public class CVKRenderer implements ComponentListener {
         
         return ret;
     }
-    
-    
+       
     protected int RecreateSwapChain() {
         VerifyInRenderThread();
         
@@ -219,22 +218,21 @@ public class CVKRenderer implements ComponentListener {
         cvkInstance = null;
         super.finalize();
     }
-    
-    
+       
     /**
      * Records/updates the Primary Command Buffer and all its Secondary Command Buffers
      * 
      * @param stack
-     * @param index - index to get the current frame/image/command buffer
+     * @param imageIndex - index to get the current frame/image/command buffer
      * @return 
      */
-    protected int RecordCommandBuffer(MemoryStack stack, int index){
+    protected int RecordCommandBuffer(MemoryStack stack, int imageIndex){
         VerifyInRenderThread();
-        CVKAssert(cvkSwapChain.GetFrameBufferHandle(index) != VK_NULL_HANDLE);
+        CVKAssert(cvkSwapChain.GetFrameBufferHandle(imageIndex) != VK_NULL_HANDLE);
     
         int ret = VK_SUCCESS;
         
-        VkCommandBuffer primaryCommandBuffer = cvkSwapChain.GetCommandBuffer(index);
+        VkCommandBuffer primaryCommandBuffer = cvkSwapChain.GetCommandBuffer(imageIndex);
            
         VkCommandBufferBeginInfo beginInfo = VkCommandBufferBeginInfo.callocStack(stack);
         beginInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO);
@@ -251,7 +249,7 @@ public class CVKRenderer implements ComponentListener {
         renderArea.extent(cvkSwapChain.GetExtent());
         renderPassInfo.renderArea(renderArea);       
         renderPassInfo.pClearValues(clearValues);
-        renderPassInfo.framebuffer(cvkSwapChain.GetFrameBufferHandle(index));
+        renderPassInfo.framebuffer(cvkSwapChain.GetFrameBufferHandle(imageIndex));
 
         // The primary command buffer does not contain any rendering commands
 	// These are stored (and retrieved) from the secondary command buffers
@@ -261,24 +259,24 @@ public class CVKRenderer implements ComponentListener {
         vkCmdBeginRenderPass(primaryCommandBuffer, renderPassInfo, VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS);
 
         // Inheritance info for the secondary command buffers (same for all!)
-        VkCommandBufferInheritanceInfo inheritanceInfo = VkCommandBufferInheritanceInfo.calloc()
-                        .sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO)
-                        .pNext(0)
-                        .framebuffer(cvkSwapChain.GetFrameBufferHandle(index))
-                        .renderPass(cvkSwapChain.GetRenderPassHandle())
-                        .subpass(0) // Get the subpass of make it here?
-                        .occlusionQueryEnable(false)
-                        .queryFlags(0)
-                        .pipelineStatistics(0);
-        
+        VkCommandBufferInheritanceInfo inheritanceInfo = VkCommandBufferInheritanceInfo.calloc();
+        inheritanceInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO);
+        inheritanceInfo.pNext(0);
+        inheritanceInfo.framebuffer(cvkSwapChain.GetFrameBufferHandle(imageIndex));
+        inheritanceInfo.renderPass(cvkSwapChain.GetRenderPassHandle());
+        inheritanceInfo.subpass(0); // Get the subpass of make it here?
+        inheritanceInfo.occlusionQueryEnable(false);
+        inheritanceInfo.queryFlags(0);
+        inheritanceInfo.pipelineStatistics(0);
+            
         // Loop through renderables and record their buffers
         for (int r = 0; r < renderables.size(); ++r) {
-            if (renderables.get(r).IsDirty()){
-                renderables.get(r).RecordCommandBuffer( cvkSwapChain, inheritanceInfo, index);
+            if (renderables.get(r).IsDirty() && renderables.get(r).GetVertexCount() > 0){
+                renderables.get(r).RecordCommandBuffer(cvkSwapChain, inheritanceInfo, imageIndex);
 
                 // TODO Hydra: may be more efficient to add all the visible command buffers to a master list then 
                 // call the following line once with the whole list
-                vkCmdExecuteCommands(primaryCommandBuffer, renderables.get(r).GetCommandBuffer(index));
+                vkCmdExecuteCommands(primaryCommandBuffer, renderables.get(r).GetCommandBuffer(imageIndex));
             }
         }
         
@@ -614,8 +612,8 @@ public class CVKRenderer implements ComponentListener {
     
     @Override
     public void componentResized(ComponentEvent e) {
-        swapChainNeedsRecreation = true;
-        CVKLOGGER.info("Canvas sent componentResized");
+//        swapChainNeedsRecreation = true;
+//        CVKLOGGER.info("Canvas sent componentResized");
     }
     @Override
     public void componentHidden(ComponentEvent e) {

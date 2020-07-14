@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
-import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKShaderUtils;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
@@ -33,7 +32,6 @@ import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32B32_SFLOAT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32_SINT;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
-import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.VK_VERTEX_INPUT_RATE_VERTEX;
 import static org.lwjgl.vulkan.VK10.VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
 import org.lwjgl.vulkan.VkVertexInputAttributeDescription;
@@ -43,6 +41,8 @@ import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VerifyInRender
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkFailed;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.checkVKret;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
+import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKBuffer;
+import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKCommandBuffer;
 import java.nio.LongBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +72,6 @@ import static org.lwjgl.vulkan.VK10.VK_SAMPLE_COUNT_1_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_FRAGMENT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_GEOMETRY_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_VERTEX_BIT;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
@@ -86,7 +85,7 @@ import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREA
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-import static org.lwjgl.vulkan.VK10.vkAllocateCommandBuffers;
+import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkAllocateDescriptorSets;
 import static org.lwjgl.vulkan.VK10.vkBeginCommandBuffer;
 import static org.lwjgl.vulkan.VK10.vkCmdBindDescriptorSets;
@@ -102,7 +101,6 @@ import static org.lwjgl.vulkan.VK10.vkMapMemory;
 import static org.lwjgl.vulkan.VK10.vkUnmapMemory;
 import static org.lwjgl.vulkan.VK10.vkUpdateDescriptorSets;
 import org.lwjgl.vulkan.VkCommandBuffer;
-import org.lwjgl.vulkan.VkCommandBufferAllocateInfo;
 import org.lwjgl.vulkan.VkCommandBufferBeginInfo;
 import org.lwjgl.vulkan.VkCommandBufferInheritanceInfo;
 import org.lwjgl.vulkan.VkDescriptorBufferInfo;
@@ -124,6 +122,9 @@ import org.lwjgl.vulkan.VkPipelineViewportStateCreateInfo;
 import org.lwjgl.vulkan.VkRect2D;
 import org.lwjgl.vulkan.VkViewport;
 import org.lwjgl.vulkan.VkWriteDescriptorSet;
+import static org.lwjgl.vulkan.VK10.vkDestroyPipeline;
+import static org.lwjgl.vulkan.VK10.vkDestroyPipelineLayout;
+
 
 public class CVKFPSRenderable extends CVKRenderable {
     private static final int MAX_DIGITS = 4;
@@ -140,38 +141,23 @@ public class CVKFPSRenderable extends CVKRenderable {
     private static long hFragmentShader = VK_NULL_HANDLE;
     private static long hDescriptorLayout = VK_NULL_HANDLE;    
     
-    private final CVKVisualProcessor parent;
-    private CVKDevice cvkDevice = null;
     private final Vector3f bottomRightCorner = new Vector3f();
     private float pyScale = 0;
     private float pxScale = 0;         
     private List<Long> pipelines = null;
     private List<Long> pipelineLayouts = null;
-    private List<CVKBuffer> vertUniformBuffers = null;
-    private List<CVKBuffer> geomUniformBuffers = null;
-    private List<CVKBuffer> vertBuffers = null;
-    private List<VkCommandBuffer> commandBuffers = null;
     private Vertex[] vertices = new Vertex[MAX_DIGITS];
     private VertexUniformBufferObject vertUBO = new VertexUniformBufferObject();
     private GeometryUniformBufferObject geomUBO = new GeometryUniformBufferObject();
     private LongBuffer pDescriptorSets = null;
     //private List<Long> descriptorSets = null;
-    
+    private List<Integer> currentFPS = null;    
+   
     // Cache image view and sampler handles so we know when they've been recreated
     // so we can recreate our descriptors
     private long hAtlasSampler = VK_NULL_HANDLE;
     private long hAtlasImageView = VK_NULL_HANDLE;
-    
-    // TODO_TT: is this needed?    
-    private boolean isDirty = true;
-     
-    
-    @Override
-    public VkCommandBuffer GetCommandBuffer(int index){
-        assert(index < commandBuffers.size());
-        return commandBuffers.get(index); 
-    }
-    
+ 
     @Override
     public boolean IsDirty(){return isDirty; }
     
@@ -315,8 +301,23 @@ public class CVKFPSRenderable extends CVKRenderable {
     
     public CVKFPSRenderable(CVKVisualProcessor visualProcessor) {
         parent = visualProcessor;
+        
+        currentFPS = new ArrayList<>();
+        currentFPS.add(7);
+        currentFPS.add(3);
+        currentFPS.add(0);  // unused
+        currentFPS.add(0);  // unused
     }
     
+    @Override
+    public void Destroy() {
+        DestroyPipeline();
+        DestroyCommandBuffers(); 
+    }
+        
+    @Override
+    public int GetVertexCount(){ return 2; }
+  
     public int Init() {
         int ret = VK_SUCCESS;
         for (int digit = 0; digit < 10; ++digit) {
@@ -466,7 +467,9 @@ public class CVKFPSRenderable extends CVKRenderable {
         for (int i = 0; i < vertices.length; ++i) {
             int data[] = new int[2];
             
-            final int foregroundIconIndex = parent.GetTextureAtlas().AddIcon(Integer.toString(7-(i*4)));
+            int digit = currentFPS.get(i);
+            
+            final int foregroundIconIndex = parent.GetTextureAtlas().AddIcon(Integer.toString(digit));
             final int backgroundIconIndex = CVKIconTextureAtlas.TRANSPARENT_ICON_INDEX;
             
             // packed icon indices
@@ -496,36 +499,26 @@ public class CVKFPSRenderable extends CVKRenderable {
             {
                 Vertex.CopyTo(data.getByteBuffer(0, size), vertices);
             }
-            vkUnmapMemory(cvkDevice.GetDevice(), vertexBuffer.GetMemoryBufferHandle());            
+            vkUnmapMemory(cvkDevice.GetDevice(), vertexBuffer.GetMemoryBufferHandle());
         }
         return ret;  
     }
     
     
-    @Override
-    public int InitCommandBuffer(CVKSwapChain cvkSwapChain){
+    public int CreateCommandBuffers(CVKSwapChain cvkSwapChain){
         int ret = VK_SUCCESS;
+        int imageCount = cvkSwapChain.GetImageCount();
         
-        try (MemoryStack stack = stackPush()) {
-            int imageCount = cvkSwapChain.GetImageCount();
-            commandBuffers = new ArrayList<>(imageCount);
+        commandBuffers = new ArrayList<>(imageCount);
 
-            VkCommandBufferAllocateInfo vkAllocInfo = VkCommandBufferAllocateInfo.callocStack(stack);
-            vkAllocInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO);
-            vkAllocInfo.commandPool(cvkDevice.GetCommandPoolHandle());
-            vkAllocInfo.level(VK_COMMAND_BUFFER_LEVEL_SECONDARY);            
-            vkAllocInfo.commandBufferCount(imageCount);
-
-            PointerBuffer pCommandBuffers = stack.mallocPointer(imageCount);
-            ret = vkAllocateCommandBuffers(cvkDevice.GetDevice(), vkAllocInfo, pCommandBuffers);
-            checkVKret(ret);
-
-            for (int i = 0; i < imageCount; ++i) {
-                commandBuffers.add(new VkCommandBuffer(pCommandBuffers.get(i), cvkDevice.GetDevice()));
-            }
-            
-            CVKLOGGER.log(Level.INFO, "Init Command Buffer - FPSRenderable");
+        for (int i = 0; i < imageCount; ++i) {
+            CVKCommandBuffer buffer = CVKCommandBuffer.Create(cvkDevice, VK_COMMAND_BUFFER_LEVEL_SECONDARY);
+            buffer.DEBUGNAME = String.format("CVKFPSRenderable %d", i);
+            commandBuffers.add(buffer);
         }
+        
+        CVKLOGGER.log(Level.INFO, "Init Command Buffer - FPSRenderable");
+        
         return ret;
     }
     
@@ -547,7 +540,7 @@ public class CVKFPSRenderable extends CVKRenderable {
             beginInfo.flags(VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT);  // hard coding this for now
             beginInfo.pInheritanceInfo(inheritanceInfo);             
 
-            VkCommandBuffer commandBuffer = commandBuffers.get(index);
+            VkCommandBuffer commandBuffer = commandBuffers.get(index).GetVKCommandBuffer();
             ret = vkBeginCommandBuffer(commandBuffer, beginInfo);
             checkVKret(ret);
 
@@ -567,7 +560,7 @@ public class CVKFPSRenderable extends CVKRenderable {
                                     stack.longs(pDescriptorSets.get(index)), 
                                     null);
             vkCmdDraw(commandBuffer,
-                      2,  //number of verts == number of digits
+                      GetVertexCount(),  //number of verts == number of digits
                       1,  //no instancing, but we must draw at least 1 point
                       0,  //first vert index
                       0); //first instance index (N/A)                         
@@ -879,30 +872,42 @@ public class CVKFPSRenderable extends CVKRenderable {
                 assert(pipelines.get(i) != VK_NULL_HANDLE);        
             }
         }
+        
+        CVKLOGGER.log(Level.INFO, "Graphics Pipeline created for FPSRenderable class.");
         return ret;
     }
         
    
-    public int DestroyPipeline(CVKSwapChain cvkSwapChain) {
-        int ret = VK_SUCCESS;
-        try (MemoryStack stack = stackPush()) {
-            
+    private void DestroyPipeline() {
+        if (0 != graphicsPipeline){
+            vkDestroyPipeline(cvkDevice.GetDevice(), graphicsPipeline, null);
         }
-        return ret;
+        
+        if (0 != pipelineLayout){
+            vkDestroyPipelineLayout(cvkDevice.GetDevice(), pipelineLayout, null);
+        }
+    }
+    
+    
+    private void DestroyCommandBuffers() {         
+        if (null != commandBuffers && commandBuffers.size() > 0) {
+            commandBuffers.forEach(el -> {el.Destroy();});
+            commandBuffers.clear();
+            commandBuffers = null;
+        }      
     }
     
     
     @Override
     public int SwapChainRecreated(CVKSwapChain cvkSwapChain) {
-        int ret = DestroyPipeline(cvkSwapChain);
-        if (VkSucceeded(ret)) {
-            ret = CreatePipeline(cvkSwapChain);
-            InitCommandBuffer(cvkSwapChain);
-        }
+        Destroy();
+        
+        int ret = CreatePipeline(cvkSwapChain);
+        if (VkFailed(ret)) { return ret; }
+        ret = CreateCommandBuffers(cvkSwapChain);
         return ret;
     }
-        
-    //@Override    
+         
     public static int LoadShaders(CVKDevice cvkDevice) {
         int ret = VK_SUCCESS;
         
@@ -994,9 +999,42 @@ public class CVKFPSRenderable extends CVKRenderable {
     @Override
     public int DisplayUpdate(CVKSwapChain cvkSwapChain, int imageIndex) {
         int ret = VK_SUCCESS;
+        
         // TODO Update uniforms that will be used in the next image
-               
+        
+        // Debug code to update the FPS value
+        ret = DebugUpdateFPS(cvkDevice, cvkSwapChain);
+        
         return ret;
+    }
+    
+    static int counter = 0;
+    private int DebugUpdateFPS(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain){
+        int ret = VK_SUCCESS;
+        
+        counter++;
+        
+        // Debug code to update every 100 frames
+        if (counter % 100 != 0)
+            return ret;
+        
+        int randTens = GetRandom(0,9);
+        int randOnes = GetRandom(0,9);
+        
+        currentFPS.set(0, randTens);
+        currentFPS.set(1, randOnes);
+        
+        // Convert to icon index
+        try(MemoryStack stack = stackPush()) {
+            // Update vertex buffers
+            ret = CreateVertexBuffers(stack, cvkSwapChain);
+        }
+        
+        return ret;
+    }
+    
+    private int GetRandom(int min, int max){
+        return (int) ((Math.random() * ((max - min) + 1)) + min);
     }
     
     @Override
@@ -1009,11 +1047,6 @@ public class CVKFPSRenderable extends CVKRenderable {
         // SimpleIcon.fs
         ++descriptorTypeCounts[VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER];
     } 
-    
-    @Override
-    public int GetVertexCount() {
-        return 2;
-    }   
     
     @Override
     public int DeviceInitialised(CVKDevice cvkDevice) {
@@ -1038,8 +1071,4 @@ public class CVKFPSRenderable extends CVKRenderable {
         }
         return ret;
     }
-    
-    
-    
-
 }
