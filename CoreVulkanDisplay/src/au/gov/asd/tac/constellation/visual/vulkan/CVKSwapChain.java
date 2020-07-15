@@ -40,7 +40,6 @@ import static org.lwjgl.vulkan.VK10.VK_ATTACHMENT_LOAD_OP_CLEAR;
 import static org.lwjgl.vulkan.VK10.VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 import static org.lwjgl.vulkan.VK10.VK_ATTACHMENT_STORE_OP_DONT_CARE;
 import static org.lwjgl.vulkan.VK10.VK_ATTACHMENT_STORE_OP_STORE;
-import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 import static org.lwjgl.vulkan.VK10.VK_COMPONENT_SWIZZLE_IDENTITY;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_COLOR_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
@@ -76,9 +75,12 @@ import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKLOGGER;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.UINT64_MAX;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VerifyInRenderThread;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.checkVKret;
+import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKCommandBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKImage;
 import static org.lwjgl.vulkan.KHRSwapchain.vkAcquireNextImageKHR;
 import static org.lwjgl.vulkan.KHRSwapchain.vkDestroySwapchainKHR;
+import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
 import static org.lwjgl.vulkan.VK10.VK_FENCE_CREATE_SIGNALED_BIT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_D24_UNORM_S8_UINT;
@@ -87,6 +89,7 @@ import static org.lwjgl.vulkan.VK10.VK_FORMAT_D32_SFLOAT_S8_UINT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_UNDEFINED;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_DEPTH_BIT;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_TILING_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
@@ -135,6 +138,7 @@ public class CVKSwapChain {
     private long hRenderPassHandle = VK_NULL_HANDLE;
     private long hDescriptorPool = VK_NULL_HANDLE;
     private int imageCount = 0;
+    private int depthFormat = VK_FORMAT_UNDEFINED;
     private List<Long> imageHandles = null;
     private List<Long> imageViewHandles = null;
     private List<Long> framebufferHandles = null;
@@ -352,8 +356,7 @@ public class CVKSwapChain {
             renderFenceHandles.add(pFence.get(0));
         }
         
-        // Figure out the best depth format our device supports
-        int depthFormat = VK_FORMAT_UNDEFINED;
+        // Figure out the best depth format our device supports        
         VkFormatProperties vkFormatProperties = VkFormatProperties.callocStack(stack);
         IntBuffer possibleDepthFormats = stack.ints(VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT);
         for (int i = 0; i < possibleDepthFormats.capacity(); ++i) {
@@ -388,20 +391,38 @@ public class CVKSwapChain {
                                         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
                                         VK_IMAGE_ASPECT_DEPTH_BIT);
         
+        // Transition the depth image to the optimal depth state
+        CVKCommandBuffer cvkDepthTransitionCmd = CVKCommandBuffer.Create(cvkDevice, VK_COMMAND_BUFFER_LEVEL_PRIMARY);
+        cvkDepthTransitionCmd.DEBUGNAME = "CVKSwapChain cvkDepthTransitionCmd";
+        ret = cvkDepthTransitionCmd.Begin(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
+        if (VkFailed(ret)) { return ret; }               
+        ret = cvkDepthImage.Transition(cvkDepthTransitionCmd, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
+        if (VkFailed(ret)) { return ret; }   
+        ret = cvkDepthTransitionCmd.EndAndSubmit();
+        if (VkFailed(ret)) { return ret; }     
+        cvkDepthTransitionCmd.Destroy();        
+        
         return ret;
     }   
     
     /**
-     *
+     * In Vulkan the swap chain owns the presentable images.  A frame buffer is
+     * a collection of attachments used by a render pass.  These attachments correspond
+     * to the images owned by the swapchain.  There will be one frame buffer per
+     * image in the swap chain.  The depth image is used by all frame buffers as
+     * we never present it so once we get to the last fragment in the last fragment
+     * shader it is free to be cleared and used by the next frame.
+     * 
      * @param stack
      * @return
+     * @see <a href=https://vulkan.lunarg.com/doc/view/1.2.141.2/windows/tutorial/html/12-init_frame_buffers.htm>LunarG Framebuffers</a>
      */
     private int InitVKFrameBuffer(MemoryStack stack) {
         CVKAssert(vkCurrentImageExtent.width() > 0);
         CVKAssert(vkCurrentImageExtent.height() > 0);
         
         int ret = VK_SUCCESS;
-        LongBuffer attachments = stack.mallocLong(1);
+        LongBuffer attachments = stack.mallocLong(2);
         LongBuffer pFramebuffer = stack.mallocLong(1);
 
         VkFramebufferCreateInfo framebufferInfo = VkFramebufferCreateInfo.callocStack(stack);
@@ -415,6 +436,7 @@ public class CVKSwapChain {
 
         for (long imageView : imageViewHandles) {
             attachments.put(0, imageView);
+            attachments.put(1, cvkDepthImage.GetImageViewHandle());
             framebufferInfo.pAttachments(attachments);
             ret = vkCreateFramebuffer(cvkDevice.GetDevice(), 
                                       framebufferInfo, 
@@ -428,7 +450,7 @@ public class CVKSwapChain {
 
 
     /**
-     * Vulkan has explicit objects that represent render passes.It describes the
+     * Vulkan has explicit objects that represent render passes. It describes the
      * frame buffer attachments such as the images in our swapchain, other depth,
      * colour or stencil buffers.  Subpasses read and write to these attachments.
      * A render pass will be instanced for use in a command buffer.
@@ -442,7 +464,12 @@ public class CVKSwapChain {
         
         int ret;      
         
-        VkAttachmentDescription.Buffer colorAttachment = VkAttachmentDescription.callocStack(1, stack);
+        // 0: colour, 1: depth
+        VkAttachmentDescription.Buffer attachments = VkAttachmentDescription.callocStack(2, stack);
+        VkAttachmentReference.Buffer attachmentRefs = VkAttachmentReference.callocStack(2, stack);        
+        
+        // Colour attachment
+        VkAttachmentDescription colorAttachment = attachments.get(0);
         colorAttachment.format(cvkDevice.GetSurfaceFormat().Value());
         colorAttachment.samples(VK_SAMPLE_COUNT_1_BIT);
         colorAttachment.loadOp(VK_ATTACHMENT_LOAD_OP_CLEAR);
@@ -454,14 +481,31 @@ public class CVKSwapChain {
         colorAttachment.initialLayout(VK_IMAGE_LAYOUT_UNDEFINED);
         colorAttachment.finalLayout(VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
 
-        VkAttachmentReference.Buffer colorAttachmentRef = VkAttachmentReference.callocStack(1, stack);
+        VkAttachmentReference colorAttachmentRef = attachmentRefs.get(0);
         colorAttachmentRef.attachment(0);
         colorAttachmentRef.layout(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+        
+        // Depth attachment
+        VkAttachmentDescription depthAttachment = attachments.get(1);
+        depthAttachment.format(depthFormat);
+        depthAttachment.samples(VK_SAMPLE_COUNT_1_BIT);
+        depthAttachment.loadOp(VK_ATTACHMENT_LOAD_OP_CLEAR);
+        depthAttachment.storeOp(VK_ATTACHMENT_STORE_OP_DONT_CARE);
+        depthAttachment.stencilLoadOp(VK_ATTACHMENT_LOAD_OP_DONT_CARE);
+        depthAttachment.stencilStoreOp(VK_ATTACHMENT_STORE_OP_DONT_CARE);
+        depthAttachment.initialLayout(VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);//VK_IMAGE_LAYOUT_UNDEFINED);
+        depthAttachment.finalLayout(VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
 
+        VkAttachmentReference depthAttachmentRef = attachmentRefs.get(1);
+        depthAttachmentRef.attachment(1);
+        depthAttachmentRef.layout(VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);  
+        
         VkSubpassDescription.Buffer subpass = VkSubpassDescription.callocStack(1, stack);
         subpass.pipelineBindPoint(VK_PIPELINE_BIND_POINT_GRAPHICS);
         subpass.colorAttachmentCount(1);
-        subpass.pColorAttachments(colorAttachmentRef);
+        // This bit of hackery is because pColorAttachments is a buffer of multiple references, whereas pDepthStencilAttachment is singular
+        subpass.pColorAttachments(VkAttachmentReference.callocStack(1, stack).put(0, colorAttachmentRef)); 
+        subpass.pDepthStencilAttachment(depthAttachmentRef);
 
         VkSubpassDependency.Buffer dependency = VkSubpassDependency.callocStack(1, stack);
         dependency.srcSubpass(VK_SUBPASS_EXTERNAL);
@@ -473,7 +517,7 @@ public class CVKSwapChain {
 
         VkRenderPassCreateInfo renderPassInfo = VkRenderPassCreateInfo.callocStack(stack);
         renderPassInfo.sType(VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO);
-        renderPassInfo.pAttachments(colorAttachment);
+        renderPassInfo.pAttachments(attachments);
         renderPassInfo.pSubpasses(subpass);
         renderPassInfo.pDependencies(dependency);
 

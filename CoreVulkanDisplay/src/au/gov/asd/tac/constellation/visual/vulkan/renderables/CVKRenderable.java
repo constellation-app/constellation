@@ -32,17 +32,17 @@ public abstract class CVKRenderable {
     protected CVKVisualProcessor parent;
     protected CVKDevice cvkDevice = null;
     
-    protected long pipelineLayout = 0;
-    protected long graphicsPipeline = 0;
-    protected List<CVKCommandBuffer> commandBuffers = null;
-    protected PointerBuffer handlePointer;
-    
-    protected long vertexBuffer = 0;
-    protected long vertexBufferMemory = 0;
-        
-    protected List<CVKBuffer> vertUniformBuffers = null;
-    protected List<CVKBuffer> geomUniformBuffers = null;
-    protected List<CVKBuffer> vertBuffers = null;
+//    protected long pipelineLayout = 0;
+//    protected long graphicsPipeline = 0;
+//    protected List<CVKCommandBuffer> commandBuffers = null;
+//    protected PointerBuffer handlePointer;
+//    
+//    protected long vertexBuffer = 0;
+//    protected long vertexBufferMemory = 0;
+//        
+//    protected List<CVKBuffer> vertUniformBuffers = null;
+//    protected List<CVKBuffer> geomUniformBuffers = null;
+//    protected List<CVKBuffer> vertBuffers = null;
     
     protected boolean isDirty = true;
     protected boolean isInitialised = false;
@@ -56,16 +56,16 @@ public abstract class CVKRenderable {
         Returns the command buffer for the current Image being sent
         to the GFX drivers
     */
-    public VkCommandBuffer GetCommandBuffer(int index)
-    {
-        assert(index < commandBuffers.size());
-        return commandBuffers.get(index).GetVKCommandBuffer(); 
-    }
+//    public VkCommandBuffer GetCommandBuffer(int index)
+//    {
+//        return commandBuffers.get(index).GetVKCommandBuffer(); 
+//    }
+    public abstract VkCommandBuffer GetCommandBuffer(int imageIndex);
     
     /*
         Returns the handle to the graphics pipeline for this renderable
     */
-    public long GetGraphicsPipeline(){return graphicsPipeline; }
+    //public long GetGraphicsPipeline() {return graphicsPipeline; }
    
     public abstract int SwapChainRecreated(CVKSwapChain cvkSwapChain);
     public abstract int DisplayUpdate(CVKSwapChain cvkSwapChain, int frameIndex);

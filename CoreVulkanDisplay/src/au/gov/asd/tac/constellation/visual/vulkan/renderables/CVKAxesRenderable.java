@@ -96,8 +96,10 @@ import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKLOGGER;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkFailed;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
+import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKCommandBuffer;
 import java.util.ArrayList;
+import java.util.List;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32_SFLOAT;
 import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
@@ -117,6 +119,7 @@ import org.lwjgl.vulkan.VkBufferCreateInfo;
 import org.lwjgl.vulkan.VkMemoryAllocateInfo;
 import org.lwjgl.vulkan.VkMemoryRequirements;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
+import org.lwjgl.vulkan.VkPipelineDepthStencilStateCreateInfo;
 
 public class CVKAxesRenderable extends CVKRenderable {
     
@@ -127,6 +130,19 @@ public class CVKAxesRenderable extends CVKRenderable {
     // Compiled Shaders
     protected static SPIRV vertShaderSPIRV;
     protected static SPIRV fragShaderSPIRV;
+    
+    
+    protected long pipelineLayout = 0;
+    protected long graphicsPipeline = 0;
+    protected List<CVKCommandBuffer> commandBuffers = null;
+    protected PointerBuffer handlePointer;    
+    protected long vertexBuffer = 0;
+    protected long vertexBufferMemory = 0;        
+    protected List<CVKBuffer> vertUniformBuffers = null;
+    protected List<CVKBuffer> geomUniformBuffers = null;
+    protected List<CVKBuffer> vertBuffers = null;    
+    public long GetGraphicsPipeline() {return graphicsPipeline; }
+    
        
     private static class Vertex {
 
@@ -366,6 +382,20 @@ public class CVKAxesRenderable extends CVKRenderable {
             multisampling.sType(VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO);
             multisampling.sampleShadingEnable(false);
             multisampling.rasterizationSamples(VK_SAMPLE_COUNT_1_BIT);
+            
+            // ===> DEPTH <===
+            
+            // Even though we don't test depth, the renderpass created by CVKSwapChain is used by
+            // each renderable and it was created to have a depth attachment
+            VkPipelineDepthStencilStateCreateInfo depthStencil = VkPipelineDepthStencilStateCreateInfo.callocStack(stack);
+            depthStencil.sType(VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO);
+            depthStencil.depthTestEnable(false);
+            depthStencil.depthWriteEnable(false);
+            depthStencil.depthCompareOp(VK_COMPARE_OP_ALWAYS);
+            depthStencil.depthBoundsTestEnable(false);
+            depthStencil.minDepthBounds(0.0f); // Optional
+            depthStencil.maxDepthBounds(1.0f); // Optional
+            depthStencil.stencilTestEnable(false);            
 
             // ===> COLOR BLENDING <===
 
@@ -401,6 +431,7 @@ public class CVKAxesRenderable extends CVKRenderable {
             pipelineInfo.pViewportState(viewportState);
             pipelineInfo.pRasterizationState(rasterizer);
             pipelineInfo.pMultisampleState(multisampling);
+            pipelineInfo.pDepthStencilState(depthStencil);
             pipelineInfo.pColorBlendState(colorBlending);
             pipelineInfo.layout(pipelineLayout);
             pipelineInfo.renderPass(cvkSwapChain.GetRenderPassHandle());
@@ -700,4 +731,10 @@ public class CVKAxesRenderable extends CVKRenderable {
 
         throw new RuntimeException("Failed to find suitable memory type");
     }
+    
+    @Override
+    public VkCommandBuffer GetCommandBuffer(int imageIndex)
+    {
+        return commandBuffers.get(imageIndex).GetVKCommandBuffer(); 
+    }      
 }
