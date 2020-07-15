@@ -48,6 +48,8 @@ public class CVKBuffer {
     protected CVKDevice cvkDevice = null;
     protected long bufferSize = 0;
     
+    public String DEBUGNAME = "";
+    
     // Use the static Create() method instead of direct construction
     private CVKBuffer() { }
     

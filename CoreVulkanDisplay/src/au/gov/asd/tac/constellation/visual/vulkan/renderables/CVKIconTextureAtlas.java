@@ -63,6 +63,7 @@ import static org.lwjgl.vulkan.VK10.vkCmdCopyBufferToImage;
 import static org.lwjgl.vulkan.VK10.vkCreateSampler;
 import static org.lwjgl.vulkan.VK10.vkDestroySampler;
 import org.lwjgl.vulkan.VkBufferImageCopy;
+import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkCommandBufferInheritanceInfo;
 import org.lwjgl.vulkan.VkExtent3D;
 import org.lwjgl.vulkan.VkSamplerCreateInfo;
@@ -113,6 +114,7 @@ public class CVKIconTextureAtlas extends CVKRenderable {
     private int lastTransferedIconCount = 0;
     
     
+    public int GetAtlasIconCount() { return lastTransferedIconCount; }
     public long GetAtlasImageViewHandle() { return cvkAtlasImage.GetImageViewHandle(); }
     public long GetAtlasSamplerHandle() { return hAtlasSampler; }
 
@@ -306,6 +308,7 @@ public class CVKIconTextureAtlas extends CVKRenderable {
                                                               ICON_SIZE_BYTES, 
                                                               VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                                                               VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);  
+                cvkStagingBuffer.DEBUGNAME = String.format("CVKIconTextureAtlas cvkStagingBuffer %d", iIcon);
                 
                // Convert the buffered image if its not in our desired state.
                 if (TYPE_4BYTE_ABGR != iconImage.getType()) {
@@ -491,4 +494,10 @@ public class CVKIconTextureAtlas extends CVKRenderable {
     public boolean SharedResourcesNeedUpdating() {
         return loadedIcons.size() > lastTransferedIconCount;
     }   
+    
+    @Override
+    public VkCommandBuffer GetCommandBuffer(int imageIndex)
+    {
+        return null;
+    }      
 }
