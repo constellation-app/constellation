@@ -661,6 +661,20 @@ public class CVKAxesRenderable extends CVKRenderable {
                 multisampling.sampleShadingEnable(false);
                 multisampling.rasterizationSamples(VK_SAMPLE_COUNT_1_BIT);
 
+		// ===> DEPTH <===
+            
+                // Even though we don't test depth, the renderpass created by CVKSwapChain is used by
+                // each renderable and it was created to have a depth attachment
+                VkPipelineDepthStencilStateCreateInfo depthStencil = VkPipelineDepthStencilStateCreateInfo.callocStack(stack);
+                depthStencil.sType(VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO);
+                depthStencil.depthTestEnable(false);
+                depthStencil.depthWriteEnable(false);
+                depthStencil.depthCompareOp(VK_COMPARE_OP_ALWAYS);
+                depthStencil.depthBoundsTestEnable(false);
+                depthStencil.minDepthBounds(0.0f); // Optional
+                depthStencil.maxDepthBounds(1.0f); // Optional
+                depthStencil.stencilTestEnable(false);
+
                 // ===> COLOR BLENDING <===
                 VkPipelineColorBlendAttachmentState.Buffer colorBlendAttachment = VkPipelineColorBlendAttachmentState.callocStack(1, stack);
                 colorBlendAttachment.colorWriteMask(VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT);
@@ -912,4 +926,25 @@ public class CVKAxesRenderable extends CVKRenderable {
         return VK_SUCCESS;
     }    
 
+==== BASE ====
+            buffer.putFloat(vertex.color.getX());
+            buffer.putFloat(vertex.color.getY());
+            buffer.putFloat(vertex.color.getZ());
+        }
+    }
+
+    private int findMemoryType(int typeFilter, int properties, CVKDevice cvkDevice) {
+
+        VkPhysicalDeviceMemoryProperties memProperties = VkPhysicalDeviceMemoryProperties.mallocStack();
+        vkGetPhysicalDeviceMemoryProperties(cvkDevice.GetDevice().getPhysicalDevice(), memProperties);
+
+        for(int i = 0;i < memProperties.memoryTypeCount();i++) {
+            if((typeFilter & (1 << i)) != 0 && (memProperties.memoryTypes(i).propertyFlags() & properties) == properties) {
+                return i;
+            }
+        }
+
+        throw new RuntimeException("Failed to find suitable memory type");
+    }
+==== BASE ====
 }

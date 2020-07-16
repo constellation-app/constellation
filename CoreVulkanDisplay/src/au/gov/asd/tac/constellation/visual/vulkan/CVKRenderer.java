@@ -245,8 +245,9 @@ public class CVKRenderer implements ComponentListener {
         VkCommandBufferBeginInfo beginInfo = VkCommandBufferBeginInfo.callocStack(stack);
         beginInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO);
 
-        VkClearValue.Buffer clearValues = VkClearValue.callocStack(1, stack);
+        VkClearValue.Buffer clearValues = VkClearValue.callocStack(2, stack);
         clearValues.color().float32(stack.floats(clr.getR(), clr.getG(), clr.getB(), 1.0f));
+        clearValues.get(1).depthStencil().set(1.0f, 0);
         
         VkRenderPassBeginInfo renderPassInfo = VkRenderPassBeginInfo.callocStack(stack);
         renderPassInfo.sType(VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO);
