@@ -112,7 +112,7 @@ public class SplitNodesPlugin extends RecordStoreQueryPlugin implements DataAcce
     @Override
     public void updateParameters(Graph graph, PluginParameters parameters) {
         if (parameters != null && parameters.getParameters() != null) {
-            @SuppressWarnings("unchecked") //TRANSACTION_TYPE_PARAMETER is always of type SingleChoiceParameter 
+            @SuppressWarnings("unchecked") //TRANSACTION_TYPE_PARAMETER is always of type SingleChoiceParameter
             final PluginParameter<SingleChoiceParameterValue> transactionType = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(TRANSACTION_TYPE_PARAMETER_ID);
             final List<String> types = new ArrayList<>();
             if (graph != null && graph.getSchema() != null) {
@@ -181,7 +181,7 @@ public class SplitNodesPlugin extends RecordStoreQueryPlugin implements DataAcce
         final RecordStore result = new GraphRecordStore();
 
         final Map<String, PluginParameter<?>> splitParameters = parameters.getParameters();
-        final String character = splitParameters.get(SPLIT_PARAMETER_ID).getStringValue();
+        final String character = splitParameters.get(SPLIT_PARAMETER_ID) != null ? splitParameters.get(SPLIT_PARAMETER_ID).getStringValue() : "";
         final ParameterValue transactionTypeChoice = splitParameters.get(TRANSACTION_TYPE_PARAMETER_ID).getSingleChoice();
         final String linkType = transactionTypeChoice != null ? transactionTypeChoice.toString() : AnalyticConcept.TransactionType.CORRELATION.getName();
         final boolean allOccurrences = splitParameters.get(ALL_OCCURRENCES_PARAMETER_ID).getBooleanValue();
