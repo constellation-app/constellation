@@ -91,7 +91,7 @@ public class SplitNodesPlugin extends RecordStoreQueryPlugin implements DataAcce
         final PluginParameter<StringParameterValue> split = StringParameterType.build(SPLIT_PARAMETER_ID);
         split.setName("Split Character(s)");
         split.setDescription("A new term will be extracted from the first instance of this character(s) in the Identifier");
-        split.setStringValue("");
+        split.setStringValue(null);
         params.addParameter(split);
 
         final PluginParameter<SingleChoiceParameterValue> transactionType = SingleChoiceParameterType.build(TRANSACTION_TYPE_PARAMETER_ID);
@@ -181,7 +181,7 @@ public class SplitNodesPlugin extends RecordStoreQueryPlugin implements DataAcce
         final RecordStore result = new GraphRecordStore();
 
         final Map<String, PluginParameter<?>> splitParameters = parameters.getParameters();
-        final String character = splitParameters.get(SPLIT_PARAMETER_ID).getStringValue();
+        final String character = splitParameters.get(SPLIT_PARAMETER_ID) != null ? splitParameters.get(SPLIT_PARAMETER_ID).getStringValue() : "";
         final ParameterValue transactionTypeChoice = splitParameters.get(TRANSACTION_TYPE_PARAMETER_ID).getSingleChoice();
         final String linkType = transactionTypeChoice != null ? transactionTypeChoice.toString() : AnalyticConcept.TransactionType.CORRELATION.getName();
         final boolean allOccurrences = splitParameters.get(ALL_OCCURRENCES_PARAMETER_ID).getBooleanValue();
