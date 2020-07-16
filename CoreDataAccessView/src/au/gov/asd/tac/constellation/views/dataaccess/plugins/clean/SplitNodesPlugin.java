@@ -91,7 +91,7 @@ public class SplitNodesPlugin extends RecordStoreQueryPlugin implements DataAcce
         final PluginParameter<StringParameterValue> split = StringParameterType.build(SPLIT_PARAMETER_ID);
         split.setName("Split Character(s)");
         split.setDescription("A new term will be extracted from the first instance of this character(s) in the Identifier");
-        split.setStringValue(null);
+        split.setStringValue("");
         params.addParameter(split);
 
         final PluginParameter<SingleChoiceParameterValue> transactionType = SingleChoiceParameterType.build(TRANSACTION_TYPE_PARAMETER_ID);
@@ -112,7 +112,7 @@ public class SplitNodesPlugin extends RecordStoreQueryPlugin implements DataAcce
     @Override
     public void updateParameters(Graph graph, PluginParameters parameters) {
         if (parameters != null && parameters.getParameters() != null) {
-            @SuppressWarnings("unchecked") //TRANSACTION_TYPE_PARAMETER is always of type SingleChoiceParameter 
+            @SuppressWarnings("unchecked") //TRANSACTION_TYPE_PARAMETER is always of type SingleChoiceParameter
             final PluginParameter<SingleChoiceParameterValue> transactionType = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(TRANSACTION_TYPE_PARAMETER_ID);
             final List<String> types = new ArrayList<>();
             if (graph != null && graph.getSchema() != null) {
