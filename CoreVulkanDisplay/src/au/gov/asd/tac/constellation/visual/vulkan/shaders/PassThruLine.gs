@@ -1,10 +1,13 @@
-#version 330 core
+#version 450
 
+// === PER PRIMITIVE DATA IN
 layout(lines) in;
-layout(line_strip, max_vertices=2) out;
+layout(location = 0) in vec4 gColor[];
 
-in vec4 gColor[];
-out vec4 fColor;
+// === PER PRIMITIVE DATA OUT
+layout(line_strip, max_vertices=2) out;
+layout(location = 0) out vec4 fColor;
+
 
 void main() {
     fColor = gColor[0];

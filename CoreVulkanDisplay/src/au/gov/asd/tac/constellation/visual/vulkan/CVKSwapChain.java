@@ -577,7 +577,14 @@ public class CVKSwapChain {
         return size;
     }
     
-    
+    /*
+    * Descriptor pools are per thread (we have one Render thread). Here we create 
+    * one Descriptor pool for all our Renderable objects. Each Renderable object 
+    * is in charge of telling the Renderer how many Descriptors Types and the 
+    * count it is using (IncrementDescriptorTypeRequirements) so here we can 
+    * allocate the correct amount of memory. Each time the Descriptor Types or 
+    * Counts change we need to recreate the pool.
+    */
     public int InitVKDescriptorPool(MemoryStack stack, CVKSynchronizedDescriptorTypeCounts desiredPoolDescriptorTypeCounts) {
         VerifyInRenderThread();
         CVKAssert(desiredPoolDescriptorTypeCounts != null);
@@ -596,6 +603,8 @@ public class CVKSwapChain {
         
         // Do we have anything to render?
         int allTypesCount = desiredPoolDescriptorTypeCounts.NumberOfDescriptorTypes();
+        int maxSets = 0;
+        
         if (allTypesCount > 0) {
             VkDescriptorPoolSize.Buffer pPoolSizes = VkDescriptorPoolSize.callocStack(allTypesCount, stack);
             
@@ -605,26 +614,35 @@ public class CVKSwapChain {
                 if (count > 0) {
                     VkDescriptorPoolSize poolSize = pPoolSizes.get(iPoolSize++);
                     poolSize.type(iType);
-                    int size = CalculateDescriptorPoolSizeForType(iType, 
-                                                                  poolDescriptorTypeCounts[iType],
-                                                                  count); 
+                    
+                    // Leaner and meaner version. Just allocate what we need. This could get out of control with 1000s of nodes.
+                    int size = count;
+                    //int size = CalculateDescriptorPoolSizeForType(iType, 
+                    //                                                poolDescriptorTypeCounts[iType],
+                    //                                                count);
+                    
                     poolDescriptorTypeCounts[iType] = size;
                     CVKLOGGER.info(String.format("Descriptor pool type %d = count %d", iType, size));
                     
                     // We will allocate a complete set of descriptors for each image
                     size *= imageCount;
                     poolSize.descriptorCount(size);
+                    
+                    // Increment the total number of descriptors we need to allocate
+                    maxSets += size;
                 } else {
                     // We aren't allocating memory for this type
                     poolDescriptorTypeCounts[iType] = 0;
                 }
             }
             
+            // Create the complete Descriptor pool using the poolSizes we calculated for each
+            // Descriptor Type
             VkDescriptorPoolCreateInfo poolInfo = VkDescriptorPoolCreateInfo.callocStack(stack);
             poolInfo.sType(VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO);
             poolInfo.flags(VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT);
             poolInfo.pPoolSizes(pPoolSizes);
-            poolInfo.maxSets(imageCount);
+            poolInfo.maxSets(maxSets);  // Max sets is the total number of descriptors that are allocated
 
             LongBuffer pDescriptorPool = stack.mallocLong(1);
             ret = vkCreateDescriptorPool(cvkDevice.GetDevice(), poolInfo, null, pDescriptorPool);

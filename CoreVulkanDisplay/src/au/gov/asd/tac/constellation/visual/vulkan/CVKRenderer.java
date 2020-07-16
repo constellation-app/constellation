@@ -108,7 +108,15 @@ public class CVKRenderer implements ComponentListener {
     public void AddRenderable(CVKRenderable renderable) {
         renderables.add(renderable);
         
-        // TODO_TT: this code sucks, make it not
+        // Each renderable is responsible for telling the renderer what and how 
+        // many Descriptor types it uses. This is calculated here each time a 
+        // renderable is added.
+        // The SwapChain will then create a Descriptor Pool based on these
+        // descriptor counts to allocate the exact amount of memory required.
+        //
+        // If you get a Descriptor POOL_OUT_OF_MEMORY error, make sure you are 
+        // returning the correct numbers for your Descriptor Types.
+        // TODO_TT: this code sucks, make it not. Also change 11 to TOTAL_DESCRIPTOR_TYPES
         int[] descriptorTypeCounts = new int[11];
         renderables.forEach(r -> {r.IncrementDescriptorTypeRequirements(descriptorTypeCounts);});    
         desiredPoolDescriptorTypeCounts.Set(descriptorTypeCounts);        
