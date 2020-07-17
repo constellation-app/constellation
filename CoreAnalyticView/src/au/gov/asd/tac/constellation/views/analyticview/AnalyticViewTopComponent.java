@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
@@ -74,6 +75,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
     private final AnalyticViewPane analyticViewPane;
     private final AnalyticController analyticController;
     private boolean suppressed = false;
+    private Graph currentGraph = null;
 
     public AnalyticViewTopComponent() {
         super();
@@ -170,6 +172,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
         if (!needsUpdate()) {
             return;
         }
+        currentGraph = graph;
         if (analyticViewPane != null) {
             analyticViewPane.setIsRunnable(graph != null);
             analyticViewPane.reset();
@@ -185,6 +188,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
     @Override
     protected void handleGraphOpened(final Graph graph) {
         if (needsUpdate()) {
+            currentGraph = graph;
             analyticViewPane.getConfigurationPane().updateState(false);
         }
     }
@@ -192,6 +196,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
     @Override
     protected void handleComponentOpened() {
         if (needsUpdate()) {
+            currentGraph = GraphManager.getDefault().getActiveGraph();
             analyticViewPane.getConfigurationPane().updateState(false);
         }
     }
@@ -199,7 +204,9 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
     @Override
     protected void componentShowing() {
         super.componentShowing();
-        analyticViewPane.reset();
+        if (currentGraph != GraphManager.getDefault().getActiveGraph()) {
+            analyticViewPane.reset();
+        }
         analyticViewPane.getConfigurationPane().updateState(false);
     }
 
