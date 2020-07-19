@@ -5,6 +5,7 @@
 * Fixed a bug exporting Glyph Textures to the wrong location if the folder path had a period.
 * Updated `QualityControlAutoVetter` to improve performance by using a `SimpleReadPlugin` internally.
 * Updated the Quality Control View so that it is multi-threaded and no longer runs on the EDT.
+* Removed the Attribute Calculator.
 
 ## 2020-06-01 Changes in June 2020
 * Added `LayerConcept` to group all of the layer mask and layer visibility attributes together. 

@@ -743,7 +743,7 @@ public class AttributeEditorPanel extends BorderPane {
      *
      * @param state containing the data of the attributes on the graph
      * @param type type of graphelement as each of these have their own headings
-     * in the attribute calculator
+     * in the attribute editor
      * @param longestTitleWidth used for layout calculations...(dodgy javafx
      * workaround)
      */
