@@ -1,6 +1,12 @@
 == 3030-12-31 Getting Started
 <p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
+== 2020-07-20 Version 2
+<p>Constellation v2.0.0 is officially released!</p>
+
+== 2020-07-17 Named Selection
+<p>A number of bugs with the Named Selection have been fixed.</p>
+
 == 2020-07-16 Attribute Calculator
 <p>The attribute editor has been removed with other views and features.</p>
 
