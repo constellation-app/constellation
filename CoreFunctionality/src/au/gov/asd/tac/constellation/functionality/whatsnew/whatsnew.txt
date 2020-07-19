@@ -24,7 +24,7 @@
 </ul>
 
 == 2020-06-18 Info Map Bug Fixed
-<p>A bug preventing running the Clustering %gt; Info Map plugins has been fixed.</p>
+<p>A bug preventing running the Clustering &gt; Info Map plugins has been fixed.</p>
 
 == 2020-06-09 Select Top N Bug Fixed
 <p>A bug preventing running the <strong>Select Top N</strong> plugin from the Data Access View has been fixed.</p>
