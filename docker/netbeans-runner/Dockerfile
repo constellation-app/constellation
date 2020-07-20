@@ -16,8 +16,8 @@ RUN apt-get -y update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ENV ZULU_VERSION="zulu11.39.15-ca-fx-jdk11.0.7-linux_x64"
-ENV ZULU_CHECKSUM="3d68aeccf6bba70618eb047b2d0bf221418b5f1befc09d9e86fe17899e19f681d32a952130fe8b4c0b43d934e81cf587c857b0539c3fc21ffe3f888ab0546683  ${ZULU_VERSION}.tar.gz"
+ENV ZULU_VERSION="zulu11.37.19-ca-fx-jdk11.0.6-linux_x64"
+ENV ZULU_CHECKSUM="f7720d2f3973c230f81b35dc9b36f72009416cf418a724f298c4513268b9e9e313744ff45f646e43a5e313ee1ef780cc3aa0232c22f36a30c8cde3db37427172  ${ZULU_VERSION}.tar.gz"
 
 RUN wget -q "https://cdn.azul.com/zulu/bin/${ZULU_VERSION}.tar.gz" \
     && echo "${ZULU_CHECKSUM}" | sha512sum -c \
