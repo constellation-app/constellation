@@ -21,7 +21,7 @@ package au.gov.asd.tac.constellation.views.qualitycontrol.daemon;
  * @author aldebaran30701
  */
 public interface QualityControlAutoVetterListener {
-    
+
     /**
      * Called when the quality control has run a rule.
      * <p>

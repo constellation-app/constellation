@@ -75,7 +75,7 @@ public class LayersViewPane extends BorderPane {
         layerIdHeadingText.setMinHeight(25);
         layerIdHeadingText.setPrefWidth(30);
         visibilityHeadingText.setPrefWidth(55);
-        visibilityHeadingText.setMinWidth(50);
+        visibilityHeadingText.setMinWidth(75);
         queryHeadingText.setPrefWidth(10000);
         queryHeadingText.setMinWidth(80);
         descriptionHeadingText.setPrefWidth(10000);
@@ -114,7 +114,6 @@ public class LayersViewPane extends BorderPane {
             } else {
                 setLayers(List.copyOf(layers));
             }
-            controller.submit();
             controller.execute();
 
             event.consume();
@@ -155,7 +154,6 @@ public class LayersViewPane extends BorderPane {
             final Node source = (Node) e.getSource();
             final LayerDescription layer = layers.get(GridPane.getRowIndex(source) - 1);
             layer.setCurrentLayerVisibility(!layer.getCurrentLayerVisibility());
-            controller.submit();
             controller.execute();
             controller.writeState();
         });

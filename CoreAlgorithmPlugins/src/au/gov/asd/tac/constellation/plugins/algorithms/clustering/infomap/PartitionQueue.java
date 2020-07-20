@@ -52,7 +52,7 @@ public class PartitionQueue {
         return level;
     }
 
-    public void setLevel(int level) {
+    public void setLevel(final int level) {
         this.level = level;
     }
 
@@ -60,7 +60,7 @@ public class PartitionQueue {
         return numNonTrivialModules;
     }
 
-    public void setNumNonTrivialModules(int numNonTrivialModules) {
+    public void setNumNonTrivialModules(final int numNonTrivialModules) {
         this.numNonTrivialModules = numNonTrivialModules;
     }
 
@@ -68,7 +68,7 @@ public class PartitionQueue {
         return flow;
     }
 
-    public void setFlow(double flow) {
+    public void setFlow(final double flow) {
         this.flow = flow;
     }
 
@@ -76,7 +76,7 @@ public class PartitionQueue {
         return nonTrivialFlow;
     }
 
-    public void setNonTrivialFlow(double nonTrivialFlow) {
+    public void setNonTrivialFlow(final double nonTrivialFlow) {
         this.nonTrivialFlow = nonTrivialFlow;
     }
 
@@ -84,7 +84,7 @@ public class PartitionQueue {
         return skip;
     }
 
-    public void setSkip(boolean skip) {
+    public void setSkip(final boolean skip) {
         this.skip = skip;
     }
 
@@ -92,7 +92,7 @@ public class PartitionQueue {
         return indexCodelength;
     }
 
-    public void setIndexCodelength(double indexCodelength) {
+    public void setIndexCodelength(final double indexCodelength) {
         this.indexCodelength = indexCodelength;
     }
 
@@ -100,7 +100,7 @@ public class PartitionQueue {
         return leafCodelength;
     }
 
-    public void setLeafCodelength(double leafCodelength) {
+    public void setLeafCodelength(final double leafCodelength) {
         this.leafCodelength = leafCodelength;
     }
 
@@ -108,7 +108,7 @@ public class PartitionQueue {
         return moduleCodelength;
     }
 
-    public void setModuleCodelength(double moduleCodelength) {
+    public void setModuleCodelength(final double moduleCodelength) {
         this.moduleCodelength = moduleCodelength;
     }
 
@@ -116,7 +116,7 @@ public class PartitionQueue {
         return queue;
     }
 
-    public void setQueue(ArrayList<NodeBase> queue) {
+    public void setQueue(final ArrayList<NodeBase> queue) {
         this.queue = queue;
     }
 
@@ -166,7 +166,7 @@ public class PartitionQueue {
         return queue.size();
     }
 
-    public void resize(int size) {
+    public void resize(final int size) {
         Resizer.resizeNodeBase(queue, size);
     }
 

@@ -37,17 +37,17 @@ public class FindSubgraphs {
     static BitSet[] traverse(final GraphWriteMethods graph) {
 
         final int vxCount = graph.getVertexCount();
-        BitSet update = new BitSet(vxCount);
-        BitSet[] receivedFrom = new BitSet[vxCount];
-        BitSet[] sendBuffer = new BitSet[vxCount];
-        BitSet newUpdate = new BitSet(vxCount);
+        final BitSet update = new BitSet(vxCount);
+        final BitSet[] receivedFrom = new BitSet[vxCount];
+        final BitSet[] sendBuffer = new BitSet[vxCount];
+        final BitSet newUpdate = new BitSet(vxCount);
 
         final int kThreshold = 10000;
         final int k = 64;
 
         // this is utilising something called k-BFS, which is meant to be faster than parallel-bfs
         // start from k-random seeds rather than the whole graph (k is set to 100 here)
-        BitSet seeds = new BitSet(vxCount);
+        final BitSet seeds = new BitSet(vxCount);
         if (vxCount > kThreshold) {
             for (int i = 0; i < k; i++) {
                 if (graph.getVertexNeighbourCount(graph.getVertex(i)) > 0) {
@@ -90,9 +90,9 @@ public class FindSubgraphs {
 
             // for each neighbour, check if there is any new information it needs to receive
             for (int src = update.nextSetBit(0); src >= 0; src = update.nextSetBit(src + 1)) {
-                int vxId = graph.getVertex(src);
+                final int vxId = graph.getVertex(src);
                 for (int neighbourPosition = 0; neighbourPosition < graph.getVertexNeighbourCount(vxId); neighbourPosition++) {
-                    int dst = graph.getVertexPosition(graph.getVertexNeighbour(vxId, neighbourPosition));
+                    final int dst = graph.getVertexPosition(graph.getVertexNeighbour(vxId, neighbourPosition));
                     if (!receivedFrom[src].equals(receivedFrom[dst])) {
                         sendBuffer[dst].or(diff(receivedFrom[src], receivedFrom[dst]));
                         newUpdate.set(dst, true);
@@ -113,9 +113,9 @@ public class FindSubgraphs {
      * @param two bitset two
      * @return
      */
-    private static BitSet diff(BitSet one, BitSet two) {
-        BitSet o = new BitSet(one.length());
-        BitSet t = new BitSet(two.length());
+    private static BitSet diff(final BitSet one, final BitSet two) {
+        final BitSet o = new BitSet(one.length());
+        final BitSet t = new BitSet(two.length());
         o.or(one);
         t.or(two);
         o.andNot(t);

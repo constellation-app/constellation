@@ -74,7 +74,7 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
     @Override
     protected void componentOpened() {
         super.componentOpened();
-        
+
         isVisible = true;
         ConstellationLogger.getDefault().viewStarted(this);
     }
@@ -82,7 +82,7 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
     @Override
     protected void componentClosed() {
         super.componentClosed();
-        
+
         isVisible = false;
         ConstellationLogger.getDefault().viewStopped(this);
     }
@@ -90,7 +90,7 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
     @Override
     protected void componentShowing() {
         super.componentShowing();
-        
+
         isVisible = true;
         if (WindowManager.getDefault().isTopComponentFloating(this)) {
             ConstellationLogger.getDefault().viewInfo(this, "Showing / Floating");
@@ -104,7 +104,7 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
     @Override
     protected void componentHidden() {
         super.componentHidden();
-        
+
         isVisible = true;
         if (WindowManager.getDefault().isTopComponentFloating(this)) {
             ConstellationLogger.getDefault().viewInfo(this, "Hidden / Floating");
@@ -120,7 +120,7 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
     @Override
     protected void componentActivated() {
         super.componentActivated();
-        
+
         isVisible = true;
         if (WindowManager.getDefault().isTopComponentFloating(this)) {
             ConstellationLogger.getDefault().viewInfo(this, "Activated / Floating");
@@ -135,7 +135,7 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
     @Override
     protected void componentDeactivated() {
         super.componentDeactivated();
-        
+
         isVisible = true;
         if (WindowManager.getDefault().isTopComponentFloating(this)) {
             ConstellationLogger.getDefault().viewInfo(this, "Deactivated / Floating");

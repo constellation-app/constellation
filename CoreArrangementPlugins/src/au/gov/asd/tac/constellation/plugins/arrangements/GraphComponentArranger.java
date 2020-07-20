@@ -15,9 +15,9 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.plugins.arrangements.subgraph.ComponentSubgraph;
+import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
 
 /**
  * A GraphTaxonomyArranger that uses a taxonomy where each taxon is a component.

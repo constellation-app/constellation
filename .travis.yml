@@ -5,7 +5,7 @@ cache:
     - ${HOME}/.ivy2/cache
 
 env:
-  - RUNNER_IMAGE="constellationapplication/netbeans-runner:11.3"
+  - RUNNER_IMAGE="constellationapplication/netbeans-runner:12"
 
 # Disable shallow clone for SCM SonarCloud analysis
 git:

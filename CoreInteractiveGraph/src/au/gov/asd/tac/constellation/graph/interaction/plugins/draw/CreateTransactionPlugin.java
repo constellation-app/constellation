@@ -82,7 +82,7 @@ public final class CreateTransactionPlugin extends SimpleEditPlugin {
         final int graphLayerAttrId = LayersConcept.GraphAttribute.LAYER_MASK_SELECTED.get(graph);
 
         final int txId = graph.addTransaction(source, destination, directed);
-        
+
         // add layer mask attributes
         if (graphLayerAttrId != Graph.NOT_FOUND && txLayerAttrId != Graph.NOT_FOUND) {
             int layer = graph.getIntValue(graphLayerAttrId, 0);

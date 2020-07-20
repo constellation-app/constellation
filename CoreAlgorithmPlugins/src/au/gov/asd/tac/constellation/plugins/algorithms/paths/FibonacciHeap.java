@@ -107,7 +107,7 @@ public final class FibonacciHeap<T> {
         /* Create the entry object, which is a circularly-linked list of length
          * one.
          */
-        Entry<T> result = new Entry<>(value, priority);
+        final Entry<T> result = new Entry<>(value, priority);
 
         /* Merge this singleton list with the tree list. */
         mMin = mergeLists(mMin, result);
@@ -163,9 +163,9 @@ public final class FibonacciHeap<T> {
      * @param two The second Fibonacci heap to merge.
      * @return A new FibonacciHeap containing all of the elements of both heaps.
      */
-    public static <T> FibonacciHeap<T> merge(FibonacciHeap<T> one, FibonacciHeap<T> two) {
+    public static <T> FibonacciHeap<T> merge(final FibonacciHeap<T> one, final FibonacciHeap<T> two) {
         /* Create a new FibonacciHeap to hold the result. */
-        FibonacciHeap<T> result = new FibonacciHeap<>();
+        final FibonacciHeap<T> result = new FibonacciHeap<>();
 
         /* Merge the two Fibonacci heap root lists together.  This helper function
          * also computes the min of the two lists, so we can store the result in
@@ -204,7 +204,7 @@ public final class FibonacciHeap<T> {
         --mSize;
 
         /* Grab the minimum element so we know what to return. */
-        Entry<T> minElem = mMin;
+        final Entry<T> minElem = mMin;
 
         /* Now, we need to get rid of this element from the list of roots.  There
          * are two cases to consider.  First, if this is the only element in the
@@ -253,7 +253,7 @@ public final class FibonacciHeap<T> {
          * ArrayList where the entry at position i is either null or the
          * unique tree of degree i.
          */
-        List<Entry<T>> treeTable = new ArrayList<>();
+        final List<Entry<T>> treeTable = new ArrayList<>();
 
         /* We need to traverse the entire list, but since we're going to be
          * messing around with it we have to be careful not to break our
@@ -262,7 +262,7 @@ public final class FibonacciHeap<T> {
          * spent a bit of overhead adding all of the nodes to a list, and
          * then will visit each element of this list in order.
          */
-        List<Entry<T>> toVisit = new ArrayList<>();
+        final List<Entry<T>> toVisit = new ArrayList<>();
 
         /* To add everything, we'll iterate across the elements until we
          * find the first element twice.  We check this by looping while the
@@ -293,14 +293,14 @@ public final class FibonacciHeap<T> {
                 }
 
                 /* Otherwise, merge with what's there. */
-                Entry<T> other = treeTable.get(curr.mDegree);
+                final Entry<T> other = treeTable.get(curr.mDegree);
                 treeTable.set(curr.mDegree, null); // Clear the slot
 
                 /* Determine which of the two trees has the smaller root, storing
                  * the two tree accordingly.
                  */
-                Entry<T> min = (other.mPriority < curr.mPriority) ? other : curr;
-                Entry<T> max = (other.mPriority < curr.mPriority) ? curr : other;
+                final Entry<T> min = (other.mPriority < curr.mPriority) ? other : curr;
+                final Entry<T> max = (other.mPriority < curr.mPriority) ? curr : other;
 
                 /* Break max out of the root list, then merge it into min's child
                  * list.
@@ -452,7 +452,7 @@ public final class FibonacciHeap<T> {
              *              +-----------------+
              *
              */
-            Entry<T> oneNext = one.mNext; // Cache this since we're about to overwrite it.
+            final Entry<T> oneNext = one.mNext; // Cache this since we're about to overwrite it.
             one.mNext = two.mNext;
             one.mNext.mPrev = one;
             two.mNext = oneNext;

@@ -32,6 +32,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
 import au.gov.asd.tac.constellation.plugins.parameters.types.DateTimeRange;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.AnalyticIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
@@ -88,6 +89,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
+import org.apache.commons.collections.CollectionUtils;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.NotificationDisplayer;
@@ -134,7 +136,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
     private final Button executeButton = new Button(EXECUTE_GO);
 
     // search plugins
-    private TextField searchPluginTextField;
+    private final TextField searchPluginTextField;
 
     // favourites
     private static final String ADD_FAVOURITE = "Add";
@@ -240,7 +242,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
             }
             // run the selected queries
             final ObservableList<Tab> tabs = dataAccessTabPane.getTabs();
-            if (tabs != null && currentGraphState != null && !tabs.isEmpty() && currentGraphState.goButtonIsGo) {
+            if (CollectionUtils.isNotEmpty(tabs) && currentGraphState != null && currentGraphState.goButtonIsGo) {
                 setExecuteButtonToStop();
                 graphState.get(GraphManager.getDefault().getActiveGraph().getId()).queriesRunning = true;
 
@@ -427,8 +429,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         });
 
         if (selectedPlugins.isEmpty()) {
-            final NotifyDescriptor nd = new NotifyDescriptor.Message("No plugins selected.", NotifyDescriptor.WARNING_MESSAGE);
-            DialogDisplayer.getDefault().notify(nd);
+            NotifyDisplayer.display("No plugins selected.", NotifyDescriptor.WARNING_MESSAGE);
         } else {
             final StringBuilder message = new StringBuilder(300);
             message.append("Add or remove plugins from your favourites category.\n\n");
@@ -1017,7 +1018,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                         final String id = param.getKey();
                         final Object obj = param.getValue().getObjectValue();
                         if (obj != null && obj.toString() != null && !obj.toString().isEmpty()) {
-                            String value = param.getValue().getStringValue();
+                            final String value = param.getValue().getStringValue();
                             RecentParameterValues.storeRecentValue(id, value);
                         }
                     }

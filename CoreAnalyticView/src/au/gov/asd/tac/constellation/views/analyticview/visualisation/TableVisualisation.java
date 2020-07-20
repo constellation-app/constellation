@@ -43,6 +43,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.VBox;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -109,7 +110,7 @@ public class TableVisualisation<C extends AnalyticData> extends InternalVisualis
         filteredData.addListener((Change<? extends C> change) -> table.refresh());
         tableFilter.textProperty().addListener((observable, oldValue, newValue) -> {
             filteredData.setPredicate(item -> {
-                if (newValue == null || newValue.isEmpty()) {
+                if (StringUtils.isBlank(newValue)) {
                     return true;
                 }
 

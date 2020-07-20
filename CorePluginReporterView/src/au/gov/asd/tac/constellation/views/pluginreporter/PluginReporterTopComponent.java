@@ -66,7 +66,7 @@ import org.openide.windows.TopComponent;
 })
 public final class PluginReporterTopComponent extends JavaFxTopComponent<PluginReporterPane> implements GraphReportListener {
 
-    private PluginReporterPane reporterPane;
+    private final PluginReporterPane reporterPane;
 
     public PluginReporterTopComponent() {
         initComponents();
@@ -74,15 +74,6 @@ public final class PluginReporterTopComponent extends JavaFxTopComponent<PluginR
         setToolTipText(Bundle.HINT_PluginReporterTopComponent());
         reporterPane = new PluginReporterPane(this);
         initContent();
-    }
-
-    /**
-     *
-     * @return boolean value if the view should update - depending on the top
-     * component's visibility status
-     */
-    public boolean shouldUpdate() {
-        return this.needsUpdate();
     }
 
     /**
@@ -128,12 +119,12 @@ public final class PluginReporterTopComponent extends JavaFxTopComponent<PluginR
     void readProperties(java.util.Properties p) {
         // Required for @ConvertAsProperties, intentionally left blank
     }
-    
+
     @Override
     protected void componentShowing() {
         super.componentShowing();
         handleNewGraph(GraphManager.getDefault().getActiveGraph());
-    }  
+    }
 
     @Override
     protected void handleNewGraph(final Graph graph) {

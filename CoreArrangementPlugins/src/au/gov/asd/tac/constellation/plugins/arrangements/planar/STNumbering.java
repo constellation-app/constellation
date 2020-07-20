@@ -51,8 +51,6 @@ public class STNumbering {
         public final Set<TreeNode> defactoPendants;
         public final Set<Integer> pendants;
         private Set<TreeNode> componentNeighours = null;
-        //TODO: Determine whether this is still required
-        private boolean old = false;
 
         public TreeNode(final int vxID) {
             this(vxID, null);
@@ -79,7 +77,7 @@ public class STNumbering {
         public int getPreorder() {
             return preorder;
         }
-        
+
     }
 
     private class NodeResult {

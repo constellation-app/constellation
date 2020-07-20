@@ -15,28 +15,38 @@
  */
 package au.gov.asd.tac.constellation.views.layers.utilities;
 
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.LayersConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.List;
 
 /**
- * Write a given set of queries to the active graph.
+ * Write a given set of queries to the active graph and set the current bit mask
+ * to the selected layer.
  *
  * @author aldebaran30701
  */
-public final class UpdateGraphQueriesPlugin extends SimpleEditPlugin {
+public final class UpdateLayerSelectionPlugin extends SimpleEditPlugin {
 
     private final List<String> queries;
+    private final int bitmask;
 
-    public UpdateGraphQueriesPlugin(final List<String> queries) {
+    public UpdateLayerSelectionPlugin(final List<String> queries, final int bitmask) {
         this.queries = queries;
+        this.bitmask = bitmask;
     }
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) {
-        graph.setLayerQueries(queries);
+        final int queriesId = LayersConcept.GraphAttribute.LAYER_QUERIES.get(graph);
+        if (queriesId != Graph.NOT_FOUND) {
+            graph.setObjectValue(queriesId, 0, queries);
+        }
+        final int bitmaskAttributeId = LayersConcept.GraphAttribute.LAYER_MASK_SELECTED.ensure(graph);
+        graph.setIntValue(bitmaskAttributeId, 0, bitmask);
     }
 
     @Override
@@ -46,6 +56,6 @@ public final class UpdateGraphQueriesPlugin extends SimpleEditPlugin {
 
     @Override
     public String getName() {
-        return "Layers View: Update Graph Queries";
+        return "Layers View: Update Layer Selection";
     }
 }
