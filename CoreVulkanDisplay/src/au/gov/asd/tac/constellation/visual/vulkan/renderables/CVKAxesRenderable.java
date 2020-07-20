@@ -91,9 +91,11 @@ import org.lwjgl.vulkan.VkVertexInputBindingDescription;
 
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
+import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKShaderUtils.ShaderKind.GEOMETRY_SHADER;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKAssert;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKLOGGER;
+import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VerifyInRenderThread;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkFailed;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkSucceeded;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
@@ -288,8 +290,8 @@ public class CVKAxesRenderable extends CVKRenderable {
     private void DestroyDescriptorSets(){
         // TODO HYDRA
         //pDescriptorSets empty list
-                
         //vkDestroyDescriptorSetLayout(cvkDevice.GetDevice(), hDescriptorLayout, null);
+        //vkFreeDescriptorSets()
     }
     
     private void DestroyPipeline() {     
@@ -325,7 +327,7 @@ public class CVKAxesRenderable extends CVKRenderable {
         return ret;
     }
     
-    private float calculateProjectionScale(final int[] viewport) {
+    private float CalculateProjectionScale(final int[] viewport) {
         // calculate the number of pixels a scene object of y-length 1 projects to.
         final Vector3f unitPosition = new Vector3f(0, 1, 0);
         final Vector4f proj1 = new Vector4f();
@@ -338,9 +340,7 @@ public class CVKAxesRenderable extends CVKRenderable {
     } 
     
     
-    private int CreateUniformBuffers(MemoryStack stack, CVKSwapChain cvkSwapChain){
-        int ret = VK_SUCCESS;
-        
+    private int CreateUniformBuffers(MemoryStack stack, CVKSwapChain cvkSwapChain){       
         int imageCount = cvkSwapChain.GetImageCount(); 
         
         vertexUniformBuffers = new ArrayList<>();     
@@ -380,7 +380,7 @@ public class CVKAxesRenderable extends CVKRenderable {
                
         final int dx = cvkSwapChain.GetWidth() / 2 - AXES_OFFSET;
         final int dy = -cvkSwapChain.GetHeight() / 2 + AXES_OFFSET;
-        pScale = calculateProjectionScale(viewport);
+        pScale = CalculateProjectionScale(viewport);
         Graphics3DUtilities.moveByProjection(ZERO_3F, IDENTITY_44F, viewport, dx, dy, topRightCorner);
         
         // LIFTED FROM AxesRenerable.display(...)
@@ -1023,5 +1023,23 @@ public class CVKAxesRenderable extends CVKRenderable {
     public VkCommandBuffer GetCommandBuffer(int imageIndex)
     {
         return commandBuffers.get(imageIndex).GetVKCommandBuffer(); 
-    }    
+    } 
+    
+     public CVKRenderableUpdateTask TaskUpdateCamera() {
+        //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
+        
+        
+        //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.DisplayUpdate) ===//
+        return (cvkSwapChain, imageIndex) -> {
+            VerifyInRenderThread();
+            
+            if (vertexUniformBuffers.isEmpty()){
+                return;
+            }
+                
+            try (MemoryStack stack = stackPush()) {
+                UpdateUniformBuffers(stack, cvkSwapChain);
+            }
+        };
+    }  
 }
