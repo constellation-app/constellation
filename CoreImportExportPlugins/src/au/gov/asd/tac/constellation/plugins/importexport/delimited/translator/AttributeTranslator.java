@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.plugins.importexport.delimited.translator;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -94,9 +95,7 @@ public abstract class AttributeTranslator implements Comparable<AttributeTransla
         this.priority = priority;
 
         this.attributeTypes = new HashSet<>();
-        for (String attributeType : attributeTypes) {
-            this.attributeTypes.add(attributeType);
-        }
+        this.attributeTypes.addAll(Arrays.asList(attributeTypes));
     }
 
     /**

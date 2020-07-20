@@ -157,18 +157,19 @@ public class StringListPanel extends javax.swing.JPanel {
     private void splitLinesButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_splitLinesButtonActionPerformed
     {//GEN-HEADEREND:event_splitLinesButtonActionPerformed
         final String delim;
-        if (delimiter.equals(COMMA)) {
-            delim = SeparatorConstants.COMMA;
-        } //        else if (delimiter.equals(NEW_LINE))
-        //        {
-        //            delim = SeparatorConstants.NEWLINE;
-        //        }
-        else if (delimiter.equals(TAB)) {
-            delim = SeparatorConstants.TAB;
-        } else if (delimiter.equals(SEMI_COLON)) {
-            delim = SeparatorConstants.SEMICOLON;
-        } else {
-            delim = txtStringDelimiter.getText();
+        switch (delimiter) {
+            case COMMA:
+                delim = SeparatorConstants.COMMA;
+                break;
+            case TAB:
+                delim = SeparatorConstants.TAB;
+                break;
+            case SEMI_COLON:
+                delim = SeparatorConstants.SEMICOLON;
+                break;
+            default:
+                delim = txtStringDelimiter.getText();
+                break;
         }
 
         final String[] lines = txtContent.getText().split(delim);

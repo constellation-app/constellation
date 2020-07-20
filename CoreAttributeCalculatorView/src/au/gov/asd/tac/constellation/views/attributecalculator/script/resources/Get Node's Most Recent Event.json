@@ -1,7 +1,0 @@
-{
-    "elementType": "Node",
-    "attrToSet": "Most Recent Event",
-    "attrType": "datetime",
-    "script": "times = for_transactions(DateTime)\nif times:\n\treturn max(times)\nreturn None",
-    "description": "Find the datetime of the most recent event that each node was involved in and store it in a new datetime attribute."
-}

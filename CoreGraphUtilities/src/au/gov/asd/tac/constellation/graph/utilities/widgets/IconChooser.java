@@ -127,7 +127,7 @@ public final class IconChooser extends javax.swing.JPanel implements TreeSelecti
             selectedPath.add(selectedFolder);
         }
         if (selectedFolder != null && selectedPath != null) {
-            final TreePath path = new TreePath(selectedPath.toArray(new IconTreeFolder[0]));
+            final TreePath path = new TreePath(selectedPath.toArray(new IconTreeFolder[selectedPath.size()]));
             iconFolders.expandPath(path);
             iconFolders.scrollPathToVisible(path);
             iconFolders.setSelectionPath(path);

@@ -15,12 +15,12 @@
  */
 package au.gov.asd.tac.constellation.views.analyticview.analytics;
 
-import au.gov.asd.tac.constellation.plugins.algorithms.sna.SnaConcept;
-import au.gov.asd.tac.constellation.plugins.algorithms.sna.centrality.DegreeCentralityPlugin;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
+import au.gov.asd.tac.constellation.plugins.algorithms.sna.SnaConcept;
+import au.gov.asd.tac.constellation.plugins.algorithms.sna.centrality.DegreeCentralityPlugin;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import java.util.Collections;
 import java.util.HashSet;

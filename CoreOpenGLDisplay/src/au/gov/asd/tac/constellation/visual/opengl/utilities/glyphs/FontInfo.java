@@ -80,7 +80,7 @@ public class FontInfo {
             font = new Font(fontName, fontStyle, fontSize);
         }
 
-        if (font.getFamily(Locale.US).equals(Font.DIALOG)) {
+        if (font.getFamily(Locale.ENGLISH).equals(Font.DIALOG)) {
             // From the Javadoc:
             // If the name parameter represents something other than a logical
             // font, i.e. is interpreted as a physical font face or family, and

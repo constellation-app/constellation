@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.graph.schema.analytic.attribute.objects;
 
-import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.objects.RawData;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;

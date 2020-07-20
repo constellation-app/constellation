@@ -29,8 +29,7 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.views.layers.layer.LayerDescription;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewState;
-import au.gov.asd.tac.constellation.views.layers.utilities.UpdateGraphBitmaskPlugin;
-import au.gov.asd.tac.constellation.views.layers.utilities.UpdateGraphQueriesPlugin;
+import au.gov.asd.tac.constellation.views.layers.utilities.UpdateLayerSelectionPlugin;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +56,8 @@ public class LayersViewController {
                 @Override
                 public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
                     LayersConcept.GraphAttribute.LAYER_MASK_SELECTED.ensure(graph);
+                    LayersConcept.GraphAttribute.LAYER_QUERIES.ensure(graph);
+                    LayersConcept.GraphAttribute.LAYER_PREFERENCES.ensure(graph);
                     LayersConcept.VertexAttribute.LAYER_MASK.ensure(graph);
                     LayersConcept.VertexAttribute.LAYER_VISIBILITY.ensure(graph);
                     LayersConcept.TransactionAttribute.LAYER_MASK.ensure(graph);
@@ -67,6 +68,7 @@ public class LayersViewController {
     }
 
     /**
+     * Get all layer queries from the Layer View and store them on the qraph.
      * Update the bitmask used to determine visibility of elements on the graph.
      */
     public void execute() {
@@ -74,29 +76,16 @@ public class LayersViewController {
         if (pane == null) {
             return;
         }
+        final List<String> layerQueries = new ArrayList<>();
         int newBitmask = 0b0;
         for (final LayerDescription layer : pane.getlayers()) {
+            layerQueries.add(layer.getLayerQuery().isEmpty() ? null : layer.getLayerQuery());
             newBitmask |= layer.getCurrentLayerVisibility() ? (1 << layer.getLayerIndex() - 1) : 0;
         }
         // if the newBitmask is 1, it means none of the boxes are checked. therefore display default layer 1 (All nodes)
         newBitmask = (newBitmask == 0) ? 0b1 : (newBitmask > 1) ? newBitmask & ~0b1 : newBitmask;
-        PluginExecution.withPlugin(new UpdateGraphBitmaskPlugin(newBitmask))
-                .executeLater(GraphManager.getDefault().getActiveGraph());
-    }
 
-    /**
-     * Get all layer queries from the Layer View and store them on the qraph.
-     */
-    public void submit() {
-        final LayersViewPane pane = parent.getContent();
-        if (pane == null) {
-            return;
-        }
-        final List<String> layerQueries = new ArrayList<>();
-        for (final LayerDescription layer : pane.getlayers()) {
-            layerQueries.add(layer.getLayerQuery().isEmpty() ? null : layer.getLayerQuery());
-        }
-        PluginExecution.withPlugin(new UpdateGraphQueriesPlugin(layerQueries))
+        PluginExecution.withPlugin(new UpdateLayerSelectionPlugin(layerQueries, newBitmask))
                 .executeLater(GraphManager.getDefault().getActiveGraph());
     }
 
@@ -133,7 +122,7 @@ public class LayersViewController {
      */
     private static final class LayersViewStateReader extends SimpleReadPlugin {
 
-        private LayersViewPane pane;
+        private final LayersViewPane pane;
 
         public LayersViewStateReader(final LayersViewPane pane) {
             this.pane = pane;
@@ -168,7 +157,7 @@ public class LayersViewController {
      */
     private static final class LayersViewStateWriter extends SimpleEditPlugin {
 
-        private List<LayerDescription> layers;
+        private final List<LayerDescription> layers;
 
         public LayersViewStateWriter(final List<LayerDescription> layers) {
             this.layers = layers;

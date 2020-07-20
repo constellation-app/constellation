@@ -27,9 +27,9 @@ import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteReader;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
-import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
 import au.gov.asd.tac.constellation.graph.versioning.UpdateProvider;
 import au.gov.asd.tac.constellation.graph.versioning.UpdateProviderManager;
+import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
 import au.gov.asd.tac.constellation.utilities.gui.IoProgress;
 import au.gov.asd.tac.constellation.utilities.stream.ExtendedBuffer;
 import com.fasterxml.jackson.core.JsonParser;
@@ -104,11 +104,12 @@ public final class GraphJsonReader {
     }
 
     public Graph readGraphZip(final String name, InputStream bin, final IoProgress progress) throws IOException, GraphParseException {
-        progress.start(100);
-        progress.progress("Reading file: " + name);
-
-        byteReader = new GraphByteReader(bin);
-        bin.close();
+        try (bin) {
+            progress.start(100);
+            progress.progress("Reading file: " + name);
+            
+            byteReader = new GraphByteReader(bin);
+        }
 
         try {
             // Get the graph first.

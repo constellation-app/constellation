@@ -413,7 +413,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
 
             @Override
             protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                Set<Integer> verticesToPath = new HashSet<>();
+                final Set<Integer> verticesToPath = new HashSet<>();
                 for (int pos = 0; pos < graph.getVertexCount(); pos++) {
                     Group group = state.groups[pos];
                     if (group == null) {
@@ -424,8 +424,8 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                     }
                     verticesToPath.add(group.getVertex());
                 }
-                ArrayList<Integer> verticesToPathList = new ArrayList<>(verticesToPath);
-                DijkstraServices ds = new DijkstraServices(graph, verticesToPathList, false);
+                final ArrayList<Integer> verticesToPathList = new ArrayList<>(verticesToPath);
+                final DijkstraServices ds = new DijkstraServices(graph, verticesToPathList, false);
                 ds.queryPaths(true);
             }
 
@@ -437,7 +437,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
             return;
         }
 
-        boolean wasColored = state.colored;
+        final boolean wasColored = state.colored;
         state.colored = !state.colored;
 
         final ColorClusters colourPlugin = new ColorClusters(!wasColored);
@@ -572,7 +572,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
         }
 
         final Update update = new Update(state);
-        Future<?> f = PluginExecution.withPlugin(update).interactively(true).executeLater(graph);
+        final Future<?> f = PluginExecution.withPlugin(update).interactively(true).executeLater(graph);
         if (state.colored && state.interactive) {
             final ColorClusters color = new ColorClusters(true);
             PluginExecution.withPlugin(color).interactively(true).waitingFor(f).executeLater(graph);
@@ -590,7 +590,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
 
         long smc;
         final long mc;
-        ReadableGraph rg = graph.getReadableGraph();
+        final ReadableGraph rg = graph.getReadableGraph();
         try {
 
             // Retrieve the COI state attribute, attribute mod counter, and structural mod counter from the graph
@@ -636,7 +636,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
         if (node != null) {
             graphNode = node;
             graph = graphNode.getGraph();
-            ReadableGraph rg = graph.getReadableGraph();
+            final ReadableGraph rg = graph.getReadableGraph();
             try {
                 final int stateAttr = ClusteringConcept.MetaAttribute.HIERARCHICAL_CLUSTERING_STATE.get(rg);
                 state = stateAttr != Graph.NOT_FOUND ? (HierarchicalState) rg.getObjectValue(stateAttr, 0) : null;
@@ -684,10 +684,10 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
 
         @Override
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-            int vxColorRef = VisualConcept.GraphAttribute.NODE_COLOR_REFERENCE.ensure(graph);
-            int txColorRef = VisualConcept.GraphAttribute.TRANSACTION_COLOR_REFERENCE.ensure(graph);
-            String vxColorAttrName = setColors ? ClusteringConcept.VertexAttribute.HIERARCHICAL_COLOUR.getName() : null;
-            String txColorAttrName = setColors ? ClusteringConcept.TransactionAttribute.HIERARCHICAL_COLOUR.getName() : null;
+            final int vxColorRef = VisualConcept.GraphAttribute.NODE_COLOR_REFERENCE.ensure(graph);
+            final int txColorRef = VisualConcept.GraphAttribute.TRANSACTION_COLOR_REFERENCE.ensure(graph);
+            final String vxColorAttrName = setColors ? ClusteringConcept.VertexAttribute.HIERARCHICAL_COLOUR.getName() : null;
+            final String txColorAttrName = setColors ? ClusteringConcept.TransactionAttribute.HIERARCHICAL_COLOUR.getName() : null;
             graph.setStringValue(vxColorRef, 0, vxColorAttrName);
             graph.setStringValue(txColorRef, 0, txColorAttrName);
         }
@@ -710,19 +710,19 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
             state.redrawCount++;
 
-            int vxOverlayColorAttr = ClusteringConcept.VertexAttribute.HIERARCHICAL_COLOUR.ensure(graph);
-            int txOverlayColorAttr = ClusteringConcept.TransactionAttribute.HIERARCHICAL_COLOUR.ensure(graph);
-            int vertexClusterAttribute = ClusteringConcept.VertexAttribute.HIERARCHICAL_CLUSTER.ensure(graph);
-            int vertexDimmedAttribute = VisualConcept.VertexAttribute.DIMMED.ensure(graph);
-            int vertexVisibilityAttribute = VisualConcept.VertexAttribute.VISIBILITY.ensure(graph);
-            int transactionDimmedAttribute = VisualConcept.TransactionAttribute.DIMMED.ensure(graph);
-            int transactionVisibilityAttribute = VisualConcept.TransactionAttribute.VISIBILITY.ensure(graph);
+            final int vxOverlayColorAttr = ClusteringConcept.VertexAttribute.HIERARCHICAL_COLOUR.ensure(graph);
+            final int txOverlayColorAttr = ClusteringConcept.TransactionAttribute.HIERARCHICAL_COLOUR.ensure(graph);
+            final int vertexClusterAttribute = ClusteringConcept.VertexAttribute.HIERARCHICAL_CLUSTER.ensure(graph);
+            final int vertexDimmedAttribute = VisualConcept.VertexAttribute.DIMMED.ensure(graph);
+            final int vertexVisibilityAttribute = VisualConcept.VertexAttribute.VISIBILITY.ensure(graph);
+            final int transactionDimmedAttribute = VisualConcept.TransactionAttribute.DIMMED.ensure(graph);
+            final int transactionVisibilityAttribute = VisualConcept.TransactionAttribute.VISIBILITY.ensure(graph);
 
             int nextCluster = 0;
 
-            int vertexCount = graph.getVertexCount();
+            final int vertexCount = graph.getVertexCount();
             for (int pos = 0; pos < vertexCount; pos++) {
-                int vertex = graph.getVertex(pos);
+                final int vertex = graph.getVertex(pos);
                 Group group = state.groups[pos];
                 if (group == null) {
                     continue;
@@ -755,30 +755,30 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                 }
             }
 
-            int linkCount = graph.getLinkCount();
+            final int linkCount = graph.getLinkCount();
             for (int p = 0; p < linkCount; p++) {
-                int link = graph.getLink(p);
-                int highVertex = graph.getLinkHighVertex(link);
-                int lowVertex = graph.getLinkLowVertex(link);
-                ConstellationColor highVertexColor = graph.getObjectValue(vxOverlayColorAttr, highVertex);
-                ConstellationColor lowVertexColor = graph.getObjectValue(vxOverlayColorAttr, lowVertex);
-                boolean highDimmed = graph.getBooleanValue(vertexDimmedAttribute, highVertex);
-                boolean lowDimmed = graph.getBooleanValue(vertexDimmedAttribute, lowVertex);
+                final int link = graph.getLink(p);
+                final int highVertex = graph.getLinkHighVertex(link);
+                final int lowVertex = graph.getLinkLowVertex(link);
+                final ConstellationColor highVertexColor = graph.getObjectValue(vxOverlayColorAttr, highVertex);
+                final ConstellationColor lowVertexColor = graph.getObjectValue(vxOverlayColorAttr, lowVertex);
+                final boolean highDimmed = graph.getBooleanValue(vertexDimmedAttribute, highVertex);
+                final boolean lowDimmed = graph.getBooleanValue(vertexDimmedAttribute, lowVertex);
 
                 if (state.interactive) {
                     // if transaction is between a cluster, do not dim or hide
                     if (highVertexColor == lowVertexColor && !highDimmed && !lowDimmed) {
-                        int transactionCount = graph.getLinkTransactionCount(link);
+                        final int transactionCount = graph.getLinkTransactionCount(link);
                         for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
-                            int transaction = graph.getLinkTransaction(link, transactionPosition);
+                            final int transaction = graph.getLinkTransaction(link, transactionPosition);
                             graph.setObjectValue(txOverlayColorAttr, transaction, highVertexColor);
                             graph.setBooleanValue(transactionDimmedAttribute, transaction, false);
                             graph.setFloatValue(transactionVisibilityAttribute, transaction, 2.0f);
                         }
                     } else { // dim or hide transaction depending on state selected.
-                        int transactionCount = graph.getLinkTransactionCount(link);
+                        final int transactionCount = graph.getLinkTransactionCount(link);
                         for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
-                            int transaction = graph.getLinkTransaction(link, transactionPosition);
+                            final int transaction = graph.getLinkTransaction(link, transactionPosition);
                             if (state.excludedElementsDimmed) {
                                 graph.setBooleanValue(transactionDimmedAttribute, transaction, true);
                                 graph.setFloatValue(transactionVisibilityAttribute, transaction, 2.0f);
@@ -789,9 +789,9 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                         }
                     }
                 } else { // when not interactive, don't dim or hide transactions
-                    int transactionCount = graph.getLinkTransactionCount(link);
+                    final int transactionCount = graph.getLinkTransactionCount(link);
                     for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
-                        int transaction = graph.getLinkTransaction(link, transactionPosition);
+                        final int transaction = graph.getLinkTransaction(link, transactionPosition);
                         graph.setObjectValue(txOverlayColorAttr, transaction, highVertexColor);
                         graph.setBooleanValue(transactionDimmedAttribute, transaction, false);
                         graph.setFloatValue(transactionVisibilityAttribute, transaction, 2.0f);

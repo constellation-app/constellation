@@ -200,7 +200,7 @@ public class KTrussState {
         return getkTrussToIndex()[getkTrussToIndex().length - 1] + 1;
     }
 
-    public boolean isNodeInComponent(int vxID, int component) {
+    public boolean isNodeInComponent(final int vxID, final int component) {
         if (getNodeToComponent().get(vxID) == null) {
             return false;
         }
@@ -211,13 +211,13 @@ public class KTrussState {
         }
     }
 
-    private boolean hasComponentParent(int component, int parent) {
+    private boolean hasComponentParent(final int component, final int parent) {
         return (component == parent
                 || (!componentTree.get(component).equals(component)
                 && hasComponentParent(getComponentTree().get(component), parent)));
     }
 
-    public boolean isLinkInComponent(int lnID, int component) {
+    public boolean isLinkInComponent(final int lnID, final int component) {
         if (getLinkToComponent().get(lnID) == null) {
             return false;
         }

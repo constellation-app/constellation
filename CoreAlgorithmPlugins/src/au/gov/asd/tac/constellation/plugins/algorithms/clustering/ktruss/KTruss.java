@@ -81,7 +81,7 @@ public class KTruss {
         }
 
         @Override
-        public void recordVertexCluster(int vxID, int clusterNum) {
+        public void recordVertexCluster(final int vxID, final int clusterNum) {
             graph.setIntValue(vertexKTrussAttribute, vxID, clusterNum);
             if (clusterNum != 0) {
                 totalVertsInTrusses++;
@@ -89,7 +89,7 @@ public class KTruss {
         }
 
         @Override
-        public void recordTransactionCluster(int txID, int clusterNum) {
+        public void recordTransactionCluster(final int txID, final int clusterNum) {
             graph.setIntValue(transactionKTrussAttribute, txID, clusterNum);
         }
 
@@ -107,15 +107,15 @@ public class KTruss {
 
             // Record an array of which values of k caused changes in the graph,
             // ie. those values of k for which the graph contained k-1 trusses that were not k-trusses.
-            boolean[] extantKTrusses = new boolean[highestK + 2];
+            final boolean[] extantKTrusses = new boolean[highestK + 2];
             Arrays.fill(extantKTrusses, false);
-            Iterator<Integer> iter = significantClusters.iterator();
+            final Iterator<Integer> iter = significantClusters.iterator();
             while (iter.hasNext()) {
                 extantKTrusses[iter.next()] = true;
             }
 
             // Get the current KTrussState
-            int kTrussStateAttr = ClusteringConcept.MetaAttribute.K_TRUSS_CLUSTERING_STATE.ensure(graph);
+            final int kTrussStateAttr = ClusteringConcept.MetaAttribute.K_TRUSS_CLUSTERING_STATE.ensure(graph);
             final KTrussState prevKTrussState = (KTrussState) graph.getObjectValue(kTrussStateAttr, 0);
 
             // Create and set the new KTrussState, respecting the visual options of the previos KTrussState if present
@@ -139,14 +139,14 @@ public class KTruss {
 
     public static void run(final GraphWriteMethods graph, final KTrussResultHandler resultHandler) {
 
-        BitSet vertices = new BitSet();
+        final BitSet vertices = new BitSet();
         vertices.set(0, graph.getVertexCount());
-        BitSet links = new BitSet();
+        final BitSet links = new BitSet();
         links.set(0, graph.getLinkCount());
 
         // Exclude all links that are loops
         for (int linkPosition = 0; linkPosition < graph.getLinkCount(); linkPosition++) {
-            int link = graph.getLink(linkPosition);
+            final int link = graph.getLink(linkPosition);
             if (graph.getLinkLowVertex(link) == graph.getLinkHighVertex(link)) {
                 links.clear(linkPosition);
             }
@@ -163,11 +163,11 @@ public class KTruss {
 
             // Cull all vertices that do not have enough links
             for (int vertexPosition = vertices.nextSetBit(0); vertexPosition >= 0; vertexPosition = vertices.nextSetBit(vertexPosition + 1)) {
-                int vxID = graph.getVertex(vertexPosition);
+                final int vxID = graph.getVertex(vertexPosition);
 
                 // Count the number of surviving links connected to this vertex
                 int survivingLinkCount = 0;
-                int vertexLinkCount = graph.getVertexLinkCount(vxID);
+                final int vertexLinkCount = graph.getVertexLinkCount(vxID);
                 for (int vertexLinkPosition = 0; vertexLinkPosition < vertexLinkCount; vertexLinkPosition++) {
                     int link = graph.getVertexLink(vxID, vertexLinkPosition);
                     if (links.get(graph.getLinkPosition(link))) {
@@ -183,16 +183,16 @@ public class KTruss {
                     resultHandler.recordVertexCluster(vxID, lastK);
 
                     for (int vertexLinkPosition = 0; vertexLinkPosition < vertexLinkCount; vertexLinkPosition++) {
-                        int link = graph.getVertexLink(vxID, vertexLinkPosition);
-                        int linkPosition = graph.getLinkPosition(link);
+                        final int link = graph.getVertexLink(vxID, vertexLinkPosition);
+                        final int linkPosition = graph.getLinkPosition(link);
 
                         // If this link was still alive then cull it and record its k-truss cluster.
                         if (links.get(linkPosition)) {
                             links.clear(linkPosition);
 
-                            int transactionCount = graph.getLinkTransactionCount(link);
+                            final int transactionCount = graph.getLinkTransactionCount(link);
                             for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
-                                int txID = graph.getLinkTransaction(link, transactionPosition);
+                                final int txID = graph.getLinkTransaction(link, transactionPosition);
                                 resultHandler.recordTransactionCluster(txID, lastK);
                             }
                         }
@@ -202,9 +202,9 @@ public class KTruss {
 
             // Cull all surviving links that do not have enough support
             for (int linkPosition = links.nextSetBit(0); linkPosition >= 0; linkPosition = links.nextSetBit(linkPosition + 1)) {
-                int link = graph.getLink(linkPosition);
-                int lowVertex = graph.getLinkLowVertex(link);
-                int highVertex = graph.getLinkHighVertex(link);
+                final int link = graph.getLink(linkPosition);
+                final int lowVertex = graph.getLinkLowVertex(link);
+                final int highVertex = graph.getLinkHighVertex(link);
 
                 // Support is determined by counting the number of triangles that the link lies in
                 // This is determined by iterating through the neighbours of the lowVertex for the link
@@ -212,9 +212,9 @@ public class KTruss {
                 // and seeing how many are also neighbours of the highVertex for the link
                 int support = 0;
                 for (int neighbourPosition = 0; neighbourPosition < graph.getVertexNeighbourCount(lowVertex); neighbourPosition++) {
-                    int lowNeighbour = graph.getVertexNeighbour(lowVertex, neighbourPosition);
-                    int lowNeighbourLink = graph.getLink(lowVertex, lowNeighbour);
-                    int triangleLink = graph.getLink(lowNeighbour, highVertex);
+                    final int lowNeighbour = graph.getVertexNeighbour(lowVertex, neighbourPosition);
+                    final int lowNeighbourLink = graph.getLink(lowVertex, lowNeighbour);
+                    final int triangleLink = graph.getLink(lowNeighbour, highVertex);
                     if (triangleLink != Graph.NOT_FOUND && links.get(graph.getLinkPosition(triangleLink)) && links.get(graph.getLinkPosition(lowNeighbourLink))) {
                         support++;
                     }
@@ -225,9 +225,9 @@ public class KTruss {
                     links.clear(linkPosition);
                     modified = true;
 
-                    int transactionCount = graph.getLinkTransactionCount(link);
+                    final int transactionCount = graph.getLinkTransactionCount(link);
                     for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
-                        int txID = graph.getLinkTransaction(link, transactionPosition);
+                        final int txID = graph.getLinkTransaction(link, transactionPosition);
                         resultHandler.recordTransactionCluster(txID, lastK);
                     }
                 }
@@ -254,7 +254,7 @@ public class KTruss {
     // componentTree records the heirarchy of nested components
     // componentSizes records the number of nodes in each componenent
     // currentComponentNum keeps track of the total number of components
-    private static int getComponents(GraphWriteMethods graph, BitSet links, Map<Integer, Integer> nodeToComponent, Map<Integer, Integer> linkToComponent, Map<Integer, Integer> componentTree, Map<Integer, Integer> componentSizes, int currentComponentNum) {
+    private static int getComponents(final GraphWriteMethods graph, final BitSet links, final Map<Integer, Integer> nodeToComponent, final Map<Integer, Integer> linkToComponent, final Map<Integer, Integer> componentTree, final Map<Integer, Integer> componentSizes, int currentComponentNum) {
         // For each link remaining in the graph find all links connected to it, record them and their end vertices as belonging to the same component, and clear them.
         for (int linkPosition = links.nextSetBit(0); linkPosition >= 0; linkPosition = links.nextSetBit(linkPosition + 1)) {
             getComponentsHopper(graph, links, nodeToComponent, linkToComponent, componentTree, currentComponentNum, linkPosition);
@@ -273,18 +273,18 @@ public class KTruss {
     // Helper method for getComponents which uses recursion to 'hop out one'.
     // Iterates through the links adjacent of a given link, adding them to the same componenent, clearing them, and then calling itself recursively,
     // until it reaches a link with no adjacent links that haven't already been cleared.
-    private static void getComponentsHopper(GraphWriteMethods graph, BitSet links, Map<Integer, Integer> nodeToComponent, Map<Integer, Integer> linkToComponent, Map<Integer, Integer> componentTree, int currentComponentNum, int initialLinkPosition) {
+    private static void getComponentsHopper(final GraphWriteMethods graph, final BitSet links, final Map<Integer, Integer> nodeToComponent, final Map<Integer, Integer> linkToComponent, final Map<Integer, Integer> componentTree, final int currentComponentNum, final int initialLinkPosition) {
 
-        Stack<Integer> linksToHopFrom = new Stack<>();
+        final Stack<Integer> linksToHopFrom = new Stack<>();
         linksToHopFrom.add(initialLinkPosition);
         links.clear(initialLinkPosition);
 
         while (!linksToHopFrom.empty()) {
 
-            int linkPosition = linksToHopFrom.pop();
-            int link = graph.getLink(linkPosition);
-            int lowVertex = graph.getLinkLowVertex(link);
-            int highVertex = graph.getLinkHighVertex(link);
+            final int linkPosition = linksToHopFrom.pop();
+            final int link = graph.getLink(linkPosition);
+            final int lowVertex = graph.getLinkLowVertex(link);
+            final int highVertex = graph.getLinkHighVertex(link);
 
             // If the current link is already in a component, record the current component as being nested inside the link's previous component.
             if (linkToComponent.get(link) != null) {
@@ -300,8 +300,8 @@ public class KTruss {
 
             // Iterate through the links adjacent to this link's low vertex, adding them to the stack if they haven't already been
             for (int i = 0; i < graph.getVertexLinkCount(lowVertex); i++) {
-                int neighbourLink = graph.getVertexLink(lowVertex, i);
-                int neighbourLinkPosition = graph.getLinkPosition(neighbourLink);
+                final int neighbourLink = graph.getVertexLink(lowVertex, i);
+                final int neighbourLinkPosition = graph.getLinkPosition(neighbourLink);
                 if (links.get(neighbourLinkPosition)) {
 
                     links.clear(neighbourLinkPosition);
@@ -310,8 +310,8 @@ public class KTruss {
             }
             // Iterate through the links adjacent to this link's high vertex, calling this method recursively to record the component for and hop out from these links
             for (int i = 0; i < graph.getVertexLinkCount(highVertex); i++) {
-                int neighbourLink = graph.getVertexLink(highVertex, i);
-                int neighbourLinkPosition = graph.getLinkPosition(neighbourLink);
+                final int neighbourLink = graph.getVertexLink(highVertex, i);
+                final int neighbourLinkPosition = graph.getLinkPosition(neighbourLink);
                 if (links.get(neighbourLinkPosition)) {
                     links.clear(neighbourLinkPosition);
                     linksToHopFrom.push(neighbourLinkPosition);

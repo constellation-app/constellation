@@ -15,13 +15,13 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms.sna.global;
 
-import au.gov.asd.tac.constellation.plugins.algorithms.sna.SnaConcept;
-import au.gov.asd.tac.constellation.plugins.algorithms.sna.centrality.PathScoringUtilities;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.algorithms.sna.SnaConcept;
+import au.gov.asd.tac.constellation.plugins.algorithms.sna.centrality.PathScoringUtilities;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
@@ -64,11 +64,11 @@ public class GraphDistancePlugin extends SimpleEditPlugin {
                 maxEccentricity = eccentricity;
             }
         }
-        for (float distance : dis) {
+        for (final float distance : dis) {
             sum += distance;
         }
-        int n = graph.getVertexCount();
-        float averageDistance = sum / (n * (n - 1));
+        final int n = graph.getVertexCount();
+        final float averageDistance = sum / (n * (n - 1));
         final int radiusAttributeId = RADIUS.ensure(graph);
         final int diameterAttributeId = DIAMETER.ensure(graph);
         final int averageDistanceAttributeId = AVERAGE_DISTANCE.ensure(graph);

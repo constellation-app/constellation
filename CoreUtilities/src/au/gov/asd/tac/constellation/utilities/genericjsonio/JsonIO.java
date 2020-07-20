@@ -123,7 +123,7 @@ public class JsonIO {
             return;
         }
         String fileName = preferenceNameDetails.getSecond();
-        if (fileName.equals("")) {
+        if (fileName.isEmpty()) {
             // User didn't enter anyhting but hit OK ... this is a trigger to auto generate a filename
             fileName = String.format("%s at %s", System.getProperty("user.name"), TIMESTAMP_FORMAT.format(Instant.now()));
         }

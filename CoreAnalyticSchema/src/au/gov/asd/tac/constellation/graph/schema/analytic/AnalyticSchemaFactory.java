@@ -348,8 +348,7 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
                 graph.setObjectValue(transactionStyleAttribute, transactionId, type.getStyle());
             }
 
-            if (type != null && type != SchemaTransactionTypeUtilities.getDefaultType()
-                    && !Objects.equals(type.isDirected(), graph.getBooleanValue(transactionDirectedAttribute, transactionId))) {
+            if (type != null && !Objects.equals(type.isDirected(), graph.getBooleanValue(transactionDirectedAttribute, transactionId))) {
                 graph.setBooleanValue(transactionDirectedAttribute, transactionId, type.isDirected());
             }
 

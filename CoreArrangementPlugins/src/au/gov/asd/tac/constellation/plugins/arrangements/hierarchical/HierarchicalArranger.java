@@ -23,10 +23,10 @@ import au.gov.asd.tac.constellation.plugins.arrangements.AbstractInclusionGraph.
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomy;
 import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomyArranger;
-import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
 import au.gov.asd.tac.constellation.plugins.arrangements.circle.CircleArranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.grid.GridArranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.subgraph.InducedSubgraph;
+import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -91,4 +91,4 @@ public interface WritableGraph extends GraphWriteMethods {
      * WritableGraph is now considered closed and should not be used again.
      */
     public void rollBack();
- }
+}

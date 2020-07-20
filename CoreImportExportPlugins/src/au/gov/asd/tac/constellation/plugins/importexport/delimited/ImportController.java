@@ -35,6 +35,7 @@ import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.Import
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.InputSource;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,9 +44,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
-import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import org.apache.commons.collections.CollectionUtils;
 import org.openide.util.NbPreferences;
 
 /**
@@ -58,6 +62,7 @@ public class ImportController {
      * Pseudo-attribute to indicate directed transactions.
      */
     public static final String DIRECTED = "__directed__";
+    private static final Logger LOGGER = Logger.getLogger(ImportController.class.getName());
 
     /**
      * Limit the number of rows shown in the preview.
@@ -116,6 +121,23 @@ public class ImportController {
         keys = new HashSet<>();
     }
 
+    /**
+     * Common handling of user alerts/dialogs for the Delimited File Importer.
+     *
+     * @param header Text to place in header bar (immediately below title bar).
+     * @param message Main message to display.
+     * @param alertType Type of alert being displayed, range from undefined,
+     * info through to warnings and errors.
+     */
+    public void displayAlert(String header, String message, Alert.AlertType alertType) {
+        final Alert dialog;
+        dialog = new Alert(alertType, "", ButtonType.OK);
+        dialog.setTitle("Delimited Importer");
+        dialog.setHeaderText(header);
+        dialog.setContentText(message);
+        dialog.showAndWait();
+    }
+
     public DelimitedFileImporterStage getStage() {
         return stage;
     }
@@ -140,14 +162,14 @@ public class ImportController {
         this.files.addAll(files);
 
         if (currentParameters != null) {
-            List<InputSource> inputSources = new ArrayList<>();
-            for (File file : files) {
+            final List<InputSource> inputSources = new ArrayList<>();
+            for (final File file : files) {
                 inputSources.add(new InputSource(file));
             }
             importFileParser.updateParameters(currentParameters, inputSources);
         }
 
-        if (sampleFile == null && files != null && !files.isEmpty()) {
+        if (sampleFile == null && CollectionUtils.isNotEmpty(files)) {
             this.sampleFile = files.get(0);
         } else {
             this.sampleFile = sampleFile;
@@ -449,9 +471,18 @@ public class ImportController {
                 currentColumns = new String[columns.length + 1];
                 System.arraycopy(columns, 0, currentColumns, 1, columns.length);
                 currentColumns[0] = "Row";
+            } catch (FileNotFoundException ex) {
+                final String warningMsg = "The following file could not be found and has been excluded from the import set:\n  " + sampleFile.getPath();
+                LOGGER.log(Level.INFO, warningMsg);
+                displayAlert("Invalid file selected", warningMsg, Alert.AlertType.WARNING);
+                files.remove(sampleFile);
+                stage.getSourcePane().removeFile(sampleFile);
             } catch (IOException ex) {
-                final NotifyDescriptor nd = new NotifyDescriptor.Message(ex.getMessage(), NotifyDescriptor.WARNING_MESSAGE);
-                DialogDisplayer.getDefault().notify(nd);
+                final String warningMsg = "The following file could not be parsed and has been excluded from the import set:\n  " + sampleFile.getPath();
+                LOGGER.log(Level.INFO, warningMsg);
+                displayAlert("Invalid file selected", warningMsg, Alert.AlertType.WARNING);
+                files.remove(sampleFile);
+                stage.getSourcePane().removeFile(sampleFile);
             }
         }
 

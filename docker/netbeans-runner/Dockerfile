@@ -1,7 +1,7 @@
 FROM ubuntu:bionic
 
 LABEL \
-  IMAGE="netbeans-runner:11.3" \
+  IMAGE="netbeans-runner:12" \
   SOURCE="ubuntu:bionic"
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -12,11 +12,12 @@ RUN apt-get -y update \
     unzip \
     wget \
     python3 \
+    git \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ENV ZULU_VERSION="zulu11.39.15-ca-fx-jdk11.0.7-linux_x64"
-ENV ZULU_CHECKSUM="3d68aeccf6bba70618eb047b2d0bf221418b5f1befc09d9e86fe17899e19f681d32a952130fe8b4c0b43d934e81cf587c857b0539c3fc21ffe3f888ab0546683  ${ZULU_VERSION}.tar.gz"
+ENV ZULU_VERSION="zulu11.37.19-ca-fx-jdk11.0.6-linux_x64"
+ENV ZULU_CHECKSUM="f7720d2f3973c230f81b35dc9b36f72009416cf418a724f298c4513268b9e9e313744ff45f646e43a5e313ee1ef780cc3aa0232c22f36a30c8cde3db37427172  ${ZULU_VERSION}.tar.gz"
 
 RUN wget -q "https://cdn.azul.com/zulu/bin/${ZULU_VERSION}.tar.gz" \
     && echo "${ZULU_CHECKSUM}" | sha512sum -c \
@@ -25,10 +26,10 @@ RUN wget -q "https://cdn.azul.com/zulu/bin/${ZULU_VERSION}.tar.gz" \
     && mv "${ZULU_VERSION}" /usr/java/ \
     && rm "${ZULU_VERSION}.tar.gz"
 
-ENV NETBEANS_VERSION="11.3" \
+ENV NETBEANS_VERSION="12.0" \
     NETBEANS_HOME="/usr/local/netbeans" \
     NETBEANS_HELP_GITHUB="https://github.com/constellation-app/third-party-dependencies/blob/master/NetBeans%20Help"
-ENV NETBEANS_CHECKSUM="ae828836138b5a4156d58df24dd4053be58018cb6b5beb179cb0f4cd8b5db72d2a7356a434d01157aacb78d228732950cf4e3a0b6c725da8e053b6ccd91075d6  netbeans-${NETBEANS_VERSION}-bin.zip"
+ENV NETBEANS_CHECKSUM="91030c9628a08acd85f1a58a7f71eec2e57dc85841c1c475cc6311335b5d8cdc10c1198274b9668b7f61a28d04b07661247dc1c3e36b8e29214aec3748e499e4  netbeans-${NETBEANS_VERSION}-bin.zip"
 
 COPY common.xml.modified ./
 
