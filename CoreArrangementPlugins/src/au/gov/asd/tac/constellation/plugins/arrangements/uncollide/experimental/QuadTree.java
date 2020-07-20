@@ -18,8 +18,11 @@ package au.gov.asd.tac.constellation.plugins.arrangements.uncollide.experimental
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Blaze;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.arrangements.uncollide.experimental.BoundingBox2D.Box2D;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import static java.lang.Math.round;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -291,8 +294,11 @@ public class QuadTree {
                 float DeltaY = wg.getFloatValue(YID, subject) - wg.getFloatValue(YID, possible);
                 final double l = DeltaX * DeltaX + DeltaY * DeltaY;
                 final double r = wg.getFloatValue(RID, possible) + wg.getFloatValue(RID, subject) + padding;
-                if (0 < l && l <= r*r) {
+                if (padding <= l && l <= r*r) {
 //                    LOG.info("l:" + l + "    r:" + r);
+//                    int selected = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.BLAZE.getName());
+//                    wg.setObjectValue(selected, subject, new Blaze(0, ConstellationColor.AZURE));
+//                    wg.setObjectValue(selected, possible, new Blaze(0, ConstellationColor.AZURE));
                     return true;
                 }
             }
@@ -300,41 +306,68 @@ public class QuadTree {
         return false;
     }
     /**
-     * Nudges two nodes in exactly the same place so that they do not overlap.
+     * Nudges two nodes in approximately the same place so that they do not overlap.
      *
      * @param subject The vertex to check for twins.
      * @param padding The minimum distance between the vertex's edge and the edges
      * of each neighbor.
      */
-    private void nudgeTwins(final int subject, final float padding) {
+    private boolean nudgeTwins(final int subject, final float padding, final int maxExpansions) {
         final List<Integer> possibles = new ArrayList<>();
         getPossibleColliders(possibles, subject);
-
-        // We need to deal with pathological cases such as everything at the same x,y point,
-        // or everything co-linear.
-        // We add a perturbation so points go different ways at different stages.
+        boolean foundTwin = false;
         for (final int possible : possibles) {
             if (subject != possible) {
                 float DeltaX = wg.getFloatValue(XID, subject) - wg.getFloatValue(XID, possible);
                 float DeltaY = wg.getFloatValue(YID, subject) - wg.getFloatValue(YID, possible);
                 final double ll = DeltaX * DeltaX + DeltaY * DeltaY;
                 final double r = wg.getFloatValue(RID, possible) + wg.getFloatValue(RID, subject) + padding;
-                if (ll == 0) {
-                    final float nudge = (float) (math.sqrt(r)/1.4); // sqrt(2A^2) = R then A = r/sqrt(2). The nudge needed to not overlap if moving both nodes away form each by the same value.
-
-                    // The two nodes will be immediately alongside each other.
-                    wg.setFloatValue(XID, subject, wg.getFloatValue(XID, subject) - nudge);
-                    wg.setFloatValue(XID, possible, wg.getFloatValue(XID, possible) + nudge);
+                final double criticalValue = math.pow(r/math.pow(1.1, maxExpansions), 2); // The required distance for the nodes to be uncollided after maxExpansions number of expansions (each expansions scaled the graph by a factor of 1.1
+                if ( ll < criticalValue ) {
+                    foundTwin = true;
+//                    final float nudge = (float) (math.sqrt(r)/1.4); // sqrt(2A^2) = R then A = r/sqrt(2). The nudge needed to not overlap if moving both nodes away form each by the same value.
+                    
+                    // If they are in the same spot we will nudge both horizontally and vertically
+                    if (DeltaX == 0 && DeltaY == 0){
+                        DeltaX = DeltaY = 1;
+                    }
+                    
+                    float nudge; // nudge needed to move them to just beyond the minimum distance so that are at least a padding apart.
+                    if (DeltaX == 0 || DeltaY == 0){
+                        nudge = (float) (criticalValue-ll+0.002)/  2; // Nudge needed if only moving along one axis
+                    } else {
+                        nudge = (float) (criticalValue-ll+0.002)/ (float) 2.82; // Nudge needed if moving along both axis
+                    }
+                    // Nudge horizontally based on relative position.
+                    if (DeltaX > 0){ 
+                        wg.setFloatValue(XID, subject, wg.getFloatValue(XID, subject) + nudge);
+                        wg.setFloatValue(XID, possible, wg.getFloatValue(XID, possible) - nudge);
+                    } else if (DeltaX < 0) {
+                        wg.setFloatValue(XID, subject, wg.getFloatValue(XID, subject) - nudge);
+                        wg.setFloatValue(XID, possible, wg.getFloatValue(XID, possible) + nudge);  
+                    }
+                    // Nudge vertically based on relative position.
+                    if (DeltaY > 0){
+                    wg.setFloatValue(YID, subject, wg.getFloatValue(YID, possible) + nudge);
+                    wg.setFloatValue(YID, possible, wg.getFloatValue(YID, possible) - nudge);
+                    } else if (DeltaY < 0){
+                    wg.setFloatValue(YID, subject, wg.getFloatValue(YID, possible) + nudge);
+                    wg.setFloatValue(YID, possible, wg.getFloatValue(YID, possible) - nudge);
+                    }     
                 }
             }
         }
+        return foundTwin;
     }
     
-    
-    public void nudgeAllTwins(final float padding){
+    public boolean nudgeAllTwins(final float padding, final int maxExpansions){
+        boolean foundTwin = false;
         for (int position = 0; position < wg.getVertexCount(); position++) {
-            nudgeTwins(wg.getVertex(position), padding);
+            if (nudgeTwins(wg.getVertex(position), padding, maxExpansions)) {
+                foundTwin = true;
+            }        
         }
+        return foundTwin;
     }
     
     /**
