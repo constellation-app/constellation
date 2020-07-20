@@ -719,8 +719,10 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
             final int transactionVisibilityAttribute = VisualConcept.TransactionAttribute.VISIBILITY.ensure(graph);
 
             int nextCluster = 0;
+            // Use the smaller of ints as to avoid going out of bounds.
+            // usually caused when cluster has not run with new elements added.
+            final int vertexCount = Math.min(graph.getVertexCount(), state.getCurrentNumOfClusters());
 
-            final int vertexCount = graph.getVertexCount();
             for (int pos = 0; pos < vertexCount; pos++) {
                 final int vertex = graph.getVertex(pos);
                 Group group = state.groups[pos];
