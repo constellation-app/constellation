@@ -1,7 +1,0 @@
-{
-    "elementType": "Node",
-    "attrToSet": "NumSelectedNeighbours",
-    "attrType": "integer",
-    "script": "count_neighbours(selected)",
-    "description": "For each node, counts the number of neighbours which are currently selected and stores the result in a new integer attribute."
-}

@@ -368,6 +368,23 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
     }
 
     /**
+     * Resets a graph, and automatically un-dims all member graph elements.
+     * <p>
+     * Member elements do not have their 'selected' attribute set, so all
+     * elements retain their original non-selected colours.
+     *
+     * @param reset The named selection to be reset.
+     *
+     * @see NamedSelection
+     */
+    public void resetSelection(final NamedSelection reset) {
+        if (graphNode != null) {
+            // Recall the graph selection, with options to not select or dim others:
+            performRecall(graphNode.getGraph(), false, false, reset.getID());
+        }
+    }
+
+    /**
      * Requests a union on the given named selections.
      * <p>
      * Results of the union are reflected on the graph.
@@ -520,6 +537,7 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
      */
     public void clearSelection(final NamedSelection selection) {
         if (!selection.isLocked()) {
+            resetSelection(selection);
             state.getCurrentlyAllocated().clear(selection.getID());
             state.getNamedSelections().remove(selection);
 
@@ -540,8 +558,9 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
      * @see NamedSelection
      */
     public void clearSelections(final ArrayList<NamedSelection> removeSelections) {
-        for (NamedSelection remove : removeSelections) {
+        for (final NamedSelection remove : removeSelections) {
             if (!remove.isLocked()) {
+                resetSelection(remove);
                 state.getCurrentlyAllocated().clear(remove.getID());
                 state.getNamedSelections().remove(remove);
             } else {
