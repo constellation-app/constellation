@@ -151,6 +151,7 @@ public class CVKSwapChain {
     
     // How big is the pool now?  The actual counts used to sized the pool are multiplied by the number of images in the chain
     private final int poolDescriptorTypeCounts[] = new int[11];
+    private int maxPoolDescriptorSetCount = 0;
     
     public int GetImageCount() { return imageCount; }
     public long GetSwapChainHandle() { return hSwapChainHandle; }
@@ -166,7 +167,7 @@ public class CVKSwapChain {
     }
     
     
-    public int Init(CVKSynchronizedDescriptorTypeCounts poolDescriptorTypeCounts) {
+    public int Init(CVKSynchronizedDescriptorTypeCounts poolDescriptorTypeCounts, int poolDescriptorSetCount) {
         int ret;
         StartLogSection("Init SwapChain");
         try (MemoryStack stack = stackPush()) {                                
@@ -181,7 +182,7 @@ public class CVKSwapChain {
             if (VkFailed(ret)) return ret;
             
             // Do we need a descriptor pool?
-            ret = InitVKDescriptorPool(stack, poolDescriptorTypeCounts);
+            ret = CreateVKDescriptorPool(stack, poolDescriptorTypeCounts, poolDescriptorSetCount);
             if (VkFailed(ret)) return ret;
         }
         EndLogSection("Init SwapChain");   
@@ -567,7 +568,7 @@ public class CVKSwapChain {
     
     //TODO_TT: instead of recreating the descriptor pool, simply add a new one.  Figure out what we do when
     // a node is removed from the scene.
-    public void UpdateDescriptorTypeRequirements(CVKSynchronizedDescriptorTypeCounts descriptorTypeCounts) {
+    public void UpdateDescriptorTypeRequirements(CVKSynchronizedDescriptorTypeCounts descriptorTypeCounts, int descriptorSetCount) {
         VerifyInRenderThread();
         CVKAssert(poolDescriptorTypeCounts.length == 11);
                 
@@ -579,11 +580,15 @@ public class CVKSwapChain {
             }
         }
         
+        if (descriptorSetCount > maxPoolDescriptorSetCount){
+            embiggen = true;
+        }
+        
         // desiredPoolDescriptorTypeCounts is only set if the current requirements
         // exceed what we can allocate in the current pool.
         if (embiggen) {
             DestroyVKDescriptorPool();
-            InitVKDescriptorPool(stackPush(), descriptorTypeCounts);
+            CreateVKDescriptorPool(stackPush(), descriptorTypeCounts, descriptorSetCount);
         }
     }
     
@@ -618,20 +623,36 @@ public class CVKSwapChain {
         if (size < MIN_POOL_PERTYPE_SIZE) {
             size = MIN_POOL_PERTYPE_SIZE;
         }
-        return size;
+        return Math.max(size, current);
+    }
+    
+    private static final int MIN_POOL_SET_SIZE = 10; 
+    private static final float POOL_SET_GROWTH_FACTOR = 1.5f;
+    private int CalculateDescriptorPoolSetSize(int current, int desired) {
+        int size = 0;
+        if (desired > current) {
+            size = Math.round((float)size * POOL_SET_GROWTH_FACTOR) + 1; 
+        }
+        if (size < MIN_POOL_SET_SIZE) {
+            size = MIN_POOL_SET_SIZE;
+        }
+        
+        return Math.max(size, current);
     }
     
     /*
-    * Descriptor pools are per thread (we have one Render thread). Here we create 
-    * one Descriptor pool for all our Renderable objects. Each Renderable object 
-    * is in charge of telling the Renderer how many Descriptors Types and the 
-    * count it is using (IncrementDescriptorTypeRequirements) so here we can 
-    * allocate the correct amount of memory. Each time the Descriptor Types or 
-    * Counts change we need to recreate the pool.
+    * Descriptor pools are per thread (we have one Render thread in Constellation).
+    * Here we create one Descriptor pool for all our Renderable objects. 
+    * Each Renderable object is in charge of telling the Renderer how many 
+    * Descriptors Types and Descriptor Sets it uses (IncrementDescriptorTypeRequirements)
+    * so here we can alllocate the correct amount of memory. We add a buffer amount
+    * to the pool so we don't need to recreate it every time a new object (like a 
+    * node is added to the graph). 
     */
-    public int InitVKDescriptorPool(MemoryStack stack, CVKSynchronizedDescriptorTypeCounts desiredPoolDescriptorTypeCounts) {
+    public int CreateVKDescriptorPool(MemoryStack stack, CVKSynchronizedDescriptorTypeCounts desiredPoolDescriptorTypeCounts, int desiredPoolDescriptorSetCount) {
         VerifyInRenderThread();
         CVKAssert(desiredPoolDescriptorTypeCounts != null);
+        CVKAssert(desiredPoolDescriptorSetCount != 0);
         
         int ret = VK_SUCCESS;
         
@@ -646,9 +667,7 @@ public class CVKSwapChain {
         // the swapchain is rebuilt.
         
         // Do we have anything to render?
-        int allTypesCount = desiredPoolDescriptorTypeCounts.NumberOfDescriptorTypes();
-        int maxSets = 0;
-        
+        int allTypesCount = desiredPoolDescriptorTypeCounts.NumberOfDescriptorTypes();       
         if (allTypesCount > 0) {
             VkDescriptorPoolSize.Buffer pPoolSizes = VkDescriptorPoolSize.callocStack(allTypesCount, stack);
             
@@ -656,29 +675,29 @@ public class CVKSwapChain {
             for (int iType = 0; iType < 11; ++iType) {
                 int count = desiredPoolDescriptorTypeCounts.Get(iType);
                 if (count > 0) {
-                    VkDescriptorPoolSize poolSize = pPoolSizes.get(iPoolSize++);
-                    poolSize.type(iType);
+                    VkDescriptorPoolSize vkPoolSize = pPoolSizes.get(iPoolSize++);
+                    vkPoolSize.type(iType);
                     
-                    // Leaner and meaner version. Just allocate what we need. This could get out of control with 1000s of nodes.
-                    int size = count;
-                    //int size = CalculateDescriptorPoolSizeForType(iType, 
-                    //                                                poolDescriptorTypeCounts[iType],
-                    //                                                count);
+                    int size = CalculateDescriptorPoolSizeForType(iType, 
+                                                                    poolDescriptorTypeCounts[iType],
+                                                                    count);
                     
                     poolDescriptorTypeCounts[iType] = size;
                     CVKLOGGER.info(String.format("Descriptor pool type %d = count %d", iType, size));
                     
                     // We will allocate a complete set of descriptors for each image
                     size *= imageCount;
-                    poolSize.descriptorCount(size);
-                    
-                    // Increment the total number of descriptors we need to allocate
-                    maxSets += size;
+                    vkPoolSize.descriptorCount(size);
                 } else {
                     // We aren't allocating memory for this type
                     poolDescriptorTypeCounts[iType] = 0;
                 }
             }
+            
+            // Max sets is the total number of descriptor sets that are allocated.
+            // This will correspond with calls to vkAllocateDescriptorSets() and is set
+            // by each renderable.
+            maxPoolDescriptorSetCount = CalculateDescriptorPoolSetSize(maxPoolDescriptorSetCount, desiredPoolDescriptorSetCount);
             
             // Create the complete Descriptor pool using the poolSizes we calculated for each
             // Descriptor Type
@@ -686,7 +705,7 @@ public class CVKSwapChain {
             poolInfo.sType(VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO);
             poolInfo.flags(VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT);
             poolInfo.pPoolSizes(pPoolSizes);
-            poolInfo.maxSets(maxSets);  // Max sets is the total number of descriptors that are allocated
+            poolInfo.maxSets(maxPoolDescriptorSetCount);
 
             LongBuffer pDescriptorPool = stack.mallocLong(1);
             ret = vkCreateDescriptorPool(cvkDevice.GetDevice(), poolInfo, null, pDescriptorPool);

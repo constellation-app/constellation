@@ -22,10 +22,7 @@ import au.gov.asd.tac.constellation.graph.interaction.framework.InteractionEvent
 import au.gov.asd.tac.constellation.graph.interaction.framework.VisualAnnotator;
 import au.gov.asd.tac.constellation.graph.interaction.framework.VisualInteraction;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.HitTestRequest;
-import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.HitTester;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.NewLineModel;
-import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.NewLineRenderable;
-import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.PlanesRenderable;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionBoxModel;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionBoxRenderable;
 import au.gov.asd.tac.constellation.graph.visual.utilities.VisualGraphUtilities;
@@ -39,6 +36,7 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualChangeBuilder;
 import au.gov.asd.tac.constellation.utilities.visual.VisualOperation;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
+import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.CVKHitTester;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -70,7 +68,7 @@ public class InteractiveVKVisualProcessor extends CVKVisualProcessor implements 
     private final long greyscaleUpdateId = VisualChangeBuilder.generateNewId();
     private final long hitTestId = VisualChangeBuilder.generateNewId();
     private final long hitTestPointId = VisualChangeBuilder.generateNewId();
-//    private final HitTester hitTester;
+    private final CVKHitTester hitTester;
     private final SelectionBoxRenderable selectionBoxRenderable = new SelectionBoxRenderable();
 //    private final NewLineRenderable newLineRenderable = new NewLineRenderable(this);
 //    private final PlanesRenderable planesRenderable = new PlanesRenderable();
@@ -96,8 +94,8 @@ public class InteractiveVKVisualProcessor extends CVKVisualProcessor implements 
 //        addRenderable(newLineRenderable);
 //        addRenderable(selectionBoxRenderable);
 //        addRenderable(planesRenderable);
-//        hitTester = new HitTester(this);
-//        addRenderable(hitTester);
+        hitTester = new CVKHitTester();//this);
+        addRenderable(hitTester);
     }
 
     /**
@@ -169,20 +167,20 @@ public class InteractiveVKVisualProcessor extends CVKVisualProcessor implements 
 
     @Override
     public VisualOperation hitTestCursor(final int x, final int y, final HitState hitState, final Queue<HitState> notificationQueue) {
-//        hitTester.queueRequest(new HitTestRequest(x, y, hitState, notificationQueue, resultState -> {
-//            if (resultState.getCurrentHitType().equals(HitType.NO_ELEMENT)) {
-//                getCanvas().setCursor(DEFAULT_CURSOR);
-//            } else {
-//                getCanvas().setCursor(CROSSHAIR_CURSOR);
-//            }
-//        }));
+        hitTester.queueRequest(new HitTestRequest(x, y, hitState, notificationQueue, resultState -> {
+            if (resultState.getCurrentHitType().equals(HitType.NO_ELEMENT)) {
+                getCanvas().setCursor(DEFAULT_CURSOR);
+            } else {
+                getCanvas().setCursor(CROSSHAIR_CURSOR);
+            }
+        }));
         return () -> Arrays.asList(new VisualChangeBuilder(VisualProperty.EXTERNAL_CHANGE)
                 .withId(hitTestId).build());
     }
 
     @Override
     public VisualOperation hitTestPoint(int x, int y, Queue<HitState> notificationQueue) {
-//        hitTester.queueRequest(new HitTestRequest(x, y, new HitState(), notificationQueue, null));
+        hitTester.queueRequest(new HitTestRequest(x, y, new HitState(), notificationQueue, null));
         return () -> Arrays.asList(new VisualChangeBuilder(VisualProperty.EXTERNAL_CHANGE)
                 .withId(hitTestPointId).build());
 

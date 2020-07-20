@@ -397,7 +397,7 @@ public class CVKFPSRenderable extends CVKRenderable {
         // TODO_TT: investigate a frames in flight < imageCount approach
         int imageCount = cvkSwapChain.GetImageCount();        
         
-        // LIFTED FROM FPSRenerable.reshape(...)
+        // LIFTED FROM FPSRenderable.reshape(...)
         //TT: the logic here seems to be the FPS text needs to be 50 pixels from the 
         // edges, the calculation of dx and dy implies that the viewport is 
         //-width/2, -height/2, width/2, height/2
@@ -443,7 +443,7 @@ public class CVKFPSRenderable extends CVKRenderable {
         vertexUBO.visibilityLow = 0.0f;
         vertexUBO.visibilityHigh = 1.0f;
         
-        // Get the projection matrix from the scence
+        // Get the projection matrix from our parent
         geometryUBO.pMatrix.set(parent.GetProjectionMatrix());
                 
         // Copy the UBOs in VK buffers we can bind to a descriptor set  
@@ -1209,7 +1209,7 @@ public class CVKFPSRenderable extends CVKRenderable {
     }
     
     @Override
-    public void IncrementDescriptorTypeRequirements(int descriptorTypeCounts[]) {
+    public void IncrementDescriptorTypeRequirements(int descriptorTypeCounts[], int descriptorSetCount) {
         CVKAssert(descriptorTypeCounts.length == (VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT + 1));
         // SimpleIcon.vs
         ++descriptorTypeCounts[VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER];
@@ -1217,6 +1217,9 @@ public class CVKFPSRenderable extends CVKRenderable {
         ++descriptorTypeCounts[VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER];
         // SimpleIcon.fs
         ++descriptorTypeCounts[VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER];
+        
+        // One descriptor set is required
+        ++descriptorSetCount;
     } 
     
     @Override

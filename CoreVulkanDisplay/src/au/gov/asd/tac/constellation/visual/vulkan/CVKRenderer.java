@@ -97,7 +97,9 @@ public class CVKRenderer implements ComponentListener {
     // we can account for our scene being populated before we've created the swapchain.    
     protected CVKSynchronizedDescriptorTypeCounts desiredPoolDescriptorTypeCounts = new CVKSynchronizedDescriptorTypeCounts();   
        
-
+    // Number of descriptor sets required
+    protected int desiredPoolDescriptorSetCount = 0;
+    
     public List<CVKRenderable> renderables = new ArrayList<>();
     
     private static float clrChange = 0.01f;
@@ -118,8 +120,10 @@ public class CVKRenderer implements ComponentListener {
         // returning the correct numbers for your Descriptor Types.
         // TODO_TT: this code sucks, make it not. Also change 11 to TOTAL_DESCRIPTOR_TYPES
         int[] descriptorTypeCounts = new int[11];
-        renderables.forEach(r -> {r.IncrementDescriptorTypeRequirements(descriptorTypeCounts);});    
-        desiredPoolDescriptorTypeCounts.Set(descriptorTypeCounts);        
+        int descriptorSetCount = 0;
+        renderables.forEach(r -> {r.IncrementDescriptorTypeRequirements(descriptorTypeCounts, descriptorSetCount);});    
+        desiredPoolDescriptorTypeCounts.Set(descriptorTypeCounts);
+        desiredPoolDescriptorSetCount = descriptorSetCount;
     }
     
     public CVKDevice GetDevice() {
@@ -176,7 +180,7 @@ public class CVKRenderer implements ComponentListener {
         if (parent.surfaceReady()) {
             cvkDevice.WaitIdle();
             CVKSwapChain newSwapChain = new CVKSwapChain(cvkDevice);                                 
-            ret = newSwapChain.Init(desiredPoolDescriptorTypeCounts);
+            ret = newSwapChain.Init(desiredPoolDescriptorTypeCounts, desiredPoolDescriptorSetCount);
             desiredPoolDescriptorTypeCounts.ResetDirty();
             if (VkSucceeded(ret)) {
                 if (cvkSwapChain != null) {
@@ -462,7 +466,8 @@ public class CVKRenderer implements ComponentListener {
             }
             
             if (desiredPoolDescriptorTypeCounts.IsDirty()) {
-                cvkSwapChain.UpdateDescriptorTypeRequirements(desiredPoolDescriptorTypeCounts);
+                cvkSwapChain.UpdateDescriptorTypeRequirements(desiredPoolDescriptorTypeCounts,
+                                                              desiredPoolDescriptorSetCount);
                 desiredPoolDescriptorTypeCounts.ResetDirty();
             }            
             
@@ -512,6 +517,8 @@ public class CVKRenderer implements ComponentListener {
                     checkVKret(ret); 
                               
                     // Update everything that needs updating - drawables 
+                    ret = parent.DisplayUpdate(cvkSwapChain, imageIndex);
+                    checkVKret(ret);
                     for (int i = 0; VkSucceeded(ret) && (i < renderables.size()); ++i) {
                         ret = renderables.get(i).DisplayUpdate(cvkSwapChain, imageIndex);
                         checkVKret(ret); 
@@ -577,7 +584,12 @@ public class CVKRenderer implements ComponentListener {
 
     
     int[] getViewport() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        final int[] viewport = new int[4];
+        viewport[0] = 0;
+        viewport[1] = 0;
+        viewport[2] = cvkSwapChain.GetWidth();
+        viewport[3] = cvkSwapChain.GetHeight();
+        return viewport;
     }
     
     public VkInstance GetVkInstance() {

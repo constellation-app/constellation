@@ -69,7 +69,6 @@ import static org.lwjgl.vulkan.VK10.vkCreateGraphicsPipelines;
 import static org.lwjgl.vulkan.VK10.vkCreatePipelineLayout;
 import static org.lwjgl.vulkan.VK10.vkEndCommandBuffer;
 import static org.lwjgl.vulkan.VK10.vkDestroyPipeline;
-import static org.lwjgl.vulkan.VK10.vkDestroyPipelineLayout;
 import static org.lwjgl.vulkan.VK10.*;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkCommandBufferBeginInfo;
@@ -93,6 +92,7 @@ import org.lwjgl.vulkan.VkVertexInputBindingDescription;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKShaderUtils.ShaderKind.GEOMETRY_SHADER;
+import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKAssert;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKLOGGER;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkFailed;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkSucceeded;
@@ -112,6 +112,7 @@ import org.lwjgl.vulkan.VkDescriptorBufferInfo;
 import org.lwjgl.vulkan.VkDescriptorSetAllocateInfo;
 import org.lwjgl.vulkan.VkDescriptorSetLayoutBinding;
 import org.lwjgl.vulkan.VkDescriptorSetLayoutCreateInfo;
+import org.lwjgl.vulkan.VkPipelineDepthStencilStateCreateInfo;
 import org.lwjgl.vulkan.VkWriteDescriptorSet;
 
 public class CVKAxesRenderable extends CVKRenderable {
@@ -136,9 +137,12 @@ public class CVKAxesRenderable extends CVKRenderable {
     private static final Vector3f ZERO_3F = new Vector3f(0, 0, 0);
     private static final Matrix44f IDENTITY_44F = Matrix44f.identity();
 
+
+    // All the verts are manually calculated for the Axes in CreateVertexBuffer():
+    // - (3 x 2) = X, Y, Z lines for Axes
+    // - (4, 4, 4) =  Arrows at the end of the Axes
+    // - (4, 6, 6) = X, Y, Z labels
     private static final int NUMBER_OF_VERTICES = 3 * 2 + 4 + 4 + 4 + 4 + 6 + 6;
-    private static final int COLOR_BUFFER_WIDTH = 4;
-    private static final int VERTEX_BUFFER_WIDTH = 3;
     
     private Vector3f topRightCorner = new Vector3f();
     private float pScale = 0;
@@ -147,6 +151,7 @@ public class CVKAxesRenderable extends CVKRenderable {
     private VertexUniformBufferObject vertexUBO = new VertexUniformBufferObject();
     protected List<CVKBuffer> vertexUniformBuffers = null;
     protected List<CVKBuffer> vertexBuffers = null;
+    private List<CVKCommandBuffer> commandBuffers = null;
     
     private List<Long> pipelines = null;
     private List<Long> pipelineLayouts = null;
@@ -218,16 +223,16 @@ public class CVKAxesRenderable extends CVKRenderable {
     
     private static class VertexUniformBufferObject {
         private static final int SIZEOF = 16 * Float.BYTES;
-        public Matrix44f mvMatrix;
+        public Matrix44f mvpMatrix;
       
         public VertexUniformBufferObject() {
-            mvMatrix = new Matrix44f();
+            mvpMatrix = new Matrix44f();
         }
         
         private void CopyTo(ByteBuffer buffer) {
             for (int iRow = 0; iRow < 4; ++iRow) {
                 for (int iCol = 0; iCol < 4; ++iCol) {
-                    buffer.putFloat(mvMatrix.get(iRow, iCol));
+                    buffer.putFloat(mvpMatrix.get(iRow, iCol));
                 }
             }
         }         
@@ -242,16 +247,18 @@ public class CVKAxesRenderable extends CVKRenderable {
     @Override
     public void Destroy() {
         DestroyCommandBuffers();
+        DestroyVertexBuffers();
+        DestroyUniformBuffers();
+        DestroyDescriptorSets();
         DestroyPipeline();
-        // Destroy vertex buffers
-        //vkDestroyBuffer(cvkDevice, vertexBuffer);
-        //vkFreeMemory(cvkDevice, vertexBufferMemory);
-        
-        // Destroy command buffers
-        //vkDestroyShaderModule(cvkDevice.GetDevice(), vertShaderModule, 0);
-        //vkDestroyShaderModule(cvkDevice.GetDevice(), fragShaderModule, 0);
-        
-        // vkDestroyDescriptorSet
+        DestroyPipelineLayouts();
+              
+        CVKAssert(pipelines == null);
+        CVKAssert(pipelineLayouts == null);
+        CVKAssert(pDescriptorSets == null);
+        CVKAssert(vertexUniformBuffers == null);
+        CVKAssert(vertexBuffers == null);
+        CVKAssert(commandBuffers == null);        
     }
     
     
@@ -263,25 +270,47 @@ public class CVKAxesRenderable extends CVKRenderable {
         }       
     }
     
+    private void DestroyVertexBuffers() {
+        if (null != vertexBuffers) {
+            vertexBuffers.forEach(el -> {el.Destroy();});
+            vertexBuffers.clear();
+            vertexBuffers = null;
+        }
+    }
     
-    private void DestroyPipeline() {
-        if (null != vertexUniformBuffers && vertexUniformBuffers.size() > 0) {
-            for (int i = 0; i < vertexUniformBuffers.size(); ++i) {
-                vkDestroyBuffer(cvkDevice.GetDevice(), vertexUniformBuffers.get(i).GetBufferHandle(), null);
-                vkFreeMemory(cvkDevice.GetDevice(), vertexUniformBuffers.get(i).GetMemoryBufferHandle(), null);
-            }
+    private void DestroyUniformBuffers() {
+        if (vertexUniformBuffers != null) {
+            vertexUniformBuffers.forEach(el -> {el.Destroy();});
             vertexUniformBuffers = null;
         }
-        
-        // Destory pipeline and layout
-        if (0 != graphicsPipeline) {
-            vkDestroyPipeline(cvkDevice.GetDevice(), graphicsPipeline, null);
-            graphicsPipeline = 0;
-        }
-        
-        if (0 != pipelineLayout) {
-            vkDestroyPipelineLayout(cvkDevice.GetDevice(), pipelineLayout, null);
-            pipelineLayout = 0;
+    }
+    
+    private void DestroyDescriptorSets(){
+        // TODO HYDRA
+        //pDescriptorSets empty list
+                
+        //vkDestroyDescriptorSetLayout(cvkDevice.GetDevice(), hDescriptorLayout, null);
+    }
+    
+    private void DestroyPipeline() {     
+        if (pipelines != null) {
+            for (int i = 0; i < pipelines.size(); ++i) {
+                vkDestroyPipeline(cvkDevice.GetDevice(), pipelines.get(i), null);
+                pipelines.set(i, VK_NULL_HANDLE);
+            }
+            pipelines.clear();
+            pipelines = null;
+        }       
+    }
+    
+    private void DestroyPipelineLayouts() {
+        if (pipelineLayouts != null) {
+            for (int i = 0; i < pipelineLayouts.size(); ++i) {
+                vkDestroyPipelineLayout(cvkDevice.GetDevice(), pipelineLayouts.get(i), null);
+                pipelineLayouts.set(i, VK_NULL_HANDLE);
+            }
+            pipelineLayouts.clear();
+            pipelineLayouts = null;
         }
     }
     
@@ -292,20 +321,7 @@ public class CVKAxesRenderable extends CVKRenderable {
     public int Init(CVKDevice cvkDevice) {
         int ret = VK_SUCCESS;
  
-         
-//        ret = DeviceInitialised(cvkDevice);
-//        if (VkFailed(ret)) { return ret; }
-//               
-//        ret = CreateVertexBuffer();
-//        if (VkFailed(ret)) { return ret; }
-//        
-//        ret = CreateIndexBuffer();
-//        if (VkFailed(ret)) { return ret; }
-        
-        //ret = CreateDescriptorLayout();
-        //checkVKret(ret);
-        
-        
+        // TODO HYDRA - Do we need an init?       
         return ret;
     }
     
@@ -321,13 +337,33 @@ public class CVKAxesRenderable extends CVKRenderable {
         return 25.0f / yScale;
     } 
     
-    private int CreateUniformBuffers(MemoryStack stack, CVKSwapChain cvkSwapChain) {
+    
+    private int CreateUniformBuffers(MemoryStack stack, CVKSwapChain cvkSwapChain){
+        int ret = VK_SUCCESS;
+        
+        int imageCount = cvkSwapChain.GetImageCount(); 
+        
+        vertexUniformBuffers = new ArrayList<>();     
+        for (int i = 0; i < imageCount; ++i) {   
+            CVKBuffer vertUniformBuffer = CVKBuffer.Create(cvkDevice, 
+                                                          VertexUniformBufferObject.SIZEOF,
+                                                          VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+                                                          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+            
+            vertUniformBuffer.DEBUGNAME = String.format("CVKAxesRenderable vertexUniformBuffer %d", i);               
+            vertexUniformBuffers.add(vertUniformBuffer);            
+        }
+        
+        return UpdateUniformBuffers(stack, cvkSwapChain);
+    }
+  
+    
+    private int UpdateUniformBuffers(MemoryStack stack, CVKSwapChain cvkSwapChain) {
         int ret = VK_SUCCESS;
      
-        // TODO_TT: investigate a frames in flight < imageCount approach
         int imageCount = cvkSwapChain.GetImageCount();        
         
-        // LIFTED FROM AxeaRenerable.reshape(...)
+        // LIFTED FROM AxesRenderable.reshape(...)
         // The logic here seems to be the FPS text needs to be 50 pixels from the 
         // edges, the calculation of dx and dy implies that the viewport is 
         //-width/2, -height/2, width/2, height/2
@@ -363,36 +399,25 @@ public class CVKAxesRenderable extends CVKRenderable {
         translationMatrix.makeTranslationMatrix(topRightCorner.getX(), 
                                                 topRightCorner.getY(), 
                                                 topRightCorner.getZ()); 
-        vertexUBO.mvMatrix.multiply(translationMatrix, srMatrix); 
-              
-        vertexUniformBuffers = new ArrayList<>();     
+        vertexUBO.mvpMatrix.multiply(translationMatrix, srMatrix); 
+          
         for (int i = 0; i < imageCount; ++i) {   
             // Initial fill of the vertex uniform buffer
             int size = VertexUniformBufferObject.SIZEOF;
-            CVKBuffer vertUniformBuffer = CVKBuffer.Create(cvkDevice, 
-                                                          VertexUniformBufferObject.SIZEOF,
-                                                          VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-                                                          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-                        
+            CVKBuffer vertUniformBuffer = vertexUniformBuffers.get(i);
             PointerBuffer vertData = stack.mallocPointer(1);
             vkMapMemory(cvkDevice.GetDevice(), vertUniformBuffer.GetMemoryBufferHandle(), 0, size, 0, vertData);
             {
                 vertexUBO.CopyTo(vertData.getByteBuffer(0, size));
             }
-            vkUnmapMemory(cvkDevice.GetDevice(), vertUniformBuffer.GetMemoryBufferHandle());     
-            vertexUniformBuffers.add(vertUniformBuffer);            
-         
+            vkUnmapMemory(cvkDevice.GetDevice(), vertUniformBuffer.GetMemoryBufferHandle());
         }
         return ret;                
     }
     
     private int CreateVertexBuffers(MemoryStack stack, CVKSwapChain cvkSwapChain) {
-         int ret = VK_SUCCESS;
-     
-        // TODO_TT: investigate a frames in flight < imageCount approach
-        //int imageCount = cvkSwapChain.GetImageCount();
-                
-        // TODO_TT: clean this up
+        int ret = VK_SUCCESS;
+              
         vertexBuffers = new ArrayList<>();
         
         // Size to upper limit, we don't have to draw each one.
@@ -535,9 +560,8 @@ public class CVKAxesRenderable extends CVKRenderable {
         vkUnmapMemory(cvkDevice.GetDevice(), vertexBuffer.GetMemoryBufferHandle());
 
         return ret;  
-    
     }
-    
+  
     
     public int CreateCommandBuffers(CVKSwapChain cvkSwapChain) {
         int ret = VK_SUCCESS;
@@ -555,6 +579,7 @@ public class CVKAxesRenderable extends CVKRenderable {
         
         return ret;
     }
+    
     
     public int CreatePipeline(CVKSwapChain cvkSwapChain) {
         assert(cvkDevice != null);
@@ -661,8 +686,7 @@ public class CVKAxesRenderable extends CVKRenderable {
                 multisampling.sampleShadingEnable(false);
                 multisampling.rasterizationSamples(VK_SAMPLE_COUNT_1_BIT);
 
-		// ===> DEPTH <===
-            
+                // ===> DEPTH <=== 
                 // Even though we don't test depth, the renderpass created by CVKSwapChain is used by
                 // each renderable and it was created to have a depth attachment
                 VkPipelineDepthStencilStateCreateInfo depthStencil = VkPipelineDepthStencilStateCreateInfo.callocStack(stack);
@@ -709,6 +733,7 @@ public class CVKAxesRenderable extends CVKRenderable {
                 pipelineInfo.pViewportState(viewportState);
                 pipelineInfo.pRasterizationState(rasterizer);
                 pipelineInfo.pMultisampleState(multisampling);
+                pipelineInfo.pDepthStencilState(depthStencil);
                 pipelineInfo.pColorBlendState(colorBlending);
                 pipelineInfo.layout(hPipelineLayout);
                 pipelineInfo.renderPass(cvkSwapChain.GetRenderPassHandle());
@@ -785,15 +810,67 @@ public class CVKAxesRenderable extends CVKRenderable {
     @Override
     public int SwapChainRecreated(CVKSwapChain cvkSwapChain) {
         VerifyInRenderThread();
-        assert(cvkDevice != null);
-        assert(cvkDevice.GetDevice() != null);
+        int ret = VK_SUCCESS;
         
-        Destroy();
-        
-        int ret = CreatePipeline(cvkSwapChain);
-        if (VkFailed(ret)) { return ret; }
-        ret = CreateCommandBuffers(cvkSwapChain);
+        // We only need to recreate these resources if the number of images in 
+        // the swapchain changes or if this is the first call after the initial
+        // swapchain is created.
+        if (pipelines == null || pipelines.size() != cvkSwapChain.GetImageCount()) {        
+            DestroyVertexBuffers();
+            DestroyUniformBuffers();
+            DestroyDescriptorSets();
+            DestroyCommandBuffers();
+            DestroyPipeline();
+            DestroyPipelineLayouts();
+            DestroyCommandBuffers(); 
 
+            CVKAssert(pipelines == null);
+            CVKAssert(pipelineLayouts == null);
+            CVKAssert(pDescriptorSets == null);
+            CVKAssert(vertexUniformBuffers == null);
+            CVKAssert(vertexBuffers == null);
+            CVKAssert(commandBuffers == null);           
+
+            try (MemoryStack stack = stackPush()) {                     
+                ret = CreateUniformBuffers(stack, cvkSwapChain);
+                if (VkFailed(ret)) { return ret; }
+
+                ret = CreateDescriptorSets(stack, cvkSwapChain);
+                if (VkFailed(ret)) { return ret; } 
+
+                ret = CreateVertexBuffers(stack, cvkSwapChain);
+                if (VkFailed(ret)) { return ret; }   
+
+                ret = CreateCommandBuffers(cvkSwapChain);
+                if (VkFailed(ret)) { return ret; }            
+
+                ret = CreatePipeline(cvkSwapChain);
+                if (VkFailed(ret)) { return ret; }                                       
+            }      
+        } else {
+            // This is the resize path, image count is unchanged.  We need to recreate
+            // pipelines as Vulkan doesn't have a good mechanism to update them and as
+            // they define the viewport and scissor rect they are now out of date.  We
+            // also need to update the uniform buffer as a new image size will mean a
+            // different position for our FPS.  After updating the uniform buffers we
+            // need to update the descriptor sets that bind the uniform buffers as well.
+            DestroyPipeline();
+            DestroyDescriptorSets();
+            CVKAssert(pipelines == null);
+            
+            try (MemoryStack stack = stackPush()) {                     
+                ret = CreatePipeline(cvkSwapChain);
+                if (VkFailed(ret)) { return ret; }                           
+                
+                ret = UpdateUniformBuffers(stack, cvkSwapChain);
+                if (VkFailed(ret)) { return ret; }
+
+                // TODO_TT: this is leaking
+                ret = CreateDescriptorSets(stack, cvkSwapChain);
+                if (VkFailed(ret)) { return ret; } 
+            }              
+        }
+        
         return ret;
     }
     
@@ -824,9 +901,12 @@ public class CVKAxesRenderable extends CVKRenderable {
     }    
     
     @Override
-    public void IncrementDescriptorTypeRequirements(int descriptorTypeCounts[]) {
+    public void IncrementDescriptorTypeRequirements(int descriptorTypeCounts[], int descriptorSetCount) {
         assert(descriptorTypeCounts.length == (VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT + 1));
         ++descriptorTypeCounts[VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER];
+        
+        // One descriptor set is required
+        ++descriptorSetCount;
     }
     
     public static int CreateDescriptorLayout(CVKDevice cvkDevice) {
@@ -850,7 +930,6 @@ public class CVKAxesRenderable extends CVKRenderable {
             layoutInfo.pBindings(bindings);
 
             LongBuffer pDescriptorSetLayout = stack.mallocLong(1);
-
             ret = vkCreateDescriptorSetLayout(cvkDevice.GetDevice(), layoutInfo, null, pDescriptorSetLayout);
             if (VkSucceeded(ret)) {
                 hDescriptorLayout = pDescriptorSetLayout.get(0);
@@ -866,15 +945,15 @@ public class CVKAxesRenderable extends CVKRenderable {
         int imageCount = cvkSwapChain.GetImageCount();
 
         // Create descriptor sets
-        LongBuffer layouts = stack.mallocLong(imageCount);
+        LongBuffer pLayouts = stack.mallocLong(imageCount);
         for (int i = 0; i < imageCount; ++i) {
-            layouts.put(i, hDescriptorLayout);
+            pLayouts.put(i, hDescriptorLayout);
         }
 
         VkDescriptorSetAllocateInfo allocInfo = VkDescriptorSetAllocateInfo.callocStack(stack);
         allocInfo.sType(VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO);
         allocInfo.descriptorPool(cvkSwapChain.GetDescriptorPoolHandle());
-        allocInfo.pSetLayouts(layouts);            
+        allocInfo.pSetLayouts(pLayouts);            
 
         // Allocate the descriptor sets from the descriptor pool, they'll be unitialised
         pDescriptorSets = MemoryUtil.memAllocLong(imageCount);
@@ -926,25 +1005,23 @@ public class CVKAxesRenderable extends CVKRenderable {
         return VK_SUCCESS;
     }    
 
-==== BASE ====
-            buffer.putFloat(vertex.color.getX());
-            buffer.putFloat(vertex.color.getY());
-            buffer.putFloat(vertex.color.getZ());
+  
+    @Override
+    public int RecreateSharedResources(CVKSwapChain cvkSwapChain) { 
+        VerifyInRenderThread();
+        
+        int ret;
+        DestroyDescriptorSets();
+        try (MemoryStack stack = stackPush()) {
+            ret = CreateDescriptorSets(stack, cvkSwapChain);
         }
+        return ret;
     }
+    
 
-    private int findMemoryType(int typeFilter, int properties, CVKDevice cvkDevice) {
-
-        VkPhysicalDeviceMemoryProperties memProperties = VkPhysicalDeviceMemoryProperties.mallocStack();
-        vkGetPhysicalDeviceMemoryProperties(cvkDevice.GetDevice().getPhysicalDevice(), memProperties);
-
-        for(int i = 0;i < memProperties.memoryTypeCount();i++) {
-            if((typeFilter & (1 << i)) != 0 && (memProperties.memoryTypes(i).propertyFlags() & properties) == properties) {
-                return i;
-            }
-        }
-
-        throw new RuntimeException("Failed to find suitable memory type");
-    }
-==== BASE ====
+    @Override
+    public VkCommandBuffer GetCommandBuffer(int imageIndex)
+    {
+        return commandBuffers.get(imageIndex).GetVKCommandBuffer(); 
+    }    
 }

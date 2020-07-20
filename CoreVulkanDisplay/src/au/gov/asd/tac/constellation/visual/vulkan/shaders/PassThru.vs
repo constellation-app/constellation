@@ -3,7 +3,7 @@
 
 // === UNIFORMS
 layout(std140, binding = 0) uniform UniformBlock {
-    mat4 mvMatrix;
+    mat4 mvpMatrix;
 }ub;
 
 // === PER VERTEX DATA IN
@@ -15,5 +15,5 @@ layout(location = 0) out vec4 gColor;
 
 void main(void) {
     gColor = color;
-    gl_Position = ub.mvMatrix * vec4(vertex, 1);
+    gl_Position = ub.mvpMatrix * vec4(vertex, 1);
 }
