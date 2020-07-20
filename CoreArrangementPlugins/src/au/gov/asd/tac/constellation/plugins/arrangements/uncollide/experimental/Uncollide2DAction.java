@@ -48,7 +48,7 @@ public final class Uncollide2DAction extends AbstractAction {
 
     @Override
     public void actionPerformed(final ActionEvent e) {
-        PluginExecutor.startWith(ArrangementPluginRegistry.UNCOLLIDE_EXPERIMENTAL)
+        PluginExecutor.startWith(ArrangementPluginRegistry.UNCOLLIDE_EXPERIMENTAL, true)
                 .set(UncollidePlugin.DIMENSION_PARAMETER_ID, 2)
                 .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
                 .executeWriteLater(context.getGraph(), Bundle.CTL_Uncollide2DAction());
