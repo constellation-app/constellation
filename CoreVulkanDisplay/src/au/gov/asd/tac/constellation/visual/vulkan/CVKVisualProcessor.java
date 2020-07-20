@@ -127,8 +127,10 @@ public class CVKVisualProcessor extends VisualProcessor {
      * display cycle.
      */
     public final Matrix44f getDisplayModelViewProjectionMatrix() {
-        final Matrix44f mvpMatrix = new Matrix44f();
+        Matrix44f mvpMatrix = new Matrix44f();
         // TODO_TT
+        // For now set it to the identity matrix
+        mvpMatrix = Matrix44f.identity();
         //mvpMatrix.multiply(renderer.getProjectionMatrix(), modelViewMatrix);
         return mvpMatrix;
     }
