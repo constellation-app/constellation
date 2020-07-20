@@ -56,7 +56,7 @@ public class RestServiceUtilities {
          */
         public static HttpMethod getValue(final String s) {
             try {
-                return HttpMethod.valueOf(s.toUpperCase(Locale.ENGLISH));
+                return HttpMethod.valueOf(s.toUpperCase(Locale.US));
             } catch (final IllegalArgumentException ex) {
                 return null;
             }

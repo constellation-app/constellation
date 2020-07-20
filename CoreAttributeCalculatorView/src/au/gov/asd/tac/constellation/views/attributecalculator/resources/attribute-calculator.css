@@ -1,0 +1,136 @@
+/*
+this should be used as a base css file for all javafx modules to provide a consistent look.
+*/
+/*
+    Created on : 24/06/2014, 5:34:13 PM
+    Author     : twinkle2_little
+*/
+/*******************************************************************************
+ *                                                                             *
+ * scrollbar                                                                   *
+ *                                                                             *
+ ******************************************************************************/
+.variableListCell:even {
+    -fx-background: #333333;
+}
+
+.variableListCell:odd {
+    -fx-background: #2A2A2A;
+}
+
+.variableListCell:selected {
+    -fx-background: #0096C9;
+}
+
+.uneditableCombo {
+    -fx-base: #444444;
+}
+
+.toggle-button:selected {
+    -fx-background-color: #444444;
+}
+
+.menu-button .arrow {
+    -fx-padding:0em;
+    -fx-shape:"M 0 0 z";
+}
+
+/*.combo-box .text-input {
+    -fx-background: #9F9F9F;
+}*/
+
+.root {
+    -fx-control-inner-background: #111111;
+    -fx-background: #222222;
+    -fx-base: #111111;
+    -fx-cell-hover-color: -fx-shadow-highlight-color;
+}
+/*******************************************************************************
+ *                                                                             *
+ * ToolTip                                                                     *
+ *                                                                             *
+ *****************************************************************************
+.tooltip {
+    -fx-padding: 0.333333em 1.666667em 0.333333em 1.666667em;  4 8 4 8
+}
+.tooltip .text{
+    -fx-fill: #e0e0e0;
+
+}
+
+
+******************************************************************************
+ *                                                                             *
+ * scrollbar                                                                   *
+ *                                                                             *
+ *****************************************************************************
+.scroll-bar:vertical .track {
+    -fx-background-color:#333333;
+    -fx-background-insets:  0, 1;
+    -fx-background-radius: 0.5em;  makes sure this remains circular
+}
+.scroll-bar .increment-button {
+    -fx-background-color: #333333;
+}
+
+.scroll-bar .decrement-button {
+    -fx-background-color: #333333;
+}
+
+
+.scroll-bar:vertical .increment-arrow {
+    -fx-background-color: -fx-mark-highlight-color, #D3D3D3;
+    -fx-background-insets: 1 0 -1 0, 0;
+    -fx-padding: 0.333333em 0.5em 0.0em 0.0em;  4 6 0 0
+    -fx-shape: "M -3 0 L 0 4 L 3 0 z";
+}
+
+.scroll-bar:vertical .track-background {
+    -fx-background-color: #333333;
+    -fx-background-insets:  0, 1;
+}
+
+.scroll-bar:vertical .decrement-arrow {
+    -fx-background-color: -fx-mark-highlight-color, #D3D3D3;
+    -fx-background-insets: 1 0 -1 0, 0;
+    -fx-padding: 0.333333em 0.5em 0.0em 0.0em;  4 6 0 0
+    -fx-shape: "M -3 0 L 0 -4 L 3 0 z";
+}
+
+.scroll-bar:horizontal .increment-arrow {
+    -fx-background-color: -fx-mark-highlight-color, #D3D3D3;
+    -fx-background-insets: 1 0 -1 0, 0;
+    -fx-padding: 0.333333em 0.5em 0.0em 0.0em;  4 6 0 0
+    -fx-shape: "M 0 3 L 3 0 L 0 -3 z";
+}
+.scroll-bar:horizontal .track-background {
+    -fx-background-color: #333333;
+    -fx-background-insets:  0, 1;
+}
+.scroll-bar:horizontal .decrement-arrow {
+    -fx-background-color: -fx-mark-highlight-color, #D3D3D3;
+    -fx-background-insets: 1 0 -1 0, 0;
+    -fx-padding: 0.333333em 0.5em 0.0em 0.0em;  4 6 0 0
+    -fx-shape: "M 0 3 L -3 0 L 0 -3 z";
+}
+.scroll-bar:horizontal .thumb {
+    -fx-background-color:#bbbbbb;
+    -fx-background-insets: 0, 1, 2;
+    -fx-background-radius: 0.5em;  makes sure this remains circular
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-background-color:#bbbbbb;
+    -fx-background-insets: 0, 1, 2;
+    -fx-background-radius: 0.5em;  makes sure this remains circular
+}
+
+******************************************************************************
+ *                                                                             *
+ * TitledPane                                                                  *
+ *                                                                             *
+ *****************************************************************************
+
+.titled-pane{
+    -fx-base: #333333;
+}*/

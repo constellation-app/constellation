@@ -1,15 +1,6 @@
 == 3030-12-31 Getting Started
 <p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
-== 2020-07-20 Version 2
-<p>Constellation v2.0.0 is officially released!</p>
-
-== 2020-07-17 Named Selection
-<p>A number of bugs with the Named Selection have been fixed.</p>
-
-== 2020-07-16 Attribute Calculator
-<p>The attribute editor has been removed with other views and features.</p>
-
 == 2020-07-08 Rendering Labels Bug Fixed
 <p>A bug with labels being rendered with unreadable text after opening views has been fixed.</p>
 
@@ -24,7 +15,7 @@
 </ul>
 
 == 2020-06-18 Info Map Bug Fixed
-<p>A bug preventing running the Clustering &gt; Info Map plugins has been fixed.</p>
+<p>A bug preventing running the Clustering %gt; Info Map plugins has been fixed.</p>
 
 == 2020-06-09 Select Top N Bug Fixed
 <p>A bug preventing running the <strong>Select Top N</strong> plugin from the Data Access View has been fixed.</p>

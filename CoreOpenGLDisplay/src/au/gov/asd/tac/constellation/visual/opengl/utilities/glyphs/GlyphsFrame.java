@@ -85,7 +85,7 @@ public class GlyphsFrame extends JFrame {
         glyphManager = new GlyphManagerBI(fontsInfo, textureBufferSize, BufferedImage.TYPE_INT_ARGB);
 
         final GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        final String[] availablefonts = Arrays.stream(ge.getAvailableFontFamilyNames(Locale.ENGLISH))
+        final String[] availablefonts = Arrays.stream(ge.getAvailableFontFamilyNames(Locale.US))
                 .filter(f -> !f.startsWith(Font.DIALOG))
                 .sorted()
                 .toArray(String[]::new);

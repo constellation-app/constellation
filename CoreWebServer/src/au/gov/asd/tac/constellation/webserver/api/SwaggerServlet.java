@@ -74,8 +74,6 @@ public class SwaggerServlet extends ConstellationHttpServlet {
 
     private static final String DESCRIPTION = "description";
     private static final String SCHEMA = "schema";
-    private static final String REQUIRED = "required";
-    private static final String OBJECT = "object";
 
     @Override
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException {
@@ -102,7 +100,7 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                 final ObjectNode paths = (ObjectNode) root.get("paths");
                 RestServiceRegistry.getServices().forEach(serviceKey -> {
                     final ObjectNode path = paths.putObject(String.format(SERVICE_PATH, serviceKey.name));
-                    final ObjectNode httpMethod = path.putObject(serviceKey.httpMethod.name().toLowerCase(Locale.ENGLISH));
+                    final ObjectNode httpMethod = path.putObject(serviceKey.httpMethod.name().toLowerCase(Locale.US));
 
                     final RestService rs = RestServiceRegistry.get(serviceKey);
 
@@ -124,31 +122,20 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                     final ArrayNode params = httpMethod.putArray("parameters");
                     rs.createParameters().getParameters().entrySet().forEach(entry -> {
                         final PluginParameter<?> pp = entry.getValue();
-
-                        if (pp.getName().toLowerCase(Locale.ENGLISH).contains("(body)")) {
-                            final ObjectNode requestBody = httpMethod.putObject("requestBody");
-                            requestBody.put(DESCRIPTION, pp.getName().replace("(body)", " - ") + pp.getDescription());
-                            requestBody.put(REQUIRED, false); //TODO Remove hard-code in #633
-                            final ObjectNode content = requestBody.putObject("content");
-                            final ObjectNode mime = content.putObject(RestServiceUtilities.APPLICATION_JSON);
-                            final ObjectNode schema = mime.putObject(SCHEMA);
-                            schema.put("type", OBJECT);
-                        } else {
-                            final ObjectNode param = params.addObject();
-                            param.put("name", pp.getId());
-                            param.put("in", "query");
-                            param.put(REQUIRED, false); // TODO Hard-code this until PluginParameters grows a required field.
-                            param.put(DESCRIPTION, pp.getDescription());
-                            final ObjectNode schema = param.putObject(SCHEMA);
-                            schema.put("type", pp.getType().getId());
-                        }
+                        final ObjectNode param = params.addObject();
+                        param.put("name", pp.getId());
+                        param.put("in", pp.getName().toLowerCase(Locale.US).contains("(body)") ? "body" : "query");
+                        param.put("required", false); // TODO Hard-code this until PluginParameters grows a required field.
+                        param.put(DESCRIPTION, pp.getDescription());
+                        final ObjectNode schema = param.putObject(SCHEMA);
+                        schema.put("type", pp.getType().getId());
                     });
 
                     // Add the required CONSTELLATION secret header parameter.
                     final ObjectNode secretParam = params.addObject();
                     secretParam.put("name", "X-CONSTELLATION-SECRET");
                     secretParam.put("in", "header");
-                    secretParam.put(REQUIRED, true);
+                    secretParam.put("required", true);
                     secretParam.put(DESCRIPTION, "CONSTELLATION secret");
                     final ObjectNode secretSchema = secretParam.putObject(SCHEMA);
                     secretSchema.put("type", "string");
@@ -164,12 +151,12 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                         schema.put("format", "binary");
                     } else if (rs.getMimeType().equals(RestServiceUtilities.APPLICATION_JSON)) {
                         // Make a wild guess about the response.
-                        if (serviceKey.name.toLowerCase(Locale.ENGLISH).startsWith("list")) {
+                        if (serviceKey.name.toLowerCase(Locale.US).startsWith("list")) {
                             schema.put("type", "array");
                             final ObjectNode items = schema.putObject("items");
-                            items.put("type", OBJECT);
+                            items.put("type", "object");
                         } else {
-                            schema.put("type", OBJECT);
+                            schema.put("type", "object");
                         }
                     }
                 });
