@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -75,7 +76,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
     private final AnalyticViewPane analyticViewPane;
     private final AnalyticController analyticController;
     private boolean suppressed = false;
-    private Graph currentGraph = null;
+    private String currentGraphId = StringUtils.EMPTY;
 
     public AnalyticViewTopComponent() {
         super();
@@ -172,7 +173,9 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
         if (!needsUpdate()) {
             return;
         }
-        currentGraph = graph;
+        if (graph != null) {
+            currentGraphId = graph.getId();
+        }
         if (analyticViewPane != null) {
             analyticViewPane.setIsRunnable(graph != null);
             analyticViewPane.reset();
@@ -188,7 +191,9 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
     @Override
     protected void handleGraphOpened(final Graph graph) {
         if (needsUpdate()) {
-            currentGraph = graph;
+            if (graph != null) {
+                currentGraphId = graph.getId();
+            }
             analyticViewPane.getConfigurationPane().updateState(false);
         }
     }
@@ -196,7 +201,10 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
     @Override
     protected void handleComponentOpened() {
         if (needsUpdate()) {
-            currentGraph = GraphManager.getDefault().getActiveGraph();
+            final Graph current = GraphManager.getDefault().getActiveGraph();
+            if (current != null) {
+                currentGraphId = current.getId();
+            }
             analyticViewPane.getConfigurationPane().updateState(false);
         }
     }
@@ -204,7 +212,8 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
     @Override
     protected void componentShowing() {
         super.componentShowing();
-        if (currentGraph != GraphManager.getDefault().getActiveGraph()) {
+        final Graph current = GraphManager.getDefault().getActiveGraph();
+        if (current != null && !current.getId().equals(currentGraphId)) {
             analyticViewPane.reset();
         }
         analyticViewPane.getConfigurationPane().updateState(false);
