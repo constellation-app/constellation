@@ -29,6 +29,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import java.util.Map;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -43,13 +44,21 @@ public class UncollidePlugin extends SimpleEditPlugin {
 
     public static final String DIMENSION_PARAMETER_ID = PluginParameter.buildId(UncollidePlugin.class, "dimension");
     public static final String SET_XYZ2_PARAMETER_ID = PluginParameter.buildId(UncollidePlugin.class, "set_xyz2");
+    public static final String MAX_EXPANSIONS_PARAMETR_ID = PluginParameter.buildId(UncollidePlugin.class, "Max Expansions");
 
     @Override
+    public String getDescription() {
+        return "Uncollide all nodes whilst attempting to maintaing graph structure.";
+    }
+            
+    @Override
     public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-        final int dimensions = parameters.getIntegerValue(DIMENSION_PARAMETER_ID);
-        final boolean set2 = parameters.getBooleanValue(SET_XYZ2_PARAMETER_ID);
+        final Map<String, PluginParameter<?>> params = parameters.getParameters();
+        final int dimensions = params.get(DIMENSION_PARAMETER_ID).getIntegerValue();
+        final boolean set2 = params.get(SET_XYZ2_PARAMETER_ID).getBooleanValue();
+        final int maxExpansions = params.get(MAX_EXPANSIONS_PARAMETR_ID).getIntegerValue();
 
-        final Arranger arranger = new UncollideArrangement(dimensions, set2);
+        final Arranger arranger = new UncollideArrangement(dimensions, set2, maxExpansions);
         ((UncollideArrangement) arranger).setInteraction(interaction);
 
         final SelectedInclusionGraph selectedGraph = new SelectedInclusionGraph(wg, SelectedInclusionGraph.Connections.NONE);
@@ -73,6 +82,12 @@ public class UncollidePlugin extends SimpleEditPlugin {
         set2Param.setDescription("If True, set X2, Y2, Z2. The default is False.");
         set2Param.setBooleanValue(false);
         parameters.addParameter(set2Param);
+        
+        final PluginParameter<IntegerParameterValue> maxExpansionsParam = IntegerParameterType.build(MAX_EXPANSIONS_PARAMETR_ID);
+        maxExpansionsParam.setName("Maximum Expansions");
+        maxExpansionsParam.setDescription("The maximum number of expansions to allow. A higher number will better retain graph structure butmay lead to a very space out graph, whilst a low number will result in a more compacted graph at a potential cost to graph sturcture.");
+        maxExpansionsParam.setIntegerValue(1);
+        parameters.addParameter(maxExpansionsParam);
 
         return parameters;
     }
