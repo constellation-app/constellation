@@ -142,7 +142,7 @@ public class CVKIconTextureAtlas extends CVKRenderable {
     }
         
     @Override
-    public void IncrementDescriptorTypeRequirements(int descriptorTypeCounts[]) {
+    public void IncrementDescriptorTypeRequirements(int descriptorTypeCounts[], int descriptorSetCount) {
     }
         
     // This could be replaced with a templated Pair type

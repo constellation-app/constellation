@@ -69,7 +69,7 @@ public abstract class CVKRenderable {
    
     public abstract int SwapChainRecreated(CVKSwapChain cvkSwapChain);
     public abstract int DisplayUpdate(CVKSwapChain cvkSwapChain, int frameIndex);
-    public abstract void IncrementDescriptorTypeRequirements(int descriptorTypeCounts[]);        
+    public abstract void IncrementDescriptorTypeRequirements(int descriptorTypeCounts[], int descriptorSetCount);        
     public abstract int RecordCommandBuffer(CVKSwapChain cvkSwapChain, VkCommandBufferInheritanceInfo inheritanceInfo, int index);
 
     /*

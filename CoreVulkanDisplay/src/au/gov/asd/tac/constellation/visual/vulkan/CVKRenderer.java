@@ -97,7 +97,9 @@ public class CVKRenderer implements ComponentListener {
     // we can account for our scene being populated before we've created the swapchain.    
     protected CVKSynchronizedDescriptorTypeCounts desiredPoolDescriptorTypeCounts = new CVKSynchronizedDescriptorTypeCounts();   
        
-
+    // Number of descriptor sets required
+    protected int desiredPoolDescriptorSetCount = 0;
+    
     public List<CVKRenderable> renderables = new ArrayList<>();
     
     private static float clrChange = 0.01f;
@@ -108,10 +110,20 @@ public class CVKRenderer implements ComponentListener {
     public void AddRenderable(CVKRenderable renderable) {
         renderables.add(renderable);
         
-        // TODO_TT: this code sucks, make it not
+        // Each renderable is responsible for telling the renderer what and how 
+        // many Descriptor types it uses. This is calculated here each time a 
+        // renderable is added.
+        // The SwapChain will then create a Descriptor Pool based on these
+        // descriptor counts to allocate the exact amount of memory required.
+        //
+        // If you get a Descriptor POOL_OUT_OF_MEMORY error, make sure you are 
+        // returning the correct numbers for your Descriptor Types.
+        // TODO_TT: this code sucks, make it not. Also change 11 to TOTAL_DESCRIPTOR_TYPES
         int[] descriptorTypeCounts = new int[11];
-        renderables.forEach(r -> {r.IncrementDescriptorTypeRequirements(descriptorTypeCounts);});    
-        desiredPoolDescriptorTypeCounts.Set(descriptorTypeCounts);        
+        int descriptorSetCount = 0;
+        renderables.forEach(r -> {r.IncrementDescriptorTypeRequirements(descriptorTypeCounts, descriptorSetCount);});    
+        desiredPoolDescriptorTypeCounts.Set(descriptorTypeCounts);
+        desiredPoolDescriptorSetCount = descriptorSetCount;
     }
     
     public CVKDevice GetDevice() {
@@ -168,7 +180,7 @@ public class CVKRenderer implements ComponentListener {
         if (parent.surfaceReady()) {
             cvkDevice.WaitIdle();
             CVKSwapChain newSwapChain = new CVKSwapChain(cvkDevice);                                 
-            ret = newSwapChain.Init(desiredPoolDescriptorTypeCounts);
+            ret = newSwapChain.Init(desiredPoolDescriptorTypeCounts, desiredPoolDescriptorSetCount);
             desiredPoolDescriptorTypeCounts.ResetDirty();
             if (VkSucceeded(ret)) {
                 if (cvkSwapChain != null) {
@@ -454,7 +466,8 @@ public class CVKRenderer implements ComponentListener {
             }
             
             if (desiredPoolDescriptorTypeCounts.IsDirty()) {
-                cvkSwapChain.UpdateDescriptorTypeRequirements(desiredPoolDescriptorTypeCounts);
+                cvkSwapChain.UpdateDescriptorTypeRequirements(desiredPoolDescriptorTypeCounts,
+                                                              desiredPoolDescriptorSetCount);
                 desiredPoolDescriptorTypeCounts.ResetDirty();
             }            
             

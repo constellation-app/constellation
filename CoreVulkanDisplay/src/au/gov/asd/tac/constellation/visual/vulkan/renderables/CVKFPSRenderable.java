@@ -1209,7 +1209,7 @@ public class CVKFPSRenderable extends CVKRenderable {
     }
     
     @Override
-    public void IncrementDescriptorTypeRequirements(int descriptorTypeCounts[]) {
+    public void IncrementDescriptorTypeRequirements(int descriptorTypeCounts[], int descriptorSetCount) {
         CVKAssert(descriptorTypeCounts.length == (VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT + 1));
         // SimpleIcon.vs
         ++descriptorTypeCounts[VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER];
@@ -1217,6 +1217,9 @@ public class CVKFPSRenderable extends CVKRenderable {
         ++descriptorTypeCounts[VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER];
         // SimpleIcon.fs
         ++descriptorTypeCounts[VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER];
+        
+        // One descriptor set is required
+        ++descriptorSetCount;
     } 
     
     @Override
