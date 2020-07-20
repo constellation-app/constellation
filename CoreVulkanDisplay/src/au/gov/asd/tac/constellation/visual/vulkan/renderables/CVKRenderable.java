@@ -96,6 +96,6 @@ public abstract class CVKRenderable {
      */
     @FunctionalInterface
     public static interface CVKRenderableUpdateTask {
-        public void run();
-    }                
+        public void run(CVKSwapChain cvkSwapChain, int imageIndex);
+    }         
 }

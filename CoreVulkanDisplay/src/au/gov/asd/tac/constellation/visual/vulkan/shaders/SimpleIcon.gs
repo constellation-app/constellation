@@ -6,7 +6,7 @@
 #version 450
 
 
-// === CONSTANTS
+// === CONSTANTS ===
 const int ICON_BITS = 16;
 const int ICON_MASK = 0xffff;
 const float TEXTURE_SIZE = 0.125;
@@ -20,7 +20,7 @@ const mat4 IDENTITY_MATRIX = mat4(
 );
 
 
-// === UNIFORMS
+// === UNIFORMS ===
 layout(std140, binding = 1) uniform UniformBlock {
     mat4 pMatrix;
     float pixelDensity;
@@ -28,35 +28,37 @@ layout(std140, binding = 1) uniform UniformBlock {
 } ub;
 
 
-// === PER PRIMITIVE DATA IN
+// === PER PRIMITIVE DATA IN ===
 layout(points) in;
 layout(location = 0) flat in ivec2 gData[];
 layout(location = 1) flat in mat4 gBackgroundIconColor[];
 layout(location = 5) flat in float gRadius[];
 
 
-// === PER PRIMITIVE DATA OUT
+// === PER PRIMITIVE DATA OUT ===
 layout(triangle_strip, max_vertices=28) out;
 layout(location = 0) flat out mat4 iconColor;
 layout(location = 4) noperspective centroid out vec3 textureCoords;
 
 
-// === FILE SCOPE VARS
+// === FILE SCOPE VARS ===
 vec4 v;
 
 
 /*
+Compared to the OpenGL version of this shader the Y is flipped.
+
 OpenGL
-^
+^ Y
 |
 |
-.---->
+.----> X
 
 Vulkan
-.---->
+.----> X
 |
 |
-V
+V Y
 */
 
 

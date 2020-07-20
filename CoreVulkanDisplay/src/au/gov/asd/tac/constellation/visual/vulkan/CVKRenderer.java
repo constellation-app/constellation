@@ -504,6 +504,8 @@ public class CVKRenderer implements ComponentListener {
                     checkVKret(ret); 
                               
                     // Update everything that needs updating - drawables 
+                    ret = parent.DisplayUpdate(cvkSwapChain, imageIndex);
+                    checkVKret(ret);
                     for (int i = 0; VkSucceeded(ret) && (i < renderables.size()); ++i) {
                         ret = renderables.get(i).DisplayUpdate(cvkSwapChain, imageIndex);
                         checkVKret(ret); 
@@ -569,7 +571,12 @@ public class CVKRenderer implements ComponentListener {
 
     
     int[] getViewport() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        final int[] viewport = new int[4];
+        viewport[0] = 0;
+        viewport[1] = 0;
+        viewport[2] = cvkSwapChain.GetWidth();
+        viewport[3] = cvkSwapChain.GetHeight();
+        return viewport;
     }
     
     public VkInstance GetVkInstance() {

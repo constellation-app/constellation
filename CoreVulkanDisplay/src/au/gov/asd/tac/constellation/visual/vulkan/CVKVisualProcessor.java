@@ -29,15 +29,19 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualOperation;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor.VisualChangeProcessor;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
+import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKAssert;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkFailed;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKAxesRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKFPSRenderable;
+import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKIconsRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable;
+import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableUpdateTask;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -45,6 +49,7 @@ import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Semaphore;
+import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import org.lwjgl.vulkan.awt.VKData;
 
 
@@ -62,10 +67,17 @@ public class CVKVisualProcessor extends VisualProcessor {
     protected final CVKRenderer cvkRenderer;
     protected final Frustum viewFrustum = new Frustum();
     private final Matrix44f projectionMatrix = new Matrix44f();
-    private CVKIconTextureAtlas cvkIconTextureAtlas = null;    
+        
 
 
     protected CVKCanvas cvkCanvas;
+    
+    // Renderables (would it be better to not hold these explicitly and just use the renderer to enumerate them?)
+    private CVKIconTextureAtlas cvkIconTextureAtlas = null;
+    private CVKAxesRenderable cvkAxes = null;
+    private CVKFPSRenderable cvkFPS = null;
+    private CVKIconsRenderable cvkIcons = null;
+    
     
     // The primary GLRenderable that performs the bulk of the visualisation. This renderable contains most of the actual logic to send data to the GL Context.
     //private GraphRenderable graphRenderable;
@@ -78,6 +90,10 @@ public class CVKVisualProcessor extends VisualProcessor {
     
     public Matrix44f GetProjectionMatrix() { return projectionMatrix; }
     public CVKIconTextureAtlas GetTextureAtlas() { return cvkIconTextureAtlas; }
+    
+    void addTask(final CVKRenderableUpdateTask task) {
+        taskQueue.add(task);
+    }
     
 
     @Override
@@ -342,11 +358,7 @@ public class CVKVisualProcessor extends VisualProcessor {
      * @param renderable The {@link GLRenderable} to add.
      */
     protected final void addRenderable(final CVKRenderable renderable) {
-        if (!isInitialised) {
-           // cvkScene.Add(renderable);
-            //TODO_TT
-            //renderer.addRenderable(renderable);
-        }
+        cvkRenderer.AddRenderable(renderable);
     }
 
     /**
@@ -400,6 +412,17 @@ public class CVKVisualProcessor extends VisualProcessor {
      */
     public boolean surfaceReady() {
         return (cvkCanvas != null) ? !cvkCanvas.getBounds().isEmpty() : false;
+    }
+    
+    public int DisplayUpdate(CVKSwapChain cvkSwapChain, int imageIndex) {
+        int ret = VK_SUCCESS;
+        final List<CVKRenderableUpdateTask> tasks = new ArrayList<>();
+//        if (taskQueue.isEmpty()) {
+//            skipRedraw = true;
+//        }
+        taskQueue.drainTo(tasks);
+        tasks.forEach(task -> { task.run(cvkSwapChain, imageIndex); });      
+        return ret;
     }
     
     @Override
@@ -523,6 +546,14 @@ public class CVKVisualProcessor extends VisualProcessor {
         switch (property) {
             case VERTICES_REBUILD:
                 return (change, access) -> {
+                    // Recreate all the icons.  Note this is sometimes called before the CVKDevice
+                    // has been initialised (we don't create our renderables until then).
+                    if (cvkIcons != null) {
+                        addTask(cvkIcons.TaskDestroyIcons());
+                        if (access.getVertexCount() > 0) {
+                            addTask(cvkIcons.TaskCreateIcons(access));
+                        }
+                    }
 //                    addTask(nodeLabelBatcher.setTopLabelColors(access));
 //                    addTask(nodeLabelBatcher.setTopLabelSizes(access));
 //                    addTask(nodeLabelBatcher.setBottomLabelColors(access));
@@ -650,11 +681,21 @@ public class CVKVisualProcessor extends VisualProcessor {
                 };
             case VERTEX_FOREGROUND_ICON:
                 return (change, access) -> {
+//                    if (cvkIcons != null) {
+
+//                        if (access.getVertexCount() > 0) {
+//                            addTask(cvkIcons.TaskUpdateIcons(access));
+//                        }
+//                    }
+                };
+                
+                
+//                return (change, access) -> {
 //                    addTaskIfReady(iconBatcher.updateIcons(access, change), iconBatcher);
 //                    addTask(gl -> {
 //                        iconTextureArray = iconBatcher.updateIconTexture(gl);
 //                    });
-                };
+//                };
             case VERTEX_SELECTED:
                 return (change, access) -> {
 //                    if (vertexFlagsTexturiser.isReady()) {
@@ -704,7 +745,11 @@ public class CVKVisualProcessor extends VisualProcessor {
         ret = CVKFPSRenderable.LoadShaders(cvkDevice);      
         if (VkFailed(ret)) {
             return ret;
-        }        
+        }   
+        ret = CVKIconsRenderable.LoadShaders(cvkDevice);      
+        if (VkFailed(ret)) {
+            return ret;
+        }           
         ret = CVKAxesRenderable.CreateDescriptorLayout(cvkDevice);
         if (VkFailed(ret)) {
             return ret;
@@ -713,23 +758,33 @@ public class CVKVisualProcessor extends VisualProcessor {
         if (VkFailed(ret)) {
             return ret;
         }        
+        ret = CVKIconsRenderable.CreateDescriptorLayout(cvkDevice);
+        if (VkFailed(ret)) {
+            return ret;
+        }           
         
 
-        CVKAxesRenderable cvkAxes = new CVKAxesRenderable(this);
+        cvkAxes = new CVKAxesRenderable(this);
         ret = cvkAxes.Init(cvkDevice);
         if (VkFailed(ret)) {
             return ret;
         }  
         cvkRenderer.AddRenderable(cvkAxes);
-                
-        CVKFPSRenderable cvkFPS = new CVKFPSRenderable(this);
+  
+        cvkFPS = new CVKFPSRenderable(this);
         ret = cvkFPS.Init();
         if (VkFailed(ret)) {
             return ret;
         }          
         cvkRenderer.AddRenderable(cvkFPS);              
         
-      
+        cvkIcons = new CVKIconsRenderable(this);
+        ret = cvkIcons.Init();
+        if (VkFailed(ret)) {
+            return ret;
+        }          
+        cvkRenderer.AddRenderable(cvkIcons);   
+        
         
         // Testing
         boolean addExtraIcons = true;
