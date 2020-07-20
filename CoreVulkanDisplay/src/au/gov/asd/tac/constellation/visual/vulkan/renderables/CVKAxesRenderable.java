@@ -92,6 +92,7 @@ import org.lwjgl.vulkan.VkVertexInputBindingDescription;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKShaderUtils.ShaderKind.GEOMETRY_SHADER;
+import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKAssert;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKLOGGER;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkFailed;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkSucceeded;
@@ -136,9 +137,12 @@ public class CVKAxesRenderable extends CVKRenderable {
     private static final Vector3f ZERO_3F = new Vector3f(0, 0, 0);
     private static final Matrix44f IDENTITY_44F = Matrix44f.identity();
 
+
+    // All the verts are manually calculated for the Axes in CreateVertexBuffer():
+    // - (3 x 2) = X, Y, Z lines for Axes
+    // - (4, 4, 4) =  Arrows at the end of the Axes
+    // - (4, 6, 6) = X, Y, Z labels
     private static final int NUMBER_OF_VERTICES = 3 * 2 + 4 + 4 + 4 + 4 + 6 + 6;
-    private static final int COLOR_BUFFER_WIDTH = 4;
-    private static final int VERTEX_BUFFER_WIDTH = 3;
     
     private Vector3f topRightCorner = new Vector3f();
     private float pScale = 0;
@@ -243,16 +247,18 @@ public class CVKAxesRenderable extends CVKRenderable {
     @Override
     public void Destroy() {
         DestroyCommandBuffers();
+        DestroyVertexBuffers();
+        DestroyUniformBuffers();
+        DestroyDescriptorSets();
         DestroyPipeline();
-        // Destroy vertex buffers
-        //vkDestroyBuffer(cvkDevice, vertexBuffer);
-        //vkFreeMemory(cvkDevice, vertexBufferMemory);
-        
-        // Destroy command buffers
-        //vkDestroyShaderModule(cvkDevice.GetDevice(), vertShaderModule, 0);
-        //vkDestroyShaderModule(cvkDevice.GetDevice(), fragShaderModule, 0);
-        
-        // vkDestroyDescriptorSet
+        DestroyPipelineLayouts();
+              
+        CVKAssert(pipelines == null);
+        CVKAssert(pipelineLayouts == null);
+        CVKAssert(pDescriptorSets == null);
+        CVKAssert(vertexUniformBuffers == null);
+        CVKAssert(vertexBuffers == null);
+        CVKAssert(commandBuffers == null);        
     }
     
     
@@ -264,16 +270,29 @@ public class CVKAxesRenderable extends CVKRenderable {
         }       
     }
     
+    private void DestroyVertexBuffers() {
+        if (null != vertexBuffers) {
+            vertexBuffers.forEach(el -> {el.Destroy();});
+            vertexBuffers.clear();
+            vertexBuffers = null;
+        }
+    }
     
-    private void DestroyPipeline() {
-        if (null != vertexUniformBuffers && vertexUniformBuffers.size() > 0) {
-            for (int i = 0; i < vertexUniformBuffers.size(); ++i) {
-                vkDestroyBuffer(cvkDevice.GetDevice(), vertexUniformBuffers.get(i).GetBufferHandle(), null);
-                vkFreeMemory(cvkDevice.GetDevice(), vertexUniformBuffers.get(i).GetMemoryBufferHandle(), null);
-            }
+    private void DestroyUniformBuffers() {
+        if (vertexUniformBuffers != null) {
+            vertexUniformBuffers.forEach(el -> {el.Destroy();});
             vertexUniformBuffers = null;
         }
-        
+    }
+    
+    private void DestroyDescriptorSets(){
+        // TODO HYDRA
+        //pDescriptorSets empty list
+                
+        //vkDestroyDescriptorSetLayout(cvkDevice.GetDevice(), hDescriptorLayout, null);
+    }
+    
+    private void DestroyPipeline() {     
         if (pipelines != null) {
             for (int i = 0; i < pipelines.size(); ++i) {
                 vkDestroyPipeline(cvkDevice.GetDevice(), pipelines.get(i), null);
@@ -284,6 +303,17 @@ public class CVKAxesRenderable extends CVKRenderable {
         }       
     }
     
+    private void DestroyPipelineLayouts() {
+        if (pipelineLayouts != null) {
+            for (int i = 0; i < pipelineLayouts.size(); ++i) {
+                vkDestroyPipelineLayout(cvkDevice.GetDevice(), pipelineLayouts.get(i), null);
+                pipelineLayouts.set(i, VK_NULL_HANDLE);
+            }
+            pipelineLayouts.clear();
+            pipelineLayouts = null;
+        }
+    }
+    
     @Override
     public int GetVertexCount(){return NUMBER_OF_VERTICES; }
     
@@ -291,21 +321,246 @@ public class CVKAxesRenderable extends CVKRenderable {
     public int Init(CVKDevice cvkDevice) {
         int ret = VK_SUCCESS;
  
-         
-//        ret = DeviceInitialised(cvkDevice);
-//        if (VkFailed(ret)) { return ret; }
-//               
-//        ret = CreateVertexBuffer();
-//        if (VkFailed(ret)) { return ret; }
-//        
-//        ret = CreateIndexBuffer();
-//        if (VkFailed(ret)) { return ret; }
-        
-        //ret = CreateDescriptorLayout();
-        //checkVKret(ret);
-        
-        
+        // TODO HYDRA - Do we need an init?       
         return ret;
+    }
+    
+    private float calculateProjectionScale(final int[] viewport) {
+        // calculate the number of pixels a scene object of y-length 1 projects to.
+        final Vector3f unitPosition = new Vector3f(0, 1, 0);
+        final Vector4f proj1 = new Vector4f();
+        Graphics3DUtilities.project(ZERO_3F, IDENTITY_44F, viewport, proj1);
+        final Vector4f proj2 = new Vector4f();
+        Graphics3DUtilities.project(unitPosition, IDENTITY_44F, viewport, proj2);
+        final float yScale = proj2.a[1] - proj1.a[1];
+
+        return 25.0f / yScale;
+    } 
+    
+    
+    private int CreateUniformBuffers(MemoryStack stack, CVKSwapChain cvkSwapChain){
+        int ret = VK_SUCCESS;
+        
+        int imageCount = cvkSwapChain.GetImageCount(); 
+        
+        vertexUniformBuffers = new ArrayList<>();     
+        for (int i = 0; i < imageCount; ++i) {   
+            CVKBuffer vertUniformBuffer = CVKBuffer.Create(cvkDevice, 
+                                                          VertexUniformBufferObject.SIZEOF,
+                                                          VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+                                                          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+            
+            vertUniformBuffer.DEBUGNAME = String.format("CVKAxesRenderable vertexUniformBuffer %d", i);               
+            vertexUniformBuffers.add(vertUniformBuffer);            
+        }
+        
+        return UpdateUniformBuffers(stack, cvkSwapChain);
+    }
+  
+    
+    private int UpdateUniformBuffers(MemoryStack stack, CVKSwapChain cvkSwapChain) {
+        int ret = VK_SUCCESS;
+     
+        int imageCount = cvkSwapChain.GetImageCount();        
+        
+        // LIFTED FROM AxesRenderable.reshape(...)
+        // The logic here seems to be the FPS text needs to be 50 pixels from the 
+        // edges, the calculation of dx and dy implies that the viewport is 
+        //-width/2, -height/2, width/2, height/2
+        
+        // whenever the drawable shape changes, recalculate the place where the fps is drawn
+        
+        // This is a GL viewport where the screen space origin is in the bottom left corner
+        //final int[] viewport = new int[]{0, 0, cvkSwapChain.GetWidth(), cvkSwapChain.GetHeight()};
+        
+        // In Vulkan the screen space origin is in the top left hand corner.  Note we put the origin at 0, H and 
+        // the viewport dimensions are W and -H.  The -H means we we still have a 0->H range, just running in the
+        // opposite direction to GL.
+        final int[] viewport = new int[]{0, cvkSwapChain.GetHeight(), cvkSwapChain.GetWidth(), -cvkSwapChain.GetHeight()};
+               
+        final int dx = cvkSwapChain.GetWidth() / 2 - AXES_OFFSET;
+        final int dy = -cvkSwapChain.GetHeight() / 2 + AXES_OFFSET;
+        pScale = calculateProjectionScale(viewport);
+        Graphics3DUtilities.moveByProjection(ZERO_3F, IDENTITY_44F, viewport, dx, dy, topRightCorner);
+        
+        // LIFTED FROM AxesRenerable.display(...)
+        // Extract the rotation matrix from the mvp matrix.
+        final Matrix44f rotationMatrix = new Matrix44f();
+        parent.getDisplayModelViewProjectionMatrix().getRotationMatrix(rotationMatrix);
+
+        // Scale down to size.
+        final Matrix44f scalingMatrix = new Matrix44f();
+        scalingMatrix.makeScalingMatrix(pScale, pScale, 0);
+        final Matrix44f srMatrix = new Matrix44f();
+        srMatrix.multiply(scalingMatrix, rotationMatrix);
+
+        // Translate to the top right corner.
+        final Matrix44f translationMatrix = new Matrix44f();
+        translationMatrix.makeTranslationMatrix(topRightCorner.getX(), 
+                                                topRightCorner.getY(), 
+                                                topRightCorner.getZ()); 
+        vertexUBO.mvpMatrix.multiply(translationMatrix, srMatrix); 
+          
+        for (int i = 0; i < imageCount; ++i) {   
+            // Initial fill of the vertex uniform buffer
+            int size = VertexUniformBufferObject.SIZEOF;
+            CVKBuffer vertUniformBuffer = vertexUniformBuffers.get(i);
+            PointerBuffer vertData = stack.mallocPointer(1);
+            vkMapMemory(cvkDevice.GetDevice(), vertUniformBuffer.GetMemoryBufferHandle(), 0, size, 0, vertData);
+            {
+                vertexUBO.CopyTo(vertData.getByteBuffer(0, size));
+            }
+            vkUnmapMemory(cvkDevice.GetDevice(), vertUniformBuffer.GetMemoryBufferHandle());
+        }
+        return ret;                
+    }
+    
+    private int CreateVertexBuffers(MemoryStack stack, CVKSwapChain cvkSwapChain) {
+        int ret = VK_SUCCESS;
+              
+        vertexBuffers = new ArrayList<>();
+        
+        // Size to upper limit, we don't have to draw each one.
+        int size = vertices.length * Vertex.SIZEOF;
+        
+        // Converted from AxesRenderable.java. Keeping comments for reference.
+        int i =  0;
+        // x axis
+        // axesBatch.stage(colorTarget, XCOLOR);
+        // axesBatch.stage(vertexTarget, ZERO_3F);
+        vertices[i++] = new Vertex(ZERO_3F, XCOLOR);
+        // axesBatch.stage(colorTarget, XCOLOR);
+        // axesBatch.stage(vertexTarget, LEN, 0, 0);      
+        vertices[i++] = new Vertex(new Vector3f(LEN,0f,0f), XCOLOR);
+        
+        // arrow
+        // axesBatch.stage(colorTarget, XCOLOR);
+        // axesBatch.stage(vertexTarget, LEN - HEAD, HEAD, 0);
+        vertices[i++] = new Vertex(new Vector3f(LEN - HEAD, HEAD, 0f), XCOLOR);
+        // axesBatch.stage(colorTarget, XCOLOR);
+        // axesBatch.stage(vertexTarget, LEN, 0, 0);
+        vertices[i++] = new Vertex(new Vector3f(LEN, 0f, 0f), XCOLOR);
+        // axesBatch.stage(colorTarget, XCOLOR);
+        // axesBatch.stage(vertexTarget, LEN, 0, 0);
+        vertices[i++] = new Vertex(new Vector3f(LEN, 0f, 0f), XCOLOR);
+        // axesBatch.stage(colorTarget, XCOLOR);
+        // axesBatch.stage(vertexTarget, LEN - HEAD, -HEAD, 0);
+        vertices[i++] = new Vertex(new Vector3f(LEN - HEAD, -HEAD, 0f), XCOLOR);
+
+        // X
+        // axesBatch.stage(colorTarget, XCOLOR);
+        // axesBatch.stage(vertexTarget, LEN + HEAD, HEAD, HEAD);
+        vertices[i++] = new Vertex(new Vector3f(LEN + HEAD, HEAD, HEAD), XCOLOR);
+        // axesBatch.stage(colorTarget, XCOLOR);
+        // axesBatch.stage(vertexTarget, LEN + HEAD, -HEAD, -HEAD);
+        vertices[i++] = new Vertex(new Vector3f(LEN + HEAD, -HEAD, -HEAD), XCOLOR);
+        // axesBatch.stage(colorTarget, XCOLOR);
+        // axesBatch.stage(vertexTarget, LEN + HEAD, HEAD, -HEAD);
+        vertices[i++] = new Vertex(new Vector3f(LEN + HEAD, HEAD, -HEAD), XCOLOR);
+        // axesBatch.stage(colorTarget, XCOLOR);
+        // axesBatch.stage(vertexTarget, LEN + HEAD, -HEAD, HEAD);
+        vertices[i++] = new Vertex(new Vector3f(LEN + HEAD, -HEAD, HEAD), XCOLOR);
+
+        // y axis
+        // axesBatch.stage(colorTarget, YCOLOR);
+        // axesBatch.stage(vertexTarget, ZERO_3F);
+        vertices[i++] = new Vertex(ZERO_3F, YCOLOR);
+        // axesBatch.stage(colorTarget, YCOLOR);
+        // axesBatch.stage(vertexTarget, 0, LEN, 0);
+        vertices[i++] = new Vertex(new Vector3f(0f, LEN, 0f), YCOLOR);
+        // arrow
+        // axesBatch.stage(colorTarget, YCOLOR);
+        // axesBatch.stage(vertexTarget, 0, LEN - HEAD, HEAD);
+        vertices[i++] = new Vertex(new Vector3f(0f, LEN - HEAD, HEAD), YCOLOR);
+        // axesBatch.stage(colorTarget, YCOLOR);
+        // axesBatch.stage(vertexTarget, 0, LEN, 0);
+        vertices[i++] = new Vertex(new Vector3f(0f, LEN, 0f), YCOLOR);
+        // axesBatch.stage(colorTarget, YCOLOR);
+        // axesBatch.stage(vertexTarget, 0, LEN, 0);
+        vertices[i++] = new Vertex(new Vector3f(0f, LEN, 0f), YCOLOR);
+        // axesBatch.stage(colorTarget, YCOLOR);
+        // axesBatch.stage(vertexTarget, 0, LEN - HEAD, -HEAD);
+        vertices[i++] = new Vertex(new Vector3f(0f, LEN - HEAD, -HEAD), YCOLOR);
+        // Y
+        // axesBatch.stage(colorTarget, YCOLOR);
+        // axesBatch.stage(vertexTarget, -HEAD, LEN + HEAD, -HEAD);
+        vertices[i++] = new Vertex(new Vector3f(-HEAD, LEN + HEAD, -HEAD), YCOLOR);
+        // axesBatch.stage(colorTarget, YCOLOR);
+        // axesBatch.stage(vertexTarget, 0, LEN + HEAD, 0);
+        vertices[i++] = new Vertex(new Vector3f(0f, LEN + HEAD, 0f), YCOLOR);
+        // axesBatch.stage(colorTarget, YCOLOR);
+        // axesBatch.stage(vertexTarget, HEAD, LEN + HEAD, -HEAD);
+        vertices[i++] = new Vertex(new Vector3f(HEAD, LEN + HEAD, -HEAD), YCOLOR);
+        // axesBatch.stage(colorTarget, YCOLOR);
+        // axesBatch.stage(vertexTarget, 0, LEN + HEAD, 0);
+        vertices[i++] = new Vertex(new Vector3f(0f, LEN + HEAD, 0f), YCOLOR);
+        // axesBatch.stage(colorTarget, YCOLOR);
+        // axesBatch.stage(vertexTarget, 0, LEN + HEAD, 0);
+        vertices[i++] = new Vertex(new Vector3f(0f, LEN + HEAD, 0f), YCOLOR);
+        // axesBatch.stage(colorTarget, YCOLOR);
+        // axesBatch.stage(vertexTarget, 0, LEN + HEAD, HEAD);
+        vertices[i++] = new Vertex(new Vector3f(0f, LEN + HEAD, HEAD), YCOLOR);
+
+        // z axis
+        // axesBatch.stage(colorTarget, ZCOLOR);
+        // axesBatch.stage(vertexTarget, ZERO_3F);
+        vertices[i++] = new Vertex(ZERO_3F, ZCOLOR);
+        // axesBatch.stage(colorTarget, ZCOLOR);
+        // axesBatch.stage(vertexTarget, 0, 0, LEN);
+        vertices[i++] = new Vertex(new Vector3f(0f, 0f, LEN), ZCOLOR);
+        // arrow
+        // axesBatch.stage(colorTarget, ZCOLOR);
+        // axesBatch.stage(vertexTarget, -HEAD, 0, LEN - HEAD);
+        vertices[i++] = new Vertex(new Vector3f(-HEAD, 0f, LEN - HEAD), ZCOLOR);
+        // axesBatch.stage(colorTarget, ZCOLOR);
+        // axesBatch.stage(vertexTarget, 0, 0, LEN);
+        vertices[i++] = new Vertex(new Vector3f(0f, 0f, LEN), ZCOLOR);
+        // axesBatch.stage(colorTarget, ZCOLOR);
+        // axesBatch.stage(vertexTarget, 0, 0, LEN);
+        vertices[i++] = new Vertex(new Vector3f(0f, 0f, LEN), ZCOLOR);
+        // axesBatch.stage(colorTarget, ZCOLOR);
+        // axesBatch.stage(vertexTarget, HEAD, 0, LEN - HEAD);
+        vertices[i++] = new Vertex(new Vector3f(HEAD, 0f, LEN - HEAD), ZCOLOR);
+        // Z
+        // axesBatch.stage(colorTarget, ZCOLOR);
+        // axesBatch.stage(vertexTarget, -HEAD, HEAD, LEN + HEAD);
+        vertices[i++] = new Vertex(new Vector3f(-HEAD, HEAD, LEN + HEAD), ZCOLOR);
+        // axesBatch.stage(colorTarget, ZCOLOR);
+        // axesBatch.stage(vertexTarget, HEAD, HEAD, LEN + HEAD);
+        vertices[i++] = new Vertex(new Vector3f(HEAD, HEAD, LEN + HEAD), ZCOLOR);
+        // axesBatch.stage(colorTarget, ZCOLOR);
+        // axesBatch.stage(vertexTarget, HEAD, HEAD, LEN + HEAD);
+        vertices[i++] = new Vertex(new Vector3f(HEAD, HEAD, LEN + HEAD), ZCOLOR);
+        // axesBatch.stage(colorTarget, ZCOLOR);
+        // axesBatch.stage(vertexTarget, -HEAD, -HEAD, LEN + HEAD);
+        vertices[i++] = new Vertex(new Vector3f(-HEAD, -HEAD, LEN + HEAD), ZCOLOR);
+        // axesBatch.stage(colorTarget, ZCOLOR);
+        // axesBatch.stage(vertexTarget, -HEAD, -HEAD, LEN + HEAD);
+        vertices[i++] = new Vertex(new Vector3f(-HEAD, -HEAD, LEN + HEAD), ZCOLOR);
+        // axesBatch.stage(colorTarget, ZCOLOR);
+        // axesBatch.stage(vertexTarget, HEAD, -HEAD, LEN + HEAD);
+        vertices[i++] = new Vertex(new Vector3f(HEAD, -HEAD, LEN + HEAD), ZCOLOR);
+        
+         
+        //TODO_TT: most if not all of Constellation's vertex buffers won't change after creation
+        // so they should probably be allocated as VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT and staged
+        // to once to fill them (staging buffer this is host visible then copied to the device local)
+        //for (int j = 0; j < imageCount; ++j) {   
+        CVKBuffer vertexBuffer = CVKBuffer.Create(cvkDevice, 
+                                                        size,
+                                                        VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+                                                        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+        vertexBuffers.add(vertexBuffer);
+
+        PointerBuffer data = stack.mallocPointer(1);
+        vkMapMemory(cvkDevice.GetDevice(), vertexBuffer.GetMemoryBufferHandle(), 0, size, 0, data);
+        {
+            Vertex.CopyTo(data.getByteBuffer(0, size), vertices);
+        }
+        vkUnmapMemory(cvkDevice.GetDevice(), vertexBuffer.GetMemoryBufferHandle());
+
+        return ret;  
+    
     }
     
     private float calculateProjectionScale(final int[] viewport) {
@@ -536,7 +791,7 @@ public class CVKAxesRenderable extends CVKRenderable {
         return ret;  
     
     }
-    
+  
     
     public int CreateCommandBuffers(CVKSwapChain cvkSwapChain) {
         int ret = VK_SUCCESS;
@@ -660,8 +915,7 @@ public class CVKAxesRenderable extends CVKRenderable {
                 multisampling.sampleShadingEnable(false);
                 multisampling.rasterizationSamples(VK_SAMPLE_COUNT_1_BIT);
 
-		// ===> DEPTH <===
-            
+                // ===> DEPTH <=== 
                 // Even though we don't test depth, the renderpass created by CVKSwapChain is used by
                 // each renderable and it was created to have a depth attachment
                 VkPipelineDepthStencilStateCreateInfo depthStencil = VkPipelineDepthStencilStateCreateInfo.callocStack(stack);
@@ -708,6 +962,7 @@ public class CVKAxesRenderable extends CVKRenderable {
                 pipelineInfo.pViewportState(viewportState);
                 pipelineInfo.pRasterizationState(rasterizer);
                 pipelineInfo.pMultisampleState(multisampling);
+                pipelineInfo.pDepthStencilState(depthStencil);
                 pipelineInfo.pColorBlendState(colorBlending);
                 pipelineInfo.layout(hPipelineLayout);
                 pipelineInfo.renderPass(cvkSwapChain.GetRenderPassHandle());
@@ -784,15 +1039,67 @@ public class CVKAxesRenderable extends CVKRenderable {
     @Override
     public int SwapChainRecreated(CVKSwapChain cvkSwapChain) {
         VerifyInRenderThread();
-        assert(cvkDevice != null);
-        assert(cvkDevice.GetDevice() != null);
+        int ret = VK_SUCCESS;
         
-        Destroy();
-        
-        int ret = CreatePipeline(cvkSwapChain);
-        if (VkFailed(ret)) { return ret; }
-        ret = CreateCommandBuffers(cvkSwapChain);
+        // We only need to recreate these resources if the number of images in 
+        // the swapchain changes or if this is the first call after the initial
+        // swapchain is created.
+        if (pipelines == null || pipelines.size() != cvkSwapChain.GetImageCount()) {        
+            DestroyVertexBuffers();
+            DestroyUniformBuffers();
+            DestroyDescriptorSets();
+            DestroyCommandBuffers();
+            DestroyPipeline();
+            DestroyPipelineLayouts();
+            DestroyCommandBuffers(); 
 
+            CVKAssert(pipelines == null);
+            CVKAssert(pipelineLayouts == null);
+            CVKAssert(pDescriptorSets == null);
+            CVKAssert(vertexUniformBuffers == null);
+            CVKAssert(vertexBuffers == null);
+            CVKAssert(commandBuffers == null);           
+
+            try (MemoryStack stack = stackPush()) {                     
+                ret = CreateUniformBuffers(stack, cvkSwapChain);
+                if (VkFailed(ret)) { return ret; }
+
+                ret = CreateDescriptorSets(stack, cvkSwapChain);
+                if (VkFailed(ret)) { return ret; } 
+
+                ret = CreateVertexBuffers(stack, cvkSwapChain);
+                if (VkFailed(ret)) { return ret; }   
+
+                ret = CreateCommandBuffers(cvkSwapChain);
+                if (VkFailed(ret)) { return ret; }            
+
+                ret = CreatePipeline(cvkSwapChain);
+                if (VkFailed(ret)) { return ret; }                                       
+            }      
+        } else {
+            // This is the resize path, image count is unchanged.  We need to recreate
+            // pipelines as Vulkan doesn't have a good mechanism to update them and as
+            // they define the viewport and scissor rect they are now out of date.  We
+            // also need to update the uniform buffer as a new image size will mean a
+            // different position for our FPS.  After updating the uniform buffers we
+            // need to update the descriptor sets that bind the uniform buffers as well.
+            DestroyPipeline();
+            DestroyDescriptorSets();
+            CVKAssert(pipelines == null);
+            
+            try (MemoryStack stack = stackPush()) {                     
+                ret = CreatePipeline(cvkSwapChain);
+                if (VkFailed(ret)) { return ret; }                           
+                
+                ret = UpdateUniformBuffers(stack, cvkSwapChain);
+                if (VkFailed(ret)) { return ret; }
+
+                // TODO_TT: this is leaking
+                ret = CreateDescriptorSets(stack, cvkSwapChain);
+                if (VkFailed(ret)) { return ret; } 
+            }              
+        }
+        
         return ret;
     }
     
@@ -852,7 +1159,6 @@ public class CVKAxesRenderable extends CVKRenderable {
             layoutInfo.pBindings(bindings);
 
             LongBuffer pDescriptorSetLayout = stack.mallocLong(1);
-
             ret = vkCreateDescriptorSetLayout(cvkDevice.GetDevice(), layoutInfo, null, pDescriptorSetLayout);
             if (VkSucceeded(ret)) {
                 hDescriptorLayout = pDescriptorSetLayout.get(0);
@@ -868,15 +1174,15 @@ public class CVKAxesRenderable extends CVKRenderable {
         int imageCount = cvkSwapChain.GetImageCount();
 
         // Create descriptor sets
-        LongBuffer layouts = stack.mallocLong(imageCount);
+        LongBuffer pLayouts = stack.mallocLong(imageCount);
         for (int i = 0; i < imageCount; ++i) {
-            layouts.put(i, hDescriptorLayout);
+            pLayouts.put(i, hDescriptorLayout);
         }
 
         VkDescriptorSetAllocateInfo allocInfo = VkDescriptorSetAllocateInfo.callocStack(stack);
         allocInfo.sType(VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO);
         allocInfo.descriptorPool(cvkSwapChain.GetDescriptorPoolHandle());
-        allocInfo.pSetLayouts(layouts);            
+        allocInfo.pSetLayouts(pLayouts);            
 
         // Allocate the descriptor sets from the descriptor pool, they'll be unitialised
         pDescriptorSets = MemoryUtil.memAllocLong(imageCount);
@@ -927,6 +1233,20 @@ public class CVKAxesRenderable extends CVKRenderable {
         this.cvkDevice = cvkDevice;
         return VK_SUCCESS;
     }    
+
+  
+    @Override
+    public int RecreateSharedResources(CVKSwapChain cvkSwapChain) { 
+        VerifyInRenderThread();
+        
+        int ret;
+        DestroyDescriptorSets();
+        try (MemoryStack stack = stackPush()) {
+            ret = CreateDescriptorSets(stack, cvkSwapChain);
+        }
+        return ret;
+    }
+    
 
     @Override
     public VkCommandBuffer GetCommandBuffer(int imageIndex)

@@ -667,9 +667,7 @@ public class CVKSwapChain {
         // the swapchain is rebuilt.
         
         // Do we have anything to render?
-        int allTypesCount = desiredPoolDescriptorTypeCounts.NumberOfDescriptorTypes();
-        int maxSets = 0;
-        
+        int allTypesCount = desiredPoolDescriptorTypeCounts.NumberOfDescriptorTypes();       
         if (allTypesCount > 0) {
             VkDescriptorPoolSize.Buffer pPoolSizes = VkDescriptorPoolSize.callocStack(allTypesCount, stack);
             
@@ -690,9 +688,6 @@ public class CVKSwapChain {
                     // We will allocate a complete set of descriptors for each image
                     size *= imageCount;
                     vkPoolSize.descriptorCount(size);
-                    
-                    // Increment the total number of descriptors we need to allocate
-                    maxSets += size;
                 } else {
                     // We aren't allocating memory for this type
                     poolDescriptorTypeCounts[iType] = 0;
