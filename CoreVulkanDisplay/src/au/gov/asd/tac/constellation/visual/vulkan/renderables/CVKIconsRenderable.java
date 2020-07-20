@@ -50,8 +50,6 @@ import org.lwjgl.vulkan.VkDescriptorSetLayoutCreateInfo;
 
 
 public class CVKIconsRenderable extends CVKRenderable{
-    CVKDevice cvkDevice = null;
-    
     private static final int ICON_BITS = 16;
     private static final int ICON_MASK = 0xffff;
     
@@ -269,6 +267,7 @@ public class CVKIconsRenderable extends CVKRenderable{
             }
             colorBuffer.flip();
             iconBuffer.flip();
+            xyzBuffer.flip();
         }
         
         //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.DisplayUpdate) ===//
@@ -288,9 +287,9 @@ public class CVKIconsRenderable extends CVKRenderable{
         return (cvkSwapChain, imageIndex) -> {
             VerifyInRenderThread();
 
-            MemoryUtil.memFree(colorBuffer);
-            MemoryUtil.memFree(iconBuffer);
-            MemoryUtil.memFree(xyzBuffer);        
+            if (colorBuffer != null) { MemoryUtil.memFree(colorBuffer); colorBuffer = null; }
+            if (iconBuffer != null) { MemoryUtil.memFree(iconBuffer); iconBuffer = null; }
+            if (xyzBuffer != null) { MemoryUtil.memFree(xyzBuffer); xyzBuffer = null; }
         };        
     }
     

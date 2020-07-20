@@ -652,7 +652,7 @@ public class CVKSwapChain {
     public int CreateVKDescriptorPool(MemoryStack stack, CVKSynchronizedDescriptorTypeCounts desiredPoolDescriptorTypeCounts, int desiredPoolDescriptorSetCount) {
         VerifyInRenderThread();
         CVKAssert(desiredPoolDescriptorTypeCounts != null);
-        CVKAssert(desiredPoolDescriptorSetCount != 0);
+        CVKAssert(desiredPoolDescriptorSetCount == 0);
         
         int ret = VK_SUCCESS;
         

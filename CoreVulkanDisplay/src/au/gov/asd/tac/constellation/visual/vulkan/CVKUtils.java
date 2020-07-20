@@ -326,7 +326,7 @@ public class CVKUtils {
             if (Beans.isDesignTime()) {
                 assert(exprResult);
             } else {
-                CVKLOGGER.warning("Assertion failure");
+                CVKLOGGER.warning("!!!!!!!!!!!!!!!Assertion failure!!!!!!!!!!!!!!!!!");
                 LogStackTrace(Level.WARNING);
             }
         }

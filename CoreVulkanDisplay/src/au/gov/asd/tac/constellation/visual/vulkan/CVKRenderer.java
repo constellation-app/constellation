@@ -209,7 +209,7 @@ public class CVKRenderer implements ComponentListener {
      * @throws Exception
      */
     public CVKRenderer(CVKVisualProcessor parent) throws Exception {
-        StartLogSection("VKRenderer ctor");
+        StartLogSection("CVKRenderer ctor");
         this.parent = parent;
         try (MemoryStack stack = stackPush()) {            
             PointerBuffer pbValidationLayers = null;
@@ -220,7 +220,7 @@ public class CVKRenderer implements ComponentListener {
             cvkInstance = new CVKInstance();
             checkVKret(cvkInstance.Init(stack, pbExtensions, pbValidationLayers, debugging));         
         }
-        EndLogSection("VKRenderer ctor");
+        EndLogSection("CVKRenderer ctor");
     }
 
     @SuppressWarnings("deprecation")
@@ -575,10 +575,12 @@ public class CVKRenderer implements ComponentListener {
             RecreateSwapChain();
         }        
         
-        // hack for constant render loop
-        if (debugging) {
-            parent.rebuild();
-        } 
+        // hack for constant render loop.  Note with the hittester in place this
+        // spams the vert rebuild and Constellation crashes after clicking in edit
+        // mode.
+//        if (debugging) {
+//            parent.rebuild();
+//        } 
         parent.signalProcessorIdle();
     }
 

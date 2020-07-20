@@ -582,16 +582,16 @@ public class CVKAxesRenderable extends CVKRenderable {
     
     
     public int CreatePipeline(CVKSwapChain cvkSwapChain) {
-        assert(cvkDevice != null);
-        assert(cvkDevice.GetDevice() != null);
-        assert(cvkSwapChain.GetSwapChainHandle()        != VK_NULL_HANDLE);
-        assert(cvkSwapChain.GetRenderPassHandle()       != VK_NULL_HANDLE);
-        assert(cvkSwapChain.GetDescriptorPoolHandle()   != VK_NULL_HANDLE);
-        assert(vertShaderModule != VK_NULL_HANDLE);
-        assert(geomShaderModule != VK_NULL_HANDLE);
-        assert(fragShaderModule != VK_NULL_HANDLE);        
-        assert(cvkSwapChain.GetWidth() > 0);
-        assert(cvkSwapChain.GetHeight() > 0);
+        CVKAssert(cvkDevice != null);
+        CVKAssert(cvkDevice.GetDevice() != null);
+        CVKAssert(cvkSwapChain.GetSwapChainHandle()        != VK_NULL_HANDLE);
+        CVKAssert(cvkSwapChain.GetRenderPassHandle()       != VK_NULL_HANDLE);
+        CVKAssert(cvkSwapChain.GetDescriptorPoolHandle()   != VK_NULL_HANDLE);
+        CVKAssert(vertShaderModule != VK_NULL_HANDLE);
+        CVKAssert(geomShaderModule != VK_NULL_HANDLE);
+        CVKAssert(fragShaderModule != VK_NULL_HANDLE);        
+        CVKAssert(cvkSwapChain.GetWidth() > 0);
+        CVKAssert(cvkSwapChain.GetHeight() > 0);
         
         // TODO Make sure this object has been initialised
         //if (!isInitialised)
@@ -722,7 +722,7 @@ public class CVKAxesRenderable extends CVKRenderable {
                 checkVKret(ret);
 
                 long hPipelineLayout = pPipelineLayout.get(0);
-                assert(hPipelineLayout != VK_NULL_HANDLE);
+                CVKAssert(hPipelineLayout != VK_NULL_HANDLE);
                 pipelineLayouts.add(hPipelineLayout);
                 
                 VkGraphicsPipelineCreateInfo.Buffer pipelineInfo = VkGraphicsPipelineCreateInfo.callocStack(1, stack);
@@ -751,7 +751,7 @@ public class CVKAxesRenderable extends CVKRenderable {
                                                 pGraphicsPipeline);
                 checkVKret(ret);                
                 pipelines.add(pGraphicsPipeline.get(0));
-                assert(pipelines.get(i) != VK_NULL_HANDLE);
+                CVKAssert(pipelines.get(i) != VK_NULL_HANDLE);
             }
         }
         CVKLOGGER.log(Level.INFO, "Graphics Pipeline created for AxesRenderable class.");

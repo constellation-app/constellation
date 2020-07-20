@@ -106,7 +106,7 @@ public class CVKDevice {
     public int Init() {
         int ret;
         
-        StartLogSection("Initialising VKDevice");
+        StartLogSection("Initialising CVKDevice");
         try (MemoryStack stack = stackPush()) {  
             ret = InitVKPhysicalDevice(stack);
             if (VkFailed(ret)) return ret;
@@ -117,7 +117,7 @@ public class CVKDevice {
             ret = InitVKCommandPool(stack);
             if (VkFailed(ret)) return ret;
         }
-        EndLogSection("Initialising VKDevice");
+        EndLogSection("Initialising CVKDevice");
         
         return ret;
     }
