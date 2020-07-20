@@ -91,7 +91,7 @@ public class CVKHitTester extends CVKRenderable {
     @Override
     public int SwapChainRecreated(CVKSwapChain cvkSwapChain) { return VK_SUCCESS;}
     @Override
-    public void IncrementDescriptorTypeRequirements(int descriptorTypeCounts[]) {}     
+    public void IncrementDescriptorTypeRequirements(int descriptorTypeCounts[], int descriptorSetCount) {}     
     @Override
     public int RecordCommandBuffer(CVKSwapChain cvkSwapChain, VkCommandBufferInheritanceInfo inheritanceInfo, int index) { return VK_SUCCESS;}
     @Override

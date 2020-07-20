@@ -47,7 +47,7 @@ layout(location = 1) in mat4 gBackgroundIconColor[];
 layout(location = 5) flat in int vxPosition[];
 
 // The radius of the vertex
-flat in float gRadius[];
+layout(location = 6) flat in float gRadius[];
 
 
 // === PER PRIMITIVE DATA OUT ===

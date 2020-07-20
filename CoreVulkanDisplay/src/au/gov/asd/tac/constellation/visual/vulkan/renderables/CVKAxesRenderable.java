@@ -708,6 +708,7 @@ public class CVKAxesRenderable extends CVKRenderable {
                 pipelineInfo.pViewportState(viewportState);
                 pipelineInfo.pRasterizationState(rasterizer);
                 pipelineInfo.pMultisampleState(multisampling);
+                pipelineInfo.pDepthStencilState(depthStencil);
                 pipelineInfo.pColorBlendState(colorBlending);
                 pipelineInfo.layout(hPipelineLayout);
                 pipelineInfo.renderPass(cvkSwapChain.GetRenderPassHandle());

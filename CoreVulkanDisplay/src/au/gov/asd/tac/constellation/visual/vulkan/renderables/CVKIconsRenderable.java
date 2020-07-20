@@ -63,6 +63,12 @@ public class CVKIconsRenderable extends CVKRenderable{
     // TODO_TT: not really width....
     private static final int ICON_BUFFER_WIDTH = 4;
     private static final int COLOR_BUFFER_WIDTH = 4;
+    private static final int XYZ_BUFFER_WIDTH = 8;
+    
+    // Buffers used by shaders
+    private FloatBuffer colorBuffer;
+    private IntBuffer iconBuffer;
+    private FloatBuffer xyzBuffer;
     
     
     // TODO_TT: generalise this for all classes
@@ -235,15 +241,31 @@ public class CVKIconsRenderable extends CVKRenderable{
         return pos;
     }
     
+    // TODO_TT: find out more about the second coord
+    // TODO_TT: see if anything ever uses the radius   - yes the blaze batcher 
+    private int bufferXYZInfo(final int pos, final FloatBuffer xyzBuffer, final VisualAccess access) {
+        xyzBuffer.put(access.getX(pos));
+        xyzBuffer.put(access.getY(pos));
+        xyzBuffer.put(access.getZ(pos));
+        xyzBuffer.put(access.getRadius(pos));
+        xyzBuffer.put(access.getX2(pos));
+        xyzBuffer.put(access.getY2(pos));
+        xyzBuffer.put(access.getZ2(pos));
+        xyzBuffer.put(access.getRadius(pos));  
+        return pos;
+    }
+    
     public CVKRenderableUpdateTask TaskCreateIcons(final VisualAccess access) {
         //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
         final int numVertices = access.getVertexCount();
         if (numVertices > 0) {
-            final FloatBuffer colorBuffer = MemoryUtil.memAllocFloat(COLOR_BUFFER_WIDTH * numVertices);
-            final IntBuffer iconBuffer = MemoryUtil.memAllocInt(ICON_BUFFER_WIDTH * numVertices);
+            colorBuffer = MemoryUtil.memAllocFloat(COLOR_BUFFER_WIDTH * numVertices);
+            iconBuffer = MemoryUtil.memAllocInt(ICON_BUFFER_WIDTH * numVertices);
+            xyzBuffer = MemoryUtil.memAllocFloat(XYZ_BUFFER_WIDTH * numVertices);
             for (int pos = 0; pos < numVertices; pos++) {
                 bufferColorInfo(pos, colorBuffer, access);
                 bufferIconInfo(pos, iconBuffer, access);
+                bufferXYZInfo(pos, xyzBuffer, access);
             }
             colorBuffer.flip();
             iconBuffer.flip();
@@ -266,6 +288,9 @@ public class CVKIconsRenderable extends CVKRenderable{
         return (cvkSwapChain, imageIndex) -> {
             VerifyInRenderThread();
 
+            MemoryUtil.memFree(colorBuffer);
+            MemoryUtil.memFree(iconBuffer);
+            MemoryUtil.memFree(xyzBuffer);        
         };        
     }
     
@@ -294,7 +319,7 @@ public class CVKIconsRenderable extends CVKRenderable{
     @Override
     public int DisplayUpdate(CVKSwapChain cvkSwapChain, int frameIndex) { return VK_SUCCESS;}
     @Override
-    public void IncrementDescriptorTypeRequirements(int descriptorTypeCounts[]) {}     
+    public void IncrementDescriptorTypeRequirements(int descriptorTypeCounts[], int descriptorSetCount) {}     
     @Override
     public int RecordCommandBuffer(CVKSwapChain cvkSwapChain, VkCommandBufferInheritanceInfo inheritanceInfo, int index) { return VK_SUCCESS;}
     @Override
