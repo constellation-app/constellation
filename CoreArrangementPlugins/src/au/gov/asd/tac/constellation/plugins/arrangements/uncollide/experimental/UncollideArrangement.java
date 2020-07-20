@@ -39,15 +39,13 @@ public class UncollideArrangement implements Arranger {
     private float minPadding;
     private PluginInteraction interaction;
     private boolean maintainMean = false;
+    private final int maxExpansions;
 
-    public UncollideArrangement(final int dimensions) {
-        this(dimensions, false);
-    }
-
-    public UncollideArrangement(final int dimensions, final boolean setXyz2) {
+    public UncollideArrangement(final int dimensions, final boolean setXyz2, final int maxExpansions) {
         this.dimensions = dimensions;
         this.setXyz2 = setXyz2;
-        minPadding = 1;
+        this.maxExpansions = maxExpansions;
+        minPadding = (float) 0.5;
     }
 
     public void setInteraction(final PluginInteraction interaction) {
@@ -75,7 +73,7 @@ public class UncollideArrangement implements Arranger {
         if (vxCount > 0) {
             if (dimensions == 2) {
                 try {
-                    uncollide2d(wg, 2000);
+                    uncollide2d(wg, 2000, maxExpansions);
                     
                     // Move x,y,z to x2,y2,z2.
                     // Set x,y to uncollided x,y.
@@ -132,15 +130,17 @@ public class UncollideArrangement implements Arranger {
         }
     }
 
-    private void uncollide2d(final GraphWriteMethods wg, final int iter) throws InterruptedException, PluginException {
+    private void uncollide2d(final GraphWriteMethods wg, final int iter, final int maxExpansions) throws InterruptedException, PluginException {
         int maxCollided = -1;
         boolean isEnd = false;
         for (int i = 0; i < iter && !isEnd; i++) {
             QuadTree qt = putAllVerticiesInQT(wg);
 
-            qt.nudgeAllTwins(minPadding);
-                    
-            qt = putAllVerticiesInQT(wg);
+            boolean foundTwin = true;
+            while (foundTwin){
+                foundTwin = qt.nudgeAllTwins(minPadding, maxExpansions);
+                qt = putAllVerticiesInQT(wg);
+            }
             
             int verticiesBeforeCollision = qt.findCollision(minPadding);
 
