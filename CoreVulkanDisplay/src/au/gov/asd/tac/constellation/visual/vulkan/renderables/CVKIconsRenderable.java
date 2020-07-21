@@ -96,7 +96,7 @@ public class CVKIconsRenderable extends CVKRenderable{
 
     private int vertexCount = 0;
     private CVKBuffer cvkVertexStagingBuffer = null;
-    private CVKIconsRenderable.Vertex[] vertices = null;
+//    private CVKIconsRenderable.Vertex[] vertices = null;
     private float[] positions = null;
     
     private List<CVKBuffer> vertexBuffers = null;    
@@ -451,10 +451,14 @@ public class CVKIconsRenderable extends CVKRenderable{
         try {
             // Vertices are modified by the event thread
             vertexLock.lock(); 
-           
             
+            // Destroy old staging buffer if it exists
+            if (cvkVertexStagingBuffer != null) {
+                cvkVertexStagingBuffer.Destroy();
+                cvkVertexStagingBuffer = null;
+            }                       
             
-            vertices = null;
+//            vertices = null;
             positions = null;
             if (vertexCount > 0) {
                 positions = new float[XYZ_BUFFER_WIDTH * vertexCount];
@@ -547,26 +551,26 @@ public class CVKIconsRenderable extends CVKRenderable{
             vertexLock.lock();
             for (int i = 0; i < vertexBuffers.size(); ++i) {   
                 CVKBuffer cvkVertexBuffer = vertexBuffers.get(i);
-                cvkVertexBuffer.Put(cvkVertexStagingBuffer);
+                cvkVertexBuffer.CopyFrom(cvkVertexStagingBuffer);
             }
         } finally {
             vertexLock.unlock();
         }        
         
-        try (MemoryStack stack = stackPush()) {                
-            int size = vertices.length * CVKIconsRenderable.Vertex.SIZEOF;
-            for (int i = 0; i < vertexBuffers.size(); ++i) {   
-                CVKBuffer cvkVertexBuffer = vertexBuffers.get(i);
-                PointerBuffer data = stack.mallocPointer(1);
-                vkMapMemory(cvkDevice.GetDevice(), cvkVertexBuffer.GetMemoryBufferHandle(), 0, size, 0, data);
-                {
-                    CVKIconsRenderable.Vertex.CopyTo(data.getByteBuffer(0, size), vertices);
-                }
-                vkUnmapMemory(cvkDevice.GetDevice(), cvkVertexBuffer.GetMemoryBufferHandle());
-            }
-        } finally {
-            vertexLock.unlock();
-        }
+//        try (MemoryStack stack = stackPush()) {                
+//            int size = vertices.length * CVKIconsRenderable.Vertex.SIZEOF;
+//            for (int i = 0; i < vertexBuffers.size(); ++i) {   
+//                CVKBuffer cvkVertexBuffer = vertexBuffers.get(i);
+//                PointerBuffer data = stack.mallocPointer(1);
+//                vkMapMemory(cvkDevice.GetDevice(), cvkVertexBuffer.GetMemoryBufferHandle(), 0, size, 0, data);
+//                {
+//                    CVKIconsRenderable.Vertex.CopyTo(data.getByteBuffer(0, size), vertices);
+//                }
+//                vkUnmapMemory(cvkDevice.GetDevice(), cvkVertexBuffer.GetMemoryBufferHandle());
+//            }
+//        } finally {
+//            vertexLock.unlock();
+//        }
         
         return ret;         
     }    
@@ -673,7 +677,7 @@ public class CVKIconsRenderable extends CVKRenderable{
                 // Copy pixels, note for undersized icons we need extra offsets to pad the top and sides                    
                 if (width == ICON_WIDTH && height == ICON_HEIGHT) {
                     assert(pixels.capacity() == ICON_SIZE_BYTES);
-                    cvkStagingBuffer.Put(pixels, 0, 0, ICON_SIZE_BYTES);
+                    cvkStagingBuffer.CopyFrom(pixels, 0, 0, ICON_SIZE_BYTES);
                 } else {
                     // Zero this buffer so undersized icons are padded with transparent pixels
                     cvkStagingBuffer.ZeroMemory();     
@@ -691,7 +695,7 @@ public class CVKIconsRenderable extends CVKRenderable{
                         // offset from the start of the row to the start of the icon
                         writePos += colOffset * ICON_COMPONENTS;
                         int readPos = iRow * width * ICON_COMPONENTS;
-                        cvkStagingBuffer.Put(pixels, writePos, readPos, width * ICON_COMPONENTS);
+                        cvkStagingBuffer.CopyFrom(pixels, writePos, readPos, width * ICON_COMPONENTS);
                     }
                 }
                 iconStagingBuffers.add(cvkStagingBuffer);
@@ -818,7 +822,7 @@ public class CVKIconsRenderable extends CVKRenderable{
         if (VkFailed(ret)) { return ret; }
 
         // We don't need these now they've been copied into the relavant buffers
-        vertices = null;
+//        vertices = null;
         positions = null;
         
         recreateIcons = false;

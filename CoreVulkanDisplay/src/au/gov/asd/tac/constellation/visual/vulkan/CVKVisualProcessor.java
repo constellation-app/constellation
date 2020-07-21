@@ -144,10 +144,7 @@ public class CVKVisualProcessor extends VisualProcessor {
      */
     public final Matrix44f getDisplayModelViewProjectionMatrix() {
         Matrix44f mvpMatrix = new Matrix44f();
-        // TODO_TT
-        // For now set it to the identity matrix
-        mvpMatrix = Matrix44f.identity();
-        //mvpMatrix.multiply(renderer.getProjectionMatrix(), modelViewMatrix);
+        mvpMatrix.multiply(projectionMatrix, modelViewMatrix);
         return mvpMatrix;
     }
 
@@ -318,9 +315,22 @@ public class CVKVisualProcessor extends VisualProcessor {
         }
     }
 
+    /**
+     * This exists so CVKRenderer can call it the wrapped function that would
+     * otherwise have private exposure to it.
+     */
     @Override
     protected void signalProcessorIdle() {
         super.signalProcessorIdle();
+    }
+    
+    /**
+     * This exists so CVKRenderer can call it the wrapped function that would
+     * otherwise have private exposure to it.
+     */    
+    @Override
+    protected void requestRedraw() {
+        super.requestRedraw();
     }
 
     @Override
@@ -634,11 +644,13 @@ public class CVKVisualProcessor extends VisualProcessor {
             case CAMERA:
                 return (change, access) -> {
                     final Camera updatedCamera = access.getCamera();
-//                    addTask(gl -> {
-//                        camera = updatedCamera;
-//                        parent.setDisplayCamera(camera);
-//                        Graphics3DUtilities.getModelViewMatrix(camera.lookAtEye, camera.lookAtCentre, camera.lookAtUp, parent.getDisplayModelViewMatrix());
-//                    });
+                    camera = updatedCamera;
+                    setDisplayCamera(camera);
+                    Graphics3DUtilities.getModelViewMatrix(camera.lookAtEye, camera.lookAtCentre, camera.lookAtUp, getDisplayModelViewMatrix());
+                    
+                    if (cvkAxes != null){
+                        addTask(cvkAxes.TaskUpdateCamera());
+                    }
                 };
             case CONNECTION_LABEL_COLOR:
                 return (change, access) -> {

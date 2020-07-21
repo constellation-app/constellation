@@ -571,8 +571,8 @@ public class CVKRenderer implements ComponentListener {
         // render fence has been the reset and the semaphores will be in the 
         // signalled state, so we just destroy them without waiting.
         if (cvkSwapChain == null || swapChainNeedsRecreation) {
-
             RecreateSwapChain();
+            parent.requestRedraw();
         }        
         
         // hack for constant render loop.  Note with the hittester in place this

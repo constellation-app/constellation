@@ -129,6 +129,7 @@ import org.lwjgl.vulkan.VkViewport;
 import org.lwjgl.vulkan.VkWriteDescriptorSet;
 import static org.lwjgl.vulkan.VK10.vkDestroyPipeline;
 import static org.lwjgl.vulkan.VK10.vkDestroyPipelineLayout;
+import static org.lwjgl.vulkan.VK10.vkFreeDescriptorSets;
 import org.lwjgl.vulkan.VkPipelineDepthStencilStateCreateInfo;
 
 
@@ -551,7 +552,7 @@ public class CVKFPSRenderable extends CVKRenderable {
             // Populate
             for (int i = 0; i < vertexBuffers.size(); ++i) {   
                 CVKBuffer cvkVertexBuffer = vertexBuffers.get(i);
-                cvkVertexBuffer.Put(cvkStagingBuffer);
+                cvkVertexBuffer.CopyFrom(cvkStagingBuffer);
             }
         }
         
@@ -725,36 +726,17 @@ public class CVKFPSRenderable extends CVKRenderable {
     private int DestroyDescriptorSets() {
         int ret = VK_SUCCESS;
         
-        /*
-        TODO_TT: vkFreeDescriptorSets is resulting in the error below.  Revisit later
-        
-        
-        VkDebugUtilsMessengerCallbackEXTI.java:47>Validation layer: Validation Error: [ VUID-vkFreeDescriptorSets-pDescriptorSets-00310 ] Object 0: handle = 0xb2a1ba00000001d0, type = VK_OBJECT_TYPE_DESCRIPTOR_SET; | MessageID = 0x7cd4a2da | Invalid VkDescriptorSet 0xb2a1ba00000001d0[]. The Vulkan spec states: pDescriptorSets must be a valid pointer to an array of descriptorSetCount VkDescriptorSet handles, each element of which must either be a valid handle or VK_NULL_HANDLE (https://www.khronos.org/registry/vulkan/specs/1.1-extensions/html/vkspec.html#VUID-vkFreeDescriptorSets-pDescriptorSets-00310)
-        */
-        
-//        try (MemoryStack stack = stackPush()) { 
-//            if (pDescriptorSets != null) {
-//                for (int i = 0; i < pDescriptorSets.capacity(); ++i) {
-//                    long hDescriptorSet = pDescriptorSets.get(i);
-//                    ret = vkFreeDescriptorSets(cvkDevice.GetDevice(), 
-//                               cvkSwapChain.GetDescriptorPoolHandle(),
-//                               stack.longs(hDescriptorSet));
-//                }
-//            }
-//        }
-            
-            
-            //TODO_TT: pull descriptor pool out of swapchain if it doesn't need constant recreation
-//            ret = vkFreeDescriptorSets(cvkDevice.GetDevice(), 
-//                                       cvkSwapChain.GetDescriptorPoolHandle(),
-//                                       pDescriptorSets);
-//            MemoryUtil.memFree(pDescriptorSets);
+//        if (pDescriptorSets != null) {
+//            // After calling vkFreeDescriptorSets, all descriptor sets in pDescriptorSets are invalid.
+//            ret = vkFreeDescriptorSets(cvkDevice.GetDevice(), cvkSwapChain.GetDescriptorPoolHandle(), pDescriptorSets);
 //            pDescriptorSets = null;
+//            checkVKret(ret);
 //        }
+        
         return ret;
     }
 
-
+    
     private int CreatePipelines(CVKSwapChain cvkSwapChain) {
         CVKAssert(cvkDevice != null);
         CVKAssert(cvkDevice.GetDevice() != null);
@@ -1095,7 +1077,6 @@ public class CVKFPSRenderable extends CVKRenderable {
 //                ret = UpdateDescriptorSets(stack, cvkSwapChain);
 //                if (VkFailed(ret)) { return ret; }    
 
-                // TODO_TT: this is leaking
                 ret = CreateDescriptorSets(stack, cvkSwapChain);
                 if (VkFailed(ret)) { return ret; } 
             }              

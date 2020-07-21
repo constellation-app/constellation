@@ -65,7 +65,7 @@ public class CVKBuffer {
     public long GetBufferSize() { return bufferSize; }
     public long GetMemoryBufferHandle() { return pBufferMemory.get(0); }
     
-    public void Put(CVKBuffer other) {
+    public void CopyFrom(CVKBuffer other) {
         CVKAssert(GetBufferSize() >= other.GetBufferSize());
         int ret;
         
