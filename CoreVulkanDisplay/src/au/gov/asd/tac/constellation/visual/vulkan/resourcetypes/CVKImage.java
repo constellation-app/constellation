@@ -15,8 +15,12 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan.resourcetypes;
 
+import au.gov.asd.tac.constellation.utilities.graphics.Vector3i;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.checkVKret;
+import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKFormatUtils;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_BUFFER_TOO_SMALL_FOR_COPY;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_IMAGE_TOO_SMALL_FOR_COPY;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_INVALID_ARGS;
 import java.nio.LongBuffer;
 import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryStack.stackPush;
@@ -27,13 +31,6 @@ import static org.lwjgl.vulkan.VK10.VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT;
 import static org.lwjgl.vulkan.VK10.VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_ACCESS_SHADER_READ_BIT;
 import static org.lwjgl.vulkan.VK10.VK_ACCESS_TRANSFER_WRITE_BIT;
-import static org.lwjgl.vulkan.VK10.VK_FORMAT_D16_UNORM;
-import static org.lwjgl.vulkan.VK10.VK_FORMAT_D16_UNORM_S8_UINT;
-import static org.lwjgl.vulkan.VK10.VK_FORMAT_D24_UNORM_S8_UINT;
-import static org.lwjgl.vulkan.VK10.VK_FORMAT_D32_SFLOAT;
-import static org.lwjgl.vulkan.VK10.VK_FORMAT_D32_SFLOAT_S8_UINT;
-import static org.lwjgl.vulkan.VK10.VK_FORMAT_S8_UINT;
-import static org.lwjgl.vulkan.VK10.VK_FORMAT_X8_D24_UNORM_PACK32;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_COLOR_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_DEPTH_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_STENCIL_BIT;
@@ -65,17 +62,27 @@ import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkAllocateMemory;
 import static org.lwjgl.vulkan.VK10.vkCreateImageView;
 import static org.lwjgl.vulkan.VK10.vkBindImageMemory;
+import static org.lwjgl.vulkan.VK10.vkCmdCopyBufferToImage;
 import static org.lwjgl.vulkan.VK10.vkCmdPipelineBarrier;
 import static org.lwjgl.vulkan.VK10.vkCreateImage;
 import static org.lwjgl.vulkan.VK10.vkDestroyImage;
 import static org.lwjgl.vulkan.VK10.vkDestroyImageView;
 import static org.lwjgl.vulkan.VK10.vkFreeMemory;
 import static org.lwjgl.vulkan.VK10.vkGetImageMemoryRequirements;
+import org.lwjgl.vulkan.VkBufferImageCopy;
+import org.lwjgl.vulkan.VkExtent3D;
 import org.lwjgl.vulkan.VkImageCreateInfo;
 import org.lwjgl.vulkan.VkImageMemoryBarrier;
 import org.lwjgl.vulkan.VkImageViewCreateInfo;
 import org.lwjgl.vulkan.VkMemoryAllocateInfo;
 import org.lwjgl.vulkan.VkMemoryRequirements;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_INVALID_IMAGE;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.checkVKret;
+import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKFormatUtils.VkFormatByteDepth;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkSucceeded;
 
 public class CVKImage {
     private CVKDevice cvkDevice     = null;
@@ -90,7 +97,9 @@ public class CVKImage {
     private int usage               = 0;
     private int properties          = 0;   
     private int aspectMask          = 0;
-    private int layout              = VK_IMAGE_LAYOUT_UNDEFINED;
+    private int imageType           = 0;
+    private int viewType            = 0;
+    private int layout              = 0;    
     
     private CVKImage() {}
     
@@ -123,22 +132,25 @@ public class CVKImage {
         super.finalize();
     }
     
-    public static boolean HasDepthComponent(int format) {
-        return  format == VK_FORMAT_D16_UNORM ||
-                format == VK_FORMAT_X8_D24_UNORM_PACK32 ||
-                format == VK_FORMAT_D32_SFLOAT  ||
-                format == VK_FORMAT_D16_UNORM_S8_UINT ||
-                format == VK_FORMAT_D24_UNORM_S8_UINT ||
-                format == VK_FORMAT_D32_SFLOAT_S8_UINT;
+    
+    public int Transition(int newLayout) {
+        int ret;
+        
+        CVKCommandBuffer cvkTransitionCmd = CVKCommandBuffer.Create(cvkDevice, VK_COMMAND_BUFFER_LEVEL_PRIMARY);
+        cvkTransitionCmd.DEBUGNAME = "CVKImage.Transition cvkTransitionCmd";
+        ret = cvkTransitionCmd.Begin(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
+        if (VkFailed(ret)) { return ret; }
+        ret = Transition(cvkTransitionCmd, newLayout);
+        if (VkSucceeded(ret)) {
+            // Blocking execute the command buffer
+            ret = cvkTransitionCmd.EndAndSubmit();                        
+        }
+        cvkTransitionCmd.Destroy();
+        
+        return ret;
     }
     
-    public static boolean HasStencilComponent(int format) {
-        return format == VK_FORMAT_S8_UINT ||
-               format == VK_FORMAT_D16_UNORM_S8_UINT ||
-               format == VK_FORMAT_D24_UNORM_S8_UINT ||
-               format == VK_FORMAT_D32_SFLOAT_S8_UINT;
-    }
-    
+        
     /**
      * This method transitions an image from layout to another.  It uses a memory
      * barrier to do this.  It doesn't sound like the kind of construct that is
@@ -175,7 +187,7 @@ public class CVKImage {
             // Depth/stencil or colour?
             if (newLayout == VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL) {
                 aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;                
-                if (HasStencilComponent(format)) {
+                if (CVKFormatUtils.VkFormatHasStencilComponent(format)) {
                     aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
                 }
             } else {
@@ -224,6 +236,142 @@ public class CVKImage {
         
         return ret;
     }
+    
+    
+    public int CopyFrom(CVKBuffer buffer) {       
+        Vector3i dstPixelOffsets = new Vector3i(0,0,0);
+        Vector3i dstPixelExtents = new Vector3i(0,0,0);        
+        
+        // Sanity check the buffer is probably holding pixels that match our format
+        if ((buffer.GetBufferSize() % VkFormatByteDepth(format)) != 0) {
+            return CVK_ERROR_INVALID_ARGS;
+        }
+        
+        // Check for overflow from ridiculously large buffer
+        if (buffer.GetBufferSize() > Integer.MAX_VALUE) {
+            return CVK_ERROR_INVALID_ARGS;
+        }                    
+        
+        // Calculate width      
+        int pixelsInBuffer = (int)buffer.GetBufferSize() / VkFormatByteDepth(format);
+        dstPixelExtents.setX(Math.min(pixelsInBuffer, width));
+        
+        // Calculate height
+        int rowsInBuffer = pixelsInBuffer / width;
+        int rowRemainder = pixelsInBuffer % width;
+        if (rowRemainder > 0) {
+            ++rowsInBuffer;
+        }
+        dstPixelExtents.setY(Math.min(rowsInBuffer, height));
+        
+        // Calculate depth
+        int pixelsInImageLayer = width * height;
+        int requiredLayers = pixelsInBuffer / pixelsInImageLayer;
+        int leftOverPixels = pixelsInBuffer % pixelsInImageLayer;
+        if (leftOverPixels > 0) {
+            ++requiredLayers;
+
+            // If this is a 1D array image we can treat it like a buffer, but if
+            // it is 2D then we must either fill a region smaller than a full
+            // layer or we fill full layers.
+            if (layout == VK_IMAGE_TYPE_2D) {
+                return CVK_ERROR_INVALID_ARGS;
+            }
+        }
+        if (requiredLayers > layers) {
+            return CVK_ERROR_IMAGE_TOO_SMALL_FOR_COPY;
+        }
+        dstPixelExtents.setZ(requiredLayers);
+        
+        return CopyFrom(buffer, 0, dstPixelOffsets, dstPixelExtents);
+    }
+    
+    
+    public int CopyFrom(CVKBuffer buffer, final int srcByteOffset, final Vector3i dstPixelOffset, final Vector3i dstPixelExtent) {
+        int ret;
+        
+        // Sanity check our image is valid
+        if (layout == VK_IMAGE_LAYOUT_UNDEFINED || width == 0 || height == 0 || layers == 0) {
+            return CVK_ERROR_INVALID_IMAGE;
+        }
+        
+        // Sanity check we have something to copy
+        if (dstPixelExtent.isZero()) {
+            return CVK_ERROR_INVALID_ARGS;
+        }               
+        
+        // only allow incomplete writes into a single layer        
+        if (!dstPixelOffset.isZero() && dstPixelExtent.getZ() != 1) {
+            return CVK_ERROR_INVALID_ARGS;
+        }        
+        
+        // Check the destination region is within our extents
+        if (width < (dstPixelOffset.getX() + dstPixelExtent.getX())) {
+            return CVK_ERROR_IMAGE_TOO_SMALL_FOR_COPY;
+        }
+        if (height < (dstPixelOffset.getY() + dstPixelExtent.getY())) {
+            return CVK_ERROR_IMAGE_TOO_SMALL_FOR_COPY;
+        }
+        if (layers < (dstPixelOffset.getZ() + dstPixelExtent.getZ())) {
+            return CVK_ERROR_IMAGE_TOO_SMALL_FOR_COPY;
+        }
+        
+        // Validate the buffer contains enough bytes to fullful the destination extents
+        int bytesRequired = dstPixelExtent.getX() * dstPixelExtent.getY() * dstPixelExtent.getZ() * VkFormatByteDepth(format);
+        if (bytesRequired > (buffer.GetBufferSize() - srcByteOffset)) {
+            return CVK_ERROR_BUFFER_TOO_SMALL_FOR_COPY;
+        }
+        
+        // Command to copy pixels and potentially transition if necessary
+        CVKCommandBuffer cvkCopyCmd = CVKCommandBuffer.Create(cvkDevice, VK_COMMAND_BUFFER_LEVEL_PRIMARY);
+        cvkCopyCmd.DEBUGNAME = "CVKImage.CopyFrom cvkCopyCmd";
+        ret = cvkCopyCmd.Begin(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
+        if (VkFailed(ret)) { return ret; }
+         
+        // Handle image transition if needed
+        int originalLayout = layout;
+        if (layout != VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL) {
+            ret = Transition(cvkCopyCmd, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+            if (VkFailed(ret)) { return ret; }
+        }
+        
+        // Copy each layer
+        try (MemoryStack stack = stackPush()) {
+            for (int iLayer = 0; iLayer < dstPixelExtent.getZ(); ++iLayer) {
+                // Setup a buffer image copy structure for the current image layer
+                VkBufferImageCopy.Buffer copyLayerBuffer = VkBufferImageCopy.callocStack(1, stack);
+                VkBufferImageCopy copyLayer = copyLayerBuffer.get(0);
+                copyLayer.bufferOffset(srcByteOffset);
+                copyLayer.bufferRowLength(0);    // Tightly packed
+                copyLayer.bufferImageHeight(0);  // Tightly packed
+                copyLayer.imageSubresource().aspectMask(VK_IMAGE_ASPECT_COLOR_BIT);
+                copyLayer.imageSubresource().mipLevel(0);
+                copyLayer.imageSubresource().baseArrayLayer(dstPixelOffset.getZ() + iLayer);
+                copyLayer.imageSubresource().layerCount(1);
+                copyLayer.imageOffset().set(dstPixelOffset.getX(), dstPixelOffset.getY(), 0);
+                copyLayer.imageExtent(VkExtent3D.callocStack(stack).set(dstPixelExtent.getX(), dstPixelExtent.getY(), 1));     
+                
+                // Enqueue the copy command to the command buffer
+                vkCmdCopyBufferToImage(cvkCopyCmd.GetVKCommandBuffer(),
+                                       buffer.GetBufferHandle(),
+                                       GetImageHandle(),
+                                       layout,
+                                       copyLayerBuffer);                    
+            }
+        }
+        
+        // Restore image layout if needed
+        if (layout != originalLayout) {
+            ret = Transition(cvkCopyCmd, originalLayout);
+            if (VkFailed(ret)) { return ret; }
+        }        
+        
+        // Blocking execute the command buffer
+        ret = cvkCopyCmd.EndAndSubmit();  
+        cvkCopyCmd.Destroy();
+        
+        return ret;
+    }    
         
     
     public static CVKImage Create(  CVKDevice cvkDevice,
@@ -249,16 +397,16 @@ public class CVKImage {
         cvkImage.tiling     = tiling;
         cvkImage.usage      = usage; 
         cvkImage.properties = properties;
-        cvkImage.aspectMask = aspectMask;
-        
-        int imageType = height > 1 ? VK_IMAGE_TYPE_2D : VK_IMAGE_TYPE_1D;
-        int viewType = layers > 1 ? (height > 1 ? VK_IMAGE_VIEW_TYPE_2D_ARRAY : VK_IMAGE_VIEW_TYPE_1D_ARRAY) : (height > 1 ? VK_IMAGE_VIEW_TYPE_2D : VK_IMAGE_VIEW_TYPE_1D);
+        cvkImage.aspectMask = aspectMask;        
+        cvkImage.imageType  = height > 1 ? VK_IMAGE_TYPE_2D : VK_IMAGE_TYPE_1D;
+        cvkImage.viewType   = layers > 1 ? (height > 1 ? VK_IMAGE_VIEW_TYPE_2D_ARRAY : VK_IMAGE_VIEW_TYPE_1D_ARRAY) : (height > 1 ? VK_IMAGE_VIEW_TYPE_2D : VK_IMAGE_VIEW_TYPE_1D);
+        cvkImage.layout     = VK_IMAGE_LAYOUT_UNDEFINED;
          
         try(MemoryStack stack = stackPush()) {
             // Create the image, this is an opaque type we can't read or write
             VkImageCreateInfo vkImageInfo = VkImageCreateInfo.callocStack(stack);
             vkImageInfo.sType(VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO);
-            vkImageInfo.imageType(imageType);
+            vkImageInfo.imageType(cvkImage.imageType);
             vkImageInfo.extent().width(width);
             vkImageInfo.extent().height(height);
             vkImageInfo.extent().depth(1);
@@ -266,7 +414,7 @@ public class CVKImage {
             vkImageInfo.arrayLayers(layers);
             vkImageInfo.format(format);
             vkImageInfo.tiling(tiling);
-            vkImageInfo.initialLayout(VK_IMAGE_LAYOUT_UNDEFINED);
+            vkImageInfo.initialLayout(cvkImage.layout);
             vkImageInfo.usage(usage);
             vkImageInfo.samples(VK_SAMPLE_COUNT_1_BIT);
             vkImageInfo.sharingMode(VK_SHARING_MODE_EXCLUSIVE);
@@ -294,7 +442,7 @@ public class CVKImage {
             VkImageViewCreateInfo vkViewInfo = VkImageViewCreateInfo.callocStack(stack);
             vkViewInfo.sType(VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO);
             vkViewInfo.image(cvkImage.GetImageHandle());
-            vkViewInfo.viewType(viewType);
+            vkViewInfo.viewType(cvkImage.viewType);
             vkViewInfo.format(cvkImage.GetFormat());
             vkViewInfo.subresourceRange().aspectMask(cvkImage.GetAspectMask());
             vkViewInfo.subresourceRange().baseMipLevel(0);

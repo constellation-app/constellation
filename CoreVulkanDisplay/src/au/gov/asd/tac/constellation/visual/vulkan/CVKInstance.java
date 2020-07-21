@@ -15,9 +15,9 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan;
 
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKLOGGER;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkSucceeded;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.checkVKret;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKLOGGER;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkSucceeded;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.checkVKret;
 import java.nio.LongBuffer;
 import java.util.logging.Level;
 import org.lwjgl.PointerBuffer;

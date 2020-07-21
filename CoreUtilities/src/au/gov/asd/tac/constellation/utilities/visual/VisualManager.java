@@ -71,6 +71,10 @@ public final class VisualManager {
     private boolean rendererIdle = true;
     private boolean indigenousChanges = false;
     private boolean refreshProcessor = false;
+    private boolean shouldRedraw = false;
+    private static boolean continuousRedrawing = false;
+    
+    public static void ToggleContinuousRedraw() { continuousRedrawing = !continuousRedrawing; }
 
     /**
      * Construct a VisualManager to delegate between the supplied
@@ -127,6 +131,10 @@ public final class VisualManager {
                 while (isProcessing) {
                     final NavigableSet<VisualChange> changes = new TreeSet<>();
                     while (true) {
+                        // Continuous rendering is not necessary but useful for debugging the rendering code
+                        if (continuousRedrawing) { 
+                            shouldRedraw = true;
+                        }
                         try {
                             final VisualOperation operation = operationQueue.take();
                             if (operation == SIGNIFY_PROCESSOR_IDLE_OPERATION) {
@@ -135,11 +143,13 @@ public final class VisualManager {
                                 indigenousChanges = true;
                             } else if (operation == REFRESH_PROCESSOR_OPERATION) {
                                 refreshProcessor = true;
+                            } else if (operation == REQUEST_REDRAW) {
+                                shouldRedraw = true;
                             } else {
                                 operation.apply();
                             }
                             changes.addAll(operation.getVisualChanges());
-                            if (rendererIdle && !changes.isEmpty()) {
+                            if (rendererIdle && (!changes.isEmpty() || shouldRedraw)) {
                                 rendererIdle = false;
                                 break;
                             }
@@ -152,6 +162,7 @@ public final class VisualManager {
                     }
                     if (isProcessing) {
                         // this call blocks until the updating is done
+                        shouldRedraw = false;
                         processor.update(changes, access, indigenousChanges, refreshProcessor);
                         indigenousChanges = false;
                         refreshProcessor = false;
@@ -296,10 +307,27 @@ public final class VisualManager {
     public final void addMultiChangeOperation(final List<VisualChange> changes) {
         addOperation(constructMultiChangeOperation(changes));
     }
+    
+    void requestRedraw() {
+        addOperation(REQUEST_REDRAW);
+    }
 
     void signifyProcessorIdle() {
         addOperation(SIGNIFY_PROCESSOR_IDLE_OPERATION);
-    }
+    }    
+    
+    private final VisualOperation REQUEST_REDRAW = new VisualOperation() {
+
+        @Override
+        public int getPriority() {
+            return VisualPriority.REFRESH_PRIORITY.getValue();
+        }
+
+        @Override
+        public List<VisualChange> getVisualChanges() {
+            return Collections.emptyList();
+        }
+    };    
 
     private final VisualOperation SIGNIFY_PROCESSOR_IDLE_OPERATION = new VisualOperation() {
 

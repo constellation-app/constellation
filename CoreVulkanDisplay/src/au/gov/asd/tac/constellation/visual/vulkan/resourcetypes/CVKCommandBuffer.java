@@ -27,7 +27,7 @@ import org.lwjgl.PointerBuffer;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkCommandBufferAllocateInfo;
 import org.lwjgl.vulkan.VkCommandBufferBeginInfo;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.*;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.*;
 import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;

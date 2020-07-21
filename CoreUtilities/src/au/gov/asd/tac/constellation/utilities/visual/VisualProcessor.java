@@ -167,6 +167,19 @@ public abstract class VisualProcessor {
     protected void signalProcessorIdle() {
         manager.signifyProcessorIdle();
     }
+    
+    /**
+     * Request the manager redraw us (visualupdate).  This is useful if we have 
+     * resized the canvas as the Vulkan display does this in two passes, the first
+     * recreates swapchain resources without rendering, the second, which occurs
+     * thanks to this request, redraws the canvas with the new resources.  
+     * This can also be used for continuous rendering if we want to test the frame
+     * rate or ever implement any non-event driven rendering updates (eg some
+     * in-graph animation).
+     */
+    protected void requestRedraw() {
+        manager.requestRedraw();
+    }
 
     /**
      * Informs the manager that this processor needs to recompute all visual

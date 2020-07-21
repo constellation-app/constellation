@@ -15,12 +15,12 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan;
 
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKMissingEnums.VkFormat.VK_FORMAT_NONE;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKAssert;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.EndLogSection;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.StartLogSection;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkFailed;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkSucceeded;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKMissingEnums.VkFormat.VK_FORMAT_NONE;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.EndLogSection;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.StartLogSection;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkSucceeded;
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.util.ArrayList;
@@ -71,10 +71,10 @@ import org.lwjgl.vulkan.VkSubpassDependency;
 import org.lwjgl.vulkan.VkSubpassDescription;
 import org.lwjgl.vulkan.VkSurfaceCapabilitiesKHR;
 import org.lwjgl.vulkan.VkSwapchainCreateInfoKHR;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKLOGGER;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.UINT64_MAX;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VerifyInRenderThread;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.checkVKret;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKLOGGER;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.UINT64_MAX;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VerifyInRenderThread;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.checkVKret;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKCommandBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKImage;
 import static org.lwjgl.vulkan.KHRSwapchain.vkAcquireNextImageKHR;
@@ -391,17 +391,18 @@ public class CVKSwapChain {
                                         VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, 
                                         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
                                         VK_IMAGE_ASPECT_DEPTH_BIT);
+        cvkDepthImage.Transition(VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
         
-        // Transition the depth image to the optimal depth state
-        CVKCommandBuffer cvkDepthTransitionCmd = CVKCommandBuffer.Create(cvkDevice, VK_COMMAND_BUFFER_LEVEL_PRIMARY);
-        cvkDepthTransitionCmd.DEBUGNAME = "CVKSwapChain cvkDepthTransitionCmd";
-        ret = cvkDepthTransitionCmd.Begin(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
-        if (VkFailed(ret)) { return ret; }               
-        ret = cvkDepthImage.Transition(cvkDepthTransitionCmd, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
-        if (VkFailed(ret)) { return ret; }   
-        ret = cvkDepthTransitionCmd.EndAndSubmit();
-        if (VkFailed(ret)) { return ret; }     
-        cvkDepthTransitionCmd.Destroy();        
+//        // Transition the depth image to the optimal depth state
+//        CVKCommandBuffer cvkDepthTransitionCmd = CVKCommandBuffer.Create(cvkDevice, VK_COMMAND_BUFFER_LEVEL_PRIMARY);
+//        cvkDepthTransitionCmd.DEBUGNAME = "CVKSwapChain cvkDepthTransitionCmd";
+//        ret = cvkDepthTransitionCmd.Begin(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
+//        if (VkFailed(ret)) { return ret; }               
+//        ret = cvkDepthImage.Transition(cvkDepthTransitionCmd, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
+//        if (VkFailed(ret)) { return ret; }   
+//        ret = cvkDepthTransitionCmd.EndAndSubmit();
+//        if (VkFailed(ret)) { return ret; }     
+//        cvkDepthTransitionCmd.Destroy();        
         
         return ret;
     }   

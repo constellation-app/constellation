@@ -15,8 +15,9 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan;
 
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.debugging;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.*;
+import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKMissingEnums;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.debugging;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.*;
 import com.google.common.primitives.Ints;
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
@@ -31,6 +32,8 @@ import static org.lwjgl.vulkan.KHRSurface.vkGetPhysicalDeviceSurfacePresentModes
 import static org.lwjgl.vulkan.KHRSurface.vkGetPhysicalDeviceSurfaceSupportKHR;
 import static org.lwjgl.vulkan.KHRSwapchain.VK_KHR_SWAPCHAIN_EXTENSION_NAME;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32B32A32_SFLOAT;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
 import static org.lwjgl.vulkan.VK10.VK_QUEUE_GRAPHICS_BIT;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
@@ -48,12 +51,14 @@ import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceFeatures;
 import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceMemoryProperties;
 import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceProperties;
 import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceQueueFamilyProperties;
+import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceFormatProperties;
 import org.lwjgl.vulkan.VkCommandPoolCreateInfo;
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkDeviceCreateInfo;
 import org.lwjgl.vulkan.VkDeviceQueueCreateInfo;
 import org.lwjgl.vulkan.VkExtensionProperties;
 import org.lwjgl.vulkan.VkExtent2D;
+import org.lwjgl.vulkan.VkFormatProperties;
 import org.lwjgl.vulkan.VkPhysicalDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceFeatures;
 import org.lwjgl.vulkan.VkPhysicalDeviceLimits;
@@ -252,6 +257,13 @@ public class CVKDevice {
         } // end physical device loop
 
         if (vkPhysicalDevice != null) {
+            // Check we can use uniform texel buffers
+            VkFormatProperties vkFormatProperties = VkFormatProperties.callocStack(stack);
+            vkGetPhysicalDeviceFormatProperties(vkPhysicalDevice, VK_FORMAT_R32G32B32A32_SFLOAT, vkFormatProperties);
+            if ((vkFormatProperties.bufferFeatures() & VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT) == 0) {
+                throw new RuntimeException("Selected surface does not support uniform texel buffers needed for the xyzw texture");
+            }
+            
             // Happy dance, we have a suitable physical device, get its properties
             vkPhysicalDeviceProperties = VkPhysicalDeviceProperties.malloc();
             vkGetPhysicalDeviceProperties(vkPhysicalDevice, vkPhysicalDeviceProperties);            
@@ -381,6 +393,7 @@ public class CVKDevice {
             if (selectedColourSpace == CVKMissingEnums.VkColorSpaceKHR.VK_COLOR_SPACE_NONE) {
                 throw new RuntimeException("Required color space unsupported (VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)");
             }
+            
 
             // Presentation modes our device can use for our surface
             pInt.put(0, 0);

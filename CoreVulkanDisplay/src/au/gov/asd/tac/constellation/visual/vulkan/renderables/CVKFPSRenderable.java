@@ -20,11 +20,11 @@ import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
-import au.gov.asd.tac.constellation.visual.vulkan.CVKShaderUtils;
+import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKShaderUtils;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKAssert;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKLOGGER;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkSucceeded;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKLOGGER;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkSucceeded;
 import au.gov.asd.tac.constellation.visual.vulkan.shaders.CVKShaderPlaceHolder;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -36,10 +36,10 @@ import static org.lwjgl.vulkan.VK10.VK_VERTEX_INPUT_RATE_VERTEX;
 import static org.lwjgl.vulkan.VK10.VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
 import org.lwjgl.vulkan.VkVertexInputAttributeDescription;
 import org.lwjgl.vulkan.VkVertexInputBindingDescription;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.LoadFileToDirectBuffer;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VerifyInRenderThread;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkFailed;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.checkVKret;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.LoadFileToDirectBuffer;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VerifyInRenderThread;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.checkVKret;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKCommandBuffer;
@@ -375,14 +375,14 @@ public class CVKFPSRenderable extends CVKRenderable {
         for (int i = 0; i < imageCount; ++i) {   
             CVKBuffer vertUniformBuffer = CVKBuffer.Create(cvkDevice, 
                                                           VertexUniformBufferObject.SIZEOF,
-                                                          VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-                                                          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+                                                          VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+                                                          VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
             vertUniformBuffer.DEBUGNAME = String.format("CVKFPSRenderable vertUniformBuffer %d", i);   
             vertexUniformBuffers.add(vertUniformBuffer);            
             
             CVKBuffer geomUniformBuffer = CVKBuffer.Create(cvkDevice, 
                                                           GeometryUniformBufferObject.SIZEOF,
-                                                          VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+                                                          VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
                                                           VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
             geomUniformBuffer.DEBUGNAME = String.format("CVKFPSRenderable geomUniformBuffer %d", i);                                    
             geometryUniformBuffers.add(geomUniformBuffer);            
@@ -446,31 +446,46 @@ public class CVKFPSRenderable extends CVKRenderable {
         
         // Get the projection matrix from our parent
         geometryUBO.pMatrix.set(parent.GetProjectionMatrix());
+        
+
+
+        // Staging buffer so our VB can be device local (most performant memory)
+        int size = VertexUniformBufferObject.SIZEOF;
+        PointerBuffer pData = stack.mallocPointer(1);        
+        CVKBuffer cvkVertUBStagingBuffer = CVKBuffer.Create(cvkDevice, 
+                                                            size,
+                                                            VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                                                            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+        cvkVertUBStagingBuffer.DEBUGNAME = "CVKFPSRenderable.UpdateUniformBuffers cvkVertUBStagingBuffer";                           
+        ret = vkMapMemory(cvkDevice.GetDevice(), cvkVertUBStagingBuffer.GetMemoryBufferHandle(), 0, size, 0, pData);
+        if (VkFailed(ret)) { return ret; }
+        {
+            vertexUBO.CopyTo(pData.getByteBuffer(0, size));
+        }
+        vkUnmapMemory(cvkDevice.GetDevice(), cvkVertUBStagingBuffer.GetMemoryBufferHandle());             
+
+        // Fill of the geometry uniform buffer
+        size = GeometryUniformBufferObject.SIZEOF;
+        CVKBuffer cvkGeomUBStagingBuffer = CVKBuffer.Create(cvkDevice, 
+                                                            size,
+                                                            VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                                                            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+        cvkGeomUBStagingBuffer.DEBUGNAME = "CVKFPSRenderable.UpdateUniformBuffers cvkGeomUBStagingBuffer";  
+        ret = vkMapMemory(cvkDevice.GetDevice(), cvkGeomUBStagingBuffer.GetMemoryBufferHandle(), 0, size, 0, pData);
+        if (VkFailed(ret)) { return ret; }
+        {
+            geometryUBO.CopyTo(pData.getByteBuffer(0, size));
+        }
+        vkUnmapMemory(cvkDevice.GetDevice(), cvkGeomUBStagingBuffer.GetMemoryBufferHandle());          
                 
         // Copy the UBOs in VK buffers we can bind to a descriptor set  
-        PointerBuffer pData = stack.mallocPointer(1);
         for (int i = 0; i < imageCount; ++i) {   
-            // Fill of the vertex uniform buffer
-            int size = VertexUniformBufferObject.SIZEOF;
-            CVKBuffer vertUniformBuffer = vertexUniformBuffers.get(i);                       
-            ret = vkMapMemory(cvkDevice.GetDevice(), vertUniformBuffer.GetMemoryBufferHandle(), 0, size, 0, pData);
-            if (VkFailed(ret)) { return ret; }
-            {
-                vertexUBO.CopyTo(pData.getByteBuffer(0, size));
-            }
-            vkUnmapMemory(cvkDevice.GetDevice(), vertUniformBuffer.GetMemoryBufferHandle());             
-            
-            // Fill of the geometry uniform buffer
-            size = GeometryUniformBufferObject.SIZEOF;
-            CVKBuffer geomUniformBuffer = geometryUniformBuffers.get(i);
-            ret = vkMapMemory(cvkDevice.GetDevice(), geomUniformBuffer.GetMemoryBufferHandle(), 0, size, 0, pData);
-            if (VkFailed(ret)) { return ret; }
-            {
-                geometryUBO.CopyTo(pData.getByteBuffer(0, size));
-            }
-            vkUnmapMemory(cvkDevice.GetDevice(), geomUniformBuffer.GetMemoryBufferHandle());                                              
+            vertexUniformBuffers.get(i).CopyFrom(cvkVertUBStagingBuffer);                       
+            geometryUniformBuffers.get(i).CopyFrom(cvkGeomUBStagingBuffer);                                           
         }
-        
+	cvkVertUBStagingBuffer.Destroy();
+        cvkGeomUBStagingBuffer.Destroy();
+
         return ret;
     }
     
@@ -538,7 +553,7 @@ public class CVKFPSRenderable extends CVKRenderable {
             int size = vertices.length * Vertex.SIZEOF;
             CVKBuffer cvkStagingBuffer = CVKBuffer.Create(cvkDevice, 
                                                           size,
-                                                          VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                                                          VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                                                           VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
             cvkStagingBuffer.DEBUGNAME = "CVKFPSRenderable cvkStagingBuffer";               
             PointerBuffer data = stack.mallocPointer(1);
@@ -551,7 +566,7 @@ public class CVKFPSRenderable extends CVKRenderable {
             // Populate
             for (int i = 0; i < vertexBuffers.size(); ++i) {   
                 CVKBuffer cvkVertexBuffer = vertexBuffers.get(i);
-                cvkVertexBuffer.Put(cvkStagingBuffer);
+                cvkVertexBuffer.CopyFrom(cvkStagingBuffer);
             }
         }
         
@@ -725,36 +740,17 @@ public class CVKFPSRenderable extends CVKRenderable {
     private int DestroyDescriptorSets() {
         int ret = VK_SUCCESS;
         
-        /*
-        TODO_TT: vkFreeDescriptorSets is resulting in the error below.  Revisit later
-        
-        
-        VkDebugUtilsMessengerCallbackEXTI.java:47>Validation layer: Validation Error: [ VUID-vkFreeDescriptorSets-pDescriptorSets-00310 ] Object 0: handle = 0xb2a1ba00000001d0, type = VK_OBJECT_TYPE_DESCRIPTOR_SET; | MessageID = 0x7cd4a2da | Invalid VkDescriptorSet 0xb2a1ba00000001d0[]. The Vulkan spec states: pDescriptorSets must be a valid pointer to an array of descriptorSetCount VkDescriptorSet handles, each element of which must either be a valid handle or VK_NULL_HANDLE (https://www.khronos.org/registry/vulkan/specs/1.1-extensions/html/vkspec.html#VUID-vkFreeDescriptorSets-pDescriptorSets-00310)
-        */
-        
-//        try (MemoryStack stack = stackPush()) { 
-//            if (pDescriptorSets != null) {
-//                for (int i = 0; i < pDescriptorSets.capacity(); ++i) {
-//                    long hDescriptorSet = pDescriptorSets.get(i);
-//                    ret = vkFreeDescriptorSets(cvkDevice.GetDevice(), 
-//                               cvkSwapChain.GetDescriptorPoolHandle(),
-//                               stack.longs(hDescriptorSet));
-//                }
-//            }
-//        }
-            
-            
-            //TODO_TT: pull descriptor pool out of swapchain if it doesn't need constant recreation
-//            ret = vkFreeDescriptorSets(cvkDevice.GetDevice(), 
-//                                       cvkSwapChain.GetDescriptorPoolHandle(),
-//                                       pDescriptorSets);
-//            MemoryUtil.memFree(pDescriptorSets);
+//        if (pDescriptorSets != null) {
+//            // After calling vkFreeDescriptorSets, all descriptor sets in pDescriptorSets are invalid.
+//            ret = vkFreeDescriptorSets(cvkDevice.GetDevice(), cvkSwapChain.GetDescriptorPoolHandle(), pDescriptorSets);
 //            pDescriptorSets = null;
+//            checkVKret(ret);
 //        }
+        
         return ret;
     }
 
-
+    
     private int CreatePipelines(CVKSwapChain cvkSwapChain) {
         CVKAssert(cvkDevice != null);
         CVKAssert(cvkDevice.GetDevice() != null);
@@ -1095,7 +1091,6 @@ public class CVKFPSRenderable extends CVKRenderable {
 //                ret = UpdateDescriptorSets(stack, cvkSwapChain);
 //                if (VkFailed(ret)) { return ret; }    
 
-                // TODO_TT: this is leaking
                 ret = CreateDescriptorSets(stack, cvkSwapChain);
                 if (VkFailed(ret)) { return ret; } 
             }              
@@ -1202,7 +1197,7 @@ public class CVKFPSRenderable extends CVKRenderable {
         counter++;
         
         // Debug code to update every 100 frames
-        if (counter % 100 != 0)
+        if (counter % 20 != 0)
             return VK_SUCCESS;
 
         currentFPS.set(0, GetRandom(0,9));

@@ -15,14 +15,16 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan;
 
+import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKMissingEnums;
+import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKAssert;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.EndLogSection;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.GetRequiredVKPhysicalDeviceExtensions;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.InitVKValidationLayers;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.StartLogSection;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkFailed;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkSucceeded;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.EndLogSection;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.GetRequiredVKPhysicalDeviceExtensions;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.InitVKValidationLayers;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.StartLogSection;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkSucceeded;
 import java.awt.event.ComponentListener;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -33,7 +35,7 @@ import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.vulkan.KHRSwapchain.vkAcquireNextImageKHR;
 import static org.lwjgl.vulkan.VK10.*;
 import org.lwjgl.vulkan.VkCommandBuffer;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.checkVKret;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.checkVKret;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable;
 import java.awt.event.ComponentEvent;
 import static org.lwjgl.vulkan.KHRSwapchain.vkQueuePresentKHR;
@@ -46,10 +48,10 @@ import org.lwjgl.vulkan.VkPresentInfoKHR;
 import org.lwjgl.vulkan.VkRect2D;
 import org.lwjgl.vulkan.VkRenderPassBeginInfo;
 import org.lwjgl.vulkan.VkSubmitInfo;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKLOGGER;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.UINT64_MAX;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VerifyInRenderThread;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.debugging;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKLOGGER;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.UINT64_MAX;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VerifyInRenderThread;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.debugging;
 import java.nio.LongBuffer;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -571,8 +573,8 @@ public class CVKRenderer implements ComponentListener {
         // render fence has been the reset and the semaphores will be in the 
         // signalled state, so we just destroy them without waiting.
         if (cvkSwapChain == null || swapChainNeedsRecreation) {
-
             RecreateSwapChain();
+            parent.requestRedraw();
         }        
         
         // hack for constant render loop.  Note with the hittester in place this

@@ -16,8 +16,9 @@
 package au.gov.asd.tac.constellation.visual.vulkan.resourcetypes;
 
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKAssert;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.checkVKret;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.checkVKret;
 import java.nio.ByteBuffer;
 import java.nio.LongBuffer;
 import org.lwjgl.PointerBuffer;
@@ -65,7 +66,7 @@ public class CVKBuffer {
     public long GetBufferSize() { return bufferSize; }
     public long GetMemoryBufferHandle() { return pBufferMemory.get(0); }
     
-    public void Put(CVKBuffer other) {
+    public int CopyFrom(CVKBuffer other) {
         CVKAssert(GetBufferSize() >= other.GetBufferSize());
         int ret;
         
@@ -73,7 +74,7 @@ public class CVKBuffer {
             CVKCommandBuffer cvkCopyCmd = CVKCommandBuffer.Create(cvkDevice, VK_COMMAND_BUFFER_LEVEL_PRIMARY);
             cvkCopyCmd.DEBUGNAME = "CVKBuffer cvkCopyCmd";
             ret = cvkCopyCmd.Begin(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
-            checkVKret(ret);    
+            if (VkFailed(ret)) { return ret; }  
 
             VkBufferCopy.Buffer vkCopyRegions = VkBufferCopy.callocStack(1, stack);
             VkBufferCopy vkBufferCopy = vkCopyRegions.get(0);
@@ -85,10 +86,11 @@ public class CVKBuffer {
                             other.GetBufferHandle(),
                             GetBufferHandle(),
                             vkCopyRegions);            
-            ret = cvkCopyCmd.EndAndSubmit();
-            checkVKret(ret);    
+            ret = cvkCopyCmd.EndAndSubmit();               
             cvkCopyCmd.Destroy();            
-        }                    
+        }
+        
+        return ret;
     }
     
     /**
@@ -97,8 +99,10 @@ public class CVKBuffer {
      * @param destOffset, where in our buffer to start the write
      * @param srcOffset, where in pBytes to start the read
      * @param size, how much to read/write
+     * @return VkResult code
      */
-    public void Put(ByteBuffer pBytes, int destOffset, int srcOffset, int size) {
+    public int Put(ByteBuffer pBytes, int destOffset, int srcOffset, int size) {
+        int ret;
         CVKAssert((properties & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) != 0);
         
         // Check memory is not already mapped with an unfinished write
@@ -111,7 +115,8 @@ public class CVKBuffer {
             int origLim = pBytes.limit();
             
             // Map destOffset into our buffer into host writable memory
-            vkMapMemory(cvkDevice.GetDevice(), GetMemoryBufferHandle(), destOffset, size, 0, data); //arg 5 is flags
+            ret = vkMapMemory(cvkDevice.GetDevice(), GetMemoryBufferHandle(), destOffset, size, 0, data); //arg 5 is flags
+            if (VkFailed(ret)) { return ret; }
             {
                 // Get a ByteBuffer representing the mapped memory, note offset is 0 as we offset in vkMapMemory
                 ByteBuffer dest = data.getByteBuffer(0, size);
@@ -130,6 +135,8 @@ public class CVKBuffer {
             }
             vkUnmapMemory(cvkDevice.GetDevice(), GetMemoryBufferHandle());
         }
+        
+        return ret;
     }
     
     public ByteBuffer StartWrite(int offset, int size) {
