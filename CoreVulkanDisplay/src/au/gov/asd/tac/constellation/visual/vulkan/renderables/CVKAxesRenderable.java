@@ -24,7 +24,6 @@ import static au.gov.asd.tac.constellation.visual.vulkan.CVKShaderUtils.ShaderKi
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKShaderUtils.ShaderKind.VERTEX_SHADER;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKShaderUtils.compileShaderFile;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VerifyInRenderThread;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.checkVKret;
 import au.gov.asd.tac.constellation.visual.vulkan.shaders.CVKShaderPlaceHolder;
 import java.nio.ByteBuffer;
@@ -94,11 +93,13 @@ import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKShaderUtils.ShaderKind.GEOMETRY_SHADER;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKAssert;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKLOGGER;
+import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VerifyInRenderThread;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkFailed;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkSucceeded;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKCommandBuffer;
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import org.lwjgl.system.MemoryUtil;
@@ -113,6 +114,7 @@ import org.lwjgl.vulkan.VkDescriptorSetAllocateInfo;
 import org.lwjgl.vulkan.VkDescriptorSetLayoutBinding;
 import org.lwjgl.vulkan.VkDescriptorSetLayoutCreateInfo;
 import org.lwjgl.vulkan.VkPipelineDepthStencilStateCreateInfo;
+import org.lwjgl.vulkan.VkPushConstantRange;
 import org.lwjgl.vulkan.VkWriteDescriptorSet;
 
 public class CVKAxesRenderable extends CVKRenderable {
@@ -156,8 +158,14 @@ public class CVKAxesRenderable extends CVKRenderable {
     private List<Long> pipelines = null;
     private List<Long> pipelineLayouts = null;
     private LongBuffer pDescriptorSets = null;
-    private static long hDescriptorLayout = VK_NULL_HANDLE;  
+    private static long hDescriptorLayout = VK_NULL_HANDLE;
+    private boolean isResourceUpdateNeeded = false;
+    private CVKSwapChain cvkSwapChain = null; //cached for cleaning up descriptor sets
     
+    // WIP Push constants
+    //private ByteBuffer pushConstants;
+    //private final int PUSH_CONSTANT_SIZE = Float.BYTES * 16;
+ 
     
     private static class Vertex {
 
@@ -286,10 +294,10 @@ public class CVKAxesRenderable extends CVKRenderable {
     }
     
     private void DestroyDescriptorSets(){
-        // TODO HYDRA
-        //pDescriptorSets empty list
-                
-        //vkDestroyDescriptorSetLayout(cvkDevice.GetDevice(), hDescriptorLayout, null);
+        if (pDescriptorSets != null) {
+            vkFreeDescriptorSets(cvkDevice.GetDevice(), cvkSwapChain.GetDescriptorPoolHandle(), pDescriptorSets);
+            pDescriptorSets = null;
+        }
     }
     
     private void DestroyPipeline() {     
@@ -321,11 +329,19 @@ public class CVKAxesRenderable extends CVKRenderable {
     public int Init(CVKDevice cvkDevice) {
         int ret = VK_SUCCESS;
  
-        // TODO HYDRA - Do we need an init?       
+        // TODO HYDRA: Convert to push constants
+//        pushConstants = ByteBuffer.allocate(PUSH_CONSTANT_SIZE);
+//        for (int iRow = 0; iRow < 4; ++iRow) {
+//            for (int iCol = 0; iCol < 4; ++iCol) {
+//                pushConstants.putFloat(0f);
+//            }
+//        }
+//        pushConstants.flip();
+    
         return ret;
     }
     
-    private float calculateProjectionScale(final int[] viewport) {
+    private float CalculateProjectionScale(final int[] viewport) {
         // calculate the number of pixels a scene object of y-length 1 projects to.
         final Vector3f unitPosition = new Vector3f(0, 1, 0);
         final Vector4f proj1 = new Vector4f();
@@ -338,9 +354,7 @@ public class CVKAxesRenderable extends CVKRenderable {
     } 
     
     
-    private int CreateUniformBuffers(MemoryStack stack, CVKSwapChain cvkSwapChain){
-        int ret = VK_SUCCESS;
-        
+    private int CreateUniformBuffers(MemoryStack stack, CVKSwapChain cvkSwapChain){       
         int imageCount = cvkSwapChain.GetImageCount(); 
         
         vertexUniformBuffers = new ArrayList<>();     
@@ -380,7 +394,7 @@ public class CVKAxesRenderable extends CVKRenderable {
                
         final int dx = cvkSwapChain.GetWidth() / 2 - AXES_OFFSET;
         final int dy = -cvkSwapChain.GetHeight() / 2 + AXES_OFFSET;
-        pScale = calculateProjectionScale(viewport);
+        pScale = CalculateProjectionScale(viewport);
         Graphics3DUtilities.moveByProjection(ZERO_3F, IDENTITY_44F, viewport, dx, dy, topRightCorner);
         
         // LIFTED FROM AxesRenerable.display(...)
@@ -412,6 +426,9 @@ public class CVKAxesRenderable extends CVKRenderable {
             }
             vkUnmapMemory(cvkDevice.GetDevice(), vertUniformBuffer.GetMemoryBufferHandle());
         }
+        
+        // TODO HYDRA: Convert to push constants
+        //UpdatePushConstants(cvkSwapChain);
         return ret;                
     }
     
@@ -562,6 +579,42 @@ public class CVKAxesRenderable extends CVKRenderable {
         return ret;  
     }
   
+    
+//    private void UpdatePushConstants(CVKSwapChain cvkSwapChain){
+//        pushConstants.clear();
+//        
+//        final int[] viewport = new int[]{0, cvkSwapChain.GetHeight(), cvkSwapChain.GetWidth(), -cvkSwapChain.GetHeight()};             
+//        final int dx = cvkSwapChain.GetWidth() / 2 - AXES_OFFSET;
+//        final int dy = -cvkSwapChain.GetHeight() / 2 + AXES_OFFSET;
+//        pScale = CalculateProjectionScale(viewport);
+//        Graphics3DUtilities.moveByProjection(ZERO_3F, IDENTITY_44F, viewport, dx, dy, topRightCorner);
+//        
+//        // LIFTED FROM AxesRenerable.display(...)
+//        // Extract the rotation matrix from the mvp matrix.
+//        final Matrix44f rotationMatrix = new Matrix44f();
+//        parent.getDisplayModelViewProjectionMatrix().getRotationMatrix(rotationMatrix);
+//
+//        // Scale down to size.
+//        final Matrix44f scalingMatrix = new Matrix44f();
+//        scalingMatrix.makeScalingMatrix(pScale, pScale, 0);
+//        final Matrix44f srMatrix = new Matrix44f();
+//        srMatrix.multiply(scalingMatrix, rotationMatrix);
+//
+//        // Translate to the top right corner.
+//        final Matrix44f translationMatrix = new Matrix44f();
+//        translationMatrix.makeTranslationMatrix(topRightCorner.getX(), 
+//                                                topRightCorner.getY(), 
+//                                                topRightCorner.getZ()); 
+//        final Matrix44f mvpMatrix = new Matrix44f();
+//        mvpMatrix.multiply(translationMatrix, srMatrix); 
+//        
+//        for (int iRow = 0; iRow < 4; ++iRow) {
+//            for (int iCol = 0; iCol < 4; ++iCol) {
+//                pushConstants.putFloat(mvpMatrix.get(iRow, iCol));
+//            }
+//        }
+//        pushConstants.flip();
+//    }
     
     public int CreateCommandBuffers(CVKSwapChain cvkSwapChain) {
         int ret = VK_SUCCESS;
@@ -715,11 +768,21 @@ public class CVKAxesRenderable extends CVKRenderable {
                 VkPipelineLayoutCreateInfo pipelineLayoutInfo = VkPipelineLayoutCreateInfo.callocStack(stack);
                 pipelineLayoutInfo.sType(VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO);
                 pipelineLayoutInfo.pSetLayouts(stack.longs(hDescriptorLayout));
-
+                              
+                // TODO HYDRA: Convert to push constants
+//              VkPushConstantRange.Buffer pushConstantRange;
+//              pushConstantRange = VkPushConstantRange.calloc(1);
+//		pushConstantRange.stageFlags(VK_SHADER_STAGE_VERTEX_BIT);
+//		pushConstantRange.size(PUSH_CONSTANT_SIZE);
+//		pushConstantRange.offset(0);
+                
+                //pipelineLayoutInfo.pPushConstantRanges(pushConstantRange);
                 LongBuffer pPipelineLayout = stack.longs(VK_NULL_HANDLE);
 
                 ret = vkCreatePipelineLayout(cvkDevice.GetDevice(), pipelineLayoutInfo, null, pPipelineLayout);
-                checkVKret(ret);
+                if (VkFailed(ret)) { 
+                    return ret; 
+                }
 
                 long hPipelineLayout = pPipelineLayout.get(0);
                 CVKAssert(hPipelineLayout != VK_NULL_HANDLE);
@@ -740,16 +803,17 @@ public class CVKAxesRenderable extends CVKRenderable {
                 pipelineInfo.subpass(0);
                 pipelineInfo.basePipelineHandle(VK_NULL_HANDLE);
                 pipelineInfo.basePipelineIndex(-1);
-
+                
                 LongBuffer pGraphicsPipeline = stack.mallocLong(1);
-
-
                 ret = vkCreateGraphicsPipelines(cvkDevice.GetDevice(), 
                                                 VK_NULL_HANDLE, 
                                                 pipelineInfo, 
                                                 null, 
                                                 pGraphicsPipeline);
-                checkVKret(ret);                
+                if (VkFailed(ret)) { 
+                    return ret; 
+                }
+                
                 pipelines.add(pGraphicsPipeline.get(0));
                 CVKAssert(pipelines.get(i) != VK_NULL_HANDLE);
             }
@@ -795,6 +859,14 @@ public class CVKAxesRenderable extends CVKRenderable {
                                     0, 
                                     stack.longs(pDescriptorSets.get(index)), 
                                     null);
+            
+            // TODO HYDRA: Convert to push constants
+            // Push mvpmatrix to the shader
+//            vkCmdPushConstants(commandBuffer,               // The buffer to push the matrix to
+//				pipelineLayouts.get(index), // The pipeline layout
+//				VK_SHADER_STAGE_VERTEX_BIT, // Flags
+//				0,                          // Offset
+//				pushConstants);             // Matrix buffer
             
             // Copy draw commands
             vkCmdDraw(commandBuffer, GetVertexCount(), 1, 0, 0);
@@ -865,7 +937,6 @@ public class CVKAxesRenderable extends CVKRenderable {
                 ret = UpdateUniformBuffers(stack, cvkSwapChain);
                 if (VkFailed(ret)) { return ret; }
 
-                // TODO_TT: this is leaking
                 ret = CreateDescriptorSets(stack, cvkSwapChain);
                 if (VkFailed(ret)) { return ret; } 
             }              
@@ -873,6 +944,7 @@ public class CVKAxesRenderable extends CVKRenderable {
         
         return ret;
     }
+  
     
     public static int LoadShaders(CVKDevice cvkDevice) {
         int ret = VK_SUCCESS;
@@ -892,6 +964,7 @@ public class CVKAxesRenderable extends CVKRenderable {
         CVKLOGGER.log(Level.INFO, "Static shaders loaded for AxesRenderable class");
         return ret;
     }
+  
     
     @Override
     public int DisplayUpdate(CVKSwapChain cvkSwapChain, int frameIndex) {
@@ -899,6 +972,7 @@ public class CVKAxesRenderable extends CVKRenderable {
         
         return VK_SUCCESS;
     }    
+
     
     @Override
     public void IncrementDescriptorTypeRequirements(int descriptorTypeCounts[], int descriptorSetCount) {
@@ -993,11 +1067,13 @@ public class CVKAxesRenderable extends CVKRenderable {
         
         return ret;
     }
+ 
     
     @Override
     public boolean SharedResourcesNeedUpdating() {
-        return false;
+        return isResourceUpdateNeeded;
     }
+ 
     
     @Override
     public int DeviceInitialised(CVKDevice cvkDevice) {
@@ -1010,11 +1086,22 @@ public class CVKAxesRenderable extends CVKRenderable {
     public int RecreateSharedResources(CVKSwapChain cvkSwapChain) { 
         VerifyInRenderThread();
         
-        int ret;
+        int ret = VK_SUCCESS;
+        
+        this.cvkSwapChain = cvkSwapChain;
+        
+        // TODO HYDRA: Investigage whether we need to recreate DescriptorSets
         DestroyDescriptorSets();
         try (MemoryStack stack = stackPush()) {
-            ret = CreateDescriptorSets(stack, cvkSwapChain);
+           ret = CreateDescriptorSets(stack, cvkSwapChain);
+           checkVKret(ret);
+           
+           ret = UpdateUniformBuffers(stack, cvkSwapChain);
+           checkVKret(ret);
+
         }
+
+        isResourceUpdateNeeded = false;
         return ret;
     }
     
@@ -1023,5 +1110,21 @@ public class CVKAxesRenderable extends CVKRenderable {
     public VkCommandBuffer GetCommandBuffer(int imageIndex)
     {
         return commandBuffers.get(imageIndex).GetVKCommandBuffer(); 
-    }    
+    } 
+    
+    
+    public CVKRenderableUpdateTask TaskUpdateCamera() {
+        //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
+        
+        
+        //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.DisplayUpdate) ===//
+        return (cvkSwapChain, imageIndex) -> {
+            VerifyInRenderThread();
+                      
+            isResourceUpdateNeeded = true;
+            
+            // WIP Update the push constants buffer
+            //UpdatePushConstants(cvkSwapChain);
+        };
+    }  
 }
