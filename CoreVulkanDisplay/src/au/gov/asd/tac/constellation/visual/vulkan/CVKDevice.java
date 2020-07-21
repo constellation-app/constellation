@@ -66,22 +66,24 @@ import org.lwjgl.vulkan.VkSurfaceFormatKHR;
 
 
 public class CVKDevice {
-    protected final CVKInstance cvkInstance;
-    protected final long hSurfaceHandle;
-    protected VkPhysicalDevice vkPhysicalDevice = null;
-    protected VkDevice vkDevice = null;
-    protected VkQueue vkQueue = null;
-    protected VkPhysicalDeviceProperties vkPhysicalDeviceProperties = null;
-    protected VkPhysicalDeviceFeatures vkPhysicalDeviceFeatures = null;    
-    protected VkSurfaceCapabilitiesKHR vkSurfaceCapabilities = null;
-    protected VkSurfaceFormatKHR.Buffer vkSurfaceFormats = null;
-    protected VkPhysicalDeviceMemoryProperties vkPhysicalDeviceMemoryProperties = null;
-    protected CVKMissingEnums.VkFormat selectedFormat = CVKMissingEnums.VkFormat.VK_FORMAT_NONE;
-    protected CVKMissingEnums.VkColorSpaceKHR selectedColourSpace = CVKMissingEnums.VkColorSpaceKHR.VK_COLOR_SPACE_NONE;
-    protected CVKMissingEnums.VkPresentModeKHR selectedPresentationMode = CVKMissingEnums.VkPresentModeKHR.VK_PRESENT_MODE_NONE;    
-    protected long hCommandPoolHandle = VK_NULL_HANDLE; 
-    protected int queueFamilyIndex = -1; 
-    protected VkExtent2D vkCurrentSurfaceExtent = VkExtent2D.malloc().set(0, 0);
+    private final CVKInstance cvkInstance;
+    private final long hSurfaceHandle;
+    private VkPhysicalDevice vkPhysicalDevice = null;
+    private VkDevice vkDevice = null;
+    private VkQueue vkQueue = null;
+    private VkPhysicalDeviceProperties vkPhysicalDeviceProperties = null;
+    private VkPhysicalDeviceFeatures vkPhysicalDeviceFeatures = null;    
+    private VkSurfaceCapabilitiesKHR vkSurfaceCapabilities = null;
+    private VkSurfaceFormatKHR.Buffer vkSurfaceFormats = null;
+    private VkPhysicalDeviceMemoryProperties vkPhysicalDeviceMemoryProperties = null;
+    private CVKMissingEnums.VkFormat selectedFormat = CVKMissingEnums.VkFormat.VK_FORMAT_NONE;
+    private CVKMissingEnums.VkColorSpaceKHR selectedColourSpace = CVKMissingEnums.VkColorSpaceKHR.VK_COLOR_SPACE_NONE;
+    private CVKMissingEnums.VkPresentModeKHR selectedPresentationMode = CVKMissingEnums.VkPresentModeKHR.VK_PRESENT_MODE_NONE;    
+    private long hCommandPoolHandle = VK_NULL_HANDLE; 
+    private int queueFamilyIndex = -1; 
+    private VkExtent2D vkCurrentSurfaceExtent = VkExtent2D.malloc().set(0, 0);
+    private int max1DImageWidth = 0;
+    private int maxImageLayers = 0;
     
     
     // Getters
@@ -95,6 +97,8 @@ public class CVKDevice {
     public CVKMissingEnums.VkFormat GetSurfaceFormat() { return selectedFormat; }    
     public CVKMissingEnums.VkColorSpaceKHR GetSurfaceColourSpace() { return selectedColourSpace; }    
     public CVKMissingEnums.VkPresentModeKHR GetPresentationMode() { return selectedPresentationMode; }
+    public int GetMax1DImageWidth() { return max1DImageWidth; }
+    public int GetMaxImageLayers() { return maxImageLayers; }
     
     
     public CVKDevice(CVKInstance instance, long surfaceHandle) {
@@ -271,8 +275,10 @@ public class CVKDevice {
                     new Object[]{vkCurrentSurfaceExtent.width(),
                                  vkCurrentSurfaceExtent.height()});           
             
-            if (debugging) {
-                VkPhysicalDeviceLimits l = vkPhysicalDeviceProperties.limits();
+            VkPhysicalDeviceLimits l = vkPhysicalDeviceProperties.limits();
+            max1DImageWidth = l.maxImageDimension1D();
+            maxImageLayers  = l.maxImageArrayLayers();
+            if (debugging) {                
                 CVKLOGGER.info(String.format("Physcial device properties:\n"
                         + "\tdeviceName: %s\n"
                         + "\tdeviceType: %s\n"
@@ -428,7 +434,7 @@ public class CVKDevice {
      * @param stack
      * @return 
      */
-    protected int InitVKLogicalDevice(MemoryStack stack) {
+    private int InitVKLogicalDevice(MemoryStack stack) {
         int ret = VK_SUCCESS;
         
         // We need the extensions and layers again.  
@@ -494,7 +500,7 @@ public class CVKDevice {
      * <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html#devsandqueues-queues">Queue
      * reference</a>
      */
-    protected void InitVKQueue(MemoryStack stack) {
+    private void InitVKQueue(MemoryStack stack) {
         PointerBuffer pb = stack.mallocPointer(1);
         vkGetDeviceQueue(vkDevice, queueFamilyIndex, 0, pb);
         long queueHandle = pb.get(0);
@@ -508,7 +514,7 @@ public class CVKDevice {
      * @param stack
      * @return
      */
-    protected int InitVKCommandPool(MemoryStack stack) {
+    private int InitVKCommandPool(MemoryStack stack) {
         int ret;
         
         VkCommandPoolCreateInfo poolInfo = VkCommandPoolCreateInfo.callocStack(stack);

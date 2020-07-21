@@ -42,7 +42,11 @@ import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPT
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_UNDEFINED;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_TYPE_1D;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_TYPE_2D;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_VIEW_TYPE_1D;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_VIEW_TYPE_1D_ARRAY;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_VIEW_TYPE_2D;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_VIEW_TYPE_2D_ARRAY;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
@@ -85,7 +89,8 @@ public class CVKImage {
     private int tiling              = 0;
     private int usage               = 0;
     private int properties          = 0;   
-    private int aspectMask          = 0;   
+    private int aspectMask          = 0;
+    private int layout              = VK_IMAGE_LAYOUT_UNDEFINED;
     
     private CVKImage() {}
     
@@ -146,17 +151,17 @@ public class CVKImage {
      * Some member variables aren't set until an image is transitioned for the first 
      * time, TODO_TT add asserts to catch access before transition?
      * 
-     * @param oldLayout
+     * @param cvkCmdBuf
      * @param newLayout
      * @return
      */
-    public int Transition(CVKCommandBuffer cvkCmdBuf, int oldLayout, int newLayout) {
+    public int Transition(CVKCommandBuffer cvkCmdBuf, int newLayout) {
         int ret = VK_SUCCESS;
     
         try(MemoryStack stack = stackPush()) {
             VkImageMemoryBarrier.Buffer vkBarrier = VkImageMemoryBarrier.callocStack(1, stack);
             vkBarrier.sType(VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER);
-            vkBarrier.oldLayout(oldLayout);
+            vkBarrier.oldLayout(layout);
             vkBarrier.newLayout(newLayout);
             vkBarrier.srcQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED);
             vkBarrier.dstQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED);
@@ -180,22 +185,22 @@ public class CVKImage {
 
             int sourceStage;
             int destinationStage;
-            if (oldLayout == VK_IMAGE_LAYOUT_UNDEFINED && newLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL) {
+            if (layout == VK_IMAGE_LAYOUT_UNDEFINED && newLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL) {
                 vkBarrier.srcAccessMask(0);
                 vkBarrier.dstAccessMask(VK_ACCESS_TRANSFER_WRITE_BIT);
                 sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
                 destinationStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
-            } else if(oldLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL && newLayout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL) {
+            } else if(layout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL && newLayout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL) {
                 vkBarrier.srcAccessMask(VK_ACCESS_TRANSFER_WRITE_BIT);
                 vkBarrier.dstAccessMask(VK_ACCESS_SHADER_READ_BIT);
                 sourceStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
                 destinationStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
-            } else if (oldLayout == VK_IMAGE_LAYOUT_UNDEFINED && newLayout == VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL) {
+            } else if (layout == VK_IMAGE_LAYOUT_UNDEFINED && newLayout == VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL) {
                 vkBarrier.srcAccessMask(0);
                 vkBarrier.dstAccessMask(VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT);
                 sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
                 destinationStage = VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
-            } else if(oldLayout == VK_IMAGE_LAYOUT_UNDEFINED && newLayout == VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL) {
+            } else if(layout == VK_IMAGE_LAYOUT_UNDEFINED && newLayout == VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL) {
                 vkBarrier.srcAccessMask(0);
                 vkBarrier.dstAccessMask(VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT);
                 sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
@@ -215,6 +220,8 @@ public class CVKImage {
                                      vkBarrier);        // image memory barriers        
             }
         }
+        layout = newLayout;
+        
         return ret;
     }
         
@@ -243,12 +250,15 @@ public class CVKImage {
         cvkImage.usage      = usage; 
         cvkImage.properties = properties;
         cvkImage.aspectMask = aspectMask;
+        
+        int imageType = height > 1 ? VK_IMAGE_TYPE_2D : VK_IMAGE_TYPE_1D;
+        int viewType = layers > 1 ? (height > 1 ? VK_IMAGE_VIEW_TYPE_2D_ARRAY : VK_IMAGE_VIEW_TYPE_1D_ARRAY) : (height > 1 ? VK_IMAGE_VIEW_TYPE_2D : VK_IMAGE_VIEW_TYPE_1D);
          
         try(MemoryStack stack = stackPush()) {
             // Create the image, this is an opaque type we can't read or write
             VkImageCreateInfo vkImageInfo = VkImageCreateInfo.callocStack(stack);
             vkImageInfo.sType(VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO);
-            vkImageInfo.imageType(VK_IMAGE_TYPE_2D);
+            vkImageInfo.imageType(imageType);
             vkImageInfo.extent().width(width);
             vkImageInfo.extent().height(height);
             vkImageInfo.extent().depth(1);
@@ -284,7 +294,7 @@ public class CVKImage {
             VkImageViewCreateInfo vkViewInfo = VkImageViewCreateInfo.callocStack(stack);
             vkViewInfo.sType(VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO);
             vkViewInfo.image(cvkImage.GetImageHandle());
-            vkViewInfo.viewType(VK_IMAGE_VIEW_TYPE_2D_ARRAY);
+            vkViewInfo.viewType(viewType);
             vkViewInfo.format(cvkImage.GetFormat());
             vkViewInfo.subresourceRange().aspectMask(cvkImage.GetAspectMask());
             vkViewInfo.subresourceRange().baseMipLevel(0);

@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.visual.vulkan.resourcetypes;
 
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
+import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKAssert;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.checkVKret;
 import java.nio.ByteBuffer;
 import java.nio.LongBuffer;
@@ -23,18 +24,23 @@ import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import org.lwjgl.system.MemoryUtil;
+import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
 import static org.lwjgl.vulkan.VK10.VK_SHARING_MODE_EXCLUSIVE;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 import static org.lwjgl.vulkan.VK10.vkAllocateMemory;
 import static org.lwjgl.vulkan.VK10.vkBindBufferMemory;
+import static org.lwjgl.vulkan.VK10.vkCmdCopyBuffer;
 import static org.lwjgl.vulkan.VK10.vkCreateBuffer;
 import static org.lwjgl.vulkan.VK10.vkDestroyBuffer;
 import static org.lwjgl.vulkan.VK10.vkFreeMemory;
 import static org.lwjgl.vulkan.VK10.vkGetBufferMemoryRequirements;
 import static org.lwjgl.vulkan.VK10.vkMapMemory;
 import static org.lwjgl.vulkan.VK10.vkUnmapMemory;
+import org.lwjgl.vulkan.VkBufferCopy;
 import org.lwjgl.vulkan.VkBufferCreateInfo;
 import org.lwjgl.vulkan.VkMemoryAllocateInfo;
 import org.lwjgl.vulkan.VkMemoryRequirements;
@@ -47,6 +53,8 @@ public class CVKBuffer {
     protected LongBuffer pBufferMemory = MemoryUtil.memAllocLong(1);
     protected CVKDevice cvkDevice = null;
     protected long bufferSize = 0;
+    private PointerBuffer pWriteMemory = null;
+    private int properties = 0;
     
     public String DEBUGNAME = "";
     
@@ -54,7 +62,34 @@ public class CVKBuffer {
     private CVKBuffer() { }
     
     public long GetBufferHandle() { return pBuffer.get(0); }
+    public long GetBufferSize() { return bufferSize; }
     public long GetMemoryBufferHandle() { return pBufferMemory.get(0); }
+    
+    public void Put(CVKBuffer other) {
+        CVKAssert(GetBufferSize() >= other.GetBufferSize());
+        int ret;
+        
+        try (MemoryStack stack = stackPush()) {
+            CVKCommandBuffer cvkCopyCmd = CVKCommandBuffer.Create(cvkDevice, VK_COMMAND_BUFFER_LEVEL_PRIMARY);
+            cvkCopyCmd.DEBUGNAME = "CVKBuffer cvkCopyCmd";
+            ret = cvkCopyCmd.Begin(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
+            checkVKret(ret);    
+
+            VkBufferCopy.Buffer vkCopyRegions = VkBufferCopy.callocStack(1, stack);
+            VkBufferCopy vkBufferCopy = vkCopyRegions.get(0);
+            vkBufferCopy.dstOffset(0);
+            vkBufferCopy.srcOffset(0);
+            vkBufferCopy.size(other.GetBufferSize());
+
+            vkCmdCopyBuffer(cvkCopyCmd.GetVKCommandBuffer(),
+                            other.GetBufferHandle(),
+                            GetBufferHandle(),
+                            vkCopyRegions);            
+            ret = cvkCopyCmd.EndAndSubmit();
+            checkVKret(ret);    
+            cvkCopyCmd.Destroy();            
+        }                    
+    }
     
     /**
      *
@@ -64,6 +99,10 @@ public class CVKBuffer {
      * @param size, how much to read/write
      */
     public void Put(ByteBuffer pBytes, int destOffset, int srcOffset, int size) {
+        CVKAssert((properties & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) != 0);
+        
+        // Check memory is not already mapped with an unfinished write
+        CVKAssert(pWriteMemory == null); 
         try (MemoryStack stack = stackPush()) {
             PointerBuffer data = stack.mallocPointer(1);
             
@@ -91,7 +130,23 @@ public class CVKBuffer {
             }
             vkUnmapMemory(cvkDevice.GetDevice(), GetMemoryBufferHandle());
         }
-    }  
+    }
+    
+    public ByteBuffer StartWrite(int offset, int size) {
+        CVKAssert((properties & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) != 0);
+        CVKAssert(pWriteMemory == null);
+        CVKAssert(size > offset);
+        pWriteMemory = MemoryUtil.memAllocPointer(1);
+        vkMapMemory(cvkDevice.GetDevice(), GetMemoryBufferHandle(), offset, size, 0, pWriteMemory);
+        return pWriteMemory.getByteBuffer(size);
+    }
+    
+    public void EndWrite() {
+        CVKAssert(pWriteMemory != null);
+        vkUnmapMemory(cvkDevice.GetDevice(), GetMemoryBufferHandle());
+        MemoryUtil.memFree(pWriteMemory);
+        pWriteMemory = null;
+    }
     
     /**
      * java.nio.ByteBuffer and their like are unpooled heap buffers unlike DirectByteBuffer
@@ -145,14 +200,15 @@ public class CVKBuffer {
                                     long size, 
                                     int usage, 
                                     int properties) {
-        assert(cvkDevice != null);
-        assert(cvkDevice.GetDevice() != null);
+        CVKAssert(cvkDevice != null);
+        CVKAssert(cvkDevice.GetDevice() != null);
         
         int ret;
         CVKBuffer cvkBuffer = new CVKBuffer();      
         try(MemoryStack stack = stackPush()) {
             cvkBuffer.bufferSize = size;
-            cvkBuffer.cvkDevice = cvkDevice;
+            cvkBuffer.cvkDevice  = cvkDevice;
+            cvkBuffer.properties = properties;
             
             // Creating a buffer doesn't actually back it with memory.  Thanks Vulkan.
             VkBufferCreateInfo vkBufferInfo = VkBufferCreateInfo.callocStack(stack);

@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryStack.stackPush;
-import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32B32_SFLOAT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32_SINT;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
 import static org.lwjgl.vulkan.VK10.VK_VERTEX_INPUT_RATE_VERTEX;
@@ -50,6 +49,8 @@ import java.util.List;
 import java.util.logging.Level;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryUtil;
+import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_TRANSFER_DST_BIT;
+import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_A_BIT;
@@ -63,9 +64,11 @@ import static org.lwjgl.vulkan.VK10.VK_CULL_MODE_BACK_BIT;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32B32A32_SFLOAT;
 import static org.lwjgl.vulkan.VK10.VK_FRONT_FACE_COUNTER_CLOCKWISE;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_LOGIC_OP_COPY;
+import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_BIND_POINT_GRAPHICS;
@@ -99,7 +102,6 @@ import static org.lwjgl.vulkan.VK10.vkCreateGraphicsPipelines;
 import static org.lwjgl.vulkan.VK10.vkCreatePipelineLayout;
 import static org.lwjgl.vulkan.VK10.vkCreateDescriptorSetLayout;
 import static org.lwjgl.vulkan.VK10.vkEndCommandBuffer;
-import static org.lwjgl.vulkan.VK10.vkFreeDescriptorSets;
 import static org.lwjgl.vulkan.VK10.vkMapMemory;
 import static org.lwjgl.vulkan.VK10.vkUnmapMemory;
 import static org.lwjgl.vulkan.VK10.vkUpdateDescriptorSets;
@@ -254,12 +256,11 @@ public class CVKFPSRenderable extends CVKRenderable {
             VkVertexInputAttributeDescription colorDescription = attributeDescriptions.get(1);
             colorDescription.binding(BINDING);
             colorDescription.location(1);
-            colorDescription.format(VK_FORMAT_R32G32B32_SFLOAT);
+            colorDescription.format(VK_FORMAT_R32G32B32A32_SFLOAT);
             colorDescription.offset(OFFSET_BKGCLR);
 
             return attributeDescriptions.rewind();
         }
-
     }
     
     
@@ -489,8 +490,8 @@ public class CVKFPSRenderable extends CVKRenderable {
         for (int i = 0; i < imageCount; ++i) {   
             CVKBuffer cvkVertexBuffer = CVKBuffer.Create(cvkDevice, 
                                                          size,
-                                                         VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-                                                         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+                                                         VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+                                                         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
             cvkVertexBuffer.DEBUGNAME = String.format("CVKFPSRenderable cvkVertexBuffer %d", i);
             vertexBuffers.add(cvkVertexBuffer);        
         }
@@ -505,9 +506,8 @@ public class CVKFPSRenderable extends CVKRenderable {
     private int UpdateVertexBuffers() {
         int ret = VK_SUCCESS;
         
-        try(MemoryStack stack = stackPush()) {     
+        try(MemoryStack stack = stackPush()) {                          
             // Size to upper limit, we don't have to draw each one.
-            int size = vertices.length * Vertex.SIZEOF;
             for (int i = 0; i < vertices.length; ++i) {
                 int data[] = new int[2];
 
@@ -533,16 +533,25 @@ public class CVKFPSRenderable extends CVKRenderable {
 
                 vertices[i] = new Vertex(data, colour);
             }
+            
+            // Copy to our staging buffer (host read/write)
+            int size = vertices.length * Vertex.SIZEOF;
+            CVKBuffer cvkStagingBuffer = CVKBuffer.Create(cvkDevice, 
+                                                          size,
+                                                          VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                                                          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+            cvkStagingBuffer.DEBUGNAME = "CVKFPSRenderable cvkStagingBuffer";               
+            PointerBuffer data = stack.mallocPointer(1);
+            vkMapMemory(cvkDevice.GetDevice(), cvkStagingBuffer.GetMemoryBufferHandle(), 0, size, 0, data);
+            {
+                Vertex.CopyTo(data.getByteBuffer(0, size), vertices);
+            }
+            vkUnmapMemory(cvkDevice.GetDevice(), cvkStagingBuffer.GetMemoryBufferHandle());
 
             // Populate
             for (int i = 0; i < vertexBuffers.size(); ++i) {   
                 CVKBuffer cvkVertexBuffer = vertexBuffers.get(i);
-                PointerBuffer data = stack.mallocPointer(1);
-                vkMapMemory(cvkDevice.GetDevice(), cvkVertexBuffer.GetMemoryBufferHandle(), 0, size, 0, data);
-                {
-                    Vertex.CopyTo(data.getByteBuffer(0, size), vertices);
-                }
-                vkUnmapMemory(cvkDevice.GetDevice(), cvkVertexBuffer.GetMemoryBufferHandle());
+                cvkVertexBuffer.Put(cvkStagingBuffer);
             }
         }
         

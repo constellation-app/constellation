@@ -294,7 +294,7 @@ public class CVKIconTextureAtlas extends CVKRenderable {
             checkVKret(ret);            
             
             // Transition image from undefined to transfer destination optimal
-            ret = cvkAtlasImage.Transition(cvkCopyCmd, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+            ret = cvkAtlasImage.Transition(cvkCopyCmd, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
             checkVKret(ret);            
 
             int numIcons = icons.size();
@@ -403,7 +403,7 @@ public class CVKIconTextureAtlas extends CVKRenderable {
             }
             
             // Now the image is populated, transition it for reading
-            ret = cvkAtlasImage.Transition(cvkCopyCmd, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+            ret = cvkAtlasImage.Transition(cvkCopyCmd, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
             checkVKret(ret);      
             
             // Ok nothing has actually happened yet, time to execute the transitions and copy

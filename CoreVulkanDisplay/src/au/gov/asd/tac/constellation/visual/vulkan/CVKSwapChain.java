@@ -397,7 +397,7 @@ public class CVKSwapChain {
         cvkDepthTransitionCmd.DEBUGNAME = "CVKSwapChain cvkDepthTransitionCmd";
         ret = cvkDepthTransitionCmd.Begin(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
         if (VkFailed(ret)) { return ret; }               
-        ret = cvkDepthImage.Transition(cvkDepthTransitionCmd, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
+        ret = cvkDepthImage.Transition(cvkDepthTransitionCmd, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
         if (VkFailed(ret)) { return ret; }   
         ret = cvkDepthTransitionCmd.EndAndSubmit();
         if (VkFailed(ret)) { return ret; }     
