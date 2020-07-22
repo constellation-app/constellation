@@ -21,6 +21,8 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 public class NotesViewController {
 
     private final NotesViewTopComponent parent;
+    
+    
 
     public NotesViewController(final NotesViewTopComponent parent) {
         this.parent = parent;

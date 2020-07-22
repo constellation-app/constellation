@@ -62,11 +62,14 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> {
 //        });
     }
 
+    
+    
     // Below are actions that are called when graph is opened - can use these to reload notes when change graph occurs
     @Override
     protected void handleNewGraph(final Graph graph) {
         if (graph != null) {
             //preparePane();
+            notesViewPane.setGraphRecord(graph.getId());
         }
     }
 
