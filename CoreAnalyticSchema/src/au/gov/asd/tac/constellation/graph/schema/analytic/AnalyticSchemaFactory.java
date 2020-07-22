@@ -347,8 +347,12 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
                     && !Objects.equals(type.getStyle(), graph.getObjectValue(transactionStyleAttribute, transactionId))) {
                 graph.setObjectValue(transactionStyleAttribute, transactionId, type.getStyle());
             }
-
-            if (type != null && !Objects.equals(type.isDirected(), graph.getBooleanValue(transactionDirectedAttribute, transactionId))) {
+            // Previously, null and empty types were treated separately.
+            // Since treating them the same (which makes sense), we were seeing
+            // some unexpected behaviour with blank types.
+            // see https://github.com/constellation-app/constellation/issues/723#issuecomment-662241467
+            // see also https://github.com/constellation-app/constellation/pull/735
+            if (type != null && type != SchemaTransactionTypeUtilities.getDefaultType() && !Objects.equals(type.isDirected(), graph.getBooleanValue(transactionDirectedAttribute, transactionId))) {
                 graph.setBooleanValue(transactionDirectedAttribute, transactionId, type.isDirected());
             }
 
