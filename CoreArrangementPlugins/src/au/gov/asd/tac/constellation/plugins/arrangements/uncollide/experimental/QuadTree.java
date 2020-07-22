@@ -293,8 +293,9 @@ public class QuadTree {
                 float DeltaX = wg.getFloatValue(XID, subject) - wg.getFloatValue(XID, possible);
                 float DeltaY = wg.getFloatValue(YID, subject) - wg.getFloatValue(YID, possible);
                 final double l = DeltaX * DeltaX + DeltaY * DeltaY;
-                final double r = wg.getFloatValue(RID, possible) + wg.getFloatValue(RID, subject) + padding;
-                if (padding <= l && l <= r*r) {
+                final double r = math.sqrt(2*wg.getFloatValue(RID, possible)) + math.sqrt(2*wg.getFloatValue(RID, subject)) + padding;
+//                final double r = wg.getFloatValue(RID, possible) + wg.getFloatValue(RID, subject) + padding;
+                if (l < r*r) {
 //                    LOG.info("l:" + l + "    r:" + r);
 //                    int selected = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.BLAZE.getName());
 //                    wg.setObjectValue(selected, subject, new Blaze(0, ConstellationColor.AZURE));
@@ -318,41 +319,42 @@ public class QuadTree {
         boolean foundTwin = false;
         for (final int possible : possibles) {
             if (subject != possible) {
-                float DeltaX = wg.getFloatValue(XID, subject) - wg.getFloatValue(XID, possible);
-                float DeltaY = wg.getFloatValue(YID, subject) - wg.getFloatValue(YID, possible);
-                final double ll = DeltaX * DeltaX + DeltaY * DeltaY;
-                final double r = wg.getFloatValue(RID, possible) + wg.getFloatValue(RID, subject) + padding;
-                final double criticalValue = math.pow(r/math.pow(1.1, maxExpansions), 2); // The required distance for the nodes to be uncollided after maxExpansions number of expansions (each expansions scaled the graph by a factor of 1.1
-                if ( ll < criticalValue ) {
+                float deltaX = wg.getFloatValue(XID, subject) - wg.getFloatValue(XID, possible);
+                float deltaY = wg.getFloatValue(YID, subject) - wg.getFloatValue(YID, possible);
+                final double delta = math.sqrt(deltaX * deltaX + deltaY * deltaY);
+                final double r = math.sqrt(2*wg.getFloatValue(RID, possible)) + math.sqrt(2*wg.getFloatValue(RID, subject)) + padding;
+//                final double r = wg.getFloatValue(RID, possible) + wg.getFloatValue(RID, subject) + padding;
+                final double criticalValue = r/math.pow(1.1, maxExpansions); // The required distance for the nodes to be uncollided after maxExpansions number of expansions (each expansions scaled the graph by a factor of 1.1
+                if ( delta < criticalValue ) {
                     foundTwin = true;
 //                    final float nudge = (float) (math.sqrt(r)/1.4); // sqrt(2A^2) = R then A = r/sqrt(2). The nudge needed to not overlap if moving both nodes away form each by the same value.
                     
                     // If they are in the same spot we will nudge both horizontally and vertically
-                    if (DeltaX == 0 && DeltaY == 0){
-                        DeltaX = DeltaY = 1;
+                    if (deltaX == 0 && deltaY == 0){
+                        deltaX = deltaY = 1;
                     }
                     
                     float nudge; // nudge needed to move them to just beyond the minimum distance so that are at least a padding apart.
-                    if (DeltaX == 0 || DeltaY == 0){
-                        nudge = (float) (criticalValue-ll+0.002)/  2; // Nudge needed if only moving along one axis
+                    if (deltaX == 0 || deltaY == 0){
+                        nudge = (float) ((criticalValue-delta)+0.002)/  2; // Nudge needed if only moving along one axis
                     } else {
-                        nudge = (float) (criticalValue-ll+0.002)/ (float) 2.82; // Nudge needed if moving along both axis
+                        nudge = (float) ((criticalValue-delta)+0.002)/ (float) 2.82; // Nudge needed if moving along both axis
                     }
                     // Nudge horizontally based on relative position.
-                    if (DeltaX > 0){ 
+                    if (deltaX > 0){ 
                         wg.setFloatValue(XID, subject, wg.getFloatValue(XID, subject) + nudge);
                         wg.setFloatValue(XID, possible, wg.getFloatValue(XID, possible) - nudge);
-                    } else if (DeltaX < 0) {
+                    } else if (deltaX < 0) {
                         wg.setFloatValue(XID, subject, wg.getFloatValue(XID, subject) - nudge);
                         wg.setFloatValue(XID, possible, wg.getFloatValue(XID, possible) + nudge);  
                     }
                     // Nudge vertically based on relative position.
-                    if (DeltaY > 0){
-                    wg.setFloatValue(YID, subject, wg.getFloatValue(YID, possible) + nudge);
-                    wg.setFloatValue(YID, possible, wg.getFloatValue(YID, possible) - nudge);
-                    } else if (DeltaY < 0){
-                    wg.setFloatValue(YID, subject, wg.getFloatValue(YID, possible) + nudge);
-                    wg.setFloatValue(YID, possible, wg.getFloatValue(YID, possible) - nudge);
+                    if (deltaY > 0){
+                        wg.setFloatValue(YID, subject, wg.getFloatValue(YID, subject) + nudge);
+                        wg.setFloatValue(YID, possible, wg.getFloatValue(YID, possible) - nudge);
+                    } else if (deltaY < 0){
+                        wg.setFloatValue(YID, subject, wg.getFloatValue(YID, subject) - nudge);
+                        wg.setFloatValue(YID, possible, wg.getFloatValue(YID, possible) + nudge);
                     }     
                 }
             }
@@ -360,14 +362,14 @@ public class QuadTree {
         return foundTwin;
     }
     
-    public boolean nudgeAllTwins(final float padding, final int maxExpansions){
-        boolean foundTwin = false;
+    public int nudgeAllTwins(final float padding, final int maxExpansions){
+        int noTwin = 0;
         for (int position = 0; position < wg.getVertexCount(); position++) {
-            if (nudgeTwins(wg.getVertex(position), padding, maxExpansions)) {
-                foundTwin = true;
+            if (!nudgeTwins(wg.getVertex(position), padding, maxExpansions)) {
+                noTwin++;
             }        
         }
-        return foundTwin;
+        return noTwin;
     }
     
     /**
