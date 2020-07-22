@@ -45,7 +45,7 @@ public class UncollideArrangement implements Arranger {
         this.dimensions = dimensions;
         this.setXyz2 = setXyz2;
         this.maxExpansions = maxExpansions;
-        minPadding = (float) 0.5;
+        minPadding = (float) 0;
     }
 
     public void setInteraction(final PluginInteraction interaction) {
@@ -133,17 +133,24 @@ public class UncollideArrangement implements Arranger {
     private void uncollide2d(final GraphWriteMethods wg, final int iter, final int maxExpansions) throws InterruptedException, PluginException {
         int maxCollided = -1;
         boolean isEnd = false;
-        for (int i = 0; i < iter && !isEnd; i++) {
-            QuadTree qt = putAllVerticiesInQT(wg);
-
-            boolean foundTwin = true;
-            while (foundTwin){
-                foundTwin = qt.nudgeAllTwins(minPadding, maxExpansions);
-                qt = putAllVerticiesInQT(wg);
+        int vertexCount = wg.getVertexCount();
+        
+        QuadTree qt = putAllVerticiesInQT(wg);
+        boolean foundTwin = true;
+        int countIterations = 0;
+        int numberNoTwins = 0;
+        while (numberNoTwins < vertexCount) {
+            numberNoTwins = qt.nudgeAllTwins(minPadding, maxExpansions);
+            if (interaction != null) {
+                final String msg = String.format("Nodes with \"Twins\" %d of %d; iteration %d", numberNoTwins, vertexCount, ++countIterations);
+                interaction.setProgress(numberNoTwins, vertexCount, msg, true);
             }
-            
-            int verticiesBeforeCollision = qt.findCollision(minPadding);
-
+            qt = putAllVerticiesInQT(wg);
+        }
+        
+        int verticiesBeforeCollision = qt.findCollision(minPadding);
+        
+        for (int i = 0; i < iter && verticiesBeforeCollision>0; i++) {
             if (interaction != null) {
                 final String msg = String.format("2D step %3d; pad %f; minimum uncollided verticies %6d of %6d", i, minPadding, verticiesBeforeCollision, wg.getVertexCount());
                 interaction.setProgress(verticiesBeforeCollision, wg.getVertexCount(), msg, true);
@@ -151,7 +158,9 @@ public class UncollideArrangement implements Arranger {
             
             PluginExecution.withPlugin(ArrangementPluginRegistry.EXPAND_GRAPH).executeNow(wg);
 
-            isEnd = verticiesBeforeCollision == 0;
+            qt = putAllVerticiesInQT(wg);
+            
+            verticiesBeforeCollision = qt.findCollision(minPadding);
 
             if (Thread.interrupted()) {
                 throw new InterruptedException();
