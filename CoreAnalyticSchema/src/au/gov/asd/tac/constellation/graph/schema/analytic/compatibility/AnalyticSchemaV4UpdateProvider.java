@@ -58,23 +58,20 @@ public class AnalyticSchemaV4UpdateProvider extends SchemaUpdateProvider {
     protected void schemaUpdate(final StoreGraph graph) {
         final int typeAttribute = AnalyticConcept.VertexAttribute.TYPE.get(graph);
 
-        final Map<String, SchemaVertexType> typesToUpgrade = new HashMap<>() {
-            {
-                put(AnalyticConcept.VertexType.MD5.getName(), AnalyticConcept.VertexType.MD5);
-                put(AnalyticConcept.VertexType.SHA1.getName(), AnalyticConcept.VertexType.SHA1);
-                put(AnalyticConcept.VertexType.SHA256.getName(), AnalyticConcept.VertexType.SHA256);
-                put(AnalyticConcept.VertexType.COUNTRY.getName(), AnalyticConcept.VertexType.COUNTRY);
-                put(AnalyticConcept.VertexType.GEOHASH.getName(), AnalyticConcept.VertexType.GEOHASH);
-                put(AnalyticConcept.VertexType.MGRS.getName(), AnalyticConcept.VertexType.MGRS);
-                put(AnalyticConcept.VertexType.MD5.getName(), AnalyticConcept.VertexType.MD5);
-                put(AnalyticConcept.VertexType.IPV4.getName(), AnalyticConcept.VertexType.IPV4);
-                put(AnalyticConcept.VertexType.IPV6.getName(), AnalyticConcept.VertexType.IPV6);
-                put(AnalyticConcept.VertexType.EMAIL_ADDRESS.getName(), AnalyticConcept.VertexType.EMAIL_ADDRESS);
-                put(AnalyticConcept.VertexType.HOST_NAME.getName(), AnalyticConcept.VertexType.HOST_NAME);
-                put(AnalyticConcept.VertexType.URL.getName(), AnalyticConcept.VertexType.URL);
-                put(AnalyticConcept.VertexType.TELEPHONE_IDENTIFIER.getName(), AnalyticConcept.VertexType.TELEPHONE_IDENTIFIER);
-            }
-        };
+        final Map<String, SchemaVertexType> typesToUpgrade = new HashMap<>();
+        typesToUpgrade.put(AnalyticConcept.VertexType.MD5.getName(), AnalyticConcept.VertexType.MD5);
+        typesToUpgrade.put(AnalyticConcept.VertexType.SHA1.getName(), AnalyticConcept.VertexType.SHA1);
+        typesToUpgrade.put(AnalyticConcept.VertexType.SHA256.getName(), AnalyticConcept.VertexType.SHA256);
+        typesToUpgrade.put(AnalyticConcept.VertexType.COUNTRY.getName(), AnalyticConcept.VertexType.COUNTRY);
+        typesToUpgrade.put(AnalyticConcept.VertexType.GEOHASH.getName(), AnalyticConcept.VertexType.GEOHASH);
+        typesToUpgrade.put(AnalyticConcept.VertexType.MGRS.getName(), AnalyticConcept.VertexType.MGRS);
+        typesToUpgrade.put(AnalyticConcept.VertexType.MD5.getName(), AnalyticConcept.VertexType.MD5);
+        typesToUpgrade.put(AnalyticConcept.VertexType.IPV4.getName(), AnalyticConcept.VertexType.IPV4);
+        typesToUpgrade.put(AnalyticConcept.VertexType.IPV6.getName(), AnalyticConcept.VertexType.IPV6);
+        typesToUpgrade.put(AnalyticConcept.VertexType.EMAIL_ADDRESS.getName(), AnalyticConcept.VertexType.EMAIL_ADDRESS);
+        typesToUpgrade.put(AnalyticConcept.VertexType.HOST_NAME.getName(), AnalyticConcept.VertexType.HOST_NAME);
+        typesToUpgrade.put(AnalyticConcept.VertexType.URL.getName(), AnalyticConcept.VertexType.URL);
+        typesToUpgrade.put(AnalyticConcept.VertexType.TELEPHONE_IDENTIFIER.getName(), AnalyticConcept.VertexType.TELEPHONE_IDENTIFIER);
 
         for (int vertex = 0; vertex < graph.getVertexCount(); vertex++) {
             final int vertexId = graph.getVertex(vertex);
