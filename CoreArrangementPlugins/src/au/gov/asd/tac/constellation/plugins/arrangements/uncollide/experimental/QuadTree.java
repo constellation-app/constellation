@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Blaze;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.plugins.arrangements.uncollide.experimental.BoundingBox2D.Box2D;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import static java.lang.Math.round;
 import java.util.ArrayList;
@@ -54,19 +53,19 @@ public class QuadTree {
 
     private final int level;
     private final List<Integer> objects;
-    private final Box2D box;
+    private final BoundingBox2D box;
     private final GraphWriteMethods wg;
     private QuadTree[] nodes;
     private static final Logger LOG = Logger.getLogger(QuadTree.class.getName());
 
-    public QuadTree(final Box2D box, final GraphWriteMethods wg) {
+    public QuadTree(final BoundingBox2D box, final GraphWriteMethods wg) {
         this(0, box, wg);
     }
 
     /*
      * Constructor
      */
-    public QuadTree(final int level, final Box2D box, final GraphWriteMethods wg) {
+    public QuadTree(final int level, final BoundingBox2D box, final GraphWriteMethods wg) {
         this.level = level;
         this.box = box;
         objects = new ArrayList<>();
@@ -82,14 +81,14 @@ public class QuadTree {
         Z2ID = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z2", "z2", 0, null);
     }
 
-    public List<Box2D> getSubs() {
-        final List<Box2D> boxes = new ArrayList<>();
+    public List<BoundingBox2D> getSubs() {
+        final List<BoundingBox2D> boxes = new ArrayList<>();
         getSubs(boxes);
 
         return boxes;
     }
 
-    private void getSubs(List<Box2D> boxes) {
+    private void getSubs(List<BoundingBox2D> boxes) {
         boxes.add(box);
         if (nodes != null) {
             for (final QuadTree qt : nodes) {
@@ -122,18 +121,11 @@ public class QuadTree {
      * Divide the node into four equal parts and initialise the four subnodes with the new bounds.
      */
     private void split() {
-        final float minx = box.minx;
-        final float miny = box.miny;
-        final float maxx = box.maxx;
-        final float maxy = box.maxy;
-        final float midx = minx + (maxx - minx) / 2;
-        final float midy = miny + (maxy - miny) / 2;
-
         nodes = new QuadTree[4];
-        nodes[TOP_R] = new QuadTree(level + 1, new Box2D(midx, miny, maxx, midy), wg);
-        nodes[TOP_L] = new QuadTree(level + 1, new Box2D(minx, miny, midx, midy), wg);
-        nodes[BOT_L] = new QuadTree(level + 1, new Box2D(minx, midy, midx, maxy), wg);
-        nodes[BOT_R] = new QuadTree(level + 1, new Box2D(midx, midy, maxx, maxy), wg);
+        nodes[TOP_R] = new QuadTree(level + 1, box.getTopRightQuadrant(), wg);
+        nodes[TOP_L] = new QuadTree(level + 1, box.getTopLeftQuadrant(), wg);
+        nodes[BOT_L] = new QuadTree(level + 1, box.getBottomLeftQuadrant(), wg);
+        nodes[BOT_R] = new QuadTree(level + 1, box.getBottomRightQuadrant(), wg);
     }
 
     /*
@@ -145,26 +137,24 @@ public class QuadTree {
      */
     private int getIndex(final int vxId) {
         int index = -1;
-        final double midx = box.minx + ((box.maxx - box.minx) / 2f);
-        final double midy = box.miny + ((box.maxy - box.miny) / 2f);
+        
+        // Object can completely fit within the top/bottom halfss.
+        final boolean topHalf = wg.getFloatValue(YID, vxId) + wg.getFloatValue(RID, vxId) < box.midY;
+        final boolean bottomHalf = wg.getFloatValue(YID, vxId) - wg.getFloatValue(RID, vxId) > box.midY;
 
-        // Object can completely fit within the top/bottom quadrants.
-        final boolean topQuadrant = wg.getFloatValue(YID, vxId) + wg.getFloatValue(RID, vxId) < midy;
-        final boolean bottomQuadrant = wg.getFloatValue(YID, vxId) - wg.getFloatValue(RID, vxId) > midy;
-
-        // Object can completely fit within the left quadrants.
-        if (wg.getFloatValue(XID, vxId) + wg.getFloatValue(RID, vxId) < midx) {
-            if (topQuadrant) {
-                index = TOP_L;
-            } else if (bottomQuadrant) {
-                index = BOT_L;
+        // Object can completely fit within the left half.
+        if (wg.getFloatValue(XID, vxId) + wg.getFloatValue(RID, vxId) < box.midX) {
+            if (topHalf) {
+                index = TOP_L; // fits in top left quadrant
+            } else if (bottomHalf) {
+                index = BOT_L; // fits in bottom left quadrant
             }
-        } // Object can completely fit within the right quadrants.
-        else if (wg.getFloatValue(XID, vxId) - wg.getFloatValue(RID, vxId) > midx) {
-            if (topQuadrant) {
-                index = TOP_R;
-            } else if (bottomQuadrant) {
-                index = BOT_R;
+        } // Object can completely fit within the right half.
+        else if (wg.getFloatValue(XID, vxId) - wg.getFloatValue(RID, vxId) > box.midX) {
+            if (topHalf) {
+                index = TOP_R; // fints in top right quadrant
+            } else if (bottomHalf) {
+                index = BOT_R; // fits in bottom right quadrant
             }
         }
 

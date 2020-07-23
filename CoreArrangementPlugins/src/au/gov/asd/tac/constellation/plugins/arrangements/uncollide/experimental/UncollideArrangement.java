@@ -211,7 +211,7 @@ public class UncollideArrangement implements Arranger {
     }
     
     private QuadTree putAllVerticiesInQT(GraphWriteMethods wg) {
-        final BoundingBox2D.Box2D bb = BoundingBox2D.getBox(wg);
+        final BoundingBox2D bb = new BoundingBox2D(wg);
         final QuadTree qt = new QuadTree(bb, wg);
         qt.insertAll();
         return qt;
