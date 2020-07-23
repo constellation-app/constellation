@@ -102,7 +102,7 @@ expects but you can change this from `etc\constellation.conf`.
 Note that Constellation "Core" (which is this repository) is designed to be 
 domain agnostic and work standalone. The version of Constellation available for 
 download from [the official website](https://constellation-app.com) is built 
-with additional plugins and is available from the [Constellation-Applications](https://github.com/constellation-app/constellation-applications) repository.
+with additional plugins and managed via the [Constellation-Applications](https://github.com/constellation-app/constellation-applications) repository.
 
 ## Contributing to Constellation
 
