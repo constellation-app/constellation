@@ -21,7 +21,7 @@ import au.gov.asd.tac.constellation.graph.NotesConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.view.notes.state.NotesViewState;
+import au.gov.asd.tac.constellation.views.notes.state.NotesViewState;
 
 /**
  * Write a given state to the active graph.
