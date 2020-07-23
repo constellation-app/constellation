@@ -433,7 +433,7 @@ public class CVKVisualProcessor extends VisualProcessor {
 //            skipRedraw = true;
 //        }
         taskQueue.drainTo(tasks);
-        tasks.forEach(task -> { task.run(cvkSwapChain, imageIndex); });      
+        tasks.forEach(task -> { task.run(imageIndex); });      
         return ret;
     }
     

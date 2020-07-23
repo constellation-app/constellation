@@ -54,17 +54,26 @@ public abstract class CVKRenderable {
 //    {
 //        return commandBuffers.get(index).GetVKCommandBuffer(); 
 //    }
-    public abstract VkCommandBuffer GetCommandBuffer(int imageIndex);
+    public abstract VkCommandBuffer GetCommandBuffer(int imageIndex);        
+        
+    /**
+     * Called just before the swapchain is about to be destroyed allowing the
+     * object to cleanup its resources.
+     * 
+     * @return error code
+     */
+    public abstract int DestroySwapChainResources();
     
-    /*
-        Returns the handle to the graphics pipeline for this renderable
+    /**
+     * 
+     * Called just after the swapchain has been recreated
+     * 
+     * @param cvkSwapChain
+     * @return error code
     */
-    //public long GetGraphicsPipeline() {return graphicsPipeline; }
-   
-    public abstract int SwapChainRecreated(CVKSwapChain cvkSwapChain);
-    public abstract int DisplayUpdate(CVKSwapChain cvkSwapChain, int frameIndex);
+    public abstract int CreateSwapChainResources(CVKSwapChain cvkSwapChain);
     public abstract void IncrementDescriptorTypeRequirements(int descriptorTypeCounts[], int descriptorSetCount);        
-    public abstract int RecordCommandBuffer(CVKSwapChain cvkSwapChain, VkCommandBufferInheritanceInfo inheritanceInfo, int index);
+    public abstract int RecordCommandBuffer(VkCommandBufferInheritanceInfo inheritanceInfo, int index);
 
     /*
         Returns the number of vertices used in the vertex buffer
@@ -72,14 +81,15 @@ public abstract class CVKRenderable {
     public abstract int GetVertexCount();
 
     /*
+        TODO HYDRA: Clarify what this means
         Return true if this renderable needs to be updated
     */
     public boolean IsDirty(){ return isDirty; }
 
     public abstract int DeviceInitialised(CVKDevice cvkDevice);
     
-    public boolean SharedResourcesNeedUpdating() { return false; }
-    public int RecreateSharedResources(CVKSwapChain cvkSwapChain) { return VK_SUCCESS; }
+    public boolean NeedsDisplayUpdate() { return false; }
+    public int DisplayUpdate() { return VK_SUCCESS; }
 
 
     /**
@@ -90,6 +100,6 @@ public abstract class CVKRenderable {
      */
     @FunctionalInterface
     public static interface CVKRenderableUpdateTask {
-        public void run(CVKSwapChain cvkSwapChain, int imageIndex);
+        public void run(int imageIndex);
     }         
 }

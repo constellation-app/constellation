@@ -159,7 +159,8 @@ public class CVKAxesRenderable extends CVKRenderable {
     private List<Long> pipelineLayouts = null;
     private LongBuffer pDescriptorSets = null;
     private static long hDescriptorLayout = VK_NULL_HANDLE;
-    private boolean isResourceUpdateNeeded = false;
+    private boolean needsDisplayUpdate = false;
+    private boolean needsResize = false;
     private CVKSwapChain cvkSwapChain = null; //cached for cleaning up descriptor sets
     
     // WIP Push constants
@@ -295,8 +296,8 @@ public class CVKAxesRenderable extends CVKRenderable {
     
     private void DestroyDescriptorSets(){
         if (pDescriptorSets != null) {
-//            vkFreeDescriptorSets(cvkDevice.GetDevice(), cvkSwapChain.GetDescriptorPoolHandle(), pDescriptorSets);
-//            pDescriptorSets = null;
+            vkFreeDescriptorSets(cvkDevice.GetDevice(), cvkSwapChain.GetDescriptorPoolHandle(), pDescriptorSets);
+            pDescriptorSets = null;
         }
     }
     
@@ -354,7 +355,9 @@ public class CVKAxesRenderable extends CVKRenderable {
     } 
     
     
-    private int CreateUniformBuffers(MemoryStack stack, CVKSwapChain cvkSwapChain){       
+    private int CreateUniformBuffers(MemoryStack stack){    
+        CVKAssert(cvkSwapChain != null);
+        
         int imageCount = cvkSwapChain.GetImageCount(); 
         
         vertexUniformBuffers = new ArrayList<>();     
@@ -368,22 +371,17 @@ public class CVKAxesRenderable extends CVKRenderable {
             vertexUniformBuffers.add(vertUniformBuffer);            
         }
         
-        return UpdateUniformBuffers(stack, cvkSwapChain);
+        return UpdateUniformBuffers(stack);
     }
   
     
-    private int UpdateUniformBuffers(MemoryStack stack, CVKSwapChain cvkSwapChain) {
+    private int UpdateUniformBuffers(MemoryStack stack) {
+        CVKAssert(cvkSwapChain != null);
         int ret = VK_SUCCESS;
      
         int imageCount = cvkSwapChain.GetImageCount();        
         
         // LIFTED FROM AxesRenderable.reshape(...)
-        // The logic here seems to be the FPS text needs to be 50 pixels from the 
-        // edges, the calculation of dx and dy implies that the viewport is 
-        //-width/2, -height/2, width/2, height/2
-        
-        // whenever the drawable shape changes, recalculate the place where the fps is drawn
-        
         // This is a GL viewport where the screen space origin is in the bottom left corner
         //final int[] viewport = new int[]{0, 0, cvkSwapChain.GetWidth(), cvkSwapChain.GetHeight()};
         
@@ -432,7 +430,8 @@ public class CVKAxesRenderable extends CVKRenderable {
         return ret;                
     }
     
-    private int CreateVertexBuffers(MemoryStack stack, CVKSwapChain cvkSwapChain) {
+    private int CreateVertexBuffers(MemoryStack stack) {
+        CVKAssert(cvkSwapChain != null);
         int ret = VK_SUCCESS;
               
         vertexBuffers = new ArrayList<>();
@@ -579,8 +578,8 @@ public class CVKAxesRenderable extends CVKRenderable {
         return ret;  
     }
   
-    
-//    private void UpdatePushConstants(CVKSwapChain cvkSwapChain){
+//        private void UpdatePushConstants(){
+//        CVKAssert(cvkSwapChain != null);
 //        pushConstants.clear();
 //        
 //        final int[] viewport = new int[]{0, cvkSwapChain.GetHeight(), cvkSwapChain.GetWidth(), -cvkSwapChain.GetHeight()};             
@@ -616,7 +615,10 @@ public class CVKAxesRenderable extends CVKRenderable {
 //        pushConstants.flip();
 //    }
     
-    public int CreateCommandBuffers(CVKSwapChain cvkSwapChain) {
+    
+    public int CreateCommandBuffers() {       
+        CVKAssert(cvkSwapChain != null);
+        
         int ret = VK_SUCCESS;
         int imageCount = cvkSwapChain.GetImageCount();
         
@@ -634,9 +636,10 @@ public class CVKAxesRenderable extends CVKRenderable {
     }
     
     
-    public int CreatePipeline(CVKSwapChain cvkSwapChain) {
+    public int CreatePipeline() {
         CVKAssert(cvkDevice != null);
         CVKAssert(cvkDevice.GetDevice() != null);
+        CVKAssert(cvkSwapChain != null);
         CVKAssert(cvkSwapChain.GetSwapChainHandle()        != VK_NULL_HANDLE);
         CVKAssert(cvkSwapChain.GetRenderPassHandle()       != VK_NULL_HANDLE);
         CVKAssert(cvkSwapChain.GetDescriptorPoolHandle()   != VK_NULL_HANDLE);
@@ -645,25 +648,10 @@ public class CVKAxesRenderable extends CVKRenderable {
         CVKAssert(fragShaderModule != VK_NULL_HANDLE);        
         CVKAssert(cvkSwapChain.GetWidth() > 0);
         CVKAssert(cvkSwapChain.GetHeight() > 0);
-        
-        // TODO Make sure this object has been initialised
-        //if (!isInitialised)
-        //    logger.error("Cannot create pipeline when renderable is not initialised");
-        
+               
         int ret = VK_SUCCESS;
         
-        try (MemoryStack stack = stackPush()) {
-        
-            ret = CreateUniformBuffers(stack, cvkSwapChain);
-            checkVKret(ret);
-            
-            ret = CreateDescriptorSets(stack, cvkSwapChain);
-            checkVKret(ret);     
-            
-            ret = CreateVertexBuffers(stack, cvkSwapChain);
-            checkVKret(ret);     
-            
-            
+        try (MemoryStack stack = stackPush()) {           
             int imageCount = cvkSwapChain.GetImageCount();
              // A complete pipeline for each swapchain image.  Wasteful?
             pipelines = new ArrayList<>(imageCount);            
@@ -776,7 +764,10 @@ public class CVKAxesRenderable extends CVKRenderable {
 //		pushConstantRange.size(PUSH_CONSTANT_SIZE);
 //		pushConstantRange.offset(0);
                 
-                //pipelineLayoutInfo.pPushConstantRanges(pushConstantRange);
+                
+//                pipelineLayoutInfo.pPushConstantRanges(pushConstantRange);
+//                int num = pipelineLayoutInfo.pushConstantRangeCount();
+                
                 LongBuffer pPipelineLayout = stack.longs(VK_NULL_HANDLE);
 
                 ret = vkCreatePipelineLayout(cvkDevice.GetDevice(), pipelineLayoutInfo, null, pPipelineLayout);
@@ -824,9 +815,9 @@ public class CVKAxesRenderable extends CVKRenderable {
     }
     
    
-    // Called from Record in the Renderer
     @Override
-    public int RecordCommandBuffer(CVKSwapChain cvkSwapChain, VkCommandBufferInheritanceInfo inheritanceInfo, int index) {
+    public int RecordCommandBuffer(VkCommandBufferInheritanceInfo inheritanceInfo, int index) {
+        CVKAssert(cvkSwapChain != null);
         VerifyInRenderThread();
         int ret = VK_SUCCESS;
         
@@ -880,9 +871,10 @@ public class CVKAxesRenderable extends CVKRenderable {
         }
         return ret;
     }
-        
+    
+
     @Override
-    public int SwapChainRecreated(CVKSwapChain cvkSwapChain) {
+    public int DestroySwapChainResources(){
         VerifyInRenderThread();
         int ret = VK_SUCCESS;
         
@@ -903,25 +895,8 @@ public class CVKAxesRenderable extends CVKRenderable {
             CVKAssert(pDescriptorSets == null);
             CVKAssert(vertexUniformBuffers == null);
             CVKAssert(vertexBuffers == null);
-            CVKAssert(commandBuffers == null);           
-
-            try (MemoryStack stack = stackPush()) {                     
-                ret = CreateUniformBuffers(stack, cvkSwapChain);
-                if (VkFailed(ret)) { return ret; }
-
-                ret = CreateDescriptorSets(stack, cvkSwapChain);
-                if (VkFailed(ret)) { return ret; } 
-
-                ret = CreateVertexBuffers(stack, cvkSwapChain);
-                if (VkFailed(ret)) { return ret; }   
-
-                ret = CreateCommandBuffers(cvkSwapChain);
-                if (VkFailed(ret)) { return ret; }            
-
-                ret = CreatePipeline(cvkSwapChain);
-                if (VkFailed(ret)) { return ret; }                                       
-            }      
-        } else {
+            CVKAssert(commandBuffers == null);
+         } else {
             // This is the resize path, image count is unchanged.  We need to recreate
             // pipelines as Vulkan doesn't have a good mechanism to update them and as
             // they define the viewport and scissor rect they are now out of date.  We
@@ -931,18 +906,64 @@ public class CVKAxesRenderable extends CVKRenderable {
             DestroyPipeline();
             DestroyDescriptorSets();
             CVKAssert(pipelines == null);
-            
-            try (MemoryStack stack = stackPush()) {                     
-                ret = CreatePipeline(cvkSwapChain);
-                if (VkFailed(ret)) { return ret; }                           
+            needsResize = true;
+        }
+        
+        cvkSwapChain = null;
+        return ret;
+    }
+    
+    /*
+        Called just before the swapchain is about to be destroyed allowing the
+        object to cleanup its resources.
+    */
+    @Override
+    public int CreateSwapChainResources(CVKSwapChain cvkSwapChain) {
+        VerifyInRenderThread();
+        int ret = VK_SUCCESS;
+
+        // Cache new swapchain before creation calls
+        this.cvkSwapChain = cvkSwapChain;
+        
+        // We only need to recreate these resources if the number of images in 
+        // the swapchain changes or if this is the first call after the initial
+        // swapchain is created.
+        if (!needsResize) {
+            try (MemoryStack stack = stackPush()) {
                 
-                ret = UpdateUniformBuffers(stack, cvkSwapChain);
+                ret = CreateUniformBuffers(stack);
                 if (VkFailed(ret)) { return ret; }
 
-                ret = CreateDescriptorSets(stack, cvkSwapChain);
+                ret = CreateDescriptorSets(stack);
+                if (VkFailed(ret)) { return ret; } 
+
+                ret = CreateVertexBuffers(stack);
+                if (VkFailed(ret)) { return ret; }   
+
+                ret = CreateCommandBuffers();
+                if (VkFailed(ret)) { return ret; }            
+
+                ret = CreatePipeline();
+                if (VkFailed(ret)) { return ret; }                                       
+            }      
+        } else {
+            // This is the resize path, image count is unchanged.  We need to recreate
+            // pipelines as Vulkan doesn't have a good mechanism to update them and as
+            // they define the viewport and scissor rect they are now out of date.        
+            try (MemoryStack stack = stackPush()) {
+                                
+                ret = CreatePipeline();
+                if (VkFailed(ret)) { return ret; }                           
+                
+                ret = UpdateUniformBuffers(stack);
+                if (VkFailed(ret)) { return ret; }
+
+                ret = CreateDescriptorSets(stack);
                 if (VkFailed(ret)) { return ret; } 
             }              
         }
+        
+        needsResize = false;
         
         return ret;
     }
@@ -965,15 +986,7 @@ public class CVKAxesRenderable extends CVKRenderable {
         
         CVKLOGGER.log(Level.INFO, "Static shaders loaded for AxesRenderable class");
         return ret;
-    }
-  
-    
-    @Override
-    public int DisplayUpdate(CVKSwapChain cvkSwapChain, int frameIndex) {
-        // UPDATE CODE
-        
-        return VK_SUCCESS;
-    }    
+    } 
 
     
     @Override
@@ -1015,7 +1028,7 @@ public class CVKAxesRenderable extends CVKRenderable {
     }         
     
     
-    private int CreateDescriptorSets(MemoryStack stack, CVKSwapChain cvkSwapChain) {
+    private int CreateDescriptorSets(MemoryStack stack) {
         int ret;
      
         int imageCount = cvkSwapChain.GetImageCount();
@@ -1072,8 +1085,8 @@ public class CVKAxesRenderable extends CVKRenderable {
  
     
     @Override
-    public boolean SharedResourcesNeedUpdating() {
-        return isResourceUpdateNeeded;
+    public boolean NeedsDisplayUpdate() {
+        return needsDisplayUpdate;
     }
  
     
@@ -1081,29 +1094,27 @@ public class CVKAxesRenderable extends CVKRenderable {
     public int DeviceInitialised(CVKDevice cvkDevice) {
         this.cvkDevice = cvkDevice;
         return VK_SUCCESS;
-    }    
+    }
 
-  
+
     @Override
-    public int RecreateSharedResources(CVKSwapChain cvkSwapChain) { 
+    public int DisplayUpdate() { 
         VerifyInRenderThread();
         
-        int ret = VK_SUCCESS;
-        
-        this.cvkSwapChain = cvkSwapChain;
+        int ret = VK_SUCCESS;    
         
         // TODO HYDRA: Investigage whether we need to recreate DescriptorSets
         DestroyDescriptorSets();
         try (MemoryStack stack = stackPush()) {
-           ret = CreateDescriptorSets(stack, cvkSwapChain);
+           ret = CreateDescriptorSets(stack);
            checkVKret(ret);
            
-           ret = UpdateUniformBuffers(stack, cvkSwapChain);
+           ret = UpdateUniformBuffers(stack);
            checkVKret(ret);
-
+          //UpdatePushConstants();
         }
 
-        isResourceUpdateNeeded = false;
+        needsDisplayUpdate = false;
         return ret;
     }
     
@@ -1117,13 +1128,13 @@ public class CVKAxesRenderable extends CVKRenderable {
     
     public CVKRenderableUpdateTask TaskUpdateCamera() {
         //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
-        
+
         
         //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.DisplayUpdate) ===//
-        return (cvkSwapChain, imageIndex) -> {
+        return (imageIndex) -> {
             VerifyInRenderThread();
                       
-            isResourceUpdateNeeded = true;
+            needsDisplayUpdate = true;
             
             // WIP Update the push constants buffer
             //UpdatePushConstants(cvkSwapChain);

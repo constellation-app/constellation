@@ -184,6 +184,8 @@ public class CVKRenderer implements ComponentListener {
             desiredPoolDescriptorTypeCounts.ResetDirty();
             if (VkSucceeded(ret)) {
                 if (cvkSwapChain != null) {
+                    // Give each renderable a chance to cleanup swapchain dependent resources
+                    renderables.forEach(el -> {el.DestroySwapChainResources();});
                     cvkSwapChain.Destroy();
                 }
                 cvkSwapChain = newSwapChain;
@@ -193,9 +195,12 @@ public class CVKRenderer implements ComponentListener {
                 parent.SwapChainRecreated(cvkDevice, cvkSwapChain);
                 
                 // Give each renderable a chance to recreate swapchain depedent resources
-                for (int i = 0; VkSucceeded(ret) && (i < renderables.size()); ++i) {
-                    ret = renderables.get(i).SwapChainRecreated(cvkSwapChain);
-                }                
+                for (int i = 0; i < renderables.size(); ++i) {
+                    ret = renderables.get(i).CreateSwapChainResources(cvkSwapChain);
+                    if (VkFailed(ret)){
+                        return ret;
+                    }
+                }
             }
         } else {
             CVKLOGGER.info("Unable to recreate swap chain, surface not ready.");
@@ -285,7 +290,7 @@ public class CVKRenderer implements ComponentListener {
         // Loop through renderables and record their buffers
         for (int r = 0; r < renderables.size(); ++r) {
             if (renderables.get(r).IsDirty() && renderables.get(r).GetVertexCount() > 0){
-                renderables.get(r).RecordCommandBuffer(cvkSwapChain, inheritanceInfo, imageIndex);
+                renderables.get(r).RecordCommandBuffer(inheritanceInfo, imageIndex);
 
                 // TODO Hydra: may be more efficient to add all the visible command buffers to a master list then 
                 // call the following line once with the whole list
@@ -476,21 +481,21 @@ public class CVKRenderer implements ComponentListener {
             // flight images to have been presented and all fences available.
             // Note the one liner was created by Netbeans, I am not convinced it's
             // very clear.
-            boolean updateSharedResources = false;
-            for (int i = 0; (i < renderables.size()) && (updateSharedResources == false); ++ i) {
-                updateSharedResources = renderables.get(i).SharedResourcesNeedUpdating();
+            boolean updateDisplays = false;
+            for (int i = 0; (i < renderables.size()) && (updateDisplays == false); ++ i) {
+                updateDisplays = renderables.get(i).NeedsDisplayUpdate();
             }
                       
-            if (updateSharedResources) {
+            if (updateDisplays) {
                 cvkDevice.WaitIdle();
                 for (int i = 0; i < renderables.size(); ++ i) {
                     CVKRenderable r = renderables.get(i);
-                    if (r.SharedResourcesNeedUpdating()) {
-                        ret = r.RecreateSharedResources(cvkSwapChain);
+                    if (r.NeedsDisplayUpdate()) {
+                        ret = r.DisplayUpdate();
                         checkVKret(ret); 
                     }
                 }
-            }           
+            }
         }
    
         // If the surface is not ready RecreateSwapChain won't have reset this flag        
@@ -518,11 +523,7 @@ public class CVKRenderer implements ComponentListener {
                               
                     // Update everything that needs updating - drawables 
                     ret = parent.DisplayUpdate(cvkSwapChain, imageIndex);
-                    checkVKret(ret);
-                    for (int i = 0; VkSucceeded(ret) && (i < renderables.size()); ++i) {
-                        ret = renderables.get(i).DisplayUpdate(cvkSwapChain, imageIndex);
-                        checkVKret(ret); 
-                    }                    
+                    checkVKret(ret);          
                     
                     // Record each renderables commands into secondary buffers and add them to the
                     // primary command buffer.
@@ -558,7 +559,7 @@ public class CVKRenderer implements ComponentListener {
                         swapChainNeedsRecreation = true;
                     } else {
                         checkVKret(ret);
-                    }                    
+                    }
         
                     // Move the frame index to the next cab off the rank
                     currentFrame = (++currentFrame) % MAX_FRAMES_IN_FLIGHT;                  
@@ -627,16 +628,23 @@ public class CVKRenderer implements ComponentListener {
 //                cvkSwapChain.DescriptorTypeRequirementsUpdated(descriptorTypeCounts);
 //            }            
 //        }
-//    }
-    
-    
-
+//    } 
     
     
     @Override
     public void componentResized(ComponentEvent e) {
-//        swapChainNeedsRecreation = true;
-//        CVKLOGGER.info("Canvas sent componentResized");
+        // Hydra - This callback is quite spammy, resulting in the swapchain being
+        // recreated many times in a row. However, there is a bug in some of
+        // the Vulkan drivers where the VK_SUBOPTIMAL_KHR and 
+        // VK_ERROR_OUT_OF_DATE_KHR messages are not being generated from
+        // vkAcquireNextImageKHR() or vkQueuePresentKHR. Updating the GFX drivers
+        // fixed the issue on my system. Unfortunately we can't expect users
+        // to be running with the correct drivers so instead we have to do it
+        // this way to flag a recreation.
+        // TODO: Test how this performs when we have a big graph
+        
+        // Reference: https://bugs.freedesktop.org/show_bug.cgi?id=111097
+        swapChainNeedsRecreation = true;
     }
     @Override
     public void componentHidden(ComponentEvent e) {

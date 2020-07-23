@@ -127,17 +127,17 @@ public class CVKIconTextureAtlas extends CVKRenderable {
     public int GetVertexCount(){ return 0; }
     
     @Override
-    public int RecordCommandBuffer(CVKSwapChain cvkSwapChain, VkCommandBufferInheritanceInfo inheritanceInfo, int index){
+    public int RecordCommandBuffer(VkCommandBufferInheritanceInfo inheritanceInfo, int index){
         return VK_SUCCESS;            
-    }   
+    }
     
     @Override
-    public int DisplayUpdate(CVKSwapChain cvkSwapChain, int imageIndex) {
+    public int DestroySwapChainResources() {
         return VK_SUCCESS;
     }
     
     @Override
-    public int SwapChainRecreated(CVKSwapChain cvkSwapChain) {
+    public int CreateSwapChainResources(CVKSwapChain cvkSwapChain) {
         return VK_SUCCESS;
     }
         
@@ -485,13 +485,13 @@ public class CVKIconTextureAtlas extends CVKRenderable {
     }
     
     @Override
-    public int RecreateSharedResources(CVKSwapChain cvkSwapChain) {
+    public int DisplayUpdate() {
         Destroy();
         return Init();
     }
     
     @Override
-    public boolean SharedResourcesNeedUpdating() {
+    public boolean NeedsDisplayUpdate() {
         return loadedIcons.size() > lastTransferedIconCount;
     }   
     
