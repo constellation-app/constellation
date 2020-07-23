@@ -51,7 +51,6 @@ networks, network infrastructure, chemical composition, etc.
 
 ## Prerequisites
 
-* Constellation is known to work on Windows 64-bit and Linux 64-bit.
 * The OpenGL graph display works with NVIDIA and ATI graphics cards that support
 OpenGL 3.3 or later. It is known to not work with older Intel on-board graphics cards.
 
