@@ -105,7 +105,7 @@ class BoundingBox2D {
      * 
      * @return  BoundingBox2D
      */
-    BoundingBox2D getTopLeftQuadrant() {
+    BoundingBox2D topLeftQuadrant() {
         return new BoundingBox2D(minX, minY, midX, midY);
     }
     
@@ -114,7 +114,7 @@ class BoundingBox2D {
      * 
      * @return  BoundingBox2D
      */
-    BoundingBox2D getTopRightQuadrant() {
+    BoundingBox2D topRightQuadrant() {
         return new BoundingBox2D(midX, minY, maxX, midY);
     }
     
@@ -123,7 +123,7 @@ class BoundingBox2D {
      * 
      * @return  BoundingBox2D
      */
-    BoundingBox2D getBottomLeftQuadrant() {
+    BoundingBox2D bottomLeftQuadrant() {
         return new BoundingBox2D(minX, midY, midX, maxY);
     }
     
@@ -132,7 +132,7 @@ class BoundingBox2D {
      * 
      * @return  BoundingBox2D
      */
-    BoundingBox2D getBottomRightQuadrant() {
+    BoundingBox2D bottomRightQuadrant() {
         return new BoundingBox2D(midX, midY, maxX, maxY);
     }  
 

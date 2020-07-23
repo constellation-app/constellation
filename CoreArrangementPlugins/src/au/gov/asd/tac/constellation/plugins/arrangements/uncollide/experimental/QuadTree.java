@@ -122,10 +122,10 @@ public class QuadTree {
      */
     private void split() {
         nodes = new QuadTree[4];
-        nodes[TOP_R] = new QuadTree(level + 1, box.getTopRightQuadrant(), wg);
-        nodes[TOP_L] = new QuadTree(level + 1, box.getTopLeftQuadrant(), wg);
-        nodes[BOT_L] = new QuadTree(level + 1, box.getBottomLeftQuadrant(), wg);
-        nodes[BOT_R] = new QuadTree(level + 1, box.getBottomRightQuadrant(), wg);
+        nodes[TOP_R] = new QuadTree(level + 1, box.topRightQuadrant(), wg);
+        nodes[TOP_L] = new QuadTree(level + 1, box.topLeftQuadrant(), wg);
+        nodes[BOT_L] = new QuadTree(level + 1, box.bottomLeftQuadrant(), wg);
+        nodes[BOT_R] = new QuadTree(level + 1, box.bottomRightQuadrant(), wg);
     }
 
     /*
