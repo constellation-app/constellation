@@ -138,6 +138,7 @@ public class NotesViewPane extends BorderPane {
             VBox noteVBox = new VBox(5, noteTitleLabel, noteContentLabel, noteTimestampLabel);
             noteVBox.setPadding(new Insets(10, 0, 10, 0));
             userNotesPane.getChildren().add(noteVBox);
+        // Auto generated note
         } else {
             final Label noteTitleLabel = new Label(title);
             final Label noteContentLabel = new Label(content);
@@ -173,7 +174,7 @@ public class NotesViewPane extends BorderPane {
 
     /**
      * When a parameter is null, it signifies that only a partial refresh is
-     * occuring this method will then remove any entries from the pane
+     * occurring this method will then remove any entries from the pane
      * responsible for holding that type of note. This allows for full
      * refreshing of one pane or the other.
      *
