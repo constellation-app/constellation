@@ -33,7 +33,7 @@ import java.util.Map;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * IO provider for the NOTES_VIEW_STATE object.
+ * IO provider for the NotesViewState object.
  *
  * @author aldebaran30701
  */

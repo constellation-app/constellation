@@ -121,7 +121,6 @@ public class NotesViewPane extends BorderPane {
     private void addNote(final String title, final String content) {
         final NotesViewEntry note = new NotesViewEntry(true, LocalDateTime.now().toString(), title, content);
         notesEntries.add(note);
-        createNote(note.getNoteTitle(), note.getNoteContent(), note.getTimestamp(), true);
         controller.writeState();
 
     }
