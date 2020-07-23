@@ -16,13 +16,19 @@
 package au.gov.asd.tac.constellation.views.notes;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.NotesConcept;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
+import au.gov.asd.tac.constellation.views.notes.state.NotesViewEntry;
+import au.gov.asd.tac.constellation.views.notes.state.NotesViewState;
+import java.util.List;
 
 /**
  *
@@ -45,12 +51,109 @@ public class NotesViewController {
             PluginExecution.withPlugin(new SimpleEditPlugin("Notes View: Add Required Attributes") {
                 @Override
                 public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-                    NotesConcept.GraphAttribute.NOTES_VIEW_STATE.ensure(graph);
+                    NotesConcept.MetaAttribute.NOTES_VIEW_STATE.ensure(graph);
                 }
             }).executeLater(activeGraph);
         }
     }
-    // Here inside this file will be any control that does not relate to
-    // visual changes such as reloading menus (will only be responsible for
-    // changes like saving values to the graph state.)
+
+    /**
+     * Reads the graph's notes_view_state attribute and populates the Notes View
+     * pane.
+     */
+    public void readState() {
+        final NotesViewPane pane = parent.getContent();
+        final Graph graph = GraphManager.getDefault().getActiveGraph();
+        if (pane == null || graph == null) {
+            return;
+        }
+        PluginExecution.withPlugin(new NotesViewStateReader(pane))
+                .executeLater(graph);
+    }
+
+    /**
+     * Executes a plugin to write the current notes to the graph's
+     * notes_view_state Attribute.
+     */
+    public void writeState() {
+        final NotesViewPane pane = parent.getContent();
+        final Graph graph = GraphManager.getDefault().getActiveGraph();
+        if (pane == null || graph == null) {
+            return;
+        }
+        PluginExecution.withPlugin(new NotesViewStateWriter(pane.getNotes()))
+                .executeLater(graph);
+    }
+
+    /**
+     * Read the current state from the graph.
+     */
+    private static final class NotesViewStateReader extends SimpleReadPlugin {
+
+        private final NotesViewPane pane;
+
+        public NotesViewStateReader(final NotesViewPane pane) {
+            this.pane = pane;
+        }
+
+        @Override
+        public void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            if (graph == null) {
+                return;
+            }
+
+            final int notesViewStateAttributeId = NotesConcept.MetaAttribute.NOTES_VIEW_STATE.get(graph);
+            if (notesViewStateAttributeId == Graph.NOT_FOUND) {
+                return;
+            }
+
+            final NotesViewState currentState = graph.getObjectValue(notesViewStateAttributeId, 0);
+            if (currentState == null || pane == null) {
+                return;
+            }
+            pane.setNotes(currentState.getNotes());
+        }
+
+        @Override
+        public String getName() {
+            return "Notes View: Read State";
+        }
+    }
+
+    /**
+     * Write the current state to the graph.
+     */
+    private static final class NotesViewStateWriter extends SimpleEditPlugin {
+
+        private final List<NotesViewEntry> notes;
+
+        public NotesViewStateWriter(final List<NotesViewEntry> notes) {
+            this.notes = notes;
+        }
+
+        @Override
+        public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            if (graph == null) {
+                return;
+            }
+
+            final int stateAttributeId = NotesConcept.MetaAttribute.NOTES_VIEW_STATE.ensure(graph);
+            final NotesViewState currentState = graph.getObjectValue(stateAttributeId, 0);
+
+            final NotesViewState newState = currentState == null ? new NotesViewState() : new NotesViewState(currentState);
+            newState.setNotes(notes);
+
+            graph.setObjectValue(stateAttributeId, 0, newState);
+        }
+
+        @Override
+        protected boolean isSignificant() {
+            return false;
+        }
+
+        @Override
+        public String getName() {
+            return "Notes View: Write State";
+        }
+    }
 }

@@ -16,8 +16,6 @@
 package au.gov.asd.tac.constellation.views.notes.utilities;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.LayersConcept;
-import au.gov.asd.tac.constellation.graph.NotesConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
@@ -38,9 +36,8 @@ public final class UpdateNotesViewStatePlugin extends SimpleEditPlugin {
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) {
-        // TODO Change attribute name
-        final int stateAttributeId = NotesConcept.GraphAttribute.NOTES_VIEW_STATE.ensure(graph);
-        graph.setObjectValue(stateAttributeId, 0, state);
+        //final int stateAttributeId = NotesConcept.MetaAttribute.NOTES_VIEW_STATE.ensure(graph);
+        //graph.setObjectValue(stateAttributeId, 0, state);
     }
 
     @Override
@@ -50,7 +47,6 @@ public final class UpdateNotesViewStatePlugin extends SimpleEditPlugin {
 
     @Override
     public String getName() {
-         // TODO Change attribute name
         return "Notes View: Update State";
     }
 }

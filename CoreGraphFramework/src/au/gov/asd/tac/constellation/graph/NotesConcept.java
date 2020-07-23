@@ -46,15 +46,14 @@ public class NotesConcept extends SchemaConcept {
         return Collections.unmodifiableSet(parentSet);
     }
 
-    public static class GraphAttribute {
+    public static class MetaAttribute {
 
-        private GraphAttribute() {
+        private MetaAttribute() {
             throw new IllegalStateException("Concept class");
         }
 
-        public static final SchemaAttribute NOTES_VIEW_STATE = new SchemaAttribute.Builder(GraphElementType.GRAPH, ObjectAttributeDescription.ATTRIBUTE_NAME, "notes_view_state")
+        public static final SchemaAttribute NOTES_VIEW_STATE = new SchemaAttribute.Builder(GraphElementType.META, ObjectAttributeDescription.ATTRIBUTE_NAME, "notes_view_state")
                 .setDescription("The current Notes View State")
-                .setDefaultValue(null)
                 .create()
                 .build();
     }
@@ -62,7 +61,7 @@ public class NotesConcept extends SchemaConcept {
     @Override
     public Collection<SchemaAttribute> getSchemaAttributes() {
         final List<SchemaAttribute> schemaAttributes = new ArrayList<>();
-        schemaAttributes.add(GraphAttribute.NOTES_VIEW_STATE);
+        schemaAttributes.add(MetaAttribute.NOTES_VIEW_STATE);
         return Collections.unmodifiableCollection(schemaAttributes);
     }
 }

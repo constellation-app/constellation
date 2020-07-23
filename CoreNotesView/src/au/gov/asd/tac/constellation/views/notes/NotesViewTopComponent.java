@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.notes;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.NotesConcept;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -66,38 +67,53 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> {
 
         initContent();
 
-        // May need to add this after state has been created for notes view
-//        addAttributeValueChangeHandler(LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE, graph -> {
-//            notesViewController.readState();
-//        });
+        addAttributeValueChangeHandler(NotesConcept.MetaAttribute.NOTES_VIEW_STATE, graph -> {
+            if (!needsUpdate()) {
+                return;
+            }
+            notesViewController.readState();
+        });
     }
 
     // Below are actions that are called when graph is opened - can use these to reload notes when change graph occurs
     @Override
     protected void handleNewGraph(final Graph graph) {
-        if (graph != null) {
-            //preparePane();
+        if (needsUpdate() && graph != null) {
+            preparePane();
             notesViewPane.setGraphRecord(graph.getId());
         }
     }
 
     @Override
     protected void handleGraphOpened(final Graph graph) {
-        if (graph != null) {
-            //preparePane();
+        if (needsUpdate() && graph != null) {
+            preparePane();
         }
     }
 
     @Override
     protected void handleGraphClosed(final Graph graph) {
-        if (graph != null) {
-            //preparePane();
+        if (needsUpdate() && graph != null) {
+            preparePane();
         }
     }
 
     @Override
     protected void handleComponentOpened() {
-        //preparePane();
+        preparePane();
+    }
+
+    @Override
+    protected void componentShowing() {
+        super.componentShowing();
+        preparePane();
+    }
+
+    private void preparePane() {
+        // TODO: setup pane with any graphreports
+        notesViewPane.clearContents();
+        notesViewController.readState();
+        notesViewController.addAttributes();
     }
 
     /**

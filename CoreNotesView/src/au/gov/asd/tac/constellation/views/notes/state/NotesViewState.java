@@ -26,18 +26,31 @@ import java.util.List;
 public class NotesViewState {
 
     // list of entries
-    private final List<NotesViewEntry> NotesViewEntries;
+    private final List<NotesViewEntry> notesViewEntries;
 
     public NotesViewState() {
-        this.NotesViewEntries = new ArrayList();
+        this.notesViewEntries = new ArrayList();
+    }
+
+    public NotesViewState(NotesViewState currentState) {
+        this.notesViewEntries = currentState.getNotes();
+    }
+
+    public NotesViewState(final List<NotesViewEntry> noteEntries) {
+        this.notesViewEntries = noteEntries;
     }
 
     /**
-     * gets an unmodifiable list of all notes entries
+     * gets a list of all notes entries
      *
-     * @return Unmodifiable list of all entries.
+     * @return a list of all entries.
      */
-    public List<NotesViewEntry> getNotesViewEntries() {
-        return List.copyOf(NotesViewEntries);
+    public List<NotesViewEntry> getNotes() {
+        return notesViewEntries;
+    }
+
+    public void setNotes(final List<NotesViewEntry> notes) {
+        notesViewEntries.clear();
+        notesViewEntries.addAll(notes);
     }
 }

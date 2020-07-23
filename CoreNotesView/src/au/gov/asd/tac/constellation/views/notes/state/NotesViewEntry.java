@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.notes.state;
 
 import java.time.LocalDateTime;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * An entry note into the Notes View
@@ -25,16 +26,24 @@ import java.time.LocalDateTime;
 public class NotesViewEntry {
 
     private final Boolean isUserNote;
-    private final LocalDateTime timestamp;
+    private final String timestamp;
     private String noteTitle;
     private String noteContent;
 
-    public NotesViewEntry(final Boolean isUserNote, final LocalDateTime timestamp,
+    public NotesViewEntry(final Boolean isUserNote, final String timestamp,
             final String noteTitle, final String noteContent) {
         this.isUserNote = isUserNote;
-        this.timestamp = timestamp == null ? LocalDateTime.now() : timestamp;
+        this.timestamp = StringUtils.isEmpty(timestamp) ? LocalDateTime.now().toString() : timestamp;
         this.noteTitle = noteTitle;
         this.noteContent = noteContent;
+    }
+
+    // copy constructor
+    public NotesViewEntry(final NotesViewEntry note) {
+        this.isUserNote = note.isUserNote();
+        this.timestamp = note.getTimestamp();
+        this.noteTitle = note.getNoteTitle();
+        this.noteContent = note.getNoteContent();
     }
 
     public void setNoteTitle(final String noteTitle) {
@@ -49,7 +58,7 @@ public class NotesViewEntry {
         return isUserNote;
     }
 
-    public LocalDateTime getTimestamp() {
+    public String getTimestamp() {
         return timestamp;
     }
 
