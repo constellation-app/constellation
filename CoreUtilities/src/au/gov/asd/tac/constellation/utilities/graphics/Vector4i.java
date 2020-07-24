@@ -17,8 +17,6 @@ package au.gov.asd.tac.constellation.utilities.graphics;
 
 /**
  * A vector of four integer point values.
- *
- * @author algol
  */
 public final class Vector4i {
 
@@ -91,16 +89,6 @@ public final class Vector4i {
         result.a[1] = a.a[1] - b.a[1];
         result.a[2] = a.a[2] - b.a[2];
         result.a[3] = a.a[3] - b.a[3];
-    }
-
-    public void getMatrixColumn(final Vector4f dst, final int column) {
-//        memcpy(dst, src+(4*column), sizeof(float)*4);
-        System.arraycopy(a, 4 * column, dst.a, 0, 4);
-    }
-
-    public void setMatrixColumn(final Vector4f dst, final int column) {
-//        memcpy(dst+(4*column), src, sizeof(float)*4);
-        System.arraycopy(a, 0, dst.a, 4 * column, 4);
     }
 
     public Vector3i toVector3i() {

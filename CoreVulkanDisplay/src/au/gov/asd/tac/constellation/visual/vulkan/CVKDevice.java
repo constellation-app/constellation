@@ -112,7 +112,7 @@ public class CVKDevice {
     }
     
     
-    public int Init() {
+    public int Initialise() {
         int ret;
         
         StartLogSection("Initialising CVKDevice");
@@ -180,7 +180,8 @@ public class CVKDevice {
         
         // Get the number of physical devices
         IntBuffer pInt = stack.mallocInt(1);
-        checkVKret(vkEnumeratePhysicalDevices(cvkInstance.GetInstance(), pInt, null));
+        ret = vkEnumeratePhysicalDevices(cvkInstance.GetVkInstance(), pInt, null);
+        if (VkFailed(ret)) return ret;
         if (pInt.get(0) == 0) {
             throw new RuntimeException("Vulkan: no GPUs found");
         }
@@ -188,14 +189,14 @@ public class CVKDevice {
         // Get the physical devices
         int numDevices = pInt.get(0);
         PointerBuffer physicalDevices = stack.mallocPointer(numDevices);
-        ret = vkEnumeratePhysicalDevices(cvkInstance.GetInstance(), pInt, physicalDevices);
+        ret = vkEnumeratePhysicalDevices(cvkInstance.GetVkInstance(), pInt, physicalDevices);
         if (VkFailed(ret)) return ret;
 
         // Enumerate physical devices.  Stop once requirements met and physical device set.
         vkPhysicalDevice = null;
         for (int iDevice = 0; (iDevice < numDevices) && vkPhysicalDevice == null; ++iDevice) {
             // Get the count of extensions supported by this device
-            VkPhysicalDevice candidate = new VkPhysicalDevice(physicalDevices.get(iDevice), cvkInstance.GetInstance());
+            VkPhysicalDevice candidate = new VkPhysicalDevice(physicalDevices.get(iDevice), cvkInstance.GetVkInstance());
             
             // Check this device supports geometry shaders
             VkPhysicalDeviceFeatures candidatePhysicalDeviceFeatures = VkPhysicalDeviceFeatures.mallocStack(stack);
@@ -274,7 +275,8 @@ public class CVKDevice {
 
             // Device caps for our surface
             vkSurfaceCapabilities = VkSurfaceCapabilitiesKHR.malloc();
-            checkVKret(UpdateSurfaceCapabilities());
+            ret = UpdateSurfaceCapabilities();
+            if (VkFailed(ret)) return ret;
             
             // What memory types are available
             vkPhysicalDeviceMemoryProperties = VkPhysicalDeviceMemoryProperties.malloc();
@@ -357,11 +359,13 @@ public class CVKDevice {
 
             // Surface formats our device can use
             pInt.put(0, 0);
-            checkVKret(vkGetPhysicalDeviceSurfaceFormatsKHR(vkPhysicalDevice, hSurfaceHandle, pInt, null));
+            ret = vkGetPhysicalDeviceSurfaceFormatsKHR(vkPhysicalDevice, hSurfaceHandle, pInt, null);
+            if (VkFailed(ret)) return ret;
             int numFormats = pInt.get(0);
             if (numFormats > 0) {
                 vkSurfaceFormats = VkSurfaceFormatKHR.malloc(numFormats);
-                checkVKret(vkGetPhysicalDeviceSurfaceFormatsKHR(vkPhysicalDevice, hSurfaceHandle, pInt, vkSurfaceFormats));
+                ret = vkGetPhysicalDeviceSurfaceFormatsKHR(vkPhysicalDevice, hSurfaceHandle, pInt, vkSurfaceFormats);
+                if (VkFailed(ret)) return ret;
                 
                 CVKLOGGER.info("Available surface formats:");
                 for (int i = 0; i < numFormats; ++i) {
@@ -397,7 +401,8 @@ public class CVKDevice {
 
             // Presentation modes our device can use for our surface
             pInt.put(0, 0);
-            checkVKret(vkGetPhysicalDeviceSurfacePresentModesKHR(vkPhysicalDevice, hSurfaceHandle, pInt, null));
+            ret = vkGetPhysicalDeviceSurfacePresentModesKHR(vkPhysicalDevice, hSurfaceHandle, pInt, null);
+            if (VkFailed(ret)) return ret;
             int numPresentationModes = pInt.get(0);
             if (numPresentationModes > 0) {
                 IntBuffer presentationModes = stack.mallocInt(numPresentationModes);

@@ -20,9 +20,10 @@ import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKBuffer;
-import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKCommandBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain.CVKDescriptorPoolRequirements;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKLOGGER;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.checkVKret;
 import java.awt.image.BufferedImage;
@@ -41,8 +42,6 @@ import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.vulkan.VK10.VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
-import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COMPARE_OP_NEVER;
 import static org.lwjgl.vulkan.VK10.VK_FILTER_LINEAR;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R8G8B8A8_SRGB;
@@ -60,13 +59,10 @@ import static org.lwjgl.vulkan.VK10.VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
 import static org.lwjgl.vulkan.VK10.VK_SAMPLER_MIPMAP_MODE_LINEAR;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
-import static org.lwjgl.vulkan.VK10.vkCmdCopyBufferToImage;
 import static org.lwjgl.vulkan.VK10.vkCreateSampler;
 import static org.lwjgl.vulkan.VK10.vkDestroySampler;
-import org.lwjgl.vulkan.VkBufferImageCopy;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkCommandBufferInheritanceInfo;
-import org.lwjgl.vulkan.VkExtent3D;
 import org.lwjgl.vulkan.VkSamplerCreateInfo;
 
 
@@ -107,7 +103,6 @@ public class CVKIconTextureAtlas extends CVKRenderable {
     
     
     // Instance members
-    private final CVKDevice cvkDevice;
     private CVKImage cvkAtlasImage = null;
     private long hAtlasSampler = VK_NULL_HANDLE;
     private final LinkedHashMap<String, Integer> loadedIcons = new LinkedHashMap<>();
@@ -118,33 +113,53 @@ public class CVKIconTextureAtlas extends CVKRenderable {
     public int GetAtlasIconCount() { return lastTransferedIconCount; }
     public long GetAtlasImageViewHandle() { return cvkAtlasImage.GetImageViewHandle(); }
     public long GetAtlasSamplerHandle() { return hAtlasSampler; }
+    
+    
+    //TODO: can this class be static so it can be shared by multiple graphs?
+    public CVKIconTextureAtlas(CVKVisualProcessor parent) {
+        this.parent = parent;
+    }
 
     @Override
-    public int DeviceInitialised(CVKDevice cvkDevice) {
-        return VK_SUCCESS;
-    }   
-    
-    @Override
-    public int GetVertexCount(){ return 0; }
-    
-    @Override
-    public int RecordCommandBuffer(CVKSwapChain cvkSwapChain, VkCommandBufferInheritanceInfo inheritanceInfo, int index){
-        return VK_SUCCESS;            
-    }   
-    
-    @Override
-    public int DisplayUpdate(CVKSwapChain cvkSwapChain, int imageIndex) {
-        return VK_SUCCESS;
+    public int Initialise(CVKDevice cvkDevice) { 
+        this.cvkDevice = cvkDevice;
+        return CreateAtlas();
     }
     
-    @Override
-    public int SwapChainRecreated(CVKSwapChain cvkSwapChain) {
-        return VK_SUCCESS;
-    }
+    private int CreateAtlas() {
+        CVKAssert(lastTransferedIconCount == 0);
+        CVKAssert(cvkAtlasImage == null);
+        CVKAssert(hAtlasSampler == VK_NULL_HANDLE);
         
+//        final Set<String> iconNames = IconManager.getIconNames(false);
+//        CVKLOGGER.info("\n====ALL ICONS====");
+//        iconNames.forEach(el -> {CVKLOGGER.info(el);});
+//        CVKLOGGER.info("");
+        
+        int ret = VK_SUCCESS;
+        if (loadedIcons.size() > 0) {
+            List<IndexedConstellationIcon> allIcons = new ArrayList<>();
+            loadedIcons.entrySet().forEach(entry -> {                
+                allIcons.add(new IndexedConstellationIcon(entry.getValue(), IconManager.getIcon(entry.getKey()))); 
+            });
+                        
+            ret = AddIconsToAtlas(allIcons);
+            checkVKret(ret);
+            lastTransferedIconCount = loadedIcons.size();  
+        }
+        return ret;    
+    }       
+    
     @Override
-    public void IncrementDescriptorTypeRequirements(int descriptorTypeCounts[], int descriptorSetCount) {
-    }
+    public int GetVertexCount(){ return 0; }    
+    @Override
+    public int RecordCommandBuffer(VkCommandBufferInheritanceInfo inheritanceInfo, int index){ return VK_SUCCESS; }    
+    @Override
+    public int DestroySwapChainResources() { return VK_SUCCESS; }    
+    @Override
+    public int CreateSwapChainResources(CVKSwapChain cvkSwapChain) { return VK_SUCCESS; }        
+    @Override
+    public void IncrementDescriptorTypeRequirements(CVKDescriptorPoolRequirements reqs, CVKDescriptorPoolRequirements perImageReqs) {}
         
     // This could be replaced with a templated Pair type
     private class IndexedConstellationIcon {
@@ -161,8 +176,7 @@ public class CVKIconTextureAtlas extends CVKRenderable {
     }
     
     
-    public CVKIconTextureAtlas(CVKDevice cvkDevice) {
-        this.cvkDevice = cvkDevice;
+    public CVKIconTextureAtlas() {
         
         // These icons are guaranteed to be in the iconMap in this order.
         // They must be at these pre-defined indices so other code (in particular the shaders) can use them.
@@ -418,41 +432,15 @@ public class CVKIconTextureAtlas extends CVKRenderable {
         
         lastTransferedIconCount = 0;
     }
-        
-    
-    public int Init() {
-        CVKAssert(lastTransferedIconCount == 0);
-        CVKAssert(cvkAtlasImage == null);
-        CVKAssert(hAtlasSampler == VK_NULL_HANDLE);
-
-        
-//        final Set<String> iconNames = IconManager.getIconNames(false);
-//        CVKLOGGER.info("\n====ALL ICONS====");
-//        iconNames.forEach(el -> {CVKLOGGER.info(el);});
-//        CVKLOGGER.info("");
-        
-        int ret = VK_SUCCESS;
-        if (loadedIcons.size() > 0) {
-            List<IndexedConstellationIcon> allIcons = new ArrayList<>();
-            loadedIcons.entrySet().forEach(entry -> {                
-                allIcons.add(new IndexedConstellationIcon(entry.getValue(), IconManager.getIcon(entry.getKey()))); 
-            });
-                        
-            ret = AddIconsToAtlas(allIcons);
-            checkVKret(ret);
-            lastTransferedIconCount = loadedIcons.size();  
-        }
-        return ret;
-    }
     
     @Override
-    public int RecreateSharedResources(CVKSwapChain cvkSwapChain) {
+    public int DisplayUpdate() {
         Destroy();
-        return Init();
+        return CreateAtlas();
     }
     
     @Override
-    public boolean SharedResourcesNeedUpdating() {
+    public boolean NeedsDisplayUpdate() {
         return loadedIcons.size() > lastTransferedIconCount;
     }   
     

@@ -69,7 +69,7 @@ public class CVKCanvas extends AWTVKCanvas{
     
     @Override
     public void initVK() {
-        vkRenderer.Init(this.surface);
+        vkRenderer.Initialise(this.surface);
     }
     
     @Override

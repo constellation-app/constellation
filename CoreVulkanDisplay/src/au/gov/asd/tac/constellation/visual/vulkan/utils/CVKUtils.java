@@ -329,8 +329,9 @@ public class CVKUtils {
     
     public static void CVKAssert(boolean exprResult) {
         if (!exprResult) {
-            if (Beans.isDesignTime()) {
-                assert(exprResult);
+            // If run from Netbeans the system console is null
+            if (System.console() == null) {
+                throw new RuntimeException("CVKAssert fired");
             } else {
                 CVKLOGGER.warning("!!!!!!!!!!!!!!!Assertion failure!!!!!!!!!!!!!!!!!");
                 LogStackTrace(Level.WARNING);

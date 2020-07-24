@@ -84,6 +84,9 @@ import org.lwjgl.vulkan.VkVertexInputBindingDescription;
 
 
 public class CVKIconsRenderable extends CVKRenderable{
+    // Static so we recreate descriptor layouts and shaders for each graph
+    private static boolean staticInitialised = false;
+    
     private static final int ICON_BITS = 16;
     private static final int ICON_MASK = 0xffff;
     
@@ -102,13 +105,13 @@ public class CVKIconsRenderable extends CVKRenderable{
     private CVKBuffer cvkVertexStagingBuffer = null;
     private CVKBuffer cvkXYZWStagingBuffer = null;
     private long hXYZWSampler = VK_NULL_HANDLE;
-//    private CVKIconsRenderable.Vertex[] vertices = null;
-//    private float[] positions = null;
+
     
     private List<CVKBuffer> vertexBuffers = null;    
     private CVKImage xyzwTexture = null;
     private boolean recreateIcons = false;
     private ReentrantLock vertexLock = new ReentrantLock();
+    private CVKSwapChain cvkSwapChain = null;
     
     
     private static class Vertex {
@@ -221,8 +224,7 @@ public class CVKIconsRenderable extends CVKRenderable{
     }    
     
     
-    // TODO_TT: generalise this for all classes
-    public static int LoadShaders(CVKDevice cvkDevice) {
+    private static int LoadShaders(CVKDevice cvkDevice) {
         int ret = VK_SUCCESS;
         
         try {
@@ -260,10 +262,8 @@ public class CVKIconsRenderable extends CVKRenderable{
         }
         
         return ret;
-    }
-    
-    
-    public static int CreateDescriptorLayout(CVKDevice cvkDevice) {
+    }      
+    private static int CreateDescriptorLayout(CVKDevice cvkDevice) {
         int ret;
         
         try(MemoryStack stack = stackPush()) {
@@ -329,20 +329,25 @@ public class CVKIconsRenderable extends CVKRenderable{
             }
         }        
         return ret;
-    }    
-            
-    public CVKIconsRenderable(CVKVisualProcessor inParent) {
-        parent = inParent;
-    }
-    
-    public int Init() {
+    }   
+    public static int StaticInitialise(CVKDevice cvkDevice) {
         int ret = VK_SUCCESS;
-        //this.cvkDevice = cvkDevice;
+        if (!staticInitialised) {
+            LoadShaders(cvkDevice);
+            if (VkFailed(ret)) { return ret; }
+            ret = CreateDescriptorLayout(cvkDevice);
+            staticInitialised = true;
+        }
         return ret;
     }
     
+            
+    public CVKIconsRenderable(CVKVisualProcessor inParent) {
+        parent = inParent;
+    }  
+    
     @Override
-    public int DeviceInitialised(CVKDevice cvkDevice) {
+    public int Initialise(CVKDevice cvkDevice) {
         this.cvkDevice = cvkDevice;
         return VK_SUCCESS;
     }
@@ -412,7 +417,6 @@ public class CVKIconsRenderable extends CVKRenderable{
                 cvkVertexStagingBuffer = null;
             }                       
             
-
             if (vertexCount > 0) {
                 int vertexBufferSizeBytes = CVKIconsRenderable.Vertex.SIZEOF * vertexCount;
                 cvkVertexStagingBuffer = CVKBuffer.Create(cvkDevice, 
@@ -461,7 +465,7 @@ public class CVKIconsRenderable extends CVKRenderable{
         }
         
         //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.DisplayUpdate) ===//
-        return (cvkSwapChain, imageIndex) -> {
+        return (imageIndex) -> {
             // We can't update the xyzw texture here as it is needed to render each image
             // in the swap chain.  If we recreate it for image 1 it will be likely be in
             // flight for presenting image 0.  The shared resource recreation path is
@@ -475,12 +479,14 @@ public class CVKIconsRenderable extends CVKRenderable{
         //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
         
         //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.DisplayUpdate) ===//
-        return (cvkSwapChain, imageIndex) -> {
+        return (imageIndex) -> {
             VerifyInRenderThread();
         };        
     }
     
-    private int CreateVertexBuffers(CVKSwapChain cvkSwapChain) {
+    private int CreateVertexBuffers() {
+        CVKAssert(cvkSwapChain != null);
+        
         int ret = VK_SUCCESS;
     
         int imageCount = cvkSwapChain.GetImageCount();               
@@ -521,7 +527,9 @@ public class CVKIconsRenderable extends CVKRenderable{
         return ret;         
     }    
     
-    private int CreateXYZWTexture(CVKSwapChain cvkSwapChain) {
+    private int CreateXYZWTexture() {
+        CVKAssert(cvkSwapChain != null);
+        
         CVKAssert(xyzwTexture == null);
         VerifyInRenderThread();        
         int ret = VK_SUCCESS;
@@ -642,19 +650,19 @@ public class CVKIconsRenderable extends CVKRenderable{
     }
     
     @Override
-    public boolean SharedResourcesNeedUpdating() { return recreateIcons; }
+    public boolean NeedsDisplayUpdate() { return recreateIcons; }
     
     @Override
-    public int RecreateSharedResources(CVKSwapChain cvkSwapChain) { 
+    public int DisplayUpdate() { 
         int ret;
         VerifyInRenderThread();
         
         DestroyVertexBuffers();
         DestroyXYZWTexture();
         
-        ret = CreateVertexBuffers(cvkSwapChain);
+        ret = CreateVertexBuffers();
         if (VkFailed(ret)) { return ret; }
-        ret = CreateXYZWTexture(cvkSwapChain);
+        ret = CreateXYZWTexture();
         if (VkFailed(ret)) { return ret; }
 
         recreateIcons = false;
@@ -665,13 +673,19 @@ public class CVKIconsRenderable extends CVKRenderable{
     @Override
     public VkCommandBuffer GetCommandBuffer(int imageIndex) { return null; }   
     @Override
-    public int SwapChainRecreated(CVKSwapChain cvkSwapChain) { return VK_SUCCESS;}
+    public int DestroySwapChainResources() { 
+        this.cvkSwapChain = null;
+        return VK_SUCCESS; 
+}
     @Override
-    public int DisplayUpdate(CVKSwapChain cvkSwapChain, int frameIndex) { return VK_SUCCESS;}
+    public int CreateSwapChainResources(CVKSwapChain cvkSwapChain) { 
+        this.cvkSwapChain = cvkSwapChain;
+        return VK_SUCCESS;
+    }
     @Override
-    public void IncrementDescriptorTypeRequirements(int descriptorTypeCounts[], int descriptorSetCount) {}     
+    public void IncrementDescriptorTypeRequirements(CVKSwapChain.CVKDescriptorPoolRequirements reqs, CVKSwapChain.CVKDescriptorPoolRequirements perImageReqs) {}     
     @Override
-    public int RecordCommandBuffer(CVKSwapChain cvkSwapChain, VkCommandBufferInheritanceInfo inheritanceInfo, int index) { return VK_SUCCESS;}
+    public int RecordCommandBuffer(VkCommandBufferInheritanceInfo inheritanceInfo, int index) { return VK_SUCCESS;}
     @Override
     public int GetVertexCount() { return 0; }
 }
