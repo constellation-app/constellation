@@ -65,7 +65,6 @@ public class AnalyticSchemaV4UpdateProvider extends SchemaUpdateProvider {
         typesToUpgrade.put(AnalyticConcept.VertexType.COUNTRY.getName(), AnalyticConcept.VertexType.COUNTRY);
         typesToUpgrade.put(AnalyticConcept.VertexType.GEOHASH.getName(), AnalyticConcept.VertexType.GEOHASH);
         typesToUpgrade.put(AnalyticConcept.VertexType.MGRS.getName(), AnalyticConcept.VertexType.MGRS);
-        typesToUpgrade.put(AnalyticConcept.VertexType.MD5.getName(), AnalyticConcept.VertexType.MD5);
         typesToUpgrade.put(AnalyticConcept.VertexType.IPV4.getName(), AnalyticConcept.VertexType.IPV4);
         typesToUpgrade.put(AnalyticConcept.VertexType.IPV6.getName(), AnalyticConcept.VertexType.IPV6);
         typesToUpgrade.put(AnalyticConcept.VertexType.EMAIL_ADDRESS.getName(), AnalyticConcept.VertexType.EMAIL_ADDRESS);
