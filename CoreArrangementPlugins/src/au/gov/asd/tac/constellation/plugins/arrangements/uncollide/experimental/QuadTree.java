@@ -27,6 +27,7 @@ import org.python.modules.math;
  * http://gamedev.tutsplus.com/tutorials/implementation/quick-tip-use-quadtrees-to-detect-likely-collisions-in-2d-space/
  *
  * @author algol
+ * @author Nova
  */
 class QuadTree {
 
@@ -40,10 +41,10 @@ class QuadTree {
     
     private static final Logger LOG = Logger.getLogger(QuadTree.class.getName());
     
-    private static int XID; 
-    private static int YID;
-    private static int RID;
-    private static GraphWriteMethods wg;
+    private final int XID; 
+    private final int YID;
+    private final int RID;
+    private final GraphWriteMethods wg;
 
     private final int level;
     private final BoundingBox2D box;
@@ -80,6 +81,12 @@ class QuadTree {
         this.box = box;
         objects = new ArrayList<>();
         nodes = null;   
+        
+        // Inherit parent values for graph based variables.
+        wg = parent.wg;
+        XID = parent.XID;
+        YID = parent.YID;
+        RID = parent.RID;
     }
 
     /*
