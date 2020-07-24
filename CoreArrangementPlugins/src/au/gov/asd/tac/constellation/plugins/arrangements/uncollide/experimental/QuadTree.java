@@ -19,7 +19,9 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 import org.python.modules.math;
 
@@ -223,6 +225,26 @@ class QuadTree {
         }
         return false;
     }
+    
+//    public Set<Integer> getTwins(final int subject, final double criticalValue) {
+//        final List<Integer> possibles = new ArrayList<>();
+//        getPossibleColliders(possibles, subject);
+//        Set<Integer> twins = new HashSet<>();
+//        for (final int possible : possibles) {
+//            if (subject != possible) {
+//                float deltaX = wg.getFloatValue(XID, subject) - wg.getFloatValue(XID, possible);
+//                float deltaY = wg.getFloatValue(YID, subject) - wg.getFloatValue(YID, possible);
+//                final double delta = math.sqrt(deltaX * deltaX + deltaY * deltaY);
+//                final double r = math.sqrt(2*wg.getFloatValue(RID, possible)) + math.sqrt(2*wg.getFloatValue(RID, subject)) + padding;
+//                final double criticalValue = r/math.pow(1.1, maxExpansions); // The required distance for the nodes to be uncollided after maxExpansions number of expansions (each expansions scaled the graph by a factor of 1.1
+//                if ( delta < criticalValue ) {
+//                    twins.add(possible);
+//                }
+//            }
+//        }
+//        return twins;
+//    }
+    
     /**
      * Nudges two nodes in approximately the same place so that they do not overlap.
      *
@@ -249,27 +271,27 @@ class QuadTree {
                         deltaX = deltaY = 1;
                     }
                     
-                    float nudge; // nudge needed to move them to just beyond the minimum distance so that are at least a padding apart.
+                    double nudge; // nudge needed to move them to just beyond the minimum distance so that are at least a padding apart.
                     if (deltaX == 0 || deltaY == 0){
-                        nudge = (float) ((criticalValue-delta)+0.002)/  2; // Nudge needed if only moving along one axis
+                        nudge = ((criticalValue-delta)+0.002); // Nudge needed if only moving along one axis
                     } else {
-                        nudge = (float) ((criticalValue-delta)+0.002)/ (float) 2.82; // Nudge needed if moving along both axis
+                        nudge = ((criticalValue-delta)+0.002)/ math.sqrt(2); // Nudge needed if moving along both axis
                     }
                     // Nudge horizontally based on relative position.
                     if (deltaX > 0){ 
-                        wg.setFloatValue(XID, subject, wg.getFloatValue(XID, subject) + nudge);
-                        wg.setFloatValue(XID, possible, wg.getFloatValue(XID, possible) - nudge);
+//                        wg.setFloatValue(XID, subject, wg.getFloatValue(XID, subject) + (float) nudge);
+                        wg.setFloatValue(XID, possible, wg.getFloatValue(XID, possible) - (float) nudge);
                     } else if (deltaX < 0) {
-                        wg.setFloatValue(XID, subject, wg.getFloatValue(XID, subject) - nudge);
-                        wg.setFloatValue(XID, possible, wg.getFloatValue(XID, possible) + nudge);  
+//                        wg.setFloatValue(XID, subject, wg.getFloatValue(XID, subject) - (float) nudge);
+                        wg.setFloatValue(XID, possible, wg.getFloatValue(XID, possible) + (float) nudge);  
                     }
                     // Nudge vertically based on relative position.
                     if (deltaY > 0){
-                        wg.setFloatValue(YID, subject, wg.getFloatValue(YID, subject) + nudge);
-                        wg.setFloatValue(YID, possible, wg.getFloatValue(YID, possible) - nudge);
+//                        wg.setFloatValue(YID, subject, wg.getFloatValue(YID, subject) + (float) nudge);
+                        wg.setFloatValue(YID, possible, wg.getFloatValue(YID, possible) - (float) nudge);
                     } else if (deltaY < 0){
-                        wg.setFloatValue(YID, subject, wg.getFloatValue(YID, subject) - nudge);
-                        wg.setFloatValue(YID, possible, wg.getFloatValue(YID, possible) + nudge);
+//                        wg.setFloatValue(YID, subject, wg.getFloatValue(YID, subject) - (float) nudge);
+                        wg.setFloatValue(YID, possible, wg.getFloatValue(YID, possible) + (float) nudge);
                     }     
                 }
             }
