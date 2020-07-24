@@ -91,7 +91,7 @@ class BoundingBox2D {
         this.midY = minY + (maxY - minY)*(float)0.5;
     }
 
-    private BoundingBox2D(float minX, float minY, float maxX, float maxY) {
+    private BoundingBox2D(float minX, float maxX, float minY, float maxY) {
         this.minX = minX;
         this.minY = minY;
         this.maxX = maxX;
@@ -106,7 +106,7 @@ class BoundingBox2D {
      * @return  BoundingBox2D
      */
     BoundingBox2D topLeftQuadrant() {
-        return new BoundingBox2D(minX, minY, midX, midY);
+        return new BoundingBox2D(minX, midX, midY, maxY);
     }
     
     /**
@@ -115,7 +115,7 @@ class BoundingBox2D {
      * @return  BoundingBox2D
      */
     BoundingBox2D topRightQuadrant() {
-        return new BoundingBox2D(midX, minY, maxX, midY);
+        return new BoundingBox2D(midX, maxX, midY, maxY);
     }
     
     /**
@@ -124,7 +124,7 @@ class BoundingBox2D {
      * @return  BoundingBox2D
      */
     BoundingBox2D bottomLeftQuadrant() {
-        return new BoundingBox2D(minX, midY, midX, maxY);
+        return new BoundingBox2D(minX, midX, minY, midY);
     }
     
     /**
@@ -133,7 +133,7 @@ class BoundingBox2D {
      * @return  BoundingBox2D
      */
     BoundingBox2D bottomRightQuadrant() {
-        return new BoundingBox2D(midX, midY, maxX, maxY);
+        return new BoundingBox2D(midX, maxX, minY, midY);
     }  
 
     @Override
