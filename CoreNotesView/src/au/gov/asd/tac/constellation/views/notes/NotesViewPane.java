@@ -32,6 +32,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -43,11 +45,17 @@ public class NotesViewPane extends BorderPane {
     private String currentGraphId;
     private GraphReport currentGraphReport;
 
-    //private final PluginReport pluginReport;
+    //private PluginReport pluginReport;
     private final VBox mainNotesPane;
     private final VBox userNotesPane;
     private final VBox autoNotesPane;
-    //private final TextArea testText;
+
+    private static final Insets NOTE_PADDING = new Insets(10, 0, 10, 0);
+    private static final int BOX_SPACING = 5;
+    private static final String DELETE_BUTTON = "Delete";
+    private static final String ADD_BUTTON = "Add New Note";
+    private static final String NOTE_TITLE = "Note Title:";
+    private static final String NOTE_CONTENT = "Note Content:";
 
     private final List<NotesViewEntry> notesEntries;
     private final List<PluginReport> pluginReportList;
@@ -68,40 +76,45 @@ public class NotesViewPane extends BorderPane {
         // placeholder label for content example
         final Label userText = new Label("User Notes Here\n");
         final Label autoText = new Label("Auto Notes Here\n");
-//        final Label autoText = new Label(pluginReportList.toString());
 
-        // headings for text areas
-        final Label noteTitleHeading = new Label("Note Title:");
-        final Label noteContentHeading = new Label("Note Content:");
+        // headings for user notes text areas
+        final Label noteTitleHeading = new Label(NOTE_TITLE);
+        final Label noteContentHeading = new Label(NOTE_CONTENT);
 
-        // Text area to enter new note
+        // Text area to enter note title
         final TextArea titleTextArea = new TextArea();
         titleTextArea.setPrefRowCount(1);
         titleTextArea.setMaxWidth(150);
         HBox.setHgrow(titleTextArea, Priority.ALWAYS);
 
+        // Text area to enter note content
         final TextArea contentTextArea = new TextArea();
         contentTextArea.setPrefRowCount(0);
         contentTextArea.setMaxWidth(150);
         HBox.setHgrow(contentTextArea, Priority.ALWAYS);
 
-        final Button addButton = new Button("Add New Note");
+        // Button to add a new note
+        final Button addButton = new Button(ADD_BUTTON);
         addButton.setAlignment(Pos.CENTER_RIGHT);
+        HBox.setHgrow(addButton, Priority.ALWAYS);
         addButton.setOnAction(event -> {
-            addNote(titleTextArea.getText(), contentTextArea.getText());
+            createNote(titleTextArea.getText(), contentTextArea.getText(), LocalDateTime.now().toString(), true);
+            controller.writeState();
             event.consume();
         });
-        HBox.setHgrow(addButton, Priority.ALWAYS);
-        HBox addNoteHBox = new HBox(5, noteTitleHeading, titleTextArea, noteContentHeading, contentTextArea, addButton);
 
-        this.userNotesPane = new VBox(5);
-        this.autoNotesPane = new VBox(5);
-        this.mainNotesPane = new VBox(5, userText, userNotesPane, autoText, autoNotesPane, addNoteHBox);
+        // Adding items used to 'add a new note' to HBox
+        final HBox addNoteHBox = new HBox(BOX_SPACING, noteTitleHeading, titleTextArea, noteContentHeading, contentTextArea, addButton);
 
-        // add layers grid and options to pane
-//        this.UserNotesPane = new VBox(5, visibleText);
+        // VBoxes used for holding notes of user and plugin generated types
+        this.userNotesPane = new VBox(BOX_SPACING, userText);
+        this.autoNotesPane = new VBox(BOX_SPACING, autoText);
+
+        // Adding
+        this.mainNotesPane = new VBox(BOX_SPACING, userNotesPane, autoNotesPane, addNoteHBox);
+
         // create layout bindings
-//        MainNotesPane.prefWidthProperty().bind(this.widthProperty());
+        mainNotesPane.prefWidthProperty().bind(this.widthProperty());
         this.setCenter(mainNotesPane);
     }
 
@@ -109,20 +122,13 @@ public class NotesViewPane extends BorderPane {
         return controller;
     }
 
-    void setGraphRecord(String currentGraphId) {
+    void setGraphRecord(final String currentGraphId) {
         this.currentGraphReport = new GraphReport(currentGraphId);
         // update ui
     }
 
     public List<NotesViewEntry> getNotes() {
         return Collections.unmodifiableList(notesEntries);
-    }
-
-    private void addNote(final String title, final String content) {
-        final NotesViewEntry note = new NotesViewEntry(true, LocalDateTime.now().toString(), title, content);
-        notesEntries.add(note);
-        controller.writeState();
-
     }
 
     private void createNote(final String title, final String content, final String timestamp, final boolean isUserNote) {
@@ -135,15 +141,34 @@ public class NotesViewPane extends BorderPane {
             final Label noteTitleLabel = new Label(title);
             final Label noteContentLabel = new Label(content);
             final Label noteTimestampLabel = new Label(timestamp);
-            VBox noteVBox = new VBox(5, noteTitleLabel, noteContentLabel, noteTimestampLabel);
-            noteVBox.setPadding(new Insets(10, 0, 10, 0));
+            final Button remove = new Button(DELETE_BUTTON);
+            remove.setOnAction(event -> {
+                // delete this note
+                if (StringUtils.isNotBlank(timestamp)) {
+                    notesEntries.removeIf(note -> timestamp.equals(note.getTimestamp()));
+                    final List<NotesViewEntry> newNotesEntries = List.copyOf(notesEntries);
+                    userNotesPane.getChildren().removeIf(note -> note instanceof VBox);
+                    for (final NotesViewEntry note : sortByTimestamp(newNotesEntries)) {
+                        createNote(note.getNoteTitle(), note.getNoteContent(), note.getTimestamp().toString(), true);
+                    }
+                }
+                controller.writeState();
+                setNotes(notesEntries);
+                event.consume();
+            });
+            HBox.setHgrow(remove, Priority.ALWAYS);
+            final HBox deleteHBox = new HBox(BOX_SPACING, remove);
+            final VBox noteVBox = new VBox(BOX_SPACING, noteTitleLabel, noteContentLabel, noteTimestampLabel, deleteHBox);
+            noteVBox.setPadding(NOTE_PADDING);
+            notesEntries.add(new NotesViewEntry(isUserNote, timestamp, title, content));
             userNotesPane.getChildren().add(noteVBox);
         } else {
             final Label noteTitleLabel = new Label(title);
             final Label noteContentLabel = new Label(content);
             final Label noteTimestampLabel = new Label(timestamp);
-            VBox noteVBox = new VBox(5, noteTitleLabel, noteContentLabel, noteTimestampLabel);
-            noteVBox.setPadding(new Insets(10, 0, 10, 0));
+            final VBox noteVBox = new VBox(BOX_SPACING, noteTitleLabel, noteContentLabel, noteTimestampLabel);
+            noteVBox.setPadding(NOTE_PADDING);
+            // add entry into auto notes list / pluginreports?
             autoNotesPane.getChildren().add(noteVBox);
         }
     }
@@ -156,7 +181,6 @@ public class NotesViewPane extends BorderPane {
                 notesCopy.add(new NotesViewEntry(note));
             });
             updateNotes(notesCopy, null);
-            //controller.writeState(); // save state on update
         });
     }
 
@@ -183,38 +207,35 @@ public class NotesViewPane extends BorderPane {
     private void updateNotes(final List<NotesViewEntry> notes, final List<PluginReport> pluginReports) {
         synchronized (this) {
             // this code should iterate the UI structure which contains the notes entries
-            // and remove all notes before refreshing.
-            if (notes != null) {
-                userNotesPane.getChildren().removeAll();
-            }
-            if (pluginReports != null) {
-                autoNotesPane.getChildren().removeAll();
-            }
-
-            if (notes != null) {
+            // and clear notes before refreshing.
+            if (CollectionUtils.isNotEmpty(notes)) {
+                userNotesPane.getChildren().removeIf(note -> note instanceof VBox);
                 // and finally create a UI note for each of the new notes in the list
                 for (final NotesViewEntry note : sortByTimestamp(notes)) {
                     createNote(note.getNoteTitle(), note.getNoteContent(), note.getTimestamp().toString(), true);
                 }
             }
-
-            if (pluginReports != null) {
+            if (CollectionUtils.isNotEmpty(pluginReports)) {
+                autoNotesPane.getChildren().removeIf(report -> report instanceof VBox);
                 // Plugin Report creation - pluginReports might be all sorted. if not make a sort method
                 for (final PluginReport pluginReport : pluginReports) {
                     //TODO: these will need to be changed to something more meaningful
                     createNote(pluginReport.getPluginName(), pluginReport.getMessage(), String.valueOf(pluginReport.getStartTime()), false);
                 }
             }
-
         }
     }
 
+    /**
+     * Clears the pane of items within stored lists and pane children which are
+     * VBoxes ready for a new graph or graph closed.
+     */
     public synchronized void clearContents() {
         Platform.runLater(() -> {
             this.notesEntries.clear();
-            userNotesPane.getChildren().clear();
+            userNotesPane.getChildren().removeIf(note -> note instanceof VBox);
             this.pluginReportList.clear();
-            autoNotesPane.getChildren().clear();
+            autoNotesPane.getChildren().removeIf(report -> report instanceof VBox);
         });
     }
 
