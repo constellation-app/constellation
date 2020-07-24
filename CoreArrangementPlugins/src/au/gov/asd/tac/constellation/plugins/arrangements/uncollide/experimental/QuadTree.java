@@ -33,7 +33,7 @@ import org.python.modules.math;
  *
  * @author algol
  */
-public class QuadTree {
+class QuadTree {
 
     private static final int MAX_OBJECTS = 10;
     private static final int MAX_LEVELS = 5;
@@ -58,14 +58,14 @@ public class QuadTree {
     private QuadTree[] nodes;
     private static final Logger LOG = Logger.getLogger(QuadTree.class.getName());
 
-    public QuadTree(final BoundingBox2D box, final GraphWriteMethods wg) {
+    QuadTree(final BoundingBox2D box, final GraphWriteMethods wg) {
         this(0, box, wg);
     }
 
     /*
      * Constructor
      */
-    public QuadTree(final int level, final BoundingBox2D box, final GraphWriteMethods wg) {
+    QuadTree(final int level, final BoundingBox2D box, final GraphWriteMethods wg) {
         this.level = level;
         this.box = box;
         objects = new ArrayList<>();
@@ -81,28 +81,12 @@ public class QuadTree {
         Z2ID = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z2", "z2", 0, null);
     }
 
-    public List<BoundingBox2D> getSubs() {
-        final List<BoundingBox2D> boxes = new ArrayList<>();
-        getSubs(boxes);
-
-        return boxes;
-    }
-
-    private void getSubs(List<BoundingBox2D> boxes) {
-        boxes.add(box);
-        if (nodes != null) {
-            for (final QuadTree qt : nodes) {
-                qt.getSubs(boxes);
-            }
-        }
-    }
-
     /*
      * Clears the quadtree.
      * <p>
      * Recursively clear all objects from all nodes.
      */
-    public void clear() {
+    private void clear() {
         objects.clear();
 
         if (nodes != null) {
@@ -195,7 +179,7 @@ public class QuadTree {
         }
     }
     
-    public void insertAll() {
+    void insertAll() {
         clear();
         for (int position = 0; position < wg.getVertexCount(); position++) {
             insert(wg.getVertex(position));
@@ -219,49 +203,6 @@ public class QuadTree {
     }
 
     /**
-     * Uncollide this orb from its colliding neighbors.
-     *
-     * @param orb The orb to be uncollided.
-     * @param padding The minimum distance between the orb's edge and the edges
-     * of each neighbor.
-     * @return the number of collisions.
-     */
-    public int uncollide(final int subject, final float padding) {
-        final List<Integer> possibles = new ArrayList<>();
-        getPossibleColliders(possibles, subject);
-
-        // We need to deal with pathological cases such as everything at the same x,y point,
-        // or everything co-linear.
-        // We add a perturbation so points go different ways at different stages.
-        float perturbation = 1e-4f;
-        int collided = 0;
-        for (final int possible : possibles) {
-            if (subject != possible) {
-                float DeltaX = wg.getFloatValue(XID, subject) - wg.getFloatValue(XID, possible);
-                float DeltaY = wg.getFloatValue(YID, subject) - wg.getFloatValue(YID, possible);
-                final double ll = DeltaX * DeltaX + DeltaY * DeltaY;
-                final double r = wg.getFloatValue(RID, possible) + wg.getFloatValue(RID, subject) + padding;
-                if (ll <= r * r) {
-                    final double l = Math.sqrt(ll);
-                    collided++;
-                    final float nudge = l != 0 ? (float) Math.min((l - r) / l * 0.5, -0.1) : -0.1f;
-                    DeltaX *= nudge;
-                    DeltaX += perturbation;
-                    DeltaY *= nudge;
-                    DeltaY += perturbation;
-                    perturbation = -perturbation;
-//                    System.out.printf("-Collided %f %f %f x=%f y=%f\n  %s <> %s\n", l, r, nudge, x, y, circle, possible);
-                    wg.setFloatValue(XID, subject, wg.getFloatValue(XID, subject) - DeltaX);
-                    wg.setFloatValue(YID, subject, wg.getFloatValue(YID, subject) - DeltaY);
-                    wg.setFloatValue(XID, possible, wg.getFloatValue(XID, possible) + DeltaX);
-                    wg.setFloatValue(YID, possible, wg.getFloatValue(YID, possible) + DeltaY);
-                }
-            }
-        }
-
-        return collided;
-    }
-    /**
      * Returns boolean indicating whether or not the vertex collides with any
      * other verticies. Two verticies in exactly the same spot are not counted
      * as overlapping.
@@ -271,7 +212,7 @@ public class QuadTree {
      * of each neighbor.
      * @return the number of collisions.
      */
-    public boolean nodeCollides(final int subject, final float padding) {
+    private boolean nodeCollides(final int subject, final float padding) {
         final List<Integer> possibles = new ArrayList<>();
         getPossibleColliders(possibles, subject);
 
@@ -383,15 +324,6 @@ public class QuadTree {
         }
         return 0;
     }
-    
-    public int uncollideAll(final float padding){
-        int totalCollided = 0;
-        for (int position = 0; position < wg.getVertexCount(); position++) {
-            totalCollided += uncollide(wg.getVertex(position), padding);
-        }
-        return totalCollided;
-    }
-
 
     @Override
     public String toString() {
