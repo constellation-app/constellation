@@ -44,8 +44,7 @@ public class CSVImportFileParser extends ImportFileParser {
     public List<String[]> parse(final InputSource input, final PluginParameters parameters) throws IOException {
         final ArrayList<String[]> results = new ArrayList<>();
         try (final CSVParser csvFileParser = CSVFormat.RFC4180.parse(new InputStreamReader(input.getInputStream(), StandardCharsets.UTF_8.name()))) {
-            final List<CSVRecord> records = csvFileParser.getRecords();
-            for (final CSVRecord record : records) {
+            for (final CSVRecord record : csvFileParser) {
                 final String[] line = new String[record.size()];
                 for (int i = 0; i < record.size(); i++) {
                     line[i] = record.get(i);
@@ -62,15 +61,13 @@ public class CSVImportFileParser extends ImportFileParser {
         final ArrayList<String[]> results = new ArrayList<>();
         try (final CSVParser csvFileParser = CSVFormat.RFC4180.parse(new InputStreamReader(input.getInputStream(), StandardCharsets.UTF_8.name()))) {
             int count = 0;
-            final List<CSVRecord> records = csvFileParser.getRecords();
-            for (final CSVRecord record : records) {
+            for (final CSVRecord record : csvFileParser) {
                 final String[] line = new String[record.size()];
                 for (int i = 0; i < record.size(); i++) {
                     line[i] = record.get(i);
                 }
                 results.add(line);
-                count += 1;
-                if (count >= limit) {
+                if (++count >= limit) {
                     return results;
                 }
             }
