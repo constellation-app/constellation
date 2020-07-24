@@ -17,15 +17,10 @@ package au.gov.asd.tac.constellation.plugins.arrangements.uncollide.experimental
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
-import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Blaze;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import static java.lang.Math.round;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-import org.python.core.PyObject;
 import org.python.modules.math;
 
 /**
@@ -43,60 +38,48 @@ class QuadTree {
     private static final int BOT_L = 2;
     private static final int BOT_R = 3;
     
+    private static final Logger LOG = Logger.getLogger(QuadTree.class.getName());
+    
     private static int XID; 
     private static int YID;
-    private static int ZID;
     private static int RID;
-    private static int X2ID;
-    private static int Y2ID;
-    private static int Z2ID;
+    private static GraphWriteMethods wg;
 
     private final int level;
-    private final List<Integer> objects;
     private final BoundingBox2D box;
-    private final GraphWriteMethods wg;
+    private final List<Integer> objects;
     private QuadTree[] nodes;
-    private static final Logger LOG = Logger.getLogger(QuadTree.class.getName());
 
-    QuadTree(final BoundingBox2D box, final GraphWriteMethods wg) {
-        this(0, box, wg);
-    }
-
-    /*
-     * Constructor
+    /**
+     * Constructor creates QuadTree and inserts all nodes
+     * 
+     * @param graph  The graph the QuadTree should be based on
      */
-    QuadTree(final int level, final BoundingBox2D box, final GraphWriteMethods wg) {
-        this.level = level;
-        this.box = box;
-        objects = new ArrayList<>();
-        nodes = null;
+    QuadTree(final GraphWriteMethods graph) {
+        this.level = 0;
+        this.box = new BoundingBox2D(graph);
+        this.objects = new ArrayList<>();
+        this.nodes = null;   
         
-        this.wg = wg;
+        wg = graph;
         XID = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
         YID = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
-        ZID = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
         RID = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.NODE_RADIUS.getName());
-        X2ID = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x2", "x2", 0, null);
-        Y2ID = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y2", "y2", 0, null);
-        Z2ID = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z2", "z2", 0, null);
+        
+        insertAll();
     }
 
-    /*
-     * Clears the quadtree.
-     * <p>
-     * Recursively clear all objects from all nodes.
+    /**
+     * Create a subtree of the current tree
+     * 
+     * @param parent
+     * @param box 
      */
-    private void clear() {
-        objects.clear();
-
-        if (nodes != null) {
-            for (int i = 0; i < nodes.length; i++) {
-                nodes[i].clear();
-                nodes[i] = null;
-            }
-
-            nodes = null;
-        }
+    private QuadTree(QuadTree parent, final BoundingBox2D box) {
+        this.level = parent.level + 1;
+        this.box = box;
+        objects = new ArrayList<>();
+        nodes = null;   
     }
 
     /*
@@ -106,10 +89,10 @@ class QuadTree {
      */
     private void split() {
         nodes = new QuadTree[4];
-        nodes[TOP_R] = new QuadTree(level + 1, box.topRightQuadrant(), wg);
-        nodes[TOP_L] = new QuadTree(level + 1, box.topLeftQuadrant(), wg);
-        nodes[BOT_L] = new QuadTree(level + 1, box.bottomLeftQuadrant(), wg);
-        nodes[BOT_R] = new QuadTree(level + 1, box.bottomRightQuadrant(), wg);
+        nodes[TOP_R] = new QuadTree(this, box.topRightQuadrant());
+        nodes[TOP_L] = new QuadTree(this, box.topLeftQuadrant());
+        nodes[BOT_L] = new QuadTree(this, box.bottomLeftQuadrant());
+        nodes[BOT_R] = new QuadTree(this, box.bottomRightQuadrant());
     }
 
     /*
@@ -150,25 +133,27 @@ class QuadTree {
      * objects that fit to their corresponding nodes.
      */
     private void insert(final int vxId) {
-        if (nodes != null) {
-            int index = getIndex(vxId);
+        if (nodes != null) { // if their are subnodes
+            int index = getIndex(vxId); // find the correct subnode
 
-            if (index != -1) {
-                nodes[index].insert(vxId);
+            if (index != -1) { // if it fits neatly in a subnode
+                nodes[index].insert(vxId); // insert into that subnode
 
                 return;
             }
         }
 
-        objects.add(vxId);
+        // if it fits in this node 
+        
+        objects.add(vxId); // add to list of objects
 
         if (objects.size() > MAX_OBJECTS && level < MAX_LEVELS) {
-            if (nodes == null) {
+            if (nodes == null) { // if no subnodes then split
                 split();
             }
 
             int i = 0;
-            while (i < objects.size()) {
+            while (i < objects.size()) { // For each object get the index and insert it into the subnode if it fits in one. If it fits in a subnode remove it from this list of objects.
                 int index = getIndex(objects.get(i));
                 if (index != -1) {
                     nodes[index].insert(objects.remove(i));
@@ -179,8 +164,7 @@ class QuadTree {
         }
     }
     
-    void insertAll() {
-        clear();
+    private void insertAll() {
         for (int position = 0; position < wg.getVertexCount(); position++) {
             insert(wg.getVertex(position));
         }
@@ -225,12 +209,7 @@ class QuadTree {
                 float DeltaY = wg.getFloatValue(YID, subject) - wg.getFloatValue(YID, possible);
                 final double l = DeltaX * DeltaX + DeltaY * DeltaY;
                 final double r = math.sqrt(2*wg.getFloatValue(RID, possible)) + math.sqrt(2*wg.getFloatValue(RID, subject)) + padding;
-//                final double r = wg.getFloatValue(RID, possible) + wg.getFloatValue(RID, subject) + padding;
                 if (l < r*r) {
-//                    LOG.info("l:" + l + "    r:" + r);
-//                    int selected = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.BLAZE.getName());
-//                    wg.setObjectValue(selected, subject, new Blaze(0, ConstellationColor.AZURE));
-//                    wg.setObjectValue(selected, possible, new Blaze(0, ConstellationColor.AZURE));
                     return true;
                 }
             }
@@ -254,11 +233,9 @@ class QuadTree {
                 float deltaY = wg.getFloatValue(YID, subject) - wg.getFloatValue(YID, possible);
                 final double delta = math.sqrt(deltaX * deltaX + deltaY * deltaY);
                 final double r = math.sqrt(2*wg.getFloatValue(RID, possible)) + math.sqrt(2*wg.getFloatValue(RID, subject)) + padding;
-//                final double r = wg.getFloatValue(RID, possible) + wg.getFloatValue(RID, subject) + padding;
                 final double criticalValue = r/math.pow(1.1, maxExpansions); // The required distance for the nodes to be uncollided after maxExpansions number of expansions (each expansions scaled the graph by a factor of 1.1
                 if ( delta < criticalValue ) {
                     foundTwin = true;
-//                    final float nudge = (float) (math.sqrt(r)/1.4); // sqrt(2A^2) = R then A = r/sqrt(2). The nudge needed to not overlap if moving both nodes away form each by the same value.
                     
                     // If they are in the same spot we will nudge both horizontally and vertically
                     if (deltaX == 0 && deltaY == 0){

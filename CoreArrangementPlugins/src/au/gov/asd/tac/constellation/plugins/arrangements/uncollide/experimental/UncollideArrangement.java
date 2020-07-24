@@ -135,7 +135,7 @@ public class UncollideArrangement implements Arranger {
         boolean isEnd = false;
         int vertexCount = wg.getVertexCount();
         
-        QuadTree qt = putAllVerticiesInQT(wg);
+        QuadTree qt = new QuadTree(wg);
         boolean foundTwin = true;
         int countIterations = 0;
         int numberNoTwins = 0;
@@ -145,7 +145,7 @@ public class UncollideArrangement implements Arranger {
                 final String msg = String.format("Nodes with \"Twins\" %d of %d; iteration %d", numberNoTwins, vertexCount, ++countIterations);
                 interaction.setProgress(numberNoTwins, vertexCount, msg, true);
             }
-            qt = putAllVerticiesInQT(wg);
+            qt = new QuadTree(wg);
         }
         
         int verticiesBeforeCollision = qt.findCollision(minPadding);
@@ -158,7 +158,7 @@ public class UncollideArrangement implements Arranger {
             
             PluginExecution.withPlugin(ArrangementPluginRegistry.EXPAND_GRAPH).executeNow(wg);
 
-            qt = putAllVerticiesInQT(wg);
+            qt = new QuadTree(wg);
             
             verticiesBeforeCollision = qt.findCollision(minPadding);
 
@@ -208,13 +208,6 @@ public class UncollideArrangement implements Arranger {
                 throw new InterruptedException();
             }
         }
-    }
-    
-    private QuadTree putAllVerticiesInQT(GraphWriteMethods wg) {
-        final BoundingBox2D bb = new BoundingBox2D(wg);
-        final QuadTree qt = new QuadTree(bb, wg);
-        qt.insertAll();
-        return qt;
     }
 
     @Override
