@@ -226,24 +226,24 @@ class QuadTree {
         return false;
     }
     
-//    public Set<Integer> getTwins(final int subject, final double criticalValue) {
-//        final List<Integer> possibles = new ArrayList<>();
-//        getPossibleColliders(possibles, subject);
-//        Set<Integer> twins = new HashSet<>();
-//        for (final int possible : possibles) {
-//            if (subject != possible) {
-//                float deltaX = wg.getFloatValue(XID, subject) - wg.getFloatValue(XID, possible);
-//                float deltaY = wg.getFloatValue(YID, subject) - wg.getFloatValue(YID, possible);
-//                final double delta = math.sqrt(deltaX * deltaX + deltaY * deltaY);
-//                final double r = math.sqrt(2*wg.getFloatValue(RID, possible)) + math.sqrt(2*wg.getFloatValue(RID, subject)) + padding;
-//                final double criticalValue = r/math.pow(1.1, maxExpansions); // The required distance for the nodes to be uncollided after maxExpansions number of expansions (each expansions scaled the graph by a factor of 1.1
-//                if ( delta < criticalValue ) {
-//                    twins.add(possible);
-//                }
-//            }
-//        }
-//        return twins;
-//    }
+    public Set<Integer> getTwins(final int subject, final double padding, final double twinThreshold) {
+        final List<Integer> possibles = new ArrayList<>();
+        getPossibleColliders(possibles, subject);
+        Set<Integer> twins = new HashSet<>();
+        for (final int possible : possibles) {
+            if (subject != possible) {
+                float deltaX = wg.getFloatValue(XID, subject) - wg.getFloatValue(XID, possible);
+                float deltaY = wg.getFloatValue(YID, subject) - wg.getFloatValue(YID, possible);
+                final double delta = math.sqrt(deltaX * deltaX + deltaY * deltaY);
+                final double r = math.sqrt(2*wg.getFloatValue(RID, possible)) + math.sqrt(2*wg.getFloatValue(RID, subject)) + padding;
+                final double criticalValue = r*twinThreshold; // The required distance for the nodes to be uncollided
+                if ( delta < criticalValue ) {
+                    twins.add(possible);
+                }
+            }
+        }
+        return twins;
+    }
     
     /**
      * Nudges two nodes in approximately the same place so that they do not overlap.
