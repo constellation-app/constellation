@@ -227,6 +227,22 @@ class QuadTree {
         return false;
     }
     
+    /**
+     * Check the subject for "twin" verticies
+     * 
+     * A twin verticie is defined as a verticie that falls within twinThreshold
+     *  x (subject radius + twin radius + padding) of the subject.
+     * The average radius is the average of the subject verticies radius and the
+     * potential twins radius.
+     * @param subject  The id of the vertex you wish to check for twins.
+     * @param padding  The extra distance added to the sum of the radius needed
+     * before two nodes can be considered to not be colliding.
+     * @param twinThreshold A scaling factor for the collision distance within 
+     * which the two noes are considered to be "twins". That is the distance
+     * between them is so insignificant that we consider them in the same spot.
+     * 
+     * @return  A set of vertex ideas for verticies  that are twins with the subject
+     */
     public Set<Integer> getTwins(final int subject, final double padding, final double twinThreshold) {
         final List<Integer> possibles = new ArrayList<>();
         getPossibleColliders(possibles, subject);
@@ -247,26 +263,20 @@ class QuadTree {
     }
     
     /**
-     * Check the entire graph for collisions. Return the number of verticies
-     * checked before finding a collision.
-     * Returns 0 if no collision is found.
+     * Check the entire graph for collisions. 
      *
-     * @param subject The vertex to check for collisions.
-     * @param padding The minimum distance between the vertex's edge and the edges
+     * @param subject  The vertex to check for collisions.
+     * @param padding  The minimum distance between the vertex's edge and the edges
      * of each neighbor.
-     * @return  the number of verticies checked before finding a collison
-     *          Note: The number of verticies without collisions is >= this.
+     * @return  boolean indicating whether the graph contains colliding verticies
      */
-    public int findCollision(final float padding){
-        int verticiesChecked = 1;
+    public boolean hasCollision(final float padding){
         for (int position = 0; position < wg.getVertexCount(); position++) {
             if(nodeCollides(wg.getVertex(position), padding)) {
-                return verticiesChecked;
-            } else {
-                verticiesChecked += 1;
-            }      
+                return true;
+            }
         }
-        return 0;
+        return false;
     }
 
 }

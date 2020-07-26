@@ -133,20 +133,19 @@ public class UncollideArrangement implements Arranger {
             }
             qt = new QuadTree(wg);
         }
+
+        interaction.setBusy("Expanding graph until there are no more colllisions", true);
         
-        int verticiesBeforeCollision = qt.findCollision(minPadding);
-        
-        for (int i = 0; i < iter && verticiesBeforeCollision>0; i++) {
-            if (interaction != null) {
-                final String msg = String.format("2D step %3d; pad %f; minimum uncollided verticies %6d of %6d", i, minPadding, verticiesBeforeCollision, wg.getVertexCount());
-                interaction.setProgress(verticiesBeforeCollision, wg.getVertexCount(), msg, true);
-            }
+        for (int i = 0; i < iter && qt.hasCollision(minPadding); i++) {
+//            if (interaction != null) {
+//                interaction.
+//                final String msg = String.format("2D step %3d of maximum %3d; pad %f", i, iter,minPadding);
+//                interaction.setProgress(verticiesBeforeCollision, wg.getVertexCount(), msg, true);
+//            }
             
             PluginExecution.withPlugin(ArrangementPluginRegistry.EXPAND_GRAPH).executeNow(wg);
 
             qt = new QuadTree(wg);
-            
-            verticiesBeforeCollision = qt.findCollision(minPadding);
 
             if (Thread.interrupted()) {
                 throw new InterruptedException();
