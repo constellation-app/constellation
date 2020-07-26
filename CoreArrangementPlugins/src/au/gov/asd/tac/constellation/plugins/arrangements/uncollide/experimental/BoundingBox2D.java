@@ -16,10 +16,8 @@
 package au.gov.asd.tac.constellation.plugins.arrangements.uncollide.experimental;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
+import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import java.util.Objects;
 
 /**
  * This class is designed to provide a bounding box for a graph.
@@ -47,7 +45,7 @@ class BoundingBox2D {
      * @param wg  the graph
      * @return  instance of class BoundingBox2D based on input graph
      */
-    BoundingBox2D(final GraphWriteMethods wg) {
+    BoundingBox2D(final GraphReadMethods wg) {
         final int xId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
         final int yId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
         final int rId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.NODE_RADIUS.getName());

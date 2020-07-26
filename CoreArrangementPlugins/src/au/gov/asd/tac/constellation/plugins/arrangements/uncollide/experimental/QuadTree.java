@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.plugins.arrangements.uncollide.experimental;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ class QuadTree {
     private final int XID; 
     private final int YID;
     private final int RID;
-    private final GraphWriteMethods wg;
+    private final GraphReadMethods wg;
 
     private final int level;
     private final BoundingBox2D box;
@@ -58,7 +59,7 @@ class QuadTree {
      * 
      * @param graph  The graph the QuadTree should be based on
      */
-    QuadTree(final GraphWriteMethods graph) {
+    QuadTree(final GraphReadMethods graph) {
         this.level = 0;
         this.box = new BoundingBox2D(graph);
         this.objects = new ArrayList<>();
@@ -253,7 +254,8 @@ class QuadTree {
      * @param subject The vertex to check for collisions.
      * @param padding The minimum distance between the vertex's edge and the edges
      * of each neighbor.
-     * @return the number of collisions.
+     * @return  the number of verticies checked before finding a collison
+     *          Note: The number of verticies without collisions is >= this.
      */
     public int findCollision(final float padding){
         int verticiesChecked = 1;
@@ -267,8 +269,4 @@ class QuadTree {
         return 0;
     }
 
-    @Override
-    public String toString() {
-        return String.format("[QTree level=%d size=%d %s]", level, objects.size(), box);
-    }
 }
