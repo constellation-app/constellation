@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
@@ -34,6 +35,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -74,6 +76,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
     private final AnalyticViewPane analyticViewPane;
     private final AnalyticController analyticController;
     private boolean suppressed = false;
+    private String currentGraphId = StringUtils.EMPTY;
 
     public AnalyticViewTopComponent() {
         super();
@@ -170,6 +173,9 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
         if (!needsUpdate()) {
             return;
         }
+        if (graph != null) {
+            currentGraphId = graph.getId();
+        }
         if (analyticViewPane != null) {
             analyticViewPane.setIsRunnable(graph != null);
             analyticViewPane.reset();
@@ -185,6 +191,9 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
     @Override
     protected void handleGraphOpened(final Graph graph) {
         if (needsUpdate()) {
+            if (graph != null) {
+                currentGraphId = graph.getId();
+            }
             analyticViewPane.getConfigurationPane().updateState(false);
         }
     }
@@ -192,6 +201,10 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
     @Override
     protected void handleComponentOpened() {
         if (needsUpdate()) {
+            final Graph current = GraphManager.getDefault().getActiveGraph();
+            if (current != null) {
+                currentGraphId = current.getId();
+            }
             analyticViewPane.getConfigurationPane().updateState(false);
         }
     }
@@ -199,7 +212,10 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
     @Override
     protected void componentShowing() {
         super.componentShowing();
-        analyticViewPane.reset();
+        final Graph current = GraphManager.getDefault().getActiveGraph();
+        if (current != null && !current.getId().equals(currentGraphId)) {
+            analyticViewPane.reset();
+        }
         analyticViewPane.getConfigurationPane().updateState(false);
     }
 
