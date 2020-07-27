@@ -99,7 +99,7 @@ public class CVKVisualProcessor extends VisualProcessor {
     @Override
     protected final void destroyCanvas() {
         //TODO_TT: is this needed?
-        System.out.println("GLVisualProcessor.destroyCanvas called");        
+        System.out.println("CVKVisualProcessor.destroyCanvas called");        
 //        cvkCanvas.destroy();
     }
     
@@ -232,7 +232,8 @@ public class CVKVisualProcessor extends VisualProcessor {
     @Override
     protected void cleanup() {
         // TODO_TT:
-        //canvas.removeGLEventListener(renderer);
+        cvkRenderer.Destroy();
+        //cvkCanvas.removeGLEventListener(renderer);
     }
 
     private final class GLExportToImageOperation implements VisualOperation {

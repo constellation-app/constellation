@@ -118,6 +118,20 @@ public class CVKRenderer implements ComponentListener {
         }   
     }
     
+    
+    /**
+     * Called from the parent CVKVisualProcessor when the VisualManager is
+     * being destroyed.
+     */
+    public void Destroy() {
+        // TODO HYDRA: Not sure if this is the best method, can it cause a
+        // deadlock? Would it be better to have a shutdown flag and do in the
+        // update loop?
+        cvkDevice.WaitIdle();
+        renderables.forEach(el -> {el.Destroy();});
+    }
+    
+    
     /**
      * When a new renderable is added we need to:
      * - call the static initialiser (in case this is the first time an instance of that
