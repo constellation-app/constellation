@@ -30,7 +30,6 @@ import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkSucceeded;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKBuffer;
-import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKImage;
 import au.gov.asd.tac.constellation.visual.vulkan.shaders.CVKShaderPlaceHolder;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -44,6 +43,7 @@ import org.lwjgl.system.MemoryUtil;
 import static org.lwjgl.vulkan.VK10.VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_TRANSFER_DST_BIT;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COMPARE_OP_NEVER;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
@@ -53,12 +53,8 @@ import static org.lwjgl.vulkan.VK10.VK_ERROR_TOO_MANY_OBJECTS;
 import static org.lwjgl.vulkan.VK10.VK_FILTER_NEAREST;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32B32A32_SFLOAT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32B32A32_SINT;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_COLOR_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_TILING_LINEAR;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_SAMPLED_BIT;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_TRANSFER_DST_BIT;
 import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
@@ -104,11 +100,12 @@ public class CVKIconsRenderable extends CVKRenderable{
     private int vertexCount = 0;
     private CVKBuffer cvkVertexStagingBuffer = null;
     private CVKBuffer cvkXYZWStagingBuffer = null;
-    private long hXYZWSampler = VK_NULL_HANDLE;
+    private CVKBuffer cvkXYZWTexelBuffer = null;
+//    private long hXYZWSampler = VK_NULL_HANDLE;
 
     
     private List<CVKBuffer> vertexBuffers = null;    
-    private CVKImage xyzwTexture = null;
+    //private CVKImage xyzwTexture = null;
     private boolean recreateIcons = false;
     private ReentrantLock vertexLock = new ReentrantLock();
     private CVKSwapChain cvkSwapChain = null;
@@ -529,8 +526,8 @@ public class CVKIconsRenderable extends CVKRenderable{
     
     private int CreateXYZWTexture() {
         CVKAssert(cvkSwapChain != null);
-        
-        CVKAssert(xyzwTexture == null);
+        CVKAssert(cvkXYZWTexelBuffer == null);
+//        CVKAssert(xyzwTexture == null);
         VerifyInRenderThread();        
         int ret = VK_SUCCESS;
         
@@ -539,28 +536,37 @@ public class CVKIconsRenderable extends CVKRenderable{
         // limited to 16KB, possibly smaller on some devices.  A 1D texture will likely
         // have a similar size restriction per layer but as we can have many layers we
         // should be able to fit all the points we need.        
-        final int numberOfTexels = vertexCount * 2; //alternate positions
-        final int maxNumberOfTexels = cvkDevice.GetMax1DImageWidth() * cvkDevice.GetMaxImageLayers();
+        final long numberOfTexels = vertexCount * 2; //alternate positions
+        final long maxNumberOfTexels = cvkDevice.GetMaxTexelBufferElements();//cvkDevice.GetMax1DImageWidth() * cvkDevice.GetMaxImageLayers();
         
-        if (numberOfTexels > maxNumberOfTexels) {
+        // Physical device limits can return a max texel buffer elements of -1 which 
+        // we can only assume means there is no discrete limit (haven't been able to
+        // find clarification in the spec).
+        if ((maxNumberOfTexels > 0) && (numberOfTexels > maxNumberOfTexels)) {
             CVKLOGGER.severe(String.format("CVKIconsRenderable.CreateXYZWTexture cannot allocate %d vertex points, maxium this device supports is %d", numberOfTexels, maxNumberOfTexels));
             return VK_ERROR_TOO_MANY_OBJECTS;
         }
         
-        final int width = Math.min(numberOfTexels, cvkDevice.GetMax1DImageWidth());
-        final int numberOfLayers = (numberOfTexels/cvkDevice.GetMax1DImageWidth()) + 1;
-        CVKAssert(width <= cvkDevice.GetMax1DImageWidth());
-        CVKAssert(numberOfLayers <= cvkDevice.GetMaxImageLayers());
-                
-        xyzwTexture = CVKImage.Create(cvkDevice,
-                                      width,
-                                      1,
-                                      numberOfLayers,
-                                      VK_FORMAT_R32G32B32A32_SFLOAT,
-                                      VK_IMAGE_TILING_LINEAR,
-                                      VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
-                                      VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-                                      VK_IMAGE_ASPECT_COLOR_BIT);
+        cvkXYZWTexelBuffer = CVKBuffer.Create(cvkDevice, 
+                                              cvkXYZWStagingBuffer.GetBufferSize(), 
+                                              VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+                                              VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+        cvkXYZWStagingBuffer.DEBUGNAME = "CVKIconsRenderable.TaskCreateIcons cvkXYZWStagingBuffer";        
+        
+//        final int width = Math.min(numberOfTexels, cvkDevice.GetMax1DImageWidth());
+//        final int numberOfLayers = (numberOfTexels/cvkDevice.GetMax1DImageWidth()) + 1;
+//        CVKAssert(width <= cvkDevice.GetMax1DImageWidth());
+//        CVKAssert(numberOfLayers <= cvkDevice.GetMaxImageLayers());
+//                
+//        xyzwTexture = CVKImage.Create(cvkDevice,
+//                                      width,
+//                                      1,
+//                                      numberOfLayers,
+//                                      VK_FORMAT_R32G32B32A32_SFLOAT,
+//                                      VK_IMAGE_TILING_LINEAR,
+//                                      VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
+//                                      VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+//                                      VK_IMAGE_ASPECT_COLOR_BIT);
         
         ret = UpdateXYZWTexture();
         if (VkFailed(ret)) { return ret; }
@@ -568,30 +574,30 @@ public class CVKIconsRenderable extends CVKRenderable{
         // Create a sampler to match the image.  Note the sampler allows us to sample
         // an image but isn't tied to a specific image, note the lack of image or 
         // imageview parameters below.
-        try(MemoryStack stack = stackPush()) {
-            VkSamplerCreateInfo vkSamplerCreateInfo = VkSamplerCreateInfo.callocStack(stack);                        
-            vkSamplerCreateInfo.sType(VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO);
-            vkSamplerCreateInfo.maxAnisotropy(1.0f);
-            vkSamplerCreateInfo.magFilter(VK_FILTER_NEAREST);
-            vkSamplerCreateInfo.minFilter(VK_FILTER_NEAREST);
-            vkSamplerCreateInfo.mipmapMode(VK_SAMPLER_MIPMAP_MODE_NEAREST);
-            vkSamplerCreateInfo.addressModeU(VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE);
-            vkSamplerCreateInfo.addressModeV(VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE);
-            vkSamplerCreateInfo.addressModeW(VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE);
-            vkSamplerCreateInfo.mipLodBias(0.0f);
-            vkSamplerCreateInfo.anisotropyEnable(false);
-            vkSamplerCreateInfo.maxAnisotropy(0);
-            vkSamplerCreateInfo.compareOp(VK_COMPARE_OP_NEVER);
-            vkSamplerCreateInfo.minLod(0.0f);
-            vkSamplerCreateInfo.maxLod(0.0f);
-            vkSamplerCreateInfo.borderColor(VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK);
-            
-            LongBuffer pTextureSampler = stack.mallocLong(1);
-            ret = vkCreateSampler(cvkDevice.GetDevice(), vkSamplerCreateInfo, null, pTextureSampler);
-            if (VkFailed(ret)) { return ret; }
-            hXYZWSampler = pTextureSampler.get(0);
-            CVKAssert(hXYZWSampler != VK_NULL_HANDLE);
-        }
+//        try(MemoryStack stack = stackPush()) {
+//            VkSamplerCreateInfo vkSamplerCreateInfo = VkSamplerCreateInfo.callocStack(stack);                        
+//            vkSamplerCreateInfo.sType(VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO);
+//            vkSamplerCreateInfo.maxAnisotropy(1.0f);
+//            vkSamplerCreateInfo.magFilter(VK_FILTER_NEAREST);
+//            vkSamplerCreateInfo.minFilter(VK_FILTER_NEAREST);
+//            vkSamplerCreateInfo.mipmapMode(VK_SAMPLER_MIPMAP_MODE_NEAREST);
+//            vkSamplerCreateInfo.addressModeU(VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE);
+//            vkSamplerCreateInfo.addressModeV(VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE);
+//            vkSamplerCreateInfo.addressModeW(VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE);
+//            vkSamplerCreateInfo.mipLodBias(0.0f);
+//            vkSamplerCreateInfo.anisotropyEnable(false);
+//            vkSamplerCreateInfo.maxAnisotropy(0);
+//            vkSamplerCreateInfo.compareOp(VK_COMPARE_OP_NEVER);
+//            vkSamplerCreateInfo.minLod(0.0f);
+//            vkSamplerCreateInfo.maxLod(0.0f);
+//            vkSamplerCreateInfo.borderColor(VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK);
+//            
+//            LongBuffer pTextureSampler = stack.mallocLong(1);
+//            ret = vkCreateSampler(cvkDevice.GetDevice(), vkSamplerCreateInfo, null, pTextureSampler);
+//            if (VkFailed(ret)) { return ret; }
+//            hXYZWSampler = pTextureSampler.get(0);
+//            CVKAssert(hXYZWSampler != VK_NULL_HANDLE);
+//        }
         
         return ret;
     }
@@ -599,13 +605,15 @@ public class CVKIconsRenderable extends CVKRenderable{
     private int UpdateXYZWTexture() {
         int ret;
         
+        ret = cvkXYZWTexelBuffer.CopyFrom(cvkXYZWStagingBuffer);
+        
         // Stage into texture
-        ret = xyzwTexture.Transition(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-        if (VkFailed(ret)) { return ret; }
-        ret = xyzwTexture.CopyFrom(cvkXYZWStagingBuffer);
-        if (VkFailed(ret)) { return ret; }
-        ret = xyzwTexture.Transition(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-        if (VkFailed(ret)) { return ret; }
+//        ret = xyzwTexture.Transition(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+//        if (VkFailed(ret)) { return ret; }
+//        ret = xyzwTexture.CopyFrom(cvkXYZWStagingBuffer);
+//        if (VkFailed(ret)) { return ret; }
+//        ret = xyzwTexture.Transition(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+//        if (VkFailed(ret)) { return ret; }
         
         // Release staging buffer
         cvkXYZWStagingBuffer.Destroy();
@@ -623,10 +631,14 @@ public class CVKIconsRenderable extends CVKRenderable{
     }
     
     private void DestroyXYZWTexture() {
-        if (xyzwTexture != null) {
-            xyzwTexture.Destroy();
-            xyzwTexture = null;
-        }
+//        if (xyzwTexture != null) {
+//            xyzwTexture.Destroy();
+//            xyzwTexture = null;
+//        }
+        if (cvkXYZWTexelBuffer != null) {
+            cvkXYZWTexelBuffer.Destroy();
+            cvkXYZWTexelBuffer = null;
+        }        
     }
     
     @Override

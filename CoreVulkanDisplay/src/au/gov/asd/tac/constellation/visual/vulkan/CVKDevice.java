@@ -87,8 +87,9 @@ public class CVKDevice {
     private long hCommandPoolHandle = VK_NULL_HANDLE; 
     private int queueFamilyIndex = -1; 
     private VkExtent2D vkCurrentSurfaceExtent = VkExtent2D.malloc().set(0, 0);
-    private int max1DImageWidth = 0;
-    private int maxImageLayers = 0;
+    private long max1DImageWidth = 0;
+    private long maxImageLayers = 0;
+    private long maxTexelBufferElements = 0;
     
     
     // Getters
@@ -102,8 +103,9 @@ public class CVKDevice {
     public CVKMissingEnums.VkFormat GetSurfaceFormat() { return selectedFormat; }    
     public CVKMissingEnums.VkColorSpaceKHR GetSurfaceColourSpace() { return selectedColourSpace; }    
     public CVKMissingEnums.VkPresentModeKHR GetPresentationMode() { return selectedPresentationMode; }
-    public int GetMax1DImageWidth() { return max1DImageWidth; }
-    public int GetMaxImageLayers() { return maxImageLayers; }
+    public long GetMax1DImageWidth() { return max1DImageWidth; }
+    public long GetMaxImageLayers() { return maxImageLayers; }
+    public long GetMaxTexelBufferElements() { return maxTexelBufferElements; }
     
     
     public CVKDevice(CVKInstance instance, long surfaceHandle) {
@@ -289,9 +291,10 @@ public class CVKDevice {
                     new Object[]{vkCurrentSurfaceExtent.width(),
                                  vkCurrentSurfaceExtent.height()});           
             
-            VkPhysicalDeviceLimits l = vkPhysicalDeviceProperties.limits();
-            max1DImageWidth = l.maxImageDimension1D();
-            maxImageLayers  = l.maxImageArrayLayers();
+            VkPhysicalDeviceLimits limits = vkPhysicalDeviceProperties.limits();
+            max1DImageWidth = limits.maxImageDimension1D();
+            maxImageLayers  = limits.maxImageArrayLayers();
+            maxTexelBufferElements = limits.maxTexelBufferElements();
             if (debugging) {                
                 CVKLOGGER.info(String.format("Physcial device properties:\n"
                         + "\tdeviceName: %s\n"
@@ -319,6 +322,7 @@ public class CVKDevice {
                         + "\t\t maxFramebufferLayers: %d\n"
                         + "\t\t maxColorAttachments: %d\n"
                         + "\t\t minMemoryMapAlignment: %d\n"
+                        + "\t\t maxTexelBufferElements: %d\n"
                         + "\t\t minTexelBufferOffsetAlignment: %d\n"
                         + "\t\t minUniformBufferOffsetAlignment: %d\n"
                         + "\t\t minStorageBufferOffsetAlignment: %d\n"
@@ -330,29 +334,30 @@ public class CVKDevice {
                         vkPhysicalDeviceProperties.driverVersion(),
                         vkPhysicalDeviceProperties.vendorID(),
                         vkPhysicalDeviceProperties.deviceID(),
-                        l.maxImageDimension1D(),
-                        l.maxImageDimension2D(),
-                        l.maxImageDimension3D(),
-                        l.maxImageDimensionCube(),
-                        l.maxImageArrayLayers(),
-                        l.maxPerStageDescriptorSamplers(),
-                        l.maxPerStageDescriptorUniformBuffers(),
-                        l.maxGeometryShaderInvocations(),
-                        l.maxGeometryInputComponents(),
-                        l.maxGeometryOutputComponents(),
-                        l.maxGeometryOutputVertices(),
-                        l.maxGeometryTotalOutputComponents(),
-                        l.maxViewportDimensions().get(0), l.maxViewportDimensions().get(1),
-                        l.viewportBoundsRange().get(0), l.viewportBoundsRange().get(1),
-                        l.maxFramebufferWidth(), l.maxFramebufferHeight(),
-                        l.maxFramebufferLayers(),
-                        l.maxColorAttachments(),
-                        l.minMemoryMapAlignment(),
-                        l.minTexelBufferOffsetAlignment(),
-                        l.minUniformBufferOffsetAlignment(),
-                        l.minStorageBufferOffsetAlignment(),
-                        l.pointSizeRange().get(0), l.pointSizeRange().get(1),
-                        l.lineWidthRange().get(0), l.lineWidthRange().get(1)                                                
+                        limits.maxImageDimension1D(),
+                        limits.maxImageDimension2D(),
+                        limits.maxImageDimension3D(),
+                        limits.maxImageDimensionCube(),
+                        limits.maxImageArrayLayers(),
+                        limits.maxPerStageDescriptorSamplers(),
+                        limits.maxPerStageDescriptorUniformBuffers(),
+                        limits.maxGeometryShaderInvocations(),
+                        limits.maxGeometryInputComponents(),
+                        limits.maxGeometryOutputComponents(),
+                        limits.maxGeometryOutputVertices(),
+                        limits.maxGeometryTotalOutputComponents(),
+                        limits.maxViewportDimensions().get(0), limits.maxViewportDimensions().get(1),
+                        limits.viewportBoundsRange().get(0), limits.viewportBoundsRange().get(1),
+                        limits.maxFramebufferWidth(), limits.maxFramebufferHeight(),
+                        limits.maxFramebufferLayers(),
+                        limits.maxColorAttachments(),
+                        limits.minMemoryMapAlignment(),
+                        limits.maxTexelBufferElements(),
+                        limits.minTexelBufferOffsetAlignment(),
+                        limits.minUniformBufferOffsetAlignment(),
+                        limits.minStorageBufferOffsetAlignment(),
+                        limits.pointSizeRange().get(0), limits.pointSizeRange().get(1),
+                        limits.lineWidthRange().get(0), limits.lineWidthRange().get(1)                                                
                         ));
             }            
                          
