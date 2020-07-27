@@ -243,7 +243,7 @@ class QuadTree {
      * 
      * @return  A set of vertex ideas for verticies  that are twins with the subject
      */
-    public Set<Integer> getTwins(final int subject, final double padding, final double twinThreshold) {
+    public Set<Integer> getTwins(final int subject, final float padding, final double twinThreshold) {
         final List<Integer> possibles = new ArrayList<>();
         getPossibleColliders(possibles, subject);
         Set<Integer> twins = new HashSet<>();
