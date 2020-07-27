@@ -33,7 +33,9 @@ import au.gov.asd.tac.constellation.plugins.arrangements.uncollide.d3.Orb3D;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 import org.openide.util.Exceptions;
 import org.python.modules.math;
 
@@ -41,7 +43,6 @@ public class UncollideArrangement implements Arranger {
 
     private final int dimensions;
     private final boolean setXyz2;
-    private float minPadding;
     private PluginInteraction interaction;
     private boolean maintainMean = false;
     private final double twinScaling;
@@ -51,15 +52,10 @@ public class UncollideArrangement implements Arranger {
         this.dimensions = dimensions;
         this.setXyz2 = setXyz2;
         this.twinScaling = math.pow(1.1, -maxExpansions);
-        minPadding = (float) 0;
     }
 
     public void setInteraction(final PluginInteraction interaction) {
         this.interaction = interaction;
-    }
-
-    public void setMinPadding(final float minPadding) {
-        this.minPadding = minPadding;
     }
 
     @Override
@@ -126,17 +122,17 @@ public class UncollideArrangement implements Arranger {
         int countIterations = 0;
         int numberNoTwins = 0;
         while (numberNoTwins < vertexCount) {
-            numberNoTwins = nudgeAllTwins(wg, qt);
             if (interaction != null) {
                 final String msg = String.format("Nodes with \"Twins\" %d of %d; iteration %d", numberNoTwins, vertexCount, ++countIterations);
                 interaction.setProgress(numberNoTwins, vertexCount, msg, true);
             }
+            numberNoTwins = nudgeAllTwins(wg, qt);
             qt = new QuadTree(wg);
         }
 
         interaction.setBusy("Expanding graph until there are no more colllisions", true);
         
-        for (int i = 0; i < iter && qt.hasCollision(minPadding); i++) {
+        for (int i = 0; i < iter && qt.hasCollision(); i++) {
 //            if (interaction != null) {
 //                interaction.
 //                final String msg = String.format("2D step %3d of maximum %3d; pad %f", i, iter,minPadding);
@@ -150,7 +146,8 @@ public class UncollideArrangement implements Arranger {
             if (Thread.interrupted()) {
                 throw new InterruptedException();
             }
-        }      
+        }  
+        interaction.setBusy("Expanding graph until there are no more colllisions", false);
     }
 
     private void uncollide3d(final Orb3D[] orbs, final int iter) throws InterruptedException {
@@ -191,16 +188,18 @@ public class UncollideArrangement implements Arranger {
     }
     
     private int nudgeAllTwins(GraphWriteMethods wg, QuadTree qt) {
-        Set<Integer> twins;
+        List<Integer> twins;
         int numberNoTwins = 0;
         for (int subject = 0; subject < wg.getVertexCount(); subject++) {
-            twins = qt.getTwins(subject, minPadding, twinScaling);
+            twins = qt.getTwins(subject, twinScaling);
             if (twins.isEmpty()) {
                 numberNoTwins++;
             } else {
-                for (int twin : twins) {
-                    nudgeTwins(wg, subject, twin, minPadding, twinScaling); 
-                }
+                nudgeTwins(wg, subject, twins.get(0), twinScaling); 
+//                for (int twin : twins) {
+//                    nudgeTwins(wg, subject, twin, twinScaling); 
+//                    qt = new QuadTree(wg);
+//                }
             }                  
         }
         return numberNoTwins;
@@ -213,7 +212,7 @@ public class UncollideArrangement implements Arranger {
      * @param padding The minimum distance between the vertex's edge and the edges
      * of each neighbor.
      */
-    private void nudgeTwins(final GraphWriteMethods wg, final int subject, final int twin, final float padding, final double twinThreshold) {
+    private void nudgeTwins(final GraphWriteMethods wg, final int subject, final int twin, final double twinThreshold) {
         final int xId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
         final int yId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
         final int rId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.NODE_RADIUS.getName());
@@ -221,38 +220,38 @@ public class UncollideArrangement implements Arranger {
         float deltaX = wg.getFloatValue(xId, subject) - wg.getFloatValue(xId, twin);
         float deltaY = wg.getFloatValue(yId, subject) - wg.getFloatValue(yId, twin);
         final double delta = math.sqrt(deltaX * deltaX + deltaY * deltaY);
-        final double r = math.sqrt(2*wg.getFloatValue(rId, subject)) + math.sqrt(2*wg.getFloatValue(rId, twin)) + padding;
+        final double r = math.sqrt(2*wg.getFloatValue(rId, subject)) + math.sqrt(2*wg.getFloatValue(rId, twin));
         final double criticalValue = r*twinThreshold; // The required distance for the nodes to be uncollided after maxExpansions number of expansions (each expansions scaled the graph by a factor of 1.1
 
-        // If they are in the same spot we will nudge both horizontally and vertically
+        // If they are in the same spot we will nudge in a random direction
         if (deltaX == 0 && deltaY == 0){
-            deltaX = deltaY = 1;
+            deltaX = ThreadLocalRandom.current().nextInt(-1, 2);
+            deltaY = ThreadLocalRandom.current().nextInt(-1, 2);
         }
 
         double nudge; // nudge needed to move them to just beyond the minimum distance so that are at least a padding apart.
         if (deltaX == 0 || deltaY == 0){
-            nudge = ((criticalValue-delta)+0.002); // Nudge needed if only moving along one axis
+            nudge = 0.5*((criticalValue-delta)+0.002); // Nudge needed if only moving along one axis
         } else {
-            nudge = ((criticalValue-delta)+0.002)/ math.sqrt(2); // Nudge needed if moving along both axis
+            nudge = 0.5*((criticalValue-delta)+0.002)/ math.sqrt(2); // Nudge needed if moving along both axis
         }
         // Nudge horizontally based on relative position.
         if (deltaX > 0){ 
-//                        wg.setFloatValue(XID, subject, wg.getFloatValue(XID, subject) + (float) nudge);
+            wg.setFloatValue(xId, subject, wg.getFloatValue(xId, subject) + (float) nudge);
             wg.setFloatValue(xId, twin, wg.getFloatValue(xId, twin) - (float) nudge);
         } else if (deltaX < 0) {
-//                        wg.setFloatValue(XID, subject, wg.getFloatValue(XID, subject) - (float) nudge);
+            wg.setFloatValue(xId, subject, wg.getFloatValue(xId, subject) - (float) nudge);
             wg.setFloatValue(xId, twin, wg.getFloatValue(xId, twin) + (float) nudge);  
         }
         // Nudge vertically based on relative position.
         if (deltaY > 0){
-//                        wg.setFloatValue(YID, subject, wg.getFloatValue(YID, subject) + (float) nudge);
+            wg.setFloatValue(yId, subject, wg.getFloatValue(yId, subject) + (float) nudge);
             wg.setFloatValue(yId, twin, wg.getFloatValue(yId, twin) - (float) nudge);
         } else if (deltaY < 0){
-//                        wg.setFloatValue(YID, subject, wg.getFloatValue(YID, subject) - (float) nudge);
+            wg.setFloatValue(yId, subject, wg.getFloatValue(yId, subject) - (float) nudge);
             wg.setFloatValue(yId, twin, wg.getFloatValue(yId, twin) + (float) nudge);  
         }
     }
-
 
     @Override
     public void setMaintainMean(boolean b) {

@@ -129,7 +129,7 @@ class QuadTree {
         } // Object can completely fit within the right half.
         else if (wg.getFloatValue(XID, vxId) - wg.getFloatValue(RID, vxId) > box.midX) {
             if (topHalf) {
-                index = TOP_R; // fints in top right quadrant
+                index = TOP_R; // fits in top right quadrant
             } else if (bottomHalf) {
                 index = BOT_R; // fits in bottom right quadrant
             }
@@ -206,7 +206,7 @@ class QuadTree {
      * of each neighbor.
      * @return the number of collisions.
      */
-    private boolean nodeCollides(final int subject, final float padding) {
+    private boolean nodeCollides(final int subject) {
         final List<Integer> possibles = new ArrayList<>();
         getPossibleColliders(possibles, subject);
 
@@ -218,7 +218,7 @@ class QuadTree {
                 float DeltaX = wg.getFloatValue(XID, subject) - wg.getFloatValue(XID, possible);
                 float DeltaY = wg.getFloatValue(YID, subject) - wg.getFloatValue(YID, possible);
                 final double l = DeltaX * DeltaX + DeltaY * DeltaY;
-                final double r = math.sqrt(2*wg.getFloatValue(RID, possible)) + math.sqrt(2*wg.getFloatValue(RID, subject)) + padding;
+                final double r = math.sqrt(2*wg.getFloatValue(RID, possible)) + math.sqrt(2*wg.getFloatValue(RID, subject));
                 if (l < r*r) {
                     return true;
                 }
@@ -235,24 +235,22 @@ class QuadTree {
      * The average radius is the average of the subject verticies radius and the
      * potential twins radius.
      * @param subject  The id of the vertex you wish to check for twins.
-     * @param padding  The extra distance added to the sum of the radius needed
-     * before two nodes can be considered to not be colliding.
      * @param twinThreshold A scaling factor for the collision distance within 
      * which the two noes are considered to be "twins". That is the distance
      * between them is so insignificant that we consider them in the same spot.
      * 
      * @return  A set of vertex ideas for verticies  that are twins with the subject
      */
-    public Set<Integer> getTwins(final int subject, final float padding, final double twinThreshold) {
+    public List<Integer> getTwins(final int subject, final double twinThreshold) {
         final List<Integer> possibles = new ArrayList<>();
         getPossibleColliders(possibles, subject);
-        Set<Integer> twins = new HashSet<>();
+        List<Integer> twins = new ArrayList<>();
         for (final int possible : possibles) {
             if (subject != possible) {
                 float deltaX = wg.getFloatValue(XID, subject) - wg.getFloatValue(XID, possible);
                 float deltaY = wg.getFloatValue(YID, subject) - wg.getFloatValue(YID, possible);
                 final double delta = math.sqrt(deltaX * deltaX + deltaY * deltaY);
-                final double r = math.sqrt(2*wg.getFloatValue(RID, possible)) + math.sqrt(2*wg.getFloatValue(RID, subject)) + padding;
+                final double r = math.sqrt(2*wg.getFloatValue(RID, possible)) + math.sqrt(2*wg.getFloatValue(RID, subject));
                 final double criticalValue = r*twinThreshold; // The required distance for the nodes to be uncollided
                 if ( delta < criticalValue ) {
                     twins.add(possible);
@@ -265,14 +263,11 @@ class QuadTree {
     /**
      * Check the entire graph for collisions. 
      *
-     * @param subject  The vertex to check for collisions.
-     * @param padding  The minimum distance between the vertex's edge and the edges
-     * of each neighbor.
      * @return  boolean indicating whether the graph contains colliding verticies
      */
-    public boolean hasCollision(final float padding){
+    public boolean hasCollision(){
         for (int position = 0; position < wg.getVertexCount(); position++) {
-            if(nodeCollides(wg.getVertex(position), padding)) {
+            if(nodeCollides(wg.getVertex(position))) {
                 return true;
             }
         }

@@ -5,12 +5,10 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.uncollide.experimental;
 
-import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -101,17 +99,16 @@ public class QuadTreeNGTest {
     @Test
     public void testGetTwins() {
         System.out.println("getTwins");
-        float padding = 1;
         double twinThreshold = 0.5;
         
-        Set<Integer> expResult = new HashSet<>();
+        List<Integer> expResult = new ArrayList<>();
         
-        Set<Integer> noCollisionResult = noCollisionsQT.getTwins(noCollisionSubject, padding, twinThreshold);
+        List<Integer> noCollisionResult = noCollisionsQT.getTwins(noCollisionSubject, twinThreshold);
         assertEquals(noCollisionResult, expResult); // Check empty set is returned if there are no collisions.
         
         expResult.add(twin1);
         expResult.add(twin2);
-        Set<Integer> result = twoTwinsQT.getTwins(twoTwinsSubject, padding, twinThreshold);
+        List<Integer> result = twoTwinsQT.getTwins(twoTwinsSubject, twinThreshold);
         assertEquals(result, expResult);
     }
 
@@ -121,10 +118,9 @@ public class QuadTreeNGTest {
     @Test
     public void testHasCollision() {
         System.out.println("findCollision");
-        float padding = 1.0F;
 
-        assertEquals(noCollisionsQT.hasCollision(padding), false);
-        assertEquals(twoTwinsQT.hasCollision(padding), true);
+        assertEquals(noCollisionsQT.hasCollision(), false);
+        assertEquals(twoTwinsQT.hasCollision(), true);
     }
     
 }
