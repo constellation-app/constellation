@@ -95,9 +95,10 @@ To package Constellation in a zip bundle do the following:
 * In NetBeans, expand `Constellation` > `Important Files`
 * Right click on `Build Script` and run the `build-zip`
 * Navigate to the `dist` folder to get `constellation.zip` file
-* If you want to use a specific JRE then copy this to the same level as the 
-`bin` folder and call it `jre`. This is the default folder name Constellation 
-expects but you can change this from `etc\constellation.conf`.
+* If you want to use a specific JRE (e.g. `zulu11.37.19-ca-fx-jre11.0.6-win_x64`) 
+then copy this to the same level as the `bin` folder and call it `jre`. This is 
+the default folder name Constellation expects but you can change this from 
+`etc\constellation.conf`.
 
 Note that Constellation "Core" (which is this repository) is designed to be 
 domain agnostic and work standalone. The version of Constellation available for 
