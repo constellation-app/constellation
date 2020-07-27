@@ -44,6 +44,8 @@ import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.checkVKr
 import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKCommandBuffer;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_SHADER_COMPILATION;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_SHADER_MODULE;
 import java.nio.LongBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -146,9 +148,13 @@ public class CVKFPSRenderable extends CVKRenderable {
     private static final Matrix44f IDENTITY_44F = Matrix44f.identity();
     private static final Vector3f ZERO_3F = new Vector3f(0, 0, 0);
     
-    private static long hVertexShader = VK_NULL_HANDLE;
-    private static long hGeometryShader = VK_NULL_HANDLE;
-    private static long hFragmentShader = VK_NULL_HANDLE;
+    private long hVertexShader = VK_NULL_HANDLE;
+    private long hGeometryShader = VK_NULL_HANDLE;
+    private long hFragmentShader = VK_NULL_HANDLE;
+    private static ByteBuffer vsBytes = null;
+    private static ByteBuffer gsBytes = null;
+    private static ByteBuffer fsBytes = null;
+    
     private long hDescriptorLayout = VK_NULL_HANDLE;    
     
     private final Vector3f bottomRightCorner = new Vector3f();
@@ -325,41 +331,63 @@ public class CVKFPSRenderable extends CVKRenderable {
         int ret = VK_SUCCESS;
         
         try {
-            ByteBuffer vsBytes = LoadFileToDirectBuffer(CVKShaderPlaceHolder.class, "compiled/SimpleIcon.vs.spv");
-            if (vsBytes.capacity() == 0) {
-                throw new RuntimeException("Failed to load compiled/SimpleIcon.vs.spv");
+            if (vsBytes == null) {
+                vsBytes = LoadFileToDirectBuffer(CVKShaderPlaceHolder.class, "compiled/SimpleIcon.vs.spv");
+                if (vsBytes.capacity() == 0) {
+                    throw new RuntimeException("Failed to load compiled/SimpleIcon.vs.spv");
+                }
             }
-            ByteBuffer gsBytes = LoadFileToDirectBuffer(CVKShaderPlaceHolder.class, "compiled/SimpleIcon.gs.spv");
-            if (vsBytes.capacity() == 0) {
-                throw new RuntimeException("Failed to load compiled/SimpleIcon.gs.spv");
-            }            
-            ByteBuffer fsBytes = LoadFileToDirectBuffer(CVKShaderPlaceHolder.class, "compiled/SimpleIcon.fs.spv");
-            if (vsBytes.capacity() == 0) {
-                throw new RuntimeException("Failed to load compiled/SimpleIcon.fs.spv");
-            }            
             
-            hVertexShader = CVKShaderUtils.createShaderModule(vsBytes, cvkDevice.GetDevice());
-            if (hVertexShader == VK_NULL_HANDLE) {
-                throw new RuntimeException("Failed to create shader from SimpleIcon.vs.spv bytes");
-            }            
-            hGeometryShader = CVKShaderUtils.createShaderModule(gsBytes, cvkDevice.GetDevice());
-            if (hGeometryShader == VK_NULL_HANDLE) {
-                throw new RuntimeException("Failed to create shader from SimpleIcon.gs.spv bytes");
-            }             
-            hFragmentShader = CVKShaderUtils.createShaderModule(fsBytes, cvkDevice.GetDevice());            
-            if (hFragmentShader == VK_NULL_HANDLE) {
-                throw new RuntimeException("Failed to create shader from SimpleIcon.fs.spv bytes");
-            }      
+            if (gsBytes == null) {
+                gsBytes = LoadFileToDirectBuffer(CVKShaderPlaceHolder.class, "compiled/SimpleIcon.gs.spv");
+                if (gsBytes.capacity() == 0) {
+                    throw new RuntimeException("Failed to load compiled/SimpleIcon.gs.spv");
+                }
+            }
             
-            MemoryUtil.memFree(vsBytes);
-            MemoryUtil.memFree(gsBytes);
-            MemoryUtil.memFree(fsBytes);
+            if (fsBytes == null) {
+                fsBytes = LoadFileToDirectBuffer(CVKShaderPlaceHolder.class, "compiled/SimpleIcon.fs.spv");
+                if (fsBytes.capacity() == 0) {
+                    throw new RuntimeException("Failed to load compiled/SimpleIcon.fs.spv");
+                }
+            }
+         
         } catch (IOException e) {
-            //TODO_TT
+            CVKLOGGER.log(Level.SEVERE, "Failed to compile FPSRenderable shaders: {0}", e.toString());
+            ret = CVK_ERROR_SHADER_COMPILATION;
         }
         
         return ret;
-    }       
+    }
+    
+    
+    private int CreateShaderModules() {
+        int ret = VK_SUCCESS;
+        
+        try{           
+            hVertexShader = CVKShaderUtils.createShaderModule(vsBytes, cvkDevice.GetDevice());
+            if (hVertexShader == VK_NULL_HANDLE) {
+                throw new RuntimeException("Failed to create shader from PassThru.vs.spv bytes");
+            }            
+            hGeometryShader = CVKShaderUtils.createShaderModule(gsBytes, cvkDevice.GetDevice());
+            if (hGeometryShader == VK_NULL_HANDLE) {
+                throw new RuntimeException("Failed to create shader from PassThruLine.gs.spv bytes");
+            }             
+            hFragmentShader = CVKShaderUtils.createShaderModule(fsBytes, cvkDevice.GetDevice());            
+            if (hFragmentShader == VK_NULL_HANDLE) {
+                throw new RuntimeException("Failed to create shader from PassThru.fs.spv bytes");
+            }
+        } catch(Exception ex){
+            CVKLOGGER.log(Level.SEVERE, "Failed to create shader module FPSRenderable: {0}", ex.toString());
+            ret = CVK_ERROR_SHADER_MODULE;
+            return ret;
+        }
+        
+        CVKLOGGER.log(Level.INFO, "Shader modules created for FPSRenderable class");
+        return ret;
+    }
+    
+    
     private int CreateDescriptorLayout(CVKDevice cvkDevice) {
         int ret;
         
@@ -410,8 +438,9 @@ public class CVKFPSRenderable extends CVKRenderable {
         int ret = VK_SUCCESS;
         if (!staticInitialised) {
             LoadShaders(cvkDevice);
-            if (VkFailed(ret)) { return ret; }
-//            ret = CreateDescriptorLayout(cvkDevice);
+            if (VkFailed(ret)) { 
+                return ret; 
+            }
             staticInitialised = true;
         }
         return ret;
@@ -1118,8 +1147,27 @@ public class CVKFPSRenderable extends CVKRenderable {
         }        
     }
     
+    public void DestroyStaticResources() {
+        if (vsBytes != null) {
+            MemoryUtil.memFree(vsBytes);
+            vsBytes = null;
+        }       
+        
+        if (gsBytes != null) {
+            MemoryUtil.memFree(gsBytes);
+            gsBytes = null;
+        }
+
+        if (fsBytes != null) {
+            MemoryUtil.memFree(fsBytes);
+            fsBytes = null;
+        }
+        
+        staticInitialised = false;
+    }
+    
     @Override
-    public void Destroy() {
+    public void Destroy() {                   
         DestroyVertexBuffers();
         DestroyUniformBuffers();
         DestroyDescriptorSets();
@@ -1134,7 +1182,7 @@ public class CVKFPSRenderable extends CVKRenderable {
         CVKAssert(vertexUniformBuffers == null);
         CVKAssert(geometryUniformBuffers == null);
         CVKAssert(vertexBuffers == null);
-        CVKAssert(commandBuffers == null);      
+        CVKAssert(commandBuffers == null);
     }    
  
    
@@ -1274,19 +1322,30 @@ public class CVKFPSRenderable extends CVKRenderable {
     
     @Override
     public int Initialise(CVKDevice cvkDevice) {
+        // Check for double initialisation
+        CVKAssert(hVertexShader == VK_NULL_HANDLE);
+        CVKAssert(hDescriptorLayout == VK_NULL_HANDLE);
+        
+        int ret = VK_SUCCESS;
+        
         this.cvkDevice = cvkDevice;
         
-        if (hDescriptorLayout == VK_NULL_HANDLE) {
-            int ret = CreateDescriptorLayout(cvkDevice);
-            if (VkFailed(ret)) { return ret; }
+        ret = CreateShaderModules();
+        if (VkFailed(ret)) {
+            return ret;
         }
-        
+         
+        ret = CreateDescriptorLayout(cvkDevice);
+        if (VkFailed(ret)) { 
+            return ret; 
+        }
+         
         for (int digit = 0; digit < 10; ++digit) {
             // Returns the index of the icon, not a success code
             parent.GetTextureAtlas().AddIcon(Integer.toString(digit));
         }
         
-        return VK_SUCCESS;
+        return ret;
     }   
     
     @Override

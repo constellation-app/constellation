@@ -118,6 +118,18 @@ public class CVKRenderer implements ComponentListener {
         }   
     }
     
+    
+    /**
+     * Called from the parent CVKVisualProcessor when the VisualManager is
+     * being destroyed.
+     */
+    public void Destroy() {
+        // Wait for the device to be free before destroying its resources
+        cvkDevice.WaitIdle();
+        renderables.forEach(el -> {el.Destroy();});
+    }
+    
+    
     /**
      * When a new renderable is added we need to:
      * - call the static initialiser (in case this is the first time an instance of that

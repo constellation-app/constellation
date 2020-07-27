@@ -39,7 +39,6 @@ import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_R_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_SECONDARY;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_CULL_MODE_BACK_BIT;
-import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32B32_SFLOAT;
 import static org.lwjgl.vulkan.VK10.VK_LOGIC_OP_COPY;
@@ -100,6 +99,8 @@ import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkSuccee
 import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKCommandBuffer;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_SHADER_COMPILATION;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_SHADER_MODULE;
 import java.util.ArrayList;
 import java.util.List;
 import org.lwjgl.system.MemoryUtil;
@@ -121,9 +122,13 @@ public class CVKAxesRenderable extends CVKRenderable {
     private static boolean staticInitialised = false;
     
     // Compiled Shader modules
-    private static long hVertShaderModule = VK_NULL_HANDLE;
-    private static long hFragShaderModule = VK_NULL_HANDLE;
-    private static long hGeomShaderModule = VK_NULL_HANDLE;   
+    private long hVertexShaderModule = VK_NULL_HANDLE;
+    private long hFragmentShaderModule = VK_NULL_HANDLE;
+    private long hGeometryShaderModule = VK_NULL_HANDLE;
+    
+    private static SPIRV vertexShaderSPIRV = null;
+    private static SPIRV geometryShaderSPIRV = null;
+    private static SPIRV fragmentShaderSPIRV = null;
        
     // FROM AxesRenderable...
     private static final float LEN = 0.5f;
@@ -244,31 +249,64 @@ public class CVKAxesRenderable extends CVKRenderable {
     }     
     
     
-    private static int LoadShaders(CVKDevice cvkDevice) {
+    private static int LoadShaders(CVKDevice cvkDevice) {       
         int ret = VK_SUCCESS;
 
         try{
-            SPIRV vertShaderSPIRV = compileShaderFile(CVKShaderPlaceHolder.class, "PassThru.vs", VERTEX_SHADER);
-            SPIRV geomShaderSPIRV = compileShaderFile(CVKShaderPlaceHolder.class, "PassThruLine.gs", GEOMETRY_SHADER);
-            SPIRV fragShaderSPIRV = compileShaderFile(CVKShaderPlaceHolder.class, "PassThru.fs", FRAGMENT_SHADER);
+            if (vertexShaderSPIRV == null) {
+                vertexShaderSPIRV = compileShaderFile(CVKShaderPlaceHolder.class, "PassThru.vs", VERTEX_SHADER);
+            }
             
-            hVertShaderModule = CVKShaderUtils.createShaderModule(vertShaderSPIRV.bytecode(), cvkDevice.GetDevice());
-            hGeomShaderModule = CVKShaderUtils.createShaderModule(geomShaderSPIRV.bytecode(), cvkDevice.GetDevice());
-            hFragShaderModule = CVKShaderUtils.createShaderModule(fragShaderSPIRV.bytecode(), cvkDevice.GetDevice());
+            if (geometryShaderSPIRV == null) {
+                geometryShaderSPIRV = compileShaderFile(CVKShaderPlaceHolder.class, "PassThruLine.gs", GEOMETRY_SHADER);
+            }
+            
+            if (fragmentShaderSPIRV == null) {
+                fragmentShaderSPIRV = compileShaderFile(CVKShaderPlaceHolder.class, "PassThru.fs", FRAGMENT_SHADER);
+            }
         } catch(Exception ex){
-            CVKLOGGER.log(Level.WARNING, "Failed to compile AxesRenderable shaders: {0}", ex.toString());
+            CVKLOGGER.log(Level.SEVERE, "Failed to compile AxesRenderable shaders: {0}", ex.toString());
+            ret = CVK_ERROR_SHADER_COMPILATION;
+            return ret;
         }
         
         CVKLOGGER.log(Level.INFO, "Static shaders loaded for AxesRenderable class");
         return ret;
-    } 
-    private int CreateDescriptorLayout(CVKDevice cvkDevice) {
+    }
+    
+    
+    private int CreateShaderModules() {
+        int ret = VK_SUCCESS;
+        
+        try{           
+            hVertexShaderModule = CVKShaderUtils.createShaderModule(vertexShaderSPIRV.bytecode(), cvkDevice.GetDevice());
+            if (hVertexShaderModule == VK_NULL_HANDLE) {
+                throw new RuntimeException("Failed to create shader from PassThru.vs.spv bytes");
+            }
+            hGeometryShaderModule = CVKShaderUtils.createShaderModule(geometryShaderSPIRV.bytecode(), cvkDevice.GetDevice());
+            if (hGeometryShaderModule == VK_NULL_HANDLE) {
+                throw new RuntimeException("Failed to create shader from PassThruLine.gs.spv bytes");
+            }
+            hFragmentShaderModule = CVKShaderUtils.createShaderModule(fragmentShaderSPIRV.bytecode(), cvkDevice.GetDevice());
+            if (hFragmentShaderModule == VK_NULL_HANDLE) {
+                throw new RuntimeException("Failed to create shader from PassThru.gs.spv bytes");
+            }
+        } catch(Exception ex){
+            CVKLOGGER.log(Level.SEVERE, "Failed to create shader module AxesRenderable: {0}", ex.toString());
+            ret = CVK_ERROR_SHADER_MODULE;
+            return ret;
+        }
+        
+        CVKLOGGER.log(Level.INFO, "Shader modules loaded for AxesRenderable class");
+        return ret;
+    }
+    
+    
+    private int CreateDescriptorLayout() {
         int ret = VK_SUCCESS;
         
         try(MemoryStack stack = stackPush()) {
-            /*
-                Vertex shader needs a uniform buffer.
-            */
+            // Vertex shader needs a uniform buffer.
             VkDescriptorSetLayoutBinding.Buffer bindings = VkDescriptorSetLayoutBinding.callocStack(1, stack);
 
             VkDescriptorSetLayoutBinding vertexUBOLayout = bindings.get(0);
@@ -294,8 +332,9 @@ public class CVKAxesRenderable extends CVKRenderable {
         int ret = VK_SUCCESS;
         if (!staticInitialised) {
             LoadShaders(cvkDevice);
-            if (VkFailed(ret)) { return ret; }
-            //ret = CreateDescriptorLayout(cvkDevice);
+            if (VkFailed(ret)) { 
+                return ret; 
+            }
             staticInitialised = true;
         }
         return ret;
@@ -304,8 +343,28 @@ public class CVKAxesRenderable extends CVKRenderable {
     
     public CVKAxesRenderable(CVKVisualProcessor visualProcessor) {
         parent = visualProcessor;
-      
     }
+    
+    
+    public void DestroyStaticResources() {
+        if (vertexShaderSPIRV != null) {
+            vertexShaderSPIRV.free();
+            vertexShaderSPIRV = null;
+        }
+        
+        if (geometryShaderSPIRV != null) {
+            geometryShaderSPIRV.free();
+            geometryShaderSPIRV = null;
+        }
+        
+        if (fragmentShaderSPIRV != null) {
+            fragmentShaderSPIRV.free();
+            fragmentShaderSPIRV = null;
+        }
+        
+        staticInitialised = false;
+    }
+    
     
     @Override
     public void Destroy() {
@@ -696,9 +755,9 @@ public class CVKAxesRenderable extends CVKRenderable {
         CVKAssert(cvkSwapChain.GetSwapChainHandle()        != VK_NULL_HANDLE);
         CVKAssert(cvkSwapChain.GetRenderPassHandle()       != VK_NULL_HANDLE);
         CVKAssert(cvkSwapChain.GetDescriptorPoolHandle()   != VK_NULL_HANDLE);
-        CVKAssert(hVertShaderModule != VK_NULL_HANDLE);
-        CVKAssert(hGeomShaderModule != VK_NULL_HANDLE);
-        CVKAssert(hFragShaderModule != VK_NULL_HANDLE);        
+        CVKAssert(hVertexShaderModule != VK_NULL_HANDLE);
+        CVKAssert(hGeometryShaderModule != VK_NULL_HANDLE);
+        CVKAssert(hFragmentShaderModule != VK_NULL_HANDLE);        
         CVKAssert(cvkSwapChain.GetWidth() > 0);
         CVKAssert(cvkSwapChain.GetHeight() > 0);
                
@@ -718,19 +777,19 @@ public class CVKAxesRenderable extends CVKRenderable {
                 VkPipelineShaderStageCreateInfo vertShaderStageInfo = shaderStages.get(0);
                 vertShaderStageInfo.sType(VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO);
                 vertShaderStageInfo.stage(VK_SHADER_STAGE_VERTEX_BIT);
-                vertShaderStageInfo.module(hVertShaderModule);
+                vertShaderStageInfo.module(hVertexShaderModule);
                 vertShaderStageInfo.pName(entryPoint);
                 
                 VkPipelineShaderStageCreateInfo geomShaderStageInfo = shaderStages.get(1);
                 geomShaderStageInfo.sType(VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO);
                 geomShaderStageInfo.stage(VK_SHADER_STAGE_GEOMETRY_BIT);
-                geomShaderStageInfo.module(hGeomShaderModule);
+                geomShaderStageInfo.module(hGeometryShaderModule);
                 geomShaderStageInfo.pName(entryPoint);   
 
                 VkPipelineShaderStageCreateInfo fragShaderStageInfo = shaderStages.get(2);
                 fragShaderStageInfo.sType(VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO);
                 fragShaderStageInfo.stage(VK_SHADER_STAGE_FRAGMENT_BIT);
-                fragShaderStageInfo.module(hFragShaderModule);
+                fragShaderStageInfo.module(hFragmentShaderModule);
                 fragShaderStageInfo.pName(entryPoint);
 
                 // ===> VERTEX STAGE <===
@@ -957,6 +1016,7 @@ public class CVKAxesRenderable extends CVKRenderable {
             // different position for our FPS.  After updating the uniform buffers we
             // need to update the descriptor sets that bind the uniform buffers as well.
             DestroyPipeline();
+            DestroyPipelineLayouts();
             DestroyDescriptorSets();
             CVKAssert(pipelines == null);
             needsResize = true;
@@ -1092,14 +1152,26 @@ public class CVKAxesRenderable extends CVKRenderable {
     
     @Override
     public int Initialise(CVKDevice cvkDevice) {
+        // Check for double initialisation
+        CVKAssert(hDescriptorLayout == VK_NULL_HANDLE);
+        CVKAssert(hVertexShaderModule == VK_NULL_HANDLE);
+        
+        int ret = VK_SUCCESS;
+        
         this.cvkDevice = cvkDevice;
         
         // This only needs to be initialised once but can't be static as each graph will
         // have their own device and the layout must be bound to that.
-        if (hDescriptorLayout == VK_NULL_HANDLE) {
-            return CreateDescriptorLayout(cvkDevice);
+        ret = CreateDescriptorLayout();
+        if (VkFailed(ret)) {
+            return ret;
         }
         
+        ret = CreateShaderModules();
+        if (VkFailed(ret)) {
+            return ret;
+        }
+               
         return VK_SUCCESS;
     }
 

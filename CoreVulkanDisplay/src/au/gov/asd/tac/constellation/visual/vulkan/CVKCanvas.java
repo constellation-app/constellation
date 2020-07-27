@@ -17,11 +17,8 @@ import org.lwjgl.vulkan.awt.VKData;
 
 public class CVKCanvas extends AWTVKCanvas{
     private boolean parentAdded = false;
-    static int frameNo = 0;
+    int frameNo = 0;
     protected long handle = 0;
-    static float red = 0.0f;
-    static float green = 0.5f;
-    static float blue = 1.0f;
     
     protected final CVKRenderer vkRenderer;
     protected ArrayList<EventListener> eventListeners = new ArrayList<>();
@@ -32,6 +29,11 @@ public class CVKCanvas extends AWTVKCanvas{
         this.addComponentListener(vkRenderer);
     }
    
+
+    public void Destroy() {
+        this.removeComponentListener(vkRenderer);
+    }
+    
     
     public void InitSurface() {
         //super.paint(null);
