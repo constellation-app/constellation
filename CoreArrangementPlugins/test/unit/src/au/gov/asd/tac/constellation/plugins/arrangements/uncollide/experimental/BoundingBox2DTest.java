@@ -22,42 +22,37 @@ public class BoundingBox2DTest {
 
     @BeforeClass
     public static void generateGraph() {
-        int attrX, attrY, attrZ;
-        int vxId1, vxId2, vxId3, vxId4, vxId5;
-        int txId1, txId2, txId3;
-        int vAttrId, tAttrId;
-        
         baseGraph = new StoreGraph();
         
-        attrX = VisualConcept.VertexAttribute.X.ensure(baseGraph);
+        int attrX = VisualConcept.VertexAttribute.X.ensure(baseGraph);
         if (attrX == Graph.NOT_FOUND) {
             fail();
         }
 
-        attrY = VisualConcept.VertexAttribute.Y.ensure(baseGraph);
+        int attrY = VisualConcept.VertexAttribute.Y.ensure(baseGraph);
         if (attrY == Graph.NOT_FOUND) {
             fail();
         }
 
-        attrZ = VisualConcept.VertexAttribute.Z.ensure(baseGraph);
+        int attrZ = VisualConcept.VertexAttribute.Z.ensure(baseGraph);
         if (attrZ == Graph.NOT_FOUND) {
             fail();
         }
 
         // Top left
-        vxId1 = baseGraph.addVertex();
+        int vxId1 = baseGraph.addVertex();
         baseGraph.setFloatValue(attrX, vxId1, -1.0f);
         baseGraph.setFloatValue(attrY, vxId1, 1.0f);
         // Top right
-        vxId2 = baseGraph.addVertex();
+        int vxId2 = baseGraph.addVertex();
         baseGraph.setFloatValue(attrX, vxId2, 1.0f);
         baseGraph.setFloatValue(attrY, vxId2, 1.0f);
         // Bottom right
-        vxId3 = baseGraph.addVertex();
+        int vxId3 = baseGraph.addVertex();
         baseGraph.setFloatValue(attrX, vxId3, 1.0f);
         baseGraph.setFloatValue(attrY, vxId3, -1.0f);
         // Bottom left
-        vxId4 = baseGraph.addVertex();
+        int vxId4 = baseGraph.addVertex();
         baseGraph.setFloatValue(attrX, vxId4, -1.0f);
         baseGraph.setFloatValue(attrY, vxId4, -1.0f);
     }
