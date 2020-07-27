@@ -75,6 +75,9 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> {
         });
     }
 
+    // TODO: This view sometimes doesnt update itself when two graphs are active, and only one is closed
+    // It could be something to do with preparing the pane, and then loading the graphreport
+    // A possible race condition with the javafx run thread.
     // Below are actions that are called when graph is opened - can use these to reload notes when change graph occurs
     @Override
     protected void handleNewGraph(final Graph graph) {
@@ -88,6 +91,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> {
     protected void handleGraphOpened(final Graph graph) {
         if (needsUpdate() && graph != null) {
             preparePane();
+            notesViewPane.setGraphRecord(graph.getId());
         }
     }
 

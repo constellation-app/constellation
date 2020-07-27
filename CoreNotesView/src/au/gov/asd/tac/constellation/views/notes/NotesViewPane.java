@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.notes;
 
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReport;
+import au.gov.asd.tac.constellation.plugins.reporting.GraphReportManager;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.views.notes.state.NotesViewEntry;
 import java.time.LocalDateTime;
@@ -122,9 +123,11 @@ public class NotesViewPane extends BorderPane {
         return controller;
     }
 
-    void setGraphRecord(final String currentGraphId) {
-        this.currentGraphReport = new GraphReport(currentGraphId);
-        // update ui
+    public void setGraphRecord(final String currentGraphId) {
+        this.currentGraphReport = GraphReportManager.getGraphReport(currentGraphId);
+        if (currentGraphId != null && currentGraphReport != null) {
+            setReports(currentGraphReport.getPluginReports());
+        }
     }
 
     public List<NotesViewEntry> getNotes() {
@@ -162,7 +165,7 @@ public class NotesViewPane extends BorderPane {
             noteVBox.setPadding(NOTE_PADDING);
             notesEntries.add(new NotesViewEntry(isUserNote, timestamp, title, content));
             userNotesPane.getChildren().add(noteVBox);
-        // Auto generated note
+            // Auto generated note
         } else {
             final Label noteTitleLabel = new Label(title);
             final Label noteContentLabel = new Label(content);
