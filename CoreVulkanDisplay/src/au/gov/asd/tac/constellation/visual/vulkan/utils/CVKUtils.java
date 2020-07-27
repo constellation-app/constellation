@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.visual.vulkan;
+package au.gov.asd.tac.constellation.visual.vulkan.utils;
 
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.beans.Beans;
@@ -50,6 +50,12 @@ public class CVKUtils {
     // Constants
     public static final int UINT32_MAX = 0xFFFFFFFF;
     public static final long UINT64_MAX = 0xFFFFFFFFFFFFFFFFL;
+    
+    // Extra error codes that don't collide with VkResult
+    public static final int CVK_ERROR_INVALID_ARGS                              = 0xFFFF0000;
+    public static final int CVK_ERROR_IMAGE_TOO_SMALL_FOR_COPY                  = 0xFFFF0001;
+    public static final int CVK_ERROR_BUFFER_TOO_SMALL_FOR_COPY                 = 0xFFFF0002;
+    public static final int CVK_ERROR_INVALID_IMAGE                             = 0xFFFF0003;
     
     // Remove this once we are sure everything is working, but for now ensure all render ops happen in the render thread
     // TODO_TT: !!!THIS WILL ONLY WORK FOR A SINGLE GRAPH, MULTIPLE GRAPHS WILL TRIP THIS !!!
@@ -323,8 +329,9 @@ public class CVKUtils {
     
     public static void CVKAssert(boolean exprResult) {
         if (!exprResult) {
-            if (Beans.isDesignTime()) {
-                assert(exprResult);
+            // If run from Netbeans the system console is null
+            if (System.console() == null) {
+                throw new RuntimeException("CVKAssert fired");
             } else {
                 CVKLOGGER.warning("!!!!!!!!!!!!!!!Assertion failure!!!!!!!!!!!!!!!!!");
                 LogStackTrace(Level.WARNING);

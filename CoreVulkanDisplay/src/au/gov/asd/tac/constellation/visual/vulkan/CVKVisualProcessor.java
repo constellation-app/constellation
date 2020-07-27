@@ -29,8 +29,8 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualOperation;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor.VisualChangeProcessor;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKAssert;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkFailed;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKAxesRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKFPSRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKIconsRenderable;
@@ -102,6 +102,7 @@ public class CVKVisualProcessor extends VisualProcessor {
         System.out.println("GLVisualProcessor.destroyCanvas called");        
 //        cvkCanvas.destroy();
     }
+    
 
     /**
      * Tell this processor that it should draw the "Hit Test" visualisation as
@@ -315,9 +316,22 @@ public class CVKVisualProcessor extends VisualProcessor {
         }
     }
 
+    /**
+     * This exists so CVKRenderer can call it the wrapped function that would
+     * otherwise have private exposure to it.
+     */
     @Override
     protected void signalProcessorIdle() {
         super.signalProcessorIdle();
+    }
+    
+    /**
+     * This exists so CVKRenderer can call it the wrapped function that would
+     * otherwise have private exposure to it.
+     */    
+    @Override
+    protected void requestRedraw() {
+        super.requestRedraw();
     }
 
     @Override
@@ -420,7 +434,7 @@ public class CVKVisualProcessor extends VisualProcessor {
 //            skipRedraw = true;
 //        }
         taskQueue.drainTo(tasks);
-        tasks.forEach(task -> { task.run(cvkSwapChain, imageIndex); });      
+        tasks.forEach(task -> { task.run(imageIndex); });      
         return ret;
     }
     
@@ -728,62 +742,36 @@ public class CVKVisualProcessor extends VisualProcessor {
         
         // Scene knows about all renderable types so build the static descriptor layout
         // for each class.
-        assert(cvkDevice != null && cvkDevice.GetDevice() != null);
-        
-        // Initialise the shared atlas texture.  It extends renderable so it gets the call
-        // for updating shared resouces.  We could have a seperate render event listener but
-        // that seems like overkill for a single class.  For as long as it's a renderable it
-        // should be the first renderable so it gets updated before any of the objects that 
-        // depend on it.
-        cvkIconTextureAtlas = new CVKIconTextureAtlas(cvkDevice);
-        cvkRenderer.AddRenderable(cvkIconTextureAtlas);
+        CVKAssert(cvkDevice != null && cvkDevice.GetDevice() != null);
+              
         
         // Static as the shader and descriptor layout doesn't change per instance of renderable or over the course of the program
-        ret = CVKAxesRenderable.LoadShaders(cvkDevice);
+        ret = CVKAxesRenderable.StaticInitialise(cvkDevice);
         if (VkFailed(ret)) {
             return ret;
         }
-        ret = CVKFPSRenderable.LoadShaders(cvkDevice);      
+        ret = CVKFPSRenderable.StaticInitialise(cvkDevice);      
         if (VkFailed(ret)) {
             return ret;
         }   
-        ret = CVKIconsRenderable.LoadShaders(cvkDevice);      
+        ret = CVKIconsRenderable.StaticInitialise(cvkDevice);      
         if (VkFailed(ret)) {
             return ret;
         }           
-        ret = CVKAxesRenderable.CreateDescriptorLayout(cvkDevice);
-        if (VkFailed(ret)) {
-            return ret;
-        }        
-        ret = CVKFPSRenderable.CreateDescriptorLayout(cvkDevice);
-        if (VkFailed(ret)) {
-            return ret;
-        }        
-        ret = CVKIconsRenderable.CreateDescriptorLayout(cvkDevice);
-        if (VkFailed(ret)) {
-            return ret;
-        }           
+     
+        // Initialise the shared atlas texture.  It extends renderable so it gets the call
+        // for updating shared resouces.  We could have a seperate render event listener but
+        // that seems like overkill for a single class.  For as long as it's a renderable it
+        // should be before any of the renderables that use it so it gets updated before any 
+        // of the objects that depend on it.
+        cvkIconTextureAtlas = new CVKIconTextureAtlas(this);
+        cvkRenderer.AddRenderable(cvkIconTextureAtlas);      
         
-
         cvkAxes = new CVKAxesRenderable(this);
-        ret = cvkAxes.Init(cvkDevice);
-        if (VkFailed(ret)) {
-            return ret;
-        }  
         cvkRenderer.AddRenderable(cvkAxes);
-  
-        cvkFPS = new CVKFPSRenderable(this);
-        ret = cvkFPS.Init();
-        if (VkFailed(ret)) {
-            return ret;
-        }          
-        cvkRenderer.AddRenderable(cvkFPS);              
-        
-        cvkIcons = new CVKIconsRenderable(this);
-        ret = cvkIcons.Init();
-        if (VkFailed(ret)) {
-            return ret;
-        }          
+        cvkFPS = new CVKFPSRenderable(this);    
+        cvkRenderer.AddRenderable(cvkFPS);                      
+        cvkIcons = new CVKIconsRenderable(this);       
         cvkRenderer.AddRenderable(cvkIcons);   
         
         
@@ -992,7 +980,7 @@ public class CVKVisualProcessor extends VisualProcessor {
         // The renderables above will have requested the icons they need for their initial state, we
         // now need to generate the atlas texture and sampler before the renderables that rely on them
         // create their descriptors
-        ret = cvkIconTextureAtlas.Init();
+//        ret = cvkIconTextureAtlas.Init();
         
         return ret;
     }    

@@ -11,7 +11,7 @@
 makefile
 *.DS_Store
 *.lck
-
+*/genfiles.properties
 .v
 
 build

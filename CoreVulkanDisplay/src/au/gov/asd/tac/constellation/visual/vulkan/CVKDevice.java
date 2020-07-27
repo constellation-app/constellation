@@ -15,8 +15,9 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan;
 
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.debugging;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.*;
+import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKMissingEnums;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.debugging;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.*;
 import com.google.common.primitives.Ints;
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
@@ -31,6 +32,8 @@ import static org.lwjgl.vulkan.KHRSurface.vkGetPhysicalDeviceSurfacePresentModes
 import static org.lwjgl.vulkan.KHRSurface.vkGetPhysicalDeviceSurfaceSupportKHR;
 import static org.lwjgl.vulkan.KHRSwapchain.VK_KHR_SWAPCHAIN_EXTENSION_NAME;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32B32A32_SFLOAT;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
 import static org.lwjgl.vulkan.VK10.VK_QUEUE_GRAPHICS_BIT;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
@@ -48,12 +51,14 @@ import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceFeatures;
 import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceMemoryProperties;
 import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceProperties;
 import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceQueueFamilyProperties;
+import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceFormatProperties;
 import org.lwjgl.vulkan.VkCommandPoolCreateInfo;
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkDeviceCreateInfo;
 import org.lwjgl.vulkan.VkDeviceQueueCreateInfo;
 import org.lwjgl.vulkan.VkExtensionProperties;
 import org.lwjgl.vulkan.VkExtent2D;
+import org.lwjgl.vulkan.VkFormatProperties;
 import org.lwjgl.vulkan.VkPhysicalDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceFeatures;
 import org.lwjgl.vulkan.VkPhysicalDeviceLimits;
@@ -66,22 +71,24 @@ import org.lwjgl.vulkan.VkSurfaceFormatKHR;
 
 
 public class CVKDevice {
-    protected final CVKInstance cvkInstance;
-    protected final long hSurfaceHandle;
-    protected VkPhysicalDevice vkPhysicalDevice = null;
-    protected VkDevice vkDevice = null;
-    protected VkQueue vkQueue = null;
-    protected VkPhysicalDeviceProperties vkPhysicalDeviceProperties = null;
-    protected VkPhysicalDeviceFeatures vkPhysicalDeviceFeatures = null;    
-    protected VkSurfaceCapabilitiesKHR vkSurfaceCapabilities = null;
-    protected VkSurfaceFormatKHR.Buffer vkSurfaceFormats = null;
-    protected VkPhysicalDeviceMemoryProperties vkPhysicalDeviceMemoryProperties = null;
-    protected CVKMissingEnums.VkFormat selectedFormat = CVKMissingEnums.VkFormat.VK_FORMAT_NONE;
-    protected CVKMissingEnums.VkColorSpaceKHR selectedColourSpace = CVKMissingEnums.VkColorSpaceKHR.VK_COLOR_SPACE_NONE;
-    protected CVKMissingEnums.VkPresentModeKHR selectedPresentationMode = CVKMissingEnums.VkPresentModeKHR.VK_PRESENT_MODE_NONE;    
-    protected long hCommandPoolHandle = VK_NULL_HANDLE; 
-    protected int queueFamilyIndex = -1; 
-    protected VkExtent2D vkCurrentSurfaceExtent = VkExtent2D.malloc().set(0, 0);
+    private final CVKInstance cvkInstance;
+    private final long hSurfaceHandle;
+    private VkPhysicalDevice vkPhysicalDevice = null;
+    private VkDevice vkDevice = null;
+    private VkQueue vkQueue = null;
+    private VkPhysicalDeviceProperties vkPhysicalDeviceProperties = null;
+    private VkPhysicalDeviceFeatures vkPhysicalDeviceFeatures = null;    
+    private VkSurfaceCapabilitiesKHR vkSurfaceCapabilities = null;
+    private VkSurfaceFormatKHR.Buffer vkSurfaceFormats = null;
+    private VkPhysicalDeviceMemoryProperties vkPhysicalDeviceMemoryProperties = null;
+    private CVKMissingEnums.VkFormat selectedFormat = CVKMissingEnums.VkFormat.VK_FORMAT_NONE;
+    private CVKMissingEnums.VkColorSpaceKHR selectedColourSpace = CVKMissingEnums.VkColorSpaceKHR.VK_COLOR_SPACE_NONE;
+    private CVKMissingEnums.VkPresentModeKHR selectedPresentationMode = CVKMissingEnums.VkPresentModeKHR.VK_PRESENT_MODE_NONE;    
+    private long hCommandPoolHandle = VK_NULL_HANDLE; 
+    private int queueFamilyIndex = -1; 
+    private VkExtent2D vkCurrentSurfaceExtent = VkExtent2D.malloc().set(0, 0);
+    private int max1DImageWidth = 0;
+    private int maxImageLayers = 0;
     
     
     // Getters
@@ -95,6 +102,8 @@ public class CVKDevice {
     public CVKMissingEnums.VkFormat GetSurfaceFormat() { return selectedFormat; }    
     public CVKMissingEnums.VkColorSpaceKHR GetSurfaceColourSpace() { return selectedColourSpace; }    
     public CVKMissingEnums.VkPresentModeKHR GetPresentationMode() { return selectedPresentationMode; }
+    public int GetMax1DImageWidth() { return max1DImageWidth; }
+    public int GetMaxImageLayers() { return maxImageLayers; }
     
     
     public CVKDevice(CVKInstance instance, long surfaceHandle) {
@@ -103,7 +112,7 @@ public class CVKDevice {
     }
     
     
-    public int Init() {
+    public int Initialise() {
         int ret;
         
         StartLogSection("Initialising CVKDevice");
@@ -171,7 +180,8 @@ public class CVKDevice {
         
         // Get the number of physical devices
         IntBuffer pInt = stack.mallocInt(1);
-        checkVKret(vkEnumeratePhysicalDevices(cvkInstance.GetInstance(), pInt, null));
+        ret = vkEnumeratePhysicalDevices(cvkInstance.GetVkInstance(), pInt, null);
+        if (VkFailed(ret)) return ret;
         if (pInt.get(0) == 0) {
             throw new RuntimeException("Vulkan: no GPUs found");
         }
@@ -179,14 +189,14 @@ public class CVKDevice {
         // Get the physical devices
         int numDevices = pInt.get(0);
         PointerBuffer physicalDevices = stack.mallocPointer(numDevices);
-        ret = vkEnumeratePhysicalDevices(cvkInstance.GetInstance(), pInt, physicalDevices);
+        ret = vkEnumeratePhysicalDevices(cvkInstance.GetVkInstance(), pInt, physicalDevices);
         if (VkFailed(ret)) return ret;
 
         // Enumerate physical devices.  Stop once requirements met and physical device set.
         vkPhysicalDevice = null;
         for (int iDevice = 0; (iDevice < numDevices) && vkPhysicalDevice == null; ++iDevice) {
             // Get the count of extensions supported by this device
-            VkPhysicalDevice candidate = new VkPhysicalDevice(physicalDevices.get(iDevice), cvkInstance.GetInstance());
+            VkPhysicalDevice candidate = new VkPhysicalDevice(physicalDevices.get(iDevice), cvkInstance.GetVkInstance());
             
             // Check this device supports geometry shaders
             VkPhysicalDeviceFeatures candidatePhysicalDeviceFeatures = VkPhysicalDeviceFeatures.mallocStack(stack);
@@ -248,6 +258,13 @@ public class CVKDevice {
         } // end physical device loop
 
         if (vkPhysicalDevice != null) {
+            // Check we can use uniform texel buffers
+            VkFormatProperties vkFormatProperties = VkFormatProperties.callocStack(stack);
+            vkGetPhysicalDeviceFormatProperties(vkPhysicalDevice, VK_FORMAT_R32G32B32A32_SFLOAT, vkFormatProperties);
+            if ((vkFormatProperties.bufferFeatures() & VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT) == 0) {
+                throw new RuntimeException("Selected surface does not support uniform texel buffers needed for the xyzw texture");
+            }
+            
             // Happy dance, we have a suitable physical device, get its properties
             vkPhysicalDeviceProperties = VkPhysicalDeviceProperties.malloc();
             vkGetPhysicalDeviceProperties(vkPhysicalDevice, vkPhysicalDeviceProperties);            
@@ -258,7 +275,8 @@ public class CVKDevice {
 
             // Device caps for our surface
             vkSurfaceCapabilities = VkSurfaceCapabilitiesKHR.malloc();
-            checkVKret(UpdateSurfaceCapabilities());
+            ret = UpdateSurfaceCapabilities();
+            if (VkFailed(ret)) return ret;
             
             // What memory types are available
             vkPhysicalDeviceMemoryProperties = VkPhysicalDeviceMemoryProperties.malloc();
@@ -271,8 +289,10 @@ public class CVKDevice {
                     new Object[]{vkCurrentSurfaceExtent.width(),
                                  vkCurrentSurfaceExtent.height()});           
             
-            if (debugging) {
-                VkPhysicalDeviceLimits l = vkPhysicalDeviceProperties.limits();
+            VkPhysicalDeviceLimits l = vkPhysicalDeviceProperties.limits();
+            max1DImageWidth = l.maxImageDimension1D();
+            maxImageLayers  = l.maxImageArrayLayers();
+            if (debugging) {                
                 CVKLOGGER.info(String.format("Physcial device properties:\n"
                         + "\tdeviceName: %s\n"
                         + "\tdeviceType: %s\n"
@@ -339,11 +359,13 @@ public class CVKDevice {
 
             // Surface formats our device can use
             pInt.put(0, 0);
-            checkVKret(vkGetPhysicalDeviceSurfaceFormatsKHR(vkPhysicalDevice, hSurfaceHandle, pInt, null));
+            ret = vkGetPhysicalDeviceSurfaceFormatsKHR(vkPhysicalDevice, hSurfaceHandle, pInt, null);
+            if (VkFailed(ret)) return ret;
             int numFormats = pInt.get(0);
             if (numFormats > 0) {
                 vkSurfaceFormats = VkSurfaceFormatKHR.malloc(numFormats);
-                checkVKret(vkGetPhysicalDeviceSurfaceFormatsKHR(vkPhysicalDevice, hSurfaceHandle, pInt, vkSurfaceFormats));
+                ret = vkGetPhysicalDeviceSurfaceFormatsKHR(vkPhysicalDevice, hSurfaceHandle, pInt, vkSurfaceFormats);
+                if (VkFailed(ret)) return ret;
                 
                 CVKLOGGER.info("Available surface formats:");
                 for (int i = 0; i < numFormats; ++i) {
@@ -375,10 +397,12 @@ public class CVKDevice {
             if (selectedColourSpace == CVKMissingEnums.VkColorSpaceKHR.VK_COLOR_SPACE_NONE) {
                 throw new RuntimeException("Required color space unsupported (VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)");
             }
+            
 
             // Presentation modes our device can use for our surface
             pInt.put(0, 0);
-            checkVKret(vkGetPhysicalDeviceSurfacePresentModesKHR(vkPhysicalDevice, hSurfaceHandle, pInt, null));
+            ret = vkGetPhysicalDeviceSurfacePresentModesKHR(vkPhysicalDevice, hSurfaceHandle, pInt, null);
+            if (VkFailed(ret)) return ret;
             int numPresentationModes = pInt.get(0);
             if (numPresentationModes > 0) {
                 IntBuffer presentationModes = stack.mallocInt(numPresentationModes);
@@ -428,7 +452,7 @@ public class CVKDevice {
      * @param stack
      * @return 
      */
-    protected int InitVKLogicalDevice(MemoryStack stack) {
+    private int InitVKLogicalDevice(MemoryStack stack) {
         int ret = VK_SUCCESS;
         
         // We need the extensions and layers again.  
@@ -494,7 +518,7 @@ public class CVKDevice {
      * <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html#devsandqueues-queues">Queue
      * reference</a>
      */
-    protected void InitVKQueue(MemoryStack stack) {
+    private void InitVKQueue(MemoryStack stack) {
         PointerBuffer pb = stack.mallocPointer(1);
         vkGetDeviceQueue(vkDevice, queueFamilyIndex, 0, pb);
         long queueHandle = pb.get(0);
@@ -508,7 +532,7 @@ public class CVKDevice {
      * @param stack
      * @return
      */
-    protected int InitVKCommandPool(MemoryStack stack) {
+    private int InitVKCommandPool(MemoryStack stack) {
         int ret;
         
         VkCommandPoolCreateInfo poolInfo = VkCommandPoolCreateInfo.callocStack(stack);

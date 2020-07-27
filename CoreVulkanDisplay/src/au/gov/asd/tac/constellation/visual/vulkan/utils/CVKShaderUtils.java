@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.visual.vulkan;
+package au.gov.asd.tac.constellation.visual.vulkan.utils;
 
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkFailed;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
 import org.lwjgl.system.NativeResource;
 import java.io.IOException;
 import java.io.InputStream;

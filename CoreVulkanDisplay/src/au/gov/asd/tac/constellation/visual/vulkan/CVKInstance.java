@@ -15,9 +15,10 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan;
 
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKLOGGER;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkSucceeded;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.checkVKret;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKLOGGER;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkSucceeded;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.checkVKret;
 import java.nio.LongBuffer;
 import java.util.logging.Level;
 import org.lwjgl.PointerBuffer;
@@ -49,16 +50,26 @@ import org.lwjgl.vulkan.VkInstance;
 import org.lwjgl.vulkan.VkInstanceCreateInfo;
 
 public class CVKInstance {
-    
-    private VkInstance cvkInstance = null;
-    protected long hDebugMessengerHandle = VK_NULL_HANDLE;
-    
-    
-    public VkInstance GetInstance() { return cvkInstance; }
+    private static CVKInstance cvkInstance = null;
+    private VkInstance vkInstance = null;
     
     
-    public void Deinit() {
-        vkDestroyInstance(cvkInstance, null);
+    private CVKInstance() {}
+    public static CVKInstance GetInstance(MemoryStack stack, PointerBuffer pbExtensions, PointerBuffer pbValidationLayers, boolean debugging) {
+        if (CVKInstance.cvkInstance == null) {
+            CVKInstance.cvkInstance = new CVKInstance();
+            int ret = CVKInstance.cvkInstance.Initialise(stack, pbExtensions, pbValidationLayers, debugging);
+            if (VkFailed(ret)) {
+                throw new RuntimeException(String.format("CVKInstance.Initialise returned error %d", ret));
+            }
+        }
+        return CVKInstance.cvkInstance;
+    }
+    public VkInstance GetVkInstance() { return vkInstance; }
+    
+    
+    public void Deinitialise() {
+        vkDestroyInstance(vkInstance, null);
     }
 
    /**
@@ -77,7 +88,7 @@ public class CVKInstance {
      * @return 
      */
     @NativeType("VkResult")
-    public int Init(MemoryStack stack, PointerBuffer pbExtensions, PointerBuffer pbValidationLayers, boolean debugging) {
+    public int Initialise(MemoryStack stack, PointerBuffer pbExtensions, PointerBuffer pbValidationLayers, boolean debugging) {
         // Create the application info struct.  This is a sub struct of the createinfo struct below
         VkApplicationInfo appInfo = VkApplicationInfo.mallocStack(stack)
                 .sType(VK_STRUCTURE_TYPE_APPLICATION_INFO)
@@ -110,15 +121,14 @@ public class CVKInstance {
         int ret = vkCreateInstance(pCreateInfo, null, pInstance);
         if (VkSucceeded(ret)) {
             long instance = pInstance.get(0);
-            cvkInstance = new VkInstance(instance, pCreateInfo);
+            vkInstance = new VkInstance(instance, pCreateInfo);
             
             // If the function exists, register a validation layer callback
             if (debugging) {
                 assert(debugCreateInfo != null);
-                if (vkGetInstanceProcAddr(cvkInstance, "vkCreateDebugUtilsMessengerEXT") != NULL) {
+                if (vkGetInstanceProcAddr(vkInstance, "vkCreateDebugUtilsMessengerEXT") != NULL) {
                     LongBuffer pDebugMessenger = stack.longs(VK_NULL_HANDLE);
-                    checkVKret(vkCreateDebugUtilsMessengerEXT(cvkInstance, debugCreateInfo, null, pDebugMessenger));
-                    hDebugMessengerHandle = pDebugMessenger.get(0);
+                    checkVKret(vkCreateDebugUtilsMessengerEXT(vkInstance, debugCreateInfo, null, pDebugMessenger));
                 }  
             }
         }
@@ -137,7 +147,7 @@ public class CVKInstance {
      * @param pUserData
      * @return
      */
-    public static int DebugCallback(int messageSeverity, int messageType, long pCallbackData, long pUserData) {
+    private static int DebugCallback(int messageSeverity, int messageType, long pCallbackData, long pUserData) {
         Level level;
         switch (messageSeverity) {
             case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT: level = Level.SEVERE; break;

@@ -41,13 +41,23 @@ public class CVKHitTester extends CVKRenderable {
     private HitTestRequest hitTestRequest;
     private final BlockingDeque<HitTestRequest> requestQueue = new LinkedBlockingDeque<>();
     private final Queue<Queue<HitState>> notificationQueues = new LinkedList<>();
+    private boolean needsDisplayUpdate = false;
     
     public void queueRequest(final HitTestRequest request) {
         requestQueue.add(request);
+        needsDisplayUpdate = true;
     }
+    
+    
+    @Override
+    public boolean NeedsDisplayUpdate() { 
+        return needsDisplayUpdate; 
+    }
+     
 
     @Override
-    public int DisplayUpdate(CVKSwapChain cvkSwapChain, int frameIndex) {
+    public int DisplayUpdate() {
+        // TODO Hydra: Need to reset the needsDisplayUpdate flag in here
         int ret = VK_SUCCESS;
         if (requestQueue != null && !requestQueue.isEmpty()) {
             requestQueue.forEach(request -> notificationQueues.add(request.getNotificationQueue()));
@@ -80,22 +90,28 @@ public class CVKHitTester extends CVKRenderable {
                     }
                 }
             }
-        }        
+        }
         return ret;
     }  
     
     @Override
     public void Destroy() {}
     @Override
-    public VkCommandBuffer GetCommandBuffer(int imageIndex) { return null; }   
+    public VkCommandBuffer GetCommandBuffer(int imageIndex) { return null; }
     @Override
-    public int SwapChainRecreated(CVKSwapChain cvkSwapChain) { return VK_SUCCESS;}
+    public int DestroySwapChainResources() { return VK_SUCCESS; }
+    
     @Override
-    public void IncrementDescriptorTypeRequirements(int descriptorTypeCounts[], int descriptorSetCount) {}     
+    public int CreateSwapChainResources(CVKSwapChain cvkSwapChain) { 
+        return VK_SUCCESS; 
+    }
+    
     @Override
-    public int RecordCommandBuffer(CVKSwapChain cvkSwapChain, VkCommandBufferInheritanceInfo inheritanceInfo, int index) { return VK_SUCCESS;}
+    public void IncrementDescriptorTypeRequirements(CVKSwapChain.CVKDescriptorPoolRequirements reqs, CVKSwapChain.CVKDescriptorPoolRequirements perImageReqs) {}     
+    @Override
+    public int RecordCommandBuffer(VkCommandBufferInheritanceInfo inheritanceInfo, int index) { return VK_SUCCESS;}
     @Override
     public int GetVertexCount() { return 0; }
     @Override
-    public int DeviceInitialised(CVKDevice cvkDevice) { return VK_SUCCESS;}    
+    public int Initialise(CVKDevice cvkDevice) { return VK_SUCCESS;}    
 }

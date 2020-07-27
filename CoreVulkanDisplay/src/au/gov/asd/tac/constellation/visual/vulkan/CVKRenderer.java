@@ -15,14 +15,17 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan;
 
+import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKMissingEnums;
+import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKAssert;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.EndLogSection;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.GetRequiredVKPhysicalDeviceExtensions;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.InitVKValidationLayers;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.StartLogSection;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkFailed;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkSucceeded;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain.CVKDescriptorPoolRequirements;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.EndLogSection;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.GetRequiredVKPhysicalDeviceExtensions;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.InitVKValidationLayers;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.StartLogSection;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkSucceeded;
 import java.awt.event.ComponentListener;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -30,10 +33,9 @@ import java.util.List;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryStack.stackPush;
-import static org.lwjgl.vulkan.KHRSwapchain.vkAcquireNextImageKHR;
 import static org.lwjgl.vulkan.VK10.*;
 import org.lwjgl.vulkan.VkCommandBuffer;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.checkVKret;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.checkVKret;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable;
 import java.awt.event.ComponentEvent;
 import static org.lwjgl.vulkan.KHRSwapchain.vkQueuePresentKHR;
@@ -46,11 +48,12 @@ import org.lwjgl.vulkan.VkPresentInfoKHR;
 import org.lwjgl.vulkan.VkRect2D;
 import org.lwjgl.vulkan.VkRenderPassBeginInfo;
 import org.lwjgl.vulkan.VkSubmitInfo;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKLOGGER;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.UINT64_MAX;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VerifyInRenderThread;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.debugging;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKLOGGER;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VerifyInRenderThread;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.debugging;
 import java.nio.LongBuffer;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import static org.lwjgl.vulkan.KHRSwapchain.VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
@@ -75,57 +78,93 @@ controller classes like CVKRenderer and aggregation classes like CVKVisualProces
 use MemoryStack to allocate nio buffers unless an allocation needs to last longer than function scope
 comment where ever code is not trivially simple
 make methods static whereever possible
-TODO_TT: remember the reason for the Create factory patten in buffer and image
+Favour full names over abbreviations (eg Initialise() over Init()).
+
+TODO: this is still not a good reason.  Maybe just stylistic so resource types are differentiated from other CVK types?
+Resource types should expose a Create factory method and have private constructors so that we don't have to worry
+about having resource types in partially initialised states.
 
 */
 
 public class CVKRenderer implements ComponentListener {
     
-    // TODO_TT: explain why this may be less than imageCount
-    protected static final int MAX_FRAMES_IN_FLIGHT = 2;
-    
-    protected CVKInstance cvkInstance = null;
-    protected CVKDevice cvkDevice = null;
-    protected CVKSwapChain cvkSwapChain = null;
-    public int currentFrame = 0;
-           
-    protected boolean swapChainNeedsRecreation = true;     
+    private int currentFrame = 0;
+    private CVKInstance cvkInstance = null;
+    private CVKDevice cvkDevice = null;
+    private CVKSwapChain cvkSwapChain = null;    
+    private boolean swapChainNeedsRecreation = true;     
     private final CVKVisualProcessor parent;  
     
     // Descriptor pools are owned by the swapchain but because the lifetime of
     // the swapchain is transient we store these counts in the renderer so that
     // we can account for our scene being populated before we've created the swapchain.    
-    protected CVKSynchronizedDescriptorTypeCounts desiredPoolDescriptorTypeCounts = new CVKSynchronizedDescriptorTypeCounts();   
+    CVKDescriptorPoolRequirements cvkDescriptorPoolRequirements = null;
+    CVKDescriptorPoolRequirements cvkPerImageDescriptorPoolRequirements = null;
        
-    // Number of descriptor sets required
-    protected int desiredPoolDescriptorSetCount = 0;
+    private final List<CVKRenderable> renderables = new ArrayList<>();
+    private final List<CVKRenderable> newRenderables = Collections.synchronizedList(new ArrayList<>());
     
-    public List<CVKRenderable> renderables = new ArrayList<>();
+    private float clrChange = 0.01f;
+    private int curClrEl = 0;
+    private Vector3f clr = new Vector3f(0.0f, 0.0f, 0.0f);
     
-    private static float clrChange = 0.01f;
-    private static int curClrEl = 0;
-    private static Vector3f clr = new Vector3f(0.0f, 0.0f, 0.0f);
-    
-    
-    public void AddRenderable(CVKRenderable renderable) {
-        renderables.add(renderable);
-        
-        // Each renderable is responsible for telling the renderer what and how 
-        // many Descriptor types it uses. This is calculated here each time a 
-        // renderable is added.
-        // The SwapChain will then create a Descriptor Pool based on these
-        // descriptor counts to allocate the exact amount of memory required.
-        //
-        // If you get a Descriptor POOL_OUT_OF_MEMORY error, make sure you are 
-        // returning the correct numbers for your Descriptor Types.
-        // TODO_TT: this code sucks, make it not. Also change 11 to TOTAL_DESCRIPTOR_TYPES
-        int[] descriptorTypeCounts = new int[11];
-        int descriptorSetCount = 0;
-        renderables.forEach(r -> {r.IncrementDescriptorTypeRequirements(descriptorTypeCounts, descriptorSetCount);});    
-        desiredPoolDescriptorTypeCounts.Set(descriptorTypeCounts);
-        desiredPoolDescriptorSetCount = descriptorSetCount;
+    /**
+     *
+     * @param renderable
+     */
+    public void AddRenderable(CVKRenderable renderable) {   
+        synchronized (newRenderables) {
+            newRenderables.add(renderable);
+        }   
     }
     
+    /**
+     * When a new renderable is added we need to:
+     * - call the static initialiser (in case this is the first time an instance of that
+     *   class has been added.  This can initialise shaders and descriptor layouts that
+     *   are shared across all instances of each renderable class.
+     * - if the renderer has already been initialised itself it will have a CVKDevice, if
+     *   that exists we need to initialise the new renderable instance.  If it doesn't 
+     *   exist then as long as the renderable is in our renderables list it will get 
+     *   initialised when the renderer is initialised.
+     * - increment descriptor counts.  We do this even if we don't have a swapchain so
+     *   that when the first swapchain is created it will allocate a descriptor pool
+     *   big enough for the renderables we currently have.
+     * 
+     * @return
+     */
+    private int ProcessNewRenderables() {
+        VerifyInRenderThread();
+        int ret = VK_SUCCESS;
+        int oldRenderableCount = renderables.size();
+        
+        synchronized (newRenderables) {
+            for (CVKRenderable r : newRenderables) {
+                // If the renderer is alredy initialised, initialise the renderable
+                if (cvkDevice != null) {
+                    ret = r.Initialise(cvkDevice);
+                    if (VkFailed(ret)) { return ret; }
+                }
+                // Welcome to the list
+                renderables.add(r);
+            }
+            newRenderables.clear();
+        }
+        
+        // If we added any new renderables we should recalculate the descriptor requirements
+        if (oldRenderableCount != renderables.size()) {
+            cvkDescriptorPoolRequirements = new CVKDescriptorPoolRequirements();
+            cvkPerImageDescriptorPoolRequirements = new CVKDescriptorPoolRequirements();
+            renderables.forEach(r -> {
+                r.IncrementDescriptorTypeRequirements(cvkDescriptorPoolRequirements,
+                                                      cvkPerImageDescriptorPoolRequirements);
+            });
+        }
+        
+        return ret;
+    }
+    
+   
     public CVKDevice GetDevice() {
         return cvkDevice;
     }
@@ -140,7 +179,7 @@ public class CVKRenderer implements ComponentListener {
     public static interface CVKRendererUpdateTask {
         public void Run();
     }
-    protected BlockingQueue<CVKRendererUpdateTask> pendingUpdates = new LinkedBlockingQueue<>();
+    private BlockingQueue<CVKRendererUpdateTask> pendingUpdates = new LinkedBlockingQueue<>();
 
     /**
      * This is called by the canvas once it has been created and has a valid surface handle.
@@ -151,9 +190,9 @@ public class CVKRenderer implements ComponentListener {
      * @see
      * <a href="https://renderdoc.org/vulkan-in-30-minutes.html">https://renderdoc.org/vulkan-in-30-minutes.html</a>      *
      */
-    public int Init(long surfaceHandle) {
+    public int Initialise(long surfaceHandle) {
         cvkDevice = new CVKDevice(cvkInstance, surfaceHandle);
-        int ret = cvkDevice.Init();
+        int ret = cvkDevice.Initialise();
         if (VkFailed(ret)) {
             return ret;
         }        
@@ -163,27 +202,23 @@ public class CVKRenderer implements ComponentListener {
             return ret;
         }
         
-        for (int i = 0; VkSucceeded(ret) && (i < renderables.size()); ++i) {
-            ret = renderables.get(i).DeviceInitialised(cvkDevice);
-        if (VkFailed(ret)) {
-            return ret;
-        }            
-        }
-        
-        return ret;
+        return ProcessNewRenderables();
     }
        
-    protected int RecreateSwapChain() {
+    private int RecreateSwapChain() {
         VerifyInRenderThread();
         
         int ret = VK_NOT_READY;
         if (parent.surfaceReady()) {
+            CVKAssert(cvkDescriptorPoolRequirements != null);
+            CVKAssert(cvkPerImageDescriptorPoolRequirements != null);
             cvkDevice.WaitIdle();
             CVKSwapChain newSwapChain = new CVKSwapChain(cvkDevice);                                 
-            ret = newSwapChain.Init(desiredPoolDescriptorTypeCounts, desiredPoolDescriptorSetCount);
-            desiredPoolDescriptorTypeCounts.ResetDirty();
+            ret = newSwapChain.Initialise(cvkDescriptorPoolRequirements, cvkPerImageDescriptorPoolRequirements);
             if (VkSucceeded(ret)) {
                 if (cvkSwapChain != null) {
+                    // Give each renderable a chance to cleanup swapchain dependent resources
+                    renderables.forEach(el -> {el.DestroySwapChainResources();});
                     cvkSwapChain.Destroy();
                 }
                 cvkSwapChain = newSwapChain;
@@ -193,9 +228,12 @@ public class CVKRenderer implements ComponentListener {
                 parent.SwapChainRecreated(cvkDevice, cvkSwapChain);
                 
                 // Give each renderable a chance to recreate swapchain depedent resources
-                for (int i = 0; VkSucceeded(ret) && (i < renderables.size()); ++i) {
-                    ret = renderables.get(i).SwapChainRecreated(cvkSwapChain);
-                }                
+                for (int i = 0; i < renderables.size(); ++i) {
+                    ret = renderables.get(i).CreateSwapChainResources(cvkSwapChain);
+                    if (VkFailed(ret)){
+                        return ret;
+                    }
+                }
             }
         } else {
             CVKLOGGER.info("Unable to recreate swap chain, surface not ready.");
@@ -217,8 +255,7 @@ public class CVKRenderer implements ComponentListener {
             if (debugging) {
                 pbValidationLayers = InitVKValidationLayers(stack);
             }
-            cvkInstance = new CVKInstance();
-            checkVKret(cvkInstance.Init(stack, pbExtensions, pbValidationLayers, debugging));         
+            cvkInstance = CVKInstance.GetInstance(stack, pbExtensions, pbValidationLayers, debugging);       
         }
         EndLogSection("CVKRenderer ctor");
     }
@@ -226,8 +263,9 @@ public class CVKRenderer implements ComponentListener {
     @SuppressWarnings("deprecation")
     @Override
     public void finalize() throws Throwable {
-        cvkInstance.Deinit();
-        cvkInstance = null;
+        // TODO: figure out a refcount or some mechanism to cleanup VkInstance after all graphs are closed
+//        cvkInstance.Deinitialise();
+//        cvkInstance = null;
         super.finalize();
     }
        
@@ -238,7 +276,7 @@ public class CVKRenderer implements ComponentListener {
      * @param imageIndex - index to get the current frame/image/command buffer
      * @return 
      */
-    protected int RecordCommandBuffer(MemoryStack stack, int imageIndex){
+    private int RecordCommandBuffer(MemoryStack stack, int imageIndex){
         VerifyInRenderThread();
         CVKAssert(cvkSwapChain.GetFrameBufferHandle(imageIndex) != VK_NULL_HANDLE);
     
@@ -285,7 +323,7 @@ public class CVKRenderer implements ComponentListener {
         // Loop through renderables and record their buffers
         for (int r = 0; r < renderables.size(); ++r) {
             if (renderables.get(r).IsDirty() && renderables.get(r).GetVertexCount() > 0){
-                renderables.get(r).RecordCommandBuffer(cvkSwapChain, inheritanceInfo, imageIndex);
+                renderables.get(r).RecordCommandBuffer(inheritanceInfo, imageIndex);
 
                 // TODO Hydra: may be more efficient to add all the visible command buffers to a master list then 
                 // call the following line once with the whole list
@@ -344,7 +382,7 @@ public class CVKRenderer implements ComponentListener {
      * @param imageIndex
      * @return
      */
-    protected int ReturnImageToSwapchainAndPresent(MemoryStack stack, LongBuffer pCommandExecutionSemaphore, int imageIndex) {
+    private int ReturnImageToSwapchainAndPresent(MemoryStack stack, LongBuffer pCommandExecutionSemaphore, int imageIndex) {
         CVKAssert(cvkDevice.GetQueue() != null);
         
         VkPresentInfoKHR presentInfo = VkPresentInfoKHR.callocStack(stack);
@@ -455,6 +493,10 @@ public class CVKRenderer implements ComponentListener {
             }
         }
         
+        // Adding renderables will change descriptor requirements, we need to update
+        // these before the swapchain is initialised for the first time.
+        ProcessNewRenderables();
+        
         if (cvkSwapChain != null) {
             // Process updates enqueued by other threads
             if (!pendingUpdates.isEmpty()) {
@@ -463,34 +505,28 @@ public class CVKRenderer implements ComponentListener {
                 tasks.forEach(task -> {
                     task.Run();
                 });                        
-            }
-            
-            if (desiredPoolDescriptorTypeCounts.IsDirty()) {
-                cvkSwapChain.UpdateDescriptorTypeRequirements(desiredPoolDescriptorTypeCounts,
-                                                              desiredPoolDescriptorSetCount);
-                desiredPoolDescriptorTypeCounts.ResetDirty();
-            }            
+            }                 
             
             // If any renderable holds a resource shared across frames then to
             // recreate it we need to a complete halt, that is we need all in
             // flight images to have been presented and all fences available.
             // Note the one liner was created by Netbeans, I am not convinced it's
             // very clear.
-            boolean updateSharedResources = false;
-            for (int i = 0; (i < renderables.size()) && (updateSharedResources == false); ++ i) {
-                updateSharedResources = renderables.get(i).SharedResourcesNeedUpdating();
+            boolean updateDisplays = false;
+            for (int i = 0; (i < renderables.size()) && (updateDisplays == false); ++ i) {
+                updateDisplays = renderables.get(i).NeedsDisplayUpdate();
             }
                       
-            if (updateSharedResources) {
+            if (updateDisplays) {
                 cvkDevice.WaitIdle();
                 for (int i = 0; i < renderables.size(); ++ i) {
                     CVKRenderable r = renderables.get(i);
-                    if (r.SharedResourcesNeedUpdating()) {
-                        ret = r.RecreateSharedResources(cvkSwapChain);
+                    if (r.NeedsDisplayUpdate()) {
+                        ret = r.DisplayUpdate();
                         checkVKret(ret); 
                     }
                 }
-            }           
+            }
         }
    
         // If the surface is not ready RecreateSwapChain won't have reset this flag        
@@ -518,18 +554,13 @@ public class CVKRenderer implements ComponentListener {
                               
                     // Update everything that needs updating - drawables 
                     ret = parent.DisplayUpdate(cvkSwapChain, imageIndex);
-                    checkVKret(ret);
-                    for (int i = 0; VkSucceeded(ret) && (i < renderables.size()); ++i) {
-                        ret = renderables.get(i).DisplayUpdate(cvkSwapChain, imageIndex);
-                        checkVKret(ret); 
-                    }                    
+                    checkVKret(ret);          
                     
                     // Record each renderables commands into secondary buffers and add them to the
                     // primary command buffer.
                     ret = RecordCommandBuffer(stack, imageIndex);
                     checkVKret(ret); 
-                                                         
-//                    parent.signalUpdateComplete();    
+                                                            
                     // This will wait for the image at imageIndex to be acquired then submit
                     // our primary command buffer to the execution queue.  Once executed 
                     // hCommandBufferExecutedSemaphore will be signaled and we can present.
@@ -558,10 +589,10 @@ public class CVKRenderer implements ComponentListener {
                         swapChainNeedsRecreation = true;
                     } else {
                         checkVKret(ret);
-                    }                    
+                    }
         
                     // Move the frame index to the next cab off the rank
-                    currentFrame = (++currentFrame) % MAX_FRAMES_IN_FLIGHT;                  
+                    currentFrame = (++currentFrame) % cvkSwapChain.GetImageCount();                  
                 }
             }
         }
@@ -571,16 +602,11 @@ public class CVKRenderer implements ComponentListener {
         // render fence has been the reset and the semaphores will be in the 
         // signalled state, so we just destroy them without waiting.
         if (cvkSwapChain == null || swapChainNeedsRecreation) {
-
             RecreateSwapChain();
+            parent.requestRedraw();
         }        
         
-        // hack for constant render loop.  Note with the hittester in place this
-        // spams the vert rebuild and Constellation crashes after clicking in edit
-        // mode.
-//        if (debugging) {
-//            parent.rebuild();
-//        } 
+        // The visual processor will not trigger any more updates until this is signalled
         parent.signalProcessorIdle();
     }
 
@@ -595,13 +621,13 @@ public class CVKRenderer implements ComponentListener {
     }
     
     public VkInstance GetVkInstance() {
-        return cvkInstance.GetInstance();
+        return cvkInstance.GetVkInstance();
     }
     
     //TODO_TT: ask a more knowledgable Java dev what this should look like
-//    protected class CVKUpdateDescriptorTypeRequirements implements CVKRendererUpdateTask {
-//        protected final CVKScene cvkScene;
-//        protected final boolean renderableAdded;
+//    private class CVKUpdateDescriptorTypeRequirements implements CVKRendererUpdateTask {
+//        private final CVKScene cvkScene;
+//        private final boolean renderableAdded;
 //        public CVKUpdateDescriptorTypeRequirements(CVKScene cvkScene, boolean renderableAdded) {
 //            this.cvkScene = cvkScene;
 //            this.renderableAdded = renderableAdded;
@@ -627,16 +653,23 @@ public class CVKRenderer implements ComponentListener {
 //                cvkSwapChain.DescriptorTypeRequirementsUpdated(descriptorTypeCounts);
 //            }            
 //        }
-//    }
-    
-    
-
+//    } 
     
     
     @Override
     public void componentResized(ComponentEvent e) {
-//        swapChainNeedsRecreation = true;
-//        CVKLOGGER.info("Canvas sent componentResized");
+        // Hydra - This callback is quite spammy, resulting in the swapchain being
+        // recreated many times in a row. However, there is a bug in some of
+        // the Vulkan drivers where the VK_SUBOPTIMAL_KHR and 
+        // VK_ERROR_OUT_OF_DATE_KHR messages are not being generated from
+        // vkAcquireNextImageKHR() or vkQueuePresentKHR. Updating the GFX drivers
+        // fixed the issue on my system. Unfortunately we can't expect users
+        // to be running with the correct drivers so instead we have to do it
+        // this way to flag a recreation.
+        // TODO: Test how this performs when we have a big graph
+        
+        // Reference: https://bugs.freedesktop.org/show_bug.cgi?id=111097
+        swapChainNeedsRecreation = true;
     }
     @Override
     public void componentHidden(ComponentEvent e) {
