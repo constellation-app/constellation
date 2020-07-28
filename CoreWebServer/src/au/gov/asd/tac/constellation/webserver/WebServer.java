@@ -126,6 +126,10 @@ public class WebServer {
     private static final String IPYTHON = ".ipython";
     private static final String RESOURCES = "resources/";
 
+    public static boolean isRunning() {
+        return running;
+    }
+
     public static synchronized int start() {
         if (!running) {
             try {
