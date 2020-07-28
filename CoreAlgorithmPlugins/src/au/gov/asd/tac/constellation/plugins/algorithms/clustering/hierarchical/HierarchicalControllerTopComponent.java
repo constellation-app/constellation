@@ -446,6 +446,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
 
     private void updateInteractivity() {
         state.interactive = !state.interactive;
+        state.colored = this.colorClustersCheckBox.isSelected();
         if (!state.interactive) {
             interactiveButton.setText(INTERACTIVE_DISABLED);
             nestedDiagramScrollPane.setViewportView(null);
@@ -577,6 +578,10 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
             final ColorClusters color = new ColorClusters(true);
             PluginExecution.withPlugin(color).interactively(true).waitingFor(f).executeLater(graph);
         }
+        if (state.colored && !state.interactive) {
+            final ColorClusters color = new ColorClusters(false);
+            PluginExecution.withPlugin(color).interactively(true).waitingFor(f).executeLater(graph);
+        }
     }
 
     /**
@@ -617,8 +622,13 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
             state.modificationCounter = mc;
             reclusterButton.setEnabled(smc != state.strucModificationCount);
         }
-        // Interactive button should only be available if state is available
-        interactiveButton.setEnabled(state != null);
+        // Interactive button should only be available if clustering has been done
+        // and a state exists for the current graph
+        // state exists - enable interactive,
+        // state exists and graph not changed - enable interactive,
+        // graph changed - disable interactive,
+        // graph changed and state exists - disable interactive
+        interactiveButton.setEnabled(state != null && smc == state.strucModificationCount);
     }
 
     /**
@@ -719,10 +729,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
             final int transactionVisibilityAttribute = VisualConcept.TransactionAttribute.VISIBILITY.ensure(graph);
 
             int nextCluster = 0;
-            // Use the smaller of ints as to avoid going out of bounds.
-            // usually caused when cluster has not run with new elements added.
-            final int vertexCount = Math.min(graph.getVertexCount(), state.getCurrentNumOfClusters());
-
+            final int vertexCount = graph.getVertexCount();
             for (int pos = 0; pos < vertexCount; pos++) {
                 final int vertex = graph.getVertex(pos);
                 Group group = state.groups[pos];
