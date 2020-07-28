@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
-import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -30,11 +29,8 @@ import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUt
 import au.gov.asd.tac.constellation.plugins.arrangements.uncollide.d3.BoundingBox3D;
 import au.gov.asd.tac.constellation.plugins.arrangements.uncollide.d3.Octree;
 import au.gov.asd.tac.constellation.plugins.arrangements.uncollide.d3.Orb3D;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 import org.openide.util.Exceptions;
 import org.python.modules.math;
@@ -118,11 +114,10 @@ public class UncollideArrangement implements Arranger {
         final int vertexCount = wg.getVertexCount();
 
         QuadTree qt = new QuadTree(wg);
-        boolean foundTwin = true;
         int countIterations = 0;
         int numberNoTwins = 0;
         while (numberNoTwins < vertexCount) {
-            if (interaction != null) {
+            if (Objects.nonNull(interaction)) {
                 final String msg = String.format("Nodes with \"Twins\" %d of %d; iteration %d", numberNoTwins, vertexCount, ++countIterations);
                 interaction.setProgress(numberNoTwins, vertexCount, msg, true);
             }
@@ -130,7 +125,9 @@ public class UncollideArrangement implements Arranger {
             qt = new QuadTree(wg);
         }
 
-        interaction.setBusy("Expanding graph until there are no more colllisions", true);
+        if(Objects.nonNull(interaction)) {
+            interaction.setBusy("Expanding graph until there are no more colllisions", true);
+        }
         
         for (int i = 0; i < iter && qt.hasCollision(); i++) {
 //            if (interaction != null) {
@@ -146,8 +143,10 @@ public class UncollideArrangement implements Arranger {
             if (Thread.interrupted()) {
                 throw new InterruptedException();
             }
-        }  
-        interaction.setBusy("Expanding graph until there are no more colllisions", false);
+        }
+        if(Objects.nonNull(interaction)) {
+            interaction.setBusy("Expanding graph until there are no more colllisions", false);
+        }
     }
 
     private void uncollide3d(final Orb3D[] orbs, final int iter) throws InterruptedException {
