@@ -52,6 +52,12 @@ public class QuadTreeNGTest {
         graphWithTwoTwins.setFloatValue(attrX, twin2, -0.1f);
         graphWithTwoTwins.setFloatValue(attrY, twin2, -0.1f);
         graphWithTwoTwins.setFloatValue(attrR, twin2, 1.0f);
+        // Non-twin collider
+        int collider = graphWithTwoTwins.addVertex();
+        graphWithTwoTwins.setFloatValue(attrX, collider, 1.0f);
+        graphWithTwoTwins.setFloatValue(attrY, collider, 1.0f);
+        graphWithTwoTwins.setFloatValue(attrR, collider, 1.0f);
+        
         
         twoTwinsQT = new QuadTree(graphWithTwoTwins);
     
@@ -81,17 +87,6 @@ public class QuadTreeNGTest {
         noCollisionsQT = new QuadTree(graphWithNoCollisions);
     }
 
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
-    @BeforeMethod
-    public void setUpMethod() throws Exception {
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
-    }
 
     /**
      * Test of getTwins method, of class QuadTree.
