@@ -75,7 +75,7 @@ public class LayersViewPane extends BorderPane {
         layerIdHeadingText.setMinHeight(25);
         layerIdHeadingText.setPrefWidth(30);
         visibilityHeadingText.setPrefWidth(55);
-        visibilityHeadingText.setMinWidth(50);
+        visibilityHeadingText.setMinWidth(75);
         queryHeadingText.setPrefWidth(10000);
         queryHeadingText.setMinWidth(80);
         descriptionHeadingText.setPrefWidth(10000);

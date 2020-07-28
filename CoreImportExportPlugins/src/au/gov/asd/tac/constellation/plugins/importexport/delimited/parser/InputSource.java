@@ -31,12 +31,12 @@ public class InputSource {
     private final File file;
     private final InputStream inputStream;
 
-    public InputSource(File file) {
+    public InputSource(final File file) {
         this.file = file;
         this.inputStream = null;
     }
 
-    public InputSource(InputStream inputStream) {
+    public InputSource(final InputStream inputStream) {
         this.file = null;
         this.inputStream = inputStream;
     }
