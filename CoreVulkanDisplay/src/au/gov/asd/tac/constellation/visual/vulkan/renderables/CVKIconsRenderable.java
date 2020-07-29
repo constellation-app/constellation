@@ -107,6 +107,8 @@ public class CVKIconsRenderable extends CVKRenderable{
     private ReentrantLock vertexLock = new ReentrantLock();
     
     
+    // ========================> Classes <======================== \\
+    
     private static class Vertex {
         // This looks a little weird for Java, but LWJGL and JOGL both require
         // contiguous memory which is passed to the native GL or VK libraries.        
@@ -215,7 +217,9 @@ public class CVKIconsRenderable extends CVKRenderable{
             return attributeDescriptions.rewind();
         }
     }    
+                      
     
+    // ========================> Static init <======================== \\
     
     private static int LoadShaders(CVKDevice cvkDevice) {
         int ret = VK_SUCCESS;
@@ -260,13 +264,16 @@ public class CVKIconsRenderable extends CVKRenderable{
     public static int StaticInitialise(CVKDevice cvkDevice) {
         int ret = VK_SUCCESS;
         if (!staticInitialised) {
-            LoadShaders(cvkDevice);
+            ret = LoadShaders(cvkDevice);
             if (VkFailed(ret)) { return ret; }            
             staticInitialised = true;
         }
         return ret;
-    }
-              
+    }    
+        
+    
+    // ========================> Lifetime <======================== \\
+    
     public CVKIconsRenderable(CVKVisualProcessor inParent) {
         parent = inParent;
     }  
@@ -275,139 +282,33 @@ public class CVKIconsRenderable extends CVKRenderable{
     public int Initialise(CVKDevice cvkDevice) {
         this.cvkDevice = cvkDevice;
         return CreateDescriptorLayout(cvkDevice);
-    }    
+    }        
     
-    private void SetIconInfo(final int pos, CVKIconsRenderable.Vertex vertex, final VisualAccess access) {
-        CVKAssert(access != null);
-        CVKAssert(vertex != null);
-        CVKAssert(pos < access.getVertexCount());
+    @Override
+    public void Destroy() {
+        DestroyVertexBuffers();
+        DestroyXYZWBuffer();
+        DestroyUniformBuffers();
+        DestroyDescriptorSets();
+        DestroyCommandBuffers();
+        DestroyPipelines();
+        DestroyPipelineLayouts();
+        DestroyCommandBuffers();  
         
-        final String foregroundIconName = access.getForegroundIcon(pos);
-        final String backgroundIconName = access.getBackgroundIcon(pos);
-        final int foregroundIconIndex = parent.GetTextureAtlas().AddIcon(foregroundIconName);
-        final int backgroundIconIndex = parent.GetTextureAtlas().AddIcon(backgroundIconName);
-
-        final String nWDecoratorName = access.getNWDecorator(pos);
-        final String sWDecoratorName = access.getSWDecorator(pos);
-        final String sEDecoratorName = access.getSEDecorator(pos);
-        final String nEDecoratorName = access.getNEDecorator(pos);
-        final int nWDecoratorIndex = nWDecoratorName != null ? parent.GetTextureAtlas().AddIcon(nWDecoratorName) : CVKIconTextureAtlas.TRANSPARENT_ICON_INDEX;
-        final int sWDecoratorIndex = sWDecoratorName != null ? parent.GetTextureAtlas().AddIcon(sWDecoratorName) : CVKIconTextureAtlas.TRANSPARENT_ICON_INDEX;
-        final int sEDecoratorIndex = sEDecoratorName != null ? parent.GetTextureAtlas().AddIcon(sEDecoratorName) : CVKIconTextureAtlas.TRANSPARENT_ICON_INDEX;
-        final int nEDecoratorIndex = nEDecoratorName != null ? parent.GetTextureAtlas().AddIcon(nEDecoratorName) : CVKIconTextureAtlas.TRANSPARENT_ICON_INDEX;
-
-        final int icons = (backgroundIconIndex << ICON_BITS) | (foregroundIconIndex & ICON_MASK);
-        final int decoratorsWest = (sWDecoratorIndex << ICON_BITS) | (nWDecoratorIndex & ICON_MASK);
-        final int decoratorsEast = (nEDecoratorIndex << ICON_BITS) | (sEDecoratorIndex & ICON_MASK);
-
-        vertex.SetIconData(icons, decoratorsWest, decoratorsEast, access.getVertexId(pos));
-    }    
-    
-    private void SetColorInfo(final int pos, CVKIconsRenderable.Vertex vertex, final VisualAccess access) {
-        CVKAssert(access != null);
-        CVKAssert(vertex != null);
-        CVKAssert(pos < access.getVertexCount());
-        
-        vertex.SetBackgroundIconColour(access.getVertexColor(pos));
-        vertex.SetVertexVisibility(access.getVertexVisibility(pos));
-    }    
-    
-    // TODO_TT: find out more about the second coord
-    // TODO_TT: see if anything ever uses the radius   - yes the blaze batcher 
-    private void SetXYZWInfo(final int pos, ByteBuffer buffer, final VisualAccess access) {
-        CVKAssert(access != null);
-        CVKAssert(buffer.remaining() >= (XYZ_BUFFER_WIDTH * Float.BYTES));    
-        
-        buffer.putFloat(access.getX(pos));
-        buffer.putFloat(access.getY(pos));
-        buffer.putFloat(access.getZ(pos));
-        buffer.putFloat(access.getRadius(pos));
-        buffer.putFloat(access.getX2(pos));
-        buffer.putFloat(access.getY2(pos));
-        buffer.putFloat(access.getZ2(pos));
-        buffer.putFloat(access.getRadius(pos));  
+        CVKAssert(pipelines == null);
+        CVKAssert(pipelineLayouts == null);
+        CVKAssert(cvkXYZWTexelBuffer == null);
+        CVKAssert(hXYZWBufferView == VK_NULL_HANDLE);        
+//        CVKAssert(pDescriptorSets == null);
+//        CVKAssert(vertexUniformBuffers == null);
+//        CVKAssert(geometryUniformBuffers == null);
+        CVKAssert(vertexBuffers == null);
+//        CVKAssert(commandBuffers == null);     
     }
     
-    public CVKRenderableUpdateTask TaskCreateIcons(final VisualAccess access) {
-        //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
-        vertexCount = access.getVertexCount();
-        try {
-            // Vertices are modified by the event thread
-            vertexLock.lock(); 
-            
-            // Destroy old staging buffer if it exists
-            if (cvkVertexStagingBuffer != null) {
-                cvkVertexStagingBuffer.Destroy();
-                cvkVertexStagingBuffer = null;
-            }                       
-            
-            if (vertexCount > 0) {
-                int vertexBufferSizeBytes = CVKIconsRenderable.Vertex.SIZEOF * vertexCount;
-                cvkVertexStagingBuffer = CVKBuffer.Create(cvkDevice, 
-                                                          vertexBufferSizeBytes, 
-                                                          VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-                                                          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-                cvkVertexStagingBuffer.DEBUGNAME = "CVKIconsRenderable.TaskCreateIcons cvkVertexStagingBuffer";
-                
-                int xyzwBufferSizeBytes = XYZ_BUFFER_WIDTH * vertexCount * Float.BYTES;
-                cvkXYZWStagingBuffer = CVKBuffer.Create(cvkDevice, 
-                                                        xyzwBufferSizeBytes, 
-                                                        VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-                                                        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-                cvkXYZWStagingBuffer.DEBUGNAME = "CVKIconsRenderable.TaskCreateIcons cvkXYZWStagingBuffer";
-                
-                ByteBuffer pVertexMemory = cvkVertexStagingBuffer.StartWrite(0, vertexBufferSizeBytes);
-                ByteBuffer pXYZWMemory = cvkXYZWStagingBuffer.StartWrite(0, xyzwBufferSizeBytes);
-                CVKIconsRenderable.Vertex vertex = new CVKIconsRenderable.Vertex();
-                for (int pos = 0; pos < vertexCount; pos++) {
-                    SetColorInfo(pos, vertex, access);
-                    SetIconInfo(pos, vertex, access);
-                    vertex.CopyTo(pVertexMemory);
-                    SetXYZWInfo(pos, pXYZWMemory, access);
-                }
-                int vertMemPos = pVertexMemory.position();
-                CVKAssert(vertMemPos == vertexBufferSizeBytes);
-                cvkVertexStagingBuffer.EndWrite();
-                pVertexMemory = null; // now unmapped, do not use
-                int xyzwMemPos = pXYZWMemory.position();
-                CVKAssert(xyzwMemPos == xyzwBufferSizeBytes);
-                cvkXYZWStagingBuffer.EndWrite();
-                pXYZWMemory = null; // now unmapped, do not use                
-                
-                
-//                vertices = new CVKIconsRenderable.Vertex[vertexCount];
-//                positions = new float[XYZ_BUFFER_WIDTH * vertexCount];
-//                for (int pos = 0; pos < vertexCount; pos++) {
-//                    vertices[pos] = new CVKIconsRenderable.Vertex();
-//                    SetColorInfo(pos, access);
-//                    SetIconInfo(pos, access);
-//                    SetXYZWInfo(pos, access);
-//                }
-            }
-        } finally {
-            vertexLock.unlock();
-        }
-        
-        //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.DisplayUpdate) ===//
-        return (imageIndex) -> {
-            // We can't update the xyzw texture here as it is needed to render each image
-            // in the swap chain.  If we recreate it for image 1 it will be likely be in
-            // flight for presenting image 0.  The shared resource recreation path is
-            // synchronised for all images so we need to do it there.
-            recreateIcons = true;
-        };
-    }    
+       
+    // ========================> Swap chain <======================== \\
     
-    // TODO_TT: do we need this if we are destroying in create?
-    public CVKRenderableUpdateTask TaskDestroyIcons() {
-        //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
-        
-        //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.DisplayUpdate) ===//
-        return (imageIndex) -> {
-            VerifyInRenderThread();
-        };        
-    }
-        
     @Override
     public int DestroySwapChainResources() { 
         this.cvkSwapChain = null;
@@ -432,7 +333,6 @@ public class CVKIconsRenderable extends CVKRenderable{
         return VK_SUCCESS; 
     }    
     
-    //@Override
     private int CreateSwapChainResources() { 
         CVKAssert(cvkSwapChain != null);
         CVKAssert(cvkDescriptorPool != null);
@@ -482,75 +382,7 @@ public class CVKIconsRenderable extends CVKRenderable{
         swapChainResourcesDirty = false;
         
         return VK_SUCCESS;
-    }
-    
-
-    @Override
-    public void Destroy() {
-        DestroyVertexBuffers();
-        DestroyXYZWBuffer();
-        DestroyUniformBuffers();
-        DestroyDescriptorSets();
-        DestroyCommandBuffers();
-        DestroyPipelines();
-        DestroyPipelineLayouts();
-        DestroyCommandBuffers();  
-        
-        CVKAssert(pipelines == null);
-        CVKAssert(pipelineLayouts == null);
-        CVKAssert(cvkXYZWTexelBuffer == null);
-        CVKAssert(hXYZWBufferView == VK_NULL_HANDLE);        
-//        CVKAssert(pDescriptorSets == null);
-//        CVKAssert(vertexUniformBuffers == null);
-//        CVKAssert(geometryUniformBuffers == null);
-        CVKAssert(vertexBuffers == null);
-//        CVKAssert(commandBuffers == null);     
-    }
-    
-    @Override
-    public boolean NeedsDisplayUpdate() { return recreateIcons || descriptorPoolResourcesDirty || swapChainResourcesDirty; }
-    
-    @Override
-    public int DisplayUpdate() { 
-        int ret = VK_SUCCESS;
-        VerifyInRenderThread();
-        
-        
-        if (swapChainResourcesDirty) {
-            ret = CreateSwapChainResources();
-            if (VkFailed(ret)) { return ret; }
-        }
-        
-        if (descriptorPoolResourcesDirty) {
-            ret = CreateDescriptorPoolResources();
-            if (VkFailed(ret)) { return ret; }
-        }
-        
-        // TODO: we need to figure out if we recreate all icons on every event, if not
-        // then we need to track what events we need to process here.
-        
-        if (recreateIcons) {
-            DestroyVertexBuffers();
-            DestroyXYZWBuffer();
-
-            ret = CreateVertexBuffers();
-            if (VkFailed(ret)) { return ret; }
-            ret = CreateXYZWBuffer();
-            if (VkFailed(ret)) { return ret; }
-
-            try (MemoryStack stack = stackPush()) {          
-                ret = UpdateUniformBuffers(stack);
-                if (VkFailed(ret)) { return ret; }
-            }
-
-            recreateIcons = false;
-        }
-        
-        return ret;
     }    
-    
-    @Override
-    public int GetVertexCount() { return 0; }    
     
     
     // ========================> Vertex buffers <======================== \\
@@ -598,7 +430,10 @@ public class CVKIconsRenderable extends CVKRenderable{
         }       
         
         return ret;         
-    }    
+    }  
+    
+    @Override
+    public int GetVertexCount() { return 0; }      
     
     private void DestroyVertexBuffers() {
         if (vertexBuffers != null) {
@@ -1103,7 +938,6 @@ public class CVKIconsRenderable extends CVKRenderable{
         return ret;        
     }
     
-    //@Override
     private int CreateDescriptorPoolResources() {
         CVKAssert(cvkDescriptorPool != null);
         CVKAssert(cvkSwapChain != null);
@@ -1343,5 +1177,187 @@ public class CVKIconsRenderable extends CVKRenderable{
 //            pipelineLayouts.clear();
 //            pipelineLayouts = null;
 //        }
-    }          
+    }      
+
+
+    // ========================> Display <======================== \\
+    
+    @Override
+    public boolean NeedsDisplayUpdate() { return recreateIcons || descriptorPoolResourcesDirty || swapChainResourcesDirty; }
+    
+    @Override
+    public int DisplayUpdate() { 
+        int ret = VK_SUCCESS;
+        VerifyInRenderThread();
+        
+        
+        if (swapChainResourcesDirty) {
+            ret = CreateSwapChainResources();
+            if (VkFailed(ret)) { return ret; }
+        }
+        
+        if (descriptorPoolResourcesDirty) {
+            ret = CreateDescriptorPoolResources();
+            if (VkFailed(ret)) { return ret; }
+        }
+        
+        // TODO: we need to figure out if we recreate all icons on every event, if not
+        // then we need to track what events we need to process here.
+        
+        if (recreateIcons) {
+            DestroyVertexBuffers();
+            DestroyXYZWBuffer();
+
+            ret = CreateVertexBuffers();
+            if (VkFailed(ret)) { return ret; }
+            ret = CreateXYZWBuffer();
+            if (VkFailed(ret)) { return ret; }
+
+            try (MemoryStack stack = stackPush()) {          
+                ret = UpdateUniformBuffers(stack);
+                if (VkFailed(ret)) { return ret; }
+            }
+
+            recreateIcons = false;
+        }
+        
+        return ret;
+    }        
+    
+    
+    // ========================> Tasks <======================== \\    
+    
+    public CVKRenderableUpdateTask TaskCreateIcons(final VisualAccess access) {
+        //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
+        vertexCount = access.getVertexCount();
+        try {
+            // Vertices are modified by the event thread
+            vertexLock.lock(); 
+            
+            // Destroy old staging buffer if it exists
+            if (cvkVertexStagingBuffer != null) {
+                cvkVertexStagingBuffer.Destroy();
+                cvkVertexStagingBuffer = null;
+            }                       
+            
+            if (vertexCount > 0) {
+                int vertexBufferSizeBytes = CVKIconsRenderable.Vertex.SIZEOF * vertexCount;
+                cvkVertexStagingBuffer = CVKBuffer.Create(cvkDevice, 
+                                                          vertexBufferSizeBytes, 
+                                                          VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                                                          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+                cvkVertexStagingBuffer.DEBUGNAME = "CVKIconsRenderable.TaskCreateIcons cvkVertexStagingBuffer";
+                
+                int xyzwBufferSizeBytes = XYZ_BUFFER_WIDTH * vertexCount * Float.BYTES;
+                cvkXYZWStagingBuffer = CVKBuffer.Create(cvkDevice, 
+                                                        xyzwBufferSizeBytes, 
+                                                        VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                                                        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+                cvkXYZWStagingBuffer.DEBUGNAME = "CVKIconsRenderable.TaskCreateIcons cvkXYZWStagingBuffer";
+                
+                ByteBuffer pVertexMemory = cvkVertexStagingBuffer.StartWrite(0, vertexBufferSizeBytes);
+                ByteBuffer pXYZWMemory = cvkXYZWStagingBuffer.StartWrite(0, xyzwBufferSizeBytes);
+                CVKIconsRenderable.Vertex vertex = new CVKIconsRenderable.Vertex();
+                for (int pos = 0; pos < vertexCount; pos++) {
+                    SetColorInfo(pos, vertex, access);
+                    SetIconInfo(pos, vertex, access);
+                    vertex.CopyTo(pVertexMemory);
+                    SetXYZWInfo(pos, pXYZWMemory, access);
+                }
+                int vertMemPos = pVertexMemory.position();
+                CVKAssert(vertMemPos == vertexBufferSizeBytes);
+                cvkVertexStagingBuffer.EndWrite();
+                pVertexMemory = null; // now unmapped, do not use
+                int xyzwMemPos = pXYZWMemory.position();
+                CVKAssert(xyzwMemPos == xyzwBufferSizeBytes);
+                cvkXYZWStagingBuffer.EndWrite();
+                pXYZWMemory = null; // now unmapped, do not use                
+                
+                
+//                vertices = new CVKIconsRenderable.Vertex[vertexCount];
+//                positions = new float[XYZ_BUFFER_WIDTH * vertexCount];
+//                for (int pos = 0; pos < vertexCount; pos++) {
+//                    vertices[pos] = new CVKIconsRenderable.Vertex();
+//                    SetColorInfo(pos, access);
+//                    SetIconInfo(pos, access);
+//                    SetXYZWInfo(pos, access);
+//                }
+            }
+        } finally {
+            vertexLock.unlock();
+        }
+        
+        //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.DisplayUpdate) ===//
+        return (imageIndex) -> {
+            // We can't update the xyzw texture here as it is needed to render each image
+            // in the swap chain.  If we recreate it for image 1 it will be likely be in
+            // flight for presenting image 0.  The shared resource recreation path is
+            // synchronised for all images so we need to do it there.
+            recreateIcons = true;
+        };
+    }    
+    
+    // TODO_TT: do we need this if we are destroying in create?
+    public CVKRenderableUpdateTask TaskDestroyIcons() {
+        //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
+        
+        //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.DisplayUpdate) ===//
+        return (imageIndex) -> {
+            VerifyInRenderThread();
+        };        
+    }    
+    
+    
+    // ========================> Helpers <======================== \\      
+    
+    private void SetIconInfo(final int pos, CVKIconsRenderable.Vertex vertex, final VisualAccess access) {
+        CVKAssert(access != null);
+        CVKAssert(vertex != null);
+        CVKAssert(pos < access.getVertexCount());
+        
+        final String foregroundIconName = access.getForegroundIcon(pos);
+        final String backgroundIconName = access.getBackgroundIcon(pos);
+        final int foregroundIconIndex = parent.GetTextureAtlas().AddIcon(foregroundIconName);
+        final int backgroundIconIndex = parent.GetTextureAtlas().AddIcon(backgroundIconName);
+
+        final String nWDecoratorName = access.getNWDecorator(pos);
+        final String sWDecoratorName = access.getSWDecorator(pos);
+        final String sEDecoratorName = access.getSEDecorator(pos);
+        final String nEDecoratorName = access.getNEDecorator(pos);
+        final int nWDecoratorIndex = nWDecoratorName != null ? parent.GetTextureAtlas().AddIcon(nWDecoratorName) : CVKIconTextureAtlas.TRANSPARENT_ICON_INDEX;
+        final int sWDecoratorIndex = sWDecoratorName != null ? parent.GetTextureAtlas().AddIcon(sWDecoratorName) : CVKIconTextureAtlas.TRANSPARENT_ICON_INDEX;
+        final int sEDecoratorIndex = sEDecoratorName != null ? parent.GetTextureAtlas().AddIcon(sEDecoratorName) : CVKIconTextureAtlas.TRANSPARENT_ICON_INDEX;
+        final int nEDecoratorIndex = nEDecoratorName != null ? parent.GetTextureAtlas().AddIcon(nEDecoratorName) : CVKIconTextureAtlas.TRANSPARENT_ICON_INDEX;
+
+        final int icons = (backgroundIconIndex << ICON_BITS) | (foregroundIconIndex & ICON_MASK);
+        final int decoratorsWest = (sWDecoratorIndex << ICON_BITS) | (nWDecoratorIndex & ICON_MASK);
+        final int decoratorsEast = (nEDecoratorIndex << ICON_BITS) | (sEDecoratorIndex & ICON_MASK);
+
+        vertex.SetIconData(icons, decoratorsWest, decoratorsEast, access.getVertexId(pos));
+    }    
+    
+    private void SetColorInfo(final int pos, CVKIconsRenderable.Vertex vertex, final VisualAccess access) {
+        CVKAssert(access != null);
+        CVKAssert(vertex != null);
+        CVKAssert(pos < access.getVertexCount());
+        
+        vertex.SetBackgroundIconColour(access.getVertexColor(pos));
+        vertex.SetVertexVisibility(access.getVertexVisibility(pos));
+    }    
+    
+    // TODO_TT: find out more about the second coord
+    // TODO_TT: see if anything ever uses the radius   - yes the blaze batcher 
+    private void SetXYZWInfo(final int pos, ByteBuffer buffer, final VisualAccess access) {
+        CVKAssert(access != null);
+        CVKAssert(buffer.remaining() >= (XYZ_BUFFER_WIDTH * Float.BYTES));    
+        
+        buffer.putFloat(access.getX(pos));
+        buffer.putFloat(access.getY(pos));
+        buffer.putFloat(access.getZ(pos));
+        buffer.putFloat(access.getRadius(pos));
+        buffer.putFloat(access.getX2(pos));
+        buffer.putFloat(access.getY2(pos));
+        buffer.putFloat(access.getZ2(pos));
+        buffer.putFloat(access.getRadius(pos));  
+    }    
 }

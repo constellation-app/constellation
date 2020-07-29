@@ -34,7 +34,6 @@ public abstract class CVKRenderable {
     protected boolean descriptorPoolResourcesDirty = false;
     protected boolean swapChainImageCountChanged = true;
     protected boolean swapChainResourcesDirty = false;
-    protected boolean isDirty = true;
     protected boolean isInitialised = false;
     
     /**
@@ -146,11 +145,6 @@ public abstract class CVKRenderable {
     */
     public abstract int GetVertexCount();
 
-    /*
-        TODO HYDRA: Clarify what this means
-        Return true if this renderable needs to be updated
-    */
-    public boolean IsDirty(){ return isDirty; }    
     
     public boolean NeedsDisplayUpdate() { return false; }
     public int DisplayUpdate() { return VK_SUCCESS; }

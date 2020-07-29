@@ -116,6 +116,18 @@ public class CVKRenderer implements ComponentListener {
         }   
     }
     
+    
+    /**
+     * Called from the parent CVKVisualProcessor when the VisualManager is
+     * being destroyed.
+     */
+    public void Destroy() {
+        // Wait for the device to be free before destroying its resources
+        cvkDevice.WaitIdle();
+        renderables.forEach(el -> {el.Destroy();});
+    }
+    
+    
     /**
      * When a new renderable is added we need to:
      * - call the static initialiser (in case this is the first time an instance of that
@@ -195,14 +207,10 @@ public class CVKRenderer implements ComponentListener {
     public int Initialise(long surfaceHandle) {
         cvkDevice = new CVKDevice(cvkInstance, surfaceHandle);
         int ret = cvkDevice.Initialise();
-        if (VkFailed(ret)) {
-            return ret;
-        }        
+        if (VkFailed(ret)) { return ret; }        
         
         ret = parent.DeviceInitialised(cvkDevice);
-        if (VkFailed(ret)) {
-            return ret;
-        }
+        if (VkFailed(ret)) { return ret; }
         
         return ProcessNewRenderables();
     }
@@ -362,7 +370,7 @@ public class CVKRenderer implements ComponentListener {
             
         // Loop through renderables and record their buffers
         for (int r = 0; r < renderables.size(); ++r) {
-            if (renderables.get(r).IsDirty() && renderables.get(r).GetVertexCount() > 0){
+            if (renderables.get(r).GetVertexCount() > 0) {
                 renderables.get(r).RecordCommandBuffer(inheritanceInfo, imageIndex);
 
                 // TODO Hydra: may be more efficient to add all the visible command buffers to a master list then 

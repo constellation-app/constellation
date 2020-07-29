@@ -97,10 +97,8 @@ public class CVKVisualProcessor extends VisualProcessor {
     
 
     @Override
-    protected final void destroyCanvas() {
-        //TODO_TT: is this needed?
-        System.out.println("GLVisualProcessor.destroyCanvas called");        
-//        cvkCanvas.destroy();
+    protected final void destroyCanvas() {     
+        cvkCanvas.Destroy();
     }
     
 
@@ -231,8 +229,9 @@ public class CVKVisualProcessor extends VisualProcessor {
 
     @Override
     protected void cleanup() {
-        // TODO_TT:
-        //canvas.removeGLEventListener(renderer);
+        cvkAxes.DestroyStaticResources();
+        cvkFPS.DestroyStaticResources();
+        cvkRenderer.Destroy();
     }
 
     private final class GLExportToImageOperation implements VisualOperation {
@@ -747,17 +746,11 @@ public class CVKVisualProcessor extends VisualProcessor {
         
         // Static as the shader and descriptor layout doesn't change per instance of renderable or over the course of the program
         ret = CVKAxesRenderable.StaticInitialise(cvkDevice);
-        if (VkFailed(ret)) {
-            return ret;
-        }
+        if (VkFailed(ret)) { return ret; }
         ret = CVKFPSRenderable.StaticInitialise(cvkDevice);      
-        if (VkFailed(ret)) {
-            return ret;
-        }   
+        if (VkFailed(ret)) { return ret; }   
         ret = CVKIconsRenderable.StaticInitialise(cvkDevice);      
-        if (VkFailed(ret)) {
-            return ret;
-        }           
+        if (VkFailed(ret)) { return ret; }           
      
         // Initialise the shared atlas texture.  It extends renderable so it gets the call
         // for updating shared resouces.  We could have a seperate render event listener but
