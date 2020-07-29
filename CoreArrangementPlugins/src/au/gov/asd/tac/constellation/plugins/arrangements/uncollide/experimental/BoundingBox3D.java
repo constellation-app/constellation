@@ -26,15 +26,9 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
  * @author algol
  * @author Nova
  */
-class BoundingBox3D { 
-    final float minX;
-    final float minY;
+class BoundingBox3D extends AbstractBoundingBox{ 
     final float minZ;
-    final float maxX;
-    final float maxY;
     final float maxZ;
-    final float midX;
-    final float midY;
     final float midZ;
     
     /**
@@ -48,15 +42,11 @@ class BoundingBox3D {
      * @return  instance of class BoundingBox2D based on input graph
      */
     BoundingBox3D(final GraphReadMethods wg) {
-        final int xId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
-        final int yId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
+        super(wg);
+        
         final int zId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
 
-        float minX = wg.getFloatValue(xId, wg.getVertex(0));
-        float minY = wg.getFloatValue(yId, wg.getVertex(0));
         float minZ = wg.getFloatValue(zId, wg.getVertex(0));
-        float maxX = minX;
-        float maxY = minY;
         float maxZ = minZ;
 
 
@@ -67,23 +57,8 @@ class BoundingBox3D {
               
         for (int position = 1; position < vxCount; position++) {
             final int vxId = wg.getVertex(position);
-
-            final float x = wg.getFloatValue(xId, vxId);
-            final float y = wg.getFloatValue(yId, vxId);
             final float z = wg.getFloatValue(zId, vxId);
             
-            if (x < minX) {
-                minX = x;
-            }
-            if (x > maxX) {
-                maxX = x;
-            }
-            if (y < minY) {
-                minY = y;
-            }
-            if (y > maxY) {
-                maxY = y;
-            }
             if (z < minZ) {
                 minZ = z;
             }
@@ -92,26 +67,16 @@ class BoundingBox3D {
             }
         }
 
-        this.minX = minX;
-        this.minY = minY;
         this.minZ = minZ;
-        this.maxX = maxX;
-        this.maxY = maxY;
         this.maxZ = maxZ;
-        this.midX = minX + (maxX - minX)*(float)0.5;
-        this.midY = minY + (maxY - minY)*(float)0.5;
         this.midZ = minZ + (maxZ - minZ)*(float)0.5;
     }
 
     private BoundingBox3D(final float minX, final float maxX, final float minY, final float maxY, final float minZ, final float maxZ) {
-        this.minX = minX;
-        this.minY = minY;
+        super(minX, maxX, minY, maxY);
+
         this.minZ = minZ;
-        this.maxX = maxX;
-        this.maxY = maxY;
         this.maxZ = maxZ;
-        this.midX = minX + (maxX - minX)*(float)0.5;
-        this.midY = minY + (maxY - minY)*(float)0.5;
         this.midZ = minZ + (maxZ - minZ)*(float)0.5;
     }
 

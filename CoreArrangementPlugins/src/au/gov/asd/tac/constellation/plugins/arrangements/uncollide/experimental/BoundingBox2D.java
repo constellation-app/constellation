@@ -15,9 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.uncollide.experimental;
 
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 
 /**
  * This class is designed to provide a 2D bounding box for a graph.
@@ -26,13 +24,7 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
  * @author algol
  * @author Nova
  */
-class BoundingBox2D { 
-    final float minX;
-    final float minY;
-    final float maxX;
-    final float maxY;
-    final float midX;
-    final float midY;
+class BoundingBox2D extends AbstractBoundingBox{ 
     
     /**
      * Generate a 2D bounding box for the graph.
@@ -45,55 +37,11 @@ class BoundingBox2D {
      * @return  instance of class BoundingBox2D based on input graph
      */
     BoundingBox2D(final GraphReadMethods wg) {
-        final int xId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
-        final int yId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
-
-        float minX = wg.getFloatValue(xId, wg.getVertex(0));
-        float minY = wg.getFloatValue(yId, wg.getVertex(0));
-        float maxX = minX;
-        float maxY = minY;
-
-
-        final int vxCount = wg.getVertexCount();
-        if(vxCount == 0) {
-            throw new IllegalArgumentException("Graph must contain atleast one vertex to find BoundingBox");
-        }
-              
-        for (int position = 1; position < vxCount; position++) {
-            final int vxId = wg.getVertex(position);
-
-            final float x = wg.getFloatValue(xId, vxId);
-            final float y = wg.getFloatValue(yId, vxId);
-            
-            if (x < minX) {
-                minX = x;
-            }
-            if (x > maxX) {
-                maxX = x;
-            }
-            if (y < minY) {
-                minY = y;
-            }
-            if (y > maxY) {
-                maxY = y;
-            }
-        }
-
-        this.minX = minX;
-        this.minY = minY;
-        this.maxX = maxX;
-        this.maxY = maxY;
-        this.midX = minX + (maxX - minX)*(float)0.5;
-        this.midY = minY + (maxY - minY)*(float)0.5;
+        super(wg);
     }
 
-    private BoundingBox2D(float minX, float maxX, float minY, float maxY) {
-        this.minX = minX;
-        this.minY = minY;
-        this.maxX = maxX;
-        this.maxY = maxY;
-        this.midX = minX + (maxX - minX)*(float)0.5;
-        this.midY = minY + (maxY - minY)*(float)0.5;
+    BoundingBox2D(float minX, float maxX, float minY, float maxY) {
+        super(minX, maxX, minY, maxY);
     }
 
     /**
