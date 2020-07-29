@@ -56,6 +56,8 @@ public class CVKUtils {
     public static final int CVK_ERROR_IMAGE_TOO_SMALL_FOR_COPY                  = 0xFFFF0001;
     public static final int CVK_ERROR_BUFFER_TOO_SMALL_FOR_COPY                 = 0xFFFF0002;
     public static final int CVK_ERROR_INVALID_IMAGE                             = 0xFFFF0003;
+    public static final int CVK_ERROR_SHADER_COMPILATION                        = 0xFFFF0004;
+    public static final int CVK_ERROR_SHADER_MODULE                             = 0xFFFF0005;
     
     // Remove this once we are sure everything is working, but for now ensure all render ops happen in the render thread
     // TODO_TT: !!!THIS WILL ONLY WORK FOR A SINGLE GRAPH, MULTIPLE GRAPHS WILL TRIP THIS !!!

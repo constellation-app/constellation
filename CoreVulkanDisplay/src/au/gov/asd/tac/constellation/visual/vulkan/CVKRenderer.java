@@ -118,6 +118,18 @@ public class CVKRenderer implements ComponentListener {
         }   
     }
     
+    
+    /**
+     * Called from the parent CVKVisualProcessor when the VisualManager is
+     * being destroyed.
+     */
+    public void Destroy() {
+        // Wait for the device to be free before destroying its resources
+        cvkDevice.WaitIdle();
+        renderables.forEach(el -> {el.Destroy();});
+    }
+    
+    
     /**
      * When a new renderable is added we need to:
      * - call the static initialiser (in case this is the first time an instance of that
@@ -193,14 +205,10 @@ public class CVKRenderer implements ComponentListener {
     public int Initialise(long surfaceHandle) {
         cvkDevice = new CVKDevice(cvkInstance, surfaceHandle);
         int ret = cvkDevice.Initialise();
-        if (VkFailed(ret)) {
-            return ret;
-        }        
+        if (VkFailed(ret)) { return ret; }        
         
         ret = parent.DeviceInitialised(cvkDevice);
-        if (VkFailed(ret)) {
-            return ret;
-        }
+        if (VkFailed(ret)) { return ret; }
         
         return ProcessNewRenderables();
     }
@@ -230,9 +238,7 @@ public class CVKRenderer implements ComponentListener {
                 // Give each renderable a chance to recreate swapchain depedent resources
                 for (int i = 0; i < renderables.size(); ++i) {
                     ret = renderables.get(i).CreateSwapChainResources(cvkSwapChain);
-                    if (VkFailed(ret)){
-                        return ret;
-                    }
+                    if (VkFailed(ret)){ return ret; }
                 }
             }
         } else {
