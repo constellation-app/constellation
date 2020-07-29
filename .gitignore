@@ -21,6 +21,7 @@ endorsed
 /*/nbproject/private
 */.jacocoverage/
 jacoco*
+ConstellationBootstrap
 
 CoreDependencies/release/modules/ext
 CoreDependencies/nbproject/project_old.xml

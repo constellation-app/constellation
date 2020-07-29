@@ -17,6 +17,8 @@ package au.gov.asd.tac.constellation.graph.interaction.visual.renderables;
 
 import au.gov.asd.tac.constellation.graph.interaction.framework.HitState;
 import au.gov.asd.tac.constellation.graph.interaction.framework.HitState.HitType;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKDescriptorPool;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKDescriptorPool.CVKDescriptorPoolRequirements;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable;
@@ -43,18 +45,53 @@ public class CVKHitTester extends CVKRenderable {
     private final Queue<Queue<HitState>> notificationQueues = new LinkedList<>();
     private boolean needsDisplayUpdate = false;
     
-    public void queueRequest(final HitTestRequest request) {
-        requestQueue.add(request);
-        needsDisplayUpdate = true;
-    }
     
+    // ========================> Lifetime <======================== \\
+    
+    @Override
+    public int Initialise(CVKDevice cvkDevice) { return VK_SUCCESS;}  
+    
+    @Override
+    public void Destroy() {}
+    
+    
+    // ========================> Swap chain <======================== \\    
+    
+    @Override
+    protected int DestroySwapChainResources() { return VK_SUCCESS; }
+    
+    
+    // ========================> Vertex buffers <======================== \\    
+    
+    @Override
+    public int GetVertexCount() { return 0; }
+    
+    
+    // ========================> Command buffers <======================== \\
+    
+    @Override
+    public VkCommandBuffer GetCommandBuffer(int imageIndex) { return null; }
+    
+    @Override
+    public int RecordCommandBuffer(VkCommandBufferInheritanceInfo inheritanceInfo, int index) { return VK_SUCCESS;}    
+    
+    
+    // ========================> Descriptors <======================== \\
+    
+    @Override
+    public int DestroyDescriptorPoolResources() { return VK_SUCCESS; }     
+      
+    @Override
+    public void IncrementDescriptorTypeRequirements(CVKDescriptorPoolRequirements reqs, CVKDescriptorPoolRequirements perImageReqs) {}       
+    
+    
+    // ========================> Display <======================== \\
     
     @Override
     public boolean NeedsDisplayUpdate() { 
         return needsDisplayUpdate; 
     }
      
-
     @Override
     public int DisplayUpdate() {
         // TODO Hydra: Need to reset the needsDisplayUpdate flag in here
@@ -93,25 +130,12 @@ public class CVKHitTester extends CVKRenderable {
         }
         return ret;
     }  
+
+
+    // ========================> Tasks <======================== \\
     
-    @Override
-    public void Destroy() {}
-    @Override
-    public VkCommandBuffer GetCommandBuffer(int imageIndex) { return null; }
-    @Override
-    public int DestroySwapChainResources() { return VK_SUCCESS; }
-    
-    @Override
-    public int CreateSwapChainResources(CVKSwapChain cvkSwapChain) { 
-        return VK_SUCCESS; 
-    }
-    
-    @Override
-    public void IncrementDescriptorTypeRequirements(CVKSwapChain.CVKDescriptorPoolRequirements reqs, CVKSwapChain.CVKDescriptorPoolRequirements perImageReqs) {}     
-    @Override
-    public int RecordCommandBuffer(VkCommandBufferInheritanceInfo inheritanceInfo, int index) { return VK_SUCCESS;}
-    @Override
-    public int GetVertexCount() { return 0; }
-    @Override
-    public int Initialise(CVKDevice cvkDevice) { return VK_SUCCESS;}    
+    public void queueRequest(final HitTestRequest request) {
+        requestQueue.add(request);
+        needsDisplayUpdate = true;
+    }    
 }

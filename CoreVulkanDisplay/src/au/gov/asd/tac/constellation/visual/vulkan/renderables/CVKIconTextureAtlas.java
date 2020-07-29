@@ -19,10 +19,11 @@ import au.gov.asd.tac.constellation.utilities.graphics.Vector3i;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKDescriptorPool;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
-import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain.CVKDescriptorPoolRequirements;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKDescriptorPool.CVKDescriptorPoolRequirements;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKLOGGER;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.checkVKret;
@@ -150,16 +151,6 @@ public class CVKIconTextureAtlas extends CVKRenderable {
         return ret;    
     }       
     
-    @Override
-    public int GetVertexCount(){ return 0; }    
-    @Override
-    public int RecordCommandBuffer(VkCommandBufferInheritanceInfo inheritanceInfo, int index){ return VK_SUCCESS; }    
-    @Override
-    public int DestroySwapChainResources() { return VK_SUCCESS; }    
-    @Override
-    public int CreateSwapChainResources(CVKSwapChain cvkSwapChain) { return VK_SUCCESS; }        
-    @Override
-    public void IncrementDescriptorTypeRequirements(CVKDescriptorPoolRequirements reqs, CVKDescriptorPoolRequirements perImageReqs) {}
         
     // This could be replaced with a templated Pair type
     private class IndexedConstellationIcon {
@@ -445,8 +436,15 @@ public class CVKIconTextureAtlas extends CVKRenderable {
     }   
     
     @Override
-    public VkCommandBuffer GetCommandBuffer(int imageIndex)
-    {
-        return null;
-    }      
+    public VkCommandBuffer GetCommandBuffer(int imageIndex) { return null; }        
+    @Override
+    public int GetVertexCount(){ return 0; }    
+    @Override
+    public int RecordCommandBuffer(VkCommandBufferInheritanceInfo inheritanceInfo, int index){ return VK_SUCCESS; }    
+    @Override
+    protected int DestroySwapChainResources() { return VK_SUCCESS; }    
+    @Override
+    protected int DestroyDescriptorPoolResources() { return VK_SUCCESS; }       
+    @Override
+    public void IncrementDescriptorTypeRequirements(CVKDescriptorPoolRequirements reqs, CVKDescriptorPoolRequirements perImageReqs) {}    
 }

@@ -15,17 +15,25 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan.renderables;
 
+import au.gov.asd.tac.constellation.visual.vulkan.CVKDescriptorPool;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKDescriptorPool.CVKDescriptorPoolRequirements;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkCommandBufferInheritanceInfo;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 
 public abstract class CVKRenderable {
     protected CVKVisualProcessor parent;
     protected CVKDevice cvkDevice = null;
-    protected boolean isDirty = true;
+    protected CVKDescriptorPool cvkDescriptorPool = null;
+    protected CVKSwapChain cvkSwapChain = null;
+    protected boolean descriptorPoolResourcesDirty = false;
+    protected boolean swapChainImageCountChanged = true;
+    protected boolean swapChainResourcesDirty = false;
     protected boolean isInitialised = false;
     
     /**
@@ -55,7 +63,7 @@ public abstract class CVKRenderable {
      * 
      * @return error code
      */
-    public abstract int DestroySwapChainResources();
+    protected abstract int DestroySwapChainResources();
     
     /**
      * 
@@ -64,8 +72,72 @@ public abstract class CVKRenderable {
      * @param cvkSwapChain
      * @return error code
     */
-    public abstract int CreateSwapChainResources(CVKSwapChain cvkSwapChain);
-    public abstract void IncrementDescriptorTypeRequirements(CVKSwapChain.CVKDescriptorPoolRequirements reqs, CVKSwapChain.CVKDescriptorPoolRequirements perImageReqs);
+    //public abstract int CreateSwapChainResources(CVKSwapChain cvkSwapChain);
+    
+    /**
+     * Called just before the descriptor pool is about to be destroyed allowing the
+     * object to cleanup its descriptors.
+     * 
+     * @return error code
+     */    
+    protected abstract int DestroyDescriptorPoolResources();
+    
+    /**
+     * 
+     * Called just after a new descriptor pool has been created but before the
+     * old one has been destroyed.  This gives us a chance to cleanup resources
+     * created from the old pool and remember the new pool.  Note we don't create
+     * the new descriptor pool resources until the next call to DisplayUpdate as
+     * at the point we are called the swapchain may also be pending recreation.
+     * 
+     * @param newDescriptorPool
+     * @return error code
+    */
+    public int SetNewDescriptorPool(CVKDescriptorPool newDescriptorPool) {
+        CVKAssert(newDescriptorPool != null);  
+        int ret = VK_SUCCESS;
+        
+        // If this isn't the initial update, release swapchain resources
+        if (cvkDescriptorPool != null) {
+            ret = DestroyDescriptorPoolResources();
+            if (VkFailed(ret)) { return ret; }
+        }        
+              
+        cvkDescriptorPool = newDescriptorPool;
+        descriptorPoolResourcesDirty = true;
+        
+        return ret;
+    }
+    
+    /**
+     * 
+     * Called just after a new swapchain has been created but before the
+     * old one has been destroyed.  This gives us a chance to cleanup resources
+     * created for the old swapchain and remember the new swapchain.  Note we 
+     * don't create the new swapchain resources until the next call to DisplayUpdate 
+     * as at the point we are called the descriptor pool may also be pending recreation.
+     * 
+     * @param newSwapChain
+     * @return error code
+    */    
+    public int SetNewSwapChain(CVKSwapChain newSwapChain) {
+        CVKAssert(newSwapChain != null);   
+        int ret = VK_SUCCESS;
+        
+        // If this isn't the initial update, release swapchain resources
+        if (cvkSwapChain != null) {
+            swapChainImageCountChanged = newSwapChain.GetImageCount() != cvkSwapChain.GetImageCount();
+            ret = DestroySwapChainResources();
+            if (VkFailed(ret)) { return ret; }
+        }
+                     
+        cvkSwapChain = newSwapChain;
+        swapChainResourcesDirty = true;
+        
+        return ret;
+    }    
+    
+    public abstract void IncrementDescriptorTypeRequirements(CVKDescriptorPoolRequirements reqs, CVKDescriptorPoolRequirements perImageReqs);
     public abstract int RecordCommandBuffer(VkCommandBufferInheritanceInfo inheritanceInfo, int index);
 
     /*
@@ -73,11 +145,6 @@ public abstract class CVKRenderable {
     */
     public abstract int GetVertexCount();
 
-    /*
-        TODO HYDRA: Clarify what this means
-        Return true if this renderable needs to be updated
-    */
-    public boolean IsDirty(){ return isDirty; }    
     
     public boolean NeedsDisplayUpdate() { return false; }
     public int DisplayUpdate() { return VK_SUCCESS; }
