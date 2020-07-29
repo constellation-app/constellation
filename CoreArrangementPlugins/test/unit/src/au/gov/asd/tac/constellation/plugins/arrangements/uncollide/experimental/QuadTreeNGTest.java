@@ -117,5 +117,28 @@ public class QuadTreeNGTest {
         assertEquals(noCollisionsQT.hasCollision(), false);
         assertEquals(twoTwinsQT.hasCollision(), true);
     }
+
+    /**
+     * Test of split method, of class QuadTree.
+     */
+    @Test
+    public void testSplit() {
+    }
+
+    /**
+     * Test of getIndex method, of class QuadTree.
+     */
+    @Test
+    public void testGetIndex() {
+    }
+
+    /**
+     * Test of nodeCollides method, of class QuadTree.
+     */
+    @Test
+    public void testNodeCollides() {
+    }
+    
+    
     
 }
