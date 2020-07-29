@@ -746,17 +746,11 @@ public class CVKVisualProcessor extends VisualProcessor {
         
         // Static as the shader and descriptor layout doesn't change per instance of renderable or over the course of the program
         ret = CVKAxesRenderable.StaticInitialise(cvkDevice);
-        if (VkFailed(ret)) {
-            return ret;
-        }
+        if (VkFailed(ret)) { return ret; }
         ret = CVKFPSRenderable.StaticInitialise(cvkDevice);      
-        if (VkFailed(ret)) {
-            return ret;
-        }   
+        if (VkFailed(ret)) { return ret; }   
         ret = CVKIconsRenderable.StaticInitialise(cvkDevice);      
-        if (VkFailed(ret)) {
-            return ret;
-        }           
+        if (VkFailed(ret)) { return ret; }           
      
         // Initialise the shared atlas texture.  It extends renderable so it gets the call
         // for updating shared resouces.  We could have a seperate render event listener but

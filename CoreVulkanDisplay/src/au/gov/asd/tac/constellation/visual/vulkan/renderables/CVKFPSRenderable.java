@@ -46,12 +46,14 @@ import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKCommandBuffer;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_SHADER_COMPILATION;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_SHADER_MODULE;
+import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryUtil;
+import static org.lwjgl.system.MemoryUtil.memAllocInt;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_TRANSFER_DST_BIT;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
@@ -66,6 +68,8 @@ import static org.lwjgl.vulkan.VK10.VK_COMPARE_OP_ALWAYS;
 import static org.lwjgl.vulkan.VK10.VK_CULL_MODE_BACK_BIT;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+import static org.lwjgl.vulkan.VK10.VK_DYNAMIC_STATE_SCISSOR;
+import static org.lwjgl.vulkan.VK10.VK_DYNAMIC_STATE_VIEWPORT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32B32A32_SFLOAT;
 import static org.lwjgl.vulkan.VK10.VK_FRONT_FACE_COUNTER_CLOCKWISE;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
@@ -85,6 +89,7 @@ import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREA
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
@@ -100,6 +105,8 @@ import static org.lwjgl.vulkan.VK10.vkCmdBindDescriptorSets;
 import static org.lwjgl.vulkan.VK10.vkCmdBindPipeline;
 import static org.lwjgl.vulkan.VK10.vkCmdBindVertexBuffers;
 import static org.lwjgl.vulkan.VK10.vkCmdDraw;
+import static org.lwjgl.vulkan.VK10.vkCmdSetScissor;
+import static org.lwjgl.vulkan.VK10.vkCmdSetViewport;
 import static org.lwjgl.vulkan.VK10.vkCreateGraphicsPipelines;
 import static org.lwjgl.vulkan.VK10.vkCreatePipelineLayout;
 import static org.lwjgl.vulkan.VK10.vkCreateDescriptorSetLayout;
@@ -133,6 +140,7 @@ import static org.lwjgl.vulkan.VK10.vkDestroyPipeline;
 import static org.lwjgl.vulkan.VK10.vkDestroyPipelineLayout;
 import static org.lwjgl.vulkan.VK10.vkFreeDescriptorSets;
 import org.lwjgl.vulkan.VkPipelineDepthStencilStateCreateInfo;
+import org.lwjgl.vulkan.VkPipelineDynamicStateCreateInfo;
 
 
 public class CVKFPSRenderable extends CVKRenderable {
@@ -333,22 +341,25 @@ public class CVKFPSRenderable extends CVKRenderable {
         try {
             if (vsBytes == null) {
                 vsBytes = LoadFileToDirectBuffer(CVKShaderPlaceHolder.class, "compiled/SimpleIcon.vs.spv");
-                if (vsBytes.capacity() == 0) {
-                    throw new RuntimeException("Failed to load compiled/SimpleIcon.vs.spv");
+                if (vsBytes == null) {
+                    CVKLOGGER.log(Level.SEVERE, "Failed to compile FPSRenderable shader: SimpleIcon.vs");
+                    return CVK_ERROR_SHADER_COMPILATION;
                 }
             }
             
             if (gsBytes == null) {
                 gsBytes = LoadFileToDirectBuffer(CVKShaderPlaceHolder.class, "compiled/SimpleIcon.gs.spv");
-                if (gsBytes.capacity() == 0) {
-                    throw new RuntimeException("Failed to load compiled/SimpleIcon.gs.spv");
+                if (gsBytes == null) {
+                    CVKLOGGER.log(Level.SEVERE, "Failed to compile FPSRenderable shader: SimpleIcon.gs");
+                    return CVK_ERROR_SHADER_COMPILATION;
                 }
             }
             
             if (fsBytes == null) {
                 fsBytes = LoadFileToDirectBuffer(CVKShaderPlaceHolder.class, "compiled/SimpleIcon.fs.spv");
-                if (fsBytes.capacity() == 0) {
-                    throw new RuntimeException("Failed to load compiled/SimpleIcon.fs.spv");
+                if (fsBytes == null) {
+                    CVKLOGGER.log(Level.SEVERE, "Failed to compile FPSRenderable shader: SimpleIcon.fs");
+                    return CVK_ERROR_SHADER_COMPILATION;
                 }
             }
          
@@ -367,15 +378,18 @@ public class CVKFPSRenderable extends CVKRenderable {
         try{           
             hVertexShader = CVKShaderUtils.createShaderModule(vsBytes, cvkDevice.GetDevice());
             if (hVertexShader == VK_NULL_HANDLE) {
-                throw new RuntimeException("Failed to create shader from PassThru.vs.spv bytes");
-            }            
+                CVKLOGGER.log(Level.SEVERE, "Failed to create shader module for: SimpleIcon.vs");
+                return CVK_ERROR_SHADER_MODULE;
+            }
             hGeometryShader = CVKShaderUtils.createShaderModule(gsBytes, cvkDevice.GetDevice());
             if (hGeometryShader == VK_NULL_HANDLE) {
-                throw new RuntimeException("Failed to create shader from PassThruLine.gs.spv bytes");
-            }             
-            hFragmentShader = CVKShaderUtils.createShaderModule(fsBytes, cvkDevice.GetDevice());            
+                CVKLOGGER.log(Level.SEVERE, "Failed to create shader module for: SimpleIcon.gs");
+                return CVK_ERROR_SHADER_MODULE;
+            }
+            hFragmentShader = CVKShaderUtils.createShaderModule(fsBytes, cvkDevice.GetDevice());
             if (hFragmentShader == VK_NULL_HANDLE) {
-                throw new RuntimeException("Failed to create shader from PassThru.fs.spv bytes");
+                CVKLOGGER.log(Level.SEVERE, "Failed to create shader module for: SimpleIcon.fs");
+                return CVK_ERROR_SHADER_MODULE;
             }
         } catch(Exception ex){
             CVKLOGGER.log(Level.SEVERE, "Failed to create shader module FPSRenderable: {0}", ex.toString());
@@ -438,9 +452,7 @@ public class CVKFPSRenderable extends CVKRenderable {
         int ret = VK_SUCCESS;
         if (!staticInitialised) {
             LoadShaders(cvkDevice);
-            if (VkFailed(ret)) { 
-                return ret; 
-            }
+            if (VkFailed(ret)) { return ret; }
             staticInitialised = true;
         }
         return ret;
@@ -748,7 +760,23 @@ public class CVKFPSRenderable extends CVKRenderable {
             VkCommandBuffer commandBuffer = commandBuffers.get(index).GetVKCommandBuffer();
             ret = vkBeginCommandBuffer(commandBuffer, beginInfo);
             checkVKret(ret);
+            
+	    // Set the dynamic viewport and scissor
+            VkViewport.Buffer viewport = VkViewport.callocStack(1, stack);
+            viewport.x(0.0f);
+            viewport.y(0.0f);
+            viewport.width(cvkSwapChain.GetWidth());
+            viewport.height(cvkSwapChain.GetHeight());
+            viewport.minDepth(0.0f);
+            viewport.maxDepth(1.0f);
 
+            VkRect2D.Buffer scissor = VkRect2D.callocStack(1, stack);
+            scissor.offset(VkOffset2D.callocStack(stack).set(0, 0));
+            scissor.extent(cvkDevice.GetCurrentSurfaceExtent());
+
+            vkCmdSetViewport(commandBuffer, 0, viewport);
+            vkCmdSetScissor(commandBuffer, 0, scissor);
+            
             vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines.get(index));
 
             LongBuffer pVertexBuffers = stack.longs(vertexBuffers.get(index).GetBufferHandle());
@@ -1023,7 +1051,6 @@ public class CVKFPSRenderable extends CVKRenderable {
                 multisampling.rasterizationSamples(VK_SAMPLE_COUNT_1_BIT);
                 
                 // ===> DEPTH <===
-
                 // Even though we don't test depth, the renderpass created by CVKSwapChain is used by
                 // each renderable and it was created to have a depth attachment
                 VkPipelineDepthStencilStateCreateInfo depthStencil = VkPipelineDepthStencilStateCreateInfo.callocStack(stack);
@@ -1048,6 +1075,16 @@ public class CVKFPSRenderable extends CVKRenderable {
                 colorBlending.pAttachments(colorBlendAttachment);
                 colorBlending.blendConstants(stack.floats(0.0f, 0.0f, 0.0f, 0.0f));
 
+                // ===> DYNAMIC PROPERTIES CREATION <===
+                IntBuffer pDynamicStates = memAllocInt(2);
+                pDynamicStates.put(VK_DYNAMIC_STATE_VIEWPORT);
+                pDynamicStates.put(VK_DYNAMIC_STATE_SCISSOR);
+                pDynamicStates.flip();
+
+                VkPipelineDynamicStateCreateInfo dynamicState = VkPipelineDynamicStateCreateInfo.calloc();
+                dynamicState.sType(VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO);
+                dynamicState.pDynamicStates(pDynamicStates);
+                
                 // ===> PIPELINE LAYOUT CREATION <===
                 VkPipelineLayoutCreateInfo pipelineLayoutInfo = VkPipelineLayoutCreateInfo.callocStack(stack);
                 pipelineLayoutInfo.sType(VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO);
@@ -1077,10 +1114,9 @@ public class CVKFPSRenderable extends CVKRenderable {
                 pipelineInfo.subpass(0);
                 pipelineInfo.basePipelineHandle(VK_NULL_HANDLE);
                 pipelineInfo.basePipelineIndex(-1);
+                pipelineInfo.pDynamicState(dynamicState);
 
                 LongBuffer pGraphicsPipeline = stack.mallocLong(1);
-
-
                 ret = vkCreateGraphicsPipelines(cvkDevice.GetDevice(), 
                                                 VK_NULL_HANDLE, 
                                                 pipelineInfo, 
@@ -1214,15 +1250,11 @@ public class CVKFPSRenderable extends CVKRenderable {
             CVKAssert(vertexBuffers == null);
             CVKAssert(commandBuffers == null);
          } else {
-            // This is the resize path, image count is unchanged.  We need to recreate
-            // pipelines as Vulkan doesn't have a good mechanism to update them and as
-            // they define the viewport and scissor rect they are now out of date.  We
-            // also need to update the uniform buffer as a new image size will mean a
+            // This is the resize path, image count is unchanged.  We
+            // need to update the uniform buffer as a new image size will mean a
             // different position for our FPS.  After updating the uniform buffers we
             // need to update the descriptor sets that bind the uniform buffers as well.
-            DestroyPipelines();
-            //DestroyDescriptorSets();
-            CVKAssert(pipelines == null);
+            DestroyDescriptorSets();
             needsResize = true;
         }
         
@@ -1260,16 +1292,12 @@ public class CVKFPSRenderable extends CVKRenderable {
                 if (VkFailed(ret)) { return ret; }                                       
             }      
         } else {
-            // This is the resize path, image count is unchanged.  We need to recreate
-            // pipelines as Vulkan doesn't have a good mechanism to update them and as
-            // they define the viewport and scissor rect they are now out of date.  We
-            // also need to update the uniform buffer as a new image size will mean a
+            // This is the resize path, image count is unchanged.  We
+            // need to update the uniform buffer as a new image size will mean a
             // different position for our FPS.  After updating the uniform buffers we
             // need to update the descriptor sets that bind the uniform buffers as well.
 
-            try (MemoryStack stack = stackPush()) {                     
-                ret = CreatePipelines();
-                if (VkFailed(ret)) { return ret; }                           
+            try (MemoryStack stack = stackPush()) {                    
                 
                 ret = UpdateUniformBuffers(stack);
                 if (VkFailed(ret)) { return ret; }
@@ -1331,14 +1359,10 @@ public class CVKFPSRenderable extends CVKRenderable {
         this.cvkDevice = cvkDevice;
         
         ret = CreateShaderModules();
-        if (VkFailed(ret)) {
-            return ret;
-        }
+        if (VkFailed(ret)) { return ret; }
          
         ret = CreateDescriptorLayout(cvkDevice);
-        if (VkFailed(ret)) { 
-            return ret; 
-        }
+        if (VkFailed(ret)) { return ret; }
          
         for (int digit = 0; digit < 10; ++digit) {
             // Returns the index of the icon, not a success code
@@ -1369,22 +1393,16 @@ public class CVKFPSRenderable extends CVKRenderable {
             // We only need to update descriptors if the atlas has generated a new texture
             if (atlasChanged) {
                 ret = DestroyDescriptorSets();
-                if (VkFailed(ret)) {
-                    return ret;
-                }
+                if (VkFailed(ret)) { return ret; }
         
                 //TODO_TT: updating the descriptor sets is probably a better approach to recreation
                 ret = CreateDescriptorSets(stack);
-                if (VkFailed(ret)) {
-                    return ret;
-                }
+                if (VkFailed(ret)) { return ret; }
             }
             
             // We update this constantly as the FPS changes constantly
             ret = UpdateVertexBuffers();
-            if (VkFailed(ret)) {
-                return ret;
-            }
+            if (VkFailed(ret)) { return ret; }
         }
         
         needsDisplayUpdate = false;

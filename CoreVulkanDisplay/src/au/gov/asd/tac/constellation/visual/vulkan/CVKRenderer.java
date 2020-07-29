@@ -205,14 +205,10 @@ public class CVKRenderer implements ComponentListener {
     public int Initialise(long surfaceHandle) {
         cvkDevice = new CVKDevice(cvkInstance, surfaceHandle);
         int ret = cvkDevice.Initialise();
-        if (VkFailed(ret)) {
-            return ret;
-        }        
+        if (VkFailed(ret)) { return ret; }        
         
         ret = parent.DeviceInitialised(cvkDevice);
-        if (VkFailed(ret)) {
-            return ret;
-        }
+        if (VkFailed(ret)) { return ret; }
         
         return ProcessNewRenderables();
     }
@@ -242,9 +238,7 @@ public class CVKRenderer implements ComponentListener {
                 // Give each renderable a chance to recreate swapchain depedent resources
                 for (int i = 0; i < renderables.size(); ++i) {
                     ret = renderables.get(i).CreateSwapChainResources(cvkSwapChain);
-                    if (VkFailed(ret)){
-                        return ret;
-                    }
+                    if (VkFailed(ret)){ return ret; }
                 }
             }
         } else {
