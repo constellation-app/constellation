@@ -160,6 +160,8 @@ public final class TableViewPane extends BorderPane {
 
     private final ReadOnlyObjectProperty<ObservableList<String>> selectedProperty;
     private final ChangeListener<ObservableList<String>> tableSelectionListener;
+    
+    private boolean sortingListenerActive = false;
 
     // Store details of sort order changes made upon column order change or table
     // preference loading - these are used to reinstate the sorting after data update
@@ -969,6 +971,7 @@ public final class TableViewPane extends BorderPane {
             if (!table.getSortOrder().isEmpty()) {
                 sortCol = table.getSortOrder().get(0);
                 sortType = sortCol.getSortType();
+                sortCol.sortTypeProperty().removeListener((v, o, n) -> paginateForSortListener());
             }
             
             sortedRowList.comparatorProperty().unbind();
@@ -979,9 +982,17 @@ public final class TableViewPane extends BorderPane {
             if (sortCol != null) {
                 table.getSortOrder().add(sortCol);
                 sortCol.setSortType(sortType);
+                sortCol.sortTypeProperty().addListener((v, o, n) -> paginateForSortListener());
             }
             
             sortedRowList.comparatorProperty().bind(table.comparatorProperty());
+            final Thread t = new Thread() {
+                @Override
+                public void run() {
+                    updateSelection(parent.getCurrentGraph(), parent.getCurrentState());
+                }
+            };
+            t.start();
             selectedProperty.addListener(tableSelectionListener);
         }
         
@@ -994,6 +1005,14 @@ public final class TableViewPane extends BorderPane {
         Platform.runLater(() -> {
             setCenter(pagination);
         });
+    }
+    
+    private void paginateForSortListener() {
+        if (!sortingListenerActive) {
+            sortingListenerActive = true;
+            paginate(sortedRowList);
+            sortingListenerActive = false;
+        }
     }
 
     /**
@@ -1104,7 +1123,7 @@ public final class TableViewPane extends BorderPane {
                     // add table data to table
                     sortedRowList = new SortedList<>(FXCollections.observableArrayList(rows));
                     sortedRowList.comparatorProperty().bind(table.comparatorProperty());
-                    sortedRowList.comparatorProperty().addListener((v, o, n) -> paginate(sortedRowList));
+                    sortedRowList.comparatorProperty().addListener((v, o, n) -> paginateForSortListener());
                     paginate(sortedRowList);
 
                     // add user defined filter to the table
