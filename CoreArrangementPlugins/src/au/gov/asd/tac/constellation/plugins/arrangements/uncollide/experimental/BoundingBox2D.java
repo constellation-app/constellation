@@ -20,9 +20,8 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 
 /**
- * This class is designed to provide a bounding box for a graph.
+ * This class is designed to provide a 2D bounding box for a graph.
  * <p>
- * This class has subclasses for creating both 2D and 3D bounding boxes.
  * 
  * @author algol
  * @author Nova
@@ -48,7 +47,6 @@ class BoundingBox2D {
     BoundingBox2D(final GraphReadMethods wg) {
         final int xId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
         final int yId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
-        final int rId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.NODE_RADIUS.getName());
 
         float minX = wg.getFloatValue(xId, wg.getVertex(0));
         float minY = wg.getFloatValue(yId, wg.getVertex(0));

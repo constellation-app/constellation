@@ -8,7 +8,6 @@ package au.gov.asd.tac.constellation.plugins.arrangements.uncollide.experimental
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import java.lang.IllegalArgumentException;
 import static org.testng.Assert.*;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -31,11 +30,6 @@ public class BoundingBox2DTest {
 
         int attrY = VisualConcept.VertexAttribute.Y.ensure(baseGraph);
         if (attrY == Graph.NOT_FOUND) {
-            fail();
-        }
-
-        int attrZ = VisualConcept.VertexAttribute.Z.ensure(baseGraph);
-        if (attrZ == Graph.NOT_FOUND) {
             fail();
         }
 
@@ -72,14 +66,16 @@ public class BoundingBox2DTest {
         assertEquals(actual.maxY, 1.0f);
     }
     
+    /**
+     * Test the constructor throws an exception when given an empty graph.
+     */
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void testConstructorThrowsException() {
         StoreGraph emptyGraph = new StoreGraph();
         VisualConcept.VertexAttribute.X.ensure(emptyGraph);
         VisualConcept.VertexAttribute.Y.ensure(emptyGraph);
-        VisualConcept.VertexAttribute.Z.ensure(emptyGraph);
 
-        BoundingBox2D actual = new BoundingBox2D(emptyGraph); // This should fail as the graph has no verticies.
+        new BoundingBox2D(emptyGraph); // This should fail as the graph has no verticies.
     }
 
     /**
