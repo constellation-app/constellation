@@ -32,27 +32,14 @@ import org.python.modules.math;
  * @author algol
  * @author Nova
  */
-class QuadTree {
-
-    private static final int MAX_OBJECTS = 10;
-    private static final int MAX_LEVELS = 5;
-
+class QuadTree extends AbstractTree{
     private static final int TOP_R = 0;
     private static final int TOP_L = 1;
     private static final int BOT_L = 2;
     private static final int BOT_R = 3;
     
     private static final Logger LOG = Logger.getLogger(QuadTree.class.getName());
-    
-    private final int XID; 
-    private final int YID;
-    private final int RID;
-    private final GraphReadMethods wg;
 
-    private final int level;
-    private final BoundingBox2D box;
-    private final List<Integer> objects;
-    private QuadTree[] nodes;
 
     /**
      * Constructor creates QuadTree and inserts all nodes
@@ -60,17 +47,8 @@ class QuadTree {
      * @param graph  The graph the QuadTree should be based on
      */
     QuadTree(final GraphReadMethods graph) {
-        this.level = 0;
+        super(graph);
         this.box = new BoundingBox2D(graph);
-        this.objects = new ArrayList<>();
-        this.nodes = null;   
-        
-        wg = graph;
-        XID = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
-        YID = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
-        RID = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.NODE_RADIUS.getName());
-        
-        insertAll();
     }
 
     /**
@@ -80,16 +58,7 @@ class QuadTree {
      * @param box 
      */
     private QuadTree(QuadTree parent, final BoundingBox2D box) {
-        this.level = parent.level + 1;
-        this.box = box;
-        objects = new ArrayList<>();
-        nodes = null;   
-        
-        // Inherit parent values for graph based variables.
-        wg = parent.wg;
-        XID = parent.XID;
-        YID = parent.YID;
-        RID = parent.RID;
+        super(parent, box);
     }
 
     /*
@@ -97,12 +66,14 @@ class QuadTree {
      * <p>
      * Divide the node into four equal parts and initialise the four subnodes with the new bounds.
      */
-    private void split() {
+    @Override
+    protected void split() {
+        BoundingBox2D box2D = (BoundingBox2D) this.box;
         nodes = new QuadTree[4];
-        nodes[TOP_R] = new QuadTree(this, box.topRightQuadrant());
-        nodes[TOP_L] = new QuadTree(this, box.topLeftQuadrant());
-        nodes[BOT_L] = new QuadTree(this, box.bottomLeftQuadrant());
-        nodes[BOT_R] = new QuadTree(this, box.bottomRightQuadrant());
+        nodes[TOP_R] = new QuadTree(this, box2D.topRightQuadrant());
+        nodes[TOP_L] = new QuadTree(this, box2D.topLeftQuadrant());
+        nodes[BOT_L] = new QuadTree(this, box2D.bottomLeftQuadrant());
+        nodes[BOT_R] = new QuadTree(this, box2D.bottomRightQuadrant());
     }
 
     /*
@@ -112,22 +83,27 @@ class QuadTree {
      * <p>
      * Determine where an object belongs in the quadtree by determining which node the object can fit into.
      */
-    private int getIndex(final int vxId) {
+    @Override
+    protected int getIndex(final int vxId) {
         int index = -1;
         
-        // Object can completely fit within the top/bottom halfss.
-        final boolean topHalf = wg.getFloatValue(YID, vxId) + wg.getFloatValue(RID, vxId) < box.midY;
-        final boolean bottomHalf = wg.getFloatValue(YID, vxId) - wg.getFloatValue(RID, vxId) > box.midY;
+        // Object can completely fit within the top/bottom halves.
+        final boolean bottomHalf = wg.getFloatValue(YID, vxId) + wg.getFloatValue(RID, vxId) < box.midY;
+        final boolean topHalf = wg.getFloatValue(YID, vxId) - wg.getFloatValue(RID, vxId) > box.midY;
+        
+        // Object can completely fit witin the left/right halves.
+        final boolean leftHalf = wg.getFloatValue(XID, vxId) + wg.getFloatValue(RID, vxId) < box.midX;
+        final boolean rightHalf = wg.getFloatValue(XID, vxId) - wg.getFloatValue(RID, vxId) > box.midX;
 
         // Object can completely fit within the left half.
-        if (wg.getFloatValue(XID, vxId) + wg.getFloatValue(RID, vxId) < box.midX) {
+        if (leftHalf) {
             if (topHalf) {
                 index = TOP_L; // fits in top left quadrant
             } else if (bottomHalf) {
                 index = BOT_L; // fits in bottom left quadrant
             }
         } // Object can completely fit within the right half.
-        else if (wg.getFloatValue(XID, vxId) - wg.getFloatValue(RID, vxId) > box.midX) {
+        else if (rightHalf) {
             if (topHalf) {
                 index = TOP_R; // fits in top right quadrant
             } else if (bottomHalf) {
@@ -142,59 +118,59 @@ class QuadTree {
      * Insert the object into the quadtree. If the node exceeds the capacity, it will split and add
      * objects that fit to their corresponding nodes.
      */
-    private void insert(final int vxId) {
-        if (nodes != null) { // if their are subnodes
-            int index = getIndex(vxId); // find the correct subnode
-
-            if (index != -1) { // if it fits neatly in a subnode
-                nodes[index].insert(vxId); // insert into that subnode
-
-                return;
-            }
-        }
-
-        // if it fits in this node 
-        
-        objects.add(vxId); // add to list of objects
-
-        if (objects.size() > MAX_OBJECTS && level < MAX_LEVELS) {
-            if (nodes == null) { // if no subnodes then split
-                split();
-            }
-
-            int i = 0;
-            while (i < objects.size()) { // For each object get the index and insert it into the subnode if it fits in one. If it fits in a subnode remove it from this list of objects.
-                int index = getIndex(objects.get(i));
-                if (index != -1) {
-                    nodes[index].insert(objects.remove(i));
-                } else {
-                    i++;
-                }
-            }
-        }
-    }
+//    private void insert(final int vxId) {
+//        if (nodes != null) { // if their are subnodes
+//            int index = getIndex(vxId); // find the correct subnode
+//
+//            if (index != -1) { // if it fits neatly in a subnode
+//                nodes[index].insert(vxId); // insert into that subnode
+//
+//                return;
+//            }
+//        }
+//
+//        // if it fits in this node 
+//        
+//        objects.add(vxId); // add to list of objects
+//
+//        if (objects.size() > MAX_OBJECTS && level < MAX_LEVELS) {
+//            if (nodes == null) { // if no subnodes then split
+//                split();
+//            }
+//
+//            int i = 0;
+//            while (i < objects.size()) { // For each object get the index and insert it into the subnode if it fits in one. If it fits in a subnode remove it from this list of objects.
+//                int index = getIndex(objects.get(i));
+//                if (index != -1) {
+//                    nodes[index].insert(objects.remove(i));
+//                } else {
+//                    i++;
+//                }
+//            }
+//        }
+//    }
     
-    private void insertAll() {
-        for (int position = 0; position < wg.getVertexCount(); position++) {
-            insert(wg.getVertex(position));
-        }
-    }
+//    private void insertAll() {
+//        for (int position = 0; position < wg.getVertexCount(); position++) {
+//            insert(wg.getVertex(position));
+//        }
+//    }
 
     /*
      * Return all objects that could collide with the given object.
      */
-    private List<Integer> getPossibleColliders(final List<Integer> colliders, final int vxId) {
-        // Recursively find all child colliders...
-        final int index = getIndex(vxId);
-        if (index != -1 && nodes != null) {
-            nodes[index].getPossibleColliders(colliders, vxId);
-        }
-
-        // ...and colliders at this level.
-        colliders.addAll(objects);
-
-        return colliders;
-    }
+//    private List<Integer> getPossibleColliders(final List<Integer> colliders, final int vxId) {
+//        // Recursively find all child colliders...
+//        final int index = getIndex(vxId);
+//        if (index != -1 && nodes != null) {
+//            nodes[index].getPossibleColliders(colliders, vxId);
+//        }
+//
+//        // ...and colliders at this level.
+//        colliders.addAll(objects);
+//
+//        return colliders;
+//    }
 
     /**
      * Returns boolean indicating whether or not the vertex collides with any
@@ -206,7 +182,8 @@ class QuadTree {
      * of each neighbor.
      * @return the number of collisions.
      */
-    private boolean nodeCollides(final int subject) {
+    @Override
+    protected boolean nodeCollides(final int subject) {
         final List<Integer> possibles = new ArrayList<>();
         getPossibleColliders(possibles, subject);
 
@@ -241,6 +218,7 @@ class QuadTree {
      * 
      * @return  A set of vertex ideas for verticies  that are twins with the subject
      */
+    @Override
     public List<Integer> getTwins(final int subject, final double twinThreshold) {
         final List<Integer> possibles = new ArrayList<>();
         getPossibleColliders(possibles, subject);
@@ -265,13 +243,13 @@ class QuadTree {
      *
      * @return  boolean indicating whether the graph contains colliding verticies
      */
-    public boolean hasCollision(){
-        for (int position = 0; position < wg.getVertexCount(); position++) {
-            if(nodeCollides(wg.getVertex(position))) {
-                return true;
-            }
-        }
-        return false;
-    }
+//    public boolean hasCollision(){
+//        for (int position = 0; position < wg.getVertexCount(); position++) {
+//            if(nodeCollides(wg.getVertex(position))) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 
 }
