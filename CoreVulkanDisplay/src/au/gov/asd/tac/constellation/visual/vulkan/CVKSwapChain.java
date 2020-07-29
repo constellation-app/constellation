@@ -135,8 +135,7 @@ public class CVKSwapChain {
     private CVKDevice cvkDevice;
     private CVKImage cvkDepthImage = null;
     private long hSwapChainHandle = VK_NULL_HANDLE;
-    private long hRenderPassHandle = VK_NULL_HANDLE;
-    private long hDescriptorPool = VK_NULL_HANDLE;
+    private long hRenderPassHandle = VK_NULL_HANDLE;    
     private int imageCount = 0;
     private int depthFormat = VK_FORMAT_UNDEFINED;
     private List<Long> imageHandles = null;
@@ -149,36 +148,11 @@ public class CVKSwapChain {
     private List<VkCommandBuffer> commandBuffers = null;
     private final VkExtent2D vkCurrentImageExtent = VkExtent2D.malloc().set(0,0);    
     
-    /**
-     * Simple class for counting the number of descriptors and desciptor sets
-     * needed by all of the renderables.
-     */
-    public static class CVKDescriptorPoolRequirements {
-        public final static int VK_DESCRIPTOR_TYPE_COUNT = 11;
-        public final int poolDescriptorTypeCounts[] = new int[VK_DESCRIPTOR_TYPE_COUNT];
-        public int poolDesciptorSetCount = 0;
-        
-        public int GetTotalDescriptorCount() {
-            int count = 0;
-            for (int i = 0; i < VK_DESCRIPTOR_TYPE_COUNT; ++i) {
-                count += poolDescriptorTypeCounts[i];
-            }
-            return count;
-        }
-        public int GetNumberOfNonEmptyTypes() {
-            int count = 0;
-            for (int i = 0; i < VK_DESCRIPTOR_TYPE_COUNT; ++i) {
-                if (poolDescriptorTypeCounts[i] > 0) { ++count; }
-            }
-            return count;          
-        }
-    }
-    private final CVKDescriptorPoolRequirements cvkDescriptorPoolRequirements = new CVKDescriptorPoolRequirements();
+    
     
     public int GetImageCount() { return imageCount; }
     public long GetSwapChainHandle() { return hSwapChainHandle; }
-    public long GetRenderPassHandle() { return hRenderPassHandle; }
-    public long GetDescriptorPoolHandle() { return hDescriptorPool; }
+    public long GetRenderPassHandle() { return hRenderPassHandle; }    
     public long GetFrameBufferHandle(int imageIndex) { return framebufferHandles.get(imageIndex); }
     public VkCommandBuffer GetCommandBuffer(int imageIndex) { return commandBuffers.get(imageIndex); }
     public long GetFence(int imageIndex) { return renderFenceHandles.get(imageIndex); }
@@ -189,8 +163,7 @@ public class CVKSwapChain {
     }
     
     
-    public int Initialise(CVKDescriptorPoolRequirements poolReqs,
-                          CVKDescriptorPoolRequirements perImagePoolReqs) {
+    public int Initialise() {
         int ret;
         StartLogSection("Init SwapChain");
         try (MemoryStack stack = stackPush()) {                                
@@ -203,10 +176,6 @@ public class CVKSwapChain {
             if (VkFailed(ret)) return ret; 
             ret = InitVKCommandBuffers(stack);
             if (VkFailed(ret)) return ret;
-            
-            // Do we need a descriptor pool?
-            ret = CreateVKDescriptorPool(stack, poolReqs, perImagePoolReqs);
-            if (VkFailed(ret)) return ret;
         }
         EndLogSection("Init SwapChain");   
         return ret;
@@ -216,7 +185,6 @@ public class CVKSwapChain {
     public void Destroy() {
         StartLogSection("Destroy SwapChain");        
         
-        DestroyVKDescriptorPool();
         DestroyVKCommandBuffers();       
         DestroyVKFrameBuffer();      
         DestroyVKRenderPass();    
@@ -226,7 +194,6 @@ public class CVKSwapChain {
         CVKAssert(cvkDepthImage == null);
         CVKAssert(hSwapChainHandle == VK_NULL_HANDLE);
         CVKAssert(hRenderPassHandle == VK_NULL_HANDLE);
-        CVKAssert(hDescriptorPool == VK_NULL_HANDLE);
         CVKAssert(imageHandles.isEmpty());
         CVKAssert(imageViewHandles.isEmpty());
         CVKAssert(framebufferHandles.isEmpty());
@@ -587,81 +554,7 @@ public class CVKSwapChain {
         }
         
         return ret;
-    }        
-       
-    
-    /*
-    * Descriptor pools are per thread (we have one Render thread in Constellation).
-    * Here we create one Descriptor pool for all our Renderable objects. 
-    * Each Renderable object is in charge of telling the Renderer how many 
-    * Descriptors Types and Descriptor Sets it uses (IncrementDescriptorTypeRequirements)
-    * so here we can alllocate the correct amount of memory. We add a buffer amount
-    * to the pool so we don't need to recreate it every time a new object (like a 
-    * node is added to the graph). 
-    */
-    public int CreateVKDescriptorPool(MemoryStack stack, 
-                                      CVKDescriptorPoolRequirements poolReqs,
-                                      CVKDescriptorPoolRequirements perImagePoolReqs) {
-        VerifyInRenderThread();
-        CVKAssert(poolReqs != null);
-        CVKAssert(perImagePoolReqs != null);
-        
-        int ret = VK_SUCCESS;
-        
-        cvkDescriptorPoolRequirements.poolDesciptorSetCount = poolReqs.poolDesciptorSetCount +
-                                                              perImagePoolReqs.poolDesciptorSetCount * GetImageCount();
-        
-        for (int i = 0; i < CVKDescriptorPoolRequirements.VK_DESCRIPTOR_TYPE_COUNT; ++i) {
-            cvkDescriptorPoolRequirements.poolDescriptorTypeCounts[i] = poolReqs.poolDescriptorTypeCounts[i] +
-                                                                        perImagePoolReqs.poolDescriptorTypeCounts[i] * GetImageCount();
-        }
-        
-        
-        // Every renderable object will likely want it's own descriptor set.  For some it will
-        // consist of a uniform buffer, a sampler and image.
-        
-        // To size the descriptor pool we need to know how many objects will have a descriptor set
-        // and what types are in those descriptor sets.
-        
-        // This will need to be resized periodically when new renderable objects are added to our
-        // scene.  The descriptor pool will also need to be recreated to the appropriate size when
-        // the swapchain is rebuilt.
-        
-        // Do we have anything to render?
-        int allTypesCount = cvkDescriptorPoolRequirements.GetNumberOfNonEmptyTypes();       
-        if (allTypesCount > 0) {
-            VkDescriptorPoolSize.Buffer pPoolSizes = VkDescriptorPoolSize.callocStack(allTypesCount, stack);
-            
-            int iPoolSize = 0;
-            for (int iType = 0; iType < 11; ++iType) {
-                int count = cvkDescriptorPoolRequirements.poolDescriptorTypeCounts[iType];
-                if (count > 0) {
-                    VkDescriptorPoolSize vkPoolSize = pPoolSizes.get(iPoolSize++);
-                    vkPoolSize.type(iType);
-                    vkPoolSize.descriptorCount(count);
-                    CVKLOGGER.info(String.format("Descriptor pool type %d = count %d", iType, count));                                        
-                } 
-            }           
-            
-            // Create the complete Descriptor pool using the poolSizes we calculated for each
-            // Descriptor Type
-            VkDescriptorPoolCreateInfo poolInfo = VkDescriptorPoolCreateInfo.callocStack(stack);
-            poolInfo.sType(VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO);
-            poolInfo.flags(VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT);
-            poolInfo.pPoolSizes(pPoolSizes);
-            poolInfo.maxSets(cvkDescriptorPoolRequirements.poolDesciptorSetCount);
-            CVKLOGGER.info(String.format("Descriptor pool maxSets = %d", cvkDescriptorPoolRequirements.poolDesciptorSetCount));  
-
-            LongBuffer pDescriptorPool = stack.mallocLong(1);
-            ret = vkCreateDescriptorPool(cvkDevice.GetDevice(), poolInfo, null, pDescriptorPool);
-            checkVKret(ret);
-            hDescriptorPool = pDescriptorPool.get(0);
-            
-            CVKAssert(hDescriptorPool != VK_NULL_HANDLE);
-        } 
-
-        return ret;
-    }
+    }             
     
     
     public int WaitOnFence(int imageIndex) {
@@ -719,14 +612,7 @@ public class CVKSwapChain {
         long hCommandExecutionSemaphore = commandExecutionHandles.get(imageIndex);
         pCommandExecutionSemaphore.put(0, hCommandExecutionSemaphore);
         return VK_SUCCESS;
-    }
-    
-    
-    private void DestroyVKDescriptorPool() {
-        vkDestroyDescriptorPool(cvkDevice.GetDevice(), hDescriptorPool, null);
-        hDescriptorPool = VK_NULL_HANDLE;
-        CVKLOGGER.info("Destroyed descriptor pool");
-    }
+    }    
     
     
     private void DestroyVKCommandBuffers() {

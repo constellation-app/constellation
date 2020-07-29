@@ -31,7 +31,6 @@ import java.nio.LongBuffer;
 import java.util.logging.Level;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
-import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_A_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_B_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_G_BIT;
@@ -39,7 +38,6 @@ import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_R_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_SECONDARY;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_CULL_MODE_BACK_BIT;
-import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32B32_SFLOAT;
 import static org.lwjgl.vulkan.VK10.VK_LOGIC_OP_COPY;
@@ -90,9 +88,9 @@ import org.lwjgl.vulkan.VkVertexInputBindingDescription;
 
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
-import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain.CVKDescriptorPoolRequirements;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKDescriptorPool;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKDescriptorPool.CVKDescriptorPoolRequirements;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKShaderUtils.ShaderKind.GEOMETRY_SHADER;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKLOGGER;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VerifyInRenderThread;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
@@ -100,8 +98,10 @@ import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkSuccee
 import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKCommandBuffer;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
 import java.util.ArrayList;
 import java.util.List;
+import static org.lwjgl.system.MemoryStack.stackPush;
 import org.lwjgl.system.MemoryUtil;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
@@ -156,8 +156,8 @@ public class CVKAxesRenderable extends CVKRenderable {
     private LongBuffer pDescriptorSets = null;
     private long hDescriptorLayout = VK_NULL_HANDLE;
     private boolean needsDisplayUpdate = false;
-    private boolean needsResize = false;
-    private CVKSwapChain cvkSwapChain = null; //cached for cleaning up descriptor sets
+    private boolean swapChainImageCountChanged = true;
+//    private CVKSwapChain cvkSwapChain = null; //cached for cleaning up descriptor sets
     
     // WIP Push constants
     //private ByteBuffer pushConstants;
@@ -347,11 +347,14 @@ public class CVKAxesRenderable extends CVKRenderable {
         }
     }
     
-    private void DestroyDescriptorSets(){
+    private int DestroyDescriptorSets(){
+        int ret = VK_SUCCESS;
         if (pDescriptorSets != null) {
-            vkFreeDescriptorSets(cvkDevice.GetDevice(), cvkSwapChain.GetDescriptorPoolHandle(), pDescriptorSets);
+            CVKAssert(cvkDescriptorPool != null);
+            ret = vkFreeDescriptorSets(cvkDevice.GetDevice(), cvkDescriptorPool.GetDescriptorPoolHandle(), pDescriptorSets);
             pDescriptorSets = null;
         }
+        return ret;
     }
     
     private void DestroyPipeline() {     
@@ -693,9 +696,9 @@ public class CVKAxesRenderable extends CVKRenderable {
         CVKAssert(cvkDevice != null);
         CVKAssert(cvkDevice.GetDevice() != null);
         CVKAssert(cvkSwapChain != null);
-        CVKAssert(cvkSwapChain.GetSwapChainHandle()        != VK_NULL_HANDLE);
-        CVKAssert(cvkSwapChain.GetRenderPassHandle()       != VK_NULL_HANDLE);
-        CVKAssert(cvkSwapChain.GetDescriptorPoolHandle()   != VK_NULL_HANDLE);
+        CVKAssert(cvkSwapChain.GetSwapChainHandle() != VK_NULL_HANDLE);
+        CVKAssert(cvkSwapChain.GetRenderPassHandle() != VK_NULL_HANDLE);
+        CVKAssert(cvkDescriptorPool.GetDescriptorPoolHandle() != VK_NULL_HANDLE);
         CVKAssert(hVertShaderModule != VK_NULL_HANDLE);
         CVKAssert(hGeomShaderModule != VK_NULL_HANDLE);
         CVKAssert(hFragShaderModule != VK_NULL_HANDLE);        
@@ -927,14 +930,14 @@ public class CVKAxesRenderable extends CVKRenderable {
     
 
     @Override
-    public int DestroySwapChainResources(){
+    protected int DestroySwapChainResources(){
         VerifyInRenderThread();
         int ret = VK_SUCCESS;
         
         // We only need to recreate these resources if the number of images in 
         // the swapchain changes or if this is the first call after the initial
         // swapchain is created.
-        if (pipelines == null || pipelines.size() != cvkSwapChain.GetImageCount()) {        
+        if (pipelines != null && swapChainImageCountChanged) {        
             DestroyVertexBuffer();
             DestroyUniformBuffers();
             DestroyDescriptorSets();
@@ -949,6 +952,7 @@ public class CVKAxesRenderable extends CVKRenderable {
             CVKAssert(vertexUniformBuffers == null);
             CVKAssert(cvkVertexBuffer == null);
             CVKAssert(commandBuffers == null);
+            swapChainImageCountChanged = true;
          } else {
             // This is the resize path, image count is unchanged.  We need to recreate
             // pipelines as Vulkan doesn't have a good mechanism to update them and as
@@ -959,10 +963,9 @@ public class CVKAxesRenderable extends CVKRenderable {
             DestroyPipeline();
             DestroyDescriptorSets();
             CVKAssert(pipelines == null);
-            needsResize = true;
+            
         }
         
-        cvkSwapChain = null;
         return ret;
     }
     
@@ -970,18 +973,16 @@ public class CVKAxesRenderable extends CVKRenderable {
         Called just before the swapchain is about to be destroyed allowing the
         object to cleanup its resources.
     */
-    @Override
-    public int CreateSwapChainResources(CVKSwapChain cvkSwapChain) {
+    private int CreateSwapChainResources() {
         VerifyInRenderThread();
+        CVKAssert(cvkSwapChain != null);
         int ret = VK_SUCCESS;
 
-        // Cache new swapchain before creation calls
-        this.cvkSwapChain = cvkSwapChain;
-        
+                
         // We only need to recreate these resources if the number of images in 
         // the swapchain changes or if this is the first call after the initial
         // swapchain is created.
-        if (!needsResize) {
+        if (swapChainImageCountChanged) {
             try (MemoryStack stack = stackPush()) {
                 
                 ret = CreateUniformBuffers(stack);
@@ -1016,7 +1017,8 @@ public class CVKAxesRenderable extends CVKRenderable {
             }              
         }
         
-        needsResize = false;
+        swapChainResourcesDirty = false;
+        swapChainImageCountChanged = false;
         
         return ret;
     }
@@ -1033,12 +1035,13 @@ public class CVKAxesRenderable extends CVKRenderable {
     
     
     private int CreateDescriptorSets(MemoryStack stack) {
+        CVKAssert(cvkDescriptorPool != null);
         CVKAssert(cvkSwapChain != null);
+        CVKAssert(vertexUniformBuffers != null);
         int ret;
-     
-        int imageCount = cvkSwapChain.GetImageCount();
 
         // Create descriptor sets
+        final int imageCount = cvkSwapChain.GetImageCount();
         LongBuffer pLayouts = stack.mallocLong(imageCount);
         for (int i = 0; i < imageCount; ++i) {
             pLayouts.put(i, hDescriptorLayout);
@@ -1046,7 +1049,7 @@ public class CVKAxesRenderable extends CVKRenderable {
 
         VkDescriptorSetAllocateInfo allocInfo = VkDescriptorSetAllocateInfo.callocStack(stack);
         allocInfo.sType(VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO);
-        allocInfo.descriptorPool(cvkSwapChain.GetDescriptorPoolHandle());
+        allocInfo.descriptorPool(cvkDescriptorPool.GetDescriptorPoolHandle());
         allocInfo.pSetLayouts(pLayouts);            
 
         // Allocate the descriptor sets from the descriptor pool, they'll be unitialised
@@ -1080,13 +1083,15 @@ public class CVKAxesRenderable extends CVKRenderable {
             vkUpdateDescriptorSets(cvkDevice.GetDevice(), descriptorWrites, null);
         }   
         
+        descriptorPoolResourcesDirty = false;
+        
         return ret;
     }
  
     
     @Override
     public boolean NeedsDisplayUpdate() {
-        return needsDisplayUpdate;
+        return needsDisplayUpdate | descriptorPoolResourcesDirty | swapChainResourcesDirty;
     }
  
     
@@ -1109,6 +1114,18 @@ public class CVKAxesRenderable extends CVKRenderable {
         VerifyInRenderThread();
         
         int ret = VK_SUCCESS;    
+        
+        if (swapChainResourcesDirty) {
+            ret = CreateSwapChainResources();
+            if (VkFailed(ret)) { return ret; }
+        }
+        
+        if (descriptorPoolResourcesDirty) {
+            ret = CreateDescriptorPoolResources();
+            if (VkFailed(ret)) { return ret; }
+        }          
+        
+        // TODO: !!!! don't recreate descriptor sets if we just created them
         
         // TODO HYDRA: Investigage whether we need to recreate DescriptorSets
         DestroyDescriptorSets();
@@ -1147,4 +1164,24 @@ public class CVKAxesRenderable extends CVKRenderable {
             //UpdatePushConstants(cvkSwapChain);
         };
     }  
+    
+    // TODO: !!! combine the DestroyBlahResources with SetNewBlah
+    @Override
+    public int DestroyDescriptorPoolResources() { 
+        int ret = VK_SUCCESS;
+        
+        if (cvkDescriptorPool != null) {
+            return DestroyDescriptorSets();
+        }
+        
+        return ret; 
+    }     
+//    @Override
+    private int CreateDescriptorPoolResources() {
+        CVKAssert(cvkDescriptorPool != null);
+        CVKAssert(cvkSwapChain != null);
+        try (MemoryStack stack = stackPush()) {
+            return CreateDescriptorSets(stack);
+        }
+    }      
 }

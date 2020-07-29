@@ -17,6 +17,8 @@ package au.gov.asd.tac.constellation.graph.interaction.visual.renderables;
 
 import au.gov.asd.tac.constellation.graph.interaction.framework.HitState;
 import au.gov.asd.tac.constellation.graph.interaction.framework.HitState.HitType;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKDescriptorPool;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKDescriptorPool.CVKDescriptorPoolRequirements;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable;
@@ -99,15 +101,19 @@ public class CVKHitTester extends CVKRenderable {
     @Override
     public VkCommandBuffer GetCommandBuffer(int imageIndex) { return null; }
     @Override
-    public int DestroySwapChainResources() { return VK_SUCCESS; }
+    protected int DestroySwapChainResources() { return VK_SUCCESS; }
+    
+//    @Override
+//    public int CreateSwapChainResources(CVKSwapChain cvkSwapChain) { 
+//        return VK_SUCCESS; 
+//    }
     
     @Override
-    public int CreateSwapChainResources(CVKSwapChain cvkSwapChain) { 
-        return VK_SUCCESS; 
-    }
-    
+    public int DestroyDescriptorPoolResources() { return VK_SUCCESS; }     
+//    @Override
+//    public int CreateDescriptorPoolResources(CVKDescriptorPool cvkDescriptorPool, final int imageCount) { return VK_SUCCESS; }         
     @Override
-    public void IncrementDescriptorTypeRequirements(CVKSwapChain.CVKDescriptorPoolRequirements reqs, CVKSwapChain.CVKDescriptorPoolRequirements perImageReqs) {}     
+    public void IncrementDescriptorTypeRequirements(CVKDescriptorPoolRequirements reqs, CVKDescriptorPoolRequirements perImageReqs) {}     
     @Override
     public int RecordCommandBuffer(VkCommandBufferInheritanceInfo inheritanceInfo, int index) { return VK_SUCCESS;}
     @Override

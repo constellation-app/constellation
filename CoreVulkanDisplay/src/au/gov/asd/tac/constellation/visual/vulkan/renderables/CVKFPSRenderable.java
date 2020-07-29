@@ -19,10 +19,11 @@ import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKDescriptorPool;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKDescriptorPool.CVKDescriptorPoolRequirements;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
 import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKShaderUtils;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
-import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain.CVKDescriptorPoolRequirements;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKLOGGER;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkSucceeded;
@@ -169,15 +170,13 @@ public class CVKFPSRenderable extends CVKRenderable {
     private List<CVKBuffer> vertexBuffers = null;
     private List<CVKCommandBuffer> commandBuffers = null;
     
-    private CVKSwapChain cvkSwapChain = null; //cached for cleaning up descriptor sets
+//    private CVKSwapChain cvkSwapChain = null; //cached for cleaning up descriptor sets
    
     // Cache image view and sampler handles so we know when they've been recreated
     // so we can recreate our descriptors
     private long hAtlasSampler = VK_NULL_HANDLE;
     private long hAtlasImageView = VK_NULL_HANDLE;
     
-    private boolean needsDisplayUpdate = false;
-    private boolean needsResize = false;
     private int counter = 0;
 
  
@@ -749,13 +748,14 @@ public class CVKFPSRenderable extends CVKRenderable {
 
 
     private int CreateDescriptorSets(MemoryStack stack) {
+        CVKAssert(cvkDescriptorPool != null);
         CVKAssert(cvkSwapChain != null);
         
         int ret;    
-        int imageCount = cvkSwapChain.GetImageCount();
 
         // The same layout is used for each descriptor set (each descriptor set is
-        // identical but allow the GPU and CPU to desynchronise_.
+        // identical but allow the GPU and CPU to desynchronise.
+        final int imageCount = cvkSwapChain.GetImageCount();
         LongBuffer layouts = stack.mallocLong(imageCount);
         for (int i = 0; i < imageCount; ++i) {
             layouts.put(i, hDescriptorLayout);
@@ -763,7 +763,7 @@ public class CVKFPSRenderable extends CVKRenderable {
 
         VkDescriptorSetAllocateInfo allocInfo = VkDescriptorSetAllocateInfo.callocStack(stack);
         allocInfo.sType(VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO);
-        allocInfo.descriptorPool(cvkSwapChain.GetDescriptorPoolHandle());
+        allocInfo.descriptorPool(cvkDescriptorPool.GetDescriptorPoolHandle());
         allocInfo.pSetLayouts(layouts);            
 
         // Allocate the descriptor sets from the descriptor pool, they'll be unitialised
@@ -771,11 +771,14 @@ public class CVKFPSRenderable extends CVKRenderable {
         ret = vkAllocateDescriptorSets(cvkDevice.GetDevice(), allocInfo, pDescriptorSets);
         if (VkFailed(ret)) { return ret; }      
         
+        descriptorPoolResourcesDirty = false;
+        
         return UpdateDescriptorSets(stack);
     }
     
     private int UpdateDescriptorSets(MemoryStack stack) {
         CVKAssert(cvkSwapChain != null);
+        CVKAssert(cvkDescriptorPool != null);
         
         int ret = VK_SUCCESS;
      
@@ -854,7 +857,7 @@ public class CVKFPSRenderable extends CVKRenderable {
             CVKLOGGER.info(String.format("CVKFPSRenderable returning %d descriptor sets to the pool", pDescriptorSets.capacity()));
             
             // After calling vkFreeDescriptorSets, all descriptor sets in pDescriptorSets are invalid.
-            ret = vkFreeDescriptorSets(cvkDevice.GetDevice(), cvkSwapChain.GetDescriptorPoolHandle(), pDescriptorSets);
+            ret = vkFreeDescriptorSets(cvkDevice.GetDevice(), cvkDescriptorPool.GetDescriptorPoolHandle(), pDescriptorSets);
             pDescriptorSets = null;
             checkVKret(ret);
         }
@@ -867,9 +870,10 @@ public class CVKFPSRenderable extends CVKRenderable {
         CVKAssert(cvkDevice != null);
         CVKAssert(cvkDevice.GetDevice() != null);
         CVKAssert(cvkSwapChain != null);
+        CVKAssert(cvkDescriptorPool != null);
         CVKAssert(cvkSwapChain.GetSwapChainHandle()        != VK_NULL_HANDLE);
         CVKAssert(cvkSwapChain.GetRenderPassHandle()       != VK_NULL_HANDLE);
-        CVKAssert(cvkSwapChain.GetDescriptorPoolHandle()   != VK_NULL_HANDLE);
+        CVKAssert(cvkDescriptorPool.GetDescriptorPoolHandle()   != VK_NULL_HANDLE);
         CVKAssert(hVertexShader   != VK_NULL_HANDLE);
         CVKAssert(hGeometryShader != VK_NULL_HANDLE);
         CVKAssert(hFragmentShader != VK_NULL_HANDLE);        
@@ -1139,7 +1143,7 @@ public class CVKFPSRenderable extends CVKRenderable {
  
    
     @Override
-    public int DestroySwapChainResources(){
+    protected int DestroySwapChainResources(){
         CVKAssert(cvkSwapChain != null);
         
         VerifyInRenderThread();
@@ -1149,7 +1153,7 @@ public class CVKFPSRenderable extends CVKRenderable {
         // We only need to recreate these resources if the number of images in 
         // the swapchain changes or if this is the first call after the initial
         // swapchain is created.
-        if (pipelines == null || pipelines.size() != cvkSwapChain.GetImageCount()) {        
+        if (pipelines != null && swapChainImageCountChanged) {        
             DestroyVertexBuffers();
             DestroyUniformBuffers();
             DestroyDescriptorSets();
@@ -1165,6 +1169,7 @@ public class CVKFPSRenderable extends CVKRenderable {
             CVKAssert(geometryUniformBuffers == null);
             CVKAssert(vertexBuffers == null);
             CVKAssert(commandBuffers == null);
+            swapChainImageCountChanged = true;
          } else {
             // This is the resize path, image count is unchanged.  We need to recreate
             // pipelines as Vulkan doesn't have a good mechanism to update them and as
@@ -1173,9 +1178,7 @@ public class CVKFPSRenderable extends CVKRenderable {
             // different position for our FPS.  After updating the uniform buffers we
             // need to update the descriptor sets that bind the uniform buffers as well.
             DestroyPipelines();
-            //DestroyDescriptorSets();
-            CVKAssert(pipelines == null);
-            needsResize = true;
+            CVKAssert(pipelines == null);            
         }
         
         cvkSwapChain = null;
@@ -1183,19 +1186,18 @@ public class CVKFPSRenderable extends CVKRenderable {
     }
  
     
-    @Override
-    public int CreateSwapChainResources(CVKSwapChain cvkSwapChain) { 
-        // Cache the last swap chain as it is needed to release descriptor sets and
-        // if we are destroyed by the finalizer we'll need it
-        this.cvkSwapChain = cvkSwapChain;
+    protected int CreateSwapChainResources() { 
+        CVKAssert(cvkDescriptorPool != null);
+        CVKAssert(cvkSwapChain != null);
         
         int ret;
         
-        // We only need to recreate these resources if the number of images in 
-        // the swapchain changes or if this is the first call after the initial
-        // swapchain is created.
-        if (!needsResize) {
-            try (MemoryStack stack = stackPush()) {                     
+        try (MemoryStack stack = stackPush()) {  
+            
+            // We only need to recreate these resources if the number of images in 
+            // the swapchain changes or if this is the first call after the initial
+            // swapchain is created.
+            if (swapChainImageCountChanged) {                               
                 ret = CreateUniformBuffers(stack);
                 if (VkFailed(ret)) { return ret; }
 
@@ -1209,34 +1211,29 @@ public class CVKFPSRenderable extends CVKRenderable {
                 if (VkFailed(ret)) { return ret; }            
 
                 ret = CreatePipelines();
-                if (VkFailed(ret)) { return ret; }                                       
-            }      
-        } else {
-            // This is the resize path, image count is unchanged.  We need to recreate
-            // pipelines as Vulkan doesn't have a good mechanism to update them and as
-            // they define the viewport and scissor rect they are now out of date.  We
-            // also need to update the uniform buffer as a new image size will mean a
-            // different position for our FPS.  After updating the uniform buffers we
-            // need to update the descriptor sets that bind the uniform buffers as well.
-
-            try (MemoryStack stack = stackPush()) {                     
+                if (VkFailed(ret)) { return ret; }        
+                
+            } else {
+                
+                // This is the resize path, image count is unchanged.  We need to recreate
+                // pipelines as Vulkan doesn't have a good mechanism to update them and as
+                // they define the viewport and scissor rect they are now out of date.  We
+                // also need to update the uniform buffer as a new image size will mean a
+                // different position for our FPS.  After updating the uniform buffers we
+                // need to update the descriptor sets that bind the uniform buffers as well.                  
                 ret = CreatePipelines();
                 if (VkFailed(ret)) { return ret; }                           
-                
+
                 ret = UpdateUniformBuffers(stack);
                 if (VkFailed(ret)) { return ret; }
-  
-                // Updating rather than recreating raises:
-                // VkDebugUtilsMessengerCallbackEXTI.java:47>Validation layer: Validation Error: [ VUID-VkWriteDescriptorSet-dstSet-00320 ] Object 0: handle = 0x2206b694060, type = VK_OBJECT_TYPE_INSTANCE; | MessageID = 0x8e0ca77 | Invalid VkDescriptorSet Object 0xb2a1ba00000001d0. The Vulkan spec states: dstSet must be a valid VkDescriptorSet handle (https://www.khronos.org/registry/vulkan/specs/1.1-extensions/html/vkspec.html#VUID-VkWriteDescriptorSet-dstSet-00320)
-//                ret = UpdateDescriptorSets(stack);
-//                if (VkFailed(ret)) { return ret; }    
 
-                ret = CreateDescriptorSets(stack);
-                if (VkFailed(ret)) { return ret; } 
-            }              
+                ret = UpdateDescriptorSets(stack);
+                if (VkFailed(ret)) { return ret; }            
+            }
         }
         
-        needsResize = false;
+        swapChainResourcesDirty = false;
+        swapChainImageCountChanged = false;
         
         return ret; 
     }
@@ -1251,7 +1248,6 @@ public class CVKFPSRenderable extends CVKRenderable {
         currentFPS.set(1, GetRandom(0,9));
         currentFPS.set(2, GetRandom(10, parent.GetTextureAtlas().GetAtlasIconCount()));
         currentFPS.set(3, GetRandom(10, parent.GetTextureAtlas().GetAtlasIconCount()));       
-        needsDisplayUpdate = true;
 
     }
     
@@ -1298,37 +1294,40 @@ public class CVKFPSRenderable extends CVKRenderable {
     
     @Override
     public int DisplayUpdate() { 
-        int ret;
+        int ret = VK_SUCCESS;
         VerifyInRenderThread();
         
         DebugUpdateFPS();
         
         boolean atlasChanged =  hAtlasSampler != parent.GetTextureAtlas().GetAtlasSamplerHandle() ||
-                                hAtlasImageView != parent.GetTextureAtlas().GetAtlasImageViewHandle();        
-                
-        try (MemoryStack stack = stackPush()) {
-            // We only need to update descriptors if the atlas has generated a new texture
-            if (atlasChanged) {
-                ret = DestroyDescriptorSets();
-                if (VkFailed(ret)) {
-                    return ret;
-                }
+                                hAtlasImageView != parent.GetTextureAtlas().GetAtlasImageViewHandle();   
         
-                //TODO_TT: updating the descriptor sets is probably a better approach to recreation
-                ret = CreateDescriptorSets(stack);
-                if (VkFailed(ret)) {
-                    return ret;
-                }
-            }
-            
-            // We update this constantly as the FPS changes constantly
-            ret = UpdateVertexBuffers();
-            if (VkFailed(ret)) {
-                return ret;
-            }
+        if (swapChainResourcesDirty) {
+            ret = CreateSwapChainResources();
+            if (VkFailed(ret)) { return ret; }
         }
         
-        needsDisplayUpdate = false;
+        if (descriptorPoolResourcesDirty) {
+            ret = CreateDescriptorPoolResources();
+            if (VkFailed(ret)) { return ret; }
+        }        
+                        
+        // We only need to update descriptors if the atlas has generated a new texture
+        if (atlasChanged) {
+            try (MemoryStack stack = stackPush()) {
+                ret = UpdateDescriptorSets(stack);
+                if (VkFailed(ret)) {
+                    return ret;
+                }                               
+            }           
+        }
+        
+        // We update this constantly as the FPS changes constantly
+        ret = UpdateVertexBuffers();
+        if (VkFailed(ret)) {
+            return ret;
+        }        
+        
         return ret;
     }
     
@@ -1337,4 +1336,24 @@ public class CVKFPSRenderable extends CVKRenderable {
     {
         return commandBuffers.get(imageIndex).GetVKCommandBuffer(); 
     }    
+    
+    @Override
+    protected int DestroyDescriptorPoolResources() { 
+        int ret = VK_SUCCESS;
+        
+        if (cvkDescriptorPool != null) {
+            return DestroyDescriptorSets();
+        }
+        
+        return ret; 
+    }     
+
+    private int CreateDescriptorPoolResources() {
+        CVKAssert(cvkDescriptorPool != null);
+        CVKAssert(cvkSwapChain != null);
+
+        try (MemoryStack stack = stackPush()) {
+            return CreateDescriptorSets(stack);
+        }
+    }      
 }

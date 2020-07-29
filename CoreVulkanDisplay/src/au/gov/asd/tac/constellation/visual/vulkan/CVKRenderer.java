@@ -18,14 +18,13 @@ package au.gov.asd.tac.constellation.visual.vulkan;
 import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKMissingEnums;
 import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
-import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain.CVKDescriptorPoolRequirements;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKDescriptorPool.CVKDescriptorPoolRequirements;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.EndLogSection;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.GetRequiredVKPhysicalDeviceExtensions;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.InitVKValidationLayers;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.StartLogSection;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkSucceeded;
 import java.awt.event.ComponentListener;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -53,7 +52,6 @@ import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VerifyIn
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.debugging;
 import java.nio.LongBuffer;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import static org.lwjgl.vulkan.KHRSwapchain.VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
@@ -91,13 +89,13 @@ public class CVKRenderer implements ComponentListener {
     private int currentFrame = 0;
     private CVKInstance cvkInstance = null;
     private CVKDevice cvkDevice = null;
-    private CVKSwapChain cvkSwapChain = null;    
-    private boolean swapChainNeedsRecreation = true;     
+    private CVKSwapChain cvkSwapChain = null;   
+    private CVKDescriptorPool cvkDescriptorPool = null;
+    private boolean swapChainNeedsRecreation = true;    
+    private boolean descriptorPoolNeedsRecreation = true;
     private final CVKVisualProcessor parent;  
     
-    // Descriptor pools are owned by the swapchain but because the lifetime of
-    // the swapchain is transient we store these counts in the renderer so that
-    // we can account for our scene being populated before we've created the swapchain.    
+    // We track these as they are needed to (re)create the descriptor pool
     CVKDescriptorPoolRequirements cvkDescriptorPoolRequirements = null;
     CVKDescriptorPoolRequirements cvkPerImageDescriptorPoolRequirements = null;
        
@@ -161,6 +159,10 @@ public class CVKRenderer implements ComponentListener {
             });
         }
         
+        if (cvkDescriptorPool != null) {
+            descriptorPoolNeedsRecreation = !cvkDescriptorPool.CanAccomodate(cvkSwapChain.GetImageCount(), cvkDescriptorPoolRequirements, cvkPerImageDescriptorPoolRequirements);                    
+        }
+        
         return ret;
     }
     
@@ -212,33 +214,71 @@ public class CVKRenderer implements ComponentListener {
         if (parent.surfaceReady()) {
             CVKAssert(cvkDescriptorPoolRequirements != null);
             CVKAssert(cvkPerImageDescriptorPoolRequirements != null);
+            
+            // Device must be finished with all pending actions before we can
+            // recreate the swapchain.
             cvkDevice.WaitIdle();
-            CVKSwapChain newSwapChain = new CVKSwapChain(cvkDevice);                                 
-            ret = newSwapChain.Initialise(cvkDescriptorPoolRequirements, cvkPerImageDescriptorPoolRequirements);
-            if (VkSucceeded(ret)) {
-                if (cvkSwapChain != null) {
-                    // Give each renderable a chance to cleanup swapchain dependent resources
-                    renderables.forEach(el -> {el.DestroySwapChainResources();});
-                    cvkSwapChain.Destroy();
-                }
-                cvkSwapChain = newSwapChain;
-                swapChainNeedsRecreation = false;                
-                
-                // Update the parent (CVKVisualProcessor) so it can update the shared viewport and frustum
-                parent.SwapChainRecreated(cvkDevice, cvkSwapChain);
-                
-                // Give each renderable a chance to recreate swapchain depedent resources
-                for (int i = 0; i < renderables.size(); ++i) {
-                    ret = renderables.get(i).CreateSwapChainResources(cvkSwapChain);
-                    if (VkFailed(ret)){
-                        return ret;
-                    }
-                }
+            
+            // Create a new swapchain.  The number of images shouldn't change, but
+            // if they do each renderable will do a full destroy/create of its
+            // swapchain dependent resources.
+            CVKSwapChain newSwapChain = new CVKSwapChain(cvkDevice);              
+            ret = newSwapChain.Initialise();
+            if (VkFailed(ret)) { return ret; }
+            
+            // Give each renderable a chance to cleanup swapchain dependent resources
+            for (int i = 0; i < renderables.size(); ++ i) {
+                ret = renderables.get(i).SetNewSwapChain(newSwapChain);
+                if (VkFailed(ret)) { return ret; }
             }
+            
+            if (cvkSwapChain != null) {                
+                cvkSwapChain.Destroy();
+            }
+            cvkSwapChain = newSwapChain;
+                
+            // Update the parent (CVKVisualProcessor) so it can update the shared viewport and frustum
+            // These will intern be consumed by the renderables on their next DisplayUpdate
+            parent.SwapChainRecreated(cvkDevice, cvkSwapChain);                                                                                    
+
+            swapChainNeedsRecreation = false;                                       
         } else {
             CVKLOGGER.info("Unable to recreate swap chain, surface not ready.");
         }
         return ret;
+    }
+    
+    private int RecreateDescriptorPool() {
+        VerifyInRenderThread();
+        
+        int ret = VK_NOT_READY;
+        if (parent.surfaceReady()) {
+            CVKAssert(cvkDescriptorPoolRequirements != null);
+            CVKAssert(cvkPerImageDescriptorPoolRequirements != null);
+            
+            // Device must be finished with all pending actions before we can
+            // recreate the swapchain or descriptor pool
+            cvkDevice.WaitIdle();
+                                                                               
+            CVKDescriptorPool newDescriptorPool = new CVKDescriptorPool(cvkDevice, 
+                                                                        cvkSwapChain.GetImageCount(),
+                                                                        cvkDescriptorPoolRequirements,
+                                                                        cvkPerImageDescriptorPoolRequirements);
+            CVKAssert(newDescriptorPool.GetDescriptorPoolHandle() != VK_NULL_HANDLE); 
+            for (int i = 0; i < renderables.size(); ++ i) {
+                ret = renderables.get(i).SetNewDescriptorPool(newDescriptorPool);
+                if (VkFailed(ret)) { return ret; }
+            }    
+            if (cvkDescriptorPool != null) {
+                cvkDescriptorPool.Destroy();
+            }
+            cvkDescriptorPool = newDescriptorPool;
+
+            descriptorPoolNeedsRecreation = false;                                       
+        } else {
+            CVKLOGGER.info("Unable to recreate descriptor pool, surface not ready.");
+        }
+        return ret;        
     }
 
     /**
@@ -471,15 +511,6 @@ public class CVKRenderer implements ComponentListener {
     public void Display() {
         int ret;
         
-        // Sychronisation
-        
-        //
-        
-        // 1.  Acquire next available image from the swap chain.
-        
-        
-        //CVKLOGGER.log(Level.INFO, Thread.currentThread().getName());
-               
         // Our render thread should be the AWT thread that owns the canvas, whose
         // surface is our render target.  Being called by any other thread will 
         // lead to resource contention and deadlock (seen during development when
@@ -495,17 +526,30 @@ public class CVKRenderer implements ComponentListener {
         
         // Adding renderables will change descriptor requirements, we need to update
         // these before the swapchain is initialised for the first time.
-        ProcessNewRenderables();
+        ret = ProcessNewRenderables();
+        checkVKret(ret);        
+
+        if (cvkSwapChain == null || swapChainNeedsRecreation) {
+            ret = RecreateSwapChain();
+            checkVKret(ret); 
+        }
+        if (cvkDescriptorPool == null || descriptorPoolNeedsRecreation) {
+            ret = RecreateDescriptorPool();
+            checkVKret(ret); 
+        }           
         
         if (cvkSwapChain != null) {
-            // Process updates enqueued by other threads
+            // Process updates enqueued by other threads.  If any display resources need to be
+            // (re)created then the renderable involved needs to set a flag so the next time
+            // NeedsDisplayUpdate is called it returns true and is given a chance to update 
+            // while no GPU actions are pending.
             if (!pendingUpdates.isEmpty()) {
                 final List<CVKRendererUpdateTask> tasks = new ArrayList<>();
                 pendingUpdates.drainTo(tasks);
                 tasks.forEach(task -> {
                     task.Run();
                 });                        
-            }                 
+            }        
             
             // If any renderable holds a resource shared across frames then to
             // recreate it we need to a complete halt, that is we need all in
@@ -516,7 +560,8 @@ public class CVKRenderer implements ComponentListener {
             for (int i = 0; (i < renderables.size()) && (updateDisplays == false); ++ i) {
                 updateDisplays = renderables.get(i).NeedsDisplayUpdate();
             }
-                      
+                    
+            // Blocking updates
             if (updateDisplays) {
                 cvkDevice.WaitIdle();
                 for (int i = 0; i < renderables.size(); ++ i) {
@@ -530,7 +575,7 @@ public class CVKRenderer implements ComponentListener {
         }
    
         // If the surface is not ready RecreateSwapChain won't have reset this flag        
-        if (cvkSwapChain != null && !swapChainNeedsRecreation) {
+        if (cvkSwapChain != null && !swapChainNeedsRecreation && cvkDescriptorPool != null && !descriptorPoolNeedsRecreation) {
                     
             try (MemoryStack stack = stackPush()) {                
                 // The swapchain decides which image we should render to based on the
@@ -595,16 +640,13 @@ public class CVKRenderer implements ComponentListener {
                     currentFrame = (++currentFrame) % cvkSwapChain.GetImageCount();                  
                 }
             }
-        }
-        
-        // Explicit waiting on semaphores was introduced in Vulkan 1.2.  It's
-        // simpler to recreate the swap chain at the end of the display as the
-        // render fence has been the reset and the semaphores will be in the 
-        // signalled state, so we just destroy them without waiting.
-        if (cvkSwapChain == null || swapChainNeedsRecreation) {
-            RecreateSwapChain();
-            parent.requestRedraw();
         }        
+        
+        // We'll need another frame to recreate the swapchain.  swapChainNeedsRecreation
+        // can be set if submitting an image to the render queue returned suboptimal or out of date.
+        if (swapChainNeedsRecreation) {
+            parent.requestRedraw();
+        }             
         
         // The visual processor will not trigger any more updates until this is signalled
         parent.signalProcessorIdle();
@@ -623,38 +665,7 @@ public class CVKRenderer implements ComponentListener {
     public VkInstance GetVkInstance() {
         return cvkInstance.GetVkInstance();
     }
-    
-    //TODO_TT: ask a more knowledgable Java dev what this should look like
-//    private class CVKUpdateDescriptorTypeRequirements implements CVKRendererUpdateTask {
-//        private final CVKScene cvkScene;
-//        private final boolean renderableAdded;
-//        public CVKUpdateDescriptorTypeRequirements(CVKScene cvkScene, boolean renderableAdded) {
-//            this.cvkScene = cvkScene;
-//            this.renderableAdded = renderableAdded;
-//        }
-//        
-//        @Override
-//        public void Run() {
-//            VerifyInRenderThread();
-//            
-//            // The addition of a new renderable may exceed our current descriptor pool's
-//            // size.  Calculate the pool requirements and resize if necessary.
-//            if (renderableAdded) {
-//
-//                // LWJGL doesn't reflect a lot of Vulkan enums instead exposing them as
-//                // multiple static final ints.  VkDescriptorType ranges from 
-//                // VK_DESCRIPTOR_TYPE_SAMPLER(0) to VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT(10)    
-//
-//                // Scene will ask each renderable to tell it about the descriptors it needs. 
-//                descriptorTypeCounts = new int[11];
-//                cvkScene.GetDescriptorTypeRequirements(descriptorTypeCounts);   
-//
-//                // SwapChain owns the descriptor pool so let it recreate it if needed
-//                cvkSwapChain.DescriptorTypeRequirementsUpdated(descriptorTypeCounts);
-//            }            
-//        }
-//    } 
-    
+      
     
     @Override
     public void componentResized(ComponentEvent e) {
