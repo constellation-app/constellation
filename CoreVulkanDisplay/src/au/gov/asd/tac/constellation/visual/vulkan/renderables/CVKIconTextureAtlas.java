@@ -19,10 +19,8 @@ import au.gov.asd.tac.constellation.utilities.graphics.Vector3i;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
-import au.gov.asd.tac.constellation.visual.vulkan.CVKDescriptorPool;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
-import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDescriptorPool.CVKDescriptorPoolRequirements;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKLOGGER;
@@ -111,14 +109,34 @@ public class CVKIconTextureAtlas extends CVKRenderable {
     private int lastTransferedIconCount = 0;
     
     
-    public int GetAtlasIconCount() { return lastTransferedIconCount; }
-    public long GetAtlasImageViewHandle() { return cvkAtlasImage.GetImageViewHandle(); }
-    public long GetAtlasSamplerHandle() { return hAtlasSampler; }
+    // ========================> Classes <======================== \\ 
+    
+    // This could be replaced with a templated Pair type
+    private class IndexedConstellationIcon {
+        public final int index;
+        public final ConstellationIcon icon;
+        IndexedConstellationIcon(int index, ConstellationIcon icon) {
+            this.index = index;
+            this.icon = icon;     
+            CVKIconTextureAtlas.iconsPerRow = textureWidth/ICON_WIDTH;
+            CVKIconTextureAtlas.rowsPerLayer = textureHeight/ICON_HEIGHT;
+            CVKIconTextureAtlas.iconsPerLayer = CVKIconTextureAtlas.iconsPerRow * CVKIconTextureAtlas.rowsPerLayer;
+            
+        }
+    }
     
     
-    //TODO: can this class be static so it can be shared by multiple graphs?
+    // ========================> Lifetime <======================== \\    
+    
     public CVKIconTextureAtlas(CVKVisualProcessor parent) {
         this.parent = parent;
+        
+        // These icons are guaranteed to be in the iconMap in this order.
+        // They must be at these pre-defined indices so other code (in particular the shaders) can use them.
+        // See *_INDEX constants above.
+        for (final String iconName : new String[]{HIGHLIGHTED_ICON, UNKNOWN_ICON, LOOP_DIRECTED_ICON, LOOP_UNDIRECTED_ICON, NOISE_ICON, TRANSPARENT_ICON}) {
+            AddIcon(iconName);
+        }            
     }
 
     @Override
@@ -149,35 +167,76 @@ public class CVKIconTextureAtlas extends CVKRenderable {
             lastTransferedIconCount = loadedIcons.size();  
         }
         return ret;    
-    }       
-    
+    }     
         
-    // This could be replaced with a templated Pair type
-    private class IndexedConstellationIcon {
-        public final int index;
-        public final ConstellationIcon icon;
-        IndexedConstellationIcon(int index, ConstellationIcon icon) {
-            this.index = index;
-            this.icon = icon;     
-            CVKIconTextureAtlas.iconsPerRow = textureWidth/ICON_WIDTH;
-            CVKIconTextureAtlas.rowsPerLayer = textureHeight/ICON_HEIGHT;
-            CVKIconTextureAtlas.iconsPerLayer = CVKIconTextureAtlas.iconsPerRow * CVKIconTextureAtlas.rowsPerLayer;
-            
+    @Override
+    public void Destroy() {
+        if (cvkAtlasImage != null) {
+            cvkAtlasImage.Destroy();
+            cvkAtlasImage = null;            
         }
-    }
-    
-    
-    public CVKIconTextureAtlas() {
+
+        if (hAtlasSampler != VK_NULL_HANDLE) {
+            vkDestroySampler(cvkDevice.GetDevice(), hAtlasSampler, null);    
+            hAtlasSampler = VK_NULL_HANDLE;
+        }
         
-        // These icons are guaranteed to be in the iconMap in this order.
-        // They must be at these pre-defined indices so other code (in particular the shaders) can use them.
-        // See *_INDEX constants above.
-        for (final String iconName : new String[]{HIGHLIGHTED_ICON, UNKNOWN_ICON, LOOP_DIRECTED_ICON, LOOP_UNDIRECTED_ICON, NOISE_ICON, TRANSPARENT_ICON}) {
-            AddIcon(iconName);
-        }        
+        lastTransferedIconCount = 0;
     }
     
-      
+    
+    // ========================> Swap chain <======================== \\
+    
+    @Override
+    protected int DestroySwapChainResources() { return VK_SUCCESS; }  
+    
+    
+    // ========================> Vertex buffers <======================== \\
+    
+    @Override
+    public int GetVertexCount(){ return 0; }   
+    
+    
+    // ========================> Command buffers <======================== \\
+    
+    @Override
+    public VkCommandBuffer GetCommandBuffer(int imageIndex) { return null; }        
+     
+    @Override
+    public int RecordCommandBuffer(VkCommandBufferInheritanceInfo inheritanceInfo, int index){ return VK_SUCCESS; }
+    
+    
+    // ========================> Descriptors <======================== \\
+    
+    @Override
+    protected int DestroyDescriptorPoolResources() { return VK_SUCCESS; }   
+    
+    @Override
+    public void IncrementDescriptorTypeRequirements(CVKDescriptorPoolRequirements reqs, CVKDescriptorPoolRequirements perImageReqs) {}    
+    
+    
+    // ========================> Display <======================== \\
+    
+    @Override
+    public int DisplayUpdate() {
+        Destroy();
+        return CreateAtlas();
+    }
+    
+    @Override
+    public boolean NeedsDisplayUpdate() {
+        return loadedIcons.size() > lastTransferedIconCount;
+    }  
+    
+    
+    // ========================> Helpers <======================== \\
+    
+    public int GetAtlasIconCount() { return lastTransferedIconCount; }
+    
+    public long GetAtlasImageViewHandle() { return cvkAtlasImage.GetImageViewHandle(); }
+    
+    public long GetAtlasSamplerHandle() { return hAtlasSampler; }
+  
     public int AddIcon(final String label) {
         final Integer iconIndex = loadedIcons.get(label);
         if (iconIndex == null) {
@@ -408,43 +467,4 @@ public class CVKIconTextureAtlas extends CVKRenderable {
         
         return ret;
     }
-    
-    @Override
-    public void Destroy() {
-        if (cvkAtlasImage != null) {
-            cvkAtlasImage.Destroy();
-            cvkAtlasImage = null;            
-        }
-
-        if (hAtlasSampler != VK_NULL_HANDLE) {
-            vkDestroySampler(cvkDevice.GetDevice(), hAtlasSampler, null);    
-            hAtlasSampler = VK_NULL_HANDLE;
-        }
-        
-        lastTransferedIconCount = 0;
-    }
-    
-    @Override
-    public int DisplayUpdate() {
-        Destroy();
-        return CreateAtlas();
-    }
-    
-    @Override
-    public boolean NeedsDisplayUpdate() {
-        return loadedIcons.size() > lastTransferedIconCount;
-    }   
-    
-    @Override
-    public VkCommandBuffer GetCommandBuffer(int imageIndex) { return null; }        
-    @Override
-    public int GetVertexCount(){ return 0; }    
-    @Override
-    public int RecordCommandBuffer(VkCommandBufferInheritanceInfo inheritanceInfo, int index){ return VK_SUCCESS; }    
-    @Override
-    protected int DestroySwapChainResources() { return VK_SUCCESS; }    
-    @Override
-    protected int DestroyDescriptorPoolResources() { return VK_SUCCESS; }       
-    @Override
-    public void IncrementDescriptorTypeRequirements(CVKDescriptorPoolRequirements reqs, CVKDescriptorPoolRequirements perImageReqs) {}    
 }

@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.visual.vulkan.renderables;
 
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4i;
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
@@ -116,7 +117,6 @@ public class CVKIconsRenderable extends CVKRenderable{
         private static final int OFFSETOF_DATA = 4 * Float.BYTES;
         private static final int OFFSET_BKGCLR = 0;
         private static final int BINDING = 0;
-
         private Vector4f backgroundIconColour = new Vector4f();
         private Vector4i data = new Vector4i();
         
@@ -182,7 +182,6 @@ public class CVKIconsRenderable extends CVKRenderable{
 
             return bindingDescription;
         }
-
         
         /**
          * A VkVertexInputAttributeDescription describes each element int the
@@ -216,7 +215,26 @@ public class CVKIconsRenderable extends CVKRenderable{
 
             return attributeDescriptions.rewind();
         }
-    }    
+    }  
+    
+    private static class VertexUniformBufferObject {
+        private static final int SIZEOF = (16 + 1 + 1 + 1) * Float.BYTES;
+
+        public Matrix44f mvMatrix = new Matrix44f();
+        public float morphMix = 0;
+        public float visibilityLow = 0;
+        public float visibilityHigh = 0;                 
+        
+        private void CopyTo(ByteBuffer buffer) {
+            for (int iRow = 0; iRow < 4; ++iRow) {
+                for (int iCol = 0; iCol < 4; ++iCol) {
+                    buffer.putFloat(mvMatrix.get(iRow, iCol));
+                }
+            }
+            buffer.putFloat(visibilityLow);
+            buffer.putFloat(visibilityHigh);
+        }         
+    }
                       
     
     // ========================> Static init <======================== \\

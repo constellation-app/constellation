@@ -19,11 +19,9 @@ import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
-import au.gov.asd.tac.constellation.visual.vulkan.CVKDescriptorPool;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDescriptorPool.CVKDescriptorPoolRequirements;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
 import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKShaderUtils;
-import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKLOGGER;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkSucceeded;
@@ -746,9 +744,6 @@ public class CVKFPSRenderable extends CVKRenderable {
         
         int ret = VK_SUCCESS;
      
-        // TODO_TT: investigate a frames in flight < imageCount approach
-        int imageCount = cvkSwapChain.GetImageCount();        
-        
         // LIFTED FROM FPSRenderable.reshape(...)
         //TT: the logic here seems to be the FPS text needs to be 50 pixels from the 
         // edges, the calculation of dx and dy implies that the viewport is 
@@ -792,8 +787,8 @@ public class CVKFPSRenderable extends CVKRenderable {
                       
                 
         // In the JOGL version these were in a static var CAMERA that never changed
-        vertexUBO.visibilityLow = 0.0f;
-        vertexUBO.visibilityHigh = 1.0f;
+        vertexUBO.visibilityLow = parent.getDisplayCamera().getVisibilityLow();
+        vertexUBO.visibilityHigh = parent.getDisplayCamera().getVisibilityHigh();
         
         // Get the projection matrix from our parent
         geometryUBO.pMatrix.set(parent.GetProjectionMatrix());
@@ -830,6 +825,7 @@ public class CVKFPSRenderable extends CVKRenderable {
         vkUnmapMemory(cvkDevice.GetDevice(), cvkGeomUBStagingBuffer.GetMemoryBufferHandle());          
                 
         // Copy the UBOs in VK buffers we can bind to a descriptor set  
+        final int imageCount = cvkSwapChain.GetImageCount(); 
         for (int i = 0; i < imageCount; ++i) {   
             vertexUniformBuffers.get(i).CopyFrom(cvkVertUBStagingBuffer);                       
             geometryUniformBuffers.get(i).CopyFrom(cvkGeomUBStagingBuffer);                                           
