@@ -126,7 +126,7 @@ public class SplitNodesPlugin extends RecordStoreQueryPlugin implements DataAcce
             transactionType.suppressEvent(true, new ArrayList<>());
             SingleChoiceParameterType.setOptions(transactionType, types);
 
-            if (types.contains(AnalyticConcept.TransactionType.CORRELATION.getName())) {
+            if (transactionType.getSingleChoice() == null && types.contains(AnalyticConcept.TransactionType.CORRELATION.getName())) {
                 SingleChoiceParameterType.setChoice(transactionType, AnalyticConcept.TransactionType.CORRELATION.getName());
             }
             transactionType.suppressEvent(false, new ArrayList<>());
