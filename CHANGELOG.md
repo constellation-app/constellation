@@ -65,36 +65,48 @@
 * Updated `deobfuscate()` in `PasswordDeobfuscator` to now return a String instead of a CharSequence.
 
 ## 2020-03-01 Changes in March 2020
-* Added new module Core View Framework containing `AbstractTopComponent` and other related classes.
-* Added new module Core Plugin Reporter to separate it from the plugin framework.
-* Added new module Core Named Selections to break it out of Core Functionality.
-* Added new module Core Attribute Calculator to separate it from the Scripting View.
 * Added `AnalyticSchemaPluginRegistry` to Core Analytic Schema
+* Added new module Core Attribute Calculator to separate it from the Scripting View.
+* Added new module Core Named Selections to break it out of Core Functionality.
+* Added new module Core Plugin Reporter to separate it from the plugin framework.
+* Added new module Core View Framework containing `AbstractTopComponent` and other related classes.
 * Added `VisualGraphPluginRegistry` to Core Visual Graph
 * Fixed a logic bug with `GraphRendererDropTarget` preventing graph droppers from every running.
-* Moved `VisualConcept` to the Core Visual Schema module.
-* Moved `BBoxf` and `BBoxd` to the Core Visual Graph module.
-* Moved `SimpleGraphOpener` and `SimpleGraphTopComponent` to the Core Graph Node module.
-* Moved `VisualGraphOpener` and `VisualGraphTopComponent` to the Core Interactive Graph module.
-* Moved `AttributeSelectionPanel` to Core Graph Utilities module.
-* Moved `DragAction` to Core Visual Graph module.
+* Moved `AnalyticIconProvider` to `au.gov.asd.tac.constellation.utilities.icon`.
 * Moved a number of plugins out of Core Functionality into other modules to better reflect their purpose.
+* Moved `AttributeSelectionPanel` to Core Graph Utilities module.
+* Moved `BBoxf` and `BBoxd` to the Core Visual Graph module.
+* Moved `CharacterIconProvider` to `au.gov.asd.tac.constellation.utilities.icon`.
+* Moved `ConstellationColor` to `au.gov.asd.tac.constellation.utilities.color`.
+* Moved `ConstellationIcon` to `au.gov.asd.tac.constellation.utilities.icon`.
+* Moved `ConstellationViewsConcept` to `au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept`.
+* Moved `DragAction` to Core Visual Graph module.
+* Moved `SchemaAttribute` to `au.gov.asd.tac.constellation.graph.schema.attribute`.
+* Moved `SchemaConcept` to `au.gov.asd.tac.constellation.graph.schema.concept`.
+* Moved `SchemaTransactionType` to `au.gov.asd.tac.constellation.graph.schema.type`.
+* Moved `SchemaVertexType` to `au.gov.asd.tac.constellation.graph.schema.type`.
+* Moved `SimpleGraphOpener` and `SimpleGraphTopComponent` to the Core Graph Node module.
+* Moved `UserInterfaceIconProvider` to `au.gov.asd.tac.constellation.utilities.icon`.
+* Moved `VisualConcept` to `au.gov.asd.tac.constellation.graph.schema.visual.concept`.
+* Moved `VisualConcept` to the Core Visual Schema module.
+* Moved `VisualGraphOpener` and `VisualGraphTopComponent` to the Core Interactive Graph module.
+* Moved `VisualManager` to `au.gov.asd.tac.constellation.utilities.visual`.
 * Removed the `build-zip` stage from Travis as it wasn't being used.
 * Removed the Core Visual Support module by merging it with Core Utilities.
-* Renamed base package of Core Visual Schema to `au.gov.asd.tac.constellation.graph.schema.visual`.
-* Renamed base package of Core Analytic Schema to `au.gov.asd.tac.constellation.graph.schema.analytic`.
-* Renamed base package of Core Plugin Framework to `au.gov.asd.tac.constellation.plugins`.
 * Renamed base package of Core Algorithms to `au.gov.asd.tac.constellation.plugins.algorithms`.
+* Renamed base package of Core Analytic Schema to `au.gov.asd.tac.constellation.graph.schema.analytic`.
 * Renamed base package of Core Arrangements to `au.gov.asd.tac.constellation.plugins.arrangements`.
 * Renamed base package of Core Import Export to `au.gov.asd.tac.constellation.plugins.importexport`.
+* Renamed base package of Core Plugin Framework to `au.gov.asd.tac.constellation.plugins`.
+* Renamed base package of Core Visual Schema to `au.gov.asd.tac.constellation.graph.schema.visual`.
+* Renamed `Decorators` to `VertexDecorators` and moved to Core Visual Schema module.
 * Renamed `InteractivePluginRegsitry` to `InteractiveGraphPluginRegistry`.
 * Renamed `IoProgressHandle` to `HandleIoProgress`.
-* Renamed `Decorators` to `VertexDecorators` and moved to Core Visual Schema module.
-* Updated Core Visual Schema with all attribute classes relevant to it.
 * Updated Core Analytic Schema with all attribute classes relevant to it.
+* Updated Core Visual Schema with all attribute classes relevant to it.
 * Updated the Core Web Server module with a complete rewrite regarding adding REST services.
-* Updated the REST API with a major refactor.
 * Updated the `README.MD` instructions to explain the NetBeans 11 installation workaround.
+* Updated the REST API with a major refactor.
 * Updated the Travis run image to use NetBeans 11.3 and include the workaround for NetBeans 11.
 
 ## 2020-02-01 Changes in February 2020
