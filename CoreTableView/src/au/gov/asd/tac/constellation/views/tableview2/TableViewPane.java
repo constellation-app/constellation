@@ -35,6 +35,7 @@ import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -162,6 +163,8 @@ public final class TableViewPane extends BorderPane {
     private final ChangeListener<ObservableList<String>> tableSelectionListener;
     
     private boolean sortingListenerActive = false;
+    private final ChangeListener<? super Comparator<? super ObservableList<String>>> tableComparatorListener;
+    private final ChangeListener<? super TableColumn.SortType> tableSortTypeListener;
 
     // Store details of sort order changes made upon column order change or table
     // preference loading - these are used to reinstate the sorting after data update
@@ -209,6 +212,9 @@ public final class TableViewPane extends BorderPane {
         };
         this.selectedProperty = table.getSelectionModel().selectedItemProperty();
         selectedProperty.addListener(tableSelectionListener);
+        
+        this.tableComparatorListener = (v, o, n) -> paginateForSortListener();
+        this.tableSortTypeListener = (v, o, n) -> paginateForSortListener();
 
         this.scheduledExecutorService = Executors.newScheduledThreadPool(1);
     }
@@ -964,6 +970,7 @@ public final class TableViewPane extends BorderPane {
             final int toIndex = Math.min(fromIndex + MAX_ROWS_PER_PAGE, rows.size());
             
             selectedProperty.removeListener(tableSelectionListener);
+            sortedRowList.comparatorProperty().removeListener(tableComparatorListener);
                         
             //get the previous sort details so that we don't lose it upon switching pages
             TableColumn<ObservableList<String>, ?> sortCol = null;
@@ -971,7 +978,7 @@ public final class TableViewPane extends BorderPane {
             if (!table.getSortOrder().isEmpty()) {
                 sortCol = table.getSortOrder().get(0);
                 sortType = sortCol.getSortType();
-                sortCol.sortTypeProperty().removeListener((v, o, n) -> paginateForSortListener());
+                sortCol.sortTypeProperty().removeListener(tableSortTypeListener);
             }
             
             sortedRowList.comparatorProperty().unbind();
@@ -982,7 +989,7 @@ public final class TableViewPane extends BorderPane {
             if (sortCol != null) {
                 table.getSortOrder().add(sortCol);
                 sortCol.setSortType(sortType);
-                sortCol.sortTypeProperty().addListener((v, o, n) -> paginateForSortListener());
+                sortCol.sortTypeProperty().addListener(tableSortTypeListener);
             }
             
             sortedRowList.comparatorProperty().bind(table.comparatorProperty());
@@ -993,6 +1000,7 @@ public final class TableViewPane extends BorderPane {
                 }
             };
             t.start();
+            sortedRowList.comparatorProperty().addListener(tableComparatorListener);
             selectedProperty.addListener(tableSelectionListener);
         }
         
@@ -1123,7 +1131,6 @@ public final class TableViewPane extends BorderPane {
                     // add table data to table
                     sortedRowList = new SortedList<>(FXCollections.observableArrayList(rows));
                     sortedRowList.comparatorProperty().bind(table.comparatorProperty());
-                    sortedRowList.comparatorProperty().addListener((v, o, n) -> paginateForSortListener());
                     paginate(sortedRowList);
 
                     // add user defined filter to the table
