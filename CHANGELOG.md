@@ -87,8 +87,7 @@
 * Moved `SchemaVertexType` to `au.gov.asd.tac.constellation.graph.schema.type`.
 * Moved `SimpleGraphOpener` and `SimpleGraphTopComponent` to the Core Graph Node module.
 * Moved `UserInterfaceIconProvider` to `au.gov.asd.tac.constellation.utilities.icon`.
-* Moved `VisualConcept` to `au.gov.asd.tac.constellation.graph.schema.visual.concept`.
-* Moved `VisualConcept` to the Core Visual Schema module.
+* Moved `VisualConcept` to the Core Visual Schema module located at `au.gov.asd.tac.constellation.graph.schema.visual.concept`.
 * Moved `VisualGraphOpener` and `VisualGraphTopComponent` to the Core Interactive Graph module.
 * Moved `VisualManager` to `au.gov.asd.tac.constellation.utilities.visual`.
 * Removed the `build-zip` stage from Travis as it wasn't being used.
