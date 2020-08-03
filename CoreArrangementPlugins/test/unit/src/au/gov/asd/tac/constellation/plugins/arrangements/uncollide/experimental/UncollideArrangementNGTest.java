@@ -62,6 +62,54 @@ public class UncollideArrangementNGTest {
         arranger.arrange(graphWithTwoTwins);
         qt = new QuadTree(graphWithTwoTwins);
         assertEquals(qt.hasCollision(), false); //Assert that after the uncollide arrangement has run there is no longer a collision. 
-        
     } 
+    
+    /**
+     * Test of arrange method, of class UncollideArrangement.
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testArrange3D() throws Exception {
+        System.out.println("arrange3D");
+        
+        StoreGraph graphWithTwoTwins = new StoreGraph();
+        
+        int attrX = VisualConcept.VertexAttribute.X.ensure(graphWithTwoTwins);
+        int attrY = VisualConcept.VertexAttribute.Y.ensure(graphWithTwoTwins);
+        int attrZ = VisualConcept.VertexAttribute.Z.ensure(graphWithTwoTwins);
+        int attrR = VisualConcept.VertexAttribute.NODE_RADIUS.ensure(graphWithTwoTwins);
+
+        // Zero vertex
+        int twoTwinsSubject = graphWithTwoTwins.addVertex();
+        graphWithTwoTwins.setFloatValue(attrX, twoTwinsSubject, 0.0f);
+        graphWithTwoTwins.setFloatValue(attrY, twoTwinsSubject, 0.0f);
+        graphWithTwoTwins.setFloatValue(attrZ, twoTwinsSubject, 0.0f);
+        graphWithTwoTwins.setFloatValue(attrR, twoTwinsSubject, 1.0f);
+        // First twin
+        int twin1 = graphWithTwoTwins.addVertex();
+        graphWithTwoTwins.setFloatValue(attrX, twin1, 0.1f);
+        graphWithTwoTwins.setFloatValue(attrY, twin1, 0.1f);
+        graphWithTwoTwins.setFloatValue(attrZ, twin1, 0.1f);
+        graphWithTwoTwins.setFloatValue(attrR, twin1, 1.0f);
+        // Second twin
+        int twin2 = graphWithTwoTwins.addVertex();
+        graphWithTwoTwins.setFloatValue(attrX, twin2, -0.1f);
+        graphWithTwoTwins.setFloatValue(attrY, twin2, -0.1f);
+        graphWithTwoTwins.setFloatValue(attrZ, twin2, -0.1f);
+        graphWithTwoTwins.setFloatValue(attrR, twin2, 1.0f);
+        // Non-twin collider
+        int collider = graphWithTwoTwins.addVertex();
+        graphWithTwoTwins.setFloatValue(attrX, collider, 1.0f);
+        graphWithTwoTwins.setFloatValue(attrY, collider, 1.0f);
+        graphWithTwoTwins.setFloatValue(attrZ, collider, 1.0f);
+        graphWithTwoTwins.setFloatValue(attrR, collider, 1.0f);
+        
+        OctTree ot = new OctTree(graphWithTwoTwins);
+        assertEquals(ot.hasCollision(), true); //Assert that before the uncollide arrangement is run the graph has a collision. 
+        final UncollideArrangement arranger = new UncollideArrangement(Dimensions.Three, 20);
+        arranger.arrange(graphWithTwoTwins);
+        ot = new OctTree(graphWithTwoTwins);
+        assertEquals(ot.hasCollision(), false); //Assert that after the uncollide arrangement has run there is no longer a collision. 
+    } 
+    
 }
