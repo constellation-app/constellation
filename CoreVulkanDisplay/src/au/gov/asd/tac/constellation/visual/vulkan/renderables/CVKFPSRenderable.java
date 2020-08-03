@@ -26,7 +26,6 @@ import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAsser
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKLOGGER;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkSucceeded;
 import au.gov.asd.tac.constellation.visual.vulkan.shaders.CVKShaderPlaceHolder;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryStack.stackPush;
@@ -36,7 +35,6 @@ import static org.lwjgl.vulkan.VK10.VK_VERTEX_INPUT_RATE_VERTEX;
 import static org.lwjgl.vulkan.VK10.VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
 import org.lwjgl.vulkan.VkVertexInputAttributeDescription;
 import org.lwjgl.vulkan.VkVertexInputBindingDescription;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.LoadFileToDirectBuffer;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VerifyInRenderThread;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.checkVKret;
@@ -45,6 +43,7 @@ import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKCommandBuffer;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_SHADER_COMPILATION;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_SHADER_MODULE;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.LoadFileToDirectBuffer;
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.util.ArrayList;
@@ -52,6 +51,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryUtil;
+import static org.lwjgl.system.MemoryUtil.memAlloc;
 import static org.lwjgl.system.MemoryUtil.memAllocInt;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_TRANSFER_DST_BIT;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
@@ -104,6 +104,7 @@ import static org.lwjgl.vulkan.VK10.vkCmdBindDescriptorSets;
 import static org.lwjgl.vulkan.VK10.vkCmdBindPipeline;
 import static org.lwjgl.vulkan.VK10.vkCmdBindVertexBuffers;
 import static org.lwjgl.vulkan.VK10.vkCmdDraw;
+import static org.lwjgl.vulkan.VK10.vkCmdPushConstants;
 import static org.lwjgl.vulkan.VK10.vkCmdSetScissor;
 import static org.lwjgl.vulkan.VK10.vkCmdSetViewport;
 import static org.lwjgl.vulkan.VK10.vkCreateGraphicsPipelines;
@@ -116,7 +117,6 @@ import static org.lwjgl.vulkan.VK10.vkUpdateDescriptorSets;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkCommandBufferBeginInfo;
 import org.lwjgl.vulkan.VkCommandBufferInheritanceInfo;
-import org.lwjgl.vulkan.VkDescriptorBufferInfo;
 import org.lwjgl.vulkan.VkDescriptorImageInfo;
 import org.lwjgl.vulkan.VkDescriptorSetAllocateInfo;
 import org.lwjgl.vulkan.VkDescriptorSetLayoutBinding;
@@ -138,8 +138,10 @@ import org.lwjgl.vulkan.VkWriteDescriptorSet;
 import static org.lwjgl.vulkan.VK10.vkDestroyPipeline;
 import static org.lwjgl.vulkan.VK10.vkDestroyPipelineLayout;
 import static org.lwjgl.vulkan.VK10.vkFreeDescriptorSets;
+import org.lwjgl.vulkan.VkDescriptorBufferInfo;
 import org.lwjgl.vulkan.VkPipelineDepthStencilStateCreateInfo;
 import org.lwjgl.vulkan.VkPipelineDynamicStateCreateInfo;
+import org.lwjgl.vulkan.VkPushConstantRange;
 
 
 public class CVKFPSRenderable extends CVKRenderable {
@@ -187,6 +189,8 @@ public class CVKFPSRenderable extends CVKRenderable {
     // so we can recreate our descriptors
     private long hAtlasSampler = VK_NULL_HANDLE;
     private long hAtlasImageView = VK_NULL_HANDLE;
+    
+    private ByteBuffer vertexPushConstants = null;
     
     private int counter = 0;
 
@@ -358,7 +362,7 @@ public class CVKFPSRenderable extends CVKRenderable {
                 }
             }
          
-        } catch (IOException e) {
+        } catch (Exception e) {
             CVKLOGGER.log(Level.SEVERE, "Failed to compile FPSRenderable shaders: {0}", e.toString());
             ret = CVK_ERROR_SHADER_COMPILATION;
         }
@@ -405,24 +409,17 @@ public class CVKFPSRenderable extends CVKRenderable {
             Fragment shader needs a sampler2Darray
             */
 
-            VkDescriptorSetLayoutBinding.Buffer bindings = VkDescriptorSetLayoutBinding.callocStack(3, stack);
-
-            VkDescriptorSetLayoutBinding vertexUBOLayout = bindings.get(0);
-            vertexUBOLayout.binding(0);
-            vertexUBOLayout.descriptorCount(1);
-            vertexUBOLayout.descriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
-            vertexUBOLayout.pImmutableSamplers(null);
-            vertexUBOLayout.stageFlags(VK_SHADER_STAGE_VERTEX_BIT);
-            
+            VkDescriptorSetLayoutBinding.Buffer bindings = VkDescriptorSetLayoutBinding.callocStack(2, stack);
+       
             VkDescriptorSetLayoutBinding geomUBOLayout = bindings.get(1);
-            geomUBOLayout.binding(1);
+            geomUBOLayout.binding(0);
             geomUBOLayout.descriptorCount(1);
             geomUBOLayout.descriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
             geomUBOLayout.pImmutableSamplers(null);
             geomUBOLayout.stageFlags(VK_SHADER_STAGE_GEOMETRY_BIT);            
 
-            VkDescriptorSetLayoutBinding samplerLayoutBinding = bindings.get(2);
-            samplerLayoutBinding.binding(2);
+            VkDescriptorSetLayoutBinding samplerLayoutBinding = bindings.get(0);
+            samplerLayoutBinding.binding(1);
             samplerLayoutBinding.descriptorCount(1);
             samplerLayoutBinding.descriptorType(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
             samplerLayoutBinding.pImmutableSamplers(null);
@@ -505,8 +502,11 @@ public class CVKFPSRenderable extends CVKRenderable {
             parent.GetTextureAtlas().AddIcon(Integer.toString(digit));
         }
         
+        // Initialise push constants buffers
+        vertexPushConstants = memAlloc(VertexUniformBufferObject.SIZEOF);
+         
         return ret;
-    }   
+    }
     
     @Override
     public void Destroy() {                   
@@ -521,7 +521,6 @@ public class CVKFPSRenderable extends CVKRenderable {
         CVKAssert(pipelines == null);
         CVKAssert(pipelineLayouts == null);
         CVKAssert(pDescriptorSets == null);
-        CVKAssert(vertexUniformBuffers == null);
         CVKAssert(geometryUniformBuffers == null);
         CVKAssert(vertexBuffers == null);
         CVKAssert(commandBuffers == null);
@@ -561,9 +560,7 @@ public class CVKFPSRenderable extends CVKRenderable {
                 
                 // We need to update the uniform buffer as a new image size will mean a
                 // different position for our FPS.  After updating the uniform buffers we
-                // need to update the descriptor sets that bind the uniform buffers as well.                  
-                    
-
+                // need to update the descriptor sets that bind the uniform buffers as well.
                 ret = UpdateUniformBuffers(stack);
                 if (VkFailed(ret)) { return ret; }
 
@@ -601,7 +598,6 @@ public class CVKFPSRenderable extends CVKRenderable {
             CVKAssert(pipelines == null);
             CVKAssert(pipelineLayouts == null);
             CVKAssert(pDescriptorSets == null);
-            CVKAssert(vertexUniformBuffers == null);
             CVKAssert(geometryUniformBuffers == null);
             CVKAssert(vertexBuffers == null);
             CVKAssert(commandBuffers == null);
@@ -718,16 +714,8 @@ public class CVKFPSRenderable extends CVKRenderable {
         
         int imageCount = cvkSwapChain.GetImageCount();        
 
-        vertexUniformBuffers = new ArrayList<>();
         geometryUniformBuffers = new ArrayList<>();        
-        for (int i = 0; i < imageCount; ++i) {   
-            CVKBuffer vertUniformBuffer = CVKBuffer.Create(cvkDevice, 
-                                                          VertexUniformBufferObject.SIZEOF,
-                                                          VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-                                                          VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-            vertUniformBuffer.DEBUGNAME = String.format("CVKFPSRenderable vertUniformBuffer %d", i);   
-            vertexUniformBuffers.add(vertUniformBuffer);            
-            
+        for (int i = 0; i < imageCount; ++i) {
             CVKBuffer geomUniformBuffer = CVKBuffer.Create(cvkDevice, 
                                                           GeometryUniformBufferObject.SIZEOF,
                                                           VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
@@ -735,7 +723,6 @@ public class CVKFPSRenderable extends CVKRenderable {
             geomUniformBuffer.DEBUGNAME = String.format("CVKFPSRenderable geomUniformBuffer %d", i);                                    
             geometryUniformBuffers.add(geomUniformBuffer);            
         }
-        
         return UpdateUniformBuffers(stack);                
     }
         
@@ -757,7 +744,7 @@ public class CVKFPSRenderable extends CVKRenderable {
         // In Vulkan the screen space origin is in the top left hand corner.  Note we put the origin at 0, H and 
         // the viewport dimensions are W and -H.  The -H means we we still have a 0->H range, just running in the
         // opposite direction to GL.
-        final int[] viewport = new int[]{0, cvkSwapChain.GetHeight(), cvkSwapChain.GetWidth(), -cvkSwapChain.GetHeight()};
+        final int[] viewport = cvkSwapChain.GetViewport();
         
         final int dx = cvkSwapChain.GetWidth() / 2 - FPS_OFFSET;
         final int dy = cvkSwapChain.GetHeight() / 2 - FPS_OFFSET;
@@ -790,28 +777,17 @@ public class CVKFPSRenderable extends CVKRenderable {
         vertexUBO.visibilityLow = parent.getDisplayCamera().getVisibilityLow();
         vertexUBO.visibilityHigh = parent.getDisplayCamera().getVisibilityHigh();
         
+        // Update the push constants data
+        vertexUBO.CopyTo(vertexPushConstants);
+        vertexPushConstants.flip();
+
         // Get the projection matrix from our parent
         geometryUBO.pMatrix.set(parent.GetProjectionMatrix());
         
-
-
         // Staging buffer so our VB can be device local (most performant memory)
-        int size = VertexUniformBufferObject.SIZEOF;
-        PointerBuffer pData = stack.mallocPointer(1);        
-        CVKBuffer cvkVertUBStagingBuffer = CVKBuffer.Create(cvkDevice, 
-                                                            size,
-                                                            VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-                                                            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-        cvkVertUBStagingBuffer.DEBUGNAME = "CVKFPSRenderable.UpdateUniformBuffers cvkVertUBStagingBuffer";                           
-        ret = vkMapMemory(cvkDevice.GetDevice(), cvkVertUBStagingBuffer.GetMemoryBufferHandle(), 0, size, 0, pData);
-        if (VkFailed(ret)) { return ret; }
-        {
-            vertexUBO.CopyTo(pData.getByteBuffer(0, size));
-        }
-        vkUnmapMemory(cvkDevice.GetDevice(), cvkVertUBStagingBuffer.GetMemoryBufferHandle());             
-
         // Fill of the geometry uniform buffer
-        size = GeometryUniformBufferObject.SIZEOF;
+        PointerBuffer pData = stack.mallocPointer(1);
+        int size = GeometryUniformBufferObject.SIZEOF;
         CVKBuffer cvkGeomUBStagingBuffer = CVKBuffer.Create(cvkDevice, 
                                                             size,
                                                             VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
@@ -826,21 +802,15 @@ public class CVKFPSRenderable extends CVKRenderable {
                 
         // Copy the UBOs in VK buffers we can bind to a descriptor set  
         final int imageCount = cvkSwapChain.GetImageCount(); 
-        for (int i = 0; i < imageCount; ++i) {   
-            vertexUniformBuffers.get(i).CopyFrom(cvkVertUBStagingBuffer);                       
+        for (int i = 0; i < imageCount; ++i) {                          
             geometryUniformBuffers.get(i).CopyFrom(cvkGeomUBStagingBuffer);                                           
         }
-	cvkVertUBStagingBuffer.Destroy();
         cvkGeomUBStagingBuffer.Destroy();
 
         return ret;
     }
     
     private void DestroyUniformBuffers() {
-        if (vertexUniformBuffers != null) {
-            vertexUniformBuffers.forEach(el -> {el.Destroy();});
-            vertexUniformBuffers = null;
-        }
         
         if (geometryUniformBuffers != null) {
             geometryUniformBuffers.forEach(el -> {el.Destroy();});
@@ -929,6 +899,14 @@ public class CVKFPSRenderable extends CVKRenderable {
                                     0, 
                                     stack.longs(pDescriptorSets.get(index)), 
                                     null);
+            
+            // Push vars to vertex shader
+            vkCmdPushConstants(commandBuffer,               // The buffer to push the matrix to
+				pipelineLayouts.get(index), // The pipeline layout
+				VK_SHADER_STAGE_VERTEX_BIT, // Flags
+				0,                          // Offset
+				vertexPushConstants);       // Matrix buffer
+            
             vkCmdDraw(commandBuffer,
                       GetVertexCount(),  //number of verts == number of digits
                       1,  //no instancing, but we must draw at least 1 point
@@ -969,12 +947,12 @@ public class CVKFPSRenderable extends CVKRenderable {
         VkDescriptorSetAllocateInfo allocInfo = VkDescriptorSetAllocateInfo.callocStack(stack);
         allocInfo.sType(VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO);
         allocInfo.descriptorPool(cvkDescriptorPool.GetDescriptorPoolHandle());
-        allocInfo.pSetLayouts(layouts);            
+        allocInfo.pSetLayouts(layouts);
 
         // Allocate the descriptor sets from the descriptor pool, they'll be unitialised
         pDescriptorSets = MemoryUtil.memAllocLong(imageCount);
         ret = vkAllocateDescriptorSets(cvkDevice.GetDevice(), allocInfo, pDescriptorSets);
-        if (VkFailed(ret)) { return ret; }      
+        if (VkFailed(ret)) { return ret; }
         
         descriptorPoolResourcesDirty = false;
         
@@ -989,11 +967,6 @@ public class CVKFPSRenderable extends CVKRenderable {
      
         int imageCount = cvkSwapChain.GetImageCount();
 
-        // Struct for the size of the uniform buffer used by SimpleIcon.vs (we fill the actual buffer below)
-        VkDescriptorBufferInfo.Buffer vertBufferInfo = VkDescriptorBufferInfo.callocStack(1, stack);
-        vertBufferInfo.offset(0);
-        vertBufferInfo.range(VertexUniformBufferObject.SIZEOF);
-
         // Struct for the size of the uniform buffer used by SimpleIcon.gs (we fill the actual buffer below)
         VkDescriptorBufferInfo.Buffer geomBufferInfo = VkDescriptorBufferInfo.callocStack(1, stack);
         geomBufferInfo.offset(0);
@@ -1006,27 +979,19 @@ public class CVKFPSRenderable extends CVKRenderable {
         imageInfo.sampler(parent.GetTextureAtlas().GetAtlasSamplerHandle());            
 
         // We need 3 write descriptors, 2 for uniform buffers (vs + gs) and one for texture (fs)
-        VkWriteDescriptorSet.Buffer descriptorWrites = VkWriteDescriptorSet.callocStack(3, stack);
+        VkWriteDescriptorSet.Buffer descriptorWrites = VkWriteDescriptorSet.callocStack(2, stack);
 
-        VkWriteDescriptorSet vertUBDescriptorWrite = descriptorWrites.get(0);
-        vertUBDescriptorWrite.sType(VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET);
-        vertUBDescriptorWrite.dstBinding(0);
-        vertUBDescriptorWrite.dstArrayElement(0);
-        vertUBDescriptorWrite.descriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
-        vertUBDescriptorWrite.descriptorCount(1);
-        vertUBDescriptorWrite.pBufferInfo(vertBufferInfo);
-
-        VkWriteDescriptorSet geomUBDescriptorWrite = descriptorWrites.get(1);
+        VkWriteDescriptorSet geomUBDescriptorWrite = descriptorWrites.get(0);
         geomUBDescriptorWrite.sType(VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET);
-        geomUBDescriptorWrite.dstBinding(1);
+        geomUBDescriptorWrite.dstBinding(0);
         geomUBDescriptorWrite.dstArrayElement(0);
         geomUBDescriptorWrite.descriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
         geomUBDescriptorWrite.descriptorCount(1);
         geomUBDescriptorWrite.pBufferInfo(geomBufferInfo);            
 
-        VkWriteDescriptorSet samplerDescriptorWrite = descriptorWrites.get(2);
+        VkWriteDescriptorSet samplerDescriptorWrite = descriptorWrites.get(1);
         samplerDescriptorWrite.sType(VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET);
-        samplerDescriptorWrite.dstBinding(2);
+        samplerDescriptorWrite.dstBinding(1);
         samplerDescriptorWrite.dstArrayElement(0);
         samplerDescriptorWrite.descriptorType(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
         samplerDescriptorWrite.descriptorCount(1);
@@ -1036,10 +1001,7 @@ public class CVKFPSRenderable extends CVKRenderable {
         for (int i = 0; i < imageCount; ++i) {
             long descriptorSet = pDescriptorSets.get(i);
 
-            vertBufferInfo.buffer(vertexUniformBuffers.get(i).GetBufferHandle());
             geomBufferInfo.buffer(geometryUniformBuffers.get(i).GetBufferHandle());
- 
-            vertUBDescriptorWrite.dstSet(descriptorSet);
             geomUBDescriptorWrite.dstSet(descriptorSet);
             samplerDescriptorWrite.dstSet(descriptorSet);
 
@@ -1056,8 +1018,6 @@ public class CVKFPSRenderable extends CVKRenderable {
     
     @Override
     public void IncrementDescriptorTypeRequirements(CVKDescriptorPoolRequirements reqs, CVKDescriptorPoolRequirements perImageReqs) {
-        // SimpleIcon.vs
-        ++perImageReqs.poolDescriptorTypeCounts[VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER];
         // SimpleIcon.gs
         ++perImageReqs.poolDescriptorTypeCounts[VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER];
         // SimpleIcon.fs
@@ -1267,17 +1227,24 @@ public class CVKFPSRenderable extends CVKRenderable {
                 pDynamicStates.put(VK_DYNAMIC_STATE_SCISSOR);
                 pDynamicStates.flip();
 
-                VkPipelineDynamicStateCreateInfo dynamicState = VkPipelineDynamicStateCreateInfo.calloc();
+                VkPipelineDynamicStateCreateInfo dynamicState = VkPipelineDynamicStateCreateInfo.callocStack(stack);
                 dynamicState.sType(VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO);
                 dynamicState.pDynamicStates(pDynamicStates);
+                
+                // ===> PUSH CONSTANTS <===
+                VkPushConstantRange.Buffer pushConstantRange;
+                pushConstantRange = VkPushConstantRange.callocStack(1, stack);
+	        pushConstantRange.stageFlags(VK_SHADER_STAGE_VERTEX_BIT);
+	        pushConstantRange.size(VertexUniformBufferObject.SIZEOF);
+	        pushConstantRange.offset(0);
                 
                 // ===> PIPELINE LAYOUT CREATION <===
                 VkPipelineLayoutCreateInfo pipelineLayoutInfo = VkPipelineLayoutCreateInfo.callocStack(stack);
                 pipelineLayoutInfo.sType(VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO);
                 pipelineLayoutInfo.pSetLayouts(stack.longs(hDescriptorLayout));
+                pipelineLayoutInfo.pPushConstantRanges(pushConstantRange);
 
                 LongBuffer pPipelineLayout = stack.longs(VK_NULL_HANDLE);
-
                 ret = vkCreatePipelineLayout(cvkDevice.GetDevice(), pipelineLayoutInfo, null, pPipelineLayout);
                 checkVKret(ret);
 
