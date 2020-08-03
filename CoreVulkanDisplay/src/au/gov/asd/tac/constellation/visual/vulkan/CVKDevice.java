@@ -34,6 +34,7 @@ import static org.lwjgl.vulkan.KHRSwapchain.VK_KHR_SWAPCHAIN_EXTENSION_NAME;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32B32A32_SFLOAT;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_R8_SINT;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
 import static org.lwjgl.vulkan.VK10.VK_QUEUE_GRAPHICS_BIT;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
@@ -264,9 +265,13 @@ public class CVKDevice {
             VkFormatProperties vkFormatProperties = VkFormatProperties.callocStack(stack);
             vkGetPhysicalDeviceFormatProperties(vkPhysicalDevice, VK_FORMAT_R32G32B32A32_SFLOAT, vkFormatProperties);
             if ((vkFormatProperties.bufferFeatures() & VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT) == 0) {
-                throw new RuntimeException("Selected surface does not support uniform texel buffers needed for the xyzw texture");
+                throw new RuntimeException("Selected surface does not support uniform texel buffers needed for the vertex position buffer");
             }
-            
+            vkGetPhysicalDeviceFormatProperties(vkPhysicalDevice, VK_FORMAT_R8_SINT, vkFormatProperties);
+            if ((vkFormatProperties.bufferFeatures() & VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT) == 0) {
+                throw new RuntimeException("Selected surface does not support uniform texel buffers needed for the vertex flags buffer");
+            }            
+                        
             // Happy dance, we have a suitable physical device, get its properties
             vkPhysicalDeviceProperties = VkPhysicalDeviceProperties.malloc();
             vkGetPhysicalDeviceProperties(vkPhysicalDevice, vkPhysicalDeviceProperties);            
@@ -326,6 +331,7 @@ public class CVKDevice {
                         + "\t\t minTexelBufferOffsetAlignment: %d\n"
                         + "\t\t minUniformBufferOffsetAlignment: %d\n"
                         + "\t\t minStorageBufferOffsetAlignment: %d\n"
+                        + "\t\t maxPushConstantsSize: %d\n"                        
                         + "\t\t pointSizeRange: %f - %f\n"
                         + "\t\t lineWidthRange: %f - %f\n",
                         vkPhysicalDeviceProperties.deviceNameString(),
@@ -356,6 +362,7 @@ public class CVKDevice {
                         limits.minTexelBufferOffsetAlignment(),
                         limits.minUniformBufferOffsetAlignment(),
                         limits.minStorageBufferOffsetAlignment(),
+                        limits.maxPushConstantsSize(),
                         limits.pointSizeRange().get(0), limits.pointSizeRange().get(1),
                         limits.lineWidthRange().get(0), limits.lineWidthRange().get(1)                                                
                         ));

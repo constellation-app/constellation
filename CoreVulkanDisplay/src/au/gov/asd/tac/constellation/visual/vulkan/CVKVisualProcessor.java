@@ -58,7 +58,7 @@ public class CVKVisualProcessor extends VisualProcessor {
     public static final Cursor DEFAULT_CURSOR = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
     public static final Cursor CROSSHAIR_CURSOR = Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR);
     
-    protected static final float FIELD_OF_VIEW = 35;
+    private static final float FIELD_OF_VIEW = 35;
     private static final float PERSPECTIVE_NEAR = 1;
     private static final float PERSPECTIVE_FAR = 500000;
     
@@ -85,11 +85,13 @@ public class CVKVisualProcessor extends VisualProcessor {
     
 
     private Camera camera;
+    private float pixelDensity = 0.0f;
     private boolean updating = false;
     
     
     public Matrix44f GetProjectionMatrix() { return projectionMatrix; }
     public CVKIconTextureAtlas GetTextureAtlas() { return cvkIconTextureAtlas; }
+    public float GetPixelDensity() { return pixelDensity; }
     
     void addTask(final CVKRenderableUpdateTask task) {
         taskQueue.add(task);
@@ -561,10 +563,8 @@ public class CVKVisualProcessor extends VisualProcessor {
                     // Recreate all the icons.  Note this is sometimes called before the CVKDevice
                     // has been initialised (we don't create our renderables until then).
                     if (cvkIcons != null) {
-                        addTask(cvkIcons.TaskDestroyIcons());
-                        if (access.getVertexCount() > 0) {
-                            addTask(cvkIcons.TaskCreateIcons(access));
-                        }
+                        addTask(cvkIcons.TaskRebuildIcons(access));
+                        addTask(cvkIcons.TaskRebuildVertexFlags(access));
                     }
 //                    addTask(nodeLabelBatcher.setTopLabelColors(access));
 //                    addTask(nodeLabelBatcher.setTopLabelSizes(access));
@@ -610,6 +610,9 @@ public class CVKVisualProcessor extends VisualProcessor {
                 };
             case HIGHLIGHT_COLOUR:
                 return (change, access) -> {
+                    if (cvkIcons != null) {
+                        addTask(cvkIcons.TaskSetHighLightColour(access));
+                    }                    
 //                    addTask(nodeLabelBatcher.setHighlightColor(access));
 //                    addTask(connectionLabelBatcher.setHighlightColor(access));
 //                    addTask(lineBatcher.setHighlightColor(access));
@@ -643,8 +646,7 @@ public class CVKVisualProcessor extends VisualProcessor {
                 };
             case CAMERA:
                 return (change, access) -> {
-                    final Camera updatedCamera = access.getCamera();
-                    camera = updatedCamera;
+                    camera = access.getCamera();
                     setDisplayCamera(camera);
                     Graphics3DUtilities.getModelViewMatrix(camera.lookAtEye, camera.lookAtCentre, camera.lookAtUp, getDisplayModelViewMatrix());
                     
@@ -691,42 +693,28 @@ public class CVKVisualProcessor extends VisualProcessor {
                 };
             case VERTEX_COLOR:
                 return (change, access) -> {
-//                    addTaskIfReady(iconBatcher.updateColors(access, change), iconBatcher);
+                    if (cvkIcons != null) {
+                        addTask(cvkIcons.TaskUpdateColours(change, access));
+                    }                    
                 };
             case VERTEX_FOREGROUND_ICON:
                 return (change, access) -> {
-//                    if (cvkIcons != null) {
-
-//                        if (access.getVertexCount() > 0) {
-//                            addTask(cvkIcons.TaskUpdateIcons(access));
-//                        }
-//                    }
+                    if (cvkIcons != null) {
+                        addTask(cvkIcons.TaskUpdateIcons(change, access));
+                    }
                 };
-                
-                
-//                return (change, access) -> {
-//                    addTaskIfReady(iconBatcher.updateIcons(access, change), iconBatcher);
-//                    addTask(gl -> {
-//                        iconTextureArray = iconBatcher.updateIconTexture(gl);
-//                    });
-//                };
+
             case VERTEX_SELECTED:
                 return (change, access) -> {
-//                    if (vertexFlagsTexturiser.isReady()) {
-//                        addTask(vertexFlagsTexturiser.updateFlags(access, change));
-//                    } else {
-//                        addTask(vertexFlagsTexturiser.dispose());
-//                        addTask(vertexFlagsTexturiser.createTexture(access));
-//                    }
+                    if (cvkIcons != null) {
+                        addTask(cvkIcons.TaskUpdateVertexFlags(change, access));
+                    }
                 };
             case VERTEX_X:
                 return (change, access) -> {
-//                    if (vertexFlagsTexturiser.isReady()) {
-//                        addTask(xyzTexturiser.updateXyzs(access, change));
-//                    } else {
-//                        addTask(xyzTexturiser.dispose());
-//                        addTask(xyzTexturiser.createTexture(access));
-//                    }
+                    if (cvkIcons != null) {
+                        addTask(cvkIcons.TaskUpdateIcons(change, access));
+                    }
                 };
             case EXTERNAL_CHANGE:
             default:
@@ -997,5 +985,7 @@ public class CVKVisualProcessor extends VisualProcessor {
         // Create the projection matrix, and load it on the projection matrix stack.
         viewFrustum.setPerspective(FIELD_OF_VIEW, (float) dpiScaledWidth / (float) dpiScaledHeight, PERSPECTIVE_NEAR, PERSPECTIVE_FAR);        
         projectionMatrix.set(viewFrustum.getProjectionMatrix());
+        
+        pixelDensity = (float) (dpiScaledHeight * 0.5 / Math.tan(Math.toRadians(FIELD_OF_VIEW)));
     }    
 }

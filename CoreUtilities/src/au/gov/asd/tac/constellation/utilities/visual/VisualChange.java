@@ -119,4 +119,22 @@ public final class VisualChange implements Comparable<VisualChange> {
     public int compareTo(VisualChange o) {
         return o == null ? -1 : id == o.id ? 0 : Integer.compare(order, o.order);
     }
+    
+    public int[] getRange() {
+        if (changeListSize > 0) {
+            int minMax[] = new int[2];
+            minMax[0] = minMax[1] = changeList[0];
+            for (int i = 1; i < changeListSize; ++i) {
+                final int index = changeList[i];
+                if (index < minMax[0]) {
+                    minMax[0] = index;
+                } else if (index > minMax[1]) {
+                    minMax[1] = index;
+                }
+            }
+            return minMax;
+        } else {
+            return null;
+        }        
+    }
 }

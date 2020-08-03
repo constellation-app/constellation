@@ -27,6 +27,13 @@ import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 
 public abstract class CVKRenderable {
+    
+    protected enum CVKRenderableResourceState {
+        CVK_RESOURCE_CLEAN,
+        CVK_RESOURCE_NEEDS_UPDATE,
+        CVK_RESOURCE_NEEDS_REBUILD               
+    }
+    
     protected CVKVisualProcessor parent;
     protected CVKDevice cvkDevice = null;
     protected CVKDescriptorPool cvkDescriptorPool = null;
