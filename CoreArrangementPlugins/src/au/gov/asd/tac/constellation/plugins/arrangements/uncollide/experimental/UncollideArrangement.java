@@ -40,18 +40,9 @@ public class UncollideArrangement implements Arranger {
     private final double twinScaling;
     
 
-    public UncollideArrangement(final int dimensions, final int maxExpansions) {
+    public UncollideArrangement(final Dimensions dimensions, final int maxExpansions) {
         this.twinScaling = math.pow(1.1, -maxExpansions);
-        switch (dimensions) {
-            case 2:
-                this.dimensions = Dimensions.Two;
-                break;
-            case 3:
-                this.dimensions = Dimensions.Three;
-                break;
-            default:
-                throw new IllegalArgumentException("Illegal number of dimensions entered. Must be 2 or 3.");
-        }
+        this.dimensions = dimensions;
         
     }
 
@@ -63,20 +54,7 @@ public class UncollideArrangement implements Arranger {
     public void arrange(final GraphWriteMethods wg) throws InterruptedException {
         final float[] oldMean = maintainMean ? ArrangementUtilities.getXyzMean(wg) : null;
 
-        final int xId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
-        final int yId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
-        final int zId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
-        final int rId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.NODE_RADIUS.getName());
-        final int x2Id = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x2", "x2", 0, null);
-        final int y2Id = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y2", "y2", 0, null);
-        final int z2Id = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z2", "z2", 0, null);
-
         final int vxCount = wg.getVertexCount();
-
-
-
-
-
 
         if (vxCount > 0) {
             try {
@@ -110,12 +88,7 @@ public class UncollideArrangement implements Arranger {
         }
         
         for (int i = 0; i < iter && tree.hasCollision(); i++) {
-//            if (interaction != null) {
-//                interaction.
-//                final String msg = String.format("2D step %3d of maximum %3d; pad %f", i, iter,minPadding);
-//                interaction.setProgress(verticiesBeforeCollision, wg.getVertexCount(), msg, true);
-//            }
-            
+
             PluginExecution.withPlugin(ArrangementPluginRegistry.EXPAND_GRAPH).executeNow(wg);
 
             tree = TreeFactory.create(wg, dimensions);
@@ -143,10 +116,6 @@ public class UncollideArrangement implements Arranger {
                 else {
                     nudgeTwins3D(wg, subject, twins.get(0), twinScaling); 
                 }
-//                for (int twin : twins) {
-//                    nudgeTwins(wg, subject, twin, twinScaling); 
-//                    qt = new QuadTree(wg);
-//                }
             }                  
         }
         return numberNoTwins;

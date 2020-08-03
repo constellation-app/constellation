@@ -5,10 +5,22 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.uncollide.experimental;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author liam.banks
  */
 public enum Dimensions {
-    Two, Three
+    Two, Three;
+    
+    public static List<String> getOptions() {
+        ArrayList<String> list = new ArrayList<>();
+        for (Dimensions d : Dimensions.values()) {
+            list.add(d.toString());
+        } 
+        return list;
+    }
 }
+

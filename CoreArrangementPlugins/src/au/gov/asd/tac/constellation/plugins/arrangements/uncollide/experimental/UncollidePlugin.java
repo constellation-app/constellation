@@ -26,10 +26,15 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
+import org.python.apache.commons.compress.utils.Lists;
 
 /**
  *
@@ -51,7 +56,7 @@ public class UncollidePlugin extends SimpleEditPlugin {
     @Override
     public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
         final Map<String, PluginParameter<?>> params = parameters.getParameters();
-        final int dimensions = params.get(DIMENSION_PARAMETER_ID).getIntegerValue();
+        final Dimensions dimensions = Dimensions.valueOf(params.get(DIMENSION_PARAMETER_ID).getStringValue());
         final int maxExpansions = params.get(MAX_EXPANSIONS_PARAMETR_ID).getIntegerValue();
 
         final Arranger arranger = new UncollideArrangement(dimensions, maxExpansions);
@@ -66,19 +71,26 @@ public class UncollidePlugin extends SimpleEditPlugin {
     @Override
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
-
-        final PluginParameter<IntegerParameterValue> dimensionsParam = IntegerParameterType.build(DIMENSION_PARAMETER_ID);
+//
+//        final PluginParameter<IntegerParameterValue> dimensionsParam = IntegerParameterType.build(DIMENSION_PARAMETER_ID);
+//        dimensionsParam.setName("Dimensions");
+//        dimensionsParam.setDescription("The dimention being 2D or 3D. The default is 2 for 2D.");
+//        dimensionsParam.setIntegerValue(2);
+//        parameters.addParameter(dimensionsParam);
+        
+        final PluginParameter<SingleChoiceParameterValue> dimensionsParam = SingleChoiceParameterType.build(DIMENSION_PARAMETER_ID);
         dimensionsParam.setName("Dimensions");
         dimensionsParam.setDescription("The dimention being 2D or 3D. The default is 2 for 2D.");
-        dimensionsParam.setIntegerValue(2);
+        List<String> options = new ArrayList<>();
+        SingleChoiceParameterType.setOptions(dimensionsParam, Dimensions.getOptions());
+        SingleChoiceParameterType.setChoice(dimensionsParam, Dimensions.Two.toString());
         parameters.addParameter(dimensionsParam);
-        
+
         final PluginParameter<IntegerParameterValue> maxExpansionsParam = IntegerParameterType.build(MAX_EXPANSIONS_PARAMETR_ID);
         maxExpansionsParam.setName("Maximum Expansions");
         maxExpansionsParam.setDescription("The maximum number of expansions to allow. A higher number will better retain graph structure butmay lead to a very space out graph, whilst a low number will result in a more compacted graph at a potential cost to graph sturcture.");
         maxExpansionsParam.setIntegerValue(1);
         parameters.addParameter(maxExpansionsParam);
-
         return parameters;
     }
 }
