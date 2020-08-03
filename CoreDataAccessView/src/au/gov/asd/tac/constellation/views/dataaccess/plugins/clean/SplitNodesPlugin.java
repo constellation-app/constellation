@@ -112,8 +112,6 @@ public class SplitNodesPlugin extends RecordStoreQueryPlugin implements DataAcce
     @Override
     public void updateParameters(Graph graph, PluginParameters parameters) {
         if (parameters != null && parameters.getParameters() != null) {
-            @SuppressWarnings("unchecked") //TRANSACTION_TYPE_PARAMETER is always of type SingleChoiceParameter
-            final PluginParameter<SingleChoiceParameterValue> transactionType = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(TRANSACTION_TYPE_PARAMETER_ID);
             final List<String> types = new ArrayList<>();
             if (graph != null && graph.getSchema() != null) {
                 for (final SchemaTransactionType type : SchemaTransactionTypeUtilities.getTypes(graph.getSchema().getFactory().getRegisteredConcepts())) {
@@ -123,10 +121,12 @@ public class SplitNodesPlugin extends RecordStoreQueryPlugin implements DataAcce
                     types.sort(String::compareTo);
                 }
             }
+            @SuppressWarnings("unchecked") //TRANSACTION_TYPE_PARAMETER is always of type SingleChoiceParameter
+            final PluginParameter<SingleChoiceParameterValue> transactionType = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(TRANSACTION_TYPE_PARAMETER_ID);
             transactionType.suppressEvent(true, new ArrayList<>());
             SingleChoiceParameterType.setOptions(transactionType, types);
 
-            if (types.contains(AnalyticConcept.TransactionType.CORRELATION.getName())) {
+            if (transactionType.getSingleChoice() == null && types.contains(AnalyticConcept.TransactionType.CORRELATION.getName())) {
                 SingleChoiceParameterType.setChoice(transactionType, AnalyticConcept.TransactionType.CORRELATION.getName());
             }
             transactionType.suppressEvent(false, new ArrayList<>());
