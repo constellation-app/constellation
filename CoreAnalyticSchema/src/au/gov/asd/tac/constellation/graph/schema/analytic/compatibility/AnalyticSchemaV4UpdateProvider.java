@@ -76,7 +76,7 @@ public class AnalyticSchemaV4UpdateProvider extends SchemaUpdateProvider {
             final int vertexId = graph.getVertex(vertex);
             final SchemaVertexType oldType = graph.getObjectValue(typeAttribute, vertexId);
 
-            if (typesToUpgrade.containsKey(oldType.getName())) {
+            if (oldType!=null && typesToUpgrade.containsKey(oldType.getName())) {
                 graph.setObjectValue(typeAttribute, vertexId, typesToUpgrade.get(oldType.getName()));
             }
         }
