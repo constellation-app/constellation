@@ -33,10 +33,10 @@ import org.python.modules.math;
  * @author Nova
  */
 class QuadTree extends AbstractTree{
-    private static final int TOP_R = 0;
-    private static final int TOP_L = 1;
-    private static final int BOT_L = 2;
-    private static final int BOT_R = 3;
+    protected static final int TOP_R = 0;
+    protected static final int TOP_L = 1;
+    protected static final int BOT_L = 2;
+    protected static final int BOT_R = 3;
     
     private static final Logger LOG = Logger.getLogger(QuadTree.class.getName());
 
@@ -47,8 +47,9 @@ class QuadTree extends AbstractTree{
      * @param graph  The graph the QuadTree should be based on
      */
     QuadTree(final GraphReadMethods graph) {
-        super(graph);
+        super(graph, Dimensions.Two);
         this.box = new BoundingBox2D(graph);
+        insertAll();
     }
 
     /**
@@ -57,8 +58,9 @@ class QuadTree extends AbstractTree{
      * @param parent
      * @param box 
      */
-    private QuadTree(QuadTree parent, final BoundingBox2D box) {
+    protected QuadTree(QuadTree parent, final BoundingBox2D box) {
         super(parent, box);
+//        insertAll();
     }
 
     /*
@@ -110,146 +112,19 @@ class QuadTree extends AbstractTree{
                 index = BOT_R; // fits in bottom right quadrant
             }
         }
-
         return index;
     }
 
-    /*
-     * Insert the object into the quadtree. If the node exceeds the capacity, it will split and add
-     * objects that fit to their corresponding nodes.
-     */
-//    private void insert(final int vxId) {
-//        if (nodes != null) { // if their are subnodes
-//            int index = getIndex(vxId); // find the correct subnode
-//
-//            if (index != -1) { // if it fits neatly in a subnode
-//                nodes[index].insert(vxId); // insert into that subnode
-//
-//                return;
-//            }
-//        }
-//
-//        // if it fits in this node 
-//        
-//        objects.add(vxId); // add to list of objects
-//
-//        if (objects.size() > MAX_OBJECTS && level < MAX_LEVELS) {
-//            if (nodes == null) { // if no subnodes then split
-//                split();
-//            }
-//
-//            int i = 0;
-//            while (i < objects.size()) { // For each object get the index and insert it into the subnode if it fits in one. If it fits in a subnode remove it from this list of objects.
-//                int index = getIndex(objects.get(i));
-//                if (index != -1) {
-//                    nodes[index].insert(objects.remove(i));
-//                } else {
-//                    i++;
-//                }
-//            }
-//        }
-//    }
-    
-//    private void insertAll() {
-//        for (int position = 0; position < wg.getVertexCount(); position++) {
-//            insert(wg.getVertex(position));
-//        }
-//    }
-
-    /*
-     * Return all objects that could collide with the given object.
-     */
-//    private List<Integer> getPossibleColliders(final List<Integer> colliders, final int vxId) {
-//        // Recursively find all child colliders...
-//        final int index = getIndex(vxId);
-//        if (index != -1 && nodes != null) {
-//            nodes[index].getPossibleColliders(colliders, vxId);
-//        }
-//
-//        // ...and colliders at this level.
-//        colliders.addAll(objects);
-//
-//        return colliders;
-//    }
-
-    /**
-     * Returns boolean indicating whether or not the vertex collides with any
-     * other verticies. Two verticies in exactly the same spot are not counted
-     * as overlapping.
-     *
-     * @param subject The vertex to check for collisions.
-     * @param padding The minimum distance between the vertex's edge and the edges
-     * of each neighbor.
-     * @return the number of collisions.
-     */
     @Override
-    protected boolean nodeCollides(final int subject) {
-        final List<Integer> possibles = new ArrayList<>();
-        getPossibleColliders(possibles, subject);
-
-        // We need to deal with pathological cases such as everything at the same x,y point,
-        // or everything co-linear.
-        // We add a perturbation so points go different ways at different stages.
-        for (final int possible : possibles) {
-            if (subject != possible) {
-                float DeltaX = wg.getFloatValue(XID, subject) - wg.getFloatValue(XID, possible);
-                float DeltaY = wg.getFloatValue(YID, subject) - wg.getFloatValue(YID, possible);
-                final double l = DeltaX * DeltaX + DeltaY * DeltaY;
-                final double r = math.sqrt(2*wg.getFloatValue(RID, possible)) + math.sqrt(2*wg.getFloatValue(RID, subject));
-                if (l < r*r) {
-                    return true;
-                }
-            }
-        }
-        return false;
+    protected double getDelta(final int vertex1, final int vertex2){
+        float DeltaX = wg.getFloatValue(XID, vertex1) - wg.getFloatValue(XID, vertex2);
+        float DeltaY = wg.getFloatValue(YID, vertex1) - wg.getFloatValue(YID, vertex2);
+        return math.sqrt(DeltaX * DeltaX + DeltaY * DeltaY);
     }
     
-    /**
-     * Check the subject for "twin" verticies
-     * 
-     * A twin verticie is defined as a verticie that falls within twinThreshold
-     *  x (subject radius + twin radius + padding) of the subject.
-     * The average radius is the average of the subject verticies radius and the
-     * potential twins radius.
-     * @param subject  The id of the vertex you wish to check for twins.
-     * @param twinThreshold A scaling factor for the collision distance within 
-     * which the two noes are considered to be "twins". That is the distance
-     * between them is so insignificant that we consider them in the same spot.
-     * 
-     * @return  A set of vertex ideas for verticies  that are twins with the subject
-     */
     @Override
-    public List<Integer> getTwins(final int subject, final double twinThreshold) {
-        final List<Integer> possibles = new ArrayList<>();
-        getPossibleColliders(possibles, subject);
-        List<Integer> twins = new ArrayList<>();
-        for (final int possible : possibles) {
-            if (subject != possible) {
-                float deltaX = wg.getFloatValue(XID, subject) - wg.getFloatValue(XID, possible);
-                float deltaY = wg.getFloatValue(YID, subject) - wg.getFloatValue(YID, possible);
-                final double delta = math.sqrt(deltaX * deltaX + deltaY * deltaY);
-                final double r = math.sqrt(2*wg.getFloatValue(RID, possible)) + math.sqrt(2*wg.getFloatValue(RID, subject));
-                final double criticalValue = r*twinThreshold; // The required distance for the nodes to be uncollided
-                if ( delta < criticalValue ) {
-                    twins.add(possible);
-                }
-            }
-        }
-        return twins;
+    protected double getCollisionDistance(final int vertex1, final int vertex2){
+        return math.sqrt(2*wg.getFloatValue(RID, vertex1)) + math.sqrt(2*wg.getFloatValue(RID, vertex2));
     }
-    
-    /**
-     * Check the entire graph for collisions. 
-     *
-     * @return  boolean indicating whether the graph contains colliding verticies
-     */
-//    public boolean hasCollision(){
-//        for (int position = 0; position < wg.getVertexCount(); position++) {
-//            if(nodeCollides(wg.getVertex(position))) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
 
 }

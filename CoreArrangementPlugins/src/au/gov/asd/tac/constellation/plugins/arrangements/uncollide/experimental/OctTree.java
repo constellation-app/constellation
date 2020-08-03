@@ -30,14 +30,14 @@ import org.python.modules.math;
  */
 class OctTree extends AbstractTree{
     // Top/bottom, left/right, front/back; top-left-back is (0, 0, 0).
-    private static final int TOP_R_F = 0;
-    private static final int TOP_L_F = 1;
-    private static final int BOT_L_F = 2;
-    private static final int BOT_R_F = 3;
-    private static final int TOP_R_B = 4;
-    private static final int TOP_L_B = 5;
-    private static final int BOT_L_B = 6;
-    private static final int BOT_R_B = 7;
+    protected static final int TOP_R_F = 0;
+    protected static final int TOP_L_F = 1;
+    protected static final int BOT_L_F = 2;
+    protected static final int BOT_R_F = 3;
+    protected static final int TOP_R_B = 4;
+    protected static final int TOP_L_B = 5;
+    protected static final int BOT_L_B = 6;
+    protected static final int BOT_R_B = 7;
     
     private final int ZID;
 
@@ -47,9 +47,9 @@ class OctTree extends AbstractTree{
      * @param graph  The graph the QuadTree should be based on
      */
     OctTree(final GraphReadMethods graph) {
-        super(graph);
-        this.box = new BoundingBox3D(graph);
+        super(graph, Dimensions.Three);
         ZID = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
+        insertAll();
     }
 
     /**
@@ -58,7 +58,7 @@ class OctTree extends AbstractTree{
      * @param parent
      * @param box 
      */
-    private OctTree(OctTree parent, final BoundingBox3D box) {
+    OctTree(OctTree parent, final BoundingBox3D box) {
         super(parent, box);
         // Inherit parent values for graph based variables.
         ZID = parent.ZID;
@@ -105,7 +105,7 @@ class OctTree extends AbstractTree{
         
         // Object can completely fit in front/back halves.
         final boolean backHalf = wg.getFloatValue(ZID, vxId) + wg.getFloatValue(RID, vxId) < box3D.midZ;
-        final boolean frontHalf = wg.getFloatValue(ZID, vxId) + wg.getFloatValue(RID, vxId) > box3D.midZ;
+        final boolean frontHalf = wg.getFloatValue(ZID, vxId) - wg.getFloatValue(RID, vxId) > box3D.midZ;
 
 
         if (topHalf) { 
@@ -141,72 +141,19 @@ class OctTree extends AbstractTree{
 
         return index;
     }
-
-
-    /**
-     * Returns boolean indicating whether or not the vertex collides with any
-     * other verticies. Two verticies in exactly the same spot are not counted
-     * as overlapping.
-     *
-     * @param subject The vertex to check for collisions.
-     * @param padding The minimum distance between the vertex's edge and the edges
-     * of each neighbor.
-     * @return the number of collisions.
-     */
+    
+    
     @Override
-    protected boolean nodeCollides(final int subject) {
-        final List<Integer> possibles = new ArrayList<>();
-        getPossibleColliders(possibles, subject);
-
-        // We need to deal with pathological cases such as everything at the same x,y point,
-        // or everything co-linear.
-        // We add a perturbation so points go different ways at different stages.
-        for (final int possible : possibles) {
-            if (subject != possible) {
-                float DeltaX = wg.getFloatValue(XID, subject) - wg.getFloatValue(XID, possible);
-                float DeltaY = wg.getFloatValue(YID, subject) - wg.getFloatValue(YID, possible);
-                final double l = DeltaX * DeltaX + DeltaY * DeltaY;
-                final double r = math.sqrt(2*wg.getFloatValue(RID, possible)) + math.sqrt(2*wg.getFloatValue(RID, subject));
-                if (l < r*r) {
-                    return true;
-                }
-            }
-        }
-        return false;
+    protected double getDelta(final int vertex1, final int vertex2){
+        float deltaX = wg.getFloatValue(XID, vertex1) - wg.getFloatValue(XID, vertex2);
+        float deltaY = wg.getFloatValue(YID, vertex1) - wg.getFloatValue(YID, vertex2);
+        float deltaZ = wg.getFloatValue(ZID, vertex1) - wg.getFloatValue(ZID, vertex2);
+        return Math.cbrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
     }
     
-    /**
-     * Check the subject for "twin" verticies
-     * 
-     * A twin verticie is defined as a verticie that falls within twinThreshold
-     *  x (subject radius + twin radius + padding) of the subject.
-     * The average radius is the average of the subject verticies radius and the
-     * potential twins radius.
-     * @param subject  The id of the vertex you wish to check for twins.
-     * @param twinThreshold A scaling factor for the collision distance within 
-     * which the two noes are considered to be "twins". That is the distance
-     * between them is so insignificant that we consider them in the same spot.
-     * 
-     * @return  A set of vertex ideas for verticies  that are twins with the subject
-     */
     @Override
-    public List<Integer> getTwins(final int subject, final double twinThreshold) {
-        final List<Integer> possibles = new ArrayList<>();
-        getPossibleColliders(possibles, subject);
-        List<Integer> twins = new ArrayList<>();
-        for (final int possible : possibles) {
-            if (subject != possible) {
-                float deltaX = wg.getFloatValue(XID, subject) - wg.getFloatValue(XID, possible);
-                float deltaY = wg.getFloatValue(YID, subject) - wg.getFloatValue(YID, possible);
-                final double delta = math.sqrt(deltaX * deltaX + deltaY * deltaY);
-                final double r = math.sqrt(2*wg.getFloatValue(RID, possible)) + math.sqrt(2*wg.getFloatValue(RID, subject));
-                final double criticalValue = r*twinThreshold; // The required distance for the nodes to be uncollided
-                if ( delta < criticalValue ) {
-                    twins.add(possible);
-                }
-            }
-        }
-        return twins;
+    protected double getCollisionDistance(final int vertex1, final int vertex2){
+        return Math.cbrt(3*wg.getFloatValue(RID, vertex1)) + Math.cbrt(3*wg.getFloatValue(RID, vertex2));
     }
 
 }

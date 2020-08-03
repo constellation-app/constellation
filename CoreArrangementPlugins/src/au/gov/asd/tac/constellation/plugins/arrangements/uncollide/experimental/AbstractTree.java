@@ -22,8 +22,8 @@ import org.python.modules.math;
  * @author liam.banks
  */
 public abstract class AbstractTree {
-    protected static final int MAX_OBJECTS = 10;
-    protected static final int MAX_LEVELS = 5;
+    protected static final int MAX_OBJECTS = 50;
+    protected static final int MAX_LEVELS = 4;
     
     protected final int XID; 
     protected final int YID;
@@ -40,17 +40,16 @@ public abstract class AbstractTree {
      * 
      * @param graph  The graph the QuadTree should be based on
      */
-    AbstractTree(final GraphReadMethods graph) {
+    AbstractTree(final GraphReadMethods graph, final Dimensions d) {
         this.level = 0;
         this.objects = new ArrayList<>();
         this.nodes = null;
+        this.box = BoxFactory.create(graph, d);
         
         this.wg = graph;
         this.XID = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
         this.YID = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
         this.RID = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.NODE_RADIUS.getName());
-        
-        insertAll();
     }
     
     /**
@@ -64,7 +63,6 @@ public abstract class AbstractTree {
         this.box = box;
         objects = new ArrayList<>();
         nodes = null;   
-        
         // Inherit parent values for graph based variables.
         wg = parent.wg;
         XID = parent.XID;
@@ -87,33 +85,10 @@ public abstract class AbstractTree {
      * Determine where an object belongs in the quadtree by determining which node the object can fit into.
      */
     abstract protected int getIndex(final int vxId);
+
+    abstract protected double getDelta(final int vertex1, final int vertex2);
     
-    /**
-     * Returns boolean indicating whether or not the vertex collides with any
-     * other verticies. Two verticies in exactly the same spot are not counted
-     * as overlapping.
-     *
-     * @param subject The vertex to check for collisions.
-     * @param padding The minimum distance between the vertex's edge and the edges
-     * of each neighbor.
-     * @return the number of collisions.
-     */
-    abstract protected boolean nodeCollides(final int subject);
-    
-    /**
-     * Check the subject for "twin" verticies
-     * 
-     * A twin vertex is defined as a vertex that falls within "twinThreshold
-     *  x collision distance" of the subject.
-     * 
-     * @param subject  The id of the vertex you wish to check for twins.
-     * @param twinThreshold A scaling factor for the collision distance within 
-     * which the two noes are considered to be "twins". That is the distance
-     * between them is so insignificant that we consider them in the same spot.
-     * 
-     * @return  A set of vertex ideas for verticies that are twins with the subject
-     */
-    abstract public List<Integer> getTwins(final int subject, final double twinThreshold);
+    abstract protected double getCollisionDistance(final int vertex1, final int vertex2);
     
     /*
      * Insert the object into the tree. If the node exceeds the capacity, it will split and add
@@ -154,7 +129,7 @@ public abstract class AbstractTree {
     /**
      * Insert all verticies in the graph into the tree.
      */
-    private void insertAll() {
+    protected final void insertAll() {
         for (int position = 0; position < wg.getVertexCount(); position++) {
             insert(wg.getVertex(position));
         }
@@ -188,6 +163,66 @@ public abstract class AbstractTree {
             }
         }
         return false;
+    }
+    
+    /**
+     * Returns boolean indicating whether or not the vertex collides with any
+     * other verticies. Two verticies in exactly the same spot are not counted
+     * as overlapping.
+     *
+     * @param subject The vertex to check for collisions.
+     * @param padding The minimum distance between the vertex's edge and the edges
+     * of each neighbor.
+     * @return the number of collisions.
+     */
+    protected final boolean nodeCollides(final int subject) {
+        final List<Integer> possibles = new ArrayList<>();
+        getPossibleColliders(possibles, subject);
+
+        // We need to deal with pathological cases such as everything at the same x,y point,
+        // or everything co-linear.
+        // We add a perturbation so points go different ways at different stages.
+        for (final int possible : possibles) {
+            if (subject != possible) {
+                final double delta = getDelta(subject, possible);
+                final double collisionDistance = getCollisionDistance(subject,possible);
+                if (delta < collisionDistance) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Check the subject for "twin" verticies
+     * 
+     * A twin verticie is defined as a verticie that falls within twinThreshold
+     *  x (subject radius + twin radius + padding) of the subject.
+     * The average radius is the average of the subject verticies radius and the
+     * potential twins radius.
+     * @param subject  The id of the vertex you wish to check for twins.
+     * @param twinThreshold A scaling factor for the collision distance within 
+     * which the two noes are considered to be "twins". That is the distance
+     * between them is so insignificant that we consider them in the same spot.
+     * 
+     * @return  A set of vertex ideas for verticies  that are twins with the subject
+     */
+    public List<Integer> getTwins(final int subject, final double twinThreshold) {
+        final List<Integer> possibles = new ArrayList<>();
+        getPossibleColliders(possibles, subject);
+        List<Integer> twins = new ArrayList<>();
+        for (final int possible : possibles) {
+            if (subject != possible) {
+                final double delta = getDelta(subject, possible);
+                final double collisionDistance = getCollisionDistance(subject, possible);
+                final double twinDistance = collisionDistance*twinThreshold; // The required distance for the nodes to be uncollided
+                if ( delta < twinDistance ) {
+                    twins.add(possible);
+                }
+            }
+        }
+        return twins;
     }
     
 }
