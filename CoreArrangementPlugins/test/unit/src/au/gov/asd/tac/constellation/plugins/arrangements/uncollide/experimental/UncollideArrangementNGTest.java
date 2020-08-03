@@ -5,16 +5,9 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.uncollide.experimental;
 
-import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.plugins.PluginInteraction;
-import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import static org.testng.Assert.*;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -70,8 +63,5 @@ public class UncollideArrangementNGTest {
         qt = new QuadTree(graphWithTwoTwins);
         assertEquals(qt.hasCollision(), false); //Assert that after the uncollide arrangement has run there is no longer a collision. 
         
-    }
-
-
-    
+    } 
 }
