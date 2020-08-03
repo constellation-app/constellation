@@ -257,7 +257,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
             final PluginParameter<SingleChoiceParameterValue> contentAttribute = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(ATTRIBUTE_PARAMETER_ID);
             contentAttribute.suppressEvent(true, new ArrayList<>());
             SingleChoiceParameterType.setOptions(contentAttribute, attributes);
-            if (attributes.contains(ContentConcept.TransactionAttribute.CONTENT.getName())) {
+            if (contentAttribute.getSingleChoice() == null && attributes.contains(ContentConcept.TransactionAttribute.CONTENT.getName())) {
                 SingleChoiceParameterType.setChoice(contentAttribute, ContentConcept.TransactionAttribute.CONTENT.getName());
             }
             contentAttribute.suppressEvent(false, new ArrayList<>());
