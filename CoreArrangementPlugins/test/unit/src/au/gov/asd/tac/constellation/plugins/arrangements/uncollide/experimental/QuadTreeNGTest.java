@@ -10,10 +10,8 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import java.util.ArrayList;
 import java.util.List;
 import static org.testng.Assert.*;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
+import static org.assertj.core.api.Assertions.assertThat;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -27,6 +25,8 @@ public class QuadTreeNGTest {
     private static int twin2;
     private static QuadTree noCollisionsQT;
     private static int noCollisionSubject;
+    private static int distantVertex1;
+    private static int distantVertex2;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -34,7 +34,6 @@ public class QuadTreeNGTest {
         
         int attrX = VisualConcept.VertexAttribute.X.ensure(graphWithTwoTwins);
         int attrY = VisualConcept.VertexAttribute.Y.ensure(graphWithTwoTwins);
-        int attrZ = VisualConcept.VertexAttribute.Z.ensure(graphWithTwoTwins);
         int attrR = VisualConcept.VertexAttribute.NODE_RADIUS.ensure(graphWithTwoTwins);
 
         // Zero vertex
@@ -65,7 +64,6 @@ public class QuadTreeNGTest {
         
         attrX = VisualConcept.VertexAttribute.X.ensure(graphWithNoCollisions);
         attrY = VisualConcept.VertexAttribute.Y.ensure(graphWithNoCollisions);
-        attrZ = VisualConcept.VertexAttribute.Z.ensure(graphWithNoCollisions);
         attrR = VisualConcept.VertexAttribute.NODE_RADIUS.ensure(graphWithNoCollisions);
 
         // Zero vertex
@@ -74,12 +72,12 @@ public class QuadTreeNGTest {
         graphWithNoCollisions.setFloatValue(attrY, noCollisionSubject, 0.0f);
         graphWithNoCollisions.setFloatValue(attrR, noCollisionSubject, 1.0f);
         // distant vertex
-        int distantVertex1 = graphWithNoCollisions.addVertex();
+        distantVertex1 = graphWithNoCollisions.addVertex();
         graphWithNoCollisions.setFloatValue(attrX, distantVertex1, 1000f);
         graphWithNoCollisions.setFloatValue(attrY, distantVertex1, 1000f);
         graphWithNoCollisions.setFloatValue(attrR, distantVertex1, 1.0f);
         // second distant vertex
-        int distantVertex2 = graphWithNoCollisions.addVertex();
+        distantVertex2 = graphWithNoCollisions.addVertex();
         graphWithNoCollisions.setFloatValue(attrX, distantVertex2, -1000f);
         graphWithNoCollisions.setFloatValue(attrY, distantVertex2, -1000f);
         graphWithNoCollisions.setFloatValue(attrR, distantVertex2, 1.0f);
@@ -108,7 +106,7 @@ public class QuadTreeNGTest {
     }
 
     /**
-     * Test of findCollision method, of class QuadTree.
+     * Test of hasCollision method, of class QuadTree.
      */
     @Test
     public void testHasCollision() {
@@ -123,6 +121,18 @@ public class QuadTreeNGTest {
      */
     @Test
     public void testSplit() {
+        BoundingBox2D box2D = (BoundingBox2D) twoTwinsQT.box;
+        
+        QuadTree[] nodes = new QuadTree[4];
+        nodes[QuadTree.TOP_R] = new QuadTree(twoTwinsQT, box2D.topRightQuadrant());
+        nodes[QuadTree.TOP_L] = new QuadTree(twoTwinsQT, box2D.topLeftQuadrant());
+        nodes[QuadTree.BOT_L] = new QuadTree(twoTwinsQT, box2D.bottomLeftQuadrant());
+        nodes[QuadTree.BOT_R] = new QuadTree(twoTwinsQT, box2D.bottomRightQuadrant());
+        
+        twoTwinsQT.split();
+        assertThat(twoTwinsQT.nodes)
+            .usingRecursiveComparison()
+            .isEqualTo(nodes);
     }
 
     /**
@@ -130,6 +140,9 @@ public class QuadTreeNGTest {
      */
     @Test
     public void testGetIndex() {
+        assertEquals(twoTwinsQT.getIndex(twoTwinsSubject), -1);
+        assertEquals(noCollisionsQT.getIndex(distantVertex1), QuadTree.TOP_R);
+        assertEquals(noCollisionsQT.getIndex(distantVertex2), QuadTree.BOT_L);
     }
 
     /**
@@ -137,6 +150,8 @@ public class QuadTreeNGTest {
      */
     @Test
     public void testNodeCollides() {
+        assertEquals(twoTwinsQT.nodeCollides(twoTwinsSubject), true);
+        assertEquals(noCollisionsQT.nodeCollides(noCollisionSubject), false);
     }
     
     
