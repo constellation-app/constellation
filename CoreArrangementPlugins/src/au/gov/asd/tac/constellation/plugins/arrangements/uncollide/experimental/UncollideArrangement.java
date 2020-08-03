@@ -35,14 +35,12 @@ import org.python.modules.math;
 public class UncollideArrangement implements Arranger {
 
     private final Dimensions dimensions;
-    private final boolean setXyz2;
     private PluginInteraction interaction;
     private boolean maintainMean = false;
     private final double twinScaling;
     
 
-    public UncollideArrangement(final int dimensions, final boolean setXyz2, final int maxExpansions) {
-        this.setXyz2 = setXyz2;
+    public UncollideArrangement(final int dimensions, final int maxExpansions) {
         this.twinScaling = math.pow(1.1, -maxExpansions);
         switch (dimensions) {
             case 2:

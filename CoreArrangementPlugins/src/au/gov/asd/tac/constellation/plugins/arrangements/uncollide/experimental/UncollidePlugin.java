@@ -24,8 +24,6 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
-import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
@@ -43,7 +41,6 @@ import org.openide.util.lookup.ServiceProvider;
 public class UncollidePlugin extends SimpleEditPlugin {
 
     public static final String DIMENSION_PARAMETER_ID = PluginParameter.buildId(UncollidePlugin.class, "dimension");
-    public static final String SET_XYZ2_PARAMETER_ID = PluginParameter.buildId(UncollidePlugin.class, "set_xyz2");
     public static final String MAX_EXPANSIONS_PARAMETR_ID = PluginParameter.buildId(UncollidePlugin.class, "Max Expansions");
 
     @Override
@@ -55,10 +52,9 @@ public class UncollidePlugin extends SimpleEditPlugin {
     public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
         final Map<String, PluginParameter<?>> params = parameters.getParameters();
         final int dimensions = params.get(DIMENSION_PARAMETER_ID).getIntegerValue();
-        final boolean set2 = params.get(SET_XYZ2_PARAMETER_ID).getBooleanValue();
         final int maxExpansions = params.get(MAX_EXPANSIONS_PARAMETR_ID).getIntegerValue();
 
-        final Arranger arranger = new UncollideArrangement(dimensions, set2, maxExpansions);
+        final Arranger arranger = new UncollideArrangement(dimensions, maxExpansions);
         ((UncollideArrangement) arranger).setInteraction(interaction);
 
         final SelectedInclusionGraph selectedGraph = new SelectedInclusionGraph(wg, SelectedInclusionGraph.Connections.NONE);
@@ -76,12 +72,6 @@ public class UncollidePlugin extends SimpleEditPlugin {
         dimensionsParam.setDescription("The dimention being 2D or 3D. The default is 2 for 2D.");
         dimensionsParam.setIntegerValue(2);
         parameters.addParameter(dimensionsParam);
-
-        final PluginParameter<BooleanParameterValue> set2Param = BooleanParameterType.build(SET_XYZ2_PARAMETER_ID);
-        set2Param.setName("Set XYZ 2");
-        set2Param.setDescription("If True, set X2, Y2, Z2. The default is False.");
-        set2Param.setBooleanValue(false);
-        parameters.addParameter(set2Param);
         
         final PluginParameter<IntegerParameterValue> maxExpansionsParam = IntegerParameterType.build(MAX_EXPANSIONS_PARAMETR_ID);
         maxExpansionsParam.setName("Maximum Expansions");
