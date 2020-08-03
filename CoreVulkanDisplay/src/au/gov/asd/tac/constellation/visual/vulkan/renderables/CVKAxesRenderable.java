@@ -793,20 +793,11 @@ public class CVKAxesRenderable extends CVKRenderable {
                
         int ret;       
         try (MemoryStack stack = stackPush()) {      
-            // ===> PUSH CONSTANTS <===
             VkPushConstantRange.Buffer pushConstantRange;
             pushConstantRange = VkPushConstantRange.callocStack(1, stack);
             pushConstantRange.stageFlags(VK_SHADER_STAGE_VERTEX_BIT);
             pushConstantRange.size(VertexUniformBufferObject.SIZEOF);
-            pushConstantRange.offset(0);
-
-            // ===> PIPELINE LAYOUT CREATION <===                
-                
-            // Note: When using PushConstants you still need a DescriptorLayout 
-            // to describe the uniform data, however you do not need to create
-            // any DescriptorSets as we directly push the matrix data using vkCmdPushConstants()
-            // during the record stage.
-            // TODO HYDRA - CONFIRM THIS IS TRUE! May not need layout either                     
+            pushConstantRange.offset(0);                     
             
             VkPipelineLayoutCreateInfo pipelineLayoutInfo = VkPipelineLayoutCreateInfo.callocStack(stack);
             pipelineLayoutInfo.sType(VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO);
@@ -1036,12 +1027,10 @@ public class CVKAxesRenderable extends CVKRenderable {
         //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
 
         
-        //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.DisplayUpdate) ===//
-        return (imageIndex) -> {
-            VerifyInRenderThread();
-                      
+        //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.ProcessRenderTasks) ===//
+        return () -> {
+            VerifyInRenderThread();                      
             needsDisplayUpdate = true;
-
         };
     }  
 

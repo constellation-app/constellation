@@ -87,7 +87,7 @@ public class CVKDevice {
     private CVKMissingEnums.VkPresentModeKHR selectedPresentationMode = CVKMissingEnums.VkPresentModeKHR.VK_PRESENT_MODE_NONE;    
     private long hCommandPoolHandle = VK_NULL_HANDLE; 
     private int queueFamilyIndex = -1; 
-    private VkExtent2D vkCurrentSurfaceExtent = VkExtent2D.malloc().set(0, 0);
+    final private VkExtent2D vkCurrentSurfaceExtent = VkExtent2D.malloc().set(0, 0);
     private long max1DImageWidth = 0;
     private long maxImageLayers = 0;
     private long maxTexelBufferElements = 0;

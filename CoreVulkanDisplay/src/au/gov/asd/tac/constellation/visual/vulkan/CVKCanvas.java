@@ -17,11 +17,11 @@ import org.lwjgl.vulkan.awt.VKData;
 
 public class CVKCanvas extends AWTVKCanvas{
     private boolean parentAdded = false;
-    int frameNo = 0;
-    protected long handle = 0;
+    private int frameNumber = 0;
+    private final CVKRenderer vkRenderer;
+    private ArrayList<EventListener> eventListeners = new ArrayList<>();
     
-    protected final CVKRenderer vkRenderer;
-    protected ArrayList<EventListener> eventListeners = new ArrayList<>();
+    public int GetFrameNumber() { return frameNumber; }
     
     public CVKCanvas(VKData vkData, CVKRenderer vkRenderer) {
         super(vkData);
@@ -36,12 +36,10 @@ public class CVKCanvas extends AWTVKCanvas{
     
     
     public void InitSurface() {
-        //super.paint(null);
         parentAdded = true;
     }
     
     public void addEventListener(EventListener listener) {
-        // TODO_TT: eventify this
         eventListeners.add(listener);
     }
     
@@ -79,17 +77,16 @@ public class CVKCanvas extends AWTVKCanvas{
         // This will be called by AWTVKCanvas during initialisation but before
         // CVKRenderer is ready to use.  platformCanvas is private in our parent 
         // so this is the only way to complete the surface initialisation.  
-        System.out.printf("Frame %d\n", ++frameNo);       
+        ++frameNumber;       
         vkRenderer.Display();
     }
     
     @Override
     public void repaint() {
         if (SwingUtilities.isEventDispatchThread()) {
-                paintVK();
+            paintVK();
         } else {
-                SwingUtilities.invokeLater(() -> paintVK());
+            SwingUtilities.invokeLater(() -> paintVK());
         }
     }
-
 }

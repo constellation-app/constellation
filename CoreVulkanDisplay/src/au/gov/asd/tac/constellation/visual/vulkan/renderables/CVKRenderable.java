@@ -136,6 +136,8 @@ public abstract class CVKRenderable {
             swapChainImageCountChanged = newSwapChain.GetImageCount() != cvkSwapChain.GetImageCount();
             ret = DestroySwapChainResources();
             if (VkFailed(ret)) { return ret; }
+        } else {
+            swapChainImageCountChanged = true;
         }
                      
         cvkSwapChain = newSwapChain;
@@ -165,6 +167,6 @@ public abstract class CVKRenderable {
      */
     @FunctionalInterface
     public static interface CVKRenderableUpdateTask {
-        public void run(int imageIndex);
+        public void run();
     }         
 }

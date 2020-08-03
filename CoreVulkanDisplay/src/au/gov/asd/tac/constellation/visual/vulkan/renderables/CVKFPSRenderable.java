@@ -797,8 +797,6 @@ public class CVKFPSRenderable extends CVKRenderable {
             commandBuffers.add(buffer);
         }
         
-        CVKLOGGER.log(Level.INFO, "Init Command Buffer - FPSRenderable");
-        
         return ret;
     }
     
@@ -808,15 +806,13 @@ public class CVKFPSRenderable extends CVKRenderable {
     }    
     
     @Override
-    public int RecordCommandBuffer(VkCommandBufferInheritanceInfo inheritanceInfo, int index){
+    public int RecordCommandBuffer(VkCommandBufferInheritanceInfo inheritanceInfo, int imageIndex){
         VerifyInRenderThread();
         CVKAssert(cvkDevice.GetDevice() != null);
         CVKAssert(cvkDevice.GetCommandPoolHandle() != VK_NULL_HANDLE);
         CVKAssert(cvkSwapChain != null);
                 
-        int ret = VK_SUCCESS;
-     
-        // TODO_TT: investigate a frames in flight < imageCount approach
+        int ret;
         try (MemoryStack stack = stackPush()) {
  
             // Fill
@@ -826,7 +822,7 @@ public class CVKFPSRenderable extends CVKRenderable {
             beginInfo.flags(VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT);  // hard coding this for now
             beginInfo.pInheritanceInfo(inheritanceInfo);             
 
-            VkCommandBuffer commandBuffer = commandBuffers.get(index).GetVKCommandBuffer();
+            VkCommandBuffer commandBuffer = GetCommandBuffer(imageIndex);
             ret = vkBeginCommandBuffer(commandBuffer, beginInfo);
             checkVKret(ret);
             
@@ -846,9 +842,9 @@ public class CVKFPSRenderable extends CVKRenderable {
             vkCmdSetViewport(commandBuffer, 0, viewport);
             vkCmdSetScissor(commandBuffer, 0, scissor);
             
-            vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines.get(index));
+            vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines.get(imageIndex));
 
-            LongBuffer pVertexBuffers = stack.longs(vertexBuffers.get(index).GetBufferHandle());
+            LongBuffer pVertexBuffers = stack.longs(vertexBuffers.get(imageIndex).GetBufferHandle());
             LongBuffer offsets = stack.longs(0);
 
             // Bind verts
@@ -859,7 +855,7 @@ public class CVKFPSRenderable extends CVKRenderable {
                                     VK_PIPELINE_BIND_POINT_GRAPHICS,
                                     hPipelineLayout, 
                                     0, 
-                                    stack.longs(pDescriptorSets.get(index)), 
+                                    stack.longs(pDescriptorSets.get(imageIndex)), 
                                     null);
             
             // Push vars to vertex shader
@@ -975,9 +971,9 @@ public class CVKFPSRenderable extends CVKRenderable {
         int imageCount = cvkSwapChain.GetImageCount();
 
         // Struct for the size of the uniform buffer used by SimpleIcon.gs (we fill the actual buffer below)
-        VkDescriptorBufferInfo.Buffer geomBufferInfo = VkDescriptorBufferInfo.callocStack(1, stack);
-        geomBufferInfo.offset(0);
-        geomBufferInfo.range(GeometryUniformBufferObject.SIZEOF);      
+        VkDescriptorBufferInfo.Buffer geometryUniformBufferInfo = VkDescriptorBufferInfo.callocStack(1, stack);
+        geometryUniformBufferInfo.offset(0);
+        geometryUniformBufferInfo.range(GeometryUniformBufferObject.SIZEOF);      
 
         // Struct for the size of the image sampler used by SimpleIcon.fs
         VkDescriptorImageInfo.Buffer imageInfo = VkDescriptorImageInfo.callocStack(1, stack);
@@ -985,7 +981,7 @@ public class CVKFPSRenderable extends CVKRenderable {
         imageInfo.imageView(parent.GetTextureAtlas().GetAtlasImageViewHandle());
         imageInfo.sampler(parent.GetTextureAtlas().GetAtlasSamplerHandle());            
 
-        // We need 3 write descriptors, 2 for uniform buffers (vs + gs) and one for texture (fs)
+        // We need 2 write descriptors, 1 for the geometry stage uniform buffer and one for fragment stage texture
         VkWriteDescriptorSet.Buffer descriptorWrites = VkWriteDescriptorSet.callocStack(2, stack);
 
         VkWriteDescriptorSet geomUBDescriptorWrite = descriptorWrites.get(0);
@@ -994,7 +990,7 @@ public class CVKFPSRenderable extends CVKRenderable {
         geomUBDescriptorWrite.dstArrayElement(0);
         geomUBDescriptorWrite.descriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
         geomUBDescriptorWrite.descriptorCount(1);
-        geomUBDescriptorWrite.pBufferInfo(geomBufferInfo);            
+        geomUBDescriptorWrite.pBufferInfo(geometryUniformBufferInfo);            
 
         VkWriteDescriptorSet samplerDescriptorWrite = descriptorWrites.get(1);
         samplerDescriptorWrite.sType(VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET);
@@ -1008,7 +1004,7 @@ public class CVKFPSRenderable extends CVKRenderable {
         for (int i = 0; i < imageCount; ++i) {
             long descriptorSet = pDescriptorSets.get(i);
 
-            geomBufferInfo.buffer(geometryUniformBuffers.get(i).GetBufferHandle());
+            geometryUniformBufferInfo.buffer(geometryUniformBuffers.get(i).GetBufferHandle());
             geomUBDescriptorWrite.dstSet(descriptorSet);
             samplerDescriptorWrite.dstSet(descriptorSet);
 
@@ -1079,7 +1075,6 @@ public class CVKFPSRenderable extends CVKRenderable {
         
         int ret;
         try (MemoryStack stack = stackPush()) {
-            // ===> PUSH CONSTANTS <===
             VkPushConstantRange.Buffer pushConstantRange;
             pushConstantRange = VkPushConstantRange.callocStack(1, stack);
             pushConstantRange.stageFlags(VK_SHADER_STAGE_VERTEX_BIT);
@@ -1192,8 +1187,7 @@ public class CVKFPSRenderable extends CVKRenderable {
                 vertexInputInfo.pVertexAttributeDescriptions(Vertex.GetAttributeDescriptions());
 
                 // ===> ASSEMBLY STAGE <===
-                // Triangle list is stipulated by the layout of the out attribute of
-                // SimpleIcon.gs
+                // Each point becomes two triangles in the geometry shader, but our input is a point list
                 VkPipelineInputAssemblyStateCreateInfo inputAssembly = VkPipelineInputAssemblyStateCreateInfo.callocStack(stack);
                 inputAssembly.sType(VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO);
                 inputAssembly.topology(VK_PRIMITIVE_TOPOLOGY_POINT_LIST);

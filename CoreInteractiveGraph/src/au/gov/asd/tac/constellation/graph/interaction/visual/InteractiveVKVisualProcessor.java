@@ -31,12 +31,12 @@ import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
 import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
-import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
 import au.gov.asd.tac.constellation.utilities.visual.VisualChangeBuilder;
 import au.gov.asd.tac.constellation.utilities.visual.VisualOperation;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.CVKHitTester;
+import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -133,7 +133,7 @@ public class InteractiveVKVisualProcessor extends CVKVisualProcessor implements 
      */
     public void addDropTargetToCanvas(final DropTargetListener targetListener) {
         this.targetListener = targetListener;
-        target = new DropTarget(super.cvkCanvas, this.targetListener);
+        target = new DropTarget(super.getCanvas(), this.targetListener);
     }
 
     private final class GLSetHitTestingOperation implements VisualOperation {
@@ -151,7 +151,7 @@ public class InteractiveVKVisualProcessor extends CVKVisualProcessor implements 
 
         @Override
         public void apply() {
-            setDrawHitTest(doHitTesting);
+            //setDrawHitTest(doHitTesting);
         }
 
         @Override
@@ -162,6 +162,7 @@ public class InteractiveVKVisualProcessor extends CVKVisualProcessor implements 
 
     @Override
     public VisualOperation setHitTestingEnabled(boolean enabled) {
+        //throw new UnsupportedOperationException("setHitTestingEnabled shouldn't be needed for Vulkan");
         return new GLSetHitTestingOperation(enabled);
     }
 
@@ -264,7 +265,11 @@ public class InteractiveVKVisualProcessor extends CVKVisualProcessor implements 
         Vector3f worldPosition = new Vector3f();
         final Vector3f direction = CameraUtilities.getFocusVector(originCamera);
         direction.scale(10);
-        Graphics3DUtilities.screenToWorldCoordinates(new Vector3f(point.x, point.y, 0), direction, modelViewProjectionMatrix, getViewport(), worldPosition);
+        
+        // Invert y
+        Vector3f screenPosition = new Vector3f(point.x, getCanvas().getHeight() - point.y, 0);
+           
+        Graphics3DUtilities.screenToWorldCoordinates(screenPosition, direction, modelViewProjectionMatrix, getViewport(), worldPosition);
         worldPosition.add(camera.lookAtEye);
         return worldPosition;
     }
@@ -324,9 +329,9 @@ public class InteractiveVKVisualProcessor extends CVKVisualProcessor implements 
 
     @Override
     public float getDPIScalingFactor() {
-        // HACK_DPI - Get the X Scale value from the GLCanva's transform matrix
+        // HACK_DPI - Get the X Scale value from the Canvas's transform matrix
         // This method was derived from the JOGL post found here:
-        // http://forum.jogamp.org/canvas-not-filling-frame-td4040092.html#a4040210
+        // http://forum.jogamp.org162/canvas-not-filling-frame-td4040092.html#a4040210
         try {
             return (float) ((Graphics2D) getCanvas().getGraphics()).getTransform().getScaleX();
         } catch (Exception ex) {
