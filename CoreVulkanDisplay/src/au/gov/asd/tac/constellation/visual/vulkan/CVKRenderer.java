@@ -358,7 +358,7 @@ public class CVKRenderer implements ComponentListener {
         vkCmdBeginRenderPass(primaryCommandBuffer, renderPassInfo, VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS);
 
         // Inheritance info for the secondary command buffers (same for all!)
-        VkCommandBufferInheritanceInfo inheritanceInfo = VkCommandBufferInheritanceInfo.calloc();
+        VkCommandBufferInheritanceInfo inheritanceInfo = VkCommandBufferInheritanceInfo.callocStack(stack);
         inheritanceInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO);
         inheritanceInfo.pNext(0);
         inheritanceInfo.framebuffer(cvkSwapChain.GetFrameBufferHandle(imageIndex));

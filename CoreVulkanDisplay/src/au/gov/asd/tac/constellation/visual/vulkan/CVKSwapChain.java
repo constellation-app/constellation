@@ -697,4 +697,7 @@ public class CVKSwapChain {
     public VkExtent2D GetExtent() { return vkCurrentImageExtent; } 
     public int GetWidth() { return vkCurrentImageExtent.width(); }
     public int GetHeight() { return vkCurrentImageExtent.height(); }
+    public int[] GetViewport(){
+        return new int[]{0, GetHeight(), GetWidth(), -GetHeight()};
+    }
 }

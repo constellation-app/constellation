@@ -4,7 +4,7 @@
 
 
 // === UNIFORMS ===
-layout(std140, binding = 0) uniform UniformBlock {
+layout(std140, push_constant) uniform UniformBlock {
     mat4 mvMatrix;
     float visibilityLow;
     float visibilityHigh;

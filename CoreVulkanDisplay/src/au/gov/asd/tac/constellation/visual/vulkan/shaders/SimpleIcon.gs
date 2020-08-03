@@ -21,7 +21,7 @@ const mat4 IDENTITY_MATRIX = mat4(
 
 
 // === UNIFORMS ===
-layout(std140, binding = 1) uniform UniformBlock {
+layout(std140, binding = 0) uniform UniformBlock {
     mat4 pMatrix;
     float pixelDensity;
     float pScale;
