@@ -24,6 +24,10 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
  */
 class TreeFactory {
 
+    public TreeFactory() {
+        throw new IllegalStateException("Utility class");
+    }  
+
     static AbstractTree create(GraphReadMethods wg, Dimensions d){
         switch (d) {
             case TWO:
