@@ -29,8 +29,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
