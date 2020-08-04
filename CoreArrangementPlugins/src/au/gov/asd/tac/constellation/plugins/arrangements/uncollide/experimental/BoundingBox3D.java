@@ -151,8 +151,4 @@ class BoundingBox3D extends AbstractBoundingBox{
     BoundingBox3D bottomRightBackOctant() {
         return new BoundingBox3D(midX, maxX, minY, midY, minZ, midZ);
     }  
-    @Override
-    public String toString() {
-        return String.format("Box: Min(%f, %f, %f), Max(%f, %f, %f)", minX, minY, minZ, maxX, maxY, maxZ);
-    }
 }

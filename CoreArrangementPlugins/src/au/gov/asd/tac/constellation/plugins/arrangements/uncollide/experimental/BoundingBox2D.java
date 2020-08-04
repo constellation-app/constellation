@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 
 /**
  * This class is designed to provide a 2D bounding box for a graph.
- * <p>
  * 
  * @author algol
  * @author Nova
@@ -79,9 +78,4 @@ class BoundingBox2D extends AbstractBoundingBox{
     BoundingBox2D bottomRightQuadrant() {
         return new BoundingBox2D(midX, maxX, minY, midY);
     }  
-
-    @Override
-    public String toString() {
-        return String.format("Box: Min(%f, %f), Max(%f, %f)", minX, minY, maxX, maxY);
-    }
 }
