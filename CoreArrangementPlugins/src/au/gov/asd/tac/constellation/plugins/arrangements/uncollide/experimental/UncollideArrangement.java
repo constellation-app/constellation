@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.plugins.arrangements.uncollide.experimental
 
 import au.gov.asd.tac.constellation.graph.GraphConstants;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
@@ -30,7 +29,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
-import static org.apache.commons.math3.stat.StatUtils.sum;
 import org.openide.util.Exceptions;
 import org.python.modules.math;
 
