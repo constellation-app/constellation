@@ -15,15 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.uncollide.experimental;
 
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Logger;
 import org.python.modules.math;
 
 /**
@@ -38,9 +30,6 @@ class QuadTree extends AbstractTree{
     protected static final int BOT_L = 2;
     protected static final int BOT_R = 3;
     
-    private static final Logger LOG = Logger.getLogger(QuadTree.class.getName());
-
-
     /**
      * Constructor creates QuadTree and inserts all nodes
      * 
@@ -60,7 +49,6 @@ class QuadTree extends AbstractTree{
      */
     protected QuadTree(QuadTree parent, final BoundingBox2D box) {
         super(parent, box);
-//        insertAll();
     }
 
     /*
