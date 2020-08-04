@@ -52,7 +52,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParamet
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
-import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
@@ -67,7 +66,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
@@ -186,7 +184,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         final PluginParameter<StringParameterValue> string1 = StringParameterType.build(TEST1_PARAMETER_ID);
         string1.setName("Test1");
         string1.setDescription("A test string");
-        string1.setStringValue("Plugh.");
+//        string1.setStringValue("Plugh.");
         params.addParameter(string1);
 
         final StringParameterValue string2pv = new StringParameterValue();
@@ -208,17 +206,21 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         final PluginParameter<LocalDateParameterValue> date = LocalDateParameterType.build(LOCAL_DATE_PARAMETER_ID);
         date.setName("Date");
         date.setDescription("Pick a day");
-        date.setLocalDateValue(LocalDate.of(2001, Month.JANUARY, 1));
+//        date.setLocalDateValue(LocalDate.of(2001, Month.JANUARY, 1));
         params.addParameter(date);
 
         final List<GraphElementTypeParameterValue> elementTypeOptions = new ArrayList<>();
+        final List<String> elementTypeOptionsStr = new ArrayList<>();
+
         for (final GraphElementType elementType : GraphElementType.values()) {
             elementTypeOptions.add(new GraphElementTypeParameterValue(elementType));
+            elementTypeOptionsStr.add(elementType.getShortLabel());
         }
         final PluginParameter<SingleChoiceParameterValue> elementType = SingleChoiceParameterType.build(ELEMENT_TYPE_PARAMETER_ID, GraphElementTypeParameterValue.class);
         elementType.setName("Graph element type");
         elementType.setDescription("Graph element type");
-        SingleChoiceParameterType.setOptionsData(elementType, elementTypeOptions);
+//        SingleChoiceParameterType.setOptionsData(elementType, elementTypeOptions);
+        SingleChoiceParameterType.setOptions(elementType, elementTypeOptionsStr);
         params.addParameter(elementType);
 
         // A single choice list with a subtype of String.
@@ -249,8 +251,8 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         SingleChoiceParameterType.setOptions(robotOptions, Arrays.asList("Bender", "Gort", "Maximillian", "Robbie", "Tom Servo"));
 
         // Create a ParameterValue of the underlying type (in this case, String) to set the default choice.
-        final StringParameterValue robotChoice = new StringParameterValue("Gort");
-        SingleChoiceParameterType.setChoiceData(robotOptions, robotChoice);
+//        final StringParameterValue robotChoice = new StringParameterValue("Gort");
+//        SingleChoiceParameterType.setChoiceData(robotOptions, robotChoice);
         params.addParameter(robotOptions);
 
         final PluginParameter<ParameterValue> buttonParam = ActionParameterType.build(REFRESH_PARAMETER_ID);
@@ -263,25 +265,25 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         planetOptions.setDescription("Some planets");
         MultiChoiceParameterType.setOptions(planetOptions, Arrays.asList("Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Coruscant"));
         final List<String> checked = new ArrayList<>();
-        checked.add("Earth");
+//        checked.add("Earth");
         MultiChoiceParameterType.setChoices(planetOptions, checked);
         params.addParameter(planetOptions);
 
         final PluginParameter<IntegerParameterValue> diceOptions = IntegerParameterType.build(DICE_PARAMETER_ID);
         diceOptions.setName("Dice");
         diceOptions.setDescription("2d6");
-        IntegerParameterType.setMinimum(diceOptions, 2);
-        IntegerParameterType.setMaximum(diceOptions, 12);
-        diceOptions.setIntegerValue(7);
+//        IntegerParameterType.setMinimum(diceOptions, 2);
+//        IntegerParameterType.setMaximum(diceOptions, 12);
+//        diceOptions.setIntegerValue(7);
         params.addParameter(diceOptions);
 
         final PluginParameter<FloatParameterValue> probability = FloatParameterType.build(PROBABILITY_PARAMETER_ID);
         probability.setName("Probability");
         probability.setDescription("0 ≤ p ≤ 1");
-        FloatParameterType.setMinimum(probability, 0f);
-        FloatParameterType.setMaximum(probability, 1f);
+//        FloatParameterType.setMinimum(probability, 0f);
+//        FloatParameterType.setMaximum(probability, 1f);
         FloatParameterType.setStep(probability, 0.1f);
-        probability.setFloatValue(1f);
+//        probability.setFloatValue(1f);
         params.addParameter(probability);
 
         final PluginParameter<FileParameterValue> openFileParam = FileParameterType.build(INPUT_FILE_PARAMETER_ID);
@@ -299,7 +301,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         final PluginParameter<ColorParameterValue> color = ColorParameterType.build(COLOR_PARAMETER_ID);
         color.setName("Color");
         color.setDescription("Your favourite colour");
-        color.setColorValue(ConstellationColor.BLUE);
+//        color.setColorValue(ConstellationColor.BLUE);
         params.addParameter(color);
 
         final PluginParameter<BooleanParameterValue> crash = BooleanParameterType.build(CRASH_PARAMETER_ID);

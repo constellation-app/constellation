@@ -52,6 +52,7 @@ public class ColorInputPane extends Pane {
     private final ColorPicker field;
     private final ComboBox<ConstellationColor> namedCombo;
     private static final Logger LOGGER = Logger.getLogger(ColorInputPane.class.getName());
+    private String parameterId;
 
     public ColorInputPane(final PluginParameter<ColorParameterValue> parameter) {
         final List<String> recentValues = RecentParameterValues.getRecentValues(parameter.getId());
@@ -81,10 +82,10 @@ public class ColorInputPane extends Pane {
         });
 
         final ColorParameterValue pv = parameter.getParameterValue();
-
-        if (recentValues != null) {
-            field.setValue(Color.valueOf(recentValues.get(0)));
-        }
+//SY
+//        if (recentValues != null) {
+//            field.setValue(Color.valueOf(recentValues.get(0)));
+//        }
 
         field.setValue(pv.get().getJavaFXColor());
 
@@ -136,6 +137,11 @@ public class ColorInputPane extends Pane {
         });
 
         getChildren().add(hbox);
+        if (recentValues.size() > 1) {
+            parameter.setStringValue(recentValues.get(1));
+        } else {
+            parameter.setStringValue(recentValues.get(0));
+        }
     }
 
     private ComboBox<ConstellationColor> makeNamedCombo() {

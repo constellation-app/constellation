@@ -20,9 +20,11 @@ import static au.gov.asd.tac.constellation.plugins.parameters.ParameterChange.EN
 import static au.gov.asd.tac.constellation.plugins.parameters.ParameterChange.VALUE;
 import static au.gov.asd.tac.constellation.plugins.parameters.ParameterChange.VISIBLE;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FloatParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.NumberParameterValue;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -63,6 +65,7 @@ public class NumberInputPane<T> extends Pane {
     private static final Logger LOGGER = Logger.getLogger(NumberInputPane.class.getName());
 
     private static final String INVALID_ID = "invalid";
+    private String parameterId;
 
     public NumberInputPane(final PluginParameter<?> parameter) {
         final NumberParameterValue pv = (NumberParameterValue) parameter.getParameterValue();
@@ -176,5 +179,27 @@ public class NumberInputPane<T> extends Pane {
             });
         });
         getChildren().add(field);
+        parameterId = parameter.getId();
+        List<String> numberRecentValues = RecentParameterValues.getRecentValues(parameterId);
+        switch (parameter.getType().getId()) {
+                case FloatParameterType.ID: {
+                    if (numberRecentValues.size() > 1) {
+                        parameter.setFloatValue(Float.valueOf(numberRecentValues.get(1)));
+                    } else {
+                        parameter.setFloatValue(Float.valueOf(numberRecentValues.get(0)));
+                    }
+                }
+                break;
+                case IntegerParameterType.ID: {
+                    if (numberRecentValues.size() > 1) {
+                        parameter.setIntegerValue(Integer.valueOf(numberRecentValues.get(1)));
+                    } else {
+                        parameter.setIntegerValue(Integer.valueOf(numberRecentValues.get(0)));
+                    }
+                }
+                break;
+            default:
+                    break;
+            }
     }
 }
