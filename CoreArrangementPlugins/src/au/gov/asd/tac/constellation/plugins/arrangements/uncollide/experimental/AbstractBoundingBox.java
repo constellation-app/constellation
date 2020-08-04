@@ -20,8 +20,9 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 
 /**
- * Provides an abstract representation os an N dimensional box that
+ * Provides an abstract representation of an N dimensional box that
  * represents the boundary of a graph.
+ * <p>
  * N must be 2 or greater.
  * 
  * @author Nova

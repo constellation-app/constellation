@@ -26,7 +26,6 @@ import java.util.List;
  * detect collisions quickly by dividing an X-dimensional space into 2^X
  * sub-spaces. The minimum value of X is 2.
  * 
- * As constellation only
  * @author Nova
  */
 public abstract class AbstractTree {
