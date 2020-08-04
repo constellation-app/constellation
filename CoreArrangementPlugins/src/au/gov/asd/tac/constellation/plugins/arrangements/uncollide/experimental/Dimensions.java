@@ -22,7 +22,7 @@ import java.util.List;
  *
  * @author Nova
  */
-public enum Dimensions {
+enum Dimensions {
     TWO, THREE;
     
     public static List<String> getOptions() {
