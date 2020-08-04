@@ -164,6 +164,23 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
     }
 
     /**
+     * Triggers an update of the QualityControlEvent as well as notifies
+     * listeners. This is used when the priority of categories is changed.
+     */
+    public void updateQualityEvents() {
+        final Graph graph = currentGraph;
+        if (graph != null) {
+            final ReadableGraph readableGraph = graph.getReadableGraph();
+            try {
+                updateQualityControlState(graph);
+            } finally {
+                readableGraph.release();
+            }
+            listeners.stream().forEach(listener -> listener.qualityControlChanged(state));
+        }
+    }
+
+    /**
      * Build a new QualityControlState with an updated list of
      * QualityControlEvent.
      *

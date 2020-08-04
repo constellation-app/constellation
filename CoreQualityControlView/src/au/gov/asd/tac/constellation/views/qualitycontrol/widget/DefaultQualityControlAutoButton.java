@@ -82,7 +82,7 @@ public final class DefaultQualityControlAutoButton extends QualityControlAutoBut
         final String styleText;
         final String tooltipText;
         if (event != null && event.getQuality() > 0) {
-            riskText = String.format(QUALITY_CONTROL_WIDGET_TEXT, String.valueOf(event.getQuality()));
+            riskText = String.format(QUALITY_CONTROL_WIDGET_TEXT, String.valueOf(event.getCategory().name()));
             styleText = QualityControlViewPane.qualityStyle(event.getQuality(), 1);
             tooltipText = event.getReasons();
         } else {

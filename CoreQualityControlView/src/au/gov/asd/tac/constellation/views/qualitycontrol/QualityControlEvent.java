@@ -29,12 +29,26 @@ import java.util.List;
  */
 public class QualityControlEvent implements Comparable<QualityControlEvent> {
 
+    public static enum QualityCategory {
+        DEFAULT,
+        INFO,
+        WARNING,
+        SEVERE,
+        FATAL
+    }
+    public final static int DEFAULT_VALUE = 0;
+    public final static int INFO_VALUE = 10;
+    public final static int WARNING_VALUE = 30;
+    public final static int SEVERE_VALUE = 60;
+    public final static int FATAL_VALUE = 90;
+
     private int quality = 0;
     private final int vertex;
     private final String identifier;
     private final String type;
     private final List<QualityControlRule> rules;
     private final List<String> reasons;
+    private QualityCategory category = QualityCategory.DEFAULT;
 
     /**
      * Constructor for QualityControlEvent.
@@ -56,7 +70,8 @@ public class QualityControlEvent implements Comparable<QualityControlEvent> {
     /**
      * Of the given rules, find all for which the vertex might be considered to
      * have low quality, as well as the lowest quality associated with these
-     * rules.
+     * rules. Stores the category which is the new highest priority as the event
+     * basis.
      *
      * @param rules the list of rules to consider.
      * @return a list of rules that are relevant.
@@ -65,8 +80,28 @@ public class QualityControlEvent implements Comparable<QualityControlEvent> {
         for (final QualityControlRule rule : rules) {
             if (rule.getResults().contains(vertex)) {
                 reasons.add(rule.getName());
-                if (rule.getQuality(vertex) > quality) {
-                    quality = rule.getQuality(vertex);
+                if (QualityControlRule.testPriority(QualityControlViewPane.getPriorities().get(rule), category) < 0) {
+                    category = QualityControlViewPane.getPriorities().get(rule);
+
+                    switch (category) {
+                        case DEFAULT:
+                            quality = DEFAULT_VALUE;
+                            break;
+                        case INFO:
+                            quality = INFO_VALUE;
+                            break;
+                        case WARNING:
+                            quality = WARNING_VALUE;
+                            break;
+                        case SEVERE:
+                            quality = SEVERE_VALUE;
+                            break;
+                        case FATAL:
+                            quality = FATAL_VALUE;
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         }
@@ -140,6 +175,17 @@ public class QualityControlEvent implements Comparable<QualityControlEvent> {
      */
     public int getQuality() {
         return quality;
+    }
+
+    /**
+     * Get the QualityCategory related to the category of this
+     * QualityControlEvent.
+     *
+     * @return the QualityCategory of the quality associated with this
+     * QualityControlEvent.
+     */
+    public QualityCategory getCategory() {
+        return category;
     }
 
     @Override

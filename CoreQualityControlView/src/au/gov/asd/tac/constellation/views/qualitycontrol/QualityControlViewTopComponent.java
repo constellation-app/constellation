@@ -62,7 +62,7 @@ public final class QualityControlViewTopComponent extends JavaFxTopComponent<Qua
 
         initComponents();
 
-        qualityControlViewPane = new QualityControlViewPane(QualityControlViewTopComponent.this);
+        qualityControlViewPane = new QualityControlViewPane();
         initContent();
     }
 
