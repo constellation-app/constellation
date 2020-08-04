@@ -24,7 +24,7 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
  */
 class TreeFactory {
 
-    public TreeFactory() {
+    private TreeFactory() {
         throw new IllegalStateException("Utility class");
     }  
 
