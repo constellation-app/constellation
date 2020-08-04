@@ -48,10 +48,10 @@ public class AbstractBoundingBox {
         final int xId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
         final int yId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
 
-        float minX = wg.getFloatValue(xId, wg.getVertex(0));
-        float minY = wg.getFloatValue(yId, wg.getVertex(0));
-        float maxX = minX;
-        float maxY = minY;
+        float minXObserved = wg.getFloatValue(xId, wg.getVertex(0));
+        float minYObserved = wg.getFloatValue(yId, wg.getVertex(0));
+        float maxXObserved = minXObserved;
+        float maxYObserved = minYObserved;
 
 
         final int vxCount = wg.getVertexCount();
@@ -65,26 +65,26 @@ public class AbstractBoundingBox {
             final float x = wg.getFloatValue(xId, vxId);
             final float y = wg.getFloatValue(yId, vxId);
             
-            if (x < minX) {
-                minX = x;
+            if (x < minXObserved) {
+                minXObserved = x;
             }
-            if (x > maxX) {
-                maxX = x;
+            if (x > maxXObserved) {
+                maxXObserved = x;
             }
-            if (y < minY) {
-                minY = y;
+            if (y < minYObserved) {
+                minYObserved = y;
             }
-            if (y > maxY) {
-                maxY = y;
+            if (y > maxYObserved) {
+                maxYObserved = y;
             }
         }
 
-        this.minX = minX;
-        this.minY = minY;
-        this.maxX = maxX;
-        this.maxY = maxY;
-        this.midX = minX + (maxX - minX)*(float)0.5;
-        this.midY = minY + (maxY - minY)*(float)0.5;
+        this.minX = minXObserved;
+        this.minY = minYObserved;
+        this.maxX = maxXObserved;
+        this.maxY = maxYObserved;
+        this.midX = minXObserved + (maxXObserved - minXObserved)*(float)0.5;
+        this.midY = minYObserved + (maxYObserved - minYObserved)*(float)0.5;
     }
     
     protected AbstractBoundingBox(float minX, float maxX, float minY, float maxY) {

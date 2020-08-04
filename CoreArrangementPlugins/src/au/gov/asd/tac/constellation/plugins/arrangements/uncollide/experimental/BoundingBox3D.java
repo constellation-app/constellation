@@ -46,8 +46,8 @@ class BoundingBox3D extends AbstractBoundingBox{
         
         final int zId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
 
-        float minZ = wg.getFloatValue(zId, wg.getVertex(0));
-        float maxZ = minZ;
+        float minZObserved = wg.getFloatValue(zId, wg.getVertex(0));
+        float maxZObserved = minZObserved;
 
 
         final int vxCount = wg.getVertexCount();
@@ -59,17 +59,17 @@ class BoundingBox3D extends AbstractBoundingBox{
             final int vxId = wg.getVertex(position);
             final float z = wg.getFloatValue(zId, vxId);
             
-            if (z < minZ) {
-                minZ = z;
+            if (z < minZObserved) {
+                minZObserved = z;
             }
-            if (z > maxZ) {
-                maxZ = z;
+            if (z > maxZObserved) {
+                maxZObserved = z;
             }
         }
 
-        this.minZ = minZ;
-        this.maxZ = maxZ;
-        this.midZ = minZ + (maxZ - minZ)*(float)0.5;
+        this.minZ = minZObserved;
+        this.maxZ = maxZObserved;
+        this.midZ = minZObserved + (maxZObserved - minZObserved)*(float)0.5;
     }
 
     private BoundingBox3D(final float minX, final float maxX, final float minY, final float maxY, final float minZ, final float maxZ) {
