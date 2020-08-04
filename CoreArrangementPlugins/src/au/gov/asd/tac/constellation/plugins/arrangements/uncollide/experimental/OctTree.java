@@ -18,9 +18,6 @@ package au.gov.asd.tac.constellation.plugins.arrangements.uncollide.experimental
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import java.util.ArrayList;
-import java.util.List;
-import org.python.modules.math;
 
 /**
  * http://gamedev.tutsplus.com/tutorials/implementation/quick-tip-use-quadtrees-to-detect-likely-collisions-in-2d-space/
@@ -39,7 +36,7 @@ class OctTree extends AbstractTree{
     protected static final int BOT_L_B = 6;
     protected static final int BOT_R_B = 7;
     
-    private final int ZID;
+    private final int zId;
 
     /**
      * Constructor creates QuadTree and inserts all nodes
@@ -48,7 +45,7 @@ class OctTree extends AbstractTree{
      */
     OctTree(final GraphReadMethods graph) {
         super(graph, Dimensions.THREE);
-        ZID = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
+        zId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
         insertAll();
     }
 
@@ -61,7 +58,7 @@ class OctTree extends AbstractTree{
     OctTree(OctTree parent, final BoundingBox3D box) {
         super(parent, box);
         // Inherit parent values for graph based variables.
-        ZID = parent.ZID;
+        zId = parent.zId;
     }
 
     /*
@@ -96,16 +93,16 @@ class OctTree extends AbstractTree{
         int index = -1;
         
         // Object can completely fit within the top/bottom halves.
-        final boolean bottomHalf = wg.getFloatValue(YID, vxId) + wg.getFloatValue(RID, vxId) < box3D.midY;
-        final boolean topHalf = wg.getFloatValue(YID, vxId) - wg.getFloatValue(RID, vxId) > box3D.midY;
+        final boolean bottomHalf = wg.getFloatValue(yId, vxId) + wg.getFloatValue(rId, vxId) < box3D.midY;
+        final boolean topHalf = wg.getFloatValue(yId, vxId) - wg.getFloatValue(rId, vxId) > box3D.midY;
         
         // Object can completely fit witin the left/right halves.
-        final boolean leftHalf = wg.getFloatValue(XID, vxId) + wg.getFloatValue(RID, vxId) < box3D.midX;
-        final boolean rightHalf = wg.getFloatValue(XID, vxId) - wg.getFloatValue(RID, vxId) > box3D.midX;
+        final boolean leftHalf = wg.getFloatValue(xId, vxId) + wg.getFloatValue(rId, vxId) < box3D.midX;
+        final boolean rightHalf = wg.getFloatValue(xId, vxId) - wg.getFloatValue(rId, vxId) > box3D.midX;
         
         // Object can completely fit in front/back halves.
-        final boolean backHalf = wg.getFloatValue(ZID, vxId) + wg.getFloatValue(RID, vxId) < box3D.midZ;
-        final boolean frontHalf = wg.getFloatValue(ZID, vxId) - wg.getFloatValue(RID, vxId) > box3D.midZ;
+        final boolean backHalf = wg.getFloatValue(zId, vxId) + wg.getFloatValue(rId, vxId) < box3D.midZ;
+        final boolean frontHalf = wg.getFloatValue(zId, vxId) - wg.getFloatValue(rId, vxId) > box3D.midZ;
 
 
         if (topHalf) { 
@@ -145,15 +142,15 @@ class OctTree extends AbstractTree{
     
     @Override
     protected double getDelta(final int vertex1, final int vertex2){
-        float deltaX = wg.getFloatValue(XID, vertex1) - wg.getFloatValue(XID, vertex2);
-        float deltaY = wg.getFloatValue(YID, vertex1) - wg.getFloatValue(YID, vertex2);
-        float deltaZ = wg.getFloatValue(ZID, vertex1) - wg.getFloatValue(ZID, vertex2);
+        float deltaX = wg.getFloatValue(xId, vertex1) - wg.getFloatValue(xId, vertex2);
+        float deltaY = wg.getFloatValue(yId, vertex1) - wg.getFloatValue(yId, vertex2);
+        float deltaZ = wg.getFloatValue(zId, vertex1) - wg.getFloatValue(zId, vertex2);
         return Math.cbrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
     }
     
     @Override
     protected double getCollisionDistance(final int vertex1, final int vertex2){
-        return Math.cbrt(3*wg.getFloatValue(RID, vertex1)) + Math.cbrt(3*wg.getFloatValue(RID, vertex2));
+        return Math.cbrt(3*wg.getFloatValue(rId, vertex1)) + Math.cbrt(3*wg.getFloatValue(rId, vertex2));
     }
 
 }

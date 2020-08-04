@@ -78,12 +78,12 @@ class QuadTree extends AbstractTree{
         int index = -1;
         
         // Object can completely fit within the top/bottom halves.
-        final boolean bottomHalf = wg.getFloatValue(YID, vxId) + wg.getFloatValue(RID, vxId) < box.midY;
-        final boolean topHalf = wg.getFloatValue(YID, vxId) - wg.getFloatValue(RID, vxId) > box.midY;
+        final boolean bottomHalf = wg.getFloatValue(yId, vxId) + wg.getFloatValue(rId, vxId) < box.midY;
+        final boolean topHalf = wg.getFloatValue(yId, vxId) - wg.getFloatValue(rId, vxId) > box.midY;
         
         // Object can completely fit witin the left/right halves.
-        final boolean leftHalf = wg.getFloatValue(XID, vxId) + wg.getFloatValue(RID, vxId) < box.midX;
-        final boolean rightHalf = wg.getFloatValue(XID, vxId) - wg.getFloatValue(RID, vxId) > box.midX;
+        final boolean leftHalf = wg.getFloatValue(xId, vxId) + wg.getFloatValue(rId, vxId) < box.midX;
+        final boolean rightHalf = wg.getFloatValue(xId, vxId) - wg.getFloatValue(rId, vxId) > box.midX;
 
         // Object can completely fit within the left half.
         if (leftHalf) {
@@ -105,14 +105,14 @@ class QuadTree extends AbstractTree{
 
     @Override
     protected double getDelta(final int vertex1, final int vertex2){
-        float DeltaX = wg.getFloatValue(XID, vertex1) - wg.getFloatValue(XID, vertex2);
-        float DeltaY = wg.getFloatValue(YID, vertex1) - wg.getFloatValue(YID, vertex2);
-        return math.sqrt(DeltaX * DeltaX + DeltaY * DeltaY);
+        float deltaX = wg.getFloatValue(xId, vertex1) - wg.getFloatValue(xId, vertex2);
+        float deltaY = wg.getFloatValue(yId, vertex1) - wg.getFloatValue(yId, vertex2);
+        return math.sqrt(deltaX * deltaX + deltaY * deltaY);
     }
     
     @Override
     protected double getCollisionDistance(final int vertex1, final int vertex2){
-        return math.sqrt(2*wg.getFloatValue(RID, vertex1)) + math.sqrt(2*wg.getFloatValue(RID, vertex2));
+        return math.sqrt(2*wg.getFloatValue(rId, vertex1)) + math.sqrt(2*wg.getFloatValue(rId, vertex2));
     }
 
 }

@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.plugins.arrangements.uncollide.experimental
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -186,7 +185,7 @@ public class UncollideArrangement implements Arranger {
         float deltaZ = wg.getFloatValue(zId, subject) - wg.getFloatValue(zId, twin);
         double delta = Math.cbrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
         
-        final double collisionDistance = Math.cbrt(3*wg.getFloatValue(rId, subject)) + Math.cbrt(3*wg.getFloatValue(rId, twin));;
+        final double collisionDistance = Math.cbrt(3*wg.getFloatValue(rId, subject)) + Math.cbrt(3*wg.getFloatValue(rId, twin));
         final double twinDistance = collisionDistance*twinThreshold; // The required distance for the nodes to be uncollided after maxExpansions number of expansions (each expansions scaled the graph by a factor of 1.1
 
         // If they are in the same spot we will nudge in a random direction

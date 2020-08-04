@@ -33,9 +33,9 @@ public abstract class AbstractTree {
     protected static final int MAX_OBJECTS = 50;
     protected static final int MAX_LEVELS = 4;
     
-    protected final int XID; 
-    protected final int YID;
-    protected final int RID;
+    protected final int xId; 
+    protected final int yId;
+    protected final int rId;
     protected final GraphReadMethods wg;
 
     protected final int level;
@@ -55,9 +55,9 @@ public abstract class AbstractTree {
         this.box = BoxFactory.create(graph, d);
         
         this.wg = graph;
-        this.XID = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
-        this.YID = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
-        this.RID = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.NODE_RADIUS.getName());
+        this.xId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
+        this.yId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
+        this.rId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.NODE_RADIUS.getName());
     }
     
     /**
@@ -73,9 +73,9 @@ public abstract class AbstractTree {
         nodes = null;   
         // Inherit parent values for graph based variables.
         wg = parent.wg;
-        XID = parent.XID;
-        YID = parent.YID;
-        RID = parent.RID;
+        xId = parent.xId;
+        yId = parent.yId;
+        rId = parent.rId;
     }
     
     /*
@@ -83,7 +83,7 @@ public abstract class AbstractTree {
      * <p>
      * Divide the node into 2^X equal parts and initialise the 2^X subnodes with the new bounds.
      */
-    abstract protected void split();
+    protected abstract void split();
     
     /*
      * Determine which node the object belongs to.
@@ -92,11 +92,11 @@ public abstract class AbstractTree {
      * <p>
      * Determine where an object belongs in the quadtree by determining which node the object can fit into.
      */
-    abstract protected int getIndex(final int vxId);
+    protected abstract int getIndex(final int vxId);
 
-    abstract protected double getDelta(final int vertex1, final int vertex2);
+    protected abstract double getDelta(final int vertex1, final int vertex2);
     
-    abstract protected double getCollisionDistance(final int vertex1, final int vertex2);
+    protected abstract double getCollisionDistance(final int vertex1, final int vertex2);
     
     /*
      * Insert the object into the tree. If the node exceeds the capacity, it will split and add
