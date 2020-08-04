@@ -44,7 +44,6 @@ import javafx.collections.FXCollections;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -232,7 +231,7 @@ public final class QualityControlViewPane extends BorderPane {
                     if (value.getClickCount() == 2) {
                         @SuppressWarnings("unchecked") //sourceCell will be a Table cell of quality control events which extends from object type
                         final TableCell<QualityControlEvent, QualityControlEvent> sourceCell = (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource();
-                        showRuleDialog(qualityTable, sourceCell);
+                        showRuleDialog(sourceCell);
                     }
                 });
 
@@ -255,7 +254,7 @@ public final class QualityControlViewPane extends BorderPane {
                     if (value.getClickCount() == 2) {
                         @SuppressWarnings("unchecked") //sourceCell will be a Table cell of quality control events which extends from object type
                         final TableCell<QualityControlEvent, QualityControlEvent> sourceCell = (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource();
-                        showRuleDialog(qualityTable, sourceCell);
+                        showRuleDialog(sourceCell);
                     }
                 });
 
@@ -279,7 +278,7 @@ public final class QualityControlViewPane extends BorderPane {
                     if (value.getClickCount() == 2) {
                         @SuppressWarnings("unchecked") //sourceCell will be a Table cell of quality control events which extends from object type
                         final TableCell<QualityControlEvent, QualityControlEvent> sourceCell = (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource();
-                        showRuleDialog(qualityTable, sourceCell);
+                        showRuleDialog(sourceCell);
                     }
                 });
 
@@ -302,7 +301,7 @@ public final class QualityControlViewPane extends BorderPane {
                     if (value.getClickCount() == 2) {
                         @SuppressWarnings("unchecked") //sourceCell will be a Table cell of quality control events which extends from object type
                         final TableCell<QualityControlEvent, QualityControlEvent> sourceCell = (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource();
-                        showRuleDialog(qualityTable, sourceCell);
+                        showRuleDialog(sourceCell);
                     }
                 });
 
@@ -340,16 +339,13 @@ public final class QualityControlViewPane extends BorderPane {
      * @return a javafx style based on the given quality and alpha values.
      */
     public static String qualityStyle(final QualityCategory category, final float alpha) {
+        final String whiteText = "-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(%d,%d,255,%f);";
         final int intensity;
         final String style;
         switch (category) {
-            case DEFAULT:
-                intensity = 255 - (255 * QualityControlEvent.DEFAULT_VALUE) / 100;
-                style = String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(%d,%d,255,%f);", intensity, intensity, alpha);
-                break;
             case INFO:
                 intensity = 255 - (255 * QualityControlEvent.INFO_VALUE) / 100;
-                style = String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(%d,%d,255,%f);", intensity, intensity, alpha);
+                style = String.format(whiteText, intensity, intensity, alpha);
                 break;
             case WARNING:
                 intensity = 255 - (255 * QualityControlEvent.WARNING_VALUE) / 100;
@@ -364,9 +360,9 @@ public final class QualityControlViewPane extends BorderPane {
                 style = String.format("-fx-text-fill: rgb(255,255,255);-fx-background-color: rgba(0,%d,%d,%f);", intensity, intensity, alpha);
                 break;
             default:
-                // Default case
+                // DEFAULT case
                 intensity = 255 - (255 * QualityControlEvent.DEFAULT_VALUE) / 100;
-                style = String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(%d,%d,255,%f);", intensity, intensity, alpha);
+                style = String.format(whiteText, intensity, intensity, alpha);
                 break;
         }
 
@@ -515,7 +511,7 @@ public final class QualityControlViewPane extends BorderPane {
      * @param owner
      * @param qcevent
      */
-    private static void showRuleDialog(final Node owner, final TableCell<QualityControlEvent, QualityControlEvent> qcevent) {
+    private static void showRuleDialog(final TableCell<QualityControlEvent, QualityControlEvent> qcevent) {
         if (qcevent.getItem() != null) {
             final int vxId = qcevent.getItem().getVertex();
             final String identifier = qcevent.getItem().getIdentifier();
@@ -538,7 +534,7 @@ public final class QualityControlViewPane extends BorderPane {
                 return compare;
             });
 
-            showRuleDialog(owner, identifier, rules);
+            showRuleDialog(identifier, rules);
         }
     }
 
@@ -550,7 +546,7 @@ public final class QualityControlViewPane extends BorderPane {
      * @param identifier The identifier of the graph node being displayed.
      * @param rules The list of rules measured against this graph node.
      */
-    private static void showRuleDialog(final Node owner, final String identifier, final List<Pair<QualityCategory, String>> rules) {
+    private static void showRuleDialog(final String identifier, final List<Pair<QualityCategory, String>> rules) {
         final ScrollPane sp = new ScrollPane();
         sp.setPrefHeight(512);
         sp.setPrefWidth(512);

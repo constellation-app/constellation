@@ -31,9 +31,9 @@ import org.openide.util.Lookup;
  */
 public abstract class QualityControlRule {
 
-    private final static int CATEGORY_1_HIGHER = -1;
-    private final static int CATEGORY_2_HIGHER = 1;
-    private final static int CATEGORIES_EQUAL = 0;
+    private static final int CATEGORY_1_HIGHER = -1;
+    private static final int CATEGORY_2_HIGHER = 1;
+    private static final int CATEGORIES_EQUAL = 0;
 
     /**
      * Test the priority between the two categories and determine which priority

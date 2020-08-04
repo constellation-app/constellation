@@ -29,18 +29,18 @@ import java.util.List;
  */
 public class QualityControlEvent implements Comparable<QualityControlEvent> {
 
-    public static enum QualityCategory {
+    public enum QualityCategory {
         DEFAULT,
         INFO,
         WARNING,
         SEVERE,
         FATAL
     }
-    public final static int DEFAULT_VALUE = 1;
-    public final static int INFO_VALUE = 30;
-    public final static int WARNING_VALUE = 60;
-    public final static int SEVERE_VALUE = 90;
-    public final static int FATAL_VALUE = 95;
+    public static final int DEFAULT_VALUE = 1;
+    public static final int INFO_VALUE = 30;
+    public static final int WARNING_VALUE = 60;
+    public static final int SEVERE_VALUE = 90;
+    public static final int FATAL_VALUE = 95;
 
     private int quality = 0;
     private final int vertex;
