@@ -163,7 +163,7 @@ public class UncollideArrangement implements Arranger {
         final double twinDistance = collisionDistance*twinScaling; // The required distance for the nodes to be uncollided after maxExpansions number of expansions (each expansions scaled the graph by a factor of 1.1
 
         // If they are in the same spot we will nudge in a random direction
-        if (Arrays.stream(deltas).allMatch(x -> x==0)){ 
+        if (delta == 0) { 
             deltaX = ThreadLocalRandom.current().nextInt(-1, 2);
             deltaY = ThreadLocalRandom.current().nextInt(-1, 2);
             if (dimensions.equals(Dimensions.THREE)) {
