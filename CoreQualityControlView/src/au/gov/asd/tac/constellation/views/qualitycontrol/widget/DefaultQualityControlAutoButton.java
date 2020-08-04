@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.qualitycontrol.widget;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlEvent;
+import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlEvent.QualityCategory;
 import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlViewPane;
 import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlViewTopComponent;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetter;
@@ -81,9 +82,9 @@ public final class DefaultQualityControlAutoButton extends QualityControlAutoBut
         final String riskText;
         final String styleText;
         final String tooltipText;
-        if (event != null && event.getQuality() > 0) {
+        if (event != null && event.getCategory() != QualityCategory.DEFAULT) {
             riskText = String.format(QUALITY_CONTROL_WIDGET_TEXT, String.valueOf(event.getCategory().name()));
-            styleText = QualityControlViewPane.qualityStyle(event.getQuality(), 1);
+            styleText = QualityControlViewPane.qualityStyle(event.getCategory(), 1);
             tooltipText = event.getReasons();
         } else {
             riskText = String.format(QUALITY_CONTROL_WIDGET_TEXT, Bundle.MSG_NoRisk());

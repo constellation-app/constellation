@@ -36,11 +36,11 @@ public class QualityControlEvent implements Comparable<QualityControlEvent> {
         SEVERE,
         FATAL
     }
-    public final static int DEFAULT_VALUE = 0;
-    public final static int INFO_VALUE = 10;
-    public final static int WARNING_VALUE = 30;
-    public final static int SEVERE_VALUE = 60;
-    public final static int FATAL_VALUE = 90;
+    public final static int DEFAULT_VALUE = 1;
+    public final static int INFO_VALUE = 30;
+    public final static int WARNING_VALUE = 60;
+    public final static int SEVERE_VALUE = 90;
+    public final static int FATAL_VALUE = 95;
 
     private int quality = 0;
     private final int vertex;
@@ -195,6 +195,6 @@ public class QualityControlEvent implements Comparable<QualityControlEvent> {
 
     @Override
     public int compareTo(final QualityControlEvent o) {
-        return Integer.compare(quality, o.quality);
+        return QualityControlRule.testPriority(o.getCategory(), category);
     }
 }

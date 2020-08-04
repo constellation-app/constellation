@@ -223,7 +223,7 @@ public final class QualityControlViewPane extends BorderPane {
                         super.updateItem(item, empty);
                         if (item != null) {
                             setText(item.getIdentifier());
-                            setStyle(qualityStyle(item.getQuality()));
+                            setStyle(qualityStyle(item.getCategory()));
                         }
                     }
                 };
@@ -246,7 +246,7 @@ public final class QualityControlViewPane extends BorderPane {
                         super.updateItem(item, empty);
                         if (item != null) {
                             setText(item.getType());
-                            setStyle(qualityStyle(item.getQuality()));
+                            setStyle(qualityStyle(item.getCategory()));
                         }
                     }
                 };
@@ -270,7 +270,7 @@ public final class QualityControlViewPane extends BorderPane {
                         if (item != null) {
                             setText(item.getCategory() == QualityCategory.DEFAULT ? Bundle.MSG_NotApplicable() : String.valueOf(item.getCategory().name()));
                             setAlignment(Pos.CENTER);
-                            setStyle(qualityStyle(item.getQuality()));
+                            setStyle(qualityStyle(item.getCategory()));
                         }
                     }
                 };
@@ -293,7 +293,7 @@ public final class QualityControlViewPane extends BorderPane {
                         super.updateItem(item, empty);
                         if (item != null) {
                             setText(item.getReasons());
-                            setStyle(qualityStyle(item.getQuality()));
+                            setStyle(qualityStyle(item.getCategory()));
                         }
                     }
                 };
@@ -328,8 +328,8 @@ public final class QualityControlViewPane extends BorderPane {
      * @param quality the quality.
      * @return a javafx style based on the given quality value.
      */
-    public static String qualityStyle(final int quality) {
-        return qualityStyle(quality, 0.75f);
+    public static String qualityStyle(final QualityCategory category) {
+        return qualityStyle(category, 0.75f);
     }
 
     /**
@@ -339,18 +339,35 @@ public final class QualityControlViewPane extends BorderPane {
      * @param alpha the alpha value.
      * @return a javafx style based on the given quality and alpha values.
      */
-    public static String qualityStyle(final int quality, final float alpha) {
-        final int intensity = 255 - (255 * quality) / 100;
+    public static String qualityStyle(final QualityCategory category, final float alpha) {
+        final int intensity;
         final String style;
-
-        if (quality >= 60 && quality < 90) {
-            style = String.format("-fx-text-fill: rgb(255,255,255);-fx-background-color: rgba(%d,%d,255,%f);", intensity, intensity, alpha);
-        } else if (quality >= 95) {
-            style = String.format("-fx-text-fill: rgb(255,255,255);-fx-background-color: rgba(0,%d,%d,%f);", intensity, intensity, alpha);
-        } else if (quality >= 90) {
-            style = String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(255,%d,%d,%f);", intensity, intensity, alpha);
-        } else {
-            style = String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(%d,%d,255,%f);", intensity, intensity, alpha);
+        switch (category) {
+            case DEFAULT:
+                intensity = 255 - (255 * QualityControlEvent.DEFAULT_VALUE) / 100;
+                style = String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(%d,%d,255,%f);", intensity, intensity, alpha);
+                break;
+            case INFO:
+                intensity = 255 - (255 * QualityControlEvent.INFO_VALUE) / 100;
+                style = String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(%d,%d,255,%f);", intensity, intensity, alpha);
+                break;
+            case WARNING:
+                intensity = 255 - (255 * QualityControlEvent.WARNING_VALUE) / 100;
+                style = String.format("-fx-text-fill: rgb(255,255,255);-fx-background-color: rgba(%d,%d,255,%f);", intensity, intensity, alpha);
+                break;
+            case SEVERE:
+                intensity = 255 - (255 * QualityControlEvent.SEVERE_VALUE) / 100;
+                style = String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(255,%d,%d,%f);", intensity, intensity, alpha);
+                break;
+            case FATAL:
+                intensity = 255 - (255 * QualityControlEvent.FATAL_VALUE) / 100;
+                style = String.format("-fx-text-fill: rgb(255,255,255);-fx-background-color: rgba(0,%d,%d,%f);", intensity, intensity, alpha);
+                break;
+            default:
+                // Default case
+                intensity = 255 - (255 * QualityControlEvent.DEFAULT_VALUE) / 100;
+                style = String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(%d,%d,255,%f);", intensity, intensity, alpha);
+                break;
         }
 
         return style;
@@ -476,9 +493,9 @@ public final class QualityControlViewPane extends BorderPane {
         rulesScrollPane.setContent(buttonGrid);
 
         final Alert alert = new Alert(Alert.AlertType.INFORMATION,
-                "Priority defines severity levels for each rule",
+                "Select Rule Priorities",
                 ButtonType.OK, ButtonType.CANCEL);
-        alert.setTitle("Select Rule Priorities");
+        alert.setHeaderText("Priority defines category levels for each rule");
         alert.getDialogPane().setContent(rulesScrollPane);
         alert.setResizable(true);
 
