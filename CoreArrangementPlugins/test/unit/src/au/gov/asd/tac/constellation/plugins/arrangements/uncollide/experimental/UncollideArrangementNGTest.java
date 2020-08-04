@@ -45,6 +45,11 @@ public class UncollideArrangementNGTest {
         graphWithTwoTwins.setFloatValue(attrX, twoTwinsSubject, 0.0f);
         graphWithTwoTwins.setFloatValue(attrY, twoTwinsSubject, 0.0f);
         graphWithTwoTwins.setFloatValue(attrR, twoTwinsSubject, 1.0f);
+        // Same Location
+        int twoTwinsSameLocation = graphWithTwoTwins.addVertex();
+        graphWithTwoTwins.setFloatValue(attrX, twoTwinsSameLocation, 0.0f);
+        graphWithTwoTwins.setFloatValue(attrY, twoTwinsSameLocation, 0.0f);
+        graphWithTwoTwins.setFloatValue(attrR, twoTwinsSameLocation, 1.0f);
         // First twin
         int twin1 = graphWithTwoTwins.addVertex();
         graphWithTwoTwins.setFloatValue(attrX, twin1, 0.1f);
@@ -95,6 +100,12 @@ public class UncollideArrangementNGTest {
         graphWithTwoTwins.setFloatValue(attrY, twoTwinsSubject, 0.0f);
         graphWithTwoTwins.setFloatValue(attrZ, twoTwinsSubject, 0.0f);
         graphWithTwoTwins.setFloatValue(attrR, twoTwinsSubject, 1.0f);
+        // Same Location
+        int twoTwinsSameLocation = graphWithTwoTwins.addVertex();
+        graphWithTwoTwins.setFloatValue(attrX, twoTwinsSameLocation, 0.0f);
+        graphWithTwoTwins.setFloatValue(attrY, twoTwinsSameLocation, 0.0f);
+        graphWithTwoTwins.setFloatValue(attrZ, twoTwinsSameLocation, 0.0f);
+        graphWithTwoTwins.setFloatValue(attrR, twoTwinsSameLocation, 1.0f);
         // First twin
         int twin1 = graphWithTwoTwins.addVertex();
         graphWithTwoTwins.setFloatValue(attrX, twin1, 0.1f);
