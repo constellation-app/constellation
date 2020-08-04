@@ -24,9 +24,9 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 class BoxFactory {
     static AbstractBoundingBox create(GraphReadMethods wg, Dimensions d){
         switch (d) {
-            case Two:
+            case TWO:
                 return new BoundingBox2D(wg);
-            case Three:
+            case THREE:
                 return new BoundingBox3D(wg);
             default:
                 return null;

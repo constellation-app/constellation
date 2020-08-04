@@ -23,7 +23,7 @@ import java.util.List;
  * @author Nova
  */
 public enum Dimensions {
-    Two, Three;
+    TWO, THREE;
     
     public static List<String> getOptions() {
         ArrayList<String> list = new ArrayList<>();

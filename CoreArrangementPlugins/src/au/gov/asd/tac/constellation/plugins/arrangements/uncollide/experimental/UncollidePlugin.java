@@ -77,7 +77,7 @@ public class UncollidePlugin extends SimpleEditPlugin {
         dimensionsParam.setDescription("The dimention being 2D or 3D. The default is 2 for 2D.");
         List<String> options = new ArrayList<>();
         SingleChoiceParameterType.setOptions(dimensionsParam, Dimensions.getOptions());
-        SingleChoiceParameterType.setChoice(dimensionsParam, Dimensions.Two.toString());
+        SingleChoiceParameterType.setChoice(dimensionsParam, Dimensions.TWO.toString());
         parameters.addParameter(dimensionsParam);
 
         final PluginParameter<IntegerParameterValue> maxExpansionsParam = IntegerParameterType.build(MAX_EXPANSIONS_PARAMETR_ID);

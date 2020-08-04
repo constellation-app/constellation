@@ -110,7 +110,7 @@ public class UncollideArrangement implements Arranger {
             if (twins.isEmpty()) {
                 numberNoTwins++;
             } else {
-                if (dimensions.equals(Dimensions.Two)){
+                if (dimensions.equals(Dimensions.TWO)){
                     nudgeTwins2D(wg, subject, twins.get(0), twinScaling); 
                 }
                 else {

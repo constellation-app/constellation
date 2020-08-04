@@ -47,7 +47,7 @@ class OctTree extends AbstractTree{
      * @param graph  The graph the QuadTree should be based on
      */
     OctTree(final GraphReadMethods graph) {
-        super(graph, Dimensions.Three);
+        super(graph, Dimensions.THREE);
         ZID = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
         insertAll();
     }

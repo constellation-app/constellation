@@ -26,9 +26,9 @@ class TreeFactory {
 
     static AbstractTree create(GraphReadMethods wg, Dimensions d){
         switch (d) {
-            case Two:
+            case TWO:
                 return new QuadTree(wg);
-            case Three:
+            case THREE:
                 return new OctTree(wg);
             default:
                 return null;

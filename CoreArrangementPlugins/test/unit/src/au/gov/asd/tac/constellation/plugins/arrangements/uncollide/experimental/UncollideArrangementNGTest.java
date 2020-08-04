@@ -68,7 +68,7 @@ public class UncollideArrangementNGTest {
         
         QuadTree qt = new QuadTree(graphWithTwoTwins);
         assertEquals(qt.hasCollision(), true); //Assert that before the uncollide arrangement is run the graph has a collision. 
-        final UncollideArrangement arranger = new UncollideArrangement(Dimensions.Two, 20);
+        final UncollideArrangement arranger = new UncollideArrangement(Dimensions.TWO, 20);
         arranger.arrange(graphWithTwoTwins);
         qt = new QuadTree(graphWithTwoTwins);
         assertEquals(qt.hasCollision(), false); //Assert that after the uncollide arrangement has run there is no longer a collision. 
@@ -116,7 +116,7 @@ public class UncollideArrangementNGTest {
         
         OctTree ot = new OctTree(graphWithTwoTwins);
         assertEquals(ot.hasCollision(), true); //Assert that before the uncollide arrangement is run the graph has a collision. 
-        final UncollideArrangement arranger = new UncollideArrangement(Dimensions.Three, 20);
+        final UncollideArrangement arranger = new UncollideArrangement(Dimensions.THREE, 20);
         arranger.arrange(graphWithTwoTwins);
         ot = new OctTree(graphWithTwoTwins);
         assertEquals(ot.hasCollision(), false); //Assert that after the uncollide arrangement has run there is no longer a collision. 
