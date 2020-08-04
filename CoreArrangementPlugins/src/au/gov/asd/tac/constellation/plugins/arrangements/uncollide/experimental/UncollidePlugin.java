@@ -80,7 +80,7 @@ public class UncollidePlugin extends SimpleEditPlugin {
         final PluginParameter<IntegerParameterValue> maxExpansionsParam = IntegerParameterType.build(MAX_EXPANSIONS_PARAMETR_ID);
         maxExpansionsParam.setName("Maximum Expansions");
         maxExpansionsParam.setDescription("The maximum number of expansions to allow. A higher number will better retain graph structure butmay lead to a very space out graph, whilst a low number will result in a more compacted graph at a potential cost to graph sturcture.");
-        maxExpansionsParam.setIntegerValue(1);
+        maxExpansionsParam.setIntegerValue(20);
         parameters.addParameter(maxExpansionsParam);
         return parameters;
     }
