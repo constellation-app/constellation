@@ -35,8 +35,10 @@ public class QuadTreeNGTest {
     private static int twin2;
     private static QuadTree noCollisionsQT;
     private static int noCollisionSubject;
-    private static int distantVertex1;
-    private static int distantVertex2;
+    private static int distantTR;
+    private static int distantTL;
+    private static int distantBR;
+    private static int distantBL;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -82,15 +84,25 @@ public class QuadTreeNGTest {
         graphWithNoCollisions.setFloatValue(attrY, noCollisionSubject, 0.0f);
         graphWithNoCollisions.setFloatValue(attrR, noCollisionSubject, 1.0f);
         // distant vertex
-        distantVertex1 = graphWithNoCollisions.addVertex();
-        graphWithNoCollisions.setFloatValue(attrX, distantVertex1, 1000f);
-        graphWithNoCollisions.setFloatValue(attrY, distantVertex1, 1000f);
-        graphWithNoCollisions.setFloatValue(attrR, distantVertex1, 1.0f);
+        distantTR = graphWithNoCollisions.addVertex();
+        graphWithNoCollisions.setFloatValue(attrX, distantTR, 1000f);
+        graphWithNoCollisions.setFloatValue(attrY, distantTR, 1000f);
+        graphWithNoCollisions.setFloatValue(attrR, distantTR, 1.0f);
         // second distant vertex
-        distantVertex2 = graphWithNoCollisions.addVertex();
-        graphWithNoCollisions.setFloatValue(attrX, distantVertex2, -1000f);
-        graphWithNoCollisions.setFloatValue(attrY, distantVertex2, -1000f);
-        graphWithNoCollisions.setFloatValue(attrR, distantVertex2, 1.0f);
+        distantBL = graphWithNoCollisions.addVertex();
+        graphWithNoCollisions.setFloatValue(attrX, distantBL, -1000f);
+        graphWithNoCollisions.setFloatValue(attrY, distantBL, -1000f);
+        graphWithNoCollisions.setFloatValue(attrR, distantBL, 1.0f);
+        // second distant vertex
+        distantTL = graphWithNoCollisions.addVertex();
+        graphWithNoCollisions.setFloatValue(attrX, distantTL, -1000f);
+        graphWithNoCollisions.setFloatValue(attrY, distantTL, 1000f);
+        graphWithNoCollisions.setFloatValue(attrR, distantTL, 1.0f);
+        // second distant vertex
+        distantBR = graphWithNoCollisions.addVertex();
+        graphWithNoCollisions.setFloatValue(attrX, distantBR, 1000f);
+        graphWithNoCollisions.setFloatValue(attrY, distantBR, -1000f);
+        graphWithNoCollisions.setFloatValue(attrR, distantBR, 1.0f);
         
         noCollisionsQT = new QuadTree(graphWithNoCollisions);
     }
@@ -151,8 +163,10 @@ public class QuadTreeNGTest {
     @Test
     public void testGetIndex() {
         assertEquals(twoTwinsQT.getIndex(twoTwinsSubject), -1);
-        assertEquals(noCollisionsQT.getIndex(distantVertex1), QuadTree.TOP_R);
-        assertEquals(noCollisionsQT.getIndex(distantVertex2), QuadTree.BOT_L);
+        assertEquals(noCollisionsQT.getIndex(distantTR), QuadTree.TOP_R);
+        assertEquals(noCollisionsQT.getIndex(distantTL), QuadTree.TOP_L);
+        assertEquals(noCollisionsQT.getIndex(distantBR), QuadTree.BOT_R);
+        assertEquals(noCollisionsQT.getIndex(distantBL), QuadTree.BOT_L);
     }
 
     /**
