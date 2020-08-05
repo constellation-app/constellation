@@ -45,7 +45,7 @@ class AbstractBoundingBox {
      * @param wg  the graph
      * @return  instance of class BoundingBox2D based on input graph
      */
-    protected AbstractBoundingBox(final GraphReadMethods wg) {
+    AbstractBoundingBox(final GraphReadMethods wg) {
         final int xId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
         final int yId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
 
@@ -88,7 +88,7 @@ class AbstractBoundingBox {
         this.midY = minYObserved + (maxYObserved - minYObserved)*(float)0.5;
     }
     
-    protected AbstractBoundingBox(float minX, float maxX, float minY, float maxY) {
+    AbstractBoundingBox(float minX, float maxX, float minY, float maxY) {
         this.minX = minX;
         this.minY = minY;
         this.maxX = maxX;

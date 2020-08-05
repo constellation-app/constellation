@@ -41,7 +41,7 @@ class BoundingBox3D extends AbstractBoundingBox{
      * @param wg  the graph
      * @return  instance of class BoundingBox2D based on input graph
      */
-    protected BoundingBox3D(final GraphReadMethods wg) {
+    BoundingBox3D(final GraphReadMethods wg) {
         super(wg);
         
         final int zId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
@@ -85,7 +85,7 @@ class BoundingBox3D extends AbstractBoundingBox{
      * 
      * @return  BoundingBox3D
      */
-    protected BoundingBox3D topLeftFrontOctant() {
+    BoundingBox3D topLeftFrontOctant() {
         return new BoundingBox3D(minX, midX, midY, maxY, midZ, maxZ);
     }
     
@@ -94,7 +94,7 @@ class BoundingBox3D extends AbstractBoundingBox{
      * 
      * @return  BoundingBox3D
      */
-    protected BoundingBox3D topRightFrontOctant() {
+    BoundingBox3D topRightFrontOctant() {
         return new BoundingBox3D(midX, maxX, midY, maxY, midZ, maxZ);
     }
     
@@ -103,7 +103,7 @@ class BoundingBox3D extends AbstractBoundingBox{
      * 
      * @return  BoundingBox3D
      */
-    protected BoundingBox3D bottomLeftFrontOctant() {
+    BoundingBox3D bottomLeftFrontOctant() {
         return new BoundingBox3D(minX, midX, minY, midY, midZ, maxZ);
     }
     
@@ -112,7 +112,7 @@ class BoundingBox3D extends AbstractBoundingBox{
      * 
      * @return  BoundingBox3D
      */
-    protected BoundingBox3D bottomRightFrontOctant() {
+    BoundingBox3D bottomRightFrontOctant() {
         return new BoundingBox3D(midX, maxX, minY, midY, midZ, maxZ);
     }  
 
@@ -121,7 +121,7 @@ class BoundingBox3D extends AbstractBoundingBox{
      * 
      * @return  BoundingBox3D
      */
-    protected BoundingBox3D topLeftBackOctant() {
+    BoundingBox3D topLeftBackOctant() {
         return new BoundingBox3D(minX, midX, midY, maxY, minZ, midZ);
     }
     
@@ -130,7 +130,7 @@ class BoundingBox3D extends AbstractBoundingBox{
      * 
      * @return  BoundingBox3D
      */
-    protected BoundingBox3D topRightBackOctant() {
+    BoundingBox3D topRightBackOctant() {
         return new BoundingBox3D(midX, maxX, midY, maxY, minZ, midZ);
     }
     
@@ -139,7 +139,7 @@ class BoundingBox3D extends AbstractBoundingBox{
      * 
      * @return  BoundingBox3D
      */
-    protected BoundingBox3D bottomLeftBackOctant() {
+    BoundingBox3D bottomLeftBackOctant() {
         return new BoundingBox3D(minX, midX, minY, midY, minZ, midZ);
     }
     
@@ -148,7 +148,7 @@ class BoundingBox3D extends AbstractBoundingBox{
      * 
      * @return  BoundingBox3D
      */
-    protected BoundingBox3D bottomRightBackOctant() {
+    BoundingBox3D bottomRightBackOctant() {
         return new BoundingBox3D(midX, maxX, minY, midY, minZ, midZ);
     }  
 }

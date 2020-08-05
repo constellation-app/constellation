@@ -35,7 +35,7 @@ class BoundingBox2D extends AbstractBoundingBox{
      * @param wg  the graph
      * @return  instance of class BoundingBox2D based on input graph
      */
-    protected BoundingBox2D(final GraphReadMethods wg) {
+    BoundingBox2D(final GraphReadMethods wg) {
         super(wg);
     }
 
@@ -48,7 +48,7 @@ class BoundingBox2D extends AbstractBoundingBox{
      * 
      * @return  BoundingBox2D
      */
-    protected BoundingBox2D topLeftQuadrant() {
+    BoundingBox2D topLeftQuadrant() {
         return new BoundingBox2D(minX, midX, midY, maxY);
     }
     
@@ -57,7 +57,7 @@ class BoundingBox2D extends AbstractBoundingBox{
      * 
      * @return  BoundingBox2D
      */
-    protected BoundingBox2D topRightQuadrant() {
+    BoundingBox2D topRightQuadrant() {
         return new BoundingBox2D(midX, maxX, midY, maxY);
     }
     
@@ -66,7 +66,7 @@ class BoundingBox2D extends AbstractBoundingBox{
      * 
      * @return  BoundingBox2D
      */
-    protected BoundingBox2D bottomLeftQuadrant() {
+    BoundingBox2D bottomLeftQuadrant() {
         return new BoundingBox2D(minX, midX, minY, midY);
     }
     
@@ -75,7 +75,7 @@ class BoundingBox2D extends AbstractBoundingBox{
      * 
      * @return  BoundingBox2D
      */
-    protected BoundingBox2D bottomRightQuadrant() {
+    BoundingBox2D bottomRightQuadrant() {
         return new BoundingBox2D(midX, maxX, minY, midY);
     }  
 }

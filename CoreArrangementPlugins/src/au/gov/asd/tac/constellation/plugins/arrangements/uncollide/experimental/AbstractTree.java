@@ -47,7 +47,7 @@ abstract class AbstractTree {
      * 
      * @param graph  The graph the QuadTree should be based on
      */
-    protected AbstractTree(final GraphReadMethods graph, final Dimensions d) {
+    AbstractTree(final GraphReadMethods graph, final Dimensions d) {
         this.level = 0;
         this.objects = new ArrayList<>();
         this.nodes = null;
@@ -65,7 +65,7 @@ abstract class AbstractTree {
      * @param parent
      * @param box 
      */
-    protected AbstractTree(AbstractTree parent, final AbstractBoundingBox box) {
+    AbstractTree(AbstractTree parent, final AbstractBoundingBox box) {
         this.level = parent.level + 1;
         this.box = box;
         objects = new ArrayList<>();
@@ -82,7 +82,7 @@ abstract class AbstractTree {
      * <p>
      * Divide the node into 2^X equal parts and initialise the 2^X subnodes with the new bounds.
      */
-    protected abstract void split();
+    abstract void split();
     
     /*
      * Determine which node the object belongs to.
@@ -91,11 +91,11 @@ abstract class AbstractTree {
      * <p>
      * Determine where an object belongs in the quadtree by determining which node the object can fit into.
      */
-    protected abstract int getIndex(final int vxId);
+    abstract int getIndex(final int vxId);
 
-    protected abstract double getDelta(final int vertex1, final int vertex2);
+    abstract double getDelta(final int vertex1, final int vertex2);
     
-    protected abstract double getCollisionDistance(final int vertex1, final int vertex2);
+    abstract double getCollisionDistance(final int vertex1, final int vertex2);
     
     /*
      * Insert the object into the tree. If the node exceeds the capacity, it will split and add
@@ -136,7 +136,7 @@ abstract class AbstractTree {
     /**
      * Insert all verticies in the graph into the tree.
      */
-    protected final void insertAll() {
+    final void insertAll() {
         for (int position = 0; position < wg.getVertexCount(); position++) {
             insert(wg.getVertex(position));
         }
@@ -145,7 +145,7 @@ abstract class AbstractTree {
     /*
      * Return all objects that could collide with the given object.
      */
-    protected final List<Integer> getPossibleColliders(final List<Integer> colliders, final int vxId) {
+    final List<Integer> getPossibleColliders(final List<Integer> colliders, final int vxId) {
         // Recursively find all child colliders...
         final int index = getIndex(vxId);
         if (index != -1 && nodes != null) {
@@ -182,7 +182,7 @@ abstract class AbstractTree {
      * of each neighbor.
      * @return the number of collisions.
      */
-    protected final boolean nodeCollides(final int subject) {
+    final boolean nodeCollides(final int subject) {
         final List<Integer> possibles = new ArrayList<>();
         getPossibleColliders(possibles, subject);
 
