@@ -68,7 +68,7 @@ public class TextPluginInteraction implements PluginInteraction {
     }
 
     @Override
-    public boolean prompt(String promptName, PluginParameters parameters) {
+    public boolean prompt(String promptName, PluginParameters parameters, boolean okButtonFocused) {
         throw new UnsupportedOperationException(NOT_SUPPORTED); //To change body of generated methods, choose Tools | Templates.
     }
 

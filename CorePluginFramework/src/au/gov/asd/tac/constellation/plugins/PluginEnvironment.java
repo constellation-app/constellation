@@ -50,6 +50,8 @@ public abstract class PluginEnvironment {
      * plugin.
      * @param interactive should the framework involve the user when running
      * this plugin or run the plugin programmatically.
+     * @param okButtonFocused if the user should be involved, should the ok
+     * button in the dialog be focused
      * @param async The plugin will not begin to execute until all of these
      * Futures have completed. If this Future is null, the plugin will execute
      * without waiting.
@@ -58,7 +60,7 @@ public abstract class PluginEnvironment {
      *
      * @return A Future representing the result of the asynchronous plugin.
      */
-    public abstract Future<?> executePluginLater(final Graph graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive, final List<Future<?>> async, final PluginSynchronizer synchronizer);
+    public abstract Future<?> executePluginLater(final Graph graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive, final boolean okButtonFocused, final List<Future<?>> async, final PluginSynchronizer synchronizer);
 
     /**
      * Execute a plugin synchronously on the current thread.
@@ -69,13 +71,15 @@ public abstract class PluginEnvironment {
      * plugin.
      * @param interactive should the framework involve the user when running
      * this plugin or run the plugin programmatically.
+     * @param okButtonFocused if the user should be involved, should the ok
+     * button in the dialog be focused
      * @return an object representing the result of this plugin run.
      * @throws InterruptedException if the plugin run is canceled or
      * interrupted.
      * @throws PluginException if a well understood problem occurs during the
      * running of the plugin.
      */
-    public abstract Object executePluginNow(final Graph graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive) throws InterruptedException, PluginException;
+    public abstract Object executePluginNow(final Graph graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive, final boolean okButtonFocused) throws InterruptedException, PluginException;
 
     /**
      * Execute a plugin synchronously on the current thread using the supplied

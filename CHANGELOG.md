@@ -1,5 +1,8 @@
 # Constellation Changes
 
+## 2020-08-01 Changes in August 2020
+* Updated a number of functions in Core Plugin Framework to include the option to unfocus the Ok button from the plugin swing dialog.
+
 ## 2020-07-01 Changes in July 2020
 * Added `AnalyticSchemaV4UpdateProvider` to upgrade `SchemaVertexType`s that have changed.
 * Added utility class `NotifyDisplayer` and static method `NotifyDisplayer#display` for use when displaying a `NotifyDescriptor` message box.

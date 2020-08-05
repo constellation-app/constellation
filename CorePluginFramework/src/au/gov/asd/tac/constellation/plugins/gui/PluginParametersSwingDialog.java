@@ -141,6 +141,13 @@ public class PluginParametersSwingDialog {
         final Object r = DialogDisplayer.getDefault().notify(dd);
         result = r == DialogDescriptor.OK_OPTION ? OK : r == DialogDescriptor.CANCEL_OPTION ? CANCEL : null;
     }
+    
+    public void showAndWaitNoFocus() {
+        //Having 'No' button as initial value means focus is off of 'Ok' and 'Cancel' buttons
+        final DialogDescriptor dd = new DialogDescriptor(xp, title, true, DialogDescriptor.OK_CANCEL_OPTION, DialogDescriptor.NO_OPTION, null);
+        final Object r = DialogDisplayer.getDefault().notify(dd);
+        result = r == DialogDescriptor.OK_OPTION ? OK : r == DialogDescriptor.CANCEL_OPTION ? CANCEL : null;
+    }
 
     /**
      * The option that was selected by the user.

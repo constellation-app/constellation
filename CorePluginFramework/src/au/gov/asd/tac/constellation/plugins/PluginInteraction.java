@@ -87,8 +87,9 @@ public interface PluginInteraction {
      *
      * @param promptName the name of the dialog box.
      * @param parameters the parameters to be displayed and edited.
+     * @param okButtonFocused whether the ok button should be focused
      * @return true if the user selected "Ok" or false if the user selected
      * "Cancel".
      */
-    boolean prompt(final String promptName, final PluginParameters parameters);
+    boolean prompt(final String promptName, final PluginParameters parameters, final boolean okButtonFocused);
 }

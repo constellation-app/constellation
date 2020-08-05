@@ -58,7 +58,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
     private static final String GRAPH_NULL_WARNING_MESSAGE = "{0} plugin was executed on a graph which was null";
 
     @Override
-    public Future<?> executePluginLater(final Graph graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive, final List<Future<?>> async, final PluginSynchronizer synchronizer) {
+    public Future<?> executePluginLater(final Graph graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive, final boolean okButtonFocused, final List<Future<?>> async, final PluginSynchronizer synchronizer) {
 
         if (graph == null) {
             LOGGER.log(Level.FINE, GRAPH_NULL_WARNING_MESSAGE, plugin.getName());
@@ -109,7 +109,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
                     plugin.updateParameters(graph, parameters);
                 }
                 if (interactive && parameters != null) {
-                    if (interaction.prompt(plugin.getName(), parameters)) {
+                    if (interaction.prompt(plugin.getName(), parameters, okButtonFocused)) {
                         ThreadConstraints calledConstraints = ThreadConstraints.getConstraints();
                         calledConstraints.setAlwaysSilent(alwaysSilent);
                         try {
@@ -174,7 +174,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
     }
 
     @Override
-    public Object executePluginNow(final Graph graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive) throws InterruptedException, PluginException {
+    public Object executePluginNow(final Graph graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive, final boolean okButtonFocused) throws InterruptedException, PluginException {
 
         if (graph == null) {
             LOGGER.log(Level.FINE, GRAPH_NULL_WARNING_MESSAGE, plugin.getName());
@@ -212,7 +212,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
                 plugin.updateParameters(graph, parameters);
             }
             if (interactive && parameters != null) {
-                if (interaction.prompt(plugin.getName(), parameters)) {
+                if (interaction.prompt(plugin.getName(), parameters, okButtonFocused)) {
                     plugin.run(graphs, interaction, parameters);
                 }
             } else {

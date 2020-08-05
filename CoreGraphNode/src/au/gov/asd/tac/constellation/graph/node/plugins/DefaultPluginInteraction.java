@@ -236,7 +236,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
     }
 
     @Override
-    public boolean prompt(final String promptName, final PluginParameters parameters) {
+    public boolean prompt(final String promptName, final PluginParameters parameters, final boolean okButtonFocused) {
         if (SwingUtilities.isEventDispatchThread()) {
             throw new IllegalStateException("Plugins should not be run on the EDT!");
         }
@@ -244,7 +244,11 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
         boolean result = false;
 
         final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(promptName, parameters);
-        dialog.showAndWait();
+        if (okButtonFocused) {
+            dialog.showAndWait();
+        } else {
+            dialog.showAndWaitNoFocus();
+        }
         if (PluginParametersDialog.OK.equals(dialog.getResult())) {
             result = true;
         }

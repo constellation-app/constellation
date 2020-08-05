@@ -381,6 +381,7 @@ public class PluginExecutor {
     private static class PluginEntry {
 
         private final boolean interactive;
+        private final boolean okButtonFocused;
         private final Plugin plugin;
         private final PluginParameters parameters;
 
@@ -390,6 +391,18 @@ public class PluginExecutor {
 
         public PluginEntry(final Plugin plugin, final boolean interactive) {
             this.interactive = interactive;
+            this.okButtonFocused = true;
+            this.plugin = plugin;
+            this.parameters = DefaultPluginParameters.getDefaultParameters(plugin);
+        }
+        
+        public PluginEntry(final String pluginId, final boolean interactive, final boolean okButtonFocused) {
+            this(PluginRegistry.get(pluginId), interactive, okButtonFocused);
+        }
+
+        public PluginEntry(final Plugin plugin, final boolean interactive, final boolean okButtonFocused) {
+            this.interactive = interactive;
+            this.okButtonFocused = okButtonFocused;
             this.plugin = plugin;
             this.parameters = DefaultPluginParameters.getDefaultParameters(plugin);
         }
@@ -403,7 +416,7 @@ public class PluginExecutor {
         }
 
         public Object executeNow(final Graph graph) throws InterruptedException, PluginException {
-            return PluginEnvironment.getDefault().executePluginNow(graph, plugin, parameters, interactive);
+            return PluginEnvironment.getDefault().executePluginNow(graph, plugin, parameters, interactive, okButtonFocused);
         }
 
         public Object executeNow(final GraphWriteMethods graph) throws InterruptedException, PluginException {
@@ -412,7 +425,7 @@ public class PluginExecutor {
 
         public Future<?> executeLater(final Graph graph, final Future<?> future) {
             final List<Future<?>> futures = future == null ? null : Arrays.asList(future);
-            return PluginEnvironment.getDefault().executePluginLater(graph, plugin, parameters, interactive, futures, null);
+            return PluginEnvironment.getDefault().executePluginLater(graph, plugin, parameters, interactive, okButtonFocused, futures, null);
         }
     }
 }

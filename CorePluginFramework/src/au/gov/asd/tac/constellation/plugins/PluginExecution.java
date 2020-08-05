@@ -51,6 +51,7 @@ public class PluginExecution {
     private final Plugin plugin;
 
     private boolean interactive = false;
+    private boolean okButtonFocused = true;
     private PluginParameters parameters = null;
     private List<Future<?>> futures = null;
     private PluginSynchronizer synchronizer = null;
@@ -138,6 +139,20 @@ public class PluginExecution {
      */
     public PluginExecution interactively(final boolean interactive) {
         this.interactive = interactive;
+        return this;
+    }
+    
+    /**
+     * Sets whether the Ok button in the Swing dialog is focused or not.
+     * NOTE: This plugin is only relevant when {@link PluginExecution.interactive}
+     * is set to true.
+     * 
+     * @param okButtonFocused whether the Swing dialog Ok button is focused
+     * 
+     * @return this to allow chaining of configuration calls.
+     */
+    public PluginExecution withOkButtonFocused(final boolean okButtonFocused) {
+        this.okButtonFocused = okButtonFocused;
         return this;
     }
 
@@ -286,7 +301,7 @@ public class PluginExecution {
         if (parameters == null) {
             parameters = DefaultPluginParameters.getDefaultParameters(plugin);
         }
-        return environment.executePluginLater(graph, plugin, parameters, interactive, futures, synchronizer);
+        return environment.executePluginLater(graph, plugin, parameters, interactive, okButtonFocused, futures, synchronizer);
     }
 
     /**
@@ -307,7 +322,7 @@ public class PluginExecution {
         if (parameters == null) {
             parameters = DefaultPluginParameters.getDefaultParameters(plugin);
         }
-        return environment.executePluginNow(graph, plugin, parameters, interactive);
+        return environment.executePluginNow(graph, plugin, parameters, interactive, okButtonFocused);
     }
 
     /**
