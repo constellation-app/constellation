@@ -28,7 +28,7 @@ import java.util.List;
  * 
  * @author Nova
  */
-public abstract class AbstractTree {
+abstract class AbstractTree {
     protected static final int MAX_OBJECTS = 50;
     protected static final int MAX_LEVELS = 4;
     
@@ -47,7 +47,7 @@ public abstract class AbstractTree {
      * 
      * @param graph  The graph the QuadTree should be based on
      */
-    AbstractTree(final GraphReadMethods graph, final Dimensions d) {
+    protected AbstractTree(final GraphReadMethods graph, final Dimensions d) {
         this.level = 0;
         this.objects = new ArrayList<>();
         this.nodes = null;
@@ -65,7 +65,7 @@ public abstract class AbstractTree {
      * @param parent
      * @param box 
      */
-    AbstractTree(AbstractTree parent, final AbstractBoundingBox box) {
+    protected AbstractTree(AbstractTree parent, final AbstractBoundingBox box) {
         this.level = parent.level + 1;
         this.box = box;
         objects = new ArrayList<>();
