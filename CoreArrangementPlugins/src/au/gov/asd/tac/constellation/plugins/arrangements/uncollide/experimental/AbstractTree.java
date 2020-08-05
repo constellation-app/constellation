@@ -103,7 +103,7 @@ abstract class AbstractTree {
      */
     private void insert(final int vxId) {
         if (nodes != null) { // if their are subnodes
-            int index = getIndex(vxId); // find the correct subnode
+            final int index = getIndex(vxId); // find the correct subnode
 
             if (index != -1) { // if it fits neatly in a subnode
                 nodes[index].insert(vxId); // insert into that subnode
@@ -123,7 +123,7 @@ abstract class AbstractTree {
 
             int i = 0;
             while (i < objects.size()) { // For each object get the index and insert it into the subnode if it fits in one. If it fits in a subnode remove it from this list of objects.
-                int index = getIndex(objects.get(i));
+                final int index = getIndex(objects.get(i));
                 if (index != -1) {
                     nodes[index].insert(objects.remove(i));
                 } else {
@@ -218,7 +218,7 @@ abstract class AbstractTree {
     public List<Integer> getTwins(final int subject, final double twinThreshold) {
         final List<Integer> possibles = new ArrayList<>();
         getPossibleColliders(possibles, subject);
-        List<Integer> twins = new ArrayList<>();
+        final List<Integer> twins = new ArrayList<>();
         for (final int possible : possibles) {
             if (subject != possible) {
                 final double delta = getDelta(subject, possible);

@@ -58,7 +58,7 @@ class QuadTree extends AbstractTree{
      */
     @Override
     protected void split() {
-        BoundingBox2D box2D = (BoundingBox2D) this.box;
+        final BoundingBox2D box2D = (BoundingBox2D) this.box;
         nodes = new QuadTree[4];
         nodes[TOP_R] = new QuadTree(this, box2D.topRightQuadrant());
         nodes[TOP_L] = new QuadTree(this, box2D.topLeftQuadrant());

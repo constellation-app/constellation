@@ -26,7 +26,7 @@ enum Dimensions {
     TWO, THREE;
     
     public static List<String> getOptions() {
-        ArrayList<String> list = new ArrayList<>();
+        final ArrayList<String> list = new ArrayList<>();
         for (Dimensions d : Dimensions.values()) {
             list.add(d.toString());
         } 

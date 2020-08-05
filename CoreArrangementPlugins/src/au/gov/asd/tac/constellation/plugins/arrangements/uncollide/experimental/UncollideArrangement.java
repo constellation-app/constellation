@@ -134,8 +134,8 @@ public class UncollideArrangement implements Arranger {
         float deltaY = wg.getFloatValue(yId, subject) - wg.getFloatValue(yId, twin);
         float deltaZ = 0;
         
-        double collisionDistance;
-        double delta;
+        final double collisionDistance;
+        final double delta;
         switch (dimensions) {
             case TWO:
                 delta = math.sqrt(deltaX * deltaX + deltaY * deltaY);
