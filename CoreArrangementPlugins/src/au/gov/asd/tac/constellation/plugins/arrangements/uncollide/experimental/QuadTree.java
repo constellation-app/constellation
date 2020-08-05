@@ -35,7 +35,7 @@ class QuadTree extends AbstractTree{
      * 
      * @param graph  The graph the QuadTree should be based on
      */
-    QuadTree(final GraphReadMethods graph) {
+    protected QuadTree(final GraphReadMethods graph) {
         super(graph, Dimensions.TWO);
         this.box = new BoundingBox2D(graph);
         insertAll();
