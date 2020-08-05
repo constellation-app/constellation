@@ -25,10 +25,10 @@ import org.python.modules.math;
  * @author Nova
  */
 class QuadTree extends AbstractTree{
-    protected static final int TOP_R = 0;
-    protected static final int TOP_L = 1;
-    protected static final int BOT_L = 2;
-    protected static final int BOT_R = 3;
+    static final int TOP_R = 0;
+    static final int TOP_L = 1;
+    static final int BOT_L = 2;
+    static final int BOT_R = 3;
     
     /**
      * Constructor creates QuadTree and inserts all nodes

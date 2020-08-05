@@ -29,18 +29,18 @@ import java.util.List;
  * @author Nova
  */
 abstract class AbstractTree {
-    protected static final int MAX_OBJECTS = 50;
-    protected static final int MAX_LEVELS = 4;
+    static final int MAX_OBJECTS = 50;
+    static final int MAX_LEVELS = 4;
     
-    protected final int xId; 
-    protected final int yId;
-    protected final int rId;
-    protected final GraphReadMethods wg;
+    final int xId; 
+    final int yId;
+    final int rId;
+    final GraphReadMethods wg;
 
-    protected final int level;
-    protected AbstractBoundingBox box;
-    protected List<Integer> objects;
-    protected AbstractTree[] nodes;
+    final int level;
+    AbstractBoundingBox box;
+    List<Integer> objects;
+    AbstractTree[] nodes;
     
     /**
      * Constructor creates QuadTree and inserts all nodes
