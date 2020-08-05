@@ -43,7 +43,7 @@ class OctTree extends AbstractTree{
      * 
      * @param graph  The graph the QuadTree should be based on
      */
-    OctTree(final GraphReadMethods graph) {
+    protected OctTree(final GraphReadMethods graph) {
         super(graph, Dimensions.THREE);
         zId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
         insertAll();
@@ -55,7 +55,7 @@ class OctTree extends AbstractTree{
      * @param parent
      * @param box 
      */
-    OctTree(OctTree parent, final BoundingBox3D box) {
+    protected OctTree(OctTree parent, final BoundingBox3D box) {
         super(parent, box);
         // Inherit parent values for graph based variables.
         zId = parent.zId;
