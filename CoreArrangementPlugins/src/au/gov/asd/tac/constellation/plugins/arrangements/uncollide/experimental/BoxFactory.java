@@ -27,7 +27,7 @@ class BoxFactory {
         throw new IllegalStateException("Utility class");
     }
       
-    static AbstractBoundingBox create(GraphReadMethods wg, Dimensions d){
+    protected static AbstractBoundingBox create(GraphReadMethods wg, Dimensions d){
         switch (d) {
             case TWO:
                 return new BoundingBox2D(wg);
