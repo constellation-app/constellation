@@ -168,8 +168,33 @@ public abstract class QualityControlRule {
      */
     public abstract int getQuality(final int vertexId);
 
+    /**
+     * Overridden toString() used for serializing objects
+     *
+     * @return the String representation of this object
+     */
+    @Override
+    public String toString() {
+        return getName();
+    }
+
+    /**
+     * Get the QualityCategory which maps to the current score
+     *
+     * @param vertexId the vertex to fetch the quality for
+     * @return QualityCategory for the vertex
+     */
     public QualityCategory getCategory(final int vertexId) {
-        final int qualityScore = getQuality(vertexId);
+        return getCategoryByScore(getQuality(vertexId));
+    }
+
+    /**
+     * Get the QualityCategory which maps to the int qualityScore
+     *
+     * @param qualityScore the int value of the rule
+     * @return QualityCategory relating to the qualityScore given.
+     */
+    public static QualityCategory getCategoryByScore(final int qualityScore) {
         if (qualityScore >= QualityControlEvent.FATAL_VALUE) {
             return QualityCategory.FATAL;
         } else if (qualityScore >= QualityControlEvent.SEVERE_VALUE) {
@@ -181,7 +206,6 @@ public abstract class QualityControlRule {
         } else {
             return QualityCategory.DEFAULT;
         }
-
     }
 
     /**

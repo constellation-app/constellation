@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.views.qualitycontrol.rules.QualityControlRul
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * QualityControlEvent for estimating the quality of the data encompassed by a
@@ -105,6 +106,50 @@ public class QualityControlEvent implements Comparable<QualityControlEvent> {
                 }
             }
         }
+    }
+
+    /**
+     * Grabs the QualityCategory represented by the string value
+     *
+     * @param category the String representation of the category
+     * @return QualityCategory enum result
+     */
+    public static QualityCategory getCategoryFromString(final String category) {
+        if (StringUtils.isNotEmpty(category)) {
+            switch (category.toLowerCase()) {
+                case "default":
+                    return QualityCategory.DEFAULT;
+                case "info":
+                    return QualityCategory.INFO;
+                case "warning":
+                    return QualityCategory.WARNING;
+                case "severe":
+                    return QualityCategory.SEVERE;
+                case "fatal":
+                    return QualityCategory.FATAL;
+                default:
+                    // default to default case when not readable.
+                    return QualityCategory.DEFAULT;
+            }
+        }
+        return QualityCategory.DEFAULT;
+    }
+
+    /**
+     * Grabs the rule loaded by lookup, if one exists with the same name.
+     *
+     * @param ruleName the name of the rule to return
+     * @return the rule object which has the same name. Null if it doesn't exist
+     */
+    public static QualityControlRule getRuleByString(final String ruleName) {
+        if (StringUtils.isNotEmpty(ruleName)) {
+            for (final QualityControlRule rule : QualityControlViewPane.getLookup().lookupAll(QualityControlRule.class)) {
+                if (ruleName.equals(rule.getName())) {
+                    return rule;
+                }
+            }
+        }
+        return null;
     }
 
     /**

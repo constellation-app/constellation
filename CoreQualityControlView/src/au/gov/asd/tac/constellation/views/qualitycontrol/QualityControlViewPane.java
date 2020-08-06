@@ -26,17 +26,24 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import au.gov.asd.tac.constellation.utilities.json.JsonUtilities;
 import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlEvent.QualityCategory;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetter;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlState;
 import au.gov.asd.tac.constellation.views.qualitycontrol.rules.QualityControlRule;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.databind.MappingJsonFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
@@ -64,8 +71,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 import javafx.util.Pair;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.NbPreferences;
 
 /**
  * The parent pane holding all the components of the Quality Control View.
@@ -79,8 +88,12 @@ import org.openide.util.NbBundle.Messages;
 })
 public final class QualityControlViewPane extends BorderPane {
 
-    private static final Map<QualityControlRule, QualityCategory> rulePriorities = new HashMap<>();
+    private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+    private static Map<QualityControlRule, QualityCategory> rulePriorities = null;
     private static final List<ToggleGroup> toggleGroups = new ArrayList<>();
+    private static final JsonFactory FACTORY = new MappingJsonFactory();
+    public static Lookup lookup = null;
+
     private final TableColumn<QualityControlEvent, QualityControlEvent> identifierColumn;
     private final TableColumn<QualityControlEvent, QualityControlEvent> typeColumn;
     private final TableColumn<QualityControlEvent, QualityControlEvent> qualityColumn;
@@ -88,13 +101,8 @@ public final class QualityControlViewPane extends BorderPane {
     private final TableView<QualityControlEvent> qualityTable;
     private final FlowPane optionsPane;
 
-    static {
-        for (final QualityControlRule rule : Lookup.getDefault().lookupAll(QualityControlRule.class)) {
-            rulePriorities.put(rule, rule.getCategory(0));
-        }
-    }
-
     public QualityControlViewPane() {
+        readSerializedRulePriorities();
 
         qualityTable = new TableView<>();
         identifierColumn = new TableColumn<>("Identifier");
@@ -369,10 +377,6 @@ public final class QualityControlViewPane extends BorderPane {
         return style;
     }
 
-    public static Map<QualityControlRule, QualityCategory> getPriorities() {
-        return rulePriorities;
-    }
-
     /**
      * Shows a dialog to allow the user to select priorities of each rule.
      */
@@ -415,7 +419,7 @@ public final class QualityControlViewPane extends BorderPane {
         rowCount++;
 
         // Setting rule names and buttons
-        for (final QualityControlRule rule : Lookup.getDefault().lookupAll(QualityControlRule.class)) {
+        for (final QualityControlRule rule : getLookup().lookupAll(QualityControlRule.class)) {
             final ToggleGroup ruleGroup = new ToggleGroup();
             final Label ruleName = new Label(rule.getName());
             final RadioButton defaultButton = new RadioButton();
@@ -424,9 +428,9 @@ public final class QualityControlViewPane extends BorderPane {
             final RadioButton severeButton = new RadioButton();
             final RadioButton fatalButton = new RadioButton();
 
-            rulePriorities.putIfAbsent(rule, rule.getCategory(0));
+            getPriorities().putIfAbsent(rule, rule.getCategory(0));
             // setting the selection based on the current priority
-            switch (rulePriorities.get(rule)) {
+            switch (getPriorities().get(rule)) {
                 case DEFAULT:
                     defaultButton.setSelected(true);
                     break;
@@ -497,10 +501,11 @@ public final class QualityControlViewPane extends BorderPane {
 
         if (alert.showAndWait().get() == ButtonType.OK) {
             for (final ToggleGroup tg : toggleGroups) {
-                rulePriorities.put((QualityControlRule) tg.getUserData(),
+                getPriorities().put((QualityControlRule) tg.getUserData(),
                         (QualityCategory) tg.getSelectedToggle().getUserData());
             }
             QualityControlAutoVetter.getInstance().updateQualityEvents();
+            writeSerializedRulePriorities();
         }
     }
 
@@ -519,7 +524,7 @@ public final class QualityControlViewPane extends BorderPane {
             for (final QualityControlRule rule : qcevent.getItem().getRules()) {
                 // Hack the name and explanation together to obviate the need for another data structure.
                 final String ruleName = rule.getName() + "§" + rule.getDescription();
-                final QualityCategory quality = rule.getResults().contains(vxId) ? rulePriorities.get(rule) : null;
+                final QualityCategory quality = rule.getResults().contains(vxId) ? getPriorities().get(rule) : null;
                 if (quality != null) {
                     rules.add(new Pair<>(quality, ruleName));
                 }
@@ -593,6 +598,60 @@ public final class QualityControlViewPane extends BorderPane {
         label.setWrapText(true);
 
         return label;
+    }
+
+    /**
+     * Writes the rulePriorities to the preferences object.
+     */
+    private static void writeSerializedRulePriorities() {
+        final String mapAsString = JsonUtilities.getMapAsString(FACTORY, getPriorities());
+        if (!mapAsString.isEmpty()) {
+            PREFERENCES.put(ApplicationPreferenceKeys.RULE_PRIORITIES, mapAsString);
+            try {
+                PREFERENCES.flush();
+            } catch (BackingStoreException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+    }
+
+    /**
+     * Reads the preferences object to load the rulePriorities.
+     */
+    private static void readSerializedRulePriorities() {
+        getPriorities().clear();
+        final Map<String, String> priorityStringMap = JsonUtilities.getStringAsMap(FACTORY, PREFERENCES.get(ApplicationPreferenceKeys.RULE_PRIORITIES, ""));
+        for (Entry<String, String> entry : priorityStringMap.entrySet()) {
+            getPriorities().put(QualityControlEvent.getRuleByString(entry.getKey()), QualityControlEvent.getCategoryFromString(entry.getValue()));
+        }
+    }
+
+    /**
+     * Lazily instantiates the rulePriorities Map and loads it via the lookup
+     *
+     * @return a Map<QualityControlRule, QualityCategory> of rules mapped to
+     * categories
+     */
+    public static Map<QualityControlRule, QualityCategory> getPriorities() {
+        if (rulePriorities == null) {
+            rulePriorities = new HashMap<>();
+            for (final QualityControlRule rule : getLookup().lookupAll(QualityControlRule.class)) {
+                rulePriorities.put(rule, rule.getCategory(0));
+            }
+        }
+        return rulePriorities;
+    }
+
+    /**
+     * Lazily instantiates the lookup object
+     *
+     * @return the cached lookup object
+     */
+    public static Lookup getLookup() {
+        if (lookup == null) {
+            lookup = Lookup.getDefault();
+        }
+        return lookup;
     }
 
     /**
