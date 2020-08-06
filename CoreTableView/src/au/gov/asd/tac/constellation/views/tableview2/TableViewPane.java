@@ -193,7 +193,10 @@ public final class TableViewPane extends BorderPane {
         this.table = new TableView<>();
         table.itemsProperty().addListener((v, o, n) -> table.refresh());
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        table.setPadding(new Insets(5));      
+        table.setPadding(new Insets(5));
+        
+        this.sortedRowList = new SortedList<>(FXCollections.observableArrayList());
+        sortedRowList.comparatorProperty().bind(table.comparatorProperty());
         paginate(sortedRowList);
 
         // TODO: experiment with caching
@@ -1127,10 +1130,11 @@ public final class TableViewPane extends BorderPane {
 
                 Platform.runLater(() -> {
                     selectedProperty.removeListener(tableSelectionListener);
+                    sortedRowList.comparatorProperty().removeListener(tableComparatorListener);
+                    sortedRowList.comparatorProperty().unbind();
 
                     // add table data to table
                     sortedRowList = new SortedList<>(FXCollections.observableArrayList(rows));
-                    sortedRowList.comparatorProperty().bind(table.comparatorProperty());
                     paginate(sortedRowList);
 
                     // add user defined filter to the table
@@ -1149,6 +1153,8 @@ public final class TableViewPane extends BorderPane {
                     });
                     updateDataLatch.countDown();
 
+                    sortedRowList.comparatorProperty().bind(table.comparatorProperty());
+                    sortedRowList.comparatorProperty().removeListener(tableComparatorListener);
                     selectedProperty.addListener(tableSelectionListener);
                 });
 
