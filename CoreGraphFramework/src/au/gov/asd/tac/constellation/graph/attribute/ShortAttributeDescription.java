@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
 import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
+import au.gov.asd.tac.constellation.graph.value.types.shortType.ShortValue;
 import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
@@ -41,7 +42,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author cygnus_x-1
  */
 @ServiceProvider(service = AttributeDescription.class)
-public class ShortAttributeDescription extends AbstractAttributeDescription {
+public class ShortAttributeDescription extends AbstractAttributeDescription<ShortValue> {
 
     public static final String ATTRIBUTE_NAME = "short";
     public static final Class<Short> NATIVE_CLASS = short.class;
@@ -267,5 +268,15 @@ public class ShortAttributeDescription extends AbstractAttributeDescription {
     public void restoreData(final Object savedData) {
         final short[] sd = (short[]) savedData;
         data = Arrays.copyOf(sd, sd.length);
+    }
+    
+    @Override
+    public ShortValue createValue() {
+        return new ShortValue();
+    }
+    
+    @Override
+    public void read(int index, ShortValue value) {
+        value.writeShort(data[index]);
     }
 }

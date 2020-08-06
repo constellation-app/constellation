@@ -100,6 +100,22 @@
                 <package>au.gov.asd.tac.constellation.graph.schema.type</package>
                 <package>au.gov.asd.tac.constellation.graph.schema.visual</package>
                 <package>au.gov.asd.tac.constellation.graph.utilities</package>
+                <package>au.gov.asd.tac.constellation.graph.value</package>
+                <package>au.gov.asd.tac.constellation.graph.value.converter</package>
+                <package>au.gov.asd.tac.constellation.graph.value.converters</package>
+                <package>au.gov.asd.tac.constellation.graph.value.expression</package>
+                <package>au.gov.asd.tac.constellation.graph.value.readables</package>
+                <package>au.gov.asd.tac.constellation.graph.value.types</package>
+                <package>au.gov.asd.tac.constellation.graph.value.types.booleanType</package>
+                <package>au.gov.asd.tac.constellation.graph.value.types.byteType</package>
+                <package>au.gov.asd.tac.constellation.graph.value.types.charType</package>
+                <package>au.gov.asd.tac.constellation.graph.value.types.doubleType</package>
+                <package>au.gov.asd.tac.constellation.graph.value.types.floatType</package>
+                <package>au.gov.asd.tac.constellation.graph.value.types.integerType</package>
+                <package>au.gov.asd.tac.constellation.graph.value.types.longType</package>
+                <package>au.gov.asd.tac.constellation.graph.value.types.objectType</package>
+                <package>au.gov.asd.tac.constellation.graph.value.types.shortType</package>
+                <package>au.gov.asd.tac.constellation.graph.value.types.stringType</package>
                 <package>au.gov.asd.tac.constellation.graph.versioning</package>
             </public-packages>
         </data>

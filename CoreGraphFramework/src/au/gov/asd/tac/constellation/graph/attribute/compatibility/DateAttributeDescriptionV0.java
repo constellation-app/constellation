@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.graph.attribute.AbstractAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
+import au.gov.asd.tac.constellation.graph.value.types.longType.LongValue;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -51,7 +52,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @Deprecated
 @ServiceProvider(service = AttributeDescription.class)
-public final class DateAttributeDescriptionV0 extends AbstractAttributeDescription {
+public final class DateAttributeDescriptionV0 extends AbstractAttributeDescription<LongValue> {
 
     private static final Logger LOGGER = Logger.getLogger(DateAttributeDescriptionV0.class.getName());
     /**
@@ -332,4 +333,13 @@ public final class DateAttributeDescriptionV0 extends AbstractAttributeDescripti
         return parseDate(value) == NULL_VALUE ? "Not a valid date (Expected yyyy-mm-dd)" : null;
     }
 
+    @Override
+    public LongValue createValue() {
+        return new LongValue();
+    }
+    
+    @Override
+    public void read(int index, LongValue value) {
+        value.writeLong(data[index]);
+    }
 }

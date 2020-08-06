@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
 import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
+import au.gov.asd.tac.constellation.graph.value.types.booleanType.BooleanValue;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
@@ -43,7 +44,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author cygnus_x-1
  */
 @ServiceProvider(service = AttributeDescription.class)
-public final class BooleanAttributeDescription extends AbstractAttributeDescription {
+public final class BooleanAttributeDescription extends AbstractAttributeDescription<BooleanValue> {
 
     private final SecureRandom random = new SecureRandom();
     private final int trueHash = random.nextInt();
@@ -397,5 +398,15 @@ public final class BooleanAttributeDescription extends AbstractAttributeDescript
                 return position2id[position++];
             }
         }
+    }
+    
+    @Override
+    public BooleanValue createValue() {
+        return new BooleanValue();
+    }
+    
+    @Override
+    public void read(int index, BooleanValue value) {
+        value.writeBoolean(data[index]);
     }
 }

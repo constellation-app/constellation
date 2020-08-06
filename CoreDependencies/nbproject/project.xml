@@ -203,6 +203,8 @@
                 <package>com.sun.istack</package>
                 <package>com.sun.istack.localization</package>
                 <package>com.sun.istack.logging</package>
+                <package>com.sun.java.help.impl</package>
+                <package>com.sun.java.help.search</package>
                 <package>com.sun.mail.auth</package>
                 <package>com.sun.mail.handlers</package>
                 <package>com.sun.mail.iap</package>
@@ -481,6 +483,14 @@
                 <package>javax.faces.view</package>
                 <package>javax.faces.view.facelets</package>
                 <package>javax.faces.webapp</package>
+                <package>javax.help</package>
+                <package>javax.help.event</package>
+                <package>javax.help.plaf</package>
+                <package>javax.help.plaf.basic</package>
+                <package>javax.help.plaf.gtk</package>
+                <package>javax.help.resources</package>
+                <package>javax.help.search</package>
+                <package>javax.help.tagext</package>
                 <package>javax.inject</package>
                 <package>javax.interceptor</package>
                 <package>javax.jms</package>
@@ -2449,6 +2459,10 @@
             <class-path-extension>
                 <runtime-relative-path>ext/javafx-web-11.0.2.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/javafx-web-11.0.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/javahelp-2.0.05.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/javahelp-2.0.05.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/javax.activation-api-1.2.0.jar</runtime-relative-path>
