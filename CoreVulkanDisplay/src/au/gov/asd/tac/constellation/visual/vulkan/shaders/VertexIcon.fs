@@ -17,9 +17,9 @@ layout(std140, binding = 5) uniform UniformBlock {
 
 
 // === PER FRAGMENT DATA IN ===
-layout(location = 0) flat in vec4 hitBufferValue;
-layout(location = 1) flat in mat4 iconColor;
-layout(location = 5) noperspective centroid in vec3 textureCoords;
+layout(location = 0) flat in mat4 iconColor;
+layout(location = 4) noperspective centroid in vec3 textureCoords;
+layout(location = 5) flat in vec4 hitBufferValue;
 
 
 // === PER FRAGMENT DATA OUT ===

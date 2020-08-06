@@ -119,4 +119,31 @@ public final class VisualChange implements Comparable<VisualChange> {
     public int compareTo(VisualChange o) {
         return o == null ? -1 : id == o.id ? 0 : Integer.compare(order, o.order);
     }
+    
+    /**
+     * Returns either an int[2] of min/max, or null if this change is empty.  
+     * Element 0 returned is the lowest vertex index in changeList.
+     * Element 1 returned is the highest vertex index in changeList.
+     * 
+     * If changeList has a size of 1 both element 0 and 1 will have that value.
+     * 
+     * @return either an int[2] of min/max, or null if this change is empty
+     */
+    public int[] getRange() {
+        if (changeListSize > 0) {
+            int minMax[] = new int[2];
+            minMax[0] = minMax[1] = changeList[0];
+            for (int i = 1; i < changeListSize; ++i) {
+                final int index = changeList[i];
+                if (index < minMax[0]) {
+                    minMax[0] = index;
+                } else if (index > minMax[1]) {
+                    minMax[1] = index;
+                }
+            }
+            return minMax;
+        } else {
+            return null;
+        }        
+    }
 }

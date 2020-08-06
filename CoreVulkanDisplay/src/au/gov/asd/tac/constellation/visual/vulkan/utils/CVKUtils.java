@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.visual.vulkan.utils;
 
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
-import java.beans.Beans;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -171,6 +170,23 @@ public class CVKUtils {
         for (StackTraceElement el : stackTrace) {
             CVKLOGGER.log(level, el.toString());
         }
+    }
+    public static String GetMethodName(final int depth) {
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        if (stackTrace.length > depth) {
+            return String.format("%s (%s:%d)",
+                    stackTrace[depth].getMethodName(),
+                    stackTrace[depth].getFileName(),
+                    stackTrace[depth].getLineNumber());
+        } else {
+            return "UNABLE TO GET METHOD NAME";
+        }      
+    }
+    public static String GetCurrentMethodName() {
+        return GetMethodName(3);   
+    }    
+    public static String GetParentMethodName() {
+        return GetMethodName(4);   
     }
 
     public static boolean LayerPresent(VkLayerProperties.Buffer layers, String layer) {

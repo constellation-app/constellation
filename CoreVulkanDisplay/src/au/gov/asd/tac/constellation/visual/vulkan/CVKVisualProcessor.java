@@ -55,74 +55,42 @@ import org.lwjgl.vulkan.awt.VKData;
 
 public class CVKVisualProcessor extends VisualProcessor {
 
-    public static final Cursor DEFAULT_CURSOR = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
-    public static final Cursor CROSSHAIR_CURSOR = Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR);
+    protected static final Cursor DEFAULT_CURSOR = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
+    protected static final Cursor CROSSHAIR_CURSOR = Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR);  
     
-    protected static final float FIELD_OF_VIEW = 35;
+    private static final float FIELD_OF_VIEW = 35;
     private static final float PERSPECTIVE_NEAR = 1;
     private static final float PERSPECTIVE_FAR = 500000;
     
-    protected final BlockingQueue<CVKRenderable.CVKRenderableUpdateTask> taskQueue = new LinkedBlockingQueue<>();
-    
-    protected final CVKRenderer cvkRenderer;
-    protected final Frustum viewFrustum = new Frustum();
-    private final Matrix44f projectionMatrix = new Matrix44f();
-        
-
-
-    protected CVKCanvas cvkCanvas;
-    
-    // Renderables (would it be better to not hold these explicitly and just use the renderer to enumerate them?)
+    private final BlockingQueue<CVKRenderable.CVKRenderableUpdateTask> taskQueue = new LinkedBlockingQueue<>();
+    private final CVKCanvas cvkCanvas;
+    private final CVKRenderer cvkRenderer;
+    private final Frustum viewFrustum = new Frustum();
+    private final Matrix44f projectionMatrix = new Matrix44f();       
     private CVKIconTextureAtlas cvkIconTextureAtlas = null;
     private CVKAxesRenderable cvkAxes = null;
     private CVKFPSRenderable cvkFPS = null;
     private CVKIconsRenderable cvkIcons = null;
-    
-    
-    // The primary GLRenderable that performs the bulk of the visualisation. This renderable contains most of the actual logic to send data to the GL Context.
-    //private GraphRenderable graphRenderable;
-    private final Matrix44f modelViewMatrix = new Matrix44f();
-    
-
+    private final Matrix44f modelViewMatrix = new Matrix44f();  
     private Camera camera;
-    private boolean updating = false;
+    private float pixelDensity = 0.0f;    
     
     
     public Matrix44f GetProjectionMatrix() { return projectionMatrix; }
     public CVKIconTextureAtlas GetTextureAtlas() { return cvkIconTextureAtlas; }
+    public float GetPixelDensity() { return pixelDensity; }
+    public int GetFrameNumber() { return cvkCanvas != null ? cvkCanvas.GetFrameNumber() : -1; }
+    
     
     void addTask(final CVKRenderableUpdateTask task) {
         taskQueue.add(task);
     }
     
-
     @Override
     protected final void destroyCanvas() {     
         cvkCanvas.Destroy();
     }
     
-
-    /**
-     * Tell this processor that it should draw the "Hit Test" visualisation as
-     * well as the regular visualisation as part of each frame of the GL
-     * life-cycle.
-     * <p>
-     * The hit-test visualisation is a hidden visualisation that gets drawn to
-     * an off-screen openGL buffer. It fills the background with solid black and
-     * then draws each element using a color whose red value corresponds to that
-     * element's ID.
-     * <p>
-     * This method is intended to be called by subclass processors that utilise
-     * this hit-test visualisation for some form of graph interaction. See the
-     * <code>HitTester</code> class in the Interactive Graph package for a
-     * canonical example.
-     *
-     * @param drawHitTest
-     */
-    protected final void setDrawHitTest(final boolean drawHitTest) {
-        //graphRenderable.setDrawHitTest(drawHitTest);
-    }
-
     @Override
     public VisualOperation exportToImage(final File imageFile) {
         return new GLExportToImageOperation(imageFile);
@@ -193,8 +161,7 @@ public class CVKVisualProcessor extends VisualProcessor {
     protected Matrix44f getCameraModelViewProjectionMatrix(final Camera camera) {
         final Matrix44f mvMatrix = Graphics3DUtilities.getModelViewMatrix(camera);
         final Matrix44f mvpMatrix = new Matrix44f();
-        // TODO_TT
-//        mvpMatrix.multiply(renderer.getProjectionMatrix(), mvMatrix);
+        mvpMatrix.multiply(projectionMatrix, mvMatrix);
         return mvpMatrix;
     }
 
@@ -210,10 +177,6 @@ public class CVKVisualProcessor extends VisualProcessor {
 
     @Override
     public final void performVisualUpdate() {
-        updating = true;
-        //TODO_TT: graphics is not used so null is 'ok' but it probably should be pulled from the cvkCanvas maybe,
-        // though why then pass that back in...
-        
         // performVisualUpdate maybe called before the JPanel is added to its
         // parent.  We can't get a renderable surface until the parent chain is
         // intact.
@@ -224,7 +187,6 @@ public class CVKVisualProcessor extends VisualProcessor {
 
     @Override
     protected void initialise() {
-
     }
 
     @Override
@@ -338,28 +300,7 @@ public class CVKVisualProcessor extends VisualProcessor {
         super.rebuild();
     }
 
-    /**
-     * Signal that the update phase of this processor has been completed (by the
-     * {@link GLRenderer}).
-     */
-//    final void signalUpdateComplete() {
-//        updating = false;
-//    }
-
-    /**
-     * Query whether or not this processor is currently in its update phase.
-     * <p>
-     * This method allows the {@link GLRenderer} to determine whether it has
- entered the display phase of its GL life-cycle in response to an update
- coordinated by this processor, or as a result of something internal, such
- as a resizing of the GL cvkCanvas.
-     *
-     * @return Whether or not this processor is currently in its updating phase.
-     */
-//    final boolean isUpdating() {
-//        return updating;
-//    }
-
+    
     /**
      * Add the specified {@link GLRenderable} to this processor's renderer. If
      * this processor has already been initialised, the renderable is not added.
@@ -372,28 +313,7 @@ public class CVKVisualProcessor extends VisualProcessor {
     protected final void addRenderable(final CVKRenderable renderable) {
         cvkRenderer.AddRenderable(renderable);
     }
-
-    /**
-     * Set the name of the buffer to draw the hit test to.
-     * <p>
-     * Note this shouldn't really go through the visual processor (nor be a
-     * public method!). In the future hit tester implementations should probably
-     * be their own renderables and they talk to the graph renderable directly
-     * as needed.
-     *
-     * @param hitTestBufferName The GL name of the hit test buffer.
-     */
-    public void setHitTestFboName(final int hitTestBufferName) {
-        //TODO_TT
-//        graphRenderable.setHitTestFboName(hitTestBufferName);
-    }
     
-    /**
-     * Notifies us that our canvas's parent component has been added to its parent.
-     * <p>
-
-     */
-
 
     public CVKVisualProcessor() throws Throwable {           
         // VkInstance is setup in the constructor
@@ -426,14 +346,11 @@ public class CVKVisualProcessor extends VisualProcessor {
         return (cvkCanvas != null) ? !cvkCanvas.getBounds().isEmpty() : false;
     }
     
-    public int DisplayUpdate(CVKSwapChain cvkSwapChain, int imageIndex) {
+    public int ProcessRenderTasks(CVKSwapChain cvkSwapChain) {
         int ret = VK_SUCCESS;
         final List<CVKRenderableUpdateTask> tasks = new ArrayList<>();
-//        if (taskQueue.isEmpty()) {
-//            skipRedraw = true;
-//        }
         taskQueue.drainTo(tasks);
-        tasks.forEach(task -> { task.run(imageIndex); });      
+        tasks.forEach(task -> { task.run(); });      
         return ret;
     }
     
@@ -561,10 +478,8 @@ public class CVKVisualProcessor extends VisualProcessor {
                     // Recreate all the icons.  Note this is sometimes called before the CVKDevice
                     // has been initialised (we don't create our renderables until then).
                     if (cvkIcons != null) {
-                        addTask(cvkIcons.TaskDestroyIcons());
-                        if (access.getVertexCount() > 0) {
-                            addTask(cvkIcons.TaskCreateIcons(access));
-                        }
+                        addTask(cvkIcons.TaskRebuildIcons(access));
+                        addTask(cvkIcons.TaskRebuildVertexFlags(access));
                     }
 //                    addTask(nodeLabelBatcher.setTopLabelColors(access));
 //                    addTask(nodeLabelBatcher.setTopLabelSizes(access));
@@ -610,6 +525,9 @@ public class CVKVisualProcessor extends VisualProcessor {
                 };
             case HIGHLIGHT_COLOUR:
                 return (change, access) -> {
+                    if (cvkIcons != null) {
+                        addTask(cvkIcons.TaskSetHighLightColour(access));
+                    }                    
 //                    addTask(nodeLabelBatcher.setHighlightColor(access));
 //                    addTask(connectionLabelBatcher.setHighlightColor(access));
 //                    addTask(lineBatcher.setHighlightColor(access));
@@ -643,13 +561,15 @@ public class CVKVisualProcessor extends VisualProcessor {
                 };
             case CAMERA:
                 return (change, access) -> {
-                    final Camera updatedCamera = access.getCamera();
-                    camera = updatedCamera;
+                    camera = access.getCamera();
                     setDisplayCamera(camera);
                     Graphics3DUtilities.getModelViewMatrix(camera.lookAtEye, camera.lookAtCentre, camera.lookAtUp, getDisplayModelViewMatrix());
                     
-                    if (cvkAxes != null){
+                    if (cvkAxes != null) {
                         addTask(cvkAxes.TaskUpdateCamera());
+                    }
+                    if (cvkIcons != null) {
+                        addTask(cvkIcons.TaskUpdateCamera());
                     }
                 };
             case CONNECTION_LABEL_COLOR:
@@ -691,42 +611,28 @@ public class CVKVisualProcessor extends VisualProcessor {
                 };
             case VERTEX_COLOR:
                 return (change, access) -> {
-//                    addTaskIfReady(iconBatcher.updateColors(access, change), iconBatcher);
+                    if (cvkIcons != null) {
+                        addTask(cvkIcons.TaskUpdateColours(change, access));
+                    }                    
                 };
             case VERTEX_FOREGROUND_ICON:
                 return (change, access) -> {
-//                    if (cvkIcons != null) {
-
-//                        if (access.getVertexCount() > 0) {
-//                            addTask(cvkIcons.TaskUpdateIcons(access));
-//                        }
-//                    }
+                    if (cvkIcons != null) {
+                        addTask(cvkIcons.TaskUpdateIcons(change, access));
+                    }
                 };
-                
-                
-//                return (change, access) -> {
-//                    addTaskIfReady(iconBatcher.updateIcons(access, change), iconBatcher);
-//                    addTask(gl -> {
-//                        iconTextureArray = iconBatcher.updateIconTexture(gl);
-//                    });
-//                };
+
             case VERTEX_SELECTED:
                 return (change, access) -> {
-//                    if (vertexFlagsTexturiser.isReady()) {
-//                        addTask(vertexFlagsTexturiser.updateFlags(access, change));
-//                    } else {
-//                        addTask(vertexFlagsTexturiser.dispose());
-//                        addTask(vertexFlagsTexturiser.createTexture(access));
-//                    }
+                    if (cvkIcons != null) {
+                        addTask(cvkIcons.TaskUpdateVertexFlags(change, access));
+                    }
                 };
             case VERTEX_X:
                 return (change, access) -> {
-//                    if (vertexFlagsTexturiser.isReady()) {
-//                        addTask(xyzTexturiser.updateXyzs(access, change));
-//                    } else {
-//                        addTask(xyzTexturiser.dispose());
-//                        addTask(xyzTexturiser.createTexture(access));
-//                    }
+                    if (cvkIcons != null) {
+                        addTask(cvkIcons.TaskUpdateIcons(change, access));
+                    }
                 };
             case EXTERNAL_CHANGE:
             default:
@@ -741,8 +647,7 @@ public class CVKVisualProcessor extends VisualProcessor {
         
         // Scene knows about all renderable types so build the static descriptor layout
         // for each class.
-        CVKAssert(cvkDevice != null && cvkDevice.GetDevice() != null);
-              
+        CVKAssert(cvkDevice != null && cvkDevice.GetDevice() != null);              
         
         // Static as the shader and descriptor layout doesn't change per instance of renderable or over the course of the program
         ret = CVKAxesRenderable.StaticInitialise(cvkDevice);
@@ -967,13 +872,7 @@ public class CVKVisualProcessor extends VisualProcessor {
             cvkIconTextureAtlas.AddIcon("Internet.Lastfm");
             cvkIconTextureAtlas.AddIcon("Flag.Latvia");
             cvkIconTextureAtlas.AddIcon("User Interface.Key");
-        }
-        
-        
-        // The renderables above will have requested the icons they need for their initial state, we
-        // now need to generate the atlas texture and sampler before the renderables that rely on them
-        // create their descriptors
-//        ret = cvkIconTextureAtlas.Init();
+        }       
         
         return ret;
     }    
@@ -996,6 +895,7 @@ public class CVKVisualProcessor extends VisualProcessor {
         
         // Create the projection matrix, and load it on the projection matrix stack.
         viewFrustum.setPerspective(FIELD_OF_VIEW, (float) dpiScaledWidth / (float) dpiScaledHeight, PERSPECTIVE_NEAR, PERSPECTIVE_FAR);        
-        projectionMatrix.set(viewFrustum.getProjectionMatrix());
+        projectionMatrix.set(viewFrustum.getProjectionMatrix());       
+        pixelDensity = (float) (dpiScaledHeight * 0.5 / Math.tan(Math.toRadians(FIELD_OF_VIEW)));
     }    
 }

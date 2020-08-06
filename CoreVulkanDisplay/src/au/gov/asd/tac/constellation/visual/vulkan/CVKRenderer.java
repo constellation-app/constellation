@@ -52,8 +52,6 @@ import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VerifyIn
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.debugging;
 import java.nio.LongBuffer;
 import java.util.Collections;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 import static org.lwjgl.vulkan.KHRSwapchain.VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 
 
@@ -99,7 +97,7 @@ public class CVKRenderer implements ComponentListener {
     CVKDescriptorPoolRequirements cvkDescriptorPoolRequirements = null;
     CVKDescriptorPoolRequirements cvkPerImageDescriptorPoolRequirements = null;
        
-    private final List<CVKRenderable> renderables = new ArrayList<>();
+    private List<CVKRenderable> renderables = new ArrayList<>();
     private final List<CVKRenderable> newRenderables = Collections.synchronizedList(new ArrayList<>());
     
     private float clrChange = 0.01f;
@@ -122,9 +120,12 @@ public class CVKRenderer implements ComponentListener {
      * being destroyed.
      */
     public void Destroy() {
-        // Wait for the device to be free before destroying its resources
-        cvkDevice.WaitIdle();
-        renderables.forEach(el -> {el.Destroy();});
+        if (renderables != null) {
+            // Wait for the device to be free before destroying its resources
+            cvkDevice.WaitIdle();
+            renderables.forEach(el -> {el.Destroy();});
+            renderables = null;
+        }
     }
     
     
@@ -182,18 +183,7 @@ public class CVKRenderer implements ComponentListener {
     public CVKDevice GetDevice() {
         return cvkDevice;
     }
-    
-    /**
-     * Render tasks can be created in response to use input or other events.  They 
-     * are then actioned in the render thread to ensure that only the render thread
-     * modifies rendering resources (so we don't try modifying vertex buffers or 
-     * other data currently being accessed by the display driver).
-     */
-    @FunctionalInterface
-    public static interface CVKRendererUpdateTask {
-        public void Run();
-    }
-    private BlockingQueue<CVKRendererUpdateTask> pendingUpdates = new LinkedBlockingQueue<>();
+
 
     /**
      * This is called by the canvas once it has been created and has a valid surface handle.
@@ -246,7 +236,7 @@ public class CVKRenderer implements ComponentListener {
             cvkSwapChain = newSwapChain;
                 
             // Update the parent (CVKVisualProcessor) so it can update the shared viewport and frustum
-            // These will intern be consumed by the renderables on their next DisplayUpdate
+            // These will in turn be consumed by the renderables on their next ProcessRenderTasks
             parent.SwapChainRecreated(cvkDevice, cvkSwapChain);                                                                                    
 
             swapChainNeedsRecreation = false;                                       
@@ -311,9 +301,7 @@ public class CVKRenderer implements ComponentListener {
     @SuppressWarnings("deprecation")
     @Override
     public void finalize() throws Throwable {
-        // TODO: figure out a refcount or some mechanism to cleanup VkInstance after all graphs are closed
-//        cvkInstance.Deinitialise();
-//        cvkInstance = null;
+        Destroy();
         super.finalize();
     }
        
@@ -551,13 +539,8 @@ public class CVKRenderer implements ComponentListener {
             // (re)created then the renderable involved needs to set a flag so the next time
             // NeedsDisplayUpdate is called it returns true and is given a chance to update 
             // while no GPU actions are pending.
-            if (!pendingUpdates.isEmpty()) {
-                final List<CVKRendererUpdateTask> tasks = new ArrayList<>();
-                pendingUpdates.drainTo(tasks);
-                tasks.forEach(task -> {
-                    task.Run();
-                });                        
-            }        
+            ret = parent.ProcessRenderTasks(cvkSwapChain);
+            checkVKret(ret);               
             
             // If any renderable holds a resource shared across frames then to
             // recreate it we need to a complete halt, that is we need all in
@@ -603,11 +586,7 @@ public class CVKRenderer implements ComponentListener {
                     // buffers.  For that we need a fence, this is a synchronisation structure that is 
                     // device writable and host readable.
                     ret = cvkSwapChain.WaitOnFence(imageIndex);
-                    checkVKret(ret); 
-                              
-                    // Update everything that needs updating - drawables 
-                    ret = parent.DisplayUpdate(cvkSwapChain, imageIndex);
-                    checkVKret(ret);          
+                    checkVKret(ret);                                   
                     
                     // Record each renderables commands into secondary buffers and add them to the
                     // primary command buffer.

@@ -17,10 +17,12 @@ package au.gov.asd.tac.constellation.visual.vulkan.resourcetypes;
 
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKLOGGER;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.checkVKret;
 import java.nio.ByteBuffer;
 import java.nio.LongBuffer;
+import java.util.List;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryStack.stackPush;
@@ -153,6 +155,41 @@ public class CVKBuffer {
         vkUnmapMemory(cvkDevice.GetDevice(), GetMemoryBufferHandle());
         MemoryUtil.memFree(pWriteMemory);
         pWriteMemory = null;
+    }
+    
+    public static class DEBUG_CVKBufferElementDescriptor {
+        public final String label;
+        public final Class<?> type;
+        public DEBUG_CVKBufferElementDescriptor(String inLabel, Class<?> inType) {
+            label = inLabel;
+            type = inType;
+        }
+    }
+    public void DEBUGPRINT(List<DEBUG_CVKBufferElementDescriptor> typeDescriptors) {
+        ByteBuffer pData = StartWrite(0, (int)bufferSize);
+        
+        CVKLOGGER.info("\n");
+        CVKLOGGER.info(String.format("Contents of %s:", DEBUGNAME));
+        int idx = 0;
+        while (pData.hasRemaining()) {
+            for (DEBUG_CVKBufferElementDescriptor desc : typeDescriptors) {
+                if (desc.type == Float.TYPE) {  
+                    final float f = pData.getFloat();
+                    CVKLOGGER.info(String.format("\tidx %d\t%s:\t%f", idx, desc.label, f));
+                } else if (desc.type == Integer.TYPE) {
+                    final int d = pData.getInt();
+                    CVKLOGGER.info(String.format("\tidx %d\t%s:\t%d", idx, desc.label, d));
+                }else {
+                    CVKLOGGER.info(String.format("CVKBuffer.DEBUGPRINT cannot handle type <%s>", desc.type.getName()));
+                    break;
+                }
+            }
+            ++idx;
+        }
+        
+        CVKLOGGER.info("\n");
+        
+        EndWrite();
     }
     
     /**
