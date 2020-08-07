@@ -71,6 +71,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 import javafx.util.Pair;
+import org.apache.commons.collections.MapUtils;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle.Messages;
@@ -633,7 +634,7 @@ public final class QualityControlViewPane extends BorderPane {
      * categories
      */
     public static Map<QualityControlRule, QualityCategory> getPriorities() {
-        if (rulePriorities == null) {
+        if (MapUtils.isEmpty(rulePriorities)) {
             rulePriorities = new HashMap<>();
             for (final QualityControlRule rule : getLookup().lookupAll(QualityControlRule.class)) {
                 rulePriorities.put(rule, rule.getCategory(0));
