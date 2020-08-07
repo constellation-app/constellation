@@ -522,25 +522,20 @@ public class AnalyticConfigurationPane extends VBox {
     }
 
     public final void updateSelectablePluginsParameters() {
-        if (categoryListPane.isExpanded()) {
-            pluginList.getItems().forEach(selectablePlugin -> {
-                lock.lock();
-                try {
+        lock.lock();
+        try {
+            if (categoryListPane.isExpanded()) {
+                pluginList.getItems().forEach(selectablePlugin -> {
                     selectablePlugin.parameters.updateParameterValues(selectablePlugin.updatedParameters);
-                } finally {
-                    lock.unlock();
-                }
-            });
-        } else if (questionListPane.isExpanded() && currentQuestion != null) {
-            pluginList.getItems().forEach(selectablePlugin -> {
-                lock.lock();
-                try {
+                });
+            } else if (questionListPane.isExpanded() && currentQuestion != null) {
+                pluginList.getItems().forEach(selectablePlugin -> {
                     selectablePlugin.parameters.updateParameterValues(selectablePlugin.updatedParameters);
                     currentQuestion.initialiseParameters(selectablePlugin.plugin, selectablePlugin.parameters);
-                } finally {
-                    lock.unlock();
-                }
-            });
+                });
+            }
+        } finally {
+            lock.unlock();
         }
     }
 
