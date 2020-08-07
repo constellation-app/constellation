@@ -218,7 +218,12 @@ public class AnalyticConfigurationPane extends VBox {
             Platform.runLater(() -> {
                 questionListPane.setExpanded(!categoryListPane.isExpanded());
                 if (categoryListPane.isExpanded()) {
-                    currentQuestion = null;
+                    lock.lock();
+                    try {
+                        currentQuestion = null;
+                    } finally {
+                        lock.unlock();
+                    }
                     populateParameterPane(globalAnalyticParameters);
                     setPluginsFromSelectedCategory();
                 }
@@ -702,7 +707,7 @@ public class AnalyticConfigurationPane extends VBox {
             }
 
             // Utilized for Question pane - TODO: when multiple tabs + saving of
-            // questions is supported, link this currentquestion variable with 
+            // questions is supported, link this currentquestion variable with
             // the saved/loaded question
             analyticConfigurationPane.lock.lock();
             try {
