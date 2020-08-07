@@ -1130,12 +1130,14 @@ public final class TableViewPane extends BorderPane {
 
                 Platform.runLater(() -> {
                     selectedProperty.removeListener(tableSelectionListener);
-                    sortedRowList.comparatorProperty().removeListener(tableComparatorListener);
                     sortedRowList.comparatorProperty().unbind();
 
                     // add table data to table
                     sortedRowList = new SortedList<>(FXCollections.observableArrayList(rows));
-                    paginate(sortedRowList);
+                    
+                    //need to set the table items to the whole list here so that the filter 
+                    //picks up the full list of options to filter before we paginate
+                    table.setItems(FXCollections.observableArrayList(sortedRowList));
 
                     // add user defined filter to the table
                     filter = TableFilter.forTableView(table).lazy(true).apply();
@@ -1147,14 +1149,14 @@ public final class TableViewPane extends BorderPane {
                         }
                     });
                     filter.getFilteredList().predicateProperty().addListener((v, o, n) -> {
-                        table.refresh();
-                        filteredRowList = new FilteredList<>(FXCollections.observableArrayList(sortedRowList), filter.getFilteredList().getPredicate());
-                        paginate(filteredRowList);
+                        sortedRowList.comparatorProperty().unbind();
+                        filteredRowList = new FilteredList<>(FXCollections.observableArrayList(rows), filter.getFilteredList().getPredicate());
+                        sortedRowList = new SortedList<>(FXCollections.observableArrayList(filteredRowList));
+                        paginate(sortedRowList);
                     });
+                    paginate(sortedRowList);
                     updateDataLatch.countDown();
-
-                    sortedRowList.comparatorProperty().bind(table.comparatorProperty());
-                    sortedRowList.comparatorProperty().removeListener(tableComparatorListener);
+                    
                     selectedProperty.addListener(tableSelectionListener);
                 });
 
