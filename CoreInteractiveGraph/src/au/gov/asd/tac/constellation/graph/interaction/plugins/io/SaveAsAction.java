@@ -64,6 +64,7 @@ import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -194,31 +195,10 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
         if (!inst.isEmpty()) {
             SaveAsCapable saveAs = inst.iterator().next();
             File newFile = getNewFileName();
-            if (newFile != null) {
-                //create target folder if necessary
-                FileObject newFolder = null;
-                try {
-                    File targetFolder = newFile.getParentFile();
-                    if (targetFolder == null) {
-                        throw new IOException(newFile.getAbsolutePath());
-                    }
-                    newFolder = FileUtil.createFolder(targetFolder);
-                } catch (IOException ioE) {
-                    NotifyDescriptor error = new NotifyDescriptor(
-                            Bundle.MSG_CannotCreateTargetFolder(newFile),
-                            Bundle.MSG_SaveAsTitle(),
-                            NotifyDescriptor.DEFAULT_OPTION,
-                            NotifyDescriptor.ERROR_MESSAGE,
-                            new Object[]{
-                                NotifyDescriptor.OK_OPTION
-                            },
-                            NotifyDescriptor.OK_OPTION);
-                    DialogDisplayer.getDefault().notify(error);
-                    return;
-                }
 
+            if (newFile != null) {
                 try {
-                    saveAs.saveAs(newFolder, newFile.getName());
+                    saveAs.saveAs(FileUtil.toFileObject(newFile.getParentFile()), newFile.getName());
                 } catch (IOException ioE) {
                     Exceptions.attachLocalizedMessage(ioE,
                             Bundle.MSG_SaveAsFailed(
@@ -292,6 +272,13 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
             newFile = chooser.getSelectedFile();
             if (newFile == null) {
                 break;
+            }
+            while (!newFile.getName().matches("^[\\w-_. ]*$") || !newFile.getParentFile().exists()) {
+                NotifyDisplayer.display("File names can only include alphanumeric characters, - or .", NotifyDescriptor.WARNING_MESSAGE);
+                if (JFileChooser.APPROVE_OPTION != chooser.showSaveDialog(WindowManager.getDefault().getMainWindow())) {
+                    return null;
+                }
+                newFile = chooser.getSelectedFile();
             }
             if (isFileInUse(newFile)) {
                 NotifyDescriptor nd = new NotifyDescriptor(

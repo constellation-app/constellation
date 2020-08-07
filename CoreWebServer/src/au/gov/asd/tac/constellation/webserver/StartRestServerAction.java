@@ -34,9 +34,11 @@ public final class StartRestServerAction implements ActionListener {
 
     @Override
     public void actionPerformed(final ActionEvent e) {
+        // title should be assigned befroe WebServer.start
+        final String title = WebServer.isRunning() ? "Web server already started" : "Web server started";
         final int port = WebServer.start();
         final String msg = String.format("External scripting listening on port %d", port);
-        NotificationDisplayer.getDefault().notify("Web server started",
+        NotificationDisplayer.getDefault().notify(title,
                 UserInterfaceIconProvider.WARNING.buildIcon(16, ConstellationColor.DARK_ORANGE.getJavaColor()),
                 msg,
                 null
