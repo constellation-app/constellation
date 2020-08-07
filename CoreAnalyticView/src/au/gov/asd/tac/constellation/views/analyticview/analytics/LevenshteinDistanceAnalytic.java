@@ -15,9 +15,12 @@
  */
 package au.gov.asd.tac.constellation.views.analyticview.analytics;
 
+import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
+import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
@@ -28,8 +31,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
-import au.gov.asd.tac.constellation.views.attributeeditor.AttributeData;
-import au.gov.asd.tac.constellation.views.attributeeditor.AttributeReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -86,10 +87,11 @@ public class LevenshteinDistanceAnalytic extends ScoreAnalyticPlugin {
         if (graph != null && graph.getSchema() != null) {
             final ReadableGraph readableGraph = graph.getReadableGraph();
             try {
-                final ArrayList<AttributeData> nodeAttributes = new AttributeReader(graph).refreshAttributes().getAttributeNames().get(GraphElementType.VERTEX);
-                for (AttributeData nodeAttribute : nodeAttributes) {
-                    if (nodeAttribute.getDataType().equals("string")) {
-                        stringAttributes.add(nodeAttribute.getAttributeName());
+                int attributeCount = readableGraph.getAttributeCount(GraphElementType.VERTEX);
+                for (int i = 0; i < attributeCount; i++) {
+                    Attribute attr = new GraphAttribute(readableGraph, readableGraph.getAttribute(GraphElementType.VERTEX, i));
+                    if (attr.getAttributeType().equals(StringAttributeDescription.ATTRIBUTE_NAME)) {
+                        stringAttributes.add(attr.getName());
                     }
                 }
             } finally {
