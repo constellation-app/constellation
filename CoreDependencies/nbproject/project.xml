@@ -1108,6 +1108,66 @@
                 <package>org.apache.xmlbeans.xml.stream</package>
                 <package>org.apache.xmlbeans.xml.stream.events</package>
                 <package>org.apache.xmlbeans.xml.stream.utils</package>
+                <package>org.assertj.core.annotations</package>
+                <package>org.assertj.core.api</package>
+                <package>org.assertj.core.api.exception</package>
+                <package>org.assertj.core.api.filter</package>
+                <package>org.assertj.core.api.iterable</package>
+                <package>org.assertj.core.api.junit.jupiter</package>
+                <package>org.assertj.core.api.recursive.comparison</package>
+                <package>org.assertj.core.condition</package>
+                <package>org.assertj.core.configuration</package>
+                <package>org.assertj.core.data</package>
+                <package>org.assertj.core.description</package>
+                <package>org.assertj.core.error</package>
+                <package>org.assertj.core.error.future</package>
+                <package>org.assertj.core.error.uri</package>
+                <package>org.assertj.core.extractor</package>
+                <package>org.assertj.core.groups</package>
+                <package>org.assertj.core.internal</package>
+                <package>org.assertj.core.internal.bytebuddy</package>
+                <package>org.assertj.core.internal.bytebuddy.agent.builder</package>
+                <package>org.assertj.core.internal.bytebuddy.asm</package>
+                <package>org.assertj.core.internal.bytebuddy.build</package>
+                <package>org.assertj.core.internal.bytebuddy.description</package>
+                <package>org.assertj.core.internal.bytebuddy.description.annotation</package>
+                <package>org.assertj.core.internal.bytebuddy.description.enumeration</package>
+                <package>org.assertj.core.internal.bytebuddy.description.field</package>
+                <package>org.assertj.core.internal.bytebuddy.description.method</package>
+                <package>org.assertj.core.internal.bytebuddy.description.modifier</package>
+                <package>org.assertj.core.internal.bytebuddy.description.type</package>
+                <package>org.assertj.core.internal.bytebuddy.dynamic</package>
+                <package>org.assertj.core.internal.bytebuddy.dynamic.loading</package>
+                <package>org.assertj.core.internal.bytebuddy.dynamic.scaffold</package>
+                <package>org.assertj.core.internal.bytebuddy.dynamic.scaffold.inline</package>
+                <package>org.assertj.core.internal.bytebuddy.dynamic.scaffold.subclass</package>
+                <package>org.assertj.core.internal.bytebuddy.implementation</package>
+                <package>org.assertj.core.internal.bytebuddy.implementation.attribute</package>
+                <package>org.assertj.core.internal.bytebuddy.implementation.auxiliary</package>
+                <package>org.assertj.core.internal.bytebuddy.implementation.bind</package>
+                <package>org.assertj.core.internal.bytebuddy.implementation.bind.annotation</package>
+                <package>org.assertj.core.internal.bytebuddy.implementation.bytecode</package>
+                <package>org.assertj.core.internal.bytebuddy.implementation.bytecode.assign</package>
+                <package>org.assertj.core.internal.bytebuddy.implementation.bytecode.assign.primitive</package>
+                <package>org.assertj.core.internal.bytebuddy.implementation.bytecode.assign.reference</package>
+                <package>org.assertj.core.internal.bytebuddy.implementation.bytecode.collection</package>
+                <package>org.assertj.core.internal.bytebuddy.implementation.bytecode.constant</package>
+                <package>org.assertj.core.internal.bytebuddy.implementation.bytecode.member</package>
+                <package>org.assertj.core.internal.bytebuddy.jar.asm</package>
+                <package>org.assertj.core.internal.bytebuddy.jar.asm.commons</package>
+                <package>org.assertj.core.internal.bytebuddy.jar.asm.signature</package>
+                <package>org.assertj.core.internal.bytebuddy.matcher</package>
+                <package>org.assertj.core.internal.bytebuddy.pool</package>
+                <package>org.assertj.core.internal.bytebuddy.utility</package>
+                <package>org.assertj.core.internal.bytebuddy.utility.privilege</package>
+                <package>org.assertj.core.internal.bytebuddy.utility.visitor</package>
+                <package>org.assertj.core.matcher</package>
+                <package>org.assertj.core.presentation</package>
+                <package>org.assertj.core.util</package>
+                <package>org.assertj.core.util.diff</package>
+                <package>org.assertj.core.util.diff.myers</package>
+                <package>org.assertj.core.util.introspection</package>
+                <package>org.assertj.core.util.xml</package>
                 <package>org.checkerframework.checker.compilermsgs.qual</package>
                 <package>org.checkerframework.checker.fenum.qual</package>
                 <package>org.checkerframework.checker.formatter</package>
@@ -2147,20 +2207,12 @@
                 <package>tec.uom.se.unit</package>
             </public-packages>
             <class-path-extension>
-                <runtime-relative-path>ext/FastInfoset-1.2.15.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/FastInfoset-1.2.15.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/GeographicLib-Java-1.49.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/GeographicLib-Java-1.49.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/SparseBitSet-1.2.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/SparseBitSet-1.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/activation-1.1.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/activation-1.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/assertj-core-3.16.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/assertj-core-3.16.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/bigint-0.7.1.jar</runtime-relative-path>
@@ -2275,8 +2327,16 @@
                 <binary-origin>release/modules/ext/failureaccess-1.0.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/FastInfoset-1.2.15.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/FastInfoset-1.2.15.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/filters-2.0.235.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/filters-2.0.235.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/GeographicLib-Java-1.49.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/GeographicLib-Java-1.49.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/gluegen-rt-natives-linux-amd64.jar</runtime-relative-path>
@@ -2785,6 +2845,10 @@
             <class-path-extension>
                 <runtime-relative-path>ext/si-units-java8-0.7.1.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/si-units-java8-0.7.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/SparseBitSet-1.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/SparseBitSet-1.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/sqlite-jdbc-3.27.2.1.jar</runtime-relative-path>
