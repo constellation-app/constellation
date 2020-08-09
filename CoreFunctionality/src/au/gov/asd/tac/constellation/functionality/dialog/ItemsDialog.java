@@ -56,6 +56,7 @@ import javafx.stage.Window;
  *
  * @author sirius
  */
+@SuppressWarnings("unchecked")
 public class ItemsDialog<T> extends ConstellationDialog {
 
     private TableView<ItemsRow<T>> table;

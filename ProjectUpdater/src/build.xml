@@ -6,20 +6,20 @@
     <property name="ivy.jar.dir" value="${user.home}/.ivy2"/>
     <property name="ivy.cache.dir" value="${ivy.jar.dir}/cache"/>
     <property name="ivy.jar.file" value="${ivy.jar.dir}/${ivy.install.version}.jar"/>
-    <property name="ivy.settings.file" value="${suite.dir}/../constellation/ProjectUpdater/src/ivysettings.xml"/>
+    <property name="ivy.settings.file" value="${suite.dir}/ProjectUpdater/src/ivysettings.xml"/>
 
     <target name="update-dependencies" if="update.dependencies" depends="skip-update-dependencies,build-project-updater,clean-dependencies,-load-ivy-tasks">
         <!--Run ivy-->
         <ivy:resolve file="./src/ivy.xml" />
-        <ivy:retrieve pattern="release/modules/ext/[artifact]-[revision].[ext]" sync="true"/>
+        <ivy:retrieve pattern="release/modules/ext/[artifact]-[revision](-[classifier]).[ext]" sync="true"/>
 
         <!--- START OF DELETABLE SECTION WHEN THIS IS IN MAVEN -->
         <echo message="installing unfolding-maps..."/>
         <get src="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/unfolding-master-20171010.jar"
-             dest="${suite.dir}/../constellation/CoreDependencies/release/modules/ext" usetimestamp="true"/>
+             dest="${suite.dir}/CoreDependencies/release/modules/ext" usetimestamp="true"/>
     
         <echo message="installing gluegen..."/>
-        <get dest="${suite.dir}/../constellation/CoreDependencies/release/modules/ext" usetimestamp="true">
+        <get dest="${suite.dir}/CoreDependencies/release/modules/ext" usetimestamp="true">
             <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/gluegen-rt.jar"/>
             <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/gluegen-rt-natives-linux-amd64.jar"/>
             <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/gluegen-rt-natives-linux-i586.jar"/>
@@ -29,7 +29,7 @@
         </get>
     
         <echo message="installing jocl..."/>
-        <get dest="${suite.dir}/../constellation/CoreDependencies/release/modules/ext" usetimestamp="true">
+        <get dest="${suite.dir}/CoreDependencies/release/modules/ext" usetimestamp="true">
             <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/jocl.jar"/>
             <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/jocl-natives-linux-amd64.jar"/>
             <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/jocl-natives-linux-i586.jar"/>
@@ -39,7 +39,7 @@
         </get>
     
         <echo message="installing jogl..."/>
-        <get dest="${suite.dir}/../constellation/CoreDependencies/release/modules/ext" usetimestamp="true">
+        <get dest="${suite.dir}/CoreDependencies/release/modules/ext" usetimestamp="true">
             <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/jogl-all.jar"/>
             <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/jogl-all-natives-linux-amd64.jar"/>
             <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/jogl-all-natives-linux-i586.jar"/>
@@ -49,24 +49,24 @@
         </get>
     
         <echo message="installing newt..."/>
-        <get dest="${suite.dir}/../constellation/CoreDependencies/release/modules/ext" usetimestamp="true">
+        <get dest="${suite.dir}/CoreDependencies/release/modules/ext" usetimestamp="true">
             <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/newt.jar"/>
             <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/newt-natives-windows-i586.jar"/>
         </get>
     
         <echo message="installing mainwindow..."/>
-        <get dest="${suite.dir}/../constellation/CoreDependencies/release/modules/ext" usetimestamp="true">
+        <get dest="${suite.dir}/CoreDependencies/release/modules/ext" usetimestamp="true">
             <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/nativewindow-natives-windows-i586.jar"/>
             <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/nativewindow.jar"/>
         </get>
     
         <echo message="installing processing..."/>
         <get src="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/Processing%204.0/core.jar"
-             dest="${suite.dir}/../constellation/CoreDependencies/release/modules/ext" usetimestamp="true"/>
+             dest="${suite.dir}/CoreDependencies/release/modules/ext" usetimestamp="true"/>
         <!--- END OF DELETABLE SECTION WHEN THIS IS IN MAVEN -->    
         
         <!-- Update the project.xml file to include the downloaded jars -->
-        <property name="ProjectUpdater.jar" value="${suite.dir}/../constellation/ProjectUpdater/dist/ProjectUpdater.jar" />
+        <property name="ProjectUpdater.jar" value="${suite.dir}/ProjectUpdater/dist/ProjectUpdater.jar" />
         <taskdef name="buildProjectXML" classname="au.gov.asd.tac.constellation.projectupdater.ProjectUpdater" classpath="${ProjectUpdater.jar}" />
         <buildProjectXML projectdirectory="." />        
     </target>
@@ -77,7 +77,7 @@
 
     <target name="build-project-updater" if="update.dependencies">
         <!-- Ensure that the ProjectUpdater jar has been built -->
-        <ant dir="${suite.dir}/../constellation/ProjectUpdater/" target="jar" />
+        <ant dir="${suite.dir}/ProjectUpdater/" target="jar" />
     </target>
 
     <target name="clean-dependencies" unless="skip-clean" description="Clean downloaded libraries.">
