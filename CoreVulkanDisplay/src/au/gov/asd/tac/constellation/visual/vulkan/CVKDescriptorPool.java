@@ -16,8 +16,6 @@
 package au.gov.asd.tac.constellation.visual.vulkan;
 
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKLOGGER;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VerifyInRenderThread;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.checkVKret;
 import java.nio.LongBuffer;
 import org.lwjgl.system.MemoryStack;
@@ -106,7 +104,7 @@ public class CVKDescriptorPool {
                              final int imageCount,
                              final CVKDescriptorPoolRequirements poolReqs,
                              final CVKDescriptorPoolRequirements perImagePoolReqs) {
-        VerifyInRenderThread();
+        cvkDevice.VerifyInRenderThread();
         CVKAssert(cvkDevice != null);
         CVKAssert(imageCount > 0);
         CVKAssert(poolReqs != null);
@@ -147,7 +145,7 @@ public class CVKDescriptorPool {
                         VkDescriptorPoolSize vkPoolSize = pPoolSizes.get(iPoolSize++);
                         vkPoolSize.type(iType);
                         vkPoolSize.descriptorCount(count);
-                        CVKLOGGER.info(String.format("Descriptor pool type %d = count %d", iType, count));                                        
+                        cvkDevice.Logger().info("Descriptor pool type %d = count %d", iType, count);                                        
                     } 
                 }           
 
@@ -158,7 +156,7 @@ public class CVKDescriptorPool {
                 poolInfo.flags(VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT);
                 poolInfo.pPoolSizes(pPoolSizes);
                 poolInfo.maxSets(cvkDescriptorPoolRequirements.poolDesciptorSetCount);
-                CVKLOGGER.info(String.format("Descriptor pool maxSets = %d", cvkDescriptorPoolRequirements.poolDesciptorSetCount));  
+                cvkDevice.Logger().info("Descriptor pool maxSets = %d", cvkDescriptorPoolRequirements.poolDesciptorSetCount);  
 
                 LongBuffer pDescriptorPool = stack.mallocLong(1);
                 ret = vkCreateDescriptorPool(cvkDevice.GetDevice(), poolInfo, null, pDescriptorPool);
@@ -174,6 +172,6 @@ public class CVKDescriptorPool {
         vkDestroyDescriptorPool(cvkDevice.GetDevice(), hDescriptorPool, null);
         hDescriptorPool = VK_NULL_HANDLE;
         cvkDevice = null;
-        CVKLOGGER.info("Destroyed descriptor pool");
+        cvkDevice.Logger().info("Destroyed descriptor pool");
     }    
 }

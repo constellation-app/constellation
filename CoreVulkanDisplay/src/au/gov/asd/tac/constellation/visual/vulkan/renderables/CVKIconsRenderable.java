@@ -32,17 +32,14 @@ import static au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderab
 import static au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableResourceState.CVK_RESOURCE_NEEDS_REBUILD;
 import static au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableResourceState.CVK_RESOURCE_NEEDS_UPDATE;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKBuffer;
-import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKBuffer.DEBUG_CVKBufferElementDescriptor;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKCommandBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.shaders.CVKShaderPlaceHolder;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKGraphLogger.CVKLOGGER;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKLOGGER;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_SHADER_COMPILATION;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_SHADER_MODULE;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.GetCurrentMethodName;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.GetParentMethodName;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.LoadFileToDirectBuffer;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VerifyInRenderThread;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.checkVKret;
 import java.io.IOException;
@@ -223,7 +220,8 @@ public class CVKIconsRenderable extends CVKRenderable{
     private CVKBuffer cvkFragmentUBStagingBuffer = null;
     private VertexUniformBufferObject vertexUBO = new VertexUniformBufferObject();
     private GeometryUniformBufferObject geometryUBO = new GeometryUniformBufferObject();
-    private FragmentUniformBufferObject fragmentUBO = new FragmentUniformBufferObject();    
+    private FragmentUniformBufferObject fragmentUBO = new FragmentUniformBufferObject();   
+    private Matrix44f mtxHighlightColour = Matrix44f.identity();
     
     // Resources recreated only through user events
     private int vertexCount = 0;
@@ -244,58 +242,77 @@ public class CVKIconsRenderable extends CVKRenderable{
     
     // ========================> Debuggering <======================== \\
     
+    private static boolean LOGSTATECHANGE = false;
     private void SetPositionBufferState(final CVKRenderableResourceState state) {
         CVKAssert(!(positionBufferState == CVK_RESOURCE_NEEDS_REBUILD && state == CVK_RESOURCE_NEEDS_UPDATE));
-        CVKLOGGER.info(String.format("%d\t positionBufferState %s -> %s\tSource: %s", 
-                parent.GetFrameNumber(), positionBufferState.name(), state.name(), GetParentMethodName()));        
+        if (LOGSTATECHANGE) {
+            cvkDevice.Logger().info("%d\t positionBufferState %s -> %s\tSource: %s", 
+                    parent.GetFrameNumber(), positionBufferState.name(), state.name(), GetParentMethodName());
+        }
         positionBufferState = state;
     }
     private void SetVertexFlagsBufferState(final CVKRenderableResourceState state) {
         CVKAssert(!(vertexFlagsBufferState == CVK_RESOURCE_NEEDS_REBUILD && state == CVK_RESOURCE_NEEDS_UPDATE));
-        CVKLOGGER.info(String.format("%d\t vertexFlagsBufferState %s -> %s\tSource: %s", 
-                parent.GetFrameNumber(), vertexFlagsBufferState.name(), state.name(), GetParentMethodName()));        
+        if (LOGSTATECHANGE) {
+            cvkDevice.Logger().info("%d\t vertexFlagsBufferState %s -> %s\tSource: %s", 
+               parent.GetFrameNumber(), vertexFlagsBufferState.name(), state.name(), GetParentMethodName());    
+        }
         vertexFlagsBufferState = state;
     }
     private void SetVertexUBOState(final CVKRenderableResourceState state) {
         CVKAssert(!(vertexUBOState == CVK_RESOURCE_NEEDS_REBUILD && state == CVK_RESOURCE_NEEDS_UPDATE));
-        CVKLOGGER.info(String.format("%d\t vertexUBOState %s -> %s\tSource: %s", 
-                parent.GetFrameNumber(), vertexUBOState.name(), state.name(), GetParentMethodName()));        
+        if (LOGSTATECHANGE) {
+            cvkDevice.Logger().info("%d\t vertexUBOState %s -> %s\tSource: %s", 
+                    parent.GetFrameNumber(), vertexUBOState.name(), state.name(), GetParentMethodName());        
+        }
         vertexUBOState = state;
     }
     private void SetGeometryUBOState(final CVKRenderableResourceState state) {
         CVKAssert(!(geometryUBOState == CVK_RESOURCE_NEEDS_REBUILD && state == CVK_RESOURCE_NEEDS_UPDATE));
-        CVKLOGGER.info(String.format("%d\t geometryUBOState %s -> %s\tSource: %s", 
-                parent.GetFrameNumber(), geometryUBOState.name(), state.name(), GetParentMethodName()));        
+        if (LOGSTATECHANGE) {
+            cvkDevice.Logger().info("%d\t geometryUBOState %s -> %s\tSource: %s", 
+                    parent.GetFrameNumber(), geometryUBOState.name(), state.name(), GetParentMethodName());        
+        }
         geometryUBOState = state;
     }
     private void SetFragmentUBOState(final CVKRenderableResourceState state) {
         CVKAssert(!(fragmentUBOState == CVK_RESOURCE_NEEDS_REBUILD && state == CVK_RESOURCE_NEEDS_UPDATE));
-        CVKLOGGER.info(String.format("%d\t fragmentUBOState %s -> %s\tSource: %s", 
-                parent.GetFrameNumber(), fragmentUBOState.name(), state.name(), GetParentMethodName()));        
+        if (LOGSTATECHANGE) {
+            cvkDevice.Logger().info("%d\t fragmentUBOState %s -> %s\tSource: %s", 
+                    parent.GetFrameNumber(), fragmentUBOState.name(), state.name(), GetParentMethodName());
+        }
         fragmentUBOState = state;
     }
     private void SetVertexBuffersState(final CVKRenderableResourceState state) {
         CVKAssert(!(vertexBuffersState == CVK_RESOURCE_NEEDS_REBUILD && state == CVK_RESOURCE_NEEDS_UPDATE));
-        CVKLOGGER.info(String.format("%d\t vertexBuffersState %s -> %s\tSource: %s", 
-                parent.GetFrameNumber(), vertexBuffersState.name(), state.name(), GetParentMethodName()));        
+        if (LOGSTATECHANGE) {
+            cvkDevice.Logger().info("%d\t vertexBuffersState %s -> %s\tSource: %s", 
+                    parent.GetFrameNumber(), vertexBuffersState.name(), state.name(), GetParentMethodName()); 
+        }
         vertexBuffersState = state;
     }
     private void SetCommandBuffersState(final CVKRenderableResourceState state) {
         CVKAssert(!(commandBuffersState == CVK_RESOURCE_NEEDS_REBUILD && state == CVK_RESOURCE_NEEDS_UPDATE));
-        CVKLOGGER.info(String.format("%d\t commandBuffersState %s -> %s\tSource: %s", 
-                parent.GetFrameNumber(), commandBuffersState.name(), state.name(), GetParentMethodName()));        
+        if (LOGSTATECHANGE) {
+            cvkDevice.Logger().info("%d\t commandBuffersState %s -> %s\tSource: %s", 
+                    parent.GetFrameNumber(), commandBuffersState.name(), state.name(), GetParentMethodName());
+        }
         commandBuffersState = state;
     }
     private void SetDescriptorSetsState(final CVKRenderableResourceState state) {
         CVKAssert(!(descriptorSetsState == CVK_RESOURCE_NEEDS_REBUILD && state == CVK_RESOURCE_NEEDS_UPDATE));
-        CVKLOGGER.info(String.format("%d\t descriptorSetsState %s -> %s\tSource: %s", 
-                parent.GetFrameNumber(), descriptorSetsState.name(), state.name(), GetParentMethodName()));        
+        if (LOGSTATECHANGE) {
+            cvkDevice.Logger().info("%d\t descriptorSetsState %s -> %s\tSource: %s", 
+                    parent.GetFrameNumber(), descriptorSetsState.name(), state.name(), GetParentMethodName());
+        }
         descriptorSetsState = state;
     }
     private void SetPipelinesState(final CVKRenderableResourceState state) {
         CVKAssert(!(pipelinesState == CVK_RESOURCE_NEEDS_REBUILD && state == CVK_RESOURCE_NEEDS_UPDATE));
-        CVKLOGGER.info(String.format("%d\t pipelinesState %s -> %s\tSource: %s", 
-                parent.GetFrameNumber(), pipelinesState.name(), state.name(), GetParentMethodName()));        
+        if (LOGSTATECHANGE) {
+            cvkDevice.Logger().info("%d\t pipelinesState %s -> %s\tSource: %s", 
+                    parent.GetFrameNumber(), pipelinesState.name(), state.name(), GetParentMethodName());   
+        }
         pipelinesState = state;
     }  
     
@@ -426,9 +443,9 @@ public class CVKIconsRenderable extends CVKRenderable{
     private static class GeometryUniformBufferObject {
         private static final int SIZEOF = 16 * Float.BYTES + 1 * Float.BYTES + 16 * Float.BYTES + 1 * Integer.BYTES;
 
-        public Matrix44f pMatrix = new Matrix44f();
+        public final Matrix44f pMatrix = new Matrix44f();
         public float pixelDensity = 0;
-        public Matrix44f highlightColor = Matrix44f.identity();
+        public final Matrix44f highlightColor = Matrix44f.identity();
         public int drawHitTest = 0;           
         
         private void CopyTo(ByteBuffer buffer) {
@@ -538,27 +555,27 @@ public class CVKIconsRenderable extends CVKRenderable{
         try{           
             hVertexShader = CVKShaderUtils.createShaderModule(vsBytes, cvkDevice.GetDevice());
             if (hVertexShader == VK_NULL_HANDLE) {
-                CVKLOGGER.log(Level.SEVERE, "Failed to create shader module for: VertexIcon.vs");
+                cvkDevice.Logger().log(Level.SEVERE, "Failed to create shader module for: VertexIcon.vs");
                 return CVK_ERROR_SHADER_MODULE;
             }
             hGeometryShader = CVKShaderUtils.createShaderModule(gsBytes, cvkDevice.GetDevice());
             if (hGeometryShader == VK_NULL_HANDLE) {
-                CVKLOGGER.log(Level.SEVERE, "Failed to create shader module for: VertexIcon.gs");
+                cvkDevice.Logger().log(Level.SEVERE, "Failed to create shader module for: VertexIcon.gs");
                 return CVK_ERROR_SHADER_MODULE;
             }
             hFragmentShader = CVKShaderUtils.createShaderModule(fsBytes, cvkDevice.GetDevice());
             if (hFragmentShader == VK_NULL_HANDLE) {
-                CVKLOGGER.log(Level.SEVERE, "Failed to create shader module for: VertexIcon.fs");
+                cvkDevice.Logger().log(Level.SEVERE, "Failed to create shader module for: VertexIcon.fs");
                 return CVK_ERROR_SHADER_MODULE;
             }
         } catch(Exception ex){
-            CVKLOGGER.log(Level.SEVERE, "Failed to create shader module CVKIconsRenderable: {0}", ex.toString());
+            cvkDevice.Logger().log(Level.SEVERE, "Failed to create shader module CVKIconsRenderable: %s", ex.toString());
             ret = CVK_ERROR_SHADER_MODULE;
             return ret;
         }
         
-        CVKLOGGER.info(String.format("Shader modules created for CVKIconsRenderable class:\n\tVertex:   0x%016x\n\tGeometry: 0x%016x\n\tFragment: 0x%016x",
-                hVertexShader, hGeometryShader, hFragmentShader));
+        cvkDevice.Logger().info("Shader modules created for CVKIconsRenderable class:\n\tVertex:   0x%016x\n\tGeometry: 0x%016x\n\tFragment: 0x%016x",
+                hVertexShader, hGeometryShader, hFragmentShader);
         return ret;
     }   
     
@@ -761,7 +778,7 @@ public class CVKIconsRenderable extends CVKRenderable{
     }    
     
     private int UpdateVertexBuffers() {
-        VerifyInRenderThread();
+        parent.VerifyInRenderThread();
         CVKAssert(cvkVertexStagingBuffer != null);
         CVKAssert(vertexBuffers != null);
         CVKAssert(vertexBuffers.size() > 0);
@@ -771,16 +788,16 @@ public class CVKIconsRenderable extends CVKRenderable{
         try {
             vertexStagingBufferLock.lock();
             
-            List<DEBUG_CVKBufferElementDescriptor> DEBUG_vertexDescriptors = new ArrayList<>();
-            DEBUG_vertexDescriptors.add(new DEBUG_CVKBufferElementDescriptor("r", Float.TYPE));
-            DEBUG_vertexDescriptors.add(new DEBUG_CVKBufferElementDescriptor("g", Float.TYPE));
-            DEBUG_vertexDescriptors.add(new DEBUG_CVKBufferElementDescriptor("b", Float.TYPE));
-            DEBUG_vertexDescriptors.add(new DEBUG_CVKBufferElementDescriptor("a", Float.TYPE));
-            DEBUG_vertexDescriptors.add(new DEBUG_CVKBufferElementDescriptor("mainIconIndices", Integer.TYPE));
-            DEBUG_vertexDescriptors.add(new DEBUG_CVKBufferElementDescriptor("decoratorWestIconIndices", Integer.TYPE));
-            DEBUG_vertexDescriptors.add(new DEBUG_CVKBufferElementDescriptor("decoratorEastIconIndices", Integer.TYPE));
-            DEBUG_vertexDescriptors.add(new DEBUG_CVKBufferElementDescriptor("vertexIndex", Integer.TYPE)); 
-            cvkVertexStagingBuffer.DEBUGPRINT(DEBUG_vertexDescriptors);            
+//            List<DEBUG_CVKBufferElementDescriptor> DEBUG_vertexDescriptors = new ArrayList<>();
+//            DEBUG_vertexDescriptors.add(new DEBUG_CVKBufferElementDescriptor("r", Float.TYPE));
+//            DEBUG_vertexDescriptors.add(new DEBUG_CVKBufferElementDescriptor("g", Float.TYPE));
+//            DEBUG_vertexDescriptors.add(new DEBUG_CVKBufferElementDescriptor("b", Float.TYPE));
+//            DEBUG_vertexDescriptors.add(new DEBUG_CVKBufferElementDescriptor("a", Float.TYPE));
+//            DEBUG_vertexDescriptors.add(new DEBUG_CVKBufferElementDescriptor("mainIconIndices", Integer.TYPE));
+//            DEBUG_vertexDescriptors.add(new DEBUG_CVKBufferElementDescriptor("decoratorWestIconIndices", Integer.TYPE));
+//            DEBUG_vertexDescriptors.add(new DEBUG_CVKBufferElementDescriptor("decoratorEastIconIndices", Integer.TYPE));
+//            DEBUG_vertexDescriptors.add(new DEBUG_CVKBufferElementDescriptor("vertexIndex", Integer.TYPE)); 
+//            cvkVertexStagingBuffer.DEBUGPRINT(DEBUG_vertexDescriptors);            
             
             for (int i = 0; i < vertexBuffers.size(); ++i) {   
                 CVKBuffer cvkVertexBuffer = vertexBuffers.get(i);
@@ -814,7 +831,7 @@ public class CVKIconsRenderable extends CVKRenderable{
     private int CreatePositionBuffer() {
         CVKAssert(cvkSwapChain != null);
         CVKAssert(cvkPositionBuffer == null);
-        VerifyInRenderThread();        
+        parent.VerifyInRenderThread();        
         int ret = VK_SUCCESS;
                 
         cvkPositionBuffer = CVKBuffer.Create(cvkDevice, 
@@ -852,16 +869,16 @@ public class CVKIconsRenderable extends CVKRenderable{
         try {
             positionStagingBufferLock.lock();
             
-            List<DEBUG_CVKBufferElementDescriptor> DEBUG_positionDescriptors = new ArrayList<>();
-            DEBUG_positionDescriptors.add(new DEBUG_CVKBufferElementDescriptor("X1", Float.TYPE));
-            DEBUG_positionDescriptors.add(new DEBUG_CVKBufferElementDescriptor("Y1", Float.TYPE));
-            DEBUG_positionDescriptors.add(new DEBUG_CVKBufferElementDescriptor("Z1", Float.TYPE));
-            DEBUG_positionDescriptors.add(new DEBUG_CVKBufferElementDescriptor("Rad1", Float.TYPE));
-            DEBUG_positionDescriptors.add(new DEBUG_CVKBufferElementDescriptor("X2", Float.TYPE));
-            DEBUG_positionDescriptors.add(new DEBUG_CVKBufferElementDescriptor("Y2", Float.TYPE));
-            DEBUG_positionDescriptors.add(new DEBUG_CVKBufferElementDescriptor("Z2", Float.TYPE));
-            DEBUG_positionDescriptors.add(new DEBUG_CVKBufferElementDescriptor("Rad2", Float.TYPE)); 
-            cvkPositionStagingBuffer.DEBUGPRINT(DEBUG_positionDescriptors);            
+//            List<DEBUG_CVKBufferElementDescriptor> DEBUG_positionDescriptors = new ArrayList<>();
+//            DEBUG_positionDescriptors.add(new DEBUG_CVKBufferElementDescriptor("X1", Float.TYPE));
+//            DEBUG_positionDescriptors.add(new DEBUG_CVKBufferElementDescriptor("Y1", Float.TYPE));
+//            DEBUG_positionDescriptors.add(new DEBUG_CVKBufferElementDescriptor("Z1", Float.TYPE));
+//            DEBUG_positionDescriptors.add(new DEBUG_CVKBufferElementDescriptor("Rad1", Float.TYPE));
+//            DEBUG_positionDescriptors.add(new DEBUG_CVKBufferElementDescriptor("X2", Float.TYPE));
+//            DEBUG_positionDescriptors.add(new DEBUG_CVKBufferElementDescriptor("Y2", Float.TYPE));
+//            DEBUG_positionDescriptors.add(new DEBUG_CVKBufferElementDescriptor("Z2", Float.TYPE));
+//            DEBUG_positionDescriptors.add(new DEBUG_CVKBufferElementDescriptor("Rad2", Float.TYPE)); 
+//            cvkPositionStagingBuffer.DEBUGPRINT(DEBUG_positionDescriptors);            
         
             ret = cvkPositionBuffer.CopyFrom(cvkPositionStagingBuffer);             
             SetPositionBufferState(CVK_RESOURCE_CLEAN);                        
@@ -886,7 +903,7 @@ public class CVKIconsRenderable extends CVKRenderable{
     private int CreateVertexFlagsBuffer() {
         CVKAssert(cvkSwapChain != null);
         CVKAssert(cvkVertexFlagsBuffer == null);
-        VerifyInRenderThread();        
+        parent.VerifyInRenderThread();        
         int ret = VK_SUCCESS;
         
         cvkVertexFlagsBuffer = CVKBuffer.Create(cvkDevice, 
@@ -1040,9 +1057,9 @@ public class CVKIconsRenderable extends CVKRenderable{
         
         // Populate the UBO.  This is easy to deal with, but not super efficient
         // as we are effectively staging into the staging buffer below.
-        geometryUBO.pMatrix = parent.GetProjectionMatrix();
+        geometryUBO.pMatrix.set(parent.GetProjectionMatrix());
         geometryUBO.pixelDensity = parent.GetPixelDensity();
-        // geometryUBO.highlightColor is set by a task
+        geometryUBO.highlightColor.set(mtxHighlightColour);
         geometryUBO.drawHitTest = 0; // TODO: Hydra41 hit test
         
         // Staging buffer so our VBO can be device local (most performant memory)
@@ -1164,7 +1181,7 @@ public class CVKIconsRenderable extends CVKRenderable{
     
     @Override
     public int RecordCommandBuffer(VkCommandBufferInheritanceInfo inheritanceInfo, int imageIndex){
-        VerifyInRenderThread();
+        parent.VerifyInRenderThread();
         CVKAssert(cvkDevice.GetDevice() != null);
         CVKAssert(cvkDevice.GetCommandPoolHandle() != VK_NULL_HANDLE);
         CVKAssert(cvkSwapChain != null);
@@ -1489,7 +1506,7 @@ public class CVKIconsRenderable extends CVKRenderable{
         int ret = VK_SUCCESS;
         
         if (pDescriptorSets != null) {
-            CVKLOGGER.info(String.format("CVKIconsRenderable returning %d descriptor sets to the pool", pDescriptorSets.capacity()));
+            cvkDevice.Logger().info("CVKIconsRenderable returning %d descriptor sets to the pool", pDescriptorSets.capacity());
             
             // After calling vkFreeDescriptorSets, all descriptor sets in pDescriptorSets are invalid.
             ret = vkFreeDescriptorSets(cvkDevice.GetDevice(), cvkDescriptorPool.GetDescriptorPoolHandle(), pDescriptorSets);
@@ -1745,7 +1762,7 @@ public class CVKIconsRenderable extends CVKRenderable{
         }
         
         SetPipelinesState(CVK_RESOURCE_CLEAN);
-        CVKLOGGER.log(Level.INFO, "Graphics Pipeline created for CVKIconsRenderable class.");
+        cvkDevice.Logger().log(Level.INFO, "Graphics Pipeline created for CVKIconsRenderable class.");
         return ret;
     }
     
@@ -1789,7 +1806,7 @@ public class CVKIconsRenderable extends CVKRenderable{
     @Override
     public int DisplayUpdate() { 
         int ret = VK_SUCCESS;
-        VerifyInRenderThread();
+        parent.VerifyInRenderThread();
         
         if (hAtlasSampler != parent.GetTextureAtlas().GetAtlasSamplerHandle() ||
             hAtlasImageView != parent.GetTextureAtlas().GetAtlasImageViewHandle()) {
@@ -1943,7 +1960,7 @@ public class CVKIconsRenderable extends CVKRenderable{
     public CVKRenderableUpdateTask TaskRebuildIcons(final VisualAccess access) {
         //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
         final int newVertexCount = access.getVertexCount();
-        CVKLOGGER.info(String.format("TaskRebuildIcons frame %d: %d verts", parent.GetFrameNumber(), access.getVertexCount()));
+        cvkDevice.Logger().info("TaskRebuildIcons frame %d: %d verts", parent.GetFrameNumber(), access.getVertexCount());
         RebuildIconStagingBuffers(access, newVertexCount);
         RebuildVertexFlagsStagingBuffers(access, newVertexCount);
         
@@ -1965,7 +1982,7 @@ public class CVKIconsRenderable extends CVKRenderable{
         //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
         // If this fires investigate why we didn't get a rebuild task first
         final int newVertexCount = access.getVertexCount();
-        CVKLOGGER.info(String.format("TaskUpdateIcons frame %d: %d verts", parent.GetFrameNumber(), access.getVertexCount()));
+        cvkDevice.Logger().info("TaskUpdateIcons frame %d: %d verts", parent.GetFrameNumber(), access.getVertexCount());
         CVKAssert(vertexCount == newVertexCount); //REMOVE AFTER TESTING
         
         // If we have had an update task called before a rebuild task we first have to build
@@ -2048,7 +2065,7 @@ public class CVKIconsRenderable extends CVKRenderable{
         //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
         final int newVertexCount = access.getVertexCount();
 //        CVKAssert(newVertexCount == vertexCount);
-        CVKLOGGER.info(String.format("TaskRebuildVertexFlags frame %d: %d verts", parent.GetFrameNumber(), access.getVertexCount()));
+        cvkDevice.Logger().info("TaskRebuildVertexFlags frame %d: %d verts", parent.GetFrameNumber(), access.getVertexCount());
         RebuildVertexFlagsStagingBuffers(access, newVertexCount);
         
         //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.ProcessRenderTasks) ===//
@@ -2060,7 +2077,7 @@ public class CVKIconsRenderable extends CVKRenderable{
     public CVKRenderableUpdateTask TaskUpdateVertexFlags(final VisualChange change, final VisualAccess access) {
         //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
         // If this fires investigate why we didn't get a rebuild task first
-        CVKLOGGER.info(String.format("TaskUpdateVertexFlags frame %d: %d verts", parent.GetFrameNumber(), access.getVertexCount()));
+        cvkDevice.Logger().info("TaskUpdateVertexFlags frame %d: %d verts", parent.GetFrameNumber(), access.getVertexCount());
         final int newVertexCount = access.getVertexCount();
 //        CVKAssert(vertexCount != newVertexCount); //REMOVE AFTER TESTING
         
@@ -2102,7 +2119,7 @@ public class CVKIconsRenderable extends CVKRenderable{
     
     public CVKRenderableUpdateTask TaskUpdateColours(final VisualChange change, final VisualAccess access) {
         //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
-        CVKLOGGER.info(String.format("TaskUpdateColours frame %d: %d verts", parent.GetFrameNumber(), access.getVertexCount()));
+        cvkDevice.Logger().info("TaskUpdateColours frame %d: %d verts", parent.GetFrameNumber(), access.getVertexCount());
         
         //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.ProcessRenderTasks) ===//
         return () -> {
@@ -2114,16 +2131,18 @@ public class CVKIconsRenderable extends CVKRenderable{
     
     public CVKRenderableUpdateTask TaskSetHighLightColour(final VisualAccess access) {
         //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
-        CVKLOGGER.info(String.format("TaskSetHighLightColour frame %d: %d verts", parent.GetFrameNumber(), access.getVertexCount()));
-        final ConstellationColor highlightColor = access.getHighlightColor();
+        cvkDevice.Logger().info("TaskSetHighLightColour frame %d: %d verts", parent.GetFrameNumber(), access.getVertexCount());
+        final ConstellationColor highlightColour = access.getHighlightColor();
                                                 
         //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.ProcessRenderTasks) ===//
         return () -> {
-            geometryUBO.highlightColor.set(0, 0, highlightColor.getRed());
-            geometryUBO.highlightColor.set(1, 1, highlightColor.getGreen());
-            geometryUBO.highlightColor.set(2, 2, highlightColor.getBlue());
+            mtxHighlightColour.set(0, 0, highlightColour.getRed());
+            mtxHighlightColour.set(1, 1, highlightColour.getGreen());
+            mtxHighlightColour.set(2, 2, highlightColour.getBlue());
           
-            SetGeometryUBOState(CVK_RESOURCE_NEEDS_UPDATE);
+            if (geometryUBOState != CVK_RESOURCE_NEEDS_REBUILD) {
+                SetGeometryUBOState(CVK_RESOURCE_NEEDS_UPDATE);
+            }            
         };             
     }
     
@@ -2131,8 +2150,10 @@ public class CVKIconsRenderable extends CVKRenderable{
         //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
                                                 
         //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.ProcessRenderTasks) ===//
-        return () -> {          
-            SetVertexUBOState(CVK_RESOURCE_NEEDS_UPDATE);
+        return () -> {  
+            if (vertexUBOState != CVK_RESOURCE_NEEDS_REBUILD) {
+                SetVertexUBOState(CVK_RESOURCE_NEEDS_UPDATE);
+            }
         };           
     }
     

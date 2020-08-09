@@ -83,12 +83,11 @@ import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDescriptorPool.CVKDescriptorPoolRequirements;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKShaderUtils.ShaderKind.GEOMETRY_SHADER;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKLOGGER;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VerifyInRenderThread;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKCommandBuffer;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKGraphLogger.CVKLOGGER;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_SHADER_COMPILATION;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_SHADER_MODULE;
 import java.nio.IntBuffer;
@@ -389,7 +388,7 @@ public class CVKAxesRenderable extends CVKRenderable {
     * object to cleanup its resources.
     */
     private int CreateSwapChainResources() {
-        VerifyInRenderThread();
+        parent.VerifyInRenderThread();
         CVKAssert(cvkSwapChain != null);
         int ret = VK_SUCCESS;
 
@@ -422,7 +421,7 @@ public class CVKAxesRenderable extends CVKRenderable {
     
     @Override
     protected int DestroySwapChainResources(){
-        VerifyInRenderThread();
+        parent.VerifyInRenderThread();
         int ret = VK_SUCCESS;
         
         // We only need to recreate these resources if the number of images in 
@@ -685,7 +684,7 @@ public class CVKAxesRenderable extends CVKRenderable {
             commandBuffers.add(buffer);
         }
         
-        CVKLOGGER.log(Level.INFO, "Init Command Buffer - AxesRenderable");
+        cvkDevice.Logger().log(Level.INFO, "Init Command Buffer - AxesRenderable");
         
         return ret;
     }
@@ -698,7 +697,7 @@ public class CVKAxesRenderable extends CVKRenderable {
     @Override
     public int RecordCommandBuffer(VkCommandBufferInheritanceInfo inheritanceInfo, int imageIndex) {
         CVKAssert(cvkSwapChain != null);
-        VerifyInRenderThread();
+        parent.VerifyInRenderThread();
         int ret;
         
         try (MemoryStack stack = stackPush()) {
@@ -973,7 +972,7 @@ public class CVKAxesRenderable extends CVKRenderable {
                 CVKAssert(pipelines.get(i) != VK_NULL_HANDLE);
             }
         }
-        CVKLOGGER.log(Level.INFO, "Graphics Pipeline created for AxesRenderable class.");
+        cvkDevice.Logger().log(Level.INFO, "Graphics Pipeline created for AxesRenderable class.");
         
         return ret;
     }
@@ -999,7 +998,7 @@ public class CVKAxesRenderable extends CVKRenderable {
 
     @Override
     public int DisplayUpdate() { 
-        VerifyInRenderThread();
+        parent.VerifyInRenderThread();
         
         int ret = VK_SUCCESS;    
         
@@ -1029,7 +1028,7 @@ public class CVKAxesRenderable extends CVKRenderable {
         
         //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.ProcessRenderTasks) ===//
         return () -> {
-            VerifyInRenderThread();                      
+            parent.VerifyInRenderThread();                      
             needsDisplayUpdate = true;
         };
     }  

@@ -15,9 +15,8 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan;
 
+import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKGraphLogger;
 import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKMissingEnums;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.debugging;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.*;
 import com.google.common.primitives.Ints;
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
@@ -69,9 +68,18 @@ import org.lwjgl.vulkan.VkQueue;
 import org.lwjgl.vulkan.VkQueueFamilyProperties;
 import org.lwjgl.vulkan.VkSurfaceCapabilitiesKHR;
 import org.lwjgl.vulkan.VkSurfaceFormatKHR;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_DEBUGGING;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.GetRequiredVKLogicalDeviceExtensions;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.InitVKValidationLayers;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.UINT32_MAX;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkSucceeded;
+import static org.lwjgl.vulkan.VK10.vkDestroyCommandPool;
+import static org.lwjgl.vulkan.VK10.vkDestroyDevice;
 
 
 public class CVKDevice {
+    private final CVKVisualProcessor parent;
     private final CVKInstance cvkInstance;
     private final long hSurfaceHandle;
     private VkPhysicalDevice vkPhysicalDevice = null;
@@ -85,7 +93,7 @@ public class CVKDevice {
     private CVKMissingEnums.VkFormat selectedFormat = CVKMissingEnums.VkFormat.VK_FORMAT_NONE;
     private CVKMissingEnums.VkColorSpaceKHR selectedColourSpace = CVKMissingEnums.VkColorSpaceKHR.VK_COLOR_SPACE_NONE;
     private CVKMissingEnums.VkPresentModeKHR selectedPresentationMode = CVKMissingEnums.VkPresentModeKHR.VK_PRESENT_MODE_NONE;    
-    private long hCommandPoolHandle = VK_NULL_HANDLE; 
+    private long hCommandPool = VK_NULL_HANDLE; 
     private int queueFamilyIndex = -1; 
     final private VkExtent2D vkCurrentSurfaceExtent = VkExtent2D.malloc().set(0, 0);
     private long max1DImageWidth = 0;
@@ -95,7 +103,7 @@ public class CVKDevice {
     
     // Getters
     public VkExtent2D GetCurrentSurfaceExtent() { return vkCurrentSurfaceExtent; }
-    public long GetCommandPoolHandle() { return hCommandPoolHandle; }
+    public long GetCommandPoolHandle() { return hCommandPool; }
     public VkDevice GetDevice() { return vkDevice; }   
     public VkPhysicalDevice GetPhysicalDevice() { return vkPhysicalDevice; }
     public VkQueue GetQueue() { return vkQueue; }
@@ -107,9 +115,11 @@ public class CVKDevice {
     public long GetMax1DImageWidth() { return max1DImageWidth; }
     public long GetMaxImageLayers() { return maxImageLayers; }
     public long GetMaxTexelBufferElements() { return maxTexelBufferElements; }
+    public CVKGraphLogger Logger() { return parent.cvkLogger; }
     
     
-    public CVKDevice(CVKInstance instance, long surfaceHandle) {
+    public CVKDevice(CVKInstance instance, long surfaceHandle, CVKVisualProcessor parent) {
+        this.parent = parent;
         cvkInstance = instance;
         hSurfaceHandle = surfaceHandle;
     }
@@ -118,20 +128,30 @@ public class CVKDevice {
     public int Initialise() {
         int ret;
         
-        StartLogSection("Initialising CVKDevice");
+        Logger().StartLogSection("Initialising CVKDevice");
         try (MemoryStack stack = stackPush()) {  
-            ret = InitVKPhysicalDevice(stack);
+            ret = SelectVKPhysicalDevice(stack);
             if (VkFailed(ret)) return ret;
-            ret = InitVKLogicalDevice(stack);
+            ret = CreateVKLogicalDevice(stack);
             if (VkFailed(ret)) return ret;
-            InitVKQueue(stack);    
-            if (VkFailed(ret)) return ret;
-            ret = InitVKCommandPool(stack);
+            StoreVKQueue(stack);    
+            ret = CreateVKCommandPool(stack);
             if (VkFailed(ret)) return ret;
         }
-        EndLogSection("Initialising CVKDevice");
+        Logger().EndLogSection("Initialising CVKDevice");
         
         return ret;
+    }
+    
+    public void Destroy() {
+        Logger().StartLogSection("Destroying CVKDevice");
+        DestroyVKCommandPool();
+        DestroyVKLogicalDevice();          
+        Logger().EndLogSection("Destroying CVKDevice");
+    }
+    
+    public void VerifyInRenderThread() {
+        parent.VerifyInRenderThread();
     }
     
     
@@ -178,7 +198,7 @@ public class CVKDevice {
      * 
      * @param stack
      */
-    private int InitVKPhysicalDevice(MemoryStack stack) {
+    private int SelectVKPhysicalDevice(MemoryStack stack) {
         int ret;
         
         // Get the number of physical devices
@@ -205,7 +225,7 @@ public class CVKDevice {
             VkPhysicalDeviceFeatures candidatePhysicalDeviceFeatures = VkPhysicalDeviceFeatures.mallocStack(stack);
             vkGetPhysicalDeviceFeatures(candidate, candidatePhysicalDeviceFeatures);
             if (!candidatePhysicalDeviceFeatures.geometryShader()) {
-                CVKLOGGER.info(String.format("Device %d discarded as it does not support geometry shaders", iDevice));
+                Logger().info("Device %d discarded as it does not support geometry shaders", iDevice);
                 continue;
             }
             
@@ -222,7 +242,7 @@ public class CVKDevice {
                 
                 for (int iExtension = 0; iExtension < numExtensions; ++iExtension) {
                     String extensionName = deviceExtensions.position(iExtension).extensionNameString();
-                    CVKLOGGER.log(Level.INFO, "Vulkan: device {0} extension available: {1}", new Object[]{iExtension, extensionName});                       
+                    Logger().log(Level.INFO, "Vulkan: device %d extension available: %s", iExtension, extensionName);                       
                 }             
 
                 // Enumerate extensions looking for swap chain support.  Stop once requirements met and physical device set.
@@ -292,16 +312,14 @@ public class CVKDevice {
             // Figure out our ideal backbuffer size
             // The current size of the surface will either be explicit, which we use, or 
             // set to a value indicating it will use whatever is set in the swap chain.
-            CVKLOGGER.log(Level.INFO, "Surface will be {0}x{1}", 
-                    new Object[]{vkCurrentSurfaceExtent.width(),
-                                 vkCurrentSurfaceExtent.height()});           
+            Logger().log(Level.INFO, "Surface will be %dx%d", vkCurrentSurfaceExtent.width(), vkCurrentSurfaceExtent.height());           
             
             VkPhysicalDeviceLimits limits = vkPhysicalDeviceProperties.limits();
             max1DImageWidth = limits.maxImageDimension1D();
             maxImageLayers  = limits.maxImageArrayLayers();
             maxTexelBufferElements = limits.maxTexelBufferElements();
-            if (debugging) {                
-                CVKLOGGER.info(String.format("Physcial device properties:\n"
+            if (CVK_DEBUGGING) {                
+                Logger().info("Physcial device properties:\n"
                         + "\tdeviceName: %s\n"
                         + "\tdeviceType: %s\n"
                         + "\tapiVersion: %d\n"
@@ -365,7 +383,7 @@ public class CVKDevice {
                         limits.maxPushConstantsSize(),
                         limits.pointSizeRange().get(0), limits.pointSizeRange().get(1),
                         limits.lineWidthRange().get(0), limits.lineWidthRange().get(1)                                                
-                        ));
+                        );
             }            
                          
 
@@ -379,7 +397,7 @@ public class CVKDevice {
                 ret = vkGetPhysicalDeviceSurfaceFormatsKHR(vkPhysicalDevice, hSurfaceHandle, pInt, vkSurfaceFormats);
                 if (VkFailed(ret)) return ret;
                 
-                CVKLOGGER.info("Available surface formats:");
+                Logger().info("Available surface formats:");
                 for (int i = 0; i < numFormats; ++i) {
                     VkSurfaceFormatKHR surfaceFormat = vkSurfaceFormats.get(i);
                     CVKMissingEnums.VkColorSpaceKHR colorSpace = CVKMissingEnums.VkColorSpaceKHR.GetByValue(surfaceFormat.colorSpace());
@@ -399,7 +417,7 @@ public class CVKDevice {
                         selectedColourSpace = colorSpace;
                     }
                     
-                    CVKLOGGER.log(Level.INFO, "    {0}:{1}", new Object[]{format.name(), colorSpace.name()});                        
+                    Logger().log(Level.INFO, "    %s:%s", format.name(), colorSpace.name());                        
                 }
             }
             
@@ -420,7 +438,7 @@ public class CVKDevice {
                 IntBuffer presentationModes = stack.mallocInt(numPresentationModes);
                 vkGetPhysicalDeviceSurfacePresentModesKHR(vkPhysicalDevice, hSurfaceHandle, pInt, presentationModes);
                 
-                CVKLOGGER.info("Supported presentation modes:");
+                Logger().info("Supported presentation modes:");
                 for (int i = 0; i < numPresentationModes; ++i) {                
                     CVKMissingEnums.VkPresentModeKHR presentationMode = CVKMissingEnums.VkPresentModeKHR.values()[presentationModes.get(i)];
                     // Mailbox is our first choice
@@ -443,7 +461,7 @@ public class CVKDevice {
                      && selectedPresentationMode == CVKMissingEnums.VkPresentModeKHR.VK_PRESENT_MODE_NONE) {
                         selectedPresentationMode = presentationMode;
                     }
-                    CVKLOGGER.log(Level.INFO, "   {0}", presentationMode.name());
+                    Logger().log(Level.INFO, "   %s", presentationMode.name());
                 }                              
             }
             
@@ -464,14 +482,14 @@ public class CVKDevice {
      * @param stack
      * @return 
      */
-    private int InitVKLogicalDevice(MemoryStack stack) {
+    private int CreateVKLogicalDevice(MemoryStack stack) {
         int ret = VK_SUCCESS;
         
         // We need the extensions and layers again.  
         PointerBuffer pbValidationLayers = null;
         PointerBuffer pbExtensions = GetRequiredVKLogicalDeviceExtensions(stack);
-        if (debugging) {
-            pbValidationLayers = InitVKValidationLayers(stack);
+        if (CVK_DEBUGGING) {
+            pbValidationLayers = InitVKValidationLayers(stack, Logger());
         }
 
         // We only need one queue
@@ -505,6 +523,13 @@ public class CVKDevice {
         }
         return ret;
     }
+    
+    private void DestroyVKLogicalDevice() {
+        if (vkDevice != null) {
+            vkDestroyDevice(vkDevice, null);
+            vkDevice = null;
+        }
+    }
 
     /**
      * Initialises the queue that enables our code to communicate with the
@@ -530,7 +555,7 @@ public class CVKDevice {
      * <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html#devsandqueues-queues">Queue
      * reference</a>
      */
-    private void InitVKQueue(MemoryStack stack) {
+    private void StoreVKQueue(MemoryStack stack) {
         PointerBuffer pb = stack.mallocPointer(1);
         vkGetDeviceQueue(vkDevice, queueFamilyIndex, 0, pb);
         long queueHandle = pb.get(0);
@@ -544,7 +569,7 @@ public class CVKDevice {
      * @param stack
      * @return
      */
-    private int InitVKCommandPool(MemoryStack stack) {
+    private int CreateVKCommandPool(MemoryStack stack) {
         int ret;
         
         VkCommandPoolCreateInfo poolInfo = VkCommandPoolCreateInfo.callocStack(stack);
@@ -554,13 +579,18 @@ public class CVKDevice {
         LongBuffer pCommandPool = stack.mallocLong(1);
         ret = vkCreateCommandPool(vkDevice, poolInfo, null, pCommandPool);
         if (VkSucceeded(ret)) {
-            hCommandPoolHandle = pCommandPool.get(0);
+            hCommandPool = pCommandPool.get(0);
         }
         
         return ret;
     }    
     
-    
+    private void DestroyVKCommandPool() {
+        if (hCommandPool != VK_NULL_HANDLE) {
+            vkDestroyCommandPool(vkDevice, hCommandPool, null);
+            hCommandPool = VK_NULL_HANDLE;
+        }
+    }
     
     
     
@@ -572,7 +602,7 @@ public class CVKDevice {
      * @return
      */
     public int UpdateSurfaceCapabilities() {
-        StartLogSection("Device updating surface capalities");
+        Logger().StartLogSection("Device updating surface capalities");
         
         int ret = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vkPhysicalDevice, hSurfaceHandle, vkSurfaceCapabilities);
         if (VkSucceeded(ret)) {
@@ -580,7 +610,7 @@ public class CVKDevice {
             if (vkCurrentSurfaceExtent.width() == UINT32_MAX) {
                 //TODO_TT: find out how big our surface is somehow
                 vkCurrentSurfaceExtent.set(800, 600);
-                CVKLOGGER.log(Level.WARNING, "vkGetPhysicalDeviceSurfaceCapabilitiesKHR returned extent with the magic don't care size");
+                Logger().log(Level.WARNING, "vkGetPhysicalDeviceSurfaceCapabilitiesKHR returned extent with the magic don't care size");
             }
             vkCurrentSurfaceExtent.set(Ints.constrainToRange(vkCurrentSurfaceExtent.width(), 
                                                   vkSurfaceCapabilities.minImageExtent().width(), 
@@ -588,15 +618,15 @@ public class CVKDevice {
                             Ints.constrainToRange(vkCurrentSurfaceExtent.height(), 
                                                   vkSurfaceCapabilities.minImageExtent().height(), 
                                                   vkSurfaceCapabilities.maxImageExtent().height()));             
-            CVKLOGGER.log(Level.INFO, "Ideal extent will be {0}x{1}", new Object[]{vkCurrentSurfaceExtent.width(), vkCurrentSurfaceExtent.height()});
+            Logger().log(Level.INFO, "Ideal extent will be %d x %d", new Object[]{vkCurrentSurfaceExtent.width(), vkCurrentSurfaceExtent.height()});
         }
         else {
-            CVKLOGGER.log(Level.SEVERE, "vkGetPhysicalDeviceSurfaceCapabilitiesKHR failed with error: {0}", ret);
+            Logger().log(Level.SEVERE, "vkGetPhysicalDeviceSurfaceCapabilitiesKHR failed with error: %d (0x%08X)", ret, ret);
         }
         
         
         
-        EndLogSection("Device updating surface capalities");
+        Logger().EndLogSection("Device updating surface capalities");
         return ret;
     }   
     

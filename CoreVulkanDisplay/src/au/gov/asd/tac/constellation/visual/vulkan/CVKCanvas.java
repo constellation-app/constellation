@@ -6,10 +6,7 @@
 package au.gov.asd.tac.constellation.visual.vulkan;
 
 import java.awt.Graphics;
-import java.util.ArrayList;
-import java.util.EventListener;
 import org.lwjgl.vulkan.awt.AWTVKCanvas;
-
 import javax.swing.SwingUtilities;
 import org.lwjgl.vulkan.awt.VKData;
 
@@ -18,29 +15,25 @@ import org.lwjgl.vulkan.awt.VKData;
 public class CVKCanvas extends AWTVKCanvas{
     private boolean parentAdded = false;
     private int frameNumber = 0;
-    private final CVKRenderer vkRenderer;
-    private ArrayList<EventListener> eventListeners = new ArrayList<>();
+    private final CVKRenderer cvkRenderer;
     
     public int GetFrameNumber() { return frameNumber; }
     
-    public CVKCanvas(VKData vkData, CVKRenderer vkRenderer) {
+    public CVKCanvas(VKData vkData, CVKRenderer cvkRenderer) {
         super(vkData);
-        this.vkRenderer = vkRenderer;
-        this.addComponentListener(vkRenderer);
+        cvkRenderer.Logger().fine("Canvas constructed");        
+        this.cvkRenderer = cvkRenderer;
+        this.addComponentListener(cvkRenderer);
     }
-   
-
+  
     public void Destroy() {
-        this.removeComponentListener(vkRenderer);
+        cvkRenderer.Logger().fine("Canvas destroyed"); 
+        this.removeComponentListener(cvkRenderer);
     }
-    
     
     public void InitSurface() {
+        cvkRenderer.Logger().fine("Canvas InitSurface"); 
         parentAdded = true;
-    }
-    
-    public void addEventListener(EventListener listener) {
-        eventListeners.add(listener);
     }
     
     @Override
@@ -62,6 +55,7 @@ public class CVKCanvas extends AWTVKCanvas{
     */
     @Override
     public boolean requestFocusInWindow() {
+        cvkRenderer.Logger().fine("Canvas requestFocusInWindow"); 
         boolean ret = super.requestFocusInWindow();
         parentAdded = true;
         return ret;
@@ -69,7 +63,8 @@ public class CVKCanvas extends AWTVKCanvas{
     
     @Override
     public void initVK() {
-        vkRenderer.Initialise(this.surface);
+        cvkRenderer.Logger().fine("Canvas initVK"); 
+        cvkRenderer.Initialise(this.surface);
     }
     
     @Override
@@ -78,7 +73,7 @@ public class CVKCanvas extends AWTVKCanvas{
         // CVKRenderer is ready to use.  platformCanvas is private in our parent 
         // so this is the only way to complete the surface initialisation.  
         ++frameNumber;       
-        vkRenderer.Display();
+        cvkRenderer.Display();
     }
     
     @Override

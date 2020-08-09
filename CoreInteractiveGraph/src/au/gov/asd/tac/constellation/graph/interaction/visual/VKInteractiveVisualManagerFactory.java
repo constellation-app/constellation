@@ -33,7 +33,7 @@ public class VKInteractiveVisualManagerFactory extends GraphVisualManagerFactory
     public VisualManager constructVisualManager(Graph graph) throws Throwable {
         final VisualAccess access = new GraphVisualAccess(graph);
         final Preferences prefs = NbPreferences.forModule(DeveloperPreferenceKeys.class);
-        final InteractiveVKVisualProcessor processor = new InteractiveVKVisualProcessor();
+        final InteractiveVKVisualProcessor processor = new InteractiveVKVisualProcessor(graph.getId());
         final VisualManager manager = new VisualManager(access, processor);
         final GraphChangeListener changeDetector = event -> manager.updateFromIndigenousChanges();
         final DefaultInteractionEventHandler eventHandler = new DefaultInteractionEventHandler(graph, manager, processor, processor);

@@ -16,18 +16,13 @@
 package au.gov.asd.tac.constellation.visual.vulkan.utils;
 
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
-import java.io.File;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKGraphLogger.CVKLOGGER;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
-import java.util.logging.FileHandler;
-import java.util.logging.Formatter;
 import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
-import java.util.logging.StreamHandler;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.Platform;
@@ -58,110 +53,19 @@ public class CVKUtils {
     public static final int CVK_ERROR_SHADER_COMPILATION                        = 0xFFFF0004;
     public static final int CVK_ERROR_SHADER_MODULE                             = 0xFFFF0005;
     
-    // Remove this once we are sure everything is working, but for now ensure all render ops happen in the render thread
-    // TODO_TT: !!!THIS WILL ONLY WORK FOR A SINGLE GRAPH, MULTIPLE GRAPHS WILL TRIP THIS !!!
-    public static long renderThreadID = 0;    
-    
     // Logger shared by all of Constellation's Vulkan classes with a minimal formatter
     // as a proxy for the IDE's console window (as prints to stdout aren't appearing).
-    public final static Logger CVKLOGGER = CreateNamedFileLogger("CVK");
-    public final static Level DEFAULT_LOG_LEVEL = Level.INFO;    
+
     
     // Enable this for additional logging, thread verification and other checks
-    public static boolean debugging = true;
+    public static boolean CVK_DEBUGGING = true;
+    
+    public static int CVK_VKALLOCATIONS = 0;
     
     
-    public static class MinimalLogFormatter extends Formatter {
-        public static int indent = 0;
-        public final static int PADLEN = 30;
-        
-        @Override
-        public String format(LogRecord record) {
-            // This does all the VA_ARGS formatting
-            String msg = formatMessage(record);
-            
-            // Don't fuss about with line and file for empty lines
-            if (msg.isBlank()) {
-                return msg;
-            }
-            
-            // StartLogSection increments indent 
-            StringBuilder lineBuilder = new StringBuilder();
-            for (int i = 0; i < indent; ++i) {
-                lineBuilder.append("    ");
-            }
-            
-            // With a grand total of 1 observation, the call we are interested
-            // is at element 8
-            StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-            if (stackTrace.length >= 8) {
-                StackTraceElement ste = stackTrace[8];
-                String fileAndLine = String.format("%s:%d>", ste.getFileName(), ste.getLineNumber());
-                lineBuilder.append(fileAndLine);
-                
-                // Right pad (additional to indent padding) up to PADLEN so we have 
-                // table like output for records at the same indent level                
-                int padding = PADLEN - fileAndLine.length();
-                for (int i = 0; i < padding; ++i) {
-                    lineBuilder.append(" ");
-                }                
-            }              
-            
-            StringBuilder sb = new StringBuilder();
-            String msgLines[] = msg.split("\\r?\\n");
-            for (String msgLine : msgLines) {
-                if (!msgLine.isBlank()) {
-                    sb.append(lineBuilder.toString());
-                    sb.append(msgLine);
-                }
-                sb.append(System.getProperty("line.separator"));
-            }                               
-            return sb.toString();
-        }         
-    }       
+          
     
-    public static Logger CreateNamedFileLogger(String name) {
-        return CreateNamedFileLogger(name, DEFAULT_LOG_LEVEL);
-    }
-    public static Logger CreateNamedFileLogger(String name, Level level) {        
-        Logger logger = Logger.getLogger(name);
-        logger.setUseParentHandlers(false);
-        logger.setLevel(Level.INFO);
 
-        // Delete old log
-        final String logName = String.format("%s.log", name);
-        try {         
-            File oldLog = new File(logName);
-            oldLog.delete();                
-        }  
-        catch(Exception e) {   
-            // old log doesn't exist or is locked, oh well keep going
-        }  
-
-        try {
-            FileHandler fileHandler = new FileHandler(logName);
-            fileHandler.setFormatter(new MinimalLogFormatter());
-            logger.addHandler(fileHandler);              
-        } catch (IOException e) {
-            logger.log(Level.WARNING, "Logger failed to create {0}, exception: {1}",
-                    new Object[]{logName, e.toString()});
-        }
-
-        StreamHandler streamHanlder = new StreamHandler(System.out, new MinimalLogFormatter());
-        logger.addHandler(streamHanlder);   
-        
-        return logger;
-    }
-    
-    
-    public static void StartLogSection(String msg) {
-        CVKLOGGER.log(Level.INFO, "{0}---- START {1} ----", new Object[]{System.getProperty("line.separator"), msg});        
-        ++CVKUtils.MinimalLogFormatter.indent;
-    }
-    public static void EndLogSection(String msg) {
-        --CVKUtils.MinimalLogFormatter.indent;
-        CVKLOGGER.log(Level.INFO, "---- END {1} ----{0}{0}", new Object[]{System.getProperty("line.separator"), msg});        
-    }
     public static void LogStackTrace() {
         LogStackTrace(Level.INFO);
     }
@@ -196,13 +100,6 @@ public class CVKUtils {
             }
         }
         return false;
-    }
-        
-    public static void VerifyInRenderThread() {
-        if (renderThreadID != 0 && (renderThreadID != Thread.currentThread().getId())) {
-            throw new RuntimeException(String.format("Error: render operation performed from thread %d, render thread %d",
-                    Thread.currentThread().getId(), renderThreadID));
-        }
     }    
     
     public static void checkVKret(int retCode) throws IllegalStateException {
@@ -290,7 +187,7 @@ public class CVKUtils {
      * @return PointerBuffer of validation layers allocated on the provided
      * stack
      */
-    public static PointerBuffer InitVKValidationLayers(MemoryStack stack) {
+    public static PointerBuffer InitVKValidationLayers(MemoryStack stack, CVKGraphLogger logger) {
         IntBuffer pInt = stack.mallocInt(1);
         pInt.put(0);
         pInt.flip();
@@ -298,7 +195,11 @@ public class CVKUtils {
         // Get the count of available layers
         checkVKret(vkEnumerateInstanceLayerProperties(pInt, null));
         int layerCount = pInt.get(0);
-        CVKLOGGER.log(Level.INFO, "Vulkan has {0} available layers.", layerCount);
+        if (logger != null) {
+            logger.info("Vulkan has %d available layers.", layerCount);
+        } else {
+            CVKLOGGER.log(Level.INFO, "Vulkan has {0} available layers.", layerCount);
+        }
 
         // Get available layers
         VkLayerProperties.Buffer availableLayers = VkLayerProperties.mallocStack(layerCount, stack);
@@ -306,7 +207,11 @@ public class CVKUtils {
         for (int i = 0; i < layerCount; ++i) {
             availableLayers.position(i);
             String layerDesc = availableLayers.descriptionString();
-            CVKLOGGER.log(Level.INFO, "Vulkan layer {0}: {1}", new Object[]{i, layerDesc});
+            if (logger != null) {
+                logger.info("\tVulkan layer %d: %s", i, layerDesc);
+            } else {
+                CVKLOGGER.log(Level.INFO, "\tVulkan layer {0}: {1}", new Object[]{i, layerDesc});
+            }            
         }
 
         // Select the best set of validation layers.  If VK_LAYER_KHRONOS_validation
