@@ -17,6 +17,7 @@ import au.gov.asd.tac.constellation.graph.value.expression.ExpressionParser.Vari
 import au.gov.asd.tac.constellation.graph.value.IndexedReadable;
 import au.gov.asd.tac.constellation.graph.value.converter.ConverterRegistry;
 import au.gov.asd.tac.constellation.graph.value.readables.And;
+import au.gov.asd.tac.constellation.graph.value.readables.Contains;
 import au.gov.asd.tac.constellation.graph.value.readables.Difference;
 import au.gov.asd.tac.constellation.graph.value.readables.Equals;
 import au.gov.asd.tac.constellation.graph.value.readables.GreaterThan;
@@ -25,6 +26,7 @@ import au.gov.asd.tac.constellation.graph.value.readables.LessThan;
 import au.gov.asd.tac.constellation.graph.value.readables.LessThanOrEquals;
 import au.gov.asd.tac.constellation.graph.value.readables.Modulus;
 import au.gov.asd.tac.constellation.graph.value.readables.Negative;
+import au.gov.asd.tac.constellation.graph.value.readables.Not;
 import au.gov.asd.tac.constellation.graph.value.readables.NotEquals;
 import au.gov.asd.tac.constellation.graph.value.readables.Or;
 import au.gov.asd.tac.constellation.graph.value.readables.Positive;
@@ -54,16 +56,27 @@ public class ExpressionFilter {
         OPERATOR_CLASSES.put(Operator.LESS_THAN_OR_EQUALS, LessThanOrEquals.class);
         OPERATOR_CLASSES.put(Operator.AND, And.class);
         OPERATOR_CLASSES.put(Operator.OR, Or.class);
+        OPERATOR_CLASSES.put(Operator.CONTAINS, Contains.class);
         
         CONVERTER_CLASSES.put(Operator.SUBTRACT, Negative.class);
         CONVERTER_CLASSES.put(Operator.ADD, Positive.class);
+        CONVERTER_CLASSES.put(Operator.NOT, Not.class);
     }
     
-    public static IndexedReadable<Object> createExpressionReadable(SequenceExpression expression, IndexedReadableProvider indexedReadableProvider, ConverterRegistry converterRegistry) {
+    public static IndexedReadable<?> createExpressionReadable(SequenceExpression expression, IndexedReadableProvider indexedReadableProvider, ConverterRegistry converterRegistry) {
+        System.out.println(expression);
+        
         final List<Expression> children = expression.getChildren();
         switch (children.size()) {
-            case 2:
-            {
+            case 1: {
+                final var indexedReadable = createIndexedReadable(children.get(0), indexedReadableProvider, converterRegistry);
+                if (indexedReadable == null) {
+                    throw new IllegalArgumentException("Invalid expression size: " + children.size());
+                }
+                return indexedReadable;
+            }
+            
+            case 2: {
                 final OperatorExpression operator = (OperatorExpression)children.get(0);
                 final Expression right = children.get(1);
                 
@@ -77,8 +90,8 @@ public class ExpressionFilter {
                 
                 return Filter.createFilter(rightIndexedReadable, converterClass, converterRegistry); 
             }
-            case 3:
-            {
+            
+            case 3: {
                 final Expression left = children.get(0);
                 final OperatorExpression operator = (OperatorExpression)children.get(1);
                 final Expression right = children.get(2);

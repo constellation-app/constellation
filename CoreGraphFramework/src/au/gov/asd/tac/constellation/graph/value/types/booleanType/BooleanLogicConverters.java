@@ -27,7 +27,7 @@ public class BooleanLogicConverters {
         r.register(parameterClass1, parameterClass2, NotEquals.class, new NotEqualsConverter());
     }
     
-    public static <P1 extends BooleanReadable> void register(ConverterRegistry r, Class<P1> parameterClass) {
+    public static <P extends BooleanReadable> void register(ConverterRegistry r, Class<P> parameterClass) {
         r.register(parameterClass, Not.class, new NotConverter());
     }
     

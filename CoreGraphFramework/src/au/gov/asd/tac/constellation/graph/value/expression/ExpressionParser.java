@@ -7,7 +7,6 @@ package au.gov.asd.tac.constellation.graph.value.expression;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +17,8 @@ import java.util.Map;
  */
 public class ExpressionParser {
 
+    public static final char NO_TOKEN = 0;
+    
     private static enum ParseState {
         READING_WHITESPACE,
         READING_SINGLE_STRING,
@@ -38,9 +39,10 @@ public class ExpressionParser {
         MODULO('%', 3),
         GREATER_THAN('>', 6),
         LESS_THAN('<', 6),
-        GREATER_THAN_OR_EQUALS((char)0, 6),
-        LESS_THAN_OR_EQUALS((char)0, 6),
-        NOT_EQUALS((char)0, 7),
+        GREATER_THAN_OR_EQUALS(NO_TOKEN, 6),
+        LESS_THAN_OR_EQUALS(NO_TOKEN, 6),
+        NOT_EQUALS(NO_TOKEN, 7),
+        CONTAINS(NO_TOKEN, 4),
         EQUALS('=', 7, GREATER_THAN, GREATER_THAN_OR_EQUALS, LESS_THAN, LESS_THAN_OR_EQUALS, NOT, NOT_EQUALS);
         
         private final char token;
@@ -64,14 +66,19 @@ public class ExpressionParser {
             return precedence;
         }
         
-        private static Map<Character, Operator> OPERATORS = new HashMap<>();
+        private static Map<Character, Operator> OPERATOR_TOKENS = new HashMap<>();
         static {
             for (Operator operator : Operator.values()) {
-                if (operator.token != 0) {
-                    OPERATORS.put(operator.token, operator);
+                if (operator.token != NO_TOKEN) {
+                    OPERATOR_TOKENS.put(operator.token, operator);
                 }
             }
         }
+    }
+    
+    private final static Map<String, Operator> wordOperators = new HashMap<>();
+    static {
+        wordOperators.put("contains", Operator.CONTAINS);
     }
     
     public static abstract class Expression {    
@@ -205,6 +212,14 @@ public class ExpressionParser {
                         return;
                     }
                 } else {
+                    if (token instanceof VariableExpression) {
+                        final var tokenVariable = (VariableExpression)token;
+                        final var wordOperator = wordOperators.get(tokenVariable.content.toLowerCase());
+                        if (wordOperator != null) {
+                            children.add(new OperatorExpression(this, wordOperator));
+                            return;
+                        }
+                    }
                     throw new IllegalStateException("2 non-operator tokens in sequence");
                 }
             }
@@ -269,8 +284,8 @@ public class ExpressionParser {
         var content = new char[expression.length()];
         var contentLength = 0;
         
-        final var rootToken = new SequenceExpression(null);
-        var currentToken = rootToken;
+        var rootExpression = new SequenceExpression(null);
+        var currentExpression = rootExpression;
         
         for (int i = 0; i <= expression.length(); i++) {
             final char c = i < expression.length() ? expression.charAt(i) : 0;
@@ -286,15 +301,16 @@ public class ExpressionParser {
                         } else if (c == '"') {
                             state = ParseState.READING_DOUBLE_STRING;
                         } else if (c == '(') {
-                            currentToken = new SequenceExpression(currentToken);
+                            currentExpression = new SequenceExpression(currentExpression);
                         } else if (c == ')') {
-                            if (currentToken == rootToken) {
+                            if (currentExpression == rootExpression) {
                                 throw new IllegalArgumentException("Invalid nesting of parenthesis");
                             }
-                            currentToken.getParent().addChild(currentToken);
-                            currentToken = currentToken.getParent();
-                        } else if (Operator.OPERATORS.containsKey(c)) {
-                            currentToken.addChild(new OperatorExpression(currentToken, Operator.OPERATORS.get(c)));
+                            final var parentExpression = currentExpression.getParent();
+                            parentExpression.addChild(currentExpression);
+                            currentExpression = parentExpression;
+                        } else if (Operator.OPERATOR_TOKENS.containsKey(c)) {
+                            currentExpression.addChild(new OperatorExpression(currentExpression, Operator.OPERATOR_TOKENS.get(c)));
                         } else {
                             throw new IllegalArgumentException("Unexpected character: " + c);
                         }
@@ -303,28 +319,29 @@ public class ExpressionParser {
                     
                 case READING_VARIABLE:
                     if (c == ' ' || c == 0) {
-                        currentToken.addChild(new VariableExpression(currentToken, content, contentLength));
+                        currentExpression.addChild(new VariableExpression(currentExpression, content, contentLength));
                         contentLength = 0;
                         state = ParseState.READING_WHITESPACE;
                     } else if (isLetter(c)) {
                         content[contentLength++] = c;
                     } else if (c == '(') {
-                        currentToken.addChild(new VariableExpression(currentToken, content, contentLength));
+                        currentExpression.addChild(new VariableExpression(currentExpression, content, contentLength));
                         contentLength = 0;
-                        currentToken = new SequenceExpression(currentToken);
+                        currentExpression = new SequenceExpression(currentExpression);
                     } else if (c == ')') {
-                        if (currentToken == rootToken) {
+                        if (currentExpression == rootExpression) {
                             throw new IllegalArgumentException("Invalid nesting of parenthesis");
                         }
-                        currentToken.addChild(new VariableExpression(currentToken, content, contentLength));
+                        currentExpression.addChild(new VariableExpression(currentExpression, content, contentLength));
                         contentLength = 0;
-                        currentToken.getParent().addChild(currentToken);
-                        currentToken = currentToken.getParent();
+                        final var parentExpression = currentExpression.getParent();
+                        parentExpression.addChild(currentExpression);
+                        currentExpression = parentExpression;
                         state = ParseState.READING_WHITESPACE;
-                    } else if (Operator.OPERATORS.containsKey(c)) {
-                        currentToken.addChild(new VariableExpression(currentToken, content, contentLength));
+                    } else if (Operator.OPERATOR_TOKENS.containsKey(c)) {
+                        currentExpression.addChild(new VariableExpression(currentExpression, content, contentLength));
                         contentLength = 0;
-                        currentToken.addChild(new OperatorExpression(currentToken, Operator.OPERATORS.get(c)));
+                        currentExpression.addChild(new OperatorExpression(currentExpression, Operator.OPERATOR_TOKENS.get(c)));
                         state = ParseState.READING_WHITESPACE;
                     } else {
                         throw new IllegalArgumentException("Unexpected character: " + c);
@@ -333,7 +350,7 @@ public class ExpressionParser {
                     
                 case READING_SINGLE_STRING:
                     if (c == '\'') {
-                        currentToken.addChild(new StringExpression(currentToken, content, contentLength));
+                        currentExpression.addChild(new StringExpression(currentExpression, content, contentLength));
                         contentLength = 0;
                         state = ParseState.READING_WHITESPACE;
                     } else if (c == '\\') {
@@ -347,7 +364,7 @@ public class ExpressionParser {
                     
                 case READING_DOUBLE_STRING:
                     if (c == '"') {
-                        currentToken.addChild(new StringExpression(currentToken, content, contentLength));
+                        currentExpression.addChild(new StringExpression(currentExpression, content, contentLength));
                         contentLength = 0;
                         state = ParseState.READING_WHITESPACE;
                     } else if (c == '\\') {
@@ -379,14 +396,20 @@ public class ExpressionParser {
             }
         }
         
-        if (currentToken != rootToken) {
+        if (currentExpression != rootExpression) {
             throw new IllegalArgumentException("Invalid nesting of parenthesis");
         }
-        if (currentToken.children.get(currentToken.children.size() - 1) instanceof OperatorExpression) {
+        if (rootExpression.children.size() == 1) {
+            final var onlyChild = rootExpression.children.get(0);
+            if (onlyChild instanceof SequenceExpression) {
+                rootExpression = (SequenceExpression)onlyChild;
+            }
+        }
+        if (currentExpression.children.get(currentExpression.children.size() - 1) instanceof OperatorExpression) {
             throw new IllegalArgumentException("An expression cannot end with an operator");
         }
         
-        return rootToken;
+        return rootExpression;
     }
     
     private static boolean isLetter(char c) {

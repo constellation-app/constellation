@@ -10,19 +10,14 @@ import au.gov.asd.tac.constellation.graph.value.readables.Sum;
 import au.gov.asd.tac.constellation.graph.value.types.integerType.IntValue;
 import au.gov.asd.tac.constellation.graph.value.converter.Biconverter;
 import au.gov.asd.tac.constellation.graph.value.converter.ConverterRegistry;
-import au.gov.asd.tac.constellation.graph.value.readables.Difference;
+import au.gov.asd.tac.constellation.graph.value.readables.Contains;
 import au.gov.asd.tac.constellation.graph.value.readables.Equals;
 import au.gov.asd.tac.constellation.graph.value.readables.GreaterThan;
 import au.gov.asd.tac.constellation.graph.value.readables.GreaterThanOrEquals;
 import au.gov.asd.tac.constellation.graph.value.readables.LessThan;
 import au.gov.asd.tac.constellation.graph.value.readables.LessThanOrEquals;
-import au.gov.asd.tac.constellation.graph.value.readables.Modulus;
 import au.gov.asd.tac.constellation.graph.value.readables.NotEquals;
-import au.gov.asd.tac.constellation.graph.value.readables.Product;
-import au.gov.asd.tac.constellation.graph.value.readables.Quotient;
 import au.gov.asd.tac.constellation.graph.value.types.booleanType.BooleanValue;
-import au.gov.asd.tac.constellation.graph.value.types.doubleType.DoubleArithmeticConverters;
-import au.gov.asd.tac.constellation.graph.value.types.doubleType.DoubleReadable;
 
 /**
  *
@@ -38,6 +33,7 @@ public class StringConverters {
         r.register(parameterClass1, parameterClass2, GreaterThanOrEquals.class, new GreaterThanOrEqualsConverter());
         r.register(parameterClass1, parameterClass2, LessThan.class, new LessThanConverter());
         r.register(parameterClass1, parameterClass2, LessThanOrEquals.class, new LessThanOrEqualsConverter());
+        r.register(parameterClass1, parameterClass2, Contains.class, new ContainsConverter());
         
         r.register(parameterClass1, parameterClass2, Sum.class, new SumConverter());
     }
@@ -164,6 +160,29 @@ public class StringConverters {
                 @Override
                 public void read(BooleanValue value) {
                     value.writeBoolean(compareStrings(source1.readString(), source2.readString()) <= 0);
+                }
+            };
+        }
+    }
+    
+    public static class ContainsConverter implements Biconverter<StringReadable, StringReadable, Contains> {
+        @Override
+        public Contains convert(StringReadable source1, StringReadable source2) {
+            return new Contains() {
+                @Override
+                public BooleanValue createValue() {
+                    return new BooleanValue();
+                }
+
+                @Override
+                public void read(BooleanValue value) {
+                    final var source1Value = source1.readString();
+                    if (source1Value == null) {
+                        value.writeBoolean(false);
+                    } else {
+                        final var source2Value = source2.readString();
+                        value.writeBoolean(source2Value != null && source1Value.contains(source2Value));
+                    }
                 }
             };
         }
