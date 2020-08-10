@@ -384,13 +384,13 @@ public final class QualityControlViewPane extends BorderPane {
     private static void showPriorityDialog() {
         final ScrollPane rulesScrollPane = new ScrollPane();
         rulesScrollPane.setPrefHeight(240);
-        rulesScrollPane.setPrefWidth(500);
+        rulesScrollPane.setPrefWidth(700);
         rulesScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         rulesScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
         final GridPane buttonGrid = new GridPane();
         buttonGrid.prefWidthProperty().bind(rulesScrollPane.widthProperty());
-        buttonGrid.setPadding(Insets.EMPTY);
+        buttonGrid.setPadding(new Insets(5, 0, 5, 0));
 
         // Setting headings
         int rowCount = 0;
@@ -428,6 +428,28 @@ public final class QualityControlViewPane extends BorderPane {
             final RadioButton warningButton = new RadioButton();
             final RadioButton severeButton = new RadioButton();
             final RadioButton fatalButton = new RadioButton();
+            final Button resetButton = new Button("Reset");
+            resetButton.setOnAction(event -> {
+                switch (rule.getCategory(0)) {
+                    case DEFAULT:
+                        defaultButton.setSelected(true);
+                        break;
+                    case INFO:
+                        infoButton.setSelected(true);
+                        break;
+                    case WARNING:
+                        warningButton.setSelected(true);
+                        break;
+                    case SEVERE:
+                        severeButton.setSelected(true);
+                        break;
+                    case FATAL:
+                        fatalButton.setSelected(true);
+                        break;
+                    default:
+                        break;
+                }
+            });
 
             getPriorities().putIfAbsent(rule, rule.getCategory(0));
             // setting the selection based on the current priority
@@ -459,6 +481,7 @@ public final class QualityControlViewPane extends BorderPane {
             GridPane.setHalignment(warningButton, HPos.CENTER);
             GridPane.setHalignment(severeButton, HPos.CENTER);
             GridPane.setHalignment(fatalButton, HPos.CENTER);
+            GridPane.setHalignment(resetButton, HPos.CENTER);
 
             ruleName.setPadding(new Insets(0, 0, 5, 5));
             defaultButton.setPadding(new Insets(0, 10, 5, 10));
@@ -466,6 +489,7 @@ public final class QualityControlViewPane extends BorderPane {
             warningButton.setPadding(new Insets(0, 10, 5, 10));
             severeButton.setPadding(new Insets(0, 10, 5, 10));
             fatalButton.setPadding(new Insets(0, 10, 5, 10));
+            resetButton.setPadding(new Insets(5, 10, 5, 10));
 
             defaultButton.setUserData(QualityCategory.DEFAULT);
             infoButton.setUserData(QualityCategory.INFO);
@@ -487,6 +511,7 @@ public final class QualityControlViewPane extends BorderPane {
             buttonGrid.add(warningButton, 3, rowCount);
             buttonGrid.add(severeButton, 4, rowCount);
             buttonGrid.add(fatalButton, 5, rowCount);
+            buttonGrid.add(resetButton, 6, rowCount);
 
             rowCount++;
         }
@@ -496,7 +521,8 @@ public final class QualityControlViewPane extends BorderPane {
         final Alert alert = new Alert(Alert.AlertType.INFORMATION,
                 "Select Rule Priorities",
                 ButtonType.OK, ButtonType.CANCEL);
-        alert.setHeaderText("Priority defines category levels for each rule");
+        alert.setTitle("Select Rule Priorities");
+        alert.setHeaderText("Customise the priority of rules");
         alert.getDialogPane().setContent(rulesScrollPane);
         alert.setResizable(true);
 
