@@ -21,7 +21,7 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.io.AbstractGraphIOProvider;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteReader;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteWriter;
-import static au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttributeDescription.ATTRIBUTE_NAME;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.BannerAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Banner;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
@@ -39,7 +39,7 @@ public class BannerIOProvider extends AbstractGraphIOProvider {
 
     @Override
     public String getName() {
-        return ATTRIBUTE_NAME;
+        return BannerAttributeDescription.ATTRIBUTE_NAME;
     }
 
     @Override

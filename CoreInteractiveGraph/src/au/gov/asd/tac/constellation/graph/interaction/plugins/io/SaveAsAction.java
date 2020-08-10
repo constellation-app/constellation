@@ -273,7 +273,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
             if (newFile == null) {
                 break;
             }
-            while (!newFile.getName().matches("^[\\w-_.]*$") || !newFile.getParentFile().exists()) {
+            while (!newFile.getName().matches("^[\\w-_. ]*$") || !newFile.getParentFile().exists()) {
                 NotifyDisplayer.display("File names can only include alphanumeric characters, - or .", NotifyDescriptor.WARNING_MESSAGE);
                 if (JFileChooser.APPROVE_OPTION != chooser.showSaveDialog(WindowManager.getDefault().getMainWindow())) {
                     return null;
