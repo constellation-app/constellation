@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.histogram;
 
+import au.gov.asd.tac.constellation.utilities.clipboard.ConstellationClipboardOwner;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -28,6 +29,9 @@ import java.awt.Paint;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
@@ -38,7 +42,9 @@ import java.awt.event.MouseWheelListener;
 import java.awt.geom.Rectangle2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JViewport;
 import javax.swing.event.MouseInputListener;
 
@@ -99,17 +105,43 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
     private boolean shiftDown;
     private boolean controlDown;
     private boolean binCollectionOutOfDate = true;
+    private final JPopupMenu copyMenu = new JPopupMenu();
+    private int selectedBarIndex = 0;
 
     public HistogramDisplay(HistogramTopComponent topComponent) {
-
         this.topComponent = topComponent;
 
         initializeSettings();
         initializeListeners();
+        
+        JMenuItem copyBarMenuItem = new JMenuItem("Copy Bar");
+        copyBarMenuItem.addActionListener(e -> {
+            Bin[] bins = binCollection.getBins();            
+            final StringBuilder buf = new StringBuilder();
+            final String label = bins[selectedBarIndex].getLabel() != null ? bins[selectedBarIndex].getLabel() : HistogramDisplay.NO_VALUE;
+            buf.append(String.format("%s\t%d\n", label, bins[selectedBarIndex].elementCount));
+            
+            if (buf.length() > 0) {
+                final StringSelection ss = new StringSelection(buf.toString());
+                final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                clipboard.setContents(ss, ConstellationClipboardOwner.getOwner());
+            }
+        });
+        copyMenu.add(copyBarMenuItem);
+        
+        JMenuItem copyHistogramMenuItem = new JMenuItem("Copy Histogram");
+        copyHistogramMenuItem.addActionListener(e -> {
+            topComponent.saveBinsToClipboard();
+        });
+        copyMenu.add(copyHistogramMenuItem);
     }
 
     public final void initializeSettings() {
         setBackground(BACKGROUND_COLOR);
+        // Set the Histogram View able to be focused.
+        this.setFocusable(true);
+        // Focus the Histogram View so 'key' actions can be registered.
+        this.requestFocus();
     }
 
     public final void initializeListeners() {
@@ -117,6 +149,7 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
         addMouseMotionListener(this);
         addMouseWheelListener(this);
         addComponentListener(this);
+        addKeyListener(this);
     }
 
     @Override
@@ -489,11 +522,19 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
 
     @Override
     public void mouseClicked(MouseEvent e) {
+        // Focus the Histogram View so 'key' actions can be registered.
+        this.requestFocus();
+        if (binCollection != null) {
+            repaint();
+            if (e.getButton() == MouseEvent.BUTTON3) {
+                selectedBarIndex = getBarAtPoint(e.getPoint(), true);
+                copyMenu.show(this, e.getX(), e.getY());
+            }
+        }
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-
         if (binCollection != null) {
 
             Bin[] bins = binCollection.getBins();
@@ -559,7 +600,14 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
 
     @Override
     public void keyPressed(KeyEvent e) {
-        // Override required, intentionally left blank
+        if (binCollection != null) {
+            // Ensure that the Histogram View is focused before allowing Ctrl + C to be registered.
+            if (this.isFocusOwner()) {
+                if ((e.isControlDown()) && (e.getKeyCode() == KeyEvent.VK_C)) {
+                    topComponent.saveBinsToClipboard();
+                }
+            }
+        }
     }
 
     @Override

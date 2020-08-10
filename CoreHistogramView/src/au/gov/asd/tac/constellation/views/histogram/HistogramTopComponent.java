@@ -144,6 +144,12 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     public void componentClosed() {
         GraphManager.getDefault().removeGraphManagerListener(this);
         newActiveGraph(null);
+        // Remove Listeners when Histogram View is closed.
+        removeMouseListener(display);
+        removeMouseMotionListener(display);
+        removeMouseWheelListener(display);
+        removeComponentListener(display);
+        removeKeyListener(display);
     }
 
     void writeProperties(java.util.Properties p) {
