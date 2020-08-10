@@ -143,7 +143,7 @@ public final class TableViewPane extends BorderPane {
 
     private static final int WIDTH = 120;
     private static final int DEFAULT_MAX_ROWS_PER_PAGE = 500;
-    private static int maxRowsPerPage = DEFAULT_MAX_ROWS_PER_PAGE;
+    private int maxRowsPerPage = DEFAULT_MAX_ROWS_PER_PAGE;
 
     private final TableViewTopComponent parent;
     private final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> columnIndex;
