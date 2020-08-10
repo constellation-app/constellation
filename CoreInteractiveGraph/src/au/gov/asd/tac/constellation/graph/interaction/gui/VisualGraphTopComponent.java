@@ -1061,7 +1061,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             this.deleteOldGdo = deleteOldGdo;
             cancelled = false;
 
-            makeBusy(true);
+            GraphNode.getGraphNode(graph).makeBusy(true);
         }
 
         @Override
@@ -1136,7 +1136,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 }
             }).executeLater(null);
 
-            makeBusy(false);
+            GraphNode.getGraphNode(graph).makeBusy(false);
         }
     }
 }

@@ -218,7 +218,12 @@ public class AnalyticConfigurationPane extends VBox {
             Platform.runLater(() -> {
                 questionListPane.setExpanded(!categoryListPane.isExpanded());
                 if (categoryListPane.isExpanded()) {
-                    currentQuestion = null;
+                    lock.lock();
+                    try {
+                        currentQuestion = null;
+                    } finally {
+                        lock.unlock();
+                    }
                     populateParameterPane(globalAnalyticParameters);
                     setPluginsFromSelectedCategory();
                 }
@@ -517,25 +522,20 @@ public class AnalyticConfigurationPane extends VBox {
     }
 
     public final void updateSelectablePluginsParameters() {
-        if (categoryListPane.isExpanded()) {
-            pluginList.getItems().forEach(selectablePlugin -> {
-                lock.lock();
-                try {
+        lock.lock();
+        try {
+            if (categoryListPane.isExpanded()) {
+                pluginList.getItems().forEach(selectablePlugin -> {
                     selectablePlugin.parameters.updateParameterValues(selectablePlugin.updatedParameters);
-                } finally {
-                    lock.unlock();
-                }
-            });
-        } else if (questionListPane.isExpanded() && currentQuestion != null) {
-            pluginList.getItems().forEach(selectablePlugin -> {
-                lock.lock();
-                try {
+                });
+            } else if (questionListPane.isExpanded() && currentQuestion != null) {
+                pluginList.getItems().forEach(selectablePlugin -> {
                     selectablePlugin.parameters.updateParameterValues(selectablePlugin.updatedParameters);
                     currentQuestion.initialiseParameters(selectablePlugin.plugin, selectablePlugin.parameters);
-                } finally {
-                    lock.unlock();
-                }
-            });
+                });
+            }
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -702,7 +702,7 @@ public class AnalyticConfigurationPane extends VBox {
             }
 
             // Utilized for Question pane - TODO: when multiple tabs + saving of
-            // questions is supported, link this currentquestion variable with 
+            // questions is supported, link this currentquestion variable with
             // the saved/loaded question
             analyticConfigurationPane.lock.lock();
             try {
