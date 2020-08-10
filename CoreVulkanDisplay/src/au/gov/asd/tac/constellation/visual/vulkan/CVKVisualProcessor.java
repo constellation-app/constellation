@@ -36,6 +36,7 @@ import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKFPSRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKIconsRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableUpdateTask;
+import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKGraphLogger;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Rectangle;
@@ -74,12 +75,51 @@ public class CVKVisualProcessor extends VisualProcessor {
     private final Matrix44f modelViewMatrix = new Matrix44f();  
     private Camera camera;
     private float pixelDensity = 0.0f;    
+    private final Thread renderThread;
+    public final CVKGraphLogger cvkLogger;
     
     
     public Matrix44f GetProjectionMatrix() { return projectionMatrix; }
     public CVKIconTextureAtlas GetTextureAtlas() { return cvkIconTextureAtlas; }
     public float GetPixelDensity() { return pixelDensity; }
     public int GetFrameNumber() { return cvkCanvas != null ? cvkCanvas.GetFrameNumber() : -1; }
+    public Thread GetRenderThread() { return renderThread; }
+    public long GetRenderThreadID() { return renderThread != null ? renderThread.getId() : -1; }
+    
+    
+    public CVKVisualProcessor(final String graphId) throws Throwable {  
+        cvkLogger = new CVKGraphLogger(graphId);
+        
+        renderThread = Thread.currentThread();
+        cvkLogger.info("Renderthread TID %d (java hash %d)", renderThread.getId(), renderThread.hashCode());
+                
+        // VkInstance is setup in the constructor
+        cvkRenderer = new CVKRenderer(this);
+
+        // LWJGL structure needed to create AWTVKCanvas.  AWTVKCanvas wraps vkInstance
+        // in a VKData object and makes it private.  The result is we need to create it
+        // here rather than have a CVKCanvas constructor that just takes the
+        // renderer and pulls the instance from there.
+        VKData vkData = new VKData();
+        vkData.instance = cvkRenderer.GetVkInstance();
+        cvkCanvas = new CVKCanvas(vkData, cvkRenderer);                   
+    }
+    
+    
+    public boolean IsRenderThreadCurrent() {
+        return GetRenderThread() == Thread.currentThread();
+    }
+    
+    public boolean IsRenderThreadAlive() {
+        return renderThread != null ? renderThread.isAlive() : false;
+    }
+        
+    public void VerifyInRenderThread() {
+        if (!IsRenderThreadCurrent()) {
+            throw new RuntimeException(String.format("Error: render operation performed from thread %d, render thread %d",
+                    Thread.currentThread().getId(), GetRenderThreadID()));
+        }
+    }      
     
     
     void addTask(final CVKRenderableUpdateTask task) {
@@ -191,8 +231,6 @@ public class CVKVisualProcessor extends VisualProcessor {
 
     @Override
     protected void cleanup() {
-        cvkAxes.DestroyStaticResources();
-        cvkFPS.DestroyStaticResources();
         cvkRenderer.Destroy();
     }
 
@@ -312,21 +350,7 @@ public class CVKVisualProcessor extends VisualProcessor {
      */
     protected final void addRenderable(final CVKRenderable renderable) {
         cvkRenderer.AddRenderable(renderable);
-    }
-    
-
-    public CVKVisualProcessor() throws Throwable {           
-        // VkInstance is setup in the constructor
-        cvkRenderer = new CVKRenderer(this);
-
-        // LWJGL structure needed to create AWTVKCanvas.  AWTVKCanvas wraps vkInstance
-        // in a VKData object and makes it private.  The result is we need to create it
-        // here rather than have a CVKCanvas constructor that just takes the
-        // renderer and pulls the instance from there.
-        VKData vkData = new VKData();
-        vkData.instance = cvkRenderer.GetVkInstance();
-        cvkCanvas = new CVKCanvas(vkData, cvkRenderer);                   
-    }
+    }       
 
     @Override
     protected Component getCanvas() {
@@ -668,211 +692,10 @@ public class CVKVisualProcessor extends VisualProcessor {
         cvkAxes = new CVKAxesRenderable(this);
         cvkRenderer.AddRenderable(cvkAxes);
         cvkFPS = new CVKFPSRenderable(this);    
-        cvkRenderer.AddRenderable(cvkFPS);                      
-        cvkIcons = new CVKIconsRenderable(this);       
-        cvkRenderer.AddRenderable(cvkIcons);   
-        
-        
-        // Testing
-        boolean addExtraIcons = true;
-        if (addExtraIcons) {
-            cvkIconTextureAtlas.AddIcon("Internet.Ebay");
-            cvkIconTextureAtlas.AddIcon("Internet.Gmail");
-            cvkIconTextureAtlas.AddIcon("Internet.Bankin");
-            cvkIconTextureAtlas.AddIcon("Internet.Behance");
-            cvkIconTextureAtlas.AddIcon("Miscellaneous.Dalek");
-            cvkIconTextureAtlas.AddIcon("Miscellaneous.HAL-9000");
-            cvkIconTextureAtlas.AddIcon("Character.Exclaimation Mark");
-            cvkIconTextureAtlas.AddIcon("User Interface.Connections");
-            cvkIconTextureAtlas.AddIcon("User Interface.Drag Word");
-            cvkIconTextureAtlas.AddIcon("Internet.Shopify");
-            cvkIconTextureAtlas.AddIcon("Miscellaneous.Mr Squiggle");
-            cvkIconTextureAtlas.AddIcon("Miscellaneous.Lock");
-            cvkIconTextureAtlas.AddIcon("Flag.Bahamas");
-            cvkIconTextureAtlas.AddIcon("Flag.Netherlands");
-            cvkIconTextureAtlas.AddIcon("User Interface.Remove");
-            cvkIconTextureAtlas.AddIcon("Flag.Aland Islands");
-            cvkIconTextureAtlas.AddIcon("Internet.Hangouts");
-            cvkIconTextureAtlas.AddIcon("Background.Flat Square");
-            cvkIconTextureAtlas.AddIcon("Communications.SIP Call");
-            cvkIconTextureAtlas.AddIcon("Flag.Marshall Islands");
-            cvkIconTextureAtlas.AddIcon("Flag.Chad");
-            cvkIconTextureAtlas.AddIcon("Flag.Palestine");
-            cvkIconTextureAtlas.AddIcon("Flag.Canada");
-            cvkIconTextureAtlas.AddIcon("Internet.Zello");
-            cvkIconTextureAtlas.AddIcon("Network.Cookie");
-            cvkIconTextureAtlas.AddIcon("Internet.Kakao Talk");
-            cvkIconTextureAtlas.AddIcon("Flag.Antigua and Barbuda");
-            cvkIconTextureAtlas.AddIcon("Flag.Kenya");
-            cvkIconTextureAtlas.AddIcon("Flag.Bhutan");
-            cvkIconTextureAtlas.AddIcon("Transport.Plane");
-            cvkIconTextureAtlas.AddIcon("Transport.Train");
-            cvkIconTextureAtlas.AddIcon("User Interface.Drag Drop");
-            cvkIconTextureAtlas.AddIcon("Internet.Pastebin");
-            cvkIconTextureAtlas.AddIcon("Pie Chart.11/16 Pie");
-            cvkIconTextureAtlas.AddIcon("Flag.Solomon Islands");
-            cvkIconTextureAtlas.AddIcon("Flag.Moldova");
-            cvkIconTextureAtlas.AddIcon("Internet.QQ");
-            cvkIconTextureAtlas.AddIcon("Flag.Chile");
-            cvkIconTextureAtlas.AddIcon("Miscellaneous.Music");
-            cvkIconTextureAtlas.AddIcon("Flag.Lithuania");
-            cvkIconTextureAtlas.AddIcon("Internet.Codepen");
-            cvkIconTextureAtlas.AddIcon("Flag.Cook Islands");
-            cvkIconTextureAtlas.AddIcon("Communications.Email");
-            cvkIconTextureAtlas.AddIcon("Flag.Jordan");
-            cvkIconTextureAtlas.AddIcon("Flag.Isle of Man");
-            cvkIconTextureAtlas.AddIcon("User Interface.Columns");
-            cvkIconTextureAtlas.AddIcon("Flag.Kyrgyzstan");
-            cvkIconTextureAtlas.AddIcon("Network.Windows");
-            cvkIconTextureAtlas.AddIcon("Network.Router");
-            cvkIconTextureAtlas.AddIcon("Flag.Malaysia");
-            cvkIconTextureAtlas.AddIcon("Internet.Picasa");
-            cvkIconTextureAtlas.AddIcon("Miscellaneous.Graph");
-            cvkIconTextureAtlas.AddIcon("Flag.Botswana");
-            cvkIconTextureAtlas.AddIcon("User Interface.Half Hop");
-            cvkIconTextureAtlas.AddIcon("Flag.Burkina Faso");
-            cvkIconTextureAtlas.AddIcon("Network.SD Card");
-            cvkIconTextureAtlas.AddIcon("Flag.Liechtenstein");
-            cvkIconTextureAtlas.AddIcon("User Interface.Information");
-            cvkIconTextureAtlas.AddIcon("Internet.Snapchat");
-            cvkIconTextureAtlas.AddIcon("Miscellaneous.Bomb");
-            cvkIconTextureAtlas.AddIcon("Internet.Medium");
-            cvkIconTextureAtlas.AddIcon("User Interface.Expand");
-            cvkIconTextureAtlas.AddIcon("Flag.Sao Tome and Principe");
-            cvkIconTextureAtlas.AddIcon("Flag.Haiti");
-            cvkIconTextureAtlas.AddIcon("User Interface.Axis (y)");
-            cvkIconTextureAtlas.AddIcon("Character.Semi-Colon");
-            cvkIconTextureAtlas.AddIcon("Flag.Djibouti");
-            cvkIconTextureAtlas.AddIcon("Flag.Kosovo");
-            cvkIconTextureAtlas.AddIcon("Communications.Call");
-            cvkIconTextureAtlas.AddIcon("Internet.Magento");
-            cvkIconTextureAtlas.AddIcon("Flag.Aruba");
-            cvkIconTextureAtlas.AddIcon("User Interface.Axis (-z)");
-            cvkIconTextureAtlas.AddIcon("Flag.Norway");
-            cvkIconTextureAtlas.AddIcon("Network.Network Interface Card");
-            cvkIconTextureAtlas.AddIcon("User Interface.Node Labels");
-            cvkIconTextureAtlas.AddIcon("Flag.Tunisia");
-            cvkIconTextureAtlas.AddIcon("Flag.Azerbaijan");
-            cvkIconTextureAtlas.AddIcon("Internet.Naver");
-            cvkIconTextureAtlas.AddIcon("Flag.Belarus");
-            cvkIconTextureAtlas.AddIcon("User Interface.Zoom In");
-            cvkIconTextureAtlas.AddIcon("Internet.Chrome");
-            cvkIconTextureAtlas.AddIcon("Pie Chart.7/16 Pie");
-            cvkIconTextureAtlas.AddIcon("Internet.Dailymotion");
-            cvkIconTextureAtlas.AddIcon("Internet.Feedly");
-            cvkIconTextureAtlas.AddIcon("Flag.India");
-            cvkIconTextureAtlas.AddIcon("User Interface.Connection Labels");
-            cvkIconTextureAtlas.AddIcon("User Interface.Axis (x)");
-            cvkIconTextureAtlas.AddIcon("User Interface.Chevron Right Double");
-            cvkIconTextureAtlas.AddIcon("Flag.Oman");
-            cvkIconTextureAtlas.AddIcon("Flag.Turkmenistan");
-            cvkIconTextureAtlas.AddIcon("Flag.Saint Lucia");
-            cvkIconTextureAtlas.AddIcon("Flag.Argentina");
-            cvkIconTextureAtlas.AddIcon("User Interface.Axis (-y)");
-            cvkIconTextureAtlas.AddIcon("Flag.Czech Republic");
-            cvkIconTextureAtlas.AddIcon("Character.Smiley Face");
-            cvkIconTextureAtlas.AddIcon("Flag.South Africa");
-            cvkIconTextureAtlas.AddIcon("Flag.Costa Rica");
-            cvkIconTextureAtlas.AddIcon("Internet.Sina Weibo");
-            cvkIconTextureAtlas.AddIcon("Network.OSX");
-            cvkIconTextureAtlas.AddIcon("User Interface.Tag");
-            cvkIconTextureAtlas.AddIcon("Flag.Colombia");
-            cvkIconTextureAtlas.AddIcon("Flag.Equatorial Guinea");
-            cvkIconTextureAtlas.AddIcon("Flag.Germany");
-            cvkIconTextureAtlas.AddIcon("User Interface.Nodes");
-            cvkIconTextureAtlas.AddIcon("User Interface.Search");
-            cvkIconTextureAtlas.AddIcon("Character.Quotation Mark");
-            cvkIconTextureAtlas.AddIcon("User Interface.Labels");
-            cvkIconTextureAtlas.AddIcon("Flag.Guinea Bissau");
-            cvkIconTextureAtlas.AddIcon("Internet.Internet Explorer");
-            cvkIconTextureAtlas.AddIcon("Character.Full Stop");
-            cvkIconTextureAtlas.AddIcon("Internet.Vine");
-            cvkIconTextureAtlas.AddIcon("Network.Microprocessor");
-            cvkIconTextureAtlas.AddIcon("Internet.Periscope");
-            cvkIconTextureAtlas.AddIcon("Miscellaneous.Cloud");
-            cvkIconTextureAtlas.AddIcon("Flag.Guernsey");
-            cvkIconTextureAtlas.AddIcon("User Interface.Axis (-x)");
-            cvkIconTextureAtlas.AddIcon("User Interface.Add Alternate");
-            cvkIconTextureAtlas.AddIcon("Flag.Monaco");
-            cvkIconTextureAtlas.AddIcon("Flag.Uruguay");
-            cvkIconTextureAtlas.AddIcon("Flag.Mexico");
-            cvkIconTextureAtlas.AddIcon("Flag.Algeria");
-            cvkIconTextureAtlas.AddIcon("Internet.Bankin");
-            cvkIconTextureAtlas.AddIcon("Flag.Swaziland");
-            cvkIconTextureAtlas.AddIcon("Network.Webcam");
-            cvkIconTextureAtlas.AddIcon("Flag.Cambodia");
-            cvkIconTextureAtlas.AddIcon("User Interface.Axis (z)");
-            cvkIconTextureAtlas.AddIcon("Flag.Venezuela");
-            cvkIconTextureAtlas.AddIcon("Flag.Uganda");
-            cvkIconTextureAtlas.AddIcon("Internet.Dribbble");
-            cvkIconTextureAtlas.AddIcon("Internet.Imgur");
-            cvkIconTextureAtlas.AddIcon("Miscellaneous.Globe");
-            cvkIconTextureAtlas.AddIcon("Flag.Lebanon");
-            cvkIconTextureAtlas.AddIcon("Flag.Estonia");
-            cvkIconTextureAtlas.AddIcon("Internet.Viber");
-            cvkIconTextureAtlas.AddIcon("Person.Person");
-            cvkIconTextureAtlas.AddIcon("User Interface.Zoom Out");
-            cvkIconTextureAtlas.AddIcon("Internet.Envato");
-            cvkIconTextureAtlas.AddIcon("Character.Opening Square Bracket");
-            cvkIconTextureAtlas.AddIcon("Flag.Eritrea");
-            cvkIconTextureAtlas.AddIcon("Miscellaneous.Dalek");
-            cvkIconTextureAtlas.AddIcon("Flag.Montenegro");
-            cvkIconTextureAtlas.AddIcon("Flag.Seychelles");
-            cvkIconTextureAtlas.AddIcon("Communications.Group Chat");
-            cvkIconTextureAtlas.AddIcon("User Interface.Settings");
-            cvkIconTextureAtlas.AddIcon("Internet.Google+");
-            cvkIconTextureAtlas.AddIcon("Flag.Gambia");
-            cvkIconTextureAtlas.AddIcon("Flag.Ireland");
-            cvkIconTextureAtlas.AddIcon("Flag.Turkey");
-            cvkIconTextureAtlas.AddIcon("Flag.Mauritania");
-            cvkIconTextureAtlas.AddIcon("Internet.Jabber");
-            cvkIconTextureAtlas.AddIcon("Internet.Google");
-            cvkIconTextureAtlas.AddIcon("Internet.Instagram");
-            cvkIconTextureAtlas.AddIcon("Internet.Aim");
-            cvkIconTextureAtlas.AddIcon("Internet.Skype");
-            cvkIconTextureAtlas.AddIcon("Network.Linux");
-            cvkIconTextureAtlas.AddIcon("Flag.Greece");
-            cvkIconTextureAtlas.AddIcon("Flag.Bahrain");
-            cvkIconTextureAtlas.AddIcon("Internet.Whatsapp");
-            cvkIconTextureAtlas.AddIcon("Flag.Vanuatu");
-            cvkIconTextureAtlas.AddIcon("Transport.Tardis");
-            cvkIconTextureAtlas.AddIcon("Flag.Namibia");
-            cvkIconTextureAtlas.AddIcon("Flag.Paraguay");
-            cvkIconTextureAtlas.AddIcon("Flag.Burundi");
-            cvkIconTextureAtlas.AddIcon("Flag.Nauru");
-            cvkIconTextureAtlas.AddIcon("Internet.Product Hunt");
-            cvkIconTextureAtlas.AddIcon("Transport.Boat");
-            cvkIconTextureAtlas.AddIcon("Network.Speaker");
-            cvkIconTextureAtlas.AddIcon("Flag.Northern Mariana Islands");
-            cvkIconTextureAtlas.AddIcon("Internet.Deviantart");
-            cvkIconTextureAtlas.AddIcon("Network.Mouse");
-            cvkIconTextureAtlas.AddIcon("Flag.Myanmar");
-            cvkIconTextureAtlas.AddIcon("Internet.Telegram");
-            cvkIconTextureAtlas.AddIcon("Miscellaneous.Map");
-            cvkIconTextureAtlas.AddIcon("Background.Edge Square");
-            cvkIconTextureAtlas.AddIcon("Flag.Guyana");
-            cvkIconTextureAtlas.AddIcon("Internet.Airbnb");
-            cvkIconTextureAtlas.AddIcon("Flag.Tonga");
-            cvkIconTextureAtlas.AddIcon("Miscellaneous.Galaxy");
-            cvkIconTextureAtlas.AddIcon("Internet.Viadeo");
-            cvkIconTextureAtlas.AddIcon("Network.Internet");
-            cvkIconTextureAtlas.AddIcon("Flag.Romania");
-            cvkIconTextureAtlas.AddIcon("User Interface.Chevron Down");
-            cvkIconTextureAtlas.AddIcon("Flag.Suriname");
-            cvkIconTextureAtlas.AddIcon("Flag.Dominica");
-            cvkIconTextureAtlas.AddIcon("Internet.Bittorrent");
-            cvkIconTextureAtlas.AddIcon("Communications.Cell Tower");
-            cvkIconTextureAtlas.AddIcon("Miscellaneous.Heart");
-            cvkIconTextureAtlas.AddIcon("Internet.Outlook");
-            cvkIconTextureAtlas.AddIcon("Internet.Paypal");
-            cvkIconTextureAtlas.AddIcon("Pie Chart.0/16 Pie");
-            cvkIconTextureAtlas.AddIcon("Flag.Uzbekistan");
-            cvkIconTextureAtlas.AddIcon("Internet.Scoopit");
-            cvkIconTextureAtlas.AddIcon("Miscellaneous.Shield");
-            cvkIconTextureAtlas.AddIcon("Internet.Lastfm");
-            cvkIconTextureAtlas.AddIcon("Flag.Latvia");
-            cvkIconTextureAtlas.AddIcon("User Interface.Key");
-        }       
+        cvkRenderer.AddRenderable(cvkFPS);
+        cvkIcons = new CVKIconsRenderable(this);
+        cvkRenderer.AddRenderable(cvkIcons);
+
         
         return ret;
     }    

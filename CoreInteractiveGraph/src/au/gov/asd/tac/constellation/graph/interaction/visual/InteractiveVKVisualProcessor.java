@@ -88,13 +88,13 @@ public class InteractiveVKVisualProcessor extends CVKVisualProcessor implements 
      * @param printGlCapabilities Whether or not to print out a list of GL
      * capabilities upon initialisation.
      */
-    public InteractiveVKVisualProcessor() throws Throwable {
-        super();
+    public InteractiveVKVisualProcessor(final String graphId) throws Throwable {
+        super(graphId);
 //        setGraphDisplayer(graphDisplayer);
 //        addRenderable(newLineRenderable);
 //        addRenderable(selectionBoxRenderable);
 //        addRenderable(planesRenderable);
-        hitTester = new CVKHitTester();//this);
+        hitTester = new CVKHitTester(this);
         addRenderable(hitTester);
     }
 

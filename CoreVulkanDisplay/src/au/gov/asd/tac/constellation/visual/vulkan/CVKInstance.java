@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan;
 
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKLOGGER;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKGraphLogger.CVKLOGGER;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkSucceeded;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.checkVKret;
@@ -52,7 +52,6 @@ import org.lwjgl.vulkan.VkInstanceCreateInfo;
 public class CVKInstance {
     private static CVKInstance cvkInstance = null;
     private VkInstance vkInstance = null;
-    
     
     private CVKInstance() {}
     public static CVKInstance GetInstance(MemoryStack stack, PointerBuffer pbExtensions, PointerBuffer pbValidationLayers, boolean debugging) {

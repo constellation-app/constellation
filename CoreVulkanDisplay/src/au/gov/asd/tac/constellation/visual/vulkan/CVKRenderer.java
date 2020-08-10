@@ -16,14 +16,11 @@
 package au.gov.asd.tac.constellation.visual.vulkan;
 
 import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKMissingEnums;
-import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDescriptorPool.CVKDescriptorPoolRequirements;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.EndLogSection;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.GetRequiredVKPhysicalDeviceExtensions;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.InitVKValidationLayers;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.StartLogSection;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
 import java.awt.event.ComponentListener;
 import java.nio.IntBuffer;
@@ -36,6 +33,7 @@ import static org.lwjgl.vulkan.VK10.*;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.checkVKret;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable;
+import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKGraphLogger;
 import java.awt.event.ComponentEvent;
 import static org.lwjgl.vulkan.KHRSwapchain.vkQueuePresentKHR;
 import org.lwjgl.vulkan.VkClearValue;
@@ -47,12 +45,11 @@ import org.lwjgl.vulkan.VkPresentInfoKHR;
 import org.lwjgl.vulkan.VkRect2D;
 import org.lwjgl.vulkan.VkRenderPassBeginInfo;
 import org.lwjgl.vulkan.VkSubmitInfo;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKLOGGER;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VerifyInRenderThread;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.debugging;
 import java.nio.LongBuffer;
 import java.util.Collections;
+import java.util.concurrent.CountDownLatch;
 import static org.lwjgl.vulkan.KHRSwapchain.VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_DEBUGGING;
 
 
 /*
@@ -99,10 +96,13 @@ public class CVKRenderer implements ComponentListener {
        
     private List<CVKRenderable> renderables = new ArrayList<>();
     private final List<CVKRenderable> newRenderables = Collections.synchronizedList(new ArrayList<>());
-    
+    private boolean isExiting = false;
+    private final CountDownLatch exitComplete = new CountDownLatch(1);
     private float clrChange = 0.01f;
     private int curClrEl = 0;
     private Vector3f clr = new Vector3f(0.0f, 0.0f, 0.0f);
+    
+    public CVKGraphLogger Logger() { return parent.cvkLogger; }
     
     /**
      *
@@ -115,16 +115,44 @@ public class CVKRenderer implements ComponentListener {
     }
     
     
+    private void DestroyImplementation() {
+        if (renderables != null) {
+            renderables.forEach(el -> {el.Destroy();});
+            renderables = null;
+        }
+
+        if (cvkDevice != null) {
+            cvkDevice.Destroy();
+            cvkDevice = null;        
+        }
+    }
+    
+    
     /**
      * Called from the parent CVKVisualProcessor when the VisualManager is
      * being destroyed.
      */
-    public void Destroy() {
-        if (renderables != null) {
-            // Wait for the device to be free before destroying its resources
-            cvkDevice.WaitIdle();
-            renderables.forEach(el -> {el.Destroy();});
-            renderables = null;
+    public void Destroy() {      
+        isExiting = true;
+        parent.cvkLogger.info("CVKRenderer.destroy() called");
+        if (parent.IsRenderThreadCurrent()) {           
+            if (cvkDevice != null) {
+                cvkDevice.WaitIdle();
+            }
+
+            DestroyImplementation();
+        } else {
+            if (parent.IsRenderThreadAlive()) {
+                try {
+                    parent.cvkLogger.info("\tDestroy called outside of render thread.  Waiting until it has finished destruction");   
+                    exitComplete.await();
+                } catch (InterruptedException e) {
+                    parent.cvkLogger.severe(String.format("InterruptedException waiting for renderer to complete destruction %s", e));
+                }
+            } else {
+                parent.cvkLogger.info("\tDestroy called outside of render thread which is no longer alive.  Attempting renderer destruction.");
+                DestroyImplementation();
+            }           
         }
     }
     
@@ -145,7 +173,7 @@ public class CVKRenderer implements ComponentListener {
      * @return
      */
     private int ProcessNewRenderables() {
-        VerifyInRenderThread();
+        parent.VerifyInRenderThread();
         int ret = VK_SUCCESS;
         int oldRenderableCount = renderables.size();
         
@@ -195,7 +223,7 @@ public class CVKRenderer implements ComponentListener {
      * <a href="https://renderdoc.org/vulkan-in-30-minutes.html">https://renderdoc.org/vulkan-in-30-minutes.html</a>      *
      */
     public int Initialise(long surfaceHandle) {
-        cvkDevice = new CVKDevice(cvkInstance, surfaceHandle);
+        cvkDevice = new CVKDevice(cvkInstance, surfaceHandle, parent);
         int ret = cvkDevice.Initialise();
         if (VkFailed(ret)) { return ret; }        
         
@@ -206,7 +234,7 @@ public class CVKRenderer implements ComponentListener {
     }
        
     private int RecreateSwapChain() {
-        VerifyInRenderThread();
+        parent.VerifyInRenderThread();
         
         int ret = VK_NOT_READY;
         if (parent.surfaceReady()) {
@@ -241,13 +269,13 @@ public class CVKRenderer implements ComponentListener {
 
             swapChainNeedsRecreation = false;                                       
         } else {
-            CVKLOGGER.info("Unable to recreate swap chain, surface not ready.");
+            parent.cvkLogger.info("Unable to recreate swap chain, surface not ready.");
         }
         return ret;
     }
     
     private int RecreateDescriptorPool() {
-        VerifyInRenderThread();
+        parent.VerifyInRenderThread();
         
         int ret = VK_NOT_READY;
         if (parent.surfaceReady()) {
@@ -274,7 +302,7 @@ public class CVKRenderer implements ComponentListener {
 
             descriptorPoolNeedsRecreation = false;                                       
         } else {
-            CVKLOGGER.info("Unable to recreate descriptor pool, surface not ready.");
+            parent.cvkLogger.info("Unable to recreate descriptor pool, surface not ready.");
         }
         return ret;        
     }
@@ -285,17 +313,17 @@ public class CVKRenderer implements ComponentListener {
      * @throws Exception
      */
     public CVKRenderer(CVKVisualProcessor parent) throws Exception {
-        StartLogSection("CVKRenderer ctor");
+        parent.cvkLogger.StartLogSection("CVKRenderer ctor");
         this.parent = parent;
         try (MemoryStack stack = stackPush()) {            
             PointerBuffer pbValidationLayers = null;
             PointerBuffer pbExtensions = GetRequiredVKPhysicalDeviceExtensions(stack);
-            if (debugging) {
-                pbValidationLayers = InitVKValidationLayers(stack);
+            if (CVK_DEBUGGING) {
+                pbValidationLayers = InitVKValidationLayers(stack, parent.cvkLogger);
             }
-            cvkInstance = CVKInstance.GetInstance(stack, pbExtensions, pbValidationLayers, debugging);       
+            cvkInstance = CVKInstance.GetInstance(stack, pbExtensions, pbValidationLayers, CVK_DEBUGGING);       
         }
-        EndLogSection("CVKRenderer ctor");
+        parent.cvkLogger.EndLogSection("CVKRenderer ctor");
     }
 
     @SuppressWarnings("deprecation")
@@ -313,7 +341,7 @@ public class CVKRenderer implements ComponentListener {
      * @return 
      */
     private int RecordCommandBuffer(MemoryStack stack, int imageIndex){
-        VerifyInRenderThread();
+        parent.VerifyInRenderThread();
         CVKAssert(cvkSwapChain.GetFrameBufferHandle(imageIndex) != VK_NULL_HANDLE);
     
         int ret = VK_SUCCESS;
@@ -370,7 +398,7 @@ public class CVKRenderer implements ComponentListener {
         vkCmdEndRenderPass(primaryCommandBuffer);
         checkVKret(vkEndCommandBuffer(primaryCommandBuffer)); 
     
-        if (debugging) {
+        if (CVK_DEBUGGING) {
             Debug_UpdateRGB();
         }
         
@@ -507,18 +535,21 @@ public class CVKRenderer implements ComponentListener {
     public void Display() {
         int ret;
         
+        if (isExiting) {
+            if (cvkDevice != null) {
+                cvkDevice.WaitIdle();
+                DestroyImplementation();
+                exitComplete.countDown();
+            }
+            return;
+        }
+        
         // Our render thread should be the AWT thread that owns the canvas, whose
         // surface is our render target.  Being called by any other thread will 
         // lead to resource contention and deadlock (seen during development when
         // user events were handled immediately rather than enqueueing them for
         // the render thread to handle).
-        if (debugging) {
-            if (CVKUtils.renderThreadID != 0) {
-                VerifyInRenderThread();
-            } else {
-                CVKUtils.renderThreadID = Thread.currentThread().getId();
-            }
-        }
+        parent.VerifyInRenderThread();
         
         // Adding renderables will change descriptor requirements, we need to update
         // these before the swapchain is initialised for the first time.
@@ -671,15 +702,15 @@ public class CVKRenderer implements ComponentListener {
     }
     @Override
     public void componentHidden(ComponentEvent e) {
-        CVKLOGGER.info("Canvas sent ");
+        parent.cvkLogger.info("Canvas sent ");
     }
     @Override
     public void componentMoved(ComponentEvent e) {
-        CVKLOGGER.info("Canvas moved");     
+        parent.cvkLogger.info("Canvas moved");     
     }
     @Override
     public void componentShown(ComponentEvent e) {
-        CVKLOGGER.info("Canvas shown");
+        parent.cvkLogger.info("Canvas shown");
     }    
     
     private void Debug_UpdateRGB(){   

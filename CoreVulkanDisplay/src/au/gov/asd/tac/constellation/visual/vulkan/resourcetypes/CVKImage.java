@@ -41,11 +41,6 @@ import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_UNDEFINED;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_TYPE_1D;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_TYPE_2D;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_VIEW_TYPE_1D;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_VIEW_TYPE_1D_ARRAY;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_VIEW_TYPE_2D;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_VIEW_TYPE_2D_ARRAY;
-import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
@@ -82,7 +77,10 @@ import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.checkVKr
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKFormatUtils.VkFormatByteDepth;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_DEBUGGING;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_VKALLOCATIONS;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkSucceeded;
+import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
 
 public class CVKImage {
     private CVKDevice cvkDevice     = null;
@@ -110,17 +108,28 @@ public class CVKImage {
     public int GetAspectMask() { return aspectMask; }
       
     public void Destroy() {
+        if (CVK_DEBUGGING && pImage.get(0) != VK_NULL_HANDLE) {
+            if (pImageMemory != null && pImageMemory.get(0) != VK_NULL_HANDLE) {
+                --CVK_VKALLOCATIONS;
+                cvkDevice.Logger().info(String.format("CVK_VKALLOCATIONS (%d-) Destroy called on CVKImage (0x%016X), vkFreeMemory will be called", CVK_VKALLOCATIONS, pImage.get(0)));
+            } else {
+                cvkDevice.Logger().info(String.format("CVK_VKALLOCATIONS (%d!) Destroy called on CVKImage (0x%016X), vkFreeMemory will NOT be called", CVK_VKALLOCATIONS, pImage.get(0)));
+            }            
+        }                
         if (pImage.get(0) != VK_NULL_HANDLE) {
             vkDestroyImage(cvkDevice.GetDevice(), pImage.get(0), null);
             pImage.put(0, VK_NULL_HANDLE);
+            pImage = null;
         }
         if (pImageView.get(0) != VK_NULL_HANDLE) {
             vkDestroyImageView(cvkDevice.GetDevice(), pImageView.get(0), null);
             pImageView.put(0, VK_NULL_HANDLE);
+            pImageView = null;
         }        
         if (pImageMemory.get(0) != VK_NULL_HANDLE) {
             vkFreeMemory(cvkDevice.GetDevice(), pImageMemory.get(0), null);
             pImageMemory.put(0, VK_NULL_HANDLE);
+            pImageMemory = null;
         }
         cvkDevice = null;
     }
@@ -379,6 +388,7 @@ public class CVKImage {
                                     int height,
                                     int layers,
                                     int format,
+                                    int viewType,
                                     int tiling,
                                     int usage, 
                                     int properties,
@@ -399,7 +409,7 @@ public class CVKImage {
         cvkImage.properties = properties;
         cvkImage.aspectMask = aspectMask;        
         cvkImage.imageType  = height > 1 ? VK_IMAGE_TYPE_2D : VK_IMAGE_TYPE_1D;
-        cvkImage.viewType   = layers > 1 ? (height > 1 ? VK_IMAGE_VIEW_TYPE_2D_ARRAY : VK_IMAGE_VIEW_TYPE_1D_ARRAY) : (height > 1 ? VK_IMAGE_VIEW_TYPE_2D : VK_IMAGE_VIEW_TYPE_1D);
+        cvkImage.viewType   = viewType;
         cvkImage.layout     = VK_IMAGE_LAYOUT_UNDEFINED;
          
         try(MemoryStack stack = stackPush()) {
@@ -424,17 +434,23 @@ public class CVKImage {
             assert(cvkImage.pImage.get(0) != VK_NULL_HANDLE);
 
             // The image isn't backed by memory, do that now
-            VkMemoryRequirements memRequirements = VkMemoryRequirements.mallocStack(stack);
-            vkGetImageMemoryRequirements(cvkDevice.GetDevice(), cvkImage.pImage.get(0), memRequirements);
+            VkMemoryRequirements vkMemoryRequirements = VkMemoryRequirements.mallocStack(stack);
+            vkGetImageMemoryRequirements(cvkDevice.GetDevice(), cvkImage.pImage.get(0), vkMemoryRequirements);
 
             VkMemoryAllocateInfo allocInfo = VkMemoryAllocateInfo.callocStack(stack);
             allocInfo.sType(VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO);
-            allocInfo.allocationSize(memRequirements.size());
-            allocInfo.memoryTypeIndex(cvkDevice.GetMemoryType(memRequirements.memoryTypeBits(), properties));
+            allocInfo.allocationSize(vkMemoryRequirements.size());
+            allocInfo.memoryTypeIndex(cvkDevice.GetMemoryType(vkMemoryRequirements.memoryTypeBits(), properties));
 
-            if(vkAllocateMemory(cvkDevice.GetDevice(), allocInfo, null, cvkImage.pImageMemory) != VK_SUCCESS) {
+            if (vkAllocateMemory(cvkDevice.GetDevice(), allocInfo, null, cvkImage.pImageMemory) != VK_SUCCESS) {
                 throw new RuntimeException("Failed to allocate image memory");
             }
+            if (CVK_DEBUGGING) {
+                ++CVK_VKALLOCATIONS;
+                cvkDevice.Logger().info(String.format("CVK_VKALLOCATIONS(%d+) vkAllocateMemory(%d) for CVKimage (0x%016X)", 
+                        CVK_VKALLOCATIONS, vkMemoryRequirements.size(), cvkImage.pImage.get(0)));
+            }
+//            LogStackTrace();            
 
             vkBindImageMemory(cvkDevice.GetDevice(), cvkImage.pImage.get(0), cvkImage.pImageMemory.get(0), 0);
             

@@ -23,10 +23,8 @@ import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDescriptorPool.CVKDescriptorPoolRequirements;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKLOGGER;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.checkVKret;
 import java.awt.image.BufferedImage;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.debugging;
 import static java.awt.image.BufferedImage.TYPE_4BYTE_ABGR;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKImage;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
@@ -50,6 +48,7 @@ import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_TILING_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_SAMPLED_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_VIEW_TYPE_2D_ARRAY;
 import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
@@ -63,6 +62,7 @@ import static org.lwjgl.vulkan.VK10.vkDestroySampler;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkCommandBufferInheritanceInfo;
 import org.lwjgl.vulkan.VkSamplerCreateInfo;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_DEBUGGING;
 
 
 public class CVKIconTextureAtlas extends CVKRenderable {
@@ -120,8 +120,7 @@ public class CVKIconTextureAtlas extends CVKRenderable {
             this.icon = icon;     
             CVKIconTextureAtlas.iconsPerRow = textureWidth/ICON_WIDTH;
             CVKIconTextureAtlas.rowsPerLayer = textureHeight/ICON_HEIGHT;
-            CVKIconTextureAtlas.iconsPerLayer = CVKIconTextureAtlas.iconsPerRow * CVKIconTextureAtlas.rowsPerLayer;
-            
+            CVKIconTextureAtlas.iconsPerLayer = CVKIconTextureAtlas.iconsPerRow * CVKIconTextureAtlas.rowsPerLayer;            
         }
     }
     
@@ -341,8 +340,9 @@ public class CVKIconTextureAtlas extends CVKRenderable {
             cvkAtlasImage = CVKImage.Create(cvkDevice, 
                                             textureWidth, 
                                             textureHeight, 
-                                            requiredLayers, 
+                                            requiredLayers,
                                             VK_FORMAT_R8G8B8A8_SRGB, //non-linear format to give more fidelity to the hues we are most able to perceive
+                                            VK_IMAGE_VIEW_TYPE_2D_ARRAY, //regardless how how many layers are in the image, the shaders that use that atlas use a sampler2DArray
                                             VK_IMAGE_TILING_OPTIMAL, //we usually sample rectangles rather than long straight lines
                                             VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
                                             VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
@@ -352,16 +352,18 @@ public class CVKIconTextureAtlas extends CVKRenderable {
             ret = cvkAtlasImage.Transition(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
             if (VkFailed(ret)) { return ret; }
 
+            // As icons have a maximum size we can use a single staging buffer to copy each one
+            CVKBuffer cvkStagingBuffer = CVKBuffer.Create(cvkDevice, 
+                                                          ICON_SIZE_BYTES, 
+                                                          VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                                                          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);  
+            cvkStagingBuffer.DEBUGNAME = "CVKIconTextureAtlas cvkStagingBuffer";            
+            
+            // Loop that copies icons from the icon manager into the atlas texture(s)
             int numIcons = icons.size();
             for (int iIcon = 0; iIcon < numIcons; ++iIcon) {
                 IndexedConstellationIcon el = icons.get(iIcon);
-                BufferedImage iconImage = el.icon.buildBufferedImage();     
-               
-                CVKBuffer cvkStagingBuffer = CVKBuffer.Create(cvkDevice, 
-                                                              ICON_SIZE_BYTES, 
-                                                              VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-                                                              VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);  
-                cvkStagingBuffer.DEBUGNAME = String.format("CVKIconTextureAtlas cvkStagingBuffer %d", iIcon);
+                BufferedImage iconImage = el.icon.buildBufferedImage();                   
                 
                // Convert the buffered image if its not in our desired state.
                 if (TYPE_4BYTE_ABGR != iconImage.getType()) {
@@ -376,9 +378,9 @@ public class CVKIconTextureAtlas extends CVKRenderable {
                 
                 // Get pixel data into a direct buffer
                 ByteBuffer pixels = ByteBuffer.wrap(((DataBufferByte) iconImage.getRaster().getDataBuffer()).getData());
-                if (debugging) {
+                if (CVK_DEBUGGING) {
                     if (IsEmpty(pixels) && el.index != TRANSPARENT_ICON_INDEX) {
-                        CVKLOGGER.warning(String.format("Icon %d is empty", el.index));
+                        cvkDevice.Logger().warning(String.format("Icon %d is empty", el.index));
                     }
                 }
                 
@@ -431,9 +433,11 @@ public class CVKIconTextureAtlas extends CVKRenderable {
                 Vector3i dstOffset = new Vector3i(texIndices.getU() * ICON_WIDTH, texIndices.getV() * ICON_HEIGHT, texIndices.getW());
                 Vector3i dstExtent = new Vector3i(ICON_WIDTH, ICON_HEIGHT, 1);
                 ret = cvkAtlasImage.CopyFrom(cvkStagingBuffer, 0, dstOffset, dstExtent);
-                if (VkFailed(ret)) { return ret; }  
-                cvkStagingBuffer.Destroy();
+                if (VkFailed(ret)) { return ret; }                  
             }
+            
+            // Finished staging so destroy the staging buffer
+            cvkStagingBuffer.Destroy();
             
             // Now the image is populated, transition it for reading
             ret = cvkAtlasImage.Transition(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);

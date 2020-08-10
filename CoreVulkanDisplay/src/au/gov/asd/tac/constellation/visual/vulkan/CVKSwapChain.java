@@ -17,8 +17,6 @@ package au.gov.asd.tac.constellation.visual.vulkan;
 
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKMissingEnums.VkFormat.VK_FORMAT_NONE;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.EndLogSection;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.StartLogSection;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkSucceeded;
 import java.nio.IntBuffer;
@@ -71,17 +69,12 @@ import org.lwjgl.vulkan.VkSubpassDependency;
 import org.lwjgl.vulkan.VkSubpassDescription;
 import org.lwjgl.vulkan.VkSurfaceCapabilitiesKHR;
 import org.lwjgl.vulkan.VkSwapchainCreateInfoKHR;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKLOGGER;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.UINT64_MAX;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VerifyInRenderThread;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.checkVKret;
-import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKCommandBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKImage;
 import static org.lwjgl.vulkan.KHRSwapchain.vkAcquireNextImageKHR;
 import static org.lwjgl.vulkan.KHRSwapchain.vkDestroySwapchainKHR;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
 import static org.lwjgl.vulkan.VK10.VK_FENCE_CREATE_SIGNALED_BIT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_D24_UNORM_S8_UINT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_D32_SFLOAT;
@@ -94,13 +87,10 @@ import static org.lwjgl.vulkan.VK10.VK_IMAGE_TILING_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
-import static org.lwjgl.vulkan.VK10.vkCreateDescriptorPool;
 import static org.lwjgl.vulkan.VK10.vkCreateFence;
 import static org.lwjgl.vulkan.VK10.vkCreateSemaphore;
-import static org.lwjgl.vulkan.VK10.vkDestroyDescriptorPool;
 import static org.lwjgl.vulkan.VK10.vkDestroyFence;
 import static org.lwjgl.vulkan.VK10.vkDestroyFramebuffer;
 import static org.lwjgl.vulkan.VK10.vkDestroyImageView;
@@ -110,8 +100,6 @@ import static org.lwjgl.vulkan.VK10.vkFreeCommandBuffers;
 import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceFormatProperties;
 import static org.lwjgl.vulkan.VK10.vkResetFences;
 import static org.lwjgl.vulkan.VK10.vkWaitForFences;
-import org.lwjgl.vulkan.VkDescriptorPoolCreateInfo;
-import org.lwjgl.vulkan.VkDescriptorPoolSize;
 import org.lwjgl.vulkan.VkExtent2D;
 import org.lwjgl.vulkan.VkFenceCreateInfo;
 import org.lwjgl.vulkan.VkFormatProperties;
@@ -165,7 +153,7 @@ public class CVKSwapChain {
     
     public int Initialise() {
         int ret;
-        StartLogSection("Init SwapChain");
+        cvkDevice.Logger().StartLogSection("Init SwapChain");
         try (MemoryStack stack = stackPush()) {                                
             
             ret = InitVKSwapChain(stack);
@@ -177,20 +165,19 @@ public class CVKSwapChain {
             ret = InitVKCommandBuffers(stack);
             if (VkFailed(ret)) return ret;
         }
-        EndLogSection("Init SwapChain");   
+        cvkDevice.Logger().EndLogSection("Init SwapChain");   
         return ret;
     }
 
     
     public void Destroy() {
-        StartLogSection("Destroy SwapChain");        
+        cvkDevice.Logger().StartLogSection("Destroy SwapChain");        
         
         DestroyVKCommandBuffers();       
         DestroyVKFrameBuffer();      
         DestroyVKRenderPass();    
         DestroyVKSwapChain();
         
-        CVKAssert(cvkDevice == null);
         CVKAssert(cvkDepthImage == null);
         CVKAssert(hSwapChainHandle == VK_NULL_HANDLE);
         CVKAssert(hRenderPassHandle == VK_NULL_HANDLE);
@@ -202,7 +189,7 @@ public class CVKSwapChain {
         CVKAssert(renderFenceHandles.isEmpty());
         CVKAssert(commandBuffers.isEmpty());
       
-        EndLogSection("Destroy SwapChain");   
+        cvkDevice.Logger().EndLogSection("Destroy SwapChain");   
     }
     
     /**
@@ -243,7 +230,7 @@ public class CVKSwapChain {
             pImageCount.put(0, vkSurfaceCapablities.maxImageCount());
         }
         imageCount = pImageCount.get(0);
-        CVKLOGGER.log(Level.INFO, "Swapchain will have {0} images", imageCount);
+        cvkDevice.Logger().log(Level.INFO, "Swapchain will have %d images", imageCount);
         if (imageCount == 0) {
             throw new RuntimeException("Swapchain cannot have 0 images");
         }        
@@ -360,7 +347,7 @@ public class CVKSwapChain {
             }
         }
         if (depthFormat == VK_FORMAT_UNDEFINED) {
-            CVKLOGGER.severe("Failed to find supported detpth format");
+            cvkDevice.Logger().severe("Failed to find supported detpth format");
             throw new RuntimeException("Failed to find supported detpth format");
         }
         
@@ -377,6 +364,7 @@ public class CVKSwapChain {
                                         vkCurrentImageExtent.height(), 
                                         1, 
                                         depthFormat, 
+                                        VK_IMAGE_VIEW_TYPE_2D,
                                         VK_IMAGE_TILING_OPTIMAL, 
                                         VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, 
                                         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
@@ -616,7 +604,6 @@ public class CVKSwapChain {
     
     
     private void DestroyVKCommandBuffers() {
-        VerifyInRenderThread();
         try (MemoryStack stack = stackPush()) {
             PointerBuffer pCommandBuffers = stack.mallocPointer(commandBuffers.size());
             for (int i = 0; i < imageCount; ++i) {
@@ -624,14 +611,14 @@ public class CVKSwapChain {
             }
             vkFreeCommandBuffers(cvkDevice.GetDevice(), cvkDevice.GetCommandPoolHandle(), pCommandBuffers);
             commandBuffers.clear();
-            CVKLOGGER.info("Destroyed command buffers for all images");
+            cvkDevice.Logger().info("Destroyed command buffers for all images");
         }        
     }  
     
     private void DestroyVKFrameBuffer() {
         for (int i = 0; i < imageCount; ++i) {
             vkDestroyFramebuffer(cvkDevice.GetDevice(), framebufferHandles.get(i), null);
-            CVKLOGGER.info(String.format("Destroyed frame buffer for image %d", i));
+            cvkDevice.Logger().info("Destroyed frame buffer for image %d", i);
         }
         framebufferHandles.clear();
     }  
@@ -639,7 +626,7 @@ public class CVKSwapChain {
     private void DestroyVKRenderPass() {
         vkDestroyRenderPass(cvkDevice.GetDevice(), hRenderPassHandle, null);
         hRenderPassHandle = VK_NULL_HANDLE;
-        CVKLOGGER.info("Destroyed render pass");
+        cvkDevice.Logger().info("Destroyed render pass");
     }   
     
     private void DestroyVKSwapChain() {
@@ -657,7 +644,7 @@ public class CVKSwapChain {
                 vkDestroyFence(cvkDevice.GetDevice(), renderFenceHandles.get(i), null);
                 renderFenceHandles.set(i, VK_NULL_HANDLE);
             }
-            CVKLOGGER.info(String.format("Destroyed synchronisation objects for image %d", i));
+            cvkDevice.Logger().info("Destroyed synchronisation objects for image %d", i);
         }
         imageAcquisitionHandles.clear();
         commandExecutionHandles.clear();
@@ -667,7 +654,7 @@ public class CVKSwapChain {
         for (int i = 0; i < imageCount; ++i) {
             vkDestroyImageView(cvkDevice.GetDevice(), imageViewHandles.get(i), null);
             imageViewHandles.set(i, VK_NULL_HANDLE);
-            CVKLOGGER.info(String.format("Destroyed image view for image %d", i));
+            cvkDevice.Logger().info("Destroyed image view for image %d", i);
         }
         imageViewHandles.clear();
 
@@ -681,10 +668,7 @@ public class CVKSwapChain {
         // Finally, destroy the swapchain
         vkDestroySwapchainKHR(cvkDevice.GetDevice(), hSwapChainHandle, null);
         hSwapChainHandle = VK_NULL_HANDLE;
-        CVKLOGGER.info("Destroyed swapchain");
-        
-        // Clear our reference to the device
-        cvkDevice = null;
+        cvkDevice.Logger().info("Destroyed swapchain");
     }
     
     
