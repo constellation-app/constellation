@@ -69,10 +69,12 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Separator;
 import javafx.scene.control.SeparatorMenuItem;
@@ -81,6 +83,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
@@ -139,7 +142,8 @@ public final class TableViewPane extends BorderPane {
     private static final ImageView MENU_ICON_TRANSACTION = new ImageView(UserInterfaceIconProvider.MENU.buildImage(16));
 
     private static final int WIDTH = 120;
-    private static final int MAX_ROWS_PER_PAGE = 500;
+    private static final int DEFAULT_MAX_ROWS_PER_PAGE = 500;
+    private static int maxRowsPerPage = DEFAULT_MAX_ROWS_PER_PAGE;
 
     private final TableViewTopComponent parent;
     private final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> columnIndex;
@@ -158,6 +162,7 @@ public final class TableViewPane extends BorderPane {
     private Button elementTypeButton;
     private MenuButton copyButton;
     private MenuButton exportButton;
+    private MenuButton preferencesButton;
 
     private final ReadOnlyObjectProperty<ObservableList<String>> selectedProperty;
     private final ChangeListener<ObservableList<String>> tableSelectionListener;
@@ -318,10 +323,11 @@ public final class TableViewPane extends BorderPane {
         exportButton.getItems().addAll(exportCsvItem, exportCsvSelectionItem,
                 exportExcelItem, exportExcelSelectionItem);
 
-        MenuButton layoutPreferencesButton = new MenuButton();
-        layoutPreferencesButton.setGraphic(SETTINGS_ICON);
-        layoutPreferencesButton.setMaxWidth(WIDTH);
-        layoutPreferencesButton.setPopupSide(Side.RIGHT);
+        this.preferencesButton = new MenuButton();
+        preferencesButton.setGraphic(SETTINGS_ICON);
+        preferencesButton.setMaxWidth(WIDTH);
+        preferencesButton.setPopupSide(Side.RIGHT);
+        final Menu setPageSize = createPageSizeMenu();
         final MenuItem savePrefsOption = new MenuItem("Save Table Preferences");
         savePrefsOption.setOnAction(e -> {
 
@@ -336,11 +342,11 @@ public final class TableViewPane extends BorderPane {
                 loadPreferences();
             }
             e.consume();
-        });
-        layoutPreferencesButton.getItems().addAll(savePrefsOption, loadPrefsOption);
+        }); 
+        preferencesButton.getItems().addAll(setPageSize, savePrefsOption, loadPrefsOption);
 
         final ToolBar toolbar = new ToolBar(columnVisibilityButton, selectedOnlyButton,
-                elementTypeButton, new Separator(), copyButton, exportButton, layoutPreferencesButton);
+                elementTypeButton, new Separator(), copyButton, exportButton, preferencesButton);
         toolbar.setOrientation(Orientation.VERTICAL);
         toolbar.setPadding(new Insets(5));
 
@@ -566,6 +572,27 @@ public final class TableViewPane extends BorderPane {
             newState.setColumnAttributes(columnAttributes);
             PluginExecution.withPlugin(new TableViewUtilities.UpdateStatePlugin(newState)).executeLater(graph);
         }
+    }
+    
+    private Menu createPageSizeMenu() {
+        final Menu pageSizeMenu = new Menu("Set Page Size");
+        final List<Integer> pageSizes = Arrays.asList(100, 250, 500, 1000);
+        final ToggleGroup pageSizeToggle = new ToggleGroup();
+        for (final Integer pageSize : pageSizes) {
+            final RadioMenuItem pageSizeOption = new RadioMenuItem(pageSize.toString());
+            pageSizeOption.setToggleGroup(pageSizeToggle);
+            pageSizeOption.setOnAction(e -> {
+                if (maxRowsPerPage != pageSize) {
+                    maxRowsPerPage = pageSize;
+                    paginate(sortedRowList);
+                }
+            });
+            if (pageSize == DEFAULT_MAX_ROWS_PER_PAGE) {
+                pageSizeOption.setSelected(true); // initially set the default as selected
+            }
+            pageSizeMenu.getItems().add(pageSizeOption);
+        }
+        return pageSizeMenu;
     }
 
     private ContextMenu initRightClickContextMenu(final TableCell<ObservableList<String>, String> cell) {
@@ -969,8 +996,8 @@ public final class TableViewPane extends BorderPane {
     
     private Node createPage(final int pageIndex, final List<ObservableList<String>> rows) {
         if (rows != null) {
-            final int fromIndex = pageIndex * MAX_ROWS_PER_PAGE;
-            final int toIndex = Math.min(fromIndex + MAX_ROWS_PER_PAGE, rows.size());
+            final int fromIndex = pageIndex * maxRowsPerPage;
+            final int toIndex = Math.min(fromIndex + maxRowsPerPage, rows.size());
             
             selectedProperty.removeListener(tableSelectionListener);
             sortedRowList.comparatorProperty().removeListener(tableComparatorListener);
@@ -1011,7 +1038,7 @@ public final class TableViewPane extends BorderPane {
     }
     
     private void paginate(final List<ObservableList<String>> rows) {
-        final Pagination pagination = new Pagination(rows == null ? 1 : rows.size() / MAX_ROWS_PER_PAGE + 1);
+        final Pagination pagination = new Pagination(rows == null ? 1 : rows.size() / maxRowsPerPage + 1);
         pagination.setPageFactory(index -> createPage(index, rows));
         Platform.runLater(() -> {
             setCenter(pagination);
