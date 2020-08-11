@@ -1,7 +1,17 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2010-2020 Australian Signals Directorate
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package au.gov.asd.tac.constellation.graph.value.types.booleanType;
 
@@ -11,18 +21,20 @@ import au.gov.asd.tac.constellation.graph.value.readables.Or;
 import au.gov.asd.tac.constellation.graph.value.converter.Biconverter;
 import au.gov.asd.tac.constellation.graph.value.converter.Converter;
 import au.gov.asd.tac.constellation.graph.value.readables.Equals;
+import au.gov.asd.tac.constellation.graph.value.readables.ExclusiveOr;
 import au.gov.asd.tac.constellation.graph.value.readables.Not;
 import au.gov.asd.tac.constellation.graph.value.readables.NotEquals;
 
 /**
  *
- * @author darren
+ * @author sirius
  */
 public class BooleanLogicConverters {
     
     public static <P1 extends BooleanReadable, P2 extends BooleanReadable> void register(ConverterRegistry r, Class<P1> parameterClass1, Class<P2> parameterClass2) {
         r.register(parameterClass1, parameterClass2, And.class, new AndConverter());
         r.register(parameterClass1, parameterClass2, Or.class, new OrConverter());
+        r.register(parameterClass1, parameterClass2, ExclusiveOr.class, new ExclusiveOrConverter());
         r.register(parameterClass1, parameterClass2, Equals.class, new EqualsConverter());
         r.register(parameterClass1, parameterClass2, NotEquals.class, new NotEqualsConverter());
     }
@@ -48,10 +60,10 @@ public class BooleanLogicConverters {
         }
     }
     
-    public static class AndConverter implements Biconverter<BooleanReadable, BooleanReadable, And> {
+    public static class AndConverter implements Biconverter<BooleanReadable, BooleanReadable, And<BooleanValue>> {
         @Override
-        public And convert(BooleanReadable source1, BooleanReadable source2) {
-            return new And() {
+        public And<BooleanValue> convert(BooleanReadable source1, BooleanReadable source2) {
+            return new And<>() {
                 @Override
                 public BooleanValue createValue() {
                     return new BooleanValue();
@@ -65,10 +77,10 @@ public class BooleanLogicConverters {
         }
     }
     
-    public static class OrConverter implements Biconverter<BooleanReadable, BooleanReadable, Or> {
+    public static class OrConverter implements Biconverter<BooleanReadable, BooleanReadable, Or<BooleanValue>> {
         @Override
-        public Or convert(BooleanReadable source1, BooleanReadable source2) {
-            return new Or() {
+        public Or<BooleanValue> convert(BooleanReadable source1, BooleanReadable source2) {
+            return new Or<>() {
                 @Override
                 public BooleanValue createValue() {
                     return new BooleanValue();
@@ -77,6 +89,23 @@ public class BooleanLogicConverters {
                 @Override
                 public void read(BooleanValue value) {
                     value.writeBoolean(source1.readBoolean() || source2.readBoolean());
+                }
+            };
+        }
+    }
+    
+    public static class ExclusiveOrConverter implements Biconverter<BooleanReadable, BooleanReadable, ExclusiveOr<BooleanValue>> {
+        @Override
+        public ExclusiveOr<BooleanValue> convert(BooleanReadable source1, BooleanReadable source2) {
+            return new ExclusiveOr<>() {
+                @Override
+                public BooleanValue createValue() {
+                    return new BooleanValue();
+                }
+
+                @Override
+                public void read(BooleanValue value) {
+                    value.writeBoolean(source1.readBoolean() ^ source2.readBoolean());
                 }
             };
         }

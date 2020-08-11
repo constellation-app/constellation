@@ -1,7 +1,17 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2010-2020 Australian Signals Directorate
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package au.gov.asd.tac.constellation.graph.value.expression;
 
@@ -19,7 +29,9 @@ import au.gov.asd.tac.constellation.graph.value.converter.ConverterRegistry;
 import au.gov.asd.tac.constellation.graph.value.readables.And;
 import au.gov.asd.tac.constellation.graph.value.readables.Contains;
 import au.gov.asd.tac.constellation.graph.value.readables.Difference;
+import au.gov.asd.tac.constellation.graph.value.readables.EndsWith;
 import au.gov.asd.tac.constellation.graph.value.readables.Equals;
+import au.gov.asd.tac.constellation.graph.value.readables.ExclusiveOr;
 import au.gov.asd.tac.constellation.graph.value.readables.GreaterThan;
 import au.gov.asd.tac.constellation.graph.value.readables.GreaterThanOrEquals;
 import au.gov.asd.tac.constellation.graph.value.readables.LessThan;
@@ -32,11 +44,12 @@ import au.gov.asd.tac.constellation.graph.value.readables.Or;
 import au.gov.asd.tac.constellation.graph.value.readables.Positive;
 import au.gov.asd.tac.constellation.graph.value.readables.Product;
 import au.gov.asd.tac.constellation.graph.value.readables.Quotient;
+import au.gov.asd.tac.constellation.graph.value.readables.StartsWith;
 import au.gov.asd.tac.constellation.graph.value.readables.Sum;
 
 /**
  *
- * @author darren
+ * @author sirius
  */
 public class ExpressionFilter {
     
@@ -56,7 +69,10 @@ public class ExpressionFilter {
         OPERATOR_CLASSES.put(Operator.LESS_THAN_OR_EQUALS, LessThanOrEquals.class);
         OPERATOR_CLASSES.put(Operator.AND, And.class);
         OPERATOR_CLASSES.put(Operator.OR, Or.class);
+        OPERATOR_CLASSES.put(Operator.EXCLUSIVE_OR, ExclusiveOr.class);
         OPERATOR_CLASSES.put(Operator.CONTAINS, Contains.class);
+        OPERATOR_CLASSES.put(Operator.STARTS_WITH, StartsWith.class);
+        OPERATOR_CLASSES.put(Operator.ENDS_WITH, EndsWith.class);
         
         CONVERTER_CLASSES.put(Operator.SUBTRACT, Negative.class);
         CONVERTER_CLASSES.put(Operator.ADD, Positive.class);

@@ -1,7 +1,17 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2010-2020 Australian Signals Directorate
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package au.gov.asd.tac.constellation.graph.value.types.longType;
 
@@ -17,17 +27,20 @@ import au.gov.asd.tac.constellation.graph.value.types.booleanType.BooleanValue;
 import au.gov.asd.tac.constellation.graph.value.types.integerType.IntValue;
 import au.gov.asd.tac.constellation.graph.value.converter.Biconverter;
 import au.gov.asd.tac.constellation.graph.value.converter.Converter;
+import au.gov.asd.tac.constellation.graph.value.readables.And;
+import au.gov.asd.tac.constellation.graph.value.readables.ExclusiveOr;
 import au.gov.asd.tac.constellation.graph.value.readables.GreaterThanOrEquals;
 import au.gov.asd.tac.constellation.graph.value.readables.LessThanOrEquals;
 import au.gov.asd.tac.constellation.graph.value.readables.Modulus;
 import au.gov.asd.tac.constellation.graph.value.readables.Negative;
 import au.gov.asd.tac.constellation.graph.value.readables.NotEquals;
+import au.gov.asd.tac.constellation.graph.value.readables.Or;
 import au.gov.asd.tac.constellation.graph.value.readables.Positive;
 import au.gov.asd.tac.constellation.graph.value.readables.Quotient;
 
 /**
  *
- * @author darren
+ * @author sirius
  */
 public class LongArithmeticConverters {
      
@@ -37,6 +50,9 @@ public class LongArithmeticConverters {
         r.register(parameterClass1, parameterClass2, Modulus.class, new ModulusConverter());
         r.register(parameterClass1, parameterClass2, Sum.class, new SumConverter());
         r.register(parameterClass1, parameterClass2, Difference.class, new DifferenceConverter());
+        r.register(parameterClass1, parameterClass2, And.class, new AndConverter());
+        r.register(parameterClass1, parameterClass2, Or.class, new OrConverter());
+        r.register(parameterClass1, parameterClass2, ExclusiveOr.class, new ExclusiveOrConverter());
         r.register(parameterClass1, parameterClass2, Comparison.class, new ComparisonConverter());
         r.register(parameterClass1, parameterClass2, Equals.class, new EqualsConverter());
         r.register(parameterClass1, parameterClass2, NotEquals.class, new NotEqualsConverter());
@@ -114,6 +130,57 @@ public class LongArithmeticConverters {
                 @Override
                 public void read(LongValue value) {
                     value.writeLong(source1.readLong() - source2.readLong());
+                }
+            };
+        }
+    }
+    
+    public static class AndConverter implements Biconverter<LongReadable, LongReadable, And<LongValue>> {
+        @Override
+        public And<LongValue> convert(LongReadable source1, LongReadable source2) {
+            return new And<>() {
+                @Override
+                public LongValue createValue() {
+                    return new LongValue();
+                }
+
+                @Override
+                public void read(LongValue value) {
+                    value.writeLong(source1.readLong() & source2.readLong());
+                }
+            };
+        }
+    }
+    
+    public static class OrConverter implements Biconverter<LongReadable, LongReadable, Or<LongValue>> {
+        @Override
+        public Or<LongValue> convert(LongReadable source1, LongReadable source2) {
+            return new Or<>() {
+                @Override
+                public LongValue createValue() {
+                    return new LongValue();
+                }
+
+                @Override
+                public void read(LongValue value) {
+                    value.writeLong(source1.readLong() | source2.readLong());
+                }
+            };
+        }
+    }
+    
+    public static class ExclusiveOrConverter implements Biconverter<LongReadable, LongReadable, ExclusiveOr<LongValue>> {
+        @Override
+        public ExclusiveOr<LongValue> convert(LongReadable source1, LongReadable source2) {
+            return new ExclusiveOr<>() {
+                @Override
+                public LongValue createValue() {
+                    return new LongValue();
+                }
+
+                @Override
+                public void read(LongValue value) {
+                    value.writeLong(source1.readLong() ^ source2.readLong());
                 }
             };
         }

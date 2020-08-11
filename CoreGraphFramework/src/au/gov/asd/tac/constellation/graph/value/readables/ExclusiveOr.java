@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.graph.value.types.floatType;
+package au.gov.asd.tac.constellation.graph.value.readables;
+
+import au.gov.asd.tac.constellation.graph.value.Readable;
 
 /**
  *
  * @author sirius
  */
-public interface FloatWritable {
-    
-    void writeFloat(float value);
-    
+public interface ExclusiveOr<V> extends Readable<V> {
 }

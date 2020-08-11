@@ -1,7 +1,17 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2010-2020 Australian Signals Directorate
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package au.gov.asd.tac.constellation.graph.value.expression;
 
@@ -13,7 +23,7 @@ import java.util.Map;
 
 /**
  *
- * @author darren
+ * @author sirius
  */
 public class ExpressionParser {
 
@@ -31,6 +41,7 @@ public class ExpressionParser {
     public static enum Operator {
         AND('&', 11),
         OR('|', 12),
+        EXCLUSIVE_OR('^', 3),
         NOT('!', 2),
         ADD('+', 4),
         SUBTRACT('-', 4),
@@ -43,6 +54,8 @@ public class ExpressionParser {
         LESS_THAN_OR_EQUALS(NO_TOKEN, 6),
         NOT_EQUALS(NO_TOKEN, 7),
         CONTAINS(NO_TOKEN, 4),
+        STARTS_WITH(NO_TOKEN, 4),
+        ENDS_WITH(NO_TOKEN, 4),
         EQUALS('=', 7, GREATER_THAN, GREATER_THAN_OR_EQUALS, LESS_THAN, LESS_THAN_OR_EQUALS, NOT, NOT_EQUALS);
         
         private final char token;
@@ -66,7 +79,7 @@ public class ExpressionParser {
             return precedence;
         }
         
-        private static Map<Character, Operator> OPERATOR_TOKENS = new HashMap<>();
+        private static final Map<Character, Operator> OPERATOR_TOKENS = new HashMap<>();
         static {
             for (Operator operator : Operator.values()) {
                 if (operator.token != NO_TOKEN) {
@@ -76,12 +89,18 @@ public class ExpressionParser {
         }
     }
     
-    private final static Map<String, Operator> wordOperators = new HashMap<>();
+    private static final Map<String, Operator> WORD_OPERATORS = new HashMap<>();
     static {
-        wordOperators.put("contains", Operator.CONTAINS);
+        WORD_OPERATORS.put("contains", Operator.CONTAINS);
+        WORD_OPERATORS.put("startswith", Operator.STARTS_WITH);
+        WORD_OPERATORS.put("endswith", Operator.ENDS_WITH);
+        WORD_OPERATORS.put("or", Operator.OR);
+        WORD_OPERATORS.put("and", Operator.AND);
+        WORD_OPERATORS.put("equals", Operator.EQUALS);
+        WORD_OPERATORS.put("notequals", Operator.NOT_EQUALS);
     }
     
-    public static abstract class Expression {    
+    public static abstract class Expression {
         private SequenceExpression parent;
 
         private Expression(SequenceExpression parent) {
@@ -116,7 +135,7 @@ public class ExpressionParser {
         
         @Override
         protected void print(String prefix, StringBuilder out) {
-            out.append(prefix).append("VARIABLE").append(": ").append(content).append("\n");
+            out.append(prefix).append("VARIABLE: ").append(content).append("\n");
         }
     }
     
@@ -134,7 +153,7 @@ public class ExpressionParser {
         
         @Override
         protected void print(String prefix, StringBuilder out) {
-            out.append(prefix).append("STRING").append(": ").append(content).append("\n");
+            out.append(prefix).append("STRING: ").append(content).append("\n");
         }
     }
     
@@ -168,15 +187,15 @@ public class ExpressionParser {
             return unmodifiableChildren;
         }
         
-        private void addChild(Expression token) {
+        private void addChild(Expression expression) {
             
-            if (token instanceof SequenceExpression) {
-                final var tokenSequence = (SequenceExpression)token;
+            if (expression instanceof SequenceExpression) {
+                final var tokenSequence = (SequenceExpression)expression;
                 switch (tokenSequence.children.size()) {
                     case 0:
                         return;
                     case 1:
-                        token = tokenSequence.children.get(0);
+                        expression = tokenSequence.children.get(0);
                         break;
                     default:
                         if (tokenSequence.children.get(tokenSequence.children.size() - 1) instanceof OperatorExpression) {
@@ -185,10 +204,10 @@ public class ExpressionParser {
                 }
             }
             
-            if (token instanceof OperatorExpression && !children.isEmpty()) {
+            if (expression instanceof OperatorExpression && !children.isEmpty()) {
                 final var lastChild = children.get(children.size() - 1);
                 if (lastChild instanceof OperatorExpression) {
-                    final var tokenOperator = (OperatorExpression)token;
+                    final var tokenOperator = (OperatorExpression)expression;
                     final var lastChildOperator = (OperatorExpression)lastChild;
                     final var combinedOperator = tokenOperator.operator.combinations.get(lastChildOperator.operator);
                     if (combinedOperator != null) {
@@ -198,23 +217,23 @@ public class ExpressionParser {
                 }
             }
             
-            if (!(token instanceof OperatorExpression) && !children.isEmpty()) {
+            if (!(expression instanceof OperatorExpression) && !children.isEmpty()) {
                 final var lastChild = children.get(children.size() - 1);
                 if (lastChild instanceof OperatorExpression) {
                     if (children.size() == 1 || children.get(children.size() - 2) instanceof OperatorExpression) {
                         final var childSequence = new SequenceExpression(this);
                         lastChild.parent = childSequence;
                         childSequence.children.add(lastChild);
-                        token.parent = childSequence;
-                        childSequence.children.add(token);
+                        expression.parent = childSequence;
+                        childSequence.children.add(expression);
                         children.remove(children.size() - 1);
                         addChild(childSequence);
                         return;
                     }
                 } else {
-                    if (token instanceof VariableExpression) {
-                        final var tokenVariable = (VariableExpression)token;
-                        final var wordOperator = wordOperators.get(tokenVariable.content.toLowerCase());
+                    if (expression instanceof VariableExpression) {
+                        final var tokenVariable = (VariableExpression)expression;
+                        final var wordOperator = WORD_OPERATORS.get(tokenVariable.content.toLowerCase());
                         if (wordOperator != null) {
                             children.add(new OperatorExpression(this, wordOperator));
                             return;
@@ -224,7 +243,7 @@ public class ExpressionParser {
                 }
             }
             
-            children.add(token);
+            children.add(expression);
         }
         
         public void normalize() {
@@ -271,9 +290,9 @@ public class ExpressionParser {
         @Override
         protected void print(String prefix, StringBuilder out) {
             out.append(prefix).append("(\n");
-            for (Expression child : children) {
+            children.forEach(child -> {
                 child.print(prefix + "  ", out);
-            }
+            });
             out.append(prefix).append(")\n");
         }
     }
