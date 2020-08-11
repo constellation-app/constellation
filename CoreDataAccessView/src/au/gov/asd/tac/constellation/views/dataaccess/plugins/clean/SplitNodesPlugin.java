@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
-import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionTypeUtilities;
@@ -65,9 +64,6 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = Plugin.class)})
 @NbBundle.Messages("SplitNodesPlugin=Split Nodes Based on Identifier")
 public class SplitNodesPlugin extends SimpleQueryPlugin implements DataAccessPlugin {
-
-    private static final String SOURCE_ID = GraphRecordStoreUtilities.SOURCE + GraphRecordStoreUtilities.ID;
-    private static final String SOURCE_IDENTIFIER = GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER;
 
     public static final String SPLIT_PARAMETER_ID = PluginParameter.buildId(SplitNodesPlugin.class, "split");
     public static final String SPLIT_INTO_SAME_LEVEL_PARAMETER_ID = PluginParameter.buildId(SplitNodesPlugin.class, "split_level");
@@ -129,27 +125,26 @@ public class SplitNodesPlugin extends SimpleQueryPlugin implements DataAccessPlu
 
     @Override
     public void updateParameters(Graph graph, PluginParameters parameters) {
-        if (parameters != null && parameters.getParameters() != null) {
-            if (!parameters.getParameters().get(SPLIT_INTO_SAME_LEVEL_PARAMETER_ID).getBooleanValue()) {
-                final List<String> types = new ArrayList<>();
-                if (graph != null && graph.getSchema() != null) {
-                    for (final SchemaTransactionType type : SchemaTransactionTypeUtilities.getTypes(graph.getSchema().getFactory().getRegisteredConcepts())) {
-                        types.add(type.getName());
-                    }
-                    if (!types.isEmpty()) {
-                        types.sort(String::compareTo);
-                    }
+        if (parameters != null && parameters.getParameters() != null && !parameters.getParameters().get(SPLIT_INTO_SAME_LEVEL_PARAMETER_ID).getBooleanValue()) {
+            final List<String> types = new ArrayList<>();
+            if (graph != null && graph.getSchema() != null) {
+                for (final SchemaTransactionType type : SchemaTransactionTypeUtilities.getTypes(graph.getSchema().getFactory().getRegisteredConcepts())) {
+                    types.add(type.getName());
                 }
-                @SuppressWarnings("unchecked") //TRANSACTION_TYPE_PARAMETER is always of type SingleChoiceParameter
-                final PluginParameter<SingleChoiceParameterValue> transactionType = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(TRANSACTION_TYPE_PARAMETER_ID);
-                transactionType.suppressEvent(true, new ArrayList<>());
-                SingleChoiceParameterType.setOptions(transactionType, types);
-
-                if (transactionType.getSingleChoice() == null && types.contains(AnalyticConcept.TransactionType.CORRELATION.getName())) {
-                    SingleChoiceParameterType.setChoice(transactionType, AnalyticConcept.TransactionType.CORRELATION.getName());
+                if (!types.isEmpty()) {
+                    types.sort(String::compareTo);
                 }
-                transactionType.suppressEvent(false, new ArrayList<>());
             }
+            @SuppressWarnings("unchecked") //TRANSACTION_TYPE_PARAMETER is always of type SingleChoiceParameter
+            final PluginParameter<SingleChoiceParameterValue> transactionType = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(TRANSACTION_TYPE_PARAMETER_ID);
+            transactionType.suppressEvent(true, new ArrayList<>());
+            SingleChoiceParameterType.setOptions(transactionType, types);
+
+            if (transactionType.getSingleChoice() == null && types.contains(AnalyticConcept.TransactionType.CORRELATION.getName())) {
+                SingleChoiceParameterType.setChoice(transactionType, AnalyticConcept.TransactionType.CORRELATION.getName());
+            }
+            transactionType.suppressEvent(false, new ArrayList<>());
+
         }
     }
 
@@ -232,8 +227,6 @@ public class SplitNodesPlugin extends SimpleQueryPlugin implements DataAccessPlu
             int currentVertexId = graph.getVertex(position);
 
             if (graph.getBooleanValue(vertexSelectedAttributeId, currentVertexId)) {
-
-                //final String identifier = currentVertex.get(SOURCE_IDENTIFIER);
                 final String identifier = graph.getStringValue(vertexIdentifierAttributeId, currentVertexId);
 
                 if (identifier != null && identifier.contains(character) && identifier.indexOf(character) < identifier.length() - character.length()) {
