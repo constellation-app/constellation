@@ -30,7 +30,7 @@ import org.lwjgl.vulkan.VkDescriptorPoolCreateInfo;
 import org.lwjgl.vulkan.VkDescriptorPoolSize;
 
 public class CVKDescriptorPool {
-    private CVKDevice cvkDevice = null;
+    private final CVKDevice cvkDevice;
     private long hDescriptorPool = VK_NULL_HANDLE;
     
     public long GetDescriptorPoolHandle() { return hDescriptorPool; }
@@ -169,9 +169,9 @@ public class CVKDescriptorPool {
     }
     
     public void Destroy() {
+        CVKAssert(cvkDevice != null);
         vkDestroyDescriptorPool(cvkDevice.GetDevice(), hDescriptorPool, null);
         hDescriptorPool = VK_NULL_HANDLE;
-        cvkDevice = null;
         cvkDevice.Logger().info("Destroyed descriptor pool");
     }    
 }

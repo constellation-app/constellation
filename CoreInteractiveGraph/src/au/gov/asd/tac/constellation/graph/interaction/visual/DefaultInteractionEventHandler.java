@@ -49,6 +49,7 @@ import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
 import au.gov.asd.tac.constellation.utilities.graphics.IntArray;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector2i;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.visual.VisualChangeBuilder;
 import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
@@ -415,7 +416,8 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                             if (zAxisRotation) {
                                 CameraUtilities.spin(camera, visualInteraction.convertTranslationToSpin(from, to));
                             } else {
-                                CameraUtilities.rotate(camera, event.isShiftDown() ? 0 : (from.y - to.y) / 2.0f, event.isControlDown() ? 0 : (from.x - to.x) / 2.0f);
+                                Vector2i yawPitch = visualInteraction.adjustPitchYawCoords(from.x - to.x, from.y - to.y);
+                                CameraUtilities.rotate(camera, event.isShiftDown() ? 0 : yawPitch.getY() / 2.0f, event.isControlDown() ? 0 : yawPitch.getX() / 2.0f);
                             }
                             cameraChange = true;
                             break;

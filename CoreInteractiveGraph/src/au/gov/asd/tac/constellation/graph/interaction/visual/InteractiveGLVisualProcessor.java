@@ -33,6 +33,7 @@ import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
 import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector2i;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
 import au.gov.asd.tac.constellation.utilities.visual.VisualChangeBuilder;
@@ -335,4 +336,9 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
             return 1.0f;
         }
     }
+    
+    @Override
+    public Vector2i adjustPitchYawCoords(int pitch, int yaw) {
+        return new Vector2i(pitch, yaw);
+    }     
 }

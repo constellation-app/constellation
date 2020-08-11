@@ -62,31 +62,44 @@ vec4 v;
 vec4 hbv;
 
 
+// NOTE: this shader has been modified for Vulkan.  The uniforms need to be explicitly
+// bound to slots and locations that match descriptors defined in the CVKIconsRenderable
+// class.  Additionally the Y goes down the screen in Vulkan as by default it uses a 
+// right handed coordinate system (take your index finger as Z pointing away from you, your
+// long finger is x pointing to the right, which leaves your thumb as y pointing down).
+// OpenGL uses a left hand system with Y going up.  That means to convert a GL shader for 
+// Vulkan we need to modify the Y and the V texture coordinate.  For this shader we take the
+// negative y when processing the graph access vertices.  Texture coordinates don't care about
+// the LHS or RHS used by the vertices.
 void drawIcon(float x, float y, float radius, int icon, mat4 color) {
 
     if (icon != TRANSPARENT_ICON) {
 
         vec3 iconOffset = vec3(float(icon & 7) / 8, float((icon >> 3) & 7) / 8, float(icon >> 6));
 
-        gl_Position = ub.pMatrix * vec4(v.x + x, v.y + y, v.z, v.w);
+        // Bottom Left
+        gl_Position = ub.pMatrix * vec4(v.x + x, v.y + y + radius, v.z, v.w);        
         iconColor = color;
         hitBufferValue = hbv;
         textureCoords = vec3(HALF_PIXEL, TEXTURE_SIZE - HALF_PIXEL, 0) + iconOffset;
         EmitVertex();
 
-        gl_Position = ub.pMatrix * vec4(v.x + x, v.y + y + radius, v.z, v.w);
+        // Top Left
+        gl_Position = ub.pMatrix * vec4(v.x + x, v.y + y, v.z, v.w);
         iconColor = color;
         hitBufferValue = hbv;
         textureCoords = vec3(HALF_PIXEL, HALF_PIXEL, 0) + iconOffset;
         EmitVertex();
 
-        gl_Position = ub.pMatrix * vec4(v.x + x + radius, v.y + y, v.z, v.w);
+        // Bottom Right      
+        gl_Position = ub.pMatrix * vec4(v.x + x + radius, v.y + y + radius, v.z, v.w);  
         iconColor = color;
         hitBufferValue = hbv;
         textureCoords = vec3(TEXTURE_SIZE - HALF_PIXEL, TEXTURE_SIZE - HALF_PIXEL, 0) + iconOffset;
         EmitVertex();
 
-        gl_Position = ub.pMatrix * vec4(v.x + x + radius, v.y + y + radius, v.z, v.w);
+        // Top Right
+        gl_Position = ub.pMatrix * vec4(v.x + x + radius, v.y + y, v.z, v.w);        
         iconColor = color;
         hitBufferValue = hbv;
         textureCoords = vec3(TEXTURE_SIZE - HALF_PIXEL, HALF_PIXEL, 0) + iconOffset;

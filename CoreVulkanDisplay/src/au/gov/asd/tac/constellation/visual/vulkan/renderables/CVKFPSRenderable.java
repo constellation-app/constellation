@@ -138,6 +138,7 @@ import org.lwjgl.vulkan.VkViewport;
 import org.lwjgl.vulkan.VkWriteDescriptorSet;
 import static org.lwjgl.vulkan.VK10.vkDestroyPipeline;
 import static org.lwjgl.vulkan.VK10.vkDestroyPipelineLayout;
+import static org.lwjgl.vulkan.VK10.vkDestroyShaderModule;
 import static org.lwjgl.vulkan.VK10.vkFreeDescriptorSets;
 import org.lwjgl.vulkan.VkDescriptorBufferInfo;
 import org.lwjgl.vulkan.VkPipelineDepthStencilStateCreateInfo;
@@ -157,9 +158,9 @@ public class CVKFPSRenderable extends CVKRenderable {
     private static final Matrix44f IDENTITY_44F = Matrix44f.identity();
     private static final Vector3f ZERO_3F = new Vector3f(0, 0, 0);
     
-    private long hVertexShader = VK_NULL_HANDLE;
-    private long hGeometryShader = VK_NULL_HANDLE;
-    private long hFragmentShader = VK_NULL_HANDLE;
+    private long hVertexShaderModule = VK_NULL_HANDLE;
+    private long hGeometryShaderModule = VK_NULL_HANDLE;
+    private long hFragmentShaderModule = VK_NULL_HANDLE;
     private static ByteBuffer vsBytes = null;
     private static ByteBuffer gsBytes = null;
     private static ByteBuffer fsBytes = null;
@@ -330,9 +331,9 @@ public class CVKFPSRenderable extends CVKRenderable {
     }    
     
     
-    // ========================> Static init <======================== \\
+    // ========================> Static resources <======================== \\
     
-    private static int LoadShaders(CVKDevice cvkDevice) {
+    private static int LoadShaders() {
         int ret = VK_SUCCESS;
         
         try {
@@ -367,47 +368,18 @@ public class CVKFPSRenderable extends CVKRenderable {
         
         return ret;
     }
-        
-    private int CreateShaderModules() {
-        int ret = VK_SUCCESS;
-        
-        try{           
-            hVertexShader = CVKShaderUtils.createShaderModule(vsBytes, cvkDevice.GetDevice());
-            if (hVertexShader == VK_NULL_HANDLE) {
-                cvkDevice.Logger().log(Level.SEVERE, "Failed to create shader module for: SimpleIcon.vs");
-                return CVK_ERROR_SHADER_MODULE;
-            }
-            hGeometryShader = CVKShaderUtils.createShaderModule(gsBytes, cvkDevice.GetDevice());
-            if (hGeometryShader == VK_NULL_HANDLE) {
-                cvkDevice.Logger().log(Level.SEVERE, "Failed to create shader module for: SimpleIcon.gs");
-                return CVK_ERROR_SHADER_MODULE;
-            }
-            hFragmentShader = CVKShaderUtils.createShaderModule(fsBytes, cvkDevice.GetDevice());
-            if (hFragmentShader == VK_NULL_HANDLE) {
-                cvkDevice.Logger().log(Level.SEVERE, "Failed to create shader module for: SimpleIcon.fs");
-                return CVK_ERROR_SHADER_MODULE;
-            }
-        } catch(Exception ex){
-            cvkDevice.Logger().log(Level.SEVERE, "Failed to create shader module FPSRenderable: %s", ex.toString());
-            ret = CVK_ERROR_SHADER_MODULE;
-            return ret;
-        }
-        
-        cvkDevice.Logger().log(Level.INFO, "Shader modules created for FPSRenderable class");
-        return ret;
-    }
-       
-    public static int StaticInitialise(CVKDevice cvkDevice) {
+            
+    public static int StaticInitialise() {
         int ret = VK_SUCCESS;
         if (!staticInitialised) {
-            LoadShaders(cvkDevice);
+            LoadShaders();
             if (VkFailed(ret)) { return ret; }
             staticInitialised = true;
         }
         return ret;
     }
     
-    public void DestroyStaticResources() {
+    public static void DestroyStaticResources() {
         if (vsBytes != null) {
             MemoryUtil.memFree(vsBytes);
             vsBytes = null;
@@ -439,10 +411,55 @@ public class CVKFPSRenderable extends CVKRenderable {
         currentFPS.add(0);  // unused
     }  
     
+    private int CreateShaderModules() {
+        int ret = VK_SUCCESS;
+        
+        try{           
+            hVertexShaderModule = CVKShaderUtils.CreateShaderModule(vsBytes, cvkDevice.GetDevice());
+            if (hVertexShaderModule == VK_NULL_HANDLE) {
+                cvkDevice.Logger().log(Level.SEVERE, "Failed to create shader module for: SimpleIcon.vs");
+                return CVK_ERROR_SHADER_MODULE;
+            }
+            hGeometryShaderModule = CVKShaderUtils.CreateShaderModule(gsBytes, cvkDevice.GetDevice());
+            if (hGeometryShaderModule == VK_NULL_HANDLE) {
+                cvkDevice.Logger().log(Level.SEVERE, "Failed to create shader module for: SimpleIcon.gs");
+                return CVK_ERROR_SHADER_MODULE;
+            }
+            hFragmentShaderModule = CVKShaderUtils.CreateShaderModule(fsBytes, cvkDevice.GetDevice());
+            if (hFragmentShaderModule == VK_NULL_HANDLE) {
+                cvkDevice.Logger().log(Level.SEVERE, "Failed to create shader module for: SimpleIcon.fs");
+                return CVK_ERROR_SHADER_MODULE;
+            }
+        } catch(Exception ex){
+            cvkDevice.Logger().log(Level.SEVERE, "Failed to create shader module FPSRenderable: %s", ex.toString());
+            ret = CVK_ERROR_SHADER_MODULE;
+            return ret;
+        }
+        
+        cvkDevice.Logger().info("Shader modules created for CVKFPSRenderable class:\n\tVertex:   0x%016x\n\tGeometry: 0x%016x\n\tFragment: 0x%016x",
+                hVertexShaderModule, hGeometryShaderModule, hFragmentShaderModule);
+        return ret;
+    }
+       
+    private void DestroyShaderModules() {
+        if (hVertexShaderModule != VK_NULL_HANDLE) {
+            vkDestroyShaderModule(cvkDevice.GetDevice(), hVertexShaderModule, null);
+            hVertexShaderModule = VK_NULL_HANDLE;
+        }
+        if (hGeometryShaderModule != VK_NULL_HANDLE) {
+            vkDestroyShaderModule(cvkDevice.GetDevice(), hGeometryShaderModule, null);
+            hGeometryShaderModule = VK_NULL_HANDLE;
+        }
+        if (hFragmentShaderModule != VK_NULL_HANDLE) {
+            vkDestroyShaderModule(cvkDevice.GetDevice(), hFragmentShaderModule, null);
+            hFragmentShaderModule = VK_NULL_HANDLE;
+        }
+    }
+    
     @Override
     public int Initialise(CVKDevice cvkDevice) {
         // Check for double initialisation
-        CVKAssert(hVertexShader == VK_NULL_HANDLE);
+        CVKAssert(hVertexShaderModule == VK_NULL_HANDLE);
         CVKAssert(hDescriptorLayout == VK_NULL_HANDLE);
         
         int ret;
@@ -487,6 +504,7 @@ public class CVKFPSRenderable extends CVKRenderable {
         DestroyPipelines();
         DestroyPipelineLayout();
         DestroyCommandBuffers();  
+        DestroyShaderModules();
         
         if (cvkStagingBuffer != null) {
             cvkStagingBuffer.Destroy();
@@ -504,6 +522,9 @@ public class CVKFPSRenderable extends CVKRenderable {
         CVKAssert(geometryUniformBuffers == null);
         CVKAssert(vertexBuffers == null);
         CVKAssert(commandBuffers == null);
+        CVKAssert(hVertexShaderModule == VK_NULL_HANDLE);
+        CVKAssert(hGeometryShaderModule == VK_NULL_HANDLE);
+        CVKAssert(hFragmentShaderModule == VK_NULL_HANDLE);        
     }     
     
     
@@ -1045,7 +1066,7 @@ public class CVKFPSRenderable extends CVKRenderable {
         int ret = VK_SUCCESS;
         
         if (pDescriptorSets != null) {
-            cvkDevice.Logger().info("CVKFPSRenderable returning %d descriptor sets to the pool", pDescriptorSets.capacity());
+            cvkDevice.Logger().fine("CVKFPSRenderable returning %d descriptor sets to the pool", pDescriptorSets.capacity());
             
             // After calling vkFreeDescriptorSets, all descriptor sets in pDescriptorSets are invalid.
             ret = vkFreeDescriptorSets(cvkDevice.GetDevice(), cvkDescriptorPool.GetDescriptorPoolHandle(), pDescriptorSets);
@@ -1121,9 +1142,9 @@ public class CVKFPSRenderable extends CVKRenderable {
         CVKAssert(cvkSwapChain.GetSwapChainHandle() != VK_NULL_HANDLE);
         CVKAssert(cvkSwapChain.GetRenderPassHandle() != VK_NULL_HANDLE);
         CVKAssert(cvkDescriptorPool.GetDescriptorPoolHandle() != VK_NULL_HANDLE);
-        CVKAssert(hVertexShader != VK_NULL_HANDLE);
-        CVKAssert(hGeometryShader != VK_NULL_HANDLE);
-        CVKAssert(hFragmentShader != VK_NULL_HANDLE);        
+        CVKAssert(hVertexShaderModule != VK_NULL_HANDLE);
+        CVKAssert(hGeometryShaderModule != VK_NULL_HANDLE);
+        CVKAssert(hFragmentShaderModule != VK_NULL_HANDLE);        
         CVKAssert(cvkSwapChain.GetWidth() > 0);
         CVKAssert(cvkSwapChain.GetHeight() > 0);
                
@@ -1176,19 +1197,19 @@ public class CVKFPSRenderable extends CVKRenderable {
 
                 vertShaderStageInfo.sType(VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO);
                 vertShaderStageInfo.stage(VK_SHADER_STAGE_VERTEX_BIT);
-                vertShaderStageInfo.module(hVertexShader);
+                vertShaderStageInfo.module(hVertexShaderModule);
                 vertShaderStageInfo.pName(entryPoint);
 
                 VkPipelineShaderStageCreateInfo geomShaderStageInfo = shaderStages.get(1);
                 geomShaderStageInfo.sType(VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO);
                 geomShaderStageInfo.stage(VK_SHADER_STAGE_GEOMETRY_BIT);
-                geomShaderStageInfo.module(hGeometryShader);
+                geomShaderStageInfo.module(hGeometryShaderModule);
                 geomShaderStageInfo.pName(entryPoint);            
 
                 VkPipelineShaderStageCreateInfo fragShaderStageInfo = shaderStages.get(2);
                 fragShaderStageInfo.sType(VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO);
                 fragShaderStageInfo.stage(VK_SHADER_STAGE_FRAGMENT_BIT);
-                fragShaderStageInfo.module(hFragmentShader);
+                fragShaderStageInfo.module(hFragmentShaderModule);
                 fragShaderStageInfo.pName(entryPoint);
 
                 // ===> VERTEX STAGE <===
@@ -1303,7 +1324,7 @@ public class CVKFPSRenderable extends CVKRenderable {
             }
         }
         
-        cvkDevice.Logger().log(Level.INFO, "Graphics Pipeline created for FPSRenderable class.");
+        cvkDevice.Logger().info("Graphics Pipeline created for FPSRenderable class.");
         return ret;
     }        
    

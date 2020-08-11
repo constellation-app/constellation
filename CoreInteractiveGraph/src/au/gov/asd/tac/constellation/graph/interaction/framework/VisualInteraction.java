@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.graph.interaction.framework;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector2i;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.awt.Point;
 
@@ -148,4 +149,17 @@ public interface VisualInteraction {
      * @return A float value describing the scale factor
      */
     public float getDPIScalingFactor();
+    
+    /**
+     * Returns the pitch and yaw passed in adjusted for the coordinate system used
+     * by the current visual processor.This equates to a noop for OpenGL and flipping
+     * the sign of the yaw component component for Vulkan as Vulkan uses a right handed
+     * coordinate system when Y increases from the top of the screen to the bottom, where
+     * OpenGL use a left handed system where Y increases from the bottom to the top.
+     * 
+     * @param pitch 
+     * @param yaw
+     * @return a Vector2 of the coordinate space adjusted pitch and yaw quanta
+     */
+    public Vector2i adjustPitchYawCoords(int pitch, int yaw);
 }

@@ -36,6 +36,7 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualOperation;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.CVKHitTester;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector2i;
 import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
 import java.awt.Graphics2D;
@@ -212,16 +213,18 @@ public class InteractiveVKVisualProcessor extends CVKVisualProcessor implements 
     public Vector3f convertZoomPointToDirection(final Point zoomPoint) {
         return new Vector3f(
                 (float) (getCanvas().getWidth() / 2.0 - zoomPoint.x),
-                (float) (zoomPoint.y - getCanvas().getHeight() / 2.0),
+                (float) (getCanvas().getHeight() / 2.0 - zoomPoint.y),
                 (float) (getCanvas().getHeight() / (2 * Math.tan(Camera.FIELD_OF_VIEW * Math.PI / 180 / 2))));
     }
 
     @Override
     public Vector3f convertTranslationToDrag(final Camera camera, final Vector3f nodeLocation, final Point from, final Point to) {
-
+        final Point vkFrom = LHSToRHS(from);
+        final Point vkTo = LHSToRHS(to);
+        
         // Calculate the vector representing the drag (in window coordinates)
-        final int dx = to.x - from.x;
-        final int dy = to.y - from.y;
+        final int dx = vkTo.x - vkFrom.x;
+        final int dy = vkTo.y - vkFrom.y;
         final Vector3f movement = new Vector3f(dx, dy, 0);
 
         // Calculate and return the vector representing the drag in graph coordinates.
@@ -232,17 +235,23 @@ public class InteractiveVKVisualProcessor extends CVKVisualProcessor implements 
 
     @Override
     public float convertTranslationToSpin(final Point from, final Point to) {
-        final float xDist = (getCanvas().getWidth() / 2.0f - to.x) / (getCanvas().getWidth() / 2.0f);
-        final float yDist = (getCanvas().getHeight() / 2.0f - to.y) / (getCanvas().getHeight() / 2.0f);
-        final float xDelta = (from.x - to.x) / 2.0f;
-        final float yDelta = (from.y - to.y) / 2.0f;
+        final Point vkFrom = LHSToRHS(from);
+        final Point vkTo = LHSToRHS(to);
+        
+        final float xDist = (getCanvas().getWidth() / 2.0f - vkTo.x) / (getCanvas().getWidth() / 2.0f);
+        final float yDist = (getCanvas().getHeight() / 2.0f - vkTo.y) / (getCanvas().getHeight() / 2.0f);
+        final float xDelta = (vkFrom.x - vkTo.x) / 2.0f;
+        final float yDelta = (vkFrom.y - vkTo.y) / 2.0f;
         return yDist * xDelta - xDist * yDelta;
     }
 
     @Override
     public Vector3f convertTranslationToPan(final Point from, final Point to, final Vector3f panReferencePoint) {
-        final float dx = (to.x - from.x);
-        final float dy = (to.y - from.y);
+        final Point vkFrom = LHSToRHS(from);
+        final Point vkTo = LHSToRHS(to);
+        
+        final float dx = (vkTo.x - vkFrom.x);
+        final float dy = (vkTo.y - vkFrom.y);
 
         // Get the current screen height
         final float screenHeight = getCanvas().getHeight();
@@ -265,10 +274,8 @@ public class InteractiveVKVisualProcessor extends CVKVisualProcessor implements 
         Vector3f worldPosition = new Vector3f();
         final Vector3f direction = CameraUtilities.getFocusVector(originCamera);
         direction.scale(10);
-        
-        // Invert y
-        Vector3f screenPosition = new Vector3f(point.x, getCanvas().getHeight() - point.y, 0);
-           
+
+        Vector3f screenPosition = new Vector3f(point.x, point.y, 0);
         Graphics3DUtilities.screenToWorldCoordinates(screenPosition, direction, modelViewProjectionMatrix, getViewport(), worldPosition);
         worldPosition.add(camera.lookAtEye);
         return worldPosition;
@@ -326,6 +333,7 @@ public class InteractiveVKVisualProcessor extends CVKVisualProcessor implements 
         final float bottomScale = (((float) (viewport[3] - bottom) / (float) viewport[3]) - 0.5f) * verticalScale * 2;
         return new float[]{leftScale, rightScale, topScale, bottomScale};
     }
+    
 
     @Override
     public float getDPIScalingFactor() {
@@ -339,4 +347,13 @@ public class InteractiveVKVisualProcessor extends CVKVisualProcessor implements 
             return 1.0f;
         }
     }
+    
+    private Point LHSToRHS(final Point point) {
+        return new Point(point.x, -point.y);
+    }
+    
+    @Override
+    public Vector2i adjustPitchYawCoords(int pitch, int yaw) {
+        return new Vector2i(pitch, -yaw);
+    } 
 }

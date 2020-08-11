@@ -128,7 +128,7 @@ public class CVKShaderUtils {
         }
     }
     
-    public static long createShaderModule(ByteBuffer spirvCode, VkDevice device) {
+    public static long CreateShaderModule(ByteBuffer spirvCode, VkDevice device) {
 
         try(MemoryStack stack = stackPush()) {
 

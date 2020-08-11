@@ -350,7 +350,9 @@ public class CVKDevice {
                         + "\t\t minUniformBufferOffsetAlignment: %d\n"
                         + "\t\t minStorageBufferOffsetAlignment: %d\n"
                         + "\t\t maxPushConstantsSize: %d\n"                        
+                        + "\t\t pointSizeGranularity: %f\n" 
                         + "\t\t pointSizeRange: %f - %f\n"
+                        + "\t\t lineWidthGranularity: %f\n" 
                         + "\t\t lineWidthRange: %f - %f\n",
                         vkPhysicalDeviceProperties.deviceNameString(),
                         CVKMissingEnums.VkPhysicalDeviceType.GetByValue(vkPhysicalDeviceProperties.deviceType()).name(),
@@ -381,7 +383,9 @@ public class CVKDevice {
                         limits.minUniformBufferOffsetAlignment(),
                         limits.minStorageBufferOffsetAlignment(),
                         limits.maxPushConstantsSize(),
+                        limits.pointSizeGranularity(),
                         limits.pointSizeRange().get(0), limits.pointSizeRange().get(1),
+                        limits.lineWidthGranularity(),
                         limits.lineWidthRange().get(0), limits.lineWidthRange().get(1)                                                
                         );
             }            

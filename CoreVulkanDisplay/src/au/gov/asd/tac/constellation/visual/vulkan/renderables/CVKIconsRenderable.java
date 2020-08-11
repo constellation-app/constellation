@@ -76,7 +76,7 @@ import static org.lwjgl.vulkan.VK10.VK_DYNAMIC_STATE_VIEWPORT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32B32A32_SFLOAT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32B32A32_SINT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R8_SINT;
-import static org.lwjgl.vulkan.VK10.VK_FRONT_FACE_COUNTER_CLOCKWISE;
+import static org.lwjgl.vulkan.VK10.VK_FRONT_FACE_CLOCKWISE;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_LOGIC_OP_COPY;
 import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
@@ -125,6 +125,7 @@ import static org.lwjgl.vulkan.VK10.vkDestroyBufferView;
 import static org.lwjgl.vulkan.VK10.vkDestroyDescriptorSetLayout;
 import static org.lwjgl.vulkan.VK10.vkDestroyPipeline;
 import static org.lwjgl.vulkan.VK10.vkDestroyPipelineLayout;
+import static org.lwjgl.vulkan.VK10.vkDestroyShaderModule;
 import static org.lwjgl.vulkan.VK10.vkEndCommandBuffer;
 import static org.lwjgl.vulkan.VK10.vkFreeDescriptorSets;
 import static org.lwjgl.vulkan.VK10.vkMapMemory;
@@ -180,9 +181,9 @@ public class CVKIconsRenderable extends CVKRenderable{
     public static final int SELECTED_BIT = 1;
     public static final int DIMMED_BIT = 2;
     
-    private long hVertexShader = VK_NULL_HANDLE;
-    private long hGeometryShader = VK_NULL_HANDLE;
-    private long hFragmentShader = VK_NULL_HANDLE;
+    private long hVertexShaderModule = VK_NULL_HANDLE;
+    private long hGeometryShaderModule = VK_NULL_HANDLE;
+    private long hFragmentShaderModule = VK_NULL_HANDLE;
     private static ByteBuffer vsBytes = null;
     private static ByteBuffer gsBytes = null;
     private static ByteBuffer fsBytes = null;    
@@ -475,9 +476,9 @@ public class CVKIconsRenderable extends CVKRenderable{
     }    
                       
     
-    // ========================> Static init <======================== \\
+    // ========================> Static resources <======================== \\
     
-    private static int LoadShaders(CVKDevice cvkDevice) {
+    private static int LoadShaders() {
         int ret = VK_SUCCESS;
         
         try {
@@ -513,10 +514,10 @@ public class CVKIconsRenderable extends CVKRenderable{
         return ret;            
     }  
 
-    public static int StaticInitialise(CVKDevice cvkDevice) {
+    public static int StaticInitialise() {
         int ret = VK_SUCCESS;
         if (!staticInitialised) {
-            ret = LoadShaders(cvkDevice);
+            ret = LoadShaders();
             if (VkFailed(ret)) { return ret; }            
             staticInitialised = true;
         }
@@ -553,18 +554,18 @@ public class CVKIconsRenderable extends CVKRenderable{
         int ret = VK_SUCCESS;
         
         try{           
-            hVertexShader = CVKShaderUtils.createShaderModule(vsBytes, cvkDevice.GetDevice());
-            if (hVertexShader == VK_NULL_HANDLE) {
+            hVertexShaderModule = CVKShaderUtils.CreateShaderModule(vsBytes, cvkDevice.GetDevice());
+            if (hVertexShaderModule == VK_NULL_HANDLE) {
                 cvkDevice.Logger().log(Level.SEVERE, "Failed to create shader module for: VertexIcon.vs");
                 return CVK_ERROR_SHADER_MODULE;
             }
-            hGeometryShader = CVKShaderUtils.createShaderModule(gsBytes, cvkDevice.GetDevice());
-            if (hGeometryShader == VK_NULL_HANDLE) {
+            hGeometryShaderModule = CVKShaderUtils.CreateShaderModule(gsBytes, cvkDevice.GetDevice());
+            if (hGeometryShaderModule == VK_NULL_HANDLE) {
                 cvkDevice.Logger().log(Level.SEVERE, "Failed to create shader module for: VertexIcon.gs");
                 return CVK_ERROR_SHADER_MODULE;
             }
-            hFragmentShader = CVKShaderUtils.createShaderModule(fsBytes, cvkDevice.GetDevice());
-            if (hFragmentShader == VK_NULL_HANDLE) {
+            hFragmentShaderModule = CVKShaderUtils.CreateShaderModule(fsBytes, cvkDevice.GetDevice());
+            if (hFragmentShaderModule == VK_NULL_HANDLE) {
                 cvkDevice.Logger().log(Level.SEVERE, "Failed to create shader module for: VertexIcon.fs");
                 return CVK_ERROR_SHADER_MODULE;
             }
@@ -575,9 +576,24 @@ public class CVKIconsRenderable extends CVKRenderable{
         }
         
         cvkDevice.Logger().info("Shader modules created for CVKIconsRenderable class:\n\tVertex:   0x%016x\n\tGeometry: 0x%016x\n\tFragment: 0x%016x",
-                hVertexShader, hGeometryShader, hFragmentShader);
+                hVertexShaderModule, hGeometryShaderModule, hFragmentShaderModule);
         return ret;
     }   
+    
+    private void DestroyShaderModules() {
+        if (hVertexShaderModule != VK_NULL_HANDLE) {
+            vkDestroyShaderModule(cvkDevice.GetDevice(), hVertexShaderModule, null);
+            hVertexShaderModule = VK_NULL_HANDLE;
+        }
+        if (hGeometryShaderModule != VK_NULL_HANDLE) {
+            vkDestroyShaderModule(cvkDevice.GetDevice(), hGeometryShaderModule, null);
+            hGeometryShaderModule = VK_NULL_HANDLE;
+        }
+        if (hFragmentShaderModule != VK_NULL_HANDLE) {
+            vkDestroyShaderModule(cvkDevice.GetDevice(), hFragmentShaderModule, null);
+            hFragmentShaderModule = VK_NULL_HANDLE;
+        }
+    }
     
     private void CreateUBOStagingBuffers() {
         cvkVertexUBStagingBuffer = CVKBuffer.Create(cvkDevice, 
@@ -601,7 +617,7 @@ public class CVKIconsRenderable extends CVKRenderable{
     public int Initialise(CVKDevice cvkDevice) {
         CVKAssert(cvkDevice != null);
         // Check for double initialisation
-        CVKAssert(hVertexShader == VK_NULL_HANDLE);
+        CVKAssert(hVertexShaderModule == VK_NULL_HANDLE);
         CVKAssert(hDescriptorLayout == VK_NULL_HANDLE);
         
         int ret;        
@@ -674,11 +690,11 @@ public class CVKIconsRenderable extends CVKRenderable{
         DestroyFragmentUniformBuffers();
         DestroyDescriptorSets();
         DestroyDescriptorLayout();
-        DestroyCommandBuffers();
         DestroyPipelines();
         DestroyPipelineLayout();
         DestroyCommandBuffers();
         DestroyStagingBuffers();
+        DestroyShaderModules();
         
         CVKAssert(vertexBuffers == null);
         CVKAssert(cvkPositionBuffer == null);
@@ -692,7 +708,10 @@ public class CVKIconsRenderable extends CVKRenderable{
         CVKAssert(hDescriptorLayout == VK_NULL_HANDLE);  
         CVKAssert(commandBuffers == null);        
         CVKAssert(pipelines == null);
-        CVKAssert(hPipelineLayout == VK_NULL_HANDLE);           
+        CVKAssert(hPipelineLayout == VK_NULL_HANDLE);    
+        CVKAssert(hVertexShaderModule == VK_NULL_HANDLE);
+        CVKAssert(hGeometryShaderModule == VK_NULL_HANDLE);
+        CVKAssert(hFragmentShaderModule == VK_NULL_HANDLE);
     }
     
        
@@ -1506,7 +1525,7 @@ public class CVKIconsRenderable extends CVKRenderable{
         int ret = VK_SUCCESS;
         
         if (pDescriptorSets != null) {
-            cvkDevice.Logger().info("CVKIconsRenderable returning %d descriptor sets to the pool", pDescriptorSets.capacity());
+            cvkDevice.Logger().fine("CVKIconsRenderable returning %d descriptor sets to the pool", pDescriptorSets.capacity());
             
             // After calling vkFreeDescriptorSets, all descriptor sets in pDescriptorSets are invalid.
             ret = vkFreeDescriptorSets(cvkDevice.GetDevice(), cvkDescriptorPool.GetDescriptorPoolHandle(), pDescriptorSets);
@@ -1585,9 +1604,9 @@ public class CVKIconsRenderable extends CVKRenderable{
         CVKAssert(cvkSwapChain.GetSwapChainHandle() != VK_NULL_HANDLE);
         CVKAssert(cvkSwapChain.GetRenderPassHandle() != VK_NULL_HANDLE);
         CVKAssert(cvkDescriptorPool.GetDescriptorPoolHandle() != VK_NULL_HANDLE);
-        CVKAssert(hVertexShader != VK_NULL_HANDLE);
-        CVKAssert(hGeometryShader != VK_NULL_HANDLE);
-        CVKAssert(hFragmentShader != VK_NULL_HANDLE);        
+        CVKAssert(hVertexShaderModule != VK_NULL_HANDLE);
+        CVKAssert(hGeometryShaderModule != VK_NULL_HANDLE);
+        CVKAssert(hFragmentShaderModule != VK_NULL_HANDLE);        
         CVKAssert(cvkSwapChain.GetWidth() > 0);
         CVKAssert(cvkSwapChain.GetHeight() > 0);
                
@@ -1636,19 +1655,19 @@ public class CVKIconsRenderable extends CVKRenderable{
                 VkPipelineShaderStageCreateInfo vertShaderStageInfo = shaderStages.get(0);
                 vertShaderStageInfo.sType(VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO);
                 vertShaderStageInfo.stage(VK_SHADER_STAGE_VERTEX_BIT);
-                vertShaderStageInfo.module(hVertexShader);
+                vertShaderStageInfo.module(hVertexShaderModule);
                 vertShaderStageInfo.pName(entryPoint);
 
                 VkPipelineShaderStageCreateInfo geomShaderStageInfo = shaderStages.get(1);
                 geomShaderStageInfo.sType(VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO);
                 geomShaderStageInfo.stage(VK_SHADER_STAGE_GEOMETRY_BIT);
-                geomShaderStageInfo.module(hGeometryShader);
+                geomShaderStageInfo.module(hGeometryShaderModule);
                 geomShaderStageInfo.pName(entryPoint);            
 
                 VkPipelineShaderStageCreateInfo fragShaderStageInfo = shaderStages.get(2);
                 fragShaderStageInfo.sType(VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO);
                 fragShaderStageInfo.stage(VK_SHADER_STAGE_FRAGMENT_BIT);
-                fragShaderStageInfo.module(hFragmentShader);
+                fragShaderStageInfo.module(hFragmentShaderModule);
                 fragShaderStageInfo.pName(entryPoint);
 
                 // ===> VERTEX STAGE <===
@@ -1690,7 +1709,7 @@ public class CVKIconsRenderable extends CVKRenderable{
                 rasterizer.polygonMode(VK_POLYGON_MODE_FILL);
                 rasterizer.lineWidth(1.0f);
                 rasterizer.cullMode(VK_CULL_MODE_BACK_BIT);
-                rasterizer.frontFace(VK_FRONT_FACE_COUNTER_CLOCKWISE);
+                rasterizer.frontFace(VK_FRONT_FACE_CLOCKWISE);
                 rasterizer.depthBiasEnable(false);
 
                 // ===> MULTISAMPLING <===
@@ -1706,8 +1725,6 @@ public class CVKIconsRenderable extends CVKRenderable{
                 depthStencil.depthWriteEnable(true);
                 depthStencil.depthCompareOp(VK_COMPARE_OP_LESS_OR_EQUAL);
                 depthStencil.depthBoundsTestEnable(false);
-//                depthStencil.minDepthBounds(0.0f);
-//                depthStencil.maxDepthBounds(1.0f);
                 depthStencil.stencilTestEnable(false);                       
 
                 // ===> COLOR BLENDING <===
@@ -1960,7 +1977,7 @@ public class CVKIconsRenderable extends CVKRenderable{
     public CVKRenderableUpdateTask TaskRebuildIcons(final VisualAccess access) {
         //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
         final int newVertexCount = access.getVertexCount();
-        cvkDevice.Logger().info("TaskRebuildIcons frame %d: %d verts", parent.GetFrameNumber(), access.getVertexCount());
+        cvkDevice.Logger().fine("TaskRebuildIcons frame %d: %d verts", parent.GetFrameNumber(), access.getVertexCount());
         RebuildIconStagingBuffers(access, newVertexCount);
         RebuildVertexFlagsStagingBuffers(access, newVertexCount);
         
@@ -1982,7 +1999,7 @@ public class CVKIconsRenderable extends CVKRenderable{
         //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
         // If this fires investigate why we didn't get a rebuild task first
         final int newVertexCount = access.getVertexCount();
-        cvkDevice.Logger().info("TaskUpdateIcons frame %d: %d verts", parent.GetFrameNumber(), access.getVertexCount());
+        cvkDevice.Logger().fine("TaskUpdateIcons frame %d: %d verts", parent.GetFrameNumber(), access.getVertexCount());
         CVKAssert(vertexCount == newVertexCount); //REMOVE AFTER TESTING
         
         // If we have had an update task called before a rebuild task we first have to build
@@ -2065,7 +2082,7 @@ public class CVKIconsRenderable extends CVKRenderable{
         //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
         final int newVertexCount = access.getVertexCount();
 //        CVKAssert(newVertexCount == vertexCount);
-        cvkDevice.Logger().info("TaskRebuildVertexFlags frame %d: %d verts", parent.GetFrameNumber(), access.getVertexCount());
+        cvkDevice.Logger().fine("TaskRebuildVertexFlags frame %d: %d verts", parent.GetFrameNumber(), access.getVertexCount());
         RebuildVertexFlagsStagingBuffers(access, newVertexCount);
         
         //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.ProcessRenderTasks) ===//
@@ -2077,7 +2094,7 @@ public class CVKIconsRenderable extends CVKRenderable{
     public CVKRenderableUpdateTask TaskUpdateVertexFlags(final VisualChange change, final VisualAccess access) {
         //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
         // If this fires investigate why we didn't get a rebuild task first
-        cvkDevice.Logger().info("TaskUpdateVertexFlags frame %d: %d verts", parent.GetFrameNumber(), access.getVertexCount());
+        cvkDevice.Logger().fine("TaskUpdateVertexFlags frame %d: %d verts", parent.GetFrameNumber(), access.getVertexCount());
         final int newVertexCount = access.getVertexCount();
 //        CVKAssert(vertexCount != newVertexCount); //REMOVE AFTER TESTING
         
@@ -2119,7 +2136,7 @@ public class CVKIconsRenderable extends CVKRenderable{
     
     public CVKRenderableUpdateTask TaskUpdateColours(final VisualChange change, final VisualAccess access) {
         //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
-        cvkDevice.Logger().info("TaskUpdateColours frame %d: %d verts", parent.GetFrameNumber(), access.getVertexCount());
+        cvkDevice.Logger().fine("TaskUpdateColours frame %d: %d verts", parent.GetFrameNumber(), access.getVertexCount());
         
         //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.ProcessRenderTasks) ===//
         return () -> {
@@ -2131,7 +2148,7 @@ public class CVKIconsRenderable extends CVKRenderable{
     
     public CVKRenderableUpdateTask TaskSetHighLightColour(final VisualAccess access) {
         //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
-        cvkDevice.Logger().info("TaskSetHighLightColour frame %d: %d verts", parent.GetFrameNumber(), access.getVertexCount());
+        cvkDevice.Logger().fine("TaskSetHighLightColour frame %d: %d verts", parent.GetFrameNumber(), access.getVertexCount());
         final ConstellationColor highlightColour = access.getHighlightColor();
                                                 
         //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.ProcessRenderTasks) ===//
@@ -2206,11 +2223,11 @@ public class CVKIconsRenderable extends CVKRenderable{
         CVKAssert(buffer.remaining() >= POSITION_STRIDE);    
         
         buffer.putFloat(access.getX(pos));
-        buffer.putFloat(access.getY(pos));
+        buffer.putFloat(-access.getY(pos));
         buffer.putFloat(access.getZ(pos));
         buffer.putFloat(access.getRadius(pos));
         buffer.putFloat(access.getX2(pos));
-        buffer.putFloat(access.getY2(pos));
+        buffer.putFloat(-access.getY2(pos));
         buffer.putFloat(access.getZ2(pos));
         buffer.putFloat(access.getRadius(pos));                 
     }  

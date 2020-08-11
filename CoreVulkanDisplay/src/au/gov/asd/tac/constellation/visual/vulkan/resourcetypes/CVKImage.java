@@ -111,9 +111,9 @@ public class CVKImage {
         if (CVK_DEBUGGING && pImage.get(0) != VK_NULL_HANDLE) {
             if (pImageMemory != null && pImageMemory.get(0) != VK_NULL_HANDLE) {
                 --CVK_VKALLOCATIONS;
-                cvkDevice.Logger().info(String.format("CVK_VKALLOCATIONS (%d-) Destroy called on CVKImage (0x%016X), vkFreeMemory will be called", CVK_VKALLOCATIONS, pImage.get(0)));
+                cvkDevice.Logger().fine(String.format("CVK_VKALLOCATIONS (%d-) Destroy called on CVKImage (0x%016X), vkFreeMemory will be called", CVK_VKALLOCATIONS, pImage.get(0)));
             } else {
-                cvkDevice.Logger().info(String.format("CVK_VKALLOCATIONS (%d!) Destroy called on CVKImage (0x%016X), vkFreeMemory will NOT be called", CVK_VKALLOCATIONS, pImage.get(0)));
+                cvkDevice.Logger().fine(String.format("CVK_VKALLOCATIONS (%d!) Destroy called on CVKImage (0x%016X), vkFreeMemory will NOT be called", CVK_VKALLOCATIONS, pImage.get(0)));
             }            
         }                
         if (pImage.get(0) != VK_NULL_HANDLE) {
@@ -447,7 +447,7 @@ public class CVKImage {
             }
             if (CVK_DEBUGGING) {
                 ++CVK_VKALLOCATIONS;
-                cvkDevice.Logger().info(String.format("CVK_VKALLOCATIONS(%d+) vkAllocateMemory(%d) for CVKimage (0x%016X)", 
+                cvkDevice.Logger().fine(String.format("CVK_VKALLOCATIONS(%d+) vkAllocateMemory(%d) for CVKimage (0x%016X)", 
                         CVK_VKALLOCATIONS, vkMemoryRequirements.size(), cvkImage.pImage.get(0)));
             }
 //            LogStackTrace();            

@@ -214,10 +214,10 @@ public class CVKBuffer {
         if (CVK_DEBUGGING && pBuffer != null) {
             if (pBufferMemory != null && pBufferMemory.get(0) != VK_NULL_HANDLE) {
                 --CVK_VKALLOCATIONS;
-                cvkDevice.Logger().info(String.format("CVK_VKALLOCATIONS (%d-) Destroy called on CVKBuffer (0x%016X), vkFreeMemory will be called", CVK_VKALLOCATIONS, pBuffer.get(0)));
+                cvkDevice.Logger().fine(String.format("CVK_VKALLOCATIONS (%d-) Destroy called on CVKBuffer (0x%016X), vkFreeMemory will be called", CVK_VKALLOCATIONS, pBuffer.get(0)));
             } else {
                 
-                cvkDevice.Logger().info(String.format("CVK_VKALLOCATIONS (%d!) Destroy called on CVKBuffer (0x%016X), vkFreeMemory will NOT be called", CVK_VKALLOCATIONS, pBuffer.get(0)));
+                cvkDevice.Logger().fine(String.format("CVK_VKALLOCATIONS (%d!) Destroy called on CVKBuffer (0x%016X), vkFreeMemory will NOT be called", CVK_VKALLOCATIONS, pBuffer.get(0)));
             }            
         }
         if (pBuffer != null && pBuffer.get(0) != VK_NULL_HANDLE) {
@@ -303,7 +303,7 @@ public class CVKBuffer {
             ret = vkAllocateMemory(cvkDevice.GetDevice(), vkAllocationInfo, null, cvkBuffer.pBufferMemory);
             checkVKret(ret);
             ++CVK_VKALLOCATIONS;
-            cvkDevice.Logger().info(String.format("CVK_VKALLOCATIONS(%d+) vkAllocateMemory(%d) for CVKBuffer (0x%016X)", 
+            cvkDevice.Logger().fine(String.format("CVK_VKALLOCATIONS(%d+) vkAllocateMemory(%d) for CVKBuffer (0x%016X)", 
                     CVK_VKALLOCATIONS, vkMemoryRequirements.size(), cvkBuffer.pBuffer.get(0)));
             //LogStackTrace();
 

@@ -120,6 +120,16 @@ public class CVKRenderer implements ComponentListener {
             renderables.forEach(el -> {el.Destroy();});
             renderables = null;
         }
+        
+        if (cvkSwapChain != null) {
+            cvkSwapChain.Destroy();
+            cvkSwapChain = null;
+        }
+        
+        if (cvkDescriptorPool != null) {
+            cvkDescriptorPool.Destroy();
+            cvkDescriptorPool = null;
+        }
 
         if (cvkDevice != null) {
             cvkDevice.Destroy();
