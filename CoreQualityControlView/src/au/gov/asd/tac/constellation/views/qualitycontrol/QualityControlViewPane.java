@@ -317,9 +317,9 @@ public final class QualityControlViewPane extends BorderPane {
                 return cell;
             });
 
-            if (state != null) {
-                qualityTable.setItems(FXCollections.observableArrayList(state.getQualityControlEvents()));
-            }
+            qualityTable.setItems(state != null
+                    ? FXCollections.observableArrayList(state.getQualityControlEvents())
+                    : FXCollections.emptyObservableList());
 
             final String displayName = graphId != null && GraphNode.getGraphNode(graphId) != null
                     ? GraphNode.getGraphNode(graphId).getDisplayName()
