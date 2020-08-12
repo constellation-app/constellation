@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.graph.attribute.utilities;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
-import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
@@ -58,11 +57,12 @@ public class AttributeUtilities {
      * @return
      */
     public static List<Attribute> getAttributes(final GraphElementType graphElementType) {
-        final Graph graph = GraphManager.getDefault().getActiveGraph();
-        final ReadableGraph readableGraph = graph.getReadableGraph();
         final List<Attribute> attributes = new ArrayList<>();
-
-        if (graph.getSchema() != null) {
+        if (GraphManager.getDefault().getActiveGraph() == null) {
+            return attributes;
+        }
+        final ReadableGraph readableGraph = GraphManager.getDefault().getActiveGraph().getReadableGraph();
+        if (GraphManager.getDefault().getActiveGraph().getSchema() != null) {
             try {
                 final int attributeCount = readableGraph.getAttributeCount(graphElementType);
                 for (int i = 0; i < attributeCount; i++) {
