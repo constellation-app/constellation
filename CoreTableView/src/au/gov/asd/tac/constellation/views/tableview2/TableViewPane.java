@@ -1037,7 +1037,7 @@ public final class TableViewPane extends BorderPane {
         return table;
     }
     
-    private void paginate(final List<ObservableList<String>> rows) {
+    protected void paginate(final List<ObservableList<String>> rows) {
         final Pagination pagination = new Pagination(rows == null ? 1 : rows.size() / maxRowsPerPage + 1);
         pagination.setPageFactory(index -> createPage(index, rows));
         Platform.runLater(() -> {
