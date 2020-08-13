@@ -59,7 +59,6 @@ import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
-import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Side;
@@ -82,6 +81,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.ToolBar;
@@ -144,6 +144,8 @@ public final class TableViewPane extends BorderPane {
     private static final int WIDTH = 120;
     private static final int DEFAULT_MAX_ROWS_PER_PAGE = 500;
     private int maxRowsPerPage = DEFAULT_MAX_ROWS_PER_PAGE;
+    
+    private final ToggleGroup pageSizeToggle = new ToggleGroup();
 
     private final TableViewTopComponent parent;
     private final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> columnIndex;
@@ -332,14 +334,22 @@ public final class TableViewPane extends BorderPane {
         savePrefsOption.setOnAction(e -> {
 
             if ((!table.getColumns().isEmpty()) && (GraphManager.getDefault().getActiveGraph() != null)) {
-                TableViewPreferencesIOUtilities.savePreferences(parent.getCurrentState().getElementType(), table);
+                TableViewPreferencesIOUtilities.savePreferences(parent.getCurrentState().getElementType(), table, maxRowsPerPage);
             }
             e.consume();
         });
         final MenuItem loadPrefsOption = new MenuItem("Load Table Preferences...");
-        loadPrefsOption.setOnAction((ActionEvent e) -> {
+        loadPrefsOption.setOnAction(e -> {
             if (GraphManager.getDefault().getActiveGraph() != null) {
                 loadPreferences();
+                //TODO: Replace need to sleep before paginating
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt();
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+                }
+                paginate(sortedRowList);
             }
             e.consume();
         }); 
@@ -577,7 +587,6 @@ public final class TableViewPane extends BorderPane {
     private Menu createPageSizeMenu() {
         final Menu pageSizeMenu = new Menu("Set Page Size");
         final List<Integer> pageSizes = Arrays.asList(100, 250, 500, 1000);
-        final ToggleGroup pageSizeToggle = new ToggleGroup();
         for (final Integer pageSize : pageSizes) {
             final RadioMenuItem pageSizeOption = new RadioMenuItem(pageSize.toString());
             pageSizeOption.setToggleGroup(pageSizeToggle);
@@ -957,7 +966,7 @@ public final class TableViewPane extends BorderPane {
             if (parent.getCurrentState() != null) {
 
                 final List<TableColumn<ObservableList<String>, ?>> newColumnOrder = new ArrayList<>();
-                final Tuple<ArrayList<String>, Tuple<String, TableColumn.SortType>> tablePrefs
+                final ThreeTuple<ArrayList<String>, Tuple<String, TableColumn.SortType>, Integer> tablePrefs
                         = TableViewPreferencesIOUtilities.getPreferences(parent.getCurrentState().getElementType());
 
                 // If no columns were found then the user abandoned load as saves cannot occur with 0 columns
@@ -969,7 +978,7 @@ public final class TableViewPane extends BorderPane {
                     // Loop through column names found in prefs and add associated columns to newColumnOrder list all set to visible.
                     for (final TableColumn<ObservableList<String>, ?> column : table.getColumns()) {
                         if (column.getText().equals(columnName)) {
-                            TableColumn<ObservableList<String>, ?> copy = column;
+                            final TableColumn<ObservableList<String>, ?> copy = column;
                             copy.setVisible(true);
                             newColumnOrder.add(copy);
                         }
@@ -990,6 +999,14 @@ public final class TableViewPane extends BorderPane {
                         }).collect(Collectors.toList());
                 saveSortDetails(tablePrefs.getSecond().getFirst(), tablePrefs.getSecond().getSecond());
                 updateVisibleColumns(parent.getCurrentGraph(), parent.getCurrentState(), orderedColumns, UpdateMethod.REPLACE);
+                for (final Toggle t : pageSizeToggle.getToggles()) {
+                    final RadioMenuItem pageSizeOption = (RadioMenuItem) t;
+                    if (Integer.parseInt(pageSizeOption.getText()) == tablePrefs.getThird()) {
+                        pageSizeOption.setSelected(true);
+                        maxRowsPerPage = tablePrefs.getThird();
+                        break;
+                    }
+                }
             }
         }
     }
