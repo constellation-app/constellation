@@ -91,14 +91,7 @@ public class LayersViewPane extends BorderPane {
         final Button addButton = new Button("Add New Layer");
         addButton.setAlignment(Pos.CENTER_RIGHT);
         addButton.setOnAction(event -> {
-            if (layersGridPane.getRowCount() <= 32) {
-                createLayer(layers.size() + 1, false, "", "");
-                controller.writeState();
-            } else {
-                final NotifyDescriptor nd = new NotifyDescriptor.Message(
-                        "You cannot have more than 32 layers", NotifyDescriptor.WARNING_MESSAGE);
-                DialogDisplayer.getDefault().notify(nd);
-            }
+            createLayerAction();
             event.consume();
         });
         HBox.setHgrow(addButton, Priority.ALWAYS);
@@ -139,6 +132,19 @@ public class LayersViewPane extends BorderPane {
         return controller;
     }
 
+    public void createLayerAction() {
+        if (layersGridPane.getRowCount() <= 32) {
+            createLayer(layers.size() + 1, false, "", "");
+            controller.writeState();
+        } else {
+            final NotifyDescriptor nd = new NotifyDescriptor.Message(
+                    "You cannot have more than 32 layers", NotifyDescriptor.WARNING_MESSAGE);
+            DialogDisplayer.getDefault().notify(nd);
+        }
+    }
+
+    ;
+    
     private int createLayer(final int currentIndex, final boolean checkBoxSelected, final String query, final String description) {
         final Label layerIdText = new Label(String.format("%02d", currentIndex));
         layerIdText.setMinWidth(30);

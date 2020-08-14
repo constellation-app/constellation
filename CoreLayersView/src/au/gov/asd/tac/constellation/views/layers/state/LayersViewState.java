@@ -15,9 +15,11 @@
  */
 package au.gov.asd.tac.constellation.views.layers.state;
 
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.views.layers.layer.LayerDescription;
 import java.util.ArrayList;
 import java.util.List;
+import org.openide.NotifyDescriptor;
 
 /**
  * Stores all Layer Queries currently active in the Layers View.
@@ -53,6 +55,14 @@ public class LayersViewState {
 
     public void addLayer(final LayerDescription layer) {
         layers.add(layer);
+    }
+
+    public void addLayer() {
+        if (layers.size() < 32) {
+            layers.add(new LayerDescription(layers.size() + 1, false, "", ""));
+        } else {
+            NotifyDisplayer.display("You cannot have more than 32 layers open", NotifyDescriptor.WARNING_MESSAGE);
+        }
     }
 
     public void setLayers(final List<LayerDescription> layers) {
