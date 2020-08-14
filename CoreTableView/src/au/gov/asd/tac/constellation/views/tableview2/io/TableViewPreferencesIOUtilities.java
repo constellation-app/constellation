@@ -92,7 +92,7 @@ public class TableViewPreferencesIOUtilities {
         final ObjectNode global = rootNode.addObject();
         final ArrayNode colOrderArrayNode = global.putArray(COLUMN_ORDER_NODE);
         final ObjectNode colSortNode = global.putObject(COLUMN_SORT_NODE);
-        final ObjectNode pageSizeNode = global.put(PAGE_SIZE_NODE, pageSize);
+        global.put(PAGE_SIZE_NODE, pageSize);
 
         // Populate elements of JSON structure based on supplied graph information
         int i = 0;
