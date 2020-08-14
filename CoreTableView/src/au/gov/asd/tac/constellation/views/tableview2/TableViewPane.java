@@ -967,7 +967,7 @@ public final class TableViewPane extends BorderPane {
 
                 final List<TableColumn<ObservableList<String>, ?>> newColumnOrder = new ArrayList<>();
                 final ThreeTuple<ArrayList<String>, Tuple<String, TableColumn.SortType>, Integer> tablePrefs
-                        = TableViewPreferencesIOUtilities.getPreferences(parent.getCurrentState().getElementType());
+                        = TableViewPreferencesIOUtilities.getPreferences(parent.getCurrentState().getElementType(), maxRowsPerPage);
 
                 // If no columns were found then the user abandoned load as saves cannot occur with 0 columns
                 if (tablePrefs.getFirst().isEmpty()) {

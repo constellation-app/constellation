@@ -118,11 +118,13 @@ public class TableViewPreferencesIOUtilities {
      *
      * @param tableType Indication of whether the table is displaying in vertex
      * of transaction mode.
+     * @param defaultPageSize The page size to load in if the preference being 
+     * loaded in doesn't have one.
      *
      * @return A Tuple containing: ordered list of table columns (1) and second
      * Tuple (2) containing details of sort column (1) and sort order (2).
      */
-    public static ThreeTuple<ArrayList<String>, Tuple<String, TableColumn.SortType>, Integer> getPreferences(GraphElementType tableType) {
+    public static ThreeTuple<ArrayList<String>, Tuple<String, TableColumn.SortType>, Integer> getPreferences(GraphElementType tableType, int defaultPageSize) {
         String filePrefix = (tableType == GraphElementType.VERTEX ? VERTEX_FILE_PREFIX : TRANSACTION_FILE_PREFIX);
         final JsonNode root = JsonIO.loadJsonPreferences(TABLE_VIEW_PREF_DIR, filePrefix);
         final ArrayList<String> colOrder = new ArrayList<>();
@@ -148,7 +150,11 @@ public class TableViewPreferencesIOUtilities {
                 }
                 
                 // Extract page size details
-                pageSize = pageSizeNode.intValue();
+                if (pageSizeNode == null) {
+                    pageSize = defaultPageSize;
+                } else {
+                    pageSize = pageSizeNode.intValue();
+                }
             }
         }
         return new ThreeTuple<>(colOrder, new Tuple<>(sortColumn, sortType), pageSize);
