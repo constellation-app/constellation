@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.layers;
 
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.views.layers.utilities.DeselectAllLayersPlugin;
 import au.gov.asd.tac.constellation.views.layers.utilities.NewLayerPlugin;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
@@ -27,25 +28,27 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle;
 
 /**
+ * Defines the keyboard shortcuts for use with the Layers view
  *
  * @author formalhaut69
  */
 @ActionID(category = "Options", id = "au.gov.asd.tac.constellation.views.layersviewshortcuts")
 @ActionRegistration(displayName = "#CTL_LayersViewShortcuts", surviveFocusChange = true)
 @ActionReferences({
-    @ActionReference(path = "Shortcuts", name = "C-0")
+    @ActionReference(path = "Shortcuts", name = "CA-S"),
+    @ActionReference(path = "Shortcuts", name = "CA-L")
 })
 @NbBundle.Messages("CTL_LayersViewShortcuts=Layers View: Shortcuts")
 public class LayersViewShortcuts extends AbstractAction{
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        /*
-         * Determine whether we have to write a new named selection (ie Control key was held),
-         * or to read a previously saved named selection (ie Control was not held).
-         */
+
         String hotkey = e.getActionCommand();
-        PluginExecution.withPlugin(new NewLayerPlugin()).executeLater(GraphManager.getDefault().getActiveGraph());
+        if (hotkey.equals("CA-L")) {
+            PluginExecution.withPlugin(new NewLayerPlugin()).executeLater(GraphManager.getDefault().getActiveGraph());
+        } else {
+            PluginExecution.withPlugin(new DeselectAllLayersPlugin()).executeLater(GraphManager.getDefault().getActiveGraph());
+        }
     }
-    
 }

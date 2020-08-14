@@ -17,48 +17,44 @@ package au.gov.asd.tac.constellation.views.layers.utilities;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.layers.layer.LayerDescription;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewState;
-import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * A plugin that creates a new layer in the layers view
+ * A plugin that deselects all layers in the layers view
  *
  * @author formalhaut69
  */
-public class NewLayerPlugin extends SimpleEditPlugin {
+public class DeselectAllLayersPlugin extends SimpleEditPlugin {
 
     @Override
-    public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) {
-        if (graph == null) {
-            return;
-        }
-
+    protected void edit(GraphWriteMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
         final int layersViewStateAttributeId = LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.ensure(graph);
         if (layersViewStateAttributeId == Graph.NOT_FOUND) {
             return;
         }
 
         LayersViewState currentState = graph.getObjectValue(layersViewStateAttributeId, 0);
-        if (currentState == null) {
-            final List<LayerDescription> layers = new ArrayList<>();
+        List<LayerDescription> layers = currentState.getLayers();
+        layers.forEach((layer) -> {
+            layer.setCurrentLayerVisibility(false);
+        });
+
+        if (layers.isEmpty()) {
             layers.add(new LayerDescription(1, true, LayerDescription.DEFAULT_QUERY_STRING, LayerDescription.DEFAULT_QUERY_DESCRIPTION));
             layers.add(new LayerDescription(2, false, StringUtils.EMPTY, StringUtils.EMPTY));
             currentState = new LayersViewState(layers);
         }
-
         final LayersViewState newState = new LayersViewState(currentState);
-        newState.addLayer();
-
         graph.setObjectValue(layersViewStateAttributeId, 0, newState);
     }
-
     @Override
     protected boolean isSignificant() {
         return false;
@@ -66,6 +62,6 @@ public class NewLayerPlugin extends SimpleEditPlugin {
 
     @Override
     public String getName() {
-        return "Layers View: New Layer Plugin";
+        return "Layers View: Deselect All Layers Plugin";
     }
 }
