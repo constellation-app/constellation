@@ -1809,6 +1809,46 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     }
 
     @Override
+    public <V> V createAttributeValue(final int attribute) {
+        return (V)attributeDescriptions[attribute].createValue();
+    }
+    
+    @Override
+    public <V> void readAttributeValue(final int attribute, final int id, final V value) {
+        attributeDescriptions[attribute].read(id, value);
+    }
+    
+    @Override
+    public <V> void writeAttributeValue(final int attribute, final int id, final V value) {
+        if (graphEdit == null) {
+            attributeDescriptions[attribute].write(id, value);
+            attributeIndices[attribute].updateElement(id);
+            attributeModificationCounters[attribute] += operationMode.getModificationIncrement();
+            globalModificationCounter += operationMode.getModificationIncrement();
+            int keyType = primaryKeyLookup[attribute];
+            if (keyType >= 0) {
+                removeFromIndex(keyType, id);
+            }
+        } else {
+            AttributeDescription description = attributeDescriptions[attribute];
+            NativeAttributeType nativeType = description.getNativeType();
+            nativeType.get(this, attribute, id, oldValue);
+
+            attributeDescriptions[attribute].write(id, value);
+
+            if (nativeType.addEdit(this, graphEdit, attribute, id, oldValue)) {
+                attributeIndices[attribute].updateElement(id);
+                attributeModificationCounters[attribute] += operationMode.getModificationIncrement();
+                globalModificationCounter += operationMode.getModificationIncrement();
+                int keyType = primaryKeyLookup[attribute];
+                if (keyType >= 0) {
+                    removeFromIndex(keyType, id);
+                }
+            }
+        }
+    }
+    
+    @Override
     public boolean isDefaultValue(final int attribute, final int id) {
         return attributeDescriptions[attribute].isClear(id);
     }

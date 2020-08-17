@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.graph.attribute;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
 import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
+import au.gov.asd.tac.constellation.graph.value.types.objectType.ObjectValue;
 import java.lang.reflect.InvocationTargetException;
 import java.security.SecureRandom;
 import java.util.Arrays;
@@ -29,7 +30,7 @@ import java.util.Arrays;
  * @param <T> the type of object stored by this description.
  * @author cygnus_x-1
  */
-public abstract class AbstractObjectAttributeDescription<T extends Object> extends AbstractAttributeDescription {
+public abstract class AbstractObjectAttributeDescription<T extends Object> extends AbstractAttributeDescription<ObjectValue<T>> {
 
     protected final SecureRandom random = new SecureRandom();
     protected final int nullHash = random.nextInt();
@@ -183,5 +184,20 @@ public abstract class AbstractObjectAttributeDescription<T extends Object> exten
     public void restoreData(final Object savedData) {
         final Object[] arrayData = (Object[]) savedData;
         data = Arrays.copyOf(arrayData, arrayData.length);
+    }
+    
+    @Override
+    public ObjectValue<T> createValue() {
+        return new ObjectValue<>();
+    }
+    
+    @Override
+    public void read(int id, ObjectValue<T> value) {
+        value.writeObject((T)data[id]);
+    }
+    
+    @Override
+    public void write(int id, ObjectValue<T> value) {
+        data[id] = value.readObject();
     }
 }

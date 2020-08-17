@@ -15,7 +15,11 @@
  */
 package au.gov.asd.tac.constellation.views.layers;
 
+import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.views.layers.layer.LayerDescription;
+import au.gov.asd.tac.constellation.views.layers.utilities.SelectExpressionPlugin;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -124,8 +128,29 @@ public class LayersViewPane extends BorderPane {
         options.setAlignment(Pos.TOP_LEFT);
         options.setPadding(new Insets(0, 0, 0, 10));
 
+        final TextArea expressionTextArea = new TextArea();
+        
+        final Button selectVerticesButton = new Button("Select Vertices");
+        selectVerticesButton.setAlignment(Pos.CENTER_RIGHT);
+        selectVerticesButton.setOnAction(event -> {
+            final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+            SelectExpressionPlugin.run(activeGraph, GraphElementType.VERTEX, expressionTextArea.getText(), "selected");
+            event.consume();
+        });
+        
+        final Button selectTransactionsButton = new Button("Select Transactions");
+        selectTransactionsButton.setAlignment(Pos.CENTER_RIGHT);
+        selectTransactionsButton.setOnAction(event -> {
+            final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+            SelectExpressionPlugin.run(activeGraph, GraphElementType.TRANSACTION, expressionTextArea.getText(), "selected");
+            event.consume();
+        });
+        
+        final HBox expressionHBox = new HBox(selectVerticesButton, selectTransactionsButton);
+        final VBox expressionVBox = new VBox(expressionTextArea, expressionHBox);
+        
         // add layers grid and options to pane
-        this.layersViewPane = new VBox(5, layersGridPane, options);
+        this.layersViewPane = new VBox(5, layersGridPane, options, expressionVBox);
 
         // create layout bindings
         layersViewPane.prefWidthProperty().bind(this.widthProperty());

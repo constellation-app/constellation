@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.graph.attribute.AbstractAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
+import au.gov.asd.tac.constellation.graph.value.types.integerType.IntValue;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.logging.Level;
@@ -49,7 +50,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @Deprecated
 @ServiceProvider(service = AttributeDescription.class)
-public final class TimeAttributeDescriptionV0 extends AbstractAttributeDescription {
+public final class TimeAttributeDescriptionV0 extends AbstractAttributeDescription<IntValue> {
 
     private static final Logger LOGGER = Logger.getLogger(TimeAttributeDescriptionV0.class.getName());
     /**
@@ -346,5 +347,20 @@ public final class TimeAttributeDescriptionV0 extends AbstractAttributeDescripti
     @Override
     public NativeAttributeType getNativeType() {
         return NativeAttributeType.INT;
+    }
+    
+    @Override
+    public IntValue createValue() {
+        return new IntValue();
+    }
+    
+    @Override
+    public void read(int index, IntValue value) {
+        value.writeInt(data[index]);
+    }
+    
+    @Override
+    public void write(int index, IntValue value) {
+        data[index] = value.readInt();
     }
 }

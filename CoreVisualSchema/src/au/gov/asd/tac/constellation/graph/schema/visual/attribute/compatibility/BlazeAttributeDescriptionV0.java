@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.graph.schema.visual.attribute.compatibility
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.attribute.AbstractAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
+import au.gov.asd.tac.constellation.graph.value.types.objectType.ObjectValue;
 import java.util.Arrays;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -31,7 +32,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @Deprecated
 @ServiceProvider(service = AttributeDescription.class)
-public final class BlazeAttributeDescriptionV0 extends AbstractAttributeDescription {
+public final class BlazeAttributeDescriptionV0 extends AbstractAttributeDescription<ObjectValue<BlazeV0>> {
 
     public static final String ATTRIBUTE_NAME = "blaze";
     private static final BlazeV0 DEFAULT_VALUE = null;
@@ -231,5 +232,20 @@ public final class BlazeAttributeDescriptionV0 extends AbstractAttributeDescript
     public void restoreData(final Object savedData) {
         final BlazeV0[] sd = (BlazeV0[]) savedData;
         data = Arrays.copyOf(sd, sd.length);
+    }
+    
+    @Override
+    public ObjectValue<BlazeV0> createValue() {
+        return new ObjectValue<>();
+    }
+    
+    @Override
+    public void read(int index, ObjectValue<BlazeV0> value) {
+        value.writeObject(data[index]);
+    }
+    
+    @Override
+    public void write(int index, ObjectValue<BlazeV0> value) {
+        data[index] = value.readObject();
     }
 }

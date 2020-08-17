@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
 import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
+import au.gov.asd.tac.constellation.graph.value.types.integerType.IntValue;
 import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
@@ -42,7 +43,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author cygnus_x-1
  */
 @ServiceProvider(service = AttributeDescription.class)
-public final class IntegerAttributeDescription extends AbstractAttributeDescription {
+public final class IntegerAttributeDescription extends AbstractAttributeDescription<IntValue> {
 
     public static final String ATTRIBUTE_NAME = "integer";
     public static final Class<Integer> NATIVE_CLASS = int.class;
@@ -280,5 +281,20 @@ public final class IntegerAttributeDescription extends AbstractAttributeDescript
     public void restoreData(final Object savedData) {
         final int[] sd = (int[]) savedData;
         data = Arrays.copyOf(sd, sd.length);
+    }
+    
+    @Override
+    public IntValue createValue() {
+        return new IntValue();
+    }
+    
+    @Override
+    public void read(int index, IntValue value) {
+        value.writeInt(data[index]);
+    }
+    
+    @Override
+    public void write(int index, IntValue value) {
+        data[index] = value.readInt();
     }
 }

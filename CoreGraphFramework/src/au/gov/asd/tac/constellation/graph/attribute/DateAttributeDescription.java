@@ -17,6 +17,8 @@ package au.gov.asd.tac.constellation.graph.attribute;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType;
+import au.gov.asd.tac.constellation.graph.value.types.booleanType.BooleanValue;
+import au.gov.asd.tac.constellation.graph.value.types.longType.LongValue;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalConstants;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
 import java.time.LocalDate;
@@ -40,7 +42,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author sirius
  */
 @ServiceProvider(service = AttributeDescription.class)
-public final class DateAttributeDescription extends AbstractAttributeDescription {
+public final class DateAttributeDescription extends AbstractAttributeDescription<LongValue> {
 
     public static final String ATTRIBUTE_NAME = "date";
     public static final int ATTRIBUTE_VERSION = 1;
@@ -234,5 +236,20 @@ public final class DateAttributeDescription extends AbstractAttributeDescription
     public void restoreData(final Object savedData) {
         final long[] sd = (long[]) savedData;
         data = Arrays.copyOf(sd, sd.length);
+    }
+    
+    @Override
+    public LongValue createValue() {
+        return new LongValue();
+    }
+    
+    @Override
+    public void read(int index, LongValue value) {
+        value.writeLong(data[index]);
+    }
+    
+    @Override
+    public void write(int index, LongValue value) {
+        data[index] = value.readLong();
     }
 }

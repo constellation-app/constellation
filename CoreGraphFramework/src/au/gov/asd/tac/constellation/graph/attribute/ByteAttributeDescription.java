@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
 import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
+import au.gov.asd.tac.constellation.graph.value.types.byteType.ByteValue;
 import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
@@ -41,7 +42,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author cygnus_x-1
  */
 @ServiceProvider(service = AttributeDescription.class)
-public class ByteAttributeDescription extends AbstractAttributeDescription {
+public class ByteAttributeDescription extends AbstractAttributeDescription<ByteValue> {
 
     public static final String ATTRIBUTE_NAME = "byte";
     public static final Class<Byte> NATIVE_CLASS = byte.class;
@@ -277,5 +278,20 @@ public class ByteAttributeDescription extends AbstractAttributeDescription {
     public void restoreData(final Object savedData) {
         final byte[] sd = (byte[]) savedData;
         data = Arrays.copyOf(sd, sd.length);
+    }
+    
+    @Override
+    public ByteValue createValue() {
+        return new ByteValue();
+    }
+    
+    @Override
+    public void read(int index, ByteValue value) {
+        value.writeByte(data[index]);
+    }
+    
+    @Override
+    public void write(int index, ByteValue value) {
+        data[index] = value.readByte();
     }
 }

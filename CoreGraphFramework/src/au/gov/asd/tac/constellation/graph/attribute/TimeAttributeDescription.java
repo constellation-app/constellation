@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.graph.attribute;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType;
+import au.gov.asd.tac.constellation.graph.value.types.integerType.IntValue;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalConstants;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
 import java.time.LocalTime;
@@ -39,7 +40,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author sirius
  */
 @ServiceProvider(service = AttributeDescription.class)
-public final class TimeAttributeDescription extends AbstractAttributeDescription {
+public final class TimeAttributeDescription extends AbstractAttributeDescription<IntValue> {
 
     public static final String ATTRIBUTE_NAME = "time";
     public static final int ATTRIBUTE_VERSION = 1;
@@ -246,5 +247,20 @@ public final class TimeAttributeDescription extends AbstractAttributeDescription
     public void restoreData(final Object savedData) {
         final int[] sd = (int[]) savedData;
         data = Arrays.copyOf(sd, sd.length);
+    }
+    
+    @Override
+    public IntValue createValue() {
+        return new IntValue();
+    }
+    
+    @Override
+    public void read(int index, IntValue value) {
+        value.writeInt(data[index]);
+    }
+    
+    @Override
+    public void write(int index, IntValue value) {
+        data[index] = value.readInt();
     }
 }

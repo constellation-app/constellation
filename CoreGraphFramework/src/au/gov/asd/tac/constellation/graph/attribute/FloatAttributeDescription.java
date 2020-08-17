@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
 import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
+import au.gov.asd.tac.constellation.graph.value.types.floatType.FloatValue;
 import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
@@ -41,7 +42,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author cygnus_x-1
  */
 @ServiceProvider(service = AttributeDescription.class)
-public final class FloatAttributeDescription extends AbstractAttributeDescription {
+public final class FloatAttributeDescription extends AbstractAttributeDescription<FloatValue> {
 
     public static final String ATTRIBUTE_NAME = "float";
     public static final Class<Float> NATIVE_CLASS = float.class;
@@ -279,5 +280,20 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
     public void restoreData(final Object savedData) {
         final float[] sd = (float[]) savedData;
         data = Arrays.copyOf(sd, sd.length);
+    }
+    
+    @Override
+    public FloatValue createValue() {
+        return new FloatValue();
+    }
+    
+    @Override
+    public void read(int index, FloatValue value) {
+        value.writeFloat(data[index]);
+    }
+    
+    @Override
+    public void write(int index, FloatValue value) {
+        data[index] = value.readFloat();
     }
 }

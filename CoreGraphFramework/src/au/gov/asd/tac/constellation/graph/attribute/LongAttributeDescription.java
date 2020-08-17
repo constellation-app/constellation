@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
 import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
+import au.gov.asd.tac.constellation.graph.value.types.longType.LongValue;
 import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
@@ -42,7 +43,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author sirius
  */
 @ServiceProvider(service = AttributeDescription.class)
-public final class LongAttributeDescription extends AbstractAttributeDescription {
+public final class LongAttributeDescription extends AbstractAttributeDescription<LongValue> {
 
     public static final String ATTRIBUTE_NAME = "long";
     public static final Class<Long> NATIVE_CLASS = long.class;
@@ -294,5 +295,20 @@ public final class LongAttributeDescription extends AbstractAttributeDescription
     public void restoreData(final Object savedData) {
         final long[] sd = (long[]) savedData;
         data = Arrays.copyOf(sd, sd.length);
+    }
+    
+    @Override
+    public LongValue createValue() {
+        return new LongValue();
+    }
+    
+    @Override
+    public void read(int index, LongValue value) {
+        value.writeLong(data[index]);
+    }
+    
+    @Override
+    public void write(int index, LongValue value) {
+        data[index] = value.readLong();
     }
 }

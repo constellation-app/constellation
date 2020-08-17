@@ -1418,6 +1418,10 @@ public interface GraphReadMethods extends GraphConstants {
      */
     long getAttributeUID(final int attribute);
 
+    <V> V createAttributeValue(final int attribute);
+    
+    <V> void readAttributeValue(final int attribute, final int id, final V value);
+    
     /**
      * Returns true if the value of this attribute for the specified element is
      * equal to the default value for that attribute. For attributes that hold
