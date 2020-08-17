@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.qualitycontrol;
 
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
@@ -101,6 +102,11 @@ public final class QualityControlViewTopComponent extends JavaFxTopComponent<Qua
     protected void componentShowing() {
         super.componentShowing();
         QualityControlAutoVetter.getInstance().initWithRefresh(true);
+    }
+
+    @Override
+    protected void handleGraphClosed(final Graph graph) {
+        qualityControlViewPane.refreshQualityControlView(null);
     }
 
     /**
