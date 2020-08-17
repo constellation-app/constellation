@@ -46,10 +46,6 @@ public class NodeLabelBatcher implements GlyphManager.GlyphStream, SceneBatcher 
     // Batch and shader
     private final Batch topBatch;
     private final Batch bottomBatch;
-    private FloatArray topLabelFloats;
-    private IntArray topLabelInts;
-    private FloatArray bottomLabelFloats;
-    private IntArray bottomLabelInts;
     private FloatArray currentFloats;
     private IntArray currentInts;
     private int shader;
@@ -90,7 +86,7 @@ public class NodeLabelBatcher implements GlyphManager.GlyphStream, SceneBatcher 
 
     private static final int FLOAT_BUFFERS_WIDTH = 4;
     private static final int INT_BUFFERS_WIDTH = 4;
-
+    
     public NodeLabelBatcher() {
 
         // Create the batches
@@ -150,12 +146,13 @@ public class NodeLabelBatcher implements GlyphManager.GlyphStream, SceneBatcher 
 
     @Override
     public GLRenderableUpdateTask createBatch(final VisualAccess access) {
-        topLabelFloats = new FloatArray();
-        topLabelInts = new IntArray();
-        bottomLabelFloats = new FloatArray();
-        bottomLabelInts = new IntArray();
-        fillTopLabels(access);
-        fillBottomLabels(access);
+        FloatArray topLabelFloats = new FloatArray();
+        IntArray topLabelInts = new IntArray();
+        FloatArray bottomLabelFloats = new FloatArray();
+        IntArray bottomLabelInts = new IntArray();
+        
+        fillTopLabels(access, topLabelFloats, topLabelInts);
+        fillBottomLabels(access, bottomLabelFloats, bottomLabelInts);
 
         return gl -> {
             topBatch.initialise(topLabelFloats.size() / FLOAT_BUFFERS_WIDTH);
@@ -171,9 +168,9 @@ public class NodeLabelBatcher implements GlyphManager.GlyphStream, SceneBatcher 
 
     public GLRenderableUpdateTask updateTopLabels(final VisualAccess access) {
         // We build the whole batch again - can't update labels in place at this stage.
-        topLabelFloats.clear();
-        topLabelInts.clear();
-        fillTopLabels(access);
+        FloatArray topLabelFloats = new FloatArray();
+        IntArray topLabelInts = new IntArray();
+        fillTopLabels(access, topLabelFloats, topLabelInts);
         return gl -> {
             topBatch.dispose(gl);
             topBatch.initialise(topLabelFloats.size() / FLOAT_BUFFERS_WIDTH);
@@ -185,9 +182,9 @@ public class NodeLabelBatcher implements GlyphManager.GlyphStream, SceneBatcher 
 
     public GLRenderableUpdateTask updateBottomLabels(final VisualAccess access) {
         // We build the whole batch again - can't update labels in place at this stage.
-        bottomLabelFloats.clear();
-        bottomLabelInts.clear();
-        fillBottomLabels(access);
+        FloatArray bottomLabelFloats = new FloatArray();
+        IntArray bottomLabelInts = new IntArray();
+        fillBottomLabels(access, bottomLabelFloats, bottomLabelInts);
         return gl -> {
             bottomBatch.dispose(gl);
             bottomBatch.initialise(bottomLabelFloats.size() / FLOAT_BUFFERS_WIDTH);
@@ -196,8 +193,8 @@ public class NodeLabelBatcher implements GlyphManager.GlyphStream, SceneBatcher 
             bottomBatch.finalise(gl);
         };
     }
-
-    private void fillTopLabels(final VisualAccess access) {
+    
+    private void fillTopLabels(final VisualAccess access, FloatArray topLabelFloats, IntArray topLabelInts) {
         currentFloats = topLabelFloats;
         currentInts = topLabelInts;
         for (int pos = 0; pos < access.getVertexCount(); pos++) {
@@ -207,7 +204,7 @@ public class NodeLabelBatcher implements GlyphManager.GlyphStream, SceneBatcher 
         topLabelInts.trimToSize();
     }
 
-    private void fillBottomLabels(final VisualAccess access) {
+    private void fillBottomLabels(final VisualAccess access, FloatArray bottomLabelFloats, IntArray bottomLabelInts) {
         currentFloats = bottomLabelFloats;
         currentInts = bottomLabelInts;
         for (int pos = 0; pos < access.getVertexCount(); pos++) {
