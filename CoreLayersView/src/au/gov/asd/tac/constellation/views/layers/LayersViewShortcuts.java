@@ -45,10 +45,13 @@ public class LayersViewShortcuts extends AbstractAction{
     public void actionPerformed(ActionEvent e) {
 
         String hotkey = e.getActionCommand();
-        if (hotkey.equals("CA-L")) {
-            PluginExecution.withPlugin(new NewLayerPlugin()).executeLater(GraphManager.getDefault().getActiveGraph());
-        } else {
-            PluginExecution.withPlugin(new DeselectAllLayersPlugin()).executeLater(GraphManager.getDefault().getActiveGraph());
+        switch (hotkey) {
+            case "CA-L":
+                PluginExecution.withPlugin(new NewLayerPlugin()).executeLater(GraphManager.getDefault().getActiveGraph());
+                break;
+            case "CA-S":
+                PluginExecution.withPlugin(new DeselectAllLayersPlugin()).executeLater(GraphManager.getDefault().getActiveGraph());
+                break;
         }
     }
 }
