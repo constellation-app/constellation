@@ -42,7 +42,7 @@ public class DeselectAllLayersPlugin extends SimpleEditPlugin {
         }
 
         LayersViewState currentState = graph.getObjectValue(layersViewStateAttributeId, 0);
-        List<LayerDescription> layers = currentState.getLayers();
+        final List<LayerDescription> layers = currentState.getLayers();
         layers.forEach((layer) -> {
             layer.setCurrentLayerVisibility(false);
         });

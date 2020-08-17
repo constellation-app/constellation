@@ -44,7 +44,7 @@ public class LayersViewShortcuts extends AbstractAction{
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        String hotkey = e.getActionCommand();
+        final String hotkey = e.getActionCommand();
         switch (hotkey) {
             case "CA-L":
                 PluginExecution.withPlugin(new NewLayerPlugin()).executeLater(GraphManager.getDefault().getActiveGraph());
