@@ -166,6 +166,7 @@ public class ConfigurationPane extends AnchorPane {
         for (final Tab tab : tabPane.getTabs()) {
             final RunPane runPane = (RunPane) tab.getContent();
             runPane.setSampleData(columnLabels, createTableRows(currentData));
+            runPane.refreshDataView();
         }
     }
 
