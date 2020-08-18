@@ -167,11 +167,7 @@ public class SingleChoiceInputPane extends HBox {
         parameterId = parameter.getId();
         List<String> singleChoiceRecentValues = RecentParameterValues.getRecentValues(parameterId);
         if (singleChoiceRecentValues != null) {
-        if (singleChoiceRecentValues.size() > 1) {
-            SingleChoiceParameterType.setChoiceData(parameter, new StringParameterValue(singleChoiceRecentValues.get(1)));
-        } else {
             SingleChoiceParameterType.setChoiceData(parameter, new StringParameterValue(singleChoiceRecentValues.get(0)));
-            }
         }
     }
 }

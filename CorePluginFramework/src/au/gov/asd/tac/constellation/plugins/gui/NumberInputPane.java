@@ -181,6 +181,7 @@ public class NumberInputPane<T> extends Pane {
         getChildren().add(field);
         parameterId = parameter.getId();
         List<String> numberRecentValues = RecentParameterValues.getRecentValues(parameterId);
+        if (numberRecentValues != null) {
         switch (parameter.getType().getId()) {
                 case FloatParameterType.ID: {
                     if (numberRecentValues.size() > 1) {
@@ -201,5 +202,6 @@ public class NumberInputPane<T> extends Pane {
             default:
                     break;
             }
+        }
     }
 }

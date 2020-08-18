@@ -82,10 +82,6 @@ public class ColorInputPane extends Pane {
         });
 
         final ColorParameterValue pv = parameter.getParameterValue();
-//SY
-//        if (recentValues != null) {
-//            field.setValue(Color.valueOf(recentValues.get(0)));
-//        }
 
         field.setValue(pv.get().getJavaFXColor());
 
@@ -137,10 +133,12 @@ public class ColorInputPane extends Pane {
         });
 
         getChildren().add(hbox);
-        if (recentValues.size() > 1) {
+        if (recentValues != null) {
+            if (recentValues.size() > 1) {
             parameter.setStringValue(recentValues.get(1));
-        } else {
+         } else {
             parameter.setStringValue(recentValues.get(0));
+            }
         }
     }
 
