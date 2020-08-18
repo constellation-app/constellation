@@ -146,10 +146,10 @@ public class NodeLabelBatcher implements GlyphManager.GlyphStream, SceneBatcher 
 
     @Override
     public GLRenderableUpdateTask createBatch(final VisualAccess access) {
-        FloatArray topLabelFloats = new FloatArray();
-        IntArray topLabelInts = new IntArray();
-        FloatArray bottomLabelFloats = new FloatArray();
-        IntArray bottomLabelInts = new IntArray();
+        final FloatArray topLabelFloats = new FloatArray();
+        final IntArray topLabelInts = new IntArray();
+        final FloatArray bottomLabelFloats = new FloatArray();
+        final IntArray bottomLabelInts = new IntArray();
         
         fillTopLabels(access, topLabelFloats, topLabelInts);
         fillBottomLabels(access, bottomLabelFloats, bottomLabelInts);
@@ -168,8 +168,8 @@ public class NodeLabelBatcher implements GlyphManager.GlyphStream, SceneBatcher 
 
     public GLRenderableUpdateTask updateTopLabels(final VisualAccess access) {
         // We build the whole batch again - can't update labels in place at this stage.
-        FloatArray topLabelFloats = new FloatArray();
-        IntArray topLabelInts = new IntArray();
+        final FloatArray topLabelFloats = new FloatArray();
+        final IntArray topLabelInts = new IntArray();
         fillTopLabels(access, topLabelFloats, topLabelInts);
         return gl -> {
             topBatch.dispose(gl);
@@ -182,8 +182,8 @@ public class NodeLabelBatcher implements GlyphManager.GlyphStream, SceneBatcher 
 
     public GLRenderableUpdateTask updateBottomLabels(final VisualAccess access) {
         // We build the whole batch again - can't update labels in place at this stage.
-        FloatArray bottomLabelFloats = new FloatArray();
-        IntArray bottomLabelInts = new IntArray();
+        final FloatArray bottomLabelFloats = new FloatArray();
+        final IntArray bottomLabelInts = new IntArray();
         fillBottomLabels(access, bottomLabelFloats, bottomLabelInts);
         return gl -> {
             bottomBatch.dispose(gl);
@@ -194,7 +194,7 @@ public class NodeLabelBatcher implements GlyphManager.GlyphStream, SceneBatcher 
         };
     }
     
-    private void fillTopLabels(final VisualAccess access, FloatArray topLabelFloats, IntArray topLabelInts) {
+    private void fillTopLabels(final VisualAccess access, final FloatArray topLabelFloats, final IntArray topLabelInts) {
         currentFloats = topLabelFloats;
         currentInts = topLabelInts;
         for (int pos = 0; pos < access.getVertexCount(); pos++) {
@@ -204,7 +204,7 @@ public class NodeLabelBatcher implements GlyphManager.GlyphStream, SceneBatcher 
         topLabelInts.trimToSize();
     }
 
-    private void fillBottomLabels(final VisualAccess access, FloatArray bottomLabelFloats, IntArray bottomLabelInts) {
+    private void fillBottomLabels(final VisualAccess access, final FloatArray bottomLabelFloats, final IntArray bottomLabelInts) {
         currentFloats = bottomLabelFloats;
         currentInts = bottomLabelInts;
         for (int pos = 0; pos < access.getVertexCount(); pos++) {
