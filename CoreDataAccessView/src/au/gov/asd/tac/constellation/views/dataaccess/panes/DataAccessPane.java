@@ -152,7 +152,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         dataAccessTabPane = new TabPane();
         dataAccessTabPane.setSide(Side.TOP);
         dataAccessTabPane.getSelectionModel().selectedIndexProperty().addListener((ObservableValue<? extends Number> ov, Number t, Number t1) -> {
-//            storeParameterValues();
+            storeParameterValues();
         });
 
         // Update the button when the user adds/removes tabs.
