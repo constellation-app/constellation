@@ -565,4 +565,8 @@ public class RunPane extends BorderPane implements KeyListener {
         final boolean isCtrl = event.isControlDown();
         final boolean isShift = event.isShiftDown();
     }
+    
+    public void refreshDataView(){
+        sampleDataView.refresh();
+    }
 }
