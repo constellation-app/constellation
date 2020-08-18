@@ -255,12 +255,14 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
 
             @SuppressWarnings("unchecked") //ATTRIBUTE_PARAMETER will always be of type SingleChoiceParameter
             final PluginParameter<SingleChoiceParameterValue> contentAttribute = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(ATTRIBUTE_PARAMETER_ID);
-            contentAttribute.suppressEvent(true, new ArrayList<>());
+
             SingleChoiceParameterType.setOptions(contentAttribute, attributes);
+            contentAttribute.suppressEvent(true, new ArrayList<>());
             if (contentAttribute.getSingleChoice() == null && attributes.contains(ContentConcept.TransactionAttribute.CONTENT.getName())) {
                 SingleChoiceParameterType.setChoice(contentAttribute, ContentConcept.TransactionAttribute.CONTENT.getName());
             }
             contentAttribute.suppressEvent(false, new ArrayList<>());
+            contentAttribute.setObjectValue(parameters.getObjectValue(ATTRIBUTE_PARAMETER_ID));
         }
     }
 
