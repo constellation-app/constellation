@@ -111,10 +111,8 @@ public class AnalyticViewPane extends BorderPane {
                     questionThread.interrupt();
                 }
                 running = false;
-                Platform.runLater(() -> {
-                    runButton.setText(RUN_START_TEXT);
-                    runButton.setStyle(RUN_START_STYLE);
-                });
+                runButton.setText(RUN_START_TEXT);
+                runButton.setStyle(RUN_START_STYLE);
             } else {
                 // display results pane
                 if (!analyticViewPane.getChildren().contains(analyticResultsPane)) {
