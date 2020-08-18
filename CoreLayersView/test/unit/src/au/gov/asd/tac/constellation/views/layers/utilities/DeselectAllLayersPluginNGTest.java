@@ -70,7 +70,7 @@ public class DeselectAllLayersPluginNGTest {
         final int layersViewStateAttributeId = LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.get(graph);
 
         assertTrue(layersViewStateAttributeId != Graph.NOT_FOUND);
-        LayersViewState currentState = graph.getObjectValue(layersViewStateAttributeId, 0);
+        final LayersViewState currentState = graph.getObjectValue(layersViewStateAttributeId, 0);
         final List<LayerDescription> layers = currentState.getLayers();
 
         layers.get(layers.size() - 1).setCurrentLayerVisibility(true);

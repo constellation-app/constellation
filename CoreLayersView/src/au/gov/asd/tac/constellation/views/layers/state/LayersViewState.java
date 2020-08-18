@@ -59,10 +59,14 @@ public class LayersViewState {
 
     public void addLayer() {
         if (layers.size() < 32) {
-            layers.add(new LayerDescription(layers.size() + 1, false, "", ""));
+            addLayer(false, "", "");
         } else {
             NotifyDisplayer.display("You cannot have more than 32 layers open", NotifyDescriptor.WARNING_MESSAGE);
         }
+    }
+
+    public void addLayer(final boolean visibility, final String name, final String description) {
+        layers.add(new LayerDescription(layers.size() + 1, visibility, name, description));
     }
 
     public void setLayers(final List<LayerDescription> layers) {

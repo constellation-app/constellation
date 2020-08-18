@@ -35,7 +35,7 @@ import org.apache.commons.lang3.StringUtils;
 public class DeselectAllLayersPlugin extends SimpleEditPlugin {
 
     @Override
-    protected void edit(GraphWriteMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+    protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         final int layersViewStateAttributeId = LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.ensure(graph);
         if (layersViewStateAttributeId == Graph.NOT_FOUND) {
             return;

@@ -62,7 +62,7 @@ public class NewLayerPluginNGTest {
     }
 
     @Test
-    public void testDeselectAllLayersPlugin() throws InterruptedException, PluginException {
+    public void testNewLayerPlugin() throws InterruptedException, PluginException {
         setupGraph();
 
         PluginExecution.withPlugin(new NewLayerPlugin()).executeNow(graph);
@@ -71,10 +71,10 @@ public class NewLayerPluginNGTest {
 
         assertTrue(layersViewStateAttributeId != Graph.NOT_FOUND);
 
-        LayersViewState currentState = graph.getObjectValue(layersViewStateAttributeId, 0);
+        final LayersViewState currentState = graph.getObjectValue(layersViewStateAttributeId, 0);
         final List<LayerDescription> layers = currentState.getLayers();
 
-        assertTrue(layers.size() == 2);
+        assertTrue(layers.size() == 3);
 
     }
 }
