@@ -134,6 +134,7 @@ public final class FloatArray implements Iterable<Float> {
             throw new IllegalArgumentException("Illegal Capacity: " + initialCapacity);
         }
         this.elementData = new float[initialCapacity];
+        size=0;
     }
 
     /**
@@ -304,6 +305,7 @@ public final class FloatArray implements Iterable<Float> {
      * @return The raw array used to store data.
      */
     public float[] rawArray() {
+        trimToSize();
         return elementData;
     }
 
