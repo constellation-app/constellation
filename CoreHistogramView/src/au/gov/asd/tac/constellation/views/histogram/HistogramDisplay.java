@@ -106,7 +106,6 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
     private boolean controlDown;
     private boolean binCollectionOutOfDate = true;
     private final JPopupMenu copyMenu = new JPopupMenu();
-    private int selectedBarIndex = 0;
 
     public HistogramDisplay(HistogramTopComponent topComponent) {
         this.topComponent = topComponent;
@@ -114,26 +113,17 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
         initializeSettings();
         initializeListeners();
         
-        JMenuItem copyBarMenuItem = new JMenuItem("Copy Bar");
-        copyBarMenuItem.addActionListener(e -> {
-            Bin[] bins = binCollection.getBins();            
-            final StringBuilder buf = new StringBuilder();
-            final String label = bins[selectedBarIndex].getLabel() != null ? bins[selectedBarIndex].getLabel() : HistogramDisplay.NO_VALUE;
-            buf.append(String.format("%s\t%d\n", label, bins[selectedBarIndex].elementCount));
-            
-            if (buf.length() > 0) {
-                final StringSelection ss = new StringSelection(buf.toString());
-                final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                clipboard.setContents(ss, ConstellationClipboardOwner.getOwner());
-            }
+        JMenuItem copyValuesMenuItem = new JMenuItem("Copy Selected Property Values");
+        copyValuesMenuItem.addActionListener(e -> {         
+            copySelectedToClipboard(false);
         });
-        copyMenu.add(copyBarMenuItem);
+        copyMenu.add(copyValuesMenuItem);
         
-        JMenuItem copyHistogramMenuItem = new JMenuItem("Copy Histogram");
-        copyHistogramMenuItem.addActionListener(e -> {
-            topComponent.saveBinsToClipboard();
+        JMenuItem copyValuesAndCountsMenuItem = new JMenuItem("Copy Selected Property Values & Counts");
+        copyValuesAndCountsMenuItem.addActionListener(e -> {
+            copySelectedToClipboard(true);
         });
-        copyMenu.add(copyHistogramMenuItem);
+        copyMenu.add(copyValuesAndCountsMenuItem);
     }
 
     public final void initializeSettings() {
@@ -519,15 +509,30 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
 
         return n;
     }
+    
+    void copySelectedToClipboard(boolean includeCounts) {
+        final StringBuilder buf = new StringBuilder();
 
+        for (Bin bin : binCollection.getBins()) {
+            if (bin.selectedCount > 0) {
+                final String label = bin.getLabel() != null ? bin.getLabel() : HistogramDisplay.NO_VALUE;
+                if (includeCounts) {
+                    buf.append(String.format("%s\t%d\n", label, bin.elementCount));
+                } else {
+                    buf.append(String.format("%s%s", label, "\n"));
+                }
+            }
+        }
+
+        final StringSelection ss = new StringSelection(buf.toString());
+        final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(ss, ConstellationClipboardOwner.getOwner());
+    }
+    
     @Override
     public void mouseClicked(MouseEvent e) {
-        // Focus the Histogram View so 'key' actions can be registered.
-        this.requestFocus();
         if (binCollection != null) {
-            repaint();
             if (e.getButton() == MouseEvent.BUTTON3) {
-                selectedBarIndex = getBarAtPoint(e.getPoint(), true);
                 copyMenu.show(this, e.getX(), e.getY());
             }
         }
@@ -536,51 +541,56 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
     @Override
     public void mousePressed(MouseEvent e) {
         if (binCollection != null) {
+            if (e.getButton() == MouseEvent.BUTTON1) {
+                Bin[] bins = binCollection.getBins();
 
-            Bin[] bins = binCollection.getBins();
+                final Point pointOnHistogram = e.getPoint();
+                final int bar = getBarAtPoint(pointOnHistogram, false);
 
-            final Point pointOnHistogram = e.getPoint();
-            final int bar = getBarAtPoint(pointOnHistogram, false);
+                shiftDown = e.isShiftDown();
+                controlDown = e.isControlDown();
 
-            shiftDown = e.isShiftDown();
-            controlDown = e.isControlDown();
+                dragStart = (shiftDown && activeBin >= 0) ? activeBin : bar;
+                dragEnd = bar;
 
-            dragStart = (shiftDown && activeBin >= 0) ? activeBin : bar;
-            dragEnd = bar;
+                binSelectionMode.mousePressed(shiftDown, controlDown, bins, dragStart, dragEnd);
 
-            binSelectionMode.mousePressed(shiftDown, controlDown, bins, dragStart, dragEnd);
-
-            repaint();
+                repaint();
+            }
         }
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
         if (binCollection != null) {
+            while (e.getButton() == MouseEvent.BUTTON1) {
+                Bin[] bins = binCollection.getBins();
 
-            Bin[] bins = binCollection.getBins();
-
-            final Point pointOnHistogram = e.getPoint();
-            final int bar = getBarAtPoint(pointOnHistogram, false);
-            int newDragEnd = bar;
-            binSelectionMode.mouseDragged(shiftDown, controlDown, bins, dragStart, dragEnd, newDragEnd);
-            dragEnd = newDragEnd;
-            repaint();
+                final Point pointOnHistogram = e.getPoint();
+                final int bar = getBarAtPoint(pointOnHistogram, false);
+                int newDragEnd = bar;
+                binSelectionMode.mouseDragged(shiftDown, controlDown, bins, dragStart, dragEnd, newDragEnd);
+                dragEnd = newDragEnd;
+                repaint();
+            }
         }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
         if (binCollection != null) {
-            binSelectionMode.mouseReleased(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd, topComponent);
-            activeBin = dragStart == dragEnd ? dragStart : -1;
-            repaint();
+            if (e.getButton() == MouseEvent.BUTTON1) {
+                binSelectionMode.mouseReleased(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd, topComponent);
+                activeBin = dragStart == dragEnd ? dragStart : -1;
+                repaint();
+            }
         }
     }
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        // Override required, intentionally left blank
+        // Focus the Histogram View so 'key' actions can be registered.
+        this.requestFocus();
     }
 
     @Override
@@ -604,7 +614,7 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
             // Ensure that the Histogram View is focused before allowing Ctrl + C to be registered.
             if (this.isFocusOwner()) {
                 if ((e.isControlDown()) && (e.getKeyCode() == KeyEvent.VK_C)) {
-                    topComponent.saveBinsToClipboard();
+                    copySelectedToClipboard(false);
                 }
             }
         }
