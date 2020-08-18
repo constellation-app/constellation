@@ -43,8 +43,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -93,11 +91,11 @@ public class AnalyticConfigurationPane extends VBox {
 
     private static boolean stateChanged = false;
     private static boolean selectionSuppressed = false;
+    // Only accessed on the FX application thread to remain thread-safe
     private AnalyticQuestionDescription<?> currentQuestion = null;
     private final Map<String, List<SelectableAnalyticPlugin>> categoryToPluginsMap;
     private final Map<AnalyticQuestionDescription<?>, List<SelectableAnalyticPlugin>> questionToPluginsMap;
     private final PluginParameters globalAnalyticParameters = new PluginParameters();
-    private final Lock lock = new ReentrantLock(true);
 
     public AnalyticConfigurationPane() {
 
@@ -228,12 +226,7 @@ public class AnalyticConfigurationPane extends VBox {
             Platform.runLater(() -> {
                 categoryListPane.setExpanded(!questionListPane.isExpanded());
                 if (questionListPane.isExpanded()) {
-                    lock.lock();
-                    try {
-                        currentQuestion = questionList.getSelectionModel().getSelectedItem();
-                    } finally {
-                        lock.unlock();
-                    }
+                    currentQuestion = questionList.getSelectionModel().getSelectedItem();
                     populateParameterPane(globalAnalyticParameters);
                     setPluginsFromSelectedQuestion();
                 }
@@ -519,22 +512,12 @@ public class AnalyticConfigurationPane extends VBox {
     public final void updateSelectablePluginsParameters() {
         if (categoryListPane.isExpanded()) {
             pluginList.getItems().forEach(selectablePlugin -> {
-                lock.lock();
-                try {
-                    selectablePlugin.parameters.updateParameterValues(selectablePlugin.updatedParameters);
-                } finally {
-                    lock.unlock();
-                }
+                selectablePlugin.parameters.updateParameterValues(selectablePlugin.updatedParameters);
             });
         } else if (questionListPane.isExpanded() && currentQuestion != null) {
             pluginList.getItems().forEach(selectablePlugin -> {
-                lock.lock();
-                try {
-                    selectablePlugin.parameters.updateParameterValues(selectablePlugin.updatedParameters);
-                    currentQuestion.initialiseParameters(selectablePlugin.plugin, selectablePlugin.parameters);
-                } finally {
-                    lock.unlock();
-                }
+                selectablePlugin.parameters.updateParameterValues(selectablePlugin.updatedParameters);
+                currentQuestion.initialiseParameters(selectablePlugin.plugin, selectablePlugin.parameters);
             });
         }
     }
@@ -681,8 +664,9 @@ public class AnalyticConfigurationPane extends VBox {
             int stateAttributeId = AnalyticViewConcept.MetaAttribute.ANALYTIC_VIEW_STATE.ensure(graph);
 
             // Make a copy in case the state on the graph is currently being modified.
-            AnalyticViewState currentState = graph.getObjectValue(stateAttributeId, 0);
-            currentState = (currentState == null) ? new AnalyticViewState() : new AnalyticViewState(currentState);
+            final AnalyticViewState currentState = graph.getObjectValue(stateAttributeId, 0) == null
+                    ? new AnalyticViewState()
+                    : new AnalyticViewState(graph.getObjectValue(stateAttributeId, 0));
 
             if (pluginWasSelected) {
                 // remove all plugins matching category
@@ -702,15 +686,12 @@ public class AnalyticConfigurationPane extends VBox {
             }
 
             // Utilized for Question pane - TODO: when multiple tabs + saving of
-            // questions is supported, link this currentquestion variable with 
+            // questions is supported, link this currentquestion variable with
             // the saved/loaded question
-            analyticConfigurationPane.lock.lock();
-            try {
+            Platform.runLater(() -> {
                 analyticConfigurationPane.currentQuestion = currentState.getActiveAnalyticQuestions().isEmpty() ? null
                         : currentState.getActiveAnalyticQuestions().get(currentState.getCurrentAnalyticQuestionIndex());
-            } finally {
-                analyticConfigurationPane.lock.unlock();
-            }
+            });
             if (!currentState.getActiveSelectablePlugins().isEmpty()) {
                 for (SelectableAnalyticPlugin selectedPlugin : currentState.getActiveSelectablePlugins().get(currentState.getCurrentAnalyticQuestionIndex())) {
                     if (currentCategory.equals(selectedPlugin.plugin.getClass().getAnnotation(AnalyticInfo.class).analyticCategory())) {
