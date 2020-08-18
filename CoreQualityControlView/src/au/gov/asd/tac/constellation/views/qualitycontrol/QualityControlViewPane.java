@@ -71,6 +71,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 import javafx.util.Pair;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
@@ -85,7 +86,8 @@ import org.openide.util.NbPreferences;
 @Messages({
     "MSG_NotApplicable=◇",
     "MSG_QualtyControlRules=Quality control rules for node %s",
-    "MSG_SelectSomething=Select some nodes in your graph to review their data quality."
+    "MSG_SelectSomething=Select some nodes in your graph to review their data quality.",
+    "MSG_NoEntries=There are no rules for this identifier."
 })
 public final class QualityControlViewPane extends BorderPane {
 
@@ -317,9 +319,9 @@ public final class QualityControlViewPane extends BorderPane {
                 return cell;
             });
 
-            if (state != null) {
-                qualityTable.setItems(FXCollections.observableArrayList(state.getQualityControlEvents()));
-            }
+            qualityTable.setItems(state != null
+                    ? FXCollections.observableArrayList(state.getQualityControlEvents())
+                    : FXCollections.emptyObservableList());
 
             final String displayName = graphId != null && GraphNode.getGraphNode(graphId) != null
                     ? GraphNode.getGraphNode(graphId).getDisplayName()
@@ -604,6 +606,10 @@ public final class QualityControlViewPane extends BorderPane {
             tp.setWrapText(true);
 
             vbox.getChildren().add(tp);
+        }
+        if (CollectionUtils.isEmpty(rules)) {
+            final Label noEntriesLabel = new Label(Bundle.MSG_NoEntries());
+            vbox.getChildren().add(noEntriesLabel);
         }
         sp.setContent(vbox);
 
