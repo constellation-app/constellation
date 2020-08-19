@@ -66,6 +66,7 @@ public class PCAPImportFileParser extends ImportFileParser {
             // Open the supplied PCAP file
             final Pcap pcap = Pcap.openStream(input.getFile());
             frameCounter = 1;
+            
             pcap.loop(new PacketHandler() {
                 @Override
                 public boolean nextPacket(Packet packet) throws IOException {
@@ -110,8 +111,8 @@ public class PCAPImportFileParser extends ImportFileParser {
                             destinationType = ipVersion + " Address";
                         }
                         
-                        LOGGER.log(Level.INFO, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}", new Object[]{frame, formatter.format(timestamp), sourceIP, sourcePort, sourceType, destinationIP, destinationPort, destinationType, protocol, ipVersion, length });
-                        final String[] row = {frame, formatter.format(timestamp), sourceIP, sourcePort, sourceType, destinationIP, destinationPort, destinationType, protocol, ipVersion, length};
+                        LOGGER.log(Level.INFO, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}", new Object[]{frame, formatter.format(timestamp), sourceIP, sourcePort, sourceType, destinationIP, destinationPort, destinationType, protocol, length });
+                        final String[] row = {frame, formatter.format(timestamp), sourceIP, sourcePort, sourceType, destinationIP, destinationPort, destinationType, protocol, length};
                         allResults.add(row);
                     } catch (AssertionError e) {
                         LOGGER.log(Level.INFO, "ASSERTION THROWN 1 {0}", e.toString());
@@ -121,7 +122,7 @@ public class PCAPImportFileParser extends ImportFileParser {
                     }
                     
                     frameCounter ++;
-                    return true;
+                    return (frameCounter <= limit || limit == 0);
                 }
             });
             
