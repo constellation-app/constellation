@@ -312,7 +312,7 @@ public class CVKAxesRenderable extends CVKRenderable {
     // ========================> Lifetime <======================== \\
     
     public CVKAxesRenderable(CVKVisualProcessor visualProcessor) {
-        parent = visualProcessor;
+        cvkVisualProcessor = visualProcessor;
     }
     
     private int CreateShaderModules() {
@@ -340,7 +340,7 @@ public class CVKAxesRenderable extends CVKRenderable {
             return ret;
         }
         
-        cvkDevice.Logger().info("Shader modules created for CVKAxesRenderable class:\n\tVertex:   0x%016x\n\tGeometry: 0x%016x\n\tFragment: 0x%016x",
+        cvkVisualProcessor.GetLogger().info("Shader modules created for CVKAxesRenderable class:\n\tVertex:   0x%016x\n\tGeometry: 0x%016x\n\tFragment: 0x%016x",
                 hVertexShaderModule, hGeometryShaderModule, hFragmentShaderModule);
         return ret;
     } 
@@ -408,7 +408,7 @@ public class CVKAxesRenderable extends CVKRenderable {
     * object to cleanup its resources.
     */
     private int CreateSwapChainResources() {
-        parent.VerifyInRenderThread();
+        cvkVisualProcessor.VerifyInRenderThread();
         CVKAssert(cvkSwapChain != null);
         int ret = VK_SUCCESS;
 
@@ -441,7 +441,7 @@ public class CVKAxesRenderable extends CVKRenderable {
     
     @Override
     protected int DestroySwapChainResources(){
-        parent.VerifyInRenderThread();
+        cvkVisualProcessor.VerifyInRenderThread();
         int ret = VK_SUCCESS;
         
         // We only need to recreate these resources if the number of images in 
@@ -451,7 +451,6 @@ public class CVKAxesRenderable extends CVKRenderable {
             DestroyVertexBuffer();
             DestroyCommandBuffers();
             DestroyPipelines();
-
             DestroyCommandBuffers(); 
 
             CVKAssert(pipelines == null);
@@ -598,8 +597,8 @@ public class CVKAxesRenderable extends CVKRenderable {
         CVKBuffer cvkStagingBuffer = CVKBuffer.Create(cvkDevice, 
                                                       size,
                                                       VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-                                                      VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-        cvkStagingBuffer.DEBUGNAME = "CVKAxesRenderable.CreateVertexBuffer cvkStagingBuffer";
+                                                      VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                                                      "CVKAxesRenderable.CreateVertexBuffer cvkStagingBuffer");
 
         PointerBuffer data = stack.mallocPointer(1);
         vkMapMemory(cvkDevice.GetDevice(), cvkStagingBuffer.GetMemoryBufferHandle(), 0, size, 0, data);
@@ -612,8 +611,8 @@ public class CVKAxesRenderable extends CVKRenderable {
         cvkVertexBuffer = CVKBuffer.Create(cvkDevice, 
                                            size,
                                            VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-                                           VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-        cvkStagingBuffer.DEBUGNAME = "CVKAxesRenderable.CreateVertexBuffers cvkStagingBuffer";
+                                           VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+                                           "CVKAxesRenderable.CreateVertexBuffers cvkStagingBuffer");
         cvkVertexBuffer.CopyFrom(cvkStagingBuffer);
         
         // Cleanup
@@ -658,7 +657,7 @@ public class CVKAxesRenderable extends CVKRenderable {
         // LIFTED FROM AxesRenerable.display(...)
         // Extract the rotation matrix from the mvp matrix.
         final Matrix44f rotationMatrix = new Matrix44f();
-        parent.getDisplayModelViewProjectionMatrix().getRotationMatrix(rotationMatrix);
+        cvkVisualProcessor.getDisplayModelViewProjectionMatrix().getRotationMatrix(rotationMatrix);
 
         // Scale down to size.
         final Matrix44f scalingMatrix = new Matrix44f();
@@ -699,12 +698,13 @@ public class CVKAxesRenderable extends CVKRenderable {
         commandBuffers = new ArrayList<>(imageCount);
 
         for (int i = 0; i < imageCount; ++i) {
-            CVKCommandBuffer buffer = CVKCommandBuffer.Create(cvkDevice, VK_COMMAND_BUFFER_LEVEL_SECONDARY);
-            buffer.DEBUGNAME = String.format("CVKAxesRenderable %d", i);
+            CVKCommandBuffer buffer = CVKCommandBuffer.Create(cvkDevice, 
+                    VK_COMMAND_BUFFER_LEVEL_SECONDARY, 
+                    String.format("CVKAxesRenderable %d", i));
             commandBuffers.add(buffer);
         }
         
-        cvkDevice.Logger().info("Init Command Buffer - CVKAxesRenderable");
+        cvkVisualProcessor.GetLogger().info("Init Command Buffer - CVKAxesRenderable");
         
         return ret;
     }
@@ -717,7 +717,7 @@ public class CVKAxesRenderable extends CVKRenderable {
     @Override
     public int RecordCommandBuffer(VkCommandBufferInheritanceInfo inheritanceInfo, int imageIndex) {
         CVKAssert(cvkSwapChain != null);
-        parent.VerifyInRenderThread();
+        cvkVisualProcessor.VerifyInRenderThread();
         int ret;
         
         try (MemoryStack stack = stackPush()) {
@@ -986,7 +986,7 @@ public class CVKAxesRenderable extends CVKRenderable {
                 CVKAssert(pipelines.get(i) != VK_NULL_HANDLE);
             }
         }
-        cvkDevice.Logger().info("Graphics Pipeline created for AxesRenderable class.");
+        cvkVisualProcessor.GetLogger().info("Graphics Pipeline created for AxesRenderable class.");
         
         return ret;
     }
@@ -1012,7 +1012,7 @@ public class CVKAxesRenderable extends CVKRenderable {
 
     @Override
     public int DisplayUpdate() { 
-        parent.VerifyInRenderThread();
+        cvkVisualProcessor.VerifyInRenderThread();
         
         int ret = VK_SUCCESS;    
         
@@ -1036,7 +1036,7 @@ public class CVKAxesRenderable extends CVKRenderable {
         
         //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.ProcessRenderTasks) ===//
         return () -> {
-            parent.VerifyInRenderThread();                      
+            cvkVisualProcessor.VerifyInRenderThread();                      
             needsDisplayUpdate = true;
         };
     }  

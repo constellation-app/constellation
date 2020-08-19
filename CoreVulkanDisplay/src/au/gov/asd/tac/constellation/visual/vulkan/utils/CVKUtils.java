@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
+import static org.lwjgl.system.MemoryStack.stackPush;
 import org.lwjgl.system.Platform;
 import static org.lwjgl.vulkan.EXTDebugUtils.VK_EXT_DEBUG_UTILS_EXTENSION_NAME;
 import static org.lwjgl.vulkan.EXTMetalSurface.VK_EXT_METAL_SURFACE_EXTENSION_NAME;
@@ -35,6 +36,8 @@ import static org.lwjgl.vulkan.KHRXlibSurface.VK_KHR_XLIB_SURFACE_EXTENSION_NAME
 import static org.lwjgl.vulkan.VK10.*;
 import org.lwjgl.vulkan.VkLayerProperties;
 import org.lwjgl.system.MemoryUtil;
+import static org.lwjgl.system.MemoryUtil.memASCII;
+import static org.lwjgl.system.MemoryUtil.memAllocPointer;
 import org.lwjgl.vulkan.VkClearColorValue;
 import org.lwjgl.vulkan.VkClearValue;
 
@@ -52,13 +55,14 @@ public class CVKUtils {
     public static final int CVK_ERROR_INVALID_IMAGE                             = 0xFFFF0003;
     public static final int CVK_ERROR_SHADER_COMPILATION                        = 0xFFFF0004;
     public static final int CVK_ERROR_SHADER_MODULE                             = 0xFFFF0005;
+    public static final int CVK_SURFACE_UNSUPPORTED                             = 0xFFFF0006;
     
     // Logger shared by all of Constellation's Vulkan classes with a minimal formatter
     // as a proxy for the IDE's console window (as prints to stdout aren't appearing).
 
     
     // Enable this for additional logging, thread verification and other checks
-    public static boolean CVK_DEBUGGING = true;
+    public static final boolean CVK_DEBUGGING = true;  //TODO: tie this to the default log level?
     
     public static int CVK_VKALLOCATIONS = 0;
     
@@ -187,79 +191,211 @@ public class CVKUtils {
      * @return PointerBuffer of validation layers allocated on the provided
      * stack
      */
-    public static PointerBuffer InitVKValidationLayers(MemoryStack stack, CVKGraphLogger logger) {
-        IntBuffer pInt = stack.mallocInt(1);
-        pInt.put(0);
-        pInt.flip();
+    private final static Level VALIDATION_LAYER_LOG_LEVEL = Level.INFO;
+    private static PointerBuffer pbVKValidationLayers = null;
+    public static PointerBuffer InitVKValidationLayers() {
+        if (pbVKValidationLayers == null) {
+            try (MemoryStack stack = stackPush()) {  
+                IntBuffer pInt = stack.mallocInt(1);
+                pInt.put(0);
+                pInt.flip();
 
-        // Get the count of available layers
-        checkVKret(vkEnumerateInstanceLayerProperties(pInt, null));
-        int layerCount = pInt.get(0);
-        if (logger != null) {
-            logger.info("Vulkan has %d available layers.", layerCount);
-        } else {
-            CVKLOGGER.log(Level.INFO, "Vulkan has {0} available layers.", layerCount);
+                // Get the count of available layers
+                int ret = vkEnumerateInstanceLayerProperties(pInt, null);
+                checkVKret(ret);
+                int layerCount = pInt.get(0);
+                if (CVKLOGGER.isLoggable(VALIDATION_LAYER_LOG_LEVEL)) {
+                    CVKLOGGER.log(VALIDATION_LAYER_LOG_LEVEL, "Vulkan has {0} available layers.", layerCount);
+                }
+
+                // Get available layers
+                VkLayerProperties.Buffer availableLayers = VkLayerProperties.mallocStack(layerCount, stack);
+                checkVKret(vkEnumerateInstanceLayerProperties(pInt, availableLayers));
+                if (CVKLOGGER.isLoggable(VALIDATION_LAYER_LOG_LEVEL)) {
+                    for (int i = 0; i < layerCount; ++i) {
+                        availableLayers.position(i);
+                        String layerDesc = availableLayers.descriptionString();
+                        CVKLOGGER.log(VALIDATION_LAYER_LOG_LEVEL, "\tVulkan layer {0}: {1}", new Object[]{i, layerDesc});          
+                    }
+                }
+
+                // Select the best set of validation layers.  If VK_LAYER_KHRONOS_validation
+                // is not available then fall back to VK_LAYER_LUNARG_standard_validation, if
+                // it's not available try a bunch of older validation layers.
+                // TODO_TT: these are borrowed from https://github.com/LWJGL/lwjgl3/blob/master/modules/samples/src/test/java/org/lwjgl/demo/vulkan/HelloVulkan.java
+                //          Find some logic behind layer selection and codify it here.
+                ArrayList<String> validationLayers = new ArrayList<>();
+                if (LayerPresent(availableLayers, "VK_LAYER_KHRONOS_validation")) {
+                    validationLayers.add("VK_LAYER_KHRONOS_validation");
+                } else if (LayerPresent(availableLayers, "VK_LAYER_LUNARG_standard_validation")) {
+                    validationLayers.add("VK_LAYER_LUNARG_standard_validation");
+                } else {
+                    if (LayerPresent(availableLayers, "VK_LAYER_GOOGLE_threading")) {
+                        validationLayers.add("VK_LAYER_GOOGLE_threading");
+                    }
+                    if (LayerPresent(availableLayers, "VK_LAYER_LUNARG_parameter_validation")) {
+                        validationLayers.add("VK_LAYER_LUNARG_parameter_validation");
+                    }
+                    if (LayerPresent(availableLayers, "VK_LAYER_LUNARG_core_validation")) {
+                        validationLayers.add("VK_LAYER_LUNARG_core_validation");
+                    }
+                    if (LayerPresent(availableLayers, "VK_LAYER_LUNARG_object_tracker")) {
+                        validationLayers.add("VK_LAYER_LUNARG_object_tracker");
+                    }
+                    if (LayerPresent(availableLayers, "VK_LAYER_GOOGLE_unique_objects")) {
+                        validationLayers.add("VK_LAYER_GOOGLE_unique_objects");
+                    }
+                }
+
+                pbVKValidationLayers = memAllocPointer(validationLayers.size());
+                validationLayers.forEach(layer -> {
+                    pbVKValidationLayers.put(memASCII(layer));
+                });
+                pbVKValidationLayers.flip();                
+            }
         }
-
-        // Get available layers
-        VkLayerProperties.Buffer availableLayers = VkLayerProperties.mallocStack(layerCount, stack);
-        checkVKret(vkEnumerateInstanceLayerProperties(pInt, availableLayers));
-        for (int i = 0; i < layerCount; ++i) {
-            availableLayers.position(i);
-            String layerDesc = availableLayers.descriptionString();
-            if (logger != null) {
-                logger.info("\tVulkan layer %d: %s", i, layerDesc);
-            } else {
-                CVKLOGGER.log(Level.INFO, "\tVulkan layer {0}: {1}", new Object[]{i, layerDesc});
-            }            
-        }
-
-        // Select the best set of validation layers.  If VK_LAYER_KHRONOS_validation
-        // is not available then fall back to VK_LAYER_LUNARG_standard_validation, if
-        // it's not available try a bunch of older validation layers.
-        // TODO_TT: these are borrowed from https://github.com/LWJGL/lwjgl3/blob/master/modules/samples/src/test/java/org/lwjgl/demo/vulkan/HelloVulkan.java
-        //          Find some logic behind layer selection and codify it here.
-        ArrayList<String> validationLayers = new ArrayList<>();
-        if (LayerPresent(availableLayers, "VK_LAYER_KHRONOS_validation")) {
-            validationLayers.add("VK_LAYER_KHRONOS_validation");
-        } else if (LayerPresent(availableLayers, "VK_LAYER_LUNARG_standard_validation")) {
-            validationLayers.add("VK_LAYER_LUNARG_standard_validation");
-        } else {
-            if (LayerPresent(availableLayers, "VK_LAYER_GOOGLE_threading")) {
-                validationLayers.add("VK_LAYER_GOOGLE_threading");
-            }
-            if (LayerPresent(availableLayers, "VK_LAYER_LUNARG_parameter_validation")) {
-                validationLayers.add("VK_LAYER_LUNARG_parameter_validation");
-            }
-            if (LayerPresent(availableLayers, "VK_LAYER_LUNARG_core_validation")) {
-                validationLayers.add("VK_LAYER_LUNARG_core_validation");
-            }
-            if (LayerPresent(availableLayers, "VK_LAYER_LUNARG_object_tracker")) {
-                validationLayers.add("VK_LAYER_LUNARG_object_tracker");
-            }
-            if (LayerPresent(availableLayers, "VK_LAYER_GOOGLE_unique_objects")) {
-                validationLayers.add("VK_LAYER_GOOGLE_unique_objects");
-            }
-        }
-
-        PointerBuffer pbValidationLayers = stack.mallocPointer(validationLayers.size());
-        validationLayers.forEach(layer -> {
-            pbValidationLayers.put(stack.ASCII(layer));
-        });
-        pbValidationLayers.flip();
-        return pbValidationLayers;
+        
+        return pbVKValidationLayers;
     }    
     
+    
+    //==========================================================================
+    // DEBUGGING CODE - ASSERTS
+    //
+    // Note the code below was originally profiled in CVKCanvas but moved here as
+    // they inform the explanation for the different assert methods.
+    //
+    // The blob below ran 5-6 times faster for CVKAssertNotNull when CVK_DEBUGGING
+    // was false.  This may be due to Java knowing it doesn't need to dereference
+    // the object when the body of CVKAssertNotNull is essentially a noop when
+    // CVK_DEBUGGING is false.
+    //            
+    //        final int COUNT = 10000000; 
+    //        long startCount = System.nanoTime();
+    //        for (int i = 0; i < COUNT; ++i) {
+    //            CVKAssert(cvkRenderer != null);
+    //        }
+    //        long endCount = System.nanoTime();
+    //        float elapsedMilliSeconds = (endCount-startCount) / 1000.0f;
+    //        cvkRenderer.GetLogger().severe("%d CVKAssert(cvkRenderer != null) took %f milliseconds with CVK_DEBUGGING = %s",
+    //                COUNT, elapsedMilliSeconds, CVK_DEBUGGING ? "true" : "false");      
+    //        
+    //        startCount = System.nanoTime();
+    //        for (int i = 0; i < COUNT; ++i) {
+    //            CVKAssertNotNull(cvkRenderer);
+    //        }
+    //        endCount = System.nanoTime();
+    //        elapsedMilliSeconds = (endCount-startCount) / 1000.0f;
+    //        cvkRenderer.GetLogger().severe("%d CVKAssertNotNull(cvkRenderer != null) took %f milliseconds with CVK_DEBUGGING = %s",
+    //                COUNT, elapsedMilliSeconds, CVK_DEBUGGING ? "true" : "false");  
+    //        
+    //
+    // This hokey bit of code confirms that JAVA isn't evaluating the body of
+    // VerifyInRenderThread() if CVK_DEBUGGING is false as the timings are more
+    // than 1000 faster when CVK_DEBUGGING is false.
+    //         
+    //        final int COUNT = 10000000; 
+    //        long startCount = System.nanoTime();
+    //        for (int i = 0; i < COUNT; ++i) {
+    //            cvkRenderer.VerifyInRenderThread();
+    //        }
+    //        long endCount = System.nanoTime();
+    //        float elapsedMilliSeconds = (endCount-startCount) / 1000.0f;
+    //        cvkRenderer.GetLogger().severe("%d VerifyInRenderThread took %f milliseconds with CVK_DEBUGGING = %s",
+    //                COUNT, elapsedMilliSeconds, CVK_DEBUGGING ? "true" : "false");        
+    //==========================================================================
+    
+    
     public static void CVKAssert(boolean exprResult) {
-        if (!exprResult) {
+        if (CVK_DEBUGGING && !exprResult) {
+            String msg = "CVKAssert fired";
+            
             // If run from Netbeans the system console is null
             if (System.console() == null) {
-                throw new RuntimeException("CVKAssert fired");
+                throw new RuntimeException(msg);
             } else {
-                CVKLOGGER.warning("!!!!!!!!!!!!!!!Assertion failure!!!!!!!!!!!!!!!!!");
-                LogStackTrace(Level.WARNING);
+                CVKLOGGER.severe(msg);
+                LogStackTrace(Level.SEVERE);
             }
         }
+    }
+    
+    public static void CVKAssertNotNull(Object object) {
+        if (CVK_DEBUGGING && object == null) {            
+            String msg = "CVKAssertNotNull(object) fired";
+            
+            // If run from Netbeans the system console is null
+            if (System.console() == null) {
+                throw new RuntimeException(msg);
+            } else {
+                CVKLOGGER.severe(msg);
+                LogStackTrace(Level.SEVERE);
+            }
+        }
+    }  
+    
+    public static void CVKAssertNotNull(long handle) {
+        if (CVK_DEBUGGING && handle == VK_NULL_HANDLE) {            
+            String msg = "CVKAssertNotNull(handle) fired";
+            
+            // If run from Netbeans the system console is null
+            if (System.console() == null) {
+                throw new RuntimeException(msg);
+            } else {
+                CVKLOGGER.severe(msg);
+                LogStackTrace(Level.SEVERE);
+            }
+        }
+    }    
+    
+    public static void CVKAssertNull(Object object) {
+        if (CVK_DEBUGGING && object != null) {
+            // If run from Netbeans the system console is null
+            String msg = String.format("CVKAssertNull(object) (%s was supposed to be null) fired", object.toString());
+            if (System.console() == null) {
+                throw new RuntimeException(msg);
+            } else {
+                CVKLOGGER.severe(msg);
+                LogStackTrace(Level.SEVERE);
+            }
+        }        
+    }
+    
+    public static void CVKAssertNull(long handle) {
+        if (CVK_DEBUGGING && handle != VK_NULL_HANDLE) {
+            // If run from Netbeans the system console is null
+            String msg = String.format("CVKAssertNull(handle) (%d(0x%016X) was supposed to be null) fired", handle, handle);
+            if (System.console() == null) {
+                throw new RuntimeException(msg);
+            } else {
+                CVKLOGGER.severe(msg);
+                LogStackTrace(Level.SEVERE);
+            }
+        }        
+    }    
+    
+    public static void CVKAssertNotNullOrEmpty(String str) {
+        if (CVK_DEBUGGING) {
+            if (str == null) {
+                // If run from Netbeans the system console is null
+                String msg = String.format("CVKAssertNotNullOrEmpty(string) fired (string was null)");
+                if (System.console() == null) {
+                    throw new RuntimeException(msg);
+                } else {
+                    CVKLOGGER.severe(msg);
+                    LogStackTrace(Level.SEVERE);
+                }
+            } else if (str.isEmpty()) {
+                // If run from Netbeans the system console is null
+                String msg = String.format("CVKAssertNotNullOrEmpty(string) fired (string was empty)");
+                if (System.console() == null) {
+                    throw new RuntimeException(msg);
+                } else {
+                    CVKLOGGER.severe(msg);
+                    LogStackTrace(Level.SEVERE);
+                }                
+            }
+        }           
     }
     
     /**

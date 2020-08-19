@@ -12,5 +12,7 @@ layout(location = 0) in vec3 vertex;
 
 void main(void) {
     gl_PointSize = 4.0;
-    gl_Position = ub.mvpMatrix * vec4(vertex.x, -vertex.y, vertex.z, 1);
+
+    gl_Position = ub.mvpMatrix * vec4(vertex.x, vertex.y, vertex.z, 1);
+    gl_Position.y = -gl_Position.y;
 }

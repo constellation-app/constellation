@@ -88,6 +88,7 @@
                 <package>au.gov.asd.tac.constellation.graph.attribute.interaction</package>
                 <package>au.gov.asd.tac.constellation.graph.attribute.io</package>
                 <package>au.gov.asd.tac.constellation.graph.construction</package>
+                <package>au.gov.asd.tac.constellation.graph.hittest</package>
                 <package>au.gov.asd.tac.constellation.graph.locking</package>
                 <package>au.gov.asd.tac.constellation.graph.manager</package>
                 <package>au.gov.asd.tac.constellation.graph.mergers</package>

@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.visual.vulkan;
 
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssertNotNull;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.checkVKret;
 import java.nio.LongBuffer;
 import org.lwjgl.system.MemoryStack;
@@ -145,7 +146,7 @@ public class CVKDescriptorPool {
                         VkDescriptorPoolSize vkPoolSize = pPoolSizes.get(iPoolSize++);
                         vkPoolSize.type(iType);
                         vkPoolSize.descriptorCount(count);
-                        cvkDevice.Logger().info("Descriptor pool type %d = count %d", iType, count);                                        
+                        cvkDevice.GetLogger().info("Descriptor pool type %d = count %d", iType, count);                                        
                     } 
                 }           
 
@@ -156,15 +157,15 @@ public class CVKDescriptorPool {
                 poolInfo.flags(VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT);
                 poolInfo.pPoolSizes(pPoolSizes);
                 poolInfo.maxSets(cvkDescriptorPoolRequirements.poolDesciptorSetCount);
-                cvkDevice.Logger().info("Descriptor pool maxSets = %d", cvkDescriptorPoolRequirements.poolDesciptorSetCount);  
+                cvkDevice.GetLogger().info("Descriptor pool maxSets = %d", cvkDescriptorPoolRequirements.poolDesciptorSetCount);  
 
                 LongBuffer pDescriptorPool = stack.mallocLong(1);
                 ret = vkCreateDescriptorPool(cvkDevice.GetDevice(), poolInfo, null, pDescriptorPool);
                 checkVKret(ret);
-                hDescriptorPool = pDescriptorPool.get(0);
-
-                CVKAssert(hDescriptorPool != VK_NULL_HANDLE);
+                hDescriptorPool = pDescriptorPool.get(0);                
             } 
+        } finally {
+            CVKAssertNotNull(hDescriptorPool);
         }
     }
     
@@ -172,6 +173,6 @@ public class CVKDescriptorPool {
         CVKAssert(cvkDevice != null);
         vkDestroyDescriptorPool(cvkDevice.GetDevice(), hDescriptorPool, null);
         hDescriptorPool = VK_NULL_HANDLE;
-        cvkDevice.Logger().info("Destroyed descriptor pool");
+        cvkDevice.GetLogger().info("Destroyed descriptor pool");
     }    
 }

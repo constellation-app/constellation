@@ -17,6 +17,8 @@ package au.gov.asd.tac.constellation.visual.vulkan.utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.logging.FileHandler;
 import java.util.logging.Formatter;
 import java.util.logging.Level;
@@ -80,7 +82,8 @@ public class CVKGraphLogger {
             final int indentation;
             int stackLevel = 8; // A guesstimation based on a few observations
             final boolean formatting;
-            final boolean graphAnnotation;
+            final boolean graphAnnotation;           
+            
             if (record instanceof CVKGraphLogRecord) {
                 CVKGraphLogRecord graphRecord = (CVKGraphLogRecord)record;
                 indentation = graphRecord.indentation;
@@ -106,14 +109,21 @@ public class CVKGraphLogger {
                 indentation = indent;
                 formatting = true;
                 graphAnnotation = true;
+                
+                // Find the first constellation call (after this log format method)
+                int level = 0;
+                boolean encounteredConstellation = false;
+                for (var el : stackTrace) {
+                    final String className = el.getClassName();
+                    if (className.contains(".constellation.") && !className.endsWith("CVKGraphLogFormatter")) {
+                        stackLevel = level;
+                        break;
+                    }
+                    ++level;
+                }                
             }
                                     
             if (formatting) {
-                // StartLogSection increments indent                 
-                for (int i = 0; i < indentation; ++i) {
-                    lineBuilder.append("    ");
-                }
-
                 // With a grand total of 1 observation, the call we are interested
                 // is at element 8                
                 if (stackTrace.length >= stackLevel) {
@@ -127,19 +137,40 @@ public class CVKGraphLogger {
                     for (int i = 0; i < padding; ++i) {
                         lineBuilder.append(" ");
                     }                
-                }     
+                }   
+                
+                // StartLogSection increments indent                 
+                for (int i = 0; i < indentation; ++i) {
+                    lineBuilder.append("    ");
+                }
+
+                if (record.getLevel() == Level.WARNING) {
+                    lineBuilder.append("!WARNING! ");
+                }
             }
             
-            StringBuilder sb = new StringBuilder();
+            StringBuilder stringBuilder = new StringBuilder();
+            
+            // Really make SEVERE stand out
+            if (formatting && record.getLevel() == Level.SEVERE) {
+                stringBuilder.append("\r\n======================================================= SEVERE =======================================================\n");
+            }            
+            
             String msgLines[] = msg.split("\\r?\\n");
             for (String msgLine : msgLines) {
                 if (!msgLine.isBlank()) {
-                    sb.append(lineBuilder.toString());
-                    sb.append(msgLine);
+                    stringBuilder.append(lineBuilder.toString());
+                    stringBuilder.append(msgLine);
                 }
-                sb.append(System.getProperty("line.separator"));
-            }                               
-            return sb.toString();
+                stringBuilder.append(System.getProperty("line.separator"));
+            }             
+            
+            // Really make SEVERE stand out
+            if (formatting && record.getLevel() == Level.SEVERE) {
+                stringBuilder.append("======================================================================================================================\r\n\r\n");
+            } 
+            
+            return stringBuilder.toString();
         }         
     }     
     
@@ -289,5 +320,18 @@ public class CVKGraphLogger {
             log(level, "---- END %s ----", msg);
             log(level, System.getProperty("line.separator"));
         }     
-    }     
+    }    
+    
+    public void LogException(Exception exception, String format, Object... args) {
+        String msg = String.format(format, args);
+        LogException(exception, msg);
+    }
+    
+    public void LogException(Exception exception, String msg) {
+        final StringWriter exceptionTraceWriter = new StringWriter();
+        final PrintWriter exceptionPrintWriter = new PrintWriter( exceptionTraceWriter );
+        exception.printStackTrace(exceptionPrintWriter);
+        exceptionPrintWriter.flush();
+        severe("\r\n%s\r\n%s", msg, exceptionTraceWriter.toString());
+    }
 }

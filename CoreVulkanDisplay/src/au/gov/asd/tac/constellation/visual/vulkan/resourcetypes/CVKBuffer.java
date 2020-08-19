@@ -60,7 +60,7 @@ public class CVKBuffer {
     private PointerBuffer pWriteMemory = null;
     private int properties = 0;
     
-    public String DEBUGNAME = "";
+    private String DEBUGNAME = "";
     
     // Use the static Create() method instead of direct construction
     private CVKBuffer() { }
@@ -74,8 +74,7 @@ public class CVKBuffer {
         int ret;
         
         try (MemoryStack stack = stackPush()) {
-            CVKCommandBuffer cvkCopyCmd = CVKCommandBuffer.Create(cvkDevice, VK_COMMAND_BUFFER_LEVEL_PRIMARY);
-            cvkCopyCmd.DEBUGNAME = "CVKBuffer cvkCopyCmd";
+            CVKCommandBuffer cvkCopyCmd = CVKCommandBuffer.Create(cvkDevice, VK_COMMAND_BUFFER_LEVEL_PRIMARY, "CVKBuffer cvkCopyCmd");
             ret = cvkCopyCmd.Begin(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
             if (VkFailed(ret)) { return ret; }  
 
@@ -169,26 +168,26 @@ public class CVKBuffer {
     public void DEBUGPRINT(List<DEBUG_CVKBufferElementDescriptor> typeDescriptors) {
         ByteBuffer pData = StartWrite(0, (int)bufferSize);
         
-        cvkDevice.Logger().info("\n");
-        cvkDevice.Logger().info(String.format("Contents of %s:", DEBUGNAME));
+        cvkDevice.GetLogger().info("\n");
+        cvkDevice.GetLogger().info(String.format("Contents of %s:", DEBUGNAME));
         int idx = 0;
         while (pData.hasRemaining()) {
             for (DEBUG_CVKBufferElementDescriptor desc : typeDescriptors) {
                 if (desc.type == Float.TYPE) {  
                     final float f = pData.getFloat();
-                    cvkDevice.Logger().info(String.format("\tidx %d\t%s:\t%f", idx, desc.label, f));
+                    cvkDevice.GetLogger().info(String.format("\tidx %d\t%s:\t%f", idx, desc.label, f));
                 } else if (desc.type == Integer.TYPE) {
                     final int d = pData.getInt();
-                    cvkDevice.Logger().info(String.format("\tidx %d\t%s:\t%d", idx, desc.label, d));
+                    cvkDevice.GetLogger().info(String.format("\tidx %d\t%s:\t%d", idx, desc.label, d));
                 }else {
-                    cvkDevice.Logger().info(String.format("CVKBuffer.DEBUGPRINT cannot handle type <%s>", desc.type.getName()));
+                    cvkDevice.GetLogger().info(String.format("CVKBuffer.DEBUGPRINT cannot handle type <%s>", desc.type.getName()));
                     break;
                 }
             }
             ++idx;
         }
         
-        cvkDevice.Logger().info("\n");
+        cvkDevice.GetLogger().info("\n");
         
         EndWrite();
     }
@@ -214,10 +213,11 @@ public class CVKBuffer {
         if (CVK_DEBUGGING && pBuffer != null) {
             if (pBufferMemory != null && pBufferMemory.get(0) != VK_NULL_HANDLE) {
                 --CVK_VKALLOCATIONS;
-                cvkDevice.Logger().fine(String.format("CVK_VKALLOCATIONS (%d-) Destroy called on CVKBuffer (0x%016X), vkFreeMemory will be called", CVK_VKALLOCATIONS, pBuffer.get(0)));
-            } else {
-                
-                cvkDevice.Logger().fine(String.format("CVK_VKALLOCATIONS (%d!) Destroy called on CVKBuffer (0x%016X), vkFreeMemory will NOT be called", CVK_VKALLOCATIONS, pBuffer.get(0)));
+                cvkDevice.GetLogger().info("CVK_VKALLOCATIONS (%d-) Destroy called on CVKBuffer %s (Buffer:0x%016X Memory:0x%016X), vkFreeMemory will be called",
+                        CVK_VKALLOCATIONS, DEBUGNAME, pBuffer.get(0), pBufferMemory.get(0));
+            } else {                
+                cvkDevice.GetLogger().info("CVK_VKALLOCATIONS (%d!) Destroy called on CVKBuffer %s (Buffer:0x%016X Memory:0x%016X), vkFreeMemory will NOT be called", 
+                        CVK_VKALLOCATIONS, CVK_VKALLOCATIONS, DEBUGNAME, pBuffer.get(0), pBufferMemory.get(0));                              
             }            
         }
         if (pBuffer != null && pBuffer.get(0) != VK_NULL_HANDLE) {
@@ -241,6 +241,7 @@ public class CVKBuffer {
         super.finalize();
     }
     
+ 
     /**
      * Factory creation method for CVKBuffers
      * 
@@ -248,21 +249,14 @@ public class CVKBuffer {
      * @param size
      * @param usage
      * @param properties
-     * @return
-     */    
-    /**
-     * Factory creation method for CVKBuffers
-     * 
-     * @param cvkDevice
-     * @param size
-     * @param usage
-     * @param properties
+     * @param debugName
      * @return
      */
     public static CVKBuffer Create( CVKDevice cvkDevice,
                                     long size, 
                                     int usage, 
-                                    int properties) {
+                                    int properties,
+                                    String debugName) {
         CVKAssert(cvkDevice != null);
         CVKAssert(cvkDevice.GetDevice() != null);
         
@@ -302,10 +296,6 @@ public class CVKBuffer {
             // Allocate the memory needed for the buffer (still needs to be bound)
             ret = vkAllocateMemory(cvkDevice.GetDevice(), vkAllocationInfo, null, cvkBuffer.pBufferMemory);
             checkVKret(ret);
-            ++CVK_VKALLOCATIONS;
-            cvkDevice.Logger().fine(String.format("CVK_VKALLOCATIONS(%d+) vkAllocateMemory(%d) for CVKBuffer (0x%016X)", 
-                    CVK_VKALLOCATIONS, vkMemoryRequirements.size(), cvkBuffer.pBuffer.get(0)));
-            //LogStackTrace();
 
             // We have a pen, we have a apple, we have a pineapple...err bind the buffer to its memory
             ret = vkBindBufferMemory(cvkDevice.GetDevice(), 
@@ -313,6 +303,13 @@ public class CVKBuffer {
                                      cvkBuffer.pBufferMemory.get(0), 
                                      0); //this memory exists only for this buffer, so no offset
             checkVKret(ret);
+            
+            if (CVK_DEBUGGING) {
+                cvkBuffer.DEBUGNAME = debugName;
+                ++CVK_VKALLOCATIONS;
+                cvkDevice.GetLogger().info(String.format("CVK_VKALLOCATIONS(%d+) vkAllocateMemory(%d) for CVKBuffer %s (Buffer:0x%016X Memory:0x%016X)", 
+                        CVK_VKALLOCATIONS, vkMemoryRequirements.size(), cvkBuffer.DEBUGNAME, cvkBuffer.pBuffer.get(0), cvkBuffer.pBufferMemory.get(0)));                
+            }
             
             return cvkBuffer;
         }

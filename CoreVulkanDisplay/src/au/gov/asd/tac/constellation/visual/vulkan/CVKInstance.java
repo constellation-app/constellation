@@ -16,6 +16,9 @@
 package au.gov.asd.tac.constellation.visual.vulkan;
 
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKGraphLogger.CVKLOGGER;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_DEBUGGING;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.GetRequiredVKPhysicalDeviceExtensions;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.InitVKValidationLayers;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkSucceeded;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.checkVKret;
@@ -23,6 +26,7 @@ import java.nio.LongBuffer;
 import java.util.logging.Level;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
+import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 import org.lwjgl.system.NativeType;
 import static org.lwjgl.vulkan.EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
@@ -54,6 +58,36 @@ public class CVKInstance {
     private VkInstance vkInstance = null;
     
     private CVKInstance() {}
+    
+    /**
+     * Singleton method that will create the CVKInstance the first time it is 
+     * called with validation layers if we are debugging.
+     * 
+     * @return the one and only instance
+     */
+    public static CVKInstance GetInstance() {
+        if (CVKInstance.cvkInstance == null) {
+            try (MemoryStack stack = stackPush()) {            
+                PointerBuffer pbValidationLayers = null;
+                PointerBuffer pbExtensions = GetRequiredVKPhysicalDeviceExtensions(stack);
+                if (CVK_DEBUGGING) {
+                    pbValidationLayers = InitVKValidationLayers();
+                }
+                cvkInstance = new CVKInstance();
+                int ret = cvkInstance.Initialise(stack, pbExtensions, pbValidationLayers, CVK_DEBUGGING);
+                if (VkFailed(ret)) {
+                    throw new RuntimeException(String.format("CVKInstance.Initialise returned error %d", ret));
+                }   
+                return CVKInstance.cvkInstance;
+            }      
+        } else {
+            return cvkInstance;
+        }        
+    }    
+    
+    
+    
+
     public static CVKInstance GetInstance(MemoryStack stack, PointerBuffer pbExtensions, PointerBuffer pbValidationLayers, boolean debugging) {
         if (CVKInstance.cvkInstance == null) {
             CVKInstance.cvkInstance = new CVKInstance();
@@ -62,9 +96,11 @@ public class CVKInstance {
                 throw new RuntimeException(String.format("CVKInstance.Initialise returned error %d", ret));
             }
         }
-        return CVKInstance.cvkInstance;
+        return cvkInstance;
     }
-    public VkInstance GetVkInstance() { return vkInstance; }
+    public static VkInstance GetVkInstance() { 
+        return GetInstance().vkInstance; 
+    }
     
     
     public void Deinitialise() {

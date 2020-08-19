@@ -570,6 +570,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void finalize() throws Throwable {
         try {

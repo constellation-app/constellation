@@ -19,14 +19,9 @@ import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKMissingEnums;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDescriptorPool.CVKDescriptorPoolRequirements;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.GetRequiredVKPhysicalDeviceExtensions;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.InitVKValidationLayers;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
 import java.awt.event.ComponentListener;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.List;
-import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.vulkan.VK10.*;
@@ -34,26 +29,28 @@ import org.lwjgl.vulkan.VkCommandBuffer;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.checkVKret;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKGraphLogger;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssertNotNull;
 import java.awt.event.ComponentEvent;
 import static org.lwjgl.vulkan.KHRSwapchain.vkQueuePresentKHR;
 import org.lwjgl.vulkan.VkClearValue;
 import org.lwjgl.vulkan.VkCommandBufferBeginInfo;
 import org.lwjgl.vulkan.VkCommandBufferInheritanceInfo;
-import org.lwjgl.vulkan.VkInstance;
 import org.lwjgl.vulkan.VkOffset2D;
 import org.lwjgl.vulkan.VkPresentInfoKHR;
 import org.lwjgl.vulkan.VkRect2D;
 import org.lwjgl.vulkan.VkRenderPassBeginInfo;
 import org.lwjgl.vulkan.VkSubmitInfo;
 import java.nio.LongBuffer;
-import java.util.Collections;
 import java.util.concurrent.CountDownLatch;
 import static org.lwjgl.vulkan.KHRSwapchain.VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_DEBUGGING;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 /*
-NAMING CONVENTION
+NAMING CONVENTION FOR CLASS MEMBERS
 
 BLAH: static final that can be accessed from either static or instanced code
 CVKBlah: a Constellation class in the au.gov.asd.tac.constellation.visual.vulkan package
@@ -65,6 +62,10 @@ pBlah: this is an object that has been explicitly malloced and needs to be expli
        a stack allocator was used to allocate it).
 blah: anything else
 
+FUNCTION ARGUMENTS
+ommit the type preface to make it clearer to differentiate the paramter from the class variable
+
+
 CODING STANDARDS
 helper classes should return error codes where possible
 controller classes like CVKRenderer and aggregation classes like CVKVisualProcessor will need some other mechanism
@@ -75,51 +76,53 @@ Favour full names over abbreviations (eg Initialise() over Init()).
 
 TODO: this is still not a good reason.  Maybe just stylistic so resource types are differentiated from other CVK types?
 Resource types should expose a Create factory method and have private constructors so that we don't have to worry
-about having resource types in partially initialised states.
+about having resource types in partially initialised states.  We can also indicate failure by returning null from Create
+rather than throwing exceptions from ctors.
 
 */
 
 public class CVKRenderer implements ComponentListener {
     
-    private int currentFrame = 0;
-    private CVKInstance cvkInstance = null;
-    private CVKDevice cvkDevice = null;
+    // We are created and displayed by this canvas
+    private final CVKCanvas cvkCanvas;  
+    private final CVKVisualProcessor cvkVisualProcessor;    
+    private final List<CVKRenderable> renderables = new ArrayList<>();
+    private final List<CVKRenderable> newRenderables = Collections.synchronizedList(new ArrayList<>());     
+    private final CVKDevice cvkDevice;
     private CVKSwapChain cvkSwapChain = null;   
     private CVKDescriptorPool cvkDescriptorPool = null;
+
+    private int currentFrame = 0;
     private boolean swapChainNeedsRecreation = true;    
-    private boolean descriptorPoolNeedsRecreation = true;
-    private final CVKVisualProcessor parent;  
+    private boolean descriptorPoolNeedsRecreation = true;    
     
     // We track these as they are needed to (re)create the descriptor pool
     CVKDescriptorPoolRequirements cvkDescriptorPoolRequirements = null;
     CVKDescriptorPoolRequirements cvkPerImageDescriptorPoolRequirements = null;
        
-    private List<CVKRenderable> renderables = new ArrayList<>();
-    private final List<CVKRenderable> newRenderables = Collections.synchronizedList(new ArrayList<>());
     private boolean isExiting = false;
     private final CountDownLatch exitComplete = new CountDownLatch(1);
     private float clrChange = 0.01f;
     private int curClrEl = 0;
     private Vector3f clr = new Vector3f(0.0f, 0.0f, 0.0f);
     
-    public CVKGraphLogger Logger() { return parent.cvkLogger; }
+    public final CVKGraphLogger GetLogger() { return cvkCanvas.GetLogger(); }
     
-    /**
-     *
-     * @param renderable
-     */
-    public void AddRenderable(CVKRenderable renderable) {   
-        synchronized (newRenderables) {
-            newRenderables.add(renderable);
-        }   
-    }
+
+    // ========================> Lifetime <======================== \\
     
+    public CVKRenderer(CVKCanvas cvkCanvas, CVKVisualProcessor cvkVisualProcessor) {
+        this.cvkCanvas = cvkCanvas;
+        this.cvkVisualProcessor = cvkVisualProcessor;
+        cvkDevice = new CVKDevice(cvkCanvas);
+    }        
     
     private void DestroyImplementation() {
-        if (renderables != null) {
-            renderables.forEach(el -> {el.Destroy();});
-            renderables = null;
-        }
+        renderables.forEach(el -> {
+
+            el.Destroy();
+        });
+        renderables.clear();
         
         if (cvkSwapChain != null) {
             cvkSwapChain.Destroy();
@@ -133,40 +136,52 @@ public class CVKRenderer implements ComponentListener {
 
         if (cvkDevice != null) {
             cvkDevice.Destroy();
-            cvkDevice = null;        
         }
     }
-    
-    
+        
     /**
-     * Called from the parent CVKVisualProcessor when the VisualManager is
-     * being destroyed.
+     * Called from CVKCanvas when it's being destroyed.
      */
     public void Destroy() {      
         isExiting = true;
-        parent.cvkLogger.info("CVKRenderer.destroy() called");
-        if (parent.IsRenderThreadCurrent()) {           
+        GetLogger().info("CVKRenderer.destroy() called");
+        if (cvkCanvas.IsRenderThreadCurrent()) {           
             if (cvkDevice != null) {
                 cvkDevice.WaitIdle();
             }
 
             DestroyImplementation();
         } else {
-            if (parent.IsRenderThreadAlive()) {
+            if (cvkCanvas.IsRenderThreadAlive()) {
                 try {
-                    parent.cvkLogger.info("\tDestroy called outside of render thread.  Waiting until it has finished destruction");   
+                    GetLogger().info("\tDestroy called outside of render thread.  Waiting until it has finished destruction");   
                     exitComplete.await();
                 } catch (InterruptedException e) {
-                    parent.cvkLogger.severe(String.format("InterruptedException waiting for renderer to complete destruction %s", e));
+                    GetLogger().severe(String.format("InterruptedException waiting for renderer to complete destruction %s", e));
                 }
             } else {
-                parent.cvkLogger.info("\tDestroy called outside of render thread which is no longer alive.  Attempting renderer destruction.");
+                GetLogger().info("\tDestroy called outside of render thread which is no longer alive.  Attempting renderer destruction.");
                 DestroyImplementation();
             }           
         }
-    }
+    }  
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public void finalize() throws Throwable {
+        Destroy();
+        super.finalize();
+    }    
     
     
+    // ========================> Renderables <======================== \\
+    
+    public void AddRenderable(CVKRenderable renderable) {   
+        synchronized (newRenderables) {
+            newRenderables.add(renderable);
+        }   
+    }    
+  
     /**
      * When a new renderable is added we need to:
      * - call the static initialiser (in case this is the first time an instance of that
@@ -183,7 +198,7 @@ public class CVKRenderer implements ComponentListener {
      * @return
      */
     private int ProcessNewRenderables() {
-        parent.VerifyInRenderThread();
+        cvkCanvas.VerifyInRenderThread();
         int ret = VK_SUCCESS;
         int oldRenderableCount = renderables.size();
         
@@ -215,134 +230,117 @@ public class CVKRenderer implements ComponentListener {
         }
         
         return ret;
+    }    
+    
+    
+    // ========================> Surface callbacks <======================== \\
+    
+    public void SurfaceCreated() {
+        int ret = cvkDevice.SurfaceCreated();
+        if (VkFailed(ret)) {
+            throw new RuntimeException("CVKCanvas's new surface is unsupported");
+        }
     }
     
-   
-    public CVKDevice GetDevice() {
-        return cvkDevice;
-    }
-
-
-    /**
-     * This is called by the canvas once it has been created and has a valid surface handle.
-     *
-     *
-     * @param surfaceHandle
-     * @return 
-     * @see
-     * <a href="https://renderdoc.org/vulkan-in-30-minutes.html">https://renderdoc.org/vulkan-in-30-minutes.html</a>      *
-     */
-    public int Initialise(long surfaceHandle) {
-        cvkDevice = new CVKDevice(cvkInstance, surfaceHandle, parent);
-        int ret = cvkDevice.Initialise();
-        if (VkFailed(ret)) { return ret; }        
+    public void SurfaceLost() {
+        cvkDevice.WaitIdle();
         
-        ret = parent.DeviceInitialised(cvkDevice);
-        if (VkFailed(ret)) { return ret; }
-        
-        return ProcessNewRenderables();
-    }
-       
-    private int RecreateSwapChain() {
-        parent.VerifyInRenderThread();
-        
-        int ret = VK_NOT_READY;
-        if (parent.surfaceReady()) {
-            CVKAssert(cvkDescriptorPoolRequirements != null);
-            CVKAssert(cvkPerImageDescriptorPoolRequirements != null);
-            
-            // Device must be finished with all pending actions before we can
-            // recreate the swapchain.
-            cvkDevice.WaitIdle();
-            
-            // Create a new swapchain.  The number of images shouldn't change, but
-            // if they do each renderable will do a full destroy/create of its
-            // swapchain dependent resources.
-            CVKSwapChain newSwapChain = new CVKSwapChain(cvkDevice);              
-            ret = newSwapChain.Initialise();
-            if (VkFailed(ret)) { return ret; }
-            
-            // Give each renderable a chance to cleanup swapchain dependent resources
-            for (int i = 0; i < renderables.size(); ++ i) {
-                ret = renderables.get(i).SetNewSwapChain(newSwapChain);
-                if (VkFailed(ret)) { return ret; }
-            }
-            
-            if (cvkSwapChain != null) {                
-                cvkSwapChain.Destroy();
-            }
-            cvkSwapChain = newSwapChain;
-                
-            // Update the parent (CVKVisualProcessor) so it can update the shared viewport and frustum
-            // These will in turn be consumed by the renderables on their next ProcessRenderTasks
-            parent.SwapChainRecreated(cvkDevice, cvkSwapChain);                                                                                    
-
-            swapChainNeedsRecreation = false;                                       
-        } else {
-            parent.cvkLogger.info("Unable to recreate swap chain, surface not ready.");
+        for (CVKRenderable el : renderables) {
+            el.SetNewSwapChain(null);
+            el.SetNewDescriptorPool(null);
         }
+        
+        if (cvkSwapChain != null) {                
+            cvkSwapChain.Destroy();
+            cvkSwapChain = null;
+        }
+        swapChainNeedsRecreation = true;       
+        
+        if (cvkDescriptorPool != null) {                
+            cvkDescriptorPool.Destroy();
+            cvkDescriptorPool = null;
+        }
+        descriptorPoolNeedsRecreation = true;         
+
+
+        cvkDevice.DestroySurface();
+    }    
+    
+    
+    // ========================> Device resources <======================== \\
+    
+    private int RecreateSwapChain() {
+        cvkCanvas.VerifyInRenderThread();               
+        CVKAssertNotNull(cvkDescriptorPoolRequirements);
+        CVKAssertNotNull(cvkPerImageDescriptorPoolRequirements);
+        
+        int ret;
+
+        // Device must be finished with all pending actions before we can
+        // recreate the swapchain.
+        cvkDevice.WaitIdle();
+
+        // Create a new swapchain.  The number of images shouldn't change, but
+        // if they do each renderable will do a full destroy/create of its
+        // swapchain dependent resources.
+        CVKSwapChain newSwapChain = new CVKSwapChain(cvkDevice);              
+        ret = newSwapChain.Initialise();
+        if (VkFailed(ret)) { return ret; }
+
+        // Give each renderable a chance to cleanup swapchain dependent resources
+        for (CVKRenderable el : renderables) {
+            ret = el.SetNewSwapChain(newSwapChain);
+            if (VkFailed(ret)) { return ret; }
+        }
+
+        if (cvkSwapChain != null) {                
+            cvkSwapChain.Destroy();
+        }
+        cvkSwapChain = newSwapChain;
+
+        // Update the parent (CVKVisualProcessor) so it can update the shared viewport and frustum
+        // These will in turn be consumed by the renderables on their next ProcessRenderTasks
+        cvkVisualProcessor.SwapChainRecreated(cvkDevice, cvkSwapChain);                                                                                    
+
+        swapChainNeedsRecreation = false;                                       
+
         return ret;
     }
     
     private int RecreateDescriptorPool() {
-        parent.VerifyInRenderThread();
+        cvkCanvas.VerifyInRenderThread();                        
+        CVKAssertNotNull(cvkDescriptorPoolRequirements);
+        CVKAssertNotNull(cvkPerImageDescriptorPoolRequirements);
         
-        int ret = VK_NOT_READY;
-        if (parent.surfaceReady()) {
-            CVKAssert(cvkDescriptorPoolRequirements != null);
-            CVKAssert(cvkPerImageDescriptorPoolRequirements != null);
-            
-            // Device must be finished with all pending actions before we can
-            // recreate the swapchain or descriptor pool
-            cvkDevice.WaitIdle();
-                                                                               
-            CVKDescriptorPool newDescriptorPool = new CVKDescriptorPool(cvkDevice, 
-                                                                        cvkSwapChain.GetImageCount(),
-                                                                        cvkDescriptorPoolRequirements,
-                                                                        cvkPerImageDescriptorPoolRequirements);
-            CVKAssert(newDescriptorPool.GetDescriptorPoolHandle() != VK_NULL_HANDLE); 
-            for (int i = 0; i < renderables.size(); ++ i) {
-                ret = renderables.get(i).SetNewDescriptorPool(newDescriptorPool);
-                if (VkFailed(ret)) { return ret; }
-            }    
-            if (cvkDescriptorPool != null) {
-                cvkDescriptorPool.Destroy();
-            }
-            cvkDescriptorPool = newDescriptorPool;
+        int ret = VK_SUCCESS;
 
-            descriptorPoolNeedsRecreation = false;                                       
-        } else {
-            parent.cvkLogger.info("Unable to recreate descriptor pool, surface not ready.");
+        // Device must be finished with all pending actions before we can
+        // recreate the swapchain or descriptor pool
+        cvkDevice.WaitIdle();
+
+        CVKDescriptorPool newDescriptorPool = new CVKDescriptorPool(cvkDevice, 
+                                                                    cvkSwapChain.GetImageCount(),
+                                                                    cvkDescriptorPoolRequirements,
+                                                                    cvkPerImageDescriptorPoolRequirements);
+        CVKAssert(newDescriptorPool.GetDescriptorPoolHandle() != VK_NULL_HANDLE);        
+        
+        for (CVKRenderable el : renderables) {
+            ret = el.SetNewDescriptorPool(newDescriptorPool);
+            if (VkFailed(ret)) { return ret; }
+        }    
+        if (cvkDescriptorPool != null) {
+            cvkDescriptorPool.Destroy();
         }
+        cvkDescriptorPool = newDescriptorPool;
+
+        descriptorPoolNeedsRecreation = false;                                       
+
         return ret;        
-    }
-
-    /**
-     *
-     * @param parent
-     * @throws Exception
-     */
-    public CVKRenderer(CVKVisualProcessor parent) throws Exception {
-        parent.cvkLogger.StartLogSection("CVKRenderer ctor");
-        this.parent = parent;
-        try (MemoryStack stack = stackPush()) {            
-            PointerBuffer pbValidationLayers = null;
-            PointerBuffer pbExtensions = GetRequiredVKPhysicalDeviceExtensions(stack);
-            if (CVK_DEBUGGING) {
-                pbValidationLayers = InitVKValidationLayers(stack, parent.cvkLogger);
-            }
-            cvkInstance = CVKInstance.GetInstance(stack, pbExtensions, pbValidationLayers, CVK_DEBUGGING);       
-        }
-        parent.cvkLogger.EndLogSection("CVKRenderer ctor");
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public void finalize() throws Throwable {
-        Destroy();
-        super.finalize();
-    }
-       
+    }    
+    
+    
+    // ========================> Command buffers <======================== \\
+    
     /**
      * Records/updates the Primary Command Buffer and all its Secondary Command Buffers
      * 
@@ -351,8 +349,8 @@ public class CVKRenderer implements ComponentListener {
      * @return 
      */
     private int RecordCommandBuffer(MemoryStack stack, int imageIndex){
-        parent.VerifyInRenderThread();
-        CVKAssert(cvkSwapChain.GetFrameBufferHandle(imageIndex) != VK_NULL_HANDLE);
+        cvkCanvas.VerifyInRenderThread();
+        CVKAssertNotNull(cvkSwapChain.GetFrameBufferHandle(imageIndex));
     
         int ret = VK_SUCCESS;
         
@@ -378,7 +376,8 @@ public class CVKRenderer implements ComponentListener {
 
         // The primary command buffer does not contain any rendering commands
 	// These are stored (and retrieved) from the secondary command buffers
-        checkVKret(vkBeginCommandBuffer(primaryCommandBuffer, beginInfo));
+        ret = vkBeginCommandBuffer(primaryCommandBuffer, beginInfo);
+        if (VkFailed(ret)) { return ret; }
         
         //vkCmdBeginRenderPass(commandBuffer, renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
         vkCmdBeginRenderPass(primaryCommandBuffer, renderPassInfo, VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS);
@@ -395,13 +394,14 @@ public class CVKRenderer implements ComponentListener {
         inheritanceInfo.pipelineStatistics(0);
             
         // Loop through renderables and record their buffers
-        for (int r = 0; r < renderables.size(); ++r) {
-            if (renderables.get(r).GetVertexCount() > 0) {
-                renderables.get(r).RecordCommandBuffer(inheritanceInfo, imageIndex);
+        for (CVKRenderable el : renderables) {
+            if (el.GetVertexCount() > 0) {
+                ret = el.RecordCommandBuffer(inheritanceInfo, imageIndex);
+                if (VkFailed(ret)) { return ret; }
 
                 // TODO Hydra: may be more efficient to add all the visible command buffers to a master list then 
                 // call the following line once with the whole list
-                vkCmdExecuteCommands(primaryCommandBuffer, renderables.get(r).GetCommandBuffer(imageIndex));
+                vkCmdExecuteCommands(primaryCommandBuffer, el.GetCommandBuffer(imageIndex));
             }
         }
         
@@ -423,6 +423,7 @@ public class CVKRenderer implements ComponentListener {
      * @param pImageAcquiredSemaphore
      * @param pCommandBufferExecutedSemaphore
      * @param commandBuffer
+     * @param hRenderFence
      * @return
      */
     public int ExecuteCommandBuffer(MemoryStack stack, 
@@ -445,7 +446,10 @@ public class CVKRenderer implements ComponentListener {
         return vkQueueSubmit(cvkDevice.GetQueue(), 
                              submitInfo, 
                              hRenderFence);    
-    }
+    }    
+    
+    
+    // ========================> Display <======================== \\
     
     /**
      *
@@ -467,7 +471,6 @@ public class CVKRenderer implements ComponentListener {
         presentInfo.pImageIndices(stack.ints(imageIndex));        
         return vkQueuePresentKHR(cvkDevice.GetQueue(), presentInfo);
     }
-
 
     /**
      * No parrellisation of CPU/GPU, eg only one swap chain image and set of command buffers
@@ -559,7 +562,7 @@ public class CVKRenderer implements ComponentListener {
         // lead to resource contention and deadlock (seen during development when
         // user events were handled immediately rather than enqueueing them for
         // the render thread to handle).
-        parent.VerifyInRenderThread();
+        cvkCanvas.VerifyInRenderThread();
         
         // Adding renderables will change descriptor requirements, we need to update
         // these before the swapchain is initialised for the first time.
@@ -568,7 +571,10 @@ public class CVKRenderer implements ComponentListener {
 
         if (cvkSwapChain == null || swapChainNeedsRecreation) {
             ret = RecreateSwapChain();
-            checkVKret(ret); 
+            if (VkFailed(ret)) {
+                GetLogger().warning("recreate swapchain failed, skipping this display");
+                return;
+            }            
         }
         if (cvkDescriptorPool == null || descriptorPoolNeedsRecreation) {
             ret = RecreateDescriptorPool();
@@ -580,7 +586,7 @@ public class CVKRenderer implements ComponentListener {
             // (re)created then the renderable involved needs to set a flag so the next time
             // NeedsDisplayUpdate is called it returns true and is given a chance to update 
             // while no GPU actions are pending.
-            ret = parent.ProcessRenderTasks(cvkSwapChain);
+            ret = cvkVisualProcessor.ProcessRenderTasks(cvkSwapChain);
             checkVKret(ret);               
             
             // If any renderable holds a resource shared across frames then to
@@ -589,17 +595,17 @@ public class CVKRenderer implements ComponentListener {
             // Note the one liner was created by Netbeans, I am not convinced it's
             // very clear.
             boolean updateDisplays = false;
-            for (int i = 0; (i < renderables.size()) && (updateDisplays == false); ++ i) {
-                updateDisplays = renderables.get(i).NeedsDisplayUpdate();
+            for (CVKRenderable el : renderables) {
+                updateDisplays = el.NeedsDisplayUpdate();
+                if (updateDisplays) break;
             }
                     
             // Blocking updates
             if (updateDisplays) {
                 cvkDevice.WaitIdle();
-                for (int i = 0; i < renderables.size(); ++ i) {
-                    CVKRenderable r = renderables.get(i);
-                    if (r.NeedsDisplayUpdate()) {
-                        ret = r.DisplayUpdate();
+                for (CVKRenderable el : renderables) {
+                    if (el.NeedsDisplayUpdate()) {
+                        ret = el.DisplayUpdate();
                         checkVKret(ret); 
                     }
                 }
@@ -673,13 +679,12 @@ public class CVKRenderer implements ComponentListener {
         // We'll need another frame to recreate the swapchain.  swapChainNeedsRecreation
         // can be set if submitting an image to the render queue returned suboptimal or out of date.
         if (swapChainNeedsRecreation) {
-            parent.requestRedraw();
+            cvkVisualProcessor.requestRedraw();
         }             
         
         // The visual processor will not trigger any more updates until this is signalled
-        parent.signalProcessorIdle();
-    }
-
+        cvkVisualProcessor.signalProcessorIdle();
+    }    
     
     int[] getViewport() {
         final int[] viewport = new int[4];
@@ -688,12 +693,27 @@ public class CVKRenderer implements ComponentListener {
         viewport[2] = cvkSwapChain.GetWidth();
         viewport[3] = cvkSwapChain.GetHeight();
         return viewport;
-    }
+    }    
     
-    public VkInstance GetVkInstance() {
-        return cvkInstance.GetVkInstance();
+    private void Debug_UpdateRGB(){   
+        final float MAX = 0.7f;  // don't go to white, it's hard to see points
+        // When the current component reaches it's limit do something
+        if (clr.a[curClrEl] >= MAX || clr.a[curClrEl] < 0.0f) {
+            // Clamp it to 0-1
+            clr.a[curClrEl] = Math.max(0.0f, Math.min(MAX, clr.a[curClrEl]));
+            // If we have hit the ceiling or floor on all components, change direction
+            if (curClrEl == 2) {
+                clrChange = -clrChange;
+            }
+            // Start changing the next component
+            curClrEl = (curClrEl + 1) % 3;
+        }
+        // Walk the current component a little
+        clr.a[curClrEl] += clrChange;            
     }
-      
+     
+    
+    // ========================> Component listener <======================== \\
     
     @Override
     public void componentResized(ComponentEvent e) {
@@ -712,30 +732,14 @@ public class CVKRenderer implements ComponentListener {
     }
     @Override
     public void componentHidden(ComponentEvent e) {
-        parent.cvkLogger.info("Canvas sent ");
+        GetLogger().info("Canvas sent ");
     }
     @Override
     public void componentMoved(ComponentEvent e) {
-        parent.cvkLogger.info("Canvas moved");     
+        GetLogger().info("Canvas moved");     
     }
     @Override
     public void componentShown(ComponentEvent e) {
-        parent.cvkLogger.info("Canvas shown");
-    }    
-    
-    private void Debug_UpdateRGB(){   
-        // When the current component reaches it's limit do something
-        if (clr.a[curClrEl] >= 1.0f || clr.a[curClrEl] < 0.0f) {
-            // Clamp it to 0-1
-            clr.a[curClrEl] = Math.max(0.0f, Math.min(1.0f, clr.a[curClrEl]));
-            // If we have hit the ceiling or floor on all components, change direction
-            if (curClrEl == 2) {
-                clrChange = -clrChange;
-            }
-            // Start changing the next component
-            curClrEl = (curClrEl + 1) % 3;
-        }
-        // Walk the current component a little
-        clr.a[curClrEl] += clrChange;            
-    }
+        GetLogger().info("Canvas shown");
+    }           
 }

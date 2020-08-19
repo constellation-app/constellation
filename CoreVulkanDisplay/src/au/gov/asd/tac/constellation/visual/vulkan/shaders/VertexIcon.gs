@@ -78,31 +78,35 @@ void drawIcon(float x, float y, float radius, int icon, mat4 color) {
         vec3 iconOffset = vec3(float(icon & 7) / 8, float((icon >> 3) & 7) / 8, float(icon >> 6));
 
         // Bottom Left
-        gl_Position = ub.pMatrix * vec4(v.x + x, v.y + y + radius, v.z, v.w);        
-        iconColor = color;
-        hitBufferValue = hbv;
-        textureCoords = vec3(HALF_PIXEL, TEXTURE_SIZE - HALF_PIXEL, 0) + iconOffset;
-        EmitVertex();
-
-        // Top Left
-        gl_Position = ub.pMatrix * vec4(v.x + x, v.y + y, v.z, v.w);
+        gl_Position = ub.pMatrix * vec4(v.x + x, v.y + y + radius, v.z, v.w);  
+        gl_Position.y = -gl_Position.y;
         iconColor = color;
         hitBufferValue = hbv;
         textureCoords = vec3(HALF_PIXEL, HALF_PIXEL, 0) + iconOffset;
         EmitVertex();
 
-        // Bottom Right      
-        gl_Position = ub.pMatrix * vec4(v.x + x + radius, v.y + y + radius, v.z, v.w);  
+        // Top Left
+        gl_Position = ub.pMatrix * vec4(v.x + x, v.y + y, v.z, v.w);
+        gl_Position.y = -gl_Position.y;
         iconColor = color;
         hitBufferValue = hbv;
-        textureCoords = vec3(TEXTURE_SIZE - HALF_PIXEL, TEXTURE_SIZE - HALF_PIXEL, 0) + iconOffset;
+        textureCoords = vec3(HALF_PIXEL, TEXTURE_SIZE - HALF_PIXEL, 0) + iconOffset;        
+        EmitVertex();
+
+        // Bottom Right      
+        gl_Position = ub.pMatrix * vec4(v.x + x + radius, v.y + y + radius, v.z, v.w);
+        gl_Position.y = -gl_Position.y;
+        iconColor = color;
+        hitBufferValue = hbv;
+        textureCoords = vec3(TEXTURE_SIZE - HALF_PIXEL, HALF_PIXEL, 0) + iconOffset;        
         EmitVertex();
 
         // Top Right
-        gl_Position = ub.pMatrix * vec4(v.x + x + radius, v.y + y, v.z, v.w);        
+        gl_Position = ub.pMatrix * vec4(v.x + x + radius, v.y + y, v.z, v.w);  
+        gl_Position.y = -gl_Position.y;      
         iconColor = color;
         hitBufferValue = hbv;
-        textureCoords = vec3(TEXTURE_SIZE - HALF_PIXEL, HALF_PIXEL, 0) + iconOffset;
+        textureCoords = vec3(TEXTURE_SIZE - HALF_PIXEL, TEXTURE_SIZE - HALF_PIXEL, 0) + iconOffset;     
         EmitVertex();
 
         EndPrimitive();
