@@ -54,6 +54,7 @@ import javax.swing.event.MouseInputListener;
  *
  * @author sirius
  * @author antares
+ * @author sol695510
  */
 public class HistogramDisplay extends JPanel implements MouseInputListener, MouseWheelListener, KeyListener, PropertyChangeListener, ComponentListener {
 
@@ -510,10 +511,21 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
         return n;
     }
     
-    void copySelectedToClipboard(boolean includeCounts) {
+    /**
+     * Copy the values of the selected bars on the Histogram to the clipboard.
+     * <p>
+     * Iterates through the current collection of bins, bins representing the bars,
+     * and determines if they are selected by checking their selectedCount value,
+     * 1 if selected, 0 if not selected.
+     * 
+     * @param includeCounts True if the counts corresponding to the values
+     * are also to be copied to the clipboard.
+     */
+    private void copySelectedToClipboard(boolean includeCounts) {
         final StringBuilder buf = new StringBuilder();
 
         for (Bin bin : binCollection.getBins()) {
+            // Check if the bar(s) on the Histogram are selected.
             if (bin.selectedCount > 0) {
                 final String label = bin.getLabel() != null ? bin.getLabel() : HistogramDisplay.NO_VALUE;
                 if (includeCounts) {
