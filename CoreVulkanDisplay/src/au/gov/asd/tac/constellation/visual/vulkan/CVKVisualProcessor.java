@@ -29,15 +29,16 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualOperation;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor.VisualChangeProcessor;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKAxesRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKFPSRenderable;
+import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKHitTester;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKIconsRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKPointsRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableUpdateTask;
 import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKGraphLogger;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_DEBUGGING;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Rectangle;
@@ -52,7 +53,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Semaphore;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
-import org.lwjgl.vulkan.awt.VKData;
 
 
 public class CVKVisualProcessor extends VisualProcessor {
@@ -68,19 +68,25 @@ public class CVKVisualProcessor extends VisualProcessor {
     
     private final BlockingQueue<CVKRenderable.CVKRenderableUpdateTask> taskQueue = new LinkedBlockingQueue<>();
     private final CVKCanvas cvkCanvas;
-    private final CVKRenderer cvkRenderer;
     private final Frustum viewFrustum = new Frustum();
     private final Matrix44f projectionMatrix = new Matrix44f();       
-    private CVKIconTextureAtlas cvkIconTextureAtlas = null;
-    private CVKAxesRenderable cvkAxes = null;
-    private CVKFPSRenderable cvkFPS = null;
-    private CVKIconsRenderable cvkIcons = null;
-    private CVKPointsRenderable cvkPoints = null;
+    private final CVKIconTextureAtlas cvkIconTextureAtlas;
+    protected final CVKHitTester cvkHitTester;
+    private final CVKAxesRenderable cvkAxes;
+    private final CVKFPSRenderable cvkFPS ;
+    private final CVKIconsRenderable cvkIcons;
+    private final CVKPointsRenderable cvkPoints;
     private final Matrix44f modelViewMatrix = new Matrix44f();  
-    private Camera camera;
+    private Camera camera = null;
     private float pixelDensity = 0.0f;    
     private final Thread renderThread;
-    public final CVKGraphLogger cvkLogger;
+    protected final CVKGraphLogger cvkLogger;
+    
+    
+    // TODO: how should this work with continuous rendering?
+    // we need to somehow not cause the hit tester's NeedsDisplayUpdate to trigger
+    // a full redraw.
+    private boolean shouldRender = true; 
     
     
     public Matrix44f GetProjectionMatrix() { return projectionMatrix; }
@@ -89,6 +95,7 @@ public class CVKVisualProcessor extends VisualProcessor {
     public int GetFrameNumber() { return cvkCanvas != null ? cvkCanvas.GetFrameNumber() : -1; }
     public Thread GetRenderThread() { return renderThread; }
     public long GetRenderThreadID() { return renderThread != null ? renderThread.getId() : -1; }
+    public CVKGraphLogger GetLogger() { return cvkLogger; }
     
     
     public CVKVisualProcessor(final String graphId) throws Throwable {  
@@ -97,16 +104,38 @@ public class CVKVisualProcessor extends VisualProcessor {
         renderThread = Thread.currentThread();
         cvkLogger.info("Renderthread TID %d (java hash %d)", renderThread.getId(), renderThread.hashCode());
                 
-        // VkInstance is setup in the constructor
-        cvkRenderer = new CVKRenderer(this);
-
-        // LWJGL structure needed to create AWTVKCanvas.  AWTVKCanvas wraps vkInstance
-        // in a VKData object and makes it private.  The result is we need to create it
-        // here rather than have a CVKCanvas constructor that just takes the
-        // renderer and pulls the instance from there.
-        VKData vkData = new VKData();
-        vkData.instance = cvkRenderer.GetVkInstance();
-        cvkCanvas = new CVKCanvas(vkData, cvkRenderer);                   
+        cvkCanvas = new CVKCanvas(this);   
+        
+        int ret;
+        ret = CVKAxesRenderable.StaticInitialise();
+        if (VkFailed(ret)) { 
+            cvkLogger.severe("Failed to statically initialise CVKAxesRenderable");
+        }
+        ret = CVKFPSRenderable.StaticInitialise();      
+        if (VkFailed(ret)) { 
+            cvkLogger.severe("Failed to statically initialise CVKFPSRenderable");
+        }
+        ret = CVKIconsRenderable.StaticInitialise();      
+        if (VkFailed(ret)) { 
+            cvkLogger.severe("Failed to statically initialise CVKIconsRenderable");
+        }
+        ret = CVKPointsRenderable.StaticInitialise();
+        if (VkFailed(ret)) { 
+            cvkLogger.severe("Failed to statically initialise CVKPointsRenderable");
+        }
+        
+        cvkIconTextureAtlas = new CVKIconTextureAtlas(this);     
+        cvkCanvas.AddRenderable(cvkIconTextureAtlas);  
+        cvkHitTester = new CVKHitTester(this);     
+        cvkCanvas.AddRenderable(cvkHitTester);  
+        cvkAxes = new CVKAxesRenderable(this);
+        cvkCanvas.AddRenderable(cvkAxes);
+        cvkFPS = new CVKFPSRenderable(this);    
+        cvkCanvas.AddRenderable(cvkFPS);
+        cvkIcons = new CVKIconsRenderable(this);
+        cvkCanvas.AddRenderable(cvkIcons);
+        cvkPoints = new CVKPointsRenderable(this);   
+        cvkCanvas.AddRenderable(cvkPoints);        
     }
     
     
@@ -119,9 +148,11 @@ public class CVKVisualProcessor extends VisualProcessor {
     }
         
     public void VerifyInRenderThread() {
-        if (!IsRenderThreadCurrent()) {
-            throw new RuntimeException(String.format("Error: render operation performed from thread %d, render thread %d",
-                    Thread.currentThread().getId(), GetRenderThreadID()));
+        if (CVK_DEBUGGING) {
+            if (!IsRenderThreadCurrent()) {
+                throw new RuntimeException(String.format("Error: render operation performed from thread %d, render thread %d",
+                        Thread.currentThread().getId(), GetRenderThreadID()));
+            }
         }
     }      
     
@@ -216,17 +247,19 @@ public class CVKVisualProcessor extends VisualProcessor {
      * @return The viewport from the {@link GLRenderer}.
      */
     protected final int[] getViewport() {
-        return cvkRenderer.getViewport();
+        return cvkCanvas.GetRenderer().getViewport();
     }
 
     @Override
-    public final void performVisualUpdate() {
+    public final void performVisualUpdate() {        
         // performVisualUpdate maybe called before the JPanel is added to its
         // parent.  We can't get a renderable surface until the parent chain is
         // intact.
-        if (cvkCanvas.surface != 0) {
+        
+        //if (shouldRender) {
             cvkCanvas.repaint();
-        }
+            shouldRender = false;
+        //}
     }
 
     @Override
@@ -235,7 +268,9 @@ public class CVKVisualProcessor extends VisualProcessor {
 
     @Override
     protected void cleanup() {
-        cvkRenderer.Destroy();
+        // No need to destroy the canvas as there will be another call from the
+        // visual manager to explicity destroy it.
+        //cvkCanvas.Destroy();            
     }
 
     private final class GLExportToImageOperation implements VisualOperation {
@@ -258,7 +293,7 @@ public class CVKVisualProcessor extends VisualProcessor {
 //                try {
 //                    ImageIO.write(img, "png", file);
 //                } catch (IOException ex) {
-//                    Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+//                    GetLogger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
 //                }
 //            });
         }
@@ -340,21 +375,7 @@ public class CVKVisualProcessor extends VisualProcessor {
     @Override
     protected void rebuild() {
         super.rebuild();
-    }
-
-    
-    /**
-     * Add the specified {@link GLRenderable} to this processor's renderer. If
-     * this processor has already been initialised, the renderable is not added.
-     * <p>
-     * Typically this is used in the constructors of subclasses of this
-     * processor.
-     *
-     * @param renderable The {@link GLRenderable} to add.
-     */
-    protected final void addRenderable(final CVKRenderable renderable) {
-        cvkRenderer.AddRenderable(renderable);
-    }       
+    }    
 
     @Override
     protected Component getCanvas() {
@@ -500,6 +521,7 @@ public class CVKVisualProcessor extends VisualProcessor {
 
     @Override
     protected final VisualChangeProcessor getChangeProcessor(final VisualProperty property) {
+        shouldRender = true;
         if (DEBUGGING_POINTS) {
             switch (property) {
                 case VERTICES_REBUILD:
@@ -519,7 +541,7 @@ public class CVKVisualProcessor extends VisualProcessor {
                     camera = access.getCamera();
                     setDisplayCamera(camera);
                     Graphics3DUtilities.getModelViewMatrix(camera.lookAtEye, camera.lookAtCentre, camera.lookAtUp, getDisplayModelViewMatrix());
-                    
+
                     if (cvkAxes != null) {
                         addTask(cvkAxes.TaskUpdateCamera());
                     }
@@ -529,21 +551,23 @@ public class CVKVisualProcessor extends VisualProcessor {
                 };      
             case EXTERNAL_CHANGE:
             default:
+                shouldRender = false;
                 return (change, access) -> {
                 };                
             }
         }
 
-        
+
         switch (property) {
             case VERTICES_REBUILD:
                 return (change, access) -> {
                     // Recreate all the icons.  Note this is sometimes called before the CVKDevice
-                    // has been initialised (we don't create our renderables until then).
-                    
+                    // has been initialised.
+
                     if (cvkIcons != null) {
-                        addTask(cvkIcons.TaskRebuildIcons(access));
-                        addTask(cvkIcons.TaskRebuildVertexFlags(access));
+                        addTask(cvkIcons.TaskUpdateIcons(change, access));
+                        addTask(cvkIcons.TaskUpdatePositions(change, access));                         
+                        addTask(cvkIcons.TaskUpdateVertexFlags(change, access));
                     }
 //                    addTask(nodeLabelBatcher.setTopLabelColors(access));
 //                    addTask(nodeLabelBatcher.setTopLabelSizes(access));
@@ -628,7 +652,7 @@ public class CVKVisualProcessor extends VisualProcessor {
                     camera = access.getCamera();
                     setDisplayCamera(camera);
                     Graphics3DUtilities.getModelViewMatrix(camera.lookAtEye, camera.lookAtCentre, camera.lookAtUp, getDisplayModelViewMatrix());
-                    
+
                     if (cvkAxes != null) {
                         addTask(cvkAxes.TaskUpdateCamera());
                     }
@@ -681,89 +705,72 @@ public class CVKVisualProcessor extends VisualProcessor {
                 };
             case VERTEX_FOREGROUND_ICON:
                 return (change, access) -> {
-                    if (cvkIcons != null) {
-                        addTask(cvkIcons.TaskUpdateIcons(change, access));
-                    }
+                    // This is a task for the Icon Atlas
+		    // TODO: implement this once we have a working hit tester
+//                    if (cvkIcons != null) {
+//                        addTask(cvkIcons.TaskUpdateIcons(change, access));
+//                    }
                 };
 
             case VERTEX_SELECTED:
                 return (change, access) -> {
-                    if (cvkIcons != null) {
-                        addTask(cvkIcons.TaskUpdateVertexFlags(change, access));
-                    }
+                    try {
+                        if (cvkIcons != null) {
+//                            if (change.getSize() == access.getVertexCount()) {
+//                                addTask(cvkIcons.TaskRebuildVertexFlags(access));
+//                            } else {
+                                addTask(cvkIcons.TaskUpdateVertexFlags(change, access));
+//                            }
+                        }
+                    } catch (Exception e) {
+                        cvkLogger.LogException(e, "Exception thrown processing visual change %s:", property);
+                        throw e;
+                    }                       
                 };
             case VERTEX_X:
                 return (change, access) -> {
-                    if (cvkIcons != null) {
-                        addTask(cvkIcons.TaskUpdateIcons(change, access));
-                    }
+                    try {
+                        if (cvkIcons != null) {
+//                            addTask(cvkIcons.TaskUpdateIcons(change, access));
+                        }
+                    } catch (Exception e) {
+                        cvkLogger.LogException(e, "Exception thrown processing visual change %s:", property);
+                        throw e;
+                    }                            
                 };
             case EXTERNAL_CHANGE:
             default:
+                shouldRender = false;
                 return (change, access) -> {
                 };
-        }
+        }     
     }
-    
-    
-    public int DeviceInitialised(CVKDevice cvkDevice) {
-        int ret;
         
-        // Scene knows about all renderable types so build the static descriptor layout
-        // for each class.
-        CVKAssert(cvkDevice != null && cvkDevice.GetDevice() != null);              
-        
-        // Static as the shader and descriptor layout doesn't change per instance of renderable or over the course of the program
-        ret = CVKAxesRenderable.StaticInitialise();
-        if (VkFailed(ret)) { return ret; }
-        ret = CVKFPSRenderable.StaticInitialise();      
-        if (VkFailed(ret)) { return ret; }   
-        ret = CVKIconsRenderable.StaticInitialise();      
-        if (VkFailed(ret)) { return ret; }    
-        ret = CVKPointsRenderable.StaticInitialise();
-        if (VkFailed(ret)) { return ret; }        
-     
-        // Initialise the shared atlas texture.  It extends renderable so it gets the call
-        // for updating shared resouces.  We could have a seperate render event listener but
-        // that seems like overkill for a single class.  For as long as it's a renderable it
-        // should be before any of the renderables that use it so it gets updated before any 
-        // of the objects that depend on it.
-        cvkIconTextureAtlas = new CVKIconTextureAtlas(this);
-        cvkRenderer.AddRenderable(cvkIconTextureAtlas);      
-        
-        cvkAxes = new CVKAxesRenderable(this);
-        cvkRenderer.AddRenderable(cvkAxes);
-        cvkFPS = new CVKFPSRenderable(this);    
-        cvkRenderer.AddRenderable(cvkFPS);
-        cvkIcons = new CVKIconsRenderable(this);
-        cvkRenderer.AddRenderable(cvkIcons);
-
-
-        cvkPoints = new CVKPointsRenderable(this);
-        cvkRenderer.AddRenderable(cvkPoints);
-        
-        return ret;
-    }    
-    
-
-    public void SwapChainRecreated(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
-        
-        //  Windows-DPI-Scaling
-        //
-        // If JOGL is ever fixed or another solution is found, either change
-        // needsManualDPIScaling to return false (so there is effectively no
-        // DPI scaling here) or remove the scaled height and width below.         
-        float dpiScaleX = 1.0f;
-        float dpiScaleY = 1.0f;
-
-        
-        // These need to be final as they are used in the lambda function below
-        final int dpiScaledWidth = (int)(cvkSwapChain.GetWidth() * dpiScaleX);
-        final int dpiScaledHeight = (int)(cvkSwapChain.GetHeight() * dpiScaleY);
-        
+    public void SwapChainRecreated(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {     
         // Create the projection matrix, and load it on the projection matrix stack.
-        viewFrustum.setPerspective(FIELD_OF_VIEW, (float) dpiScaledWidth / (float) dpiScaledHeight, PERSPECTIVE_NEAR, PERSPECTIVE_FAR);        
-        projectionMatrix.set(viewFrustum.getProjectionMatrix());       
-        pixelDensity = (float) (dpiScaledHeight * 0.5 / Math.tan(Math.toRadians(FIELD_OF_VIEW)));
+        viewFrustum.setPerspective(FIELD_OF_VIEW, (float)cvkSwapChain.GetWidth() / (float)cvkSwapChain.GetHeight(), PERSPECTIVE_NEAR, PERSPECTIVE_FAR);           
+        pixelDensity = (float)(cvkSwapChain.GetHeight() * 0.5 / Math.tan(Math.toRadians(FIELD_OF_VIEW)));        
+        projectionMatrix.set(viewFrustum.getProjectionMatrix());
+        
+        // Compared to OpenGL Vulkan has a RHS with Y pointing down and it also 
+        // calculates the Z differently in clipspace.  The Y needs to be flipped
+        // screenspace in whatever shader applies the projection matrix.  The 
+        // clipspace Z calculation can either be applied in the shader at the same
+        // time by averaging gl_position z and w after the projection or it can
+        // be applied to the projection matrix.  The latter is cheaper as it we
+        // do it once for the per scene projection matrix rather than having to
+        // do it per vertex for every renderable.
+        //
+        // NOTE: this appears not to be needed.  Leaving this note here for now
+        // until there is time to analyse the required linear algebra with
+        // RenderDoc.
+        //
+        // Reference: https://matthewwellings.com/blog/the-new-vulkan-coordinate-system/
+//        Matrix44f pre = new Matrix44f();
+//        pre.makeIdentity();
+//        pre.set(1, 1, -1);
+//        pre.set(2, 2, 0.5f);
+//        pre.set(2, 3, 0.5f);        
+//        projectionMatrix.multiply(pre, viewFrustum.getProjectionMatrix());
     }    
 }

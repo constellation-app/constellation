@@ -22,7 +22,6 @@ import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkCommandBufferInheritanceInfo;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 
@@ -34,7 +33,7 @@ public abstract class CVKRenderable {
         CVK_RESOURCE_NEEDS_REBUILD               
     }
     
-    protected CVKVisualProcessor parent;
+    protected CVKVisualProcessor cvkVisualProcessor;
     protected CVKDevice cvkDevice = null;
     protected CVKDescriptorPool cvkDescriptorPool = null;
     protected CVKSwapChain cvkSwapChain = null;
@@ -53,9 +52,9 @@ public abstract class CVKRenderable {
      */
     public abstract int Initialise(CVKDevice cvkDevice);
     
-    /*
-        Cleanup
-    */
+    /**
+     * Cleanup, terminal, called when a graph is closing
+     */
     public abstract void Destroy();
     
     /*
@@ -101,7 +100,6 @@ public abstract class CVKRenderable {
      * @return error code
     */
     public int SetNewDescriptorPool(CVKDescriptorPool newDescriptorPool) {
-        CVKAssert(newDescriptorPool != null);  
         int ret = VK_SUCCESS;
         
         // If this isn't the initial update, release swapchain resources
@@ -128,16 +126,16 @@ public abstract class CVKRenderable {
      * @return error code
     */    
     public int SetNewSwapChain(CVKSwapChain newSwapChain) {
-        CVKAssert(newSwapChain != null);   
         int ret = VK_SUCCESS;
         
+        swapChainImageCountChanged = cvkSwapChain == null || 
+                                     newSwapChain == null ||
+                                     newSwapChain.GetImageCount() != cvkSwapChain.GetImageCount();
+        
         // If this isn't the initial update, release swapchain resources
-        if (cvkSwapChain != null) {
-            swapChainImageCountChanged = newSwapChain.GetImageCount() != cvkSwapChain.GetImageCount();
+        if (cvkSwapChain != null) {            
             ret = DestroySwapChainResources();
             if (VkFailed(ret)) { return ret; }
-        } else {
-            swapChainImageCountChanged = true;
         }
                      
         cvkSwapChain = newSwapChain;

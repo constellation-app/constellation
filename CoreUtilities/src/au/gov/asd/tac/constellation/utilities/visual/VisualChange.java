@@ -130,7 +130,7 @@ public final class VisualChange implements Comparable<VisualChange> {
      * @return either an int[2] of min/max, or null if this change is empty
      */
     public int[] getRange() {
-        if (changeListSize > 0) {
+        if (changeList != null && changeListSize > 0) {
             int minMax[] = new int[2];
             minMax[0] = minMax[1] = changeList[0];
             for (int i = 1; i < changeListSize; ++i) {
@@ -146,4 +146,18 @@ public final class VisualChange implements Comparable<VisualChange> {
             return null;
         }        
     }
+    
+    /**
+     * It's unclear from the class javadoc what a null changeList means.  Does
+     * it mean for a given VisualAccess we should vertices 0 to changeListSize
+     * have changed, but vertices after changeListSize have not?
+     * 
+     * For safety calling code can use this function, then ignore the change
+     * and process all of the vertices in the VisualAccess.
+     * 
+     * @return
+     */
+    public boolean isEmpty() {
+        return changeList == null;
+    }    
 }

@@ -98,6 +98,7 @@ public class CVKImage {
     private int imageType           = 0;
     private int viewType            = 0;
     private int layout              = 0;    
+    private String DEBUGNAME        = "";
     
     private CVKImage() {}
     
@@ -111,9 +112,11 @@ public class CVKImage {
         if (CVK_DEBUGGING && pImage.get(0) != VK_NULL_HANDLE) {
             if (pImageMemory != null && pImageMemory.get(0) != VK_NULL_HANDLE) {
                 --CVK_VKALLOCATIONS;
-                cvkDevice.Logger().fine(String.format("CVK_VKALLOCATIONS (%d-) Destroy called on CVKImage (0x%016X), vkFreeMemory will be called", CVK_VKALLOCATIONS, pImage.get(0)));
+                cvkDevice.GetLogger().info("CVK_VKALLOCATIONS (%d-) Destroy called on CVKimage %s (image:0x%016X memory:0x%016X), vkFreeMemory will be called", 
+                        CVK_VKALLOCATIONS, DEBUGNAME, pImage.get(0), pImageMemory.get(0));                      
             } else {
-                cvkDevice.Logger().fine(String.format("CVK_VKALLOCATIONS (%d!) Destroy called on CVKImage (0x%016X), vkFreeMemory will NOT be called", CVK_VKALLOCATIONS, pImage.get(0)));
+                cvkDevice.GetLogger().info("CVK_VKALLOCATIONS (%d!) Destroy called on CVKimage %s (image:0x%016X memory:0x%016X), vkFreeMemory will NOT be called", 
+                        CVK_VKALLOCATIONS, DEBUGNAME, pImage.get(0), pImageMemory.get(0));  
             }            
         }                
         if (pImage.get(0) != VK_NULL_HANDLE) {
@@ -145,8 +148,7 @@ public class CVKImage {
     public int Transition(int newLayout) {
         int ret;
         
-        CVKCommandBuffer cvkTransitionCmd = CVKCommandBuffer.Create(cvkDevice, VK_COMMAND_BUFFER_LEVEL_PRIMARY);
-        cvkTransitionCmd.DEBUGNAME = "CVKImage.Transition cvkTransitionCmd";
+        CVKCommandBuffer cvkTransitionCmd = CVKCommandBuffer.Create(cvkDevice, VK_COMMAND_BUFFER_LEVEL_PRIMARY, "CVKImage.Transition cvkTransitionCmd");
         ret = cvkTransitionCmd.Begin(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
         if (VkFailed(ret)) { return ret; }
         ret = Transition(cvkTransitionCmd, newLayout);
@@ -332,8 +334,7 @@ public class CVKImage {
         }
         
         // Command to copy pixels and potentially transition if necessary
-        CVKCommandBuffer cvkCopyCmd = CVKCommandBuffer.Create(cvkDevice, VK_COMMAND_BUFFER_LEVEL_PRIMARY);
-        cvkCopyCmd.DEBUGNAME = "CVKImage.CopyFrom cvkCopyCmd";
+        CVKCommandBuffer cvkCopyCmd = CVKCommandBuffer.Create(cvkDevice, VK_COMMAND_BUFFER_LEVEL_PRIMARY, "CVKImage.CopyFrom cvkCopyCmd");
         ret = cvkCopyCmd.Begin(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
         if (VkFailed(ret)) { return ret; }
          
@@ -392,7 +393,8 @@ public class CVKImage {
                                     int tiling,
                                     int usage, 
                                     int properties,
-                                    int aspectMask) {
+                                    int aspectMask,
+                                    String debugName) {
         assert(cvkDevice != null);
         assert(cvkDevice.GetDevice() != null);
         assert(layers >= 1);
@@ -411,6 +413,7 @@ public class CVKImage {
         cvkImage.imageType  = height > 1 ? VK_IMAGE_TYPE_2D : VK_IMAGE_TYPE_1D;
         cvkImage.viewType   = viewType;
         cvkImage.layout     = VK_IMAGE_LAYOUT_UNDEFINED;
+        cvkImage.DEBUGNAME  = debugName;
          
         try(MemoryStack stack = stackPush()) {
             // Create the image, this is an opaque type we can't read or write
@@ -447,10 +450,9 @@ public class CVKImage {
             }
             if (CVK_DEBUGGING) {
                 ++CVK_VKALLOCATIONS;
-                cvkDevice.Logger().fine(String.format("CVK_VKALLOCATIONS(%d+) vkAllocateMemory(%d) for CVKimage (0x%016X)", 
-                        CVK_VKALLOCATIONS, vkMemoryRequirements.size(), cvkImage.pImage.get(0)));
-            }
-//            LogStackTrace();            
+                cvkDevice.GetLogger().info("CVK_VKALLOCATIONS(%d+) vkAllocateMemory(%d) for CVKimage %s (image:0x%016X memory:0x%016X)", 
+                        CVK_VKALLOCATIONS, vkMemoryRequirements.size(), cvkImage.DEBUGNAME, cvkImage.pImage.get(0), cvkImage.pImageMemory.get(0));
+            }        
 
             vkBindImageMemory(cvkDevice.GetDevice(), cvkImage.pImage.get(0), cvkImage.pImageMemory.get(0), 0);
             
@@ -472,12 +474,7 @@ public class CVKImage {
             return cvkImage;
         } catch (Exception e) {
             //TODO_TT: move this to class destructor
-            if (cvkImage.pImage.get(0) != VK_NULL_HANDLE) {
-                vkDestroyImage(cvkDevice.GetDevice(), cvkImage.GetImageHandle(), null);
-            }
-            if (cvkImage.pImageMemory.get(0) != VK_NULL_HANDLE) {
-                vkFreeMemory(cvkDevice.GetDevice(), cvkImage.GetMemoryImageHandle(), null);
-            }       
+            cvkImage.Destroy();
         }
         
         return null;

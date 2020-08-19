@@ -28,6 +28,7 @@ import java.awt.image.BufferedImage;
 import static java.awt.image.BufferedImage.TYPE_4BYTE_ABGR;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKImage;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssertNotNull;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
 import java.awt.image.DataBufferByte;
 import java.nio.ByteBuffer;
@@ -128,7 +129,7 @@ public class CVKIconTextureAtlas extends CVKRenderable {
     // ========================> Lifetime <======================== \\    
     
     public CVKIconTextureAtlas(CVKVisualProcessor parent) {
-        this.parent = parent;
+        this.cvkVisualProcessor = parent;
         
         // These icons are guaranteed to be in the iconMap in this order.
         // They must be at these pre-defined indices so other code (in particular the shaders) can use them.
@@ -237,6 +238,10 @@ public class CVKIconTextureAtlas extends CVKRenderable {
     public long GetAtlasSamplerHandle() { return hAtlasSampler; }
   
     public int AddIcon(final String label) {
+        CVKAssertNotNull(label);
+        if (label.isEmpty()) {
+            return TRANSPARENT_ICON_INDEX;
+        }
         final Integer iconIndex = loadedIcons.get(label);
         if (iconIndex == null) {
             final int index = loadedIcons.size();
@@ -346,7 +351,8 @@ public class CVKIconTextureAtlas extends CVKRenderable {
                                             VK_IMAGE_TILING_OPTIMAL, //we usually sample rectangles rather than long straight lines
                                             VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
                                             VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-                                            VK_IMAGE_ASPECT_COLOR_BIT);                         
+                                            VK_IMAGE_ASPECT_COLOR_BIT,
+                                            "CVKIconTextureAtlas cvkAtlasImage");                         
             
             // Transition image from undefined to transfer destination optimal
             ret = cvkAtlasImage.Transition(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
@@ -356,8 +362,8 @@ public class CVKIconTextureAtlas extends CVKRenderable {
             CVKBuffer cvkStagingBuffer = CVKBuffer.Create(cvkDevice, 
                                                           ICON_SIZE_BYTES, 
                                                           VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-                                                          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);  
-            cvkStagingBuffer.DEBUGNAME = "CVKIconTextureAtlas cvkStagingBuffer";            
+                                                          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                                                          "CVKIconTextureAtlas cvkStagingBuffer");           
             
             // Loop that copies icons from the icon manager into the atlas texture(s)
             int numIcons = icons.size();
@@ -380,7 +386,8 @@ public class CVKIconTextureAtlas extends CVKRenderable {
                 ByteBuffer pixels = ByteBuffer.wrap(((DataBufferByte) iconImage.getRaster().getDataBuffer()).getData());
                 if (CVK_DEBUGGING) {
                     if (IsEmpty(pixels) && el.index != TRANSPARENT_ICON_INDEX) {
-                        cvkDevice.Logger().warning(String.format("Icon %d is empty", el.index));
+                        final String iconName = icons.get(el.index).icon.getExtendedName();
+                        cvkVisualProcessor.GetLogger().warning(String.format("Icon %d (%s) is empty", el.index, iconName));
                     }
                 }
                 

@@ -39,6 +39,7 @@ import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKCommandBuffer;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKGraphLogger.CVKLOGGER;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssertNotNull;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_SHADER_COMPILATION;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_SHADER_MODULE;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.LoadFileToDirectBuffer;
@@ -402,7 +403,7 @@ public class CVKFPSRenderable extends CVKRenderable {
     // ========================> Lifetime <======================== \\
     
     public CVKFPSRenderable(CVKVisualProcessor visualProcessor) {
-        parent = visualProcessor;
+        cvkVisualProcessor = visualProcessor;
         
         currentFPS = new ArrayList<>();
         currentFPS.add(7);
@@ -417,26 +418,26 @@ public class CVKFPSRenderable extends CVKRenderable {
         try{           
             hVertexShaderModule = CVKShaderUtils.CreateShaderModule(vsBytes, cvkDevice.GetDevice());
             if (hVertexShaderModule == VK_NULL_HANDLE) {
-                cvkDevice.Logger().log(Level.SEVERE, "Failed to create shader module for: SimpleIcon.vs");
+                cvkVisualProcessor.GetLogger().log(Level.SEVERE, "Failed to create shader module for: SimpleIcon.vs");
                 return CVK_ERROR_SHADER_MODULE;
             }
             hGeometryShaderModule = CVKShaderUtils.CreateShaderModule(gsBytes, cvkDevice.GetDevice());
             if (hGeometryShaderModule == VK_NULL_HANDLE) {
-                cvkDevice.Logger().log(Level.SEVERE, "Failed to create shader module for: SimpleIcon.gs");
+                cvkVisualProcessor.GetLogger().log(Level.SEVERE, "Failed to create shader module for: SimpleIcon.gs");
                 return CVK_ERROR_SHADER_MODULE;
             }
             hFragmentShaderModule = CVKShaderUtils.CreateShaderModule(fsBytes, cvkDevice.GetDevice());
             if (hFragmentShaderModule == VK_NULL_HANDLE) {
-                cvkDevice.Logger().log(Level.SEVERE, "Failed to create shader module for: SimpleIcon.fs");
+                cvkVisualProcessor.GetLogger().log(Level.SEVERE, "Failed to create shader module for: SimpleIcon.fs");
                 return CVK_ERROR_SHADER_MODULE;
             }
         } catch(Exception ex){
-            cvkDevice.Logger().log(Level.SEVERE, "Failed to create shader module FPSRenderable: %s", ex.toString());
+            cvkVisualProcessor.GetLogger().log(Level.SEVERE, "Failed to create shader module FPSRenderable: %s", ex.toString());
             ret = CVK_ERROR_SHADER_MODULE;
             return ret;
         }
         
-        cvkDevice.Logger().info("Shader modules created for CVKFPSRenderable class:\n\tVertex:   0x%016x\n\tGeometry: 0x%016x\n\tFragment: 0x%016x",
+        cvkVisualProcessor.GetLogger().info("Shader modules created for CVKFPSRenderable class:\n\tVertex:   0x%016x\n\tGeometry: 0x%016x\n\tFragment: 0x%016x",
                 hVertexShaderModule, hGeometryShaderModule, hFragmentShaderModule);
         return ret;
     }
@@ -477,7 +478,7 @@ public class CVKFPSRenderable extends CVKRenderable {
          
         for (int digit = 0; digit < 10; ++digit) {
             // Returns the index of the icon, not a success code
-            parent.GetTextureAtlas().AddIcon(Integer.toString(digit));
+            cvkVisualProcessor.GetTextureAtlas().AddIcon(Integer.toString(digit));
         }
         
         // Initialise push constants buffers
@@ -488,8 +489,8 @@ public class CVKFPSRenderable extends CVKRenderable {
         cvkStagingBuffer = CVKBuffer.Create(cvkDevice, 
                                             size,
                                             VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-                                            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-        cvkStagingBuffer.DEBUGNAME = "CVKFPSRenderable cvkStagingBuffer";           
+                                            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                                            "CVKFPSRenderable cvkStagingBuffer");
          
         return ret;
     }
@@ -580,7 +581,7 @@ public class CVKFPSRenderable extends CVKRenderable {
     protected int DestroySwapChainResources(){
         CVKAssert(cvkSwapChain != null);
         
-        parent.VerifyInRenderThread();
+        cvkVisualProcessor.VerifyInRenderThread();
         
         int ret = VK_SUCCESS;
         
@@ -628,8 +629,8 @@ public class CVKFPSRenderable extends CVKRenderable {
             CVKBuffer cvkVertexBuffer = CVKBuffer.Create(cvkDevice, 
                                                          size,
                                                          VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-                                                         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-            cvkVertexBuffer.DEBUGNAME = String.format("CVKFPSRenderable cvkVertexBuffer %d", i);
+                                                         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+                                                         String.format("CVKFPSRenderable cvkVertexBuffer %d", i));
             vertexBuffers.add(cvkVertexBuffer);        
         }
         
@@ -651,7 +652,7 @@ public class CVKFPSRenderable extends CVKRenderable {
                 
                 final int foregroundIconIndex;
                 if (digit >= 0 && digit < 10) {
-                    foregroundIconIndex = parent.GetTextureAtlas().AddIcon(Integer.toString(digit));
+                    foregroundIconIndex = cvkVisualProcessor.GetTextureAtlas().AddIcon(Integer.toString(digit));
                 } else {
                     foregroundIconIndex = digit;
                 }
@@ -713,8 +714,8 @@ public class CVKFPSRenderable extends CVKRenderable {
             CVKBuffer geomUniformBuffer = CVKBuffer.Create(cvkDevice, 
                                                           GeometryUniformBufferObject.SIZEOF,
                                                           VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-                                                          VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-            geomUniformBuffer.DEBUGNAME = String.format("CVKFPSRenderable geomUniformBuffer %d", i);                                    
+                                                          VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+                                                          String.format("CVKFPSRenderable geomUniformBuffer %d", i));
             geometryUniformBuffers.add(geomUniformBuffer);            
         }
         return UpdateUniformBuffers(stack);                
@@ -748,7 +749,7 @@ public class CVKFPSRenderable extends CVKRenderable {
 
         
         // set the number of pixels per world unit at distance 1
-        geometryUBO.pixelDensity = parent.GetPixelDensity();
+        geometryUBO.pixelDensity = cvkVisualProcessor.GetPixelDensity();
         geometryUBO.pScale = pyScale;
              
         
@@ -768,15 +769,15 @@ public class CVKFPSRenderable extends CVKRenderable {
                       
                 
         // In the JOGL version these were in a static var CAMERA that never changed
-        vertexUBO.visibilityLow = parent.getDisplayCamera().getVisibilityLow();
-        vertexUBO.visibilityHigh = parent.getDisplayCamera().getVisibilityHigh();
+        vertexUBO.visibilityLow = cvkVisualProcessor.getDisplayCamera().getVisibilityLow();
+        vertexUBO.visibilityHigh = cvkVisualProcessor.getDisplayCamera().getVisibilityHigh();
         
         // Update the push constants data
         vertexUBO.CopyTo(vertexPushConstants);
         vertexPushConstants.flip();
 
-        // Get the projection matrix from our parent
-        geometryUBO.pMatrix.set(parent.GetProjectionMatrix());
+        // Get the projection matrix from our cvkVisualProcessor
+        geometryUBO.pMatrix.set(cvkVisualProcessor.GetProjectionMatrix());
         
 
         // Fill of the geometry uniform buffer
@@ -785,8 +786,8 @@ public class CVKFPSRenderable extends CVKRenderable {
         CVKBuffer cvkGeomUBStagingBuffer = CVKBuffer.Create(cvkDevice, 
                                                             size,
                                                             VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-                                                            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-        cvkGeomUBStagingBuffer.DEBUGNAME = "CVKFPSRenderable.UpdateUniformBuffers cvkGeomUBStagingBuffer";  
+                                                            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                                                            "CVKFPSRenderable.UpdateUniformBuffers cvkGeomUBStagingBuffer");  
         ret = vkMapMemory(cvkDevice.GetDevice(), cvkGeomUBStagingBuffer.GetMemoryBufferHandle(), 0, size, 0, pData);
         if (VkFailed(ret)) { return ret; }
         {
@@ -824,8 +825,9 @@ public class CVKFPSRenderable extends CVKRenderable {
         commandBuffers = new ArrayList<>(imageCount);
 
         for (int i = 0; i < imageCount; ++i) {
-            CVKCommandBuffer buffer = CVKCommandBuffer.Create(cvkDevice, VK_COMMAND_BUFFER_LEVEL_SECONDARY);
-            buffer.DEBUGNAME = String.format("CVKFPSRenderable %d", i);
+            CVKCommandBuffer buffer = CVKCommandBuffer.Create(cvkDevice, 
+                    VK_COMMAND_BUFFER_LEVEL_SECONDARY, 
+                    String.format("CVKFPSRenderable %d", i));
             commandBuffers.add(buffer);
         }
         
@@ -839,7 +841,7 @@ public class CVKFPSRenderable extends CVKRenderable {
     
     @Override
     public int RecordCommandBuffer(VkCommandBufferInheritanceInfo inheritanceInfo, int imageIndex){
-        parent.VerifyInRenderThread();
+        cvkVisualProcessor.VerifyInRenderThread();
         CVKAssert(cvkDevice.GetDevice() != null);
         CVKAssert(cvkDevice.GetCommandPoolHandle() != VK_NULL_HANDLE);
         CVKAssert(cvkSwapChain != null);
@@ -1010,8 +1012,8 @@ public class CVKFPSRenderable extends CVKRenderable {
         // Struct for the size of the image sampler used by SimpleIcon.fs
         VkDescriptorImageInfo.Buffer imageInfo = VkDescriptorImageInfo.callocStack(1, stack);
         imageInfo.imageLayout(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-        imageInfo.imageView(parent.GetTextureAtlas().GetAtlasImageViewHandle());
-        imageInfo.sampler(parent.GetTextureAtlas().GetAtlasSamplerHandle());            
+        imageInfo.imageView(cvkVisualProcessor.GetTextureAtlas().GetAtlasImageViewHandle());
+        imageInfo.sampler(cvkVisualProcessor.GetTextureAtlas().GetAtlasSamplerHandle());            
 
         // We need 2 write descriptors, 1 for the geometry stage uniform buffer and one for fragment stage texture
         VkWriteDescriptorSet.Buffer descriptorWrites = VkWriteDescriptorSet.callocStack(2, stack);
@@ -1045,8 +1047,8 @@ public class CVKFPSRenderable extends CVKRenderable {
         }
         
         // Cache atlas handles so we know when to recreate descriptors
-        hAtlasSampler = parent.GetTextureAtlas().GetAtlasSamplerHandle();
-        hAtlasImageView = parent.GetTextureAtlas().GetAtlasImageViewHandle();            
+        hAtlasSampler = cvkVisualProcessor.GetTextureAtlas().GetAtlasSamplerHandle();
+        hAtlasImageView = cvkVisualProcessor.GetTextureAtlas().GetAtlasImageViewHandle();            
         
         return ret;
     }
@@ -1066,7 +1068,9 @@ public class CVKFPSRenderable extends CVKRenderable {
         int ret = VK_SUCCESS;
         
         if (pDescriptorSets != null) {
-            cvkDevice.Logger().fine("CVKFPSRenderable returning %d descriptor sets to the pool", pDescriptorSets.capacity());
+            CVKAssertNotNull(cvkDescriptorPool);
+            CVKAssertNotNull(cvkDescriptorPool.GetDescriptorPoolHandle());             
+            cvkVisualProcessor.GetLogger().fine("CVKFPSRenderable returning %d descriptor sets to the pool", pDescriptorSets.capacity());
             
             // After calling vkFreeDescriptorSets, all descriptor sets in pDescriptorSets are invalid.
             ret = vkFreeDescriptorSets(cvkDevice.GetDevice(), cvkDescriptorPool.GetDescriptorPoolHandle(), pDescriptorSets);
@@ -1324,7 +1328,7 @@ public class CVKFPSRenderable extends CVKRenderable {
             }
         }
         
-        cvkDevice.Logger().info("Graphics Pipeline created for FPSRenderable class.");
+        cvkVisualProcessor.GetLogger().info("Graphics Pipeline created for CVKFPSRenderable class.");
         return ret;
     }        
    
@@ -1344,7 +1348,7 @@ public class CVKFPSRenderable extends CVKRenderable {
     
     @Override
     public boolean NeedsDisplayUpdate() { 
-        parent.VerifyInRenderThread();               
+        cvkVisualProcessor.VerifyInRenderThread();               
         
         return true;
     }
@@ -1352,12 +1356,12 @@ public class CVKFPSRenderable extends CVKRenderable {
     @Override
     public int DisplayUpdate() { 
         int ret = VK_SUCCESS;
-        parent.VerifyInRenderThread();
+        cvkVisualProcessor.VerifyInRenderThread();
         
         DebugUpdateFPS();
         
-        boolean atlasChanged =  hAtlasSampler != parent.GetTextureAtlas().GetAtlasSamplerHandle() ||
-                                hAtlasImageView != parent.GetTextureAtlas().GetAtlasImageViewHandle();   
+        boolean atlasChanged =  hAtlasSampler != cvkVisualProcessor.GetTextureAtlas().GetAtlasSamplerHandle() ||
+                                hAtlasImageView != cvkVisualProcessor.GetTextureAtlas().GetAtlasImageViewHandle();   
         
         if (swapChainResourcesDirty) {
             ret = CreateSwapChainResources();
@@ -1431,8 +1435,8 @@ public class CVKFPSRenderable extends CVKRenderable {
 
         currentFPS.set(0, GetRandom(0,9));
         currentFPS.set(1, GetRandom(0,9));
-        currentFPS.set(2, GetRandom(10, parent.GetTextureAtlas().GetAtlasIconCount()));
-        currentFPS.set(3, GetRandom(10, parent.GetTextureAtlas().GetAtlasIconCount()));       
+        currentFPS.set(2, GetRandom(10, cvkVisualProcessor.GetTextureAtlas().GetAtlasIconCount()));
+        currentFPS.set(3, GetRandom(10, cvkVisualProcessor.GetTextureAtlas().GetAtlasIconCount()));       
 
     }
     

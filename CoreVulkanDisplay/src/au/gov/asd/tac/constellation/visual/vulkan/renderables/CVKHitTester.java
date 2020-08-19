@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.graph.interaction.visual.renderables;
+package au.gov.asd.tac.constellation.visual.vulkan.renderables;
 
-import au.gov.asd.tac.constellation.graph.interaction.framework.HitState;
-import au.gov.asd.tac.constellation.graph.interaction.framework.HitState.HitType;
+import au.gov.asd.tac.constellation.graph.hittest.HitState;
+import au.gov.asd.tac.constellation.graph.hittest.HitState.HitType;
+import au.gov.asd.tac.constellation.graph.hittest.HitTestRequest;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDescriptorPool.CVKDescriptorPoolRequirements;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
-import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.BlockingDeque;
@@ -48,7 +48,7 @@ public class CVKHitTester extends CVKRenderable {
     // ========================> Lifetime <======================== \\
     
     public CVKHitTester(CVKVisualProcessor parent) {
-        this.parent = parent;
+        this.cvkVisualProcessor = parent;
     }
     
     @Override

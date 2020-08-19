@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.graph.interaction.visual.renderables;
+package au.gov.asd.tac.constellation.graph.hittest;
 
-import au.gov.asd.tac.constellation.graph.interaction.framework.HitState;
 import java.util.Queue;
 import java.util.function.Consumer;
 

@@ -21,8 +21,8 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
-import au.gov.asd.tac.constellation.graph.interaction.framework.HitState;
-import au.gov.asd.tac.constellation.graph.interaction.framework.HitState.HitType;
+import au.gov.asd.tac.constellation.graph.hittest.HitState;
+import au.gov.asd.tac.constellation.graph.hittest.HitState.HitType;
 import au.gov.asd.tac.constellation.graph.interaction.framework.InteractionEventHandler;
 import au.gov.asd.tac.constellation.graph.interaction.framework.VisualAnnotator;
 import au.gov.asd.tac.constellation.graph.interaction.framework.VisualInteraction;
@@ -416,7 +416,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                             if (zAxisRotation) {
                                 CameraUtilities.spin(camera, visualInteraction.convertTranslationToSpin(from, to));
                             } else {
-                                Vector2i yawPitch = visualInteraction.adjustPitchYawCoords(from.x - to.x, from.y - to.y);
+                                Vector2i yawPitch = new Vector2i(from.x - to.x, from.y - to.y);
                                 CameraUtilities.rotate(camera, event.isShiftDown() ? 0 : yawPitch.getY() / 2.0f, event.isControlDown() ? 0 : yawPitch.getX() / 2.0f);
                             }
                             cameraChange = true;
@@ -1153,6 +1153,6 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
         // HACK_DPI - Get the DPI scale factor and multiply the point by it
         final float dpiScalingFactor = this.visualInteraction.getDPIScalingFactor();
         pointToScale.x *= dpiScalingFactor;
-        pointToScale.y *= dpiScalingFactor;
+        pointToScale.y *= dpiScalingFactor;               
     }
 }

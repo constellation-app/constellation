@@ -72,7 +72,7 @@ public final class VisualManager {
     private boolean indigenousChanges = false;
     private boolean refreshProcessor = false;
     private boolean shouldRedraw = false;
-    private static boolean continuousRedrawing = true; //TODO: change this after testing
+    private static boolean continuousRedrawing = false; //TODO: change this after testing
     
     public static void ToggleContinuousRedraw() { continuousRedrawing = !continuousRedrawing; }
 
@@ -111,6 +111,7 @@ public final class VisualManager {
         processor.destroyCanvas();
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void finalize() throws Throwable {
         try {

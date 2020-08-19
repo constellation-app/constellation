@@ -15,6 +15,14 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>au.gov.asd.tac.constellation.graph</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>1.0.6</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>au.gov.asd.tac.constellation.utilities</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -28,6 +36,7 @@
                 <package>au.gov.asd.tac.constellation.visual.vulkan.maths</package>
                 <package>au.gov.asd.tac.constellation.visual.vulkan.renderables</package>
                 <package>au.gov.asd.tac.constellation.visual.vulkan.resourcetypes</package>
+                <package>au.gov.asd.tac.constellation.visual.vulkan.utils</package>
             </public-packages>
         </data>
     </configuration>

@@ -16,12 +16,12 @@
 package au.gov.asd.tac.constellation.graph.interaction.visual;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.graph.interaction.framework.HitState;
-import au.gov.asd.tac.constellation.graph.interaction.framework.HitState.HitType;
+import au.gov.asd.tac.constellation.graph.hittest.HitState;
+import au.gov.asd.tac.constellation.graph.hittest.HitState.HitType;
 import au.gov.asd.tac.constellation.graph.interaction.framework.InteractionEventHandler;
 import au.gov.asd.tac.constellation.graph.interaction.framework.VisualAnnotator;
 import au.gov.asd.tac.constellation.graph.interaction.framework.VisualInteraction;
-import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.HitTestRequest;
+import au.gov.asd.tac.constellation.graph.hittest.HitTestRequest;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.NewLineModel;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionBoxModel;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionBoxRenderable;
@@ -35,10 +35,11 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualChangeBuilder;
 import au.gov.asd.tac.constellation.utilities.visual.VisualOperation;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
-import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.CVKHitTester;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector2i;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssertNotNull;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.dnd.DropTarget;
@@ -68,8 +69,7 @@ public class InteractiveVKVisualProcessor extends CVKVisualProcessor implements 
     private final long newLineUpdateId = VisualChangeBuilder.generateNewId();
     private final long greyscaleUpdateId = VisualChangeBuilder.generateNewId();
     private final long hitTestId = VisualChangeBuilder.generateNewId();
-    private final long hitTestPointId = VisualChangeBuilder.generateNewId();
-    private final CVKHitTester hitTester;
+    private final long hitTestPointId = VisualChangeBuilder.generateNewId();      
     private final SelectionBoxRenderable selectionBoxRenderable = new SelectionBoxRenderable();
 //    private final NewLineRenderable newLineRenderable = new NewLineRenderable(this);
 //    private final PlanesRenderable planesRenderable = new PlanesRenderable();
@@ -79,24 +79,9 @@ public class InteractiveVKVisualProcessor extends CVKVisualProcessor implements 
     private DropTargetListener targetListener;
     private DropTarget target;
 
-    private static final Logger LOGGER = Logger.getLogger(InteractiveGLVisualProcessor.class.getName());
 
-    /**
-     * Create a new InteractiveGLVisualProcessor.
-     *
-     * @param debugGl Whether or not to utilise a GLContext that includes
-     * debugging.
-     * @param printGlCapabilities Whether or not to print out a list of GL
-     * capabilities upon initialisation.
-     */
     public InteractiveVKVisualProcessor(final String graphId) throws Throwable {
         super(graphId);
-//        setGraphDisplayer(graphDisplayer);
-//        addRenderable(newLineRenderable);
-//        addRenderable(selectionBoxRenderable);
-//        addRenderable(planesRenderable);
-        hitTester = new CVKHitTester(this);
-        addRenderable(hitTester);
     }
 
     /**
@@ -169,20 +154,23 @@ public class InteractiveVKVisualProcessor extends CVKVisualProcessor implements 
 
     @Override
     public VisualOperation hitTestCursor(final int x, final int y, final HitState hitState, final Queue<HitState> notificationQueue) {
-        hitTester.queueRequest(new HitTestRequest(x, y, hitState, notificationQueue, resultState -> {
-            if (resultState.getCurrentHitType().equals(HitType.NO_ELEMENT)) {
-                getCanvas().setCursor(DEFAULT_CURSOR);
-            } else {
-                getCanvas().setCursor(CROSSHAIR_CURSOR);
-            }
-        }));
+        if (cvkHitTester != null) {
+            cvkHitTester.queueRequest(new HitTestRequest(x, y, hitState, notificationQueue, resultState -> {
+                if (resultState.getCurrentHitType().equals(HitType.NO_ELEMENT)) {
+                    getCanvas().setCursor(DEFAULT_CURSOR);
+                } else {
+                    getCanvas().setCursor(CROSSHAIR_CURSOR);
+                }
+            }));
+        }
         return () -> Arrays.asList(new VisualChangeBuilder(VisualProperty.EXTERNAL_CHANGE)
                 .withId(hitTestId).build());
     }
 
     @Override
     public VisualOperation hitTestPoint(int x, int y, Queue<HitState> notificationQueue) {
-        hitTester.queueRequest(new HitTestRequest(x, y, new HitState(), notificationQueue, null));
+        CVKAssertNotNull(cvkHitTester);
+        cvkHitTester.queueRequest(new HitTestRequest(x, y, new HitState(), notificationQueue, null));
         return () -> Arrays.asList(new VisualChangeBuilder(VisualProperty.EXTERNAL_CHANGE)
                 .withId(hitTestPointId).build());
 
@@ -211,20 +199,20 @@ public class InteractiveVKVisualProcessor extends CVKVisualProcessor implements 
 
     @Override
     public Vector3f convertZoomPointToDirection(final Point zoomPoint) {
+
         return new Vector3f(
                 (float) (getCanvas().getWidth() / 2.0 - zoomPoint.x),
-                (float) (getCanvas().getHeight() / 2.0 - zoomPoint.y),
+
+                (float) (zoomPoint.y - getCanvas().getHeight() / 2.0),
                 (float) (getCanvas().getHeight() / (2 * Math.tan(Camera.FIELD_OF_VIEW * Math.PI / 180 / 2))));
+
     }
 
     @Override
     public Vector3f convertTranslationToDrag(final Camera camera, final Vector3f nodeLocation, final Point from, final Point to) {
-        final Point vkFrom = LHSToRHS(from);
-        final Point vkTo = LHSToRHS(to);
-        
         // Calculate the vector representing the drag (in window coordinates)
-        final int dx = vkTo.x - vkFrom.x;
-        final int dy = vkTo.y - vkFrom.y;
+        final int dx = to.x - from.x;
+        final int dy = to.y - from.y;
         final Vector3f movement = new Vector3f(dx, dy, 0);
 
         // Calculate and return the vector representing the drag in graph coordinates.
@@ -235,23 +223,17 @@ public class InteractiveVKVisualProcessor extends CVKVisualProcessor implements 
 
     @Override
     public float convertTranslationToSpin(final Point from, final Point to) {
-        final Point vkFrom = LHSToRHS(from);
-        final Point vkTo = LHSToRHS(to);
-        
-        final float xDist = (getCanvas().getWidth() / 2.0f - vkTo.x) / (getCanvas().getWidth() / 2.0f);
-        final float yDist = (getCanvas().getHeight() / 2.0f - vkTo.y) / (getCanvas().getHeight() / 2.0f);
-        final float xDelta = (vkFrom.x - vkTo.x) / 2.0f;
-        final float yDelta = (vkFrom.y - vkTo.y) / 2.0f;
+        final float xDist = (getCanvas().getWidth() / 2.0f - to.x) / (getCanvas().getWidth() / 2.0f);
+        final float yDist = (getCanvas().getHeight() / 2.0f - to.y) / (getCanvas().getHeight() / 2.0f);
+        final float xDelta = (from.x - to.x) / 2.0f;
+        final float yDelta = (from.y - to.y) / 2.0f;
         return yDist * xDelta - xDist * yDelta;
     }
 
     @Override
     public Vector3f convertTranslationToPan(final Point from, final Point to, final Vector3f panReferencePoint) {
-        final Point vkFrom = LHSToRHS(from);
-        final Point vkTo = LHSToRHS(to);
-        
-        final float dx = (vkTo.x - vkFrom.x);
-        final float dy = (vkTo.y - vkFrom.y);
+        final float dx = (to.x - from.x);
+        final float dy = (to.y - from.y);
 
         // Get the current screen height
         final float screenHeight = getCanvas().getHeight();
@@ -343,17 +325,8 @@ public class InteractiveVKVisualProcessor extends CVKVisualProcessor implements 
         try {
             return (float) ((Graphics2D) getCanvas().getGraphics()).getTransform().getScaleX();
         } catch (Exception ex) {
-            LOGGER.log(Level.WARNING, "Null exception accessing interactionGraph", ex);
+            cvkLogger.log(Level.WARNING, "Null exception accessing interactionGraph", ex);
             return 1.0f;
         }
     }
-    
-    private Point LHSToRHS(final Point point) {
-        return new Point(point.x, -point.y);
-    }
-    
-    @Override
-    public Vector2i adjustPitchYawCoords(int pitch, int yaw) {
-        return new Vector2i(pitch, -yaw);
-    } 
 }

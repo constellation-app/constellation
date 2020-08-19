@@ -152,10 +152,10 @@ public class CVKSwapChain {
     
     
     public int Initialise() {
-        int ret;
-        cvkDevice.Logger().StartLogSection("Init SwapChain");
+        int ret;        
+        
         try (MemoryStack stack = stackPush()) {                                
-            
+            cvkDevice.GetLogger().StartLogSection("Init SwapChain");
             ret = InitVKSwapChain(stack);
             if (VkFailed(ret)) return ret;
             ret = InitVKRenderPass(stack);
@@ -164,14 +164,15 @@ public class CVKSwapChain {
             if (VkFailed(ret)) return ret; 
             ret = InitVKCommandBuffers(stack);
             if (VkFailed(ret)) return ret;
+        } finally {
+            cvkDevice.GetLogger().EndLogSection("Init SwapChain");   
         }
-        cvkDevice.Logger().EndLogSection("Init SwapChain");   
         return ret;
     }
 
     
     public void Destroy() {
-        cvkDevice.Logger().StartLogSection("Destroy SwapChain");        
+        cvkDevice.GetLogger().StartLogSection("Destroy SwapChain");        
         
         DestroyVKCommandBuffers();       
         DestroyVKFrameBuffer();      
@@ -189,7 +190,7 @@ public class CVKSwapChain {
         CVKAssert(renderFenceHandles.isEmpty());
         CVKAssert(commandBuffers.isEmpty());
       
-        cvkDevice.Logger().EndLogSection("Destroy SwapChain");   
+        cvkDevice.GetLogger().EndLogSection("Destroy SwapChain");   
     }
     
     /**
@@ -230,7 +231,7 @@ public class CVKSwapChain {
             pImageCount.put(0, vkSurfaceCapablities.maxImageCount());
         }
         imageCount = pImageCount.get(0);
-        cvkDevice.Logger().log(Level.INFO, "Swapchain will have %d images", imageCount);
+        cvkDevice.GetLogger().log(Level.INFO, "Swapchain will have %d images", imageCount);
         if (imageCount == 0) {
             throw new RuntimeException("Swapchain cannot have 0 images");
         }        
@@ -347,7 +348,7 @@ public class CVKSwapChain {
             }
         }
         if (depthFormat == VK_FORMAT_UNDEFINED) {
-            cvkDevice.Logger().severe("Failed to find supported detpth format");
+            cvkDevice.GetLogger().severe("Failed to find supported detpth format");
             throw new RuntimeException("Failed to find supported detpth format");
         }
         
@@ -368,7 +369,8 @@ public class CVKSwapChain {
                                         VK_IMAGE_TILING_OPTIMAL, 
                                         VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, 
                                         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-                                        VK_IMAGE_ASPECT_DEPTH_BIT);
+                                        VK_IMAGE_ASPECT_DEPTH_BIT,
+                                        "CVKSwapChain cvkDepthImage");
         cvkDepthImage.Transition(VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
         
 //        // Transition the depth image to the optimal depth state
@@ -611,14 +613,14 @@ public class CVKSwapChain {
             }
             vkFreeCommandBuffers(cvkDevice.GetDevice(), cvkDevice.GetCommandPoolHandle(), pCommandBuffers);
             commandBuffers.clear();
-            cvkDevice.Logger().info("Destroyed command buffers for all images");
+            cvkDevice.GetLogger().info("Destroyed command buffers for all images");
         }        
     }  
     
     private void DestroyVKFrameBuffer() {
         for (int i = 0; i < imageCount; ++i) {
             vkDestroyFramebuffer(cvkDevice.GetDevice(), framebufferHandles.get(i), null);
-            cvkDevice.Logger().info("Destroyed frame buffer for image %d", i);
+            cvkDevice.GetLogger().info("Destroyed frame buffer for image %d", i);
         }
         framebufferHandles.clear();
     }  
@@ -626,7 +628,7 @@ public class CVKSwapChain {
     private void DestroyVKRenderPass() {
         vkDestroyRenderPass(cvkDevice.GetDevice(), hRenderPassHandle, null);
         hRenderPassHandle = VK_NULL_HANDLE;
-        cvkDevice.Logger().info("Destroyed render pass");
+        cvkDevice.GetLogger().info("Destroyed render pass");
     }   
     
     private void DestroyVKSwapChain() {
@@ -644,7 +646,7 @@ public class CVKSwapChain {
                 vkDestroyFence(cvkDevice.GetDevice(), renderFenceHandles.get(i), null);
                 renderFenceHandles.set(i, VK_NULL_HANDLE);
             }
-            cvkDevice.Logger().info("Destroyed synchronisation objects for image %d", i);
+            cvkDevice.GetLogger().info("Destroyed synchronisation objects for image %d", i);
         }
         imageAcquisitionHandles.clear();
         commandExecutionHandles.clear();
@@ -654,7 +656,7 @@ public class CVKSwapChain {
         for (int i = 0; i < imageCount; ++i) {
             vkDestroyImageView(cvkDevice.GetDevice(), imageViewHandles.get(i), null);
             imageViewHandles.set(i, VK_NULL_HANDLE);
-            cvkDevice.Logger().info("Destroyed image view for image %d", i);
+            cvkDevice.GetLogger().info("Destroyed image view for image %d", i);
         }
         imageViewHandles.clear();
 
@@ -668,7 +670,7 @@ public class CVKSwapChain {
         // Finally, destroy the swapchain
         vkDestroySwapchainKHR(cvkDevice.GetDevice(), hSwapChainHandle, null);
         hSwapChainHandle = VK_NULL_HANDLE;
-        cvkDevice.Logger().info("Destroyed swapchain");
+        cvkDevice.GetLogger().info("Destroyed swapchain");
     }
     
     
