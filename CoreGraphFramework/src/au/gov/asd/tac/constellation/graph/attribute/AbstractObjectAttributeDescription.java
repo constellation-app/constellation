@@ -16,9 +16,12 @@
 package au.gov.asd.tac.constellation.graph.attribute;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
 import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
-import au.gov.asd.tac.constellation.graph.value.types.objectType.ObjectValue;
+import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
+import au.gov.asd.tac.constellation.graph.value.readables.ObjectReadable;
+import au.gov.asd.tac.constellation.graph.value.variables.ObjectVariable;
 import java.lang.reflect.InvocationTargetException;
 import java.security.SecureRandom;
 import java.util.Arrays;
@@ -30,7 +33,7 @@ import java.util.Arrays;
  * @param <T> the type of object stored by this description.
  * @author cygnus_x-1
  */
-public abstract class AbstractObjectAttributeDescription<T extends Object> extends AbstractAttributeDescription<ObjectValue<T>> {
+public abstract class AbstractObjectAttributeDescription<T extends Object> extends AbstractAttributeDescription {
 
     protected final SecureRandom random = new SecureRandom();
     protected final int nullHash = random.nextInt();
@@ -187,17 +190,21 @@ public abstract class AbstractObjectAttributeDescription<T extends Object> exten
     }
     
     @Override
-    public ObjectValue<T> createValue() {
-        return new ObjectValue<>();
+    public Object createReadObject(IntReadable indexReadable) {
+        return (ObjectReadable) () -> data[indexReadable.readInt()];
     }
     
     @Override
-    public void read(int id, ObjectValue<T> value) {
-        value.writeObject((T)data[id]);
-    }
-    
-    @Override
-    public void write(int id, ObjectValue<T> value) {
-        data[id] = value.readObject();
+    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+        return new ObjectVariable() {
+            @Override
+            public Object readObject() {
+                return data[indexReadable.readInt()];
+            }
+            @Override
+            public void writeObject(Object value) {
+                graph.setObjectValue(attribute, indexReadable.readInt(), value);
+            }
+        };
     }
 }

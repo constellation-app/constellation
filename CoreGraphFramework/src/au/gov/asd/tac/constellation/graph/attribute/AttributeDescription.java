@@ -19,12 +19,12 @@ import au.gov.asd.tac.constellation.graph.GraphIndex;
 import au.gov.asd.tac.constellation.graph.GraphIndexResult;
 import au.gov.asd.tac.constellation.graph.GraphIndexType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType.NativeValue;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
 import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
-import au.gov.asd.tac.constellation.graph.value.IndexedReadable;
-import au.gov.asd.tac.constellation.graph.value.IndexedWritable;
+import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
 
 /**
  * An AttributeDescription defines an attribute type that can hold a new type of
@@ -51,7 +51,7 @@ import au.gov.asd.tac.constellation.graph.value.IndexedWritable;
  *
  * @author sirius
  */
-public interface AttributeDescription<V> extends IndexedReadable<V>, IndexedWritable<V> {
+public interface AttributeDescription {
 
     /**
      * Sets the graph that this attribute belongs to. The framework calls this
@@ -501,6 +501,10 @@ public interface AttributeDescription<V> extends IndexedReadable<V>, IndexedWrit
      */
     public void setObject(final int id, final Object value);
 
+    public Object createReadObject(IntReadable indexReadable);
+    
+    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable);
+    
     /**
      * Convert an attribute value from its object representation to its native
      * representation. The native representation is that which the attribute

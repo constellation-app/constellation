@@ -17,17 +17,15 @@ package au.gov.asd.tac.constellation.views.layers.utilities;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.value.IndexedReadable;
-import au.gov.asd.tac.constellation.graph.value.Readable;
-import au.gov.asd.tac.constellation.graph.value.converter.ConverterRegistry;
-import au.gov.asd.tac.constellation.graph.value.expression.ExpressionFilter;
+import au.gov.asd.tac.constellation.graph.value.Operators;
+import au.gov.asd.tac.constellation.graph.value.Updatable;
+import au.gov.asd.tac.constellation.graph.value.expression.ExpressionCompiler;
 import au.gov.asd.tac.constellation.graph.value.expression.ExpressionParser;
 import au.gov.asd.tac.constellation.graph.value.expression.ExpressionParser.SequenceExpression;
-import au.gov.asd.tac.constellation.graph.value.expression.IndexedReadableProvider;
-import au.gov.asd.tac.constellation.graph.value.readables.Assign;
-import au.gov.asd.tac.constellation.graph.value.types.integerType.IntValue;
+import au.gov.asd.tac.constellation.graph.value.expression.VariableProvider;
+import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
+import au.gov.asd.tac.constellation.graph.value.values.IntValue;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -61,72 +59,37 @@ public class SelectExpressionPlugin extends SimpleEditPlugin {
     @Override
     protected void edit(GraphWriteMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
         
-        final IndexedReadableProvider indexedReadableProvider = new GraphIndexedReadableProvider(graph, elementType);
-        
-        final int resultAttribute = graph.getAttribute(elementType, attributeName);
-        if (resultAttribute == Graph.NOT_FOUND) {
-            throw new IllegalArgumentException("Unknown " + elementType.getShortLabel() + " attribute: " + attributeName);
-        }
+        final VariableProvider variableProvider = new GraphVariableProvider(graph, elementType);
         
         final IntValue indexValue = new IntValue();
-        final Readable<Object> expressionReadable = (Readable<Object>)ExpressionFilter.createExpressionReadable(expression, indexedReadableProvider, indexValue, ConverterRegistry.getDefault());
         
-        final var expressionResult = expressionReadable.createValue();
-        
-        final var resultValue = graph.createAttributeValue(resultAttribute);
-        
-        final Assign assign = ConverterRegistry.getDefault().convert(resultValue, expressionResult, Assign.class);
-        if (assign == null) {
-            throw new IllegalArgumentException("Selection attribute cannot be assigned from expression result");
-        }
+        final var compiledExpression = (Updatable)ExpressionCompiler.compileSequenceExpression(expression, variableProvider, indexValue, Operators.getDefault());
         
         final int elementCount = elementType.getElementCount(graph);
         for (int position = 0; position < elementCount; position++) {
             final int id = elementType.getElement(graph, position);
             indexValue.writeInt(id);
-            expressionReadable.read(expressionResult);
-            assign.assign();
-            graph.writeAttributeValue(resultAttribute, id, resultValue);
+            compiledExpression.update();
         }
     }
     
-    private static final class GraphIndexedReadableProvider implements IndexedReadableProvider {
+    private static final class GraphVariableProvider implements VariableProvider {
 
-        final GraphReadMethods graphReadMethods;
+        final GraphWriteMethods graphWriteMethods;
         final GraphElementType elementType;
 
-        public GraphIndexedReadableProvider(GraphReadMethods graphReadMethods, GraphElementType elementType) {
-            this.graphReadMethods = graphReadMethods;
+        public GraphVariableProvider(GraphWriteMethods graphWriteMethods, GraphElementType elementType) {
+            this.graphWriteMethods = graphWriteMethods;
             this.elementType = elementType;
         }
-        
-        @Override
-        public IndexedReadable<?> getIndexedReadable(String name) {
-            return new GraphIndexedReadable(graphReadMethods, elementType, name);
-        }
-    }
-    
-    private static final class GraphIndexedReadable<V> implements IndexedReadable<V> {
 
-        private final GraphReadMethods graphReadMethods;
-        private final int attribute;
-        
-        public GraphIndexedReadable(GraphReadMethods graphReadMethods, GraphElementType elementType, String attributeName) {
-            this.graphReadMethods = graphReadMethods;
-            this.attribute = graphReadMethods.getAttribute(elementType, attributeName);
+        @Override
+        public Object getVariable(String name, IntReadable indexReadable) {
+            final int attribute = graphWriteMethods.getAttribute(elementType, name);
             if (attribute == Graph.NOT_FOUND) {
-                throw new IllegalArgumentException("Unknown " + elementType + " attribute: " + attributeName);
+                return null;
             }
-        }
-        
-        @Override
-        public V createValue() {
-            return graphReadMethods.createAttributeValue(attribute);
-        }
-
-        @Override
-        public void read(int id, V value) {
-            graphReadMethods.readAttributeValue(attribute, id, value);
+            return graphWriteMethods.createWriteAttributeObject(attribute, indexReadable);
         }
     }
     

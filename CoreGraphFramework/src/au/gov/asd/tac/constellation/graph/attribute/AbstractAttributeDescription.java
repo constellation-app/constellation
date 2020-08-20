@@ -28,7 +28,7 @@ import java.io.Serializable;
  *
  * @author algol
  */
-public abstract class AbstractAttributeDescription<T> implements AttributeDescription<T>, Serializable {
+public abstract class AbstractAttributeDescription implements AttributeDescription, Serializable {
 
     public static final int DEFAULT_VERSION = 0;
     protected GraphReadMethods graph = null;

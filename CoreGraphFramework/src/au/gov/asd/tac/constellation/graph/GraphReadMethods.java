@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.graph;
 
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
+import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
 import java.util.stream.IntStream;
 
 /**
@@ -1417,10 +1418,8 @@ public interface GraphReadMethods extends GraphConstants {
      * @return the attribute UID.
      */
     long getAttributeUID(final int attribute);
-
-    <V> V createAttributeValue(final int attribute);
     
-    <V> void readAttributeValue(final int attribute, final int id, final V value);
+    Object createReadAttributeObject(final int attribute, IntReadable indexReadable);
     
     /**
      * Returns true if the value of this attribute for the specified element is

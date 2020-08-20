@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.graph;
 
 import au.gov.asd.tac.constellation.graph.operations.GraphOperation;
+import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
 
 /**
  * GraphWriteMethods extends GraphReadMethods and adds methods that allow
@@ -304,7 +305,7 @@ public interface GraphWriteMethods extends GraphReadMethods {
      */
     void updateAttributeDefaultValue(final int attribute, final Object newObject);
 
-    <V> void writeAttributeValue(final int attribute, final int id, final V value);
+    Object createWriteAttributeObject(final int attribute, IntReadable indexReadable);
     
     /**
      * Sets the value of the specified attribute for the specified element to

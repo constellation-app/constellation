@@ -16,10 +16,12 @@
 package au.gov.asd.tac.constellation.graph.attribute.compatibility;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.graph.attribute.AbstractAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
-import au.gov.asd.tac.constellation.graph.value.types.integerType.IntValue;
+import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
+import au.gov.asd.tac.constellation.graph.value.variables.IntVariable;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.logging.Level;
@@ -50,7 +52,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @Deprecated
 @ServiceProvider(service = AttributeDescription.class)
-public final class TimeAttributeDescriptionV0 extends AbstractAttributeDescription<IntValue> {
+public final class TimeAttributeDescriptionV0 extends AbstractAttributeDescription {
 
     private static final Logger LOGGER = Logger.getLogger(TimeAttributeDescriptionV0.class.getName());
     /**
@@ -350,17 +352,21 @@ public final class TimeAttributeDescriptionV0 extends AbstractAttributeDescripti
     }
     
     @Override
-    public IntValue createValue() {
-        return new IntValue();
+    public Object createReadObject(IntReadable indexReadable) {
+        return (IntReadable) () -> data[indexReadable.readInt()];
     }
     
     @Override
-    public void read(int index, IntValue value) {
-        value.writeInt(data[index]);
-    }
-    
-    @Override
-    public void write(int index, IntValue value) {
-        data[index] = value.readInt();
+    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+        return new IntVariable() {
+            @Override
+            public int readInt() {
+                return data[indexReadable.readInt()];
+            }
+            @Override
+            public void writeInt(int value) {
+                graph.setIntValue(attribute, indexReadable.readInt(), value);
+            }
+        };
     }
 }

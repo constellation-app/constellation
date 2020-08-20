@@ -16,10 +16,13 @@
 package au.gov.asd.tac.constellation.graph.attribute;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
 import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
-import au.gov.asd.tac.constellation.graph.value.types.floatType.FloatValue;
+import au.gov.asd.tac.constellation.graph.value.readables.FloatReadable;
+import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
+import au.gov.asd.tac.constellation.graph.value.variables.FloatVariable;
 import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
@@ -42,7 +45,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author cygnus_x-1
  */
 @ServiceProvider(service = AttributeDescription.class)
-public final class FloatAttributeDescription extends AbstractAttributeDescription<FloatValue> {
+public final class FloatAttributeDescription extends AbstractAttributeDescription {
 
     public static final String ATTRIBUTE_NAME = "float";
     public static final Class<Float> NATIVE_CLASS = float.class;
@@ -283,17 +286,21 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
     }
     
     @Override
-    public FloatValue createValue() {
-        return new FloatValue();
+    public Object createReadObject(IntReadable indexReadable) {
+        return (FloatReadable) () -> data[indexReadable.readInt()];
     }
     
     @Override
-    public void read(int index, FloatValue value) {
-        value.writeFloat(data[index]);
-    }
-    
-    @Override
-    public void write(int index, FloatValue value) {
-        data[index] = value.readFloat();
+    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+        return new FloatVariable() {
+            @Override
+            public float readFloat() {
+                return data[indexReadable.readInt()];
+            }
+            @Override
+            public void writeFloat(float value) {
+                graph.setFloatValue(attribute, indexReadable.readInt(), value);
+            }
+        };
     }
 }

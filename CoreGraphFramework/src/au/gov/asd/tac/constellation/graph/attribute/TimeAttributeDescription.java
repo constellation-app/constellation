@@ -16,8 +16,10 @@
 package au.gov.asd.tac.constellation.graph.attribute;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType;
-import au.gov.asd.tac.constellation.graph.value.types.integerType.IntValue;
+import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
+import au.gov.asd.tac.constellation.graph.value.variables.IntVariable;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalConstants;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
 import java.time.LocalTime;
@@ -40,7 +42,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author sirius
  */
 @ServiceProvider(service = AttributeDescription.class)
-public final class TimeAttributeDescription extends AbstractAttributeDescription<IntValue> {
+public final class TimeAttributeDescription extends AbstractAttributeDescription {
 
     public static final String ATTRIBUTE_NAME = "time";
     public static final int ATTRIBUTE_VERSION = 1;
@@ -250,17 +252,21 @@ public final class TimeAttributeDescription extends AbstractAttributeDescription
     }
     
     @Override
-    public IntValue createValue() {
-        return new IntValue();
+    public Object createReadObject(IntReadable indexReadable) {
+        return (IntReadable) () -> data[indexReadable.readInt()];
     }
     
     @Override
-    public void read(int index, IntValue value) {
-        value.writeInt(data[index]);
-    }
-    
-    @Override
-    public void write(int index, IntValue value) {
-        data[index] = value.readInt();
+    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+        return new IntVariable() {
+            @Override
+            public int readInt() {
+                return data[indexReadable.readInt()];
+            }
+            @Override
+            public void writeInt(int value) {
+                graph.setIntValue(attribute, indexReadable.readInt(), value);
+            }
+        };
     }
 }

@@ -39,8 +39,10 @@ public class ExpressionParser {
     }
     
     public static enum Operator {
-        AND('&', 11),
-        OR('|', 12),
+        AND_AND(NO_TOKEN, 11),
+        AND('&', 11, null, AND_AND),
+        OR_OR(NO_TOKEN, 12),
+        OR('|', 12, null, OR_OR),
         EXCLUSIVE_OR('^', 3),
         NOT('!', 2),
         ADD('+', 4),
@@ -56,7 +58,8 @@ public class ExpressionParser {
         CONTAINS(NO_TOKEN, 4),
         STARTS_WITH(NO_TOKEN, 4),
         ENDS_WITH(NO_TOKEN, 4),
-        EQUALS('=', 7, GREATER_THAN, GREATER_THAN_OR_EQUALS, LESS_THAN, LESS_THAN_OR_EQUALS, NOT, NOT_EQUALS);
+        EQUALS(NO_TOKEN, 7),
+        ASSIGN('=', 14, null, EQUALS, GREATER_THAN, GREATER_THAN_OR_EQUALS, LESS_THAN, LESS_THAN_OR_EQUALS, NOT, NOT_EQUALS);
         
         private final char token;
         private final int precedence;
@@ -345,7 +348,7 @@ public class ExpressionParser {
                         currentExpression.addChild(new VariableExpression(currentExpression, content, contentLength));
                         contentLength = 0;
                         state = ParseState.READING_WHITESPACE;
-                    } else if (isLetter(c)) {
+                    } else if (isLetter(c) || isDigit(c)) {
                         content[contentLength++] = c;
                     } else if (c == '(') {
                         currentExpression.addChild(new VariableExpression(currentExpression, content, contentLength));
@@ -432,10 +435,15 @@ public class ExpressionParser {
             throw new IllegalArgumentException("An expression cannot end with an operator");
         }
         
+        rootExpression.normalize();
         return rootExpression;
     }
     
     private static boolean isLetter(char c) {
         return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+    }
+    
+    private static boolean isDigit(char c) {
+        return c >= '0' && c <= '9';
     }
 }
