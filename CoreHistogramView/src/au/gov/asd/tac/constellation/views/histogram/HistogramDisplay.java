@@ -114,13 +114,13 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
         initializeSettings();
         initializeListeners();
         
-        JMenuItem copyValuesMenuItem = new JMenuItem("Copy Selected Property Values");
+        final JMenuItem copyValuesMenuItem = new JMenuItem("Copy Selected Property Values");
         copyValuesMenuItem.addActionListener(e -> {         
             copySelectedToClipboard(false);
         });
         copyMenu.add(copyValuesMenuItem);
         
-        JMenuItem copyValuesAndCountsMenuItem = new JMenuItem("Copy Selected Property Values & Counts");
+        final JMenuItem copyValuesAndCountsMenuItem = new JMenuItem("Copy Selected Property Values & Counts");
         copyValuesAndCountsMenuItem.addActionListener(e -> {
             copySelectedToClipboard(true);
         });
@@ -570,7 +570,7 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
             final Point pointOnHistogram = e.getPoint();
             final int bar = getBarAtPoint(pointOnHistogram, false);
             
-            int newDragEnd = bar;
+            final int newDragEnd = bar;
             binSelectionMode.mouseDragged(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd, newDragEnd);
             dragEnd = newDragEnd;
             repaint();
