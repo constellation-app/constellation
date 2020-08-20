@@ -92,9 +92,9 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
     private int preferredHeight;
     private int iconPadding;
     private int barHeight;   // the vertical thickness of the bars
-    private int barsWidth; //the length of the longest bar
-    private int textWidth; //the width of the space allocated to text
-    private float scaleFactor; //the scale factor from histogram count to bar length in pixels
+    private int barsWidth; // the length of the longest bar
+    private int textWidth; // the width of the space allocated to text
+    private float scaleFactor; // the scale factor from histogram count to bar length in pixels
     private int preferredTextWidth = 80; // this will be modified when the component is painted and the actual size of the text is measured.
     private final Dimension preferredSize = new Dimension(MINIMUM_TEXT_WIDTH + PREFERRED_BAR_LENGTH + TEXT_TO_BAR_GAP + 2, PREFERRED_HEIGHT);
     private BinCollection binCollection = null;
@@ -129,10 +129,8 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
 
     public final void initializeSettings() {
         setBackground(BACKGROUND_COLOR);
-        // Set the Histogram View able to be focused.
-        this.setFocusable(true);
-        // Focus the Histogram View so 'key' actions can be registered.
-        this.requestFocus();
+        this.setFocusable(true); // Set the Histogram View able to be focused.
+        this.requestFocus(); // Focus the Histogram View so 'key' actions can be registered.
     }
 
     public final void initializeListeners() {
@@ -250,7 +248,7 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
             textWidth = MINIMUM_TEXT_WIDTH;
             barsWidth = Math.max(1, parentWidth - LEFT_MARGIN - padding - MINIMUM_TEXT_WIDTH - TEXT_TO_BAR_GAP - RIGHT_MARGIN);
 
-        } else { //bars are at desired length. Expand text space unless it is already sufficient
+        } else { // Bars are at desired length. Expand text space unless it is already sufficient
 
             if (parentWidth < LEFT_MARGIN + padding + preferredTextWidth + TEXT_TO_BAR_GAP + PREFERRED_BAR_LENGTH + RIGHT_MARGIN) {
                 barsWidth = PREFERRED_BAR_LENGTH;
@@ -402,7 +400,7 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
                     for (int bar = firstBar; bar <= lastBar; bar++) {
                         Bin bin = bins[bar];
 
-                        final int y = TOP_MARGIN + ((bar + 1) * barOffset) + (barHeight / 2) + correction; //(bar+1) to account for header
+                        final int y = TOP_MARGIN + ((bar + 1) * barOffset) + (barHeight / 2) + correction; // (bar+1) to account for header
 
                         // Category label text.
                         String category = bin.getLabel();
@@ -523,7 +521,6 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
      */
     private void copySelectedToClipboard(boolean includeCounts) {
         final StringBuilder buf = new StringBuilder();
-
         for (Bin bin : binCollection.getBins()) {
             // Check if the bar(s) on the Histogram are selected.
             if (bin.selectedCount > 0) {
@@ -543,66 +540,56 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
     
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (binCollection != null) {
-            if (e.getButton() == MouseEvent.BUTTON3) {
-                copyMenu.show(this, e.getX(), e.getY());
-            }
+        if (binCollection != null &&
+            e.getButton() == MouseEvent.BUTTON3) {
+            copyMenu.show(this, e.getX(), e.getY());
         }
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if (binCollection != null) {
-            if (e.getButton() == MouseEvent.BUTTON1) {
-                Bin[] bins = binCollection.getBins();
+        if (binCollection != null &&
+            e.getButton() == MouseEvent.BUTTON1) {
+            final Point pointOnHistogram = e.getPoint();
+            final int bar = getBarAtPoint(pointOnHistogram, false);
 
-                final Point pointOnHistogram = e.getPoint();
-                final int bar = getBarAtPoint(pointOnHistogram, false);
+            shiftDown = e.isShiftDown();
+            controlDown = e.isControlDown();
 
-                shiftDown = e.isShiftDown();
-                controlDown = e.isControlDown();
-
-                dragStart = (shiftDown && activeBin >= 0) ? activeBin : bar;
-                dragEnd = bar;
-
-                binSelectionMode.mousePressed(shiftDown, controlDown, bins, dragStart, dragEnd);
-
-                repaint();
-            }
+            dragStart = (shiftDown && activeBin >= 0) ? activeBin : bar;
+            dragEnd = bar;
+            binSelectionMode.mousePressed(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd);
+            repaint();
         }
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        if (binCollection != null) {
-            while (e.getButton() == MouseEvent.BUTTON1) {
-                Bin[] bins = binCollection.getBins();
-
-                final Point pointOnHistogram = e.getPoint();
-                final int bar = getBarAtPoint(pointOnHistogram, false);
-                int newDragEnd = bar;
-                binSelectionMode.mouseDragged(shiftDown, controlDown, bins, dragStart, dragEnd, newDragEnd);
-                dragEnd = newDragEnd;
-                repaint();
-            }
+        if (binCollection != null &&
+            e.getButton() == MouseEvent.BUTTON1) {
+            final Point pointOnHistogram = e.getPoint();
+            final int bar = getBarAtPoint(pointOnHistogram, false);
+            
+            int newDragEnd = bar;
+            binSelectionMode.mouseDragged(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd, newDragEnd);
+            dragEnd = newDragEnd;
+            repaint();
         }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if (binCollection != null) {
-            if (e.getButton() == MouseEvent.BUTTON1) {
-                binSelectionMode.mouseReleased(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd, topComponent);
-                activeBin = dragStart == dragEnd ? dragStart : -1;
-                repaint();
-            }
+        if (binCollection != null &&
+            e.getButton() == MouseEvent.BUTTON1) {
+            binSelectionMode.mouseReleased(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd, topComponent);
+            activeBin = dragStart == dragEnd ? dragStart : -1;
+            repaint();
         }
     }
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        // Focus the Histogram View so 'key' actions can be registered.
-        this.requestFocus();
+        this.requestFocus(); // Focus the Histogram View so 'key' actions can be registered.
     }
 
     @Override
@@ -622,13 +609,10 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (binCollection != null) {
-            // Ensure that the Histogram View is focused before allowing Ctrl + C to be registered.
-            if (this.isFocusOwner()) {
-                if ((e.isControlDown()) && (e.getKeyCode() == KeyEvent.VK_C)) {
-                    copySelectedToClipboard(false);
-                }
-            }
+        if (binCollection != null &&
+            this.isFocusOwner() && // Check if Histogram Display is focused before allowing Ctrl + C to be registered.
+            ((e.isControlDown()) && (e.getKeyCode() == KeyEvent.VK_C))) {
+            copySelectedToClipboard(false);
         }
     }
 
