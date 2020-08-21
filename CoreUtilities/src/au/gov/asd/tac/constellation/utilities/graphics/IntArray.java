@@ -135,7 +135,7 @@ public final class IntArray implements Iterable<Integer> {
         }
         
         this.elementData = new int[initialCapacity];
-        size=0;
+        size = 0;
     }
 
     /**

@@ -136,7 +136,7 @@ public final class FloatArray implements Iterable<Float> {
         }
         
         this.elementData = new float[initialCapacity];
-        size=0;
+        size = 0;
     }
 
     /**
