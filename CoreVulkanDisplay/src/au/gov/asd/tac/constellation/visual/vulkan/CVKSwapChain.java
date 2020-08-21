@@ -38,8 +38,6 @@ import static org.lwjgl.vulkan.VK10.VK_ATTACHMENT_LOAD_OP_CLEAR;
 import static org.lwjgl.vulkan.VK10.VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 import static org.lwjgl.vulkan.VK10.VK_ATTACHMENT_STORE_OP_DONT_CARE;
 import static org.lwjgl.vulkan.VK10.VK_ATTACHMENT_STORE_OP_STORE;
-import static org.lwjgl.vulkan.VK10.VK_COMPONENT_SWIZZLE_IDENTITY;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_COLOR_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_UNDEFINED;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
@@ -50,20 +48,17 @@ import static org.lwjgl.vulkan.VK10.VK_SAMPLE_COUNT_1_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SHARING_MODE_EXCLUSIVE;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUBPASS_EXTERNAL;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkAllocateCommandBuffers;
 import static org.lwjgl.vulkan.VK10.vkCreateFramebuffer;
-import static org.lwjgl.vulkan.VK10.vkCreateImageView;
 import static org.lwjgl.vulkan.VK10.vkCreateRenderPass;
 import org.lwjgl.vulkan.VkAttachmentDescription;
 import org.lwjgl.vulkan.VkAttachmentReference;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkCommandBufferAllocateInfo;
 import org.lwjgl.vulkan.VkFramebufferCreateInfo;
-import org.lwjgl.vulkan.VkImageViewCreateInfo;
 import org.lwjgl.vulkan.VkRenderPassCreateInfo;
 import org.lwjgl.vulkan.VkSubpassDependency;
 import org.lwjgl.vulkan.VkSubpassDescription;
@@ -72,6 +67,7 @@ import org.lwjgl.vulkan.VkSwapchainCreateInfoKHR;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.UINT64_MAX;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.checkVKret;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKImage;
+import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKSwapChainImage;
 import static org.lwjgl.vulkan.KHRSwapchain.vkAcquireNextImageKHR;
 import static org.lwjgl.vulkan.KHRSwapchain.vkDestroySwapchainKHR;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
@@ -80,11 +76,13 @@ import static org.lwjgl.vulkan.VK10.VK_FORMAT_D24_UNORM_S8_UINT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_D32_SFLOAT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_D32_SFLOAT_S8_UINT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_R8G8B8A8_UINT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_UNDEFINED;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_DEPTH_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_TILING_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
 import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
@@ -93,7 +91,6 @@ import static org.lwjgl.vulkan.VK10.vkCreateFence;
 import static org.lwjgl.vulkan.VK10.vkCreateSemaphore;
 import static org.lwjgl.vulkan.VK10.vkDestroyFence;
 import static org.lwjgl.vulkan.VK10.vkDestroyFramebuffer;
-import static org.lwjgl.vulkan.VK10.vkDestroyImageView;
 import static org.lwjgl.vulkan.VK10.vkDestroyRenderPass;
 import static org.lwjgl.vulkan.VK10.vkDestroySemaphore;
 import static org.lwjgl.vulkan.VK10.vkFreeCommandBuffers;
@@ -123,11 +120,11 @@ public class CVKSwapChain {
     private CVKDevice cvkDevice;
     private CVKImage cvkDepthImage = null;
     private long hSwapChainHandle = VK_NULL_HANDLE;
-    private long hRenderPassHandle = VK_NULL_HANDLE;    
+    private long hRenderPassHandle = VK_NULL_HANDLE;
+    private long hOffscreenRenderPassHandle = VK_NULL_HANDLE;
     private int imageCount = 0;
     private int depthFormat = VK_FORMAT_UNDEFINED;
-    private List<Long> imageHandles = null;
-    private List<Long> imageViewHandles = null;
+    private List<CVKSwapChainImage> swapChainImages = null;
     private List<Long> framebufferHandles = null;
     private List<Long> imageAcquisitionHandles = null;
     private List<Long> commandExecutionHandles = null;
@@ -135,16 +132,21 @@ public class CVKSwapChain {
     private int nextImageAcquisitionIndex = 0;
     private List<VkCommandBuffer> commandBuffers = null;
     private final VkExtent2D vkCurrentImageExtent = VkExtent2D.malloc().set(0,0);    
-    
+    //private int colorFormat = VK_FORMAT_R8G8B8A8_UINT;
     
     
     public int GetImageCount() { return imageCount; }
+    public CVKImage GetImage(int imageIndex) {
+        return swapChainImages.get(imageIndex);
+    }
     public long GetSwapChainHandle() { return hSwapChainHandle; }
-    public long GetRenderPassHandle() { return hRenderPassHandle; }    
+    public long GetRenderPassHandle() { return hRenderPassHandle; }
+     public long GetOffscreenRenderPassHandle() { return hOffscreenRenderPassHandle; }
     public long GetFrameBufferHandle(int imageIndex) { return framebufferHandles.get(imageIndex); }
     public VkCommandBuffer GetCommandBuffer(int imageIndex) { return commandBuffers.get(imageIndex); }
     public long GetFence(int imageIndex) { return renderFenceHandles.get(imageIndex); }
-    
+    public int GetDepthFormat() { return depthFormat; }
+    public int GetColorFormat() { return cvkDevice.GetSurfaceFormat().Value(); }
     
     public CVKSwapChain(CVKDevice device) {
         cvkDevice = device;
@@ -159,6 +161,8 @@ public class CVKSwapChain {
             ret = InitVKSwapChain(stack);
             if (VkFailed(ret)) return ret;
             ret = InitVKRenderPass(stack);
+            if (VkFailed(ret)) return ret;
+            ret = CreateOffscreenRenderPass(stack);
             if (VkFailed(ret)) return ret;
             ret = InitVKFrameBuffer(stack);
             if (VkFailed(ret)) return ret; 
@@ -176,14 +180,14 @@ public class CVKSwapChain {
         
         DestroyVKCommandBuffers();       
         DestroyVKFrameBuffer();      
-        DestroyVKRenderPass();    
+        DestroyVKRenderPass();
+        DestroyVKOffscreenRenderPass();
         DestroyVKSwapChain();
         
         CVKAssert(cvkDepthImage == null);
         CVKAssert(hSwapChainHandle == VK_NULL_HANDLE);
         CVKAssert(hRenderPassHandle == VK_NULL_HANDLE);
-        CVKAssert(imageHandles.isEmpty());
-        CVKAssert(imageViewHandles.isEmpty());
+        CVKAssert(hOffscreenRenderPassHandle == VK_NULL_HANDLE);
         CVKAssert(framebufferHandles.isEmpty());
         CVKAssert(imageAcquisitionHandles.isEmpty());
         CVKAssert(commandExecutionHandles.isEmpty());
@@ -247,7 +251,8 @@ public class CVKSwapChain {
         createInfo.imageColorSpace(cvkDevice.GetSurfaceColourSpace().Value());
         createInfo.imageExtent(vkCurrentImageExtent);
         createInfo.imageArrayLayers(1);
-        createInfo.imageUsage(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT);
+        // VK_IMAGE_USAGE_TRANSFER_SRC_BIT flag is needed as we support screenshots of the swapchain image
+        createInfo.imageUsage(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT );
         createInfo.imageSharingMode(VK_SHARING_MODE_EXCLUSIVE);        
         createInfo.preTransform(vkSurfaceCapablities.currentTransform());
         createInfo.compositeAlpha(VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR);
@@ -273,42 +278,19 @@ public class CVKSwapChain {
         if (VkFailed(ret)) return ret;
 
         // Store the native handle for each image and create a view for it
-        imageHandles = new ArrayList<>(imageCount);
-        imageViewHandles = new ArrayList<>();
+        swapChainImages = new ArrayList<>(imageCount);
         imageAcquisitionHandles = new ArrayList<>();
         commandExecutionHandles = new ArrayList<>();
         renderFenceHandles = new ArrayList<>();
         for(int i = 0; i < imageCount; ++i) {
             long swapChainImageHandle = pSwapchainImageHandles.get(i);
-            imageHandles.add(swapChainImageHandle);
             
-            // Create an image view for this image
-            VkImageViewCreateInfo imageViewCreateInfo = VkImageViewCreateInfo.callocStack(stack);
-
-            imageViewCreateInfo.sType(VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO);
-            imageViewCreateInfo.image(swapChainImageHandle);
-            imageViewCreateInfo.viewType(VK_IMAGE_VIEW_TYPE_2D);
-            imageViewCreateInfo.format(cvkDevice.GetSurfaceFormat().Value());
-
-            imageViewCreateInfo.components().r(VK_COMPONENT_SWIZZLE_IDENTITY);
-            imageViewCreateInfo.components().g(VK_COMPONENT_SWIZZLE_IDENTITY);
-            imageViewCreateInfo.components().b(VK_COMPONENT_SWIZZLE_IDENTITY);
-            imageViewCreateInfo.components().a(VK_COMPONENT_SWIZZLE_IDENTITY);
-
-            imageViewCreateInfo.subresourceRange().aspectMask(VK_IMAGE_ASPECT_COLOR_BIT);
-            imageViewCreateInfo.subresourceRange().baseMipLevel(0);
-            imageViewCreateInfo.subresourceRange().levelCount(1);
-            imageViewCreateInfo.subresourceRange().baseArrayLayer(0);
-            imageViewCreateInfo.subresourceRange().layerCount(1);
-
-            LongBuffer pImageView = stack.mallocLong(1);
-            ret = vkCreateImageView(cvkDevice.GetDevice(), 
-                                    imageViewCreateInfo, 
-                                    null, //allocation callbacks
-                                    pImageView);
-            if (VkFailed(ret)) { return ret; }            
-            imageViewHandles.add(pImageView.get(0));      
-            
+            // Factory that returns a SwapChainImage instance initialised with device, image handle,
+            // sets default parameters and creates the Image View
+            swapChainImages.add(CVKSwapChainImage.Create(cvkDevice, swapChainImageHandle));
+            swapChainImages.get(i).SetExtent(cvkDevice.GetCurrentSurfaceExtent().width(),
+                    cvkDevice.GetCurrentSurfaceExtent().height());
+                  
             // Create synchronisation objects, we recreate these each time the swapchain is recreated
             // which is probably excessive, though it's theoretically possible the recreated swapchain
             // could have a different number of images to its precursor (though probably impossible in
@@ -416,15 +398,16 @@ public class CVKSwapChain {
         
         framebufferHandles = new ArrayList<>(imageCount);
 
-        for (long imageView : imageViewHandles) {
-            attachments.put(0, imageView);
+        for (var image : swapChainImages) {
+            attachments.put(0, image.GetImageViewHandle());
             attachments.put(1, cvkDepthImage.GetImageViewHandle());
             framebufferInfo.pAttachments(attachments);
             ret = vkCreateFramebuffer(cvkDevice.GetDevice(), 
                                       framebufferInfo, 
                                       null, //allocation callbacks
                                       pFramebuffer);
-            framebufferHandles.add(pFramebuffer.get(0));
+            if (VkFailed(ret)) { return ret; }
+            framebufferHandles.add(pFramebuffer.get(0)); 
         }
         
         return ret;
@@ -512,6 +495,84 @@ public class CVKSwapChain {
             hRenderPassHandle = pRenderPass.get(0);        
         }
         
+        return ret;
+    }
+    
+    private int CreateOffscreenRenderPass(MemoryStack stack) {
+        CVKAssert(cvkDevice.GetDevice() != null);
+        CVKAssert(cvkDevice.GetSurfaceFormat() != VK_FORMAT_NONE);
+        
+        int ret;      
+               
+        // 0: colour, 1: depth
+        VkAttachmentDescription.Buffer attachments = VkAttachmentDescription.callocStack(2, stack);
+        VkAttachmentReference.Buffer attachmentRefs = VkAttachmentReference.callocStack(2, stack);        
+
+        // Colour attachment
+        VkAttachmentDescription colorAttachment = attachments.get(0);
+        //colorAttachment.format(colorFormat);
+        colorAttachment.format(cvkDevice.GetSurfaceFormat().Value());
+        colorAttachment.samples(VK_SAMPLE_COUNT_1_BIT);
+        colorAttachment.loadOp(VK_ATTACHMENT_LOAD_OP_CLEAR);
+        colorAttachment.storeOp(VK_ATTACHMENT_STORE_OP_STORE);
+        colorAttachment.stencilLoadOp(VK_ATTACHMENT_LOAD_OP_DONT_CARE);
+        colorAttachment.stencilStoreOp(VK_ATTACHMENT_STORE_OP_DONT_CARE);
+
+        // These are the states of our display images at the start and end of this pass
+        colorAttachment.initialLayout(VK_IMAGE_LAYOUT_UNDEFINED);
+        // TODO - I think something is wrong with the colour attachment here
+        // VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL CONFIRM THIS
+        colorAttachment.finalLayout(VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
+
+        VkAttachmentReference colorAttachmentRef = attachmentRefs.get(0);
+        colorAttachmentRef.attachment(0);
+        colorAttachmentRef.layout(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+
+        // Depth attachment
+        VkAttachmentDescription depthAttachment = attachments.get(1);
+        depthAttachment.format(GetDepthFormat());
+        depthAttachment.samples(VK_SAMPLE_COUNT_1_BIT);
+        depthAttachment.loadOp(VK_ATTACHMENT_LOAD_OP_CLEAR);
+        depthAttachment.storeOp(VK_ATTACHMENT_STORE_OP_DONT_CARE);
+        depthAttachment.stencilLoadOp(VK_ATTACHMENT_LOAD_OP_DONT_CARE);
+        depthAttachment.stencilStoreOp(VK_ATTACHMENT_STORE_OP_DONT_CARE);
+        depthAttachment.initialLayout(VK_IMAGE_LAYOUT_UNDEFINED);//VK_IMAGE_LAYOUT_UNDEFINED);
+        depthAttachment.finalLayout(VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
+
+        VkAttachmentReference depthAttachmentRef = attachmentRefs.get(1);
+        depthAttachmentRef.attachment(1);
+        depthAttachmentRef.layout(VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);  
+
+        VkSubpassDescription.Buffer subpass = VkSubpassDescription.callocStack(1, stack);
+        subpass.pipelineBindPoint(VK_PIPELINE_BIND_POINT_GRAPHICS);
+        subpass.colorAttachmentCount(1);
+        // This bit of hackery is because pColorAttachments is a buffer of multiple references, whereas pDepthStencilAttachment is singular
+        subpass.pColorAttachments(VkAttachmentReference.callocStack(1, stack).put(0, colorAttachmentRef)); 
+        subpass.pDepthStencilAttachment(depthAttachmentRef);
+
+        VkSubpassDependency.Buffer dependency = VkSubpassDependency.callocStack(1, stack);
+        dependency.srcSubpass(VK_SUBPASS_EXTERNAL);
+        dependency.dstSubpass(0);
+        dependency.srcStageMask(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT);
+        dependency.srcAccessMask(0);
+        dependency.dstStageMask(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT);
+        dependency.dstAccessMask(VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT);
+
+        VkRenderPassCreateInfo renderPassInfo = VkRenderPassCreateInfo.callocStack(stack);
+        renderPassInfo.sType(VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO);
+        renderPassInfo.pAttachments(attachments);
+        renderPassInfo.pSubpasses(subpass);
+        renderPassInfo.pDependencies(dependency);
+
+        LongBuffer pRenderPass = stack.mallocLong(1);
+        ret = vkCreateRenderPass(cvkDevice.GetDevice(),
+                                 renderPassInfo, 
+                                 null, //allocation callbacks
+                                 pRenderPass);
+        if (VkSucceeded(ret)) {
+            hOffscreenRenderPassHandle = pRenderPass.get(0);        
+        }
+
         return ret;
     } 
     
@@ -629,7 +690,13 @@ public class CVKSwapChain {
         vkDestroyRenderPass(cvkDevice.GetDevice(), hRenderPassHandle, null);
         hRenderPassHandle = VK_NULL_HANDLE;
         cvkDevice.GetLogger().info("Destroyed render pass");
-    }   
+    }
+
+    private void DestroyVKOffscreenRenderPass() {
+        vkDestroyRenderPass(cvkDevice.GetDevice(), hOffscreenRenderPassHandle, null);
+        hOffscreenRenderPassHandle = VK_NULL_HANDLE;
+        cvkDevice.GetLogger().info("Destroyed offscreenrender pass");
+    }
     
     private void DestroyVKSwapChain() {
         // Destroy synchronisation objects
@@ -654,14 +721,10 @@ public class CVKSwapChain {
                 
         // The swapchain creates its own images but we create the image views for each one, destroy those now
         for (int i = 0; i < imageCount; ++i) {
-            vkDestroyImageView(cvkDevice.GetDevice(), imageViewHandles.get(i), null);
-            imageViewHandles.set(i, VK_NULL_HANDLE);
+             // Clear our list of images, we don't destroy these as the swapchain objects owns their memory
+            swapChainImages.get(i).Destroy();
             cvkDevice.GetLogger().info("Destroyed image view for image %d", i);
         }
-        imageViewHandles.clear();
-
-        // Clear our list of images, we don't destroy these as the swapchain objects owns their memory
-        imageHandles.clear();
         
         // Destroy the depth attachment
         cvkDepthImage.Destroy();
@@ -676,7 +739,7 @@ public class CVKSwapChain {
     
     public boolean NeedsResize() {
         checkVKret(cvkDevice.UpdateSurfaceCapabilities());
-        return vkCurrentImageExtent.width() !=cvkDevice.GetCurrentSurfaceExtent().width()
+        return vkCurrentImageExtent.width() != cvkDevice.GetCurrentSurfaceExtent().width()
             || vkCurrentImageExtent.height() != cvkDevice.GetCurrentSurfaceExtent().height();
     }
     

@@ -141,7 +141,7 @@ public class CVKBuffer {
         return ret;
     }
     
-    public ByteBuffer StartWrite(int offset, int size) {
+    public ByteBuffer StartMemoryMap(int offset, int size) {
         CVKAssert((properties & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) != 0);
         CVKAssert(pWriteMemory == null);
         CVKAssert(size > offset);
@@ -150,7 +150,7 @@ public class CVKBuffer {
         return pWriteMemory.getByteBuffer(size);
     }
     
-    public void EndWrite() {
+    public void EndMemoryMap() {
         CVKAssert(pWriteMemory != null);
         vkUnmapMemory(cvkDevice.GetDevice(), GetMemoryBufferHandle());
         MemoryUtil.memFree(pWriteMemory);
@@ -166,7 +166,7 @@ public class CVKBuffer {
         }
     }
     public void DEBUGPRINT(List<DEBUG_CVKBufferElementDescriptor> typeDescriptors) {
-        ByteBuffer pData = StartWrite(0, (int)bufferSize);
+        ByteBuffer pData = StartMemoryMap(0, (int)bufferSize);
         
         cvkDevice.GetLogger().info("\n");
         cvkDevice.GetLogger().info(String.format("Contents of %s:", DEBUGNAME));
@@ -189,7 +189,7 @@ public class CVKBuffer {
         
         cvkDevice.GetLogger().info("\n");
         
-        EndWrite();
+        EndMemoryMap();
     }
     
     /**

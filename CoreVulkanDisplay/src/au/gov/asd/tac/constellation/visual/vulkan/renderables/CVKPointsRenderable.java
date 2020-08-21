@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
 import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDescriptorPool;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKRenderUpdateTask;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
 import static au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableResourceState.CVK_RESOURCE_CLEAN;
@@ -35,6 +36,7 @@ import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKShaderUtils.Sh
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKShaderUtils.ShaderKind.VERTEX_SHADER;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKShaderUtils.compileShaderFile;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssertNotNull;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_DEBUGGING;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_SHADER_COMPILATION;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_SHADER_MODULE;
@@ -472,7 +474,7 @@ public class CVKPointsRenderable extends CVKRenderable {
         } else {
             // View frustum and projection matrix likely have changed.  We don't
             // need to rebuild our pipelines as the frustum is set by dynamic
-            // state in RecordCommandBuffer
+            // state in RecordDisplayCommandBuffer
             if (vertexUBOState != CVK_RESOURCE_NEEDS_REBUILD) {
                 SetVertexUBOState(CVK_RESOURCE_NEEDS_UPDATE); 
             }
@@ -485,7 +487,7 @@ public class CVKPointsRenderable extends CVKRenderable {
     // ========================> Vertex buffers <======================== \\
     
     private int CreateVertexBuffer() {
-        CVKAssert(cvkSwapChain != null);
+        CVKAssertNotNull(cvkSwapChain);
         
         int ret = VK_SUCCESS;
     
@@ -573,7 +575,7 @@ public class CVKPointsRenderable extends CVKRenderable {
     // ========================> Command buffers <======================== \\
     
     public int CreateCommandBuffers(){
-        CVKAssert(cvkSwapChain != null);
+        CVKAssertNotNull(cvkSwapChain);
         
         int ret = VK_SUCCESS;
         int imageCount = cvkSwapChain.GetImageCount();
@@ -598,8 +600,8 @@ public class CVKPointsRenderable extends CVKRenderable {
     }       
     
     @Override
-    public int RecordCommandBuffer(VkCommandBufferInheritanceInfo inheritanceInfo, int imageIndex){
-        CVKAssert(cvkSwapChain != null);
+    public int RecordDisplayCommandBuffer(VkCommandBufferInheritanceInfo inheritanceInfo, int imageIndex){
+        CVKAssertNotNull(cvkSwapChain);
         cvkVisualProcessor.VerifyInRenderThread();
         int ret;
         
@@ -714,10 +716,10 @@ public class CVKPointsRenderable extends CVKRenderable {
     }     
     
     private int CreatePipelines() {
-        CVKAssert(cvkDevice != null);
-        CVKAssert(cvkDevice.GetDevice() != null);
-        CVKAssert(cvkDescriptorPool != null);
-        CVKAssert(cvkSwapChain != null);
+        CVKAssertNotNull(cvkDevice);
+        CVKAssertNotNull(cvkDevice.GetDevice());
+        CVKAssertNotNull(cvkDescriptorPool);
+        CVKAssertNotNull(cvkSwapChain);
         CVKAssert(cvkSwapChain.GetSwapChainHandle() != VK_NULL_HANDLE);
         CVKAssert(cvkSwapChain.GetRenderPassHandle() != VK_NULL_HANDLE);
         CVKAssert(cvkDescriptorPool.GetDescriptorPoolHandle() != VK_NULL_HANDLE);
@@ -966,7 +968,7 @@ public class CVKPointsRenderable extends CVKRenderable {
                                                           VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
                                                           "CVKPointRenderable.TaskCreateIcons cvkVertexStagingBuffer");               
                 
-                ByteBuffer pVertexMemory = cvkVertexStagingBuffer.StartWrite(0, vertexBufferSizeBytes);
+                ByteBuffer pVertexMemory = cvkVertexStagingBuffer.StartMemoryMap(0, vertexBufferSizeBytes);
                 for (int pos = 0; pos < newVertexCount; pos++) {
                     final int offset = Vertex.SIZEOF * pos;
                     pVertexMemory.position(offset);
@@ -976,7 +978,7 @@ public class CVKPointsRenderable extends CVKRenderable {
                 }
                 int vertMemPos = pVertexMemory.position();
                 CVKAssert(vertMemPos == vertexBufferSizeBytes);
-                cvkVertexStagingBuffer.EndWrite();
+                cvkVertexStagingBuffer.EndMemoryMap();
                 pVertexMemory = null; // now unmapped, do not use
             }
         } finally {
@@ -984,7 +986,7 @@ public class CVKPointsRenderable extends CVKRenderable {
         }        
     }
     
-    public CVKRenderableUpdateTask TaskRebuildPoints(final VisualAccess access) {
+    public CVKRenderUpdateTask TaskRebuildPoints(final VisualAccess access) {
         //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
         final int newVertexCount = access.getVertexCount();
         cvkVisualProcessor.GetLogger().info(String.format("TaskRebuildPoints frame %d: %d verts", cvkVisualProcessor.GetFrameNumber(), access.getVertexCount()));
@@ -1002,7 +1004,7 @@ public class CVKPointsRenderable extends CVKRenderable {
         };
     }    
     
-    public CVKRenderableUpdateTask TaskUpdatePoints(final VisualChange change, final VisualAccess access) {
+    public CVKRenderUpdateTask TaskUpdatePoints(final VisualChange change, final VisualAccess access) {
         //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
         // If this fires investigate why we didn't get a rebuild task first
         final int newVertexCount = access.getVertexCount();
@@ -1022,7 +1024,7 @@ public class CVKPointsRenderable extends CVKRenderable {
 
             // We map the whole range as GraphVisualAccess applies any per vertex change to all 
             // vertices in the accessGraph so the change will contain all vertices anyway.
-            ByteBuffer pVertexMemory = cvkVertexStagingBuffer.StartWrite(0, (int)cvkVertexStagingBuffer.GetBufferSize());
+            ByteBuffer pVertexMemory = cvkVertexStagingBuffer.StartMemoryMap(0, (int)cvkVertexStagingBuffer.GetBufferSize());
             final int numChanges = change.getSize();
             for (int i = 0; i < numChanges; ++i) {
                 int pos = change.getElement(i);
@@ -1048,7 +1050,7 @@ public class CVKPointsRenderable extends CVKRenderable {
         };        
     }
     
-    public CVKRenderableUpdateTask TaskUpdateCamera() {
+    public CVKRenderUpdateTask TaskUpdateCamera() {
         //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
                                                 
         //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.ProcessRenderTasks) ===//

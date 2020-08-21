@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDescriptorPool.CVKDescriptorPoolRequirements;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKRenderUpdateTask;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.checkVKret;
 import java.awt.image.BufferedImage;
@@ -29,6 +30,7 @@ import static java.awt.image.BufferedImage.TYPE_4BYTE_ABGR;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKImage;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssertNotNull;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssertNull;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
 import java.awt.image.DataBufferByte;
 import java.nio.ByteBuffer;
@@ -64,6 +66,8 @@ import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkCommandBufferInheritanceInfo;
 import org.lwjgl.vulkan.VkSamplerCreateInfo;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_DEBUGGING;
+import java.io.File;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
 
 
 public class CVKIconTextureAtlas extends CVKRenderable {
@@ -108,6 +112,9 @@ public class CVKIconTextureAtlas extends CVKRenderable {
     private final LinkedHashMap<String, Integer> loadedIcons = new LinkedHashMap<>();
     private int maxIcons = Short.MAX_VALUE; //replace this with a calculated value
     private int lastTransferedIconCount = 0;
+    private boolean needsSaveToFile = false;
+    private boolean needsAtlasRebuilt = false;
+    private File fileToSave = null;
     
     
     // ========================> Classes <======================== \\ 
@@ -146,9 +153,9 @@ public class CVKIconTextureAtlas extends CVKRenderable {
     }
     
     private int CreateAtlas() {
-        CVKAssert(lastTransferedIconCount == 0);
-        CVKAssert(cvkAtlasImage == null);
-        CVKAssert(hAtlasSampler == VK_NULL_HANDLE);
+        CVKAssertNull(lastTransferedIconCount);
+        CVKAssertNull(cvkAtlasImage);
+        CVKAssertNull(hAtlasSampler);
         
 //        final Set<String> iconNames = IconManager.getIconNames(false);
 //        CVKLOGGER.info("\n====ALL ICONS====");
@@ -203,7 +210,7 @@ public class CVKIconTextureAtlas extends CVKRenderable {
     public VkCommandBuffer GetCommandBuffer(int imageIndex) { return null; }        
      
     @Override
-    public int RecordCommandBuffer(VkCommandBufferInheritanceInfo inheritanceInfo, int index){ return VK_SUCCESS; }
+    public int RecordDisplayCommandBuffer(VkCommandBufferInheritanceInfo inheritanceInfo, int index){ return VK_SUCCESS; }
     
     
     // ========================> Descriptors <======================== \\
@@ -219,14 +226,45 @@ public class CVKIconTextureAtlas extends CVKRenderable {
     
     @Override
     public int DisplayUpdate() {
-        Destroy();
-        return CreateAtlas();
+        int ret = VK_SUCCESS;
+        
+        if (needsSaveToFile) {
+            ret = SaveToFile(fileToSave);
+            needsSaveToFile = false;
+        }
+        
+        if (needsAtlasRebuilt) {
+            Destroy();
+            ret = CreateAtlas();
+            if (VkFailed(ret)) { return ret; }
+            needsAtlasRebuilt = false;
+        }
+        
+        return ret;
     }
     
     @Override
     public boolean NeedsDisplayUpdate() {
-        return loadedIcons.size() > lastTransferedIconCount;
+       
+        needsAtlasRebuilt = (loadedIcons.size() > lastTransferedIconCount);
+        
+        return needsSaveToFile || needsAtlasRebuilt;
     }  
+    
+    
+    // ========================> Tasks <======================== \\
+    
+    public CVKRenderUpdateTask TaskSaveToFile(File file) {
+        //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
+                
+        //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.ProcessRenderTasks) ===//
+        return () -> {
+            cvkVisualProcessor.VerifyInRenderThread();
+            
+            needsSaveToFile = true;
+            fileToSave = file;
+        };
+    }
     
     
     // ========================> Helpers <======================== \\
@@ -255,6 +293,10 @@ public class CVKIconTextureAtlas extends CVKRenderable {
         }
 
         return iconIndex;
+    }
+    
+    public int SaveToFile(File file) {
+        return cvkAtlasImage.SaveToFile(file);
     }
     
     /**
@@ -349,7 +391,7 @@ public class CVKIconTextureAtlas extends CVKRenderable {
                                             VK_FORMAT_R8G8B8A8_SRGB, //non-linear format to give more fidelity to the hues we are most able to perceive
                                             VK_IMAGE_VIEW_TYPE_2D_ARRAY, //regardless how how many layers are in the image, the shaders that use that atlas use a sampler2DArray
                                             VK_IMAGE_TILING_OPTIMAL, //we usually sample rectangles rather than long straight lines
-                                            VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
+                                            VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT ,
                                             VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
                                             VK_IMAGE_ASPECT_COLOR_BIT,
                                             "CVKIconTextureAtlas cvkAtlasImage");                         
@@ -473,7 +515,7 @@ public class CVKIconTextureAtlas extends CVKRenderable {
             ret = vkCreateSampler(cvkDevice.GetDevice(), vkSamplerCreateInfo, null, pTextureSampler);
             checkVKret(ret);
             hAtlasSampler = pTextureSampler.get(0);
-            CVKAssert(hAtlasSampler != VK_NULL_HANDLE);                       
+            CVKAssertNotNull(hAtlasSampler);
         }
         
         return ret;
