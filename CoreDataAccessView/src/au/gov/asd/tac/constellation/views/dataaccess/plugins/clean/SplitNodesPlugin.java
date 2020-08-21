@@ -123,13 +123,15 @@ public class SplitNodesPlugin extends RecordStoreQueryPlugin implements DataAcce
             }
             @SuppressWarnings("unchecked") //TRANSACTION_TYPE_PARAMETER is always of type SingleChoiceParameter
             final PluginParameter<SingleChoiceParameterValue> transactionType = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(TRANSACTION_TYPE_PARAMETER_ID);
-            transactionType.suppressEvent(true, new ArrayList<>());
-            SingleChoiceParameterType.setOptions(transactionType, types);
 
+            SingleChoiceParameterType.setOptions(transactionType, types);
+            transactionType.suppressEvent(true, new ArrayList<>());
             if (transactionType.getSingleChoice() == null && types.contains(AnalyticConcept.TransactionType.CORRELATION.getName())) {
                 SingleChoiceParameterType.setChoice(transactionType, AnalyticConcept.TransactionType.CORRELATION.getName());
             }
             transactionType.suppressEvent(false, new ArrayList<>());
+            transactionType.setObjectValue(parameters.getObjectValue(TRANSACTION_TYPE_PARAMETER_ID));
+
         }
     }
 
