@@ -519,9 +519,9 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
      * @param includeCounts True if the counts corresponding to the values
      * are also to be copied to the clipboard.
      */
-    private void copySelectedToClipboard(boolean includeCounts) {
+    private void copySelectedToClipboard(final boolean includeCounts) {
         final StringBuilder buf = new StringBuilder();
-        for (Bin bin : binCollection.getBins()) {
+        for (final Bin bin : binCollection.getBins()) {
             // Check if the bar(s) on the Histogram are selected.
             if (bin.selectedCount > 0) {
                 final String label = bin.getLabel() != null ? bin.getLabel() : HistogramDisplay.NO_VALUE;
@@ -540,16 +540,16 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
     
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (binCollection != null &&
-            e.getButton() == MouseEvent.BUTTON3) {
+        if (binCollection != null
+            && e.getButton() == MouseEvent.BUTTON3) {
             copyMenu.show(this, e.getX(), e.getY());
         }
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if (binCollection != null &&
-            e.getButton() == MouseEvent.BUTTON1) {
+        if (binCollection != null
+            && e.getButton() == MouseEvent.BUTTON1) {
             final Point pointOnHistogram = e.getPoint();
             final int bar = getBarAtPoint(pointOnHistogram, false);
 
@@ -565,8 +565,8 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        if (binCollection != null &&
-            e.getButton() == MouseEvent.BUTTON1) {
+        if (binCollection != null
+            && e.getButton() == MouseEvent.BUTTON1) {
             final Point pointOnHistogram = e.getPoint();
             final int bar = getBarAtPoint(pointOnHistogram, false);
             
@@ -579,8 +579,8 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if (binCollection != null &&
-            e.getButton() == MouseEvent.BUTTON1) {
+        if (binCollection != null
+            && e.getButton() == MouseEvent.BUTTON1) {
             binSelectionMode.mouseReleased(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd, topComponent);
             activeBin = dragStart == dragEnd ? dragStart : -1;
             repaint();
@@ -609,9 +609,9 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (binCollection != null &&
-            this.isFocusOwner() && // Check if Histogram Display is focused before allowing Ctrl + C to be registered.
-            ((e.isControlDown()) && (e.getKeyCode() == KeyEvent.VK_C))) {
+        if (binCollection != null
+            && this.isFocusOwner() // Check if Histogram Display is focused before allowing Ctrl + C to be registered.
+            && ((e.isControlDown()) && (e.getKeyCode() == KeyEvent.VK_C))) {
             copySelectedToClipboard(false);
         }
     }
