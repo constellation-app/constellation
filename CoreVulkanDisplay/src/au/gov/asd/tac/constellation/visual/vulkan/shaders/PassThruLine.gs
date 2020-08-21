@@ -1,8 +1,10 @@
 #version 450
 
+
 // === PER PRIMITIVE DATA IN
 layout(lines) in;
 layout(location = 0) in vec4 gColor[];
+
 
 // === PER PRIMITIVE DATA OUT
 layout(line_strip, max_vertices=2) out;

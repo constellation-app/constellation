@@ -11,45 +11,53 @@
 // leave gaps in the lines.
 // Therefore for distant edges we'll draw actual lines.
 
-#version 330 core
+#version 450
 
+
+// === CONSTANTS ===
 // Keep this in sync with SceneBatchStore.
 const int LINE_INFO_ARROW = 1;
 const int LINE_INFO_OVERFLOW = 2;
 
 // Keep this in sync with LineArrow.gs.
-//
 const float EDGE_SEPARATION_SCALE = 32;
 const float VISIBLE_ARROW_DISTANCE = 100;
 
 const float FLOAT_MULTIPLIER = 1024;
 
+
+// === UNIFORMS ===
+layout(std140, binding = 0) uniform UniformBlock {
+    mat4 pMatrix;
+    float visibilityLow;
+    float visibilityHigh;
+    float directionMotion;
+    vec4 highlightColor;
+    float alpha;
+    int drawHitTest;
+} ub;
+
+
+// === PER VERTEX DATA IN ===
 layout(lines) in;
+layout(location = 0) in vec4 vpointColor[];
+layout(location = 1) flat in ivec4 gData[];
+
+
+// === PER VERTEX DATA OUT ===
 layout(line_strip, max_vertices=4) out;
+layout(location = 0) out vec4 pointColor;
+layout(location = 1) flat out int hitTestId;
+layout(location = 2) flat out int lineStyle;
+layout(location = 3) out float pointCoord;
+layout(location = 4) flat out float lineLength;
 
-uniform mat4 pMatrix;
-
-uniform float visibilityLow;
-uniform float visibilityHigh;
-uniform float directionMotion;
-uniform vec4 highlightColor;
-uniform float alpha;
-uniform int drawHitTest;
-
-in vec4 vpointColor[];
-flat in ivec4 gData[];
-
-out vec4 pointColor;
-flat out int hitTestId;
-flat out int lineStyle;
-out float pointCoord;
-flat out float lineLength;
 
 void main() {
     // Lines are explicitly not drawn if they have visibility <= 0.
     // See au.gov.asd.tac.constellation.visual.opengl.task;
     float visibility = vpointColor[0][3];
-    if(visibility > max(visibilityLow, 0) && (visibility <= visibilityHigh || visibility > 1.0)) {
+    if(visibility > max(ub.visibilityLow, 0) && (visibility <= ub.visibilityHigh || visibility > 1.0)) {
         // The ends of the line.
         vec4 end0 = gl_in[0].gl_Position;
         vec4 end1 = gl_in[1].gl_Position;
@@ -105,15 +113,15 @@ void main() {
             // Therefore, we'll pass the txId in a separate int that has no chance of being interpolated.
             int hti;
 
-            if(drawHitTest==0) {
+            if (ub.drawHitTest==0) {
                 color0 = vpointColor[0];
                 color1 = vpointColor[1];
 
                 // If this line is selected, and we're not drawing into the hit test buffer,
                 // draw it fatter.
-                if(isSelected){
-                    color0 = highlightColor;
-                    color1 = highlightColor;
+                if (isSelected) {
+                    color0 = ub.highlightColor;
+                    color1 = ub.highlightColor;
                 } else if (isDim) {
                     color0 = vec4(0.25, 0.25, 0.25, 0.5);
                     color1 = color0;
@@ -122,8 +130,8 @@ void main() {
                 // This overwrites the visibility value in vpointcolor[][3].
                 // TODO: The fade-out distance should depend on the current bounding box / camera distance.
                 float lineAlpha = 1-smoothstep(10, 500000, lineDistance);
-                color0.a = lineAlpha * alpha;
-                color1.a = lineAlpha * alpha;
+                color0.a = lineAlpha * ub.alpha;
+                color1.a = lineAlpha * ub.alpha;
 
                 hti = 0;
             } else {
@@ -137,13 +145,15 @@ void main() {
 
             pointColor = color0;
             hitTestId = hti;
-            gl_Position = pMatrix * end0;
+            gl_Position = ub.pMatrix * end0;
+            gl_Position.y = -gl_Position.y;
             pointCoord = 0;
             EmitVertex();
 
             pointColor = color1;
             hitTestId = hti;
-            gl_Position = pMatrix * end1;
+            gl_Position = ub.pMatrix * end1;
+            gl_Position.y = -gl_Position.y;
             pointCoord = lineLength;
             EmitVertex();
 
@@ -152,13 +162,13 @@ void main() {
             // Draw the motion bars.
             bool arrow0 = (gData[0].t & LINE_INFO_ARROW) != 0;
             bool arrow1 = (gData[1].t & LINE_INFO_ARROW) != 0;
-            if(drawHitTest == 0 && directionMotion != -1 && lineLength > 1 && arrow0 != arrow1) {
+            if (ub.drawHitTest == 0 && ub.directionMotion != -1 && lineLength > 1 && arrow0 != arrow1) {
                 end0.z += 0.001;
                 end1.z += 0.001;
 
                 lineLength = length(end1 - end0);
                 float motionLen = lineLength / 32.0;
-                float motionPos = directionMotion - (floor(directionMotion / lineLength) * lineLength);
+                float motionPos = ub.directionMotion - (floor(ub.directionMotion / lineLength) * lineLength);
 
                 if(arrow1) {
                     motionPos = lineLength - motionPos;
@@ -177,12 +187,14 @@ void main() {
                 color.a = 1;
 
                 pointColor = color;
-                gl_Position = pMatrix * (end0 + motionStart * lineDirection);
+                gl_Position = ub.pMatrix * (end0 + motionStart * lineDirection);
+                gl_Position.y = -gl_Position.y;
                 pointCoord = 0;
                 EmitVertex();
 
                 pointColor = color;
-                gl_Position = pMatrix * (end0 + motionEnd * lineDirection);
+                gl_Position = ub.pMatrix * (end0 + motionEnd * lineDirection);
+                gl_Position.y = -gl_Position.y;
                 pointCoord = 0;
                 EmitVertex();
 

@@ -34,6 +34,7 @@ import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKAxesRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKFPSRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKHitTester;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKIconsRenderable;
+import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKLabelsRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKPointsRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableUpdateTask;
@@ -73,8 +74,9 @@ public class CVKVisualProcessor extends VisualProcessor {
     private final CVKIconTextureAtlas cvkIconTextureAtlas;
     protected final CVKHitTester cvkHitTester;
     private final CVKAxesRenderable cvkAxes;
-    private final CVKFPSRenderable cvkFPS ;
+    private final CVKFPSRenderable cvkFPS;
     private final CVKIconsRenderable cvkIcons;
+    private final CVKLabelsRenderable cvkLabels;
     private final CVKPointsRenderable cvkPoints;
     private final Matrix44f modelViewMatrix = new Matrix44f();  
     private Camera camera = null;
@@ -119,6 +121,10 @@ public class CVKVisualProcessor extends VisualProcessor {
         if (VkFailed(ret)) { 
             cvkLogger.severe("Failed to statically initialise CVKIconsRenderable");
         }
+        ret = CVKLabelsRenderable.StaticInitialise();      
+        if (VkFailed(ret)) { 
+            cvkLogger.severe("Failed to statically initialise CVKLabelsRenderable");
+        }        
         ret = CVKPointsRenderable.StaticInitialise();
         if (VkFailed(ret)) { 
             cvkLogger.severe("Failed to statically initialise CVKPointsRenderable");
@@ -134,6 +140,8 @@ public class CVKVisualProcessor extends VisualProcessor {
         cvkCanvas.AddRenderable(cvkFPS);
         cvkIcons = new CVKIconsRenderable(this);
         cvkCanvas.AddRenderable(cvkIcons);
+        cvkLabels = new CVKLabelsRenderable(this);
+        cvkCanvas.AddRenderable(cvkLabels);
         cvkPoints = new CVKPointsRenderable(this);   
         cvkCanvas.AddRenderable(cvkPoints);        
     }
@@ -561,18 +569,15 @@ public class CVKVisualProcessor extends VisualProcessor {
         switch (property) {
             case VERTICES_REBUILD:
                 return (change, access) -> {
-                    // Recreate all the icons.  Note this is sometimes called before the CVKDevice
-                    // has been initialised.
+                    addTask(cvkIcons.TaskUpdateIcons(change, access));
+                    addTask(cvkIcons.TaskUpdatePositions(change, access));                         
+                    addTask(cvkIcons.TaskUpdateVertexFlags(change, access));
 
-                    if (cvkIcons != null) {
-                        addTask(cvkIcons.TaskUpdateIcons(change, access));
-                        addTask(cvkIcons.TaskUpdatePositions(change, access));                         
-                        addTask(cvkIcons.TaskUpdateVertexFlags(change, access));
-                    }
-//                    addTask(nodeLabelBatcher.setTopLabelColors(access));
-//                    addTask(nodeLabelBatcher.setTopLabelSizes(access));
-//                    addTask(nodeLabelBatcher.setBottomLabelColors(access));
-//                    addTask(nodeLabelBatcher.setBottomLabelSizes(access));
+                    addTask(cvkLabels.TaskUpdateLabels(change, access));
+                    addTask(cvkLabels.TaskUpdateColours(change, access));
+                    addTask(cvkLabels.TaskUpdateSizes(change, access));
+
+
 //                    addTask(xyzTexturiser.dispose());
 //                    addTask(xyzTexturiser.createTexture(access));
 //                    addTask(vertexFlagsTexturiser.dispose());
@@ -609,14 +614,12 @@ public class CVKVisualProcessor extends VisualProcessor {
 //                        graphBackgroundColor = new float[]{backgroundColor.getRed(), backgroundColor.getGreen(), backgroundColor.getBlue(), 1};
 //                    });
 //                    addTask(connectionLabelBatcher.setBackgroundColor(access));
-//                    addTask(nodeLabelBatcher.setBackgroundColor(access));
+                    addTask(cvkLabels.TaskSetBackgroundColor(access));
                 };
             case HIGHLIGHT_COLOUR:
                 return (change, access) -> {
-                    if (cvkIcons != null) {
-                        addTask(cvkIcons.TaskSetHighLightColour(access));
-                    }                    
-//                    addTask(nodeLabelBatcher.setHighlightColor(access));
+                    addTask(cvkIcons.TaskSetHighlightColour(access));                   
+                    addTask(cvkLabels.TaskSetHighlightColor(access));
 //                    addTask(connectionLabelBatcher.setHighlightColor(access));
 //                    addTask(lineBatcher.setHighlightColor(access));
 //                    addTask(iconBatcher.setHighlightColor(access));
@@ -638,14 +641,13 @@ public class CVKVisualProcessor extends VisualProcessor {
                 };
             case BOTTOM_LABEL_COLOR:
                 return (change, access) -> {
-//                    addTask(nodeLabelBatcher.setBottomLabelColors(access));
+                    addTask(cvkLabels.TaskUpdateColours(change, access));
                 };
             case BOTTOM_LABELS_REBUILD:
                 return (change, access) -> {
-//                    addTask(nodeLabelBatcher.setBottomLabelColors(access));
-//                    addTask(nodeLabelBatcher.setBottomLabelSizes(access));
-//                    // Note that updating bottom labels always rebuilds from scratch, so it is not an issue if the batch was not 'ready'.
-//                    addTask(nodeLabelBatcher.updateBottomLabels(access));
+                    addTask(cvkLabels.TaskUpdateLabels(change, access));
+                    addTask(cvkLabels.TaskUpdateColours(change, access));
+                    addTask(cvkLabels.TaskUpdateSizes(change, access));
                 };
             case CAMERA:
                 return (change, access) -> {
@@ -653,12 +655,8 @@ public class CVKVisualProcessor extends VisualProcessor {
                     setDisplayCamera(camera);
                     Graphics3DUtilities.getModelViewMatrix(camera.lookAtEye, camera.lookAtCentre, camera.lookAtUp, getDisplayModelViewMatrix());
 
-                    if (cvkAxes != null) {
-                        addTask(cvkAxes.TaskUpdateCamera());
-                    }
-                    if (cvkIcons != null) {
-                        addTask(cvkIcons.TaskUpdateCamera());
-                    }
+                    addTask(cvkAxes.TaskUpdateCamera());
+                    addTask(cvkIcons.TaskUpdateCamera());
                 };
             case CONNECTION_LABEL_COLOR:
                 return (change, access) -> {
@@ -673,14 +671,13 @@ public class CVKVisualProcessor extends VisualProcessor {
                 };
             case TOP_LABEL_COLOR:
                 return (change, access) -> {
-//                    addTask(nodeLabelBatcher.setTopLabelColors(access));
+                    addTask(cvkLabels.TaskUpdateColours(change, access));
                 };
             case TOP_LABELS_REBUILD:
                 return (change, access) -> {
-//                    addTask(nodeLabelBatcher.setTopLabelColors(access));
-//                    addTask(nodeLabelBatcher.setTopLabelSizes(access));
-//                    // Note that updating top labels always rebuilds from scratch, so it is not an issue if the batch was not 'ready'.
-//                    addTask(nodeLabelBatcher.updateTopLabels(access));
+                    addTask(cvkLabels.TaskUpdateLabels(change, access));
+                    addTask(cvkLabels.TaskUpdateColours(change, access));
+                    addTask(cvkLabels.TaskUpdateSizes(change, access));                    
                 };
             case CONNECTION_COLOR:
                 return (change, access) -> {
@@ -714,18 +711,7 @@ public class CVKVisualProcessor extends VisualProcessor {
 
             case VERTEX_SELECTED:
                 return (change, access) -> {
-                    try {
-                        if (cvkIcons != null) {
-//                            if (change.getSize() == access.getVertexCount()) {
-//                                addTask(cvkIcons.TaskRebuildVertexFlags(access));
-//                            } else {
-                                addTask(cvkIcons.TaskUpdateVertexFlags(change, access));
-//                            }
-                        }
-                    } catch (Exception e) {
-                        cvkLogger.LogException(e, "Exception thrown processing visual change %s:", property);
-                        throw e;
-                    }                       
+                    addTask(cvkIcons.TaskUpdateVertexFlags(change, access));                      
                 };
             case VERTEX_X:
                 return (change, access) -> {

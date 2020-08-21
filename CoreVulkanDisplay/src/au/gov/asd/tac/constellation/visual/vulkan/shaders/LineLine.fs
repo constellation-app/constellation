@@ -1,19 +1,25 @@
-#version 330 core
+#version 450
 
+
+// === CONSTANTS ===
 const int LINE_STYLE_SOLID = 0;
 const int LINE_STYLE_DOTTED = 1;
 const int LINE_STYLE_DASHED = 2;
 const int LINE_STYLE_DIAMOND = 3;
 const float LINE_DOT_SIZE = 0.3;
 
-in vec4 pointColor;
-flat in int hitTestId;
-flat in int lineStyle;
-in float pointCoord;
 
-flat in float lineLength;
+// === PER FRAGMENT DATA IN ===
+layout(location = 0) in vec4 pointColor;
+layout(location = 1) flat in int hitTestId;
+layout(location = 2) flat in int lineStyle;
+layout(location = 3) in float pointCoord;
+layout(location = 4) flat in float lineLength;
 
+
+// === PER FRAGMENT DATA OUT ===
 out vec4 fragColor;
+
 
 void main(void) {
     // Line style.

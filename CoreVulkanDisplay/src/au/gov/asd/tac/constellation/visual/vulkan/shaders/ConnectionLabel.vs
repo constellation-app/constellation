@@ -1,7 +1,9 @@
 // Draw labels for connections.
 // The labels are drawn glyph by glyph: each shader call draws one glyph.
-#version 330 core
+#version 450
 
+
+// === CONSTANTS ===
 // The z distance from the camera at which a label is no longer visible
 const float LABEL_VISIBLE_DISTANCE = 150;
 
@@ -26,28 +28,38 @@ const float SIN_EIGHTY_DEGREES = 0.98481;
 // A small constant added to the depths of labels in cases where they would otherwise appear past both nodes of their conncetion.
 const float LABEL_DEPTH_PUSHBACK = 0.001;
 
+
+// === UNIFORMS ===
 // .xyz = world coordinates of node.
 // .a = radius of node.
-uniform samplerBuffer xyzTexture;
+layout(binding = 0) uniform samplerBuffer xyzTexture;
 
-// Matrix to project from world coordinates to camera coordinates
-uniform mat4 mvMatrix;
+layout(std140, binding = 1) uniform UniformBlock {
+    // Matrix to project from world coordinates to camera coordinates
+    mat4 mvMatrix;
 
-// Each column is a connection label with the following structure:
-// [0..2] rgb colour (note label colours do not habve an alpha)
-// [3] label size
-uniform mat4 labelInfo;
+    // Each column is a connection label with the following structure:
+    // [0..2] rgb colour (note label colours do not habve an alpha)
+    // [3] label size
+    mat4 labelInfo;
 
-// Information from the graph's visual state
-uniform float morphMix;
-uniform float visibilityLow;
-uniform float visibilityHigh;
+    // Information from the graph's visual state
+    float morphMix;
+    float visibilityLow;
+    float visibilityHigh;
 
-// The index of the background glyph in the glyphInfo texture
-uniform int backgroundGlyphIndex;
+    // The index of the background glyph in the glyphInfo texture
+    int backgroundGlyphIndex;
 
-// Used to draw the label background.
-uniform vec4 backgroundColor;
+    // Used to draw the label background.
+    vec4 backgroundColor;
+
+    // gl_DepthRange is not available for Vulkan shaders so we have to pass these through ourselves
+    float near;
+    //float far; Not used
+} ub;
+
+
 
 // [0] the index of the glyph in the glyphInfoTexture
 // [1..2] x and y offsets of this glyph from the top centre of the line of text
@@ -76,6 +88,7 @@ out float drawIndicatorY;
 // The depth of the label which is used to bring labels in front of connections.
 out float depth;
 
+
 void main(void) {
 
     float labelWidth = glyphLocationData[0];
@@ -96,16 +109,16 @@ void main(void) {
     int lowOffset = lowNodeIndex * 2;
     vec4 v1 = texelFetch(xyzTexture, lowOffset);
     vec4 v1End = texelFetch(xyzTexture, lowOffset + 1);
-    vec4 mixedV1 = mix(v1, v1End, morphMix);
+    vec4 mixedV1 = mix(v1, v1End, ub.morphMix);
 
     int highOffset = highNodeIndex * 2;
     vec4 v2 = texelFetch(xyzTexture, highOffset);
     vec4 v2End = texelFetch(xyzTexture, highOffset + 1);
-    vec4 mixedV2 = mix(v2, v2End, morphMix);
+    vec4 mixedV2 = mix(v2, v2End, ub.morphMix);
 
     // Calculate the unit vector parallel to the connection
-    v1 = mvMatrix * vec4(mixedV1.xyz, 1);
-    v2 = mvMatrix * vec4(mixedV2.xyz, 1);
+    v1 = ub.mvMatrix * vec4(mixedV1.xyz, 1);
+    v2 = ub.mvMatrix * vec4(mixedV2.xyz, 1);
     vec3 connectionDirection = normalize(v1.xyz - v2.xyz);
 
     // The unit vector perpendicular to the connection in the x-y plane
@@ -124,23 +137,23 @@ void main(void) {
     vec4 connectionLocation = vec4(mix(v1.xyz, v2.xyz, stagger), 1);
 
     // Get the size and colour of this label from the relevant label information matrix
-    glyphScale = labelInfo[labelNumber][3] * LABEL_TO_NRADIUS_UNITS * LABEL_AESTHETIC_SCALE;
+    glyphScale = ub.labelInfo[labelNumber][3] * LABEL_TO_NRADIUS_UNITS * LABEL_AESTHETIC_SCALE;
 
     // Determine visiblity of this label based both on the visibility of the associated node, and the fade out distance for labels.
     float distance = -connectionLocation.z;
-    float alpha = (glyphVis > max(visibilityLow, 0) && (glyphVis <= visibilityHigh || glyphVis > 1.0)) ?
+    float alpha = (glyphVis > max(ub.visibilityLow, 0) && (glyphVis <= ub.visibilityHigh || glyphVis > 1.0)) ?
         1 - smoothstep((LABEL_VISIBLE_DISTANCE-20) * glyphScale, LABEL_VISIBLE_DISTANCE * glyphScale, distance) : 0.0;
 
     // The total vertical offset of the label from the line joining two nodes.
     float labelYOffset = (totalScale * LABEL_TO_NRADIUS_UNITS * LABEL_AESTHETIC_SCALE);
     // We need to subtract half the size of the first connection label from every line's Y offset,
     // since we want the connection to align with the first label's centre (rather than its top).
-    labelYOffset -= 0.5 * labelInfo[0][3] * LABEL_TO_NRADIUS_UNITS * LABEL_AESTHETIC_SCALE;
+    labelYOffset -= 0.5 * ub.labelInfo[0][3] * LABEL_TO_NRADIUS_UNITS * LABEL_AESTHETIC_SCALE;
 
-    // Set the colour appropritely - this comes from the labelInfo matrix for a normal glyph, or the graph background colour
+    // Set the colour appropritely - this comes from the ub.labelInfo matrix for a normal glyph, or the graph background colour
     // if it is a background glyph.
-    labelColor = glyphIndex == backgroundGlyphIndex ?
-        vec4(backgroundColor.xyz * BACKGROUND_DARKENING_FACTOR, alpha) : vec4(labelInfo[labelNumber].xyz, alpha);
+    labelColor = glyphIndex == ub.backgroundGlyphIndex ?
+        vec4(ub.backgroundColor.xyz * BACKGROUND_DARKENING_FACTOR, alpha) : vec4(ub.labelInfo[labelNumber].xyz, alpha);
 
     // Calculate the pixel coordinates of the glyph's location on the graph
     vec4 locationOffset = vec4(glyphXOffset * glyphScale, -(glyphYOffset * glyphScale) - labelYOffset, 0, 0);
@@ -172,8 +185,6 @@ void main(void) {
     backgroundScalingFactor = abs(2 * labelWidth);
     // The location of the bottom right corner of the label
     vec4 labelBRLocation = labelLocation + vec4(glyphScale * backgroundScalingFactor, -glyphScale, 0, 0);
-    // The near plane
-    float near = gl_DepthRange.near;
 
     // Look for an intercept at the top of the label
     float beta = labelLocation.y / labelLocation.z;
@@ -185,7 +196,7 @@ void main(void) {
         connectionInterceptX = v1.x +  distanceAlongConnection * connectionDirection.x;
         topInterceptZ = v1.z +  distanceAlongConnection * connectionDirection.z;
         // Check that this point actually lies between v1 and v2
-        if (-topInterceptZ > near && connectionInterceptX >= min(v1.x, v2.x) && connectionInterceptX <= max(v1.x, v2.x)) {
+        if (-topInterceptZ > ub.near && connectionInterceptX >= min(v1.x, v2.x) && connectionInterceptX <= max(v1.x, v2.x)) {
             // Calculate the intercept on the top of the label by scaling this point
             topIntercept = (connectionInterceptX * labelLocation.z) / topInterceptZ;
             // If the intercept actually lies on the top side of the label, flag that there is a top intercept
@@ -205,7 +216,7 @@ void main(void) {
         connectionInterceptX = v1.x +  distanceAlongConnection * connectionDirection.x;
         bottomInterceptZ = v1.z + distanceAlongConnection * connectionDirection.z;
         // Check that this point actually lies between v1 and v2
-        if (-bottomInterceptZ > near && connectionInterceptX >= min(v1.x, v2.x) && connectionInterceptX <= max(v1.x, v2.x)) {
+        if (-bottomInterceptZ > ub.near && connectionInterceptX >= min(v1.x, v2.x) && connectionInterceptX <= max(v1.x, v2.x)) {
             // Calculate the intercept on the bottom of the label by scaling this point
             bottomIntercept = (connectionInterceptX * labelBRLocation.z) / bottomInterceptZ;
             // If the intercept actually lies on the bottom side of the label, flag that there is a bottom intercept
@@ -252,7 +263,7 @@ void main(void) {
             connectionInterceptY = v1.y +  distanceAlongConnection * connectionDirection.y;
             leftInterceptZ = v1.z +  distanceAlongConnection*connectionDirection.z;
             // Check that this point actually lies between v1 and v2
-            if (-leftInterceptZ > near && connectionInterceptY >= min(v1.y, v2.y) && connectionInterceptY <= max(v1.y, v2.y)) {
+            if (-leftInterceptZ > ub.near && connectionInterceptY >= min(v1.y, v2.y) && connectionInterceptY <= max(v1.y, v2.y)) {
                 // Calculate the intercept on the left of the label by scaling this point
                 leftIntercept = (connectionInterceptY * labelLocation.z) / leftInterceptZ;
                 // If the intercept actually lies on left top side of the label, flag that there is a top intercept
@@ -271,7 +282,7 @@ void main(void) {
             connectionInterceptY = v1.y +  distanceAlongConnection * connectionDirection.y;
             rightInterceptZ = v1.z +  distanceAlongConnection * connectionDirection.z;
             // Check that this point actually lies between v1 and v2
-            if (-rightInterceptZ > near && connectionInterceptY >= min(v1.y, v2.y) && connectionInterceptY <= max(v1.y, v2.y)) {
+            if (-rightInterceptZ > ub.near && connectionInterceptY >= min(v1.y, v2.y) && connectionInterceptY <= max(v1.y, v2.y)) {
                 // Calculate the intercept on the right of the label by scaling this point
                 rightIntercept = (connectionInterceptY * labelBRLocation.z) / rightInterceptZ;
                 // If the intercept actually lies on the right side of the label, flag that there is a top intercept
@@ -309,17 +320,17 @@ void main(void) {
     }
 
     // If we are not looking at the background glyph and the first label, we don't want to draw an indicator.
-    if (glyphIndex != backgroundGlyphIndex || totalScale != 0) {
+    if (glyphIndex != ub.backgroundGlyphIndex || totalScale != 0) {
         drawIndicator = 0;
     }
     // If we are not looking at the background glyph, reset the background scaling factor to the default
-    if (glyphIndex != backgroundGlyphIndex) {
+    if (glyphIndex != ub.backgroundGlyphIndex) {
         backgroundScalingFactor = 1;
     }
 
     // Used to brings glyphs slightly forward - text glyphs are brought further forward than the background glyph.
     // Note that both of these quantities are strictly smaller than LABEL_DEPTH_PUSHBACK
-    float bringForward = glyphIndex == backgroundGlyphIndex ? 0.00025 : 0.00075;
+    float bringForward = glyphIndex == ub.backgroundGlyphIndex ? 0.00025 : 0.00075;
 
 
     // If the calculated depth is in front of the connection's anterior node,
@@ -334,8 +345,8 @@ void main(void) {
     }
     // If the calculated depth is in front of the near plane,
     // clamp it to the depth of this plane and push it backwards a small amount.
-    if(-depth < near) {
-        depth = -near - LABEL_DEPTH_PUSHBACK;
+    if(-depth < ub.near) {
+        depth = -ub.near - LABEL_DEPTH_PUSHBACK;
     }
     // Bring this glyph forwards by the appropriate amount depending on whether or not it is the background glyph.
     depth += bringForward;

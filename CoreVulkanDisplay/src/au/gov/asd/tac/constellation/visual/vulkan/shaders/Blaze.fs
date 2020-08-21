@@ -1,25 +1,34 @@
-#version 330 core
+#version 450
 
+
+// === CONSTANTS ===
 const float ICON_BORDER = 0.125;
 
-flat in vec4 fColor;
-//flat in ivec4 fData;
-in vec2 pointCoord;
-in float fnradius;
-flat in int isPointer;
 
-uniform float opacity;
+// === UNIFORMS ===
+layout(binding = 2) uniform sampler2DArray images;
+layout(std140, binding = 3) uniform UniformBlock {
+    float opacity;
+} ub;
 
-uniform sampler2DArray images;
 
+// === PER FRAGMENT DATA IN ===
+layout(location = 0) flat in vec4 fColor;
+layout(location = 1) in vec2 pointCoord;
+layout(location = 2) in float fnradius;
+layout(location = 3) flat in int isPointer;
+
+
+// === PER FRAGMENT DATA OUT ===
 out vec4 fragColor;
+
 
 void main() {
 
     // Blazes don't do icons for now.
     // Comment out the rest of the code to avoid "fData not used" errors when linking on some drivers.
     if(isPointer != 0) {
-        fragColor = vec4(fColor.rgb * (1.0 - pointCoord.x * pointCoord.x), opacity);
+        fragColor = vec4(fColor.rgb * (1.0 - pointCoord.x * pointCoord.x), ub.opacity);
     }
 /*
     else {

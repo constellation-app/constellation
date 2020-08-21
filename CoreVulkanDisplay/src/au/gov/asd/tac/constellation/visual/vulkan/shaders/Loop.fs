@@ -1,19 +1,29 @@
-#version 330 core
+#version 450
 
+
+// === CONSTANTS ===
 const int LOOP_DIRECTED_INDEX = 2;
 const int LOOP_UNDIRECTED_INDEX = 3;
 
-uniform sampler2DArray images;
 
-// If non-zero, use the texture to color the icon.
-// Otherwise, use a unique color for hit testing.
-uniform int drawHitTest;
+// === UNIFORMS ===
+layout(binding = 3) uniform sampler2DArray images;
+layout(std140, binding = 4) uniform UniformBlock {
+    // If non-zero, use the texture to color the icon.
+    // Otherwise, use a unique color for hit testing.
+    int drawHitTest;
+} ub;
 
-in vec4 pointColor;
-flat in ivec4 fData;
-in vec2 pointCoord;
 
+// === PER FRAGMENT DATA IN ===
+layout(location = 0) in vec4 pointColor;
+layout(location = 1) flat in ivec4 fData;
+layout(location = 2) in vec2 pointCoord;
+
+
+// === PER FRAGMENT DATA OUT ===
 out vec4 fragColor;
+
 
 void main() {
     int imgIx = fData.q;
@@ -27,14 +37,14 @@ void main() {
         discard;
     }
 
-    if(drawHitTest == 0) {
+    if (ub.drawHitTest == 0) {
         int seldim = fData.p;
         bool isSelected = (seldim & 1) != 0;
         bool isDim = (seldim & 2) != 0;
 
-        if(isSelected) {
+        if (isSelected) {
             fragColor = vec4(1, 0.1, 0.1, 1);
-        } else if(isDim) {
+        } else if (isDim) {
             fragColor = vec4(0.25, 0.25, 0.25, 1);
         } else {
             fragColor.rgb *= pointColor.rgb;

@@ -27,7 +27,7 @@ out vec4 fragColor;
 
 
 void main(void) {
-    if (ub.drawHitTest ==0 ) {
+    if (ub.drawHitTest == 0) {
         fragColor = iconColor * texture(images, textureCoords);
 
         // Discarding only when fragColor.a==0.0 means that some "nearly transparent" pixels get drawn, which causes weird see-through

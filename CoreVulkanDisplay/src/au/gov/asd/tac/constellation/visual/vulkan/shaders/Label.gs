@@ -1,8 +1,10 @@
 // Geometry shader for labels.
 // Outputs the 4 corners of a glyph, and if we are drawing the background of a connection label, possibly the 3 corners
 // of an indicator triangle pointing at the conenction.
-#version 330 core
+#version 450
 
+
+// === CONSTANTS ===
 // If the point is beyond this distance, don't draw it.
 // Keep this in sync with the text fadeout in the fragment shader.
 const float VISIBLE_DISTANCE = 150;
@@ -13,50 +15,58 @@ const float INDICATOR_SIZE = 0.1;
 // An approximation of the trigonometric tangent function evaluated at various degree values.
 const float SIN_SIXTY_DEGREES = 0.86603;
 
-layout(points) in;
-layout(triangle_strip, max_vertices=7) out;
 
-// Matrix to convert from camera coordinates to scene coordinates.
-uniform mat4 pMatrix;
+// === UNIFORMS ===
+layout(std140, binding = 2) uniform UniformBlock {
+    // Matrix to convert from camera coordinates to scene coordinates.
+    mat4 pMatrix;
+
+    // The scaling factor to convert from texture coordinates to world unit coordinates
+    float widthScalingFactor;
+    float heightScalingFactor;
+
+    // Used to draw the connection indicator on the label background.
+    vec4 highlightColor;
+
+    // gl_DepthRange is not available for Vulkan shaders so we have to pass these through ourselves
+    float near;
+    float far;
+} ub;
 
 // [0..1] x,y coordinates of glyph in glyphImageTexture. The whole part of x is the texture number
 // [2..3] width, height of glyph in glyphImageTexture
-uniform samplerBuffer glyphInfoTexture;
+layout(binding = 3) uniform samplerBuffer glyphInfoTexture;
 
-// The scaling factor to convert from texture coordinates to world unit coordinates
-uniform float widthScalingFactor;
-uniform float heightScalingFactor;
 
-// Used to draw the connection indicator on the label background.
-uniform vec4 highlightColor;
+// === PER PRIMITIVE DATA IN ===
+layout(points) in;
 
 // The scaling factor if the glyph we are rendering is in fact the background for a line of text.
 // This will be one in all other cases.
-in float backgroundScalingFactor[];
-in int glyphIndex[];
-in vec4 labelColor[];
-in float glyphScale[];
-in int drawIndicator[];
-in float drawIndicatorX[];
-in float drawIndicatorY[];
-in float depth[];
+layout(location = 0) in float backgroundScalingFactor[];
+layout(location = 1) in int glyphIndex[];
+layout(location = 2) in vec4 labelColor[];
+layout(location = 3) in float glyphScale[];
+layout(location = 4) in int drawIndicator[];
+layout(location = 5) in float drawIndicatorX[];
+layout(location = 6) in float drawIndicatorY[];
+layout(location = 7) in float depth[];
+
+
+// === PER PRIMITIVE DATA OUT ===
+layout(triangle_strip, max_vertices=7) out;
 
 // The coordinates to lookup the glyph in the glyphImageTexture
-noperspective centroid out vec3 textureCoordinates;
+layout(location = 0) noperspective centroid out vec3 textureCoordinates;
 // The colour of this glyph (constant for a whole label, unless we are rendering its background or connection indicator).
-out vec4 fLabelColor;
+layout(location = 1) out vec4 fLabelColor;
 
-flat out float fDepth;
+layout(location = 2) flat out float fDepth;
 
 
 void main(void) {
 
     if(labelColor[0].a > 0) {
-
-        // The near and far planes
-        float near = gl_DepthRange.near;
-        float far = gl_DepthRange.far;
-
         // Retrive the positional information about the glyph from the glypInfoTexture
         vec4 glyphInfo = texelFetch(glyphInfoTexture, glyphIndex[0]);
         int glyphPage = int(glyphInfo[0]);
@@ -69,19 +79,20 @@ void main(void) {
         vec4 glyphLocation = gl_in[0].gl_Position;
 
         // Calculate depth
-        vec4 depthVec = pMatrix * vec4(glyphLocation.xy, depth[0], glyphLocation.w);
-        float calcdDepth = ((far - near) * (depthVec.z / depthVec.w) + far + near) / 2.0;
+        vec4 depthVec = ub.pMatrix * vec4(glyphLocation.xy, depth[0], glyphLocation.w);
+        float calcdDepth = ((ub.far - ub.near) * (depthVec.z / depthVec.w) + ub.far + ub.near) / 2.0;
 
         // The dimensions (in camera coordinates) of the glyph
-        float width = glyphWidth * glyphScale[0] * widthScalingFactor * backgroundScalingFactor[0];
-        float height = glyphHeight * glyphScale[0] * heightScalingFactor;
+        float width = glyphWidth * glyphScale[0] * ub.widthScalingFactor * backgroundScalingFactor[0];
+        float height = glyphHeight * glyphScale[0] * ub.heightScalingFactor;
 
         // Emitt the four corners of the glyph in screen coordinates.
         // Upper Left
         fLabelColor = labelColor[0];
         textureCoordinates = vec3(glyphX, glyphY, glyphPage);
         fDepth = calcdDepth;
-        gl_Position = pMatrix * glyphLocation;
+        gl_Position = ub.pMatrix * glyphLocation;
+        gl_Position.y = -gl_Position.y;
         EmitVertex();
 
         // Lower Left
@@ -89,7 +100,8 @@ void main(void) {
         textureCoordinates = vec3(glyphX, glyphY + glyphHeight, glyphPage);
         fDepth = calcdDepth;
         vec4 locationOffset = vec4(0, -height, 0, 0);
-        gl_Position = pMatrix * (glyphLocation + locationOffset);
+        gl_Position = ub.pMatrix * (glyphLocation + locationOffset);
+        gl_Position.y = -gl_Position.y;
         EmitVertex();
 
         // Upper Right
@@ -97,7 +109,8 @@ void main(void) {
         textureCoordinates = vec3(glyphX + glyphWidth, glyphY, glyphPage);
         fDepth = calcdDepth;
         locationOffset = vec4(width, 0, 0, 0);
-        gl_Position = pMatrix * (glyphLocation + locationOffset);
+        gl_Position = ub.pMatrix * (glyphLocation + locationOffset);
+        gl_Position.y = -gl_Position.y;
         EmitVertex();
 
         // Lower Right
@@ -105,7 +118,8 @@ void main(void) {
         textureCoordinates = vec3(glyphX + glyphWidth, glyphY + glyphHeight, glyphPage);
         fDepth = calcdDepth;
         locationOffset =  vec4(width, -height, 0, 0);
-        gl_Position = pMatrix * (glyphLocation + locationOffset);
+        gl_Position = ub.pMatrix * (glyphLocation + locationOffset);
+        gl_Position.y = -gl_Position.y;
         EmitVertex();
 
         EndPrimitive();
@@ -116,11 +130,11 @@ void main(void) {
             // recalculate depth for direction indicator noting that we need to push the depth slightly forward of the
             // background glyph, but not as far forward as the other glyphs.
             float forward = 0.00025;
-            vec4 depthVec = pMatrix * vec4(glyphLocation.xy, depth[0] + forward, glyphLocation.w);
-            float calcdDepth = ((far - near)*(depthVec.z / depthVec.w) + far + near) / 2.0;
+            vec4 depthVec = ub.pMatrix * vec4(glyphLocation.xy, depth[0] + forward, glyphLocation.w);
+            float calcdDepth = ((ub.far - ub.near)*(depthVec.z / depthVec.w) + ub.far + ub.near) / 2.0;
 
             // The indicator colour is the graph highlight colour, with the alpha value that is constant across the label.
-            vec4 indicatorColor = vec4(highlightColor.xyz, 1.5 * labelColor[0].a);
+            vec4 indicatorColor = vec4(ub.highlightColor.xyz, 1.5 * labelColor[0].a);
             vec4 trianglePoint, triangleBase1, triangleBase2;
 
             if (drawIndicator[0] == 1 || drawIndicator[0] == 2) {
@@ -142,19 +156,22 @@ void main(void) {
             fLabelColor = indicatorColor;
             textureCoordinates = vec3(glyphX, glyphY, glyphPage);
             fDepth = calcdDepth;
-            gl_Position = pMatrix * (glyphLocation + trianglePoint);
+            gl_Position = ub.pMatrix * (glyphLocation + trianglePoint);
+            gl_Position.y = -gl_Position.y;
             EmitVertex();
 
             fLabelColor = indicatorColor;
             textureCoordinates = vec3(glyphX, glyphY, glyphPage);
             fDepth = calcdDepth;
-            gl_Position = pMatrix * (glyphLocation + triangleBase1);
+            gl_Position = ub.pMatrix * (glyphLocation + triangleBase1);
+            gl_Position.y = -gl_Position.y;
             EmitVertex();
 
             fLabelColor = indicatorColor;
             textureCoordinates = vec3(glyphX, glyphY, glyphPage);
             fDepth = calcdDepth;
-            gl_Position = pMatrix * (glyphLocation + triangleBase2);
+            gl_Position = ub.pMatrix * (glyphLocation + triangleBase2);
+            gl_Position.y = -gl_Position.y;
             EmitVertex();
 
             EndPrimitive();

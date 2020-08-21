@@ -1,7 +1,9 @@
 // Draw labels for nodes.
 // The labels are drawn glyph by glyph: each shader call draws one glyph.
-#version 330 core
+#version 450
 
+
+// === CONSTANTS ===
 // The z distance from the camera at which a label is no longer visible
 const float LABEL_VISIBLE_DISTANCE = 150;
 
@@ -20,57 +22,65 @@ const float LABEL_NODE_GAP = 0.2 / LABEL_AESTHETIC_SCALE;
 // 1 means no darkening, 0 means completely black
 const float BACKGROUND_DARKENING_FACTOR = 0.8;
 
+
+// === UNIFORMS ===
 // .xyz = world coordinates of node.
 // .a = radius of node.
-uniform samplerBuffer xyzTexture;
+layout(binding = 0) uniform samplerBuffer xyzTexture;
+layout(std140, binding = 1) uniform UniformBlock {
+    // Matrix to project from world coordinates to camera coordinates
+    mat4 mvMatrix;
 
-// Matrix to project from world coordinates to camera coordinates
-uniform mat4 mvMatrix;
+    // Each column is a node (bottom or top) label with the following structure:
+    // [0..2] rgb colour (note label colours do not habve an alpha)
+    // [3] label size
+    mat4 labelBottomInfo;
+    mat4 labelTopInfo;
 
-// Each column is a node (bottom or top) label with the following structure:
-// [0..2] rgb colour (note label colours do not habve an alpha)
-// [3] label size
-uniform mat4 labelBottomInfo;
-uniform mat4 labelTopInfo;
+    // Information from the graph's visual state
+    float morphMix;
+    float visibilityLow;
+    float visibilityHigh;
 
-// Information from the graph's visual state
-uniform float morphMix;
-uniform float visibilityLow;
-uniform float visibilityHigh;
+    // The index of the background glyph in the glyphInfo texture
+    int backgroundGlyphIndex;
 
-// The index of the background glyph in the glyphInfo texture
-uniform int backgroundGlyphIndex;
+    // Used to draw the label background.
+    vec4 backgroundColor;
+} ub;
 
-// Used to draw the label background.
-uniform vec4 backgroundColor;
 
+// === PER VERTEX DATA IN ===
 // [0] the index of the glyph in the glyphInfoTexture
 // [1..2] x and y offsets of this glyph from the top centre of the line of text
 // [3] The visibility of this glyph (constant for a node, but easier to pass in the batch).
-in vec4 glyphLocationData;
+layout(location = 0) in vec4 glyphLocationData;
 
 // [0] The index of the node containg this glyph in the xyzTexture
 // [1] The total scale of the lines and their labels up to this point (< 0 if this is a glyph in a bottom label)
 // [2] The label number in which this glyph occurs
 // [3] Unused
-in ivec4 graphLocationData;
+layout(location = 1) in ivec4 graphLocationData;
 
+
+// === PER VERTEX DATA OUT ===
 // Information about the texture location, colour and scale of the glyph
-out int glyphIndex;
-out vec4 labelColor;
-out float glyphScale;
+layout(location = 0) out int glyphIndex;
+layout(location = 1) out vec4 labelColor;
+layout(location = 2) out float glyphScale;
 // The scaling factor if the glyph we are rendering is in fact the background for a line of text.
 // This will be one in all other cases.
-out float backgroundScalingFactor;
+layout(location = 3) out float backgroundScalingFactor;
 // A value describing the side of the background on which an indicator should be for connection labels.
 // This will always be zero here because we don't draw indicators for node labels.
-out int drawIndicator;
+layout(location = 4) out int drawIndicator;
 // Locations for placing the aforementioned indicator. Again they are unused here
-out float drawIndicatorX;
-out float drawIndicatorY;
+layout(location = 5) out float drawIndicatorX;
+layout(location = 6) out float drawIndicatorY;
 // The depth of the label which is used to bring labels in front of connections.
 // As this feature is not used for node labels, depth simply gets set to the z_position of the label.
-out float depth;
+layout(location = 7) out float depth;
+
 
 void main(void) {
 
@@ -88,28 +98,28 @@ void main(void) {
     int offset = nodeIndex * 2;
     vec4 v = texelFetch(xyzTexture, offset);
     vec4 vEnd = texelFetch(xyzTexture, offset + 1);
-    vec4 mixedVertex = mix(v, vEnd, morphMix);
+    vec4 mixedVertex = mix(v, vEnd, ub.morphMix);
 
     // Calculate the pixel coordinates of the vertex
-    vec4 nodeLocation = mvMatrix * vec4(mixedVertex.xyz, 1);
+    vec4 nodeLocation = ub.mvMatrix * vec4(mixedVertex.xyz, 1);
 
     // Get the radius of the associated vertex
     float nradius = mixedVertex.w;
 
 
     // Get the size and colour of this label from the relevant label information matrix
-    mat4 labelInfo = totalScale < 0 ? labelBottomInfo : labelTopInfo;
+    mat4 labelInfo = totalScale < 0 ? ub.labelBottomInfo : ub.labelTopInfo;
     float labelScale = labelInfo[labelNumber][3] * LABEL_TO_NRADIUS_UNITS * LABEL_AESTHETIC_SCALE;
     glyphScale = nradius * labelScale;
     
     // Determine visiblity of this label based both on the visibility of the associated node, and the fade out distance for labels.
     float distance = -nodeLocation.z / nradius;
-    float alpha = (glyphVis > max(visibilityLow, 0) && (glyphVis <= visibilityHigh || glyphVis > 1.0)) ?
+    float alpha = (glyphVis > max(ub.visibilityLow, 0) && (glyphVis <= ub.visibilityHigh || glyphVis > 1.0)) ?
         1 - smoothstep((LABEL_VISIBLE_DISTANCE - 20) * glyphScale, LABEL_VISIBLE_DISTANCE * glyphScale, distance) : 0.0;
 
     // Set the colour (and background information if this glyph is the background)
-    if (glyphIndex == backgroundGlyphIndex) {
-        labelColor = vec4(backgroundColor.xyz * BACKGROUND_DARKENING_FACTOR, alpha);
+    if (glyphIndex == ub.backgroundGlyphIndex) {
+        labelColor = vec4(ub.backgroundColor.xyz * BACKGROUND_DARKENING_FACTOR, alpha);
         backgroundScalingFactor = abs(2 * glyphXOffset);
     } else {
         labelColor = vec4(labelInfo[labelNumber].xyz, alpha);

@@ -16,4 +16,5 @@ layout(location = 0) out vec4 gColor;
 void main(void) {
     gColor = color;
     gl_Position = ub.mvpMatrix * vec4(vertex, 1);
+    gl_Position.y = -gl_Position.y;
 }

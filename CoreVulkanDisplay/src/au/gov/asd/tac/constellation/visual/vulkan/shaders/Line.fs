@@ -1,5 +1,7 @@
-#version 330 core
+#version 450
 
+
+// === CONSTANTS ===
 // We want thin black lines on the edges of the edges so we can see individual lines
 // instead of a mass of color.
 const float EDGE1 = 1.0/16;
@@ -11,45 +13,51 @@ const int LINE_STYLE_DASHED = 2;
 const int LINE_STYLE_DIAMOND = 3;
 const float LINE_DOT_SIZE = 0.3;
 
-uniform float alpha;
 
-uniform int drawHitTest;
+// === UNIFORMS ===
+layout(std140, binding = 3) uniform UniformBlock {
+    int drawHitTest;
+} ub;
 
-in vec4 pointColor;
-flat in ivec4 fData;
-in vec2 pointCoord;
 
-flat in float lineLength;
+// === PER FRAGMENT DATA IN ===
+layout(location = 0) in vec4 pointColor;
+layout(location = 1) flat in ivec4 fData;
+layout(location = 2) in vec2 pointCoord;
+layout(location = 3) flat in float lineLength;
 
+
+// === PER FRAGMENT DATA OUT ===
 out vec4 fragColor;
+
 
 void main(void) {
     // Line style.
-    if(fData.q != LINE_STYLE_SOLID && lineLength > 0) {
+    if (fData.q != LINE_STYLE_SOLID && lineLength > 0) {
         float lineStyle = fData.q;
         float segmentSize = LINE_DOT_SIZE * (lineLength / (0.25 + lineLength));
 
-        if(lineStyle == LINE_STYLE_DOTTED) {
+        if (lineStyle == LINE_STYLE_DOTTED) {
             float seg = mod(pointCoord.y, 2 * segmentSize);
             if(seg > (1 * segmentSize) && seg < (2 * segmentSize)) {
                 discard;
             }
-        } else if(lineStyle == LINE_STYLE_DASHED) {
+        } else if (lineStyle == LINE_STYLE_DASHED) {
             float seg = mod(pointCoord.y, 3 * segmentSize);
             if(seg > (2 * segmentSize) && seg<(3 * segmentSize)) {
                 discard;
             }
-        } else if(lineStyle == LINE_STYLE_DIAMOND) {
+        } else if (lineStyle == LINE_STYLE_DIAMOND) {
             float seg = mod(pointCoord.y, segmentSize) / segmentSize;
             if((pointCoord.x < 0 && seg > pointCoord.x + 1) || (pointCoord.x > 0 && seg > (1 - pointCoord.x))) {
                 discard;
-            } else if((pointCoord.x < 0 && seg < (1 - pointCoord.x) - 1) || (pointCoord.x > 0 && seg < pointCoord.x)) {
+            } else if ((pointCoord.x < 0 && seg < (1 - pointCoord.x) - 1) || (pointCoord.x > 0 && seg < pointCoord.x)) {
                 discard;
             }
         }
     }
 
-    if(drawHitTest==0) {
+    if (ub.drawHitTest == 0) {
         // Make the edges of the line darker so the viewer can distinguish between lines.
         if (abs(pointCoord.x) > 0.20) {
             fragColor = (1.2 - abs(pointCoord.x)) * pointColor;

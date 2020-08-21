@@ -120,7 +120,7 @@ import org.lwjgl.vulkan.VkSemaphoreCreateInfo;
  * resources and updating the next set before the first has been presented.
  */
 public class CVKSwapChain {
-    private CVKDevice cvkDevice;
+    private final CVKDevice cvkDevice;
     private CVKImage cvkDepthImage = null;
     private long hSwapChainHandle = VK_NULL_HANDLE;
     private long hRenderPassHandle = VK_NULL_HANDLE;    

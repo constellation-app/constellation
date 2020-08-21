@@ -1,8 +1,10 @@
 // LINE geometry shader.
 // Points that are marked with the hidden indicator (color.a<0) are not emitted.
 
-#version 330 core
+#version 450
 
+
+// === CONSTANTS ===
 // Keep this in sync with SceneBatchStore.
 const int LINE_INFO_ARROW = 1;
 const int LINE_INFO_OVERFLOW = 2;
@@ -13,31 +15,38 @@ const float VISIBLE_ARROW_DISTANCE = 100;
 
 const float FLOAT_MULTIPLIER = 1024;
 
+
+// === UNIFORMS ===
+layout(std140, binding = 2) uniform UniformBlock {
+    mat4 pMatrix;
+    float visibilityLow;
+    float visibilityHigh;
+    float directionMotion;
+    vec4 highlightColor;
+    float alpha;
+    int drawHitTest;
+} ub;
+
+
+// === PER PRIMITIVE DATA IN ===
 layout(lines) in;
+layout(location = 0) in vec4 vpointColor[];
+layout(location = 1) flat in ivec4 gData[];
+
+
+// === PER PRIMITIVE DATA OUT ===
 layout(triangle_strip, max_vertices=22) out;
+layout(location = 0) out vec4 pointColor;
+layout(location = 1) flat out ivec4 fData;
+layout(location = 2) out vec2 pointCoord;
+layout(location = 3) flat out float lineLength;
 
-uniform mat4 pMatrix;
-
-uniform float visibilityLow;
-uniform float visibilityHigh;
-uniform float directionMotion;
-uniform vec4 highlightColor;
-uniform float alpha;
-uniform int drawHitTest;
-
-in vec4 vpointColor[];
-flat in ivec4 gData[];
-
-out vec4 pointColor;
-flat out ivec4 fData;
-out vec2 pointCoord;
-flat out float lineLength;
 
 void main() {
     // Lines are explicitly not drawn if they have visibility <= 0.
     // See au.gov.asd.tac.constellation.visual.opengl.task;
     float visibility = vpointColor[0][3];
-    if(visibility > max(visibilityLow, 0) && (visibility <= visibilityHigh || visibility > 1.0)) {
+    if(visibility > max(ub.visibilityLow, 0) && (visibility <= ub.visibilityHigh || visibility > 1.0)) {
         // The ends of the line.
         vec4 end0 = gl_in[0].gl_Position;
         vec4 end1 = gl_in[1].gl_Position;
@@ -95,25 +104,25 @@ void main() {
             // If this line is selected and we're not drawing into the hit test buffer,
             // or we've been told to draw it fatter (presumably to indicate many transactions in this edge),
             // draw it fatter.
-            if((isSelected && drawHitTest == 0) || (lineInfo0 & LINE_INFO_OVERFLOW) != 0 || (lineInfo1 & LINE_INFO_OVERFLOW) != 0) {
+            if((isSelected && ub.drawHitTest == 0) || (lineInfo0 & LINE_INFO_OVERFLOW) != 0 || (lineInfo1 & LINE_INFO_OVERFLOW) != 0) {
                 halfWidth *= 2;
                 arrowVector *= 1.5;
             }
 
-            // If we're drawing into the hit buffer, the alpha is left alone, because hit testing depends on the edge id
-            // stored in the alpha of the color.
-            // If we're drawing into the display buffer, vary the alpha depending on the distance of the line from the camera.
+            // If we're drawing into the hit buffer, the ub.alpha is left alone, because hit testing depends on the edge id
+            // stored in the ub.alpha of the color.
+            // If we're drawing into the display buffer, vary the ub.alpha depending on the distance of the line from the camera.
             // We use the nearest end of the line for the distance.
             vec4 color0;
             vec4 color1;
 
-            if(drawHitTest==0) {
+            if(ub.drawHitTest==0) {
                 color0 = vpointColor[0];
                 color1 = vpointColor[1];
 
                 if(isSelected){
-                    color0 = highlightColor;
-                    color1 = highlightColor;
+                    color0 = ub.highlightColor;
+                    color1 = ub.highlightColor;
                 } else if (isDim) {
                     color0 = vec4(0.25, 0.25, 0.25, 0.5);
                     color1 = color0;
@@ -122,8 +131,8 @@ void main() {
                 // This overwrites the visibility value in vpointcolor[][3].
                 // TODO: The fade-out distance should depend on the current bounding box / camera distance.
                 float alphaFade = 1 - smoothstep(10, 500000, lineDistance);
-                color0.a = alphaFade * alpha;
-                color1.a = alphaFade * alpha;
+                color0.a = alphaFade * ub.alpha;
+                color1.a = alphaFade * ub.alpha;
             } else {
                 color0 = vec4(0, 0, 0, 0);
                 color1 = color0;
@@ -139,19 +148,22 @@ void main() {
             if(outgoing1 && (end0.z>-100 || width>1)) {
                 // Draw a triangle to represent the arrow
                 pointColor = color0;
-                gl_Position = pMatrix * end0;
+                gl_Position = ub.pMatrix * end0;
+                gl_Position.y = -gl_Position.y;
                 fData = ivec4(gData[0].stp, 0);
                 pointCoord = vec2(0, 1);
                 EmitVertex();
 
                 pointColor = color0;
-                gl_Position = pMatrix * (end0 - halfWidth * 4 + arrowVector);
+                gl_Position = ub.pMatrix * (end0 - halfWidth * 4 + arrowVector);
+                gl_Position.y = -gl_Position.y;
                 fData = ivec4(gData[0].stp, 0);
                 pointCoord = vec2(-0.7, 0.5);
                 EmitVertex();
 
                 pointColor = color0;
-                gl_Position = pMatrix * (end0 + halfWidth * 4 + arrowVector);
+                gl_Position = ub.pMatrix * (end0 + halfWidth * 4 + arrowVector);
+                gl_Position.y = -gl_Position.y;
                 fData = ivec4(gData[0].stp, 0);
                 pointCoord = vec2(0.7, 0.5);
                 EmitVertex();
@@ -161,7 +173,8 @@ void main() {
                 // If both ends have arrows then convert the triangle into a diamond.
                 if (outgoing0) {
                     pointColor = color0;
-                    gl_Position = pMatrix * (end0 + arrowVector * 0.5);
+                    gl_Position = ub.pMatrix * (end0 + arrowVector * 0.5);
+                    gl_Position.y = -gl_Position.y;
                     fData = ivec4(gData[0].stp, 0);
                     pointCoord = vec2(0, 0);
                     EmitVertex();
@@ -177,19 +190,22 @@ void main() {
             if(outgoing0 && (end1.z > -100 || width > 1)) {
                 // Draw a triangle to represent the arrow
                 pointColor = color1;
-                gl_Position = pMatrix * end1;
+                gl_Position = ub.pMatrix * end1;
+                gl_Position.y = -gl_Position.y;
                 fData = ivec4(gData[0].stp, 0);
                 pointCoord = vec2(0, 1);
                 EmitVertex();
 
                 pointColor = color1;
-                gl_Position = pMatrix * (end1 - halfWidth * 4 - arrowVector);
+                gl_Position = ub.pMatrix * (end1 - halfWidth * 4 - arrowVector);
+                gl_Position.y = -gl_Position.y;
                 fData = ivec4(gData[0].stp, 0);
                 pointCoord = vec2(-0.7, 0.5);
                 EmitVertex();
 
                 pointColor = color1;
-                gl_Position = pMatrix * (end1 + halfWidth * 4 - arrowVector);
+                gl_Position = ub.pMatrix * (end1 + halfWidth * 4 - arrowVector);
+                gl_Position.y = -gl_Position.y;
                 fData = ivec4(gData[0].stp, 0);
                 pointCoord = vec2(0.7, 0.5);
                 EmitVertex();
@@ -199,7 +215,8 @@ void main() {
                 // If both ends have arrows then convert the triangle into a diamond.
                 if (outgoing1) {
                     pointColor = color1;
-                    gl_Position = pMatrix * (end1 - arrowVector * 0.5);
+                    gl_Position = ub.pMatrix * (end1 - arrowVector * 0.5);
+                    gl_Position.y = -gl_Position.y;
                     fData = ivec4(gData[0].stp, 0);
                     pointCoord = vec2(0, 0);
                     EmitVertex();
@@ -215,25 +232,29 @@ void main() {
 
             // Draw the shaft of the edge with the required line style.
             pointColor = color0;
-            gl_Position = pMatrix * (end0 + halfWidth);
+            gl_Position = ub.pMatrix * (end0 + halfWidth);
+            gl_Position.y = -gl_Position.y;
             fData = ivec4(gData[0].stp, lineStyle);
             pointCoord = vec2(0.5, 0);
             EmitVertex();
 
             pointColor = color0;
-            gl_Position = pMatrix * (end0 - halfWidth);
+            gl_Position = ub.pMatrix * (end0 - halfWidth);
+            gl_Position.y = -gl_Position.y;
             fData = ivec4(gData[0].stp, lineStyle);
             pointCoord = vec2(-0.5, 0);
             EmitVertex();
 
             pointColor = color1;
-            gl_Position = pMatrix * (end1 + halfWidth);
+            gl_Position = ub.pMatrix * (end1 + halfWidth);
+            gl_Position.y = -gl_Position.y;
             fData = ivec4(gData[0].stp, lineStyle);
             pointCoord = vec2(0.5, lineLength);
             EmitVertex();
 
             pointColor = color1;
-            gl_Position = pMatrix * (end1 - halfWidth);
+            gl_Position = ub.pMatrix * (end1 - halfWidth);
+            gl_Position.y = -gl_Position.y;
             fData = ivec4(gData[0].stp, lineStyle);
             pointCoord = vec2(-0.5, lineLength);
             EmitVertex();
@@ -241,12 +262,12 @@ void main() {
             EndPrimitive();
 
             // Draw the motion bars
-            if(drawHitTest == 0 && directionMotion != -1 && lineLength > 1 && outgoing0 != outgoing1) {
+            if(ub.drawHitTest == 0 && ub.directionMotion != -1 && lineLength > 1 && outgoing0 != outgoing1) {
                 end0.z += 0.001;
                 end1.z += 0.001;
 
                 float motionLen = lineLength / 32.0;
-                float motionPos = directionMotion - (floor(directionMotion / lineLength) * lineLength);
+                float motionPos = ub.directionMotion - (floor(ub.directionMotion / lineLength) * lineLength);
 
                 if(outgoing1) {
                     motionPos = lineLength - motionPos;
@@ -257,7 +278,7 @@ void main() {
                 float motionEnd = clamp(motionPos + motionLen, 0, lineLength);
 
                 vec4 color;
-                if (drawHitTest == 0) {
+                if (ub.drawHitTest == 0) {
                     color = mix(vpointColor[0], vpointColor[1], motionPos / (lineLength - motionLen));
                     if (!isDim && !isSelected) {
                         float luminosity = 0.21 * color.r + 0.71 * color.g + 0.08 * color.b;
@@ -270,25 +291,29 @@ void main() {
                 }
 
                 pointColor = color;
-                gl_Position = pMatrix * (end0 + halfWidth + motionStart * lineDirection);
+                gl_Position = ub.pMatrix * (end0 + halfWidth + motionStart * lineDirection);
+                gl_Position.y = -gl_Position.y;
                 fData = ivec4(gData[0].stp, lineStyle);
                 pointCoord = vec2(0.5, motionStart);
                 EmitVertex();
 
                 pointColor = color;
-                gl_Position = pMatrix * (end0 - halfWidth + motionStart * lineDirection);
+                gl_Position = ub.pMatrix * (end0 - halfWidth + motionStart * lineDirection);
+                gl_Position.y = -gl_Position.y;
                 fData = ivec4(gData[0].stp, lineStyle);
                 pointCoord = vec2(-0.5, motionStart);
                 EmitVertex();
 
                 pointColor = color;
-                gl_Position = pMatrix * (end0 + halfWidth + motionEnd * lineDirection);
+                gl_Position = ub.pMatrix * (end0 + halfWidth + motionEnd * lineDirection);
+                gl_Position.y = -gl_Position.y;
                 fData = ivec4(gData[0].stp, lineStyle);
                 pointCoord = vec2(0.5, motionEnd);
                 EmitVertex();
 
                 pointColor = color;
-                gl_Position = pMatrix * (end0 - halfWidth + motionEnd * lineDirection);
+                gl_Position = ub.pMatrix * (end0 - halfWidth + motionEnd * lineDirection);
+                gl_Position.y = -gl_Position.y;
                 fData = ivec4(gData[0].stp, lineStyle);
                 pointCoord = vec2(-0.5, motionEnd);
                 EmitVertex();

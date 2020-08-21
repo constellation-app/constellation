@@ -1,17 +1,24 @@
-#version 330 core
+#version 450
 
-uniform samplerBuffer xyzTexture;
 
-uniform mat4 mvMatrix;
-uniform float morphMix;
+// === UNIFORMS ===
+layout(binding = 0) uniform samplerBuffer xyzTexture;
+layout(std140, binding = 1) uniform UniformBlock {
+    mat4 mvMatrix;
+    float morphMix;
+} ub;
 
-in vec4 vColor;
-in ivec4 data;
 
-out vec4 vpointColor;
-flat out ivec4 gData;
+// === PER VERTEX DATA IN ===
+layout(location = 0) in vec4 vColor;
+layout(location = 1) in ivec4 data;
 
-flat out float nradius;
+
+// === PER VERTEX DATA OUT ===
+layout(location = 0) out vec4 vpointColor;
+layout(location = 1) flat out ivec4 gData;
+layout(location = 2) flat out float nradius;
+
 
 void main(void) {
     // Pass the color to the fragment shader.
@@ -24,11 +31,11 @@ void main(void) {
     int offset = vxIndex * 2;
     vec3 v = texelFetch(xyzTexture, offset).stp;
     vec3 vEnd = texelFetch(xyzTexture, offset + 1).stp;
-    vec3 mixedVertex = mix(v, vEnd, morphMix);
+    vec3 mixedVertex = mix(v, vEnd, ub.morphMix);
 
-    gl_Position = mvMatrix * vec4(mixedVertex, 1);
+    gl_Position = ub.mvMatrix * vec4(mixedVertex, 1);
 
     // Get the side radius of the associated vertex and pass that through
     // so the text is drawn relative to the node size.
-    nradius = mix(texelFetch(xyzTexture, offset).q, texelFetch(xyzTexture, offset + 1).q, morphMix);
+    nradius = mix(texelFetch(xyzTexture, offset).q, texelFetch(xyzTexture, offset + 1).q, ub.morphMix);
 }

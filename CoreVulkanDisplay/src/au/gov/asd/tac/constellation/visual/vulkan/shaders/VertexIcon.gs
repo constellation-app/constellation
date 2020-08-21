@@ -9,13 +9,10 @@
 // === CONSTANTS ===
 const int ICON_BITS = 16;
 const int ICON_MASK = 0xffff;
-
 const int SELECTED_MASK = 1;
 const int DIM_MASK = 2;
-
 const float TEXTURE_SIZE = 0.125;
 const float HALF_PIXEL = (0.5 / (256 * 8));
-
 const int HIGHLIGHT_ICON = 0;
 const int TRANSPARENT_ICON = 5;
 
@@ -26,7 +23,6 @@ const mat4 DIM_MATRIX = 0.5 * mat4(
     0.08, 0.08, 0.08, 0.00,
     0.00, 0.00, 0.00, 1.00
 );
-
 const mat4 IDENTITY_MATRIX = mat4(1.0);
 
 

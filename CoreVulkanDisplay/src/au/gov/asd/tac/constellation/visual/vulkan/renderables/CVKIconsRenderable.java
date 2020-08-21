@@ -524,7 +524,7 @@ public class CVKIconsRenderable extends CVKRenderable{
             }
          
         } catch (IOException e) {
-            CVKLOGGER.log(Level.SEVERE, "Failed to compile FPSRenderable shaders: {0}", e.toString());
+            CVKLOGGER.log(Level.SEVERE, "Failed to compile CVKIconsRenderable shaders: {0}", e.toString());
             ret = CVK_ERROR_SHADER_COMPILATION;
         }
         
@@ -2204,7 +2204,7 @@ public class CVKIconsRenderable extends CVKRenderable{
         };             
     }   
     
-    public CVKRenderableUpdateTask TaskSetHighLightColour(final VisualAccess access) {
+    public CVKRenderableUpdateTask TaskSetHighlightColour(final VisualAccess access) {
         //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
         cvkVisualProcessor.GetLogger().fine("TaskSetHighLightColour frame %d: %d verts", cvkVisualProcessor.GetFrameNumber(), access.getVertexCount());
         final ConstellationColor highlightColour = access.getHighlightColor();
