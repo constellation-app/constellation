@@ -41,7 +41,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class PCAPImportFileParser extends ImportFileParser {
 
     private static final Logger LOGGER = Logger.getLogger(PCAPImportFileParser.class.getName());    
-    final private List<String[]> allResults = new ArrayList<>();
+    private final List<String[]> allResults = new ArrayList<>();
     private int frameCounter = 1;
  
     /**
