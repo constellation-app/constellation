@@ -16,6 +16,12 @@
 package au.gov.asd.tac.constellation.graph.file;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import javax.swing.JOptionPane;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileSystem;
 import org.openide.filesystems.FileUtil;
@@ -33,6 +39,16 @@ public class GraphObjectUtilities {
     private static final FileSystem FILE_SYSTEM = FileUtil.createMemoryFileSystem();
 
     private static int fileCounter = 0;
+
+    //Constants for dealing with copying of filenames
+    private static final String COPY_STRING = " - Copy";
+    private static final String COPY_STRING_PATTERN = "(.+ - Copy) \\((\\d)\\)$";
+    private static final Pattern COPY_NAME_MATCHER = Pattern.compile(COPY_STRING_PATTERN);
+
+    private static final int FILENAME_LENGTH_LIMIT = 10;
+
+    private static final String CHOOSE_FILENAME = "Please enter a shorter filename:";
+    private static final String FILENAME_TITLE = "Filename";
 
     /**
      * Create a new DataObject backed by an in-memory file.
@@ -61,15 +77,50 @@ public class GraphObjectUtilities {
      */
     public static GraphDataObject createMemoryDataObject(final String name, final boolean numbered) {
         GraphDataObject gdo = null;
+        final FileObject root = FILE_SYSTEM.getRoot();
         try {
-            final String fnam = numbered ? String.format("%s%d%s", name, ++fileCounter, GraphDataObject.FILE_EXTENSION) : String.format("%s%s", name, GraphDataObject.FILE_EXTENSION);
-            final FileObject root = FILE_SYSTEM.getRoot();
+            String fnam = getNewFileName(name, numbered, root);
+            if (isFileNameDuplicateInMemory(name, root)) {
+                //If after all of the above the filename already exists in memory, start again.
+                return createMemoryDataObject(name, numbered);
+            }
+            while (fnam.length() >= FILENAME_LENGTH_LIMIT) {
+
+                fnam = (String) JOptionPane.showInputDialog(null,
+                        CHOOSE_FILENAME,
+                        FILENAME_TITLE,
+                        JOptionPane.INFORMATION_MESSAGE,
+                        null,
+                        null,
+                        fnam);
+            }
             final FileObject fo = FileUtil.createData(root, fnam);
             gdo = (GraphDataObject) DataObject.find(fo);
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
-
         return gdo;
+    }
+
+    private static String getNewFileName(final String name, final boolean numbered, final FileObject root) {
+        final List<FileObject> files = Arrays.stream(root.getChildren()).filter(file -> file.getName().equals(name)).collect(Collectors.toList());
+        if (files.size() > 0) {
+            if (name.endsWith(COPY_STRING)) {
+                return String.format("%s (%d)%s", name, 1, GraphDataObject.FILE_EXTENSION);
+            }
+            Matcher matcher = COPY_NAME_MATCHER.matcher(name);
+            if (matcher.matches()) {
+                String fileNamePart = matcher.group(1);
+                Integer copyNum = Integer.parseInt(matcher.group(2));
+                return String.format("%s (%d)%s", fileNamePart, ++copyNum, GraphDataObject.FILE_EXTENSION);
+            }
+            return String.format("%s - Copy%s", name, GraphDataObject.FILE_EXTENSION);
+        }
+        return numbered ? String.format("%s%d%s", name, ++fileCounter, GraphDataObject.FILE_EXTENSION) : String.format("%s%s", name, GraphDataObject.FILE_EXTENSION);
+    }
+
+    private static boolean isFileNameDuplicateInMemory(final String name, final FileObject root) {
+        final List<FileObject> files = Arrays.stream(root.getChildren()).filter(file -> file.getName().equals(name)).collect(Collectors.toList());
+        return (files.size() > 0);
     }
 }
