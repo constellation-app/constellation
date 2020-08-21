@@ -37,7 +37,7 @@ import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKIconsRenderable
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKLabelsRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKPointsRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable;
-import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableUpdateTask;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKRenderUpdateTask;
 import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKGraphLogger;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_DEBUGGING;
 import java.awt.Component;
@@ -67,7 +67,7 @@ public class CVKVisualProcessor extends VisualProcessor {
     private static final float PERSPECTIVE_NEAR = 1;
     private static final float PERSPECTIVE_FAR = 500000;
     
-    private final BlockingQueue<CVKRenderable.CVKRenderableUpdateTask> taskQueue = new LinkedBlockingQueue<>();
+    private final BlockingQueue<CVKRenderUpdateTask> taskQueue = new LinkedBlockingQueue<>();
     private final CVKCanvas cvkCanvas;
     private final Frustum viewFrustum = new Frustum();
     private final Matrix44f projectionMatrix = new Matrix44f();       
@@ -165,7 +165,7 @@ public class CVKVisualProcessor extends VisualProcessor {
     }      
     
     
-    void addTask(final CVKRenderableUpdateTask task) {
+    void addTask(final CVKRenderUpdateTask task) {
         taskQueue.add(task);
     }
     
@@ -291,7 +291,12 @@ public class CVKVisualProcessor extends VisualProcessor {
 
         @Override
         public void apply() {
-            // TODO_TT: this whole func
+           
+            // Currently in the VisualProcessor thread, add a task to trigger
+            // the save to file from the Render thread.
+            if (cvkCanvas.GetRenderer() != null) {
+                addTask(cvkCanvas.GetRenderer().TaskRequestScreenshot(file));
+            }
 //            graphRenderable.addTask(drawable -> {
 //                final GL30 gl = drawable.getGL().getGL3();
 //                gl.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, 0);
@@ -405,7 +410,7 @@ public class CVKVisualProcessor extends VisualProcessor {
     
     public int ProcessRenderTasks(CVKSwapChain cvkSwapChain) {
         int ret = VK_SUCCESS;
-        final List<CVKRenderableUpdateTask> tasks = new ArrayList<>();
+        final List<CVKRenderUpdateTask> tasks = new ArrayList<>();
         taskQueue.drainTo(tasks);
         tasks.forEach(task -> { task.run(); });      
         return ret;
@@ -759,4 +764,11 @@ public class CVKVisualProcessor extends VisualProcessor {
 //        pre.set(2, 3, 0.5f);        
 //        projectionMatrix.multiply(pre, viewFrustum.getProjectionMatrix());
     }    
+
+    public List<CVKRenderable> GetHitTesterList() {
+        // TODO Hydra - Cache me
+        List<CVKRenderable> hitTesters = new ArrayList<>();
+        hitTesters.add(cvkIcons);
+        return hitTesters;
+    }
 }

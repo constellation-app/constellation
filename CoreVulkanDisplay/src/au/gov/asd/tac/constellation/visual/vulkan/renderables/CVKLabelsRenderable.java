@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDescriptorPool;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDescriptorPool.CVKDescriptorPoolRequirements;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKRenderUpdateTask;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKBuffer;
@@ -833,7 +834,7 @@ public class CVKLabelsRenderable extends CVKRenderable {
     }       
     
     @Override
-    public int RecordCommandBuffer(VkCommandBufferInheritanceInfo inheritanceInfo, int imageIndex){
+    public int RecordDisplayCommandBuffer(VkCommandBufferInheritanceInfo inheritanceInfo, int imageIndex){
         return VK_SUCCESS;
 //        cvkVisualProcessor.VerifyInRenderThread();
 //        CVKAssert(cvkDevice.GetDevice() != null);
@@ -1555,7 +1556,7 @@ public class CVKLabelsRenderable extends CVKRenderable {
     
     // ========================> Tasks <======================== \\
     
-    public CVKRenderableUpdateTask TaskUpdateLabels(final VisualChange change, final VisualAccess access) {
+    public CVKRenderUpdateTask TaskUpdateLabels(final VisualChange change, final VisualAccess access) {
         //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
         cvkVisualProcessor.GetLogger().fine("TaskUpdateLabels frame %d: %d verts", cvkVisualProcessor.GetFrameNumber(), access.getVertexCount());
         
@@ -1587,7 +1588,7 @@ public class CVKLabelsRenderable extends CVKRenderable {
         };         
     }
     
-    public CVKRenderableUpdateTask TaskUpdateColours(final VisualChange change, final VisualAccess access) {
+    public CVKRenderUpdateTask TaskUpdateColours(final VisualChange change, final VisualAccess access) {
         //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
         cvkVisualProcessor.GetLogger().fine("TaskUpdateColours frame %d: %d verts", cvkVisualProcessor.GetFrameNumber(), access.getVertexCount());
         
@@ -1619,7 +1620,7 @@ public class CVKLabelsRenderable extends CVKRenderable {
         };         
     }
     
-    public CVKRenderableUpdateTask TaskUpdateSizes(final VisualChange change, final VisualAccess access) {
+    public CVKRenderUpdateTask TaskUpdateSizes(final VisualChange change, final VisualAccess access) {
         //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
         cvkVisualProcessor.GetLogger().fine("TaskUpdateSizes frame %d: %d verts", cvkVisualProcessor.GetFrameNumber(), access.getVertexCount());
         
@@ -1651,7 +1652,7 @@ public class CVKLabelsRenderable extends CVKRenderable {
         };         
     }    
     
-    public CVKRenderableUpdateTask TaskSetBackgroundColor(final VisualAccess access) {
+    public CVKRenderUpdateTask TaskSetBackgroundColor(final VisualAccess access) {
         //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
         cvkVisualProcessor.GetLogger().fine("TaskSetBackgroundColor frame %d: %d verts", cvkVisualProcessor.GetFrameNumber(), access.getVertexCount());
 
@@ -1662,7 +1663,7 @@ public class CVKLabelsRenderable extends CVKRenderable {
         };         
     }   
     
-    public CVKRenderableUpdateTask TaskSetHighlightColor(final VisualAccess access) {
+    public CVKRenderUpdateTask TaskSetHighlightColor(final VisualAccess access) {
         //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
         cvkVisualProcessor.GetLogger().fine("TaskSetBackgroundColor frame %d: %d verts", cvkVisualProcessor.GetFrameNumber(), access.getVertexCount());
 

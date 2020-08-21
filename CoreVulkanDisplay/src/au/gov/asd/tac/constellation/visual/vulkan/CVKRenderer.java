@@ -47,6 +47,7 @@ import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_DEBU
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.io.File;
 
 
 /*
@@ -105,6 +106,8 @@ public class CVKRenderer implements ComponentListener {
     private float clrChange = 0.01f;
     private int curClrEl = 0;
     private Vector3f clr = new Vector3f(0.0f, 0.0f, 0.0f);
+    private boolean requestScreenshot = false;
+    private File requestScreenshotFile = null;
     
     public final CVKGraphLogger GetLogger() { return cvkCanvas.GetLogger(); }
     
@@ -396,7 +399,7 @@ public class CVKRenderer implements ComponentListener {
         // Loop through renderables and record their buffers
         for (CVKRenderable el : renderables) {
             if (el.GetVertexCount() > 0) {
-                ret = el.RecordCommandBuffer(inheritanceInfo, imageIndex);
+                ret = el.RecordDisplayCommandBuffer(inheritanceInfo, imageIndex);
                 if (VkFailed(ret)) { return ret; }
 
                 // TODO Hydra: may be more efficient to add all the visible command buffers to a master list then 
@@ -669,7 +672,17 @@ public class CVKRenderer implements ComponentListener {
                     } else {
                         checkVKret(ret);
                     }
+                    
+                    // Offscreen Render Pass
+                    List<CVKRenderable> hitTestRenderables = cvkVisualProcessor.GetHitTesterList();
+                    renderables.forEach(r->{ r.OffscreenRender(hitTestRenderables); });
         
+                    if (requestScreenshot) {
+                        cvkSwapChain.GetImage(imageIndex).SaveToFile(requestScreenshotFile);
+                        requestScreenshot = false;
+                        requestScreenshotFile = null;
+                    }
+                    
                     // Move the frame index to the next cab off the rank
                     currentFrame = (++currentFrame) % cvkSwapChain.GetImageCount();                  
                 }
@@ -686,6 +699,19 @@ public class CVKRenderer implements ComponentListener {
         cvkVisualProcessor.signalProcessorIdle();
     }    
     
+   /**
+     * @param file to save the screenshot to
+     */
+    public CVKRenderUpdateTask TaskRequestScreenshot(File file) {
+        //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
+            
+        //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.ProcessRenderTasks) ===//
+        return () -> {
+            requestScreenshot = true;
+            requestScreenshotFile = file;
+        };
+    }
+
     int[] getViewport() {
         final int[] viewport = new int[4];
         viewport[0] = 0;
