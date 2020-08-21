@@ -3,6 +3,9 @@
 ## 2020-08-21 Changes in August 2020
 * Added a feature to the Histogram View to copy values from selected histogram bars using ctrl+c or a right-click context menu.
 
+## 2020-08-01 Changes in August 2020
+* Updated `DefaultPluginInteraction` and `PluginParameters` to unfocus the Ok button from the plugin swing dialog if there is a multi-line string parameter so that enter can be used in the parameter.
+
 ## 2020-07-01 Changes in July 2020
 * Added `AnalyticSchemaV4UpdateProvider` to upgrade `SchemaVertexType`s that have changed.
 * Added utility class `NotifyDisplayer` and static method `NotifyDisplayer#display` for use when displaying a `NotifyDescriptor` message box.

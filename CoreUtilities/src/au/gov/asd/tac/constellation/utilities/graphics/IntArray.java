@@ -129,10 +129,13 @@ public final class IntArray implements Iterable<Integer> {
      */
     public IntArray(final int initialCapacity) {
         super();
+        
         if (initialCapacity < 0) {
             throw new IllegalArgumentException("Illegal Capacity: " + initialCapacity);
         }
+        
         this.elementData = new int[initialCapacity];
+        size = 0;
     }
 
     /**
@@ -308,6 +311,7 @@ public final class IntArray implements Iterable<Integer> {
      * @return The raw array used to store data.
      */
     public int[] rawArray() {
+        trimToSize();
         return elementData;
     }
 
