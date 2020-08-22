@@ -107,7 +107,7 @@ public class GraphObjectUtilities {
             if (name.endsWith(COPY_STRING)) {
                 return String.format("%s (%d)%s", name, 1, GraphDataObject.FILE_EXTENSION);
             }
-            
+
             final Pattern COPY_NAME_MATCHER = Pattern.compile(COPY_STRING_PATTERN);
             final Matcher matcher = COPY_NAME_MATCHER.matcher(name);
             if (matcher.matches()) {
