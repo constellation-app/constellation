@@ -43,7 +43,6 @@ public class GraphObjectUtilities {
     //Constants for dealing with copying of filenames
     private static final String COPY_STRING = " - Copy";
     private static final String COPY_STRING_PATTERN = "(.+ - Copy) \\((\\d)\\)$";
-    private static final Pattern COPY_NAME_MATCHER = Pattern.compile(COPY_STRING_PATTERN);
 
     private static final int FILENAME_LENGTH_LIMIT = 10;
 
@@ -108,11 +107,13 @@ public class GraphObjectUtilities {
             if (name.endsWith(COPY_STRING)) {
                 return String.format("%s (%d)%s", name, 1, GraphDataObject.FILE_EXTENSION);
             }
-            Matcher matcher = COPY_NAME_MATCHER.matcher(name);
+            
+            final Pattern COPY_NAME_MATCHER = Pattern.compile(COPY_STRING_PATTERN);
+            final Matcher matcher = COPY_NAME_MATCHER.matcher(name);
             if (matcher.matches()) {
-                String fileNamePart = matcher.group(1);
-                Integer copyNum = Integer.parseInt(matcher.group(2));
-                return String.format("%s (%d)%s", fileNamePart, ++copyNum, GraphDataObject.FILE_EXTENSION);
+                final String fileNamePart = matcher.group(1);
+                final int copyNum = Integer.parseInt(matcher.group(2));
+                return String.format("%s (%d)%s", fileNamePart, copyNum + 1, GraphDataObject.FILE_EXTENSION);
             }
             return String.format("%s - Copy%s", name, GraphDataObject.FILE_EXTENSION);
         }
