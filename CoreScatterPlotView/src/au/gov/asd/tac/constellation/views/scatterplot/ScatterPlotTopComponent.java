@@ -231,7 +231,6 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
     @Override
     protected void componentShowing() {
         super.componentShowing();
-        handleNewGraph(GraphManager.getDefault().getActiveGraph());
     }
 
     /**
