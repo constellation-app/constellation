@@ -181,6 +181,7 @@ public class CVKImage {
     
     public void DestroyImageView() {
         if (pImageView.get(0) != VK_NULL_HANDLE) {
+            cvkDevice.GetLogger().info("Destroying VkImageView:0x%016X for %s)", pImageView.get(0), DEBUGNAME);
             vkDestroyImageView(cvkDevice.GetDevice(), pImageView.get(0), null);
             pImageView.put(0, VK_NULL_HANDLE);
             pImageView = null;
@@ -633,6 +634,8 @@ public class CVKImage {
 
                 ret = vkCreateImageView(cvkDevice.GetDevice(), vkViewInfo, null, pImageView);
                 if (VkFailed(ret)) { return ret; }
+                
+                cvkDevice.GetLogger().info("Created VkImageView:0x%016X for %s)", pImageView.get(0), DEBUGNAME);
 
         } catch (Exception e) {
             // TODO HYDRA TEST THIS CODE PATH       

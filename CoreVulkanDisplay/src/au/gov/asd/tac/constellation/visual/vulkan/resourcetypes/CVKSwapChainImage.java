@@ -22,8 +22,10 @@ public class CVKSwapChainImage extends CVKImage {
     private CVKSwapChainImage() {}
     
     public static CVKSwapChainImage Create(CVKDevice cvkDevice,
-                                 long imageHandle) {
+                                           long imageHandle,
+                                           String debugName) {
         CVKSwapChainImage cvkImage   = new CVKSwapChainImage();
+        cvkImage.DEBUGNAME  = debugName;
         cvkImage.cvkDevice  = cvkDevice;
         cvkImage.width      = 0;
         cvkImage.height     = 0;

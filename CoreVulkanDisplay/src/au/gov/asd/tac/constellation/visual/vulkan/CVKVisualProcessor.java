@@ -707,11 +707,7 @@ public class CVKVisualProcessor extends VisualProcessor {
                 };
             case VERTEX_FOREGROUND_ICON:
                 return (change, access) -> {
-                    // This is a task for the Icon Atlas
-		    // TODO: implement this once we have a working hit tester
-//                    if (cvkIcons != null) {
-//                        addTask(cvkIcons.TaskUpdateIcons(change, access));
-//                    }
+                    addTask(cvkIcons.TaskUpdateIcons(change, access));
                 };
 
             case VERTEX_SELECTED:

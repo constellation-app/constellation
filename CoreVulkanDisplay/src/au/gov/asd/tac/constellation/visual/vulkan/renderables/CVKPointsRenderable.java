@@ -180,7 +180,7 @@ public class CVKPointsRenderable extends CVKRenderable {
     private void SetVertexUBOState(final CVKRenderableResourceState state) {
         CVKAssert(!(vertexUBOState == CVK_RESOURCE_NEEDS_REBUILD && state == CVK_RESOURCE_NEEDS_UPDATE));
         if (LOGSTATECHANGE) {
-            cvkVisualProcessor.GetLogger().info(String.format("%d\t vertexUBOState %s -> %s\tSource: %s", 
+            GetLogger().info(String.format("%d\t vertexUBOState %s -> %s\tSource: %s", 
                     cvkVisualProcessor.GetFrameNumber(), vertexUBOState.name(), state.name(), GetParentMethodName()));  
         }
         vertexUBOState = state;
@@ -188,7 +188,7 @@ public class CVKPointsRenderable extends CVKRenderable {
     private void SetVertexBuffersState(final CVKRenderableResourceState state) {
         CVKAssert(!(vertexBuffersState == CVK_RESOURCE_NEEDS_REBUILD && state == CVK_RESOURCE_NEEDS_UPDATE));
         if (LOGSTATECHANGE) {
-            cvkVisualProcessor.GetLogger().info(String.format("%d\t vertexBuffersState %s -> %s\tSource: %s", 
+            GetLogger().info(String.format("%d\t vertexBuffersState %s -> %s\tSource: %s", 
                     cvkVisualProcessor.GetFrameNumber(), vertexBuffersState.name(), state.name(), GetParentMethodName()));        
         }
         vertexBuffersState = state;
@@ -196,7 +196,7 @@ public class CVKPointsRenderable extends CVKRenderable {
     private void SetCommandBuffersState(final CVKRenderableResourceState state) {
         CVKAssert(!(commandBuffersState == CVK_RESOURCE_NEEDS_REBUILD && state == CVK_RESOURCE_NEEDS_UPDATE));
         if (LOGSTATECHANGE) {
-            cvkVisualProcessor.GetLogger().info(String.format("%d\t commandBuffersState %s -> %s\tSource: %s", 
+            GetLogger().info(String.format("%d\t commandBuffersState %s -> %s\tSource: %s", 
                     cvkVisualProcessor.GetFrameNumber(), commandBuffersState.name(), state.name(), GetParentMethodName())); 
         }
         commandBuffersState = state;
@@ -204,7 +204,7 @@ public class CVKPointsRenderable extends CVKRenderable {
     private void SetDescriptorSetsState(final CVKRenderableResourceState state) {
         CVKAssert(!(descriptorSetsState == CVK_RESOURCE_NEEDS_REBUILD && state == CVK_RESOURCE_NEEDS_UPDATE));
         if (LOGSTATECHANGE) {
-            cvkVisualProcessor.GetLogger().info(String.format("%d\t descriptorSetsState %s -> %s\tSource: %s", 
+            GetLogger().info(String.format("%d\t descriptorSetsState %s -> %s\tSource: %s", 
                     cvkVisualProcessor.GetFrameNumber(), descriptorSetsState.name(), state.name(), GetParentMethodName()));   
         }
         descriptorSetsState = state;
@@ -212,7 +212,7 @@ public class CVKPointsRenderable extends CVKRenderable {
     private void SetPipelinesState(final CVKRenderableResourceState state) {
         CVKAssert(!(pipelinesState == CVK_RESOURCE_NEEDS_REBUILD && state == CVK_RESOURCE_NEEDS_UPDATE));
         if (LOGSTATECHANGE) {
-            cvkVisualProcessor.GetLogger().info(String.format("%d\t pipelinesState %s -> %s\tSource: %s", 
+            GetLogger().info(String.format("%d\t pipelinesState %s -> %s\tSource: %s", 
                     cvkVisualProcessor.GetFrameNumber(), pipelinesState.name(), state.name(), GetParentMethodName()));   
         }
         pipelinesState = state;
@@ -332,8 +332,8 @@ public class CVKPointsRenderable extends CVKRenderable {
     
     // ========================> Lifetime <======================== \\
     
-    public CVKPointsRenderable(CVKVisualProcessor inParent) {
-        cvkVisualProcessor = inParent;
+    public CVKPointsRenderable(CVKVisualProcessor visualProcessor) {
+        super(visualProcessor);
     }  
     
     private int CreateShaderModules() {
@@ -342,21 +342,21 @@ public class CVKPointsRenderable extends CVKRenderable {
         try{           
             hVertexShaderModule = CVKShaderUtils.CreateShaderModule(vertexShaderSPIRV.bytecode(), cvkDevice.GetDevice());
             if (hVertexShaderModule == VK_NULL_HANDLE) {
-                cvkVisualProcessor.GetLogger().log(Level.SEVERE, "Failed to create shader module for: VertexIcon.vs");
+                GetLogger().log(Level.SEVERE, "Failed to create shader module for: VertexIcon.vs");
                 return CVK_ERROR_SHADER_MODULE;
             }
             hFragmentShaderModule = CVKShaderUtils.CreateShaderModule(fragmentShaderSPIRV.bytecode(), cvkDevice.GetDevice());
             if (hFragmentShaderModule == VK_NULL_HANDLE) {
-                cvkVisualProcessor.GetLogger().log(Level.SEVERE, "Failed to create shader module for: VertexIcon.fs");
+                GetLogger().log(Level.SEVERE, "Failed to create shader module for: VertexIcon.fs");
                 return CVK_ERROR_SHADER_MODULE;
             }
         } catch(Exception ex){
-            cvkVisualProcessor.GetLogger().log(Level.SEVERE, "Failed to create shader module CVKPointRenderable: {0}", ex.toString());
+            GetLogger().log(Level.SEVERE, "Failed to create shader module CVKPointRenderable: {0}", ex.toString());
             ret = CVK_ERROR_SHADER_MODULE;
             return ret;
         }
         
-        cvkVisualProcessor.GetLogger().info("Shader modules created for CVKPointsRenderable class:\n\tVertex: 0x%016x\n\tFragment: 0x%016x",
+        GetLogger().info("Shader modules created for CVKPointsRenderable class:\n\tVertex: 0x%016x\n\tFragment: 0x%016x",
                 hVertexShaderModule, hFragmentShaderModule);
         
         return ret;
@@ -870,7 +870,7 @@ public class CVKPointsRenderable extends CVKRenderable {
             }
         }
         SetPipelinesState(CVK_RESOURCE_CLEAN);
-        cvkVisualProcessor.GetLogger().log(Level.INFO, "Graphics Pipeline created for AxesRenderable class.");
+        GetLogger().log(Level.INFO, "Graphics Pipeline created for AxesRenderable class.");
         
         return ret;
     }
@@ -989,7 +989,7 @@ public class CVKPointsRenderable extends CVKRenderable {
     public CVKRenderUpdateTask TaskRebuildPoints(final VisualAccess access) {
         //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
         final int newVertexCount = access.getVertexCount();
-        cvkVisualProcessor.GetLogger().info(String.format("TaskRebuildPoints frame %d: %d verts", cvkVisualProcessor.GetFrameNumber(), access.getVertexCount()));
+        GetLogger().info(String.format("TaskRebuildPoints frame %d: %d verts", cvkVisualProcessor.GetFrameNumber(), access.getVertexCount()));
         RebuildVertexStagingBuffer(access, newVertexCount);
         
         //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.ProcessRenderTasks) ===//
@@ -1008,7 +1008,7 @@ public class CVKPointsRenderable extends CVKRenderable {
         //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
         // If this fires investigate why we didn't get a rebuild task first
         final int newVertexCount = access.getVertexCount();
-        cvkVisualProcessor.GetLogger().info(String.format("TaskUpdatePoints frame %d: %d verts", cvkVisualProcessor.GetFrameNumber(), access.getVertexCount()));
+        GetLogger().info(String.format("TaskUpdatePoints frame %d: %d verts", cvkVisualProcessor.GetFrameNumber(), access.getVertexCount()));
         CVKAssert(vertexCount == newVertexCount); //REMOVE AFTER TESTING
         
         // If we have had an update task called before a rebuild task we first have to build

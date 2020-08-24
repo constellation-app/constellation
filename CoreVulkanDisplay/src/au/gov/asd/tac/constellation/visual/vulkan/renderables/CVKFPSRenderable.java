@@ -397,7 +397,7 @@ public class CVKFPSRenderable extends CVKRenderable {
     // ========================> Lifetime <======================== \\
     
     public CVKFPSRenderable(CVKVisualProcessor visualProcessor) {
-        cvkVisualProcessor = visualProcessor;
+        super(visualProcessor);
         
         currentFPS = new ArrayList<>();
         currentFPS.add(7);
@@ -412,26 +412,26 @@ public class CVKFPSRenderable extends CVKRenderable {
         try{           
             hVertexShaderModule = CVKShaderUtils.CreateShaderModule(vsBytes, cvkDevice.GetDevice());
             if (hVertexShaderModule == VK_NULL_HANDLE) {
-                cvkVisualProcessor.GetLogger().log(Level.SEVERE, "Failed to create shader module for: SimpleIcon.vs");
+                GetLogger().log(Level.SEVERE, "Failed to create shader module for: SimpleIcon.vs");
                 return CVK_ERROR_SHADER_MODULE;
             }
             hGeometryShaderModule = CVKShaderUtils.CreateShaderModule(gsBytes, cvkDevice.GetDevice());
             if (hGeometryShaderModule == VK_NULL_HANDLE) {
-                cvkVisualProcessor.GetLogger().log(Level.SEVERE, "Failed to create shader module for: SimpleIcon.gs");
+                GetLogger().log(Level.SEVERE, "Failed to create shader module for: SimpleIcon.gs");
                 return CVK_ERROR_SHADER_MODULE;
             }
             hFragmentShaderModule = CVKShaderUtils.CreateShaderModule(fsBytes, cvkDevice.GetDevice());
             if (hFragmentShaderModule == VK_NULL_HANDLE) {
-                cvkVisualProcessor.GetLogger().log(Level.SEVERE, "Failed to create shader module for: SimpleIcon.fs");
+                GetLogger().log(Level.SEVERE, "Failed to create shader module for: SimpleIcon.fs");
                 return CVK_ERROR_SHADER_MODULE;
             }
         } catch(Exception ex){
-            cvkVisualProcessor.GetLogger().log(Level.SEVERE, "Failed to create shader module FPSRenderable: %s", ex.toString());
+            GetLogger().log(Level.SEVERE, "Failed to create shader module FPSRenderable: %s", ex.toString());
             ret = CVK_ERROR_SHADER_MODULE;
             return ret;
         }
         
-        cvkVisualProcessor.GetLogger().info("Shader modules created for CVKFPSRenderable class:\n\tVertex:   0x%016x\n\tGeometry: 0x%016x\n\tFragment: 0x%016x",
+        GetLogger().info("Shader modules created for CVKFPSRenderable class:\n\tVertex:   0x%016x\n\tGeometry: 0x%016x\n\tFragment: 0x%016x",
                 hVertexShaderModule, hGeometryShaderModule, hFragmentShaderModule);
         return ret;
     }
@@ -578,14 +578,12 @@ public class CVKFPSRenderable extends CVKRenderable {
             DestroyCommandBuffers();
             DestroyPipelines();
             DestroyCommandBuffers(); 
-//            DestroyPushConstants();
 
             CVKAssertNull(pipelines);
             CVKAssertNull(pDescriptorSets);
             CVKAssertNull(geometryUniformBuffers);
             CVKAssertNull(vertexBuffers);
             CVKAssertNull(commandBuffers);
-//            CVKAssertNull(vertexPushConstants);
             swapChainImageCountChanged = true;
          } 
         
@@ -970,12 +968,14 @@ public class CVKFPSRenderable extends CVKRenderable {
             ret = vkCreateDescriptorSetLayout(cvkDevice.GetDevice(), layoutInfo, null, pDescriptorSetLayout);
             if (VkSucceeded(ret)) {
                 hDescriptorLayout = pDescriptorSetLayout.get(0);
+                GetLogger().info("CVKFPSRenderable created hDescriptorLayout: 0x%016X", hDescriptorLayout);
             }
         }        
         return ret;
     }
     
     private void DestroyDescriptorLayout() {
+        GetLogger().info("CVKFPSRenderable destroying hDescriptorLayout: 0x%016X", hDescriptorLayout);
         vkDestroyDescriptorSetLayout(cvkDevice.GetDevice(), hDescriptorLayout, null);
         hDescriptorLayout = VK_NULL_HANDLE;
     }
@@ -1003,6 +1003,10 @@ public class CVKFPSRenderable extends CVKRenderable {
         pDescriptorSets = MemoryUtil.memAllocLong(imageCount);
         ret = vkAllocateDescriptorSets(cvkDevice.GetDevice(), allocInfo, pDescriptorSets);
         if (VkFailed(ret)) { return ret; }
+        
+        for (int i = 0; i < pDescriptorSets.capacity(); ++i) {
+            GetLogger().info("CVKFPSRenderable allocated hDescriptorSet %d: 0x%016X", i, pDescriptorSets.get(i));
+        }        
         
         descriptorPoolResourcesDirty = false;
         
@@ -1083,7 +1087,11 @@ public class CVKFPSRenderable extends CVKRenderable {
         if (pDescriptorSets != null) {
             CVKAssertNotNull(cvkDescriptorPool);
             CVKAssertNotNull(cvkDescriptorPool.GetDescriptorPoolHandle());             
-            cvkVisualProcessor.GetLogger().fine("CVKFPSRenderable returning %d descriptor sets to the pool", pDescriptorSets.capacity());
+            GetLogger().fine("CVKFPSRenderable returning %d descriptor sets to the pool", pDescriptorSets.capacity());
+            
+            for (int i = 0; i < pDescriptorSets.capacity(); ++i) {
+                GetLogger().info("CVKFPSRenderable freeing hDescriptorSet %d: 0x%016X", i, pDescriptorSets.get(i));
+            }            
             
             // After calling vkFreeDescriptorSets, all descriptor sets in pDescriptorSets are invalid.
             ret = vkFreeDescriptorSets(cvkDevice.GetDevice(), cvkDescriptorPool.GetDescriptorPoolHandle(), pDescriptorSets);
@@ -1341,7 +1349,7 @@ public class CVKFPSRenderable extends CVKRenderable {
             }
         }
         
-        cvkVisualProcessor.GetLogger().info("Graphics Pipeline created for CVKFPSRenderable class.");
+        GetLogger().info("Graphics Pipeline created for CVKFPSRenderable class.");
         return ret;
     }        
    

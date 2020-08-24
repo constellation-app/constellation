@@ -332,7 +332,7 @@ public class CVKLabelsRenderable extends CVKRenderable {
     // ========================> Lifetime <======================== \\
     
     public CVKLabelsRenderable(CVKVisualProcessor visualProcessor) {
-        cvkVisualProcessor = visualProcessor;
+        super(visualProcessor);
     }  
     
     private int CreateShaderModules() {

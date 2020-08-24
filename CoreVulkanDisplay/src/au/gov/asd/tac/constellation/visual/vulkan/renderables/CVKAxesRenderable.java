@@ -310,7 +310,7 @@ public class CVKAxesRenderable extends CVKRenderable {
     // ========================> Lifetime <======================== \\
     
     public CVKAxesRenderable(CVKVisualProcessor visualProcessor) {
-        cvkVisualProcessor = visualProcessor;
+        super(visualProcessor);
     }
     
     private int CreateShaderModules() {
@@ -338,7 +338,7 @@ public class CVKAxesRenderable extends CVKRenderable {
             return ret;
         }
         
-        cvkVisualProcessor.GetLogger().info("Shader modules created for CVKAxesRenderable class:\n\tVertex:   0x%016x\n\tGeometry: 0x%016x\n\tFragment: 0x%016x",
+        GetLogger().info("Shader modules created for CVKAxesRenderable class:\n\tVertex:   0x%016x\n\tGeometry: 0x%016x\n\tFragment: 0x%016x",
                 hVertexShaderModule, hGeometryShaderModule, hFragmentShaderModule);
         return ret;
     } 
@@ -701,7 +701,7 @@ public class CVKAxesRenderable extends CVKRenderable {
             commandBuffers.add(buffer);
         }
         
-        cvkVisualProcessor.GetLogger().info("Init Command Buffer - CVKAxesRenderable");
+        GetLogger().info("Init Command Buffer - CVKAxesRenderable");
         
         return ret;
     }
@@ -967,7 +967,7 @@ public class CVKAxesRenderable extends CVKRenderable {
                 CVKAssertNotNull(pipelines.get(i));
             }
         }
-        cvkVisualProcessor.GetLogger().info("Graphics Pipeline created for AxesRenderable class.");
+        GetLogger().info("Graphics Pipeline created for AxesRenderable class.");
         
         return ret;
     }

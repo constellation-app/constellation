@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkCommandBufferInheritanceInfo;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
+import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKGraphLogger;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
 import java.util.List;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
@@ -34,7 +35,7 @@ public abstract class CVKRenderable {
         CVK_RESOURCE_NEEDS_REBUILD               
     }
     
-    protected CVKVisualProcessor cvkVisualProcessor;
+    protected final CVKVisualProcessor cvkVisualProcessor;
     protected CVKDevice cvkDevice = null;
     protected CVKDescriptorPool cvkDescriptorPool = null;
     protected CVKSwapChain cvkSwapChain = null;
@@ -42,6 +43,11 @@ public abstract class CVKRenderable {
     protected boolean swapChainImageCountChanged = true;
     protected boolean swapChainResourcesDirty = false;
     protected boolean isInitialised = false;
+    
+    
+    public CVKRenderable(CVKVisualProcessor visualProcessor) {
+        cvkVisualProcessor = visualProcessor;
+    }
     
     /**
      * This is called either when a new renderable is added to CVKRenderer or
@@ -57,6 +63,8 @@ public abstract class CVKRenderable {
      * Cleanup, terminal, called when a graph is closing
      */
     public abstract void Destroy();
+    
+    protected CVKGraphLogger GetLogger() { return cvkVisualProcessor.GetLogger(); }
     
     /*
         Returns the command buffer for the current Image being sent

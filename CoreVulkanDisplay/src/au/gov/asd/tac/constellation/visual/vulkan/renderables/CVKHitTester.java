@@ -106,8 +106,8 @@ public class CVKHitTester extends CVKRenderable {
     
     // ========================> Lifetime <======================== \\
     
-    public CVKHitTester(CVKVisualProcessor parent) {
-        this.cvkVisualProcessor = parent;
+    public CVKHitTester(CVKVisualProcessor visualProcessor) {
+        super(visualProcessor);
     }
     
     @Override

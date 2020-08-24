@@ -135,8 +135,8 @@ public class CVKIconTextureAtlas extends CVKRenderable {
     
     // ========================> Lifetime <======================== \\    
     
-    public CVKIconTextureAtlas(CVKVisualProcessor parent) {
-        this.cvkVisualProcessor = parent;
+    public CVKIconTextureAtlas(CVKVisualProcessor visualProcessor) {
+        super(visualProcessor);
         
         // These icons are guaranteed to be in the iconMap in this order.
         // They must be at these pre-defined indices so other code (in particular the shaders) can use them.
@@ -429,7 +429,7 @@ public class CVKIconTextureAtlas extends CVKRenderable {
                 if (CVK_DEBUGGING) {
                     if (IsEmpty(pixels) && el.index != TRANSPARENT_ICON_INDEX) {
                         final String iconName = icons.get(el.index).icon.getExtendedName();
-                        cvkVisualProcessor.GetLogger().warning(String.format("Icon %d (%s) is empty", el.index, iconName));
+                        GetLogger().warning("Icon %d (%s) is empty", el.index, iconName);
                     }
                 }
                 
