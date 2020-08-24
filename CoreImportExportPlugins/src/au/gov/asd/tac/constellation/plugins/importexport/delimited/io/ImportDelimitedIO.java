@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.AttributeType;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.DelimitedFileImporterStage;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.GraphDestination;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.ImportAttributeDefinition;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.ImportController;
@@ -44,6 +43,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
+import javafx.stage.Window;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.StatusDisplayer;
@@ -82,7 +82,7 @@ public class ImportDelimitedIO {
     private static final String PARAMETERS = "parameters";
     private static final String JSON_EXTENSION = ".json";
 
-    public static void saveParameters(final DelimitedFileImporterStage stage, final ImportController importController) {
+    public static void saveParameters(final Window parentWindow, final ImportController importController) {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
         final File delimIoDir = new File(userDir, IMPORT_DELIMITED_DIR);
@@ -97,7 +97,7 @@ public class ImportDelimitedIO {
             return;
         }
 
-        final String templName = new TemplateListDialog(stage, false, null).getName(stage, delimIoDir);
+        final String templName = new TemplateListDialog(parentWindow, false, null).getName(parentWindow, delimIoDir);
         if (templName != null) {
             // A JSON document to store everything in.
             // Two objects; the source data + the configuration data.
@@ -207,7 +207,7 @@ public class ImportDelimitedIO {
         }
     }
 
-    public static void loadParameters(final DelimitedFileImporterStage stage, final ImportController importController) {
+    public static void loadParameters(final Window parentWindow, final ImportController importController) {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
         final File delimIoDir = new File(userDir, IMPORT_DELIMITED_DIR);
@@ -229,7 +229,7 @@ public class ImportDelimitedIO {
 //            names[i] = decode(names[i].substring(0, names[i].length()-5));
 //        }
 
-        final String templName = new TemplateListDialog(stage, true, null).getName(stage, delimIoDir);
+        final String templName = new TemplateListDialog(parentWindow, true, null).getName(parentWindow, delimIoDir);
         if (templName != null) {
             final File template = new File(delimIoDir, FilenameEncoder.encode(templName) + JSON_EXTENSION);
             if (!template.canRead()) {
@@ -308,7 +308,7 @@ public class ImportDelimitedIO {
 
                         importController.setClearManuallyAdded(false);
                         try {
-                            stage.update(importController, definitions);
+                            importController.getStage().update(importController, definitions);
                         } finally {
                             importController.setClearManuallyAdded(true);
                         }
