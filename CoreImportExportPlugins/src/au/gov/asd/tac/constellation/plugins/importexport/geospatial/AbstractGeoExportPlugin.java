@@ -43,6 +43,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.F
 import au.gov.asd.tac.constellation.plugins.parameters.types.GraphAttributeParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
@@ -156,7 +157,9 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                     final List<GraphAttributeParameterValue> attributeOptions = new ArrayList<>();
                     final ReadableGraph readableGraph = activeGraph.getReadableGraph();
                     try {
-                        final GraphElementType elementType = (GraphElementType) ((ElementTypeParameterValue) params.get(master.getId()).getObjectValue()).getObjectValue();
+                        ParameterValue pv = params.get(master.getId()).getSingleChoice();
+                        assert(pv instanceof ElementTypeParameterValue);
+                        final GraphElementType elementType = ((ElementTypeParameterValue) pv).getGraphElementType();
                         switch (elementType) {
                             case TRANSACTION:
                                 final int transactionAttributeCount = readableGraph.getAttributeCount(GraphElementType.TRANSACTION);

@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import static au.gov.asd.tac.constellation.plugins.importexport.geospatial.AbstractGeoExportPlugin.SPATIAL_REFERENCE_PARAMETER_ID;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape;
 import java.io.File;
 import java.io.IOException;
@@ -46,7 +47,9 @@ public class ExportToGeoPackagePlugin extends AbstractGeoExportPlugin {
 
     @Override
     protected void exportGeo(final PluginParameters parameters, final String uuid, final Map<String, String> shapes, final Map<String, Map<String, Object>> attributes, final File output) throws IOException {
-        final Shape.SpatialReference spatialReference = (Shape.SpatialReference) ((SpatialReferenceParameterValue) parameters.getObjectValue(SPATIAL_REFERENCE_PARAMETER_ID)).getObjectValue();
+        ParameterValue spatialReferencePV = parameters.getSingleChoice(SPATIAL_REFERENCE_PARAMETER_ID);
+        assert(spatialReferencePV instanceof SpatialReferenceParameterValue);
+        Shape.SpatialReference spatialReference = ((SpatialReferenceParameterValue) spatialReferencePV).getSpatialReference();
         Shape.generateGeoPackage(uuid, shapes, attributes, output, spatialReference);
     }
 
