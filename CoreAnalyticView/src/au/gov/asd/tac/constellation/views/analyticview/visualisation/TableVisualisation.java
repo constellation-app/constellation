@@ -23,7 +23,6 @@ import au.gov.asd.tac.constellation.views.analyticview.translators.AbstractTable
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -151,37 +150,35 @@ public class TableVisualisation<C extends AnalyticData> extends InternalVisualis
 
     @Override
     public void resultChanged(final List<C> selectedItems, final List<C> ignoredItems) {
-        Platform.runLater(() -> {
-            // remove the selection change listener
-            final ListChangeListener<C> listener = currentListener;
-            setSelectionModelListener(null);
+        // remove the selection change listener
+        final ListChangeListener<C> listener = currentListener;
+        setSelectionModelListener(null);
 
-            // add items from the ignored list which are currently selected
-            final int[] selectionIndices = new int[selectedItems.size() + ignoredItems.size()];
-            if (!ignoredItems.isEmpty()) {
-                final List<C> currentSelection = table.getSelectionModel().getSelectedItems();
-                ignoredItems.forEach(item -> {
-                    if (currentSelection.contains(item)) {
-                        selectionIndices[selectedItems.size() + ignoredItems.indexOf(item)] = table.getItems().indexOf(item);
-                    }
-                });
-            }
+        // add items from the ignored list which are currently selected
+        final int[] selectionIndices = new int[selectedItems.size() + ignoredItems.size()];
+        if (!ignoredItems.isEmpty()) {
+            final List<C> currentSelection = table.getSelectionModel().getSelectedItems();
+            ignoredItems.forEach(item -> {
+                if (currentSelection.contains(item)) {
+                    selectionIndices[selectedItems.size() + ignoredItems.indexOf(item)] = table.getItems().indexOf(item);
+                }
+            });
+        }
 
-            // add all items from the selected list
-            if (!selectedItems.isEmpty()) {
-                selectedItems.forEach(item -> {
-                    selectionIndices[selectedItems.indexOf(item)] = table.getItems().indexOf(item);
-                });
-            }
+        // add all items from the selected list
+        if (!selectedItems.isEmpty()) {
+            selectedItems.forEach(item -> {
+                selectionIndices[selectedItems.indexOf(item)] = table.getItems().indexOf(item);
+            });
+        }
 
-            // clear the table selection and then make the new selection
-            table.getSelectionModel().clearSelection();
-            if (selectionIndices.length > 0) {
-                table.getSelectionModel().selectIndices(selectionIndices[0], selectionIndices);
-            }
+        // clear the table selection and then make the new selection
+        table.getSelectionModel().clearSelection();
+        if (selectionIndices.length > 0) {
+            table.getSelectionModel().selectIndices(selectionIndices[0], selectionIndices);
+        }
 
-            // add the selection change listener back
-            setSelectionModelListener(listener);
-        });
+        // add the selection change listener back
+        setSelectionModelListener(listener);
     }
 }
