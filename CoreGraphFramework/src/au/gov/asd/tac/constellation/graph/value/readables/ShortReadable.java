@@ -30,6 +30,21 @@ public interface ShortReadable extends IntReadable, Updatable {
     }
     
     @Override
+    default long readLong() {
+         return readShort();
+    }
+    
+    @Override
+    default float readFloat() {
+         return readShort();
+    }
+    
+    @Override
+    default double readDouble() {
+         return readShort();
+    }
+    
+    @Override
     default void update() {
         readShort();
     }

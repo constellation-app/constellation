@@ -21,8 +21,13 @@ import au.gov.asd.tac.constellation.graph.value.Updatable;
  *
  * @author sirius
  */
-public interface LongReadable extends DoubleReadable, Updatable {
+public interface LongReadable extends FloatReadable, Updatable {
     long readLong();
+    
+    @Override
+    default float readFloat() {
+        return readLong();
+    }
     
     @Override
     default double readDouble() {

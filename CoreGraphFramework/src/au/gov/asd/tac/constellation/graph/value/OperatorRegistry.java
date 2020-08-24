@@ -34,12 +34,14 @@ public class OperatorRegistry {
         this.name = name;
     }
     
-    public final <P, R> void register(Class<P> parameterClass, Class<R> resultClass, Function<? super P, ? extends R> function) {
+    public final <P, R> OperatorRegistry register(Class<P> parameterClass, Class<R> resultClass, Function<? super P, ? extends R> function) {
         functions.add(new FunctionRecord(parameterClass, function));
+        return this;
     }
     
-    public final <P1, P2, R> void register(Class<P1> parameter1Class, Class<P2> parameter2Class, Class<R> resultClass, BiFunction<? super P1, ? super P2, ? extends R> biFunction) {
+    public final <P1, P2, R> OperatorRegistry register(Class<P1> parameter1Class, Class<P2> parameter2Class, Class<R> resultClass, BiFunction<? super P1, ? super P2, ? extends R> biFunction) {
         biFunctions.add(new BiFunctionRecord(parameter1Class, parameter2Class, biFunction));
+        return this;
     }
     
     public Object apply(Object parameter) {

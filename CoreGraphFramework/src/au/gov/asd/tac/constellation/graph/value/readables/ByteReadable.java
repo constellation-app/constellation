@@ -21,11 +21,31 @@ import au.gov.asd.tac.constellation.graph.value.Updatable;
  *
  * @author sirius
  */
-public interface ByteReadable extends IntReadable, Updatable {
+public interface ByteReadable extends ShortReadable, Updatable {
     byte readByte();
     
     @Override
+    default short readShort() {
+        return readByte();
+    }
+    
+    @Override
     default int readInt() {
+        return readByte();
+    }
+    
+    @Override
+    default long readLong() {
+        return readByte();
+    }
+    
+    @Override
+    default float readFloat() {
+        return readByte();
+    }
+    
+    @Override
+    default double readDouble() {
         return readByte();
     }
     
