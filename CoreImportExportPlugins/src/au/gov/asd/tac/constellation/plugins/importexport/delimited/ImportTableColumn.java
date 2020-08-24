@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.plugins.importexport.delimited.model.CellVal
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.model.CellValueProperty;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.model.TableRow;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.translator.AttributeTranslator;
+import au.gov.asd.tac.constellation.plugins.importexport.delimited.translator.ScriptAttributeTranslator;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -33,6 +34,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.layout.BorderPane;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * ImportTableColumn extends a standard JavaFX table column to add field
@@ -63,14 +65,14 @@ public class ImportTableColumn extends TableColumn<TableRow, CellValue> {
     }
 
     public void validate(final List<TableRow> data) {
-        AttributeNode attributeNode = getAttributeNode();
+        final AttributeNode attributeNode = getAttributeNode();
 
         boolean columnFailed = false;
 
         if (attributeNode != null) {
-            AttributeTranslator parser = attributeNode.getTranslator();
-            PluginParameters parserParameters = attributeNode.getTranslatorParameters();
-            String defaultValue = attributeNode.getDefaultValue();
+            final AttributeTranslator parser = attributeNode.getTranslator();
+            final PluginParameters parserParameters = attributeNode.getTranslatorParameters();
+            final String defaultValue = attributeNode.getDefaultValue();
 
             Class<? extends AttributeDescription> attributeDescriptionClass = AttributeRegistry.getDefault().getAttributes().get(attributeNode.getAttribute().getAttributeType());
             // Handle pseudo-attributes
@@ -78,12 +80,17 @@ public class ImportTableColumn extends TableColumn<TableRow, CellValue> {
                 attributeDescriptionClass = BooleanAttributeDescription.class;
             }
             try {
-                AttributeDescription attributeDescription = attributeDescriptionClass.getDeclaredConstructor().newInstance();
-                for (TableRow row : data) {
-                    CellValueProperty property = row.getProperty(columnIndex);
-                    String value = property.get().getOriginalText();
-                    String parsedValue = parser.translate(value, parserParameters);
-                    String errorMessage = attributeDescription.acceptsString(parsedValue);
+                final AttributeDescription attributeDescription = attributeDescriptionClass.getDeclaredConstructor().newInstance();
+                for (final TableRow row : data) {
+                    final CellValueProperty property = row.getProperty(columnIndex);
+                    final String value = property.get().getOriginalText();
+                    final String errorMessage;
+                    final String parsedValue = parser.translate(value, parserParameters); // errors here
+                    if (StringUtils.contains(parsedValue, ScriptAttributeTranslator.ERROR_TEXT)) {
+                        errorMessage = parsedValue;
+                    } else {
+                        errorMessage = attributeDescription.acceptsString(parsedValue);
+                    }
                     columnFailed |= errorMessage != null;
                     if (parsedValue == null ? value == null : parsedValue.equals(value)) {
                         property.setText(value);
@@ -108,8 +115,8 @@ public class ImportTableColumn extends TableColumn<TableRow, CellValue> {
                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         } else {
-            for (TableRow row : data) {
-                CellValueProperty property = row.getProperty(columnIndex);
+            for (final TableRow row : data) {
+                final CellValueProperty property = row.getProperty(columnIndex);
                 property.setText(property.get().getOriginalText());
                 property.setMessage(null, false);
             }
@@ -123,9 +130,9 @@ public class ImportTableColumn extends TableColumn<TableRow, CellValue> {
     }
 
     public AttributeNode getAttributeNode() {
-        ColumnHeader header = (ColumnHeader) getGraphic();
+        final ColumnHeader header = (ColumnHeader) getGraphic();
         if (header.getChildren().size() > 1) {
-            Node node = header.getChildren().get(1);
+            final Node node = header.getChildren().get(1);
             if (node instanceof AttributeNode) {
                 return (AttributeNode) node;
             }
@@ -133,8 +140,8 @@ public class ImportTableColumn extends TableColumn<TableRow, CellValue> {
         return null;
     }
 
-    public void setAttributeNode(AttributeNode attributeNode) {
-        ColumnHeader header = (ColumnHeader) getGraphic();
+    public void setAttributeNode(final AttributeNode attributeNode) {
+        final ColumnHeader header = (ColumnHeader) getGraphic();
         header.setCenter(attributeNode == null ? new Label() : attributeNode);
     }
 
@@ -142,7 +149,7 @@ public class ImportTableColumn extends TableColumn<TableRow, CellValue> {
 
         private final Label label;
 
-        public ColumnHeader(String label) {
+        public ColumnHeader(final String label) {
             setPadding(new Insets(2));
             this.label = new Label(label);
             BorderPane.setAlignment(this.label, Pos.CENTER);

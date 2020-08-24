@@ -43,6 +43,7 @@ public class ScriptAttributeTranslator extends AttributeTranslator {
 
     private static final String PYTHON_LANGUAGE = "Python";
     public static final String SCRIPT_PARAMETER_ID = PluginParameter.buildId(ScriptAttributeTranslator.class, "script");
+    public static final String ERROR_TEXT = "ERROR: ";
 
     private static final Map<String, String> LANGUAGES = new HashMap<>();
 
@@ -94,7 +95,7 @@ public class ScriptAttributeTranslator extends AttributeTranslator {
                 compiledScript = null;
                 savedLanguage = null;
                 savedScript = null;
-                return "ERROR: " + e.getMessage();
+                return ERROR_TEXT + e.getMessage();
             }
         }
 
@@ -107,7 +108,7 @@ public class ScriptAttributeTranslator extends AttributeTranslator {
             }
             return String.valueOf(result);
         } catch (ScriptException e) {
-            return "ERROR: " + e.getMessage();
+            return ERROR_TEXT + e.getMessage();
         }
     }
 

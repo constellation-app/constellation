@@ -32,7 +32,7 @@ import org.openide.windows.TopComponent;
  */
 @TopComponent.Description(
         preferredID = "DelimitedImportTopComponent",
-        iconBase = "au/gov/asd/tac/constellation/plugins/layers/importexport/resources/importDelimited.png",
+        iconBase = "au/gov/asd/tac/constellation/plugins/importexport/delimited/resources/importDelimited.png",
         persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(
         mode = "explorer",
