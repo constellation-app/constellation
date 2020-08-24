@@ -35,6 +35,10 @@ public class ElementTypeParameterValue extends ParameterValue {
         this.elementType = elementType;
     }
 
+    public GraphElementType getGraphElementType() {
+        return elementType;
+    }
+
     @Override
     public String validateString(final String s) {
         try {
