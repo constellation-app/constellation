@@ -331,6 +331,65 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
     }
 
     /**
+     * Get a contrasting color based on YIQ values. Will return BLACK if the
+     * passed in color is null.
+     *
+     * @param color HTML color to contrast with
+     * @return the ConstellationColor which contrasts with color.
+     */
+    public static ConstellationColor getContrastHtmlColor(final String color) {
+        return getContrastColor(fromHtmlColor(color));
+    }
+
+    /**
+     * Get a contrasting color based on YIQ values. Will return BLACK if the
+     * passed in color is null.
+     *
+     * @param color RGB color to contrast with
+     * @return the ConstellationColor which contrasts with color.
+     */
+    public static ConstellationColor getContrastRGBColor(final String color) {
+        return getContrastColor(fromRgbColor(color));
+    }
+
+    /**
+     * Get a contrasting color based on YIQ values. Will return BLACK if the
+     * passed in color is null.
+     *
+     * @param color ConstellationColor color to contrast with
+     * @return the ConstellationColor which contrasts with color.
+     */
+    public static ConstellationColor getContrastColor(final ConstellationColor color) {
+        return getContrastColor(color.getJavaColor());
+    }
+
+    /**
+     * Get a contrasting color based on YIQ values. Will return BLACK if the
+     * passed in color is null.
+     *
+     * @param color RGB color String separated by commas to contrast with
+     * @return the ConstellationColor which contrasts with color.
+     */
+    public static ConstellationColor getContrastfromRgbWithCommaColor(final String color) {
+        return getContrastColor(fromRgbWithCommaColor(color));
+    }
+
+    /**
+     * Get a contrasting color based on YIQ values. Will return BLACK if the
+     * passed in color is null.
+     *
+     * @param color JavaFX color to contrast with
+     * @return the ConstellationColor which contrasts with color.
+     */
+    public static ConstellationColor getContrastColor(final Color color) {
+        if (color == null) {
+            return ConstellationColor.BLACK;
+        }
+        final double y = (299 * color.getRed() + 587 * color.getGreen() + 114 * color.getBlue()) / 1000;
+        return y >= 128 ? ConstellationColor.BLACK : ConstellationColor.WHITE;
+    }
+
+    /**
      * Convert a RGB color string (RGBrrrgggbbb) to a ColorValue.
      *
      * @param color The RGB color string
