@@ -150,13 +150,15 @@ public class RunPane extends BorderPane implements KeyListener {
         setCenter(configBox);
 
         filterField = new TextField();
+        filterField.setFocusTraversable(false);
         filterField.setMinHeight(USE_PREF_SIZE);
-        filterField.setPromptText("Filter");
+        filterField.setText("Filter");
+        filterField.setStyle("-fx-background-color: black; -fx-text-fill: white;");
         filterField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (setFilter(newValue)) {
-                filterField.setStyle("-fx-background-color: white;");
+                filterField.setStyle("-fx-background-color: black; -fx-text-fill: white;");
             } else {
-                filterField.setStyle("-fx-background-color: red;");
+                filterField.setStyle("-fx-background-color: red; -fx-text-fill: black;");
             }
         });
 
