@@ -82,4 +82,28 @@ public class ElementTypeParameterValue extends ParameterValue {
     public String toString() {
         return elementType == null ? "No Value" : elementType.getShortLabel();
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 41 * hash + Objects.hashCode(this.elementType);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ElementTypeParameterValue other = (ElementTypeParameterValue) obj;
+        return this.elementType == other.elementType;
+    }
+    
+    
 }
