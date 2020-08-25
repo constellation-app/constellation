@@ -35,7 +35,7 @@ import org.openide.util.NbBundle;
 @ActionID(category = "Options", id = "au.gov.asd.tac.constellation.views.layersviewshortcuts")
 @ActionRegistration(displayName = "#CTL_LayersViewShortcuts", surviveFocusChange = true)
 @ActionReferences({
-    @ActionReference(path = "Shortcuts", name = "CA-S"),
+    @ActionReference(path = "Shortcuts", name = "CA-D"),
     @ActionReference(path = "Shortcuts", name = "CA-L")
 })
 @NbBundle.Messages("CTL_LayersViewShortcuts=Layers View: Shortcuts")
