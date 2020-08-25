@@ -42,11 +42,10 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParamet
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
-import au.gov.asd.tac.constellation.plugins.templates.SimpleQueryPlugin;
+import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import org.openide.util.NbBundle;
@@ -63,10 +62,10 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = DataAccessPlugin.class),
     @ServiceProvider(service = Plugin.class)})
 @NbBundle.Messages("SplitNodesPlugin=Split Nodes Based on Identifier")
-public class SplitNodesPlugin extends SimpleQueryPlugin implements DataAccessPlugin {
+public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlugin {
 
     public static final String SPLIT_PARAMETER_ID = PluginParameter.buildId(SplitNodesPlugin.class, "split");
-    public static final String SPLIT_INTO_SAME_LEVEL_PARAMETER_ID = PluginParameter.buildId(SplitNodesPlugin.class, "split_level");
+    public static final String DUPLICATE_TRANSACTIONS_PARAMETER_ID = PluginParameter.buildId(SplitNodesPlugin.class, "split_level");
     public static final String TRANSACTION_TYPE_PARAMETER_ID = PluginParameter.buildId(SplitNodesPlugin.class, "transaction_type");
     public static final String ALL_OCCURRENCES_PARAMETER_ID = PluginParameter.buildId(SplitNodesPlugin.class, "all_occurances");
 
@@ -95,11 +94,11 @@ public class SplitNodesPlugin extends SimpleQueryPlugin implements DataAccessPlu
         split.setStringValue(null);
         params.addParameter(split);
 
-        final PluginParameter<BooleanParameterValue> splitIntoSameLevelParameter = BooleanParameterType.build(SPLIT_INTO_SAME_LEVEL_PARAMETER_ID);
-        splitIntoSameLevelParameter.setName("Split Nodes into same level");
-        splitIntoSameLevelParameter.setDescription("Choose to split Nodes hanging off from the same parent node rather than from one of the new nodes");
-        splitIntoSameLevelParameter.setBooleanValue(false);
-        params.addParameter(splitIntoSameLevelParameter);
+        final PluginParameter<BooleanParameterValue> duplicateTransactionsParameter = BooleanParameterType.build(DUPLICATE_TRANSACTIONS_PARAMETER_ID);
+        duplicateTransactionsParameter.setName("Duplicate transactions");
+        duplicateTransactionsParameter.setDescription("Duplicate transactions for split nodes");
+        duplicateTransactionsParameter.setBooleanValue(false);
+        params.addParameter(duplicateTransactionsParameter);
 
         final PluginParameter<SingleChoiceParameterValue> transactionType = SingleChoiceParameterType.build(TRANSACTION_TYPE_PARAMETER_ID);
         transactionType.setName("Transaction Type");
@@ -112,7 +111,7 @@ public class SplitNodesPlugin extends SimpleQueryPlugin implements DataAccessPlu
         allOccurrences.setBooleanValue(false);
         params.addParameter(allOccurrences);
 
-        params.addController(SPLIT_INTO_SAME_LEVEL_PARAMETER_ID, (master, parameters, change) -> {
+        params.addController(DUPLICATE_TRANSACTIONS_PARAMETER_ID, (master, parameters, change) -> {
             if (change == ParameterChange.VALUE) {
                 final boolean splitIntoSameLevel = master.getBooleanValue();
                 parameters.get(TRANSACTION_TYPE_PARAMETER_ID).setEnabled(!splitIntoSameLevel);
@@ -125,7 +124,7 @@ public class SplitNodesPlugin extends SimpleQueryPlugin implements DataAccessPlu
 
     @Override
     public void updateParameters(Graph graph, PluginParameters parameters) {
-        if (parameters != null && parameters.getParameters() != null && !parameters.getParameters().get(SPLIT_INTO_SAME_LEVEL_PARAMETER_ID).getBooleanValue()) {
+        if (parameters != null && parameters.getParameters() != null && !parameters.getParameters().get(DUPLICATE_TRANSACTIONS_PARAMETER_ID).getBooleanValue()) {
             final List<String> types = new ArrayList<>();
             if (graph != null && graph.getSchema() != null) {
                 for (final SchemaTransactionType type : SchemaTransactionTypeUtilities.getTypes(graph.getSchema().getFactory().getRegisteredConcepts())) {
@@ -149,38 +148,40 @@ public class SplitNodesPlugin extends SimpleQueryPlugin implements DataAccessPlu
     }
 
     private int createNewNode(final GraphWriteMethods graph, final int selectedNode, final String newNodeIdentifier, final String linkType, final boolean splitIntoSameLevel) {
-        int vertexIdentifierAttributeId = graph.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.IDENTIFIER.getName());
-        int transactionTypeAttributeId = graph.getAttribute(GraphElementType.TRANSACTION, AnalyticConcept.TransactionAttribute.TYPE.getName());
-        int vertexAttributeCount = graph.getAttributeCount(GraphElementType.VERTEX);
+        final int vertexIdentifierAttributeId = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
+        final int transactionTypeAttributeId = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
+        final int transactionDirectedAttribute = VisualConcept.TransactionAttribute.DIRECTED.ensure(graph);
+        final int vertexAttributeCount = graph.getAttributeCount(GraphElementType.VERTEX);
 
         // Add new node
-        int newVertexId = graph.addVertex();
+        final int newVertexId = graph.addVertex();
 
-        //Loops through all of the Node attributes and copies them to the new node
+        //Loops through all of the Node attributes and copy them to the new node
         for (int vertexAttributePosition = 0; vertexAttributePosition < vertexAttributeCount; vertexAttributePosition++) {
-            int vertexAttributeId = graph.getAttribute(GraphElementType.VERTEX, vertexAttributePosition);
-            String vertexAttributeName = graph.getAttributeName(vertexAttributeId);
+            final int vertexAttributeId = graph.getAttribute(GraphElementType.VERTEX, vertexAttributePosition);
+            final String vertexAttributeName = graph.getAttributeName(vertexAttributeId);
 
             if (vertexAttributeName.equals(VisualConcept.VertexAttribute.IDENTIFIER.getName())) {
                 graph.setStringValue(vertexIdentifierAttributeId, newVertexId, newNodeIdentifier);
             } else if ((VisualConcept.VertexAttribute.X.getName()).equals(vertexAttributeName)) {
                 //The X coordinate is skipped so that the second node is not created in the exact same location
-                //as the first node. Copiying the Y & Z for a better arrangement as it looks less cluttered.
+                //as the first node. Copying the Y & Z for a better arrangement as it looks less cluttered.
             } else {
                 graph.getNativeAttributeType(vertexAttributeId).copyAttributeValue(graph, vertexAttributeId, selectedNode, newVertexId);
             }
         }
 
-        // Transactions
-        final boolean directed = false;
+        // Add Transactions
         if (splitIntoSameLevel) {
             int transactionCount = graph.getVertexTransactionCount(selectedNode);
             for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
-                int originalTransactionId = graph.getVertexTransaction(selectedNode, transactionPosition);
+                final int originalTransactionId = graph.getVertexTransaction(selectedNode, transactionPosition);
 
-                int sourceVertex = graph.getTransactionSourceVertex(originalTransactionId);
-                int destinationVertex = graph.getTransactionDestinationVertex(originalTransactionId);
+                final int sourceVertex = graph.getTransactionSourceVertex(originalTransactionId);
+                final int destinationVertex = graph.getTransactionDestinationVertex(originalTransactionId);
                 int newTransactionId = 0;
+                final Boolean directed = graph.getBooleanValue(transactionDirectedAttribute, originalTransactionId);
+
                 if (sourceVertex == selectedNode && destinationVertex == selectedNode) {
                     newTransactionId = graph.addTransaction(newVertexId, newVertexId, directed);
                 } else if (sourceVertex == selectedNode) {
@@ -189,11 +190,11 @@ public class SplitNodesPlugin extends SimpleQueryPlugin implements DataAccessPlu
                     newTransactionId = graph.addTransaction(sourceVertex, newVertexId, directed);
                 }
 
-                //Loops through all the transaction attributes and copies them to the new transaction
+                //Loops through all the transaction attributes and copy them to the new transaction
                 int transactionAttributeCount = graph.getAttributeCount(GraphElementType.TRANSACTION);
                 for (int transactionAttributePosition = 0; transactionAttributePosition < transactionAttributeCount; transactionAttributePosition++) {
-                    int transactionAttributeId = graph.getAttribute(GraphElementType.TRANSACTION, transactionAttributePosition);
-                    String transactionAttributeName = graph.getAttributeName(transactionAttributeId);
+                    final int transactionAttributeId = graph.getAttribute(GraphElementType.TRANSACTION, transactionAttributePosition);
+                    final String transactionAttributeName = graph.getAttributeName(transactionAttributeId);
                     if (transactionAttributeName.equals(VisualConcept.TransactionAttribute.IDENTIFIER.getName())) {
                         graph.setStringValue(transactionAttributeId, newTransactionId, Integer.toString(newTransactionId));
                     } else {
@@ -203,7 +204,7 @@ public class SplitNodesPlugin extends SimpleQueryPlugin implements DataAccessPlu
             }
         } else {
             //Add a transaction of the type 'linkType' between the selected node and new node
-            int newTransactionId = graph.addTransaction(selectedNode, newVertexId, directed);
+            final int newTransactionId = graph.addTransaction(selectedNode, newVertexId, false);
             graph.setStringValue(transactionTypeAttributeId, newTransactionId, linkType);
         }
         return newVertexId;
@@ -216,15 +217,14 @@ public class SplitNodesPlugin extends SimpleQueryPlugin implements DataAccessPlu
         final ParameterValue transactionTypeChoice = splitParameters.get(TRANSACTION_TYPE_PARAMETER_ID).getSingleChoice();
         final String linkType = transactionTypeChoice != null ? transactionTypeChoice.toString() : AnalyticConcept.TransactionType.CORRELATION.getName();
         final boolean allOccurrences = splitParameters.get(ALL_OCCURRENCES_PARAMETER_ID).getBooleanValue();
-        final boolean splitIntoSameLevel = splitParameters.get(SPLIT_INTO_SAME_LEVEL_PARAMETER_ID).getBooleanValue();
-
-        int vertexSelectedAttributeId = graph.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
-        int vertexIdentifierAttributeId = graph.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.IDENTIFIER.getName());
-        List<Integer> newVertices = new ArrayList<>();
-
+        final boolean splitIntoSameLevel = splitParameters.get(DUPLICATE_TRANSACTIONS_PARAMETER_ID).getBooleanValue();
+        final int vertexSelectedAttributeId = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
+        final int vertexIdentifierAttributeId = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
+        final List<Integer> newVertices = new ArrayList<>();
         final int graphVertexCount = graph.getVertexCount();
+
         for (int position = 0; position < graphVertexCount; position++) {
-            int currentVertexId = graph.getVertex(position);
+            final int currentVertexId = graph.getVertex(position);
 
             if (graph.getBooleanValue(vertexSelectedAttributeId, currentVertexId)) {
                 final String identifier = graph.getStringValue(vertexIdentifierAttributeId, currentVertexId);
@@ -232,10 +232,15 @@ public class SplitNodesPlugin extends SimpleQueryPlugin implements DataAccessPlu
                 if (identifier != null && identifier.contains(character) && identifier.indexOf(character) < identifier.length() - character.length()) {
                     String leftNodeIdentifier = "";
                     if (allOccurrences) {
-                        final List<String> substrings = new ArrayList<>(Arrays.asList(identifier.split(character)));
-                        leftNodeIdentifier = substrings.get(0);
-                        for (int i = 1; i < substrings.size(); i++) {
-                            newVertices.add(createNewNode(graph, position, substrings.get(i), linkType, splitIntoSameLevel));
+                        final String[] substrings = identifier.split(character);
+                        if (substrings.length <= 0) {
+                            continue;
+                        }
+
+                        leftNodeIdentifier = substrings[0];
+
+                        for (int i = 1; i < substrings.length; i++) {
+                            newVertices.add(createNewNode(graph, position, substrings[i], linkType, splitIntoSameLevel));
                         }
 
                     } else {
@@ -266,10 +271,29 @@ public class SplitNodesPlugin extends SimpleQueryPlugin implements DataAccessPlu
         }
     }
 
+    /**
+     * The arrangement to be done after the plugin completes.
+     * <p>
+     * Some plugins result in new nodes being created in a graph. In order to
+     * make these nodes visible to the user, the new nodes should undergo a
+     * default arrangement.
+     * <p>
+     * Be cautious when specifying no arrangement. Due to various graphics
+     * card/driver quirks, we can't leave the nodes at (0,0,0). It's easy to
+     * crash the display this way. Also, we don't want to crush the new nodes
+     * too close together: the camera will zoom in and make them bigger and
+     * slower to draw. Therefore it is highly recommended that plugins do not
+     * specify no arrangement unless they know what they're doing.
+     * <p>
+     * Note: PluginExecutors should be arrangements. Do the sensible thing when
+     * overriding.
+     *
+     * @return A PluginExecutor that does an arrangement, or null if no
+     * arrangement is to be done.
+     */
     public PluginExecutor completionArrangement() {
         return PluginExecutor.startWith(ArrangementPluginRegistry.GRID_COMPOSITE)
                 .followedBy(ArrangementPluginRegistry.PENDANTS)
                 .followedBy(ArrangementPluginRegistry.UNCOLLIDE);
     }
-
 }
