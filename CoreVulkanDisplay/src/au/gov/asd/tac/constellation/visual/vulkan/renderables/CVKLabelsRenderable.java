@@ -15,6 +15,9 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan.renderables;
 
+import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector4i;
+import au.gov.asd.tac.constellation.utilities.text.LabelUtilities;
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
 import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDescriptorPool;
@@ -36,15 +39,21 @@ import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.LongBuffer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32B32A32_SFLOAT;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32B32A32_SINT;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
+import static org.lwjgl.vulkan.VK10.VK_VERTEX_INPUT_RATE_VERTEX;
 import static org.lwjgl.vulkan.VK10.vkDestroyShaderModule;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkCommandBufferInheritanceInfo;
+import org.lwjgl.vulkan.VkVertexInputAttributeDescription;
+import org.lwjgl.vulkan.VkVertexInputBindingDescription;
 
 /**
  * Requirements: 
@@ -78,22 +87,41 @@ public class CVKLabelsRenderable extends CVKRenderable {
     private List<CVKBuffer> geometryUniformBuffers = null;    
     private List<CVKBuffer> fragmentUniformBuffers = null;       
     
+    // Resources recreated only through user events
+    private int vertexCount = 0;
+    private CVKBuffer cvkVertexStagingBuffer = null;
+//    private CVKBuffer cvkPositionStagingBuffer = null;
+//    private CVKBuffer cvkPositionBuffer = null;    
+//    private CVKBuffer cvkVertexFlagsStagingBuffer = null;
+//    private CVKBuffer cvkVertexFlagsBuffer = null;    
+//    private long hPositionBufferView = VK_NULL_HANDLE;
+//    private long hVertexFlagsBufferView = VK_NULL_HANDLE;    
+    
     
     
     // ========================> Classes <======================== \\
     
-//    private static class Vertex {
-//        // This looks a little weird for Java, but LWJGL and JOGL both require
-//        // contiguous memory which is passed to the native GL or VK libraries.        
-//        private static final int SIZEOF = 4 * Float.BYTES + 4 * Integer.BYTES;
-//        private static final int OFFSETOF_DATA = 4 * Float.BYTES;
-//        private static final int OFFSET_BKGCLR = 0;
-//        private static final int BINDING = 0;
-//        private Vector4f backgroundIconColour = new Vector4f();
-//        private Vector4i data = new Vector4i();
-//        
-//        public Vertex() {}
-//
+    private static class Vertex {
+        // This looks a little weird for Java, but LWJGL and JOGL both require
+        // contiguous memory which is passed to the native GL or VK libraries.        
+        private static final int SIZEOF = 4 * Float.BYTES + 4 * Integer.BYTES;
+        private static final int OFFSETOF_GLYPH_DATA = 0;
+        private static final int OFFSETOF_GRAPH_DATA = 4 * Float.BYTES;        
+        private static final int BINDING = 0;
+        
+        // [0] the index of the glyph in the glyphInfoTexture
+        // [1..2] x and y offsets of this glyph from the top centre of the line of text
+        // [3] The visibility of this glyph (constant for a node, but easier to pass in the batch).
+        private Vector4f glyphLocationData = new Vector4f();
+        
+        // [0] The index of the node containg this glyph in the xyzTexture
+        // [1] The total scale of the lines and their labels up to this point (< 0 if this is a glyph in a bottom label)
+        // [2] The label number in which this glyph occurs
+        // [3] Unused        
+        private Vector4i graphLocationData = new Vector4i();
+        
+        public Vertex() {}
+
 //        public Vertex(Vector4i inData, Vector4f inColour) {
 //            data = inData;
 //            backgroundIconColour = inColour;
@@ -104,84 +132,84 @@ public class CVKLabelsRenderable extends CVKRenderable {
 //            backgroundIconColour.a[1] = colour.getGreen();
 //            backgroundIconColour.a[2] = colour.getBlue();
 //        }
-//        
+        
 //        public void SetVertexVisibility(float visibility) {
 //            backgroundIconColour.a[3] = visibility;
 //        }
-//        
+        
 //        public void SetIconData(int mainIconIndices, int decoratorWestIconIndices, int decoratorEastIconIndices, int vertexIndex) {
 //            data.set(mainIconIndices, decoratorWestIconIndices, decoratorEastIconIndices, vertexIndex);
 //        }   
-//        
-//        public void CopyToSequentially(ByteBuffer buffer) {
-//            buffer.putFloat(backgroundIconColour.a[0]);
-//            buffer.putFloat(backgroundIconColour.a[1]);
-//            buffer.putFloat(backgroundIconColour.a[2]);
-//            buffer.putFloat(backgroundIconColour.a[3]);
-//            buffer.putInt(data.a[0]);
-//            buffer.putInt(data.a[1]);
-//            buffer.putInt(data.a[2]);
-//            buffer.putInt(data.a[3]);              
-//        }        
-//
-//        /**
-//         * A VkVertexInputBindingDescription defines the rate at which data is
-//         * consumed by vertex shader (per vertex or per instance).  
-//         * The input rate determines whether to move to the next data entry after
-//         * each vertex or after each instance.
-//         * The binding description also defines the vertex stride, the number of
-//         * bytes that must be stepped from vertex n-1 to vertex n.
-//         * 
-//         * @return Binding description for the FPS vertex type
-//         */
-//        private static VkVertexInputBindingDescription.Buffer GetBindingDescription() {
-//
-//            VkVertexInputBindingDescription.Buffer bindingDescription =
-//                    VkVertexInputBindingDescription.callocStack(1);
-//
-//            // If we bind multiple vertex buffers with different descriptions
-//            // this is the index of this description occupies in the array of
-//            // bound descriptions.
-//            bindingDescription.binding(BINDING);
-//            bindingDescription.stride(Vertex.SIZEOF);
-//            bindingDescription.inputRate(VK_VERTEX_INPUT_RATE_VERTEX);
-//
-//            return bindingDescription;
-//        }
-//        
-//        /**
-//         * A VkVertexInputAttributeDescription describes each element int the
-//         * vertex buffer.
-//         * binding:  matches the binding member of VkVertexInputBindingDescription
-//         * location: corresponds to the layout(location = #) in the vertex shader
-//         *           for this element (0 for data, 1 for bkgClr).
-//         * format:   format the shader will interpret this as.
-//         * offset:   bytes from the start of the vertex this attribute starts at
-//         * 
-//         * @return 
-//         */
-//        private static VkVertexInputAttributeDescription.Buffer GetAttributeDescriptions() {
-//
-//            VkVertexInputAttributeDescription.Buffer attributeDescriptions =
-//                    VkVertexInputAttributeDescription.callocStack(2);
-//
-//            // backgroundIconColor
-//            VkVertexInputAttributeDescription posDescription = attributeDescriptions.get(0);
-//            posDescription.binding(BINDING);
-//            posDescription.location(0);
-//            posDescription.format(VK_FORMAT_R32G32B32A32_SFLOAT);
-//            posDescription.offset(OFFSET_BKGCLR);
-//
-//            // data
-//            VkVertexInputAttributeDescription colorDescription = attributeDescriptions.get(1);
-//            colorDescription.binding(BINDING);
-//            colorDescription.location(1);
-//            colorDescription.format(VK_FORMAT_R32G32B32A32_SINT);
-//            colorDescription.offset(OFFSETOF_DATA);
-//
-//            return attributeDescriptions.rewind();
-//        }
-//    }  
+        
+        public void CopyToSequentially(ByteBuffer buffer) {
+            buffer.putFloat(glyphLocationData.a[0]);
+            buffer.putFloat(glyphLocationData.a[1]);
+            buffer.putFloat(glyphLocationData.a[2]);
+            buffer.putFloat(glyphLocationData.a[3]);
+            buffer.putInt(graphLocationData.a[0]);
+            buffer.putInt(graphLocationData.a[1]);
+            buffer.putInt(graphLocationData.a[2]);
+            buffer.putInt(graphLocationData.a[3]);              
+        }        
+
+        /**
+         * A VkVertexInputBindingDescription defines the rate at which data is
+         * consumed by vertex shader (per vertex or per instance).  
+         * The input rate determines whether to move to the next data entry after
+         * each vertex or after each instance.
+         * The binding description also defines the vertex stride, the number of
+         * bytes that must be stepped from vertex n-1 to vertex n.
+         * 
+         * @return Binding description for the FPS vertex type
+         */
+        private static VkVertexInputBindingDescription.Buffer GetBindingDescription() {
+
+            VkVertexInputBindingDescription.Buffer bindingDescription =
+                    VkVertexInputBindingDescription.callocStack(1);
+
+            // If we bind multiple vertex buffers with different descriptions
+            // this is the index of this description occupies in the array of
+            // bound descriptions.
+            bindingDescription.binding(BINDING);
+            bindingDescription.stride(Vertex.SIZEOF);
+            bindingDescription.inputRate(VK_VERTEX_INPUT_RATE_VERTEX);
+
+            return bindingDescription;
+        }
+        
+        /**
+         * A VkVertexInputAttributeDescription describes each element int the
+         * vertex buffer.
+         * binding:  matches the binding member of VkVertexInputBindingDescription
+         * location: corresponds to the layout(location = #) in the vertex shader
+         *           for this element (0 for data, 1 for bkgClr).
+         * format:   format the shader will interpret this as.
+         * offset:   bytes from the start of the vertex this attribute starts at
+         * 
+         * @return 
+         */
+        private static VkVertexInputAttributeDescription.Buffer GetAttributeDescriptions() {
+
+            VkVertexInputAttributeDescription.Buffer attributeDescriptions =
+                    VkVertexInputAttributeDescription.callocStack(2);
+
+            // glyphLocationData
+            VkVertexInputAttributeDescription posDescription = attributeDescriptions.get(0);
+            posDescription.binding(BINDING);
+            posDescription.location(0);
+            posDescription.format(VK_FORMAT_R32G32B32A32_SFLOAT);
+            posDescription.offset(OFFSETOF_GLYPH_DATA);
+
+            // graphLocationData
+            VkVertexInputAttributeDescription colorDescription = attributeDescriptions.get(1);
+            colorDescription.binding(BINDING);
+            colorDescription.location(1);
+            colorDescription.format(VK_FORMAT_R32G32B32A32_SINT);
+            colorDescription.offset(OFFSETOF_GRAPH_DATA);
+
+            return attributeDescriptions.rewind();
+        }
+    }  
 //    
 //    private static class Position {
 //        private static final int SIZEOF = 2 * 4 * Float.BYTES;
@@ -1556,24 +1584,60 @@ public class CVKLabelsRenderable extends CVKRenderable {
     
     // ========================> Tasks <======================== \\
     
+    private Vertex[] BuildVertexArray(final VisualAccess access, int first, int last) {
+        final int newVertexCount = (last - first) + 1;
+        if (newVertexCount > 0) {
+            Vertex vertices[] = new Vertex[newVertexCount];            
+            for (int pos = first; pos <= last; ++pos) {
+                final float visibility = access.getVertexVisibility(pos);            
+                vertices[pos] = new Vertex();
+                Vertex vertex = vertices[pos];
+                
+                for (int label = 0; label < access.getTopLabelCount(); label++) {
+                    final String text = access.getVertexTopLabelText(pos, label);
+                    ArrayList<String> lines = LabelUtilities.splitTextIntoLines(text);
+                    
+//                    for (final String line : lines) {
+//                        setCurrentContext(pos, totalScale, visibility, label);
+//                        SharedDrawable.getGlyphManager().renderTextAsLigatures(line, this);
+//                        totalScale += labelTopInfoReference.get(label, 3);
+//                    }                    
+                }
+                
+            }            
+            
+//        
+//        int totalScale = LabelUtilities.NRADIUS_TO_LABEL_UNITS;
+//        for (int label = 0; label < access.getTopLabelCount(); label++) {
+//            final String text = access.getVertexTopLabelText(pos, label);
+//            ArrayList<String> lines = LabelUtilities.splitTextIntoLines(text);
+//            Collections.reverse(lines);
+
+//        }            
+            
+            return vertices;
+        } else {
+            return null;
+        } 
+    }  
+        
+    
     public CVKRenderUpdateTask TaskUpdateLabels(final VisualChange change, final VisualAccess access) {
         //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
         cvkVisualProcessor.GetLogger().fine("TaskUpdateLabels frame %d: %d verts", cvkVisualProcessor.GetFrameNumber(), access.getVertexCount());
         
-        // If we have had an update task called before a rebuild task we first have to build
-        // the staging buffer.  Rebuild also if we our vertex count has somehow changed.
-//        final boolean rebuildRequired = cvkVertexStagingBuffer == null || 
-//                                        access.getVertexCount() * Vertex.SIZEOF != cvkVertexStagingBuffer.GetBufferSize() || 
-//                                        change.isEmpty();
-//        final int changedVerticeRange[];
-//        final Vertex vertices[];
-//        if (rebuildRequired) {
-//            vertices = BuildVertexArray(access, 0, access.getVertexCount() - 1);
-//            changedVerticeRange = null;
-//        } else {
-//            changedVerticeRange = change.getRange();
-//            vertices = BuildVertexArray(access, changedVerticeRange[0], changedVerticeRange[1]);         
-//        }
+        final boolean rebuildRequired = cvkVertexStagingBuffer == null || 
+                                        access.getVertexCount() * Vertex.SIZEOF != cvkVertexStagingBuffer.GetBufferSize() || 
+                                        change.isEmpty();
+        final int changedVerticeRange[];
+        final Vertex vertices[];
+        if (rebuildRequired) {
+            vertices = BuildVertexArray(access, 0, access.getVertexCount() - 1);
+            changedVerticeRange = null;
+        } else {
+            changedVerticeRange = change.getRange();
+            vertices = BuildVertexArray(access, changedVerticeRange[0], changedVerticeRange[1]);         
+        }
         
         //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.ProcessRenderTasks) ===//
         return () -> {

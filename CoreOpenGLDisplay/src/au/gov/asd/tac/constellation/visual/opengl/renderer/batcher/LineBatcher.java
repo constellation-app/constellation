@@ -23,7 +23,7 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualAccess.ConnectionDire
 import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable.GLRenderableUpdateTask;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.TextureUnits;
-import au.gov.asd.tac.constellation.visual.opengl.utilities.LabelUtilities;
+import au.gov.asd.tac.constellation.utilities.text.LabelUtilities;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL3;

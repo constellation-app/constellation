@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs;
+package au.gov.asd.tac.constellation.utilities.glyphs;
 
 import java.io.IOException;
 import java.io.OutputStream;

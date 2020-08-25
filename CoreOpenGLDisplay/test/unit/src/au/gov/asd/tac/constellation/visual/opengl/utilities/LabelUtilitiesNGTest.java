@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.utilities;
 
-import au.gov.asd.tac.constellation.visual.opengl.utilities.LabelUtilities;
+import au.gov.asd.tac.constellation.utilities.text.LabelUtilities;
 import java.util.ArrayList;
 import java.util.List;
 import static org.testng.Assert.assertEquals;

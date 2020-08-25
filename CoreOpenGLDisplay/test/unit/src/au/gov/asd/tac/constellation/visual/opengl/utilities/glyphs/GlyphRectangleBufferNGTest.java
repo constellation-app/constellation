@@ -15,14 +15,14 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs;
 
-import static au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManagerBI.DEFAULT_BUFFER_TYPE;
+import au.gov.asd.tac.constellation.utilities.glyphs.GlyphRectangleBuffer;
+import static au.gov.asd.tac.constellation.utilities.glyphs.GlyphManagerBI.DEFAULT_BUFFER_TYPE;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.nio.ByteBuffer;
-import org.testng.Assert;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;

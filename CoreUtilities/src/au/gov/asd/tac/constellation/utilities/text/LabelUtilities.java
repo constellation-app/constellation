@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.visual.opengl.utilities;
+package au.gov.asd.tac.constellation.utilities.text;
 
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.util.ArrayList;

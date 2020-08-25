@@ -17,8 +17,8 @@ package au.gov.asd.tac.constellation.visual.opengl.utilities;
 
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
-import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManager;
-import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManagerBI;
+import au.gov.asd.tac.constellation.utilities.glyphs.GlyphManager;
+import au.gov.asd.tac.constellation.utilities.glyphs.GlyphManagerBI;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManagerOpenGLController;
 import com.jogamp.opengl.DebugGL3;
 import com.jogamp.opengl.GL3;

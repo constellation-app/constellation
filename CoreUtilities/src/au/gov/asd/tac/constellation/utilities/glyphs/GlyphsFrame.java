@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs;
+package au.gov.asd.tac.constellation.utilities.glyphs;
 
-import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.FontInfo.ParsedFontInfo;
+import au.gov.asd.tac.constellation.utilities.glyphs.FontInfo.ParsedFontInfo;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -144,7 +144,6 @@ public class GlyphsFrame extends JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Glyph rendering example");
         setLocationByPlatform(true);
-        setPreferredSize(new java.awt.Dimension(1200, 400));
 
         textLines.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         textLines.addActionListener(new java.awt.event.ActionListener() {

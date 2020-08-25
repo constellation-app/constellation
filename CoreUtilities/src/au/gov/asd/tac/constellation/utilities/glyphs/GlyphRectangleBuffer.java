@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs;
+package au.gov.asd.tac.constellation.utilities.glyphs;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -39,7 +39,7 @@ import java.util.Objects;
  *
  * @author algol
  */
-final class GlyphRectangleBuffer {
+public final class GlyphRectangleBuffer {
 
     // The buffers that glyphs will be drawn to.
     // Each one of these will eventually be copied to a texture buffer.

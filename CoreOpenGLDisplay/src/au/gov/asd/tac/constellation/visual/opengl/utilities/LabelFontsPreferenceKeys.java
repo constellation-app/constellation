@@ -16,8 +16,8 @@
 package au.gov.asd.tac.constellation.visual.opengl.utilities;
 
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.ConstellationLabelFonts;
-import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.FontInfo;
-import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManagerBI;
+import au.gov.asd.tac.constellation.utilities.glyphs.FontInfo;
+import au.gov.asd.tac.constellation.utilities.glyphs.GlyphManagerBI;
 import java.util.prefs.Preferences;
 import org.openide.util.NbPreferences;
 

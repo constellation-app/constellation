@@ -1,3 +1,5 @@
+package au.gov.asd.tac.constellation.utilities.glyphs;
+
 ///*
 // * Copyright 2010-2020 Australian Signals Directorate
 // *

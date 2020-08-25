@@ -142,6 +142,7 @@
                 <package>au.gov.asd.tac.constellation.utilities.font</package>
                 <package>au.gov.asd.tac.constellation.utilities.genericjsonio</package>
                 <package>au.gov.asd.tac.constellation.utilities.geospatial</package>
+                <package>au.gov.asd.tac.constellation.utilities.glyphs</package>
                 <package>au.gov.asd.tac.constellation.utilities.graphics</package>
                 <package>au.gov.asd.tac.constellation.utilities.gui</package>
                 <package>au.gov.asd.tac.constellation.utilities.html</package>
