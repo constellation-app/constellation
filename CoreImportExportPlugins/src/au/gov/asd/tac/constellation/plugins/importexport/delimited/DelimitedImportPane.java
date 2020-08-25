@@ -25,7 +25,6 @@ import java.util.prefs.Preferences;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Menu;
@@ -65,7 +64,7 @@ public class DelimitedImportPane extends BorderPane {
     private static final Image HELP_IMAGE = UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.AZURE.getJavaColor());
     private final Preferences importExportPrefs = NbPreferences.forModule(ImportExportPreferenceKeys.class);
 
-    public DelimitedImportPane(final DelimitedImportTopComponent delimitedImportTopComponent, final Scene scene) {
+    public DelimitedImportPane(final DelimitedImportTopComponent delimitedImportTopComponent) {
         this.delimitedImportTopComponent = delimitedImportTopComponent;
         root = new BorderPane();
 

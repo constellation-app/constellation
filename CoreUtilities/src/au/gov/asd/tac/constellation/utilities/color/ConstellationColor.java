@@ -360,7 +360,7 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
      * @return the ConstellationColor which contrasts with color.
      */
     public static ConstellationColor getContrastColor(final ConstellationColor color) {
-        return getContrastColor(color.getJavaColor());
+        return getContrastColor(color == null ? null : color.getJavaColor());
     }
 
     /**
@@ -385,7 +385,7 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
         if (color == null) {
             return ConstellationColor.BLACK;
         }
-        final double y = (299 * color.getRed() + 587 * color.getGreen() + 114 * color.getBlue()) / 1000;
+        final double y = (299 * color.getRed() + 587 * color.getGreen() + 114 * color.getBlue()) / 1000f;
         return y >= 128 ? ConstellationColor.BLACK : ConstellationColor.WHITE;
     }
 

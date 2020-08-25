@@ -94,7 +94,7 @@ public class RunPane extends BorderPane implements KeyListener {
     private final TextField attributeFilterTextField = new TextField();
     private String attributeFilter = "";
     private final EasyGridPane attributePane;
-    private final static double ATTRIBUTE_PADDING_HEIGHT = 19.75;
+    private static final double ATTRIBUTE_PADDING_HEIGHT = 19.75;
 
     private ObservableList<TableRow> currentRows = FXCollections.observableArrayList();
     private String[] currentColumnLabels = new String[0];

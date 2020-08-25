@@ -58,7 +58,7 @@ public final class DelimitedImportTopComponent extends JavaFxTopComponent<Delimi
         setToolTipText(Bundle.HINT_ImportDelimitedFile());
         initComponents();
 
-        delimitedImportPane = new DelimitedImportPane(this, scene);
+        delimitedImportPane = new DelimitedImportPane(this);
         initContent();
     }
 
@@ -85,11 +85,6 @@ public final class DelimitedImportTopComponent extends JavaFxTopComponent<Delimi
     @Override
     protected void handleGraphClosed(final Graph graph) {
         preparePane();
-    }
-
-    @Override
-    protected void componentShowing() {
-        super.componentShowing();
     }
 
     private void preparePane() {
