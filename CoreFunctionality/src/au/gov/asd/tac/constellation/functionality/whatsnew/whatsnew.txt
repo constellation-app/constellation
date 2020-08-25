@@ -1,9 +1,15 @@
 == 3030-12-31 Getting Started
 <p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
-== 2020-08-07 Table View
+== 2020-08-25 Table View
 <p>Table View has been updated to include a paging system. This helps improve the Table view performance on larger graphs.</p>
 <p>A menu item has also been added to set the size of a page in the table. Click on the cog and go to 'Set Page Size'. Default is 500.</p>
+
+== 2020-08-21 Histogram Copying Options
+<p>You can now copy a selection from the bars within the histogram in the Histogram View via two options:</p>
+<ul>
+<li>Ctrl+C - Will copy the property values of the selection to the clipboard.</li>
+<li>Right-Click Context Menu - Options to either copy the property values or both the property values and counts of the selection to the clipboard.</li>
 
 == 2020-08-06 Quality Control Categories
 <p>The Quality Control View now ranks and lists the quality of an element as a category instead of a score. This is also implemented in the Data Access View.</p>
@@ -27,7 +33,7 @@
 <p>A number of bugs with the Named Selection have been fixed.</p>
 
 == 2020-07-16 Attribute Calculator
-<p>The attribute editor has been removed with other views and features.</p>
+<p>The Attribute Calculator has been removed with other views and features.</p>
 
 == 2020-07-08 Rendering Labels Bug Fixed
 <p>A bug with labels being rendered with unreadable text after opening views has been fixed.</p>

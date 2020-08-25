@@ -160,7 +160,7 @@ public class DelimitedFileImporterStage extends Stage {
         helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
         menuToolbar.getChildren().add(helpButton);
 
-        gridPane.addColumn(0, titledSourcePane, titledConfigurationPane, actionPane);
+        gridPane.addColumn(0, titledSourcePane, titledConfigurationPane);
 
         final Rectangle2D visualBounds = Screen.getPrimary().getVisualBounds();
         final double screenHeight = visualBounds.getHeight();
@@ -172,7 +172,7 @@ public class DelimitedFileImporterStage extends Stage {
         sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         sp.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         root.setCenter(sp);
-        root.setCenter(new VBox(menuToolbar, sp));
+        root.setCenter(new VBox(menuToolbar, sp, actionPane));
 
 //        Scene scene = new Scene(root, 700, 1050, Color.WHITESMOKE);
         final Scene scene = new Scene(root);
