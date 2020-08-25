@@ -49,8 +49,10 @@ public class LayersViewShortcuts extends AbstractAction{
             case "CA-L":
                 PluginExecution.withPlugin(new NewLayerPlugin()).executeLater(GraphManager.getDefault().getActiveGraph());
                 break;
-            case "CA-S":
+            case "CA-D":
                 PluginExecution.withPlugin(new DeselectAllLayersPlugin()).executeLater(GraphManager.getDefault().getActiveGraph());
+                break;
+            default:
                 break;
         }
     }
