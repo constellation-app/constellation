@@ -283,7 +283,7 @@ public class SourcePane extends GridPane {
      */
     public void updateDestinationGraphCombo() {
         // previousDestinationObject is the previously selected item in the combobox
-        ImportDestination<?> previousDestinationObject = graphComboBox.getSelectionModel().getSelectedItem();
+        final ImportDestination<?> previousDestinationObject = graphComboBox.getSelectionModel().getSelectedItem();
         final ObservableList<ImportDestination<?>> destinations = FXCollections.observableArrayList();
 
         final Map<String, Graph> graphs = GraphManager.getDefault().getAllGraphs();
