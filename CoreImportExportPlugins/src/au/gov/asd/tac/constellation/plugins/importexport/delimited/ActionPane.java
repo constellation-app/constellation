@@ -61,11 +61,6 @@ public class ActionPane extends BorderPane {
         runBox.setPadding(new Insets(5, 5, 35, 5));
         setRight(runBox);
 
-        final Button abortButton = new Button("Abort Import");
-        abortButton.setOnAction((ActionEvent t) -> {
-            importController.cancelImport();
-        });
-
         final Button importButton = new Button("Import");
         importButton.setOnAction((ActionEvent t) -> {
             try {
@@ -80,6 +75,6 @@ public class ActionPane extends BorderPane {
             }
         });
 
-        runBox.getChildren().addAll(abortButton, importButton);
+        runBox.getChildren().add(importButton);
     }
 }
