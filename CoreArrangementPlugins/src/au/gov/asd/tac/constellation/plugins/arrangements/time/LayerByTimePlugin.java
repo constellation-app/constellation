@@ -354,7 +354,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             //Create and store graph attributes.
             final LayerName defaultName = new LayerName(Graph.NOT_FOUND, "Default");
             final int timeLayerAttr = wgcopy.addAttribute(GraphElementType.TRANSACTION, LayerNameAttributeDescription.ATTRIBUTE_NAME, LAYER_NAME, "time layer", defaultName, null);
-            final int nLayersAttr = wgcopy.addAttribute(GraphElementType.GRAPH, "integer", NLAYERS, "number of layers", 0, null);
+            wgcopy.addAttribute(GraphElementType.GRAPH, IntegerAttributeDescription.ATTRIBUTE_NAME, NLAYERS, "The number of layers to layer by time", 1, null);
             final int zAttr = wgcopy.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z", "z", 0, null);
             final int vxVisibilityAttr = wgcopy.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, VISIBILITY, VISIBILITY, 1, null);
             final int txVisibilityAttr = wgcopy.addAttribute(GraphElementType.TRANSACTION, FloatAttributeDescription.ATTRIBUTE_NAME, VISIBILITY, VISIBILITY, 1, null);
@@ -482,10 +482,6 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                     });
                 }
             }
-
-//            //Set Display Mode to 3D
-//            GraphNode graphNode = Utilities.actionsGlobalContext().lookup(GraphNode.class);
-//            graphNode.getVisual().setDisplayMode(GraphDraw.MODE_3D);
         } finally {
             wgcopy.commit();
         }
@@ -547,9 +543,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             remappedLayers.put(i, runningLayers);
         }
 
-        // Now that we have the total number of layers, tell the graph so it
-        // can handle the visibility toggle.
-        wgcopy.addAttribute(GraphElementType.GRAPH, "integer", NLAYERS, "The number of layers to layer by time", 1, null);
+        // Now that we have the total number of layers, tell the graph so it can handle the visibility toggle.
         final int nLayersAttr = wgcopy.getAttribute(GraphElementType.GRAPH, NLAYERS);
         wgcopy.setIntValue(nLayersAttr, 0, remappedLayers.keySet().size());
 
