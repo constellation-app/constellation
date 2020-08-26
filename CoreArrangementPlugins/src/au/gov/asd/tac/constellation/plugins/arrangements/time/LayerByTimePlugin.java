@@ -354,7 +354,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             //Create and store graph attributes.
             final LayerName defaultName = new LayerName(Graph.NOT_FOUND, "Default");
             final int timeLayerAttr = wgcopy.addAttribute(GraphElementType.TRANSACTION, LayerNameAttributeDescription.ATTRIBUTE_NAME, LAYER_NAME, "time layer", defaultName, null);
-
+            final int nLayersAttr = wgcopy.addAttribute(GraphElementType.GRAPH, "integer", NLAYERS, "number of layers", 0, null);
             final int zAttr = wgcopy.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z", "z", 0, null);
             final int vxVisibilityAttr = wgcopy.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, VISIBILITY, VISIBILITY, 1, null);
             final int txVisibilityAttr = wgcopy.addAttribute(GraphElementType.TRANSACTION, FloatAttributeDescription.ATTRIBUTE_NAME, VISIBILITY, VISIBILITY, 1, null);
