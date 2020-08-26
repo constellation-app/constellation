@@ -29,12 +29,13 @@ import java.util.logging.StreamHandler;
 public class CVKGraphLogger {
     // Static logger used by static code like shader loading or by code that doesn't know
     // what graph it is working for.    
-    private final static Level DEFAULT_LOG_LEVEL = Level.ALL;    
-    public final static Logger CVKLOGGER = CreateNamedFileLogger("CVK", DEFAULT_LOG_LEVEL);    
+    private final static Level DEFAULT_LOG_LEVEL = Level.INFO;    
+    private final static Logger CVKLOGGER = CreateNamedFileLogger("CVK", DEFAULT_LOG_LEVEL);    
     
     // Variables for the per graph loggers
     private static final boolean INDIVIDUAL_LOGS = true; 
     private static int NEXT_LOGGER_ID = 0;
+    private static CVKGraphLogger staticLogger = null;
     private final int loggerId;
     private int indentation = 0;
     private final Logger graphLogger;
@@ -205,20 +206,22 @@ public class CVKGraphLogger {
         logger.addHandler(streamHanlder);   
         
         return logger;
+    }       
+    
+    public static CVKGraphLogger GetStaticLogger() {
+        if (staticLogger == null) {
+            staticLogger = new CVKGraphLogger();
+        }
+        return staticLogger;
     }
-        
-//    public static void StaticStartLogSection(String msg) {
-//        CVKLOGGER.log(Level.INFO, "{0}---- START {1} ----", new Object[]{System.getProperty("line.separator"), msg});        
-//        ++CVKGraphLogFormatter.indent;
-//    }
-//    
-//    public static void StaticEndLogSection(String msg) {
-//        --CVKGraphLogFormatter.indent;
-//        CVKLOGGER.log(Level.INFO, "---- END {1} ----{0}{0}", new Object[]{System.getProperty("line.separator"), msg});        
-//    }    
     
     
     // ========================> Per Graph Logging <======================== \\
+    
+    private CVKGraphLogger() {
+        graphLogger = null;
+        loggerId = -1;
+    }
     
     public CVKGraphLogger(String graphId) {
         this.loggerId = NEXT_LOGGER_ID++;
@@ -230,17 +233,22 @@ public class CVKGraphLogger {
         DoLog(Level.SEVERE, String.format("Graph %s using logger %d", graphId, loggerId), loggerId, 0, false);
     }
     
+    public boolean isLoggable(Level level) {
+        return graphLogger != null ? graphLogger.isLoggable(level) : CVKLOGGER.isLoggable(level);
+    }
+    
     private void DoLog(Level level, String msg) {
         DoLog(level, msg, loggerId, indentation, true);
     }
     
     private void DoLog(Level level, String msg, final int loggerId, final int indentation, boolean formatted) {
-        CVKGraphLogRecord record = new CVKGraphLogRecord(level, msg, loggerId, indentation, formatted, true);
-        CVKLOGGER.log(record);
-        if (graphLogger != null) {
-            record.graphAnnotation = false;
+        CVKGraphLogRecord record = new CVKGraphLogRecord(level, msg, loggerId, indentation, formatted, true);            
+        if (graphLogger != null) {            
             graphLogger.log(record);
-        }
+        } else {
+            record.graphAnnotation = false;
+        }        
+        CVKLOGGER.log(record);
     }    
     
     public void log(Level level, String format, Object... args) {
@@ -333,5 +341,13 @@ public class CVKGraphLogger {
         exception.printStackTrace(exceptionPrintWriter);
         exceptionPrintWriter.flush();
         severe("\r\n%s\r\n%s", msg, exceptionTraceWriter.toString());
+    }
+    
+    public void Flush() {
+        Logger logger = graphLogger != null ? graphLogger : CVKLOGGER;       
+        
+        for (var handler : logger.getHandlers()) {
+            handler.flush();
+        }        
     }
 }

@@ -13,21 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.visual.vulkan.renderables;
+package au.gov.asd.tac.constellation.visual.vulkan.resourcetypes;
 
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3i;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
-import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
-import au.gov.asd.tac.constellation.visual.vulkan.CVKDescriptorPool.CVKDescriptorPoolRequirements;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKRenderUpdateTask;
-import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
+import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKGraphLogger;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.checkVKret;
 import java.awt.image.BufferedImage;
 import static java.awt.image.BufferedImage.TYPE_4BYTE_ABGR;
-import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKImage;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssertNotNull;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssertNull;
@@ -62,15 +59,15 @@ import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkCreateSampler;
 import static org.lwjgl.vulkan.VK10.vkDestroySampler;
-import org.lwjgl.vulkan.VkCommandBuffer;
-import org.lwjgl.vulkan.VkCommandBufferInheritanceInfo;
 import org.lwjgl.vulkan.VkSamplerCreateInfo;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_DEBUGGING;
 import java.io.File;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
 
 
-public class CVKIconTextureAtlas extends CVKRenderable {
+public class CVKIconTextureAtlas {
+    private static CVKIconTextureAtlas cvkIconTextureAtlas = null;
+    
     public static final int ICON_WIDTH = 256;
     public static final int ICON_HEIGHT = 256;
     public static final int ICON_COMPONENTS = 4; //ARGB, 1 byte each
@@ -135,8 +132,19 @@ public class CVKIconTextureAtlas extends CVKRenderable {
     
     // ========================> Lifetime <======================== \\    
     
-    public CVKIconTextureAtlas(CVKVisualProcessor visualProcessor) {
-        super(visualProcessor);
+    public static boolean IsInstantiated() {
+        return cvkIconTextureAtlas != null;
+    }
+    
+    public static CVKIconTextureAtlas GetInstance() {  
+        if (cvkIconTextureAtlas == null) {
+            cvkIconTextureAtlas = new CVKIconTextureAtlas();
+            cvkIconTextureAtlas.Initialise();
+        }
+        return cvkIconTextureAtlas;
+    }
+    
+    private CVKIconTextureAtlas() {
         
         // These icons are guaranteed to be in the iconMap in this order.
         // They must be at these pre-defined indices so other code (in particular the shaders) can use them.
@@ -146,9 +154,7 @@ public class CVKIconTextureAtlas extends CVKRenderable {
         }            
     }
 
-    @Override
-    public int Initialise(CVKDevice cvkDevice) { 
-        this.cvkDevice = cvkDevice;
+    private int Initialise() { 
         return CreateAtlas();
     }
     
@@ -176,55 +182,23 @@ public class CVKIconTextureAtlas extends CVKRenderable {
         return ret;    
     }     
         
-    @Override
-    public void Destroy() {
+    private void Destroy() {
         if (cvkAtlasImage != null) {
             cvkAtlasImage.Destroy();
             cvkAtlasImage = null;            
         }
 
         if (hAtlasSampler != VK_NULL_HANDLE) {
-            vkDestroySampler(cvkDevice.GetDevice(), hAtlasSampler, null);    
+            vkDestroySampler(CVKDevice.GetVkDevice(), hAtlasSampler, null);    
             hAtlasSampler = VK_NULL_HANDLE;
         }
         
         lastTransferedIconCount = 0;
-    }
-    
-    
-    // ========================> Swap chain <======================== \\
-    
-    @Override
-    protected int DestroySwapChainResources() { return VK_SUCCESS; }  
-    
-    
-    // ========================> Vertex buffers <======================== \\
-    
-    @Override
-    public int GetVertexCount(){ return 0; }   
-    
-    
-    // ========================> Command buffers <======================== \\
-    
-    @Override
-    public VkCommandBuffer GetCommandBuffer(int imageIndex) { return null; }        
-     
-    @Override
-    public int RecordDisplayCommandBuffer(VkCommandBufferInheritanceInfo inheritanceInfo, int index){ return VK_SUCCESS; }
-    
-    
-    // ========================> Descriptors <======================== \\
-    
-    @Override
-    protected int DestroyDescriptorPoolResources() { return VK_SUCCESS; }   
-    
-    @Override
-    public void IncrementDescriptorTypeRequirements(CVKDescriptorPoolRequirements reqs, CVKDescriptorPoolRequirements perImageReqs) {}    
-    
+    }      
+       
     
     // ========================> Display <======================== \\
     
-    @Override
     public int DisplayUpdate() {
         int ret = VK_SUCCESS;
         
@@ -233,7 +207,7 @@ public class CVKIconTextureAtlas extends CVKRenderable {
             needsSaveToFile = false;
         }
         
-        if (needsAtlasRebuilt) {
+        if (loadedIcons.size() > lastTransferedIconCount) {
             Destroy();
             ret = CreateAtlas();
             if (VkFailed(ret)) { return ret; }
@@ -243,14 +217,6 @@ public class CVKIconTextureAtlas extends CVKRenderable {
         return ret;
     }
     
-    @Override
-    public boolean NeedsDisplayUpdate() {
-       
-        needsAtlasRebuilt = (loadedIcons.size() > lastTransferedIconCount);
-        
-        return needsSaveToFile || needsAtlasRebuilt;
-    }  
-    
     
     // ========================> Tasks <======================== \\
     
@@ -259,8 +225,6 @@ public class CVKIconTextureAtlas extends CVKRenderable {
                 
         //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.ProcessRenderTasks) ===//
         return () -> {
-            cvkVisualProcessor.VerifyInRenderThread();
-            
             needsSaveToFile = true;
             fileToSave = file;
         };
@@ -384,8 +348,7 @@ public class CVKIconTextureAtlas extends CVKRenderable {
             int requiredLayers = (icons.size() / iconsPerLayer) + 1;
             
             // Create destination image            
-            cvkAtlasImage = CVKImage.Create(cvkDevice, 
-                                            textureWidth, 
+            cvkAtlasImage = CVKImage.Create(textureWidth, 
                                             textureHeight, 
                                             requiredLayers,
                                             VK_FORMAT_R8G8B8A8_SRGB, //non-linear format to give more fidelity to the hues we are most able to perceive
@@ -394,6 +357,7 @@ public class CVKIconTextureAtlas extends CVKRenderable {
                                             VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT ,
                                             VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
                                             VK_IMAGE_ASPECT_COLOR_BIT,
+                                            null,
                                             "CVKIconTextureAtlas cvkAtlasImage");                         
             
             // Transition image from undefined to transfer destination optimal
@@ -401,10 +365,10 @@ public class CVKIconTextureAtlas extends CVKRenderable {
             if (VkFailed(ret)) { return ret; }
 
             // As icons have a maximum size we can use a single staging buffer to copy each one
-            CVKBuffer cvkStagingBuffer = CVKBuffer.Create(cvkDevice, 
-                                                          ICON_SIZE_BYTES, 
+            CVKBuffer cvkStagingBuffer = CVKBuffer.Create(ICON_SIZE_BYTES, 
                                                           VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                                                           VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                                                          null,
                                                           "CVKIconTextureAtlas cvkStagingBuffer");           
             
             // Loop that copies icons from the icon manager into the atlas texture(s)
@@ -429,7 +393,7 @@ public class CVKIconTextureAtlas extends CVKRenderable {
                 if (CVK_DEBUGGING) {
                     if (IsEmpty(pixels) && el.index != TRANSPARENT_ICON_INDEX) {
                         final String iconName = icons.get(el.index).icon.getExtendedName();
-                        GetLogger().warning("Icon %d (%s) is empty", el.index, iconName);
+                        GetLogger().warning(String.format("Icon %d (%s) is empty", el.index, iconName));
                     }
                 }
                 
@@ -512,7 +476,7 @@ public class CVKIconTextureAtlas extends CVKRenderable {
             vkSamplerCreateInfo.borderColor(VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE);
             
             LongBuffer pTextureSampler = stack.mallocLong(1);
-            ret = vkCreateSampler(cvkDevice.GetDevice(), vkSamplerCreateInfo, null, pTextureSampler);
+            ret = vkCreateSampler(CVKDevice.GetVkDevice(), vkSamplerCreateInfo, null, pTextureSampler);
             checkVKret(ret);
             hAtlasSampler = pTextureSampler.get(0);
             CVKAssertNotNull(hAtlasSampler);
@@ -520,4 +484,6 @@ public class CVKIconTextureAtlas extends CVKRenderable {
         
         return ret;
     }
+    
+    private CVKGraphLogger GetLogger() { return CVKGraphLogger.GetStaticLogger(); }
 }

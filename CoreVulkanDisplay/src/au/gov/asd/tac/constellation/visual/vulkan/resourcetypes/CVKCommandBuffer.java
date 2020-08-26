@@ -59,6 +59,7 @@ import org.lwjgl.vulkan.VkRenderPassBeginInfo;
 import org.lwjgl.vulkan.VkSubmitInfo;
 import org.lwjgl.vulkan.VkViewport;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
+import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKGraphLogger;
 import static org.lwjgl.vulkan.VK10.VK_DEPENDENCY_BY_REGION_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_COLOR_BIT;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_BIND_POINT_GRAPHICS;
@@ -73,10 +74,11 @@ import org.lwjgl.vulkan.VkMemoryBarrier;
 
 public class CVKCommandBuffer {
     private VkCommandBuffer vkCommandBuffer = null;
-    private CVKDevice cvkDevice = null;
+    private CVKGraphLogger cvkGraphLogger = null;
     
     //TODO: REMOVE THIS
     public String DEBUGNAME = "";
+    private CVKGraphLogger GetLogger() { return cvkGraphLogger != null ? cvkGraphLogger : CVKGraphLogger.GetStaticLogger(); }
 
 
     private CVKCommandBuffer() {}
@@ -96,22 +98,18 @@ public class CVKCommandBuffer {
 
     public void Destroy(){        
         if (vkCommandBuffer != null) {
-            cvkDevice.VerifyInRenderThread();
+            if (CVK_DEBUGGING) {
+                --CVK_VKALLOCATIONS;
+                GetLogger().info("CVK_VKALLOCATIONS(%d-) vkFreeCommandBuffers for %s 0x%016X", 
+                        CVK_VKALLOCATIONS, DEBUGNAME, vkCommandBuffer.address());                
+            }             
             
-//            if (CVK_DEBUGGING) {
-//                --CVK_VKALLOCATIONS;
-//                cvkDevice.GetLogger().info("CVK_VKALLOCATIONS(%d-) vkFreeCommandBuffers for %s 0x%016X", 
-//                        CVK_VKALLOCATIONS, DEBUGNAME, vkCommandBuffer.address());                
-//            }             
-            
-            vkFreeCommandBuffers(cvkDevice.GetDevice(), cvkDevice.GetCommandPoolHandle(), vkCommandBuffer);
+            vkFreeCommandBuffers(CVKDevice.GetVkDevice(), CVKDevice.GetCommandPoolHandle(), vkCommandBuffer);
             vkCommandBuffer = null;
         }
     }
     
-    public int Begin(int flags) {	
-        cvkDevice.VerifyInRenderThread();
-        
+    public int Begin(int flags) {	  
         int ret;            
         try (MemoryStack stack = stackPush()) {
             VkCommandBufferBeginInfo vkBeginInfo = VkCommandBufferBeginInfo.callocStack(stack);
@@ -133,9 +131,9 @@ public class CVKCommandBuffer {
             submitInfo.sType(VK_STRUCTURE_TYPE_SUBMIT_INFO);
             submitInfo.pCommandBuffers(stack.pointers(vkCommandBuffer));
 
-            ret = vkQueueSubmit(cvkDevice.GetQueue(), submitInfo, VK_NULL_HANDLE);
+            ret = vkQueueSubmit(CVKDevice.GetVkQueue(), submitInfo, VK_NULL_HANDLE);
             if (VkFailed(ret)) { return ret; }
-            ret = vkQueueWaitIdle(cvkDevice.GetQueue());
+            ret = vkQueueWaitIdle(CVKDevice.GetVkQueue());
         }  
         return ret;
     }
@@ -467,32 +465,31 @@ public class CVKCommandBuffer {
 //		vkResetCommandBuffer(vkCommandBuffer, VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT);
 //	}
 //	
-    public static CVKCommandBuffer Create(CVKDevice cvkDevice, int level, final String debugName) {
-        assert(cvkDevice != null);
-        assert(cvkDevice.GetDevice() != null);
+    public static CVKCommandBuffer Create(int level, CVKGraphLogger graphLogger, final String debugName) {
+        assert(CVKDevice.GetVkDevice() != null);
 
         int ret;
         CVKCommandBuffer cvkCommandBuffer = new CVKCommandBuffer();
-        cvkCommandBuffer.cvkDevice = cvkDevice;
+        cvkCommandBuffer.cvkGraphLogger   = graphLogger;
         try (MemoryStack stack = stackPush()) {
             VkCommandBufferAllocateInfo vkAllocateInfo = VkCommandBufferAllocateInfo.callocStack(stack);
             vkAllocateInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO);
-            vkAllocateInfo.commandPool(cvkDevice.GetCommandPoolHandle());
+            vkAllocateInfo.commandPool(CVKDevice.GetCommandPoolHandle());
             vkAllocateInfo.level(level);
             vkAllocateInfo.commandBufferCount(1);
 
             PointerBuffer pCommandBuffer = stack.mallocPointer(1);
-            ret = vkAllocateCommandBuffers(cvkDevice.GetDevice(), vkAllocateInfo, pCommandBuffer);
+            ret = vkAllocateCommandBuffers(CVKDevice.GetVkDevice(), vkAllocateInfo, pCommandBuffer);
             checkVKret(ret);
 
-            cvkCommandBuffer.vkCommandBuffer = new VkCommandBuffer(pCommandBuffer.get(0), cvkDevice.GetDevice());
+            cvkCommandBuffer.vkCommandBuffer = new VkCommandBuffer(pCommandBuffer.get(0), CVKDevice.GetVkDevice());
             
-//            if (CVK_DEBUGGING) {
-//                cvkCommandBuffer.DEBUGNAME = debugName;
-//                ++CVK_VKALLOCATIONS;
-//                cvkDevice.GetLogger().info("CVK_VKALLOCATIONS(%d+) vkAllocateCommandBuffers for %s 0x%016X", 
-//                        CVK_VKALLOCATIONS, cvkCommandBuffer.DEBUGNAME, cvkCommandBuffer.vkCommandBuffer.address());                
-//            }              
+            if (CVK_DEBUGGING) {
+                cvkCommandBuffer.DEBUGNAME = debugName;
+                ++CVK_VKALLOCATIONS;
+                cvkCommandBuffer.GetLogger().info("CVK_VKALLOCATIONS(%d+) vkAllocateCommandBuffers for %s 0x%016X", 
+                        CVK_VKALLOCATIONS, cvkCommandBuffer.DEBUGNAME, cvkCommandBuffer.vkCommandBuffer.address());                
+            }              
         }
         return cvkCommandBuffer;
     }	

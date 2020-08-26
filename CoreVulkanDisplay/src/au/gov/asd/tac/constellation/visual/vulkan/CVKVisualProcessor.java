@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan;
 
-import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKIconTextureAtlas;
+import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKIconTextureAtlas;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
@@ -71,7 +71,6 @@ public class CVKVisualProcessor extends VisualProcessor {
     private final CVKCanvas cvkCanvas;
     private final Frustum viewFrustum = new Frustum();
     private final Matrix44f projectionMatrix = new Matrix44f();       
-    private final CVKIconTextureAtlas cvkIconTextureAtlas;
     protected final CVKHitTester cvkHitTester;
     private final CVKAxesRenderable cvkAxes;
     private final CVKFPSRenderable cvkFPS;
@@ -92,58 +91,60 @@ public class CVKVisualProcessor extends VisualProcessor {
     
     
     public Matrix44f GetProjectionMatrix() { return projectionMatrix; }
-    public CVKIconTextureAtlas GetTextureAtlas() { return cvkIconTextureAtlas; }
     public float GetPixelDensity() { return pixelDensity; }
     public int GetFrameNumber() { return cvkCanvas != null ? cvkCanvas.GetFrameNumber() : -1; }
     public Thread GetRenderThread() { return renderThread; }
     public long GetRenderThreadID() { return renderThread != null ? renderThread.getId() : -1; }
     public CVKGraphLogger GetLogger() { return cvkLogger; }
+    public CVKCanvas GetCanvas() { return cvkCanvas; }
     
     
     public CVKVisualProcessor(final String graphId) throws Throwable {  
         cvkLogger = new CVKGraphLogger(graphId);
-        
-        renderThread = Thread.currentThread();
-        cvkLogger.info("Renderthread TID %d (java hash %d)", renderThread.getId(), renderThread.hashCode());
-                
-        cvkCanvas = new CVKCanvas(this);   
-        
-        int ret;
-        ret = CVKAxesRenderable.StaticInitialise();
-        if (VkFailed(ret)) { 
-            cvkLogger.severe("Failed to statically initialise CVKAxesRenderable");
+        try {
+            renderThread = Thread.currentThread();
+            cvkLogger.info("Renderthread TID %d (java hash %d)", renderThread.getId(), renderThread.hashCode());
+
+            cvkCanvas = new CVKCanvas(this);   
+
+            int ret;
+            ret = CVKAxesRenderable.StaticInitialise();
+            if (VkFailed(ret)) { 
+                cvkLogger.severe("Failed to statically initialise CVKAxesRenderable");
+            }
+            ret = CVKFPSRenderable.StaticInitialise();      
+            if (VkFailed(ret)) { 
+                cvkLogger.severe("Failed to statically initialise CVKFPSRenderable");
+            }
+            ret = CVKIconsRenderable.StaticInitialise();      
+            if (VkFailed(ret)) { 
+                cvkLogger.severe("Failed to statically initialise CVKIconsRenderable");
+            }
+            ret = CVKLabelsRenderable.StaticInitialise();      
+            if (VkFailed(ret)) { 
+                cvkLogger.severe("Failed to statically initialise CVKLabelsRenderable");
+            }        
+            ret = CVKPointsRenderable.StaticInitialise();
+            if (VkFailed(ret)) { 
+                cvkLogger.severe("Failed to statically initialise CVKPointsRenderable");
+            }
+
+            cvkHitTester = new CVKHitTester(this);     
+            cvkCanvas.AddRenderable(cvkHitTester);  
+            cvkAxes = new CVKAxesRenderable(this);
+            cvkCanvas.AddRenderable(cvkAxes);
+            cvkFPS = new CVKFPSRenderable(this);    
+            cvkCanvas.AddRenderable(cvkFPS);
+            cvkIcons = new CVKIconsRenderable(this);
+            cvkCanvas.AddRenderable(cvkIcons);
+            cvkLabels = new CVKLabelsRenderable(this);
+            cvkCanvas.AddRenderable(cvkLabels);
+            cvkPoints = new CVKPointsRenderable(this);   
+            cvkCanvas.AddRenderable(cvkPoints);
+        } catch (Exception e) {
+            cvkLogger.LogException(e, "Exception raised constructing CVKVisualProcessor %s", graphId);
+            throw e;
         }
-        ret = CVKFPSRenderable.StaticInitialise();      
-        if (VkFailed(ret)) { 
-            cvkLogger.severe("Failed to statically initialise CVKFPSRenderable");
-        }
-        ret = CVKIconsRenderable.StaticInitialise();      
-        if (VkFailed(ret)) { 
-            cvkLogger.severe("Failed to statically initialise CVKIconsRenderable");
-        }
-        ret = CVKLabelsRenderable.StaticInitialise();      
-        if (VkFailed(ret)) { 
-            cvkLogger.severe("Failed to statically initialise CVKLabelsRenderable");
-        }        
-        ret = CVKPointsRenderable.StaticInitialise();
-        if (VkFailed(ret)) { 
-            cvkLogger.severe("Failed to statically initialise CVKPointsRenderable");
-        }
-        
-        cvkIconTextureAtlas = new CVKIconTextureAtlas(this);     
-        cvkCanvas.AddRenderable(cvkIconTextureAtlas);  
-        cvkHitTester = new CVKHitTester(this);     
-        cvkCanvas.AddRenderable(cvkHitTester);  
-        cvkAxes = new CVKAxesRenderable(this);
-        cvkCanvas.AddRenderable(cvkAxes);
-        cvkFPS = new CVKFPSRenderable(this);    
-        cvkCanvas.AddRenderable(cvkFPS);
-        cvkIcons = new CVKIconsRenderable(this);
-        cvkCanvas.AddRenderable(cvkIcons);
-        cvkLabels = new CVKLabelsRenderable(this);
-        cvkCanvas.AddRenderable(cvkLabels);
-        cvkPoints = new CVKPointsRenderable(this);   
-        cvkCanvas.AddRenderable(cvkPoints);        
     }
     
     
@@ -733,7 +734,7 @@ public class CVKVisualProcessor extends VisualProcessor {
         }     
     }
         
-    public void SwapChainRecreated(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {     
+    public void SwapChainRecreated(CVKSwapChain cvkSwapChain) {     
         // Create the projection matrix, and load it on the projection matrix stack.
         viewFrustum.setPerspective(FIELD_OF_VIEW, (float)cvkSwapChain.GetWidth() / (float)cvkSwapChain.GetHeight(), PERSPECTIVE_NEAR, PERSPECTIVE_FAR);           
         pixelDensity = (float)(cvkSwapChain.GetHeight() * 0.5 / Math.tan(Math.toRadians(FIELD_OF_VIEW)));        
@@ -767,4 +768,17 @@ public class CVKVisualProcessor extends VisualProcessor {
         hitTesters.add(cvkIcons);
         return hitTesters;
     }
+    
+    /**
+     * This is triggered by the ExportIconTextureAtlasAction from the developer menu to
+     * dump the icon atlas to disk for debugging.
+     * 
+     * @param file
+     */
+    public static void ExportIconTextureAtlas(File file) {
+        if (CVKIconTextureAtlas.IsInstantiated()) {
+            CVKRenderUpdateTask task = CVKIconTextureAtlas.GetInstance().TaskSaveToFile(file);
+            task.run();
+        }
+    }       
 }

@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan;
 
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKGraphLogger.CVKLOGGER;
+import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKGraphLogger;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_DEBUGGING;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.GetRequiredVKPhysicalDeviceExtensions;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.InitVKValidationLayers;
@@ -194,13 +194,12 @@ public class CVKInstance {
         }                      
         VkDebugUtilsMessengerCallbackDataEXT callbackData = VkDebugUtilsMessengerCallbackDataEXT.create(pCallbackData);
         String callbackMsg = callbackData.pMessageString();
-        CVKLOGGER.log(level, "Validation layer: {0}", callbackMsg);
+        CVKGraphLogger.GetStaticLogger().log(level, "Validation layer: {0}", callbackMsg);
         
         // This is an E for effort attempt to get something logged in the case
-        // that Constellation/JVM is crashing to desktop.
-        for (var handler : CVKLOGGER.getHandlers()) {
-            handler.flush();
-        }
+        // that Constellation/JVM is crashing to desktop.        
+        CVKGraphLogger.GetStaticLogger().Flush();
+        
         
         // DELETE AFTER DEBUGGING
 //        boolean isCmdBuffer = false;

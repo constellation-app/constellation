@@ -23,7 +23,6 @@ import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKCommandBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKImage;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKGraphLogger.CVKLOGGER;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssertNotNull;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssertNull;
@@ -65,7 +64,6 @@ import static org.lwjgl.vulkan.VK10.vkCmdBeginRenderPass;
 import static org.lwjgl.vulkan.VK10.vkCmdEndRenderPass;
 import static org.lwjgl.vulkan.VK10.vkCreateFramebuffer;
 import static org.lwjgl.vulkan.VK10.vkDestroyFramebuffer;
-import static org.lwjgl.vulkan.VK10.vkDeviceWaitIdle;
 import org.lwjgl.vulkan.VkClearValue;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkCommandBufferInheritanceInfo;
@@ -111,8 +109,7 @@ public class CVKHitTester extends CVKRenderable {
     }
     
     @Override
-    public int Initialise(CVKDevice cvkDevice) { 
-        this.cvkDevice = cvkDevice;  
+    public int Initialise() { 
         return VK_SUCCESS;
     }
     
@@ -175,18 +172,17 @@ public class CVKHitTester extends CVKRenderable {
         int requiredLayers = 1;
 
         // Create destination color image            
-        cvkImage = CVKImage.Create(cvkDevice, 
-                                        textureWidth, 
-                                        textureHeight, 
-                                        requiredLayers, 
-                                        //colorFormat, // Format TODO Not sure what the format should be - look at GL version
-                                        cvkSwapChain.GetColorFormat(),
-                                        VK_IMAGE_VIEW_TYPE_2D,
-                                        VK_IMAGE_TILING_LINEAR, // Tiling
-                                        VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT, // TODO Usage 
-                                        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT , // TODO - properties?
-                                        VK_IMAGE_ASPECT_COLOR_BIT,
-                                        "CVKHitTester cvkImage");  // TODO - aspect mask
+        cvkImage = CVKImage.Create(textureWidth, 
+                                   textureHeight, 
+                                   requiredLayers, 
+                                   cvkSwapChain.GetColorFormat(),
+                                   VK_IMAGE_VIEW_TYPE_2D,
+                                   VK_IMAGE_TILING_LINEAR, // Tiling
+                                   VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT, // TODO Usage 
+                                   VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT , // TODO - properties?
+                                   VK_IMAGE_ASPECT_COLOR_BIT,
+                                   GetLogger(),
+                                   "CVKHitTester cvkImage");  // TODO - aspect mask
 
         if (cvkImage == null) {
             return 1;
@@ -194,8 +190,7 @@ public class CVKHitTester extends CVKRenderable {
 
         // TODO HYDRA: Might be able to just use DepthImage from Swapchain!
         // Create depth image 
-        cvkDepthImage = CVKImage.Create(cvkDevice, 
-                                        textureWidth, 
+        cvkDepthImage = CVKImage.Create(textureWidth, 
                                         textureHeight, 
                                         requiredLayers, 
                                         cvkSwapChain.GetDepthFormat(),
@@ -204,6 +199,7 @@ public class CVKHitTester extends CVKRenderable {
                                         VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, // TODO Usage 
                                         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, // TODO - properties?
                                         VK_IMAGE_ASPECT_DEPTH_BIT,
+                                        GetLogger(),
                                         "CVKHitTester cvkDepthImage");  // TODO - aspect mask
         if (cvkDepthImage == null) {
             // TODO HYDRA: If this DepthImage is required add a CVK error
@@ -240,7 +236,7 @@ public class CVKHitTester extends CVKRenderable {
             attachments.put(0, cvkImage.GetImageViewHandle());
             attachments.put(1, cvkDepthImage.GetImageViewHandle());
             framebufferInfo.pAttachments(attachments);
-            ret = vkCreateFramebuffer(cvkDevice.GetDevice(), 
+            ret = vkCreateFramebuffer(CVKDevice.GetVkDevice(), 
                                       framebufferInfo, 
                                       null, //allocation callbacks
                                       pFramebuffer);
@@ -255,9 +251,9 @@ public class CVKHitTester extends CVKRenderable {
     
     private void DestroyFrameBuffer() {
         if (hFrameBufferHandle != null) {
-            vkDestroyFramebuffer(cvkDevice.GetDevice(), hFrameBufferHandle, null);
+            vkDestroyFramebuffer(CVKDevice.GetVkDevice(), hFrameBufferHandle, null);
             hFrameBufferHandle = null;
-            CVKLOGGER.info(String.format("Destroyed frame buffer for HitTester"));
+            GetLogger().info("Destroyed frame buffer for HitTester");
         }
     }  
     
@@ -271,14 +267,12 @@ public class CVKHitTester extends CVKRenderable {
     // ========================> Command buffers <======================== \\
     
     private int CreateCommandBuffer() {       
-        CVKAssertNotNull(cvkDevice);
-        
         int ret = VK_SUCCESS;
              
-        commandBuffer = CVKCommandBuffer.Create(cvkDevice, VK_COMMAND_BUFFER_LEVEL_PRIMARY, "CVKHitTester CommandBuffer");
+        commandBuffer = CVKCommandBuffer.Create(VK_COMMAND_BUFFER_LEVEL_PRIMARY, GetLogger(), "CVKHitTester CommandBuffer");
         commandBuffer.DEBUGNAME = String.format("CVKHitTester");
         
-        CVKLOGGER.log(Level.INFO, "Init Command Buffer - HitTester");
+        GetLogger().info("Init Command Buffer - HitTester");
         
         return ret;
     }
@@ -359,8 +353,8 @@ public class CVKHitTester extends CVKRenderable {
     public int OffscreenRender(List<CVKRenderable> hitTestRenderables) {
         cvkVisualProcessor.VerifyInRenderThread();
         
-        CVKAssertNotNull(cvkDevice.GetDevice());
-        CVKAssertNotNull(cvkDevice.GetCommandPoolHandle());
+        CVKAssertNotNull(CVKDevice.GetVkDevice());
+        CVKAssertNotNull(CVKDevice.GetCommandPoolHandle());
         CVKAssertNotNull(cvkSwapChain);
                 
         int ret = VK_SUCCESS;
@@ -434,7 +428,7 @@ public class CVKHitTester extends CVKRenderable {
                     0, 1);                                                                  // baseMipLevel/mipLevelCount
             
             // TODO Do we need this?
-            vkDeviceWaitIdle(cvkDevice.GetDevice());
+            CVKDevice.WaitIdle();
             commandBuffer.EndAndSubmit();
             
             // TODO - COMPLETE ME       

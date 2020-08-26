@@ -30,13 +30,14 @@ import static au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderab
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKCommandBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.shaders.CVKShaderPlaceHolder;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKGraphLogger.CVKLOGGER;
+import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKGraphLogger;
 import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKShaderUtils;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKShaderUtils.ShaderKind.FRAGMENT_SHADER;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKShaderUtils.ShaderKind.VERTEX_SHADER;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKShaderUtils.compileShaderFile;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssertNotNull;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssertNull;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_DEBUGGING;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_SHADER_COMPILATION;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_SHADER_MODULE;
@@ -283,7 +284,7 @@ public class CVKPointsRenderable extends CVKRenderable {
             if (vertexShaderSPIRV == null) {
                 vertexShaderSPIRV = compileShaderFile(CVKShaderPlaceHolder.class, "PassThruPoint.vs", VERTEX_SHADER);
                 if (vertexShaderSPIRV == null) {
-                    CVKLOGGER.log(Level.SEVERE, "Failed to compile CVKPointRenderable shaders: PassThruPoint.vs");
+                    CVKGraphLogger.GetStaticLogger().log(Level.SEVERE, "Failed to compile CVKPointRenderable shaders: PassThruPoint.vs");
                     return CVK_ERROR_SHADER_COMPILATION;
                 }
             }
@@ -291,17 +292,17 @@ public class CVKPointsRenderable extends CVKRenderable {
             if (fragmentShaderSPIRV == null) {
                 fragmentShaderSPIRV = compileShaderFile(CVKShaderPlaceHolder.class, "PassThruPoint.fs", FRAGMENT_SHADER);
                 if (fragmentShaderSPIRV == null) {
-                    CVKLOGGER.log(Level.SEVERE, "Failed to compile CVKPointRenderable shaders: PassThru.fs");
+                    CVKGraphLogger.GetStaticLogger().log(Level.SEVERE, "Failed to compile CVKPointRenderable shaders: PassThru.fs");
                     return CVK_ERROR_SHADER_COMPILATION;
                 }
             }
         } catch(Exception ex){
-            CVKLOGGER.log(Level.SEVERE, "Failed to compile CVKPointRenderable shaders: {0}", ex.toString());
+            CVKGraphLogger.GetStaticLogger().log(Level.SEVERE, "Failed to compile CVKPointRenderable shaders: {0}", ex.toString());
             ret = CVK_ERROR_SHADER_COMPILATION;
             return ret;
         }
         
-        CVKLOGGER.log(Level.INFO, "Static shaders loaded for CVKPointRenderable class");
+        CVKGraphLogger.GetStaticLogger().log(Level.INFO, "Static shaders loaded for CVKPointRenderable class");
         return ret;
     }             
     
@@ -340,12 +341,12 @@ public class CVKPointsRenderable extends CVKRenderable {
         int ret = VK_SUCCESS;
         
         try{           
-            hVertexShaderModule = CVKShaderUtils.CreateShaderModule(vertexShaderSPIRV.bytecode(), cvkDevice.GetDevice());
+            hVertexShaderModule = CVKShaderUtils.CreateShaderModule(vertexShaderSPIRV.bytecode(), CVKDevice.GetVkDevice());
             if (hVertexShaderModule == VK_NULL_HANDLE) {
                 GetLogger().log(Level.SEVERE, "Failed to create shader module for: VertexIcon.vs");
                 return CVK_ERROR_SHADER_MODULE;
             }
-            hFragmentShaderModule = CVKShaderUtils.CreateShaderModule(fragmentShaderSPIRV.bytecode(), cvkDevice.GetDevice());
+            hFragmentShaderModule = CVKShaderUtils.CreateShaderModule(fragmentShaderSPIRV.bytecode(), CVKDevice.GetVkDevice());
             if (hFragmentShaderModule == VK_NULL_HANDLE) {
                 GetLogger().log(Level.SEVERE, "Failed to create shader module for: VertexIcon.fs");
                 return CVK_ERROR_SHADER_MODULE;
@@ -364,31 +365,29 @@ public class CVKPointsRenderable extends CVKRenderable {
     
     private void DestroyShaderModules() {
         if (hVertexShaderModule != VK_NULL_HANDLE) {
-            vkDestroyShaderModule(cvkDevice.GetDevice(), hVertexShaderModule, null);
+            vkDestroyShaderModule(CVKDevice.GetVkDevice(), hVertexShaderModule, null);
             hVertexShaderModule = VK_NULL_HANDLE;
         }
         if (hFragmentShaderModule != VK_NULL_HANDLE) {
-            vkDestroyShaderModule(cvkDevice.GetDevice(), hFragmentShaderModule, null);
+            vkDestroyShaderModule(CVKDevice.GetVkDevice(), hFragmentShaderModule, null);
             hFragmentShaderModule = VK_NULL_HANDLE;
         }
     }       
     
     private void CreateUBOStagingBuffers() {
-        cvkVertexUBStagingBuffer = CVKBuffer.Create(cvkDevice, 
-                                                    VertexUniformBufferObject.SIZEOF,
+        cvkVertexUBStagingBuffer = CVKBuffer.Create(VertexUniformBufferObject.SIZEOF,
                                                     VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                                                     VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                                                    GetLogger(),
                                                     "CVKPointRenderable.CreateUBOStagingBuffers cvkVertexUBStagingBuffer");     
     }
     
     @Override
-    public int Initialise(CVKDevice cvkDevice) {
-        CVKAssert(cvkDevice != null);
+    public int Initialise() {
         // Check for double initialisation
-        CVKAssert(hVertexShaderModule == VK_NULL_HANDLE);
+        CVKAssertNull(hVertexShaderModule);
         
         int ret;        
-        this.cvkDevice = cvkDevice;
         
         // Initialise push constants to identity mtx
         CreatePushConstants();        
@@ -494,11 +493,11 @@ public class CVKPointsRenderable extends CVKRenderable {
         // We can only create vertex buffers if we have something to put in them
         if (vertexCount > 0) {
             int vertexBufferSizeBytes = Vertex.SIZEOF * vertexCount;
-            cvkVertexBuffer = CVKBuffer.Create(cvkDevice, 
-                                                vertexBufferSizeBytes,
-                                                VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-                                                VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-                                                "CVKPointRenderable cvkVertexBuffer");
+            cvkVertexBuffer = CVKBuffer.Create(vertexBufferSizeBytes,
+                                               VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+                                               VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+                                               GetLogger(),
+                                               "CVKPointRenderable cvkVertexBuffer");
 
             // Populate them with some values
             return UpdateVertexBuffer();
@@ -583,9 +582,7 @@ public class CVKPointsRenderable extends CVKRenderable {
         commandBuffers = new ArrayList<>(imageCount);
 
         for (int i = 0; i < imageCount; ++i) {
-            CVKCommandBuffer buffer = CVKCommandBuffer.Create(cvkDevice, 
-                    VK_COMMAND_BUFFER_LEVEL_SECONDARY, 
-                    String.format("CVKPointRenderable %d", i));
+            CVKCommandBuffer buffer = CVKCommandBuffer.Create(VK_COMMAND_BUFFER_LEVEL_SECONDARY, GetLogger(), String.format("CVKPointRenderable %d", i));
             commandBuffers.add(buffer);
         }
         
@@ -631,7 +628,7 @@ public class CVKPointsRenderable extends CVKRenderable {
 
             VkRect2D.Buffer scissor = VkRect2D.callocStack(1, stack);
             scissor.offset(VkOffset2D.callocStack(stack).set(0, 0));
-            scissor.extent(cvkDevice.GetCurrentSurfaceExtent());
+            scissor.extent(cvkVisualProcessor.GetCanvas().GetCurrentSurfaceExtent());
 
             vkCmdSetViewport(commandBuffer, 0, viewport);           
             vkCmdSetScissor(commandBuffer, 0, scissor);
@@ -685,8 +682,7 @@ public class CVKPointsRenderable extends CVKRenderable {
     // ========================> Pipelines <======================== \\
     
     private int CreatePipelineLayout() {
-        CVKAssert(cvkDevice != null);
-        CVKAssert(cvkDevice.GetDevice() != null);
+        CVKAssert(CVKDevice.GetVkDevice() != null);
                
         int ret;       
         try (MemoryStack stack = stackPush()) {      
@@ -700,7 +696,7 @@ public class CVKPointsRenderable extends CVKRenderable {
             pipelineLayoutInfo.sType(VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO);
             pipelineLayoutInfo.pPushConstantRanges(pushConstantRange);  
             LongBuffer pPipelineLayout = stack.longs(VK_NULL_HANDLE);
-            ret = vkCreatePipelineLayout(cvkDevice.GetDevice(), pipelineLayoutInfo, null, pPipelineLayout);
+            ret = vkCreatePipelineLayout(CVKDevice.GetVkDevice(), pipelineLayoutInfo, null, pPipelineLayout);
             if (VkFailed(ret)) { return ret; }
             hPipelineLayout = pPipelineLayout.get(0);
             CVKAssert(hPipelineLayout != VK_NULL_HANDLE);                
@@ -710,21 +706,20 @@ public class CVKPointsRenderable extends CVKRenderable {
     
     private void DestroyPipelineLayout() {
         if (hPipelineLayout != VK_NULL_HANDLE) {
-            vkDestroyPipelineLayout(cvkDevice.GetDevice(), hPipelineLayout, null);
+            vkDestroyPipelineLayout(CVKDevice.GetVkDevice(), hPipelineLayout, null);
             hPipelineLayout = VK_NULL_HANDLE;
         }
     }     
     
     private int CreatePipelines() {
-        CVKAssertNotNull(cvkDevice);
-        CVKAssertNotNull(cvkDevice.GetDevice());
+        CVKAssertNotNull(CVKDevice.GetVkDevice());
         CVKAssertNotNull(cvkDescriptorPool);
         CVKAssertNotNull(cvkSwapChain);
-        CVKAssert(cvkSwapChain.GetSwapChainHandle() != VK_NULL_HANDLE);
-        CVKAssert(cvkSwapChain.GetRenderPassHandle() != VK_NULL_HANDLE);
-        CVKAssert(cvkDescriptorPool.GetDescriptorPoolHandle() != VK_NULL_HANDLE);
-        CVKAssert(hVertexShaderModule != VK_NULL_HANDLE);
-        CVKAssert(hFragmentShaderModule != VK_NULL_HANDLE);        
+        CVKAssertNotNull(cvkSwapChain.GetSwapChainHandle());
+        CVKAssertNotNull(cvkSwapChain.GetRenderPassHandle());
+        CVKAssertNotNull(cvkDescriptorPool.GetDescriptorPoolHandle());
+        CVKAssertNotNull(hVertexShaderModule);
+        CVKAssertNotNull(hFragmentShaderModule);        
         CVKAssert(cvkSwapChain.GetWidth() > 0);
         CVKAssert(cvkSwapChain.GetHeight() > 0);
                
@@ -775,7 +770,7 @@ public class CVKPointsRenderable extends CVKRenderable {
 
                 VkRect2D.Buffer scissor = VkRect2D.callocStack(1, stack);
                 scissor.offset(VkOffset2D.callocStack(stack).set(0, 0));
-                scissor.extent(cvkDevice.GetCurrentSurfaceExtent());
+                scissor.extent(cvkVisualProcessor.GetCanvas().GetCurrentSurfaceExtent());
 
                 VkPipelineViewportStateCreateInfo viewportState = VkPipelineViewportStateCreateInfo.callocStack(stack);
                 viewportState.sType(VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO);
@@ -852,7 +847,7 @@ public class CVKPointsRenderable extends CVKRenderable {
                 pipelineInfo.pDynamicState(dynamicState);
                 
                 LongBuffer pGraphicsPipeline = stack.mallocLong(1);
-                ret = vkCreateGraphicsPipelines(cvkDevice.GetDevice(), 
+                ret = vkCreateGraphicsPipelines(CVKDevice.GetVkDevice(), 
                                                 VK_NULL_HANDLE, 
                                                 pipelineInfo, 
                                                 null, 
@@ -861,7 +856,7 @@ public class CVKPointsRenderable extends CVKRenderable {
                 
                 if (CVK_DEBUGGING) {
                     ++CVK_VKALLOCATIONS;
-                    cvkDevice.GetLogger().info("CVK_VKALLOCATIONS(%d+) vkCreateGraphicsPipelines for CVKPointBuffer.pipeline_%d 0x%016X", 
+                    GetLogger().info("CVK_VKALLOCATIONS(%d+) vkCreateGraphicsPipelines for CVKPointBuffer.pipeline_%d 0x%016X", 
                             CVK_VKALLOCATIONS, i, pGraphicsPipeline.get(0));                
                 }                
                 
@@ -880,11 +875,11 @@ public class CVKPointsRenderable extends CVKRenderable {
             for (int i = 0; i < pipelines.size(); ++i) {
                 if (CVK_DEBUGGING) {
                     --CVK_VKALLOCATIONS;
-                    cvkDevice.GetLogger().info("CVK_VKALLOCATIONS(%d-) vkDestroyPipeline for CVKPointBuffer.pipeline_%d 0x%016X", 
+                    GetLogger().info("CVK_VKALLOCATIONS(%d-) vkDestroyPipeline for CVKPointBuffer.pipeline_%d 0x%016X", 
                             CVK_VKALLOCATIONS, i, pipelines.get(i));                
                 }                     
                 
-                vkDestroyPipeline(cvkDevice.GetDevice(), pipelines.get(i), null);
+                vkDestroyPipeline(CVKDevice.GetVkDevice(), pipelines.get(i), null);
                 pipelines.set(i, VK_NULL_HANDLE);
             }
             pipelines.clear();
@@ -962,10 +957,10 @@ public class CVKPointsRenderable extends CVKRenderable {
             
             if (newVertexCount > 0) {
                 int vertexBufferSizeBytes = Vertex.SIZEOF * newVertexCount;
-                cvkVertexStagingBuffer = CVKBuffer.Create(cvkDevice, 
-                                                          vertexBufferSizeBytes, 
+                cvkVertexStagingBuffer = CVKBuffer.Create(vertexBufferSizeBytes, 
                                                           VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                                                           VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                                                          GetLogger(),
                                                           "CVKPointRenderable.TaskCreateIcons cvkVertexStagingBuffer");               
                 
                 ByteBuffer pVertexMemory = cvkVertexStagingBuffer.StartMemoryMap(0, vertexBufferSizeBytes);
