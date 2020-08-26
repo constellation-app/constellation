@@ -39,7 +39,7 @@ public class ChartBuilder<X, Y> {
     private AxisBuilder<Y> yAxisBuilder;
     private final Predicate<XYChart.Data<X,Y>> xNotGreaterThanZero = data -> ((float) data.getXValue() <= 0);
     private final Predicate<XYChart.Data<X,Y>> yNotGreaterThanZero = data -> ((float) data.getYValue() <= 0);
-    private final String invalidLogWarning = "Warning: Unable to apply log function to values <= 0";
+    private static final String INVALIDLOGWARNING = "Warning: Unable to apply log function to values <= 0";
 
 
     public ChartBuilder(AxisBuilder<X> xAxis, AxisBuilder<Y> yAxis) {
@@ -74,19 +74,17 @@ public class ChartBuilder<X, Y> {
             }
         }
         
-        if (xAxisBuilder instanceof LogarithmicAxisBuilder){
-            if (series.getData().stream().anyMatch(xNotGreaterThanZero)) {
+        if (xAxisBuilder instanceof LogarithmicAxisBuilder 
+                && series.getData().stream().anyMatch(xNotGreaterThanZero)){ // If it is a logarithmic axis with values <=0 then switch to a NumericAxis instead
             xAxisBuilder = (AxisBuilder<X>) new NumberAxisBuilder();
-            NotifyDisplayer.display(invalidLogWarning, NotifyDescriptor.WARNING_MESSAGE);
-            }
+            NotifyDisplayer.display(INVALIDLOGWARNING, NotifyDescriptor.WARNING_MESSAGE);
         }
         final Axis<X> xAxis = xAxisBuilder.build();
         xAxis.setLabel(state.getXAttribute().getName());
         
-        if (yAxisBuilder instanceof LogarithmicAxisBuilder){
-            if (series.getData().stream().anyMatch(yNotGreaterThanZero)) {
+        if (yAxisBuilder instanceof LogarithmicAxisBuilder 
+                && series.getData().stream().anyMatch(yNotGreaterThanZero)){ // If it is a logarithmic axis with values <=0 then switch to a NumericAxis instead
             yAxisBuilder = (AxisBuilder<Y>) new NumberAxisBuilder();
-            }
         }
         final Axis<Y> yAxis = yAxisBuilder.build();
         yAxis.setLabel(state.getYAttribute().getName());
