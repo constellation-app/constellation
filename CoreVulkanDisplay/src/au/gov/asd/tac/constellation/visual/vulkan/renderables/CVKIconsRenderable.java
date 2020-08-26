@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan.renderables;
 
+import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKIconTextureAtlas;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
@@ -35,7 +36,7 @@ import static au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderab
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKCommandBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.shaders.CVKShaderPlaceHolder;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKGraphLogger.CVKLOGGER;
+import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKGraphLogger;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssertNotNull;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_SHADER_COMPILATION;
@@ -503,7 +504,7 @@ public class CVKIconsRenderable extends CVKRenderable{
             if (vsBytes == null) {
                 vsBytes = LoadFileToDirectBuffer(CVKShaderPlaceHolder.class, "compiled/VertexIcon.vs.spv");
                 if (vsBytes == null) {
-                    CVKLOGGER.log(Level.SEVERE, "Failed to load precompiled CVKIconsRenderable shader: VertexIcon.vs");
+                    CVKGraphLogger.GetStaticLogger().log(Level.SEVERE, "Failed to load precompiled CVKIconsRenderable shader: VertexIcon.vs");
                     return CVK_ERROR_SHADER_COMPILATION;
                 }
             }
@@ -511,7 +512,7 @@ public class CVKIconsRenderable extends CVKRenderable{
             if (gsBytes == null) {
                 gsBytes = LoadFileToDirectBuffer(CVKShaderPlaceHolder.class, "compiled/VertexIcon.gs.spv");
                 if (gsBytes == null) {
-                    CVKLOGGER.log(Level.SEVERE, "Failed to load precompiled CVKIconsRenderable shader: VertexIcon.gs");
+                    CVKGraphLogger.GetStaticLogger().log(Level.SEVERE, "Failed to load precompiled CVKIconsRenderable shader: VertexIcon.gs");
                     return CVK_ERROR_SHADER_COMPILATION;
                 }
             }
@@ -519,13 +520,13 @@ public class CVKIconsRenderable extends CVKRenderable{
             if (fsBytes == null) {
                 fsBytes = LoadFileToDirectBuffer(CVKShaderPlaceHolder.class, "compiled/VertexIcon.fs.spv");
                 if (fsBytes == null) {
-                    CVKLOGGER.log(Level.SEVERE, "Failed to load precompiled CVKIconsRenderable shader: VertexIcon.fs");
+                    CVKGraphLogger.GetStaticLogger().log(Level.SEVERE, "Failed to load precompiled CVKIconsRenderable shader: VertexIcon.fs");
                     return CVK_ERROR_SHADER_COMPILATION;
                 }
             }
          
         } catch (IOException e) {
-            CVKLOGGER.log(Level.SEVERE, "Failed to compile CVKIconsRenderable shaders: {0}", e.toString());
+            CVKGraphLogger.GetStaticLogger().log(Level.SEVERE, "Failed to compile CVKIconsRenderable shaders: {0}", e.toString());
             ret = CVK_ERROR_SHADER_COMPILATION;
         }
         
@@ -572,17 +573,17 @@ public class CVKIconsRenderable extends CVKRenderable{
         int ret = VK_SUCCESS;
         
         try{           
-            hVertexShaderModule = CVKShaderUtils.CreateShaderModule(vsBytes, cvkDevice.GetDevice());
+            hVertexShaderModule = CVKShaderUtils.CreateShaderModule(vsBytes, CVKDevice.GetVkDevice());
             if (hVertexShaderModule == VK_NULL_HANDLE) {
                 GetLogger().log(Level.SEVERE, "Failed to create shader module for: VertexIcon.vs");
                 return CVK_ERROR_SHADER_MODULE;
             }
-            hGeometryShaderModule = CVKShaderUtils.CreateShaderModule(gsBytes, cvkDevice.GetDevice());
+            hGeometryShaderModule = CVKShaderUtils.CreateShaderModule(gsBytes, CVKDevice.GetVkDevice());
             if (hGeometryShaderModule == VK_NULL_HANDLE) {
                 GetLogger().log(Level.SEVERE, "Failed to create shader module for: VertexIcon.gs");
                 return CVK_ERROR_SHADER_MODULE;
             }
-            hFragmentShaderModule = CVKShaderUtils.CreateShaderModule(fsBytes, cvkDevice.GetDevice());
+            hFragmentShaderModule = CVKShaderUtils.CreateShaderModule(fsBytes, CVKDevice.GetVkDevice());
             if (hFragmentShaderModule == VK_NULL_HANDLE) {
                 GetLogger().log(Level.SEVERE, "Failed to create shader module for: VertexIcon.fs");
                 return CVK_ERROR_SHADER_MODULE;
@@ -600,46 +601,44 @@ public class CVKIconsRenderable extends CVKRenderable{
     
     private void DestroyShaderModules() {
         if (hVertexShaderModule != VK_NULL_HANDLE) {
-            vkDestroyShaderModule(cvkDevice.GetDevice(), hVertexShaderModule, null);
+            vkDestroyShaderModule(CVKDevice.GetVkDevice(), hVertexShaderModule, null);
             hVertexShaderModule = VK_NULL_HANDLE;
         }
         if (hGeometryShaderModule != VK_NULL_HANDLE) {
-            vkDestroyShaderModule(cvkDevice.GetDevice(), hGeometryShaderModule, null);
+            vkDestroyShaderModule(CVKDevice.GetVkDevice(), hGeometryShaderModule, null);
             hGeometryShaderModule = VK_NULL_HANDLE;
         }
         if (hFragmentShaderModule != VK_NULL_HANDLE) {
-            vkDestroyShaderModule(cvkDevice.GetDevice(), hFragmentShaderModule, null);
+            vkDestroyShaderModule(CVKDevice.GetVkDevice(), hFragmentShaderModule, null);
             hFragmentShaderModule = VK_NULL_HANDLE;
         }
     }
     
     private void CreateUBOStagingBuffers() {
-        cvkVertexUBStagingBuffer = CVKBuffer.Create(cvkDevice, 
-                                                    VertexUniformBufferObject.SIZEOF,
+        cvkVertexUBStagingBuffer = CVKBuffer.Create(VertexUniformBufferObject.SIZEOF,
                                                     VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                                                     VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                                                    GetLogger(),
                                                     "CVKIconsRenderable.CreateUBOStagingBuffers cvkVertexUBStagingBuffer");   
-        cvkGeometryUBStagingBuffer = CVKBuffer.Create(cvkDevice, 
-                                                      GeometryUniformBufferObject.SIZEOF,
+        cvkGeometryUBStagingBuffer = CVKBuffer.Create(GeometryUniformBufferObject.SIZEOF,
                                                       VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                                                       VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                                                      GetLogger(),
                                                       "CVKIconsRenderable.CreateUBOStagingBuffers cvkGeometryUBStagingBuffer"); 
-        cvkFragmentUBStagingBuffer = CVKBuffer.Create(cvkDevice, 
-                                                      FragmentUniformBufferObject.SIZEOF,
+        cvkFragmentUBStagingBuffer = CVKBuffer.Create(FragmentUniformBufferObject.SIZEOF,
                                                       VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                                                       VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                                                      GetLogger(),
                                                       "CVKIconsRenderable.CreateUBOStagingBuffers cvkFragmentUBStagingBuffer");
     }
     
     @Override
-    public int Initialise(CVKDevice cvkDevice) {
-        CVKAssert(cvkDevice != null);
+    public int Initialise() {
         // Check for double initialisation
         CVKAssert(hVertexShaderModule == VK_NULL_HANDLE);
         CVKAssert(hDescriptorLayout == VK_NULL_HANDLE);
         
         int ret;        
-        this.cvkDevice = cvkDevice;
         
         ret = CreateShaderModules();
         if (VkFailed(ret)) { return ret; }             
@@ -782,10 +781,10 @@ public class CVKIconsRenderable extends CVKRenderable{
             vertexBuffers = new ArrayList<>();
             
             for (int i = 0; i < imageCount; ++i) {   
-                CVKBuffer cvkVertexBuffer = CVKBuffer.Create(cvkDevice, 
-                                                             cvkVertexStagingBuffer.GetBufferSize(),
+                CVKBuffer cvkVertexBuffer = CVKBuffer.Create(cvkVertexStagingBuffer.GetBufferSize(),
                                                              VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
                                                              VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+                                                             GetLogger(),
                                                              String.format("CVKIconsRenderable cvkVertexBuffer %d", i));
                 vertexBuffers.add(cvkVertexBuffer);        
             }
@@ -849,11 +848,11 @@ public class CVKIconsRenderable extends CVKRenderable{
         cvkVisualProcessor.VerifyInRenderThread();        
         int ret = VK_SUCCESS;
                 
-        cvkPositionBuffer = CVKBuffer.Create(cvkDevice, 
-                                              cvkPositionStagingBuffer.GetBufferSize(), 
-                                              VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-                                              VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-                                              "CVKIconsRenderable.CreatePositionBuffer cvkPositionBuffer");       
+        cvkPositionBuffer = CVKBuffer.Create(cvkPositionStagingBuffer.GetBufferSize(), 
+                                             VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+                                             VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+                                             GetLogger(),
+                                             "CVKIconsRenderable.CreatePositionBuffer cvkPositionBuffer");       
                 
         try (MemoryStack stack = stackPush()) {
             // NB: we have already checked VK_FORMAT_R32G32B32A32_SFLOAT can be used as a texel buffer
@@ -867,7 +866,7 @@ public class CVKIconsRenderable extends CVKRenderable{
             vkViewInfo.range(VK_WHOLE_SIZE);
 
             LongBuffer pBufferView = stack.mallocLong(1);
-            ret = vkCreateBufferView(cvkDevice.GetDevice(), vkViewInfo, null, pBufferView);
+            ret = vkCreateBufferView(CVKDevice.GetVkDevice(), vkViewInfo, null, pBufferView);
             if (VkFailed(ret)) { return ret; }
             hPositionBufferView = pBufferView.get(0);            
             GetLogger().info("Created CVKIconsRenderable.hPositionBufferView: 0x%016X", hPositionBufferView);
@@ -906,7 +905,7 @@ public class CVKIconsRenderable extends CVKRenderable{
         }   
         if (hPositionBufferView != VK_NULL_HANDLE) {
             GetLogger().info("Destroying CVKIconsRenderable.hPositionBufferView: 0x%016X", hPositionBufferView);
-            vkDestroyBufferView(cvkDevice.GetDevice(), hPositionBufferView, null);
+            vkDestroyBufferView(CVKDevice.GetVkDevice(), hPositionBufferView, null);
             hPositionBufferView = VK_NULL_HANDLE;
         }
     }
@@ -917,10 +916,10 @@ public class CVKIconsRenderable extends CVKRenderable{
         cvkVisualProcessor.VerifyInRenderThread();        
         int ret = VK_SUCCESS;
         
-        cvkVertexFlagsBuffer = CVKBuffer.Create(cvkDevice, 
-                                                cvkVertexFlagsStagingBuffer.GetBufferSize(), 
+        cvkVertexFlagsBuffer = CVKBuffer.Create(cvkVertexFlagsStagingBuffer.GetBufferSize(), 
                                                 VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
                                                 VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+                                                GetLogger(),
                                                 "CVKIconsRenderable.CreateVertexFlagsBuffer cvkVertexFlagsBuffer");       
                 
         try (MemoryStack stack = stackPush()) {
@@ -935,7 +934,7 @@ public class CVKIconsRenderable extends CVKRenderable{
             vkViewInfo.range(VK_WHOLE_SIZE);
 
             LongBuffer pBufferView = stack.mallocLong(1);
-            ret = vkCreateBufferView(cvkDevice.GetDevice(), vkViewInfo, null, pBufferView);
+            ret = vkCreateBufferView(CVKDevice.GetVkDevice(), vkViewInfo, null, pBufferView);
             if (VkFailed(ret)) { return ret; }
             hVertexFlagsBufferView = pBufferView.get(0);
             GetLogger().info("Created CVKIconsRenderable.hVertexFlagsBufferView: 0x%016X", hVertexFlagsBufferView);
@@ -962,7 +961,7 @@ public class CVKIconsRenderable extends CVKRenderable{
         }   
         if (hVertexFlagsBufferView != VK_NULL_HANDLE) {
             GetLogger().info("Destroying CVKIconsRenderable.hVertexFlagsBufferView: 0x%016X", hVertexFlagsBufferView);
-            vkDestroyBufferView(cvkDevice.GetDevice(), hVertexFlagsBufferView, null);
+            vkDestroyBufferView(CVKDevice.GetVkDevice(), hVertexFlagsBufferView, null);
             hVertexFlagsBufferView = VK_NULL_HANDLE;
         }        
     }
@@ -978,10 +977,10 @@ public class CVKIconsRenderable extends CVKRenderable{
  
         vertexUniformBuffers = new ArrayList<>();
         for (int i = 0; i < cvkSwapChain.GetImageCount(); ++i) {   
-            CVKBuffer vertexUniformBuffer = CVKBuffer.Create(cvkDevice, 
-                                                             VertexUniformBufferObject.SIZEOF,
+            CVKBuffer vertexUniformBuffer = CVKBuffer.Create(VertexUniformBufferObject.SIZEOF,
                                                              VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
                                                              VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+                                                             GetLogger(),
                                                              String.format("CVKIconsRenderable vertexUniformBuffer %d", i));   
             vertexUniformBuffers.add(vertexUniformBuffer);                     
         }        
@@ -1010,12 +1009,12 @@ public class CVKIconsRenderable extends CVKRenderable{
         PointerBuffer pData = stack.mallocPointer(1);        
         
         // Map staging buffer into host (CPU) rw memory and copy our UBO into it
-        ret = vkMapMemory(cvkDevice.GetDevice(), cvkVertexUBStagingBuffer.GetMemoryBufferHandle(), 0, size, 0, pData);
+        ret = vkMapMemory(CVKDevice.GetVkDevice(), cvkVertexUBStagingBuffer.GetMemoryBufferHandle(), 0, size, 0, pData);
         if (VkFailed(ret)) { return ret; }
         {
             vertexUBO.CopyTo(pData.getByteBuffer(0, size));
         }
-        vkUnmapMemory(cvkDevice.GetDevice(), cvkVertexUBStagingBuffer.GetMemoryBufferHandle());   
+        vkUnmapMemory(CVKDevice.GetVkDevice(), cvkVertexUBStagingBuffer.GetMemoryBufferHandle());   
      
         // Copy the staging buffer into the uniform buffer on the device
         final int imageCount = cvkSwapChain.GetImageCount(); 
@@ -1043,10 +1042,10 @@ public class CVKIconsRenderable extends CVKRenderable{
 
         geometryUniformBuffers = new ArrayList<>(); 
         for (int i = 0; i < cvkSwapChain.GetImageCount(); ++i) {   
-            CVKBuffer geometryUniformBuffer = CVKBuffer.Create(cvkDevice, 
-                                                               GeometryUniformBufferObject.SIZEOF,
+            CVKBuffer geometryUniformBuffer = CVKBuffer.Create(GeometryUniformBufferObject.SIZEOF,
                                                                VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
                                                                VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+                                                               GetLogger(),
                                                                String.format("CVKIconsRenderable geometryUniformBuffer %d", i));
             geometryUniformBuffers.add(geometryUniformBuffer);              
         }
@@ -1073,12 +1072,12 @@ public class CVKIconsRenderable extends CVKRenderable{
         PointerBuffer pData = stack.mallocPointer(1);        
         
         // Map staging buffer into host (CPU) rw memory and copy our UBO into it
-        ret = vkMapMemory(cvkDevice.GetDevice(), cvkGeometryUBStagingBuffer.GetMemoryBufferHandle(), 0, size, 0, pData);
+        ret = vkMapMemory(CVKDevice.GetVkDevice(), cvkGeometryUBStagingBuffer.GetMemoryBufferHandle(), 0, size, 0, pData);
         if (VkFailed(ret)) { return ret; }
         {
             geometryUBO.CopyTo(pData.getByteBuffer(0, size));
         }
-        vkUnmapMemory(cvkDevice.GetDevice(), cvkGeometryUBStagingBuffer.GetMemoryBufferHandle());   
+        vkUnmapMemory(CVKDevice.GetVkDevice(), cvkGeometryUBStagingBuffer.GetMemoryBufferHandle());   
      
         // Copy the staging buffer into the uniform buffer on the device
         final int imageCount = cvkSwapChain.GetImageCount(); 
@@ -1106,10 +1105,10 @@ public class CVKIconsRenderable extends CVKRenderable{
 
         fragmentUniformBuffers = new ArrayList<>();
         for (int i = 0; i < cvkSwapChain.GetImageCount(); ++i) {   
-            CVKBuffer fragmentUniformBuffer = CVKBuffer.Create(cvkDevice, 
-                                                               FragmentUniformBufferObject.SIZEOF,
+            CVKBuffer fragmentUniformBuffer = CVKBuffer.Create(FragmentUniformBufferObject.SIZEOF,
                                                                VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
                                                                VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+                                                               GetLogger(),
                                                                String.format("CVKIconsRenderable fragmentUniformBuffer %d", i));
             fragmentUniformBuffers.add(fragmentUniformBuffer);              
         }
@@ -1131,12 +1130,12 @@ public class CVKIconsRenderable extends CVKRenderable{
         PointerBuffer pData = stack.mallocPointer(1);        
         
         // Map staging buffer into host (CPU) rw memory and copy our UBO into it
-        ret = vkMapMemory(cvkDevice.GetDevice(), cvkFragmentUBStagingBuffer.GetMemoryBufferHandle(), 0, size, 0, pData);
+        ret = vkMapMemory(CVKDevice.GetVkDevice(), cvkFragmentUBStagingBuffer.GetMemoryBufferHandle(), 0, size, 0, pData);
         if (VkFailed(ret)) { return ret; }
         {
             fragmentUBO.CopyTo(pData.getByteBuffer(0, size));
         }
-        vkUnmapMemory(cvkDevice.GetDevice(), cvkFragmentUBStagingBuffer.GetMemoryBufferHandle());   
+        vkUnmapMemory(CVKDevice.GetVkDevice(), cvkFragmentUBStagingBuffer.GetMemoryBufferHandle());   
      
         // Copy the staging buffer into the uniform buffer on the device
         final int imageCount = cvkSwapChain.GetImageCount(); 
@@ -1171,12 +1170,10 @@ public class CVKIconsRenderable extends CVKRenderable{
         offscreenCommandBuffers = new ArrayList<>(imageCount);
         
         for (int i = 0; i < imageCount; ++i) {
-            CVKCommandBuffer buffer = CVKCommandBuffer.Create(cvkDevice, 
-                    VK_COMMAND_BUFFER_LEVEL_SECONDARY, String.format("CVKIconsRenderable %d", i));
+            CVKCommandBuffer buffer = CVKCommandBuffer.Create(VK_COMMAND_BUFFER_LEVEL_SECONDARY, GetLogger(), String.format("CVKIconsRenderable %d", i));
             commandBuffers.add(buffer);
             
-            CVKCommandBuffer offscreenBuffer = CVKCommandBuffer.Create(cvkDevice, VK_COMMAND_BUFFER_LEVEL_SECONDARY,
-                    String.format("CVKIconsRenderable Offscreen Buffer %d", i));
+            CVKCommandBuffer offscreenBuffer = CVKCommandBuffer.Create(VK_COMMAND_BUFFER_LEVEL_SECONDARY, GetLogger(), String.format("CVKIconsRenderable Offscreen Buffer %d", i));
             offscreenCommandBuffers.add(offscreenBuffer);
         }
         
@@ -1193,8 +1190,8 @@ public class CVKIconsRenderable extends CVKRenderable{
     @Override
     public int RecordDisplayCommandBuffer(VkCommandBufferInheritanceInfo inheritanceInfo, int imageIndex){
         cvkVisualProcessor.VerifyInRenderThread();
-        CVKAssertNotNull(cvkDevice.GetDevice());
-        CVKAssert(cvkDevice.GetCommandPoolHandle() != VK_NULL_HANDLE);
+        CVKAssertNotNull(CVKDevice.GetVkDevice());
+        CVKAssert(CVKDevice.GetCommandPoolHandle() != VK_NULL_HANDLE);
         CVKAssertNotNull(cvkSwapChain);
                 
         int ret;     
@@ -1209,7 +1206,7 @@ public class CVKIconsRenderable extends CVKRenderable{
             
             // Set the dynamic viewport and scissor
             commandBuffer.viewPortCmd(cvkSwapChain.GetWidth(), cvkSwapChain.GetHeight(), stack);
-            commandBuffer.scissorCmd(cvkDevice.GetCurrentSurfaceExtent(), stack);
+            commandBuffer.scissorCmd(cvkVisualProcessor.GetCanvas().GetCurrentSurfaceExtent(), stack);
             
             // Bind the graphics pipeline
             commandBuffer.BindGraphicsPipelineCmd(displayPipelines.get(imageIndex));
@@ -1244,8 +1241,8 @@ public class CVKIconsRenderable extends CVKRenderable{
     @Override
     public int RecordHitTestCommandBuffer(VkCommandBufferInheritanceInfo inheritanceInfo, int imageIndex){
                 cvkVisualProcessor.VerifyInRenderThread();
-        CVKAssertNotNull(cvkDevice.GetDevice());
-        CVKAssert(cvkDevice.GetCommandPoolHandle() != VK_NULL_HANDLE);
+        CVKAssertNotNull(CVKDevice.GetVkDevice());
+        CVKAssert(CVKDevice.GetCommandPoolHandle() != VK_NULL_HANDLE);
         CVKAssertNotNull(cvkSwapChain);
                 
         int ret;     
@@ -1260,7 +1257,7 @@ public class CVKIconsRenderable extends CVKRenderable{
             
             // Set the dynamic viewport and scissor
             commandBuffer.viewPortCmd(cvkSwapChain.GetWidth(), cvkSwapChain.GetHeight(), stack);
-            commandBuffer.scissorCmd(cvkDevice.GetCurrentSurfaceExtent(), stack);
+            commandBuffer.scissorCmd(cvkVisualProcessor.GetCanvas().GetCurrentSurfaceExtent(), stack);
             
             // Bind the graphics pipeline
             commandBuffer.BindGraphicsPipelineCmd(hitTestPipelines.get(imageIndex));
@@ -1369,7 +1366,7 @@ public class CVKIconsRenderable extends CVKRenderable{
 
             LongBuffer pDescriptorSetLayout = stack.mallocLong(1);
 
-            ret = vkCreateDescriptorSetLayout(cvkDevice.GetDevice(), layoutInfo, null, pDescriptorSetLayout);
+            ret = vkCreateDescriptorSetLayout(CVKDevice.GetVkDevice(), layoutInfo, null, pDescriptorSetLayout);
             if (VkSucceeded(ret)) {
                 hDescriptorLayout = pDescriptorSetLayout.get(0);
                 GetLogger().info("CVKIconsRenderable created hDescriptorLayout: 0x%016X", hDescriptorLayout);
@@ -1380,7 +1377,7 @@ public class CVKIconsRenderable extends CVKRenderable{
     
     private void DestroyDescriptorLayout() {
         GetLogger().info("CVKIconsRenderable destroying hDescriptorLayout: 0x%016X", hDescriptorLayout);
-        vkDestroyDescriptorSetLayout(cvkDevice.GetDevice(), hDescriptorLayout, null);
+        vkDestroyDescriptorSetLayout(CVKDevice.GetVkDevice(), hDescriptorLayout, null);
         hDescriptorLayout = VK_NULL_HANDLE;
     }
     
@@ -1405,7 +1402,7 @@ public class CVKIconsRenderable extends CVKRenderable{
 
         // Allocate the descriptor sets from the descriptor pool, they'll be unitialised
         pDescriptorSets = MemoryUtil.memAllocLong(imageCount);
-        ret = vkAllocateDescriptorSets(cvkDevice.GetDevice(), allocInfo, pDescriptorSets);
+        ret = vkAllocateDescriptorSets(CVKDevice.GetVkDevice(), allocInfo, pDescriptorSets);
         if (VkFailed(ret)) { return ret; }
         
         for (int i = 0; i < pDescriptorSets.capacity(); ++i) {
@@ -1468,8 +1465,8 @@ public class CVKIconsRenderable extends CVKRenderable{
         // Struct for the size of the image sampler (atlas) used by VertexIcon.fs
         VkDescriptorImageInfo.Buffer imageInfo = VkDescriptorImageInfo.callocStack(1, stack);
         imageInfo.imageLayout(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-        imageInfo.imageView(cvkVisualProcessor.GetTextureAtlas().GetAtlasImageViewHandle());
-        imageInfo.sampler(cvkVisualProcessor.GetTextureAtlas().GetAtlasSamplerHandle());
+        imageInfo.imageView(CVKIconTextureAtlas.GetInstance().GetAtlasImageViewHandle());
+        imageInfo.sampler(CVKIconTextureAtlas.GetInstance().GetAtlasSamplerHandle());
         
         // Struct for the uniform buffer used by VertexIcon.fs
         VkDescriptorBufferInfo.Buffer fragmentUniformBufferInfo = VkDescriptorBufferInfo.callocStack(1, stack);
@@ -1548,12 +1545,12 @@ public class CVKIconsRenderable extends CVKRenderable{
             descriptorWrites.forEach(el -> {el.dstSet(descriptorSet);});
 
             // Update the descriptors with a write and no copy
-            vkUpdateDescriptorSets(cvkDevice.GetDevice(), descriptorWrites, null);
+            vkUpdateDescriptorSets(CVKDevice.GetVkDevice(), descriptorWrites, null);
         }
         
         // Cache atlas handles so we know when to recreate descriptors
-        hAtlasSampler = cvkVisualProcessor.GetTextureAtlas().GetAtlasSamplerHandle();
-        hAtlasImageView = cvkVisualProcessor.GetTextureAtlas().GetAtlasImageViewHandle();            
+        hAtlasSampler = CVKIconTextureAtlas.GetInstance().GetAtlasSamplerHandle();
+        hAtlasImageView = CVKIconTextureAtlas.GetInstance().GetAtlasImageViewHandle();            
         
         SetDescriptorSetsState(CVK_RESOURCE_CLEAN);
         
@@ -1573,7 +1570,7 @@ public class CVKIconsRenderable extends CVKRenderable{
             }            
             
             // After calling vkFreeDescriptorSets, all descriptor sets in pDescriptorSets are invalid.
-            ret = vkFreeDescriptorSets(cvkDevice.GetDevice(), cvkDescriptorPool.GetDescriptorPoolHandle(), pDescriptorSets);
+            ret = vkFreeDescriptorSets(CVKDevice.GetVkDevice(), cvkDescriptorPool.GetDescriptorPoolHandle(), pDescriptorSets);
             pDescriptorSets = null;
             checkVKret(ret);
         }
@@ -1622,9 +1619,8 @@ public class CVKIconsRenderable extends CVKRenderable{
     // ========================> Pipelines <======================== \\
     
     private int CreatePipelineLayout() {
-        CVKAssert(cvkDevice != null);
-        CVKAssert(cvkDevice.GetDevice() != null);
-        CVKAssert(hDescriptorLayout != VK_NULL_HANDLE);
+        CVKAssertNotNull(CVKDevice.GetVkDevice());
+        CVKAssertNotNull(hDescriptorLayout);
                
         int ret;       
         try (MemoryStack stack = stackPush()) {           
@@ -1632,7 +1628,7 @@ public class CVKIconsRenderable extends CVKRenderable{
             pipelineLayoutInfo.sType(VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO);
             pipelineLayoutInfo.pSetLayouts(stack.longs(hDescriptorLayout));
             LongBuffer pPipelineLayout = stack.longs(VK_NULL_HANDLE);
-            ret = vkCreatePipelineLayout(cvkDevice.GetDevice(), pipelineLayoutInfo, null, pPipelineLayout);
+            ret = vkCreatePipelineLayout(CVKDevice.GetVkDevice(), pipelineLayoutInfo, null, pPipelineLayout);
             if (VkFailed(ret)) { return ret; }
             hPipelineLayout = pPipelineLayout.get(0);
             CVKAssert(hPipelineLayout != VK_NULL_HANDLE);                
@@ -1642,8 +1638,7 @@ public class CVKIconsRenderable extends CVKRenderable{
     
     private int CreatePipelines(long renderPassHandle, List<Long> pipelines) {
         CVKAssert(hPipelineLayout != VK_NULL_HANDLE);
-        CVKAssertNotNull(cvkDevice);
-        CVKAssertNotNull(cvkDevice.GetDevice());
+        CVKAssertNotNull(CVKDevice.GetVkDevice());
         CVKAssertNotNull(cvkSwapChain);
         CVKAssertNotNull(cvkDescriptorPool);
         CVKAssert(cvkSwapChain.GetSwapChainHandle() != VK_NULL_HANDLE);
@@ -1818,7 +1813,7 @@ public class CVKIconsRenderable extends CVKRenderable{
                 pipelineInfo.pDynamicState(dynamicState);
 
                 LongBuffer pGraphicsPipeline = stack.mallocLong(1);
-                ret = vkCreateGraphicsPipelines(cvkDevice.GetDevice(), 
+                ret = vkCreateGraphicsPipelines(CVKDevice.GetVkDevice(), 
                                                 VK_NULL_HANDLE, 
                                                 pipelineInfo, 
                                                 null, 
@@ -1837,7 +1832,7 @@ public class CVKIconsRenderable extends CVKRenderable{
     private void DestroyPipelines() {
         if (displayPipelines != null) {
             for (int i = 0; i < displayPipelines.size(); ++i) {
-                vkDestroyPipeline(cvkDevice.GetDevice(), displayPipelines.get(i), null);
+                vkDestroyPipeline(CVKDevice.GetVkDevice(), displayPipelines.get(i), null);
                 displayPipelines.set(i, VK_NULL_HANDLE);
             }
             displayPipelines.clear();
@@ -1847,7 +1842,7 @@ public class CVKIconsRenderable extends CVKRenderable{
     
     private void DestroyPipelineLayout() {
         if (hPipelineLayout != VK_NULL_HANDLE) {
-            vkDestroyPipelineLayout(cvkDevice.GetDevice(), hPipelineLayout, null);
+            vkDestroyPipelineLayout(CVKDevice.GetVkDevice(), hPipelineLayout, null);
             hPipelineLayout = VK_NULL_HANDLE;
         }
     }      
@@ -1867,8 +1862,8 @@ public class CVKIconsRenderable extends CVKRenderable{
                 commandBuffersState != CVK_RESOURCE_CLEAN ||
                 descriptorSetsState != CVK_RESOURCE_CLEAN ||
                 pipelinesState != CVK_RESOURCE_CLEAN ||                
-                hAtlasSampler != cvkVisualProcessor.GetTextureAtlas().GetAtlasSamplerHandle() ||
-                hAtlasImageView != cvkVisualProcessor.GetTextureAtlas().GetAtlasImageViewHandle() ); 
+                hAtlasSampler != CVKIconTextureAtlas.GetInstance().GetAtlasSamplerHandle() ||
+                hAtlasImageView != CVKIconTextureAtlas.GetInstance().GetAtlasImageViewHandle() ); 
     }
     
     @Override
@@ -1876,8 +1871,8 @@ public class CVKIconsRenderable extends CVKRenderable{
         int ret = VK_SUCCESS;
         cvkVisualProcessor.VerifyInRenderThread();
         
-        if (hAtlasSampler != cvkVisualProcessor.GetTextureAtlas().GetAtlasSamplerHandle() ||
-            hAtlasImageView != cvkVisualProcessor.GetTextureAtlas().GetAtlasImageViewHandle()) {
+        if (hAtlasSampler != CVKIconTextureAtlas.GetInstance().GetAtlasSamplerHandle() ||
+            hAtlasImageView != CVKIconTextureAtlas.GetInstance().GetAtlasImageViewHandle()) {
             if (descriptorSetsState != CVK_RESOURCE_NEEDS_REBUILD) {
                 descriptorSetsState = CVK_RESOURCE_NEEDS_UPDATE;
             }
@@ -2047,8 +2042,7 @@ public class CVKIconsRenderable extends CVKRenderable{
         }        
     }    
     
-    private void RebuildVertexStagingBuffer(Vertex[] vertices) {
-        CVKAssertNotNull(cvkDevice);
+    private void RebuildVertexStagingBuffer(Vertex[] vertices) {        
         final int newSizeBytes = (vertices != null ? vertices.length : 0) * Vertex.SIZEOF;
         final boolean recreate = cvkVertexStagingBuffer == null || newSizeBytes != cvkVertexStagingBuffer.GetBufferSize();
         
@@ -2059,10 +2053,10 @@ public class CVKIconsRenderable extends CVKRenderable{
             }
             
             if (newSizeBytes > 0) {
-                cvkVertexStagingBuffer = CVKBuffer.Create(cvkDevice, 
-                                                          newSizeBytes, 
+                cvkVertexStagingBuffer = CVKBuffer.Create(newSizeBytes, 
                                                           VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                                                           VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                                                          GetLogger(),
                                                           "CVKIconsRenderable.RebuildVertexStagingBuffer cvkVertexStagingBuffer");
             }
         }       
@@ -2073,7 +2067,6 @@ public class CVKIconsRenderable extends CVKRenderable{
     }
     
     private void UpdateVertexStagingBuffer(Vertex[] vertices, int first, int last) {
-        CVKAssertNotNull(cvkDevice);
         CVKAssertNotNull(cvkVertexStagingBuffer);
         CVKAssertNotNull(vertices != null);
         CVKAssert(vertices.length > 0 && vertices.length > last);
@@ -2091,7 +2084,6 @@ public class CVKIconsRenderable extends CVKRenderable{
     }         
     
     private void RebuildPositionStagingBuffer(Position[] positions) {
-        CVKAssertNotNull(cvkDevice);
         final int newSizeBytes = (positions != null ? positions.length : 0) * Position.SIZEOF;
         final boolean recreate = cvkPositionStagingBuffer == null || newSizeBytes != cvkPositionStagingBuffer.GetBufferSize();
         
@@ -2102,10 +2094,10 @@ public class CVKIconsRenderable extends CVKRenderable{
             }
             
             if (newSizeBytes > 0) {
-                cvkPositionStagingBuffer = CVKBuffer.Create(cvkDevice, 
-                                                            newSizeBytes, 
+                cvkPositionStagingBuffer = CVKBuffer.Create(newSizeBytes, 
                                                             VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                                                             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                                                            GetLogger(),
                                                             "CVKIconsRenderable.RebuildPositionStagingBuffer cvkPositionBuffer");
             }
         }       
@@ -2116,7 +2108,6 @@ public class CVKIconsRenderable extends CVKRenderable{
     }
     
     private void UpdatePositionStagingBuffer(Position[] positions, int first, int last) {
-        CVKAssertNotNull(cvkDevice);
         CVKAssertNotNull(cvkPositionStagingBuffer);
         CVKAssertNotNull(positions != null);
         CVKAssert(positions.length > 0 && positions.length > last);
@@ -2134,7 +2125,6 @@ public class CVKIconsRenderable extends CVKRenderable{
     }          
     
     private void RebuildVertexFlagsStagingBuffer(byte[] vertexFlags) {
-        CVKAssertNotNull(cvkDevice);
         final int newSizeBytes = (vertexFlags != null ? vertexFlags.length : 0) * Byte.BYTES;
         final boolean recreate = cvkVertexFlagsStagingBuffer == null || newSizeBytes != cvkVertexFlagsStagingBuffer.GetBufferSize();
         
@@ -2145,10 +2135,10 @@ public class CVKIconsRenderable extends CVKRenderable{
             }
             
             if (newSizeBytes > 0) {
-                cvkVertexFlagsStagingBuffer = CVKBuffer.Create(cvkDevice, 
-                                                               newSizeBytes, 
+                cvkVertexFlagsStagingBuffer = CVKBuffer.Create(newSizeBytes, 
                                                                VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                                                                VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                                                               GetLogger(),
                                                                "CVKIconsRenderable.RebuildVertexFlagsStagingBuffers cvkVertexFlagsStagingBuffer");
             }
         }       
@@ -2159,7 +2149,6 @@ public class CVKIconsRenderable extends CVKRenderable{
     }   
     
     private void UpdateVertexFlagsStagingBuffer(byte[] vertexFlags, int first, int last) {
-        CVKAssertNotNull(cvkDevice);
         CVKAssert(vertexFlags != null && vertexFlags.length > 0);
         CVKAssert(last >= 0 && last >= first && first >= 0);
 
@@ -2315,17 +2304,17 @@ public class CVKIconsRenderable extends CVKRenderable{
         
         final String foregroundIconName = access.getForegroundIcon(pos);
         final String backgroundIconName = access.getBackgroundIcon(pos);
-        final int foregroundIconIndex = cvkVisualProcessor.GetTextureAtlas().AddIcon(foregroundIconName);
-        final int backgroundIconIndex = cvkVisualProcessor.GetTextureAtlas().AddIcon(backgroundIconName);
+        final int foregroundIconIndex = CVKIconTextureAtlas.GetInstance().AddIcon(foregroundIconName);
+        final int backgroundIconIndex = CVKIconTextureAtlas.GetInstance().AddIcon(backgroundIconName);
 
         final String nWDecoratorName = access.getNWDecorator(pos);
         final String sWDecoratorName = access.getSWDecorator(pos);
         final String sEDecoratorName = access.getSEDecorator(pos);
         final String nEDecoratorName = access.getNEDecorator(pos);
-        final int nWDecoratorIndex = nWDecoratorName != null ? cvkVisualProcessor.GetTextureAtlas().AddIcon(nWDecoratorName) : CVKIconTextureAtlas.TRANSPARENT_ICON_INDEX;
-        final int sWDecoratorIndex = sWDecoratorName != null ? cvkVisualProcessor.GetTextureAtlas().AddIcon(sWDecoratorName) : CVKIconTextureAtlas.TRANSPARENT_ICON_INDEX;
-        final int sEDecoratorIndex = sEDecoratorName != null ? cvkVisualProcessor.GetTextureAtlas().AddIcon(sEDecoratorName) : CVKIconTextureAtlas.TRANSPARENT_ICON_INDEX;
-        final int nEDecoratorIndex = nEDecoratorName != null ? cvkVisualProcessor.GetTextureAtlas().AddIcon(nEDecoratorName) : CVKIconTextureAtlas.TRANSPARENT_ICON_INDEX;
+        final int nWDecoratorIndex = nWDecoratorName != null ? CVKIconTextureAtlas.GetInstance().AddIcon(nWDecoratorName) : CVKIconTextureAtlas.TRANSPARENT_ICON_INDEX;
+        final int sWDecoratorIndex = sWDecoratorName != null ? CVKIconTextureAtlas.GetInstance().AddIcon(sWDecoratorName) : CVKIconTextureAtlas.TRANSPARENT_ICON_INDEX;
+        final int sEDecoratorIndex = sEDecoratorName != null ? CVKIconTextureAtlas.GetInstance().AddIcon(sEDecoratorName) : CVKIconTextureAtlas.TRANSPARENT_ICON_INDEX;
+        final int nEDecoratorIndex = nEDecoratorName != null ? CVKIconTextureAtlas.GetInstance().AddIcon(nEDecoratorName) : CVKIconTextureAtlas.TRANSPARENT_ICON_INDEX;
 
         final int icons = (backgroundIconIndex << ICON_BITS) | (foregroundIconIndex & ICON_MASK);
         final int decoratorsWest = (sWDecoratorIndex << ICON_BITS) | (nWDecoratorIndex & ICON_MASK);

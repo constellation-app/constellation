@@ -29,9 +29,10 @@ import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKCommandBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.shaders.CVKShaderPlaceHolder;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKGraphLogger.CVKLOGGER;
+import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKGraphLogger;
 import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKShaderUtils;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssertNull;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_SHADER_COMPILATION;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_SHADER_MODULE;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.LoadFileToDirectBuffer;
@@ -298,7 +299,7 @@ public class CVKLabelsRenderable extends CVKRenderable {
             if (vsBytes == null) {
                 vsBytes = LoadFileToDirectBuffer(CVKShaderPlaceHolder.class, "compiled/NodeLabel.vs.spv");
                 if (vsBytes == null) {
-                    CVKLOGGER.log(Level.SEVERE, "Failed to load precompiled CVKLabelsRenderable shader: NodeLabel.vs.spv");
+                    CVKGraphLogger.GetStaticLogger().log(Level.SEVERE, "Failed to load precompiled CVKLabelsRenderable shader: NodeLabel.vs.spv");
                     return CVK_ERROR_SHADER_COMPILATION;
                 }
             }
@@ -306,7 +307,7 @@ public class CVKLabelsRenderable extends CVKRenderable {
             if (gsBytes == null) {
                 gsBytes = LoadFileToDirectBuffer(CVKShaderPlaceHolder.class, "compiled/Label.gs.spv");
                 if (gsBytes == null) {
-                    CVKLOGGER.log(Level.SEVERE, "Failed to load precompiled CVKLabelsRenderable shader: Label.gs.spv");
+                    CVKGraphLogger.GetStaticLogger().log(Level.SEVERE, "Failed to load precompiled CVKLabelsRenderable shader: Label.gs.spv");
                     return CVK_ERROR_SHADER_COMPILATION;
                 }
             }
@@ -314,13 +315,13 @@ public class CVKLabelsRenderable extends CVKRenderable {
             if (fsBytes == null) {
                 fsBytes = LoadFileToDirectBuffer(CVKShaderPlaceHolder.class, "compiled/Label.fs.spv");
                 if (fsBytes == null) {
-                    CVKLOGGER.log(Level.SEVERE, "Failed to load precompiled CVKLabelsRenderable shader: Label.fs.spv");
+                    CVKGraphLogger.GetStaticLogger().log(Level.SEVERE, "Failed to load precompiled CVKLabelsRenderable shader: Label.fs.spv");
                     return CVK_ERROR_SHADER_COMPILATION;
                 }
             }
          
         } catch (IOException e) {
-            CVKLOGGER.log(Level.SEVERE, "Failed to compile CVKLabelsRenderable shaders: {0}", e.toString());
+            CVKGraphLogger.GetStaticLogger().log(Level.SEVERE, "Failed to compile CVKLabelsRenderable shaders: {0}", e.toString());
             ret = CVK_ERROR_SHADER_COMPILATION;
         }
         
@@ -367,17 +368,17 @@ public class CVKLabelsRenderable extends CVKRenderable {
         int ret = VK_SUCCESS;
         
         try{           
-            hVertexShaderModule = CVKShaderUtils.CreateShaderModule(vsBytes, cvkDevice.GetDevice());
+            hVertexShaderModule = CVKShaderUtils.CreateShaderModule(vsBytes, CVKDevice.GetVkDevice());
             if (hVertexShaderModule == VK_NULL_HANDLE) {
                 cvkVisualProcessor.GetLogger().log(Level.SEVERE, "Failed to create shader module for: NodeLabel.vs");
                 return CVK_ERROR_SHADER_MODULE;
             }
-            hGeometryShaderModule = CVKShaderUtils.CreateShaderModule(gsBytes, cvkDevice.GetDevice());
+            hGeometryShaderModule = CVKShaderUtils.CreateShaderModule(gsBytes, CVKDevice.GetVkDevice());
             if (hGeometryShaderModule == VK_NULL_HANDLE) {
                 cvkVisualProcessor.GetLogger().log(Level.SEVERE, "Failed to create shader module for: Label.gs");
                 return CVK_ERROR_SHADER_MODULE;
             }
-            hFragmentShaderModule = CVKShaderUtils.CreateShaderModule(fsBytes, cvkDevice.GetDevice());
+            hFragmentShaderModule = CVKShaderUtils.CreateShaderModule(fsBytes, CVKDevice.GetVkDevice());
             if (hFragmentShaderModule == VK_NULL_HANDLE) {
                 cvkVisualProcessor.GetLogger().log(Level.SEVERE, "Failed to create shader module for: Label.fs");
                 return CVK_ERROR_SHADER_MODULE;
@@ -395,15 +396,15 @@ public class CVKLabelsRenderable extends CVKRenderable {
     
     private void DestroyShaderModules() {
         if (hVertexShaderModule != VK_NULL_HANDLE) {
-            vkDestroyShaderModule(cvkDevice.GetDevice(), hVertexShaderModule, null);
+            vkDestroyShaderModule(CVKDevice.GetVkDevice(), hVertexShaderModule, null);
             hVertexShaderModule = VK_NULL_HANDLE;
         }
         if (hGeometryShaderModule != VK_NULL_HANDLE) {
-            vkDestroyShaderModule(cvkDevice.GetDevice(), hGeometryShaderModule, null);
+            vkDestroyShaderModule(CVKDevice.GetVkDevice(), hGeometryShaderModule, null);
             hGeometryShaderModule = VK_NULL_HANDLE;
         }
         if (hFragmentShaderModule != VK_NULL_HANDLE) {
-            vkDestroyShaderModule(cvkDevice.GetDevice(), hFragmentShaderModule, null);
+            vkDestroyShaderModule(CVKDevice.GetVkDevice(), hFragmentShaderModule, null);
             hFragmentShaderModule = VK_NULL_HANDLE;
         }
     }
@@ -427,14 +428,12 @@ public class CVKLabelsRenderable extends CVKRenderable {
 //    }
     
     @Override
-    public int Initialise(CVKDevice cvkDevice) {
-        CVKAssert(cvkDevice != null);
+    public int Initialise() {
         // Check for double initialisation
-        CVKAssert(hVertexShaderModule == VK_NULL_HANDLE);
+        CVKAssertNull(hVertexShaderModule);
 //        CVKAssert(hDescriptorLayout == VK_NULL_HANDLE);
         
         int ret;        
-        this.cvkDevice = cvkDevice;
         
         ret = CreateShaderModules();
         if (VkFailed(ret)) { return ret; }             
@@ -685,12 +684,12 @@ public class CVKLabelsRenderable extends CVKRenderable {
 //        PointerBuffer pData = stack.mallocPointer(1);        
 //        
 //        // Map staging buffer into host (CPU) rw memory and copy our UBO into it
-//        ret = vkMapMemory(cvkDevice.GetDevice(), cvkVertexUBStagingBuffer.GetMemoryBufferHandle(), 0, size, 0, pData);
+//        ret = vkMapMemory(cvkDevice.GetVkDevice(), cvkVertexUBStagingBuffer.GetMemoryBufferHandle(), 0, size, 0, pData);
 //        if (VkFailed(ret)) { return ret; }
 //        {
 //            vertexUBO.CopyTo(pData.getByteBuffer(0, size));
 //        }
-//        vkUnmapMemory(cvkDevice.GetDevice(), cvkVertexUBStagingBuffer.GetMemoryBufferHandle());   
+//        vkUnmapMemory(cvkDevice.GetVkDevice(), cvkVertexUBStagingBuffer.GetMemoryBufferHandle());   
 //     
 //        // Copy the staging buffer into the uniform buffer on the device
 //        final int imageCount = cvkSwapChain.GetImageCount(); 
@@ -749,12 +748,12 @@ public class CVKLabelsRenderable extends CVKRenderable {
 //        PointerBuffer pData = stack.mallocPointer(1);        
 //        
 //        // Map staging buffer into host (CPU) rw memory and copy our UBO into it
-//        ret = vkMapMemory(cvkDevice.GetDevice(), cvkGeometryUBStagingBuffer.GetMemoryBufferHandle(), 0, size, 0, pData);
+//        ret = vkMapMemory(cvkDevice.GetVkDevice(), cvkGeometryUBStagingBuffer.GetMemoryBufferHandle(), 0, size, 0, pData);
 //        if (VkFailed(ret)) { return ret; }
 //        {
 //            geometryUBO.CopyTo(pData.getByteBuffer(0, size));
 //        }
-//        vkUnmapMemory(cvkDevice.GetDevice(), cvkGeometryUBStagingBuffer.GetMemoryBufferHandle());   
+//        vkUnmapMemory(cvkDevice.GetVkDevice(), cvkGeometryUBStagingBuffer.GetMemoryBufferHandle());   
 //     
 //        // Copy the staging buffer into the uniform buffer on the device
 //        final int imageCount = cvkSwapChain.GetImageCount(); 
@@ -807,12 +806,12 @@ public class CVKLabelsRenderable extends CVKRenderable {
 //        PointerBuffer pData = stack.mallocPointer(1);        
 //        
 //        // Map staging buffer into host (CPU) rw memory and copy our UBO into it
-//        ret = vkMapMemory(cvkDevice.GetDevice(), cvkFragmentUBStagingBuffer.GetMemoryBufferHandle(), 0, size, 0, pData);
+//        ret = vkMapMemory(cvkDevice.GetVkDevice(), cvkFragmentUBStagingBuffer.GetMemoryBufferHandle(), 0, size, 0, pData);
 //        if (VkFailed(ret)) { return ret; }
 //        {
 //            fragmentUBO.CopyTo(pData.getByteBuffer(0, size));
 //        }
-//        vkUnmapMemory(cvkDevice.GetDevice(), cvkFragmentUBStagingBuffer.GetMemoryBufferHandle());   
+//        vkUnmapMemory(cvkDevice.GetVkDevice(), cvkFragmentUBStagingBuffer.GetMemoryBufferHandle());   
 //     
 //        // Copy the staging buffer into the uniform buffer on the device
 //        final int imageCount = cvkSwapChain.GetImageCount(); 
@@ -865,7 +864,7 @@ public class CVKLabelsRenderable extends CVKRenderable {
     public int RecordDisplayCommandBuffer(VkCommandBufferInheritanceInfo inheritanceInfo, int imageIndex){
         return VK_SUCCESS;
 //        cvkVisualProcessor.VerifyInRenderThread();
-//        CVKAssert(cvkDevice.GetDevice() != null);
+//        CVKAssert(cvkDevice.GetVkDevice() != null);
 //        CVKAssert(cvkDevice.GetCommandPoolHandle() != VK_NULL_HANDLE);
 //        CVKAssert(cvkSwapChain != null);
 //                
@@ -998,7 +997,7 @@ public class CVKLabelsRenderable extends CVKRenderable {
 //
 //            LongBuffer pDescriptorSetLayout = stack.mallocLong(1);
 //
-//            ret = vkCreateDescriptorSetLayout(cvkDevice.GetDevice(), layoutInfo, null, pDescriptorSetLayout);
+//            ret = vkCreateDescriptorSetLayout(cvkDevice.GetVkDevice(), layoutInfo, null, pDescriptorSetLayout);
 //            if (VkSucceeded(ret)) {
 //                hDescriptorLayout = pDescriptorSetLayout.get(0);
 //            }
@@ -1007,7 +1006,7 @@ public class CVKLabelsRenderable extends CVKRenderable {
     }      
     
     private void DestroyDescriptorLayout() {
-//        vkDestroyDescriptorSetLayout(cvkDevice.GetDevice(), hDescriptorLayout, null);
+//        vkDestroyDescriptorSetLayout(cvkDevice.GetVkDevice(), hDescriptorLayout, null);
 //        hDescriptorLayout = VK_NULL_HANDLE;
     }
     
@@ -1032,7 +1031,7 @@ public class CVKLabelsRenderable extends CVKRenderable {
 //
 //        // Allocate the descriptor sets from the descriptor pool, they'll be unitialised
 //        pDescriptorSets = MemoryUtil.memAllocLong(imageCount);
-//        ret = vkAllocateDescriptorSets(cvkDevice.GetDevice(), allocInfo, pDescriptorSets);
+//        ret = vkAllocateDescriptorSets(cvkDevice.GetVkDevice(), allocInfo, pDescriptorSets);
 //        if (VkFailed(ret)) { return ret; }
         
         return UpdateDescriptorSets(stack);
@@ -1171,7 +1170,7 @@ public class CVKLabelsRenderable extends CVKRenderable {
 //            descriptorWrites.forEach(el -> {el.dstSet(descriptorSet);});
 //
 //            // Update the descriptors with a write and no copy
-//            vkUpdateDescriptorSets(cvkDevice.GetDevice(), descriptorWrites, null);
+//            vkUpdateDescriptorSets(cvkDevice.GetVkDevice(), descriptorWrites, null);
 //        }
 //        
 //        // Cache atlas handles so we know when to recreate descriptors
@@ -1192,7 +1191,7 @@ public class CVKLabelsRenderable extends CVKRenderable {
 //            cvkVisualProcessor.GetLogger().fine("CVKIconsRenderable returning %d descriptor sets to the pool", pDescriptorSets.capacity());
 //            
 //            // After calling vkFreeDescriptorSets, all descriptor sets in pDescriptorSets are invalid.
-//            ret = vkFreeDescriptorSets(cvkDevice.GetDevice(), cvkDescriptorPool.GetDescriptorPoolHandle(), pDescriptorSets);
+//            ret = vkFreeDescriptorSets(cvkDevice.GetVkDevice(), cvkDescriptorPool.GetDescriptorPoolHandle(), pDescriptorSets);
 //            pDescriptorSets = null;
 //            checkVKret(ret);
 //        }
@@ -1243,7 +1242,7 @@ public class CVKLabelsRenderable extends CVKRenderable {
     
 //    private int CreatePipelineLayout() {
 //        CVKAssert(cvkDevice != null);
-//        CVKAssert(cvkDevice.GetDevice() != null);
+//        CVKAssert(cvkDevice.GetVkDevice() != null);
 //        CVKAssert(hDescriptorLayout != VK_NULL_HANDLE);
 //               
 //        int ret;       
@@ -1252,7 +1251,7 @@ public class CVKLabelsRenderable extends CVKRenderable {
 //            pipelineLayoutInfo.sType(VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO);
 //            pipelineLayoutInfo.pSetLayouts(stack.longs(hDescriptorLayout));
 //            LongBuffer pPipelineLayout = stack.longs(VK_NULL_HANDLE);
-//            ret = vkCreatePipelineLayout(cvkDevice.GetDevice(), pipelineLayoutInfo, null, pPipelineLayout);
+//            ret = vkCreatePipelineLayout(cvkDevice.GetVkDevice(), pipelineLayoutInfo, null, pPipelineLayout);
 //            if (VkFailed(ret)) { return ret; }
 //            hPipelineLayout = pPipelineLayout.get(0);
 //            CVKAssert(hPipelineLayout != VK_NULL_HANDLE);                
@@ -1263,7 +1262,7 @@ public class CVKLabelsRenderable extends CVKRenderable {
 //    private int CreatePipelines() {
 //        CVKAssert(hPipelineLayout != VK_NULL_HANDLE);
 //        CVKAssert(cvkDevice != null);
-//        CVKAssert(cvkDevice.GetDevice() != null);
+//        CVKAssert(cvkDevice.GetVkDevice() != null);
 //        CVKAssert(cvkSwapChain != null);
 //        CVKAssert(cvkDescriptorPool != null);
 //        CVKAssert(cvkSwapChain.GetSwapChainHandle() != VK_NULL_HANDLE);
@@ -1432,7 +1431,7 @@ public class CVKLabelsRenderable extends CVKRenderable {
 //                pipelineInfo.pDynamicState(dynamicState);
 //
 //                LongBuffer pGraphicsPipeline = stack.mallocLong(1);
-//                ret = vkCreateGraphicsPipelines(cvkDevice.GetDevice(), 
+//                ret = vkCreateGraphicsPipelines(cvkDevice.GetVkDevice(), 
 //                                                VK_NULL_HANDLE, 
 //                                                pipelineInfo, 
 //                                                null, 
@@ -1451,7 +1450,7 @@ public class CVKLabelsRenderable extends CVKRenderable {
 //    private void DestroyPipelines() {
 //        if (pipelines != null) {
 //            for (int i = 0; i < pipelines.size(); ++i) {
-//                vkDestroyPipeline(cvkDevice.GetDevice(), pipelines.get(i), null);
+//                vkDestroyPipeline(cvkDevice.GetVkDevice(), pipelines.get(i), null);
 //                pipelines.set(i, VK_NULL_HANDLE);
 //            }
 //            pipelines.clear();
@@ -1461,7 +1460,7 @@ public class CVKLabelsRenderable extends CVKRenderable {
 //    
 //    private void DestroyPipelineLayout() {
 //        if (hPipelineLayout != VK_NULL_HANDLE) {
-//            vkDestroyPipelineLayout(cvkDevice.GetDevice(), hPipelineLayout, null);
+//            vkDestroyPipelineLayout(cvkDevice.GetVkDevice(), hPipelineLayout, null);
 //            hPipelineLayout = VK_NULL_HANDLE;
 //        }
 //    }      

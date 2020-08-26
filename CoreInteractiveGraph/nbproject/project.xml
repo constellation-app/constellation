@@ -217,6 +217,7 @@
                 <package>au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard</package>
                 <package>au.gov.asd.tac.constellation.graph.interaction.plugins.io</package>
                 <package>au.gov.asd.tac.constellation.graph.interaction.plugins.zoom</package>
+                <package>au.gov.asd.tac.constellation.graph.interaction.visual</package>
             </public-packages>
         </data>
     </configuration>

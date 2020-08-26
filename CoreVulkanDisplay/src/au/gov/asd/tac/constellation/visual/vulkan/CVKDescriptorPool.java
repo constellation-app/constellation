@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan;
 
+import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKGraphLogger;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssertNotNull;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.checkVKret;
@@ -31,8 +32,8 @@ import org.lwjgl.vulkan.VkDescriptorPoolCreateInfo;
 import org.lwjgl.vulkan.VkDescriptorPoolSize;
 
 public class CVKDescriptorPool {
-    private final CVKDevice cvkDevice;
     private long hDescriptorPool = VK_NULL_HANDLE;
+    private final CVKGraphLogger cvkGraphLogger;
     
     public long GetDescriptorPoolHandle() { return hDescriptorPool; }
         
@@ -101,18 +102,18 @@ public class CVKDescriptorPool {
      * @param poolReqs
      * @param perImagePoolReqs
      */
-    public CVKDescriptorPool(CVKDevice cvkDevice,
-                             final int imageCount,
+    public CVKDescriptorPool(final int imageCount,
                              final CVKDescriptorPoolRequirements poolReqs,
-                             final CVKDescriptorPoolRequirements perImagePoolReqs) {
-        cvkDevice.VerifyInRenderThread();
-        CVKAssert(cvkDevice != null);
+                             final CVKDescriptorPoolRequirements perImagePoolReqs,
+                             CVKGraphLogger logger) {
+        cvkGraphLogger = logger;
+        
         CVKAssert(imageCount > 0);
         CVKAssert(poolReqs != null);
         CVKAssert(perImagePoolReqs != null);
                         
         int ret = VK_SUCCESS;
-        this.cvkDevice = cvkDevice;
+        
         
         cvkDescriptorPoolRequirements.poolDesciptorSetCount = poolReqs.poolDesciptorSetCount +
                                                               perImagePoolReqs.poolDesciptorSetCount * imageCount;
@@ -146,7 +147,7 @@ public class CVKDescriptorPool {
                         VkDescriptorPoolSize vkPoolSize = pPoolSizes.get(iPoolSize++);
                         vkPoolSize.type(iType);
                         vkPoolSize.descriptorCount(count);
-                        cvkDevice.GetLogger().info("Descriptor pool type %d = count %d", iType, count);                                        
+                        cvkGraphLogger.info("Descriptor pool type %d = count %d", iType, count);                                        
                     } 
                 }           
 
@@ -157,10 +158,10 @@ public class CVKDescriptorPool {
                 poolInfo.flags(VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT);
                 poolInfo.pPoolSizes(pPoolSizes);
                 poolInfo.maxSets(cvkDescriptorPoolRequirements.poolDesciptorSetCount);
-                cvkDevice.GetLogger().info("Descriptor pool maxSets = %d", cvkDescriptorPoolRequirements.poolDesciptorSetCount);  
+                cvkGraphLogger.info("Descriptor pool maxSets = %d", cvkDescriptorPoolRequirements.poolDesciptorSetCount);  
 
                 LongBuffer pDescriptorPool = stack.mallocLong(1);
-                ret = vkCreateDescriptorPool(cvkDevice.GetDevice(), poolInfo, null, pDescriptorPool);
+                ret = vkCreateDescriptorPool(CVKDevice.GetVkDevice(), poolInfo, null, pDescriptorPool);
                 checkVKret(ret);
                 hDescriptorPool = pDescriptorPool.get(0);                
             } 
@@ -170,9 +171,8 @@ public class CVKDescriptorPool {
     }
     
     public void Destroy() {
-        CVKAssert(cvkDevice != null);
-        vkDestroyDescriptorPool(cvkDevice.GetDevice(), hDescriptorPool, null);
+        vkDestroyDescriptorPool(CVKDevice.GetVkDevice(), hDescriptorPool, null);
         hDescriptorPool = VK_NULL_HANDLE;
-        cvkDevice.GetLogger().info("Destroyed descriptor pool");
+        cvkGraphLogger.info("Destroyed descriptor pool");
     }    
 }

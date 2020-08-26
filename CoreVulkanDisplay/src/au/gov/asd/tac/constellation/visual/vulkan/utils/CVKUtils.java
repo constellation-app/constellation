@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.visual.vulkan.utils;
 
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKGraphLogger.CVKLOGGER;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -79,7 +78,7 @@ public class CVKUtils {
     public static void LogStackTrace(Level level) {
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         for (StackTraceElement el : stackTrace) {
-            CVKLOGGER.log(level, el.toString());
+            CVKGraphLogger.GetStaticLogger().log(level, el.toString());
         }
     }
     public static String GetMethodName(final int depth) {
@@ -119,9 +118,9 @@ public class CVKUtils {
             else {
                 desc = String.format("Vulkan error [0x%X]", retCode);
             }          
-            CVKLOGGER.severe(String.format("SEVERE: checkVKret failed, %s\nStack:", desc));
+            CVKGraphLogger.GetStaticLogger().severe(String.format("SEVERE: checkVKret failed, %s\nStack:", desc));
             LogStackTrace(Level.SEVERE);
-            CVKLOGGER.severe("Exception incoming");
+            CVKGraphLogger.GetStaticLogger().severe("Exception incoming");
             
             throw new IllegalStateException(desc); 
         }
@@ -207,18 +206,18 @@ public class CVKUtils {
                 int ret = vkEnumerateInstanceLayerProperties(pInt, null);
                 checkVKret(ret);
                 int layerCount = pInt.get(0);
-                if (CVKLOGGER.isLoggable(VALIDATION_LAYER_LOG_LEVEL)) {
-                    CVKLOGGER.log(VALIDATION_LAYER_LOG_LEVEL, "Vulkan has {0} available layers.", layerCount);
+                if (CVKGraphLogger.GetStaticLogger().isLoggable(VALIDATION_LAYER_LOG_LEVEL)) {
+                    CVKGraphLogger.GetStaticLogger().log(VALIDATION_LAYER_LOG_LEVEL, "Vulkan has %d available layers.", layerCount);
                 }
 
                 // Get available layers
                 VkLayerProperties.Buffer availableLayers = VkLayerProperties.mallocStack(layerCount, stack);
                 checkVKret(vkEnumerateInstanceLayerProperties(pInt, availableLayers));
-                if (CVKLOGGER.isLoggable(VALIDATION_LAYER_LOG_LEVEL)) {
+                if (CVKGraphLogger.GetStaticLogger().isLoggable(VALIDATION_LAYER_LOG_LEVEL)) {
                     for (int i = 0; i < layerCount; ++i) {
                         availableLayers.position(i);
                         String layerDesc = availableLayers.descriptionString();
-                        CVKLOGGER.log(VALIDATION_LAYER_LOG_LEVEL, "\tVulkan layer {0}: {1}", new Object[]{i, layerDesc});          
+                        CVKGraphLogger.GetStaticLogger().log(VALIDATION_LAYER_LOG_LEVEL, "\tVulkan layer %d: %s", i, layerDesc);          
                     }
                 }
 
@@ -317,7 +316,7 @@ public class CVKUtils {
             if (System.console() == null) {
                 throw new RuntimeException(msg);
             } else {
-                CVKLOGGER.severe(msg);
+                CVKGraphLogger.GetStaticLogger().severe(msg);
                 LogStackTrace(Level.SEVERE);
             }
         }
@@ -331,7 +330,7 @@ public class CVKUtils {
             if (System.console() == null) {
                 throw new RuntimeException(msg);
             } else {
-                CVKLOGGER.severe(msg);
+                CVKGraphLogger.GetStaticLogger().severe(msg);
                 LogStackTrace(Level.SEVERE);
             }
         }
@@ -345,7 +344,7 @@ public class CVKUtils {
             if (System.console() == null) {
                 throw new RuntimeException(msg);
             } else {
-                CVKLOGGER.severe(msg);
+                CVKGraphLogger.GetStaticLogger().severe(msg);
                 LogStackTrace(Level.SEVERE);
             }
         }
@@ -358,7 +357,7 @@ public class CVKUtils {
             if (System.console() == null) {
                 throw new RuntimeException(msg);
             } else {
-                CVKLOGGER.severe(msg);
+                CVKGraphLogger.GetStaticLogger().severe(msg);
                 LogStackTrace(Level.SEVERE);
             }
         }        
@@ -371,7 +370,7 @@ public class CVKUtils {
             if (System.console() == null) {
                 throw new RuntimeException(msg);
             } else {
-                CVKLOGGER.severe(msg);
+                CVKGraphLogger.GetStaticLogger().severe(msg);
                 LogStackTrace(Level.SEVERE);
             }
         }        
@@ -385,7 +384,7 @@ public class CVKUtils {
                 if (System.console() == null) {
                     throw new RuntimeException(msg);
                 } else {
-                    CVKLOGGER.severe(msg);
+                    CVKGraphLogger.GetStaticLogger().severe(msg);
                     LogStackTrace(Level.SEVERE);
                 }
             } else if (str.isEmpty()) {
@@ -394,7 +393,7 @@ public class CVKUtils {
                 if (System.console() == null) {
                     throw new RuntimeException(msg);
                 } else {
-                    CVKLOGGER.severe(msg);
+                    CVKGraphLogger.GetStaticLogger().severe(msg);
                     LogStackTrace(Level.SEVERE);
                 }                
             }

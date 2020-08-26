@@ -36,7 +36,6 @@ public abstract class CVKRenderable {
     }
     
     protected final CVKVisualProcessor cvkVisualProcessor;
-    protected CVKDevice cvkDevice = null;
     protected CVKDescriptorPool cvkDescriptorPool = null;
     protected CVKSwapChain cvkSwapChain = null;
     protected boolean descriptorPoolResourcesDirty = false;
@@ -54,10 +53,9 @@ public abstract class CVKRenderable {
      * it the renderer has not been initialised itself at that point, called
      * when the renderer is initialised.
      * 
-     * @param cvkDevice
      * @return
      */
-    public abstract int Initialise(CVKDevice cvkDevice);
+    public abstract int Initialise();
     
     /**
      * Cleanup, terminal, called when a graph is closing
