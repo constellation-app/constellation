@@ -282,6 +282,8 @@ public class SourcePane extends GridPane {
      * value loading when this pane is being initialized.
      */
     public void updateDestinationGraphCombo() {
+        // previousDestinationObject is the previously selected item in the combobox
+        ImportDestination<?> previousDestinationObject = graphComboBox.getSelectionModel().getSelectedItem();
         final ObservableList<ImportDestination<?>> destinations = FXCollections.observableArrayList();
 
         final Map<String, Graph> graphs = GraphManager.getDefault().getAllGraphs();
@@ -303,12 +305,16 @@ public class SourcePane extends GridPane {
                 defaultDestination = destination;
             }
         }
-
+        // resets the combo box when set correctly.
         graphComboBox.setItems(destinations);
         graphComboBox.setOnAction((final ActionEvent t) -> {
             importController.setDestination(graphComboBox.getSelectionModel().getSelectedItem());
         });
-        graphComboBox.getSelectionModel().select(defaultDestination);
-        importController.setDestination(defaultDestination);
+        // Select null triggers the combobox to update to the correct value for
+        // some unknown reason. Removal will mean that the combobox will
+        // not keep it's state when a graph event occurs
+        // ClearSelection() did not work to fix this.
+        graphComboBox.getSelectionModel().select(null);
+        importController.setDestination(previousDestinationObject != null ? previousDestinationObject : defaultDestination);
     }
 }
