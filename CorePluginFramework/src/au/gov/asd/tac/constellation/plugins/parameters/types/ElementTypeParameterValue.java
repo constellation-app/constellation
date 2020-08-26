@@ -89,9 +89,7 @@ public class ElementTypeParameterValue extends ParameterValue {
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 41 * hash + Objects.hashCode(this.elementType);
-        return hash;
+        return 41 * 5 + Objects.hashCode(this.elementType);
     }
 
     @Override
