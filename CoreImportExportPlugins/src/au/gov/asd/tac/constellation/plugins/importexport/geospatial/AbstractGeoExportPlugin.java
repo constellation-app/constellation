@@ -157,7 +157,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                     final List<GraphAttributeParameterValue> attributeOptions = new ArrayList<>();
                     final ReadableGraph readableGraph = activeGraph.getReadableGraph();
                     try {
-                        ParameterValue pv = params.get(master.getId()).getSingleChoice();
+                        final ParameterValue pv = params.get(master.getId()).getSingleChoice();
                         assert(pv instanceof ElementTypeParameterValue);
                         final GraphElementType elementType = ((ElementTypeParameterValue) pv).getGraphElementType();
                         switch (elementType) {
