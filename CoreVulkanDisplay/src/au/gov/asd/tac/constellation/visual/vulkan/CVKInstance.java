@@ -194,7 +194,7 @@ public class CVKInstance {
         }                      
         VkDebugUtilsMessengerCallbackDataEXT callbackData = VkDebugUtilsMessengerCallbackDataEXT.create(pCallbackData);
         String callbackMsg = callbackData.pMessageString();
-        CVKGraphLogger.GetStaticLogger().log(level, "Validation layer: {0}", callbackMsg);
+        CVKGraphLogger.GetStaticLogger().log(level, "Validation layer: %s", callbackMsg);
         
         // This is an E for effort attempt to get something logged in the case
         // that Constellation/JVM is crashing to desktop.        

@@ -177,7 +177,7 @@ public class CVKFPSRenderable extends CVKRenderable {
     // TODO: Candidates to be moved to CVKRenderable
     private List<CVKBuffer> geometryUniformBuffers = null;
     private List<CVKBuffer> vertexBuffers = null;
-    private List<CVKCommandBuffer> commandBuffers = null;   
+    private List<CVKCommandBuffer> displayCommandBuffers = null;   
     private CVKBuffer cvkStagingBuffer = null;
     private CVKBuffer cvkGeomUBStagingBuffer = null;
    
@@ -533,7 +533,7 @@ public class CVKFPSRenderable extends CVKRenderable {
         CVKAssertNull(pDescriptorSets);
         CVKAssertNull(geometryUniformBuffers);
         CVKAssertNull(vertexBuffers);
-        CVKAssertNull(commandBuffers);
+        CVKAssertNull(displayCommandBuffers);
         CVKAssertNull(hVertexShaderModule);
         CVKAssertNull(hGeometryShaderModule);
         CVKAssertNull(hFragmentShaderModule);        
@@ -616,7 +616,7 @@ public class CVKFPSRenderable extends CVKRenderable {
             CVKAssertNull(pDescriptorSets);
             CVKAssertNull(geometryUniformBuffers);
             CVKAssertNull(vertexBuffers);
-            CVKAssertNull(commandBuffers);
+            CVKAssertNull(displayCommandBuffers);
             swapChainImageCountChanged = true;
          } 
         
@@ -890,21 +890,21 @@ public class CVKFPSRenderable extends CVKRenderable {
         int ret = VK_SUCCESS;
         int imageCount = cvkSwapChain.GetImageCount();
         
-        commandBuffers = new ArrayList<>(imageCount);
+        displayCommandBuffers = new ArrayList<>(imageCount);
 
         for (int i = 0; i < imageCount; ++i) {
             CVKCommandBuffer buffer = CVKCommandBuffer.Create(VK_COMMAND_BUFFER_LEVEL_SECONDARY, 
                                                               GetLogger(),
                                                               String.format("CVKFPSRenderable %d", i));
-            commandBuffers.add(buffer);
+            displayCommandBuffers.add(buffer);
         }
         
         return ret;
     }
     
     @Override
-    public VkCommandBuffer GetCommandBuffer(int imageIndex) {
-        return commandBuffers.get(imageIndex).GetVKCommandBuffer(); 
+    public VkCommandBuffer GetDisplayCommandBuffer(int imageIndex) {
+        return displayCommandBuffers.get(imageIndex).GetVKCommandBuffer(); 
     }    
     
     @Override
@@ -915,53 +915,35 @@ public class CVKFPSRenderable extends CVKRenderable {
         CVKAssertNotNull(cvkSwapChain);
                 
         int ret;
-        try (MemoryStack stack = stackPush()) {         
 
-            CVKCommandBuffer commandBuffer = commandBuffers.get(imageIndex);
-                     
-            commandBuffer.BeginRecordSecondary(VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT,
-                                                           inheritanceInfo);
-            
-	    // Set the dynamic viewport and scissor
-            commandBuffer.viewPortCmd(cvkSwapChain.GetWidth(), cvkSwapChain.GetHeight(), stack);
-            commandBuffer.scissorCmd(cvkVisualProcessor.GetCanvas().GetCurrentSurfaceExtent(), stack);
-            
-            commandBuffer.BindGraphicsPipelineCmd(pipelines.get(imageIndex));
-  
-            LongBuffer pVertexBuffers = stack.longs(vertexBuffers.get(imageIndex).GetBufferHandle());
-            LongBuffer offsets = stack.longs(0);
+        CVKCommandBuffer commandBuffer = displayCommandBuffers.get(imageIndex);
 
-            // Bind verts
-            vkCmdBindVertexBuffers(commandBuffer.GetVKCommandBuffer(), 0, pVertexBuffers, offsets);
+        ret = commandBuffer.BeginRecordSecondary(VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT,
+                                                       inheritanceInfo);
+        if (VkFailed(ret)) { return ret; }
 
-            // Bind descriptors
-            vkCmdBindDescriptorSets(commandBuffer.GetVKCommandBuffer(), 
-                                    VK_PIPELINE_BIND_POINT_GRAPHICS,
-                                    hPipelineLayout, 
-                                    0, 
-                                    stack.longs(pDescriptorSets.get(imageIndex)), 
-                                    null);
-            
-            // Push vars to vertex shader
-            commandBuffer.pushConstantsCmd(hPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, vertexPushConstants);
-           
-            vkCmdDraw(commandBuffer.GetVKCommandBuffer(),
-                      GetVertexCount(),  //number of verts == number of digits
-                      1,  //no instancing, but we must draw at least 1 point
-                      0,  //first vert index
-                      0); //first instance index (N/A)                         
-            ret = vkEndCommandBuffer(commandBuffer.GetVKCommandBuffer());
-            checkVKret(ret);
-        }
+        commandBuffer.SetViewPort(cvkSwapChain.GetWidth(), cvkSwapChain.GetHeight());
+        commandBuffer.SetScissor(cvkVisualProcessor.GetCanvas().GetCurrentSurfaceExtent());
+
+        commandBuffer.BindGraphicsPipeline(pipelines.get(imageIndex));
+        commandBuffer.BindVertexInput(vertexBuffers.get(imageIndex).GetBufferHandle());
+
+        commandBuffer.BindGraphicsDescriptorSets(hPipelineLayout, pDescriptorSets.get(imageIndex));
+        commandBuffer.PushConstants(hPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, vertexPushConstants);
+
+        commandBuffer.Draw(GetVertexCount());
+
+        ret = commandBuffer.FinishRecord();
+        if (VkFailed(ret)) { return ret; }
         
         return ret;
     }   
     
     private void DestroyCommandBuffers() {         
-        if (null != commandBuffers) {
-            commandBuffers.forEach(el -> {el.Destroy();});
-            commandBuffers.clear();
-            commandBuffers = null;
+        if (null != displayCommandBuffers) {
+            displayCommandBuffers.forEach(el -> {el.Destroy();});
+            displayCommandBuffers.clear();
+            displayCommandBuffers = null;
         }      
     }
     

@@ -68,8 +68,14 @@ import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.GetRequi
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.InitVKValidationLayers;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkSucceeded;
+import static org.lwjgl.vulkan.KHRSurface.vkDestroySurfaceKHR;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_FEATURE_BLIT_DST_BIT;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_FEATURE_BLIT_SRC_BIT;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_R8G8B8A8_UNORM;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_UNDEFINED;
 import static org.lwjgl.vulkan.VK10.vkDestroyCommandPool;
 import static org.lwjgl.vulkan.VK10.vkDestroyDevice;
+import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceFormatProperties;
 
 
 public class CVKDevice {
@@ -417,6 +423,34 @@ public class CVKDevice {
         return ret;
     }
 
+    public boolean CheckDeviceSupportsBlit(int sourceFormat, int destinationFormat) {
+        // Check and store if the device can perform blit image operations
+        boolean supportsBlit = true;
+
+        try (MemoryStack stack = stackPush()) {
+            // Check blit support for source and destination
+            // TODO HYDRA do this once and store result in cvkdevice
+            VkFormatProperties formatProps = VkFormatProperties.callocStack(stack);
+
+            // Check if the device supports blitting from optimal images (the swapchain images are in optimal format)
+            vkGetPhysicalDeviceFormatProperties(GetVkPhysicalDevice(), sourceFormat, formatProps);
+
+            if ((formatProps.optimalTilingFeatures() & VK_FORMAT_FEATURE_BLIT_SRC_BIT) == 0) {
+                    GetLogger().info("Device does not support blitting from optimal tiled images, using copy instead of blit!");
+                    supportsBlit = false;
+            }
+
+            // Check if the device supports blitting to linear images
+            vkGetPhysicalDeviceFormatProperties(GetVkPhysicalDevice(), destinationFormat, formatProps);
+            if ((formatProps.linearTilingFeatures() & VK_FORMAT_FEATURE_BLIT_DST_BIT) == 0) {
+                    GetLogger().info("Device does not support blitting to linear tiled images, using copy instead of blit!");
+                    supportsBlit = false;
+            }
+        }
+        
+        return supportsBlit;
+    }
+    
     /**
      * Create a logical device that gives us control over the physical device
      *

@@ -3,9 +3,14 @@
 #version 450
 
 
+// === PUSH CONSTANTS ===
+layout(std140, push_constant) uniform VertexPushConstant {
+    mat4 mvMatrix;
+}vpc;
+
+
 // === UNIFORMS ===
 layout(std140, binding = 0) uniform UniformBlock {
-    mat4 mvMatrix;
     float morphMix;
     float visibilityLow;
     float visibilityHigh;
@@ -48,5 +53,5 @@ void main(void) {
         gRadius = -1;
     }
 
-    gl_Position = ub.mvMatrix * vec4(mixedVertex, 1);
+    gl_Position = vpc.mvMatrix * vec4(mixedVertex, 1);
 }
