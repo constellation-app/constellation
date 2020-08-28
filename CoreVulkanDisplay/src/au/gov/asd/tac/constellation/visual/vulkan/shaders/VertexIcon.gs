@@ -11,8 +11,6 @@ const int ICON_BITS = 16;
 const int ICON_MASK = 0xffff;
 const int SELECTED_MASK = 1;
 const int DIM_MASK = 2;
-const float TEXTURE_SIZE = 0.125;
-const float HALF_PIXEL = (0.5 / (256 * 8));
 const int HIGHLIGHT_ICON = 0;
 const int TRANSPARENT_ICON = 5;
 
@@ -36,9 +34,13 @@ layout(std140, push_constant) uniform HitTestPushConstant {
 
 // === UNIFORMS ===
 layout(std140, binding = 2) uniform UniformBlock {
-    mat4 pMatrix;
+    int iconsPerRowColumn;
+    int iconsPerLayer;
+    int atlas2DDimension;
+
     float pixelDensity;
     mat4 highlightColor;
+    mat4 pMatrix;            
 } ub;
 layout(binding = 3) uniform isamplerBuffer flags;
 
@@ -61,8 +63,10 @@ layout(location = 5) flat out vec4 hitBufferValue;
 
 
 // === FILE SCOPE VARS ===
-vec4 v;
+vec4 vert;
 vec4 hbv;
+float iconDimUVSpace; //the width and height of an icon in UV space, 0.0-1.0
+float halfPixel;
 
 
 // NOTE: this shader has been modified for Vulkan.  The uniforms need to be explicitly
@@ -78,38 +82,51 @@ void drawIcon(float x, float y, float radius, int icon, mat4 color) {
 
     if (icon != TRANSPARENT_ICON) {
 
-        vec3 iconOffset = vec3(float(icon & 7) / 8, float((icon >> 3) & 7) / 8, float(icon >> 6));
+/*  The shader needs to calculate texture coordinates that match the index in the texture, this
+    is the Java function that places icons:
+    public Vector3i IndexToTextureIndices(int index) {
+        return new Vector3i(index % iconsPerRowColumn,
+                            (index % iconsPerLayer) / iconsPerRowColumn,
+                            index / iconsPerLayer);     
+    }
+*/
+        int u = icon % ub.iconsPerRowColumn;
+        int v = (icon % ub.iconsPerLayer) / ub.iconsPerRowColumn;
+        int w = icon / ub.iconsPerLayer;
+        vec3 iconOffset = vec3(float(u) / float(ub.iconsPerRowColumn), 
+                               float(v) / float(ub.iconsPerRowColumn), 
+                               float(w));
 
         // Bottom Left
-        gl_Position = ub.pMatrix * vec4(v.x + x, v.y + y + radius, v.z, v.w);  
+        gl_Position = ub.pMatrix * vec4(vert.x + x, vert.y + y + radius, vert.z, vert.w);  
         gl_Position.y = -gl_Position.y;
         iconColor = color;
         hitBufferValue = hbv;
-        textureCoords = vec3(HALF_PIXEL, HALF_PIXEL, 0) + iconOffset;
+        textureCoords = vec3(halfPixel, halfPixel, 0) + iconOffset;
         EmitVertex();
 
         // Top Left
-        gl_Position = ub.pMatrix * vec4(v.x + x, v.y + y, v.z, v.w);
+        gl_Position = ub.pMatrix * vec4(vert.x + x, vert.y + y, vert.z, vert.w);
         gl_Position.y = -gl_Position.y;
         iconColor = color;
         hitBufferValue = hbv;
-        textureCoords = vec3(HALF_PIXEL, TEXTURE_SIZE - HALF_PIXEL, 0) + iconOffset;        
+        textureCoords = vec3(halfPixel, iconDimUVSpace - halfPixel, 0) + iconOffset;        
         EmitVertex();
 
         // Bottom Right      
-        gl_Position = ub.pMatrix * vec4(v.x + x + radius, v.y + y + radius, v.z, v.w);
+        gl_Position = ub.pMatrix * vec4(vert.x + x + radius, vert.y + y + radius, vert.z, vert.w);
         gl_Position.y = -gl_Position.y;
         iconColor = color;
         hitBufferValue = hbv;
-        textureCoords = vec3(TEXTURE_SIZE - HALF_PIXEL, HALF_PIXEL, 0) + iconOffset;        
+        textureCoords = vec3(iconDimUVSpace - halfPixel, halfPixel, 0) + iconOffset;        
         EmitVertex();
 
         // Top Right
-        gl_Position = ub.pMatrix * vec4(v.x + x + radius, v.y + y, v.z, v.w);  
+        gl_Position = ub.pMatrix * vec4(vert.x + x + radius, vert.y + y, vert.z, vert.w);  
         gl_Position.y = -gl_Position.y;      
         iconColor = color;
         hitBufferValue = hbv;
-        textureCoords = vec3(TEXTURE_SIZE - HALF_PIXEL, TEXTURE_SIZE - HALF_PIXEL, 0) + iconOffset;     
+        textureCoords = vec3(iconDimUVSpace - halfPixel, iconDimUVSpace - halfPixel, 0) + iconOffset;     
         EmitVertex();
 
         EndPrimitive();
@@ -117,6 +134,9 @@ void drawIcon(float x, float y, float radius, int icon, mat4 color) {
 }
 
 void main() {
+    // The atlas texture size can change as more icons are added so we need to do a little calculation
+    halfPixel = 0.5 / float(ub.atlas2DDimension);
+    iconDimUVSpace = 1.0 / float(ub.iconsPerRowColumn);
 
     // Nodes are explicitly not drawn if they have visibility <= 0.
     // See au.gov.asd.tac.constellation.visual.opengl.task.NodeHider.java.
@@ -126,7 +146,7 @@ void main() {
     if (sideRadius > 0) {
 
         // Get the position of the vertex
-        v = gl_in[0].gl_Position;
+        vert = gl_in[0].gl_Position;
 
         // Calculate the hit buffer value
         hbv = vec4(gData[0][3] + 1, 0, 0, 1);
@@ -140,16 +160,16 @@ void main() {
         if((fd & SELECTED_MASK) != 0) {
             // Set a minimum size for selected vertices.
             float ddist = 800;
-            if(v.z < -ddist) {
-                sideRadius *= 1 - ((ddist+v.z)/ddist);
+            if(vert.z < -ddist) {
+                sideRadius *= 1 - ((ddist+vert.z)/ddist);
             }
 
-            v.z += 0.001;
+            vert.z += 0.001;
         }
 
         int bgIcon = (gData[0][0] >> ICON_BITS) & ICON_MASK;
 
-        float iconPixelRadius = sideRadius * ub.pixelDensity / -v.z;
+        float iconPixelRadius = sideRadius * ub.pixelDensity / -vert.z;
         if (iconPixelRadius < 1 && bgIcon != TRANSPARENT_ICON) {
             mat4 backgroundIconColor = gBackgroundIconColor[0];
             backgroundIconColor[3][3] = max(smoothstep(0.0, 1.0, iconPixelRadius), 0.7);

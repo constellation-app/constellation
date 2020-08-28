@@ -100,7 +100,7 @@ public class CVKCommandBuffer {
         if (vkCommandBuffer != null) {
             if (CVK_DEBUGGING) {
                 --CVK_VKALLOCATIONS;
-                GetLogger().info("CVK_VKALLOCATIONS(%d-) vkFreeCommandBuffers for %s 0x%016X", 
+                GetLogger().fine("CVK_VKALLOCATIONS(%d-) vkFreeCommandBuffers for %s 0x%016X", 
                         CVK_VKALLOCATIONS, DEBUGNAME, vkCommandBuffer.address());                
             }             
             
@@ -398,7 +398,7 @@ public class CVKCommandBuffer {
             if (CVK_DEBUGGING) {
                 cvkCommandBuffer.DEBUGNAME = debugName;
                 ++CVK_VKALLOCATIONS;
-                cvkCommandBuffer.GetLogger().info("CVK_VKALLOCATIONS(%d+) vkAllocateCommandBuffers for %s 0x%016X", 
+                cvkCommandBuffer.GetLogger().fine("CVK_VKALLOCATIONS(%d+) vkAllocateCommandBuffers for %s 0x%016X", 
                         CVK_VKALLOCATIONS, cvkCommandBuffer.DEBUGNAME, cvkCommandBuffer.vkCommandBuffer.address());                
             }              
         }

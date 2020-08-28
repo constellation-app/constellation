@@ -89,9 +89,11 @@ public class CVKDevice {
     private long hCommandPool = VK_NULL_HANDLE; 
     private int queueFamilyIndex = -1;     
     private final VkExtent2D vkMaxFramebufferExtent = VkExtent2D.malloc().set(0, 0);
-    private long max1DImageWidth = 0;
-    private long maxImageLayers = 0;
-    private long maxTexelBufferElements = 0;    
+    private int max1DImageWidth = 0;
+    private int max2DDimension = 0;
+    private int maxImageLayers = 0;
+    private int maxTexelBufferElements = 0;   
+    private int minUniformBufferAlignment = 1;
     
     
     // ========================> Getters <======================== \\
@@ -101,9 +103,11 @@ public class CVKDevice {
     public static VkPhysicalDevice GetVkPhysicalDevice() { return GetInstance().vkPhysicalDevice; }
     public static VkQueue GetVkQueue() { return GetInstance().vkQueue; }
     public static VkExtent2D GetMaxFrameBufferExtent() { return GetInstance().vkMaxFramebufferExtent; }
-    public static long GetMax1DImageWidth() { return GetInstance().max1DImageWidth; }
-    public static long GetMaxImageLayers() { return GetInstance().maxImageLayers; }
-    public static long GetMaxTexelBufferElements() { return GetInstance().maxTexelBufferElements; }
+    public static int GetMax1DImageWidth() { return GetInstance().max1DImageWidth; }
+    public static int GetMax2DDimension()  { return GetInstance().max2DDimension; }
+    public static int GetMaxImageLayers()  { return GetInstance().maxImageLayers; }
+    public static int GetMaxTexelBufferElements() { return GetInstance().maxTexelBufferElements; }
+    public static int GetMinUniformBufferAlignment() { return GetInstance().minUniformBufferAlignment; }
     private CVKGraphLogger GetLogger() { return CVKGraphLogger.GetStaticLogger(); }
     
     
@@ -333,8 +337,10 @@ public class CVKDevice {
 
             VkPhysicalDeviceLimits limits = vkPhysicalDeviceProperties.limits();
             max1DImageWidth = limits.maxImageDimension1D();
+            max2DDimension  = limits.maxImageDimension2D();
             maxImageLayers  = limits.maxImageArrayLayers();
             maxTexelBufferElements = limits.maxTexelBufferElements();
+            minUniformBufferAlignment = (int)limits.minUniformBufferOffsetAlignment();
             vkMaxFramebufferExtent.set(limits.maxFramebufferWidth(), limits.maxFramebufferHeight());             
             
             if (CVK_DEBUGGING) {                
