@@ -123,7 +123,7 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
     }
 
     @Override
-    public void updateParameters(Graph graph, PluginParameters parameters) {
+    public void updateParameters(final Graph graph, final PluginParameters parameters) {
         if (parameters != null && parameters.getParameters() != null && !parameters.getParameters().get(DUPLICATE_TRANSACTIONS_PARAMETER_ID).getBooleanValue()) {
             final List<String> types = new ArrayList<>();
             if (graph != null && graph.getSchema() != null) {
@@ -173,7 +173,7 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
 
         // Add Transactions
         if (splitIntoSameLevel) {
-            int transactionCount = graph.getVertexTransactionCount(selectedNode);
+            final int transactionCount = graph.getVertexTransactionCount(selectedNode);
             for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
                 final int originalTransactionId = graph.getVertexTransaction(selectedNode, transactionPosition);
 
@@ -191,7 +191,7 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
                 }
 
                 //Loops through all the transaction attributes and copy them to the new transaction
-                int transactionAttributeCount = graph.getAttributeCount(GraphElementType.TRANSACTION);
+                final int transactionAttributeCount = graph.getAttributeCount(GraphElementType.TRANSACTION);
                 for (int transactionAttributePosition = 0; transactionAttributePosition < transactionAttributeCount; transactionAttributePosition++) {
                     final int transactionAttributeId = graph.getAttribute(GraphElementType.TRANSACTION, transactionAttributePosition);
                     final String transactionAttributeName = graph.getAttributeName(transactionAttributeId);

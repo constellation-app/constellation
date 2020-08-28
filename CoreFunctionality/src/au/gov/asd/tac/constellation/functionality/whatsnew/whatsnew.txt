@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
+== 2020-08-28 Split Nodes Plugin
+<p>A new option is added to split nodes with duplicate transactions.</p>
+
 == 2020-08-06 Quality Control Categories
 <p>The Quality Control View now ranks and lists the quality of an element as a category instead of a score. This is also implemented in the Data Access View.</p>
 <p>Categories can be mapped to each individual rule through the Quality Control View</p>
