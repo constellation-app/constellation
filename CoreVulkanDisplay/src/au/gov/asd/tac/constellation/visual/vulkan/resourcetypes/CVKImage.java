@@ -923,10 +923,9 @@ public class CVKImage {
 
             // Save to file
             ImageIO.write(image, "png", file);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
-//            cvkDevice.GetLogger().LogException(e, String.format("Save file failed: %s", file.getName()));
+            GetLogger().LogException(e, String.format("Save file failed: %s", file.getName()));
             return CVK_ERROR_SAVE_TO_FILE_FAILED;
         }
 

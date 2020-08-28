@@ -133,14 +133,14 @@ public class CVKVisualProcessor extends VisualProcessor {
             cvkCanvas.AddRenderable(cvkHitTester);  
             cvkAxes = new CVKAxesRenderable(this);
             cvkCanvas.AddRenderable(cvkAxes);
-            cvkFPS = new CVKFPSRenderable(this);    
-            cvkCanvas.AddRenderable(cvkFPS);
             cvkIcons = new CVKIconsRenderable(this);
             cvkCanvas.AddRenderable(cvkIcons);
             cvkLabels = new CVKLabelsRenderable(this);
             cvkCanvas.AddRenderable(cvkLabels);
             cvkPoints = new CVKPointsRenderable(this);   
             cvkCanvas.AddRenderable(cvkPoints);
+            cvkFPS = new CVKFPSRenderable(this);    
+            cvkCanvas.AddRenderable(cvkFPS);            
         } catch (Exception e) {
             cvkLogger.LogException(e, "Exception raised constructing CVKVisualProcessor %s", graphId);
             throw e;

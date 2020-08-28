@@ -29,7 +29,6 @@ import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAsser
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssertNotNull;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssertNull;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
-import java.awt.image.DataBufferByte;
 import java.nio.ByteBuffer;
 import java.nio.LongBuffer;
 import java.util.ArrayList;
@@ -60,26 +59,25 @@ import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkCreateSampler;
 import static org.lwjgl.vulkan.VK10.vkDestroySampler;
 import org.lwjgl.vulkan.VkSamplerCreateInfo;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_DEBUGGING;
 import java.io.File;
+import static org.lwjgl.system.MemoryUtil.memAlloc;
+import static org.lwjgl.system.MemoryUtil.memFree;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
 
 
 public class CVKIconTextureAtlas {
     private static CVKIconTextureAtlas cvkIconTextureAtlas = null;
     
-    public static final int ICON_WIDTH = 256;
-    public static final int ICON_HEIGHT = 256;
+    public static final int ICON_DIMENSION = 256;
     public static final int ICON_COMPONENTS = 4; //ARGB, 1 byte each
-    public static final int ICON_SIZE_PIXELS = ICON_WIDTH * ICON_HEIGHT;    
+    public static final int ICON_SIZE_PIXELS = ICON_DIMENSION * ICON_DIMENSION;    
     public static final int ICON_SIZE_BYTES = ICON_SIZE_PIXELS * ICON_COMPONENTS;
     
-    public static int textureWidth = 2048; //copied from JOGL but should be calculated, will mean adding more params to UBOs
-    public static int textureHeight = 2048;      
-    public static int iconsPerLayer = 0;
-    public static int iconsPerRow = 0;
-    public static int rowsPerLayer = 0;
-    public static int textureLayers = 1;
+    // Calculated once the device limits are known
+    public int texture2DDimension = 0;  
+    public int iconsPerLayer      = 0;
+    public int iconsPerRowColumn  = 0;
+    private int maxIcons          = Short.MAX_VALUE; //TODO: how do we handle the icons getting populated before texture limits are known?
     
     // These icons must be permanently present at these pre-defined indexes.
     // The shaders expect them to be there.
@@ -105,12 +103,11 @@ public class CVKIconTextureAtlas {
     
     // Instance members
     private CVKImage cvkAtlasImage = null;
+    private CVKBuffer cvkStagingBuffer = null;
     private long hAtlasSampler = VK_NULL_HANDLE;
     private final LinkedHashMap<String, Integer> loadedIcons = new LinkedHashMap<>();
-    private int maxIcons = Short.MAX_VALUE; //replace this with a calculated value
     private int lastTransferedIconCount = 0;
     private boolean needsSaveToFile = false;
-    private boolean needsAtlasRebuilt = false;
     private File fileToSave = null;
     
     
@@ -122,10 +119,7 @@ public class CVKIconTextureAtlas {
         public final ConstellationIcon icon;
         IndexedConstellationIcon(int index, ConstellationIcon icon) {
             this.index = index;
-            this.icon = icon;     
-            CVKIconTextureAtlas.iconsPerRow = textureWidth/ICON_WIDTH;
-            CVKIconTextureAtlas.rowsPerLayer = textureHeight/ICON_HEIGHT;
-            CVKIconTextureAtlas.iconsPerLayer = CVKIconTextureAtlas.iconsPerRow * CVKIconTextureAtlas.rowsPerLayer;            
+            this.icon = icon;               
         }
     }
     
@@ -139,13 +133,14 @@ public class CVKIconTextureAtlas {
     public static CVKIconTextureAtlas GetInstance() {  
         if (cvkIconTextureAtlas == null) {
             cvkIconTextureAtlas = new CVKIconTextureAtlas();
-            cvkIconTextureAtlas.Initialise();
         }
         return cvkIconTextureAtlas;
     }
     
-    private CVKIconTextureAtlas() {
-        
+    private CVKIconTextureAtlas() {    
+
+
+
         // These icons are guaranteed to be in the iconMap in this order.
         // They must be at these pre-defined indices so other code (in particular the shaders) can use them.
         // See *_INDEX constants above.
@@ -153,9 +148,23 @@ public class CVKIconTextureAtlas {
             AddIcon(iconName);
         }            
     }
-
-    private int Initialise() { 
-        return CreateAtlas();
+    
+    private static int NextPowerOfTwo(int num) {
+        int highestOneBit = Integer.highestOneBit(num);
+        if (num == highestOneBit) {
+            return num;
+        }
+        return highestOneBit << 1;
+    }
+    
+    private static int CalcMinTextureDimension(final int iconDimension, final int numberOfIcons, final int maxTextureDimension) {
+        final int maxIconsPerDimension = maxTextureDimension / ICON_DIMENSION;
+        final int iconsPerDimension   = (int)(Math.ceil(Math.sqrt(numberOfIcons)));
+        if (iconsPerDimension < maxIconsPerDimension) {
+            return NextPowerOfTwo(iconsPerDimension * ICON_DIMENSION);            
+        } else {
+            return maxIconsPerDimension * ICON_DIMENSION;
+        }        
     }
     
     private int CreateAtlas() {
@@ -163,6 +172,15 @@ public class CVKIconTextureAtlas {
         CVKAssertNull(cvkAtlasImage);
         CVKAssertNull(hAtlasSampler);
         
+
+        texture2DDimension = CalcMinTextureDimension(ICON_DIMENSION, loadedIcons.size(), CVKDevice.GetMax2DDimension());
+        iconsPerRowColumn  = texture2DDimension / ICON_DIMENSION;
+        iconsPerLayer      = iconsPerRowColumn * iconsPerRowColumn; 
+        maxIcons           = iconsPerLayer * CVKDevice.GetMaxImageLayers();
+        GetLogger().info("Icon atlas will be %dx%d to accomodate %d icons:\n\t%d icons per dimension\n\t%d icons per layer\n\t%d maximum icons",
+                texture2DDimension, texture2DDimension, loadedIcons.size(), iconsPerRowColumn, iconsPerLayer, maxIcons);   
+
+                     
 //        final Set<String> iconNames = IconManager.getIconNames(false);
 //        CVKLOGGER.info("\n====ALL ICONS====");
 //        iconNames.forEach(el -> {CVKLOGGER.info(el);});
@@ -211,7 +229,6 @@ public class CVKIconTextureAtlas {
             Destroy();
             ret = CreateAtlas();
             if (VkFailed(ret)) { return ret; }
-            needsAtlasRebuilt = false;
         }
         
         return ret;
@@ -260,7 +277,7 @@ public class CVKIconTextureAtlas {
     }
     
     public int SaveToFile(File file) {
-        return cvkAtlasImage.SaveToFile(file);
+            return cvkAtlasImage.SaveToFile(file);
     }
     
     /**
@@ -308,8 +325,8 @@ public class CVKIconTextureAtlas {
      * @return vector of lookup indices
      */
     public Vector3i IndexToTextureIndices(int index) {
-        return new Vector3i(index % CVKIconTextureAtlas.iconsPerRow,
-                            (index % CVKIconTextureAtlas.iconsPerLayer) / CVKIconTextureAtlas.iconsPerRow,
+        return new Vector3i(index % iconsPerRowColumn,
+                            (index % iconsPerLayer) / iconsPerRowColumn,
                             index / iconsPerLayer);     
     }
     
@@ -321,7 +338,7 @@ public class CVKIconTextureAtlas {
         offset += texIndices.getX() * ICON_SIZE_BYTES;
         
         // add size of previous rows on this layer
-        offset += texIndices.getY() * iconsPerRow * ICON_SIZE_BYTES;
+        offset += texIndices.getY() * iconsPerRowColumn * ICON_SIZE_BYTES;
                 
         // add size of previous layers
         offset += texIndices.getZ() * iconsPerLayer * ICON_SIZE_BYTES;
@@ -347,9 +364,14 @@ public class CVKIconTextureAtlas {
         try (MemoryStack stack = stackPush()) {
             int requiredLayers = (icons.size() / iconsPerLayer) + 1;
             
+            if (cvkAtlasImage != null) {
+                cvkAtlasImage.Destroy();
+                cvkAtlasImage = null;
+            }
+            
             // Create destination image            
-            cvkAtlasImage = CVKImage.Create(textureWidth, 
-                                            textureHeight, 
+            cvkAtlasImage = CVKImage.Create(texture2DDimension, 
+                                            texture2DDimension, 
                                             requiredLayers,
                                             VK_FORMAT_R8G8B8A8_SRGB, //non-linear format to give more fidelity to the hues we are most able to perceive
                                             VK_IMAGE_VIEW_TYPE_2D_ARRAY, //regardless how how many layers are in the image, the shaders that use that atlas use a sampler2DArray
@@ -365,14 +387,17 @@ public class CVKIconTextureAtlas {
             if (VkFailed(ret)) { return ret; }
 
             // As icons have a maximum size we can use a single staging buffer to copy each one
-            CVKBuffer cvkStagingBuffer = CVKBuffer.Create(ICON_SIZE_BYTES, 
-                                                          VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-                                                          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-                                                          null,
-                                                          "CVKIconTextureAtlas cvkStagingBuffer");           
+            if (cvkStagingBuffer == null) {
+                cvkStagingBuffer = CVKBuffer.Create(ICON_SIZE_BYTES, 
+                                                    VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                                                    VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                                                    null,
+                                                    "CVKIconTextureAtlas cvkStagingBuffer");
+            }
             
             // Loop that copies icons from the icon manager into the atlas texture(s)
             int numIcons = icons.size();
+            ByteBuffer pixels = null;
             for (int iIcon = 0; iIcon < numIcons; ++iIcon) {
                 IndexedConstellationIcon el = icons.get(iIcon);
                 BufferedImage iconImage = el.icon.buildBufferedImage();                   
@@ -385,34 +410,44 @@ public class CVKIconTextureAtlas {
                 }     
                 int width = iconImage.getWidth();
                 int height = iconImage.getHeight();
-                CVKAssert(width <= ICON_WIDTH);
-                CVKAssert(height <= ICON_HEIGHT);
-                
-                // Get pixel data into a direct buffer
-                ByteBuffer pixels = ByteBuffer.wrap(((DataBufferByte) iconImage.getRaster().getDataBuffer()).getData());
-                if (CVK_DEBUGGING) {
-                    if (IsEmpty(pixels) && el.index != TRANSPARENT_ICON_INDEX) {
-                        final String iconName = icons.get(el.index).icon.getExtendedName();
-                        GetLogger().warning(String.format("Icon %d (%s) is empty", el.index, iconName));
+                CVKAssert(width  <= ICON_DIMENSION);
+                CVKAssert(height <= ICON_DIMENSION);
+                               
+                final int iconSizeBytes = ICON_COMPONENTS * width * height;
+                if (pixels == null || pixels.capacity() != iconSizeBytes) {
+                    if (pixels != null) {
+                        memFree(pixels);
                     }
-                }
+                    pixels = memAlloc(iconSizeBytes);
+                }               
                 
-                // To save us having to swizzle with ever render, do it now (ABGR->RGBA, AWT what were you thinking?)
-                for (int i = 0; i < pixels.capacity(); i+=4) {
-                    byte a = pixels.get(i);
-                    byte b = pixels.get(i+1);
-                    
-                    // swap alpha and red
-                    pixels.put(i, pixels.get(i+3));
-                    pixels.put(i+3, a);
-                    
-                    // swap blue and green
-                    pixels.put(i+1, pixels.get(i+2));
-                    pixels.put(i+2, b);             
-                }
+                // To save us having to swizzle with every render, do it now (ABGR->RGBA, AWT what were you thinking?)
+                for (int v = 0; v < height; ++v) {
+                    for (int u = 0; u < width; ++u) {
+                        int agbr   = 0;
+                        try {
+                            
+                            agbr = iconImage.getRGB(u, v);
+                        } catch(Exception e) {
+                            agbr = 0;
+                        }
+
+                        Object o = iconImage.getRaster().getDataElements(u, v, null);
+                        final byte r = (byte) iconImage.getColorModel().getRed(o);
+                        final byte g = (byte) iconImage.getColorModel().getGreen(o);
+                        final byte b = (byte) iconImage.getColorModel().getBlue(o);
+                        final byte a = (byte) iconImage.getColorModel().getAlpha(o);
+                        final int offset = ICON_COMPONENTS * (u + width * v);
+                        pixels.put(offset,   r);//(byte) (agbr&0x000000FF));
+                        pixels.put(offset+1, g);//(byte)((agbr&0x00FF0000)>>16));
+                        pixels.put(offset+2, b);//(byte)((agbr&0x0000FF00)>>8));
+                        pixels.put(offset+3, a);//(byte) (agbr>>24));                             
+                    }                                      
+                }                  
+
                              
                 // Copy pixels, note for undersized icons we need extra offsets to pad the top and sides                    
-                if (width == ICON_WIDTH && height == ICON_HEIGHT) {
+                if (width == ICON_DIMENSION && height == ICON_DIMENSION) {
                     CVKAssert(pixels.capacity() == ICON_SIZE_BYTES);
                     cvkStagingBuffer.Put(pixels, 0, 0, ICON_SIZE_BYTES);
                 } else {
@@ -420,14 +455,14 @@ public class CVKIconTextureAtlas {
                     cvkStagingBuffer.ZeroMemory();     
                     
                     // Offsets to centre the icon are in pixels
-                    int colOffset = (ICON_WIDTH - width) / 2;
-                    int rowOffset = (ICON_HEIGHT - height) / 2;
+                    int colOffset = (ICON_DIMENSION - width) / 2;
+                    int rowOffset = (ICON_DIMENSION - height) / 2;
                     
                     // Adjust the start position to the right row
                     for (int iRow = 0; iRow < height; ++iRow) {       
                         // offset to the start of this row
-                        int writePos = (iRow + rowOffset) * ICON_WIDTH * ICON_COMPONENTS;
-                        CVKAssert(((iRow + rowOffset + 1) * ICON_WIDTH * ICON_COMPONENTS) <= ICON_SIZE_BYTES);
+                        int writePos = (iRow + rowOffset) * ICON_DIMENSION * ICON_COMPONENTS;
+                        CVKAssert(((iRow + rowOffset + 1) * ICON_DIMENSION * ICON_COMPONENTS) <= ICON_SIZE_BYTES);
                         
                         // offset from the start of the row to the start of the icon
                         writePos += colOffset * ICON_COMPONENTS;
@@ -443,14 +478,18 @@ public class CVKIconTextureAtlas {
                 // Copy it in.  Note this is blocking.  If this is highlighted as a performance issue use the
                 // add a version of CVKImage.CopyFrom that takes a command buffer but doesn't submit it and
                 // doesn't do any image layout transitions.                
-                Vector3i dstOffset = new Vector3i(texIndices.getU() * ICON_WIDTH, texIndices.getV() * ICON_HEIGHT, texIndices.getW());
-                Vector3i dstExtent = new Vector3i(ICON_WIDTH, ICON_HEIGHT, 1);
+                Vector3i dstOffset = new Vector3i(texIndices.getU() * ICON_DIMENSION, texIndices.getV() * ICON_DIMENSION, texIndices.getW());
+                Vector3i dstExtent = new Vector3i(ICON_DIMENSION, ICON_DIMENSION, 1);
+                
+                GetLogger().info("Icon %d copying into %s", iIcon, dstOffset);
+
+                
                 ret = cvkAtlasImage.CopyFrom(cvkStagingBuffer, 0, dstOffset, dstExtent);
                 if (VkFailed(ret)) { return ret; }                  
             }
-            
-            // Finished staging so destroy the staging buffer
-            cvkStagingBuffer.Destroy();
+            if (pixels != null) {
+                memFree(pixels);
+            }
             
             // Now the image is populated, transition it for reading
             ret = cvkAtlasImage.Transition(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);

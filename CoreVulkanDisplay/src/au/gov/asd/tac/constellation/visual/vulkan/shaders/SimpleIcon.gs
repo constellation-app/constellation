@@ -10,7 +10,6 @@
 const int ICON_BITS = 16;
 const int ICON_MASK = 0xffff;
 const float TEXTURE_SIZE = 0.125;
-const float HALF_PIXEL = (0.5 / (256 * 8));
 const int TRANSPARENT_ICON = 5;
 const mat4 IDENTITY_MATRIX = mat4(
     1, 0, 0, 0,
@@ -25,6 +24,9 @@ layout(std140, binding = 0) uniform UniformBlock {
     mat4 pMatrix;
     float pixelDensity;
     float pScale;
+    int iconsPerRowColumn;
+    int iconsPerLayer;
+    int atlas2DDimension;
 } ub;
 
 
@@ -42,7 +44,9 @@ layout(location = 4) noperspective centroid out vec3 textureCoords;
 
 
 // === FILE SCOPE VARS ===
-vec4 v;
+vec4 vert;
+float iconDimUVSpace; //the width and height of an icon in UV space, 0.0-1.0
+float halfPixel;
 
 
 /*
@@ -65,30 +69,43 @@ V Y
 void drawIcon(float x, float y, float radius, int icon, mat4 color) {
     if (icon != TRANSPARENT_ICON) {
 
-        vec3 iconOffset = vec3(float(icon & 7) / 8, float((icon >> 3) & 7) / 8, float(icon >> 6));
+/*  The shader needs to calculate texture coordinates that match the index in the texture, this
+    is the Java function that places icons:
+    public Vector3i IndexToTextureIndices(int index) {
+        return new Vector3i(index % iconsPerRowColumn,
+                            (index % iconsPerLayer) / iconsPerRowColumn,
+                            index / iconsPerLayer);     
+    }
+*/
+        int u = icon % ub.iconsPerRowColumn;
+        int v = (icon % ub.iconsPerLayer) / ub.iconsPerRowColumn;
+        int w = icon / ub.iconsPerLayer;
+        vec3 iconOffset = vec3(float(u) / float(ub.iconsPerRowColumn), 
+                               float(v) / float(ub.iconsPerRowColumn), 
+                               float(w));
 
         // Top left
-        gl_Position = v + (ub.pScale * ub.pMatrix * vec4(x, y, 0, 0));
+        gl_Position = vert + (ub.pScale * ub.pMatrix * vec4(x, y, 0, 0));
         iconColor = color;
-        textureCoords = vec3(TEXTURE_SIZE - HALF_PIXEL, TEXTURE_SIZE - HALF_PIXEL, 0) + iconOffset;        
+        textureCoords = vec3(iconDimUVSpace - halfPixel, iconDimUVSpace - halfPixel, 0) + iconOffset;        
         EmitVertex();
 
         // Bottom left
-        gl_Position = v + (ub.pScale * ub.pMatrix * vec4(x, y + radius, 0, 0));
+        gl_Position = vert + (ub.pScale * ub.pMatrix * vec4(x, y + radius, 0, 0));
         iconColor = color;
-        textureCoords = vec3(TEXTURE_SIZE - HALF_PIXEL, HALF_PIXEL, 0) + iconOffset;        
+        textureCoords = vec3(iconDimUVSpace - halfPixel, halfPixel, 0) + iconOffset;        
         EmitVertex();
 
         // Top right
-        gl_Position = v + (ub.pScale * ub.pMatrix * vec4(x + radius, y, 0, 0));
+        gl_Position = vert + (ub.pScale * ub.pMatrix * vec4(x + radius, y, 0, 0));
         iconColor = color;
-        textureCoords = vec3(HALF_PIXEL, TEXTURE_SIZE - HALF_PIXEL, 0) + iconOffset;
+        textureCoords = vec3(halfPixel, iconDimUVSpace - halfPixel, 0) + iconOffset;
         EmitVertex();
 
         // Bottom right
-        gl_Position = v + (ub.pScale * ub.pMatrix * vec4(x + radius, y + radius, 0, 0));
+        gl_Position = vert + (ub.pScale * ub.pMatrix * vec4(x + radius, y + radius, 0, 0));
         iconColor = color;
-        textureCoords = vec3(HALF_PIXEL, HALF_PIXEL, 0) + iconOffset;      
+        textureCoords = vec3(halfPixel, halfPixel, 0) + iconOffset;      
         EmitVertex();
 
         EndPrimitive();
@@ -99,12 +116,15 @@ void main() {
     float sideRadius = gRadius[0];
     if (sideRadius > 0) {
 
+        halfPixel = 0.5 / float(ub.atlas2DDimension);
+        iconDimUVSpace = 1.0 / float(ub.iconsPerRowColumn);
+
         // Get the position of the vertex
-        v = gl_in[0].gl_Position;
+        vert = gl_in[0].gl_Position;
 
         int bgIcon = (gData[0][0] >> ICON_BITS) & ICON_MASK;
 
-        float iconPixelRadius = sideRadius * ub.pixelDensity / -v.z;
+        float iconPixelRadius = sideRadius * ub.pixelDensity / -vert.z;
         if (iconPixelRadius < 1 && bgIcon != TRANSPARENT_ICON) {
             mat4 backgroundIconColor = gBackgroundIconColor[0];
             backgroundIconColor[3][3] = max(smoothstep(0.0, 1.0, iconPixelRadius), 0.7);

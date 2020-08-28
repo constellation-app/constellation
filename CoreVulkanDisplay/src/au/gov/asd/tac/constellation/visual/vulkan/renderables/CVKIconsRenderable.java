@@ -176,8 +176,6 @@ public class CVKIconsRenderable extends CVKRenderable{
     
     private static final int ICON_BITS = 16;
     private static final int ICON_MASK = 0xffff;
-    private static final int POSITION_STRIDE = 8 * Float.BYTES;
-    private static final int FLAGS_STRIDE = Byte.BYTES;
     public static final int SELECTED_BIT = 1;
     public static final int DIMMED_BIT = 2;
     
@@ -326,7 +324,7 @@ public class CVKIconsRenderable extends CVKRenderable{
         private Vector4f backgroundIconColour = new Vector4f();
         private Vector4i data = new Vector4i();
         
-        public Vertex() {}
+        private Vertex() {}
 
         public Vertex(Vector4i inData, Vector4f inColour) {
             data = inData;
@@ -458,29 +456,69 @@ public class CVKIconsRenderable extends CVKRenderable{
             buffer.putFloat(visibilityLow);
             buffer.putFloat(visibilityHigh);
         }         
-    }
+    }      
     
-    private static class GeometryUniformBufferObject {
-        private static final int SIZEOF = 16 * Float.BYTES + 1 * Float.BYTES + 16 * Float.BYTES + 1 * Integer.BYTES;
-
-        public final Matrix44f pMatrix = new Matrix44f();
-        public float pixelDensity = 0;
-        public final Matrix44f highlightColor = Matrix44f.identity();
-        public int drawHitTest = 0;           
+    private static class GeometryUniformBufferObject {                                           
+        private int iconsPerRowColumn;
+        private int iconsPerLayer;
+        private int atlas2DDimension;
+        private int drawHitTest = 0;  
+        private float pixelDensity = 0;
+        private final Matrix44f highlightColor = Matrix44f.identity();
+        private final Matrix44f pMatrix = new Matrix44f();    
+        private static Integer padding = null;
         
-        private void CopyTo(ByteBuffer buffer) {
-            for (int iRow = 0; iRow < 4; ++iRow) {
-                for (int iCol = 0; iCol < 4; ++iCol) {
-                    buffer.putFloat(pMatrix.get(iRow, iCol));
-                }
+        
+        private static int SizeOf() {
+            if (padding == null) {
+                CVKAssertNotNull(CVKDevice.GetVkDevice()); 
+                final int minAlignment = CVKDevice.GetMinUniformBufferAlignment();
+                
+                // The matrices are 64 bytes each so should line up on a boundary (unless the minimum alignment is huge)
+                CVKAssert(minAlignment <= (16 * Float.BYTES));
+
+                int sizeof = 1 * Integer.BYTES + // iconsPerRowColumn
+                             1 * Integer.BYTES + // iconsPerLayer
+                             1 * Integer.BYTES + // atlas2DDimension
+                             1 * Integer.BYTES + // drawHitTest
+                             1 * Float.BYTES;    // pixelDensity    
+
+                final int overrun = sizeof % minAlignment;
+                padding = Integer.valueOf(overrun > 0 ? minAlignment - overrun : 0);             
             }
+            
+            return       1 * Integer.BYTES + // iconsPerRowColumn
+                         1 * Integer.BYTES + // iconsPerLayer
+                         1 * Integer.BYTES + // atlas2DDimension
+                         1 * Integer.BYTES + // drawHitTest
+                         1 * Float.BYTES   + // pixelDensity    
+                         padding +
+                         16 * Float.BYTES + // highlightColor
+                         16 * Float.BYTES;  // pMatrix
+        }
+        
+        private void CopyTo(ByteBuffer buffer) {                        
+            buffer.putInt(iconsPerRowColumn);
+            buffer.putInt(iconsPerLayer);
+            buffer.putInt(atlas2DDimension);
+            buffer.putInt(drawHitTest);
             buffer.putFloat(pixelDensity);
+            
+            for (int i = 0; i < padding; ++i) {
+                buffer.put((byte)0);
+            }
+                        
             for (int iRow = 0; iRow < 4; ++iRow) {
                 for (int iCol = 0; iCol < 4; ++iCol) {
                     buffer.putFloat(highlightColor.get(iRow, iCol));
                 }
-            }            
-            buffer.putInt(drawHitTest);
+            }   
+            
+            for (int iRow = 0; iRow < 4; ++iRow) {
+                for (int iCol = 0; iCol < 4; ++iCol) {
+                    buffer.putFloat(pMatrix.get(iRow, iCol));
+                }
+            }         
         }         
     }  
     
@@ -620,7 +658,7 @@ public class CVKIconsRenderable extends CVKRenderable{
                                                     VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
                                                     GetLogger(),
                                                     "CVKIconsRenderable.CreateUBOStagingBuffers cvkVertexUBStagingBuffer");   
-        cvkGeometryUBStagingBuffer = CVKBuffer.Create(GeometryUniformBufferObject.SIZEOF,
+        cvkGeometryUBStagingBuffer = CVKBuffer.Create(GeometryUniformBufferObject.SizeOf(),
                                                       VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                                                       VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
                                                       GetLogger(),
@@ -1042,7 +1080,7 @@ public class CVKIconsRenderable extends CVKRenderable{
 
         geometryUniformBuffers = new ArrayList<>(); 
         for (int i = 0; i < cvkSwapChain.GetImageCount(); ++i) {   
-            CVKBuffer geometryUniformBuffer = CVKBuffer.Create(GeometryUniformBufferObject.SIZEOF,
+            CVKBuffer geometryUniformBuffer = CVKBuffer.Create(GeometryUniformBufferObject.SizeOf(),
                                                                VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
                                                                VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
                                                                GetLogger(),
@@ -1066,9 +1104,12 @@ public class CVKIconsRenderable extends CVKRenderable{
         geometryUBO.pixelDensity = cvkVisualProcessor.GetPixelDensity();
         geometryUBO.highlightColor.set(mtxHighlightColour);
         geometryUBO.drawHitTest = 0; // TODO: Hydra41 hit test
+        geometryUBO.iconsPerRowColumn = CVKIconTextureAtlas.GetInstance().iconsPerRowColumn;
+        geometryUBO.iconsPerLayer     = CVKIconTextureAtlas.GetInstance().iconsPerLayer;
+        geometryUBO.atlas2DDimension  = CVKIconTextureAtlas.GetInstance().texture2DDimension;        
         
         // Staging buffer so our VBO can be device local (most performant memory)
-        final int size = GeometryUniformBufferObject.SIZEOF;
+        final int size = GeometryUniformBufferObject.SizeOf();
         PointerBuffer pData = stack.mallocPointer(1);        
         
         // Map staging buffer into host (CPU) rw memory and copy our UBO into it
@@ -1454,7 +1495,7 @@ public class CVKIconsRenderable extends CVKRenderable{
         VkDescriptorBufferInfo.Buffer geometryUniformBufferInfo = VkDescriptorBufferInfo.callocStack(1, stack);
         // geometryBufferInfo.buffer is set per imageIndex
         geometryUniformBufferInfo.offset(0);
-        geometryUniformBufferInfo.range(GeometryUniformBufferObject.SIZEOF);      
+        geometryUniformBufferInfo.range(GeometryUniformBufferObject.SizeOf());      
         
         // Struct for texel buffer (vertex flags) used by VertexIcon.gs
         VkDescriptorBufferInfo.Buffer vertexFlagsTexelBufferInfo = VkDescriptorBufferInfo.callocStack(1, stack);

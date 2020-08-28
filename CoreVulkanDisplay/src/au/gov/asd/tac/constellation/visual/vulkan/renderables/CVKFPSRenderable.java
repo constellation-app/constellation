@@ -179,6 +179,7 @@ public class CVKFPSRenderable extends CVKRenderable {
     private List<CVKBuffer> vertexBuffers = null;
     private List<CVKCommandBuffer> commandBuffers = null;   
     private CVKBuffer cvkStagingBuffer = null;
+    private CVKBuffer cvkGeomUBStagingBuffer = null;
    
     // Cache image view and sampler handles so we know when they've been recreated
     // so we can recreate our descriptors
@@ -304,15 +305,41 @@ public class CVKFPSRenderable extends CVKRenderable {
     }
         
     private static class GeometryUniformBufferObject {
-        private static final int SIZEOF = (16 + 1 + 1) * Float.BYTES;
+        private final Matrix44f pMatrix = new Matrix44f();
+        private float pixelDensity = 0;
+        private float pScale = 0;        
+        private int iconsPerRowColumn;
+        private int iconsPerLayer;
+        private int atlas2DDimension;     
+        private static Integer padding = null;
+        
+        private static int SizeOf() {
+            if (padding == null) {
+                CVKAssertNotNull(CVKDevice.GetVkDevice()); 
+                final int minAlignment = CVKDevice.GetMinUniformBufferAlignment();
+                
+                // The matrices are 64 bytes each so should line up on a boundary (unless the minimum alignment is huge)
+                CVKAssert(minAlignment <= (16 * Float.BYTES));
 
-        public Matrix44f pMatrix;
-        public float pixelDensity = 0;
-        public float pScale = 0;        
+                int sizeof = 16 * Float.BYTES +   // pMatrix
+                              1 * Float.BYTES +   // pixelDensity
+                              1 * Float.BYTES +   // pScale
+                              1 * Integer.BYTES + // iconsPerRowColumn
+                              1 * Integer.BYTES + // iconsPerLayer
+                              1 * Integer.BYTES;  // atlas2DDimension  
 
-        public GeometryUniformBufferObject() {
-            pMatrix = new Matrix44f();
-        }
+                final int overrun = sizeof % minAlignment;
+                padding = Integer.valueOf(overrun > 0 ? minAlignment - overrun : 0);             
+            }
+            
+            return 16 * Float.BYTES +   // pMatrix
+                    1 * Float.BYTES +   // pixelDensity
+                    1 * Float.BYTES +   // pScale
+                    1 * Integer.BYTES + // iconsPerRowColumn
+                    1 * Integer.BYTES + // iconsPerLayer
+                    1 * Integer.BYTES + // atlas2DDimension  
+                    padding;
+        }            
         
         private void CopyTo(ByteBuffer buffer) {
             // TODO_TT: convert to a blat
@@ -323,6 +350,13 @@ public class CVKFPSRenderable extends CVKRenderable {
             }
             buffer.putFloat(pixelDensity);
             buffer.putFloat(pScale);
+            buffer.putInt(iconsPerRowColumn);
+            buffer.putInt(iconsPerLayer);
+            buffer.putInt(atlas2DDimension);
+            
+            for (int i = 0; i < padding; ++i) {
+                buffer.put((byte)0);
+            }            
         }             
     }    
     
@@ -604,6 +638,13 @@ public class CVKFPSRenderable extends CVKRenderable {
                                             GetLogger(),
                                             "CVKFPSRenderable cvkStagingBuffer");
         
+        size = GeometryUniformBufferObject.SizeOf();
+        cvkGeomUBStagingBuffer = CVKBuffer.Create(size,
+                                                  VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                                                  VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                                                  GetLogger(),
+                                                  "CVKFPSRenderable.cvkGeomUBStagingBuffer");          
+        
         return VK_SUCCESS;
     }
     
@@ -611,6 +652,10 @@ public class CVKFPSRenderable extends CVKRenderable {
         if (cvkStagingBuffer != null) {
             cvkStagingBuffer.Destroy();
             cvkStagingBuffer = null;
+        }
+        if (cvkGeomUBStagingBuffer != null) {
+            cvkGeomUBStagingBuffer.Destroy();
+            cvkGeomUBStagingBuffer = null;
         }
     }
     
@@ -717,16 +762,17 @@ public class CVKFPSRenderable extends CVKRenderable {
 
         geometryUniformBuffers = new ArrayList<>();        
         for (int i = 0; i < imageCount; ++i) {
-            CVKBuffer geomUniformBuffer = CVKBuffer.Create(GeometryUniformBufferObject.SIZEOF,
+            CVKBuffer geomUniformBuffer = CVKBuffer.Create(GeometryUniformBufferObject.SizeOf(),
                                                            VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
                                                            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
                                                            GetLogger(),
                                                            String.format("CVKFPSRenderable geomUniformBuffer %d", i));
             geometryUniformBuffers.add(geomUniformBuffer);            
         }
-        return UpdateUniformBuffers(stack);                
+
+        return UpdateUniformBuffers(stack);
     }
-        
+    
     private int UpdateUniformBuffers(MemoryStack stack) {
         CVKAssertNotNull(cvkSwapChain);
         
@@ -752,13 +798,31 @@ public class CVKFPSRenderable extends CVKRenderable {
         pxScale = calculateXProjectionScale(viewport);
         pyScale = calculateYProjectionScale(viewport);
         Graphics3DUtilities.moveByProjection(ZERO_3F, IDENTITY_44F, viewport, dx, dy, bottomRightCorner);
-
         
         // set the number of pixels per world unit at distance 1
-        geometryUBO.pixelDensity = cvkVisualProcessor.GetPixelDensity();
-        geometryUBO.pScale = pyScale;
-             
-        
+        geometryUBO.pixelDensity      = cvkVisualProcessor.GetPixelDensity();
+        geometryUBO.pScale            = pyScale;
+        geometryUBO.iconsPerRowColumn = CVKIconTextureAtlas.GetInstance().iconsPerRowColumn;
+        geometryUBO.iconsPerLayer     = CVKIconTextureAtlas.GetInstance().iconsPerLayer;
+        geometryUBO.atlas2DDimension  = CVKIconTextureAtlas.GetInstance().texture2DDimension;                      
+        geometryUBO.pMatrix.set(cvkVisualProcessor.GetProjectionMatrix());        
+
+        // Fill of the geometry uniform buffer
+        PointerBuffer pData = stack.mallocPointer(1);
+        int size = GeometryUniformBufferObject.SizeOf();
+        ret = vkMapMemory(CVKDevice.GetVkDevice(), cvkGeomUBStagingBuffer.GetMemoryBufferHandle(), 0, size, 0, pData);
+        if (VkFailed(ret)) { return ret; }
+        {
+            geometryUBO.CopyTo(pData.getByteBuffer(0, size));
+        }
+        vkUnmapMemory(CVKDevice.GetVkDevice(), cvkGeomUBStagingBuffer.GetMemoryBufferHandle());          
+                
+        // Copy the UBOs in VK buffers we can bind to a descriptor set  
+        final int imageCount = cvkSwapChain.GetImageCount(); 
+        for (int i = 0; i < imageCount; ++i) {                          
+            geometryUniformBuffers.get(i).CopyFrom(cvkGeomUBStagingBuffer);                                           
+        }           
+                     
         // LIFTED FROM FPSRenerable.display(...)
         // Initialise source data to sensible values   
         final Matrix44f scalingMatrix = new Matrix44f();
@@ -772,47 +836,19 @@ public class CVKFPSRenderable extends CVKRenderable {
                                                 bottomRightCorner.getY(), 
                                                 bottomRightCorner.getZ());
         vertexUBO.mvMatrix.multiply(translationMatrix, srMatrix);        
-                      
-                
+                                      
         // In the JOGL version these were in a static var CAMERA that never changed
         vertexUBO.visibilityLow = cvkVisualProcessor.getDisplayCamera().getVisibilityLow();
         vertexUBO.visibilityHigh = cvkVisualProcessor.getDisplayCamera().getVisibilityHigh();
         
         // Update the push constants data
         vertexUBO.CopyTo(vertexPushConstants);
-        vertexPushConstants.flip();
-
-        // Get the projection matrix from our cvkVisualProcessor
-        geometryUBO.pMatrix.set(cvkVisualProcessor.GetProjectionMatrix());
-        
-
-        // Fill of the geometry uniform buffer
-        PointerBuffer pData = stack.mallocPointer(1);
-        int size = GeometryUniformBufferObject.SIZEOF;
-        CVKBuffer cvkGeomUBStagingBuffer = CVKBuffer.Create(size,
-                                                            VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-                                                            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-                                                            GetLogger(),
-                                                            "CVKFPSRenderable.UpdateUniformBuffers cvkGeomUBStagingBuffer");  
-        ret = vkMapMemory(CVKDevice.GetVkDevice(), cvkGeomUBStagingBuffer.GetMemoryBufferHandle(), 0, size, 0, pData);
-        if (VkFailed(ret)) { return ret; }
-        {
-            geometryUBO.CopyTo(pData.getByteBuffer(0, size));
-        }
-        vkUnmapMemory(CVKDevice.GetVkDevice(), cvkGeomUBStagingBuffer.GetMemoryBufferHandle());          
-                
-        // Copy the UBOs in VK buffers we can bind to a descriptor set  
-        final int imageCount = cvkSwapChain.GetImageCount(); 
-        for (int i = 0; i < imageCount; ++i) {                          
-            geometryUniformBuffers.get(i).CopyFrom(cvkGeomUBStagingBuffer);                                           
-        }
-        cvkGeomUBStagingBuffer.Destroy();
+        vertexPushConstants.flip();        
 
         return ret;
-    }
+    }    
     
-    private void DestroyUniformBuffers() {
-        
+    private void DestroyUniformBuffers() {        
         if (geometryUniformBuffers != null) {
             geometryUniformBuffers.forEach(el -> {el.Destroy();});
             geometryUniformBuffers = null;
@@ -1025,7 +1061,7 @@ public class CVKFPSRenderable extends CVKRenderable {
         // Struct for the size of the uniform buffer used by SimpleIcon.gs (we fill the actual buffer below)
         VkDescriptorBufferInfo.Buffer geometryUniformBufferInfo = VkDescriptorBufferInfo.callocStack(1, stack);
         geometryUniformBufferInfo.offset(0);
-        geometryUniformBufferInfo.range(GeometryUniformBufferObject.SIZEOF);      
+        geometryUniformBufferInfo.range(GeometryUniformBufferObject.SizeOf());      
 
         // Struct for the size of the image sampler used by SimpleIcon.fs
         VkDescriptorImageInfo.Buffer imageInfo = VkDescriptorImageInfo.callocStack(1, stack);
@@ -1396,10 +1432,11 @@ public class CVKFPSRenderable extends CVKRenderable {
         // We only need to update descriptors if the atlas has generated a new texture
         if (atlasChanged) {
             try (MemoryStack stack = stackPush()) {
+                ret = UpdateUniformBuffers(stack);
+                if (VkFailed(ret)) { return ret; }
+                
                 ret = UpdateDescriptorSets(stack);
-                if (VkFailed(ret)) {
-                    return ret;
-                }                               
+                if (VkFailed(ret)) { return ret; }
             }           
         }
         

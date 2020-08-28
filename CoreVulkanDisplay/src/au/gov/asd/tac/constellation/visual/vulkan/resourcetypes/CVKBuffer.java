@@ -180,7 +180,11 @@ public class CVKBuffer {
                 } else if (desc.type == Integer.TYPE) {
                     final int d = pData.getInt();
                     GetLogger().info(String.format("\tidx %d\t%s:\t%d", idx, desc.label, d));
-                }else {
+                } else if (desc.type == Byte.TYPE) {
+                    // Assume we want to treat bytes as unsigned
+                    final int b = pData.get() & 0xff;
+                    GetLogger().info(String.format("\tidx %d\t%s:\t%d", idx, desc.label, b));                    
+                } else {
                     GetLogger().info(String.format("CVKBuffer.DEBUGPRINT cannot handle type <%s>", desc.type.getName()));
                     break;
                 }
