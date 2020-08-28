@@ -20,12 +20,19 @@ import au.gov.asd.tac.constellation.graph.hittest.HitState.HitType;
 import au.gov.asd.tac.constellation.graph.hittest.HitTestRequest;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDescriptorPool.CVKDescriptorPoolRequirements;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
+import static au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableResourceState.CVK_RESOURCE_CLEAN;
+import static au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableResourceState.CVK_RESOURCE_NEEDS_REBUILD;
+import static au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableResourceState.CVK_RESOURCE_NEEDS_UPDATE;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKCommandBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKImage;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssertNotNull;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssertNull;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_HITTEST_DEPTH_IMAGE_CREATE_FAILED;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_HITTEST_SOURCE_IMAGE_CREATE_FAILED;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.GetParentMethodName;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
 import java.nio.LongBuffer;
 import java.util.LinkedList;
@@ -39,6 +46,7 @@ import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.vulkan.VK10.VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32_SFLOAT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_UNDEFINED;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_COLOR_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_DEPTH_BIT;
@@ -57,20 +65,14 @@ import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-import static org.lwjgl.vulkan.VK10.VK_SUBPASS_CONTENTS_INLINE;
+import static org.lwjgl.vulkan.VK10.VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
-import static org.lwjgl.vulkan.VK10.vkCmdBeginRenderPass;
-import static org.lwjgl.vulkan.VK10.vkCmdEndRenderPass;
+import static org.lwjgl.vulkan.VK10.vkCmdExecuteCommands;
 import static org.lwjgl.vulkan.VK10.vkCreateFramebuffer;
 import static org.lwjgl.vulkan.VK10.vkDestroyFramebuffer;
-import org.lwjgl.vulkan.VkClearValue;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkCommandBufferInheritanceInfo;
 import org.lwjgl.vulkan.VkFramebufferCreateInfo;
-import org.lwjgl.vulkan.VkOffset2D;
-import org.lwjgl.vulkan.VkRect2D;
-import org.lwjgl.vulkan.VkRenderPassBeginInfo;
 
 
 /**
@@ -80,10 +82,21 @@ import org.lwjgl.vulkan.VkRenderPassBeginInfo;
  * circular dependency.
  * 
  * 
- * Steps
- * 1. Create an image the same size as the viewport
- * 2. Create a framebuffer based off that image
- * 3. 
+ * The Hit Tester performs a second offscreen render pass with objects that need
+ * to be tested against mouse clicks/mouse overs (e.g. Icons, Connections).
+ * However the objects are each drawn with a unique color determined in the shader
+ * by the node id.
+ * <p>
+ * Whenever the mouse is moved, read the current pixel from the alternate
+ * image and convert the unique color back to the node id.
+ * <p>
+ * It is assumed that node ids are &gt;=0. Since a black background would return
+ * 0, we add 1 to the node id in the shader, and subtract 1 here. Change this
+ * for a non-black background.
+ * <p>
+ * The alternate framebuffer is currently R32F format. This gives 22 bits of
+ * mantissa, or 4,194,304 ids. Using the sign bit gives another 22 bits. We use
+ * positive numbers for node ids, negative numbers for line ids.
  */
 public class CVKHitTester extends CVKRenderable {
 
@@ -95,12 +108,52 @@ public class CVKHitTester extends CVKRenderable {
     private CVKImage cvkDepthImage = null;
     private Long hFrameBufferHandle = null;
     private CVKCommandBuffer commandBuffer = null;
-    // TODO Use swapchain image format?
-    //private int colorFormat = VK_FORMAT_R8G8B8A8_UINT;
-
-    // ========================> Static init <======================== \\
+    private final int colorFormat = VK_FORMAT_R32_SFLOAT;   // Only use the red channel for hit testing
+    
+    private CVKRenderableResourceState commandBuffersState = CVK_RESOURCE_CLEAN;
+    private CVKRenderableResourceState frameBuffersState = CVK_RESOURCE_CLEAN;
+    private CVKRenderableResourceState imagesState = CVK_RESOURCE_CLEAN;
     
     
+    // ========================> Debuggering <======================== \\
+    
+    static int counter = 0;
+    private void SaveToFile() {
+        counter++;
+        
+        if (counter % 100 == 0 ) {
+            // Debug code to write out the offscreen hittester image to file
+            String fileName = String.format("C:\\OffscreenRender_%d.png", counter);       
+            cvkImage.SaveToFile(fileName);
+        }
+    }
+    
+       
+    private static boolean LOGSTATECHANGE = false;
+    private void SetCommandBuffersState(final CVKRenderableResourceState state) {
+        CVKAssert(!(commandBuffersState == CVK_RESOURCE_NEEDS_REBUILD && state == CVK_RESOURCE_NEEDS_UPDATE));
+        if (LOGSTATECHANGE) {
+            GetLogger().info("%d\t commandBuffersState %s -> %s\tSource: %s", 
+                    cvkVisualProcessor.GetFrameNumber(), commandBuffersState.name(), state.name(), GetParentMethodName());
+        }
+        commandBuffersState = state;
+    }
+    private void SetFrameBuffersState(final CVKRenderableResourceState state) {
+        CVKAssert(!(frameBuffersState == CVK_RESOURCE_NEEDS_REBUILD && state == CVK_RESOURCE_NEEDS_UPDATE));
+        if (LOGSTATECHANGE) {
+            GetLogger().info("%d\t frameBuffersState %s -> %s\tSource: %s", 
+                    cvkVisualProcessor.GetFrameNumber(), frameBuffersState.name(), state.name(), GetParentMethodName());
+        }
+        frameBuffersState = state;
+    }
+    private void SetImagesState(final CVKRenderableResourceState state) {
+        CVKAssert(!(imagesState == CVK_RESOURCE_NEEDS_REBUILD && state == CVK_RESOURCE_NEEDS_UPDATE));
+        if (LOGSTATECHANGE) {
+            GetLogger().info("%d\t imagesState %s -> %s\tSource: %s", 
+                    cvkVisualProcessor.GetFrameNumber(), imagesState.name(), state.name(), GetParentMethodName());
+        }
+        imagesState = state;
+    }
     
     // ========================> Lifetime <======================== \\
     
@@ -128,33 +181,33 @@ public class CVKHitTester extends CVKRenderable {
     // ========================> Swap chain <======================== \\    
     
     @Override
-    protected int DestroySwapChainResources() { return VK_SUCCESS; }
-    
-    private int CreateSwapChainResources() {
-        cvkVisualProcessor.VerifyInRenderThread();
-        CVKAssertNotNull(cvkSwapChain);
-        int ret = VK_SUCCESS;
-
-                
+    protected int DestroySwapChainResources() { 
+         this.cvkSwapChain = null;
+        
         // We only need to recreate these resources if the number of images in 
         // the swapchain changes or if this is the first call after the initial
         // swapchain is created.
-        if (swapChainImageCountChanged) {
-            ret = CreateImages();
-            if (VkFailed(ret)) { return ret; }            
-
-            ret = CreateFrameBuffer();
-            if (VkFailed(ret)) { return ret; }
-
-             ret = CreateCommandBuffer();
-            if (VkFailed(ret)) { return ret; }
-            
-        } else {
-            // This is the resize path, image count is unchanged.
+        if (swapChainImageCountChanged) {  
+            DestroyCommandBuffer();     
+            DestroyImage();
+            DestroyFrameBuffer();
         }
         
-        swapChainResourcesDirty = false;
-        swapChainImageCountChanged = false;
+        return VK_SUCCESS; 
+    }
+    
+    @Override
+    public int SetNewSwapChain(CVKSwapChain newSwapChain) {
+        int ret = super.SetNewSwapChain(newSwapChain);
+        if (VkFailed(ret)) { return ret; }
+        
+        if (swapChainImageCountChanged) {
+            // The number of images has changed, we need to rebuild all image
+            // buffered resources
+            SetCommandBuffersState(CVK_RESOURCE_NEEDS_REBUILD);
+            SetImagesState(CVK_RESOURCE_NEEDS_REBUILD);
+            SetFrameBuffersState(CVK_RESOURCE_NEEDS_REBUILD);
+        }
         
         return ret;
     } 
@@ -165,46 +218,47 @@ public class CVKHitTester extends CVKRenderable {
     private int CreateImages() {
         CVKAssertNotNull(cvkSwapChain);
         CVKAssert(cvkSwapChain.GetDepthFormat() != VK_FORMAT_UNDEFINED);
+        CVKAssertNull(cvkImage);
+        CVKAssertNull(cvkDepthImage);
         
         int ret = VK_SUCCESS;   
         int textureWidth = cvkSwapChain.GetWidth();
         int textureHeight = cvkSwapChain.GetHeight();
         int requiredLayers = 1;
 
-        // Create destination color image            
-        cvkImage = CVKImage.Create(textureWidth, 
-                                   textureHeight, 
-                                   requiredLayers, 
-                                   cvkSwapChain.GetColorFormat(),
-                                   VK_IMAGE_VIEW_TYPE_2D,
-                                   VK_IMAGE_TILING_LINEAR, // Tiling
-                                   VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT, // TODO Usage 
-                                   VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT , // TODO - properties?
-                                   VK_IMAGE_ASPECT_COLOR_BIT,
-                                   GetLogger(),
-                                   "CVKHitTester cvkImage");  // TODO - aspect mask
-
+        // Create destination color image to render to
+        cvkImage = CVKImage.Create( textureWidth, 
+                                    textureHeight, 
+                                    requiredLayers, 
+                                    colorFormat,            // R32 Float - we only use the Red channel for hit testing
+                                    VK_IMAGE_VIEW_TYPE_2D,
+                                    VK_IMAGE_TILING_LINEAR, // Linear Tiling so we can read it later
+                                    VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT,
+                                    VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT , // Host Visible so we can read the memory without transitioning
+                                    VK_IMAGE_ASPECT_COLOR_BIT,
+                                    GetLogger(),
+                                    "CVKHitTester cvkImage");
         if (cvkImage == null) {
-            return 1;
+            return CVK_ERROR_HITTEST_SOURCE_IMAGE_CREATE_FAILED;
         }
 
-        // TODO HYDRA: Might be able to just use DepthImage from Swapchain!
-        // Create depth image 
+        // Create depth image required for hittesting
         cvkDepthImage = CVKImage.Create(textureWidth, 
                                         textureHeight, 
                                         requiredLayers, 
                                         cvkSwapChain.GetDepthFormat(),
                                         VK_IMAGE_VIEW_TYPE_2D,
-                                        VK_IMAGE_TILING_OPTIMAL, // Tiling or VK_IMAGE_TILING_OPTIMAL
-                                        VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, // TODO Usage 
-                                        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, // TODO - properties?
+                                        VK_IMAGE_TILING_OPTIMAL,
+                                        VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
+                                        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
                                         VK_IMAGE_ASPECT_DEPTH_BIT,
                                         GetLogger(),
                                         "CVKHitTester cvkDepthImage");  // TODO - aspect mask
         if (cvkDepthImage == null) {
-            // TODO HYDRA: If this DepthImage is required add a CVK error
-            return 1;
-        }           
+            return CVK_ERROR_HITTEST_DEPTH_IMAGE_CREATE_FAILED;
+        }
+        
+        SetImagesState(CVK_RESOURCE_CLEAN);
         
         return ret;
     }
@@ -213,6 +267,11 @@ public class CVKHitTester extends CVKRenderable {
         if (cvkImage != null) {
             cvkImage.Destroy();
             cvkImage = null;
+        }
+        
+        if (cvkDepthImage != null) {
+            cvkDepthImage.Destroy();
+            cvkDepthImage = null;
         }
     }
     
@@ -236,6 +295,7 @@ public class CVKHitTester extends CVKRenderable {
             attachments.put(0, cvkImage.GetImageViewHandle());
             attachments.put(1, cvkDepthImage.GetImageViewHandle());
             framebufferInfo.pAttachments(attachments);
+            
             ret = vkCreateFramebuffer(CVKDevice.GetVkDevice(), 
                                       framebufferInfo, 
                                       null, //allocation callbacks
@@ -243,6 +303,8 @@ public class CVKHitTester extends CVKRenderable {
             if (VkFailed(ret)) { return ret; }
             
             hFrameBufferHandle = pFramebuffer.get(0);
+            
+            SetFrameBuffersState(CVK_RESOURCE_CLEAN);
 
         }
         return ret;
@@ -267,18 +329,21 @@ public class CVKHitTester extends CVKRenderable {
     // ========================> Command buffers <======================== \\
     
     private int CreateCommandBuffer() {       
+        CVKAssertNotNull(CVKDevice.GetVkDevice());
+        CVKAssertNull(commandBuffer);
+        
         int ret = VK_SUCCESS;
              
         commandBuffer = CVKCommandBuffer.Create(VK_COMMAND_BUFFER_LEVEL_PRIMARY, GetLogger(), "CVKHitTester CommandBuffer");
-        commandBuffer.DEBUGNAME = String.format("CVKHitTester");
         
+        SetCommandBuffersState(CVK_RESOURCE_CLEAN);
         GetLogger().info("Init Command Buffer - HitTester");
         
         return ret;
     }
     
     @Override
-    public VkCommandBuffer GetCommandBuffer(int imageIndex) { return commandBuffer.GetVKCommandBuffer(); }
+    public VkCommandBuffer GetDisplayCommandBuffer(int imageIndex) { return commandBuffer.GetVKCommandBuffer(); }
     
     @Override
     public int RecordDisplayCommandBuffer(VkCommandBufferInheritanceInfo inheritanceInfo, int index) { 
@@ -305,20 +370,29 @@ public class CVKHitTester extends CVKRenderable {
     
     @Override
     public boolean NeedsDisplayUpdate() { 
-        return needsDisplayUpdate; 
+        return needsDisplayUpdate ||
+                imagesState != CVK_RESOURCE_CLEAN ||
+                frameBuffersState != CVK_RESOURCE_CLEAN ||
+                commandBuffersState != CVK_RESOURCE_CLEAN; 
     }
      
     @Override
     public int DisplayUpdate() {
         int ret = VK_SUCCESS;
-        
-        // TODO change to enum as in IconRenderable
-        if (swapChainResourcesDirty) {
-            ret = CreateSwapChainResources();
-            if (VkFailed(ret)) { return ret; }
-        }
                 
-        // TODO Hydra: Need to reset the needsDisplayUpdate flag in here    
+        if (imagesState == CVK_RESOURCE_NEEDS_REBUILD) {
+            ret = CreateImages();
+            if (VkFailed(ret)) { return ret; }  
+        }
+        if (commandBuffersState == CVK_RESOURCE_NEEDS_REBUILD) {
+            ret = CreateCommandBuffer();
+            if (VkFailed(ret)) { return ret; }  
+        }
+        if (frameBuffersState == CVK_RESOURCE_NEEDS_REBUILD) {
+            ret = CreateFrameBuffer();
+            if (VkFailed(ret)) { return ret; }  
+        }
+                      
         if (requestQueue != null && !requestQueue.isEmpty()) {
             requestQueue.forEach(request -> notificationQueues.add(request.getNotificationQueue()));
             hitTestRequest = requestQueue.getLast();
@@ -328,10 +402,25 @@ public class CVKHitTester extends CVKRenderable {
         if (!notificationQueues.isEmpty()) {
             final int x = hitTestRequest.getX();
             final int y = hitTestRequest.getY();
+            int redPixel = 0;
 
+            if (cvkImage.GetLayout() != VK_IMAGE_LAYOUT_UNDEFINED) {
+                redPixel = cvkImage.ReadPixel(x, y);
+            }
+
+            final int id;
+            final HitType currentHitType;
+            if (redPixel == 0) {
+                currentHitType = HitType.NO_ELEMENT;
+                id = -1;
+            } else {
+                currentHitType = redPixel > 0 ? HitType.VERTEX : HitType.TRANSACTION;
+                id = redPixel > 0 ? redPixel - 1 : -redPixel - 1;
+            }
+             
             final HitState hitState = hitTestRequest.getHitState();
-            hitState.setCurrentHitId(-1);
-            hitState.setCurrentHitType(HitType.NO_ELEMENT);
+            hitState.setCurrentHitId(id);
+            hitState.setCurrentHitType(currentHitType);
             if (hitTestRequest.getFollowUpOperation() != null) {
                 hitTestRequest.getFollowUpOperation().accept(hitState);
             }
@@ -356,41 +445,27 @@ public class CVKHitTester extends CVKRenderable {
         CVKAssertNotNull(CVKDevice.GetVkDevice());
         CVKAssertNotNull(CVKDevice.GetCommandPoolHandle());
         CVKAssertNotNull(cvkSwapChain);
-                
-        int ret = VK_SUCCESS;
         
+        int ret = VK_SUCCESS;
+        if (hitTestRenderables.isEmpty()) {
+            return ret;
+        }
+
         try (MemoryStack stack = stackPush()) {
             
-            // TODO OR VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO ?
             ret = commandBuffer.Begin(VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT);
             if (VkFailed(ret)) { return ret; }
                        
             // Pre Draw Barrier
-            commandBuffer.pipelineImageMemoryBarrierCmd(cvkImage.GetImageHandle(), 
+            commandBuffer.PipelineImageMemoryBarrier(cvkImage.GetImageHandle(), 
                     VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,    // Old/New Layout
                     0, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,                                // Src/Dst Access mask
                     VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,  // Src/Dst Stage mask
                     0, 1);                                                                  // baseMipLevel/mipLevelCount
-                        
-            // Clear colour to black
-            VkClearValue.Buffer clearValues = VkClearValue.callocStack(2, stack);
-            clearValues.color().float32(stack.floats(0f, 1.0f, 0.5f, 1.0f));
-            clearValues.get(1).depthStencil().set(1.0f, 0);
-
-            VkRenderPassBeginInfo renderPassInfo = VkRenderPassBeginInfo.callocStack(stack);
-            renderPassInfo.sType(VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO);
-            renderPassInfo.renderPass(cvkSwapChain.GetOffscreenRenderPassHandle());
-
-            VkRect2D renderArea = VkRect2D.callocStack(stack);
-            renderArea.offset(VkOffset2D.callocStack(stack).set(0, 0));
-            renderArea.extent(cvkSwapChain.GetExtent());
-            renderPassInfo.renderArea(renderArea);       
-            renderPassInfo.pClearValues(clearValues);
-            renderPassInfo.framebuffer(hFrameBufferHandle);
-
-            //  TODO - VK_SUBPASS_CONTENTS_INLINE  OR VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS
-            vkCmdBeginRenderPass(commandBuffer.GetVKCommandBuffer(), renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-            //commandBuffer.beginRenderPassCmd();
+            
+            commandBuffer.BeginRenderPass(cvkSwapChain.GetOffscreenRenderPassHandle(),
+                    hFrameBufferHandle, cvkSwapChain.GetWidth(), cvkSwapChain.GetHeight(), 
+                    1, 1, VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS);
 
             // Inheritance info for the secondary command buffers (same for all!)
             VkCommandBufferInheritanceInfo inheritanceInfo = VkCommandBufferInheritanceInfo.callocStack(stack);
@@ -398,54 +473,31 @@ public class CVKHitTester extends CVKRenderable {
             inheritanceInfo.pNext(0);
             inheritanceInfo.framebuffer(hFrameBufferHandle);
             inheritanceInfo.renderPass(cvkSwapChain.GetOffscreenRenderPassHandle());
-            //inheritanceInfo.subpass(0); // TODO Get the subpass or make it here?
             inheritanceInfo.occlusionQueryEnable(false);
             inheritanceInfo.queryFlags(0);
             inheritanceInfo.pipelineStatistics(0);
-
-	    // TODO Is this needed or set in RecordHitTestCommandBuffer() ?
-            // Set the dynamic viewport and scissor
-            //commandBuffer.viewPortCmd(cvkSwapChain.GetWidth(), cvkSwapChain.GetHeight(), stack);
-            //commandBuffer.scissorCmd(cvkDevice.GetCurrentSurfaceExtent(), stack);
             
-            // Check flags and render the nodes and connections
-            /// Loop through command buffers of hit test objects and record their buffers
+            // Loop through command buffers of hit test objects and record their buffers
             hitTestRenderables.forEach(renderable -> {
-            // TODO HYDRA - WIP HIT TESTER
-//                if (renderable.GetVertexCount() > 0) {
-//                    renderable.RecordHitTestCommandBuffer(inheritanceInfo, 0);
-//                    vkCmdExecuteCommands(commandBuffer.GetVKCommandBuffer(), renderable.GetCommandBuffer(0));
-//                }
+                if (renderable.GetVertexCount() > 0) {
+                    renderable.RecordHitTestCommandBuffer(inheritanceInfo, 0);
+                    vkCmdExecuteCommands(commandBuffer.GetVKCommandBuffer(), renderable.GetHitTestCommandBuffer(0));
+                }
             });
             
-            vkCmdEndRenderPass(commandBuffer.GetVKCommandBuffer());
+            commandBuffer.EndRenderPass();
         
             // Pre Draw Barrier
-            commandBuffer.pipelineImageMemoryBarrierCmd(cvkImage.GetImageHandle(), 
-                    VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_GENERAL,//VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_GENERAL,    // Old/New Layout
-                    0, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,                                // Src/Dst Access mask
-                    VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, //VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,  // Src/Dst Stage mask
-                    0, 1);                                                                  // baseMipLevel/mipLevelCount
+            commandBuffer.PipelineImageMemoryBarrier(cvkImage.GetImageHandle(), 
+                    VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_GENERAL,                                 // Old/New Layout
+                    0, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,                                            // Src/Dst Access mask
+                    VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,  // Src/Dst Stage mask
+                    0, 1);                                                                              // baseMipLevel/mipLevelCount
             
-            // TODO Do we need this?
-            CVKDevice.WaitIdle();
+            cvkImage.SetLayout(VK_IMAGE_LAYOUT_GENERAL);
             commandBuffer.EndAndSubmit();
-            
-            // TODO - COMPLETE ME       
-            //MapMemory();
         }
               
-        return ret;
-    }    
-    
-     
-    private int MapMemory() {     
-        int ret = VK_SUCCESS;
-        
-        // Test code to write out the image to file before we just map to memory and do the hit
-        String fileName = "screenshot.png";       
-        ret = cvkImage.SaveToFile(fileName);
-
         return ret;
     }
         
@@ -456,4 +508,8 @@ public class CVKHitTester extends CVKRenderable {
         requestQueue.add(request);
         needsDisplayUpdate = true;
     }
+    
+    
+    // ========================> Helpers <======================== \\
+
 }

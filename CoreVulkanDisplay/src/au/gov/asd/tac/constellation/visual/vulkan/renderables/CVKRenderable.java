@@ -64,11 +64,17 @@ public abstract class CVKRenderable {
     
     protected CVKGraphLogger GetLogger() { return cvkVisualProcessor.GetLogger(); }
     
-    /*
-        Returns the command buffer for the current Image being sent
-        to the GFX drivers
-    */
-    public abstract VkCommandBuffer GetCommandBuffer(int imageIndex);        
+    /**
+     * Returns the command buffer for the current Image being sent
+     * to the GFX drivers
+     */
+    public abstract VkCommandBuffer GetDisplayCommandBuffer(int imageIndex);        
+    
+    /**
+     * Returns the hit test command buffer for the current Image being sent
+     * to the GFX drivers
+     */
+    public VkCommandBuffer GetHitTestCommandBuffer(int imageIndex){ return null; }
         
     /**
      * Called just before the swapchain is about to be destroyed allowing the

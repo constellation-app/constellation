@@ -26,12 +26,19 @@ const mat4 DIM_MATRIX = 0.5 * mat4(
 const mat4 IDENTITY_MATRIX = mat4(1.0);
 
 
+// === PUSH CONSTANTS ===
+layout(std140, push_constant) uniform HitTestPushConstant {
+    // Offset is 64 as the MV matrix (in VertexIcon.vs) 
+    // is before it in the pushConstant buffer.
+    layout(offset = 64) int drawHitTest;
+} htpc;
+
+
 // === UNIFORMS ===
 layout(std140, binding = 2) uniform UniformBlock {
     mat4 pMatrix;
     float pixelDensity;
     mat4 highlightColor;
-    int drawHitTest;
 } ub;
 layout(binding = 3) uniform isamplerBuffer flags;
 
@@ -185,7 +192,7 @@ void main() {
         }
 
         // If the vertex is selected then draw the highlight icon
-        if ((ub.drawHitTest == 0) && (fd & SELECTED_MASK) != 0) {
+        if ((htpc.drawHitTest == 0) && (fd & SELECTED_MASK) != 0) {
             drawIcon(-sideRadius, -sideRadius, 2 * sideRadius, HIGHLIGHT_ICON, ub.highlightColor);
         }
     }

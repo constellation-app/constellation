@@ -362,7 +362,6 @@ public class CVKRenderer implements ComponentListener {
         ret = vkBeginCommandBuffer(primaryCommandBuffer, beginInfo);
         if (VkFailed(ret)) { return ret; }
         
-        //vkCmdBeginRenderPass(commandBuffer, renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
         vkCmdBeginRenderPass(primaryCommandBuffer, renderPassInfo, VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS);
 
         // Inheritance info for the secondary command buffers (same for all!)
@@ -384,7 +383,7 @@ public class CVKRenderer implements ComponentListener {
 
                 // TODO Hydra: may be more efficient to add all the visible command buffers to a master list then 
                 // call the following line once with the whole list
-                vkCmdExecuteCommands(primaryCommandBuffer, el.GetCommandBuffer(imageIndex));
+                vkCmdExecuteCommands(primaryCommandBuffer, el.GetDisplayCommandBuffer(imageIndex));
             }
         }
         
@@ -659,7 +658,7 @@ public class CVKRenderer implements ComponentListener {
                     
                     // Offscreen Render Pass
                     List<CVKRenderable> hitTestRenderables = cvkVisualProcessor.GetHitTesterList();
-                    for (CVKRenderable r : hitTestRenderables) {
+                    for (CVKRenderable r : renderables) {
                         r.OffscreenRender(hitTestRenderables); 
                     }                    
         

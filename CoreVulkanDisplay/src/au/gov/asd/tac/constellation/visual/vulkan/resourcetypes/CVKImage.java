@@ -80,6 +80,8 @@ import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAsser
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssertNotNull;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssertNull;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_DEBUGGING;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_DEST_IMAGE_CREATE_FAILED;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_IMAGE_GET_ID_FAILED;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_IMAGE_VIEW_CREATION_FAILED;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_SAVE_TO_FILE_FAILED;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_VKALLOCATIONS;
@@ -88,7 +90,7 @@ import java.awt.Point;
 import java.awt.Transparency;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
 import java.awt.image.BufferedImage;
-import static java.awt.image.BufferedImage.TYPE_3BYTE_BGR;
+import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 import java.awt.image.ColorModel;
 import java.awt.image.ComponentColorModel;
 import java.awt.image.DataBuffer;
@@ -97,15 +99,14 @@ import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 import java.io.File;
 import java.nio.ByteBuffer;
-import javax.imageio.ImageIO;       // TODO make sure this import is ok from javax
+import java.nio.FloatBuffer;
+import javax.imageio.ImageIO;
 import org.lwjgl.PointerBuffer;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.vulkan.KHRSwapchain.VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 import static org.lwjgl.vulkan.VK10.VK_ACCESS_MEMORY_READ_BIT;
 import static org.lwjgl.vulkan.VK10.VK_ACCESS_TRANSFER_READ_BIT;
 import static org.lwjgl.vulkan.VK10.VK_FILTER_NEAREST;
-import static org.lwjgl.vulkan.VK10.VK_FORMAT_FEATURE_BLIT_DST_BIT;
-import static org.lwjgl.vulkan.VK10.VK_FORMAT_FEATURE_BLIT_SRC_BIT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R8G8B8A8_UNORM;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_GENERAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
@@ -119,13 +120,11 @@ import static org.lwjgl.vulkan.VK10.vkCmdCopyImage;
 import static org.lwjgl.vulkan.VK10.vkGetImageSubresourceLayout;
 import static org.lwjgl.vulkan.VK10.vkMapMemory;
 import static org.lwjgl.vulkan.VK10.vkUnmapMemory;
-import org.lwjgl.vulkan.VkFormatProperties;
 import org.lwjgl.vulkan.VkImageBlit;
 import org.lwjgl.vulkan.VkImageCopy;
 import org.lwjgl.vulkan.VkImageSubresource;
 import org.lwjgl.vulkan.VkOffset3D;
 import org.lwjgl.vulkan.VkSubresourceLayout;
-import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceFormatProperties;
 
 
 public class CVKImage {
@@ -147,6 +146,7 @@ public class CVKImage {
     protected String DEBUGNAME              = "";
     protected PointerBuffer pWriteMemory    = null;
     CVKImage destImage                      = null;
+    private boolean needsSwizzle            = false;
 
     protected CVKImage() {}
     
@@ -156,6 +156,8 @@ public class CVKImage {
     public int GetFormat() { return format; }
     public int GetAspectMask() { return aspectMask; }
     private CVKGraphLogger GetLogger() { return cvkGraphLogger != null ? cvkGraphLogger : CVKGraphLogger.GetStaticLogger(); }
+    public int GetLayout() { return layout; }
+    public void SetLayout(int layout) { this.layout = layout; }
       
     public void Destroy() {
         DestroyImage();
@@ -238,14 +240,7 @@ public class CVKImage {
      * @param cvkCmdBuf
      * @param newLayout
      * @return
-     */
-    
-    // TODO HYDRA - Check if this is still needed?
-    public int Transition(CVKCommandBuffer cvkCmdBuf, int oldLayout, int newLayout) {
-         layout = oldLayout;
-         return Transition(cvkCmdBuf, newLayout);
-    }
-    
+     */   
     public int Transition(CVKCommandBuffer cvkCmdBuf, int newLayout) {
         int ret = VK_SUCCESS;
     
@@ -296,9 +291,8 @@ public class CVKImage {
                 vkBarrier.dstAccessMask(VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT);
                 sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
                 destinationStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-            // TODO - this should work for any initial layout
             // Tansition image into layout for copying (e.g. copy to memory or screenshot)
-            } else if(/*layout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL &&*/ newLayout == VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL) {
+            } else if( newLayout == VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL) {
                 vkBarrier.srcAccessMask(VK_ACCESS_TRANSFER_WRITE_BIT);
                 vkBarrier.dstAccessMask(VK_ACCESS_MEMORY_READ_BIT);
                 sourceStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
@@ -310,7 +304,8 @@ public class CVKImage {
                 sourceStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
                 destinationStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
             // Transition swapchain image back to original state after a screenshot
-            } else if(layout == VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL && newLayout == VK_IMAGE_LAYOUT_PRESENT_SRC_KHR) {
+            } else if(layout == VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL && (newLayout == VK_IMAGE_LAYOUT_PRESENT_SRC_KHR ||
+                    newLayout == VK_IMAGE_LAYOUT_GENERAL)) {
                 vkBarrier.srcAccessMask(VK_ACCESS_MEMORY_READ_BIT);
                 vkBarrier.dstAccessMask(VK_ACCESS_TRANSFER_READ_BIT);
                 sourceStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
@@ -549,7 +544,7 @@ public class CVKImage {
         CVKAssert(layers >= 1);
         
         int ret;
-        CVKImage cvkImage       = new CVKImage();        
+        CVKImage cvkImage       = new CVKImage();
         cvkImage.width          = width;
         cvkImage.height         = height;
         cvkImage.layers         = layers;
@@ -635,8 +630,7 @@ public class CVKImage {
                 
                 GetLogger().info("Created VkImageView:0x%016X for %s)", pImageView.get(0), DEBUGNAME);
 
-        } catch (Exception e) {
-            // TODO HYDRA TEST THIS CODE PATH       
+        } catch (Exception e) {   
             GetLogger().LogException(e, "Image View creation failed for Image Handle %d. Image will be destroyed!", GetImageHandle());
             ret = CVK_ERROR_IMAGE_VIEW_CREATION_FAILED;
             
@@ -655,7 +649,7 @@ public class CVKImage {
      * @param stack
      * @return error code
      */
-    public int CopyToCPUMemoryImage(MemoryStack stack) {
+    private int CopyToCPUMemoryImage(MemoryStack stack) {
         CVKAssertNull(destImage);
         
         int ret = VK_SUCCESS;
@@ -663,24 +657,8 @@ public class CVKImage {
         int originalLayout = VK_IMAGE_LAYOUT_UNDEFINED;
                 
         // Check blit support for source and destination
-        // TODO HYDRA do this once and store result in cvkdevice
-        VkFormatProperties formatProps = VkFormatProperties.callocStack(stack);
-
-        // Check if the device supports blitting from optimal images (the swapchain images are in optimal format)
-        vkGetPhysicalDeviceFormatProperties(CVKDevice.GetVkPhysicalDevice(), format, formatProps);
-
-        if ((formatProps.optimalTilingFeatures() & VK_FORMAT_FEATURE_BLIT_SRC_BIT) == 0) {
-                GetLogger().info("Device does not support blitting from optimal tiled images, using copy instead of blit!");
-                supportsBlit = false;
-        }
-
-        // Check if the device supports blitting to linear images
-        vkGetPhysicalDeviceFormatProperties(CVKDevice.GetVkPhysicalDevice(), VK_FORMAT_R8G8B8A8_UNORM, formatProps);
-        if ((formatProps.linearTilingFeatures() & VK_FORMAT_FEATURE_BLIT_DST_BIT) == 0) {
-                GetLogger().info("Device does not support blitting to linear tiled images, using copy instead of blit!");
-                supportsBlit = false;
-        }
-
+        supportsBlit = CVKDevice.GetInstance().CheckDeviceSupportsBlit(format, VK_FORMAT_R8G8B8A8_UNORM);
+ 
         // Source for the copy is the last rendered swapchain image
         originalLayout = layout;
         CVKImage srcImage = this;
@@ -697,10 +675,10 @@ public class CVKImage {
                                     aspectMask,
                                     cvkGraphLogger,
                                     "CVKImage destImage");
-        if (destImage == null) { return 1; }
+        if (destImage == null) { return CVK_ERROR_DEST_IMAGE_CREATE_FAILED; }
         
         // Do the actual blit from the swapchain image to our host visible destination image
-        CVKCommandBuffer cvkCopyCmd = CVKCommandBuffer.Create(VK_COMMAND_BUFFER_LEVEL_PRIMARY, cvkGraphLogger, "CVKImage-CopyCmdBuffer");
+        CVKCommandBuffer cvkCopyCmd = CVKCommandBuffer.Create(VK_COMMAND_BUFFER_LEVEL_PRIMARY, GetLogger(), "CVKImage CopyCmdBuffer");
 
         ret = cvkCopyCmd.Begin(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
         if (VkFailed(ret)) { return ret; }
@@ -714,7 +692,7 @@ public class CVKImage {
         if (VkFailed(ret)) { return ret; }
 
         // If source and destination support blit we'll blit as this also does automatic format conversion (e.g. from BGR to RGB)
-        boolean needsSwizzle = false;
+        needsSwizzle = false;
         if (supportsBlit) {
             // Define the region to blit (we will blit the whole swapchain image)
             VkOffset3D blitSize = VkOffset3D.callocStack(stack);
@@ -731,9 +709,6 @@ public class CVKImage {
             // The blit will automatically transfer from the original format
             // to the destination. For example the swap image uses RGB 
             // while the destination format is VK_FORMAT_R8G8B8A8_UNORM 
-            // TODO HYDRA we could probably just use a 3 byte format without alpha
-            // If that works it will save a lot of messing around later. Test after
-            // hittester is working.
             vkCmdBlitImage(
                     cvkCopyCmd.GetVKCommandBuffer(),
                     srcImage.GetImageHandle(), VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
@@ -743,7 +718,6 @@ public class CVKImage {
         }
         else
         {
-            // TODO Hydra test this code path
             // Otherwise use image copy (requires us to manually flip components)
             VkImageCopy.Buffer imageCopyRegion = VkImageCopy.callocStack(1, stack);
             imageCopyRegion.srcSubresource().aspectMask(VK_IMAGE_ASPECT_COLOR_BIT);
@@ -762,7 +736,7 @@ public class CVKImage {
                     destImage.GetImageHandle(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                     imageCopyRegion);
 
-            needsSwizzle = true;
+            destImage.needsSwizzle = true;
         }
 
         // Transition destination image to general layout, which is the required layout for mapping the image memory later on
@@ -774,30 +748,36 @@ public class CVKImage {
         if (VkFailed(ret)) { return ret; }
 
         // Submit the commands and wait
-        cvkCopyCmd.EndAndSubmit();
+        ret = cvkCopyCmd.EndAndSubmit();
+        if (VkFailed(ret)) { return ret; }
                 
         return ret;
     }
     
-    
-    public PointerBuffer StartMemoryMap(MemoryStack stack) {
+    /**
+     * Maps the images memory into a buffer
+     * 
+     * @param stack
+     * @return buffer filled with memory
+     */
+    private PointerBuffer StartMemoryMap(MemoryStack stack) {
         CVKAssert(pWriteMemory == null);    
         int ret = VK_SUCCESS;
         
-        // Get layout of the image (including row pitch)
+        // Get layout of the image to determine the offset
         VkImageSubresource subResource = VkImageSubresource.callocStack(stack);
         subResource.set(VK_IMAGE_ASPECT_COLOR_BIT, 0, 0);
         VkSubresourceLayout subResourceLayout = VkSubresourceLayout.callocStack(stack);
-        vkGetImageSubresourceLayout(CVKDevice.GetVkDevice(), destImage.GetImageHandle(), subResource, subResourceLayout);
+        vkGetImageSubresourceLayout(CVKDevice.GetVkDevice(), GetImageHandle(), subResource, subResourceLayout);
 
         // Map Memory
         pWriteMemory = MemoryUtil.memAllocPointer(1);
         long offset = subResourceLayout.offset();
 
-        ret = vkMapMemory(CVKDevice.GetVkDevice(), destImage.GetMemoryImageHandle(), offset, VK_WHOLE_SIZE, 0, pWriteMemory);
+        ret = vkMapMemory(CVKDevice.GetVkDevice(), GetMemoryImageHandle(), offset, VK_WHOLE_SIZE, 0, pWriteMemory);
         if (VkFailed(ret)) 
         { 
-            GetLogger().severe(String.format("Mapping image memory failed"));
+            GetLogger().severe("Mapping image memory failed");
             return null; 
         }
         
@@ -806,16 +786,13 @@ public class CVKImage {
     
     
     /**
-     * Cleanup the mapped memory and from StartMemoryMap and destroy the destImage
-     * 
+     * Cleanup the mapped memory and from StartMemoryMap
      */
-    public void EndMemoryMap() {
+    private void EndMemoryMap() {
         CVKAssertNotNull(pWriteMemory);
-        vkUnmapMemory(CVKDevice.GetVkDevice(), destImage.GetMemoryImageHandle());
+        vkUnmapMemory(CVKDevice.GetVkDevice(), GetMemoryImageHandle());
         MemoryUtil.memFree(pWriteMemory);
         pWriteMemory = null;
-        destImage.Destroy();
-        destImage = null;
     }
     
     
@@ -827,14 +804,11 @@ public class CVKImage {
      * 
      * @param stack
      * @param file
-     * @param needsSwizzle
      * @return 
      */
-    public int SaveMemoryToFile(MemoryStack stack, File file, boolean needsSwizzle) {
-        // Check paramters
+    private int SaveMemoryToFile(MemoryStack stack, File file) {
         CVKAssertNotNull(file);
         CVKAssertNotNull(pWriteMemory);
-        CVKAssertNotNull(destImage);
         
         int ret = VK_SUCCESS;
         BufferedImage out = null;
@@ -843,81 +817,85 @@ public class CVKImage {
         VkImageSubresource subResource = VkImageSubresource.callocStack(stack);
         subResource.set(VK_IMAGE_ASPECT_COLOR_BIT, 0, 0);
         VkSubresourceLayout subResourceLayout = VkSubresourceLayout.callocStack(stack);
-        vkGetImageSubresourceLayout(CVKDevice.GetVkDevice(), destImage.GetImageHandle(), subResource, subResourceLayout);
+        vkGetImageSubresourceLayout(CVKDevice.GetVkDevice(), GetImageHandle(), subResource, subResourceLayout);
 
-        // The destination image is in the format VK_FORMAT_B8G8R8A8_UNORM:
+        ////////////////////////////////////////////////////////////////////////
+        // The image is in the format VK_FORMAT_B8G8R8A8_UNORM:
         // CmdBlitImage() automatically converts between formats for us.
         // VK_FORMAT_B8G8R8A8_UNORM
         //    specifies a four-component, 32-bit unsigned normalized format 
         //    that has an 8-bit B component in byte 0, an 8-bit G component 
         //    in byte 1, an 8-bit R component in byte 2, and an 8-bit A component in byte 3.
-
         // The PNG image format is RGB (24-bit)
+        ////////////////////////////////////////////////////////////////////////
 
         // Size (in bytes) of the destination image including any padding
         final long sourceImageSize = subResourceLayout.size(); 
-        // Offset (in bytes) that the image starts (usually 0)
-        long offset = subResourceLayout.offset();
-        // Calculate the file width including the padding (in bytes)
-        int fileWidth = (int)(subResourceLayout.rowPitch() / 4);
-        // Calculate the file height (in bytes)
-        int fileHeight = (int)(sourceImageSize / fileWidth) / 4;
-        // Calculate the file size (in bytes)
-        int fileSize = (int)(sourceImageSize / 4 ) * 3;
-
-        // TODO Hydra need to handle images with layers like the atlas texture
+        int fileWidth = width;
+        int fileHeight = height;
+        int fileSize = (int)sourceImageSize;
+        if (!needsSwizzle) {
+            // Calculate the file width including the padding (in bytes)
+            fileWidth = (int)(subResourceLayout.rowPitch() / 4);
+            CVKAssert(fileWidth != 0);
+            // Calculate the file height (in bytes)
+            fileHeight = (int)(sourceImageSize / fileWidth) / 4;
+        }
+        
+        
+        // TODO HYDRA need to handle images with layers like the atlas texture
         long fileLayers = subResourceLayout.depthPitch();
 
         try {
             // Create the output buffered image with the original images
             // width and height, and in the PNG format (3 bytes BGR)
-            out = new BufferedImage(width, height, TYPE_3BYTE_BGR);
+            out = new BufferedImage(width, height, TYPE_INT_ARGB);
+            
+                    
             byte[] rgb = new byte[fileSize];
-            int i = 0;
-            int r = 0;
+            int iDst = 0;
+            int iSrc = 0;
 
-            ByteBuffer row = pWriteMemory.getByteBuffer((int)sourceImageSize);
-
-            for (int y = 0; y < fileHeight; ++y)
-            {                   
-                for (int x = 0; x < fileWidth; ++x)
-                {
-                    // Skip the padded bytes
-                    if (x >= width) {
-                        r += 4;
-                        continue;
-                    }
-                    // TODO: tests to see if we need to swizzle the rgb channels
-                    Byte red = row.get(r++);        // red
-                    Byte green = row.get(r++);      // green
-                    Byte blue = row.get(r++);       // blue
-                    Byte alpha = row.get(r++);      // alpha
-
-                    // If we need to swizzle colours manually (e.g. Blit is not supported which
-                    // does automatic conversion for us
-                    if (needsSwizzle) {
-                        rgb[i++] = blue;
-                        rgb[i++] = green;
-                        rgb[i++] = red;
-                    }
-                    else {
-                        rgb[i++] = red;
-                        rgb[i++] = green;
-                        rgb[i++] = blue;
-                    }
+            ByteBuffer sourceBuffer = pWriteMemory.getByteBuffer((int)sourceImageSize);
+            
+            if (fileWidth == width) {
+                sourceBuffer.get(rgb);
+            } else {
+                for (int y = 0; y < fileHeight; ++y)
+                {                
+                    for (int x = 0; x < fileWidth; ++x)
+                    {
+                        // Skip the padded bytes
+                        if (x >= width) {
+                            iSrc += 4;
+                            continue;
+                        }
+                        
+                        rgb[iDst++] = sourceBuffer.get(iSrc++);       // red
+                        rgb[iDst++] = sourceBuffer.get(iSrc++);       // green
+                        rgb[iDst++] = sourceBuffer.get(iSrc++);       // blue
+                        rgb[iDst++] = sourceBuffer.get(iSrc++);       // alpha
+                    }     
                 }
             }
 
             DataBuffer buffer = new DataBufferByte(rgb, rgb.length);
-
+           
+            int[] colorFormat = {0,1,2};
+            if (needsSwizzle) {
+                colorFormat[0] = 2;
+                colorFormat[1] = 1;
+                colorFormat[2] = 0;
+            }
+           
             // 3 bytes per pixel: red, green, blue
             WritableRaster raster = Raster.createInterleavedRaster(buffer, 
                     width, height,          // width, height of image
-                    3 * width,              // number of bytes per row (stride)
-                    3,                      // number of channels (rgb)
-                    new int[] {0, 1, 2},    // colour format order (i.e. byte 0 is first, byte 1 is second ...
+                    4 * width,              // number of bytes per row (stride)
+                    4,                      // number of channels (rgb)
+                    colorFormat,            // colour format order (iDst.e. byte 0 is first, byte 1 is second ...
                                             // can change order if you want a different format rgb -> bgr
-                    (Point)null);           // TODO Look up this
+                    (Point)null);           // Upper left point of Raster (not used here)
             ColorModel colorModel = new ComponentColorModel(ColorModel.getRGBdefault().getColorSpace(), false, true, Transparency.OPAQUE, DataBuffer.TYPE_BYTE); 
             BufferedImage image = new BufferedImage(colorModel, raster, true, null);
 
@@ -926,7 +904,7 @@ public class CVKImage {
         }
         catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
-//            cvkDevice.GetLogger().LogException(e, String.format("Save file failed: %s", file.getName()));
+            GetLogger().LogException(e, "Save file failed: %s", file.getName());
             return CVK_ERROR_SAVE_TO_FILE_FAILED;
         }
 
@@ -959,17 +937,63 @@ public class CVKImage {
             ret = CopyToCPUMemoryImage(stack);
             if (VkFailed(ret)) { return ret; }
                         
-            // Start mapping the destination images memory
-            StartMemoryMap(stack);
+            // Start mapping the destination image's memory
+            destImage.StartMemoryMap(stack);
             
             // Save to the given file
-            ret = SaveMemoryToFile(stack, file, false);
+            ret = destImage.SaveMemoryToFile(stack, file);
             if (VkFailed(ret)) { return ret; }
 
             // Cleanup
-            EndMemoryMap();
+            destImage.EndMemoryMap();
+            destImage.Destroy();
+            destImage = null;
      
         }
         return ret;
+    }
+    
+    
+    public int ReadPixel(int x, int y) {
+        int r;
+        
+        try (MemoryStack stack = stackPush()) {
+            StartMemoryMap(stack);                 
+            r = ReadPixel(stack, x, y);
+            EndMemoryMap();
+        }
+        
+        return r;
+    }
+    
+    private int ReadPixel(MemoryStack stack, int x, int y) {
+        CVKAssertNotNull(pWriteMemory);
+        
+        int redPixel = 0;
+
+        // Get layout of the image
+        VkImageSubresource subResource = VkImageSubresource.callocStack(stack);
+        subResource.set(VK_IMAGE_ASPECT_COLOR_BIT, 0, 0);
+        VkSubresourceLayout subResourceLayout = VkSubresourceLayout.callocStack(stack);
+        vkGetImageSubresourceLayout(CVKDevice.GetVkDevice(), GetImageHandle(), subResource, subResourceLayout);
+
+        // VK_FORMAT_R32_SFLOAT
+        // Size (in bytes) of the destination image including any padding
+        final long sourceImageSize = subResourceLayout.size(); 
+        // Calculate the file width including the padding (in bytes)
+        int fileWidth = (int)(subResourceLayout.rowPitch() / 4);
+
+        try {
+            FloatBuffer sourceBuffer = pWriteMemory.getFloatBuffer((int)sourceImageSize);
+            redPixel = (int)sourceBuffer.get(x + (y * fileWidth));
+
+        }
+        catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+            GetLogger().LogException(e, "Get ID from Image Memory failed");
+            return CVK_ERROR_IMAGE_GET_ID_FAILED;
+        }
+
+        return redPixel;
     }
 }

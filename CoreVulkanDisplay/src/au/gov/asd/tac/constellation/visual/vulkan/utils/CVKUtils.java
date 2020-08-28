@@ -58,6 +58,10 @@ public class CVKUtils {
     public static final int CVK_ERROR_OUT_OF_MEMORY                             = 0xFFFF0007;
     public static final int CVK_ERROR_IMAGE_VIEW_CREATION_FAILED                = 0xFFFF0008;
     public static final int CVK_ERROR_SAVE_TO_FILE_FAILED                       = 0xFFFF0009;
+    public static final int CVK_ERROR_IMAGE_GET_ID_FAILED                       = 0xFFFF000A;
+    public static final int CVK_ERROR_DEST_IMAGE_CREATE_FAILED                  = 0xFFFF000B;
+    public static final int CVK_ERROR_HITTEST_SOURCE_IMAGE_CREATE_FAILED        = 0xFFFF000C;
+    public static final int CVK_ERROR_HITTEST_DEPTH_IMAGE_CREATE_FAILED         = 0xFFFF000D;
     
     // Logger shared by all of Constellation's Vulkan classes with a minimal formatter
     // as a proxy for the IDE's console window (as prints to stdout aren't appearing).

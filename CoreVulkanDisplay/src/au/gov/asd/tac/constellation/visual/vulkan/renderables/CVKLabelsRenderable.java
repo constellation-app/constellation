@@ -82,7 +82,7 @@ public class CVKLabelsRenderable extends CVKRenderable {
     // Resources recreated with the swap chain (dependent on the image count)    
     private LongBuffer pDescriptorSets = null; 
     private List<Long> pipelines = null;
-    private List<CVKCommandBuffer> commandBuffers = null;    
+    private List<CVKCommandBuffer> displayCommandBuffers = null;    
     private List<CVKBuffer> vertexBuffers = null;   
     private List<CVKBuffer> vertexUniformBuffers = null;
     private List<CVKBuffer> geometryUniformBuffers = null;    
@@ -503,7 +503,7 @@ public class CVKLabelsRenderable extends CVKRenderable {
 //        CVKAssert(fragmentUniformBuffers == null); 
 //        CVKAssert(pDescriptorSets == null);
 //        CVKAssert(hDescriptorLayout == VK_NULL_HANDLE);  
-//        CVKAssert(commandBuffers == null);        
+//        CVKAssert(displayCommandBuffers == null);        
 //        CVKAssert(pipelines == null);
 //        CVKAssert(hPipelineLayout == VK_NULL_HANDLE);    
 //        CVKAssert(hVertexShaderModule == VK_NULL_HANDLE);
@@ -842,12 +842,12 @@ public class CVKLabelsRenderable extends CVKRenderable {
         int ret = VK_SUCCESS;
 //        int imageCount = cvkSwapChain.GetImageCount();
 //        
-//        commandBuffers = new ArrayList<>(imageCount);
+//        displayCommandBuffers = new ArrayList<>(imageCount);
 //
 //        for (int i = 0; i < imageCount; ++i) {
 //            CVKCommandBuffer buffer = CVKCommandBuffer.Create(cvkDevice, 
 //                    VK_COMMAND_BUFFER_LEVEL_SECONDARY, String.format("CVKIconsRenderable %d", i));
-//            commandBuffers.add(buffer);
+//            displayCommandBuffers.add(buffer);
 //        }
 //        
 //        SetCommandBuffersState(CVK_RESOURCE_CLEAN);
@@ -856,8 +856,8 @@ public class CVKLabelsRenderable extends CVKRenderable {
     }   
     
     @Override
-    public VkCommandBuffer GetCommandBuffer(int imageIndex) {
-        return commandBuffers.get(imageIndex).GetVKCommandBuffer(); 
+    public VkCommandBuffer GetDisplayCommandBuffer(int imageIndex) {
+        return displayCommandBuffers.get(imageIndex).GetVKCommandBuffer(); 
     }       
     
     @Override
@@ -878,7 +878,7 @@ public class CVKLabelsRenderable extends CVKRenderable {
 //            beginInfo.flags(VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT);
 //            beginInfo.pInheritanceInfo(inheritanceInfo);             
 //
-//            VkCommandBuffer commandBuffer = GetCommandBuffer(imageIndex);
+//            VkCommandBuffer commandBuffer = GetDisplayCommandBuffer(imageIndex);
 //            ret = vkBeginCommandBuffer(commandBuffer, beginInfo);
 //            checkVKret(ret);
 //            
@@ -927,10 +927,10 @@ public class CVKLabelsRenderable extends CVKRenderable {
     }       
     
     private void DestroyCommandBuffers() {         
-//        if (null != commandBuffers) {
-//            commandBuffers.forEach(el -> {el.Destroy();});
-//            commandBuffers.clear();
-//            commandBuffers = null;
+//        if (null != displayCommandBuffers) {
+//            displayCommandBuffers.forEach(el -> {el.Destroy();});
+//            displayCommandBuffers.clear();
+//            displayCommandBuffers = null;
 //        }      
     }        
     
