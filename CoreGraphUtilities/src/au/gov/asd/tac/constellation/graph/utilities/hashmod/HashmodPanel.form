@@ -41,6 +41,7 @@
                           <Component id="hashmodLabel4" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="hashmodLabel5" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="hashmodLabel6" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="hashmodLabel7" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -50,6 +51,7 @@
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="createAttributesCheckbox" min="-2" max="-2" attributes="0"/>
                                   <Component id="createAllCheckbox" min="-2" max="-2" attributes="0"/>
+                                  <Component id="createTransactionsCheckbox" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
@@ -98,6 +100,11 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="createAttributesCheckbox" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="hashmodLabel6" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="createTransactionsCheckbox" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="hashmodLabel7" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
@@ -250,6 +257,23 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="createAttributesCheckboxActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="hashmodLabel7">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/hashmod/Bundle.properties" key="HashmodPanel.hashmodLabel7.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+        </Property>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="createTransactionsCheckbox">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/hashmod/Bundle.properties" key="HashmodPanel.createTransactionsCheckbox.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+        </Property>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="createTransactionsCheckboxActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

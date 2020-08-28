@@ -121,7 +121,7 @@ For more information please see the [contributing guide](CONTRIBUTING.md).
 
 * Basics (Buttonology) _(coming later)_
 * Social Network Analysis _(coming later)_
-* [Developer Guide](https://github.com/constellation-app/constellation-training/blob/master/CONSTELLATION%20Developer%20Guide.pdf)
+* [Developer Guide](https://github.com/constellation-app/constellation-training/tree/master/Developer%20Training)
 * [Example Module Template](https://github.com/constellation-app/constellation-module-example)
 
 ## Common Troubleshooting Checks
