@@ -92,7 +92,6 @@ import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
-import static org.lwjgl.vulkan.VK10.VK_PIPELINE_BIND_POINT_GRAPHICS;
 import static org.lwjgl.vulkan.VK10.VK_POLYGON_MODE_FILL;
 import static org.lwjgl.vulkan.VK10.VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
 import static org.lwjgl.vulkan.VK10.VK_SAMPLE_COUNT_1_BIT;
@@ -118,10 +117,6 @@ import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.VK_VERTEX_INPUT_RATE_VERTEX;
 import static org.lwjgl.vulkan.VK10.VK_WHOLE_SIZE;
 import static org.lwjgl.vulkan.VK10.vkAllocateDescriptorSets;
-import static org.lwjgl.vulkan.VK10.vkCmdBindDescriptorSets;
-import static org.lwjgl.vulkan.VK10.vkCmdBindVertexBuffers;
-import static org.lwjgl.vulkan.VK10.vkCmdDraw;
-import static org.lwjgl.vulkan.VK10.vkCmdPushConstants;
 import static org.lwjgl.vulkan.VK10.vkCreateBufferView;
 import static org.lwjgl.vulkan.VK10.vkCreateDescriptorSetLayout;
 import static org.lwjgl.vulkan.VK10.vkCreateGraphicsPipelines;
@@ -131,7 +126,6 @@ import static org.lwjgl.vulkan.VK10.vkDestroyDescriptorSetLayout;
 import static org.lwjgl.vulkan.VK10.vkDestroyPipeline;
 import static org.lwjgl.vulkan.VK10.vkDestroyPipelineLayout;
 import static org.lwjgl.vulkan.VK10.vkDestroyShaderModule;
-import static org.lwjgl.vulkan.VK10.vkEndCommandBuffer;
 import static org.lwjgl.vulkan.VK10.vkFreeDescriptorSets;
 import static org.lwjgl.vulkan.VK10.vkMapMemory;
 import static org.lwjgl.vulkan.VK10.vkUnmapMemory;
@@ -437,16 +431,41 @@ public class CVKIconsRenderable extends CVKRenderable{
     }
     
     private static class VertexUniformBufferObject {
-        private static final int SIZEOF = (/*16 +*/ 1 + 1 + 1) * Float.BYTES;
-
         public float morphMix = 0;
         public float visibilityLow = 0;
-        public float visibilityHigh = 0;                 
+        public float visibilityHigh = 0;    
+        private static Integer padding = null;
+        
+        private static int SizeOf() {
+            if (padding == null) {
+                CVKAssertNotNull(CVKDevice.GetVkDevice()); 
+                final int minAlignment = CVKDevice.GetMinUniformBufferAlignment();
+                
+                // The matrices are 64 bytes each so should line up on a boundary (unless the minimum alignment is huge)
+                CVKAssert(minAlignment <= (16 * Float.BYTES));
+
+                int sizeof = 1 * Float.BYTES + // morphMix
+                             1 * Float.BYTES + // visibilityLow
+                             1 * Float.BYTES;  // visibilityHigh 
+
+                final int overrun = sizeof % minAlignment;
+                padding = Integer.valueOf(overrun > 0 ? minAlignment - overrun : 0);             
+            }
+            
+            return 1 * Float.BYTES + // morphMix
+                   1 * Float.BYTES + // visibilityLow
+                   1 * Float.BYTES + // visibilityHigh
+                   padding;
+        }        
         
         private void CopyTo(ByteBuffer buffer) {
             buffer.putFloat(morphMix);
             buffer.putFloat(visibilityLow);
             buffer.putFloat(visibilityHigh);
+            
+            for (int i = 0; i < padding; ++i) {
+                buffer.put((byte)0);
+            }            
         }         
     }      
     
@@ -454,12 +473,10 @@ public class CVKIconsRenderable extends CVKRenderable{
         private int iconsPerRowColumn;
         private int iconsPerLayer;
         private int atlas2DDimension;
-
         private float pixelDensity = 0;
         private final Matrix44f highlightColor = Matrix44f.identity();
         private final Matrix44f pMatrix = new Matrix44f();    
-        private static Integer padding = null;
-        
+        private static Integer padding = null;        
         
         private static int SizeOf() {
             if (padding == null) {
@@ -632,7 +649,7 @@ public class CVKIconsRenderable extends CVKRenderable{
     }
     
     private void CreateUBOStagingBuffers() {
-        cvkVertexUBStagingBuffer = CVKBuffer.Create(VertexUniformBufferObject.SIZEOF,
+        cvkVertexUBStagingBuffer = CVKBuffer.Create(VertexUniformBufferObject.SizeOf(),
                                                     VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                                                     VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
                                                     GetLogger(),
@@ -986,7 +1003,7 @@ public class CVKIconsRenderable extends CVKRenderable{
  
         vertexUniformBuffers = new ArrayList<>();
         for (int i = 0; i < cvkSwapChain.GetImageCount(); ++i) {   
-            CVKBuffer vertexUniformBuffer = CVKBuffer.Create(VertexUniformBufferObject.SIZEOF,
+            CVKBuffer vertexUniformBuffer = CVKBuffer.Create(VertexUniformBufferObject.SizeOf(),
                                                              VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
                                                              VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
                                                              GetLogger(),
@@ -1013,7 +1030,7 @@ public class CVKIconsRenderable extends CVKRenderable{
         vertexUBO.visibilityHigh = cvkVisualProcessor.getDisplayCamera().getVisibilityHigh();            
 
         // Staging buffer so our VBO can be device local (most performant memory)
-        final int size = VertexUniformBufferObject.SIZEOF;
+        final int size = VertexUniformBufferObject.SizeOf();
         PointerBuffer pData = stack.mallocPointer(1);        
         
         // Map staging buffer into host (CPU) rw memory and copy our UBO into it
@@ -1443,7 +1460,7 @@ public class CVKIconsRenderable extends CVKRenderable{
         VkDescriptorBufferInfo.Buffer vertexUniformBufferInfo = VkDescriptorBufferInfo.callocStack(1, stack);
         // vertexUniformBufferInfo.buffer is set per imageIndex
         vertexUniformBufferInfo.offset(0);
-        vertexUniformBufferInfo.range(VertexUniformBufferObject.SIZEOF);        
+        vertexUniformBufferInfo.range(VertexUniformBufferObject.SizeOf());        
         
         // Struct for texel buffer (positions) used by VertexIcon.vs
         VkDescriptorBufferInfo.Buffer positionsTexelBufferInfo = VkDescriptorBufferInfo.callocStack(1, stack);

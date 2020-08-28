@@ -77,6 +77,7 @@ import static org.lwjgl.vulkan.VK10.VK_FORMAT_D24_UNORM_S8_UINT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_D32_SFLOAT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_D32_SFLOAT_S8_UINT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32_SFLOAT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_UNDEFINED;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_DEPTH_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
@@ -498,7 +499,7 @@ public class CVKSwapChain {
 
         // Colour attachment
         VkAttachmentDescription colorAttachment = attachments.get(0);
-        colorAttachment.format(cvkCanvas.GetSurfaceFormat().Value());
+        colorAttachment.format(VK_FORMAT_R32_SFLOAT);
         colorAttachment.samples(VK_SAMPLE_COUNT_1_BIT);
         colorAttachment.loadOp(VK_ATTACHMENT_LOAD_OP_CLEAR);
         colorAttachment.storeOp(VK_ATTACHMENT_STORE_OP_STORE);
