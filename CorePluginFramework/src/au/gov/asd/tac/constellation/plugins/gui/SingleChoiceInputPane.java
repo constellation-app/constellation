@@ -118,7 +118,7 @@ public class SingleChoiceInputPane extends HBox {
         parameter.addListener((final PluginParameter<?> scParameter, final ParameterChange change) -> {
             Platform.runLater(() -> {
                 assert(scParameter.getParameterValue() instanceof SingleChoiceParameterValue);
-                SingleChoiceParameterValue scParameterValue = (SingleChoiceParameterValue) scParameter.getParameterValue();
+                final SingleChoiceParameterValue scParameterValue = (SingleChoiceParameterValue) scParameter.getParameterValue();
                 switch (change) {
                     case VALUE:
                         // Don't change the value if it isn't necessary.
