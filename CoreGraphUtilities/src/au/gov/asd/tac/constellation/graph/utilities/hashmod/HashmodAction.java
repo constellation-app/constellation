@@ -202,6 +202,7 @@ public final class HashmodAction implements ActionListener {
 
         if (createTransactions) {
             final BitSet vertices = HashmodUtilities.vertexBits(wg);
+            vxPos = 0;
 
             final int vxCount2 = wg.getVertexCount();
             final int[] vxOrder2 = new int[vxCount2];

@@ -58,6 +58,9 @@ public class LogarithmicAxis extends ValueAxis<Number> {
     @Override
     protected Object autoRange(double minValue, double maxValue, double length, double labelSize) {
         if (isAutoRanging()) {
+            if (minValue == 0){ // Can only be reached if graph is empty due to ChartBuilder:77,85 checks.
+                minValue = 1; //When graph is empty set override default minimum of 0 (which is incomaptible with the logartihmic axis) and set it to 1. This results in behaviour similiar to that of the non-log axis for an empty chart.
+            }
             return new double[]{minValue, maxValue};
         } else {
             return getRange();
