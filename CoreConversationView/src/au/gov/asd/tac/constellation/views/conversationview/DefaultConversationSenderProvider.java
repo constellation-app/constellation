@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.geometry.Pos;
@@ -51,6 +52,9 @@ public class DefaultConversationSenderProvider implements ConversationSenderProv
     public void updateMessageSenders(GraphReadMethods graph, List<ConversationMessage> messages, List<String> senderAttributes) {
         assert !SwingUtilities.isEventDispatchThread();
 
+        if(Objects.isNull(graph) || messages.isEmpty()){
+            return; //Nothing to do
+        }
         try {
             // Get the icon attribute if it exists
             final int iconAttribute = VisualConcept.VertexAttribute.FOREGROUND_ICON.get(graph);

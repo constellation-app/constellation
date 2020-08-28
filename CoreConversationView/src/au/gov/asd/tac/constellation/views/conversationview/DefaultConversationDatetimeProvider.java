@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 import javafx.scene.layout.Region;
 import javax.swing.SwingUtilities;
 
@@ -36,7 +37,9 @@ public class DefaultConversationDatetimeProvider implements ConversationDatetime
     @Override
     public void updateDatetimes(GraphReadMethods graph, List<ConversationMessage> messages) {
         assert !SwingUtilities.isEventDispatchThread();
-
+        if (messages.isEmpty()) {
+            return; // No messages means nothing to do.
+        }
         final int datetimeAttribute = TemporalConcept.TransactionAttribute.DATETIME.get(graph);
         if (datetimeAttribute == Graph.NOT_FOUND) {
             for (ConversationMessage message : messages) {

@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import org.openide.util.Lookup;
 
 /**
@@ -133,9 +134,11 @@ public abstract class ConversationContributionProvider implements Comparable<Con
      */
     public static List<ConversationContributionProvider> getCompatibleProviders(GraphReadMethods graph) {
         List<ConversationContributionProvider> compatibleProviders = new ArrayList<>();
-        for (ConversationContributionProvider provider : getProviders()) {
-            if (provider.isCompatibleWithGraph(graph)) {
-                compatibleProviders.add(provider);
+        if (Objects.nonNull(graph)) {
+            for (ConversationContributionProvider provider : getProviders()) {
+                if (provider.isCompatibleWithGraph(graph)) {
+                    compatibleProviders.add(provider);
+                }
             }
         }
         return compatibleProviders;

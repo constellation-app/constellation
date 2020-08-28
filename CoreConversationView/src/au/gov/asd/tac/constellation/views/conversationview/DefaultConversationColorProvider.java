@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.conversationview;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import java.util.List;
+import java.util.Objects;
 import javafx.scene.paint.Color;
 import javax.swing.SwingUtilities;
 
@@ -33,7 +34,11 @@ public class DefaultConversationColorProvider implements ConversationColorProvid
     @Override
     public void updateMessageColors(GraphReadMethods graph, List<ConversationMessage> messages) {
         assert !SwingUtilities.isEventDispatchThread();
-
+        
+        if (Objects.isNull(graph) || messages.isEmpty()) {
+            return; // Nothing to do.
+        }
+        
         final DefaultConversationColor color = new DefaultConversationColor(0.3f, 0.8f);
 
         // The position in the vertexColors array of each vertex (by position)

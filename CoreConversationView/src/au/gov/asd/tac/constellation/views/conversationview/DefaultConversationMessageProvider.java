@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.utilities.GraphIndexUtilities;
 import java.util.List;
+import java.util.Objects;
 import javax.swing.SwingUtilities;
 
 /**
@@ -38,7 +39,10 @@ public class DefaultConversationMessageProvider implements ConversationMessagePr
     @Override
     public void getMessages(GraphReadMethods graph, List<ConversationMessage> messages) {
         assert !SwingUtilities.isEventDispatchThread();
-
+        messages.clear();
+        if (Objects.isNull(graph)) {
+            return; // Null graph means no messages.
+        }
         final int vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
         if (vertexSelectedAttribute != Graph.NOT_FOUND) {
             final GraphIndexResult selectedVertices = GraphIndexUtilities.filterElements(graph, vertexSelectedAttribute, true);
