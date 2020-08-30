@@ -189,9 +189,13 @@ public class CVKHitTester extends CVKRenderable {
         // swapchain is created.
         if (swapChainImageCountChanged) {  
             DestroyCommandBuffer();     
-            DestroyImage();
-            DestroyFrameBuffer();
         }
+        
+        // Unlike other renderables we have resources that are tied to the size 
+        // of the display buffer so they must be recreated even when the image
+        // count doesn't change.
+        DestroyImage();
+        DestroyFrameBuffer();        
         
         return VK_SUCCESS; 
     }
@@ -205,9 +209,13 @@ public class CVKHitTester extends CVKRenderable {
             // The number of images has changed, we need to rebuild all image
             // buffered resources
             SetCommandBuffersState(CVK_RESOURCE_NEEDS_REBUILD);
-            SetImagesState(CVK_RESOURCE_NEEDS_REBUILD);
-            SetFrameBuffersState(CVK_RESOURCE_NEEDS_REBUILD);
         }
+        
+        // Unlike other renderables we have resources that are tied to the size 
+        // of the display buffer so they must be recreated even when the image
+        // count doesn't change.
+        SetImagesState(CVK_RESOURCE_NEEDS_REBUILD);
+        SetFrameBuffersState(CVK_RESOURCE_NEEDS_REBUILD);        
         
         return ret;
     } 

@@ -663,6 +663,7 @@ public class CVKRenderer implements ComponentListener {
                     }                    
         
                     if (requestScreenshot) {
+                        CVKDevice.WaitIdle();
                         cvkSwapChain.GetImage(imageIndex).SaveToFile(requestScreenshotFile);
                         requestScreenshot = false;
                         requestScreenshotFile = null;
