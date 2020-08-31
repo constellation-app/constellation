@@ -48,9 +48,10 @@ public class HashmodPanel extends javax.swing.JPanel {
 
     private static final String HASHMOD_CSV_FILE = "user.home";
     private String hashmodCSVFileStr = "";
+    private String hashmodCSVChainStr = "";
     private Boolean isChainedHashmods = false;
     private int numChainedHashmods = 0;
-    private final Hashmod[] chainedHashmods = new Hashmod[10];
+    private Hashmod[] chainedHashmods = new Hashmod[10];
 
     /**
      * Creates new form HashmodPanel.
@@ -115,6 +116,10 @@ public class HashmodPanel extends javax.swing.JPanel {
         return createAttributesCheckbox.isSelected();
     }
 
+    public boolean getCreateTransactions() {
+        return createTransactionsCheckbox.isSelected();
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -140,6 +145,8 @@ public class HashmodPanel extends javax.swing.JPanel {
         hashmodButton1 = new JButton();
         hashmodLabel6 = new JLabel();
         createAttributesCheckbox = new JCheckBox();
+        hashmodLabel7 = new JLabel();
+        createTransactionsCheckbox = new JCheckBox();
 
         Mnemonics.setLocalizedText(hashmodLabel, NbBundle.getMessage(HashmodPanel.class, "Hashmod.csv.label")); // NOI18N
 
@@ -198,6 +205,15 @@ public class HashmodPanel extends javax.swing.JPanel {
             }
         });
 
+        Mnemonics.setLocalizedText(hashmodLabel7, NbBundle.getMessage(HashmodPanel.class, "HashmodPanel.hashmodLabel7.text")); // NOI18N
+
+        Mnemonics.setLocalizedText(createTransactionsCheckbox, NbBundle.getMessage(HashmodPanel.class, "HashmodPanel.createTransactionsCheckbox.text")); // NOI18N
+        createTransactionsCheckbox.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                createTransactionsCheckboxActionPerformed(evt);
+            }
+        });
+
         GroupLayout layout = new GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -221,7 +237,8 @@ public class HashmodPanel extends javax.swing.JPanel {
                             .addComponent(hashmodLabel3)
                             .addComponent(hashmodLabel4)
                             .addComponent(hashmodLabel5)
-                            .addComponent(hashmodLabel6))
+                            .addComponent(hashmodLabel6)
+                            .addComponent(hashmodLabel7))
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                             .addComponent(value2AttributeTextField)
@@ -229,7 +246,8 @@ public class HashmodPanel extends javax.swing.JPanel {
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                     .addComponent(createAttributesCheckbox)
-                                    .addComponent(createAllCheckbox))
+                                    .addComponent(createAllCheckbox)
+                                    .addComponent(createTransactionsCheckbox))
                                 .addGap(0, 0, Short.MAX_VALUE)))))
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -264,6 +282,10 @@ public class HashmodPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                     .addComponent(createAttributesCheckbox)
                     .addComponent(hashmodLabel6))
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(createTransactionsCheckbox)
+                    .addComponent(hashmodLabel7))
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                     .addComponent(hashmodLabel5)
@@ -311,9 +333,14 @@ public class HashmodPanel extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_createAttributesCheckboxActionPerformed
 
+    private void createTransactionsCheckboxActionPerformed(ActionEvent evt) {//GEN-FIRST:event_createTransactionsCheckboxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_createTransactionsCheckboxActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private JCheckBox createAllCheckbox;
     private JCheckBox createAttributesCheckbox;
+    private JCheckBox createTransactionsCheckbox;
     private JButton hashmodButton;
     private JButton hashmodButton1;
     private JTextField hashmodCSVFile;
@@ -324,6 +351,7 @@ public class HashmodPanel extends javax.swing.JPanel {
     private JLabel hashmodLabel4;
     private JLabel hashmodLabel5;
     private JLabel hashmodLabel6;
+    private JLabel hashmodLabel7;
     private JTextArea jCSVFileList;
     private JScrollPane jScrollPane1;
     private JTextField keyAttributeTextField;

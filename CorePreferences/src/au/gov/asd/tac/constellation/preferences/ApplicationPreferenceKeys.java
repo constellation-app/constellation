@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.preferences.rest.RestDirectory;
 import java.io.File;
 import java.util.prefs.Preferences;
 import javax.swing.JFileChooser;
-import org.apache.commons.lang3.StringUtils;
 import org.openide.util.Lookup;
 
 /**
@@ -179,7 +178,7 @@ public final class ApplicationPreferenceKeys {
     /**
      * Quality Control View Priorities
      */
-    public static final String RULE_PRIORITIES = StringUtils.EMPTY;
+    public static final String RULE_PRIORITIES = "customRules";
 
     private ApplicationPreferenceKeys() {
     }
