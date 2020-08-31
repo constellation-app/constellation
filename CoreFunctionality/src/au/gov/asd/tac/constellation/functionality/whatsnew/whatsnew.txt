@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
+== 2020-08-28 Split Nodes Plugin
+<p>A new option is added to split nodes, duplicating the transactions of the selected node.</p>
+
 == 2020-08-24 Layers View Keyboard Shortcuts
 <p>Keyboard shortcuts have been added to the Layers View. "Ctrl+Alt+L" will add a new layer and "Ctrl+Alt+D" will deselect all layers.</p>
 
