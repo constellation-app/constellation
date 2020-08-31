@@ -22,7 +22,6 @@ import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Objects;
 import javafx.scene.layout.Region;
 import javax.swing.SwingUtilities;
 

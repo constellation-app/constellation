@@ -133,7 +133,7 @@ public abstract class ConversationContributionProvider implements Comparable<Con
      * @return A list of all providers that are compatible with the given graph.
      */
     public static List<ConversationContributionProvider> getCompatibleProviders(GraphReadMethods graph) {
-        List<ConversationContributionProvider> compatibleProviders = new ArrayList<>();
+        final List<ConversationContributionProvider> compatibleProviders = new ArrayList<>();
         if (Objects.nonNull(graph)) {
             for (ConversationContributionProvider provider : getProviders()) {
                 if (provider.isCompatibleWithGraph(graph)) {

@@ -189,7 +189,7 @@ public class Conversation {
 
         @Override
         protected boolean update(GraphReadMethods graph) {
-            return Objects.isNull(graph);
+            return graph == null;
         }
     };
     /**
@@ -203,9 +203,8 @@ public class Conversation {
 
             
             ConversationState newConversationState;
-            int conversationStateAttribute;
             if (Objects.nonNull(graph)) {
-                conversationStateAttribute = ConversationViewConcept.MetaAttribute.CONVERSATION_VIEW_STATE.get(graph);
+                int conversationStateAttribute = ConversationViewConcept.MetaAttribute.CONVERSATION_VIEW_STATE.get(graph);
                 if (conversationStateAttribute == Graph.NOT_FOUND) {
                     newConversationState = new ConversationState();
                     newConversationState.setSenderAttributesToKeys(graph);
@@ -435,10 +434,6 @@ public class Conversation {
     private UpdateComponent<GraphReadMethods> senderUpdater = new UpdateComponent<GraphReadMethods>("Senders", LOCK_STAGE) {
         @Override
         protected boolean update(GraphReadMethods graph) {
-//            if (graph == null) {
-//                return false;
-//            }
-
             try {
                 final CountDownLatch latch = new CountDownLatch(1);
 
