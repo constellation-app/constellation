@@ -227,6 +227,12 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
             scatterPlotPane.getOptionsPane().refreshOptions(currentState);
         }
     }
+    
+    @Override
+    protected void componentShowing() {
+        super.componentShowing();
+        refreshHandler.accept(currentGraph);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
