@@ -203,8 +203,8 @@ public class Conversation {
 
             
             ConversationState newConversationState;
-            if (Objects.nonNull(graph)) {
-                int conversationStateAttribute = ConversationViewConcept.MetaAttribute.CONVERSATION_VIEW_STATE.get(graph);
+            if (graph != null) {
+                final int conversationStateAttribute = ConversationViewConcept.MetaAttribute.CONVERSATION_VIEW_STATE.get(graph);
                 if (conversationStateAttribute == Graph.NOT_FOUND) {
                     newConversationState = new ConversationState();
                     newConversationState.setSenderAttributesToKeys(graph);
