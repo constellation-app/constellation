@@ -227,11 +227,11 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
             scatterPlotPane.getOptionsPane().refreshOptions(currentState);
         }
     }
-
+    
     @Override
     protected void componentShowing() {
         super.componentShowing();
-        handleNewGraph(GraphManager.getDefault().getActiveGraph());
+        refreshHandler.accept(currentGraph);
     }
 
     /**
