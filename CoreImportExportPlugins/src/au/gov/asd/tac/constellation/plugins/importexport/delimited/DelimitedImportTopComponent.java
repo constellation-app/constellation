@@ -64,7 +64,7 @@ public final class DelimitedImportTopComponent extends JavaFxTopComponent<Delimi
 
     @Override
     protected String createStyle() {
-        return "resources/delimited-importer.css";
+        return null;
     }
 
     @Override
