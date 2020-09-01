@@ -25,12 +25,12 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.StreamHandler;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_DEFAULT_LOG_LEVEL;
 
 public class CVKGraphLogger {
     // Static logger used by static code like shader loading or by code that doesn't know
-    // what graph it is working for.    
-    private final static Level DEFAULT_LOG_LEVEL = Level.INFO;    
-    private final static Logger CVKLOGGER = CreateNamedFileLogger("CVK", DEFAULT_LOG_LEVEL);    
+    // what graph it is working for.      
+    private final static Logger CVKLOGGER = CreateNamedFileLogger("CVK", CVK_DEFAULT_LOG_LEVEL);    
     
     // Variables for the per graph loggers
     private static final boolean INDIVIDUAL_LOGS = true; 
@@ -226,7 +226,7 @@ public class CVKGraphLogger {
     public CVKGraphLogger(String graphId) {
         this.loggerId = NEXT_LOGGER_ID++;
         if (INDIVIDUAL_LOGS) {
-            graphLogger = CreateNamedFileLogger(String.format("CVK_graph_%d", loggerId), DEFAULT_LOG_LEVEL);
+            graphLogger = CreateNamedFileLogger(String.format("CVK_graph_%d", loggerId), CVK_DEFAULT_LOG_LEVEL);
         } else {
             graphLogger = null;
         }        
@@ -308,7 +308,7 @@ public class CVKGraphLogger {
     }       
     
     public void StartLogSection(String msg) {
-        StartLogSection(DEFAULT_LOG_LEVEL, msg);
+        StartLogSection(Level.INFO, msg);
     }
     
     public void StartLogSection(Level level, String msg) {
@@ -319,7 +319,7 @@ public class CVKGraphLogger {
     }
     
     public void EndLogSection(String msg) {
-        EndLogSection(DEFAULT_LOG_LEVEL, msg);       
+        EndLogSection(Level.INFO, msg);       
     }    
     
     public void EndLogSection(Level level, String msg) {

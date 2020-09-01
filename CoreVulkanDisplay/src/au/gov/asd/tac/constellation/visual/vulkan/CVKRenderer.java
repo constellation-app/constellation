@@ -28,6 +28,7 @@ import static org.lwjgl.vulkan.VK10.*;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.checkVKret;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable;
+import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKGlyphTextureAtlas;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKIconTextureAtlas;
 import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKGraphLogger;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssertNotNull;
@@ -585,7 +586,10 @@ public class CVKRenderer implements ComponentListener {
             // Blocking updates
             if (updateDisplays) {
                 CVKDevice.WaitIdle();
-                CVKIconTextureAtlas.GetInstance().DisplayUpdate();
+                ret = CVKIconTextureAtlas.GetInstance().DisplayUpdate();
+                checkVKret(ret);
+                ret = CVKGlyphTextureAtlas.GetInstance().DisplayUpdate();
+                checkVKret(ret);
                 for (CVKRenderable el : renderables) {
                     if (el.NeedsDisplayUpdate()) {
                         ret = el.DisplayUpdate();

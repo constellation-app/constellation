@@ -37,7 +37,6 @@ import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKIconsRenderable
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKLabelsRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKPointsRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable;
-import au.gov.asd.tac.constellation.visual.vulkan.CVKRenderUpdateTask;
 import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKGraphLogger;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_DEBUGGING;
 import java.awt.Component;
@@ -97,6 +96,10 @@ public class CVKVisualProcessor extends VisualProcessor {
     public long GetRenderThreadID() { return renderThread != null ? renderThread.getId() : -1; }
     public CVKGraphLogger GetLogger() { return cvkLogger; }
     public CVKCanvas GetCanvas() { return cvkCanvas; }
+    public long GetPositionBufferViewHandle() { return cvkIcons.GetPositionBufferViewHandle(); }
+    public long GetPositionBufferHandle() { return cvkIcons.GetPositionBufferHandle(); }
+    public long GetPositionBufferSize() { return cvkIcons.GetPositionBufferSize(); }
+    public long GetVertexFlagsBufferViewHandle() { return cvkIcons.GetVertexFlagsBufferViewHandle(); }
     
     
     public CVKVisualProcessor(final String graphId) throws Throwable {  
@@ -104,7 +107,7 @@ public class CVKVisualProcessor extends VisualProcessor {
         try {
             renderThread = Thread.currentThread();
             cvkLogger.info("Renderthread TID %d (java hash %d)", renderThread.getId(), renderThread.hashCode());
-
+           
             cvkCanvas = new CVKCanvas(this);   
 
             int ret;
@@ -131,16 +134,17 @@ public class CVKVisualProcessor extends VisualProcessor {
 
             cvkHitTester = new CVKHitTester(this);     
             cvkCanvas.AddRenderable(cvkHitTester);  
-            cvkAxes = new CVKAxesRenderable(this);
-            cvkCanvas.AddRenderable(cvkAxes);
             cvkIcons = new CVKIconsRenderable(this);
             cvkCanvas.AddRenderable(cvkIcons);
             cvkLabels = new CVKLabelsRenderable(this);
             cvkCanvas.AddRenderable(cvkLabels);
+            cvkAxes = new CVKAxesRenderable(this);
+            cvkCanvas.AddRenderable(cvkAxes);            
             cvkPoints = new CVKPointsRenderable(this);   
             cvkCanvas.AddRenderable(cvkPoints);
             cvkFPS = new CVKFPSRenderable(this);    
-            cvkCanvas.AddRenderable(cvkFPS);            
+            cvkCanvas.AddRenderable(cvkFPS);      
+
         } catch (Exception e) {
             cvkLogger.LogException(e, "Exception raised constructing CVKVisualProcessor %s", graphId);
             throw e;
@@ -661,8 +665,11 @@ public class CVKVisualProcessor extends VisualProcessor {
                     setDisplayCamera(camera);
                     Graphics3DUtilities.getModelViewMatrix(camera.lookAtEye, camera.lookAtCentre, camera.lookAtUp, getDisplayModelViewMatrix());
 
-                    addTask(cvkAxes.TaskUpdateCamera());
+                    if (cvkAxes != null) {
+                        addTask(cvkAxes.TaskUpdateCamera());
+                    }
                     addTask(cvkIcons.TaskUpdateCamera());
+                    addTask(cvkLabels.TaskUpdateCamera());
                 };
             case CONNECTION_LABEL_COLOR:
                 return (change, access) -> {

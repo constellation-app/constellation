@@ -23,14 +23,15 @@ const float LABEL_NODE_GAP = 0.2 / LABEL_AESTHETIC_SCALE;
 const float BACKGROUND_DARKENING_FACTOR = 0.8;
 
 
-// === UNIFORMS ===
-// .xyz = world coordinates of node.
-// .a = radius of node.
-layout(binding = 0) uniform samplerBuffer xyzTexture;
-layout(std140, binding = 1) uniform UniformBlock {
+// === PUSH CONSTANTS ===
+layout(std140, push_constant) uniform VertexPushConstant {
     // Matrix to project from world coordinates to camera coordinates
     mat4 mvMatrix;
+} vpc;
 
+
+// === UNIFORMS ===
+layout(std140, binding = 0) uniform UniformBlock {
     // Each column is a node (bottom or top) label with the following structure:
     // [0..2] rgb colour (note label colours do not habve an alpha)
     // [3] label size
@@ -48,18 +49,20 @@ layout(std140, binding = 1) uniform UniformBlock {
     // Used to draw the label background.
     vec4 backgroundColor;
 } ub;
+// .xyz = world coordinates of node.
+// .a = radius of node.
+layout(binding = 1) uniform samplerBuffer xyzTexture;
 
 
 // === PER VERTEX DATA IN ===
-// [0] the index of the glyph in the glyphInfoTexture
-// [1..2] x and y offsets of this glyph from the top centre of the line of text
-// [3] The visibility of this glyph (constant for a node, but easier to pass in the batch).
-layout(location = 0) in vec4 glyphLocationData;
+// [0..1] x and y offsets of this glyph from the top centre of the line of text
+// [2] The visibility of this glyph (constant for a node, but easier to pass in the batch).
+layout(location = 0) in vec3 glyphLocationData;
 
-// [0] The index of the node containg this glyph in the xyzTexture
-// [1] The total scale of the lines and their labels up to this point (< 0 if this is a glyph in a bottom label)
-// [2] The label number in which this glyph occurs
-// [3] Unused
+// [0] the index of the glyph in the glyphInfoTexture
+// [1] The index of the node containing this glyph in the xyzTexture
+// [2] The total scale of the lines and their labels up to this point (< 0 if this is a glyph in a bottom label)
+// [3] The label number in which this glyph occurs
 layout(location = 1) in ivec4 graphLocationData;
 
 
@@ -82,16 +85,15 @@ layout(location = 6) out float drawIndicatorY;
 layout(location = 7) out float depth;
 
 
-void main(void) {
+void main(void) {    
+    float glyphXOffset = glyphLocationData[0];
+    float glyphYOffset = glyphLocationData[1];
+    float glyphVis = glyphLocationData[2];
 
-    glyphIndex = int(glyphLocationData[0]);
-    float glyphXOffset = glyphLocationData[1];
-    float glyphYOffset = glyphLocationData[2];
-    float glyphVis = glyphLocationData[3];
-
-    int nodeIndex = graphLocationData[0];
-    int totalScale = graphLocationData[1];
-    int labelNumber = graphLocationData[2];
+    glyphIndex = int(graphLocationData[0]);
+    int nodeIndex = graphLocationData[1];
+    int totalScale = graphLocationData[2];
+    int labelNumber = graphLocationData[3];
 
     // Find the xyz of the vertex that this glyph belongs to,
     // specified by an offset into the xyzTexture buffer.
@@ -101,7 +103,7 @@ void main(void) {
     vec4 mixedVertex = mix(v, vEnd, ub.morphMix);
 
     // Calculate the pixel coordinates of the vertex
-    vec4 nodeLocation = ub.mvMatrix * vec4(mixedVertex.xyz, 1);
+    vec4 nodeLocation = vpc.mvMatrix * vec4(mixedVertex.xyz, 1);
 
     // Get the radius of the associated vertex
     float nradius = mixedVertex.w;

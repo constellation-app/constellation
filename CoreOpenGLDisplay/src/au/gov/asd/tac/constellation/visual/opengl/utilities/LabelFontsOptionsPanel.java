@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.visual.opengl.utilities;
 
 import au.gov.asd.tac.constellation.utilities.gui.JNumberedTextArea;
-import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.ConstellationLabelFonts;
+import au.gov.asd.tac.constellation.utilities.glyphs.ConstellationLabelFonts;
 import au.gov.asd.tac.constellation.utilities.glyphs.FontInfo;
 import au.gov.asd.tac.constellation.utilities.glyphs.FontStyle;
 import au.gov.asd.tac.constellation.utilities.glyphs.GlyphManagerBI;

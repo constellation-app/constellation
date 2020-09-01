@@ -208,6 +208,15 @@ public class CVKInstance {
 //        } else {
 //            isCmdBuffer = false;
 //        }
+
+/*
+ERROR
+Validation layer: Validation Error: [ UNASSIGNED-CoreValidation-Shader-InterfaceTypeMismatch ] Object 0: handle = 0xe81828000000000d, type = VK_OBJECT_TYPE_SHADER_MODULE; | MessageID = 0xb6cf33fe | Type mismatch on location 0.0: 'ptr to output sint32' vs 'ptr to input arr[1] of float32'
+
+CAUSE
+Output at location 0 of the vertex shader did not match input at location 0 of the geometry shader
+*/
+
         
         // TODO_TT: this has to be false because...
         return VK_FALSE;

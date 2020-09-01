@@ -63,18 +63,13 @@ public class CVKUtils {
     public static final int CVK_ERROR_HITTEST_SOURCE_IMAGE_CREATE_FAILED        = 0xFFFF000C;
     public static final int CVK_ERROR_HITTEST_DEPTH_IMAGE_CREATE_FAILED         = 0xFFFF000D;
     
-    // Logger shared by all of Constellation's Vulkan classes with a minimal formatter
-    // as a proxy for the IDE's console window (as prints to stdout aren't appearing).
-
     
     // Enable this for additional logging, thread verification and other checks
     public static final boolean CVK_DEBUGGING = true;  //TODO: tie this to the default log level?
-    
+    public static final Level CVK_DEFAULT_LOG_LEVEL = Level.WARNING;  
     public static int CVK_VKALLOCATIONS = 0;
     
-    
-          
-    
+   
 
     public static void LogStackTrace() {
         LogStackTrace(Level.INFO);

@@ -6,7 +6,7 @@
 // === PUSH CONSTANTS ===
 layout(std140, push_constant) uniform VertexPushConstant {
     mat4 mvMatrix;
-}vpc;
+} vpc;
 
 
 // === UNIFORMS ===
