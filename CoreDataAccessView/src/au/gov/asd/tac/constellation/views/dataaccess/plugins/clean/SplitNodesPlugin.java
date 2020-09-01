@@ -198,7 +198,8 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
                     final int transactionAttributeId = graph.getAttribute(GraphElementType.TRANSACTION, transactionAttributePosition);
                     final String transactionAttributeName = graph.getAttributeName(transactionAttributeId);
                     if (transactionAttributeName.equals(VisualConcept.TransactionAttribute.IDENTIFIER.getName())) {
-                        graph.setStringValue(transactionAttributeId, newTransactionId, Integer.toString(newTransactionId));
+                        final String transactionIdentifier = graph.getStringValue(transactionAttributeId, originalTransactionId);
+                        graph.setStringValue(transactionAttributeId, newTransactionId,transactionIdentifier);
                     } else {
                         graph.getNativeAttributeType(transactionAttributeId).copyAttributeValue(graph, transactionAttributeId, originalTransactionId, newTransactionId);
                     }
