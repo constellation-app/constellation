@@ -675,6 +675,16 @@ public class ComponentSubgraph implements GraphWriteMethods {
     }
 
     @Override
+    public <V> V createAttributeValue(final int attribute) {
+        return proxy.createAttributeValue(attribute);
+    }
+    
+    @Override
+    public <V> void readAttributeValue(final int attribute, final int id, final V value) {
+        proxy.readAttributeValue(attribute, id, value);
+    }
+    
+    @Override
     public boolean isPrimaryKey(int attribute) {
         return proxy.isPrimaryKey(attribute);
     }

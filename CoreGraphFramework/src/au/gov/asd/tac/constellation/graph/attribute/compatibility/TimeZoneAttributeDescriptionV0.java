@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.graph.attribute.compatibility;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.attribute.AbstractAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
+import au.gov.asd.tac.constellation.graph.value.types.objectType.ObjectValue;
 import java.util.Arrays;
 import java.util.TimeZone;
 import org.openide.util.lookup.ServiceProvider;
@@ -45,7 +46,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @Deprecated
 @ServiceProvider(service = AttributeDescription.class)
-public final class TimeZoneAttributeDescriptionV0 extends AbstractAttributeDescription {
+public final class TimeZoneAttributeDescriptionV0 extends AbstractAttributeDescription<ObjectValue<TimeZone>> {
 
     private static final TimeZone DEFAULT_VALUE = TimeZone.getTimeZone("UTC");
     private TimeZone[] data = new TimeZone[0];
@@ -177,5 +178,15 @@ public final class TimeZoneAttributeDescriptionV0 extends AbstractAttributeDescr
     public void restoreData(final Object savedData) {
         final TimeZone[] sd = (TimeZone[]) savedData;
         data = Arrays.copyOf(sd, sd.length);
+    }
+    
+    @Override
+    public ObjectValue<TimeZone> createValue() {
+        return new ObjectValue<>();
+    }
+    
+    @Override
+    public void read(int index, ObjectValue<TimeZone> value) {
+        value.writeObject(data[index]);
     }
 }

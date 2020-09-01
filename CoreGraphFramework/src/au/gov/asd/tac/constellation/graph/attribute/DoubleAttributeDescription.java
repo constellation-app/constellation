@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
 import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
+import au.gov.asd.tac.constellation.graph.value.types.doubleType.DoubleValue;
 import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
@@ -41,7 +42,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author cygnus_x-1
  */
 @ServiceProvider(service = AttributeDescription.class)
-public class DoubleAttributeDescription extends AbstractAttributeDescription {
+public class DoubleAttributeDescription extends AbstractAttributeDescription<DoubleValue> {
 
     public static final String ATTRIBUTE_NAME = "double";
     public static final Class<Double> NATIVE_CLASS = double.class;
@@ -279,5 +280,15 @@ public class DoubleAttributeDescription extends AbstractAttributeDescription {
     public void restoreData(final Object savedData) {
         final double[] sd = (double[]) savedData;
         data = Arrays.copyOf(sd, sd.length);
+    }
+    
+    @Override
+    public DoubleValue createValue() {
+        return new DoubleValue();
+    }
+    
+    @Override
+    public void read(int index, DoubleValue value) {
+        value.writeDouble(data[index]);
     }
 }

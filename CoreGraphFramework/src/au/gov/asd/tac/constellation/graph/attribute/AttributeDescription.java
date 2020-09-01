@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType.NativeValue;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
 import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
+import au.gov.asd.tac.constellation.graph.value.IndexedReadable;
 
 /**
  * An AttributeDescription defines an attribute type that can hold a new type of
@@ -49,7 +50,7 @@ import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
  *
  * @author sirius
  */
-public interface AttributeDescription {
+public interface AttributeDescription<V> extends IndexedReadable<V> {
 
     /**
      * Sets the graph that this attribute belongs to. The framework calls this

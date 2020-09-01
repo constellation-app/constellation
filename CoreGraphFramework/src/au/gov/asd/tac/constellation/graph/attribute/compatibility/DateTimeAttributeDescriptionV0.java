@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.graph.attribute.AbstractAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
+import au.gov.asd.tac.constellation.graph.value.types.longType.LongValue;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -58,7 +59,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @Deprecated
 @ServiceProvider(service = AttributeDescription.class)
-public final class DateTimeAttributeDescriptionV0 extends AbstractAttributeDescription {
+public final class DateTimeAttributeDescriptionV0 extends AbstractAttributeDescription<LongValue> {
 
     /**
      * UTC time zone.
@@ -425,5 +426,15 @@ public final class DateTimeAttributeDescriptionV0 extends AbstractAttributeDescr
     @Override
     public NativeAttributeType getNativeType() {
         return NativeAttributeType.LONG;
+    }
+    
+    @Override
+    public LongValue createValue() {
+        return new LongValue();
+    }
+    
+    @Override
+    public void read(int index, LongValue value) {
+        value.writeLong(data[index]);
     }
 }

@@ -222,6 +222,16 @@ public final class StoreGraphValidator implements GraphWriteMethods {
     }
 
     @Override
+    public <V> V createAttributeValue(final int attribute) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @Override
+    public <V> void readAttributeValue(final int attribute, final int id, final V value) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @Override
     public Schema getSchema() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

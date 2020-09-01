@@ -1743,6 +1743,16 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     }
 
     @Override
+    public <V> V createAttributeValue(final int attribute) {
+        return (V)attributeDescriptions[attribute].createValue();
+    }
+    
+    @Override
+    public <V> void readAttributeValue(final int attribute, final int id, final V value) {
+        attributeDescriptions[attribute].read(id, value);
+    }
+    
+    @Override
     public boolean isDefaultValue(final int attribute, final int id) {
         return attributeDescriptions[attribute].isClear(id);
     }

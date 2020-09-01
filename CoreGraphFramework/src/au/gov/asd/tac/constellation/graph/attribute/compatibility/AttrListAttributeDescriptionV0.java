@@ -18,6 +18,8 @@ package au.gov.asd.tac.constellation.graph.attribute.compatibility;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.attribute.AbstractAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
+import au.gov.asd.tac.constellation.graph.value.types.booleanType.BooleanValue;
+import au.gov.asd.tac.constellation.graph.value.types.stringType.StringValue;
 import java.util.Arrays;
 
 /**
@@ -34,7 +36,7 @@ import java.util.Arrays;
  */
 @Deprecated
 //@ServiceProvider(service = AttributeDescription.class)
-public final class AttrListAttributeDescriptionV0 extends AbstractAttributeDescription {
+public final class AttrListAttributeDescriptionV0 extends AbstractAttributeDescription<StringValue> {
 
     private static final String DEFAULT_VALUE = null;
     public static final String ATTR_NAME = "attr_list";
@@ -213,5 +215,15 @@ public final class AttrListAttributeDescriptionV0 extends AbstractAttributeDescr
     public void restoreData(final Object savedData) {
         final String[] sd = (String[]) savedData;
         data = Arrays.copyOf(sd, sd.length);
+    }
+    
+    @Override
+    public StringValue createValue() {
+        return new StringValue();
+    }
+    
+    @Override
+    public void read(int index, StringValue value) {
+        value.writeString(data[index]);
     }
 }
