@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
+== 2020-08-28 Split Nodes Plugin
+<p>A new option is added to split nodes, duplicating the transactions of the selected node.</p>
+
 == 2020-08-26 Delimited File Importer
 <p>Conversion of the importer to a view has allowed a more consistent user experience.</p>
 <p>Multiple bug fixes with selection of check-boxes and loading of dropdowns are now in effect.</p>
