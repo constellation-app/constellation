@@ -338,6 +338,7 @@ public class PluginParameters implements PluginParameterListener {
     public boolean hasMultiLineStringParameter() {
         for (PluginParameter<?> parameter : uParameters.values()) {
             if (parameter.getParameterValue() instanceof StringParameterValue
+                    && parameter.getProperty(StringParameterType.LINES) != null
                     && (int) parameter.getProperty(StringParameterType.LINES) > 1) {
                 return true;                 
             }

@@ -1982,7 +1982,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 }
             }
         }
-        setObjectValue(LayersConcept.GraphAttribute.LAYER_PREFERENCES.get(this), 0, preferences);
+        setObjectValue(LayersConcept.GraphAttribute.LAYER_PREFERENCES.ensure(this), 0, preferences);
     }
 
     /**
