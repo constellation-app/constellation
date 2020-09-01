@@ -22,7 +22,6 @@ import au.gov.asd.tac.constellation.plugins.importexport.delimited.model.CellVal
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.model.CellValueProperty;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.model.TableRow;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.translator.AttributeTranslator;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.translator.ScriptAttributeTranslator;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -34,7 +33,6 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.layout.BorderPane;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * ImportTableColumn extends a standard JavaFX table column to add field
@@ -84,13 +82,9 @@ public class ImportTableColumn extends TableColumn<TableRow, CellValue> {
                 for (final TableRow row : data) {
                     final CellValueProperty property = row.getProperty(columnIndex);
                     final String value = property.get().getOriginalText();
-                    final String errorMessage;
-                    final String parsedValue = parser.translate(value, parserParameters); // errors here
-                    if (StringUtils.contains(parsedValue, ScriptAttributeTranslator.ERROR_TEXT)) {
-                        errorMessage = parsedValue;
-                    } else {
-                        errorMessage = attributeDescription.acceptsString(parsedValue);
-                    }
+                    final String parsedValue = parser.translate(value, parserParameters);
+                    final String errorMessage = attributeDescription.acceptsString(parsedValue);
+
                     columnFailed |= errorMessage != null;
                     if (parsedValue == null ? value == null : parsedValue.equals(value)) {
                         property.setText(value);

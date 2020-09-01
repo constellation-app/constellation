@@ -111,7 +111,7 @@ public class ScriptAttributeTranslator extends AttributeTranslator {
             }
             return String.valueOf(result);
         } catch (ScriptException e) {
-            return ERROR_TEXT + e.getMessage();
+            return "ERROR: " + e.getMessage();
         }
     }
 
