@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.LayersConcept;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
@@ -41,9 +42,11 @@ import java.util.List;
 public class LayersViewController {
 
     private final LayersViewTopComponent parent;
+    private final List<SchemaAttribute> listenedAttributes;
 
     public LayersViewController(final LayersViewTopComponent parent) {
         this.parent = parent;
+        this.listenedAttributes = new ArrayList<>();
     }
 
     /**
@@ -62,6 +65,27 @@ public class LayersViewController {
                     LayersConcept.VertexAttribute.LAYER_VISIBILITY.ensure(graph);
                     LayersConcept.TransactionAttribute.LAYER_MASK.ensure(graph);
                     LayersConcept.TransactionAttribute.LAYER_VISIBILITY.ensure(graph);
+                }
+            }).executeLater(activeGraph);
+        }
+    }
+
+    /**
+     * Update the List of listened attributes via the Layers View State.
+     */
+    public void updateListenedAttributes() {
+        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+        if (activeGraph != null) {
+            PluginExecution.withPlugin(new SimpleReadPlugin("Layers View: Capture Listened Attributes") {
+                @Override
+                public void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+                    final int layerStateId = LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.get(graph);
+                    if (layerStateId == Graph.NOT_FOUND) {
+                        return;
+                    }
+
+                    final LayersViewState state = graph.getObjectValue(layerStateId, 0);
+                    listenedAttributes.addAll(state.getLayerAttributes());
                 }
             }).executeLater(activeGraph);
         }
@@ -101,6 +125,8 @@ public class LayersViewController {
         }
         PluginExecution.withPlugin(new LayersViewStateReader(pane))
                 .executeLater(graph);
+
+        updateListenedAttributes();
     }
 
     /**
@@ -115,6 +141,10 @@ public class LayersViewController {
         }
         PluginExecution.withPlugin(new LayersViewStateWriter(pane.getlayers()))
                 .executeLater(graph);
+    }
+
+    public List<SchemaAttribute> getListenedAttributes() {
+        return listenedAttributes;
     }
 
     /**
@@ -174,6 +204,7 @@ public class LayersViewController {
 
             final LayersViewState newState = currentState == null ? new LayersViewState() : new LayersViewState(currentState);
             newState.setLayers(layers);
+            newState.extractLayerAttributes(graph);
 
             graph.setObjectValue(stateAttributeId, 0, newState);
         }

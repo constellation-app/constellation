@@ -15,8 +15,11 @@
  */
 package au.gov.asd.tac.constellation.views.layers.state;
 
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.views.layers.layer.LayerDescription;
+import au.gov.asd.tac.constellation.views.layers.layer.LayerEvaluator;
 import java.util.ArrayList;
 import java.util.List;
 import org.openide.NotifyDescriptor;
@@ -29,19 +32,25 @@ import org.openide.NotifyDescriptor;
 public class LayersViewState {
 
     private final List<LayerDescription> layers;
+    private final List<SchemaAttribute> layerAttributes;
 
     public LayersViewState() {
-        this((List<LayerDescription>) null);
+        this((List<LayerDescription>) null, (List<SchemaAttribute>) null);
     }
 
     public LayersViewState(final LayersViewState state) {
-        this(state.getLayers());
+        this(state.getLayers(), state.getLayerAttributes());
     }
 
-    public LayersViewState(final List<LayerDescription> layers) {
+    public LayersViewState(final List<LayerDescription> layers, final List<SchemaAttribute> layerAttributes) {
         this.layers = new ArrayList<>();
+        this.layerAttributes = new ArrayList<>();
+
         if (layers != null) {
             this.layers.addAll(layers);
+        }
+        if (layerAttributes != null) {
+            this.layerAttributes.addAll(layerAttributes);
         }
     }
 
@@ -51,6 +60,10 @@ public class LayersViewState {
 
     public List<LayerDescription> getLayers() {
         return layers;
+    }
+
+    public List<SchemaAttribute> getLayerAttributes() {
+        return layerAttributes;
     }
 
     public void addLayer(final LayerDescription layer) {
@@ -72,5 +85,18 @@ public class LayersViewState {
     public void setLayers(final List<LayerDescription> layers) {
         this.layers.clear();
         this.layers.addAll(layers);
+    }
+
+    public void extractLayerAttributes(GraphWriteMethods graph) {
+        final List<SchemaAttribute> attributes = new ArrayList<>();
+        for (final LayerDescription layer : layers) {
+            attributes.addAll(LayerEvaluator.getQueryAttributes(graph, layer.getLayerQuery()));
+        }
+        setLayerAttributes(attributes);
+    }
+
+    public void setLayerAttributes(final List<SchemaAttribute> layerAttributes) {
+        this.layerAttributes.clear();
+        this.layerAttributes.addAll(layerAttributes);
     }
 }

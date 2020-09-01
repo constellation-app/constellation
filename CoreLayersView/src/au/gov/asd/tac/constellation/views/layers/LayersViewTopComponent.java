@@ -16,8 +16,14 @@
 package au.gov.asd.tac.constellation.views.layers;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.monitor.AttributeValueMonitor;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
+import au.gov.asd.tac.constellation.views.layers.utilities.ValidateLayerMasks;
+import java.util.ArrayList;
+import java.util.List;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -54,6 +60,7 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
 
     private final LayersViewController layersViewController;
     private final LayersViewPane layersViewPane;
+    private final List<AttributeValueMonitor> valueMonitors = new ArrayList<>();
 
     public LayersViewTopComponent() {
         setName(Bundle.CTL_LayersViewTopComponent());
@@ -62,13 +69,34 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
 
         layersViewController = new LayersViewController(LayersViewTopComponent.this);
         layersViewPane = new LayersViewPane(layersViewController);
+        List<SchemaAttribute> changeListeners = new ArrayList<>();
+
         initContent();
 
         addAttributeValueChangeHandler(LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE, graph -> {
             if (!needsUpdate()) {
                 return;
             }
+
             layersViewController.readState();
+            PluginExecution.withPlugin(new ValidateLayerMasks()).executeLater(graph);
+
+            // remove all monitors before re-adding updated ones
+            for (final AttributeValueMonitor monitor : valueMonitors) {
+                removeAttributeValueChangeHandler(monitor);
+            }
+
+            changeListeners.clear();
+            changeListeners.addAll(layersViewController.getListenedAttributes());
+
+            // adding change handlers for attribute changes
+            for (final SchemaAttribute attribute : changeListeners) {
+                valueMonitors.add(
+                        addAttributeValueChangeHandler(attribute, currentGraph -> {
+                            PluginExecution.withPlugin(new ValidateLayerMasks()).executeLater(currentGraph);
+                        })
+                );
+            }
         });
     }
 

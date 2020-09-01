@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2020 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -50,7 +50,7 @@ public class NewLayerPlugin extends SimpleEditPlugin {
             final List<LayerDescription> layers = new ArrayList<>();
             layers.add(new LayerDescription(1, true, LayerDescription.DEFAULT_QUERY_STRING, LayerDescription.DEFAULT_QUERY_DESCRIPTION));
             layers.add(new LayerDescription(2, false, StringUtils.EMPTY, StringUtils.EMPTY));
-            currentState = new LayersViewState(layers);
+            currentState = new LayersViewState(layers, currentState.getLayerAttributes());
         }
 
         final LayersViewState newState = new LayersViewState(currentState);

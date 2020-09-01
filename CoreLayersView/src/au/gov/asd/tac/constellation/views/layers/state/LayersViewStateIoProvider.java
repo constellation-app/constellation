@@ -16,11 +16,14 @@
 package au.gov.asd.tac.constellation.views.layers.state;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
+import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.io.AbstractGraphIOProvider;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteReader;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteWriter;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttributeUtilities;
 import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
 import au.gov.asd.tac.constellation.views.layers.layer.LayerDescription;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -65,7 +68,18 @@ public class LayersViewStateIoProvider extends AbstractGraphIOProvider {
                     ));
                 }
             }
-            final LayersViewState state = new LayersViewState(layerDescriptions);
+            final List<SchemaAttribute> layerAttributes = new ArrayList<>();
+            final ArrayNode layerAttributesArray = (ArrayNode) jnode.withArray("layerAttributes");
+            for (int i = 0; i < layerAttributesArray.size(); i++) {
+                if (layerAttributesArray.get(i).isNull()) {
+                    layerAttributes.add(null);
+                } else {
+                    // create SchemaAttribute here // TODO: This currently adds both V and T attributes.
+                    layerAttributes.add(SchemaAttributeUtilities.getAttribute(GraphElementType.VERTEX, layerAttributesArray.get(i).get(0).asText()));
+                    layerAttributes.add(SchemaAttributeUtilities.getAttribute(GraphElementType.TRANSACTION, layerAttributesArray.get(i).get(0).asText()));
+                }
+            }
+            final LayersViewState state = new LayersViewState(layerDescriptions, layerAttributes);
             graph.setObjectValue(attributeId, elementId, state);
         }
     }
@@ -98,6 +112,21 @@ public class LayersViewStateIoProvider extends AbstractGraphIOProvider {
                     }
                 }
                 jsonGenerator.writeEndArray();
+
+                jsonGenerator.writeArrayFieldStart("layerAttributes");
+                int count = 0;
+                for (SchemaAttribute attr : state.getLayerAttributes()) {
+                    if (attr == null) {
+                        jsonGenerator.writeNull();
+                    } else {
+                        jsonGenerator.writeStartArray(count++);
+                        // TODO: Specify Vertex/Transaction?
+                        jsonGenerator.writeString(attr.getName());
+                        jsonGenerator.writeEndArray();
+                    }
+                }
+                jsonGenerator.writeEndArray();
+
                 jsonGenerator.writeEndObject();
             }
         }
