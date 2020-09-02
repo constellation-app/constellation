@@ -2217,21 +2217,20 @@
                 <package>tec.uom.se.unit</package>
             </public-packages>
             <class-path-extension>
-<<<<<<< HEAD
-                <runtime-relative-path>ext/FastInfoset-1.2.15.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/FastInfoset-1.2.15.jar</binary-origin>
+                <runtime-relative-path>ext/FastInfoset-1.2.15-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/FastInfoset-1.2.15-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/GeographicLib-Java-1.49.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/GeographicLib-Java-1.49.jar</binary-origin>
+                <runtime-relative-path>ext/GeographicLib-Java-1.49-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/GeographicLib-Java-1.49-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/SparseBitSet-1.2.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/SparseBitSet-1.2.jar</binary-origin>
+                <runtime-relative-path>ext/SparseBitSet-1.2-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/SparseBitSet-1.2-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/activation-1.1.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/activation-1.1.jar</binary-origin>
+                <runtime-relative-path>ext/activation-1.1-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/activation-1.1-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/assertj-core-3.16.1-jar.jar</runtime-relative-path>
@@ -2350,16 +2349,8 @@
                 <binary-origin>release/modules/ext/failureaccess-1.0.1-bundle.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/FastInfoset-1.2.15-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/FastInfoset-1.2.15-jar.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/filters-2.0.235-jar.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/filters-2.0.235-jar.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/GeographicLib-Java-1.49-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/GeographicLib-Java-1.49-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/gluegen-rt-natives-linux-amd64.jar</runtime-relative-path>
@@ -2534,12 +2525,12 @@
                 <binary-origin>release/modules/ext/javafx-web-11.0.2-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/javahelp-2.0.05.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/javahelp-2.0.05.jar</binary-origin>
+                <runtime-relative-path>ext/javahelp-2.0.05-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/javahelp-2.0.05-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/javax.activation-api-1.2.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/javax.activation-api-1.2.0.jar</binary-origin>
+                <runtime-relative-path>ext/javax.activation-api-1.2.0-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/javax.activation-api-1.2.0-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/javax.mail-1.5.0-jar.jar</runtime-relative-path>
@@ -2872,10 +2863,6 @@
             <class-path-extension>
                 <runtime-relative-path>ext/si-units-java8-0.7.1-jar.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/si-units-java8-0.7.1-jar.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/SparseBitSet-1.2-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/SparseBitSet-1.2-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/sqlite-jdbc-3.27.2.1-jar.jar</runtime-relative-path>
