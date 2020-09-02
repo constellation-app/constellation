@@ -648,6 +648,7 @@ public class PCAPImportFileParser extends ImportFileParser {
                                         destPort = Integer.toString(bytesToInt(ipv4BufferArray,
                                                 ipv4HeaderLength + UDP_DEST_PORT_OFFSET,
                                                 HDR_IPV4_PORT_SIZE, infoBuilder, INFO_TRUNCATED_DEST_PORT));
+                                        break;
                                     default:
                                         // No ports expected
                                         break;
@@ -699,6 +700,7 @@ public class PCAPImportFileParser extends ImportFileParser {
                                         destPort = Integer.toString(bytesToInt(ipv6BufferArray,
                                                 HDR_IPV6_SIZE + UDP_DEST_PORT_OFFSET,
                                                 HDR_IPV6_PORT_SIZE, infoBuilder, INFO_TRUNCATED_DEST_PORT));
+                                        break;
                                     default:
                                         // No ports expected
                                         break;
