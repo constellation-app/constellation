@@ -16,10 +16,13 @@
 package au.gov.asd.tac.constellation.graph.attribute;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
 import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
-import au.gov.asd.tac.constellation.graph.value.types.stringType.StringValue;
+import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
+import au.gov.asd.tac.constellation.graph.value.readables.StringReadable;
+import au.gov.asd.tac.constellation.graph.value.variables.StringVariable;
 import java.util.Arrays;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -258,14 +261,23 @@ public final class StringAttributeDescription extends AbstractAttributeDescripti
         final String[] sd = (String[]) savedData;
         data = Arrays.copyOf(sd, sd.length);
     }
-    
+
     @Override
-    public StringValue createValue() {
-        return new StringValue();
+    public Object createReadObject(IntReadable indexReadable) {
+        return (StringReadable) () -> data[indexReadable.readInt()];
     }
-    
+
     @Override
-    public void read(int index, StringValue value) {
-        value.writeString(data[index]);
+    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+        return new StringVariable() {
+            @Override
+            public String readString() {
+                return data[indexReadable.readInt()];
+            }
+            @Override
+            public void writeString(String value) {
+                graph.setObjectValue(attribute, indexReadable.readInt(), value);
+            }
+        };
     }
 }

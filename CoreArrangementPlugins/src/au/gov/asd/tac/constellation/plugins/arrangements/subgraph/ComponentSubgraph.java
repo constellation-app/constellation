@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.graph.operations.GraphOperation;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
+import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.IntStream;
@@ -675,15 +676,15 @@ public class ComponentSubgraph implements GraphWriteMethods {
     }
 
     @Override
-    public <V> V createAttributeValue(final int attribute) {
-        return proxy.createAttributeValue(attribute);
+    public Object createWriteAttributeObject(int attribute, IntReadable indexReadable) {
+        return proxy.createWriteAttributeObject(attribute, indexReadable);
     }
-    
+
     @Override
-    public <V> void readAttributeValue(final int attribute, final int id, final V value) {
-        proxy.readAttributeValue(attribute, id, value);
+    public Object createReadAttributeObject(int attribute, IntReadable indexReadable) {
+        return proxy.createReadAttributeObject(attribute, indexReadable);
     }
-    
+
     @Override
     public boolean isPrimaryKey(int attribute) {
         return proxy.isPrimaryKey(attribute);

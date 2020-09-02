@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2020 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,7 +28,7 @@ import java.util.Map;
 public class ExpressionParser {
 
     public static final char NO_TOKEN = 0;
-    
+
     private static enum ParseState {
         READING_WHITESPACE,
         READING_SINGLE_STRING,
@@ -37,10 +37,12 @@ public class ExpressionParser {
         READING_SINGLE_ESCAPED,
         READING_DOUBLE_ESCAPED
     }
-    
+
     public static enum Operator {
-        AND('&', 11),
-        OR('|', 12),
+        AND_AND(NO_TOKEN, 11),
+        AND('&', 11, null, AND_AND),
+        OR_OR(NO_TOKEN, 12),
+        OR('|', 12, null, OR_OR),
         EXCLUSIVE_OR('^', 3),
         NOT('!', 2),
         ADD('+', 4),
@@ -56,18 +58,23 @@ public class ExpressionParser {
         CONTAINS(NO_TOKEN, 4),
         STARTS_WITH(NO_TOKEN, 4),
         ENDS_WITH(NO_TOKEN, 4),
-        EQUALS('=', 7, GREATER_THAN, GREATER_THAN_OR_EQUALS, LESS_THAN, LESS_THAN_OR_EQUALS, NOT, NOT_EQUALS);
-        
+        EQUALS(NO_TOKEN, 7),
+        ASSIGN('=', 14, null, EQUALS, GREATER_THAN, GREATER_THAN_OR_EQUALS, LESS_THAN, LESS_THAN_OR_EQUALS, NOT, NOT_EQUALS);
+
         private final char token;
         private final int precedence;
         private final Map<Operator, Operator> combinations = new HashMap<>();
-        
+
         private Operator(char token, int precedence, Operator... combinations) {
             this.token = token;
             this.precedence = precedence;
-            
+
             for (int i = 0; i < combinations.length; i += 2) {
-                this.combinations.put(combinations[i], combinations[i+1]);
+                if (combinations[i] == null) {
+                    this.combinations.put(this, combinations[i+1]);
+                } else {
+                    this.combinations.put(combinations[i], combinations[i+1]);
+                }
             }
         }
 
@@ -78,7 +85,7 @@ public class ExpressionParser {
         public int getPrecedence() {
             return precedence;
         }
-        
+
         private static final Map<Character, Operator> OPERATOR_TOKENS = new HashMap<>();
         static {
             for (Operator operator : Operator.values()) {
@@ -88,7 +95,7 @@ public class ExpressionParser {
             }
         }
     }
-    
+
     private static final Map<String, Operator> WORD_OPERATORS = new HashMap<>();
     static {
         WORD_OPERATORS.put("contains", Operator.CONTAINS);
@@ -99,20 +106,20 @@ public class ExpressionParser {
         WORD_OPERATORS.put("equals", Operator.EQUALS);
         WORD_OPERATORS.put("notequals", Operator.NOT_EQUALS);
     }
-    
+
     public static abstract class Expression {
         private SequenceExpression parent;
 
         private Expression(SequenceExpression parent) {
             this.parent = parent;
         }
-        
+
         public SequenceExpression getParent() {
             return parent;
         }
-        
+
         protected abstract void print(String prefix, StringBuilder out);
-        
+
         @Override
         public String toString() {
             final var out = new StringBuilder();
@@ -120,75 +127,75 @@ public class ExpressionParser {
             return out.toString();
         }
     }
-    
+
     public static class VariableExpression extends Expression {
         private final String content;
-        
+
         private VariableExpression(SequenceExpression parent, char[] content, int contentLength) {
             super(parent);
             this.content = new String(content, 0, contentLength);
         }
-        
+
         public String getContent() {
             return content;
         }
-        
+
         @Override
         protected void print(String prefix, StringBuilder out) {
             out.append(prefix).append("VARIABLE: ").append(content).append("\n");
         }
     }
-    
+
     public static class StringExpression extends Expression {
         private final String content;
-        
+
         private StringExpression(SequenceExpression parent, char[] content, int contentLength) {
             super(parent);
             this.content = new String(content, 0, contentLength);
         }
-        
+
         public String getContent() {
             return content;
         }
-        
+
         @Override
         protected void print(String prefix, StringBuilder out) {
             out.append(prefix).append("STRING: ").append(content).append("\n");
         }
     }
-    
+
     public static class OperatorExpression extends Expression {
         private Operator operator;
-        
+
         private OperatorExpression(SequenceExpression parent, Operator operator) {
             super(parent);
             this.operator = operator;
         }
-        
+
         public Operator getOperator() {
             return operator;
         }
-        
+
         @Override
         protected void print(String prefix, StringBuilder out) {
             out.append(prefix).append("OPERATOR").append(": ").append(operator).append("\n");
         }
     }
-    
+
     public static class SequenceExpression extends Expression {
         private final List<Expression> children = new ArrayList<>();
         private final List<Expression> unmodifiableChildren = Collections.unmodifiableList(children);
-        
+
         private SequenceExpression(SequenceExpression parent) {
             super(parent);
         }
-        
+
         public List<Expression> getChildren() {
             return unmodifiableChildren;
         }
-        
+
         private void addChild(Expression expression) {
-            
+
             if (expression instanceof SequenceExpression) {
                 final var tokenSequence = (SequenceExpression)expression;
                 switch (tokenSequence.children.size()) {
@@ -203,7 +210,7 @@ public class ExpressionParser {
                         }
                 }
             }
-            
+
             if (expression instanceof OperatorExpression && !children.isEmpty()) {
                 final var lastChild = children.get(children.size() - 1);
                 if (lastChild instanceof OperatorExpression) {
@@ -216,7 +223,7 @@ public class ExpressionParser {
                     }
                 }
             }
-            
+
             if (!(expression instanceof OperatorExpression) && !children.isEmpty()) {
                 final var lastChild = children.get(children.size() - 1);
                 if (lastChild instanceof OperatorExpression) {
@@ -242,13 +249,13 @@ public class ExpressionParser {
                     throw new IllegalStateException("2 non-operator tokens in sequence");
                 }
             }
-            
+
             children.add(expression);
         }
-        
+
         public void normalize() {
             normalizeChildren();
-            
+
             while (children.size() > 3) {
                 var lowestPrecedence = Integer.MAX_VALUE;
                 var lowestIndex = -1;
@@ -259,25 +266,25 @@ public class ExpressionParser {
                         lowestIndex = i;
                     }
                 }
-                
+
                 final var childSequence = new SequenceExpression(this);
-                
+
                 final var left = children.remove(lowestIndex - 1);
                 left.parent = childSequence;
                 childSequence.addChild(left);
-                
+
                 final var operator = children.remove(lowestIndex - 1);
                 operator.parent = childSequence;
                 childSequence.addChild(operator);
-                
+
                 final var right = children.get(lowestIndex - 1);
                 right.parent = childSequence;
                 childSequence.addChild(right);
-                
+
                 children.set(lowestIndex - 1, childSequence);
             }
         }
-        
+
         private void normalizeChildren() {
             for (int i = children.size() - 1; i >= 0; i--) {
                 final var child = children.get(i);
@@ -286,7 +293,7 @@ public class ExpressionParser {
                 }
             }
         }
-        
+
         @Override
         protected void print(String prefix, StringBuilder out) {
             out.append(prefix).append("(\n");
@@ -296,19 +303,19 @@ public class ExpressionParser {
             out.append(prefix).append(")\n");
         }
     }
-    
+
     public static SequenceExpression parse(String expression) {
-        
+
         var state = ParseState.READING_WHITESPACE;
         var content = new char[expression.length()];
         var contentLength = 0;
-        
+
         var rootExpression = new SequenceExpression(null);
         var currentExpression = rootExpression;
-        
+
         for (int i = 0; i <= expression.length(); i++) {
             final char c = i < expression.length() ? expression.charAt(i) : 0;
-            
+
             switch (state) {
                 case READING_WHITESPACE:
                     if (c != ' ' && c != 0) {
@@ -335,13 +342,13 @@ public class ExpressionParser {
                         }
                     }
                     break;
-                    
+
                 case READING_VARIABLE:
                     if (c == ' ' || c == 0) {
                         currentExpression.addChild(new VariableExpression(currentExpression, content, contentLength));
                         contentLength = 0;
                         state = ParseState.READING_WHITESPACE;
-                    } else if (isLetter(c)) {
+                    } else if (isLetter(c) || isDigit(c)) {
                         content[contentLength++] = c;
                     } else if (c == '(') {
                         currentExpression.addChild(new VariableExpression(currentExpression, content, contentLength));
@@ -366,7 +373,7 @@ public class ExpressionParser {
                         throw new IllegalArgumentException("Unexpected character: " + c);
                     }
                     break;
-                    
+
                 case READING_SINGLE_STRING:
                     if (c == '\'') {
                         currentExpression.addChild(new StringExpression(currentExpression, content, contentLength));
@@ -380,7 +387,7 @@ public class ExpressionParser {
                         content[contentLength++] = c;
                     }
                     break;
-                    
+
                 case READING_DOUBLE_STRING:
                     if (c == '"') {
                         currentExpression.addChild(new StringExpression(currentExpression, content, contentLength));
@@ -394,7 +401,7 @@ public class ExpressionParser {
                         content[contentLength++] = c;
                     }
                     break;
-                    
+
                 case READING_SINGLE_ESCAPED:
                     if (c == 0) {
                         throw new IllegalArgumentException("Unexpected end of expression while in quoted string");
@@ -403,7 +410,7 @@ public class ExpressionParser {
                         state = ParseState.READING_SINGLE_STRING;
                     }
                     break;
-                    
+
                 case READING_DOUBLE_ESCAPED:
                     if (c == 0) {
                         throw new IllegalArgumentException("Unexpected end of expression while in quoted string");
@@ -414,7 +421,7 @@ public class ExpressionParser {
                     break;
             }
         }
-        
+
         if (currentExpression != rootExpression) {
             throw new IllegalArgumentException("Invalid nesting of parenthesis");
         }
@@ -427,11 +434,16 @@ public class ExpressionParser {
         if (currentExpression.children.get(currentExpression.children.size() - 1) instanceof OperatorExpression) {
             throw new IllegalArgumentException("An expression cannot end with an operator");
         }
-        
+
+        rootExpression.normalize();
         return rootExpression;
     }
-    
+
     private static boolean isLetter(char c) {
         return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+    }
+
+    private static boolean isDigit(char c) {
+        return c >= '0' && c <= '9';
     }
 }

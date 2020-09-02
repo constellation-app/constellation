@@ -16,10 +16,13 @@
 package au.gov.asd.tac.constellation.graph.attribute;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
 import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
-import au.gov.asd.tac.constellation.graph.value.types.doubleType.DoubleValue;
+import au.gov.asd.tac.constellation.graph.value.readables.DoubleReadable;
+import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
+import au.gov.asd.tac.constellation.graph.value.variables.DoubleVariable;
 import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
@@ -281,14 +284,23 @@ public class DoubleAttributeDescription extends AbstractAttributeDescription<Dou
         final double[] sd = (double[]) savedData;
         data = Arrays.copyOf(sd, sd.length);
     }
-    
+
     @Override
-    public DoubleValue createValue() {
-        return new DoubleValue();
+    public Object createReadObject(IntReadable indexReadable) {
+        return (DoubleReadable) () -> data[indexReadable.readInt()];
     }
-    
+
     @Override
-    public void read(int index, DoubleValue value) {
-        value.writeDouble(data[index]);
+    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+        return new DoubleVariable() {
+            @Override
+            public double readDouble() {
+                return data[indexReadable.readInt()];
+            }
+            @Override
+            public void writeDouble(double value) {
+                graph.setDoubleValue(attribute, indexReadable.readInt(), value);
+            }
+        };
     }
 }

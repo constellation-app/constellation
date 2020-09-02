@@ -16,10 +16,13 @@
 package au.gov.asd.tac.constellation.graph.attribute;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
 import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
-import au.gov.asd.tac.constellation.graph.value.types.byteType.ByteValue;
+import au.gov.asd.tac.constellation.graph.value.readables.ByteReadable;
+import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
+import au.gov.asd.tac.constellation.graph.value.variables.ByteVariable;
 import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
@@ -279,14 +282,23 @@ public class ByteAttributeDescription extends AbstractAttributeDescription<ByteV
         final byte[] sd = (byte[]) savedData;
         data = Arrays.copyOf(sd, sd.length);
     }
-    
+
     @Override
-    public ByteValue createValue() {
-        return new ByteValue();
+    public Object createReadObject(IntReadable indexReadable) {
+        return (ByteReadable) () -> data[indexReadable.readInt()];
     }
-    
+
     @Override
-    public void read(int index, ByteValue value) {
-        value.writeByte(data[index]);
+    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+        return new ByteVariable() {
+            @Override
+            public byte readByte() {
+                return data[indexReadable.readInt()];
+            }
+            @Override
+            public void writeByte(byte value) {
+                graph.setByteValue(attribute, indexReadable.readInt(), value);
+            }
+        };
     }
 }

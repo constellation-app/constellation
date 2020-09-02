@@ -16,9 +16,12 @@
 package au.gov.asd.tac.constellation.graph.attribute.compatibility;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.AbstractAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
-import au.gov.asd.tac.constellation.graph.value.types.objectType.ObjectValue;
+import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
+import au.gov.asd.tac.constellation.graph.value.readables.ObjectReadable;
+import au.gov.asd.tac.constellation.graph.value.variables.ObjectVariable;
 import java.util.Arrays;
 import java.util.TimeZone;
 import org.openide.util.lookup.ServiceProvider;
@@ -179,14 +182,23 @@ public final class TimeZoneAttributeDescriptionV0 extends AbstractAttributeDescr
         final TimeZone[] sd = (TimeZone[]) savedData;
         data = Arrays.copyOf(sd, sd.length);
     }
-    
+
     @Override
-    public ObjectValue<TimeZone> createValue() {
-        return new ObjectValue<>();
+    public Object createReadObject(IntReadable indexReadable) {
+        return (ObjectReadable) () -> data[indexReadable.readInt()];
     }
-    
+
     @Override
-    public void read(int index, ObjectValue<TimeZone> value) {
-        value.writeObject(data[index]);
+    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+        return new ObjectVariable() {
+            @Override
+            public Object readObject() {
+                return data[indexReadable.readInt()];
+            }
+            @Override
+            public void writeObject(Object value) {
+                graph.setObjectValue(attribute, indexReadable.readInt(), value);
+            }
+        };
     }
 }

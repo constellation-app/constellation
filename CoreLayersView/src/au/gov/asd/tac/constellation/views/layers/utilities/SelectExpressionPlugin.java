@@ -17,16 +17,15 @@ package au.gov.asd.tac.constellation.views.layers.utilities;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.LayersConcept;
-import au.gov.asd.tac.constellation.graph.value.IndexedReadable;
-import au.gov.asd.tac.constellation.graph.value.converter.ConverterRegistry;
-import au.gov.asd.tac.constellation.graph.value.expression.ExpressionFilter;
+import au.gov.asd.tac.constellation.graph.value.Operators;
+import au.gov.asd.tac.constellation.graph.value.Updatable;
+import au.gov.asd.tac.constellation.graph.value.expression.ExpressionCompiler;
 import au.gov.asd.tac.constellation.graph.value.expression.ExpressionParser;
 import au.gov.asd.tac.constellation.graph.value.expression.ExpressionParser.SequenceExpression;
-import au.gov.asd.tac.constellation.graph.value.expression.IndexedReadableProvider;
-import au.gov.asd.tac.constellation.graph.value.types.booleanType.BooleanReadable;
+import au.gov.asd.tac.constellation.graph.value.expression.VariableProvider;
+import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
+import au.gov.asd.tac.constellation.graph.value.values.IntValue;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -44,13 +43,15 @@ import org.openide.util.Exceptions;
 public class SelectExpressionPlugin extends SimpleEditPlugin {
 
     private final GraphElementType elementType;
+    private final String attributeName;
     private final String expressionString;
     private final SequenceExpression expression;
     private final int layerNumber;
 
-    public SelectExpressionPlugin(GraphElementType elementType, String expressionString, final int layerNumber) {
-        super("Select by expression: " + elementType.getShortLabel());
+    public SelectExpressionPlugin(GraphElementType elementType, String expressionString, String attributeName, final int layerNumber) {
+        super("Calculate by expression: " + elementType.getShortLabel());
         this.elementType = elementType;
+        this.attributeName = attributeName;
         this.expressionString = expressionString;
         this.expression = ExpressionParser.parse(expressionString);
         this.expression.normalize();
@@ -60,83 +61,42 @@ public class SelectExpressionPlugin extends SimpleEditPlugin {
     @Override
     protected void edit(GraphWriteMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
 
-        final IndexedReadableProvider indexedReadableProvider = new GraphIndexedReadableProvider(graph, elementType);
+        final VariableProvider variableProvider = new GraphVariableProvider(graph, elementType);
 
-        final int layerMaskAttribute;
-        switch (elementType) {
-            case VERTEX:
-                layerMaskAttribute = LayersConcept.VertexAttribute.LAYER_MASK.ensure(graph);
-                break;
-            case TRANSACTION:
-                layerMaskAttribute = LayersConcept.TransactionAttribute.LAYER_MASK.ensure(graph);
-                break;
-            default:
-                throw new IllegalArgumentException("Unsupported graph element type: " + elementType);
-        }
+        final IntValue indexValue = new IntValue();
 
-        final IndexedReadable expressionReadable = ExpressionFilter.createExpressionReadable(expression, indexedReadableProvider, ConverterRegistry.getDefault());
-        final Object expressionResult = expressionReadable.createValue();
-        final BooleanReadable expressionBooleanReadable = ConverterRegistry.getDefault().convert(expressionResult, BooleanReadable.class);
-        if (expressionBooleanReadable == null) {
-            throw new IllegalArgumentException("Expression does not create a boolean result");
-        }
+        final var compiledExpression = (Updatable)ExpressionCompiler.compileSequenceExpression(expression, variableProvider, indexValue, Operators.getDefault());
 
         final int elementCount = elementType.getElementCount(graph);
         for (int position = 0; position < elementCount; position++) {
             final int id = elementType.getElement(graph, position);
-            expressionReadable.read(id, expressionResult);
-
-            // bitmask is added if it results in true, removed if it results in false.
-            final int bitmask = expressionBooleanReadable.readBoolean()
-                    ? graph.getIntValue(layerMaskAttribute, id) | (1 << layerNumber)
-                    : graph.getIntValue(layerMaskAttribute, id) & ~(1 << layerNumber);
-
-            graph.setIntValue(layerMaskAttribute, id, bitmask);
+            indexValue.writeInt(id);
+            compiledExpression.update();
         }
     }
 
-    private static final class GraphIndexedReadableProvider implements IndexedReadableProvider {
+    private static final class GraphVariableProvider implements VariableProvider {
 
-        final GraphReadMethods graphReadMethods;
+        final GraphWriteMethods graphWriteMethods;
         final GraphElementType elementType;
 
-        public GraphIndexedReadableProvider(GraphReadMethods graphReadMethods, GraphElementType elementType) {
-            this.graphReadMethods = graphReadMethods;
+        public GraphVariableProvider(GraphWriteMethods graphWriteMethods, GraphElementType elementType) {
+            this.graphWriteMethods = graphWriteMethods;
             this.elementType = elementType;
         }
 
         @Override
-        public IndexedReadable<?> getIndexedReadable(String name) {
-            return new GraphIndexedReadable(graphReadMethods, elementType, name);
-        }
-    }
-
-    private static final class GraphIndexedReadable<V> implements IndexedReadable<V> {
-
-        private final GraphReadMethods graphReadMethods;
-        private final int attribute;
-
-        public GraphIndexedReadable(GraphReadMethods graphReadMethods, GraphElementType elementType, String attributeName) {
-            this.graphReadMethods = graphReadMethods;
-            this.attribute = graphReadMethods.getAttribute(elementType, attributeName);
+        public Object getVariable(String name, IntReadable indexReadable) {
+            final int attribute = graphWriteMethods.getAttribute(elementType, name);
             if (attribute == Graph.NOT_FOUND) {
-                throw new IllegalArgumentException("Unknown " + elementType + " attribute: " + attributeName);
+                return null;
             }
-        }
-
-        @Override
-        public V createValue() {
-            return graphReadMethods.createAttributeValue(attribute);
-        }
-
-        @Override
-        public void read(int id, V value) {
-            graphReadMethods.readAttributeValue(attribute, id, value);
+            return graphWriteMethods.createWriteAttributeObject(attribute, indexReadable);
         }
     }
 
-    public static void run(Graph graph, GraphElementType elementType, String expressionString, final int layerNumber) {
-        final Plugin plugin = new SelectExpressionPlugin(elementType, expressionString, layerNumber);
+    public static void run(Graph graph, GraphElementType elementType, String expressionString, String attributeName, final int layerNumber) {
+        final Plugin plugin = new SelectExpressionPlugin(elementType, expressionString, attributeName, layerNumber);
         final Future<?> f = PluginExecution.withPlugin(plugin).executeLater(graph);
         try {
             f.get();

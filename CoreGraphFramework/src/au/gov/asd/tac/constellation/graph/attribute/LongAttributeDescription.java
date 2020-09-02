@@ -16,10 +16,13 @@
 package au.gov.asd.tac.constellation.graph.attribute;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
 import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
-import au.gov.asd.tac.constellation.graph.value.types.longType.LongValue;
+import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
+import au.gov.asd.tac.constellation.graph.value.readables.LongReadable;
+import au.gov.asd.tac.constellation.graph.value.variables.LongVariable;
 import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
@@ -296,14 +299,23 @@ public final class LongAttributeDescription extends AbstractAttributeDescription
         final long[] sd = (long[]) savedData;
         data = Arrays.copyOf(sd, sd.length);
     }
-    
+
     @Override
-    public LongValue createValue() {
-        return new LongValue();
+    public Object createReadObject(IntReadable indexReadable) {
+        return (LongReadable) () -> data[indexReadable.readInt()];
     }
-    
+
     @Override
-    public void read(int index, LongValue value) {
-        value.writeLong(data[index]);
+    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+        return new LongVariable() {
+            @Override
+            public long readLong() {
+                return data[indexReadable.readInt()];
+            }
+            @Override
+            public void writeLong(long value) {
+                graph.setLongValue(attribute, indexReadable.readInt(), value);
+            }
+        };
     }
 }

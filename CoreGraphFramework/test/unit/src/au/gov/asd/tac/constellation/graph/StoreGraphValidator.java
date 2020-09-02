@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.graph;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.graph.operations.GraphOperation;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
+import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -222,15 +223,15 @@ public final class StoreGraphValidator implements GraphWriteMethods {
     }
 
     @Override
-    public <V> V createAttributeValue(final int attribute) {
+    public Object createWriteAttributeObject(int attribute, IntReadable indexReadable) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     @Override
-    public <V> void readAttributeValue(final int attribute, final int id, final V value) {
+    public Object createReadAttributeObject(int attribute, IntReadable indexReadable) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     @Override
     public Schema getSchema() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

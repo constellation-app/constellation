@@ -20,10 +20,13 @@ import au.gov.asd.tac.constellation.graph.GraphIndex;
 import au.gov.asd.tac.constellation.graph.GraphIndexResult;
 import au.gov.asd.tac.constellation.graph.GraphIndexType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
 import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
-import au.gov.asd.tac.constellation.graph.value.types.booleanType.BooleanValue;
+import au.gov.asd.tac.constellation.graph.value.readables.BooleanReadable;
+import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
+import au.gov.asd.tac.constellation.graph.value.variables.BooleanVariable;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
@@ -399,14 +402,23 @@ public final class BooleanAttributeDescription extends AbstractAttributeDescript
             }
         }
     }
-    
+
     @Override
-    public BooleanValue createValue() {
-        return new BooleanValue();
+    public Object createReadObject(IntReadable indexReadable) {
+        return (BooleanReadable) () -> data[indexReadable.readInt()];
     }
-    
+
     @Override
-    public void read(int index, BooleanValue value) {
-        value.writeBoolean(data[index]);
+    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+        return new BooleanVariable() {
+            @Override
+            public boolean readBoolean() {
+                return data[indexReadable.readInt()];
+            }
+            @Override
+            public void writeBoolean(boolean value) {
+                graph.setBooleanValue(attribute, indexReadable.readInt(), value);
+            }
+        };
     }
 }
