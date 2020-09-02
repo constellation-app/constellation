@@ -451,16 +451,24 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
         @Override
         public boolean setObjectValue(final Object o) {
             boolean valueChanged = false;
-
-            final SingleChoiceParameterValue sc = (SingleChoiceParameterValue) o;
-            if (!Objects.equals(options, sc.options)) {
-                options.clear();
-                options.addAll(sc.options);
+            if (o instanceof SingleChoiceParameterValue) {
+                final SingleChoiceParameterValue sc = (SingleChoiceParameterValue) o;
+                if (!Objects.equals(options, sc.options)) {
+                    options.clear();
+                    options.addAll(sc.options);
+                    valueChanged = true;
+                }
+                if (!Objects.equals(choice, sc.choice)) {
+                    choice = sc.choice;
+                    valueChanged = true;
+                }
+            } 
+            else if (o instanceof ParameterValue) {
+                setChoiceData(this.innerClass.cast(o)); 
                 valueChanged = true;
             }
-            if (!Objects.equals(choice, sc.choice)) {
-                choice = sc.choice;
-                valueChanged = true;
+            else {
+                throw new IllegalArgumentException("Invalid argument");
             }
 
             return valueChanged;
