@@ -148,11 +148,9 @@ public class AnalyticConfigurationPane extends VBox {
         });
         categoryList.getItems().addAll(categories);
         categoryList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            Platform.runLater(() -> {
-                currentQuestion = null;
-                populateParameterPane(globalAnalyticParameters);
-                setPluginsFromSelectedCategory();
-            });
+            currentQuestion = null;
+            populateParameterPane(globalAnalyticParameters);
+            setPluginsFromSelectedCategory();
         });
 
         // build the pane holding the list of analytic categories
@@ -194,18 +192,16 @@ public class AnalyticConfigurationPane extends VBox {
             };
         });
         questionList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            Platform.runLater(() -> {
-                currentQuestion = newValue;
-                @SuppressWarnings("unchecked") //AGGREGATOR_PARAMETER_ID is always a SingleChoiceParameter
-                final PluginParameter<SingleChoiceParameterValue> aggregator = (PluginParameter<SingleChoiceParameterValue>) globalAnalyticParameters.getParameters().get(AGGREGATOR_PARAMETER_ID);
-                SingleChoiceParameterType.getOptionsData(aggregator).forEach(aggregatorParameterValue -> {
-                    if (((AnalyticAggregatorParameterValue) aggregatorParameterValue).getObjectValue().getClass().equals(currentQuestion.getAggregatorType())) {
-                        SingleChoiceParameterType.setChoiceData(aggregator, (AnalyticAggregatorParameterValue) aggregatorParameterValue);
-                    }
-                });
-                populateParameterPane(globalAnalyticParameters);
-                setPluginsFromSelectedQuestion();
+            currentQuestion = newValue;
+            @SuppressWarnings("unchecked") //AGGREGATOR_PARAMETER_ID is always a SingleChoiceParameter
+            final PluginParameter<SingleChoiceParameterValue> aggregator = (PluginParameter<SingleChoiceParameterValue>) globalAnalyticParameters.getParameters().get(AGGREGATOR_PARAMETER_ID);
+            SingleChoiceParameterType.getOptionsData(aggregator).forEach(aggregatorParameterValue -> {
+                if (((AnalyticAggregatorParameterValue) aggregatorParameterValue).getObjectValue().getClass().equals(currentQuestion.getAggregatorType())) {
+                    SingleChoiceParameterType.setChoiceData(aggregator, (AnalyticAggregatorParameterValue) aggregatorParameterValue);
+                }
             });
+            populateParameterPane(globalAnalyticParameters);
+            setPluginsFromSelectedQuestion();
         });
 
         // build the pane holding the list of analytic questions
@@ -213,24 +209,22 @@ public class AnalyticConfigurationPane extends VBox {
 
         // ensure that only one of either the category or question pane are expanded at any time
         categoryListPane.expandedProperty().addListener((observable, oldValue, newValue) -> {
-            Platform.runLater(() -> {
-                questionListPane.setExpanded(!categoryListPane.isExpanded());
-                if (categoryListPane.isExpanded()) {
-                    currentQuestion = null;
-                    populateParameterPane(globalAnalyticParameters);
-                    setPluginsFromSelectedCategory();
-                }
-            });
+
+            questionListPane.setExpanded(!categoryListPane.isExpanded());
+            if (categoryListPane.isExpanded()) {
+                currentQuestion = null;
+                populateParameterPane(globalAnalyticParameters);
+                setPluginsFromSelectedCategory();
+            }
+
         });
         questionListPane.expandedProperty().addListener((observable, oldValue, newValue) -> {
-            Platform.runLater(() -> {
-                categoryListPane.setExpanded(!questionListPane.isExpanded());
-                if (questionListPane.isExpanded()) {
-                    currentQuestion = questionList.getSelectionModel().getSelectedItem();
-                    populateParameterPane(globalAnalyticParameters);
-                    setPluginsFromSelectedQuestion();
-                }
-            });
+            categoryListPane.setExpanded(!questionListPane.isExpanded());
+            if (questionListPane.isExpanded()) {
+                currentQuestion = questionList.getSelectionModel().getSelectedItem();
+                populateParameterPane(globalAnalyticParameters);
+                setPluginsFromSelectedQuestion();
+            }
         });
 
         // populate the category and question pane

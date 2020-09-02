@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +30,7 @@ import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import org.openide.NotifyDescriptor;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -43,7 +45,7 @@ public class ScriptAttributeTranslator extends AttributeTranslator {
 
     private static final String PYTHON_LANGUAGE = "Python";
     public static final String SCRIPT_PARAMETER_ID = PluginParameter.buildId(ScriptAttributeTranslator.class, "script");
-
+    private static final String DEFAULT_SCRIPT = "value = value + \"2\"";
     private static final Map<String, String> LANGUAGES = new HashMap<>();
 
     static {
@@ -68,7 +70,7 @@ public class ScriptAttributeTranslator extends AttributeTranslator {
         StringParameterType.setLines(scriptParameter, 10);
         scriptParameter.setName("Script");
         scriptParameter.setDescription("Modify the 'value' variable to implement your formatting");
-        scriptParameter.setStringValue("value = value + \"2\"");
+        scriptParameter.setStringValue(DEFAULT_SCRIPT);
         params.addParameter(scriptParameter);
 
         return params;
@@ -94,7 +96,9 @@ public class ScriptAttributeTranslator extends AttributeTranslator {
                 compiledScript = null;
                 savedLanguage = null;
                 savedScript = null;
-                return "ERROR: " + e.getMessage();
+                parameters.getParameters().get(SCRIPT_PARAMETER_ID).setStringValue(DEFAULT_SCRIPT);
+                NotifyDisplayer.display(e.getMessage(), NotifyDescriptor.ERROR_MESSAGE);
+                return value;
             }
         }
 
