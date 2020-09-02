@@ -45,7 +45,7 @@ public class PCAPImportFileParserNGTest {
     static Method private_getEtherTypeStr = null;
     static Method private_bytesToIpv4Str = null;
     static Method private_bytesToIpv6Str = null;
- 
+
 
     static String[] expectedHeadings = {
             "Frame", "Time",
@@ -58,7 +58,7 @@ public class PCAPImportFileParserNGTest {
             "BROADCAST ff:ff:ff:ff:ff:ff", "192.168.1.255", "137", "IPv4 Address",
             "0800", "UDP", "92", ""};
     
-    static String[] prptocolMap = {
+    static String[] protocolMap = {
         "HOPOPT", "ICMP", "IGMP", "GGP", "IPv4", "ST", "TCP", "CBT", "EGP",
         "IGP", "BBN-RCC-MON", "NVP-II", "PUP", "ARGUS", "EMCON", "XNET", "CHAOS",
         "UDP", "MUX", "DCN-MEAS", "HMP", "PRM", "XNS-IDP", "TRUNK-1", "TRUNK-2",
@@ -131,7 +131,7 @@ public class PCAPImportFileParserNGTest {
         private_bytesToIpv4Str = PCAPImportFileParser.class.getDeclaredMethod("bytesToIpv4Str", byte[].class, int.class);
         private_bytesToIpv4Str.setAccessible(true);
         private_bytesToIpv6Str = PCAPImportFileParser.class.getDeclaredMethod("bytesToIpv6Str", byte[].class, int.class);
-        private_bytesToIpv6Str.setAccessible(true);
+        private_bytesToIpv6Str.setAccessible(true);        
     }
 
     @AfterClass
@@ -231,8 +231,8 @@ public class PCAPImportFileParserNGTest {
         try {
             // Check some sample byte values, ensuring end cases are covered and confirm
             // correct int representation is received
-            for (int i = 0; i < prptocolMap.length; i++) {
-                Assert.assertEquals(prptocolMap[i], (String) private_byteToProtocol.invoke(parser, (byte)i));
+            for (int i = 0; i < protocolMap.length; i++) {
+                Assert.assertEquals(protocolMap[i], (String) private_byteToProtocol.invoke(parser, (byte)i));
             }
         } catch (Exception ex) {
             Assert.fail("Unexpected exception received: " + ex.getClass().getName());

@@ -21,6 +21,7 @@ import io.pkts.PacketHandler;
 import io.pkts.Pcap;
 import io.pkts.buffer.Buffer;
 import io.pkts.packet.Packet;
+import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
@@ -28,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.codec.binary.Hex;
@@ -65,6 +67,15 @@ public class PCAPImportFileParser extends ImportFileParser {
             = "Extracting data from PCAP file failed.\n";
     private static final String WARN_INVALID_PCAP
             = WARN_PARSING_PREFIX + "Unable to parse file, invalid PCAP.";
+    private static final String INFO_TRUNCATED_SRC_PORT
+            = "Packet truncated (Unable to extract source port). ";
+    private static final String INFO_TRUNCATED_DEST_PORT
+            = "Packet truncated (Unable to extract destination port). ";
+    private static final String INFO_TRUNCATED_ETHERTYPE
+            = "Packet truncated (Unable to extract ARP ethertype). ";
+    private static final String INFO_TRUNCATED_ARPOPERATION
+            = "Packet truncated (Unable to extract ARP operation). ";
+    
     
     // Number of bytes in an integer
     private static final int INT_SIZE = 4;
@@ -202,8 +213,48 @@ public class PCAPImportFileParser extends ImportFileParser {
     private static final int ARP_REQUEST_ID = 0x0001;
     private static final int ARP_REPLY_ID = 0x0002;
 
+    /**
+     * Map of known IPv4/IPv6 protocol codes encoded in respective packet
+     * headers.
+     * Refer to:
+     * https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml
+     */
+    private static final String[] PROTOCOL_MAP = {
+        "HOPOPT", "ICMP", "IGMP", "GGP", "IPv4", "ST", "TCP", "CBT", "EGP",
+        "IGP", "BBN-RCC-MON", "NVP-II", "PUP", "ARGUS", "EMCON", "XNET", "CHAOS",
+        "UDP", "MUX", "DCN-MEAS", "HMP", "PRM", "XNS-IDP", "TRUNK-1", "TRUNK-2",
+        "LEAF-1", "LEAF-2", "RDP", "IRTP", "ISO-TP4", "NETBLT", "MFE-NSP", "MERIT-INP",
+        "DCCP", "3PC", "IDPR", "XTP", "DDP", "IDPR-CMTP", "TP++", "IL", "IPv6",
+        "SDRP", "IPv6-Route", "IPv6-Frag", "IDRP", "RSVP", "GRE", "DSR", "BNA",
+        "ESP", "AH", "I-NLSP", "SWIPE", "NARP", "MOBILE", "TLSP", "SKIP",
+        "IPv6-ICMP", "IPv6-NoNxt", "IPv6-Opts", "0x3d", "CFTP", "0x3f", "SAT-EXPAK",
+        "KRYPTOLAN", "RVD", "IPPC", "0x44", "SAT-MON", "VISA", "IPCV", "CPNX",
+        "CPHB", "WSN", "PVP", "BR-SAT-MON", "SUN-ND", "WB-MON", "WB-EXPAK",
+        "ISO-IP", "VMTP", "SECURE-VMTP", "VINES", "IPTM", "NSFNET-IGP",
+        "DGP", "TCF", "EIGRP", "OSPFIGP", "Sprite-RPC", "LARP", "MTP", "AX.25",
+        "IPIP", "MICP", "SCC-SP", "ETHERIP", "ENCAP", "0x63", "GMTP", "IFMP",
+        "PNNI", "PIM", "ARIS", "SCPS", "QNX", "A/N", "IPComp", "SNP",
+        "Compaq-Peer", "IPX-in-IP", "VRRP", "PGM", "0x72", "L2TP", "DDX", "IATP",
+        "STP", "SRP", "UTI", "SMP", "SM", "PTP", "ISIS over IPv4", "FIRE", "CRTP",
+        "CRUDP", "SSCOPMCE", "IPLT", "SPS", "PIPE", "SCTP", "FC",
+        "RSVP-E2E-IGNORE", "Mobility Header", "UDPLite", "MPLS-in-IP", "manet",
+        "HIP", "Shim6", "WESP", "ROHC", "Ethernet", "0x90", "0x91", "0x92",
+        "0x93", "0x94", "0x95", "0x96", "0x97", "0x98", "0x99", "0x9a", "0x9b",
+        "0x9c", "0x9d", "0x9e", "0x9f", "0xa0", "0xa1", "0xa2", "0xa3", "0xa4",
+        "0xa5", "0xa6", "0xa7", "0xa8", "0xa9", "0xaa", "0xab", "0xac", "0xad",
+        "0xae", "0xaf", "0xb0", "0xb1", "0xb2", "0xb3", "0xb4", "0xb5", "0xb6",
+        "0xb7", "0xb8", "0xb9", "0xba", "0xbb", "0xbc", "0xbd", "0xbe", "0xbf",
+        "0xc0", "0xc1", "0xc2", "0xc3", "0xc4", "0xc5", "0xc6", "0xc7", "0xc8",
+        "0xc9", "0xca", "0xcb", "0xcc", "0xcd", "0xce", "0xcf", "0xd0", "0xd1",
+        "0xd2", "0xd3", "0xd4", "0xd5", "0xd6", "0xd7", "0xd8", "0xd9", "0xda",
+        "0xdb", "0xdc", "0xdd", "0xde", "0xdf", "0xe0", "0xe1", "0xe2", "0xe3",
+        "0xe4", "0xe5", "0xe6", "0xe7", "0xe8", "0xe9", "0xea", "0xeb", "0xec",
+        "0xed", "0xee", "0xef", "0xf0", "0xf1", "0xf2", "0xf3", "0xf4", "0xf5",
+        "0xf6", "0xf7", "0xf8", "0xf9", "0xfa", "0xfb", "0xfc", "0xfd", "0xfe",
+        "0xff"};
+    
     // Counter keeping track of frame being processed
-    private static int frameCounter = 1;
+    private int frameCounter = 1;
 
     /**
      * Construct a new JSONImportFileParser with "JSON" label at position 4.
@@ -221,7 +272,7 @@ public class PCAPImportFileParser extends ImportFileParser {
      * @return Integer equivalent of supplied value.
      */
     private int byteToInt(final byte value) {
-        final byte bytesArray[] = {0, 0, 0, value};
+        final byte[] bytesArray = {0, 0, 0, value};
         return ByteBuffer.wrap(bytesArray).getInt();
     }
 
@@ -235,291 +286,7 @@ public class PCAPImportFileParser extends ImportFileParser {
      * hex code of the byte if no mapping exists.
      */
     private String byteToProtocol(final byte value) {
-        final byte valueArray[] = {value};
-        final int intValue = byteToInt(value);
-        // Values sourced from https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml
-        switch (intValue) {
-            case (0):
-                return "HOPOPT";
-            case (1):
-                return "ICMP";
-            case (2):
-                return "IGMP";
-            case (3):
-                return "GGP";
-            case (4):
-                return "IPv4";
-            case (5):
-                return "ST";
-            case (6):
-                return "TCP";
-            case (7):
-                return "CBT";
-            case (8):
-                return "EGP";
-            case (9):
-                return "IGP";
-            case (10):
-                return "BBN-RCC-MON";
-            case (11):
-                return "NVP-II";
-            case (12):
-                return "PUP";
-            case (13):
-                return "ARGUS";
-            case (14):
-                return "EMCON";
-            case (15):
-                return "XNET";
-            case (16):
-                return "CHAOS";
-            case (17):
-                return "UDP";
-            case (18):
-                return "MUX";
-            case (19):
-                return "DCN-MEAS";
-            case (20):
-                return "HMP";
-            case (21):
-                return "PRM";
-            case (22):
-                return "XNS-IDP";
-            case (23):
-                return "TRUNK-1";
-            case (24):
-                return "TRUNK-2";
-            case (25):
-                return "LEAF-1";
-            case (26):
-                return "LEAF-2";
-            case (27):
-                return "RDP";
-            case (28):
-                return "IRTP";
-            case (29):
-                return "ISO-TP4";
-            case (30):
-                return "NETBLT";
-            case (31):
-                return "MFE-NSP";
-            case (32):
-                return "MERIT-INP";
-            case (33):
-                return "DCCP";
-            case (34):
-                return "3PC";
-            case (35):
-                return "IDPR";
-            case (36):
-                return "XTP";
-            case (37):
-                return "DDP";
-            case (38):
-                return "IDPR-CMTP";
-            case (39):
-                return "TP++";
-            case (40):
-                return "IL";
-            case (41):
-                return "IPv6";
-            case (42):
-                return "SDRP";
-            case (43):
-                return "IPv6-Route";
-            case (44):
-                return "IPv6-Frag";
-            case (45):
-                return "IDRP";
-            case (46):
-                return "RSVP";
-            case (47):
-                return "GRE";
-            case (48):
-                return "DSR";
-            case (49):
-                return "BNA";
-            case (50):
-                return "ESP";
-            case (51):
-                return "AH";
-            case (52):
-                return "I-NLSP";
-            case (53):
-                return "SWIPE";
-            case (54):
-                return "NARP";
-            case (55):
-                return "MOBILE";
-            case (56):
-                return "TLSP";
-            case (57):
-                return "SKIP";
-            case (58):
-                return "IPv6-ICMP";
-            case (59):
-                return "IPv6-NoNxt";
-            case (60):
-                return "IPv6-Opts";
-            case (62):
-                return "CFTP";
-            case (64):
-                return "SAT-EXPAK";
-            case (65):
-                return "KRYPTOLAN";
-            case (66):
-                return "RVD";
-            case (67):
-                return "IPPC";
-            case (69):
-                return "SAT-MON";
-            case (70):
-                return "VISA";
-            case (71):
-                return "IPCV";
-            case (72):
-                return "CPNX";
-            case (73):
-                return "CPHB";
-            case (74):
-                return "WSN";
-            case (75):
-                return "PVP";
-            case (76):
-                return "BR-SAT-MON";
-            case (77):
-                return "SUN-ND";
-            case (78):
-                return "WB-MON";
-            case (79):
-                return "WB-EXPAK";
-            case (80):
-                return "ISO-IP";
-            case (81):
-                return "VMTP";
-            case (82):
-                return "SECURE-VMTP";
-            case (83):
-                return "VINES";
-            case (84):
-                return "IPTM";
-            case (85):
-                return "NSFNET-IGP";
-            case (86):
-                return "DGP";
-            case (87):
-                return "TCF";
-            case (88):
-                return "EIGRP";
-            case (89):
-                return "OSPFIGP";
-            case (90):
-                return "Sprite-RPC";
-            case (91):
-                return "LARP";
-            case (92):
-                return "MTP";
-            case (93):
-                return "AX.25";
-            case (94):
-                return "IPIP";
-            case (95):
-                return "MICP";
-            case (96):
-                return "SCC-SP";
-            case (97):
-                return "ETHERIP";
-            case (98):
-                return "ENCAP";
-            case (100):
-                return "GMTP";
-            case (101):
-                return "IFMP";
-            case (102):
-                return "PNNI";
-            case (103):
-                return "PIM";
-            case (104):
-                return "ARIS";
-            case (105):
-                return "SCPS";
-            case (106):
-                return "QNX";
-            case (107):
-                return "A/N";
-            case (108):
-                return "IPComp";
-            case (109):
-                return "SNP";
-            case (110):
-                return "Compaq-Peer";
-            case (111):
-                return "IPX-in-IP";
-            case (112):
-                return "VRRP";
-            case (113):
-                return "PGM";
-            case (115):
-                return "L2TP";
-            case (116):
-                return "DDX";
-            case (117):
-                return "IATP";
-            case (118):
-                return "STP";
-            case (119):
-                return "SRP";
-            case (120):
-                return "UTI";
-            case (121):
-                return "SMP";
-            case (122):
-                return "SM";
-            case (123):
-                return "PTP";
-            case (124):
-                return "ISIS over IPv4";
-            case (125):
-                return "FIRE";
-            case (126):
-                return "CRTP";
-            case (127):
-                return "CRUDP";
-            case (128):
-                return "SSCOPMCE";
-            case (129):
-                return "IPLT";
-            case (130):
-                return "SPS";
-            case (131):
-                return "PIPE";
-            case (132):
-                return "SCTP";
-            case (133):
-                return "FC";
-            case (134):
-                return "RSVP-E2E-IGNORE";
-            case (135):
-                return "Mobility Header";
-            case (136):
-                return "UDPLite";
-            case (137):
-                return "MPLS-in-IP";
-            case (138):
-                return "manet";
-            case (139):
-                return "HIP";
-            case (140):
-                return "Shim6";
-            case (141):
-                return "WESP";
-            case (142):
-                return "ROHC";
-            case (143):
-                return "Ethernet";
-            default:
-                return ("0x" + Hex.encodeHexString(valueArray));
-        }
+        return PROTOCOL_MAP[byteToInt(value)];
     }
 
     /**
@@ -595,7 +362,7 @@ public class PCAPImportFileParser extends ImportFileParser {
         // integer = 0.
         if (offset + size <= bytes.length) {
             final byte[] extractedBytes = getBytes(bytes, offset, size);
-            final byte bytesArray[] = {0, 0, 0, 0};
+            final byte[] bytesArray = {0, 0, 0, 0};
             for (int i = 0; i < extractedBytes.length; i++) {
                 bytesArray[INT_SIZE + i - extractedBytes.length] = extractedBytes[i];
             }
@@ -695,7 +462,7 @@ public class PCAPImportFileParser extends ImportFileParser {
 
         final StringBuilder builder = new StringBuilder();
         for (byte element : getBytes(bytes, offset, IPV4_IP_SIZE)) {
-            builder.append(String.valueOf((int)(element & 0xff)));
+            builder.append(String.valueOf(element & 0xff));
             builder.append(".");
         }
         return builder.toString().substring(0, builder.toString().length() - 1);
@@ -728,6 +495,21 @@ public class PCAPImportFileParser extends ImportFileParser {
     }
 
     /**
+     * Open and return the supplied PCAP file, with exception handling wrapper
+     * to ensure exceptions are caught and propagated in a controlled manner.
+     * @param file PCAP file to open
+     * @return opened PCAP file
+     * @throws IOException 
+     */
+    private Pcap openPcap(File file) throws IOException {
+        try {
+                return Pcap.openStream(file);
+            } catch (final Exception ex) {
+                throw new IOException(WARN_INVALID_PCAP);
+            }
+    }
+    
+    /**
      * Designed to perform common decoding as required by the parse and preview
      * functions. Perform common extraction of data from PCAP file. This uses
      * the io.pkts library (where possible) to decode content of PCAP file,
@@ -754,13 +536,7 @@ public class PCAPImportFileParser extends ImportFileParser {
         results.add(headings);
 
         try {
-            Pcap pcap;
-            try {
-                // Open the supplied PCAP file and reset frameCounter
-                pcap = Pcap.openStream(input.getFile());
-            } catch (final Exception ex) {
-                throw new IOException(WARN_INVALID_PCAP);
-            }
+            Pcap pcap = openPcap(input.getFile());
             frameCounter = 1;
 
             // Use io.pkts fucntionality to extract rawe packets and iterate
@@ -842,8 +618,6 @@ public class PCAPImportFileParser extends ImportFileParser {
                                 final int ipv4version = byteToIPVersion(ipv4BufferArray[HDR_IPV4_VERSION_HDRSIZE_OFFSET]);
                                 if (ipv4version != 4) {
                                     infoBuilder.append("Bogus IPv4 version (").append(ipv4version).append(", must be 4). ");
-                                    LOGGER.log(Level.INFO, "Frame {0}. {1}",
-                                            new Object[]{frameCounter, infoBuilder.toString()});
                                 }
 
                                 // Extract key output fields based on values contained in IPv4 message
@@ -862,22 +636,20 @@ public class PCAPImportFileParser extends ImportFileParser {
                                     case IP_PROT_TCP:
                                         srcPort = Integer.toString(bytesToInt(ipv4BufferArray,
                                                 ipv4HeaderLength + TCP_SRC_PORT_OFFSET,
-                                                HDR_IPV4_PORT_SIZE, infoBuilder,
-                                                "Packet truncated (Unable to extract src port). "));
+                                                HDR_IPV4_PORT_SIZE, infoBuilder, INFO_TRUNCATED_SRC_PORT));
                                         destPort = Integer.toString(bytesToInt(ipv4BufferArray,
                                                 ipv4HeaderLength + TCP_DEST_PORT_OFFSET,
-                                                HDR_IPV4_PORT_SIZE, infoBuilder,
-                                                "Packet truncated (Unable to extract dest port). "));
+                                                HDR_IPV4_PORT_SIZE, infoBuilder, INFO_TRUNCATED_DEST_PORT));
                                         break;
                                     case IP_PROT_UDP:
                                         srcPort = Integer.toString(bytesToInt(ipv4BufferArray,
                                                 ipv4HeaderLength + UDP_SRC_PORT_OFFSET,
-                                                HDR_IPV4_PORT_SIZE, infoBuilder,
-                                                "Packet truncated (Unable to extract src port). "));
+                                                HDR_IPV4_PORT_SIZE, infoBuilder, INFO_TRUNCATED_SRC_PORT));
                                         destPort = Integer.toString(bytesToInt(ipv4BufferArray,
                                                 ipv4HeaderLength + UDP_DEST_PORT_OFFSET,
-                                                HDR_IPV4_PORT_SIZE, infoBuilder,
-                                                "Packet truncated (Unable to extract dest port). "));
+                                                HDR_IPV4_PORT_SIZE, infoBuilder, INFO_TRUNCATED_DEST_PORT));
+                                    default:
+                                        // No ports expected
                                         break;
                                 }
                                 break;
@@ -897,8 +669,6 @@ public class PCAPImportFileParser extends ImportFileParser {
                                         = byteToIPVersion(ipv6BufferArray[HDR_IPV6_VERSION_TRAFFCLASS_OFFSET]);
                                 if (ipv6version != 6) {
                                     infoBuilder.append("Bogus IPv6 version (").append(ipv6version).append(", must be 6). ");
-                                    LOGGER.log(Level.INFO, "Frame {0}. {1}",
-                                            new Object[]{frameCounter, infoBuilder.toString()});
                                 }
 
                                 // Extract key output fields based on values contained in IPv6 message
@@ -917,22 +687,20 @@ public class PCAPImportFileParser extends ImportFileParser {
                                     case IP_PROT_TCP:
                                         srcPort = Integer.toString(bytesToInt(ipv6BufferArray,
                                                 HDR_IPV6_SIZE + TCP_SRC_PORT_OFFSET,
-                                                HDR_IPV6_PORT_SIZE, infoBuilder,
-                                                "Packet truncated (Unable to extract src port). "));
+                                                HDR_IPV6_PORT_SIZE, infoBuilder, INFO_TRUNCATED_SRC_PORT));
                                         destPort = Integer.toString(bytesToInt(ipv6BufferArray,
                                                 HDR_IPV6_SIZE + TCP_DEST_PORT_OFFSET,
-                                                HDR_IPV6_PORT_SIZE, infoBuilder,
-                                                "Packet truncated (Unable to extract dest port). "));
+                                                HDR_IPV6_PORT_SIZE, infoBuilder, INFO_TRUNCATED_DEST_PORT));
                                         break;
                                     case IP_PROT_UDP:
                                         srcPort = Integer.toString(bytesToInt(ipv6BufferArray,
                                                 HDR_IPV6_SIZE + UDP_SRC_PORT_OFFSET,
-                                                HDR_IPV6_PORT_SIZE, infoBuilder,
-                                                "Packet truncated (Unable to extract src port). "));
+                                                HDR_IPV6_PORT_SIZE, infoBuilder, INFO_TRUNCATED_SRC_PORT));
                                         destPort = Integer.toString(bytesToInt(ipv6BufferArray,
                                                 HDR_IPV6_SIZE + UDP_DEST_PORT_OFFSET,
-                                                HDR_IPV6_PORT_SIZE, infoBuilder,
-                                                "Packet truncated (Unable to extract dest port). "));
+                                                HDR_IPV6_PORT_SIZE, infoBuilder, INFO_TRUNCATED_DEST_PORT));
+                                    default:
+                                        // No ports expected
                                         break;
                                 }
                                 break;
@@ -944,16 +712,15 @@ public class PCAPImportFileParser extends ImportFileParser {
 
                                 // xtract key output fields based on values contained in ARP message
                                 srcType = getEtherTypeStr(bytesToInt(arpBufferArray, HDR_ARP_PROTOCOL_OFFSET,
-                                        HDR_ARP_PROTOCOL_SIZE, infoBuilder,
-                                        "Packet truncated (Unable to extract ARP ethertype). "));
+                                        HDR_ARP_PROTOCOL_SIZE, infoBuilder, INFO_TRUNCATED_ETHERTYPE));
                                 destType = srcType;
                                 srcIP = bytesToIpv4Str(arpBufferArray, HDR_ARP_SRC_IP_OFFSET);
                                 destIP = bytesToIpv4Str(arpBufferArray, HDR_ARP_DEST_IP_OFFSET);
                                 protocol = "ARP";
 
                                 // Based on operation type, populate the info string
-                                final int arpOp = bytesToInt(arpBufferArray, HDR_ARP_OPERATION_OFFSET, HDR_ARP_OPERATION_SIZE,
-                                        infoBuilder, "Packet truncated (Unable to extract ARP operation). ");
+                                final int arpOp = bytesToInt(arpBufferArray, HDR_ARP_OPERATION_OFFSET,
+                                        HDR_ARP_OPERATION_SIZE, infoBuilder, INFO_TRUNCATED_ARPOPERATION);
                                 switch (arpOp) {
                                     case ARP_REQUEST_ID:
                                         infoBuilder.append("Who has ").append(destIP).append("? Tell ").append(srcIP).append(" ");
