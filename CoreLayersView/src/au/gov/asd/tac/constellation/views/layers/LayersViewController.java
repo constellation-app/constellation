@@ -85,6 +85,7 @@ public class LayersViewController {
                     }
 
                     final LayersViewState state = graph.getObjectValue(layerStateId, 0);
+                    listenedAttributes.clear();
                     listenedAttributes.addAll(state.getLayerAttributes());
                 }
             }).executeLater(activeGraph);

@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2020 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,7 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.LayersConcept;
 import au.gov.asd.tac.constellation.graph.value.IndexedReadable;
 import au.gov.asd.tac.constellation.graph.value.converter.ConverterRegistry;
 import au.gov.asd.tac.constellation.graph.value.expression.ExpressionFilter;
@@ -46,46 +46,55 @@ public class SelectExpressionPlugin extends SimpleEditPlugin {
     private final GraphElementType elementType;
     private final String expressionString;
     private final SequenceExpression expression;
+    private final int layerNumber;
 
-    public SelectExpressionPlugin(GraphElementType elementType, String expressionString) {
+    public SelectExpressionPlugin(GraphElementType elementType, String expressionString, final int layerNumber) {
         super("Select by expression: " + elementType.getShortLabel());
         this.elementType = elementType;
         this.expressionString = expressionString;
         this.expression = ExpressionParser.parse(expressionString);
         this.expression.normalize();
+        this.layerNumber = layerNumber;
     }
-    
+
     @Override
     protected void edit(GraphWriteMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
-        
+
         final IndexedReadableProvider indexedReadableProvider = new GraphIndexedReadableProvider(graph, elementType);
-        
-        final int selectedAttribute;
+
+        final int layerMaskAttribute;
         switch (elementType) {
             case VERTEX:
-                selectedAttribute = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
+                layerMaskAttribute = LayersConcept.VertexAttribute.LAYER_MASK.ensure(graph);
                 break;
             case TRANSACTION:
-                selectedAttribute = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
+                layerMaskAttribute = LayersConcept.TransactionAttribute.LAYER_MASK.ensure(graph);
+                break;
             default:
                 throw new IllegalArgumentException("Unsupported graph element type: " + elementType);
         }
-        
+
         final IndexedReadable expressionReadable = ExpressionFilter.createExpressionReadable(expression, indexedReadableProvider, ConverterRegistry.getDefault());
         final Object expressionResult = expressionReadable.createValue();
         final BooleanReadable expressionBooleanReadable = ConverterRegistry.getDefault().convert(expressionResult, BooleanReadable.class);
         if (expressionBooleanReadable == null) {
             throw new IllegalArgumentException("Expression does not create a boolean result");
         }
-        
+
         final int elementCount = elementType.getElementCount(graph);
         for (int position = 0; position < elementCount; position++) {
             final int id = elementType.getElement(graph, position);
             expressionReadable.read(id, expressionResult);
-            graph.setBooleanValue(selectedAttribute, id, expressionBooleanReadable.readBoolean());
+
+            // bitmask is added if it results in true, removed if it results in false.
+            final int bitmask = expressionBooleanReadable.readBoolean()
+                    ? graph.getIntValue(layerMaskAttribute, id) | (1 << layerNumber)
+                    : graph.getIntValue(layerMaskAttribute, id) & ~(1 << layerNumber);
+
+            graph.setIntValue(layerMaskAttribute, id, bitmask);
         }
     }
-    
+
     private static final class GraphIndexedReadableProvider implements IndexedReadableProvider {
 
         final GraphReadMethods graphReadMethods;
@@ -95,18 +104,18 @@ public class SelectExpressionPlugin extends SimpleEditPlugin {
             this.graphReadMethods = graphReadMethods;
             this.elementType = elementType;
         }
-        
+
         @Override
         public IndexedReadable<?> getIndexedReadable(String name) {
             return new GraphIndexedReadable(graphReadMethods, elementType, name);
         }
     }
-    
+
     private static final class GraphIndexedReadable<V> implements IndexedReadable<V> {
 
         private final GraphReadMethods graphReadMethods;
         private final int attribute;
-        
+
         public GraphIndexedReadable(GraphReadMethods graphReadMethods, GraphElementType elementType, String attributeName) {
             this.graphReadMethods = graphReadMethods;
             this.attribute = graphReadMethods.getAttribute(elementType, attributeName);
@@ -114,7 +123,7 @@ public class SelectExpressionPlugin extends SimpleEditPlugin {
                 throw new IllegalArgumentException("Unknown " + elementType + " attribute: " + attributeName);
             }
         }
-        
+
         @Override
         public V createValue() {
             return graphReadMethods.createAttributeValue(attribute);
@@ -125,9 +134,9 @@ public class SelectExpressionPlugin extends SimpleEditPlugin {
             graphReadMethods.readAttributeValue(attribute, id, value);
         }
     }
-    
-    public static void run(Graph graph, GraphElementType elementType, String expressionString) {
-        final Plugin plugin = new SelectExpressionPlugin(elementType, expressionString);
+
+    public static void run(Graph graph, GraphElementType elementType, String expressionString, final int layerNumber) {
+        final Plugin plugin = new SelectExpressionPlugin(elementType, expressionString, layerNumber);
         final Future<?> f = PluginExecution.withPlugin(plugin).executeLater(graph);
         try {
             f.get();

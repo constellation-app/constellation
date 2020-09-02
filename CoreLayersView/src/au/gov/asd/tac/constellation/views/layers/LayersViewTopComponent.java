@@ -60,7 +60,8 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
 
     private final LayersViewController layersViewController;
     private final LayersViewPane layersViewPane;
-    private final List<AttributeValueMonitor> valueMonitors = new ArrayList<>();
+    private final List<AttributeValueMonitor> valueMonitors;
+    private final List<SchemaAttribute> changeListeners;
 
     public LayersViewTopComponent() {
         setName(Bundle.CTL_LayersViewTopComponent());
@@ -69,7 +70,8 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
 
         layersViewController = new LayersViewController(LayersViewTopComponent.this);
         layersViewPane = new LayersViewPane(layersViewController);
-        List<SchemaAttribute> changeListeners = new ArrayList<>();
+        changeListeners = new ArrayList<>();
+        valueMonitors = new ArrayList<>();
 
         initContent();
 
@@ -89,7 +91,7 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
             changeListeners.clear();
             changeListeners.addAll(layersViewController.getListenedAttributes());
 
-            // adding change handlers for attribute changes
+            // adding change handlers for attribute changes based on current layer selection
             for (final SchemaAttribute attribute : changeListeners) {
                 valueMonitors.add(
                         addAttributeValueChangeHandler(attribute, currentGraph -> {

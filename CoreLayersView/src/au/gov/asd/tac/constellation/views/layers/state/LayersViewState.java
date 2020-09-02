@@ -15,11 +15,16 @@
  */
 package au.gov.asd.tac.constellation.views.layers.state;
 
+import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttributeUtilities;
+import au.gov.asd.tac.constellation.graph.value.expression.ExpressionParser;
+import au.gov.asd.tac.constellation.graph.value.expression.ExpressionParser.Expression;
+import au.gov.asd.tac.constellation.graph.value.expression.ExpressionParser.SequenceExpression;
+import au.gov.asd.tac.constellation.graph.value.expression.ExpressionParser.VariableExpression;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.views.layers.layer.LayerDescription;
-import au.gov.asd.tac.constellation.views.layers.layer.LayerEvaluator;
 import java.util.ArrayList;
 import java.util.List;
 import org.openide.NotifyDescriptor;
@@ -90,8 +95,21 @@ public class LayersViewState {
     public void extractLayerAttributes(GraphWriteMethods graph) {
         final List<SchemaAttribute> attributes = new ArrayList<>();
         for (final LayerDescription layer : layers) {
-            attributes.addAll(LayerEvaluator.getQueryAttributes(graph, layer.getLayerQuery()));
+
+            // continue if the layer is not enabled.
+            if (!layer.getCurrentLayerVisibility()) {
+                continue;
+            }
+
+            SequenceExpression expression = ExpressionParser.parse(layer.getLayerQuery());
+            for (final Expression exp : expression.getChildren()) {
+                if (exp instanceof VariableExpression) {
+                    attributes.add(SchemaAttributeUtilities.getAttribute(GraphElementType.VERTEX, ((VariableExpression) exp).getContent()));
+                    // TODO: Hardcoded to only get vertexes
+                }
+            }
         }
+        attributes.removeIf(item -> item == null);
         setLayerAttributes(attributes);
     }
 
