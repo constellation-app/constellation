@@ -134,7 +134,7 @@ public abstract class ConversationContributionProvider implements Comparable<Con
      */
     public static List<ConversationContributionProvider> getCompatibleProviders(GraphReadMethods graph) {
         final List<ConversationContributionProvider> compatibleProviders = new ArrayList<>();
-        if (Objects.nonNull(graph)) {
+        if (graph != null) {
             for (ConversationContributionProvider provider : getProviders()) {
                 if (provider.isCompatibleWithGraph(graph)) {
                     compatibleProviders.add(provider);

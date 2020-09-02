@@ -40,7 +40,7 @@ public class DefaultConversationMessageProvider implements ConversationMessagePr
     public void getMessages(GraphReadMethods graph, List<ConversationMessage> messages) {
         assert !SwingUtilities.isEventDispatchThread();
         messages.clear();
-        if (Objects.isNull(graph)) {
+        if (graph == null) {
             return; // Null graph means no messages.
         }
         final int vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);

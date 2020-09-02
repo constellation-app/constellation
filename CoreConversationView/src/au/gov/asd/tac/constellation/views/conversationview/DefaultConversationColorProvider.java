@@ -35,7 +35,7 @@ public class DefaultConversationColorProvider implements ConversationColorProvid
     public void updateMessageColors(GraphReadMethods graph, List<ConversationMessage> messages) {
         assert !SwingUtilities.isEventDispatchThread();
         
-        if (Objects.isNull(graph) || messages.isEmpty()) {
+        if (graph == null || messages.isEmpty()) {
             return; // Nothing to do.
         }
         

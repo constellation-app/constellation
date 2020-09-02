@@ -245,7 +245,7 @@ public class Conversation {
         @Override
         protected boolean update(GraphReadMethods graph) {
             possibleSenderAttributes.clear();
-            if (Objects.nonNull(graph)) {
+            if (graph != null) {
                 final int attributeCount = graph.getAttributeCount(GraphElementType.VERTEX);
                 for (int i = 0; i < attributeCount; i++) {
                     final int attributeId = graph.getAttribute(GraphElementType.VERTEX, i);
