@@ -36,6 +36,10 @@ public class BitMaskQuery {
         this.mask = 0xFFFFFFFFFFFFFFFFL ^ (1L << bitIndex);
     }
     
+    public boolean isActive(long activeQueryBitMask) {
+        return (activeQueryBitMask & (1 << bitIndex)) != 0;
+    }
+    
     public boolean update(GraphReadMethods graph, IntReadable index) {
         if(query.requiresUpdate(graph)) {
             final Object compiledExpresssion = query.compile(graph, index);
