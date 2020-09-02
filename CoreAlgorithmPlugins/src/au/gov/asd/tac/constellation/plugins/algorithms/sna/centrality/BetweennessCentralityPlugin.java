@@ -158,23 +158,18 @@ public class BetweennessCentralityPlugin extends SimpleEditPlugin {
                 if (normaliseConnectedComponents) {
                     final float subgraphVertexCount = subgraphs[vertexPosition].cardinality();
                     betweennessAttributeValue = betweennesses[vertexPosition] / (((subgraphVertexCount - 1) * (subgraphVertexCount - 2)) / 2);
-                    graph.setFloatValue(betweennessAttribute, vertexId, betweennesses[vertexPosition] / (((subgraphVertexCount - 1) * (subgraphVertexCount - 2)) / 2));
                 } else {
                     betweennessAttributeValue = betweennesses[vertexPosition] / (((vertexCount - 1) * (vertexCount - 2)) / 2f);
-                    graph.setFloatValue(betweennessAttribute, vertexId, betweennesses[vertexPosition] / (((vertexCount - 1) * (vertexCount - 2)) / 2f));
                 }
             } else if (normaliseByAvailable && maxBetweenness > 0) {
                 if (normaliseConnectedComponents) {
                     final float maxBetweennessConnectedComponent = maxBetweennessConnectedComponents.get(subgraphs[vertexPosition]);
                     betweennessAttributeValue = betweennesses[vertexPosition] / maxBetweennessConnectedComponent;
-                    graph.setFloatValue(betweennessAttribute, vertexId, betweennesses[vertexPosition] / maxBetweennessConnectedComponent);
                 } else {
                     betweennessAttributeValue = betweennesses[vertexPosition] / maxBetweenness;
-                    graph.setFloatValue(betweennessAttribute, vertexId, betweennesses[vertexPosition] / maxBetweenness);
                 }
             } else {
                 betweennessAttributeValue = betweennesses[vertexPosition];
-                graph.setFloatValue(betweennessAttribute, vertexId, betweennesses[vertexPosition]);
             }
             
             graph.setFloatValue(betweennessAttribute, vertexId, Float.isNaN(betweennessAttributeValue) ? 0 : betweennessAttributeValue);
