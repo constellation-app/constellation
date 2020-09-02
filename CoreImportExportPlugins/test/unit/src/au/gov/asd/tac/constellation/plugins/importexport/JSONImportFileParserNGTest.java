@@ -35,9 +35,9 @@ import org.testng.annotations.Test;
  *
  * @author serpens24
  */
-public class JSONImportFielParserNGTest {
+public class JSONImportFileParserNGTest {
 
-    // Refelction used to view private fields in class under test.
+    // Reflection used to view private fields in class under test.
     static JSONImportFileParser instance = new JSONImportFileParser();
     static Field private_invalidJSONField = null;
     static Field private_noValidListField = null;

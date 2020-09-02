@@ -61,6 +61,11 @@ public class PCAPImportFileParser extends ImportFileParser {
 
     private static final Logger LOGGER = Logger.getLogger(PCAPImportFileParser.class.getName());
 
+    private static final String WARN_PARSING_PREFIX
+            = "Extracting data from PCAP file failed.\n";
+    private static final String WARN_INVALID_PCAP
+            = WARN_PARSING_PREFIX + "Unable to parse file, invalid PCAP.";
+    
     // Number of bytes in an integer
     private static final int INT_SIZE = 4;
 
@@ -261,7 +266,7 @@ public class PCAPImportFileParser extends ImportFileParser {
             case (12):
                 return "PUP";
             case (13):
-                return "ARGUS (deprecated)";
+                return "ARGUS";
             case (14):
                 return "EMCON";
             case (15):
@@ -341,7 +346,7 @@ public class PCAPImportFileParser extends ImportFileParser {
             case (52):
                 return "I-NLSP";
             case (53):
-                return "SWIPE (deprecated)";
+                return "SWIPE";
             case (54):
                 return "NARP";
             case (55):
@@ -397,7 +402,7 @@ public class PCAPImportFileParser extends ImportFileParser {
             case (83):
                 return "VINES";
             case (84):
-                return "TTP";
+                return "IPTM";
             case (85):
                 return "NSFNET-IGP";
             case (86):
@@ -419,7 +424,7 @@ public class PCAPImportFileParser extends ImportFileParser {
             case (94):
                 return "IPIP";
             case (95):
-                return "MICP (deprecated)";
+                return "MICP";
             case (96):
                 return "SCC-SP";
             case (97):
@@ -469,7 +474,7 @@ public class PCAPImportFileParser extends ImportFileParser {
             case (121):
                 return "SMP";
             case (122):
-                return "SM (deprecated)";
+                return "SM";
             case (123):
                 return "PTP";
             case (124):
@@ -510,6 +515,8 @@ public class PCAPImportFileParser extends ImportFileParser {
                 return "WESP";
             case (142):
                 return "ROHC";
+            case (143):
+                return "Ethernet";
             default:
                 return ("0x" + Hex.encodeHexString(valueArray));
         }
@@ -554,7 +561,7 @@ public class PCAPImportFileParser extends ImportFileParser {
      * @throws Assertion if requested offset or size to extract is negative
      */
     private byte[] getBytes(final byte[] bytes, int offset, int size) {
-        assert (offset >= 0 && size > 0); 
+        assert (offset >= 0 && offset < bytes.length && size > 0); 
         return Arrays.copyOfRange(bytes, offset, offset + size);
     }
 
@@ -581,7 +588,7 @@ public class PCAPImportFileParser extends ImportFileParser {
      * outside of the allowable range
      */
     private int bytesToInt(final byte[] bytes, int offset, int size, StringBuilder infoBuilder, String infoString) {
-        assert (offset >= 0 && size > 0 && size <= INT_SIZE);
+        assert (offset >= 0 && offset < bytes.length && size > 0 && size <= INT_SIZE);
 
         // Ensure that source bytes array is large enough to accomodate the
         // request. If not, set infoBuilder to supplied infoString and return
@@ -614,7 +621,7 @@ public class PCAPImportFileParser extends ImportFileParser {
      * @throws Assertion if requested offset is negative
      */
     private String bytesToMacAddressStr(final byte[] bytes, int offset) {
-        assert (offset >= 0);
+        assert (offset >= 0 && offset < bytes.length);
 
         final byte[] extractedBytes = getBytes(bytes, offset, HDR_ETHERNET_II_MAC_SIZE);
         final String rawString = Hex.encodeHexString(extractedBytes);
@@ -649,7 +656,7 @@ public class PCAPImportFileParser extends ImportFileParser {
      * @throws Assertion if requested offset or size is negative
      */
     private String bytesToHexStr(final byte[] bytes, int offset, int size) {
-        assert (offset >= 0 && size > 0);
+        assert (offset >= 0 && offset < bytes.length && size > 0);
 
         return Hex.encodeHexString(getBytes(bytes, offset, size));
     }
@@ -747,9 +754,13 @@ public class PCAPImportFileParser extends ImportFileParser {
         results.add(headings);
 
         try {
-
-            // Open the supplied PCAP file and reset frameCounter
-            final Pcap pcap = Pcap.openStream(input.getFile());
+            Pcap pcap;
+            try {
+                // Open the supplied PCAP file and reset frameCounter
+                pcap = Pcap.openStream(input.getFile());
+            } catch (final Exception ex) {
+                throw new IOException(WARN_INVALID_PCAP);
+            }
             frameCounter = 1;
 
             // Use io.pkts fucntionality to extract rawe packets and iterate
@@ -1005,12 +1016,16 @@ public class PCAPImportFileParser extends ImportFileParser {
 
         } catch (final IndexOutOfBoundsException ex) {
             // io.pkts library doesn't gracefully handle truncated PCAP files and throws an IndexOutOfBoundsException
-            // exception
+            // exception. Catch this gracefully as its an expected event.
             LOGGER.log(Level.INFO,
                     "Processing of PCAP truncated at row={0}, potentially truncated PCAP file encountered. {1}",
                     new Object[]{frameCounter, ex.toString()});
             return results;
-        } catch (final Exception ex) {
+        } catch (final IllegalArgumentException ex) {
+            // This exception is thrown by the io.pkts package when receiving an unexpected file type
+            throw new IOException(WARN_INVALID_PCAP);
+        }
+        catch (final Exception ex) {
             // Unexpected exceptions
             Exceptions.printStackTrace(ex);
             throw (ex);
