@@ -15,6 +15,12 @@ const float INDICATOR_SIZE = 0.1;
 // An approximation of the trigonometric tangent function evaluated at various degree values.
 const float SIN_SIXTY_DEGREES = 0.86603;
 
+// The GL version this shader started as used the shader implicit gl_DepthRange which doesn't exist for Vulkan, luckily we never
+// set it via glDepthRange(float, float); so it was always at the default projection Z range (aka depth) of -1..1.  Note in Vulkan
+// depth is mapped 0..1.  We've used the GL default as that is what the shader was written to expect but keep an eye for issues.
+const float DEPTH_NEAR = -1.0;
+const float DEPTH_FAR  =  1.0;
+
 
 // === UNIFORMS ===
 layout(std140, binding = 2) uniform UniformBlock {
@@ -27,10 +33,6 @@ layout(std140, binding = 2) uniform UniformBlock {
 
     // Used to draw the connection indicator on the label background.
     vec4 highlightColor;
-
-    // gl_DepthRange is not available for Vulkan shaders so we have to pass these through ourselves
-    float near;
-    float far;
 } ub;
 
 // [0..1] x,y coordinates of glyph in glyphImageTexture. The whole part of x is the texture number
@@ -43,10 +45,10 @@ layout(points) in;
 
 // The scaling factor if the glyph we are rendering is in fact the background for a line of text.
 // This will be one in all other cases.
-layout(location = 0) in float backgroundScalingFactor[];
-layout(location = 1) in int glyphIndex[];
-layout(location = 2) in vec4 labelColor[];
-layout(location = 3) in float glyphScale[];
+layout(location = 0) in int glyphIndex[];
+layout(location = 1) in vec4 labelColor[];
+layout(location = 2) in float glyphScale[];
+layout(location = 3) in float backgroundScalingFactor[];
 layout(location = 4) in int drawIndicator[];
 layout(location = 5) in float drawIndicatorX[];
 layout(location = 6) in float drawIndicatorY[];
@@ -60,7 +62,6 @@ layout(triangle_strip, max_vertices=7) out;
 layout(location = 0) noperspective centroid out vec3 textureCoordinates;
 // The colour of this glyph (constant for a whole label, unless we are rendering its background or connection indicator).
 layout(location = 1) out vec4 fLabelColor;
-
 layout(location = 2) flat out float fDepth;
 
 
@@ -80,7 +81,7 @@ void main(void) {
 
         // Calculate depth
         vec4 depthVec = ub.pMatrix * vec4(glyphLocation.xy, depth[0], glyphLocation.w);
-        float calcdDepth = ((ub.far - ub.near) * (depthVec.z / depthVec.w) + ub.far + ub.near) / 2.0;
+        float calcdDepth = ((DEPTH_FAR - DEPTH_NEAR) * (depthVec.z / depthVec.w) + DEPTH_FAR + DEPTH_NEAR) / 2.0;
 
         // The dimensions (in camera coordinates) of the glyph
         float width = glyphWidth * glyphScale[0] * ub.widthScalingFactor * backgroundScalingFactor[0];
@@ -131,7 +132,7 @@ void main(void) {
             // background glyph, but not as far forward as the other glyphs.
             float forward = 0.00025;
             vec4 depthVec = ub.pMatrix * vec4(glyphLocation.xy, depth[0] + forward, glyphLocation.w);
-            float calcdDepth = ((ub.far - ub.near)*(depthVec.z / depthVec.w) + ub.far + ub.near) / 2.0;
+            float calcdDepth = ((DEPTH_FAR - DEPTH_NEAR)*(depthVec.z / depthVec.w) + DEPTH_FAR + DEPTH_NEAR) / 2.0;
 
             // The indicator colour is the graph highlight colour, with the alpha value that is constant across the label.
             vec4 indicatorColor = vec4(ub.highlightColor.xyz, 1.5 * labelColor[0].a);

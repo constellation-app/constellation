@@ -28,6 +28,11 @@ const float SIN_EIGHTY_DEGREES = 0.98481;
 // A small constant added to the depths of labels in cases where they would otherwise appear past both nodes of their conncetion.
 const float LABEL_DEPTH_PUSHBACK = 0.001;
 
+// The GL version this shader started as used the shader implicit gl_DepthRange which doesn't exist for Vulkan, luckily we never
+// set it via glDepthRange(float, float); so it was always at the default projection Z range (aka depth) of -1..1.  Note in Vulkan
+// depth is mapped 0..1.  We've used the GL default as that is what the shader was written to expect but keep an eye for issues.
+const float DEPTH_NEAR = -1.0;
+
 
 // === UNIFORMS ===
 // .xyz = world coordinates of node.
@@ -53,40 +58,40 @@ layout(std140, binding = 1) uniform UniformBlock {
 
     // Used to draw the label background.
     vec4 backgroundColor;
-
-    // gl_DepthRange is not available for Vulkan shaders so we have to pass these through ourselves
-    float near;
-    //float far; Not used
 } ub;
 
 
-
+// === PER VERTEX DATA IN ===
 // [0] the index of the glyph in the glyphInfoTexture
 // [1..2] x and y offsets of this glyph from the top centre of the line of text
 // [3] The visibility of this glyph (constant for a node, but easier to pass in the batch).
-in vec4 glyphLocationData;
+layout(location = 0) in vec4 glyphLocationData;
 
 // [0] The index of the node containg this glyph in the xyzTexture
 // [1] The total scale of the lines and their labels up to this point (< 0 if this is a glyph in a bottom label)
 // [2] The label number in which this glyph occurs
 // [3] Unused
-in ivec4 graphLocationData;
+layout(location = 1) in ivec4 graphLocationData;
+
+
+// === PER VERTEX DATA OUT ===
+// TODO: squash these
 
 // Information about the texture location, colour and scale of the glyph
-out int glyphIndex;
-out vec4 labelColor;
-out float glyphScale;
+layout(location = 0) out int glyphIndex;
+layout(location = 1) out vec4 labelColor;
+layout(location = 2) out float glyphScale;
 // The scaling factor if the glyph we are rendering is in fact the background for a line of text.
 // This will be one in all other cases.
-out float backgroundScalingFactor;
+layout(location = 3) out float backgroundScalingFactor;
 // A value describing the side of the background on which an indicator should be for connection labels.
 // This will be zero when no indicator should be drawn.
-out int drawIndicator;
+layout(location = 4) out int drawIndicator;
 // Locations for placing the aforementioned indicator.
-out float drawIndicatorX;
-out float drawIndicatorY;
+layout(location = 5) out float drawIndicatorX;
+layout(location = 6) out float drawIndicatorY;
 // The depth of the label which is used to bring labels in front of connections.
-out float depth;
+layout(location = 7) out float depth;
 
 
 void main(void) {
@@ -196,7 +201,7 @@ void main(void) {
         connectionInterceptX = v1.x +  distanceAlongConnection * connectionDirection.x;
         topInterceptZ = v1.z +  distanceAlongConnection * connectionDirection.z;
         // Check that this point actually lies between v1 and v2
-        if (-topInterceptZ > ub.near && connectionInterceptX >= min(v1.x, v2.x) && connectionInterceptX <= max(v1.x, v2.x)) {
+        if (-topInterceptZ > DEPTH_NEAR && connectionInterceptX >= min(v1.x, v2.x) && connectionInterceptX <= max(v1.x, v2.x)) {
             // Calculate the intercept on the top of the label by scaling this point
             topIntercept = (connectionInterceptX * labelLocation.z) / topInterceptZ;
             // If the intercept actually lies on the top side of the label, flag that there is a top intercept
@@ -216,7 +221,7 @@ void main(void) {
         connectionInterceptX = v1.x +  distanceAlongConnection * connectionDirection.x;
         bottomInterceptZ = v1.z + distanceAlongConnection * connectionDirection.z;
         // Check that this point actually lies between v1 and v2
-        if (-bottomInterceptZ > ub.near && connectionInterceptX >= min(v1.x, v2.x) && connectionInterceptX <= max(v1.x, v2.x)) {
+        if (-bottomInterceptZ > DEPTH_NEAR && connectionInterceptX >= min(v1.x, v2.x) && connectionInterceptX <= max(v1.x, v2.x)) {
             // Calculate the intercept on the bottom of the label by scaling this point
             bottomIntercept = (connectionInterceptX * labelBRLocation.z) / bottomInterceptZ;
             // If the intercept actually lies on the bottom side of the label, flag that there is a bottom intercept
@@ -263,7 +268,7 @@ void main(void) {
             connectionInterceptY = v1.y +  distanceAlongConnection * connectionDirection.y;
             leftInterceptZ = v1.z +  distanceAlongConnection*connectionDirection.z;
             // Check that this point actually lies between v1 and v2
-            if (-leftInterceptZ > ub.near && connectionInterceptY >= min(v1.y, v2.y) && connectionInterceptY <= max(v1.y, v2.y)) {
+            if (-leftInterceptZ > DEPTH_NEAR && connectionInterceptY >= min(v1.y, v2.y) && connectionInterceptY <= max(v1.y, v2.y)) {
                 // Calculate the intercept on the left of the label by scaling this point
                 leftIntercept = (connectionInterceptY * labelLocation.z) / leftInterceptZ;
                 // If the intercept actually lies on left top side of the label, flag that there is a top intercept
@@ -282,7 +287,7 @@ void main(void) {
             connectionInterceptY = v1.y +  distanceAlongConnection * connectionDirection.y;
             rightInterceptZ = v1.z +  distanceAlongConnection * connectionDirection.z;
             // Check that this point actually lies between v1 and v2
-            if (-rightInterceptZ > ub.near && connectionInterceptY >= min(v1.y, v2.y) && connectionInterceptY <= max(v1.y, v2.y)) {
+            if (-rightInterceptZ > DEPTH_NEAR && connectionInterceptY >= min(v1.y, v2.y) && connectionInterceptY <= max(v1.y, v2.y)) {
                 // Calculate the intercept on the right of the label by scaling this point
                 rightIntercept = (connectionInterceptY * labelBRLocation.z) / rightInterceptZ;
                 // If the intercept actually lies on the right side of the label, flag that there is a top intercept
@@ -345,8 +350,8 @@ void main(void) {
     }
     // If the calculated depth is in front of the near plane,
     // clamp it to the depth of this plane and push it backwards a small amount.
-    if(-depth < ub.near) {
-        depth = -ub.near - LABEL_DEPTH_PUSHBACK;
+    if(-depth < DEPTH_NEAR) {
+        depth = -DEPTH_NEAR - LABEL_DEPTH_PUSHBACK;
     }
     // Bring this glyph forwards by the appropriate amount depending on whether or not it is the background glyph.
     depth += bringForward;

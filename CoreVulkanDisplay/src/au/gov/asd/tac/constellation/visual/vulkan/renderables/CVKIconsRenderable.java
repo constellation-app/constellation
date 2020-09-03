@@ -15,6 +15,11 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan.renderables;
 
+import static au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableResourceState.*;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.*;
+import static org.lwjgl.system.MemoryUtil.*;
+import static org.lwjgl.vulkan.VK10.*;
+import static org.lwjgl.system.MemoryStack.stackPush;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKIconTextureAtlas;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
@@ -28,24 +33,11 @@ import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKRenderUpdateTask;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
 import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKShaderUtils;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkSucceeded;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
-import static au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableResourceState.CVK_RESOURCE_CLEAN;
-import static au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableResourceState.CVK_RESOURCE_NEEDS_REBUILD;
-import static au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableResourceState.CVK_RESOURCE_NEEDS_UPDATE;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKCommandBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.shaders.CVKShaderPlaceHolder;
 import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKGraphLogger;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssertNotNull;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssertNull;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_SHADER_COMPILATION;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_SHADER_MODULE;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.GetParentMethodName;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.LoadFileToDirectBuffer;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.checkVKret;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
@@ -53,83 +45,8 @@ import java.nio.LongBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
-import static org.lwjgl.system.MemoryStack.stackPush;
 import org.lwjgl.system.MemoryUtil;
-import static org.lwjgl.system.MemoryUtil.memAlloc;
-import static org.lwjgl.system.MemoryUtil.memAllocInt;
-import static org.lwjgl.system.MemoryUtil.memFree;
-import static org.lwjgl.vulkan.VK10.VK_BLEND_FACTOR_DST_ALPHA;
-import static org.lwjgl.vulkan.VK10.VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.vulkan.VK10.VK_BLEND_FACTOR_SRC_ALPHA;
-import static org.lwjgl.vulkan.VK10.VK_BLEND_OP_ADD;
-import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_TRANSFER_DST_BIT;
-import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
-import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
-import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT;
-import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
-import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_A_BIT;
-import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_B_BIT;
-import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_G_BIT;
-import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_R_BIT;
-import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_SECONDARY;
-import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT;
-import static org.lwjgl.vulkan.VK10.VK_COMPARE_OP_LESS_OR_EQUAL;
-import static org.lwjgl.vulkan.VK10.VK_CULL_MODE_BACK_BIT;
-import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER;
-import static org.lwjgl.vulkan.VK10.VK_DYNAMIC_STATE_SCISSOR;
-import static org.lwjgl.vulkan.VK10.VK_DYNAMIC_STATE_VIEWPORT;
-import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32B32A32_SFLOAT;
-import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32B32A32_SINT;
-import static org.lwjgl.vulkan.VK10.VK_FORMAT_R8_SINT;
-import static org.lwjgl.vulkan.VK10.VK_FRONT_FACE_COUNTER_CLOCKWISE;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-import static org.lwjgl.vulkan.VK10.VK_LOGIC_OP_COPY;
-import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
-import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
-import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
-import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
-import static org.lwjgl.vulkan.VK10.VK_POLYGON_MODE_FILL;
-import static org.lwjgl.vulkan.VK10.VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
-import static org.lwjgl.vulkan.VK10.VK_SAMPLE_COUNT_1_BIT;
-import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_FRAGMENT_BIT;
-import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_GEOMETRY_BIT;
-import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_VERTEX_BIT;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_BUFFER_VIEW_CREATE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
-import static org.lwjgl.vulkan.VK10.VK_VERTEX_INPUT_RATE_VERTEX;
-import static org.lwjgl.vulkan.VK10.VK_WHOLE_SIZE;
-import static org.lwjgl.vulkan.VK10.vkAllocateDescriptorSets;
-import static org.lwjgl.vulkan.VK10.vkCreateBufferView;
-import static org.lwjgl.vulkan.VK10.vkCreateDescriptorSetLayout;
-import static org.lwjgl.vulkan.VK10.vkCreateGraphicsPipelines;
-import static org.lwjgl.vulkan.VK10.vkCreatePipelineLayout;
-import static org.lwjgl.vulkan.VK10.vkDestroyBufferView;
-import static org.lwjgl.vulkan.VK10.vkDestroyDescriptorSetLayout;
-import static org.lwjgl.vulkan.VK10.vkDestroyPipeline;
-import static org.lwjgl.vulkan.VK10.vkDestroyPipelineLayout;
-import static org.lwjgl.vulkan.VK10.vkDestroyShaderModule;
-import static org.lwjgl.vulkan.VK10.vkFreeDescriptorSets;
-import static org.lwjgl.vulkan.VK10.vkMapMemory;
-import static org.lwjgl.vulkan.VK10.vkUnmapMemory;
-import static org.lwjgl.vulkan.VK10.vkUpdateDescriptorSets;
 import org.lwjgl.vulkan.VkBufferViewCreateInfo;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkCommandBufferInheritanceInfo;
@@ -158,6 +75,7 @@ import org.lwjgl.vulkan.VkVertexInputBindingDescription;
 import org.lwjgl.vulkan.VkViewport;
 import org.lwjgl.vulkan.VkWriteDescriptorSet;
 
+
 /**
  * What resources do icons have
  *  - vs: vertex buffer (icon indexes and bkg colour)
@@ -184,8 +102,7 @@ public class CVKIconsRenderable extends CVKRenderable{
     private long hFragmentShaderModule = VK_NULL_HANDLE;
     private static ByteBuffer vsBytes = null;
     private static ByteBuffer gsBytes = null;
-    private static ByteBuffer fsBytes = null;    
-    
+    private static ByteBuffer fsBytes = null;        
     private long hDescriptorLayout = VK_NULL_HANDLE; 
     private long hPipelineLayout = VK_NULL_HANDLE; 
 
@@ -200,8 +117,8 @@ public class CVKIconsRenderable extends CVKRenderable{
     private CVKRenderableResourceState commandBuffersState = CVK_RESOURCE_CLEAN;
     private CVKRenderableResourceState descriptorSetsState = CVK_RESOURCE_CLEAN;
     private CVKRenderableResourceState pipelinesState = CVK_RESOURCE_CLEAN;    
-    private long hAtlasSampler = VK_NULL_HANDLE;
-    private long hAtlasImageView = VK_NULL_HANDLE;    
+    private long hIconAtlasSampler = VK_NULL_HANDLE;
+    private long hIconAtlasImageView = VK_NULL_HANDLE;    
         
     // Resources recreated with the swap chain (dependent on the image count)    
     private LongBuffer pDescriptorSets = null; 
@@ -216,9 +133,9 @@ public class CVKIconsRenderable extends CVKRenderable{
     // The UBO staging buffers are a known size so created outside user events
     private CVKBuffer cvkVertexUBStagingBuffer = null;
     private CVKBuffer cvkGeometryUBStagingBuffer = null;
-    private VertexUniformBufferObject vertexUBO = new VertexUniformBufferObject();
-    private GeometryUniformBufferObject geometryUBO = new GeometryUniformBufferObject(); 
-    private Matrix44f mtxHighlightColour = Matrix44f.identity();
+    private final VertexUniformBufferObject vertexUBO = new VertexUniformBufferObject();
+    private final GeometryUniformBufferObject geometryUBO = new GeometryUniformBufferObject(); 
+    private final Matrix44f mtxHighlightColour = Matrix44f.identity();
     
     // Resources recreated only through user events
     private int vertexCount = 0;
@@ -997,7 +914,7 @@ public class CVKIconsRenderable extends CVKRenderable{
     
     // TODO: make sure these are called when the camera changes etc
     
-    private int CreateVertexUniformBuffers(MemoryStack stack) {
+    private int CreateVertexUniformBuffers() {
         CVKAssertNotNull(cvkSwapChain);
         CVKAssert(vertexUniformBuffers == null);
  
@@ -1010,10 +927,10 @@ public class CVKIconsRenderable extends CVKRenderable{
                                                              String.format("CVKIconsRenderable vertexUniformBuffer %d", i));   
             vertexUniformBuffers.add(vertexUniformBuffer);                     
         }        
-        return UpdateVertexUniformBuffers(stack);
+        return UpdateVertexUniformBuffers();
     }
         
-    private int UpdateVertexUniformBuffers(MemoryStack stack) {
+    private int UpdateVertexUniformBuffers() {
         CVKAssertNotNull(cvkSwapChain);
         CVKAssertNotNull(cvkVertexUBStagingBuffer);
         CVKAssertNotNull(vertexUniformBuffers);
@@ -1030,18 +947,14 @@ public class CVKIconsRenderable extends CVKRenderable{
         vertexUBO.visibilityHigh = cvkVisualProcessor.getDisplayCamera().getVisibilityHigh();            
 
         // Staging buffer so our VBO can be device local (most performant memory)
-        final int size = VertexUniformBufferObject.SizeOf();
-        PointerBuffer pData = stack.mallocPointer(1);        
-        
-        // Map staging buffer into host (CPU) rw memory and copy our UBO into it
-        ret = vkMapMemory(CVKDevice.GetVkDevice(), cvkVertexUBStagingBuffer.GetMemoryBufferHandle(), 0, size, 0, pData);
-        if (VkFailed(ret)) { return ret; }
+        ByteBuffer pMemory = cvkVertexUBStagingBuffer.StartMemoryMap(0, VertexUniformBufferObject.SizeOf());
         {
-            vertexUBO.CopyTo(pData.getByteBuffer(0, size));
+            vertexUBO.CopyTo(pMemory);
         }
-        vkUnmapMemory(CVKDevice.GetVkDevice(), cvkVertexUBStagingBuffer.GetMemoryBufferHandle());   
-     
-        // Copy the staging buffer into the uniform buffer on the device
+        cvkVertexUBStagingBuffer.EndMemoryMap();
+        pMemory = null;
+        
+        // Copy the staging buffer into the uniform buff-er on the device
         final int imageCount = cvkSwapChain.GetImageCount(); 
         for (int i = 0; i < imageCount; ++i) {   
             ret = vertexUniformBuffers.get(i).CopyFrom(cvkVertexUBStagingBuffer);   
@@ -1063,7 +976,7 @@ public class CVKIconsRenderable extends CVKRenderable{
         }    
     }      
     
-    private int CreateGeometryUniformBuffers(MemoryStack stack) {
+    private int CreateGeometryUniformBuffers() {
         CVKAssertNotNull(cvkSwapChain);
         CVKAssert(geometryUniformBuffers == null);
 
@@ -1076,10 +989,10 @@ public class CVKIconsRenderable extends CVKRenderable{
                                                                String.format("CVKIconsRenderable geometryUniformBuffer %d", i));
             geometryUniformBuffers.add(geometryUniformBuffer);              
         }
-        return UpdateGeometryUniformBuffers(stack);
+        return UpdateGeometryUniformBuffers();
     }
     
-    private int UpdateGeometryUniformBuffers(MemoryStack stack) {
+    private int UpdateGeometryUniformBuffers() {
         CVKAssertNotNull(cvkSwapChain);
         CVKAssertNotNull(cvkGeometryUBStagingBuffer);
         CVKAssertNotNull(geometryUniformBuffers);
@@ -1098,16 +1011,12 @@ public class CVKIconsRenderable extends CVKRenderable{
         geometryUBO.atlas2DDimension  = CVKIconTextureAtlas.GetInstance().texture2DDimension;        
         
         // Staging buffer so our VBO can be device local (most performant memory)
-        final int size = GeometryUniformBufferObject.SizeOf();
-        PointerBuffer pData = stack.mallocPointer(1);        
-        
-        // Map staging buffer into host (CPU) rw memory and copy our UBO into it
-        ret = vkMapMemory(CVKDevice.GetVkDevice(), cvkGeometryUBStagingBuffer.GetMemoryBufferHandle(), 0, size, 0, pData);
-        if (VkFailed(ret)) { return ret; }
+        ByteBuffer pMemory = cvkGeometryUBStagingBuffer.StartMemoryMap(0, GeometryUniformBufferObject.SizeOf());
         {
-            geometryUBO.CopyTo(pData.getByteBuffer(0, size));
+            geometryUBO.CopyTo(pMemory);
         }
-        vkUnmapMemory(CVKDevice.GetVkDevice(), cvkGeometryUBStagingBuffer.GetMemoryBufferHandle());   
+        cvkGeometryUBStagingBuffer.EndMemoryMap();
+        pMemory = null;
      
         // Copy the staging buffer into the uniform buffer on the device
         final int imageCount = cvkSwapChain.GetImageCount(); 
@@ -1231,7 +1140,7 @@ public class CVKIconsRenderable extends CVKRenderable{
     public int RecordDisplayCommandBuffer(VkCommandBufferInheritanceInfo inheritanceInfo, int imageIndex){
         cvkVisualProcessor.VerifyInRenderThread();
         CVKAssertNotNull(CVKDevice.GetVkDevice());
-        CVKAssert(CVKDevice.GetCommandPoolHandle() != VK_NULL_HANDLE);
+        CVKAssertNotNull(CVKDevice.GetCommandPoolHandle());
         CVKAssertNotNull(cvkSwapChain);
                 
         int ret;     
@@ -1486,7 +1395,7 @@ public class CVKIconsRenderable extends CVKRenderable{
         imageInfo.imageView(CVKIconTextureAtlas.GetInstance().GetAtlasImageViewHandle());
         imageInfo.sampler(CVKIconTextureAtlas.GetInstance().GetAtlasSamplerHandle());
 
-        // We need 6 write descriptors, 2 for uniform buffers, 2 for texel buffers and 1 for texture sampler                       
+        // We need 5 write descriptors, 2 for uniform buffers, 2 for texel buffers and 1 for texture sampler                       
         VkWriteDescriptorSet.Buffer descriptorWrites = VkWriteDescriptorSet.callocStack(5, stack);
 
         // Vertex uniform buffer
@@ -1546,12 +1455,13 @@ public class CVKIconsRenderable extends CVKRenderable{
             descriptorWrites.forEach(el -> {el.dstSet(descriptorSet);});
 
             // Update the descriptors with a write and no copy
+            GetLogger().info("CVKIconsRenderable updating descriptorSet: 0x%016X", descriptorSet);
             vkUpdateDescriptorSets(CVKDevice.GetVkDevice(), descriptorWrites, null);
         }
         
         // Cache atlas handles so we know when to recreate descriptors
-        hAtlasSampler = CVKIconTextureAtlas.GetInstance().GetAtlasSamplerHandle();
-        hAtlasImageView = CVKIconTextureAtlas.GetInstance().GetAtlasImageViewHandle();            
+        hIconAtlasSampler = CVKIconTextureAtlas.GetInstance().GetAtlasSamplerHandle();
+        hIconAtlasImageView = CVKIconTextureAtlas.GetInstance().GetAtlasImageViewHandle();            
         
         SetDescriptorSetsState(CVK_RESOURCE_CLEAN);
         
@@ -1873,8 +1783,8 @@ public class CVKIconsRenderable extends CVKRenderable{
                 commandBuffersState != CVK_RESOURCE_CLEAN ||
                 descriptorSetsState != CVK_RESOURCE_CLEAN ||
                 pipelinesState != CVK_RESOURCE_CLEAN ||                
-                hAtlasSampler != CVKIconTextureAtlas.GetInstance().GetAtlasSamplerHandle() ||
-                hAtlasImageView != CVKIconTextureAtlas.GetInstance().GetAtlasImageViewHandle() ); 
+                hIconAtlasSampler != CVKIconTextureAtlas.GetInstance().GetAtlasSamplerHandle() ||
+                hIconAtlasImageView != CVKIconTextureAtlas.GetInstance().GetAtlasImageViewHandle() ); 
     }
     
     @Override
@@ -1882,8 +1792,8 @@ public class CVKIconsRenderable extends CVKRenderable{
         int ret = VK_SUCCESS;
         cvkVisualProcessor.VerifyInRenderThread();
         
-        if (hAtlasSampler != CVKIconTextureAtlas.GetInstance().GetAtlasSamplerHandle() ||
-            hAtlasImageView != CVKIconTextureAtlas.GetInstance().GetAtlasImageViewHandle()) {
+        if (hIconAtlasSampler != CVKIconTextureAtlas.GetInstance().GetAtlasSamplerHandle() ||
+            hIconAtlasImageView != CVKIconTextureAtlas.GetInstance().GetAtlasImageViewHandle()) {
             if (descriptorSetsState != CVK_RESOURCE_NEEDS_REBUILD) {
                 descriptorSetsState = CVK_RESOURCE_NEEDS_UPDATE;
             }
@@ -1922,19 +1832,19 @@ public class CVKIconsRenderable extends CVKRenderable{
         
             // Vertex uniform buffer (camera guff)
             if (vertexUBOState == CVK_RESOURCE_NEEDS_REBUILD) {
-                ret = CreateVertexUniformBuffers(stack);
+                ret = CreateVertexUniformBuffers();
                 if (VkFailed(ret)) { return ret; }
             } else if (vertexUBOState == CVK_RESOURCE_NEEDS_UPDATE) {
-                ret = UpdateVertexUniformBuffers(stack);
+                ret = UpdateVertexUniformBuffers();
                 if (VkFailed(ret)) { return ret; }               
             }
 
             // Geometry uniform buffer (projection, highlight colour and hit test)
             if (geometryUBOState == CVK_RESOURCE_NEEDS_REBUILD) {
-                ret = CreateGeometryUniformBuffers(stack);
+                ret = CreateGeometryUniformBuffers();
                 if (VkFailed(ret)) { return ret; }
             } else if (geometryUBOState == CVK_RESOURCE_NEEDS_UPDATE) {
-                ret = UpdateGeometryUniformBuffers(stack);
+                ret = UpdateGeometryUniformBuffers();
                 if (VkFailed(ret)) { return ret; }               
             }                   
 
@@ -1955,11 +1865,11 @@ public class CVKIconsRenderable extends CVKRenderable{
         
             // Pipelines (all the render state and resources in one object)
             if (pipelinesState == CVK_RESOURCE_NEEDS_REBUILD) {
-                displayPipelines = new ArrayList<>(2);
+                displayPipelines = new ArrayList<>(cvkSwapChain.GetImageCount());
                 ret = CreatePipelines(cvkSwapChain.GetRenderPassHandle(), displayPipelines);
                 if (VkFailed(ret)) { return ret; }
                 
-                hitTestPipelines = new ArrayList<>(2);
+                hitTestPipelines = new ArrayList<>(cvkSwapChain.GetImageCount());
                 ret = CreatePipelines(cvkSwapChain.GetOffscreenRenderPassHandle(), hitTestPipelines);
                 if (VkFailed(ret)) { return ret; }  
             }                                            
@@ -2291,9 +2201,7 @@ public class CVKIconsRenderable extends CVKRenderable{
                                                 
         //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.ProcessRenderTasks) ===//
         return () -> {  
-            if (vertexUBOState != CVK_RESOURCE_NEEDS_REBUILD) {
-                SetVertexUBOState(CVK_RESOURCE_NEEDS_UPDATE);
-            }
+            UpdateVertexPushConstants();
         };           
     }
     
@@ -2338,4 +2246,12 @@ public class CVKIconsRenderable extends CVKRenderable{
         vertex.SetBackgroundIconColour(access.getVertexColor(pos));
         vertex.SetVertexVisibility(access.getVertexVisibility(pos));
     }      
+    
+    public long GetPositionBufferViewHandle() { return hPositionBufferView; }
+    
+    public long GetPositionBufferHandle() { return cvkPositionBuffer != null ? cvkPositionBuffer.GetBufferHandle() : VK_NULL_HANDLE; }
+    
+    public long GetPositionBufferSize() { return cvkPositionBuffer != null ? cvkPositionBuffer.GetBufferSize() : 0; }
+    
+    public long GetVertexFlagsBufferViewHandle() { return hVertexFlagsBufferView; }
 }

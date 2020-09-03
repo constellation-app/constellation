@@ -364,14 +364,26 @@ public final class Vector3f implements Serializable {
     public float getR() {
         return a[0];
     }
+    
+    public void setR(final float r) {
+        a[0] = r;
+    }    
 
     public float getG() {
         return a[1];
     }
+    
+    public void setG(final float g) {
+        a[1] = g;
+    }    
 
     public float getB() {
         return a[2];
     }
+    
+    public void setB(final float b) {
+        a[2] = b;
+    }    
 
     /**
      * Does this vector contain valid numbers.
