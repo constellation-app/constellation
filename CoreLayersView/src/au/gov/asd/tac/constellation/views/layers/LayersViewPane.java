@@ -18,15 +18,8 @@ package au.gov.asd.tac.constellation.views.layers;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.graph.value.Access;
-import au.gov.asd.tac.constellation.graph.value.readables.ByteReadable;
-import au.gov.asd.tac.constellation.graph.value.readables.CharReadable;
-import au.gov.asd.tac.constellation.graph.value.readables.DoubleReadable;
-import au.gov.asd.tac.constellation.graph.value.readables.FloatReadable;
-import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
-import au.gov.asd.tac.constellation.graph.value.readables.LongReadable;
-import au.gov.asd.tac.constellation.graph.value.readables.ShortReadable;
 import au.gov.asd.tac.constellation.views.layers.layer.LayerDescription;
+import au.gov.asd.tac.constellation.views.layers.utilities.QueryManager;
 import au.gov.asd.tac.constellation.views.layers.utilities.SelectExpressionPlugin;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -61,6 +54,8 @@ public class LayersViewPane extends BorderPane {
     private final HBox options;
     private final List<LayerDescription> layers;
 
+    private final QueryManager queryManager = new QueryManager();
+    
     public LayersViewPane(final LayersViewController controller) {
 
         // create controller

@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import org.python.google.common.base.Objects;
 
 /**
  *
@@ -52,7 +53,7 @@ public class Query {
     }
     
     public boolean requiresUpdate(GraphReadMethods graph) {
-        if (!graphId.equals(graph.getId())) {
+        if (graphId == null || !graphId.equals(graph.getId())) {
             return true;
         }
         

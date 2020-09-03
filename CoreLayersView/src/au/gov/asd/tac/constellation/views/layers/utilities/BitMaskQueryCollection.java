@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.layers.utilities;
 
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
@@ -29,9 +30,9 @@ import java.util.List;
 public class BitMaskQueryCollection {
     private final List<BitMaskQuery> queries;
     
-    private final List<BitMaskQuery> activeQueries = new ArrayList<>();
     private final IntValue index = new IntValue();
 
+    private final List<BitMaskQuery> activeQueries = new ArrayList<>();    
     private final List<BitMaskQuery> updateQueries = new ArrayList<>();
     
     public BitMaskQueryCollection(List<BitMaskQuery> queries) {
@@ -59,7 +60,7 @@ public class BitMaskQueryCollection {
     
     public long updateBitMask(long bitMask) {
         for (BitMaskQuery updateQuery : updateQueries) {
-            updateQuery.updateBitMask(bitMask);
+            bitMask = updateQuery.updateBitMask(bitMask);
         }
         return bitMask;
     }
@@ -69,11 +70,19 @@ public class BitMaskQueryCollection {
         if (update(graph)) {
             final int elementCount = elementType.getElementCount(graph);
             for (int position = 0; position < elementCount; position++) {
+                index.writeInt(position);
                 final int elementId = elementType.getElement(graph, position);
-                final long bitMask = graph.getLongValue(bitMaskAttributeId, elementId);
-                final long updatedBitMask = updateBitMask(bitMask);
-                graph.setLongValue(bitMaskAttributeId, elementId, updatedBitMask);
-                graph.setBooleanValue(visibleAttributeId, elementId, updatedBitMask != 0);
+                if (bitMaskAttributeId == Graph.NOT_FOUND) {
+                    final long bitMask = 0;
+                    final long updatedBitMask = updateBitMask(bitMask);
+                    graph.setFloatValue(visibleAttributeId, elementId, updatedBitMask == 0 ? 0 : 1000000000);
+                } else {
+                    final long bitMask = graph.getLongValue(bitMaskAttributeId, elementId);
+                    final long updatedBitMask = updateBitMask(bitMask);
+                    graph.setLongValue(bitMaskAttributeId, elementId, updatedBitMask);
+                    graph.setFloatValue(visibleAttributeId, elementId, updatedBitMask == 0 ? 0 : 1000000000);
+                }
+                
             }
         }
     }
