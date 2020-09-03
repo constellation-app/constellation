@@ -80,9 +80,8 @@ public class BitMaskQueryCollection {
                     final long bitMask = graph.getLongValue(bitMaskAttributeId, elementId);
                     final long updatedBitMask = updateBitMask(bitMask);
                     graph.setLongValue(bitMaskAttributeId, elementId, updatedBitMask);
-                    graph.setFloatValue(visibleAttributeId, elementId, updatedBitMask == 0 ? 0 : 1000000000);
+                    graph.setFloatValue(visibleAttributeId, elementId, (updatedBitMask & activeQueriesBitMask) == 0 ? 0 : 1000000000);
                 }
-                
             }
         }
     }
