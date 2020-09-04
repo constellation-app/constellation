@@ -2145,105 +2145,105 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
     // update the layer visibility of an element
     private void updateLayerMask(final int attributeId, final GraphElementType elementType, final int elementId, final int selectedLayerMask) {
-        final int bitmask = recalculateLayerMask(elementType, elementId);
-        transactionLayerVisibilityAttributeId = LayersConcept.TransactionAttribute.LAYER_VISIBILITY.get(this);
-        vertexLayerVisibilityAttributeId = LayersConcept.VertexAttribute.LAYER_VISIBILITY.get(this);
-
-        if (elementType == GraphElementType.VERTEX) {
-            // when attr ids are found
-            if (vertexLayerMaskAttribureId != Graph.NOT_FOUND && vertexLayerVisibilityAttributeId != Graph.NOT_FOUND) {
-                // Attributes exist, update bitmask (this eventually becomes more comples to cover all layers). If the bitmask
-                // is non-zero value then the element can be displayed, if not, layer filters will result in it being hidden.
-
-                if (attributeId != vertexLayerMaskAttribureId) { // set filter bitmask when not updating (prevents infinite loop)
-                    avoidLayerUpdate = true; // cancels out the re-update when setting the int vals
-                    setLayerMask(vertexLayerMaskAttribureId, elementId, bitmask);
-                    avoidLayerUpdate = false;
-                }
-                final float existingVisibility = getFloatValue(vertexLayerVisibilityAttributeId, elementId);
-                if ((bitmask & currentVisibleMask) > 0) {
-                    // A value > 0 indicates the object is mapped to at least one visible layer
-                    if (existingVisibility != 1.0f) {
-                        setLayerVisibility(vertexLayerVisibilityAttributeId, elementId, 1.0f);
-                    }
-                } else {
-                    // A value = 0 indicates the object is not mapped to at least one visible layer
-                    if (existingVisibility != 0.0f) {
-                        setLayerVisibility(vertexLayerVisibilityAttributeId, elementId, 0.0f);
-                    }
-                }
-            }
-        } else if (elementType == GraphElementType.TRANSACTION
-                && transactionLayerMaskAttrId != Graph.NOT_FOUND
-                && transactionLayerVisibilityAttributeId != Graph.NOT_FOUND) {
-            if (attributeId != transactionLayerMaskAttrId) {
-                avoidLayerUpdate = true;
-                setLayerMask(transactionLayerMaskAttrId, elementId, bitmask);
-                avoidLayerUpdate = false;
-            }
-            final float existingVisibility = getFloatValue(transactionLayerVisibilityAttributeId, elementId);
-            if ((bitmask & currentVisibleMask) > 0) {
-                if (existingVisibility != 1.0f) {
-                    setLayerVisibility(transactionLayerVisibilityAttributeId, elementId, 1.0f);
-                }
-            } else {
-                if (existingVisibility != 0.0f) {
-                    setLayerVisibility(transactionLayerVisibilityAttributeId, elementId, 0.0f);
-                }
-            }
-        }
+//        final int bitmask = recalculateLayerMask(elementType, elementId);
+//        transactionLayerVisibilityAttributeId = LayersConcept.TransactionAttribute.LAYER_VISIBILITY.get(this);
+//        vertexLayerVisibilityAttributeId = LayersConcept.VertexAttribute.LAYER_VISIBILITY.get(this);
+//
+//        if (elementType == GraphElementType.VERTEX) {
+//            // when attr ids are found
+//            if (vertexLayerMaskAttribureId != Graph.NOT_FOUND && vertexLayerVisibilityAttributeId != Graph.NOT_FOUND) {
+//                // Attributes exist, update bitmask (this eventually becomes more comples to cover all layers). If the bitmask
+//                // is non-zero value then the element can be displayed, if not, layer filters will result in it being hidden.
+//
+//                if (attributeId != vertexLayerMaskAttribureId) { // set filter bitmask when not updating (prevents infinite loop)
+//                    avoidLayerUpdate = true; // cancels out the re-update when setting the int vals
+//                    setLayerMask(vertexLayerMaskAttribureId, elementId, bitmask);
+//                    avoidLayerUpdate = false;
+//                }
+//                final float existingVisibility = getFloatValue(vertexLayerVisibilityAttributeId, elementId);
+//                if ((bitmask & currentVisibleMask) > 0) {
+//                    // A value > 0 indicates the object is mapped to at least one visible layer
+//                    if (existingVisibility != 1.0f) {
+//                        setLayerVisibility(vertexLayerVisibilityAttributeId, elementId, 1.0f);
+//                    }
+//                } else {
+//                    // A value = 0 indicates the object is not mapped to at least one visible layer
+//                    if (existingVisibility != 0.0f) {
+//                        setLayerVisibility(vertexLayerVisibilityAttributeId, elementId, 0.0f);
+//                    }
+//                }
+//            }
+//        } else if (elementType == GraphElementType.TRANSACTION
+//                && transactionLayerMaskAttrId != Graph.NOT_FOUND
+//                && transactionLayerVisibilityAttributeId != Graph.NOT_FOUND) {
+//            if (attributeId != transactionLayerMaskAttrId) {
+//                avoidLayerUpdate = true;
+//                setLayerMask(transactionLayerMaskAttrId, elementId, bitmask);
+//                avoidLayerUpdate = false;
+//            }
+//            final float existingVisibility = getFloatValue(transactionLayerVisibilityAttributeId, elementId);
+//            if ((bitmask & currentVisibleMask) > 0) {
+//                if (existingVisibility != 1.0f) {
+//                    setLayerVisibility(transactionLayerVisibilityAttributeId, elementId, 1.0f);
+//                }
+//            } else {
+//                if (existingVisibility != 0.0f) {
+//                    setLayerVisibility(transactionLayerVisibilityAttributeId, elementId, 0.0f);
+//                }
+//            }
+//        }
     }
 
     // update the layer visibility for an element when an attribute changes
     private void updateLayerMask(final int attributeId, final int elementid) {
-        layerMaskSelectedAttributeId = LayersConcept.GraphAttribute.LAYER_MASK_SELECTED.get(this);
-        vertexLayerMaskAttribureId = LayersConcept.VertexAttribute.LAYER_MASK.get(this);
-        vertexLayerVisibilityAttributeId = LayersConcept.VertexAttribute.LAYER_VISIBILITY.get(this);
-        transactionLayerMaskAttrId = LayersConcept.TransactionAttribute.LAYER_MASK.get(this);
-        transactionLayerVisibilityAttributeId = LayersConcept.TransactionAttribute.LAYER_VISIBILITY.get(this);
-
-        if (attributeId != vertexLayerVisibilityAttributeId && attributeId != transactionLayerVisibilityAttributeId) {
-            // get the element type of selected layer mask and recalculate element mask
-            currentVisibleMask = (layerMaskSelectedAttributeId != Graph.NOT_FOUND)
-                    ? getIntValue(layerMaskSelectedAttributeId, 0) : 1;
-            final GraphElementType elementType = getAttributeElementType(attributeId);
-
-            final int layerPrefId = LayersConcept.GraphAttribute.LAYER_PREFERENCES.get(this);
-            if (layerPrefId == Graph.NOT_FOUND) {
-                return;
-            }
-            List<Byte> preferences = getLayerPreferences();
-            // preload layerPrefs jit if it hasn't been instantiated
-            if (preferences.isEmpty()) {
-                preferences = new ArrayList<>();
-                for (int i = 0; i < 31; i++) {
-                    preferences.add((byte) 0b0);
-                }
-            }
-            setObjectValue(layerPrefId, 0, preferences);
-
-            updateLayerMask(attributeId, elementType, elementid, currentVisibleMask);
-        }
+//        layerMaskSelectedAttributeId = LayersConcept.GraphAttribute.LAYER_MASK_SELECTED.get(this);
+//        vertexLayerMaskAttribureId = LayersConcept.VertexAttribute.LAYER_MASK.get(this);
+//        vertexLayerVisibilityAttributeId = LayersConcept.VertexAttribute.LAYER_VISIBILITY.get(this);
+//        transactionLayerMaskAttrId = LayersConcept.TransactionAttribute.LAYER_MASK.get(this);
+//        transactionLayerVisibilityAttributeId = LayersConcept.TransactionAttribute.LAYER_VISIBILITY.get(this);
+//
+//        if (attributeId != vertexLayerVisibilityAttributeId && attributeId != transactionLayerVisibilityAttributeId) {
+//            // get the element type of selected layer mask and recalculate element mask
+//            currentVisibleMask = (layerMaskSelectedAttributeId != Graph.NOT_FOUND)
+//                    ? getIntValue(layerMaskSelectedAttributeId, 0) : 1;
+//            final GraphElementType elementType = getAttributeElementType(attributeId);
+//
+//            final int layerPrefId = LayersConcept.GraphAttribute.LAYER_PREFERENCES.get(this);
+//            if (layerPrefId == Graph.NOT_FOUND) {
+//                return;
+//            }
+//            List<Byte> preferences = getLayerPreferences();
+//            // preload layerPrefs jit if it hasn't been instantiated
+//            if (preferences.isEmpty()) {
+//                preferences = new ArrayList<>();
+//                for (int i = 0; i < 31; i++) {
+//                    preferences.add((byte) 0b0);
+//                }
+//            }
+//            setObjectValue(layerPrefId, 0, preferences);
+//
+//            updateLayerMask(attributeId, elementType, elementid, currentVisibleMask);
+//        }
     }
 
     // update the layer visibility of all elements
     private void updateAllLayerMasks() {
-        currentVisibleMask = (layerMaskSelectedAttributeId != Graph.NOT_FOUND)
-                ? getIntValue(layerMaskSelectedAttributeId, 0) : 1;
-
-        recalculateLayerVisibilities();
-
-        // loop through all vertexes and recalculate masks
-        final int vertexCount = getVertexCount();
-        for (int i = 0; i < vertexCount; i++) {
-            updateLayerMask(-1, GraphElementType.VERTEX, vStore.getElement(i), currentVisibleMask);
-        }
-
-        // loop through all transactions and recalculate masks
-        final int transactionCount = getTransactionCount();
-        for (int i = 0; i < transactionCount; i++) {
-            updateLayerMask(-1, GraphElementType.TRANSACTION, tStore.getElement(i), currentVisibleMask);
-        }
+//        currentVisibleMask = (layerMaskSelectedAttributeId != Graph.NOT_FOUND)
+//                ? getIntValue(layerMaskSelectedAttributeId, 0) : 1;
+//
+//        recalculateLayerVisibilities();
+//
+//        // loop through all vertexes and recalculate masks
+//        final int vertexCount = getVertexCount();
+//        for (int i = 0; i < vertexCount; i++) {
+//            updateLayerMask(-1, GraphElementType.VERTEX, vStore.getElement(i), currentVisibleMask);
+//        }
+//
+//        // loop through all transactions and recalculate masks
+//        final int transactionCount = getTransactionCount();
+//        for (int i = 0; i < transactionCount; i++) {
+//            updateLayerMask(-1, GraphElementType.TRANSACTION, tStore.getElement(i), currentVisibleMask);
+//        }
     }
 
     private void setLayerVisibility(final int attributeId, final int elementId, final float floatValue) {

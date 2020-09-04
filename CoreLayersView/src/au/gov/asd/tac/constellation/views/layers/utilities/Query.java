@@ -84,8 +84,8 @@ public class Query {
         
         graphId = graph.getId();
         globalModificationCounter = graph.getGlobalModificationCounter();
-        structureModificationCounter = graph.getGlobalModificationCounter();
-        attributeModificationCounter = graph.getGlobalModificationCounter();
+        structureModificationCounter = graph.getStructureModificationCounter();
+        attributeModificationCounter = graph.getAttributeModificationCounter();
         
         attributeIds = variableProvider.getAttributeIds();
         valueModificationCounters = new long[attributeIds.length];
