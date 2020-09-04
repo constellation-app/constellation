@@ -21,7 +21,6 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.utilities.GraphIndexUtilities;
 import java.util.List;
-import java.util.Objects;
 import javax.swing.SwingUtilities;
 
 /**

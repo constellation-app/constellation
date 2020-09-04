@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import org.openide.util.Lookup;
 
 /**
