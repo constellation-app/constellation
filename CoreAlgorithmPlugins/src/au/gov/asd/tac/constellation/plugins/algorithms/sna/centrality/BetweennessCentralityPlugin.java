@@ -153,7 +153,7 @@ public class BetweennessCentralityPlugin extends SimpleEditPlugin {
         // update the graph with betweenness values
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
             final int vertexId = graph.getVertex(vertexPosition);
-            float betweennessAttributeValue;
+            final float betweennessAttributeValue;
             if (normaliseByPossible) {
                 if (normaliseConnectedComponents) {
                     final float subgraphVertexCount = subgraphs[vertexPosition].cardinality();
