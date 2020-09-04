@@ -22,12 +22,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.swing.JOptionPane;
+import org.apache.commons.io.FilenameUtils;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileSystem;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
 import org.openide.util.Exceptions;
-import org.apache.commons.io.FilenameUtils;
 
 /**
  * Memory Management Capability
@@ -36,11 +36,8 @@ import org.apache.commons.io.FilenameUtils;
  */
 public class GraphObjectUtilities {
 
-    private static final GraphObjectUtilities graphObjectUtilities = new GraphObjectUtilities();
-
     private GraphObjectUtilities() {
         //Adding private to remove code smell
-        COPY_NAME_MATCHER = Pattern.compile(COPY_STRING_PATTERN);
     }
 
     // This is the in-memory filesystem we use to store files for DataObjects.
@@ -51,7 +48,7 @@ public class GraphObjectUtilities {
     //Constants for dealing with copying of filenames
     private static final String COPY_STRING = " - Copy";
     private static final String COPY_STRING_PATTERN = "^(.{1,100} - Copy) \\((\\d{1,3})\\)$";
-    private final Pattern COPY_NAME_MATCHER;
+    private static final Pattern COPY_NAME_MATCHER = Pattern.compile(COPY_STRING_PATTERN);
 
     private static final int FILENAME_LENGTH_LIMIT = 100;
 
@@ -87,10 +84,10 @@ public class GraphObjectUtilities {
         GraphDataObject gdo = null;
         final FileObject root = FILE_SYSTEM.getRoot();
         try {
-            String fnam = graphObjectUtilities.getNewFileName(name, numbered, root);
-            while (graphObjectUtilities.isFileNameDuplicateInMemory(fnam, root)) {
+            String fnam = getNewFileName(name, numbered, root);
+            while (isFileNameDuplicateInMemory(fnam, root)) {
                 //If after all of the above the filename already exists in memory, start again.
-                fnam = graphObjectUtilities.getNewFileName(fnam, numbered, root);
+                fnam = getNewFileName(fnam, numbered, root);
             }
             while (fnam.length() >= FILENAME_LENGTH_LIMIT) {
                 fnam = (String) JOptionPane.showInputDialog(null,
@@ -110,15 +107,14 @@ public class GraphObjectUtilities {
         return gdo;
     }
 
-    private String getNewFileName(final String name, final boolean numbered, final FileObject root) {
+    private static String getNewFileName(final String name, final boolean numbered, final FileObject root) {
         final List<FileObject> files = Arrays.stream(root.getChildren()).filter(file -> file.getName().equals(name)).collect(Collectors.toList());
         if (files.size() > 0) {
             if (name.endsWith(COPY_STRING)) {
                 return String.format("%s (%d)", name, 1);
             }
 
-            final Matcher matcher = Pattern.compile(COPY_STRING_PATTERN).matcher(name);
-            //final Matcher matcher =  COPY_NAME_MATCHER.matcher(name);
+            final Matcher matcher = COPY_NAME_MATCHER.matcher(name);
             if (matcher.matches()) {
                 final String fileNamePart = matcher.group(1);
                 final int copyNum = Integer.parseInt(matcher.group(2));
@@ -129,10 +125,10 @@ public class GraphObjectUtilities {
         return numbered ? String.format("%s%d", name, ++fileCounter) : String.format("%s", name);
     }
 
-    private boolean isFileNameDuplicateInMemory(final String name, final FileObject root) {
+    private static boolean isFileNameDuplicateInMemory(final String name, final FileObject root) {
 
         final String tempName = FilenameUtils.getBaseName(name);
         final List<FileObject> files = Arrays.stream(root.getChildren()).filter(file -> file.getName().equals(tempName)).collect(Collectors.toList());
-        return (files.size() > 0);
+        return files.isEmpty();
     }
 }
