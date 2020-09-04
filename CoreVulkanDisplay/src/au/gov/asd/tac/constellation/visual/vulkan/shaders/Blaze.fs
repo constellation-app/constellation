@@ -20,7 +20,7 @@ layout(location = 3) flat in int isPointer;
 
 
 // === PER FRAGMENT DATA OUT ===
-out vec4 fragColor;
+layout(location = 0) out vec4 fragColor;
 
 
 void main() {

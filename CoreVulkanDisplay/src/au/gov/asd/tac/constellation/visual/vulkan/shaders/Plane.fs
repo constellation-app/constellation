@@ -12,7 +12,7 @@ layout(location = 2) flat in vec2 width_height_frac;
 
 
 // === PER FRAGMENT DATA OUT ===
-out vec4 fragColor;
+layout(location = 0) out vec4 fragColor;
 
 
 void main(void) {

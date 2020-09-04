@@ -18,7 +18,7 @@ layout(location = 4) flat in float lineLength;
 
 
 // === PER FRAGMENT DATA OUT ===
-out vec4 fragColor;
+layout(location = 0) out vec4 fragColor;
 
 
 void main(void) {

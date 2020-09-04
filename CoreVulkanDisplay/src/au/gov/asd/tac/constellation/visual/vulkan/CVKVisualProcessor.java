@@ -110,28 +110,6 @@ public class CVKVisualProcessor extends VisualProcessor {
            
             cvkCanvas = new CVKCanvas(this);   
 
-            int ret;
-            ret = CVKAxesRenderable.StaticInitialise();
-            if (VkFailed(ret)) { 
-                cvkLogger.severe("Failed to statically initialise CVKAxesRenderable");
-            }
-            ret = CVKFPSRenderable.StaticInitialise();      
-            if (VkFailed(ret)) { 
-                cvkLogger.severe("Failed to statically initialise CVKFPSRenderable");
-            }
-            ret = CVKIconsRenderable.StaticInitialise();      
-            if (VkFailed(ret)) { 
-                cvkLogger.severe("Failed to statically initialise CVKIconsRenderable");
-            }
-            ret = CVKLabelsRenderable.StaticInitialise();      
-            if (VkFailed(ret)) { 
-                cvkLogger.severe("Failed to statically initialise CVKLabelsRenderable");
-            }        
-            ret = CVKPointsRenderable.StaticInitialise();
-            if (VkFailed(ret)) { 
-                cvkLogger.severe("Failed to statically initialise CVKPointsRenderable");
-            }
-
             cvkHitTester = new CVKHitTester(this);     
             cvkCanvas.AddRenderable(cvkHitTester);  
             cvkIcons = new CVKIconsRenderable(this);
@@ -144,7 +122,6 @@ public class CVKVisualProcessor extends VisualProcessor {
             cvkCanvas.AddRenderable(cvkPoints);
             cvkFPS = new CVKFPSRenderable(this);    
             cvkCanvas.AddRenderable(cvkFPS);      
-
         } catch (Exception e) {
             cvkLogger.LogException(e, "Exception raised constructing CVKVisualProcessor %s", graphId);
             throw e;

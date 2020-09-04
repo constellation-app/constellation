@@ -25,7 +25,7 @@ layout(location = 5) flat in vec4 hitBufferValue;
 
 
 // === PER FRAGMENT DATA OUT ===
-out vec4 fragColor;
+layout(location = 0) out vec4 fragColor;
 
 
 void main(void) {

@@ -15,6 +15,10 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan.renderables;
 
+import static au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableResourceState.*;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.*;
+import static org.lwjgl.vulkan.VK10.*;
+import static org.lwjgl.system.MemoryStack.stackPush;
 import au.gov.asd.tac.constellation.graph.hittest.HitState;
 import au.gov.asd.tac.constellation.graph.hittest.HitState.HitType;
 import au.gov.asd.tac.constellation.graph.hittest.HitTestRequest;
@@ -22,57 +26,20 @@ import au.gov.asd.tac.constellation.visual.vulkan.CVKDescriptorPool.CVKDescripto
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
-import static au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableResourceState.CVK_RESOURCE_CLEAN;
-import static au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableResourceState.CVK_RESOURCE_NEEDS_REBUILD;
-import static au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableResourceState.CVK_RESOURCE_NEEDS_UPDATE;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKCommandBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKImage;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssertNotNull;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssertNull;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_HITTEST_DEPTH_IMAGE_CREATE_FAILED;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_HITTEST_SOURCE_IMAGE_CREATE_FAILED;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.GetParentMethodName;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
 import java.nio.LongBuffer;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
-import java.util.logging.Level;
 import org.lwjgl.system.MemoryStack;
-import static org.lwjgl.system.MemoryStack.stackPush;
-import static org.lwjgl.vulkan.VK10.VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT;
-import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32_SFLOAT;
-import static org.lwjgl.vulkan.VK10.VK_FORMAT_UNDEFINED;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_COLOR_BIT;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_DEPTH_BIT;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_GENERAL;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_UNDEFINED;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_TILING_LINEAR;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_TILING_OPTIMAL;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_VIEW_TYPE_2D;
-import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
-import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
-import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
-import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS;
-import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
-import static org.lwjgl.vulkan.VK10.vkCmdExecuteCommands;
-import static org.lwjgl.vulkan.VK10.vkCreateFramebuffer;
-import static org.lwjgl.vulkan.VK10.vkDestroyFramebuffer;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkCommandBufferInheritanceInfo;
 import org.lwjgl.vulkan.VkFramebufferCreateInfo;
+import org.lwjgl.vulkan.VkVertexInputAttributeDescription;
+import org.lwjgl.vulkan.VkVertexInputBindingDescription;
 
 
 /**
@@ -99,7 +66,6 @@ import org.lwjgl.vulkan.VkFramebufferCreateInfo;
  * positive numbers for node ids, negative numbers for line ids.
  */
 public class CVKHitTester extends CVKRenderable {
-
     private HitTestRequest hitTestRequest;
     private final BlockingDeque<HitTestRequest> requestQueue = new LinkedBlockingDeque<>();
     private final Queue<Queue<HitState>> notificationQueues = new LinkedList<>();
@@ -110,7 +76,6 @@ public class CVKHitTester extends CVKRenderable {
     private CVKCommandBuffer commandBuffer = null;
     private final int colorFormat = VK_FORMAT_R32_SFLOAT;   // Only use the red channel for hit testing
     
-    private CVKRenderableResourceState commandBuffersState = CVK_RESOURCE_CLEAN;
     private CVKRenderableResourceState frameBuffersState = CVK_RESOURCE_CLEAN;
     private CVKRenderableResourceState imagesState = CVK_RESOURCE_CLEAN;
     
@@ -127,17 +92,7 @@ public class CVKHitTester extends CVKRenderable {
             cvkImage.SaveToFile(fileName);
         }
     }
-    
-       
-    private static boolean LOGSTATECHANGE = false;
-    private void SetCommandBuffersState(final CVKRenderableResourceState state) {
-        CVKAssert(!(commandBuffersState == CVK_RESOURCE_NEEDS_REBUILD && state == CVK_RESOURCE_NEEDS_UPDATE));
-        if (LOGSTATECHANGE) {
-            GetLogger().info("%d\t commandBuffersState %s -> %s\tSource: %s", 
-                    cvkVisualProcessor.GetFrameNumber(), commandBuffersState.name(), state.name(), GetParentMethodName());
-        }
-        commandBuffersState = state;
-    }
+          
     private void SetFrameBuffersState(final CVKRenderableResourceState state) {
         CVKAssert(!(frameBuffersState == CVK_RESOURCE_NEEDS_REBUILD && state == CVK_RESOURCE_NEEDS_UPDATE));
         if (LOGSTATECHANGE) {
@@ -153,7 +108,8 @@ public class CVKHitTester extends CVKRenderable {
                     cvkVisualProcessor.GetFrameNumber(), imagesState.name(), state.name(), GetParentMethodName());
         }
         imagesState = state;
-    }
+    }         
+    
     
     // ========================> Lifetime <======================== \\
     
@@ -163,7 +119,7 @@ public class CVKHitTester extends CVKRenderable {
     
     @Override
     public int Initialise() { 
-        return VK_SUCCESS;
+        return super.Initialise();  
     }
     
     @Override
@@ -519,5 +475,9 @@ public class CVKHitTester extends CVKRenderable {
     
     
     // ========================> Helpers <======================== \\
-
+    @Override
+    protected VkVertexInputBindingDescription.Buffer GetVertexBindingDescription() { return null; }
+    
+    @Override
+    protected VkVertexInputAttributeDescription.Buffer GetVertexAttributeDescriptions() { return null; }
 }

@@ -15,6 +15,15 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan.utils;
 
+import static org.lwjgl.system.MemoryUtil.*;
+import static org.lwjgl.vulkan.VK10.*;
+import static org.lwjgl.vulkan.EXTDebugUtils.VK_EXT_DEBUG_UTILS_EXTENSION_NAME;
+import static org.lwjgl.vulkan.EXTMetalSurface.VK_EXT_METAL_SURFACE_EXTENSION_NAME;
+import static org.lwjgl.vulkan.KHRSurface.VK_KHR_SURFACE_EXTENSION_NAME;
+import static org.lwjgl.vulkan.KHRSwapchain.VK_KHR_SWAPCHAIN_EXTENSION_NAME;
+import static org.lwjgl.vulkan.KHRWin32Surface.VK_KHR_WIN32_SURFACE_EXTENSION_NAME;
+import static org.lwjgl.vulkan.KHRXlibSurface.VK_KHR_XLIB_SURFACE_EXTENSION_NAME;
+import static org.lwjgl.system.MemoryStack.stackPush;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,19 +33,9 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
-import static org.lwjgl.system.MemoryStack.stackPush;
 import org.lwjgl.system.Platform;
-import static org.lwjgl.vulkan.EXTDebugUtils.VK_EXT_DEBUG_UTILS_EXTENSION_NAME;
-import static org.lwjgl.vulkan.EXTMetalSurface.VK_EXT_METAL_SURFACE_EXTENSION_NAME;
-import static org.lwjgl.vulkan.KHRSurface.VK_KHR_SURFACE_EXTENSION_NAME;
-import static org.lwjgl.vulkan.KHRSwapchain.VK_KHR_SWAPCHAIN_EXTENSION_NAME;
-import static org.lwjgl.vulkan.KHRWin32Surface.VK_KHR_WIN32_SURFACE_EXTENSION_NAME;
-import static org.lwjgl.vulkan.KHRXlibSurface.VK_KHR_XLIB_SURFACE_EXTENSION_NAME;
-import static org.lwjgl.vulkan.VK10.*;
 import org.lwjgl.vulkan.VkLayerProperties;
 import org.lwjgl.system.MemoryUtil;
-import static org.lwjgl.system.MemoryUtil.memASCII;
-import static org.lwjgl.system.MemoryUtil.memAllocPointer;
 import org.lwjgl.vulkan.VkClearColorValue;
 import org.lwjgl.vulkan.VkClearValue;
 
@@ -62,18 +61,21 @@ public class CVKUtils {
     public static final int CVK_ERROR_DEST_IMAGE_CREATE_FAILED                  = 0xFFFF000B;
     public static final int CVK_ERROR_HITTEST_SOURCE_IMAGE_CREATE_FAILED        = 0xFFFF000C;
     public static final int CVK_ERROR_HITTEST_DEPTH_IMAGE_CREATE_FAILED         = 0xFFFF000D;
+    public static final int CVK_ERROR_MD5_ALGORITHM_LOAD_FAILED                 = 0xFFFF000E;
+    public static final int CVK_ERROR_SHADER_SOURCE_LOAD_FAILED                 = 0xFFFF000F;
+    public static final int CVK_ERROR_SHADER_COMPILER_LOAD_FAILED               = 0xFFFF0010;
+    public static final int CVK_ERROR_SHADER_TYPE_UNKNOWN                       = 0xFFFF0011;
+    public static final int CVK_ERROR_SHADER_SPIRV_WRITE_FAILED                 = 0xFFFF0012;
+    public static final int CVK_ERROR_SHADER_MD5_WRITE_FAILED                   = 0xFFFF0013;
+    public static final int CVK_ERROR_SHADER_SOURCE_FILE_NOT_FOUND              = 0xFFFF0014;
     
     
     // Enable this for additional logging, thread verification and other checks
-    public static final boolean CVK_DEBUGGING = true;  //TODO: tie this to the default log level?
+    public static final boolean CVK_DEBUGGING = false;
     public static final Level CVK_DEFAULT_LOG_LEVEL = Level.WARNING;  
     public static int CVK_VKALLOCATIONS = 0;
-    
    
 
-    public static void LogStackTrace() {
-        LogStackTrace(Level.INFO);
-    }
     public static void LogStackTrace(Level level) {
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         for (StackTraceElement el : stackTrace) {
@@ -407,7 +409,7 @@ public class CVKUtils {
      * @throws IOException
      */
     public static ByteBuffer LoadFileToDirectBuffer(final Class<?> refClass, final String resourceName) throws IOException {
-        InputStream source = refClass.getResourceAsStream(resourceName);
+        InputStream source = refClass.getResourceAsStream(resourceName);        
         byte[] allBytes = source.readAllBytes();
         
         ByteBuffer buffer = MemoryUtil.memAlloc(allBytes.length);
@@ -415,6 +417,8 @@ public class CVKUtils {
         buffer.flip();
         return buffer;          
     }
+    
+
    
         
     public static boolean VkSucceeded(int ret) { return ret == VK_SUCCESS; }

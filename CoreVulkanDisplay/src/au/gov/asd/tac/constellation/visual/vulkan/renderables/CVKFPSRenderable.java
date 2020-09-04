@@ -15,6 +15,10 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan.renderables;
 
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.*;
+import static org.lwjgl.system.MemoryStack.stackPush;
+import static org.lwjgl.system.MemoryUtil.*;
+import static org.lwjgl.vulkan.VK10.*;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKIconTextureAtlas;
 import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
@@ -22,125 +26,31 @@ import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDescriptorPool.CVKDescriptorPoolRequirements;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
-import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKShaderUtils;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkSucceeded;
-import au.gov.asd.tac.constellation.visual.vulkan.shaders.CVKShaderPlaceHolder;
 import java.nio.ByteBuffer;
 import org.lwjgl.system.MemoryStack;
-import static org.lwjgl.system.MemoryStack.stackPush;
-import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32_SINT;
-import static org.lwjgl.vulkan.VK10.VK_VERTEX_INPUT_RATE_VERTEX;
-import static org.lwjgl.vulkan.VK10.VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
 import org.lwjgl.vulkan.VkVertexInputAttributeDescription;
 import org.lwjgl.vulkan.VkVertexInputBindingDescription;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.checkVKret;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKCommandBuffer;
-import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKGraphLogger;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssertNotNull;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssertNull;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_SHADER_COMPILATION;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_SHADER_MODULE;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.LoadFileToDirectBuffer;
-import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryUtil;
-import static org.lwjgl.system.MemoryUtil.memAlloc;
-import static org.lwjgl.system.MemoryUtil.memAllocInt;
-import static org.lwjgl.system.MemoryUtil.memFree;
-import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_TRANSFER_DST_BIT;
-import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
-import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
-import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
-import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_A_BIT;
-import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_B_BIT;
-import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_G_BIT;
-import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_R_BIT;
-import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_SECONDARY;
-import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT;
-import static org.lwjgl.vulkan.VK10.VK_COMPARE_OP_ALWAYS;
-import static org.lwjgl.vulkan.VK10.VK_CULL_MODE_BACK_BIT;
-import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-import static org.lwjgl.vulkan.VK10.VK_DYNAMIC_STATE_SCISSOR;
-import static org.lwjgl.vulkan.VK10.VK_DYNAMIC_STATE_VIEWPORT;
-import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32B32A32_SFLOAT;
-import static org.lwjgl.vulkan.VK10.VK_FRONT_FACE_COUNTER_CLOCKWISE;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-import static org.lwjgl.vulkan.VK10.VK_LOGIC_OP_COPY;
-import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
-import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
-import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
-import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
-import static org.lwjgl.vulkan.VK10.VK_POLYGON_MODE_FILL;
-import static org.lwjgl.vulkan.VK10.VK_SAMPLE_COUNT_1_BIT;
-import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_FRAGMENT_BIT;
-import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_GEOMETRY_BIT;
-import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_VERTEX_BIT;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
-import static org.lwjgl.vulkan.VK10.vkAllocateDescriptorSets;
-import static org.lwjgl.vulkan.VK10.vkCreateGraphicsPipelines;
-import static org.lwjgl.vulkan.VK10.vkCreatePipelineLayout;
-import static org.lwjgl.vulkan.VK10.vkCreateDescriptorSetLayout;
-import static org.lwjgl.vulkan.VK10.vkDestroyDescriptorSetLayout;
-import static org.lwjgl.vulkan.VK10.vkMapMemory;
-import static org.lwjgl.vulkan.VK10.vkUnmapMemory;
-import static org.lwjgl.vulkan.VK10.vkUpdateDescriptorSets;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkCommandBufferInheritanceInfo;
 import org.lwjgl.vulkan.VkDescriptorImageInfo;
 import org.lwjgl.vulkan.VkDescriptorSetAllocateInfo;
 import org.lwjgl.vulkan.VkDescriptorSetLayoutBinding;
 import org.lwjgl.vulkan.VkDescriptorSetLayoutCreateInfo;
-import org.lwjgl.vulkan.VkGraphicsPipelineCreateInfo;
-import org.lwjgl.vulkan.VkOffset2D;
-import org.lwjgl.vulkan.VkPipelineColorBlendAttachmentState;
-import org.lwjgl.vulkan.VkPipelineColorBlendStateCreateInfo;
-import org.lwjgl.vulkan.VkPipelineInputAssemblyStateCreateInfo;
 import org.lwjgl.vulkan.VkPipelineLayoutCreateInfo;
-import org.lwjgl.vulkan.VkPipelineMultisampleStateCreateInfo;
-import org.lwjgl.vulkan.VkPipelineRasterizationStateCreateInfo;
-import org.lwjgl.vulkan.VkPipelineShaderStageCreateInfo;
-import org.lwjgl.vulkan.VkPipelineVertexInputStateCreateInfo;
-import org.lwjgl.vulkan.VkPipelineViewportStateCreateInfo;
-import org.lwjgl.vulkan.VkRect2D;
-import org.lwjgl.vulkan.VkViewport;
 import org.lwjgl.vulkan.VkWriteDescriptorSet;
-import static org.lwjgl.vulkan.VK10.vkDestroyPipeline;
-import static org.lwjgl.vulkan.VK10.vkDestroyPipelineLayout;
-import static org.lwjgl.vulkan.VK10.vkDestroyShaderModule;
-import static org.lwjgl.vulkan.VK10.vkFreeDescriptorSets;
 import org.lwjgl.vulkan.VkDescriptorBufferInfo;
-import org.lwjgl.vulkan.VkPipelineDepthStencilStateCreateInfo;
-import org.lwjgl.vulkan.VkPipelineDynamicStateCreateInfo;
 import org.lwjgl.vulkan.VkPushConstantRange;
 
 
 public class CVKFPSRenderable extends CVKRenderable {
-    // Static so we recreate descriptor layouts and shaders for each graph
-    private static boolean staticInitialised = false;
-    
     private static final int MAX_DIGITS = 4;
     private static final int ICON_BITS = 16;
     private static final int ICON_MASK = 0xffff;    
@@ -149,20 +59,9 @@ public class CVKFPSRenderable extends CVKRenderable {
     private static final Matrix44f IDENTITY_44F = Matrix44f.identity();
     private static final Vector3f ZERO_3F = new Vector3f(0, 0, 0);
     
-    private long hVertexShaderModule = VK_NULL_HANDLE;
-    private long hGeometryShaderModule = VK_NULL_HANDLE;
-    private long hFragmentShaderModule = VK_NULL_HANDLE;
-    private static ByteBuffer vsBytes = null;
-    private static ByteBuffer gsBytes = null;
-    private static ByteBuffer fsBytes = null;
-    
-    private long hDescriptorLayout = VK_NULL_HANDLE;    
-    
     private final Vector3f bottomRightCorner = new Vector3f();
     private float pyScale = 0;
     private float pxScale = 0;         
-    private List<Long> pipelines = null;
-    private long hPipelineLayout = VK_NULL_HANDLE;
     private final Vertex[] vertices = new Vertex[MAX_DIGITS];
     private final VertexUniformBufferObject vertexUBO = new VertexUniformBufferObject();
     private final GeometryUniformBufferObject geometryUBO = new GeometryUniformBufferObject();
@@ -181,8 +80,7 @@ public class CVKFPSRenderable extends CVKRenderable {
     private long hAtlasSampler = VK_NULL_HANDLE;
     private long hAtlasImageView = VK_NULL_HANDLE;
     
-    private ByteBuffer vertexPushConstants = null;
-    
+    private ByteBuffer vertexPushConstants = null;  
     private int counter = 0;
 
 
@@ -275,6 +173,16 @@ public class CVKFPSRenderable extends CVKRenderable {
             return attributeDescriptions.rewind();
         }
     }
+    
+    @Override
+    protected VkVertexInputBindingDescription.Buffer GetVertexBindingDescription() {
+        return Vertex.GetBindingDescription();
+    }
+    
+    @Override
+    protected VkVertexInputAttributeDescription.Buffer GetVertexAttributeDescriptions() {
+        return Vertex.GetAttributeDescriptions();
+    }     
         
     private static class VertexUniformBufferObject {
         private static final int SIZEOF = (16 + 1 + 1) * Float.BYTES;
@@ -356,73 +264,17 @@ public class CVKFPSRenderable extends CVKRenderable {
     }    
     
     
-    // ========================> Static resources <======================== \\
+    // ========================> Shaders <======================== \\
     
-    private static int LoadShaders() {
-        int ret = VK_SUCCESS;
-        
-        try {
-            if (vsBytes == null) {
-                vsBytes = LoadFileToDirectBuffer(CVKShaderPlaceHolder.class, "compiled/SimpleIcon.vs.spv");
-                if (vsBytes == null) {
-                    CVKGraphLogger.GetStaticLogger().log(Level.SEVERE, "Failed to compile FPSRenderable shader: SimpleIcon.vs");
-                    return CVK_ERROR_SHADER_COMPILATION;
-                }
-            }
-            
-            if (gsBytes == null) {
-                gsBytes = LoadFileToDirectBuffer(CVKShaderPlaceHolder.class, "compiled/SimpleIcon.gs.spv");
-                if (gsBytes == null) {
-                    CVKGraphLogger.GetStaticLogger().log(Level.SEVERE, "Failed to compile FPSRenderable shader: SimpleIcon.gs");
-                    return CVK_ERROR_SHADER_COMPILATION;
-                }
-            }
-            
-            if (fsBytes == null) {
-                fsBytes = LoadFileToDirectBuffer(CVKShaderPlaceHolder.class, "compiled/SimpleIcon.fs.spv");
-                if (fsBytes == null) {
-                    CVKGraphLogger.GetStaticLogger().log(Level.SEVERE, "Failed to compile FPSRenderable shader: SimpleIcon.fs");
-                    return CVK_ERROR_SHADER_COMPILATION;
-                }
-            }
-         
-        } catch (Exception e) {
-            CVKGraphLogger.GetStaticLogger().LogException(e, "Failed to compile CVKFPSRenderable shaders");
-            ret = CVK_ERROR_SHADER_COMPILATION;
-        }
-        
-        return ret;
-    }
-            
-    public static int StaticInitialise() {
-        int ret = VK_SUCCESS;
-        if (!staticInitialised) {
-            LoadShaders();
-            if (VkFailed(ret)) { return ret; }
-            staticInitialised = true;
-        }
-        return ret;
-    }
+    @Override
+    protected String GetVertexShaderName() { return "SimpleIcon.vs"; }
     
-    public static void DestroyStaticResources() {
-        if (vsBytes != null) {
-            MemoryUtil.memFree(vsBytes);
-            vsBytes = null;
-        }       
-        
-        if (gsBytes != null) {
-            MemoryUtil.memFree(gsBytes);
-            gsBytes = null;
-        }
-
-        if (fsBytes != null) {
-            MemoryUtil.memFree(fsBytes);
-            fsBytes = null;
-        }
-        
-        staticInitialised = false;
-    }
+    @Override
+    protected String GetGeometryShaderName() { return "SimpleIcon.gs"; }
     
+    @Override
+    protected String GetFragmentShaderName() { return "SimpleIcon.fs"; }   
+        
     
     // ========================> Lifetime <======================== \\
     
@@ -436,61 +288,10 @@ public class CVKFPSRenderable extends CVKRenderable {
         currentFPS.add(0);  // unused
     }  
     
-    private int CreateShaderModules() {
-        int ret = VK_SUCCESS;
-        
-        try{           
-            hVertexShaderModule = CVKShaderUtils.CreateShaderModule(vsBytes, CVKDevice.GetVkDevice());
-            if (hVertexShaderModule == VK_NULL_HANDLE) {
-                GetLogger().log(Level.SEVERE, "Failed to create shader module for: SimpleIcon.vs");
-                return CVK_ERROR_SHADER_MODULE;
-            }
-            hGeometryShaderModule = CVKShaderUtils.CreateShaderModule(gsBytes, CVKDevice.GetVkDevice());
-            if (hGeometryShaderModule == VK_NULL_HANDLE) {
-                GetLogger().log(Level.SEVERE, "Failed to create shader module for: SimpleIcon.gs");
-                return CVK_ERROR_SHADER_MODULE;
-            }
-            hFragmentShaderModule = CVKShaderUtils.CreateShaderModule(fsBytes, CVKDevice.GetVkDevice());
-            if (hFragmentShaderModule == VK_NULL_HANDLE) {
-                GetLogger().log(Level.SEVERE, "Failed to create shader module for: SimpleIcon.fs");
-                return CVK_ERROR_SHADER_MODULE;
-            }
-        } catch(Exception ex){
-            GetLogger().log(Level.SEVERE, "Failed to create shader module FPSRenderable: %s", ex.toString());
-            ret = CVK_ERROR_SHADER_MODULE;
-            return ret;
-        }
-        
-        GetLogger().info("Shader modules created for CVKFPSRenderable class:\n\tVertex:   0x%016x\n\tGeometry: 0x%016x\n\tFragment: 0x%016x",
-                hVertexShaderModule, hGeometryShaderModule, hFragmentShaderModule);
-        return ret;
-    }
-       
-    private void DestroyShaderModules() {
-        if (hVertexShaderModule != VK_NULL_HANDLE) {
-            vkDestroyShaderModule(CVKDevice.GetVkDevice(), hVertexShaderModule, null);
-            hVertexShaderModule = VK_NULL_HANDLE;
-        }
-        if (hGeometryShaderModule != VK_NULL_HANDLE) {
-            vkDestroyShaderModule(CVKDevice.GetVkDevice(), hGeometryShaderModule, null);
-            hGeometryShaderModule = VK_NULL_HANDLE;
-        }
-        if (hFragmentShaderModule != VK_NULL_HANDLE) {
-            vkDestroyShaderModule(CVKDevice.GetVkDevice(), hFragmentShaderModule, null);
-            hFragmentShaderModule = VK_NULL_HANDLE;
-        }
-    }
-    
     @Override
     public int Initialise() {
-        // Check for double initialisation
-        CVKAssertNull(hVertexShaderModule);
-        CVKAssertNull(hDescriptorLayout);
-        
-        int ret;        
-        
-        ret = CreateShaderModules();
-        if (VkFailed(ret)) { return ret; }
+        int ret = super.Initialise();  
+        if (VkFailed(ret)) { return ret; }       
          
         ret = CreateDescriptorLayout();
         if (VkFailed(ret)) { return ret; }
@@ -520,10 +321,9 @@ public class CVKFPSRenderable extends CVKRenderable {
         DestroyPipelineLayout();
         DestroyCommandBuffers(); 
         DestroyPushConstants(); 
-        DestroyShaderModules();
         DestroyStagingBuffer();
                
-        CVKAssertNull(pipelines);
+        CVKAssertNull(displayPipelines);
         CVKAssertNull(hPipelineLayout);
         CVKAssertNull(pDescriptorSets);
         CVKAssertNull(geometryUniformBuffers);
@@ -566,7 +366,8 @@ public class CVKFPSRenderable extends CVKRenderable {
                 ret = CreateCommandBuffers();
                 if (VkFailed(ret)) { return ret; }            
 
-                ret = CreatePipelines();
+                displayPipelines = new ArrayList<>(cvkSwapChain.GetImageCount());
+                ret = CreatePipelines(cvkSwapChain.GetRenderPassHandle(), displayPipelines);
                 if (VkFailed(ret)) { return ret; }        
                 
             } else {
@@ -599,7 +400,7 @@ public class CVKFPSRenderable extends CVKRenderable {
         // We only need to recreate these resources if the number of images in 
         // the swapchain changes or if this is the first call after the initial
         // swapchain is created.
-        if (pipelines != null && swapChainImageCountChanged) {        
+        if (displayPipelines != null && swapChainImageCountChanged) {        
             DestroyVertexBuffers();
             DestroyUniformBuffers();
             DestroyDescriptorSets();
@@ -607,7 +408,7 @@ public class CVKFPSRenderable extends CVKRenderable {
             DestroyPipelines();
             DestroyCommandBuffers(); 
 
-            CVKAssertNull(pipelines);
+            CVKAssertNull(displayPipelines);
             CVKAssertNull(pDescriptorSets);
             CVKAssertNull(geometryUniformBuffers);
             CVKAssertNull(vertexBuffers);
@@ -920,7 +721,7 @@ public class CVKFPSRenderable extends CVKRenderable {
         commandBuffer.SetViewPort(cvkSwapChain.GetWidth(), cvkSwapChain.GetHeight());
         commandBuffer.SetScissor(cvkVisualProcessor.GetCanvas().GetCurrentSurfaceExtent());
 
-        commandBuffer.BindGraphicsPipeline(pipelines.get(imageIndex));
+        commandBuffer.BindGraphicsPipeline(displayPipelines.get(imageIndex));
         commandBuffer.BindVertexInput(vertexBuffers.get(imageIndex).GetBufferHandle());
 
         commandBuffer.BindGraphicsDescriptorSets(hPipelineLayout, pDescriptorSets.get(imageIndex));
@@ -1170,212 +971,7 @@ public class CVKFPSRenderable extends CVKRenderable {
             vkDestroyPipelineLayout(CVKDevice.GetVkDevice(), hPipelineLayout, null);
             hPipelineLayout = VK_NULL_HANDLE;
         }
-    }    
-    
-    private int CreatePipelines() {
-        CVKAssertNotNull(hPipelineLayout);
-        CVKAssertNotNull(CVKDevice.GetVkDevice());
-        CVKAssertNotNull(cvkSwapChain);
-        CVKAssertNotNull(cvkDescriptorPool);
-        CVKAssertNotNull(cvkSwapChain.GetSwapChainHandle());
-        CVKAssertNotNull(cvkSwapChain.GetRenderPassHandle());
-        CVKAssertNotNull(cvkDescriptorPool.GetDescriptorPoolHandle());
-        CVKAssertNotNull(hVertexShaderModule);
-        CVKAssertNotNull(hGeometryShaderModule);
-        CVKAssertNotNull(hFragmentShaderModule);        
-        CVKAssert(cvkSwapChain.GetWidth() > 0);
-        CVKAssert(cvkSwapChain.GetHeight() > 0);
-               
-        final int imageCount = cvkSwapChain.GetImageCount();                
-        int ret = VK_SUCCESS;
-        try (MemoryStack stack = stackPush()) {                 
-            // A complete pipeline for each swapchain image.  Wasteful?
-            pipelines = new ArrayList<>(imageCount);            
-            for (int i = 0; i < imageCount; ++i) {                              
-                // prepare vertex attributes
-
-                //From the GL FPSBatcher and FPSRenderable and shaders:
-                // 1 vertex per digit.
-                // Vert inputs:
-                // int[2] data {icon indexes (encoded to int), digit index * 4)
-                // float[4] backgroundIconColor
-                // Vert outputs:
-                // flat out ivec2 gData; this is data passed through
-                // out mat4 gBackgroundIconColor; backgroundIconColor in a 4x4 matrix
-                // flat out float gRadius; 1 if visible, -1 otherwise
-                // gl_Position = mvMatrix * vec4(digitPosition, 1); where digitPosition is (digit index * 4, 0, 0)
-
-                // A bunch of uniforms:
-                // SimpleIcon.vs:
-                // uniform mat4 mvMatrix;
-                // uniform float visibilityLow;
-                // uniform float visibilityHigh;
-                // uniform float offset;
-
-                // SimpleIcon.gs:
-                // Input:
-                // uniform mat4 pMatrix;
-                // uniform float pixelDensity;
-                // uniform float pScale;     
-                // Ouput:
-                // flat out mat4 iconColor;
-                // noperspective centroid out vec3 textureCoords;
-                // layout(triangle_strip, max_vertices=28) out;     
-
-
-            
-                // TODO: Generalize map of shaders and type per renderable
-                // Then can dynamically set here? Think I saw something like
-                // this in the Oreon engine.
-                ByteBuffer entryPoint = stack.UTF8("main");
-
-                VkPipelineShaderStageCreateInfo.Buffer shaderStages = VkPipelineShaderStageCreateInfo.callocStack(3, stack);
-
-                VkPipelineShaderStageCreateInfo vertShaderStageInfo = shaderStages.get(0);
-
-                vertShaderStageInfo.sType(VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO);
-                vertShaderStageInfo.stage(VK_SHADER_STAGE_VERTEX_BIT);
-                vertShaderStageInfo.module(hVertexShaderModule);
-                vertShaderStageInfo.pName(entryPoint);
-
-                VkPipelineShaderStageCreateInfo geomShaderStageInfo = shaderStages.get(1);
-                geomShaderStageInfo.sType(VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO);
-                geomShaderStageInfo.stage(VK_SHADER_STAGE_GEOMETRY_BIT);
-                geomShaderStageInfo.module(hGeometryShaderModule);
-                geomShaderStageInfo.pName(entryPoint);            
-
-                VkPipelineShaderStageCreateInfo fragShaderStageInfo = shaderStages.get(2);
-                fragShaderStageInfo.sType(VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO);
-                fragShaderStageInfo.stage(VK_SHADER_STAGE_FRAGMENT_BIT);
-                fragShaderStageInfo.module(hFragmentShaderModule);
-                fragShaderStageInfo.pName(entryPoint);
-
-                // ===> VERTEX STAGE <===
-                VkPipelineVertexInputStateCreateInfo vertexInputInfo = VkPipelineVertexInputStateCreateInfo.callocStack(stack);
-                vertexInputInfo.sType(VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO);
-                vertexInputInfo.pVertexBindingDescriptions(Vertex.GetBindingDescription());
-                vertexInputInfo.pVertexAttributeDescriptions(Vertex.GetAttributeDescriptions());
-
-                // ===> ASSEMBLY STAGE <===
-                // Each point becomes two triangles in the geometry shader, but our input is a point list
-                VkPipelineInputAssemblyStateCreateInfo inputAssembly = VkPipelineInputAssemblyStateCreateInfo.callocStack(stack);
-                inputAssembly.sType(VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO);
-                inputAssembly.topology(VK_PRIMITIVE_TOPOLOGY_POINT_LIST);
-                inputAssembly.primitiveRestartEnable(false);
-
-                // ===> VIEWPORT & SCISSOR
-                VkViewport.Buffer viewport = VkViewport.callocStack(1, stack);
-                viewport.x(0.0f);
-                viewport.y(0.0f);
-                viewport.width(cvkSwapChain.GetWidth());
-                viewport.height(cvkSwapChain.GetHeight());
-                viewport.minDepth(0.0f);
-                viewport.maxDepth(1.0f);
-
-                VkRect2D.Buffer scissor = VkRect2D.callocStack(1, stack);
-                scissor.offset(VkOffset2D.callocStack(stack).set(0, 0));
-                scissor.extent(cvkSwapChain.GetExtent());
-
-                VkPipelineViewportStateCreateInfo viewportState = VkPipelineViewportStateCreateInfo.callocStack(stack);
-                viewportState.sType(VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO);
-                viewportState.pViewports(viewport);
-                viewportState.pScissors(scissor);
-
-                // ===> RASTERIZATION STAGE <===
-                VkPipelineRasterizationStateCreateInfo rasterizer = VkPipelineRasterizationStateCreateInfo.callocStack(stack);
-                rasterizer.sType(VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO);
-                rasterizer.depthClampEnable(false);
-                rasterizer.rasterizerDiscardEnable(false);
-                rasterizer.polygonMode(VK_POLYGON_MODE_FILL);
-                rasterizer.lineWidth(1.0f);
-                rasterizer.cullMode(VK_CULL_MODE_BACK_BIT);
-                rasterizer.frontFace(VK_FRONT_FACE_COUNTER_CLOCKWISE);
-                rasterizer.depthBiasEnable(false);
-
-                // ===> MULTISAMPLING <===
-                VkPipelineMultisampleStateCreateInfo multisampling = VkPipelineMultisampleStateCreateInfo.callocStack(stack);
-                multisampling.sType(VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO);
-                multisampling.sampleShadingEnable(false);
-                multisampling.rasterizationSamples(VK_SAMPLE_COUNT_1_BIT);
-                
-                // ===> DEPTH <===
-                // Even though we don't test depth, the renderpass created by CVKSwapChain is used by
-                // each renderable and it was created to have a depth attachment
-                VkPipelineDepthStencilStateCreateInfo depthStencil = VkPipelineDepthStencilStateCreateInfo.callocStack(stack);
-                depthStencil.sType(VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO);
-                depthStencil.depthTestEnable(false);
-                depthStencil.depthWriteEnable(false);
-                depthStencil.depthCompareOp(VK_COMPARE_OP_ALWAYS);
-                depthStencil.depthBoundsTestEnable(false);
-                depthStencil.minDepthBounds(0.0f); // Optional
-                depthStencil.maxDepthBounds(1.0f); // Optional
-                depthStencil.stencilTestEnable(false);                       
-
-                // ===> COLOR BLENDING <===
-                VkPipelineColorBlendAttachmentState.Buffer colorBlendAttachment = VkPipelineColorBlendAttachmentState.callocStack(1, stack);
-                colorBlendAttachment.colorWriteMask(VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT);
-                colorBlendAttachment.blendEnable(false);
-
-                VkPipelineColorBlendStateCreateInfo colorBlending = VkPipelineColorBlendStateCreateInfo.callocStack(stack);
-                colorBlending.sType(VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO);
-                colorBlending.logicOpEnable(false);
-                colorBlending.logicOp(VK_LOGIC_OP_COPY);
-                colorBlending.pAttachments(colorBlendAttachment);
-                colorBlending.blendConstants(stack.floats(0.0f, 0.0f, 0.0f, 0.0f));
-
-                // ===> DYNAMIC PROPERTIES CREATION <===
-                IntBuffer pDynamicStates = memAllocInt(2);
-                pDynamicStates.put(VK_DYNAMIC_STATE_VIEWPORT);
-                pDynamicStates.put(VK_DYNAMIC_STATE_SCISSOR);
-                pDynamicStates.flip();
-                VkPipelineDynamicStateCreateInfo dynamicState = VkPipelineDynamicStateCreateInfo.callocStack(stack);
-                dynamicState.sType(VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO);
-                dynamicState.pDynamicStates(pDynamicStates);
-                                
-                // ===> PIPELINE CREATION <===
-                VkGraphicsPipelineCreateInfo.Buffer pipelineInfo = VkGraphicsPipelineCreateInfo.callocStack(1, stack);
-                pipelineInfo.sType(VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO);
-                pipelineInfo.pStages(shaderStages);
-                pipelineInfo.pVertexInputState(vertexInputInfo);
-                pipelineInfo.pInputAssemblyState(inputAssembly);
-                pipelineInfo.pViewportState(viewportState);
-                pipelineInfo.pRasterizationState(rasterizer);
-                pipelineInfo.pMultisampleState(multisampling);
-                pipelineInfo.pDepthStencilState(depthStencil);
-                pipelineInfo.pColorBlendState(colorBlending);
-                pipelineInfo.layout(hPipelineLayout);
-                pipelineInfo.renderPass(cvkSwapChain.GetRenderPassHandle());
-                pipelineInfo.subpass(0);
-                pipelineInfo.basePipelineHandle(VK_NULL_HANDLE);
-                pipelineInfo.basePipelineIndex(-1);
-                pipelineInfo.pDynamicState(dynamicState);
-
-                LongBuffer pGraphicsPipeline = stack.mallocLong(1);
-                ret = vkCreateGraphicsPipelines(CVKDevice.GetVkDevice(), 
-                                                VK_NULL_HANDLE, 
-                                                pipelineInfo, 
-                                                null, 
-                                                pGraphicsPipeline);
-                if (VkFailed(ret)) { return ret; }
-                CVKAssertNotNull(pGraphicsPipeline.get(0));  
-                pipelines.add(pGraphicsPipeline.get(0));                      
-            }
-        }
-        
-        GetLogger().info("Graphics Pipeline created for CVKFPSRenderable class.");
-        return ret;
-    }        
-   
-    private void DestroyPipelines() {
-        if (pipelines != null) {
-            for (int i = 0; i < pipelines.size(); ++i) {
-                vkDestroyPipeline(CVKDevice.GetVkDevice(), pipelines.get(i), null);
-                pipelines.set(i, VK_NULL_HANDLE);
-            }
-            pipelines.clear();
-            pipelines = null;
-        }        
-    }   
+    } 
     
     
     // ========================> Display <======================== \\
