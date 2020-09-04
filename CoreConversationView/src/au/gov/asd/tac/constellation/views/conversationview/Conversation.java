@@ -122,18 +122,24 @@ public class Conversation {
      * Create a new Conversation.
      */
     public Conversation() {
+        conversationExistanceUpdater.dependOn(graphUpdateController.getNewGraphUpdateComponent());  
+        
+        conversationStateUpdater.dependOn(conversationExistanceUpdater);
         conversationStateUpdater.dependOn(graphUpdateController.createAttributeUpdateComponent(ConversationViewConcept.MetaAttribute.CONVERSATION_VIEW_STATE));
+        
+        possibleSenderAttributeUpdater.dependOn(conversationExistanceUpdater);
+        possibleSenderAttributeUpdater.dependOn(graphUpdateController.getAttributeUpdateComponent());
 
+        senderAttributeUpdater.dependOn(possibleSenderAttributeUpdater);
         senderAttributeUpdater.dependOn(graphUpdateController.getAttributeUpdateComponent());
 
-        possibleSenderAttributeUpdater.dependOn(graphUpdateController.getAttributeUpdateComponent());
-        senderAttributeUpdater.dependOn(possibleSenderAttributeUpdater);
-
+        contributionProviderUpdater.dependOn(conversationExistanceUpdater);
         contributionProviderUpdater.dependOn(graphUpdateController.getAttributeUpdateComponent());
-
+        
+        messageUpdater.dependOn(conversationExistanceUpdater);
         messageUpdater.dependOn(graphUpdateController.createAttributeUpdateComponent(VisualConcept.VertexAttribute.SELECTED));
         messageUpdater.dependOn(graphUpdateController.createAttributeUpdateComponent(VisualConcept.TransactionAttribute.SELECTED));
-
+        
         contributionUpdater.dependOn(messageUpdater);
 
         datetimeUpdater.dependOn(contributionUpdater);
@@ -178,22 +184,38 @@ public class Conversation {
      * Inspects the contents of the conversation state and registers any changes
      * that have occurred.
      */
+    private UpdateComponent<GraphReadMethods> conversationExistanceUpdater = new UpdateComponent<GraphReadMethods>("Existance State", LOCK_STAGE) {
+
+        @Override
+        protected boolean update(GraphReadMethods graph) {
+            return graph == null;
+        }
+    };
+    /**
+     * Inspects the contents of the conversation state and registers any changes
+     * that have occurred.
+     */
     private UpdateComponent<GraphReadMethods> conversationStateUpdater = new UpdateComponent<GraphReadMethods>("Conversation State", LOCK_STAGE) {
 
         @Override
         protected boolean update(GraphReadMethods graph) {
 
+            
             ConversationState newConversationState;
-            int conversationStateAttribute = ConversationViewConcept.MetaAttribute.CONVERSATION_VIEW_STATE.get(graph);
-            if (conversationStateAttribute == Graph.NOT_FOUND) {
-                newConversationState = new ConversationState();
-                newConversationState.setSenderAttributesToKeys(graph);
-            } else {
-                newConversationState = (ConversationState) graph.getObjectValue(conversationStateAttribute, 0);
-                if (newConversationState == null) {
+            if (graph != null) {
+                final int conversationStateAttribute = ConversationViewConcept.MetaAttribute.CONVERSATION_VIEW_STATE.get(graph);
+                if (conversationStateAttribute == Graph.NOT_FOUND) {
                     newConversationState = new ConversationState();
                     newConversationState.setSenderAttributesToKeys(graph);
+                } else {
+                    newConversationState = (ConversationState) graph.getObjectValue(conversationStateAttribute, 0);
+                    if (newConversationState == null) {
+                        newConversationState = new ConversationState();
+                        newConversationState.setSenderAttributesToKeys(graph);
+                    }
                 }
+            } else {
+                newConversationState = new ConversationState();
             }
 
             if (!conversationState.getHiddenContributionProviders().equals(newConversationState.getHiddenContributionProviders())) {
@@ -222,12 +244,14 @@ public class Conversation {
         @Override
         protected boolean update(GraphReadMethods graph) {
             possibleSenderAttributes.clear();
-            final int attributeCount = graph.getAttributeCount(GraphElementType.VERTEX);
-            for (int i = 0; i < attributeCount; i++) {
-                final int attributeId = graph.getAttribute(GraphElementType.VERTEX, i);
-                final Attribute attribute = new GraphAttribute(graph, attributeId);
-                if (!ObjectAttributeDescription.class.isAssignableFrom(attribute.getDataType())) {
-                    possibleSenderAttributes.add(attribute.getName());
+            if (graph != null) {
+                final int attributeCount = graph.getAttributeCount(GraphElementType.VERTEX);
+                for (int i = 0; i < attributeCount; i++) {
+                    final int attributeId = graph.getAttribute(GraphElementType.VERTEX, i);
+                    final Attribute attribute = new GraphAttribute(graph, attributeId);
+                    if (!ObjectAttributeDescription.class.isAssignableFrom(attribute.getDataType())) {
+                        possibleSenderAttributes.add(attribute.getName());
+                    }
                 }
             }
             return true;
@@ -286,7 +310,6 @@ public class Conversation {
                 final Thread thread = new Thread(CONVERSATION_VIEW_UPDATE_MESSAGE_THREAD_NAME) {
                     @Override
                     public void run() {
-                        allMessages.clear();
                         messageProvider.getMessages(graph, allMessages);
                         latch.countDown();
                     }
@@ -410,10 +433,6 @@ public class Conversation {
     private UpdateComponent<GraphReadMethods> senderUpdater = new UpdateComponent<GraphReadMethods>("Senders", LOCK_STAGE) {
         @Override
         protected boolean update(GraphReadMethods graph) {
-            if (graph == null) {
-                return false;
-            }
-
             try {
                 final CountDownLatch latch = new CountDownLatch(1);
 
