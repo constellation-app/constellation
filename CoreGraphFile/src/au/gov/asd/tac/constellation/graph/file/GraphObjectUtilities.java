@@ -36,10 +36,6 @@ import org.openide.util.Exceptions;
  */
 public class GraphObjectUtilities {
 
-    private GraphObjectUtilities() {
-        //Adding private to remove code smell
-    }
-
     // This is the in-memory filesystem we use to store files for DataObjects.
     private static final FileSystem FILE_SYSTEM = FileUtil.createMemoryFileSystem();
 
