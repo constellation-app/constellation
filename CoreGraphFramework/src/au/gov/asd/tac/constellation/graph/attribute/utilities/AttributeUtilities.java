@@ -59,10 +59,9 @@ public class AttributeUtilities {
      */
     public static List<Attribute> getAttributes(final GraphElementType graphElementType) {
         final Graph graph = GraphManager.getDefault().getActiveGraph();
-        final ReadableGraph readableGraph = graph.getReadableGraph();
         final List<Attribute> attributes = new ArrayList<>();
-
-        if (graph.getSchema() != null) {
+        if (graph != null && graph.getSchema() != null) {
+            final ReadableGraph readableGraph = graph.getReadableGraph();
             try {
                 final int attributeCount = readableGraph.getAttributeCount(graphElementType);
                 for (int i = 0; i < attributeCount; i++) {
