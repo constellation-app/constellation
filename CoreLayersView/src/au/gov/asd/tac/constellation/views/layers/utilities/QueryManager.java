@@ -114,7 +114,7 @@ public class QueryManager implements LookupListener, GraphChangeListener {
         protected void edit(GraphWriteMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
             final int bitMaskAttributeId = LayersConcept.VertexAttribute.LAYER_MASK.ensure(graph);
             final int visibleMaskAttributeId = VisualConcept.VertexAttribute.VISIBILITY.ensure(graph);
-            bitMaskQueries.updateBitMasks(graph, bitMaskAttributeId, visibleMaskAttributeId, GraphElementType.VERTEX);
+            bitMaskQueries.updateBitMasks(graph, bitMaskAttributeId, visibleMaskAttributeId);
         }
     }
 }

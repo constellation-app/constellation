@@ -77,16 +77,16 @@ public class BitMaskQueryCollection {
         return bitMask;
     }
 
-    public void updateBitMasks(GraphWriteMethods graph, int bitMaskAttributeId, int visibleAttributeId, GraphElementType elementType) {
+    public void updateBitMasks(GraphWriteMethods graph, int bitMaskAttributeId, int visibleAttributeId) {
         if (update(graph)) {
             final int elementCount = elementType.getElementCount(graph);
             for (int position = 0; position < elementCount; position++) {
-                index.writeInt(position);
                 final int elementId = elementType.getElement(graph, position);
+                index.writeInt(elementId);
                 final long bitMask = graph.getLongValue(bitMaskAttributeId, elementId);
                 final long updatedBitMask = updateBitMask(bitMask);
                 graph.setLongValue(bitMaskAttributeId, elementId, updatedBitMask);
-                graph.setFloatValue(visibleAttributeId, elementId, (updatedBitMask & activeQueriesBitMask) == 0 ? 0 : 1000000000);
+                graph.setFloatValue(visibleAttributeId, elementId, (updatedBitMask & activeQueriesBitMask) == 0 ? 0.0f : 1.0f);
             }
         }
     }

@@ -44,6 +44,7 @@ public class BitMaskQuery {
         if(query.requiresUpdate(graph)) {
             final Object compiledExpresssion = query.compile(graph, index);
             this.result = Access.getDefault().getRegistry(BooleanReadable.class).convert(compiledExpresssion);
+            //TODO check for null
             return true;
         } else {
             return false;
