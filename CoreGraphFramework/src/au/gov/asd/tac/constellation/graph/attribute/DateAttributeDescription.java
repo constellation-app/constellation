@@ -46,7 +46,7 @@ public final class DateAttributeDescription extends AbstractAttributeDescription
     public static final int ATTRIBUTE_VERSION = 1;
     public static final Class<Long> NATIVE_CLASS = Long.class;
     public static final NativeAttributeType NATIVE_TYPE = NativeAttributeType.LONG;
-    public static final long DEFAULT_VALUE = Long.MIN_VALUE;
+    public static final long DEFAULT_VALUE = 0;
 
     private long[] data = new long[0];
     private long defaultValue = DEFAULT_VALUE;
