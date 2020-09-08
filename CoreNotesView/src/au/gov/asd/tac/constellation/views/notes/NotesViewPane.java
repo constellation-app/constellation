@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.plugins.reporting.GraphReportManager;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.views.notes.state.NotesViewEntry;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -29,6 +30,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -75,44 +77,57 @@ public class NotesViewPane extends BorderPane {
         // THIS LINE CAUSES AN ERROR RELATING TO THE CONSTRUCTOR!
         //pluginReportList = currentGraphReport.getPluginReports();
         // placeholder label for content example
-        final Label userText = new Label("User Notes Here\n");
-        final Label autoText = new Label("Auto Notes Here\n");
+        final Label notesListText = new Label("NOTES LIST\n");
+        final Label newNoteText = new Label("NEW NOTE\n");
 
         // headings for user notes text areas
         final Label noteTitleHeading = new Label(NOTE_TITLE);
         final Label noteContentHeading = new Label(NOTE_CONTENT);
 
         // Text area to enter note title
-        final TextArea titleTextArea = new TextArea();
-        titleTextArea.setPrefRowCount(1);
-        titleTextArea.setMaxWidth(150);
-        HBox.setHgrow(titleTextArea, Priority.ALWAYS);
+        final TextField titleText = new TextField();
+//        titleText.setPrefRowCount(1);
+        titleText.setMaxWidth(200);
+        titleText.setPromptText("Title");
+        titleText.setStyle("-fx-prompt-text-fill: #909090;");
+        HBox.setHgrow(titleText, Priority.ALWAYS);
 
         // Text area to enter note content
-        final TextArea contentTextArea = new TextArea();
-        contentTextArea.setPrefRowCount(0);
-        contentTextArea.setMaxWidth(150);
-        HBox.setHgrow(contentTextArea, Priority.ALWAYS);
+        final TextArea contentText = new TextArea();
+//        contentTextArea.setPrefRowCount(0);
+//        contentTextArea.setMaxWidth(150);
+//        contentText.setMaxHeight(150);
+        contentText.setMaxSize(200, 100);
+        contentText.setPromptText("Take a note...");
+        contentText.setStyle("-fx-prompt-text-fill: #909090;");
+        contentText.setWrapText(true);
+//        contentText.setFocusTraversable(false);
+        HBox.setHgrow(contentText, Priority.ALWAYS);
 
         // Button to add a new note
         final Button addButton = new Button(ADD_BUTTON);
         addButton.setAlignment(Pos.CENTER_RIGHT);
         HBox.setHgrow(addButton, Priority.ALWAYS);
         addButton.setOnAction(event -> {
-            createNote(titleTextArea.getText(), contentTextArea.getText(), LocalDateTime.now().toString(), true);
+            createNote(titleText.getText(), contentText.getText(), LocalDateTime.now().toString(), true);
+            titleText.clear();
+            contentText.clear();
             controller.writeState();
             event.consume();
         });
 
         // Adding items used to 'add a new note' to HBox
-        final HBox addNoteHBox = new HBox(BOX_SPACING, noteTitleHeading, titleTextArea, noteContentHeading, contentTextArea, addButton);
+//        final VBox addNoteVBox = new VBox(BOX_SPACING, noteTitleHeading, titleTextArea, noteContentHeading, contentTextArea, addButton);
+        final VBox addNoteVBox = new VBox(BOX_SPACING, titleText, contentText, addButton);
+        addNoteVBox.setStyle("-fx-padding: 5px;");
 
         // VBoxes used for holding notes of user and plugin generated types
-        this.userNotesPane = new VBox(BOX_SPACING, userText);
-        this.autoNotesPane = new VBox(BOX_SPACING, autoText);
+        // NOTE These are just temporary titles in Vboxes.
+        this.userNotesPane = new VBox(BOX_SPACING, notesListText);
+        this.autoNotesPane = new VBox(BOX_SPACING, newNoteText);
 
         // Adding
-        this.mainNotesPane = new VBox(BOX_SPACING, userNotesPane, autoNotesPane, addNoteHBox);
+        this.mainNotesPane = new VBox(BOX_SPACING, userNotesPane, autoNotesPane, addNoteVBox);
 
         // create layout bindings
         mainNotesPane.prefWidthProperty().bind(this.widthProperty());
@@ -163,6 +178,7 @@ public class NotesViewPane extends BorderPane {
             final HBox deleteHBox = new HBox(BOX_SPACING, remove);
             final VBox noteVBox = new VBox(BOX_SPACING, noteTitleLabel, noteContentLabel, noteTimestampLabel, deleteHBox);
             noteVBox.setPadding(NOTE_PADDING);
+            noteVBox.setStyle("-fx-background-color: #FF0000;");
             notesEntries.add(new NotesViewEntry(isUserNote, timestamp, title, content));
             userNotesPane.getChildren().add(noteVBox);
             // Auto generated note
@@ -172,6 +188,7 @@ public class NotesViewPane extends BorderPane {
             final Label noteTimestampLabel = new Label(timestamp);
             final VBox noteVBox = new VBox(BOX_SPACING, noteTitleLabel, noteContentLabel, noteTimestampLabel);
             noteVBox.setPadding(NOTE_PADDING);
+            noteVBox.setStyle("-fx-background-color: #009DFF;");
             // add entry into auto notes list / pluginreports?
             autoNotesPane.getChildren().add(noteVBox);
         }
