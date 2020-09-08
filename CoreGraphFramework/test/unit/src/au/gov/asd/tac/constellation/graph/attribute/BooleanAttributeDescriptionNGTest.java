@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.graph.attribute;
 
-import au.gov.asd.tac.constellation.graph.GraphIndex;
-import au.gov.asd.tac.constellation.graph.GraphIndexType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
@@ -389,7 +387,6 @@ public class BooleanAttributeDescriptionNGTest {
 //        int result = instance.hashCode(id);
 //        assertEquals(result, expResult);
 //    }
-
     /**
      * Test of equals method, of class BooleanAttributeDescription.
      */
@@ -451,7 +448,6 @@ public class BooleanAttributeDescriptionNGTest {
 //        boolean result = instance.supportsIndexType(indexType);
 //        assertEquals(result, expResult);
 //    }
-
 //    /**
 //     * Test of createIndex method, of class BooleanAttributeDescription.
 //     */
@@ -462,5 +458,4 @@ public class BooleanAttributeDescriptionNGTest {
 //        GraphIndex result = instance.createIndex(indexType);
 //        assertEquals(result, expResult);
 //    }
-
 }

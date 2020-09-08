@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.graph.attribute;
 
-import au.gov.asd.tac.constellation.graph.GraphIndex;
-import au.gov.asd.tac.constellation.graph.GraphIndexType;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -54,7 +52,8 @@ public class BooleanObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of convertFromObject method, of class BooleanObjectAttributeDescription.
+     * Test of convertFromObject method, of class
+     * BooleanObjectAttributeDescription.
      */
     @Test
     public void testConvertFromObject() {
@@ -65,7 +64,8 @@ public class BooleanObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of convertFromString method, of class BooleanObjectAttributeDescription.
+     * Test of convertFromString method, of class
+     * BooleanObjectAttributeDescription.
      */
     @Test
     public void testConvertFromString() {
@@ -253,7 +253,6 @@ public class BooleanObjectAttributeDescriptionNGTest {
 //        int result = instance.hashCode(id);
 //        assertEquals(result, expResult);
 //    }
-
 //    /**
 //     * Test of supportsIndexType method, of class BooleanObjectAttributeDescription.
 //     */
@@ -275,5 +274,4 @@ public class BooleanObjectAttributeDescriptionNGTest {
 //        GraphIndex result = instance.createIndex(indexType);
 //        assertEquals(result, expResult);
 //    }
-
 }

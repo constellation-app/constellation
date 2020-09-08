@@ -26,11 +26,11 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class DoubleObjectAttributeDescriptionNGTest {
+public class ShortObjectAttributeDescriptionNGTest {
 
-    DoubleObjectAttributeDescription instance;
+    ShortObjectAttributeDescription instance;
 
-    public DoubleObjectAttributeDescriptionNGTest() {
+    public ShortObjectAttributeDescriptionNGTest() {
     }
 
     @BeforeClass
@@ -43,7 +43,7 @@ public class DoubleObjectAttributeDescriptionNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        instance = new DoubleObjectAttributeDescription();
+        instance = new ShortObjectAttributeDescription();
         instance.setCapacity(1);
     }
 
@@ -53,30 +53,30 @@ public class DoubleObjectAttributeDescriptionNGTest {
 
     /**
      * Test of convertFromObject method, of class
-     * DoubleObjectAttributeDescription.
+     * ShortObjectAttributeDescription.
      */
     @Test
     public void testConvertFromObject() {
         Object object = null;
-        Double expResult = null;
-        Double result = instance.convertFromObject(object);
+        Short expResult = null;
+        Short result = instance.convertFromObject(object);
         assertEquals(result, expResult);
     }
 
     /**
      * Test of convertFromString method, of class
-     * DoubleObjectAttributeDescription.
+     * ShortObjectAttributeDescription.
      */
     @Test
     public void testConvertFromString() {
         String string = "";
-        Double expResult = null;
-        Double result = instance.convertFromString(string);
+        Short expResult = null;
+        Short result = instance.convertFromString(string);
         assertEquals(result, expResult);
     }
 
     /**
-     * Test of getByte method, of class DoubleObjectAttributeDescription.
+     * Test of getByte method, of class ShortObjectAttributeDescription.
      */
     @Test
     public void testGetByte() {
@@ -87,7 +87,7 @@ public class DoubleObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of setByte method, of class DoubleObjectAttributeDescription.
+     * Test of setByte method, of class ShortObjectAttributeDescription.
      */
     @Test
     public void testSetByte() {
@@ -97,7 +97,7 @@ public class DoubleObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of getShort method, of class DoubleObjectAttributeDescription.
+     * Test of getShort method, of class ShortObjectAttributeDescription.
      */
     @Test
     public void testGetShort() {
@@ -108,7 +108,7 @@ public class DoubleObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of setShort method, of class DoubleObjectAttributeDescription.
+     * Test of setShort method, of class ShortObjectAttributeDescription.
      */
     @Test
     public void testSetShort() {
@@ -118,7 +118,7 @@ public class DoubleObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of getInt method, of class DoubleObjectAttributeDescription.
+     * Test of getInt method, of class ShortObjectAttributeDescription.
      */
     @Test
     public void testGetInt() {
@@ -129,7 +129,7 @@ public class DoubleObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of setInt method, of class DoubleObjectAttributeDescription.
+     * Test of setInt method, of class ShortObjectAttributeDescription.
      */
     @Test
     public void testSetInt() {
@@ -139,7 +139,7 @@ public class DoubleObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of getLong method, of class DoubleObjectAttributeDescription.
+     * Test of getLong method, of class ShortObjectAttributeDescription.
      */
     @Test
     public void testGetLong() {
@@ -150,7 +150,7 @@ public class DoubleObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of setLong method, of class DoubleObjectAttributeDescription.
+     * Test of setLong method, of class ShortObjectAttributeDescription.
      */
     @Test
     public void testSetLong() {
@@ -160,7 +160,7 @@ public class DoubleObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of getFloat method, of class DoubleObjectAttributeDescription.
+     * Test of getFloat method, of class ShortObjectAttributeDescription.
      */
     @Test
     public void testGetFloat() {
@@ -171,7 +171,7 @@ public class DoubleObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of setFloat method, of class DoubleObjectAttributeDescription.
+     * Test of setFloat method, of class ShortObjectAttributeDescription.
      */
     @Test
     public void testSetFloat() {
@@ -181,7 +181,7 @@ public class DoubleObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of getDouble method, of class DoubleObjectAttributeDescription.
+     * Test of getDouble method, of class ShortObjectAttributeDescription.
      */
     @Test
     public void testGetDouble() {
@@ -192,7 +192,7 @@ public class DoubleObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of setDouble method, of class DoubleObjectAttributeDescription.
+     * Test of setDouble method, of class ShortObjectAttributeDescription.
      */
     @Test
     public void testSetDouble() {
@@ -202,7 +202,7 @@ public class DoubleObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of getBoolean method, of class DoubleObjectAttributeDescription.
+     * Test of getBoolean method, of class ShortObjectAttributeDescription.
      */
     @Test
     public void testGetBoolean() {
@@ -213,7 +213,7 @@ public class DoubleObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of setBoolean method, of class DoubleObjectAttributeDescription.
+     * Test of setBoolean method, of class ShortObjectAttributeDescription.
      */
     @Test
     public void testSetBoolean() {
@@ -222,29 +222,8 @@ public class DoubleObjectAttributeDescriptionNGTest {
         instance.setBoolean(id, value);
     }
 
-    /**
-     * Test of getChar method, of class DoubleObjectAttributeDescription.
-     */
-    @Test
-    public void testGetChar() {
-        int id = 0;
-        char expResult = 0;
-        char result = instance.getChar(id);
-        assertEquals(result, expResult);
-    }
-
-    /**
-     * Test of setChar method, of class DoubleObjectAttributeDescription.
-     */
-    @Test
-    public void testSetChar() {
-        int id = 0;
-        char value = ' ';
-        instance.setChar(id, value);
-    }
-
 //    /**
-//     * Test of hashCode method, of class DoubleObjectAttributeDescription.
+//     * Test of hashCode method, of class ShortObjectAttributeDescription.
 //     */
 //    @Test
 //    public void testHashCode() {

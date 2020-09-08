@@ -15,7 +15,8 @@
  */
 package au.gov.asd.tac.constellation.graph.attribute;
 
-import java.net.URI;
+import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
+import java.time.ZoneId;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -27,11 +28,11 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class HyperlinkAttributeDescriptionNGTest {
+public class TimeZoneAttributeDescriptionNGTest {
 
-    HyperlinkAttributeDescription instance;
+    TimeZoneAttributeDescription instance;
 
-    public HyperlinkAttributeDescriptionNGTest() {
+    public TimeZoneAttributeDescriptionNGTest() {
     }
 
     @BeforeClass
@@ -44,7 +45,7 @@ public class HyperlinkAttributeDescriptionNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        instance = new HyperlinkAttributeDescription();
+        instance = new TimeZoneAttributeDescription();
         instance.setCapacity(1);
     }
 
@@ -53,25 +54,56 @@ public class HyperlinkAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of convertFromObject method, of class HyperlinkAttributeDescription.
+     * Test of getVersion method, of class TimeZoneAttributeDescription.
      */
     @Test
-    public void testConvertFromObject() {
-        Object object = null;
-        URI expResult = null;
-        URI result = instance.convertFromObject(object);
+    public void testGetVersion() {
+        int expResult = 1;
+        int result = instance.getVersion();
         assertEquals(result, expResult);
     }
 
     /**
-     * Test of convertFromString method, of class HyperlinkAttributeDescription.
+     * Test of convertFromObject method, of class TimeZoneAttributeDescription.
+     */
+    @Test
+    public void testConvertFromObject() {
+        Object object = null;
+        ZoneId expResult = TimeZoneUtilities.UTC;
+        ZoneId result = instance.convertFromObject(object);
+        assertEquals(result, expResult);
+    }
+
+    /**
+     * Test of convertFromString method, of class TimeZoneAttributeDescription.
      */
     @Test
     public void testConvertFromString() {
         String string = "";
-        URI expResult = null;
-        URI result = instance.convertFromString(string);
+        ZoneId expResult = TimeZoneUtilities.UTC;
+        ZoneId result = instance.convertFromString(string);
         assertEquals(result, expResult);
     }
 
+    /**
+     * Test of getString method, of class TimeZoneAttributeDescription.
+     */
+    @Test
+    public void testGetString() {
+        int id = 0;
+        String expResult = "+00:00 [UTC]";
+        String result = instance.getString(id);
+        assertEquals(result, expResult);
+    }
+
+//    /**
+//     * Test of hashCode method, of class TimeZoneAttributeDescription.
+//     */
+//    @Test
+//    public void testHashCode() {
+//        int id = 0;
+//        int expResult = 0;
+//        int result = instance.hashCode(id);
+//        assertEquals(result, expResult);
+//    }
 }

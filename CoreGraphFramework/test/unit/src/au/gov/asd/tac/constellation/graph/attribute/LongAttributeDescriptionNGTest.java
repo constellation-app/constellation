@@ -32,11 +32,11 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class IntegerAttributeDescriptionNGTest {
+public class LongAttributeDescriptionNGTest {
 
-    IntegerAttributeDescription instance;
+    LongAttributeDescription instance;
 
-    public IntegerAttributeDescriptionNGTest() {
+    public LongAttributeDescriptionNGTest() {
     }
 
     @BeforeClass
@@ -49,7 +49,7 @@ public class IntegerAttributeDescriptionNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        instance = new IntegerAttributeDescription();
+        instance = new LongAttributeDescription();
         instance.setCapacity(1);
     }
 
@@ -58,47 +58,47 @@ public class IntegerAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of getName method, of class IntegerAttributeDescription.
+     * Test of getName method, of class LongAttributeDescription.
      */
     @Test
     public void testGetName() {
-        String expResult = "integer";
+        String expResult = "long";
         String result = instance.getName();
         assertEquals(result, expResult);
     }
 
     /**
-     * Test of getNativeClass method, of class IntegerAttributeDescription.
+     * Test of getNativeClass method, of class LongAttributeDescription.
      */
     @Test
     public void testGetNativeClass() {
-        Class expResult = int.class;
+        Class expResult = long.class;
         Class result = instance.getNativeClass();
         assertEquals(result, expResult);
     }
 
     /**
-     * Test of getNativeType method, of class IntegerAttributeDescription.
+     * Test of getNativeType method, of class LongAttributeDescription.
      */
     @Test
     public void testGetNativeType() {
-        NativeAttributeType expResult = NativeAttributeType.INT;
+        NativeAttributeType expResult = NativeAttributeType.LONG;
         NativeAttributeType result = instance.getNativeType();
         assertEquals(result, expResult);
     }
 
     /**
-     * Test of getDefault method, of class IntegerAttributeDescription.
+     * Test of getDefault method, of class LongAttributeDescription.
      */
     @Test
     public void testGetDefault() {
-        Object expResult = (int) 0;
+        Object expResult = (long) 0;
         Object result = instance.getDefault();
         assertEquals(result, expResult);
     }
 
     /**
-     * Test of setDefault method, of class IntegerAttributeDescription.
+     * Test of setDefault method, of class LongAttributeDescription.
      */
     @Test
     public void testSetDefault() {
@@ -107,7 +107,7 @@ public class IntegerAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of getCapacity method, of class IntegerAttributeDescription.
+     * Test of getCapacity method, of class LongAttributeDescription.
      */
     @Test
     public void testGetCapacity() {
@@ -117,7 +117,7 @@ public class IntegerAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of setCapacity method, of class IntegerAttributeDescription.
+     * Test of setCapacity method, of class LongAttributeDescription.
      */
     @Test
     public void testSetCapacity() {
@@ -126,7 +126,7 @@ public class IntegerAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of getByte method, of class IntegerAttributeDescription.
+     * Test of getByte method, of class LongAttributeDescription.
      */
     @Test
     public void testGetByte() {
@@ -137,7 +137,7 @@ public class IntegerAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of setByte method, of class IntegerAttributeDescription.
+     * Test of setByte method, of class LongAttributeDescription.
      */
     @Test
     public void testSetByte() {
@@ -147,7 +147,7 @@ public class IntegerAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of getShort method, of class IntegerAttributeDescription.
+     * Test of getShort method, of class LongAttributeDescription.
      */
     @Test
     public void testGetShort() {
@@ -158,7 +158,7 @@ public class IntegerAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of setShort method, of class IntegerAttributeDescription.
+     * Test of setShort method, of class LongAttributeDescription.
      */
     @Test
     public void testSetShort() {
@@ -168,7 +168,7 @@ public class IntegerAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of getInt method, of class IntegerAttributeDescription.
+     * Test of getInt method, of class LongAttributeDescription.
      */
     @Test
     public void testGetInt() {
@@ -179,7 +179,7 @@ public class IntegerAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of setInt method, of class IntegerAttributeDescription.
+     * Test of setInt method, of class LongAttributeDescription.
      */
     @Test
     public void testSetInt() {
@@ -189,7 +189,7 @@ public class IntegerAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of getLong method, of class IntegerAttributeDescription.
+     * Test of getLong method, of class LongAttributeDescription.
      */
     @Test
     public void testGetLong() {
@@ -200,7 +200,7 @@ public class IntegerAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of setLong method, of class IntegerAttributeDescription.
+     * Test of setLong method, of class LongAttributeDescription.
      */
     @Test
     public void testSetLong() {
@@ -210,7 +210,7 @@ public class IntegerAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of getFloat method, of class IntegerAttributeDescription.
+     * Test of getFloat method, of class LongAttributeDescription.
      */
     @Test
     public void testGetFloat() {
@@ -221,7 +221,7 @@ public class IntegerAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of setFloat method, of class IntegerAttributeDescription.
+     * Test of setFloat method, of class LongAttributeDescription.
      */
     @Test
     public void testSetFloat() {
@@ -231,7 +231,7 @@ public class IntegerAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of getDouble method, of class IntegerAttributeDescription.
+     * Test of getDouble method, of class LongAttributeDescription.
      */
     @Test
     public void testGetDouble() {
@@ -242,7 +242,7 @@ public class IntegerAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of setDouble method, of class IntegerAttributeDescription.
+     * Test of setDouble method, of class LongAttributeDescription.
      */
     @Test
     public void testSetDouble() {
@@ -252,7 +252,7 @@ public class IntegerAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of getBoolean method, of class IntegerAttributeDescription.
+     * Test of getBoolean method, of class LongAttributeDescription.
      */
     @Test
     public void testGetBoolean() {
@@ -263,7 +263,7 @@ public class IntegerAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of setBoolean method, of class IntegerAttributeDescription.
+     * Test of setBoolean method, of class LongAttributeDescription.
      */
     @Test
     public void testSetBoolean() {
@@ -273,7 +273,7 @@ public class IntegerAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of getChar method, of class IntegerAttributeDescription.
+     * Test of getChar method, of class LongAttributeDescription.
      */
     @Test
     public void testGetChar() {
@@ -284,7 +284,7 @@ public class IntegerAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of setChar method, of class IntegerAttributeDescription.
+     * Test of setChar method, of class LongAttributeDescription.
      */
     @Test
     public void testSetChar() {
@@ -294,7 +294,7 @@ public class IntegerAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of getString method, of class IntegerAttributeDescription.
+     * Test of getString method, of class LongAttributeDescription.
      */
     @Test
     public void testGetString() {
@@ -305,7 +305,7 @@ public class IntegerAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of setString method, of class IntegerAttributeDescription.
+     * Test of setString method, of class LongAttributeDescription.
      */
     @Test
     public void testSetString() {
@@ -315,7 +315,7 @@ public class IntegerAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of acceptsString method, of class IntegerAttributeDescription.
+     * Test of acceptsString method, of class LongAttributeDescription.
      */
     @Test
     public void testAcceptsString() {
@@ -326,18 +326,18 @@ public class IntegerAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of getObject method, of class IntegerAttributeDescription.
+     * Test of getObject method, of class LongAttributeDescription.
      */
     @Test
     public void testGetObject() {
         int id = 0;
-        Object expResult = (int) 0;
+        Object expResult = (long) 0;
         Object result = instance.getObject(id);
         assertEquals(result, expResult);
     }
 
     /**
-     * Test of setObject method, of class IntegerAttributeDescription.
+     * Test of setObject method, of class LongAttributeDescription.
      */
     @Test
     public void testSetObject() {
@@ -347,7 +347,7 @@ public class IntegerAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of isClear method, of class IntegerAttributeDescription.
+     * Test of isClear method, of class LongAttributeDescription.
      */
     @Test
     public void testIsClear() {
@@ -358,7 +358,7 @@ public class IntegerAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of clear method, of class IntegerAttributeDescription.
+     * Test of clear method, of class LongAttributeDescription.
      */
     @Test
     public void testClear() {
@@ -367,18 +367,18 @@ public class IntegerAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of copy method, of class IntegerAttributeDescription.
+     * Test of copy method, of class LongAttributeDescription.
      */
     @Test
     public void testCopy() {
         GraphReadMethods graph = new StoreGraph();
         AttributeDescription expResult = instance;
         AttributeDescription result = instance.copy(graph);
-        assertEquals(result.getInt(0), expResult.getInt(0));
+        assertEquals(result.getLong(0), expResult.getLong(0));
     }
 
     /**
-     * Test of hashCode method, of class IntegerAttributeDescription.
+     * Test of hashCode method, of class LongAttributeDescription.
      */
     @Test
     public void testHashCode() {
@@ -389,7 +389,7 @@ public class IntegerAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of equals method, of class IntegerAttributeDescription.
+     * Test of equals method, of class LongAttributeDescription.
      */
     @Test
     public void testEquals() {
@@ -401,7 +401,7 @@ public class IntegerAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of save method, of class IntegerAttributeDescription.
+     * Test of save method, of class LongAttributeDescription.
      */
     @Test
     public void testSave() {
@@ -411,7 +411,7 @@ public class IntegerAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of restore method, of class IntegerAttributeDescription.
+     * Test of restore method, of class LongAttributeDescription.
      */
     @Test
     public void testRestore() {
@@ -421,21 +421,21 @@ public class IntegerAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of saveData method, of class IntegerAttributeDescription.
+     * Test of saveData method, of class LongAttributeDescription.
      */
     @Test
     public void testSaveData() {
-        Object expResult = new int[1];
+        Object expResult = new long[1];
         Object result = instance.saveData();
         assertEquals(result, expResult);
     }
 
     /**
-     * Test of restoreData method, of class IntegerAttributeDescription.
+     * Test of restoreData method, of class LongAttributeDescription.
      */
     @Test
     public void testRestoreData() {
-        Object savedData = new int[1];
+        Object savedData = new long[1];
         instance.restoreData(savedData);
     }
 

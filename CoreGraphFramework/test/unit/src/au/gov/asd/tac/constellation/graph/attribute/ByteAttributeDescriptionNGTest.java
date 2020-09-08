@@ -406,7 +406,7 @@ public class ByteAttributeDescriptionNGTest {
     @Test
     public void testSave() {
         int id = 0;
-        ParameterWriteAccess access =new MultiValueStore();
+        ParameterWriteAccess access = new MultiValueStore();
         instance.save(id, access);
     }
 

@@ -26,11 +26,11 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class DoubleObjectAttributeDescriptionNGTest {
+public class LongObjectAttributeDescriptionNGTest {
 
-    DoubleObjectAttributeDescription instance;
+    LongObjectAttributeDescription instance;
 
-    public DoubleObjectAttributeDescriptionNGTest() {
+    public LongObjectAttributeDescriptionNGTest() {
     }
 
     @BeforeClass
@@ -43,7 +43,7 @@ public class DoubleObjectAttributeDescriptionNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        instance = new DoubleObjectAttributeDescription();
+        instance = new LongObjectAttributeDescription();
         instance.setCapacity(1);
     }
 
@@ -53,30 +53,30 @@ public class DoubleObjectAttributeDescriptionNGTest {
 
     /**
      * Test of convertFromObject method, of class
-     * DoubleObjectAttributeDescription.
+     * LongObjectAttributeDescription.
      */
     @Test
     public void testConvertFromObject() {
         Object object = null;
-        Double expResult = null;
-        Double result = instance.convertFromObject(object);
+        Long expResult = null;
+        Long result = instance.convertFromObject(object);
         assertEquals(result, expResult);
     }
 
     /**
      * Test of convertFromString method, of class
-     * DoubleObjectAttributeDescription.
+     * LongObjectAttributeDescription.
      */
     @Test
     public void testConvertFromString() {
         String string = "";
-        Double expResult = null;
-        Double result = instance.convertFromString(string);
+        Long expResult = null;
+        Long result = instance.convertFromString(string);
         assertEquals(result, expResult);
     }
 
     /**
-     * Test of getByte method, of class DoubleObjectAttributeDescription.
+     * Test of getByte method, of class LongObjectAttributeDescription.
      */
     @Test
     public void testGetByte() {
@@ -87,7 +87,7 @@ public class DoubleObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of setByte method, of class DoubleObjectAttributeDescription.
+     * Test of setByte method, of class LongObjectAttributeDescription.
      */
     @Test
     public void testSetByte() {
@@ -97,7 +97,7 @@ public class DoubleObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of getShort method, of class DoubleObjectAttributeDescription.
+     * Test of getShort method, of class LongObjectAttributeDescription.
      */
     @Test
     public void testGetShort() {
@@ -108,7 +108,7 @@ public class DoubleObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of setShort method, of class DoubleObjectAttributeDescription.
+     * Test of setShort method, of class LongObjectAttributeDescription.
      */
     @Test
     public void testSetShort() {
@@ -118,7 +118,7 @@ public class DoubleObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of getInt method, of class DoubleObjectAttributeDescription.
+     * Test of getInt method, of class LongObjectAttributeDescription.
      */
     @Test
     public void testGetInt() {
@@ -129,7 +129,7 @@ public class DoubleObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of setInt method, of class DoubleObjectAttributeDescription.
+     * Test of setInt method, of class LongObjectAttributeDescription.
      */
     @Test
     public void testSetInt() {
@@ -139,7 +139,7 @@ public class DoubleObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of getLong method, of class DoubleObjectAttributeDescription.
+     * Test of getLong method, of class LongObjectAttributeDescription.
      */
     @Test
     public void testGetLong() {
@@ -150,7 +150,7 @@ public class DoubleObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of setLong method, of class DoubleObjectAttributeDescription.
+     * Test of setLong method, of class LongObjectAttributeDescription.
      */
     @Test
     public void testSetLong() {
@@ -160,7 +160,7 @@ public class DoubleObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of getFloat method, of class DoubleObjectAttributeDescription.
+     * Test of getFloat method, of class LongObjectAttributeDescription.
      */
     @Test
     public void testGetFloat() {
@@ -171,7 +171,7 @@ public class DoubleObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of setFloat method, of class DoubleObjectAttributeDescription.
+     * Test of setFloat method, of class LongObjectAttributeDescription.
      */
     @Test
     public void testSetFloat() {
@@ -181,7 +181,7 @@ public class DoubleObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of getDouble method, of class DoubleObjectAttributeDescription.
+     * Test of getDouble method, of class LongObjectAttributeDescription.
      */
     @Test
     public void testGetDouble() {
@@ -192,7 +192,7 @@ public class DoubleObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of setDouble method, of class DoubleObjectAttributeDescription.
+     * Test of setDouble method, of class LongObjectAttributeDescription.
      */
     @Test
     public void testSetDouble() {
@@ -202,7 +202,7 @@ public class DoubleObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of getBoolean method, of class DoubleObjectAttributeDescription.
+     * Test of getBoolean method, of class LongObjectAttributeDescription.
      */
     @Test
     public void testGetBoolean() {
@@ -213,7 +213,7 @@ public class DoubleObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of setBoolean method, of class DoubleObjectAttributeDescription.
+     * Test of setBoolean method, of class LongObjectAttributeDescription.
      */
     @Test
     public void testSetBoolean() {
@@ -223,7 +223,7 @@ public class DoubleObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of getChar method, of class DoubleObjectAttributeDescription.
+     * Test of getChar method, of class LongObjectAttributeDescription.
      */
     @Test
     public void testGetChar() {
@@ -234,7 +234,7 @@ public class DoubleObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of setChar method, of class DoubleObjectAttributeDescription.
+     * Test of setChar method, of class LongObjectAttributeDescription.
      */
     @Test
     public void testSetChar() {
@@ -244,7 +244,7 @@ public class DoubleObjectAttributeDescriptionNGTest {
     }
 
 //    /**
-//     * Test of hashCode method, of class DoubleObjectAttributeDescription.
+//     * Test of hashCode method, of class LongObjectAttributeDescription.
 //     */
 //    @Test
 //    public void testHashCode() {

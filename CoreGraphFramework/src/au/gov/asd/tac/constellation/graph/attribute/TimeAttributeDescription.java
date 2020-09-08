@@ -45,7 +45,7 @@ public final class TimeAttributeDescription extends AbstractAttributeDescription
     public static final int ATTRIBUTE_VERSION = 1;
     public static final Class<Integer> NATIVE_CLASS = Integer.class;
     public static final NativeAttributeType NATIVE_TYPE = NativeAttributeType.INT;
-    public static final int DEFAULT_VALUE = Integer.MIN_VALUE;
+    public static final int DEFAULT_VALUE = 0;
 
     private int[] data = new int[0];
     private int defaultValue = DEFAULT_VALUE;

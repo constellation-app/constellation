@@ -52,7 +52,8 @@ public class ByteObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of convertFromObject method, of class ByteObjectAttributeDescription.
+     * Test of convertFromObject method, of class
+     * ByteObjectAttributeDescription.
      */
     @Test
     public void testConvertFromObject() {
@@ -63,7 +64,8 @@ public class ByteObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of convertFromString method, of class ByteObjectAttributeDescription.
+     * Test of convertFromString method, of class
+     * ByteObjectAttributeDescription.
      */
     @Test
     public void testConvertFromString() {
@@ -230,5 +232,4 @@ public class ByteObjectAttributeDescriptionNGTest {
 //        int result = instance.hashCode(id);
 //        assertEquals(result, expResult);
 //    }
-
 }

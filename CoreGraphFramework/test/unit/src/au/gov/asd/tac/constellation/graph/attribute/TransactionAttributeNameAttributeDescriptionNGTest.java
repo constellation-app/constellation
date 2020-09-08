@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.graph.attribute;
 
-import java.net.URI;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -27,11 +26,9 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class HyperlinkAttributeDescriptionNGTest {
+public class TransactionAttributeNameAttributeDescriptionNGTest {
 
-    HyperlinkAttributeDescription instance;
-
-    public HyperlinkAttributeDescriptionNGTest() {
+    public TransactionAttributeNameAttributeDescriptionNGTest() {
     }
 
     @BeforeClass
@@ -44,8 +41,6 @@ public class HyperlinkAttributeDescriptionNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        instance = new HyperlinkAttributeDescription();
-        instance.setCapacity(1);
     }
 
     @AfterMethod
@@ -53,24 +48,15 @@ public class HyperlinkAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of convertFromObject method, of class HyperlinkAttributeDescription.
-     */
-    @Test
-    public void testConvertFromObject() {
-        Object object = null;
-        URI expResult = null;
-        URI result = instance.convertFromObject(object);
-        assertEquals(result, expResult);
-    }
-
-    /**
-     * Test of convertFromString method, of class HyperlinkAttributeDescription.
+     * Test of convertFromString method, of class
+     * TransactionAttributeNameAttributeDescription.
      */
     @Test
     public void testConvertFromString() {
         String string = "";
-        URI expResult = null;
-        URI result = instance.convertFromString(string);
+        TransactionAttributeNameAttributeDescription instance = new TransactionAttributeNameAttributeDescription();
+        String expResult = "";
+        String result = instance.convertFromString(string);
         assertEquals(result, expResult);
     }
 
