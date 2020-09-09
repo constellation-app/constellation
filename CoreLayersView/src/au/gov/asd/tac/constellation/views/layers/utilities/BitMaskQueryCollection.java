@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.layers.utilities;
 
-import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
@@ -33,44 +32,71 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class BitMaskQueryCollection {
 
-    private static final Logger LOGGER = Logger.getLogger(BitMaskQueryCollection.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(BitMaskQueryCollection.class.getName());
 
-    // layer query still gets cleared when selecting.. - maybe null off by one index?
-    // overrides bitmasks on some elements.
-    // concurrent mod on active queries without the future
-    // query can now be null - to handle layers without queries
-    // deselect all queries doesn't work
-    // avoid default layer - placeholder for show all elements?
-    // unable to find assign when querying Label = 's';
-    // Added getQueriesCount method
-    private final List<BitMaskQuery> queries;
+  // layer query still gets cleared when selecting.. - maybe null off by one index?
+  // overrides bitmasks on some elements.
+  // concurrent mod on active queries without the future
+  // query can now be null - to handle layers without queries
+  // deselect all queries doesn't work
+  // avoid default layer - placeholder for show all elements?
+  // unable to find assign when querying Label = 's';
+  // Added getQueriesCount method
+  private final List<BitMaskQuery> queries;
+    private final GraphElementType elementType;
+
+    private final BitMaskQuery[] queries = new BitMaskQuery[64];
 
     private final IntValue index = new IntValue();
 
     private final List<BitMaskQuery> activeQueries = new ArrayList<>();
     private final List<BitMaskQuery> updateQueries = new ArrayList<>();
 
-    public BitMaskQueryCollection(List<BitMaskQuery> queries) {
-        this.queries = queries;
+    private long activeQueriesBitMask = 0;
+
+    public BitMaskQueryCollection(GraphElementType elementType) {
+        this.elementType = elementType;
     }
 
-    public void setActiveQueries(long activeQueryBitMask) {
+    public void setQuery(String query, int bitMaskIndex) {
+        queries[bitMaskIndex] = new BitMaskQuery(new Query(elementType, query), bitMaskIndex);
+    }
+
+    public void setActiveQueries(long activeQueriesBitMask) {
+        this.activeQueriesBitMask = activeQueriesBitMask;
         activeQueries.clear();
         for (BitMaskQuery bitMaskQuery : queries) {
-            boolean result = bitMaskQuery.isActive(activeQueryBitMask);
-            LOGGER.log(Level.WARNING, bitMaskQuery.getDescription() + " :" + bitMaskQuery.getIndex() + "active mask = " + activeQueryBitMask + (result ? "Success" : "fail"));
-            if (result) {
+            if (bitMaskQuery != null && bitMaskQuery.isActive(activeQueriesBitMask)) {
+/**
+public BitMaskQueryCollection(List<BitMaskQuery> queries) {
+    this.queries = queries;
+}
+
+public void setActiveQueries(long activeQueryBitMask) {
+    activeQueries.clear();
+    for (BitMaskQuery bitMaskQuery : queries) {
+        boolean result = bitMaskQuery.isActive(activeQueryBitMask);
+        LOGGER.log(Level.WARNING, bitMaskQuery.getDescription() + " :" + bitMaskQuery.getIndex() + "active mask = " + activeQueryBitMask + (result ? "Success" : "fail"));
+        if (result) {
+*/
+
+// here to uncomment
                 activeQueries.add(bitMaskQuery);
             }
         }
     }
-
+// added
     public int getQueriesCount() {
         return queries.size();
     }
 
     public List<BitMaskQuery> getQueries() {
         return queries;
+    }
+    // end added
+
+    public long getActiveQueriesBitMask() {
+        return activeQueriesBitMask;
     }
 
     public boolean update(GraphReadMethods graph) {
@@ -90,13 +116,13 @@ public class BitMaskQueryCollection {
         return bitMask;
     }
 
-    public void updateBitMasks(GraphWriteMethods graph, int bitMaskAttributeId, int visibleAttributeId, GraphElementType elementType, long activeQueriesBitMask) {
-        setActiveQueries(activeQueriesBitMask);
+    public void updateBitMasks(GraphWriteMethods graph, int bitMaskAttributeId, int visibleAttributeId) {
         if (update(graph)) {
             final int elementCount = elementType.getElementCount(graph);
             for (int position = 0; position < elementCount; position++) {
-                index.writeInt(position);
                 final int elementId = elementType.getElement(graph, position);
+
+                /**
                 if (bitMaskAttributeId == Graph.NOT_FOUND) {
                     final long bitMask = 0;
                     final long updatedBitMask = updateBitMask(bitMask);
@@ -107,6 +133,14 @@ public class BitMaskQueryCollection {
                     //graph.setLongValue(bitMaskAttributeId, elementId, updatedBitMask); // not needed to re-set the bit value on the node ?
                     graph.setFloatValue(visibleAttributeId, elementId, (updatedBitMask & activeQueriesBitMask) == 0 ? 0.0f : 1.0f);
                 }
+                */
+
+
+                index.writeInt(elementId);
+                final long bitMask = graph.getLongValue(bitMaskAttributeId, elementId);
+                final long updatedBitMask = updateBitMask(bitMask);
+                //graph.setLongValue(bitMaskAttributeId, elementId, updatedBitMask); // not sure why setting this here
+                graph.setFloatValue(visibleAttributeId, elementId, (updatedBitMask & activeQueriesBitMask) == 0 ? 0.0f : 1.0f);
             }
         }
     }

@@ -17,15 +17,16 @@ package au.gov.asd.tac.constellation.views.layers.utilities;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.LayersConcept;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import org.openide.nodes.Node;
@@ -45,16 +46,16 @@ public class QueryManager implements LookupListener, GraphChangeListener {
     private final Lookup.Result<GraphNode> result;
     private GraphNode graphNode = null;
 
-    private final BitMaskQueryCollection bitMasks = new BitMaskQueryCollection(
-            Arrays.asList( //new BitMaskQuery(new Query(GraphElementType.VERTEX, "Score > '5'"), 0),
-                    //new BitMaskQuery(new Query(GraphElementType.VERTEX, "Count > '50'"), 1)
-                    )
-    );
+    private final BitMaskQueryCollection bitMasks = new BitMaskQueryCollection(GraphElementType.VERTEX);
 
     public QueryManager() {
         result = Utilities.actionsGlobalContext().lookupResult(GraphNode.class);
         result.addLookupListener(this);
         resultChanged(null);
+
+        bitMasks.setQuery("Score > '5'", 0);
+        bitMasks.setQuery("Count > '50'", 1);
+        bitMasks.setActiveQueries(0xFFFFFFFFFFFFFFFFL);
     }
 
     @Override
@@ -98,10 +99,10 @@ public class QueryManager implements LookupListener, GraphChangeListener {
 
     private static class UpdateQueryPlugin extends SimpleEditPlugin {
 
-        private final BitMaskQueryCollection bitMasks;
+        private final BitMaskQueryCollection bitMaskQueries;
 
-        public UpdateQueryPlugin(BitMaskQueryCollection bitMasks) {
-            this.bitMasks = bitMasks;
+        public UpdateQueryPlugin(BitMaskQueryCollection bitMaskQueries) {
+            this.bitMaskQueries = bitMaskQueries;
         }
 
         @Override
@@ -111,9 +112,9 @@ public class QueryManager implements LookupListener, GraphChangeListener {
 
         @Override
         protected void edit(GraphWriteMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
-            final int bitMaskAttributeId = graph.getAttribute(GraphElementType.VERTEX, "bitmask");
-            final int visibleMaskAttributeId = graph.getAttribute(GraphElementType.VERTEX, "visibility");
-            bitMasks.updateBitMasks(graph, bitMaskAttributeId, visibleMaskAttributeId, GraphElementType.VERTEX, 0xFFFFFFFFFFFFFFFFL);
+            final int bitMaskAttributeId = LayersConcept.VertexAttribute.LAYER_MASK.ensure(graph);
+            final int visibleMaskAttributeId = VisualConcept.VertexAttribute.VISIBILITY.ensure(graph);
+            bitMaskQueries.updateBitMasks(graph, bitMaskAttributeId, visibleMaskAttributeId);
         }
     }
 }
