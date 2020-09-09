@@ -122,9 +122,8 @@ public class GraphObjectUtilities {
     }
 
     private static boolean isFileNameDuplicateInMemory(final String name, final FileObject root) {
-
         final String tempName = FilenameUtils.getBaseName(name);
         final List<FileObject> files = Arrays.stream(root.getChildren()).filter(file -> file.getName().equals(tempName)).collect(Collectors.toList());
-        return files.isEmpty();
+        return !files.isEmpty();
     }
 }
