@@ -46,7 +46,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author sirius
  */
 @ServiceProvider(service = AttributeDescription.class)
-public final class LongAttributeDescription extends AbstractAttributeDescription<LongValue> {
+public final class LongAttributeDescription extends AbstractAttributeDescription {
 
     public static final String ATTRIBUTE_NAME = "long";
     public static final Class<Long> NATIVE_CLASS = long.class;
@@ -312,6 +312,7 @@ public final class LongAttributeDescription extends AbstractAttributeDescription
             public long readLong() {
                 return data[indexReadable.readInt()];
             }
+
             @Override
             public void writeLong(long value) {
                 graph.setLongValue(attribute, indexReadable.readInt(), value);

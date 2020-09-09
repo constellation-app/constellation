@@ -71,9 +71,9 @@ public class ExpressionParser {
 
             for (int i = 0; i < combinations.length; i += 2) {
                 if (combinations[i] == null) {
-                    this.combinations.put(this, combinations[i+1]);
+                    this.combinations.put(this, combinations[i + 1]);
                 } else {
-                    this.combinations.put(combinations[i], combinations[i+1]);
+                    this.combinations.put(combinations[i], combinations[i + 1]);
                 }
             }
         }
@@ -87,6 +87,7 @@ public class ExpressionParser {
         }
 
         private static final Map<Character, Operator> OPERATOR_TOKENS = new HashMap<>();
+
         static {
             for (Operator operator : Operator.values()) {
                 if (operator.token != NO_TOKEN) {
@@ -97,6 +98,7 @@ public class ExpressionParser {
     }
 
     private static final Map<String, Operator> WORD_OPERATORS = new HashMap<>();
+
     static {
         WORD_OPERATORS.put("contains", Operator.CONTAINS);
         WORD_OPERATORS.put("startswith", Operator.STARTS_WITH);
@@ -108,6 +110,7 @@ public class ExpressionParser {
     }
 
     public static abstract class Expression {
+
         private SequenceExpression parent;
 
         private Expression(SequenceExpression parent) {
@@ -129,6 +132,7 @@ public class ExpressionParser {
     }
 
     public static class VariableExpression extends Expression {
+
         private final String content;
 
         private VariableExpression(SequenceExpression parent, char[] content, int contentLength) {
@@ -147,6 +151,7 @@ public class ExpressionParser {
     }
 
     public static class StringExpression extends Expression {
+
         private final String content;
 
         private StringExpression(SequenceExpression parent, char[] content, int contentLength) {
@@ -165,6 +170,7 @@ public class ExpressionParser {
     }
 
     public static class OperatorExpression extends Expression {
+
         private Operator operator;
 
         private OperatorExpression(SequenceExpression parent, Operator operator) {
@@ -183,6 +189,7 @@ public class ExpressionParser {
     }
 
     public static class SequenceExpression extends Expression {
+
         private final List<Expression> children = new ArrayList<>();
         private final List<Expression> unmodifiableChildren = Collections.unmodifiableList(children);
 
@@ -197,7 +204,7 @@ public class ExpressionParser {
         private void addChild(Expression expression) {
 
             if (expression instanceof SequenceExpression) {
-                final var tokenSequence = (SequenceExpression)expression;
+                final var tokenSequence = (SequenceExpression) expression;
                 switch (tokenSequence.children.size()) {
                     case 0:
                         return;
@@ -214,8 +221,8 @@ public class ExpressionParser {
             if (expression instanceof OperatorExpression && !children.isEmpty()) {
                 final var lastChild = children.get(children.size() - 1);
                 if (lastChild instanceof OperatorExpression) {
-                    final var tokenOperator = (OperatorExpression)expression;
-                    final var lastChildOperator = (OperatorExpression)lastChild;
+                    final var tokenOperator = (OperatorExpression) expression;
+                    final var lastChildOperator = (OperatorExpression) lastChild;
                     final var combinedOperator = tokenOperator.operator.combinations.get(lastChildOperator.operator);
                     if (combinedOperator != null) {
                         children.remove(children.size() - 1);
@@ -239,7 +246,7 @@ public class ExpressionParser {
                     }
                 } else {
                     if (expression instanceof VariableExpression) {
-                        final var tokenVariable = (VariableExpression)expression;
+                        final var tokenVariable = (VariableExpression) expression;
                         final var wordOperator = WORD_OPERATORS.get(tokenVariable.content.toLowerCase());
                         if (wordOperator != null) {
                             children.add(new OperatorExpression(this, wordOperator));
@@ -260,7 +267,7 @@ public class ExpressionParser {
                 var lowestPrecedence = Integer.MAX_VALUE;
                 var lowestIndex = -1;
                 for (int i = 1; i < children.size(); i += 2) {
-                    final int precedence = ((OperatorExpression)children.get(i)).getOperator().getPrecedence();
+                    final int precedence = ((OperatorExpression) children.get(i)).getOperator().getPrecedence();
                     if (precedence < lowestPrecedence) {
                         lowestPrecedence = precedence;
                         lowestIndex = i;
@@ -289,7 +296,7 @@ public class ExpressionParser {
             for (int i = children.size() - 1; i >= 0; i--) {
                 final var child = children.get(i);
                 if (child instanceof SequenceExpression) {
-                    ((SequenceExpression)child).normalize();
+                    ((SequenceExpression) child).normalize();
                 }
             }
         }
@@ -428,10 +435,11 @@ public class ExpressionParser {
         if (rootExpression.children.size() == 1) {
             final var onlyChild = rootExpression.children.get(0);
             if (onlyChild instanceof SequenceExpression) {
-                rootExpression = (SequenceExpression)onlyChild;
+                rootExpression = (SequenceExpression) onlyChild;
             }
         }
-        if (currentExpression.children.get(currentExpression.children.size() - 1) instanceof OperatorExpression) {
+        // TODO: errors as indexoutofbounds when it is 0.
+        if (!currentExpression.children.isEmpty() && currentExpression.children.get(currentExpression.children.size() - 1) instanceof OperatorExpression) {
             throw new IllegalArgumentException("An expression cannot end with an operator");
         }
 

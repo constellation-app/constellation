@@ -23,7 +23,6 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.visual.contextmenu.ContextMenuProvider;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
-import au.gov.asd.tac.constellation.views.layers.layer.LayerDescription;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewState;
 import java.util.ArrayList;
@@ -57,11 +56,11 @@ public class LayersAddContextMenu implements ContextMenuProvider {
             final List<String> currentLayers = new ArrayList<>();
             if (stateAttributeId != GraphConstants.NOT_FOUND) {
                 final LayersViewState currentState = graph.getObjectValue(stateAttributeId, 0);
-                for (final LayerDescription layer : currentState.getLayers()) {
-                    if (layer.getLayerIndex() > 1) {
-                        final String description = StringUtils.isBlank(layer.getLayerDescription())
-                                ? NO_LAYER_TEXT : layer.getLayerDescription();
-                        currentLayers.add(String.valueOf(layer.getLayerIndex()) + " - " + description);
+                for (final BitMaskQuery layer : currentState.getLayers()) {
+                    if (layer.getIndex() > 1) {
+                        final String description = StringUtils.isBlank(layer.getDescription())
+                                ? NO_LAYER_TEXT : layer.getDescription();
+                        currentLayers.add(String.valueOf(layer.getIndex()) + " - " + description);
                     }
                 }
             } else {

@@ -45,7 +45,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author cygnus_x-1
  */
 @ServiceProvider(service = AttributeDescription.class)
-public class DoubleAttributeDescription extends AbstractAttributeDescription<DoubleValue> {
+public class DoubleAttributeDescription extends AbstractAttributeDescription {
 
     public static final String ATTRIBUTE_NAME = "double";
     public static final Class<Double> NATIVE_CLASS = double.class;
@@ -297,6 +297,7 @@ public class DoubleAttributeDescription extends AbstractAttributeDescription<Dou
             public double readDouble() {
                 return data[indexReadable.readInt()];
             }
+
             @Override
             public void writeDouble(double value) {
                 graph.setDoubleValue(attribute, indexReadable.readInt(), value);

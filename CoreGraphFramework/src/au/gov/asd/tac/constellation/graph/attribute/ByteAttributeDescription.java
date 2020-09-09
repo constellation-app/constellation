@@ -45,7 +45,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author cygnus_x-1
  */
 @ServiceProvider(service = AttributeDescription.class)
-public class ByteAttributeDescription extends AbstractAttributeDescription<ByteValue> {
+public class ByteAttributeDescription extends AbstractAttributeDescription {
 
     public static final String ATTRIBUTE_NAME = "byte";
     public static final Class<Byte> NATIVE_CLASS = byte.class;
@@ -295,6 +295,7 @@ public class ByteAttributeDescription extends AbstractAttributeDescription<ByteV
             public byte readByte() {
                 return data[indexReadable.readInt()];
             }
+
             @Override
             public void writeByte(byte value) {
                 graph.setByteValue(attribute, indexReadable.readInt(), value);

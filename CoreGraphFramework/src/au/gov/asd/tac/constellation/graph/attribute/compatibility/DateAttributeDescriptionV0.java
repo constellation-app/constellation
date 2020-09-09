@@ -55,7 +55,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @Deprecated
 @ServiceProvider(service = AttributeDescription.class)
-public final class DateAttributeDescriptionV0 extends AbstractAttributeDescription<LongValue> {
+public final class DateAttributeDescriptionV0 extends AbstractAttributeDescription {
 
     private static final Logger LOGGER = Logger.getLogger(DateAttributeDescriptionV0.class.getName());
     /**
@@ -348,6 +348,7 @@ public final class DateAttributeDescriptionV0 extends AbstractAttributeDescripti
             public long readLong() {
                 return data[indexReadable.readInt()];
             }
+
             @Override
             public void writeLong(long value) {
                 graph.setLongValue(attribute, indexReadable.readInt(), value);

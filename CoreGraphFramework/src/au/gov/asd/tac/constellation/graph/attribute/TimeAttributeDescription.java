@@ -42,7 +42,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author sirius
  */
 @ServiceProvider(service = AttributeDescription.class)
-public final class TimeAttributeDescription extends AbstractAttributeDescription<IntValue> {
+public final class TimeAttributeDescription extends AbstractAttributeDescription {
 
     public static final String ATTRIBUTE_NAME = "time";
     public static final int ATTRIBUTE_VERSION = 1;
@@ -263,6 +263,7 @@ public final class TimeAttributeDescription extends AbstractAttributeDescription
             public int readInt() {
                 return data[indexReadable.readInt()];
             }
+
             @Override
             public void writeInt(int value) {
                 graph.setIntValue(attribute, indexReadable.readInt(), value);

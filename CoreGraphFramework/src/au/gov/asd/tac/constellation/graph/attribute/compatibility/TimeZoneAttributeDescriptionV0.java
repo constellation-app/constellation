@@ -49,7 +49,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @Deprecated
 @ServiceProvider(service = AttributeDescription.class)
-public final class TimeZoneAttributeDescriptionV0 extends AbstractAttributeDescription<ObjectValue<TimeZone>> {
+public final class TimeZoneAttributeDescriptionV0 extends AbstractAttributeDescription {
 
     private static final TimeZone DEFAULT_VALUE = TimeZone.getTimeZone("UTC");
     private TimeZone[] data = new TimeZone[0];
@@ -195,6 +195,7 @@ public final class TimeZoneAttributeDescriptionV0 extends AbstractAttributeDescr
             public Object readObject() {
                 return data[indexReadable.readInt()];
             }
+
             @Override
             public void writeObject(Object value) {
                 graph.setObjectValue(attribute, indexReadable.readInt(), value);

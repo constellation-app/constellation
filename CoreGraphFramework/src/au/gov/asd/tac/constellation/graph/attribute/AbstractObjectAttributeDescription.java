@@ -33,7 +33,7 @@ import java.util.Arrays;
  * @param <T> the type of object stored by this description.
  * @author cygnus_x-1
  */
-public abstract class AbstractObjectAttributeDescription<T extends Object> extends AbstractAttributeDescription<ObjectValue<T>> {
+public abstract class AbstractObjectAttributeDescription<T extends Object> extends AbstractAttributeDescription {
 
     protected final SecureRandom random = new SecureRandom();
     protected final int nullHash = random.nextInt();
@@ -201,6 +201,7 @@ public abstract class AbstractObjectAttributeDescription<T extends Object> exten
             public Object readObject() {
                 return data[indexReadable.readInt()];
             }
+
             @Override
             public void writeObject(Object value) {
                 graph.setObjectValue(attribute, indexReadable.readInt(), value);

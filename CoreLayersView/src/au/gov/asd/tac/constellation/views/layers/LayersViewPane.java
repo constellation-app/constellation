@@ -19,8 +19,9 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.views.layers.layer.LayerDescription;
-import au.gov.asd.tac.constellation.views.layers.utilities.QueryManager;
-import au.gov.asd.tac.constellation.views.layers.utilities.SelectExpressionPlugin;
+import au.gov.asd.tac.constellation.views.layers.utilities.BitMaskQuery;
+import au.gov.asd.tac.constellation.views.layers.utilities.BitMaskQueryCollection;
+import au.gov.asd.tac.constellation.views.layers.utilities.Query;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -38,6 +39,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 
@@ -52,10 +55,9 @@ public class LayersViewPane extends BorderPane {
     private final GridPane layersGridPane;
     private final VBox layersViewPane;
     private final HBox options;
-    private final List<LayerDescription> layers;
+    //private final List<BitMaskQuery> layers;
 
-    private final QueryManager queryManager = new QueryManager();
-    
+    //private final QueryManager queryManager = new QueryManager();
     public LayersViewPane(final LayersViewController controller) {
 
         // create controller
@@ -89,17 +91,16 @@ public class LayersViewPane extends BorderPane {
         descriptionHeadingText.setMinWidth(80);
 
         // instantiate list of layers
-        layers = new ArrayList<>();
-
+        //layers = new ArrayList<>();
         // set default layers
-        setDefaultLayers();
+        this.setDefaultLayers();
 
         // create options
         final Button addButton = new Button("Add New Layer");
         addButton.setAlignment(Pos.CENTER_RIGHT);
         addButton.setOnAction(event -> {
             if (layersGridPane.getRowCount() <= 32) {
-                createLayer(layers.size() + 1, false, "", "");
+                createLayer(controller.getQueryCollection().getQueries().size() + 1, false, null, "");
                 controller.writeState();
             } else {
                 final NotifyDescriptor nd = new NotifyDescriptor.Message(
@@ -113,13 +114,12 @@ public class LayersViewPane extends BorderPane {
         final Button deselectAllButton = new Button("Deselect All Layers");
         deselectAllButton.setAlignment(Pos.CENTER_RIGHT);
         deselectAllButton.setOnAction(event -> {
-            for (final LayerDescription layer : layers) {
-                layer.setCurrentLayerVisibility(false);
-            }
-            if (this.layers.isEmpty()) {
+            controller.getQueryCollection().setVisibilityOnAll(false);
+
+            if (CollectionUtils.isEmpty(controller.getQueryCollection().getQueries())) {
                 setDefaultLayers();
             } else {
-                setLayers(List.copyOf(layers));
+                setLayers(controller.getQueryCollection().getQueries());
             }
             controller.execute();
 
@@ -132,26 +132,26 @@ public class LayersViewPane extends BorderPane {
         options.setPadding(new Insets(0, 0, 0, 10));
 
         final TextArea expressionTextArea = new TextArea();
-        
+
         final Button selectVerticesButton = new Button("Select Vertices");
         selectVerticesButton.setAlignment(Pos.CENTER_RIGHT);
         selectVerticesButton.setOnAction(event -> {
             final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-            SelectExpressionPlugin.run(activeGraph, GraphElementType.VERTEX, expressionTextArea.getText(), "selected");
+            //SelectExpressionPlugin.run(activeGraph, GraphElementType.VERTEX, expressionTextArea.getText(), "selected");
             event.consume();
         });
-        
+
         final Button selectTransactionsButton = new Button("Select Transactions");
         selectTransactionsButton.setAlignment(Pos.CENTER_RIGHT);
         selectTransactionsButton.setOnAction(event -> {
             final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-            SelectExpressionPlugin.run(activeGraph, GraphElementType.TRANSACTION, expressionTextArea.getText(), "selected");
+            //SelectExpressionPlugin.run(activeGraph, GraphElementType.TRANSACTION, expressionTextArea.getText(), "selected");
             event.consume();
         });
-        
+
         final HBox expressionHBox = new HBox(selectVerticesButton, selectTransactionsButton);
         final VBox expressionVBox = new VBox(expressionTextArea, expressionHBox);
-        
+
         // add layers grid and options to pane
         this.layersViewPane = new VBox(5, layersGridPane, options, expressionVBox);
 
@@ -180,8 +180,9 @@ public class LayersViewPane extends BorderPane {
         ((CheckBox) visibilityCheckBox).setSelected(checkBoxSelected);
         visibilityCheckBox.setOnMouseClicked(e -> {
             final Node source = (Node) e.getSource();
-            final LayerDescription layer = layers.get(GridPane.getRowIndex(source) - 1);
-            layer.setCurrentLayerVisibility(!layer.getCurrentLayerVisibility());
+            final BitMaskQuery bitMaskQuery = controller.getQueryCollection().getQueries().get(GridPane.getRowIndex(source) - 1);
+            //final LayerDescription layer = layers.get(GridPane.getRowIndex(source) - 1);
+            bitMaskQuery.setVisibility(!bitMaskQuery.getVisibility());
             controller.execute();
             controller.writeState();
         });
@@ -191,8 +192,18 @@ public class LayersViewPane extends BorderPane {
         ((TextArea) queryTextArea).setText(query);
         ((TextArea) queryTextArea).focusedProperty().addListener((observable, oldVal, newVal) -> {
             if (!newVal) {
-                final LayerDescription layer = layers.get(currentIndex - 1);
-                layer.setQueryText(((TextArea) queryTextArea).getText());
+                final BitMaskQuery bitMaskQuery = controller.getQueryCollection().getQueries().get(currentIndex - 1);
+                //final LayerDescription layer = layers.get(currentIndex - 1);
+                if (StringUtils.isBlank(((TextArea) queryTextArea).getText())) {
+                    // empty meaning no query.
+                    bitMaskQuery.setQuery(null);
+                } else {
+                    bitMaskQuery.setQuery(new Query(GraphElementType.VERTEX, ((TextArea) queryTextArea).getText()));
+                    // create query and set it.
+                    // set string
+                    //bitMaskQuery.setQueryString(((TextArea) queryTextArea).getText());
+                }
+
                 controller.writeState();
             }
         });
@@ -202,58 +213,76 @@ public class LayersViewPane extends BorderPane {
         ((TextArea) descriptionTextArea).setText(description);
         ((TextArea) descriptionTextArea).focusedProperty().addListener((observable, oldVal, newVal) -> {
             if (!newVal) {
-                final LayerDescription layer = layers.get(currentIndex - 1);
-                layer.setDescriptionText(((TextArea) descriptionTextArea).getText());
+                final BitMaskQuery bitMaskQuery = controller.getQueryCollection().getQueries().get(currentIndex - 1);
+                //final LayerDescription layer = layers.get(currentIndex - 1);
+                bitMaskQuery.setDescription(((TextArea) descriptionTextArea).getText());
                 controller.writeState();
             }
         });
 
-        if (query.equals(LayerDescription.DEFAULT_QUERY_STRING)) {
+        if (LayerDescription.DEFAULT_QUERY_STRING.equals(query)) {
             layerIdText.setDisable(true);
             ((CheckBox) visibilityCheckBox).setSelected(true);
             visibilityCheckBox.setDisable(true);
             queryTextArea.setDisable(true);
             descriptionTextArea.setDisable(true);
         }
-        layers.add(new LayerDescription(currentIndex, checkBoxSelected, query, description));
+
+        final BitMaskQuery bitMaskQuery = new BitMaskQuery(new Query(GraphElementType.VERTEX, query), currentIndex, description);
+        if (query == null) { // TODO: Redundant?
+            bitMaskQuery.setQuery(null);
+        }
+        bitMaskQuery.setVisibility(checkBoxSelected);
+        controller.getQueryCollection().add(bitMaskQuery);
+        //controller.
+        // TODO: Hardcoded vertex
+        //layers.add(new LayerDescription(currentIndex, checkBoxSelected, query, description));
         layersGridPane.addRow(currentIndex, layerIdText,
                 visibilityCheckBox, queryTextArea, descriptionTextArea);
 
         return currentIndex;
     }
 
-    public List<LayerDescription> getlayers() {
-        return Collections.unmodifiableList(layers);
+    public List<BitMaskQuery> getlayers() {
+        return Collections.unmodifiableList(controller.getQueryCollection().getQueries());
     }
 
-    public synchronized void setLayers(final List<LayerDescription> layers) {
+    public synchronized void setLayers(final List<BitMaskQuery> layers) {
+        //final CountDownLatch cd1 = new CountDownLatch(1);
         Platform.runLater(() -> {
-            this.layers.clear();
-            final List<LayerDescription> layersCopy = new ArrayList();
+
+            controller.getQueryCollection().getQueries().clear();
+            //this.layers.clear();
+            final List<BitMaskQuery> layersCopy = new ArrayList();
             layers.forEach((layer) -> {
-                layersCopy.add(new LayerDescription(layer));
+                layersCopy.add(new BitMaskQuery(layer));
             });
             updateLayers(layersCopy);
+            //cd1.countDown();
         });
+        //try {
+        //    cd1.await();
+        //} catch (InterruptedException ex) {
+        //    Exceptions.printStackTrace(ex);
+        //}
     }
 
-    private void updateLayers(List<LayerDescription> layers) {
+    private void updateLayers(List<BitMaskQuery> queries) {
         synchronized (this) {
             layersGridPane.getChildren().removeIf(node -> GridPane.getRowIndex(node) > 0);
-            for (final LayerDescription layer : layers) {
-                createLayer(layer.getLayerIndex(), layer.getCurrentLayerVisibility(),
-                        layer.getLayerQuery(), layer.getLayerDescription());
+            for (final BitMaskQuery bitMaskQuery : queries) {
+                createLayer(bitMaskQuery.getIndex(), bitMaskQuery.getVisibility(),
+                        bitMaskQuery.getQueryString(), bitMaskQuery.getDescription());
 
             }
         }
     }
 
+    /**
+     * Set the layers to the defaults.
+     */
     public synchronized void setDefaultLayers() {
-        final List<LayerDescription> defaultLayers = new ArrayList<>();
-        defaultLayers.add(new LayerDescription(1, true,
-                LayerDescription.DEFAULT_QUERY_STRING, LayerDescription.DEFAULT_QUERY_DESCRIPTION));
-        defaultLayers.add(new LayerDescription(2, false, "", ""));
-
-        setLayers(defaultLayers);
+        controller.getQueryCollection().setDefaultQueries();
+        setLayers(BitMaskQueryCollection.getDefaultQueries());
     }
 }

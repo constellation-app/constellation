@@ -16,10 +16,8 @@
 package au.gov.asd.tac.constellation.views.layers.utilities;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.LayersConcept;
-import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
@@ -27,7 +25,6 @@ import au.gov.asd.tac.constellation.views.layers.layer.LayerDescription;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
-import org.openide.util.Exceptions;
 
 public final class ValidateLayerMasks extends SimpleEditPlugin {
 
@@ -75,13 +72,14 @@ public final class ValidateLayerMasks extends SimpleEditPlugin {
             for (int j = 0; j < queries.size(); j++) {
                 // calculate bitmask for dynamic layers that are displayed
                 if (j < preferences.size() && (preferences.get(j) & 0b11) == 3 && queries.get(j) != null) {
-                    try {
-                        new SelectExpressionPlugin(GraphElementType.VERTEX, queries.get(j), j).edit(graph, interaction, parameters);
-                    } catch (InterruptedException ex) {
-                        Exceptions.printStackTrace(ex);
-                    } catch (PluginException ex) {
-                        Exceptions.printStackTrace(ex);
-                    }
+                    /**
+                     * try { new SelectExpressionPlugin(GraphElementType.VERTEX,
+                     * queries.get(j), j).edit(graph, interaction, parameters);
+                     * } catch (InterruptedException ex) {
+                     * Exceptions.printStackTrace(ex); } catch (PluginException
+                     * ex) { Exceptions.printStackTrace(ex); }
+                    *
+                     */
                 }
             }
             for (int i = 0; i < graph.getVertexCount(); i++) {
@@ -101,15 +99,16 @@ public final class ValidateLayerMasks extends SimpleEditPlugin {
             for (int j = 0; j < queries.size(); j++) {
                 // calculate bitmask for dynamic layers that are displayed
                 if (j < preferences.size() && (preferences.get(j) & 0b11) == 3 && queries.get(j) != null) {
-                    try {
-                        new SelectExpressionPlugin(GraphElementType.TRANSACTION, queries.get(j), j).edit(graph, interaction, parameters);
-                    } catch (InterruptedException ex) {
-                        Exceptions.printStackTrace(ex);
-                    } catch (PluginException ex) {
-                        Exceptions.printStackTrace(ex);
-                    }
-                    // SelectExpressionPlugin.run(activeGraph, GraphElementType.TRANSACTION, queries.get(j), j);
-
+                    /**
+                     * try { new
+                     * SelectExpressionPlugin(GraphElementType.TRANSACTION,
+                     * queries.get(j), j).edit(graph, interaction, parameters);
+                     * } catch (InterruptedException ex) {
+                     * Exceptions.printStackTrace(ex); } catch (PluginException
+                     * ex) { Exceptions.printStackTrace(ex); } //
+                     * SelectExpressionPlugin.run(activeGraph,
+                     * GraphElementType.TRANSACTION, queries.get(j), j);
+                     */
                 }
             }
             for (int i = 0; i < graph.getTransactionCount(); i++) {

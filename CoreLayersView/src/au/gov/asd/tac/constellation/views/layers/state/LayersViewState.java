@@ -17,14 +17,12 @@ package au.gov.asd.tac.constellation.views.layers.state;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.LayersConcept;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
-import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttributeUtilities;
-import au.gov.asd.tac.constellation.graph.value.expression.ExpressionParser;
-import au.gov.asd.tac.constellation.graph.value.expression.ExpressionParser.Expression;
-import au.gov.asd.tac.constellation.graph.value.expression.ExpressionParser.SequenceExpression;
-import au.gov.asd.tac.constellation.graph.value.expression.ExpressionParser.VariableExpression;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
-import au.gov.asd.tac.constellation.views.layers.layer.LayerDescription;
+import au.gov.asd.tac.constellation.views.layers.utilities.BitMaskQuery;
+import au.gov.asd.tac.constellation.views.layers.utilities.BitMaskQueryCollection;
+import au.gov.asd.tac.constellation.views.layers.utilities.Query;
 import java.util.ArrayList;
 import java.util.List;
 import org.openide.NotifyDescriptor;
@@ -36,81 +34,69 @@ import org.openide.NotifyDescriptor;
  */
 public class LayersViewState {
 
-    private final List<LayerDescription> layers;
+    private final BitMaskQueryCollection queries;
     private final List<SchemaAttribute> layerAttributes;
 
     public LayersViewState() {
-        this((List<LayerDescription>) null, (List<SchemaAttribute>) null);
+        this((List<BitMaskQuery>) null, (List<SchemaAttribute>) null, new BitMaskQueryCollection(new ArrayList<BitMaskQuery>())); // TODO: Make this pass in list of queries
     }
 
     public LayersViewState(final LayersViewState state) {
-        this(state.getLayers(), state.getLayerAttributes());
+        this(state.getLayers(), state.getLayerAttributes(), state.queries);
     }
 
-    public LayersViewState(final List<LayerDescription> layers, final List<SchemaAttribute> layerAttributes) {
-        this.layers = new ArrayList<>();
-        this.layerAttributes = new ArrayList<>();
+    public LayersViewState(final List<BitMaskQuery> layers, final List<SchemaAttribute> layerAttributes, final BitMaskQueryCollection queries) {
 
-        if (layers != null) {
-            this.layers.addAll(layers);
-        }
+        this.layerAttributes = new ArrayList<>();
+        this.queries = queries;
         if (layerAttributes != null) {
             this.layerAttributes.addAll(layerAttributes);
         }
     }
 
     public int getLayerCount() {
-        return layers.size();
+        return queries.getQueriesCount();
     }
 
-    public List<LayerDescription> getLayers() {
-        return layers;
+    public List<BitMaskQuery> getLayers() {
+        return queries.getQueries();
+    }
+
+    public BitMaskQueryCollection getQueriesCollection() {
+        return queries;
     }
 
     public List<SchemaAttribute> getLayerAttributes() {
         return layerAttributes;
     }
 
-    public void addLayer(final LayerDescription layer) {
-        layers.add(layer);
+    public void addLayer(final BitMaskQuery layer) {
+        queries.add(layer);
     }
 
     public void addLayer() {
-        if (layers.size() < 32) {
+        if (getLayerCount() < 32) {
             addLayer(false, "", "");
         } else {
             NotifyDisplayer.display("You cannot have more than 32 layers open", NotifyDescriptor.WARNING_MESSAGE);
         }
     }
 
-    public void addLayer(final boolean visibility, final String name, final String description) {
-        layers.add(new LayerDescription(layers.size() + 1, visibility, name, description));
+    public void addLayer(final boolean visibility, final String queryString, final String description) {
+        // TODO: Change signature to
+        // public void addLayer(final GraphElementType elementType, final String queryString, final int bitIndex, final String description) {
+        queries.add(new Query(GraphElementType.VERTEX, queryString), 1, description); // bitIndex, description);
     }
 
-    public void setLayers(final List<LayerDescription> layers) {
-        this.layers.clear();
-        this.layers.addAll(layers);
+    public void setLayers(final List<BitMaskQuery> layers) {
+        this.queries.setQueries(layers);
     }
 
     public void extractLayerAttributes(GraphWriteMethods graph) {
-        final List<SchemaAttribute> attributes = new ArrayList<>();
-        for (final LayerDescription layer : layers) {
+        final int graphCurrentBitMaskId = LayersConcept.GraphAttribute.LAYER_MASK_SELECTED.ensure(graph);
+        final int currentBitmask = graph.getIntValue(graphCurrentBitMaskId, 0); // TODO: Get Long value once switched to long
 
-            // continue if the layer is not enabled.
-            if (!layer.getCurrentLayerVisibility()) {
-                continue;
-            }
-
-            SequenceExpression expression = ExpressionParser.parse(layer.getLayerQuery());
-            for (final Expression exp : expression.getChildren()) {
-                if (exp instanceof VariableExpression) {
-                    attributes.add(SchemaAttributeUtilities.getAttribute(GraphElementType.VERTEX, ((VariableExpression) exp).getContent()));
-                    // TODO: Hardcoded to only get vertexes
-                }
-            }
-        }
-        attributes.removeIf(item -> item == null);
-        setLayerAttributes(attributes);
+        setLayerAttributes(queries.getListenedAttributes(currentBitmask));
     }
 
     public void setLayerAttributes(final List<SchemaAttribute> layerAttributes) {

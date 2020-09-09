@@ -47,7 +47,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author cygnus_x-1
  */
 @ServiceProvider(service = AttributeDescription.class)
-public final class BooleanAttributeDescription extends AbstractAttributeDescription<BooleanValue> {
+public final class BooleanAttributeDescription extends AbstractAttributeDescription {
 
     private final SecureRandom random = new SecureRandom();
     private final int trueHash = random.nextInt();
@@ -415,6 +415,7 @@ public final class BooleanAttributeDescription extends AbstractAttributeDescript
             public boolean readBoolean() {
                 return data[indexReadable.readInt()];
             }
+
             @Override
             public void writeBoolean(boolean value) {
                 graph.setBooleanValue(attribute, indexReadable.readInt(), value);

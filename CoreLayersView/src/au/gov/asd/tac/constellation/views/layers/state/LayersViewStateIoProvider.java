@@ -25,7 +25,9 @@ import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteWriter;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttributeUtilities;
 import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
-import au.gov.asd.tac.constellation.views.layers.layer.LayerDescription;
+import au.gov.asd.tac.constellation.views.layers.utilities.BitMaskQuery;
+import au.gov.asd.tac.constellation.views.layers.utilities.BitMaskQueryCollection;
+import au.gov.asd.tac.constellation.views.layers.utilities.Query;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -53,19 +55,21 @@ public class LayersViewStateIoProvider extends AbstractGraphIOProvider {
             final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap,
             final GraphByteReader byteReader, final ImmutableObjectCache cache) throws IOException {
         if (!jnode.isNull()) {
-            final List<LayerDescription> layerDescriptions = new ArrayList<>();
+            final List<BitMaskQuery> layerDescriptions = new ArrayList<>();
             final ArrayNode layersArray = (ArrayNode) jnode.withArray("layers");
             for (int i = 0; i < layersArray.size(); i++) {
                 if (layersArray.get(i).isNull()) {
                     layerDescriptions.add(null);
                 } else {
                     // create LayerDescription with index, visibility, query and description
-                    layerDescriptions.add(new LayerDescription(
+
+                    final BitMaskQuery query = new BitMaskQuery(new Query(GraphElementType.VERTEX, layersArray.get(i).get(2).asText()),
                             layersArray.get(i).get(0).asInt(),
-                            layersArray.get(i).get(1).asBoolean(),
-                            layersArray.get(i).get(2).asText(),
                             layersArray.get(i).get(3).asText()
-                    ));
+                    );
+                    query.setVisibility(layersArray.get(i).get(1).asBoolean());
+                    layerDescriptions.add(query);
+
                 }
             }
             final List<SchemaAttribute> layerAttributes = new ArrayList<>();
@@ -79,7 +83,7 @@ public class LayersViewStateIoProvider extends AbstractGraphIOProvider {
                     layerAttributes.add(SchemaAttributeUtilities.getAttribute(GraphElementType.TRANSACTION, layerAttributesArray.get(i).get(0).asText()));
                 }
             }
-            final LayersViewState state = new LayersViewState(layerDescriptions, layerAttributes);
+            final LayersViewState state = new LayersViewState(layerDescriptions, layerAttributes, new BitMaskQueryCollection(layerDescriptions));
             graph.setObjectValue(attributeId, elementId, state);
         }
     }
@@ -99,15 +103,15 @@ public class LayersViewStateIoProvider extends AbstractGraphIOProvider {
                 jsonGenerator.writeObjectFieldStart(attribute.getName());
                 jsonGenerator.writeArrayFieldStart("layers");
 
-                for (LayerDescription layer : state.getLayers()) {
+                for (BitMaskQuery layer : state.getLayers()) {
                     if (layer == null) {
                         jsonGenerator.writeNull();
                     } else {
-                        jsonGenerator.writeStartArray(layer.getLayerIndex());
-                        jsonGenerator.writeNumber(layer.getLayerIndex());
-                        jsonGenerator.writeBoolean(layer.getCurrentLayerVisibility());
-                        jsonGenerator.writeString(layer.getLayerQuery());
-                        jsonGenerator.writeString(layer.getLayerDescription());
+                        jsonGenerator.writeStartArray(layer.getIndex());
+                        jsonGenerator.writeNumber(layer.getIndex());
+                        jsonGenerator.writeBoolean(layer.getVisibility());
+                        jsonGenerator.writeString(layer.getQueryString());
+                        jsonGenerator.writeString(layer.getDescription());
                         jsonGenerator.writeEndArray();
                     }
                 }

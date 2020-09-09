@@ -45,7 +45,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author cygnus_x-1
  */
 @ServiceProvider(service = AttributeDescription.class)
-public final class IntegerAttributeDescription extends AbstractAttributeDescription<IntValue> {
+public final class IntegerAttributeDescription extends AbstractAttributeDescription {
 
     public static final String ATTRIBUTE_NAME = "integer";
     public static final Class<Integer> NATIVE_CLASS = int.class;
@@ -297,6 +297,7 @@ public final class IntegerAttributeDescription extends AbstractAttributeDescript
             public int readInt() {
                 return data[indexReadable.readInt()];
             }
+
             @Override
             public void writeInt(int value) {
                 graph.setIntValue(attribute, indexReadable.readInt(), value);

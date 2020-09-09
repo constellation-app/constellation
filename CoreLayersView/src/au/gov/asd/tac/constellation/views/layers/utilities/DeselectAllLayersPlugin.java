@@ -21,11 +21,9 @@ import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.views.layers.layer.LayerDescription;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewState;
-import java.util.List;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.collections.CollectionUtils;
 
 /**
  * A plugin that deselects all layers in the layers view
@@ -42,15 +40,17 @@ public class DeselectAllLayersPlugin extends SimpleEditPlugin {
         }
 
         LayersViewState currentState = graph.getObjectValue(layersViewStateAttributeId, 0);
-        final List<LayerDescription> layers = currentState.getLayers();
-        layers.forEach((layer) -> {
-            layer.setCurrentLayerVisibility(false);
-        });
+        currentState.getQueriesCollection().setVisibilityOnAll(false);
+//        final List<BitMaskQuery> layers = currentState.getLayers();
+//        layers.forEach((layer) -> {
+//            layer.setCurrentLayerVisibility(false);
+//        });
 
-        if (layers.isEmpty()) {
-            layers.add(new LayerDescription(1, true, LayerDescription.DEFAULT_QUERY_STRING, LayerDescription.DEFAULT_QUERY_DESCRIPTION));
-            layers.add(new LayerDescription(2, false, StringUtils.EMPTY, StringUtils.EMPTY));
-            currentState = new LayersViewState(layers, currentState.getLayerAttributes());
+        if (CollectionUtils.isEmpty(currentState.getQueriesCollection().getQueries())) {
+            currentState.getQueriesCollection().setDefaultQueries();
+            //layers.add(new BitMaskQuery(1, true, LayerDescription.DEFAULT_QUERY_STRING, LayerDescription.DEFAULT_QUERY_DESCRIPTION));
+            //layers.add(new BitMaskQuery(2, false, StringUtils.EMPTY, StringUtils.EMPTY));
+            currentState = new LayersViewState(currentState.getLayers(), currentState.getLayerAttributes(), currentState.getQueriesCollection());
         }
         final LayersViewState newState = new LayersViewState(currentState);
         graph.setObjectValue(layersViewStateAttributeId, 0, newState);

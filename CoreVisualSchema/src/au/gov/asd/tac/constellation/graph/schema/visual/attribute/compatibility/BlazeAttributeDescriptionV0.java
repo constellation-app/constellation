@@ -35,7 +35,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @Deprecated
 @ServiceProvider(service = AttributeDescription.class)
-public final class BlazeAttributeDescriptionV0 extends AbstractAttributeDescription<ObjectValue<BlazeV0>> {
+public final class BlazeAttributeDescriptionV0 extends AbstractAttributeDescription {
 
     public static final String ATTRIBUTE_NAME = "blaze";
     private static final BlazeV0 DEFAULT_VALUE = null;
@@ -249,6 +249,7 @@ public final class BlazeAttributeDescriptionV0 extends AbstractAttributeDescript
             public Object readObject() {
                 return data[indexReadable.readInt()];
             }
+
             @Override
             public void writeObject(Object value) {
                 graph.setObjectValue(attribute, indexReadable.readInt(), value);

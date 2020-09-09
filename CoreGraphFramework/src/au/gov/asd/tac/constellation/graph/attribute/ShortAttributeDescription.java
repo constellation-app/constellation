@@ -45,7 +45,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author cygnus_x-1
  */
 @ServiceProvider(service = AttributeDescription.class)
-public class ShortAttributeDescription extends AbstractAttributeDescription<ShortValue> {
+public class ShortAttributeDescription extends AbstractAttributeDescription {
 
     public static final String ATTRIBUTE_NAME = "short";
     public static final Class<Short> NATIVE_CLASS = short.class;
@@ -285,6 +285,7 @@ public class ShortAttributeDescription extends AbstractAttributeDescription<Shor
             public short readShort() {
                 return data[indexReadable.readInt()];
             }
+
             @Override
             public void writeShort(short value) {
                 graph.setShortValue(attribute, indexReadable.readInt(), value);

@@ -51,7 +51,7 @@ import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
  *
  * @author sirius
  */
-public interface AttributeDescription<V> extends IndexedReadable<V> {
+public interface AttributeDescription {
 
     /**
      * Sets the graph that this attribute belongs to. The framework calls this

@@ -18,10 +18,8 @@ package au.gov.asd.tac.constellation.views.layers;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.monitor.AttributeValueMonitor;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
-import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
-import au.gov.asd.tac.constellation.views.layers.utilities.ValidateLayerMasks;
 import java.util.ArrayList;
 import java.util.List;
 import org.openide.awt.ActionID;
@@ -81,7 +79,8 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
             }
 
             layersViewController.readState();
-            PluginExecution.withPlugin(new ValidateLayerMasks()).executeLater(graph);
+            layersViewController.updateQueries(graph);
+            //PluginExecution.withPlugin(new ValidateLayerMasks()).executeLater(graph);
 
             // remove all monitors before re-adding updated ones
             for (final AttributeValueMonitor monitor : valueMonitors) {
@@ -94,8 +93,9 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
             // adding change handlers for attribute changes based on current layer selection
             for (final SchemaAttribute attribute : changeListeners) {
                 valueMonitors.add(
-                        addAttributeValueChangeHandler(attribute, currentGraph -> {
-                            PluginExecution.withPlugin(new ValidateLayerMasks()).executeLater(currentGraph);
+                        addAttributeValueChangeHandler(attribute, changedGraph -> {
+                            layersViewController.updateQueries(changedGraph);
+                            //PluginExecution.withPlugin(new ValidateLayerMasks()).executeLater(currentGraph);
                         })
                 );
             }

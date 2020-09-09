@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2020 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,13 +28,13 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import org.openide.nodes.Node;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
 import org.openide.util.Utilities;
 import org.openide.windows.TopComponent;
-import org.openide.nodes.Node;
-import org.openide.util.Exceptions;
 
 /**
  *
@@ -44,20 +44,19 @@ public class QueryManager implements LookupListener, GraphChangeListener {
 
     private final Lookup.Result<GraphNode> result;
     private GraphNode graphNode = null;
-    
+
     private final BitMaskQueryCollection bitMasks = new BitMaskQueryCollection(
-        Arrays.asList(
-            new BitMaskQuery(new Query(GraphElementType.VERTEX, "Score > '5'"), 0),
-            new BitMaskQuery(new Query(GraphElementType.VERTEX, "Count > '50'"), 1)
-        )
+            Arrays.asList( //new BitMaskQuery(new Query(GraphElementType.VERTEX, "Score > '5'"), 0),
+                    //new BitMaskQuery(new Query(GraphElementType.VERTEX, "Count > '50'"), 1)
+                    )
     );
-    
+
     public QueryManager() {
         result = Utilities.actionsGlobalContext().lookupResult(GraphNode.class);
         result.addLookupListener(this);
         resultChanged(null);
     }
-    
+
     @Override
     public final void resultChanged(LookupEvent le) {
         final Node[] activatedNodes = TopComponent.getRegistry().getActivatedNodes();
@@ -68,7 +67,7 @@ public class QueryManager implements LookupListener, GraphChangeListener {
             setNode(null);
         }
     }
- 
+
     private void setNode(GraphNode graphNode) {
         if (graphNode != this.graphNode) {
             if (this.graphNode != null) {
@@ -96,7 +95,7 @@ public class QueryManager implements LookupListener, GraphChangeListener {
             }
         }
     }
-    
+
     private static class UpdateQueryPlugin extends SimpleEditPlugin {
 
         private final BitMaskQueryCollection bitMasks;
@@ -104,12 +103,12 @@ public class QueryManager implements LookupListener, GraphChangeListener {
         public UpdateQueryPlugin(BitMaskQueryCollection bitMasks) {
             this.bitMasks = bitMasks;
         }
-        
+
         @Override
         public String getName() {
             return "Update Query";
         }
-        
+
         @Override
         protected void edit(GraphWriteMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
             final int bitMaskAttributeId = graph.getAttribute(GraphElementType.VERTEX, "bitmask");

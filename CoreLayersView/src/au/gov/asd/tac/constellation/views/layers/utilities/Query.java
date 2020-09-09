@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2020 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,7 +27,6 @@ import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import org.python.google.common.base.Objects;
 
 /**
  *
@@ -36,27 +35,35 @@ import org.python.google.common.base.Objects;
 public class Query {
 
     private final GraphElementType elementType;
-    private final String queryString;
-    
+    private String queryString;
+
     private String graphId = null;
-    
+
     private long globalModificationCounter;
     private long structureModificationCounter;
     private long attributeModificationCounter;
-    
+
     private int[] attributeIds = null;
     private long[] valueModificationCounters = null;
-    
+
     public Query(GraphElementType elementType, String queryString) {
         this.elementType = elementType;
         this.queryString = queryString;
     }
-    
+
+    public String getQueryString() {
+        return queryString;
+    }
+
+    public GraphElementType getQueryElementType() {
+        return elementType;
+    }
+
     public boolean requiresUpdate(GraphReadMethods graph) {
         if (graphId == null || !graphId.equals(graph.getId())) {
             return true;
         }
-        
+
         if (globalModificationCounter != graph.getGlobalModificationCounter()) {
             if (attributeModificationCounter != graph.getAttributeModificationCounter()) {
                 return true;
@@ -64,38 +71,42 @@ public class Query {
             if (structureModificationCounter != graph.getStructureModificationCounter()) {
                 return true;
             }
-            
+
             for (int i = 0; i < attributeIds.length; i++) {
                 if (valueModificationCounters[i] != graph.getValueModificationCounter(attributeIds[i])) {
                     return true;
                 }
             }
         }
-        
+
         return false;
     }
-    
+
     public Object compile(GraphReadMethods graph, IntReadable index) {
         final SequenceExpression expression = ExpressionParser.parse(queryString);
-        
+
         final GraphVariableProvider variableProvider = new GraphVariableProvider(graph, elementType);
-        
+
         final Object result = ExpressionCompiler.compileSequenceExpression(expression, variableProvider, index, Operators.getDefault());
-        
+
         graphId = graph.getId();
         globalModificationCounter = graph.getGlobalModificationCounter();
         structureModificationCounter = graph.getGlobalModificationCounter();
         attributeModificationCounter = graph.getGlobalModificationCounter();
-        
+
         attributeIds = variableProvider.getAttributeIds();
         valueModificationCounters = new long[attributeIds.length];
         for (int i = 0; i < attributeIds.length; i++) {
             valueModificationCounters[i] = graph.getValueModificationCounter(attributeIds[i]);
         }
-        
+
         return result;
     }
-    
+
+    public void setQueryString(final String queryString) {
+        this.queryString = queryString;
+    }
+
     private static final class GraphVariableProvider implements VariableProvider {
 
         final GraphReadMethods graphReadMethods;
@@ -103,7 +114,7 @@ public class Query {
         final Map<String, Object> variables = new HashMap<>();
         final int[] attributeIds;
         int attributeCount = 0;
-        
+
         public GraphVariableProvider(GraphReadMethods graphWriteMethods, GraphElementType elementType) {
             this.graphReadMethods = graphWriteMethods;
             this.elementType = elementType;
@@ -113,7 +124,7 @@ public class Query {
         public int[] getAttributeIds() {
             return Arrays.copyOf(attributeIds, attributeCount);
         }
-        
+
         @Override
         public Object getVariable(String name, IntReadable indexReadable) {
             Object variable = variables.get(name);
@@ -125,7 +136,7 @@ public class Query {
                 return null;
             }
             attributeIds[attributeCount++] = attribute;
-            
+
             variable = graphReadMethods.createReadAttributeObject(attribute, indexReadable);
             variables.put(name, variable);
             return variable;

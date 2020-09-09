@@ -28,7 +28,6 @@ import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.undo.GraphEdit;
 import au.gov.asd.tac.constellation.graph.utilities.MultiValueStore;
 import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
-import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.datastructure.IntHashSet;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
 import java.io.Serializable;
@@ -1752,16 +1751,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     @Override
     public Object createWriteAttributeObject(final int attribute, IntReadable indexReadable) {
         return attributeDescriptions[attribute].createWriteObject(this, attribute, indexReadable);
-    }
-
-    @Override
-    public <V> V createAttributeValue(final int attribute) {
-        return (V)attributeDescriptions[attribute].createValue();
-    }
-
-    @Override
-    public <V> void readAttributeValue(final int attribute, final int id, final V value) {
-        attributeDescriptions[attribute].read(id, value);
     }
 
     @Override

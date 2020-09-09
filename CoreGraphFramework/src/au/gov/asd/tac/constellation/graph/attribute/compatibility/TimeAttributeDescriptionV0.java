@@ -52,7 +52,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @Deprecated
 @ServiceProvider(service = AttributeDescription.class)
-public final class TimeAttributeDescriptionV0 extends AbstractAttributeDescription<IntValue> {
+public final class TimeAttributeDescriptionV0 extends AbstractAttributeDescription {
 
     private static final Logger LOGGER = Logger.getLogger(TimeAttributeDescriptionV0.class.getName());
     /**
@@ -363,6 +363,7 @@ public final class TimeAttributeDescriptionV0 extends AbstractAttributeDescripti
             public int readInt() {
                 return data[indexReadable.readInt()];
             }
+
             @Override
             public void writeInt(int value) {
                 graph.setIntValue(attribute, indexReadable.readInt(), value);

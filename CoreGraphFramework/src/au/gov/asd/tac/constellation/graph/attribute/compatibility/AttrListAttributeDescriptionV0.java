@@ -38,7 +38,7 @@ import java.util.Arrays;
  */
 @Deprecated
 //@ServiceProvider(service = AttributeDescription.class)
-public final class AttrListAttributeDescriptionV0 extends AbstractAttributeDescription<StringValue> {
+public final class AttrListAttributeDescriptionV0 extends AbstractAttributeDescription {
 
     private static final String DEFAULT_VALUE = null;
     public static final String ATTR_NAME = "attr_list";
@@ -231,6 +231,7 @@ public final class AttrListAttributeDescriptionV0 extends AbstractAttributeDescr
             public String readString() {
                 return data[indexReadable.readInt()];
             }
+
             @Override
             public void writeString(String value) {
                 graph.setObjectValue(attribute, indexReadable.readInt(), value);

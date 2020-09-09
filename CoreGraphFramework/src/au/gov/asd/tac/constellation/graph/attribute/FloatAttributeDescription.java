@@ -45,7 +45,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author cygnus_x-1
  */
 @ServiceProvider(service = AttributeDescription.class)
-public final class FloatAttributeDescription extends AbstractAttributeDescription<FloatValue> {
+public final class FloatAttributeDescription extends AbstractAttributeDescription {
 
     public static final String ATTRIBUTE_NAME = "float";
     public static final Class<Float> NATIVE_CLASS = float.class;
@@ -297,6 +297,7 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
             public float readFloat() {
                 return data[indexReadable.readInt()];
             }
+
             @Override
             public void writeFloat(float value) {
                 graph.setFloatValue(attribute, indexReadable.readInt(), value);

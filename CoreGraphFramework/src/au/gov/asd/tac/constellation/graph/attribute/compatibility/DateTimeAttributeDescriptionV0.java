@@ -62,7 +62,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @Deprecated
 @ServiceProvider(service = AttributeDescription.class)
-public final class DateTimeAttributeDescriptionV0 extends AbstractAttributeDescription<LongValue> {
+public final class DateTimeAttributeDescriptionV0 extends AbstractAttributeDescription {
 
     /**
      * UTC time zone.
@@ -443,6 +443,7 @@ public final class DateTimeAttributeDescriptionV0 extends AbstractAttributeDescr
             public long readLong() {
                 return data[indexReadable.readInt()];
             }
+
             @Override
             public void writeLong(long value) {
                 graph.setLongValue(attribute, indexReadable.readInt(), value);
