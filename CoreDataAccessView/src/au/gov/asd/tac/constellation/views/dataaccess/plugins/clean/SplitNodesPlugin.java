@@ -46,8 +46,10 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
@@ -229,7 +231,11 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
                 if (identifier != null && identifier.contains(character) && identifier.indexOf(character) < identifier.length() - character.length()) {
                     String leftNodeIdentifier = "";
                     if (allOccurrences) {
-                        final String[] substrings = identifier.split(character);
+                        final String[] substrings = Arrays.stream(identifier.split(character))
+                                .filter(value
+                                        -> value != null && value.length() > 0
+                                )
+                                .toArray(size -> new String[size]);
                         if (substrings.length <= 0) {
                             continue;
                         }
@@ -243,10 +249,17 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
                     } else {
                         final int i = identifier.indexOf(character);
                         leftNodeIdentifier = identifier.substring(0, i);
-                        newVertices.add(createNewNode(graph, position, identifier.substring(i + 1), linkType, splitIntoSameLevel));
+                        if (StringUtils.isNotBlank(leftNodeIdentifier)) {
+                            newVertices.add(createNewNode(graph, position, identifier.substring(i + 1), linkType, splitIntoSameLevel));
+                        } else {
+                            leftNodeIdentifier = identifier.substring(i + 1);
+                        }
                     }
                     // Rename the selected node
-                    graph.setStringValue(vertexIdentifierAttributeId, currentVertexId, leftNodeIdentifier);
+                    if (StringUtils.isNotBlank(leftNodeIdentifier)) {
+                        graph.setStringValue(vertexIdentifierAttributeId, currentVertexId, leftNodeIdentifier);
+                        newVertices.add(currentVertexId);
+                    }
                 }
             }
         }
