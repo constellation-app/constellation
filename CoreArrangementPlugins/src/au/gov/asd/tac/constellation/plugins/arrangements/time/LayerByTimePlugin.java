@@ -717,13 +717,13 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         graph.setFloatValue(x2Attr, sNodeId, graph.getFloatValue(xAttr, sNodeId));
         graph.setFloatValue(y2Attr, sNodeId, graph.getFloatValue(yAttr, sNodeId));
         graph.setFloatValue(z2Attr, sNodeId, graph.getFloatValue(zAttr, sNodeId));
-        graph.setFloatValue(vxVisibilityAttr, sNodeId, 0);
+        graph.setFloatValue(vxVisibilityAttr, sNodeId, 1);
 
         final int dNodeId = graph.getTransactionDestinationVertex(txId);
         graph.setFloatValue(x2Attr, dNodeId, graph.getFloatValue(xAttr, dNodeId));
         graph.setFloatValue(y2Attr, dNodeId, graph.getFloatValue(yAttr, dNodeId));
         graph.setFloatValue(z2Attr, dNodeId, graph.getFloatValue(zAttr, dNodeId));
-        graph.setFloatValue(vxVisibilityAttr, dNodeId, 0);
+        graph.setFloatValue(vxVisibilityAttr, dNodeId, 1);
 
         // The nodes on the ends of this transaction will be in this layer.
         if (!nodeIdToLayers.containsKey(sNodeId)) {
@@ -791,13 +791,13 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         graph.setFloatValue(x2Attr, srcVxId, graph.getFloatValue(xAttr, srcVxId));
         graph.setFloatValue(y2Attr, srcVxId, graph.getFloatValue(yAttr, srcVxId));
         graph.setFloatValue(z2Attr, srcVxId, graph.getFloatValue(zAttr, srcVxId));
-        graph.setFloatValue(vxVisibilityAttr, srcVxId, 0);
+        graph.setFloatValue(vxVisibilityAttr, srcVxId, 1);
 
         final int dstVxId = graph.getTransactionDestinationVertex(txId);
         graph.setFloatValue(x2Attr, dstVxId, graph.getFloatValue(xAttr, dstVxId));
         graph.setFloatValue(y2Attr, dstVxId, graph.getFloatValue(yAttr, dstVxId));
         graph.setFloatValue(z2Attr, dstVxId, graph.getFloatValue(zAttr, dstVxId));
-        graph.setFloatValue(vxVisibilityAttr, dstVxId, 0);
+        graph.setFloatValue(vxVisibilityAttr, dstVxId, 1);
 
         final int tlSrcVxId;
         if (srcVxMap.containsKey(srcVxId)) {
