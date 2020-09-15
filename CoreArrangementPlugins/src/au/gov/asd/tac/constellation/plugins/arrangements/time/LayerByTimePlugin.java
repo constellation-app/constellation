@@ -406,7 +406,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                             if (isTransactionLayers) {
                                 transactionsAsLayers(wgcopy, txId, z, step);
                             } else {
-                                nodesAsLayers(wgcopy, txId, newLayer, normLayer);
+                                nodesAsLayers(wgcopy, txId, newLayer);
                             }
                         }
                     }
@@ -433,20 +433,6 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                 final int nTx = wgcopy.getVertexTransactionCount(vertexId);
                 if (nTx == 0) {
                     vertices.add(vertexId);
-                }
-                //Tag on the back of this loop and update the visibility of each node to match it's z value
-                if (isTransactionLayers) {
-                    float vxZ = wgcopy.getFloatValue(zAttr, vertexId);
-                }
-            }
-
-            if (isTransactionLayers) {
-                for (int pos = 0; pos < wgcopy.getTransactionCount(); pos++) {
-                    final int txId = wgcopy.getTransaction(pos);
-                    final int srcVxId = wgcopy.getTransactionSourceVertex(txId);
-                    final int dstVxId = wgcopy.getTransactionDestinationVertex(txId);
-                    final float srcVxz = wgcopy.getFloatValue(zAttr, srcVxId);
-                    final float dstVxz = wgcopy.getFloatValue(zAttr, dstVxId);
                 }
             }
 
@@ -698,7 +684,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
     /**
      * Procedure for reordering the graph using nodes as layers on the z-axis.
      */
-    private void nodesAsLayers(final GraphWriteMethods graph, final int txId, final int layer, final float normLayer) {
+    private void nodesAsLayers(final GraphWriteMethods graph, final int txId, final int layer) {
         final int xAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", 0, null);
         final int yAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y", "y", 0, null);
         final int zAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z", "z", 0, null);
