@@ -25,6 +25,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.Window;
 
 /**
  * A Javafx dialog that will present the {@link PluginParametersPane} GUI for a
@@ -51,7 +52,7 @@ public class PluginParametersDialog extends Stage {
      * @param title The dialog box title.
      * @param parameters The plugin parameters.
      */
-    public PluginParametersDialog(final Stage owner, final String title, final PluginParameters parameters) {
+    public PluginParametersDialog(final Window owner, final String title, final PluginParameters parameters) {
         this(owner, title, parameters, (String[]) null);
     }
 
@@ -64,7 +65,7 @@ public class PluginParametersDialog extends Stage {
      * @param parameters The plugin parameters.
      * @param options The dialog box button labels, one for each button.
      */
-    public PluginParametersDialog(final Stage owner, final String title, final PluginParameters parameters, final String... options) {
+    public PluginParametersDialog(final Window owner, final String title, final PluginParameters parameters, final String... options) {
         initStyle(StageStyle.UTILITY);
         initModality(Modality.WINDOW_MODAL);
         initOwner(owner);

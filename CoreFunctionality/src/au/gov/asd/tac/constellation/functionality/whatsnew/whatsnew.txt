@@ -4,6 +4,10 @@
 == 2020-08-28 Split Nodes Plugin
 <p>A new option is added to split nodes, duplicating the transactions of the selected node.</p>
 
+== 2020-08-26 Delimited File Importer
+<p>Conversion of the importer to a view has allowed a more consistent user experience.</p>
+<p>Multiple bug fixes with selection of check-boxes and loading of dropdowns are now in effect.</p>
+
 == 2020-08-24 Layers View Keyboard Shortcuts
 <p>Keyboard shortcuts have been added to the Layers View. "Ctrl+Alt+L" will add a new layer and "Ctrl+Alt+D" will deselect all layers.</p>
 
@@ -12,6 +16,7 @@
 <ul>
 <li>Ctrl+C - Will copy the property values of the selection to the clipboard.</li>
 <li>Right-Click Context Menu - Options to either copy the property values or both the property values and counts of the selection to the clipboard.</li>
+</ul>
 
 == 2020-08-06 Quality Control Categories
 <p>The Quality Control View now ranks and lists the quality of an element as a category instead of a score. This is also implemented in the Data Access View.</p>

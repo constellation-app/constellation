@@ -23,15 +23,13 @@ import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.util.List;
 import java.util.prefs.Preferences;
 import javafx.geometry.HPos;
-import javafx.geometry.Rectangle2D;
+import javafx.geometry.Insets;
 import javafx.geometry.VPos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -41,94 +39,88 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.stage.Screen;
-import javafx.stage.Stage;
-import org.netbeans.api.annotations.common.StaticResource;
+import javafx.stage.Window;
 import org.openide.NotifyDescriptor;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbPreferences;
 
 /**
- * The DelimitedFileImportState provides a window that will hold the entire
- * delimited file import UI.
+ * This pane holds all parts for importing a delimited file. An import
+ * controller handles the importing of files The source and configuration panes
+ * handle the input and output of the selected data into a graph.
  *
- * @author sirius
+ * @author aldebaran30701
  */
-public class DelimitedFileImporterStage extends Stage {
-
-    private static final String HELP_CTX = DelimitedFileImporterStage.class.getName();
+public class DelimitedImportPane extends BorderPane {
 
     private final ImportController importController = new ImportController(this);
-    private final SourcePane sourcePane;
+    private final DelimitedImportTopComponent delimitedImportTopComponent;
     private final ConfigurationPane configurationPane;
+    private final SourcePane sourcePane;
+    private final EasyGridPane gridPane;
+    private final BorderPane root;
 
+    private static final String HELP_CTX = DelimitedImportPane.class.getName();
+    private static final Image HELP_IMAGE = UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.AZURE.getJavaColor());
     private final Preferences importExportPrefs = NbPreferences.forModule(ImportExportPreferenceKeys.class);
 
-    @StaticResource
-    private static final String DELIMITED_IMPORTER_ICON_PATH = "au/gov/asd/tac/constellation/plugins/importexport/delimited/resources/importDelimited.png";
-    private static final Image HELP_IMAGE = UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.AZURE.getJavaColor());
+    public DelimitedImportPane(final DelimitedImportTopComponent delimitedImportTopComponent) {
+        this.delimitedImportTopComponent = delimitedImportTopComponent;
+        root = new BorderPane();
 
-    public DelimitedFileImporterStage() {
-        final BorderPane root = new BorderPane();
-        final double hPadding = 100;
-        final EasyGridPane gridPane = new EasyGridPane();
-        gridPane.addColumnConstraint(true, HPos.LEFT, Priority.ALWAYS, Double.MAX_VALUE, 200, GridPane.USE_COMPUTED_SIZE, -1);
-        gridPane.addRowConstraint(true, VPos.TOP, Priority.ALWAYS, Double.MAX_VALUE, 0, GridPane.USE_COMPUTED_SIZE, -1);
-        gridPane.addRowConstraint(true, VPos.TOP, Priority.ALWAYS, Double.MAX_VALUE, 0, GridPane.USE_COMPUTED_SIZE, -1);
-        gridPane.addRowConstraint(true, VPos.BOTTOM, Priority.ALWAYS, Double.MAX_VALUE, 0, GridPane.USE_COMPUTED_SIZE, -1);
-
+        // titled source pane
         sourcePane = new SourcePane(importController);
         final TitledPane titledSourcePane = new TitledPane("Source", sourcePane);
         titledSourcePane.setCollapsible(true);
-
-        configurationPane = new ConfigurationPane(importController);
-        final TitledPane titledConfigurationPane = new TitledPane("Configuration", configurationPane);
-        titledConfigurationPane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        titledConfigurationPane.setMinSize(0, 0);
-        titledConfigurationPane.setCollapsible(false);
-
-        final ActionPane actionPane = new ActionPane(importController);
-        actionPane.setMinSize(0, 10);
-
-        importController.setConfigurationPane(configurationPane);
 
         // Options menu.
         final Menu optionsMenu = new Menu("Options");
         final MenuItem loadMenuItem = new MenuItem("Load...");
         loadMenuItem.setOnAction(event -> {
             if (importController.hasFiles()) {
-                ImportDelimitedIO.loadParameters(this, importController);
+                ImportDelimitedIO.loadParameters(this.getParentWindow(), importController);
             } else {
                 NotifyDisplayer.display("Select a file first.", NotifyDescriptor.WARNING_MESSAGE);
             }
         });
 
+        // save menu item
         final MenuItem saveMenuItem = new MenuItem("Save...");
         saveMenuItem.setOnAction(event -> {
-            ImportDelimitedIO.saveParameters(this, importController);
+            ImportDelimitedIO.saveParameters(this.getParentWindow(), importController);
         });
 
         // the menu item gets called when the checkbox value changes so work around it by using a flag
         final boolean[] userClickedTheCheckboxFirst = new boolean[1];
         userClickedTheCheckboxFirst[0] = false;
 
+        // show schema attributes checkbox
         final CheckBox showSchemaAttributesCheckBox = new CheckBox();
-        showSchemaAttributesCheckBox.setSelected(importExportPrefs.getBoolean(ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES, ImportExportPreferenceKeys.DEFAULT_SHOW_SCHEMA_ATTRIBUTES));
+        final boolean showSchemaDefault = importExportPrefs.getBoolean(ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES, ImportExportPreferenceKeys.DEFAULT_SHOW_SCHEMA_ATTRIBUTES);
+        showSchemaAttributesCheckBox.setSelected(showSchemaDefault);
+        importExportPrefs.putBoolean(ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES, showSchemaDefault);
+        importController.setShowAllSchemaAttributes(showSchemaDefault);
+        importController.setClearManuallyAdded(false);
+        importController.setDestination(sourcePane.getDestination());
+
         showSchemaAttributesCheckBox.setOnAction(event -> {
             // the checkbox has its own listener
             boolean newPreference = !importExportPrefs.getBoolean(ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES, ImportExportPreferenceKeys.DEFAULT_SHOW_SCHEMA_ATTRIBUTES);
+            importExportPrefs.putBoolean(ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES, newPreference);
             importController.setShowAllSchemaAttributes(newPreference);
             importController.setClearManuallyAdded(false);
             importController.setDestination(sourcePane.getDestination());
             userClickedTheCheckboxFirst[0] = true;
+            showSchemaAttributesCheckBox.setSelected(newPreference);
         });
 
+        // show schema attributes menu item
         final MenuItem showSchemaAttributesItem = new MenuItem("Show all schema attributes", showSchemaAttributesCheckBox);
         showSchemaAttributesItem.setOnAction(event -> {
             // ignore if the checkbox was clicked
             if (!userClickedTheCheckboxFirst[0]) {
                 final boolean newPreference = !importExportPrefs.getBoolean(ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES, ImportExportPreferenceKeys.DEFAULT_SHOW_SCHEMA_ATTRIBUTES);
+                importExportPrefs.putBoolean(ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES, newPreference);
                 importController.setShowAllSchemaAttributes(newPreference);
                 importController.setClearManuallyAdded(false);
                 importController.setDestination(sourcePane.getDestination());
@@ -139,6 +131,7 @@ public class DelimitedFileImporterStage extends Stage {
         });
         optionsMenu.getItems().addAll(loadMenuItem, saveMenuItem, showSchemaAttributesItem);
 
+        // setting up menu bar
         final AnchorPane menuToolbar = new AnchorPane();
         final MenuBar menuBar = new MenuBar();
         AnchorPane.setTopAnchor(menuBar, 0.0);
@@ -149,6 +142,7 @@ public class DelimitedFileImporterStage extends Stage {
         menuBar.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
         menuToolbar.getChildren().add(menuBar);
 
+        // setting up help button
         final Button helpButton = new Button("", new ImageView(HELP_IMAGE));
         AnchorPane.setTopAnchor(helpButton, 0.0);
         AnchorPane.setRightAnchor(helpButton, 0.0);
@@ -160,34 +154,40 @@ public class DelimitedFileImporterStage extends Stage {
         helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
         menuToolbar.getChildren().add(helpButton);
 
-        gridPane.addColumn(0, titledSourcePane, titledConfigurationPane);
+        // titled configuration pane
+        configurationPane = new ConfigurationPane(importController);
+        final TitledPane titledConfigurationPane = new TitledPane("Configuration", configurationPane);
+        titledConfigurationPane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        titledConfigurationPane.setMinSize(0, 0);
+        titledConfigurationPane.setCollapsible(false);
 
-        final Rectangle2D visualBounds = Screen.getPrimary().getVisualBounds();
-        final double screenHeight = visualBounds.getHeight();
+        // gridpane for configuration pane
+        gridPane = new EasyGridPane();
+        gridPane.addColumn(0, titledConfigurationPane);
+        gridPane.setPadding(new Insets(0, 0, 10, 0));
+        gridPane.addColumnConstraint(true, HPos.LEFT, Priority.ALWAYS, Double.MAX_VALUE, 200, GridPane.USE_COMPUTED_SIZE, -1);
+        gridPane.addRowConstraint(true, VPos.TOP, Priority.ALWAYS, Double.MAX_VALUE, 0, GridPane.USE_COMPUTED_SIZE, -1);
+        gridPane.addRowConstraint(true, VPos.TOP, Priority.ALWAYS, Double.MAX_VALUE, 0, GridPane.USE_COMPUTED_SIZE, -1);
+        gridPane.addRowConstraint(true, VPos.BOTTOM, Priority.ALWAYS, Double.MAX_VALUE, 0, GridPane.USE_COMPUTED_SIZE, -1);
 
-        final ScrollPane sp = new ScrollPane(gridPane);
-        sp.setFitToWidth(true);
+        // actionpane for holding import and cancel buttons
+        final ActionPane actionPane = new ActionPane(importController);
+        actionPane.setMinSize(0, 40);
+        actionPane.prefWidthProperty().bind(this.widthProperty());
+        actionPane.setPadding(new Insets(0, 0, 20, 0));
 
-        sp.setPrefHeight(screenHeight - hPadding);
-        sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        sp.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-        root.setCenter(sp);
-        root.setCenter(new VBox(menuToolbar, sp, actionPane));
+        importController.setConfigurationPane(configurationPane);
 
-//        Scene scene = new Scene(root, 700, 1050, Color.WHITESMOKE);
-        final Scene scene = new Scene(root);
-        scene.setFill(Color.WHITESMOKE);
-        scene.setOnKeyPressed(event -> {
+        // Setting help keyevent to f1
+        setOnKeyPressed(event -> {
             final KeyCode c = event.getCode();
             if (c == KeyCode.F1) {
                 new HelpCtx(HELP_CTX).display();
             }
         });
 
-        setScene(scene);
-        setTitle("Import from Delimited File");
-        getIcons().add(new Image(DELIMITED_IMPORTER_ICON_PATH));
-        DelimitedFileImporterStage.this.centerOnScreen();
+        root.setCenter(new VBox(menuToolbar, titledSourcePane, gridPane, actionPane));
+        setCenter(root);
     }
 
     public void update(final ImportController importController, final List<ImportDefinition> definitions) {
@@ -195,7 +195,19 @@ public class DelimitedFileImporterStage extends Stage {
         configurationPane.update(definitions);
     }
 
+    public void updateSourcePane() {
+        sourcePane.update(importController);
+    }
+
+    public void close() {
+        delimitedImportTopComponent.close();
+    }
+
     public SourcePane getSourcePane() {
         return sourcePane;
+    }
+
+    public Window getParentWindow() {
+        return this.getScene().getWindow();
     }
 }
