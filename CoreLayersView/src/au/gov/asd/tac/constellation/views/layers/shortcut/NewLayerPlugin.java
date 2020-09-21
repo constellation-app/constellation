@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.views.layers.utilities;
+package au.gov.asd.tac.constellation.views.layers.shortcut;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewState;
-import java.util.List;
 
 /**
  * A plugin that creates a new layer in the layers view
@@ -45,15 +43,12 @@ public class NewLayerPlugin extends SimpleEditPlugin {
 
         LayersViewState currentState = graph.getObjectValue(layersViewStateAttributeId, 0);
         if (currentState == null) {
-            //final List<BitMaskQuery> layers = new ArrayList<>();
-            //layers.add
-            //currentState.getQueriesCollection().setDefaultQueries();
-            //layers.add(new LayerDescription(1, true, LayerDescription.DEFAULT_QUERY_STRING, LayerDescription.DEFAULT_QUERY_DESCRIPTION));
-            //layers.add(new LayerDescription(2, false, StringUtils.EMPTY, StringUtils.EMPTY));
-            //currentState = new LayersViewState(BitMaskQueryCollection.getDefaultQueries(), currentState.getLayerAttributes(), new BitMaskQueryCollection(BitMaskQueryCollection.getDefaultQueries()));
-
-            // TODO: Check this nul reference passed in
-            currentState = new LayersViewState(BitMaskQueryCollection.getDefaultQueries(), (List<SchemaAttribute>) null, new BitMaskQueryCollection(BitMaskQueryCollection.getDefaultQueries()));
+            currentState = new LayersViewState();
+        }
+        if (currentState.getVxQueriesCollection().getHighestQueryIndex() == 0
+                && currentState.getTxQueriesCollection().getHighestQueryIndex() == 0) {
+            currentState.getVxQueriesCollection().setDefaultQueries();
+            currentState.getTxQueriesCollection().setDefaultQueries();
         }
 
         final LayersViewState newState = new LayersViewState(currentState);

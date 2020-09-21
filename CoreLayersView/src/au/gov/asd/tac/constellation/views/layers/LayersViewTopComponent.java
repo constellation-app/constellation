@@ -58,18 +58,14 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
 
     private final LayersViewController layersViewController;
     private final LayersViewPane layersViewPane;
-    private final List<AttributeValueMonitor> valueMonitors;
-    private final List<SchemaAttribute> changeListeners;
 
     public LayersViewTopComponent() {
         setName(Bundle.CTL_LayersViewTopComponent());
         setToolTipText(Bundle.HINT_LayersViewTopComponent());
         initComponents();
 
-        layersViewController = new LayersViewController(LayersViewTopComponent.this);
+        layersViewController = LayersViewController.getDefault().init(LayersViewTopComponent.this);
         layersViewPane = new LayersViewPane(layersViewController);
-        changeListeners = new ArrayList<>();
-        valueMonitors = new ArrayList<>();
 
         initContent();
 
@@ -80,28 +76,30 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
 
             layersViewController.readState();
             layersViewController.updateQueries(graph);
-            //PluginExecution.withPlugin(new ValidateLayerMasks()).executeLater(graph);
 
-            // remove all monitors before re-adding updated ones
-            for (final AttributeValueMonitor monitor : valueMonitors) {
-                removeAttributeValueChangeHandler(monitor);
-            }
-
-            changeListeners.clear();
-            changeListeners.addAll(layersViewController.getListenedAttributes());
-
-            // adding change handlers for attribute changes based on current layer selection
-            for (final SchemaAttribute attribute : changeListeners) {
-                valueMonitors.add(
-                        addAttributeValueChangeHandler(attribute, changedGraph -> {
-                            layersViewController.updateQueries(changedGraph);
-                            //PluginExecution.withPlugin(new ValidateLayerMasks()).executeLater(currentGraph);
-                        })
-                );
-            }
         });
     }
 
+    public void removeValueHandlers(final List<AttributeValueMonitor> valueMonitors) {
+        // remove all monitors before re-adding updated ones
+        for (final AttributeValueMonitor monitor : valueMonitors) {
+            removeAttributeValueChangeHandler(monitor);
+        }
+    }
+
+    public synchronized List<AttributeValueMonitor> setChangeListeners(final List<SchemaAttribute> changeListeners) {
+        final List<AttributeValueMonitor> valueMonitors = new ArrayList<>();
+        for (final SchemaAttribute attribute : changeListeners) {
+            valueMonitors.add(
+                    addAttributeValueChangeHandler(attribute, changedGraph -> {
+                        layersViewController.updateQueries(changedGraph);
+                    })
+            );
+        }
+        return List.copyOf(valueMonitors);
+    }
+
+    // adding change handlers for attribute changes based on current layer selection
     @Override
     protected String createStyle() {
         return "resources/layers-view.css";

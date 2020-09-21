@@ -15,16 +15,10 @@
  */
 package au.gov.asd.tac.constellation.views.layers;
 
-import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.views.layers.layer.LayerDescription;
-import au.gov.asd.tac.constellation.views.layers.utilities.BitMaskQuery;
-import au.gov.asd.tac.constellation.views.layers.utilities.BitMaskQueryCollection;
-import au.gov.asd.tac.constellation.views.layers.utilities.Query;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import au.gov.asd.tac.constellation.views.layers.query.BitMaskQuery;
+import au.gov.asd.tac.constellation.views.layers.query.BitMaskQueryCollection;
+import au.gov.asd.tac.constellation.views.layers.query.Query;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -39,7 +33,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -55,9 +48,7 @@ public class LayersViewPane extends BorderPane {
     private final GridPane layersGridPane;
     private final VBox layersViewPane;
     private final HBox options;
-    //private final List<BitMaskQuery> layers;
 
-    //private final QueryManager queryManager = new QueryManager();
     public LayersViewPane(final LayersViewController controller) {
 
         // create controller
@@ -68,6 +59,8 @@ public class LayersViewPane extends BorderPane {
         final Label visibilityHeadingText = new Label("Visibility");
         final Label queryHeadingText = new Label("Query");
         final Label descriptionHeadingText = new Label("Description");
+        final Label vertexHeadingText = new Label("Vertex");
+        final Label transactionHeadingText = new Label("Transaction");
 
         // create gridpane and alignments
         layersGridPane = new GridPane();
@@ -75,7 +68,7 @@ public class LayersViewPane extends BorderPane {
         layersGridPane.setVgap(5);
         layersGridPane.setPadding(new Insets(0, 10, 10, 10));
         layersGridPane.addRow(0, layerIdHeadingText, visibilityHeadingText,
-                queryHeadingText, descriptionHeadingText);
+                queryHeadingText, descriptionHeadingText, vertexHeadingText, transactionHeadingText);
 
         // set heading alignments
         GridPane.setMargin(layerIdHeadingText, new Insets(15, 0, 0, 0));
@@ -90,8 +83,6 @@ public class LayersViewPane extends BorderPane {
         descriptionHeadingText.setPrefWidth(10000);
         descriptionHeadingText.setMinWidth(80);
 
-        // instantiate list of layers
-        //layers = new ArrayList<>();
         // set default layers
         this.setDefaultLayers();
 
@@ -99,12 +90,14 @@ public class LayersViewPane extends BorderPane {
         final Button addButton = new Button("Add New Layer");
         addButton.setAlignment(Pos.CENTER_RIGHT);
         addButton.setOnAction(event -> {
-            if (layersGridPane.getRowCount() <= 32) {
-                createLayer(controller.getQueryCollection().getQueries().size() + 1, false, null, "");
+            if (layersGridPane.getRowCount() <= BitMaskQueryCollection.MAX_QUERY_AMT) {
+                createLayer(Math.max(controller.getTransactionQueryCollection().getHighestQueryIndex() + 1,
+                        controller.getVertexQueryCollection().getHighestQueryIndex() + 1),
+                        false, null, StringUtils.EMPTY, true, true);
                 controller.writeState();
             } else {
-                final NotifyDescriptor nd = new NotifyDescriptor.Message(
-                        "You cannot have more than 32 layers", NotifyDescriptor.WARNING_MESSAGE);
+                final NotifyDescriptor nd = new NotifyDescriptor.Message("You cannot have more than "
+                        + BitMaskQueryCollection.MAX_QUERY_AMT + " layers", NotifyDescriptor.WARNING_MESSAGE);
                 DialogDisplayer.getDefault().notify(nd);
             }
             event.consume();
@@ -114,15 +107,9 @@ public class LayersViewPane extends BorderPane {
         final Button deselectAllButton = new Button("Deselect All Layers");
         deselectAllButton.setAlignment(Pos.CENTER_RIGHT);
         deselectAllButton.setOnAction(event -> {
-            controller.getQueryCollection().setVisibilityOnAll(false);
-
-            if (CollectionUtils.isEmpty(controller.getQueryCollection().getQueries())) {
-                setDefaultLayers();
-            } else {
-                setLayers(controller.getQueryCollection().getQueries());
-            }
-            controller.execute();
-
+            controller.getVertexQueryCollection().setVisibilityOnAll(false);
+            controller.getTransactionQueryCollection().setVisibilityOnAll(false);
+            controller.writeState();
             event.consume();
         });
         HBox.setHgrow(deselectAllButton, Priority.ALWAYS);
@@ -131,29 +118,8 @@ public class LayersViewPane extends BorderPane {
         options.setAlignment(Pos.TOP_LEFT);
         options.setPadding(new Insets(0, 0, 0, 10));
 
-        final TextArea expressionTextArea = new TextArea();
-
-        final Button selectVerticesButton = new Button("Select Vertices");
-        selectVerticesButton.setAlignment(Pos.CENTER_RIGHT);
-        selectVerticesButton.setOnAction(event -> {
-            final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-            //SelectExpressionPlugin.run(activeGraph, GraphElementType.VERTEX, expressionTextArea.getText(), "selected");
-            event.consume();
-        });
-
-        final Button selectTransactionsButton = new Button("Select Transactions");
-        selectTransactionsButton.setAlignment(Pos.CENTER_RIGHT);
-        selectTransactionsButton.setOnAction(event -> {
-            final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-            //SelectExpressionPlugin.run(activeGraph, GraphElementType.TRANSACTION, expressionTextArea.getText(), "selected");
-            event.consume();
-        });
-
-        final HBox expressionHBox = new HBox(selectVerticesButton, selectTransactionsButton);
-        final VBox expressionVBox = new VBox(expressionTextArea, expressionHBox);
-
         // add layers grid and options to pane
-        this.layersViewPane = new VBox(5, layersGridPane, options, expressionVBox);
+        this.layersViewPane = new VBox(5, layersGridPane, options);
 
         // create layout bindings
         layersViewPane.prefWidthProperty().bind(this.widthProperty());
@@ -163,117 +129,180 @@ public class LayersViewPane extends BorderPane {
         controller.writeState();
     }
 
-    public LayersViewController getController() {
-        return controller;
-    }
+    private void createLayer(final int currentIndex, final boolean checkBoxSelected, final String query, final String description, final boolean showVertices, final boolean showTransactions) {
 
-    private int createLayer(final int currentIndex, final boolean checkBoxSelected, final String query, final String description) {
+        // Layer ID
         final Label layerIdText = new Label(String.format("%02d", currentIndex));
         layerIdText.setMinWidth(30);
         layerIdText.setPrefWidth(40);
         layerIdText.setTextAlignment(TextAlignment.CENTER);
         layerIdText.setPadding(new Insets(0, 0, 0, 10));
 
+        // Layer Visibility
         final Node visibilityCheckBox = new CheckBox();
         ((CheckBox) visibilityCheckBox).setMinWidth(60);
         ((CheckBox) visibilityCheckBox).setPadding(new Insets(0, 30, 0, 15));
         ((CheckBox) visibilityCheckBox).setSelected(checkBoxSelected);
         visibilityCheckBox.setOnMouseClicked(e -> {
-            final Node source = (Node) e.getSource();
-            final BitMaskQuery bitMaskQuery = controller.getQueryCollection().getQueries().get(GridPane.getRowIndex(source) - 1);
-            //final LayerDescription layer = layers.get(GridPane.getRowIndex(source) - 1);
-            bitMaskQuery.setVisibility(!bitMaskQuery.getVisibility());
+            final int gridIndex = GridPane.getRowIndex((Node) e.getSource()) - 1;
+            final BitMaskQuery vxbitMaskQuery = controller.getVertexQueryCollection().getQuery(gridIndex);
+            final BitMaskQuery txbitMaskQuery = controller.getTransactionQueryCollection().getQuery(gridIndex);
+            if (vxbitMaskQuery != null) {
+                vxbitMaskQuery.setVisibility(!vxbitMaskQuery.getVisibility());
+            }
+            if (txbitMaskQuery != null) {
+                txbitMaskQuery.setVisibility(!txbitMaskQuery.getVisibility());
+            }
             controller.execute();
             controller.writeState();
         });
 
+        // Include Vertex Preference
+        final Node vxCheckBox = new CheckBox("Vertex");
+        ((CheckBox) vxCheckBox).setSelected(showVertices);
+        ((CheckBox) vxCheckBox).setMinWidth(60);
+        ((CheckBox) vxCheckBox).setPadding(new Insets(0, 30, 0, 15));
+        vxCheckBox.setOnMouseClicked(e -> {
+            final int gridIndex = GridPane.getRowIndex((Node) e.getSource()) - 1;
+            final BitMaskQuery vxbitMaskQuery = controller.getVertexQueryCollection().getQuery(gridIndex);
+            final BitMaskQuery txbitMaskQuery = controller.getTransactionQueryCollection().getQuery(gridIndex);
+
+            if (vxbitMaskQuery != null && txbitMaskQuery != null) {
+                controller.getVertexQueryCollection().removeQuery(gridIndex);
+            } else if (vxbitMaskQuery != null) {
+                final BitMaskQuery tempQuery = new BitMaskQuery(new Query(GraphElementType.TRANSACTION, controller.getVertexQueryCollection().getQuery(gridIndex).getQueryString()), gridIndex, controller.getVertexQueryCollection().getQuery(gridIndex).getDescription());
+                tempQuery.setVisibility(controller.getVertexQueryCollection().getQuery(gridIndex).getVisibility());
+                controller.getTransactionQueryCollection().add(tempQuery);
+                controller.getVertexQueryCollection().removeQuery(gridIndex);
+            } else if (txbitMaskQuery != null) {
+                final BitMaskQuery tempQuery = new BitMaskQuery(new Query(GraphElementType.VERTEX, controller.getTransactionQueryCollection().getQuery(gridIndex).getQueryString()), gridIndex, controller.getTransactionQueryCollection().getQuery(gridIndex).getDescription());
+                tempQuery.setVisibility(controller.getTransactionQueryCollection().getQuery(gridIndex).getVisibility());
+                controller.getVertexQueryCollection().add(tempQuery);
+            } else {
+                controller.getVertexQueryCollection().add(new BitMaskQuery(new Query(GraphElementType.VERTEX, null), gridIndex, StringUtils.EMPTY));
+            }
+
+            controller.execute();
+            controller.writeState();
+        });
+
+        // Include Transaction Preference
+        final Node txCheckBox = new CheckBox("Transaction");
+        ((CheckBox) txCheckBox).setMinWidth(60);
+        ((CheckBox) txCheckBox).setPadding(new Insets(0, 30, 0, 15));
+        ((CheckBox) txCheckBox).setSelected(showTransactions);
+        txCheckBox.setOnMouseClicked(e -> {
+            final int gridIndex = GridPane.getRowIndex((Node) e.getSource()) - 1;
+            final BitMaskQuery vxbitMaskQuery = controller.getVertexQueryCollection().getQuery(gridIndex);
+            final BitMaskQuery txbitMaskQuery = controller.getTransactionQueryCollection().getQuery(gridIndex);
+
+            if (vxbitMaskQuery != null && txbitMaskQuery != null) {
+                controller.getTransactionQueryCollection().removeQuery(gridIndex);
+            } else if (vxbitMaskQuery != null) {
+                final BitMaskQuery tempQuery = new BitMaskQuery(new Query(GraphElementType.TRANSACTION, controller.getVertexQueryCollection().getQuery(gridIndex).getQueryString()), gridIndex, controller.getVertexQueryCollection().getQuery(gridIndex).getDescription());
+                tempQuery.setVisibility(controller.getVertexQueryCollection().getQuery(gridIndex).getVisibility());
+                controller.getTransactionQueryCollection().add(tempQuery);
+            } else if (txbitMaskQuery != null) {
+                final BitMaskQuery tempQuery = new BitMaskQuery(new Query(GraphElementType.VERTEX, controller.getTransactionQueryCollection().getQuery(gridIndex).getQueryString()), gridIndex, controller.getTransactionQueryCollection().getQuery(gridIndex).getDescription());
+                tempQuery.setVisibility(controller.getTransactionQueryCollection().getQuery(gridIndex).getVisibility());
+                controller.getVertexQueryCollection().add(tempQuery);
+                controller.getTransactionQueryCollection().removeQuery(gridIndex);
+            } else {
+                controller.getTransactionQueryCollection().add(new BitMaskQuery(new Query(GraphElementType.TRANSACTION, null), gridIndex, StringUtils.EMPTY));
+            }
+
+            controller.execute();
+            controller.writeState();
+        });
+
+        // Layer Query Entry
         final Node queryTextArea = new TextArea();
         ((TextArea) queryTextArea).setPrefRowCount(1);
         ((TextArea) queryTextArea).setText(query);
         ((TextArea) queryTextArea).focusedProperty().addListener((observable, oldVal, newVal) -> {
             if (!newVal) {
-                final BitMaskQuery bitMaskQuery = controller.getQueryCollection().getQueries().get(currentIndex - 1);
-                //final LayerDescription layer = layers.get(currentIndex - 1);
-                if (StringUtils.isBlank(((TextArea) queryTextArea).getText())) {
-                    // empty meaning no query.
-                    bitMaskQuery.setQuery(null);
-                } else {
-                    bitMaskQuery.setQuery(new Query(GraphElementType.VERTEX, ((TextArea) queryTextArea).getText()));
-                    // create query and set it.
-                    // set string
-                    //bitMaskQuery.setQueryString(((TextArea) queryTextArea).getText());
+                final BitMaskQuery vxbitMaskQuery = controller.getVertexQueryCollection().getQuery(currentIndex);
+                final BitMaskQuery txbitMaskQuery = controller.getTransactionQueryCollection().getQuery(currentIndex);
+                if (vxbitMaskQuery != null) {
+                    vxbitMaskQuery.setQuery(new Query(GraphElementType.VERTEX, StringUtils.isBlank(((TextArea) queryTextArea).getText()) ? StringUtils.EMPTY : ((TextArea) queryTextArea).getText()));
                 }
-
+                if (txbitMaskQuery != null) {
+                    txbitMaskQuery.setQuery(new Query(GraphElementType.TRANSACTION, StringUtils.isBlank(((TextArea) queryTextArea).getText()) ? StringUtils.EMPTY : ((TextArea) queryTextArea).getText()));
+                }
                 controller.writeState();
             }
         });
 
+        // Layer Description Entry
         final Node descriptionTextArea = new TextArea();
         ((TextArea) descriptionTextArea).setPrefRowCount(1);
         ((TextArea) descriptionTextArea).setText(description);
         ((TextArea) descriptionTextArea).focusedProperty().addListener((observable, oldVal, newVal) -> {
             if (!newVal) {
-                final BitMaskQuery bitMaskQuery = controller.getQueryCollection().getQueries().get(currentIndex - 1);
-                //final LayerDescription layer = layers.get(currentIndex - 1);
-                bitMaskQuery.setDescription(((TextArea) descriptionTextArea).getText());
+                final BitMaskQuery vxbitMaskQuery = controller.getVertexQueryCollection().getQuery(currentIndex);
+                if (vxbitMaskQuery != null) {
+                    vxbitMaskQuery.setDescription(((TextArea) descriptionTextArea).getText());
+                }
+                final BitMaskQuery txbitMaskQuery = controller.getTransactionQueryCollection().getQuery(currentIndex);
+                if (txbitMaskQuery != null) {
+                    txbitMaskQuery.setDescription(((TextArea) descriptionTextArea).getText());
+                }
                 controller.writeState();
             }
         });
 
-        if (LayerDescription.DEFAULT_QUERY_STRING.equals(query)) {
+        // Default layer Handling
+        if (currentIndex == 0) {
             layerIdText.setDisable(true);
             ((CheckBox) visibilityCheckBox).setSelected(true);
             visibilityCheckBox.setDisable(true);
+            vxCheckBox.setDisable(true);
+            txCheckBox.setDisable(true);
             queryTextArea.setDisable(true);
             descriptionTextArea.setDisable(true);
         }
 
-        final BitMaskQuery bitMaskQuery = new BitMaskQuery(new Query(GraphElementType.VERTEX, query), currentIndex, description);
-        if (query == null) { // TODO: Redundant?
-            bitMaskQuery.setQuery(null);
+        // Adding to collections based on checkbox preferences.
+        if (showVertices) {
+            final BitMaskQuery vxbitMaskQuery = new BitMaskQuery(new Query(GraphElementType.VERTEX, query), currentIndex, description);
+            vxbitMaskQuery.setVisibility(checkBoxSelected);
+            controller.getVertexQueryCollection().add(vxbitMaskQuery);
         }
-        bitMaskQuery.setVisibility(checkBoxSelected);
-        controller.getQueryCollection().add(bitMaskQuery);
-        //controller.
-        // TODO: Hardcoded vertex
-        //layers.add(new LayerDescription(currentIndex, checkBoxSelected, query, description));
-        layersGridPane.addRow(currentIndex, layerIdText,
-                visibilityCheckBox, queryTextArea, descriptionTextArea);
 
-        return currentIndex;
+        if (showTransactions) {
+            final BitMaskQuery txbitMaskQuery = new BitMaskQuery(new Query(GraphElementType.TRANSACTION, query), currentIndex, description);
+            txbitMaskQuery.setVisibility(checkBoxSelected);
+            controller.getTransactionQueryCollection().add(txbitMaskQuery);
+        }
+
+        // Add created items to grid pane
+        layersGridPane.addRow(currentIndex + 1, layerIdText,
+                visibilityCheckBox, queryTextArea, descriptionTextArea, vxCheckBox, txCheckBox);
     }
 
-    public List<BitMaskQuery> getlayers() {
-        return Collections.unmodifiableList(controller.getQueryCollection().getQueries());
-    }
-
-    public synchronized void setLayers(final List<BitMaskQuery> layers) {
-        //final CountDownLatch cd1 = new CountDownLatch(1);
+    public synchronized void setLayers(final BitMaskQuery[] vxLayers, final BitMaskQuery[] txLayers) {
         Platform.runLater(() -> {
-
-            controller.getQueryCollection().getQueries().clear();
-            //this.layers.clear();
-            final List<BitMaskQuery> layersCopy = new ArrayList();
-            layers.forEach((layer) -> {
-                layersCopy.add(new BitMaskQuery(layer));
-            });
-            updateLayers(layersCopy);
-            //cd1.countDown();
+            controller.getVertexQueryCollection().clear();
+            controller.getTransactionQueryCollection().clear();
+            updateLayers(vxLayers, txLayers);
         });
-        //try {
-        //    cd1.await();
-        //} catch (InterruptedException ex) {
-        //    Exceptions.printStackTrace(ex);
-        //}
     }
 
-    private void updateLayers(List<BitMaskQuery> queries) {
+    private void updateLayers(final BitMaskQuery[] vxQueries, final BitMaskQuery[] txQueries) {
         synchronized (this) {
             layersGridPane.getChildren().removeIf(node -> GridPane.getRowIndex(node) > 0);
-            for (final BitMaskQuery bitMaskQuery : queries) {
-                createLayer(bitMaskQuery.getIndex(), bitMaskQuery.getVisibility(),
-                        bitMaskQuery.getQueryString(), bitMaskQuery.getDescription());
+            for (int position = 0; position < Math.max(vxQueries.length, txQueries.length); position++) {
+                final BitMaskQuery vxQuery = vxQueries[position];
+                final BitMaskQuery txQuery = txQueries[position];
+                if (vxQuery == null && txQuery == null) {
+                    continue;
+                }
 
+                final int queryIndex = vxQuery != null ? vxQuery.getIndex() : txQuery.getIndex();
+                final boolean queryVisibility = vxQuery != null ? vxQuery.getVisibility() : txQuery.getVisibility();
+                final String queryString = vxQuery != null ? vxQuery.getQueryString() : txQuery.getQueryString();
+                final String queryDescription = vxQuery != null ? vxQuery.getDescription() : txQuery.getDescription();
+                createLayer(queryIndex, queryVisibility, queryString, queryDescription, vxQuery != null, txQuery != null);
             }
         }
     }
@@ -282,7 +311,8 @@ public class LayersViewPane extends BorderPane {
      * Set the layers to the defaults.
      */
     public synchronized void setDefaultLayers() {
-        controller.getQueryCollection().setDefaultQueries();
-        setLayers(BitMaskQueryCollection.getDefaultQueries());
+        controller.getVertexQueryCollection().setDefaultQueries();
+        controller.getTransactionQueryCollection().setDefaultQueries();
+        setLayers(BitMaskQueryCollection.DEFAULT_VX_QUERIES, BitMaskQueryCollection.DEFAULT_TX_QUERIES);
     }
 }

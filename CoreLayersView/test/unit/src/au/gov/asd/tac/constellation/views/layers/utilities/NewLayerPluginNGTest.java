@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2020 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,14 +16,12 @@
 package au.gov.asd.tac.constellation.views.layers.utilities;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.LayersConcept;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.views.layers.layer.LayerDescription;
+import au.gov.asd.tac.constellation.views.layers.shortcut.NewLayerPlugin;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewState;
-import java.util.List;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 import org.testng.annotations.Test;
@@ -41,21 +39,21 @@ public class NewLayerPluginNGTest {
         graph = new StoreGraph();
 
         // Create LayerMask attributes
-        layerMaskV = LayersConcept.VertexAttribute.LAYER_MASK.ensure(graph);
+        layerMaskV = LayersViewConcept.VertexAttribute.LAYER_MASK.ensure(graph);
         if (layerMaskV == Graph.NOT_FOUND) {
             fail();
         }
-        layerMaskT = LayersConcept.TransactionAttribute.LAYER_MASK.ensure(graph);
+        layerMaskT = LayersViewConcept.TransactionAttribute.LAYER_MASK.ensure(graph);
         if (layerMaskT == Graph.NOT_FOUND) {
             fail();
         }
 
         // Create LayerVisilibity Attributes
-        layerVisibilityV = LayersConcept.VertexAttribute.LAYER_VISIBILITY.ensure(graph);
+        layerVisibilityV = LayersViewConcept.VertexAttribute.LAYER_VISIBILITY.ensure(graph);
         if (layerVisibilityV == Graph.NOT_FOUND) {
             fail();
         }
-        layerVisibilityT = LayersConcept.TransactionAttribute.LAYER_VISIBILITY.ensure(graph);
+        layerVisibilityT = LayersViewConcept.TransactionAttribute.LAYER_VISIBILITY.ensure(graph);
         if (layerVisibilityT == Graph.NOT_FOUND) {
             fail();
         }
@@ -72,9 +70,9 @@ public class NewLayerPluginNGTest {
         assertTrue(layersViewStateAttributeId != Graph.NOT_FOUND);
 
         final LayersViewState currentState = graph.getObjectValue(layersViewStateAttributeId, 0);
-        final List<LayerDescription> layers = currentState.getLayers();
 
-        assertTrue(layers.size() == 3);
+        //TODO: CurrentState will be null and needs to be created
+        assertTrue(currentState.getLayerCount() == 3);
 
     }
 }

@@ -17,14 +17,15 @@ package au.gov.asd.tac.constellation.views.layers.state;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.LayersConcept;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
-import au.gov.asd.tac.constellation.views.layers.utilities.BitMaskQuery;
-import au.gov.asd.tac.constellation.views.layers.utilities.BitMaskQueryCollection;
-import au.gov.asd.tac.constellation.views.layers.utilities.Query;
+import au.gov.asd.tac.constellation.views.layers.LayersViewController;
+import au.gov.asd.tac.constellation.views.layers.query.BitMaskQuery;
+import au.gov.asd.tac.constellation.views.layers.query.BitMaskQueryCollection;
+import au.gov.asd.tac.constellation.views.layers.query.Query;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.NotifyDescriptor;
 
 /**
@@ -34,73 +35,75 @@ import org.openide.NotifyDescriptor;
  */
 public class LayersViewState {
 
-    private final BitMaskQueryCollection queries;
+    private final BitMaskQueryCollection vxQueries;
+    private final BitMaskQueryCollection txQueries;
     private final List<SchemaAttribute> layerAttributes;
 
     public LayersViewState() {
-        this((List<BitMaskQuery>) null, (List<SchemaAttribute>) null, new BitMaskQueryCollection(new ArrayList<BitMaskQuery>())); // TODO: Make this pass in list of queries
+        this((List<SchemaAttribute>) null, new BitMaskQueryCollection(GraphElementType.VERTEX),
+                new BitMaskQueryCollection(GraphElementType.TRANSACTION));
     }
 
     public LayersViewState(final LayersViewState state) {
-        this(state.getLayers(), state.getLayerAttributes(), state.queries);
+        this(state.getLayerAttributes(), state.vxQueries, state.txQueries);
     }
 
-    public LayersViewState(final List<BitMaskQuery> layers, final List<SchemaAttribute> layerAttributes, final BitMaskQueryCollection queries) {
+    public LayersViewState(final List<SchemaAttribute> layerAttributes,
+            final BitMaskQueryCollection vxQueries, final BitMaskQueryCollection txQueries) {
 
         this.layerAttributes = new ArrayList<>();
-        this.queries = queries;
+        this.vxQueries = vxQueries;
+        this.txQueries = txQueries;
         if (layerAttributes != null) {
             this.layerAttributes.addAll(layerAttributes);
         }
     }
 
+    // returns the highest no of layers
     public int getLayerCount() {
-        return queries.getQueriesCount();
+        return Math.max(vxQueries.getHighestQueryIndex(), txQueries.getHighestQueryIndex());
     }
 
-    public List<BitMaskQuery> getLayers() {
-        return queries.getQueries();
+    public BitMaskQueryCollection getVxQueriesCollection() {
+        return vxQueries;
     }
 
-    public BitMaskQueryCollection getQueriesCollection() {
-        return queries;
+    public BitMaskQueryCollection getTxQueriesCollection() {
+        return txQueries;
     }
 
     public List<SchemaAttribute> getLayerAttributes() {
         return layerAttributes;
     }
 
-    public void addLayer(final BitMaskQuery layer) {
-        queries.add(layer);
-    }
-
     public void addLayer() {
-        if (getLayerCount() < 32) {
-            addLayer(false, "", "");
+        final int count = getLayerCount();
+        if (count < BitMaskQueryCollection.MAX_QUERY_AMT) {
+            vxQueries.add(new BitMaskQuery(new Query(GraphElementType.VERTEX, null), count + 1, StringUtils.EMPTY));
+            txQueries.add(new BitMaskQuery(new Query(GraphElementType.TRANSACTION, null), count + 1, StringUtils.EMPTY));
         } else {
-            NotifyDisplayer.display("You cannot have more than 32 layers open", NotifyDescriptor.WARNING_MESSAGE);
+            NotifyDisplayer.display("You cannot have more than " + BitMaskQueryCollection.MAX_QUERY_AMT + " layers open", NotifyDescriptor.WARNING_MESSAGE);
         }
     }
 
-    public void addLayer(final boolean visibility, final String queryString, final String description) {
-        // TODO: Change signature to
-        // public void addLayer(final GraphElementType elementType, final String queryString, final int bitIndex, final String description) {
-        queries.add(new Query(GraphElementType.VERTEX, queryString), 1, description); // bitIndex, description);
+    public void setVxLayers(final BitMaskQuery[] vxLayers) {
+        this.vxQueries.setQueries(vxLayers);
     }
 
-    public void setLayers(final List<BitMaskQuery> layers) {
-        this.queries.setQueries(layers);
+    public void setTxLayers(final BitMaskQuery[] txLayers) {
+        this.txQueries.setQueries(txLayers);
     }
 
     public void extractLayerAttributes(GraphWriteMethods graph) {
-        final int graphCurrentBitMaskId = LayersConcept.GraphAttribute.LAYER_MASK_SELECTED.ensure(graph);
-        final int currentBitmask = graph.getIntValue(graphCurrentBitMaskId, 0); // TODO: Get Long value once switched to long
+        final int graphCurrentBitMaskId = LayersViewConcept.GraphAttribute.LAYER_MASK_SELECTED.ensure(graph);
+        final long currentBitmask = graph.getLongValue(graphCurrentBitMaskId, 0);
 
-        setLayerAttributes(queries.getListenedAttributes(currentBitmask));
-    }
+        // get attributes from vertex and transactions
+        final List<SchemaAttribute> newLayerAttributes = vxQueries.getListenedAttributes(graph, currentBitmask);
+        newLayerAttributes.addAll(txQueries.getListenedAttributes(graph, currentBitmask));
 
-    public void setLayerAttributes(final List<SchemaAttribute> layerAttributes) {
         this.layerAttributes.clear();
-        this.layerAttributes.addAll(layerAttributes);
+        this.layerAttributes.addAll(newLayerAttributes);
+        LayersViewController.getDefault().setListenedAttributes();
     }
 }

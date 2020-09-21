@@ -19,8 +19,8 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.LayersConcept;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.graph.monitor.AttributeValueMonitor;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -28,10 +28,10 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
+import au.gov.asd.tac.constellation.views.layers.query.BitMaskQuery;
+import au.gov.asd.tac.constellation.views.layers.query.BitMaskQueryCollection;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewState;
-import au.gov.asd.tac.constellation.views.layers.utilities.BitMaskQuery;
-import au.gov.asd.tac.constellation.views.layers.utilities.BitMaskQueryCollection;
 import au.gov.asd.tac.constellation.views.layers.utilities.UpdateLayerSelectionPlugin;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,34 +43,49 @@ import java.util.List;
  */
 public class LayersViewController {
 
-    private final LayersViewTopComponent parent;
-    private final List<SchemaAttribute> listenedAttributes;
-    private final BitMaskQueryCollection bitMaskCollection = new BitMaskQueryCollection(new ArrayList<>());
+    // Layers view controller instance
+    private static LayersViewController INSTANCE = null;
+    private LayersViewTopComponent parent;
 
-    public LayersViewController(final LayersViewTopComponent parent) {
-        this.parent = parent;
-        this.listenedAttributes = new ArrayList<>();
+    private final List<AttributeValueMonitor> valueMonitors;
+    private final List<SchemaAttribute> changeListeners;
+
+    private final BitMaskQueryCollection vxBitMaskCollection = new BitMaskQueryCollection(GraphElementType.VERTEX);
+    private final BitMaskQueryCollection txBitMaskCollection = new BitMaskQueryCollection(GraphElementType.TRANSACTION);
+
+    /**
+     * Private constructor for singleton
+     */
+    private LayersViewController() {
+        this.valueMonitors = new ArrayList<>();
+        this.changeListeners = new ArrayList<>();
     }
 
     /**
-     * Add attributes required by the Layers View for it to function
+     * Singleton instance retrieval
+     *
+     * @return the instance, if one is not made, it will make one.
      */
-    public void addAttributes() {
-        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-        if (activeGraph != null) {
-            PluginExecution.withPlugin(new SimpleEditPlugin("Layers View: Add Required Attributes") {
-                @Override
-                public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-                    LayersConcept.GraphAttribute.LAYER_MASK_SELECTED.ensure(graph);
-                    LayersConcept.GraphAttribute.LAYER_QUERIES.ensure(graph);
-                    LayersConcept.GraphAttribute.LAYER_PREFERENCES.ensure(graph);
-                    LayersConcept.VertexAttribute.LAYER_MASK.ensure(graph);
-                    LayersConcept.VertexAttribute.LAYER_VISIBILITY.ensure(graph);
-                    LayersConcept.TransactionAttribute.LAYER_MASK.ensure(graph);
-                    LayersConcept.TransactionAttribute.LAYER_VISIBILITY.ensure(graph);
-                }
-            }).executeLater(activeGraph);
+    public synchronized static LayersViewController getDefault() {
+        if (INSTANCE == null) {
+            INSTANCE = new LayersViewController();
         }
+        return INSTANCE;
+    }
+
+    /**
+     *
+     * @param parent the TopComponent which this controller controls.
+     * @return the instance to allow chaining
+     */
+    public LayersViewController init(final LayersViewTopComponent parent) {
+        this.parent = parent;
+        return INSTANCE;
+    }
+
+    public void setListenedAttributes() {
+        parent.removeValueHandlers(valueMonitors);
+        valueMonitors.addAll(parent.setChangeListeners(changeListeners));
     }
 
     /**
@@ -88,8 +103,30 @@ public class LayersViewController {
                     }
 
                     final LayersViewState state = graph.getObjectValue(layerStateId, 0);
-                    listenedAttributes.clear();
-                    listenedAttributes.addAll(state.getLayerAttributes());
+                    if (state != null) {
+                        changeListeners.clear();
+                        changeListeners.addAll(state.getLayerAttributes());
+                    }
+                }
+            }).executeLater(activeGraph);
+        }
+    }
+
+    /**
+     * Add attributes required by the Layers View for it to function
+     */
+    public void addAttributes() {
+        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+        if (activeGraph != null) {
+            PluginExecution.withPlugin(new SimpleEditPlugin("Layers View: Add Required Attributes") {
+                @Override
+                public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+                    LayersViewConcept.GraphAttribute.LAYER_MASK_SELECTED.ensure(graph);
+                    LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.ensure(graph);
+                    LayersViewConcept.VertexAttribute.LAYER_MASK.ensure(graph);
+                    LayersViewConcept.VertexAttribute.LAYER_VISIBILITY.ensure(graph);
+                    LayersViewConcept.TransactionAttribute.LAYER_MASK.ensure(graph);
+                    LayersViewConcept.TransactionAttribute.LAYER_VISIBILITY.ensure(graph);
                 }
             }).executeLater(activeGraph);
         }
@@ -100,18 +137,20 @@ public class LayersViewController {
      * Update the bitmask used to determine visibility of elements on the graph.
      */
     public void execute() {
-        final LayersViewPane pane = parent.getContent();
-        if (pane == null) {
-            return;
-        }
-        final List<String> layerQueries = new ArrayList<>();
         int newBitmask = 0b0;
-        for (final BitMaskQuery query : pane.getlayers()) {
-            layerQueries.add(query.getQueryString());
-            newBitmask |= query.getVisibility() ? (1 << query.getIndex() - 1) : 0;
+        for (int position = 0; position <= Math.max(vxBitMaskCollection.getHighestQueryIndex(), txBitMaskCollection.getHighestQueryIndex()); position++) {
+            final BitMaskQuery vxQuery = vxBitMaskCollection.getQuery(position);
+            final BitMaskQuery txQuery = txBitMaskCollection.getQuery(position);
+
+            if (vxQuery != null) {
+                newBitmask |= vxQuery.getVisibility() ? (1 << vxQuery.getIndex()) : 0;
+            } else if (txQuery != null) {
+                newBitmask |= txQuery.getVisibility() ? (1 << txQuery.getIndex()) : 0;
+            }
         }
         // if the newBitmask is 1, it means none of the boxes are checked. therefore display default layer 1 (All nodes)
         newBitmask = (newBitmask == 0) ? 0b1 : (newBitmask > 1) ? newBitmask & ~0b1 : newBitmask;
+        // TODO: use activequeries to make bitmask
 
         PluginExecution.withPlugin(new UpdateLayerSelectionPlugin(newBitmask))
                 .executeLater(GraphManager.getDefault().getActiveGraph());
@@ -143,31 +182,24 @@ public class LayersViewController {
         if (pane == null || graph == null) {
             return;
         }
-        PluginExecution.withPlugin(new LayersViewStateWriter(pane.getlayers()))
+        PluginExecution.withPlugin(new LayersViewStateWriter(vxBitMaskCollection.getQueries(), txBitMaskCollection.getQueries()))
                 .executeLater(graph);
     }
 
-    public List<SchemaAttribute> getListenedAttributes() {
-        return listenedAttributes;
-    }
-
-    //
     public void updateQueries(final Graph currentGraph) {
-        final LayersViewController.UpdateQueryPlugin plugin = new LayersViewController.UpdateQueryPlugin(bitMaskCollection);
-        PluginExecution.withPlugin(plugin).executeLater(currentGraph);
-//        final Future<?> f = PluginExecution.withPlugin(plugin).executeLater(currentGraph);
-//        try {
-//            f.get();
-//        } catch (InterruptedException ex) {
-//            Exceptions.printStackTrace(ex);
-//            Thread.currentThread().interrupt();
-//        } catch (ExecutionException ex) {
-//            Exceptions.printStackTrace(ex);
-//        }
+        final LayersViewController.UpdateQueryPlugin vxPlugin = new LayersViewController.UpdateQueryPlugin(vxBitMaskCollection);
+        PluginExecution.withPlugin(vxPlugin).executeLater(currentGraph);
+        // TODO: How do we call both and make them work.
+        //final LayersViewController.UpdateQueryPlugin txPlugin = new LayersViewController.UpdateQueryPlugin(txBitMaskCollection);
+        //PluginExecution.withPlugin(txPlugin).executeLater(currentGraph);
     }
 
-    public BitMaskQueryCollection getQueryCollection() {
-        return bitMaskCollection;
+    public BitMaskQueryCollection getVertexQueryCollection() {
+        return vxBitMaskCollection;
+    }
+
+    public BitMaskQueryCollection getTransactionQueryCollection() {
+        return txBitMaskCollection;
     }
 
     /**
@@ -196,7 +228,8 @@ public class LayersViewController {
             if (currentState == null || pane == null) {
                 return;
             }
-            pane.setLayers(currentState.getLayers());
+
+            pane.setLayers(currentState.getVxQueriesCollection().getQueries(), currentState.getTxQueriesCollection().getQueries());
         }
 
         @Override
@@ -210,10 +243,12 @@ public class LayersViewController {
      */
     private static final class LayersViewStateWriter extends SimpleEditPlugin {
 
-        private final List<BitMaskQuery> layers;
+        private final BitMaskQuery[] vxLayers;
+        private final BitMaskQuery[] txLayers;
 
-        public LayersViewStateWriter(final List<BitMaskQuery> layers) {
-            this.layers = layers;
+        public LayersViewStateWriter(final BitMaskQuery[] vxLayers, final BitMaskQuery[] txLayers) {
+            this.vxLayers = vxLayers;
+            this.txLayers = txLayers;
         }
 
         @Override
@@ -226,8 +261,8 @@ public class LayersViewController {
             final LayersViewState currentState = graph.getObjectValue(stateAttributeId, 0);
 
             final LayersViewState newState = currentState == null ? new LayersViewState() : new LayersViewState(currentState);
-            newState.setLayers(layers);
-            newState.extractLayerAttributes(graph);
+            newState.setVxLayers(vxLayers);
+            newState.setTxLayers(txLayers);
 
             graph.setObjectValue(stateAttributeId, 0, newState);
         }
@@ -247,7 +282,7 @@ public class LayersViewController {
 
         private final BitMaskQueryCollection bitMasks;
 
-        public UpdateQueryPlugin(BitMaskQueryCollection bitMasks) {
+        public UpdateQueryPlugin(final BitMaskQueryCollection bitMasks) {
             this.bitMasks = bitMasks;
         }
 
@@ -258,14 +293,20 @@ public class LayersViewController {
 
         @Override
         protected void edit(GraphWriteMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
-            final int bitMaskAttributeId = graph.getAttribute(GraphElementType.VERTEX, "bitmask");
-            final int bitmaskId = LayersConcept.VertexAttribute.LAYER_MASK.get(graph);
-            final int bitmaskVisibilityId = LayersConcept.VertexAttribute.LAYER_VISIBILITY.get(graph);
-            final int visibleMaskAttributeId = graph.getAttribute(GraphElementType.VERTEX, "visibility");
+            final int graphCurrentBitMaskAttrId = LayersViewConcept.GraphAttribute.LAYER_MASK_SELECTED.ensure(graph);
+            final long currentBitmask = graph.getLongValue(graphCurrentBitMaskAttrId, 0);
 
-            final int graphCurrentBitMaskId = LayersConcept.GraphAttribute.LAYER_MASK_SELECTED.ensure(graph);
-            final int currentBitmask = graph.getIntValue(graphCurrentBitMaskId, 0);
-            bitMasks.updateBitMasks(graph, bitmaskId, bitmaskVisibilityId, GraphElementType.VERTEX, currentBitmask);
+            final int bitmaskAttrId = LayersViewConcept.VertexAttribute.LAYER_MASK.get(graph);
+            final int bitmaskVisibilityAttrId = LayersViewConcept.VertexAttribute.LAYER_VISIBILITY.get(graph);
+
+            bitMasks.setActiveQueries(currentBitmask);
+            bitMasks.updateBitMasks(graph, bitmaskAttrId, bitmaskVisibilityAttrId);
+
+            final int stateAttributeId = LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.ensure(graph);
+            final LayersViewState currentState = graph.getObjectValue(stateAttributeId, 0);
+            if (currentState != null) {
+                currentState.extractLayerAttributes(graph);
+            }
         }
     }
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.views.layers.utilities;
+package au.gov.asd.tac.constellation.views.layers.query;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
@@ -46,7 +46,7 @@ public class Query {
     private int[] attributeIds = null;
     private long[] valueModificationCounters = null;
 
-    public Query(GraphElementType elementType, String queryString) {
+    public Query(final GraphElementType elementType, final String queryString) {
         this.elementType = elementType;
         this.queryString = queryString;
     }
@@ -59,7 +59,7 @@ public class Query {
         return elementType;
     }
 
-    public boolean requiresUpdate(GraphReadMethods graph) {
+    public boolean requiresUpdate(final GraphReadMethods graph) {
         if (graphId == null || !graphId.equals(graph.getId())) {
             return true;
         }
@@ -82,7 +82,7 @@ public class Query {
         return false;
     }
 
-    public Object compile(GraphReadMethods graph, IntReadable index) {
+    public Object compile(final GraphReadMethods graph, final IntReadable index) {
         final SequenceExpression expression = ExpressionParser.parse(queryString);
 
         final GraphVariableProvider variableProvider = new GraphVariableProvider(graph, elementType);
@@ -105,6 +105,10 @@ public class Query {
 
     public void setQueryString(final String queryString) {
         this.queryString = queryString;
+    }
+
+    public int[] getAttributeIds() {
+        return attributeIds;
     }
 
     private static final class GraphVariableProvider implements VariableProvider {

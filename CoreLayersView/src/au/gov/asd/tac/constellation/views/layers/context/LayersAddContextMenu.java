@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.views.layers.utilities;
+package au.gov.asd.tac.constellation.views.layers.context;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphConstants;
@@ -23,8 +23,10 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.visual.contextmenu.ContextMenuProvider;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
+import au.gov.asd.tac.constellation.views.layers.query.BitMaskQuery;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewState;
+import au.gov.asd.tac.constellation.views.layers.utilities.UpdateElementBitmaskPlugin;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -39,6 +41,11 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = ContextMenuProvider.class, position = 210)
 public class LayersAddContextMenu implements ContextMenuProvider {
+
+    public enum LayerAction {
+        ADD,
+        REMOVE
+    }
 
     private static final String LAYER_MENU = "Layers";
     private static final String NO_LAYER_TEXT = "[NO DESCRIPTION]";
@@ -56,15 +63,27 @@ public class LayersAddContextMenu implements ContextMenuProvider {
             final List<String> currentLayers = new ArrayList<>();
             if (stateAttributeId != GraphConstants.NOT_FOUND) {
                 final LayersViewState currentState = graph.getObjectValue(stateAttributeId, 0);
-                for (final BitMaskQuery layer : currentState.getLayers()) {
-                    if (layer.getIndex() > 1) {
-                        final String description = StringUtils.isBlank(layer.getDescription())
-                                ? NO_LAYER_TEXT : layer.getDescription();
-                        currentLayers.add(String.valueOf(layer.getIndex()) + " - " + description);
+
+                if (currentState != null) {
+                    for (int position = 0; position <= currentState.getLayerCount(); position++) {
+                        final BitMaskQuery vxQuery = currentState.getVxQueriesCollection().getQuery(position);
+                        final BitMaskQuery txQuery = currentState.getTxQueriesCollection().getQuery(position);
+
+                        if (vxQuery != null && vxQuery.getIndex() > 0) {
+                            final String description = StringUtils.isBlank(txQuery.getDescription())
+                                    ? NO_LAYER_TEXT : txQuery.getDescription();
+                            currentLayers.add(String.valueOf(txQuery.getIndex()) + " - " + description);
+                        } else if (txQuery != null && txQuery.getIndex() > 0) {
+                            final String description = StringUtils.isBlank(txQuery.getDescription())
+                                    ? NO_LAYER_TEXT : txQuery.getDescription();
+                            currentLayers.add(String.valueOf(txQuery.getIndex()) + " - " + description);
+                        }
                     }
+                } else {
+                    currentLayers.add("1 - " + NO_LAYER_TEXT);
                 }
             } else {
-                currentLayers.add("2 - " + NO_LAYER_TEXT);
+                currentLayers.add("1 - " + NO_LAYER_TEXT);
             }
             return currentLayers;
         } else {
