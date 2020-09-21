@@ -257,7 +257,7 @@ public class PCAPImportFileParser extends ImportFileParser {
     private int frameCounter = 1;
 
     /**
-     * Construct a new JSONImportFileParser with "JSON" label at position 4.
+     * Construct a new PCAPImportFileParser with "PCAP" label at position 4.
      */
     public PCAPImportFileParser() {
         super("PCAP", 4);
@@ -829,6 +829,6 @@ public class PCAPImportFileParser extends ImportFileParser {
      */
     @Override
     public List<String[]> preview(final InputSource input, final PluginParameters parameters, final int limit) throws IOException {
-        return getResults(input, 0);
+        return getResults(input, limit);
     }
 }

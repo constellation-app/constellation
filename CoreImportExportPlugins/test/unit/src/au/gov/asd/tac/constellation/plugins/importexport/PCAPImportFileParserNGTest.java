@@ -5,7 +5,6 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport;
 
-import static au.gov.asd.tac.constellation.plugins.importexport.JSONImportFileParserNGTest.private_invalidJSONMsg;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.InputSource;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.PCAPImportFileParser;
 import java.io.File;
@@ -13,9 +12,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -145,7 +142,68 @@ public class PCAPImportFileParserNGTest {
     @AfterMethod
     public void tearDownMethod() throws Exception {
     }
-
+    
+    @Test
+    public void checkParseInvalidPCAP() throws InterruptedException {
+        // Confirm that attempts to parse invalid PCAP return a clean
+        // IOException exception.
+        final PCAPImportFileParser parser = new PCAPImportFileParser();
+        try {
+            parser.parse(new InputSource(new File(this.getClass().getResource("./resources/PCAP-invalidContent.pcap").getFile())), null);
+            Assert.fail("Expected exception not received");
+        } catch (IOException ex) {
+            Assert.assertTrue(ex.getMessage().contains(private_invalidPCAPMsg));
+        } catch (Exception ex) {
+            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
+        }
+    }
+    
+    @Test
+    public void checkParseTruncatedPCAPHeader() throws InterruptedException {
+        // Confirm that attempts to parse invalid PCAP return a clean
+        // IOException exception.
+        final PCAPImportFileParser parser = new PCAPImportFileParser();
+        try {
+            parser.parse(new InputSource(new File(this.getClass().getResource("./resources/PCAP-truncated_header.pcap").getFile())), null);
+            Assert.fail("Expected exception not received");
+        } catch (IOException ex) {
+            Assert.assertTrue(ex.getMessage().contains(private_invalidPCAPMsg));
+        } catch (Exception ex) {
+            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
+        }
+    }
+    
+    @Test
+    public void checkParseTruncatedPCAPFrame1() throws InterruptedException {
+        // Confirm that attempts to parse invalid PCAP return a clean
+        // IOException exception.
+        final PCAPImportFileParser parser = new PCAPImportFileParser();
+        try {
+            List<String[]> results = parser.parse(new InputSource(new File(this.getClass().getResource("./resources/PCAP-truncated_frame1.pcap").getFile())), null);
+            Assert.assertEquals(results.size(), 1, "results.size():");
+            Assert.assertEquals(expectedHeadings, results.get(0), "results[0]:");
+            
+        } catch (Exception ex) {
+            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
+        }
+    }
+    
+    @Test
+    public void checkParseTruncatedPCAPFrame2() throws InterruptedException {
+        // Confirm that attempts to parse invalid PCAP return a clean
+        // IOException exception.
+        final PCAPImportFileParser parser = new PCAPImportFileParser();
+        try {
+            List<String[]> results = parser.parse(new InputSource(new File(this.getClass().getResource("./resources/PCAP-truncated_frame2.pcap").getFile())), null);
+            Assert.assertEquals(results.size(), 2, "results.size():");
+            Assert.assertEquals(expectedHeadings, results.get(0), "results[0]:");
+            Assert.assertEquals(expectedRow1, results.get(1), "results[1]:");
+            
+        } catch (Exception ex) {
+            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
+        }
+    }
+    
     @Test
     public void checkPreviewInvalidPCAP() throws InterruptedException {
         // Confirm that attempts to preview invalid PCAP return a clean
@@ -484,7 +542,6 @@ public class PCAPImportFileParserNGTest {
     public void checkbytesToMacAddressStr() throws InterruptedException {
         final PCAPImportFileParser parser = new PCAPImportFileParser();
         StringBuilder infoBuilder = new StringBuilder();
-        String sampleText = "EXAMPLE";
 
         try {
             String result1 = (String) private_bytesToMacAddressStr.invoke(parser, testSrcArray, 0);
@@ -575,7 +632,6 @@ public class PCAPImportFileParserNGTest {
     public void checkbytesToHexStr() throws InterruptedException {
         final PCAPImportFileParser parser = new PCAPImportFileParser();
         StringBuilder infoBuilder = new StringBuilder();
-        String sampleText = "EXAMPLE";
 
         try {
             String result1 = (String) private_bytesToHexStr.invoke(parser, testSrcArray, 0, 1);
