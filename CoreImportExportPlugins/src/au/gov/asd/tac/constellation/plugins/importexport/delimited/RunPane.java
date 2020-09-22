@@ -87,7 +87,7 @@ public class RunPane extends BorderPane implements KeyListener {
     private int attributeCount = 0;
 
     private final TextField filterField;
-    private final RowFilter rowFilter = new RowFilter();
+    private RowFilter rowFilter = null;
     private String filter = "";
 
     private final SplitPane attributeFilterPane = new SplitPane();
@@ -100,6 +100,8 @@ public class RunPane extends BorderPane implements KeyListener {
     private String[] currentColumnLabels = new String[0];
 
     private static final Image ADD_IMAGE = UserInterfaceIconProvider.ADD.buildImage(16, Color.BLACK);
+
+    private static final String ROW_FILTER_INITIALISER = "Import from Delimited: Row Filter Initialiser";
 
     private class AttributeBox extends BorderPane {
 
@@ -134,6 +136,13 @@ public class RunPane extends BorderPane implements KeyListener {
     }
 
     public RunPane(final ImportController importController) {
+        // improvement the performance loading the pane by moving the ScriptEngine loading off the EDT
+        if (rowFilter == null) {
+            new Thread(() -> {
+                rowFilter = new RowFilter();
+            }, ROW_FILTER_INITIALISER).start();
+        }
+
         this.importController = importController;
 
         setMaxHeight(Double.MAX_VALUE);
