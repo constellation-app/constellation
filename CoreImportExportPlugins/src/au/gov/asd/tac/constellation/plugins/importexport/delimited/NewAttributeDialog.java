@@ -33,6 +33,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.Window;
 
 /**
  * The NewAttributeDialog provides a dialog box allowing the user to create a
@@ -51,7 +52,7 @@ public class NewAttributeDialog extends Stage {
 
     private Attribute attribute = null;
 
-    public NewAttributeDialog(Stage owner, final GraphElementType elementType) {
+    public NewAttributeDialog(final Window owner, final GraphElementType elementType) {
 
         this.elementType = elementType;
 
@@ -61,18 +62,18 @@ public class NewAttributeDialog extends Stage {
 
         setTitle("New Attribute");
 
-        BorderPane root = new BorderPane();
+        final BorderPane root = new BorderPane();
         root.setStyle("-fx-background-color: #DDDDDD;");
-        Scene scene = new Scene(root);
+        final Scene scene = new Scene(root);
         setScene(scene);
 
-        GridPane fieldPane = new GridPane();
+        final GridPane fieldPane = new GridPane();
         fieldPane.setHgap(5);
         fieldPane.setVgap(5);
         fieldPane.setPadding(new Insets(10));
         root.setCenter(fieldPane);
 
-        Label typeLabel = new Label("Type:");
+        final Label typeLabel = new Label("Type:");
         GridPane.setConstraints(typeLabel, 0, 0);
         fieldPane.getChildren().add(typeLabel);
 
@@ -82,7 +83,7 @@ public class NewAttributeDialog extends Stage {
         GridPane.setConstraints(typeBox, 1, 0);
         fieldPane.getChildren().add(typeBox);
 
-        Label labelLabel = new Label("Label:");
+        final Label labelLabel = new Label("Label:");
         GridPane.setConstraints(labelLabel, 0, 1);
         fieldPane.getChildren().add(labelLabel);
 
@@ -93,7 +94,7 @@ public class NewAttributeDialog extends Stage {
         fieldPane.getChildren().add(labelText);
         labelText.requestFocus();
 
-        Label descriptionLabel = new Label("Description:");
+        final Label descriptionLabel = new Label("Description:");
         GridPane.setConstraints(descriptionLabel, 0, 2);
         fieldPane.getChildren().add(descriptionLabel);
 
@@ -103,20 +104,20 @@ public class NewAttributeDialog extends Stage {
         GridPane.setConstraints(descriptionText, 1, 2);
         fieldPane.getChildren().add(descriptionText);
 
-        FlowPane buttonPane = new FlowPane();
+        final FlowPane buttonPane = new FlowPane();
         buttonPane.setAlignment(Pos.BOTTOM_RIGHT);
         buttonPane.setPadding(new Insets(5));
         buttonPane.setHgap(5);
         root.setBottom(buttonPane);
 
-        Button okButton = new Button("Ok");
+        final Button okButton = new Button("Ok");
         okButton.setOnAction((ActionEvent event) -> {
             attribute = new NewAttribute(elementType, typeBox.getSelectionModel().getSelectedItem(), labelText.getText(), descriptionText.getText());
             NewAttributeDialog.this.hide();
         });
         buttonPane.getChildren().add(okButton);
 
-        Button cancelButton = new Button("Cancel");
+        final Button cancelButton = new Button("Cancel");
         cancelButton.setOnAction((ActionEvent event) -> {
             NewAttributeDialog.this.hide();
         });

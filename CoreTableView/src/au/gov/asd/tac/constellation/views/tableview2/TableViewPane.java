@@ -35,6 +35,7 @@ import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -56,18 +57,23 @@ import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Side;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Pagination;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Separator;
 import javafx.scene.control.SeparatorMenuItem;
@@ -75,7 +81,9 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
@@ -134,6 +142,10 @@ public final class TableViewPane extends BorderPane {
     private static final ImageView MENU_ICON_TRANSACTION = new ImageView(UserInterfaceIconProvider.MENU.buildImage(16));
 
     private static final int WIDTH = 120;
+    private static final int DEFAULT_MAX_ROWS_PER_PAGE = 500;
+    private int maxRowsPerPage = DEFAULT_MAX_ROWS_PER_PAGE;
+    
+    private final ToggleGroup pageSizeToggle = new ToggleGroup();
 
     private final TableViewTopComponent parent;
     private final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> columnIndex;
@@ -144,15 +156,22 @@ public final class TableViewPane extends BorderPane {
     private final TableView<ObservableList<String>> table;
     private TableFilter<ObservableList<String>> filter;
     private final BorderPane progress;
+    private SortedList<ObservableList<String>> sortedRowList;
+    private List<ObservableList<String>> filteredRowList;
 
     private Button columnVisibilityButton;
     private ToggleButton selectedOnlyButton;
     private Button elementTypeButton;
     private MenuButton copyButton;
     private MenuButton exportButton;
+    private MenuButton preferencesButton;
 
     private final ReadOnlyObjectProperty<ObservableList<String>> selectedProperty;
     private final ChangeListener<ObservableList<String>> tableSelectionListener;
+    
+    private boolean sortingListenerActive = false;
+    private final ChangeListener<? super Comparator<? super ObservableList<String>>> tableComparatorListener;
+    private final ChangeListener<? super TableColumn.SortType> tableSortTypeListener;
 
     // Store details of sort order changes made upon column order change or table
     // preference loading - these are used to reinstate the sorting after data update
@@ -182,7 +201,10 @@ public final class TableViewPane extends BorderPane {
         table.itemsProperty().addListener((v, o, n) -> table.refresh());
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         table.setPadding(new Insets(5));
-        setCenter(table);
+        
+        this.sortedRowList = new SortedList<>(FXCollections.observableArrayList());
+        sortedRowList.comparatorProperty().bind(table.comparatorProperty());
+        paginate(sortedRowList);
 
         // TODO: experiment with caching
         table.setCache(false);
@@ -200,6 +222,9 @@ public final class TableViewPane extends BorderPane {
         };
         this.selectedProperty = table.getSelectionModel().selectedItemProperty();
         selectedProperty.addListener(tableSelectionListener);
+        
+        this.tableComparatorListener = (v, o, n) -> paginateForSortListener();
+        this.tableSortTypeListener = (v, o, n) -> paginateForSortListener();
 
         this.scheduledExecutorService = Executors.newScheduledThreadPool(1);
     }
@@ -300,29 +325,38 @@ public final class TableViewPane extends BorderPane {
         exportButton.getItems().addAll(exportCsvItem, exportCsvSelectionItem,
                 exportExcelItem, exportExcelSelectionItem);
 
-        MenuButton layoutPreferencesButton = new MenuButton();
-        layoutPreferencesButton.setGraphic(SETTINGS_ICON);
-        layoutPreferencesButton.setMaxWidth(WIDTH);
-        layoutPreferencesButton.setPopupSide(Side.RIGHT);
+        this.preferencesButton = new MenuButton();
+        preferencesButton.setGraphic(SETTINGS_ICON);
+        preferencesButton.setMaxWidth(WIDTH);
+        preferencesButton.setPopupSide(Side.RIGHT);
+        final Menu setPageSize = createPageSizeMenu();
         final MenuItem savePrefsOption = new MenuItem("Save Table Preferences");
         savePrefsOption.setOnAction(e -> {
 
             if ((!table.getColumns().isEmpty()) && (GraphManager.getDefault().getActiveGraph() != null)) {
-                TableViewPreferencesIOUtilities.savePreferences(parent.getCurrentState().getElementType(), table);
+                TableViewPreferencesIOUtilities.savePreferences(parent.getCurrentState().getElementType(), table, maxRowsPerPage);
             }
             e.consume();
         });
         final MenuItem loadPrefsOption = new MenuItem("Load Table Preferences...");
-        loadPrefsOption.setOnAction((ActionEvent e) -> {
+        loadPrefsOption.setOnAction(e -> {
             if (GraphManager.getDefault().getActiveGraph() != null) {
                 loadPreferences();
+                //TODO: Replace need to sleep before paginating
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt();
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+                }
+                paginate(sortedRowList);
             }
             e.consume();
-        });
-        layoutPreferencesButton.getItems().addAll(savePrefsOption, loadPrefsOption);
+        }); 
+        preferencesButton.getItems().addAll(setPageSize, savePrefsOption, loadPrefsOption);
 
         final ToolBar toolbar = new ToolBar(columnVisibilityButton, selectedOnlyButton,
-                elementTypeButton, new Separator(), copyButton, exportButton, layoutPreferencesButton);
+                elementTypeButton, new Separator(), copyButton, exportButton, preferencesButton);
         toolbar.setOrientation(Orientation.VERTICAL);
         toolbar.setPadding(new Insets(5));
 
@@ -548,6 +582,26 @@ public final class TableViewPane extends BorderPane {
             newState.setColumnAttributes(columnAttributes);
             PluginExecution.withPlugin(new TableViewUtilities.UpdateStatePlugin(newState)).executeLater(graph);
         }
+    }
+    
+    private Menu createPageSizeMenu() {
+        final Menu pageSizeMenu = new Menu("Set Page Size");
+        final List<Integer> pageSizes = Arrays.asList(100, 250, 500, 1000);
+        for (final Integer pageSize : pageSizes) {
+            final RadioMenuItem pageSizeOption = new RadioMenuItem(pageSize.toString());
+            pageSizeOption.setToggleGroup(pageSizeToggle);
+            pageSizeOption.setOnAction(e -> {
+                if (maxRowsPerPage != pageSize) {
+                    maxRowsPerPage = pageSize;
+                    paginate(sortedRowList);
+                }
+            });
+            if (pageSize == DEFAULT_MAX_ROWS_PER_PAGE) {
+                pageSizeOption.setSelected(true); // initially set the default as selected
+            }
+            pageSizeMenu.getItems().add(pageSizeOption);
+        }
+        return pageSizeMenu;
     }
 
     private ContextMenu initRightClickContextMenu(final TableCell<ObservableList<String>, String> cell) {
@@ -912,8 +966,8 @@ public final class TableViewPane extends BorderPane {
             if (parent.getCurrentState() != null) {
 
                 final List<TableColumn<ObservableList<String>, ?>> newColumnOrder = new ArrayList<>();
-                final Tuple<ArrayList<String>, Tuple<String, TableColumn.SortType>> tablePrefs
-                        = TableViewPreferencesIOUtilities.getPreferences(parent.getCurrentState().getElementType());
+                final ThreeTuple<ArrayList<String>, Tuple<String, TableColumn.SortType>, Integer> tablePrefs
+                        = TableViewPreferencesIOUtilities.getPreferences(parent.getCurrentState().getElementType(), maxRowsPerPage);
 
                 // If no columns were found then the user abandoned load as saves cannot occur with 0 columns
                 if (tablePrefs.getFirst().isEmpty()) {
@@ -924,7 +978,7 @@ public final class TableViewPane extends BorderPane {
                     // Loop through column names found in prefs and add associated columns to newColumnOrder list all set to visible.
                     for (final TableColumn<ObservableList<String>, ?> column : table.getColumns()) {
                         if (column.getText().equals(columnName)) {
-                            TableColumn<ObservableList<String>, ?> copy = column;
+                            final TableColumn<ObservableList<String>, ?> copy = column;
                             copy.setVisible(true);
                             newColumnOrder.add(copy);
                         }
@@ -945,7 +999,74 @@ public final class TableViewPane extends BorderPane {
                         }).collect(Collectors.toList());
                 saveSortDetails(tablePrefs.getSecond().getFirst(), tablePrefs.getSecond().getSecond());
                 updateVisibleColumns(parent.getCurrentGraph(), parent.getCurrentState(), orderedColumns, UpdateMethod.REPLACE);
+                for (final Toggle t : pageSizeToggle.getToggles()) {
+                    final RadioMenuItem pageSizeOption = (RadioMenuItem) t;
+                    if (Integer.parseInt(pageSizeOption.getText()) == tablePrefs.getThird()) {
+                        pageSizeOption.setSelected(true);
+                        maxRowsPerPage = tablePrefs.getThird();
+                        break;
+                    }
+                }
             }
+        }
+    }
+    
+    private Node createPage(final int pageIndex, final List<ObservableList<String>> rows) {
+        if (rows != null) {
+            final int fromIndex = pageIndex * maxRowsPerPage;
+            final int toIndex = Math.min(fromIndex + maxRowsPerPage, rows.size());
+            
+            selectedProperty.removeListener(tableSelectionListener);
+            sortedRowList.comparatorProperty().removeListener(tableComparatorListener);
+                        
+            //get the previous sort details so that we don't lose it upon switching pages
+            TableColumn<ObservableList<String>, ?> sortCol = null;
+            TableColumn.SortType sortType = null;
+            if (!table.getSortOrder().isEmpty()) {
+                sortCol = table.getSortOrder().get(0);
+                sortType = sortCol.getSortType();
+                sortCol.sortTypeProperty().removeListener(tableSortTypeListener);
+            }
+            
+            sortedRowList.comparatorProperty().unbind();
+            
+            table.setItems(FXCollections.observableArrayList(rows.subList(fromIndex, toIndex)));
+            
+            //restore the sort details
+            if (sortCol != null) {
+                table.getSortOrder().add(sortCol);
+                sortCol.setSortType(sortType);
+                sortCol.sortTypeProperty().addListener(tableSortTypeListener);
+            }
+            
+            sortedRowList.comparatorProperty().bind(table.comparatorProperty());
+            final Thread t = new Thread() {
+                @Override
+                public void run() {
+                    updateSelection(parent.getCurrentGraph(), parent.getCurrentState());
+                }
+            };
+            t.start();
+            sortedRowList.comparatorProperty().addListener(tableComparatorListener);
+            selectedProperty.addListener(tableSelectionListener);
+        }
+        
+        return table;
+    }
+    
+    protected void paginate(final List<ObservableList<String>> rows) {
+        final Pagination pagination = new Pagination(rows == null || rows.isEmpty() ? 1 : (int) Math.ceil(rows.size() / (double) maxRowsPerPage));
+        pagination.setPageFactory(index -> createPage(index, rows));
+        Platform.runLater(() -> {
+            setCenter(pagination);
+        });
+    }
+    
+    private void paginateForSortListener() {
+        if (!sortingListenerActive) {
+            sortingListenerActive = true;
+            paginate(sortedRowList);
+            sortingListenerActive = false;
         }
     }
 
@@ -1053,10 +1174,14 @@ public final class TableViewPane extends BorderPane {
 
                 Platform.runLater(() -> {
                     selectedProperty.removeListener(tableSelectionListener);
+                    sortedRowList.comparatorProperty().unbind();
 
                     // add table data to table
-                    table.setItems(FXCollections.observableArrayList(rows));
-                    setCenter(table);
+                    sortedRowList = new SortedList<>(FXCollections.observableArrayList(rows));
+                    
+                    //need to set the table items to the whole list here so that the filter 
+                    //picks up the full list of options to filter before we paginate
+                    table.setItems(FXCollections.observableArrayList(sortedRowList));
 
                     // add user defined filter to the table
                     filter = TableFilter.forTableView(table).lazy(true).apply();
@@ -1067,9 +1192,15 @@ public final class TableViewPane extends BorderPane {
                             return false;
                         }
                     });
-                    filter.getFilteredList().predicateProperty().addListener((v, o, n) -> table.refresh());
+                    filter.getFilteredList().predicateProperty().addListener((v, o, n) -> {
+                        sortedRowList.comparatorProperty().unbind();
+                        filteredRowList = new FilteredList<>(FXCollections.observableArrayList(rows), filter.getFilteredList().getPredicate());
+                        sortedRowList = new SortedList<>(FXCollections.observableArrayList(filteredRowList));
+                        paginate(sortedRowList);
+                    });
+                    paginate(sortedRowList);
                     updateDataLatch.countDown();
-
+                    
                     selectedProperty.addListener(tableSelectionListener);
                 });
 
