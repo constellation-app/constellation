@@ -143,36 +143,36 @@ public class PCAPImportFileParserNGTest {
     public void tearDownMethod() throws Exception {
     }
     
-//    @Test
-//    public void checkParseInvalidPCAP() throws InterruptedException {
-//        // Confirm that attempts to parse invalid PCAP return a clean
-//        // IOException exception.
-//        final PCAPImportFileParser parser = new PCAPImportFileParser();
-//        try {
-//            parser.parse(new InputSource(new File(this.getClass().getResource("./resources/PCAP-invalidContent.pcap").getFile())), null);
-//            Assert.fail("Expected exception not received");
-//        } catch (IOException ex) {
-//            Assert.assertTrue(ex.getMessage().contains(private_invalidPCAPMsg));
-//        } catch (Exception ex) {
-//            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
-//        }
-//    }
-//    
-//    @Test
-//    public void checkParseTruncatedPCAPHeader() throws InterruptedException {
-//        // Confirm that attempts to parse invalid PCAP return a clean
-//        // IOException exception.
-//        final PCAPImportFileParser parser = new PCAPImportFileParser();
-//        try {
-//            parser.parse(new InputSource(new File(this.getClass().getResource("./resources/PCAP-truncated_header.pcap").getFile())), null);
-//            Assert.fail("Expected exception not received");
-//        } catch (IOException ex) {
-//            Assert.assertTrue(ex.getMessage().contains(private_invalidPCAPMsg));
-//        } catch (Exception ex) {
-//            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
-//        }
-//    }
-//    
+    @Test
+    public void checkParseInvalidPCAP() throws InterruptedException {
+        // Confirm that attempts to parse invalid PCAP return a clean
+        // IOException exception.
+        final PCAPImportFileParser parser = new PCAPImportFileParser();
+        try {
+            parser.parse(new InputSource(new File(this.getClass().getResource("./resources/PCAP-invalidContent.pcap").getFile())), null);
+            Assert.fail("Expected exception not received");
+        } catch (IOException ex) {
+            Assert.assertTrue(ex.getMessage().contains(private_invalidPCAPMsg));
+        } catch (Exception ex) {
+            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
+        }
+    }
+    
+    @Test
+    public void checkParseTruncatedPCAPHeader() throws InterruptedException {
+        // Confirm that attempts to parse invalid PCAP return a clean
+        // IOException exception.
+        final PCAPImportFileParser parser = new PCAPImportFileParser();
+        try {
+            parser.parse(new InputSource(new File(this.getClass().getResource("./resources/PCAP-truncated_header.pcap").getFile())), null);
+            Assert.fail("Expected exception not received");
+        } catch (IOException ex) {
+            Assert.assertTrue(ex.getMessage().contains(private_invalidPCAPMsg));
+        } catch (Exception ex) {
+            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
+        }
+    }
+    
 //    @Test
 //    public void checkParseTruncatedPCAPFrame1() throws InterruptedException {
 //        // Confirm that attempts to parse invalid PCAP return a clean
@@ -204,36 +204,36 @@ public class PCAPImportFileParserNGTest {
 //        }
 //    }
 //    
-//    @Test
-//    public void checkPreviewInvalidPCAP() throws InterruptedException {
-//        // Confirm that attempts to preview invalid PCAP return a clean
-//        // IOException exception.
-//        final PCAPImportFileParser parser = new PCAPImportFileParser();
-//        try {
-//            parser.preview(new InputSource(new File(this.getClass().getResource("./resources/PCAP-invalidContent.pcap").getFile())), null, 100);
-//            Assert.fail("Expected exception not received");
-//        } catch (IOException ex) {
-//            Assert.assertTrue(ex.getMessage().contains(private_invalidPCAPMsg));
-//        } catch (Exception ex) {
-//            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
-//        }
-//    }
-//
-//    @Test
-//    public void checkPreviewTruncatedPCAPHeader() throws InterruptedException {
-//        // Confirm that attempts to preview invalid PCAP return a clean
-//        // IOException exception.
-//        final PCAPImportFileParser parser = new PCAPImportFileParser();
-//        try {
-//            parser.preview(new InputSource(new File(this.getClass().getResource("./resources/PCAP-truncated_header.pcap").getFile())), null, 100);
-//            Assert.fail("Expected exception not received");
-//        } catch (IOException ex) {
-//            Assert.assertTrue(ex.getMessage().contains(private_invalidPCAPMsg));
-//        } catch (Exception ex) {
-//            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
-//        }
-//    }
-//
+    @Test
+    public void checkPreviewInvalidPCAP() throws InterruptedException {
+        // Confirm that attempts to preview invalid PCAP return a clean
+        // IOException exception.
+        final PCAPImportFileParser parser = new PCAPImportFileParser();
+        try {
+            parser.preview(new InputSource(new File(this.getClass().getResource("./resources/PCAP-invalidContent.pcap").getFile())), null, 100);
+            Assert.fail("Expected exception not received");
+        } catch (IOException ex) {
+            Assert.assertTrue(ex.getMessage().contains(private_invalidPCAPMsg));
+        } catch (Exception ex) {
+            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
+        }
+    }
+
+    @Test
+    public void checkPreviewTruncatedPCAPHeader() throws InterruptedException {
+        // Confirm that attempts to preview invalid PCAP return a clean
+        // IOException exception.
+        final PCAPImportFileParser parser = new PCAPImportFileParser();
+        try {
+            parser.preview(new InputSource(new File(this.getClass().getResource("./resources/PCAP-truncated_header.pcap").getFile())), null, 100);
+            Assert.fail("Expected exception not received");
+        } catch (IOException ex) {
+            Assert.assertTrue(ex.getMessage().contains(private_invalidPCAPMsg));
+        } catch (Exception ex) {
+            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
+        }
+    }
+
 //    @Test
 //    public void checkPreviewTruncatedPCAPFrame1() throws InterruptedException {
 //        // Confirm that attempts to preview invalid PCAP return a clean
