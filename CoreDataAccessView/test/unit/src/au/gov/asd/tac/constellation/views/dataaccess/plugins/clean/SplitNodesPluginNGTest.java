@@ -169,8 +169,60 @@ public class SplitNodesPluginNGTest {
         final PluginParameters parameters = instance.createParameters();
         parameters.getParameters().get(SplitNodesPlugin.SPLIT_PARAMETER_ID).setStringValue(" ");
 
-        final RecordStore result = instance.query(query, interaction, parameters);
-        assertEquals(result, expResult);
+        parameters.setStringValue(SplitNodesPlugin.SPLIT_PARAMETER_ID, "Y");
+        parameters.setStringValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, "false");
+        PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
+
+        // Assert the node is renamed to "YY"
+        assertEquals(graph.getVertexCount(), 4);
+        assertEquals(graph.getTransactionCount(), 3);
+        assertEquals(graph.getStringValue(vertexIdentifierAttribute, vxId4), "YY");
     }
 
+    @Test
+    public void testQueryWithNoResultingNodesToSplitTo_AllOccurancesSelected_WithoutDuplicateTransactions() throws Exception {
+        final SplitNodesPlugin instance = new SplitNodesPlugin();
+        final PluginParameters parameters = instance.createParameters();
+
+        parameters.setStringValue(SplitNodesPlugin.SPLIT_PARAMETER_ID, "Y");
+        parameters.setStringValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, "true");
+        PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
+
+        // Assert no new nodes are created
+        assertEquals(graph.getVertexCount(), 4);
+        assertEquals(graph.getTransactionCount(), 3);
+        assertEquals(graph.getStringValue(vertexIdentifierAttribute, vxId4), "YYY");
+    }
+
+    @Test
+    public void testQueryWithNoResultingNodesToSplitTo_AllOccurancesNotSelected_WithDuplicateTransactions() throws Exception {
+        final SplitNodesPlugin instance = new SplitNodesPlugin();
+        final PluginParameters parameters = instance.createParameters();
+
+        parameters.setStringValue(SplitNodesPlugin.SPLIT_PARAMETER_ID, "Y");
+        parameters.setStringValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, "false");
+        parameters.setStringValue(SplitNodesPlugin.DUPLICATE_TRANSACTIONS_PARAMETER_ID, "true");
+        PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
+
+        // Assert the node is renamed to "YY"
+        assertEquals(graph.getVertexCount(), 4);
+        assertEquals(graph.getTransactionCount(), 3);
+        assertEquals(graph.getStringValue(vertexIdentifierAttribute, vxId4), "YY");
+    }
+
+    @Test
+    public void testQueryWithNoResultingNodesToSplitTo_AllOccurancesSelected_WithDuplicateTransactions() throws Exception {
+        final SplitNodesPlugin instance = new SplitNodesPlugin();
+        final PluginParameters parameters = instance.createParameters();
+
+        parameters.setStringValue(SplitNodesPlugin.SPLIT_PARAMETER_ID, "Y");
+        parameters.setStringValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, "true");
+        parameters.setStringValue(SplitNodesPlugin.DUPLICATE_TRANSACTIONS_PARAMETER_ID, "true");
+        PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
+
+        // Assert no new nodes are created
+        assertEquals(graph.getVertexCount(), 4);
+        assertEquals(graph.getTransactionCount(), 3);
+        assertEquals(graph.getStringValue(vertexIdentifierAttribute, vxId4), "YYY");
+    }
 }

@@ -144,7 +144,6 @@ public class SingleChoiceInputPane extends HBox {
 
                         break;
                     case ENABLED:
-                        field.setDisable(!parameter1.isEnabled());
                         break;
                     case VISIBLE:
                         field.setManaged(parameter.isVisible());

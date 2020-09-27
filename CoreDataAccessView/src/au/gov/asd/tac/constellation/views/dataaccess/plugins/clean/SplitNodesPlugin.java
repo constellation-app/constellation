@@ -42,10 +42,9 @@ import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
 import au.gov.asd.tac.constellation.views.dataaccess.templates.RecordStoreQueryPlugin;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
@@ -186,22 +185,38 @@ public class SplitNodesPlugin extends RecordStoreQueryPlugin implements DataAcce
         final String linkType = transactionTypeChoice != null ? transactionTypeChoice.toString() : AnalyticConcept.TransactionType.CORRELATION.getName();
         final boolean allOccurrences = splitParameters.get(ALL_OCCURRENCES_PARAMETER_ID).getBooleanValue();
 
-        query.reset();
-        while (query.next()) {
-            final String identifier = query.get(SOURCE_IDENTIFIER);
-            if (identifier != null && identifier.contains(character) && identifier.indexOf(character) < identifier.length() - character.length()) {
-                if (allOccurrences) {
-                    final List<String> substrings = new ArrayList<>(Arrays.asList(identifier.split(character)));
-                    final String left = substrings.get(0);
-                    for (int i = 1; i < substrings.size(); i++) {
-                        final String right = substrings.get(i);
-                        editResultStore(result, left, right, query, linkType);
+                if (identifier != null && identifier.contains(character) && identifier.indexOf(character) < identifier.length() - character.length()) {
+                    String leftNodeIdentifier = "";
+                    if (allOccurrences) {
+                        final String[] substrings = Arrays.stream(identifier.split(character))
+                                .filter(value
+                                        -> value != null && value.length() > 0
+                                )
+                                .toArray(size -> new String[size]);
+                        if (substrings.length <= 0) {
+                            continue;
+                        }
+
+                        leftNodeIdentifier = substrings[0];
+
+                        for (int i = 1; i < substrings.length; i++) {
+                            newVertices.add(createNewNode(graph, position, substrings[i], linkType, splitIntoSameLevel));
+                        }
+
+                    } else {
+                        final int i = identifier.indexOf(character);
+                        leftNodeIdentifier = identifier.substring(0, i);
+                        if (StringUtils.isNotBlank(leftNodeIdentifier)) {
+                            newVertices.add(createNewNode(graph, position, identifier.substring(i + 1), linkType, splitIntoSameLevel));
+                        } else {
+                            leftNodeIdentifier = identifier.substring(i + 1);
+                        }
                     }
-                } else {
-                    final int i = identifier.indexOf(character);
-                    final String left = identifier.substring(0, i);
-                    final String right = identifier.substring(i + 1);
-                    editResultStore(result, left, right, query, linkType);
+                    // Rename the selected node
+                    if (StringUtils.isNotBlank(leftNodeIdentifier)) {
+                        graph.setStringValue(vertexIdentifierAttributeId, currentVertexId, leftNodeIdentifier);
+                        newVertices.add(currentVertexId);
+                    }
                 }
             }
         }

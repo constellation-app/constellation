@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.graph.visual.utilities.VisualGraphUtilities;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
@@ -32,7 +33,10 @@ import org.openide.util.NbBundle.Messages;
  */
 @ActionID(category = "Edit", id = "au.gov.asd.tac.constellation.functionality.display.MenuSetDrawModeAction")
 @ActionRegistration(displayName = "#CTL_MenuSetDrawModeAction", lazy = false)
-@ActionReference(path = "Menu/Edit", position = 800, separatorBefore = 799)
+@ActionReferences({
+    @ActionReference(path = "Menu/Edit", position = 800, separatorBefore = 799),
+    @ActionReference(path = "Shortcuts", name = "C-D")
+})
 @Messages({
     "CTL_MenuSetDrawModeAction=Draw Mode"
 })

@@ -28,6 +28,8 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Window;
 
 /**
  * Display a list of query names and allow the user to select one.
@@ -40,7 +42,7 @@ class TemplateListDialog {
     private final boolean isLoading;
     private final String initial;
 
-    TemplateListDialog(final Object owner, final boolean isLoading, final String initial) {
+    public TemplateListDialog(final Window owner, final boolean isLoading, final String initial) {
         this.owner = owner;
         this.isLoading = isLoading;
         this.initial = initial;
@@ -64,10 +66,12 @@ class TemplateListDialog {
         return names;
     }
 
-    String getName(final Object owner, final File delimIoDir) {
+    public String getName(final Window owner, final File delimIoDir) {
         final String[] templateLabels = getFileLabels(delimIoDir);
 
         final Alert dialog = new Alert(Alert.AlertType.CONFIRMATION);
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.initOwner(owner);
 
         final TextField label = new TextField();
         label.setPromptText("Template label");
@@ -101,6 +105,8 @@ class TemplateListDialog {
                 final Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setHeaderText("Import template exists");
                 alert.setContentText(msg);
+                alert.initModality(Modality.WINDOW_MODAL);
+                alert.initOwner(owner);
                 final Optional<ButtonType> confirm = alert.showAndWait();
                 go = confirm.isPresent() && confirm.get() == ButtonType.OK;
             }
