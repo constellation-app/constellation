@@ -200,37 +200,37 @@ public class PCAPImportFileParserNGTest {
         }
     }
 
+//    @Test
+//    public void checkParseTruncatedPCAPFrame1() throws InterruptedException {
+//        // Confirm that attempts to parse invalid PCAP return a clean
+//        // IOException exception.
+//        final PCAPImportFileParser parser = new PCAPImportFileParser();
+//        try {
+//            List<String[]> results = parser.parse(new InputSource(new File(this.getClass().getResource("./resources/PCAP-truncated_frame1.pcap").getFile())), null);
+//            Assert.assertEquals(results.size(), 1, "results.size():");
+//            Assert.assertEquals(expectedHeadings, results.get(0), "results[0]:");
+//            
+//        } catch (Exception ex) {
+//            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
+//        }
+//    }
+    
     @Test
-    public void checkParseTruncatedPCAPFrame1() throws InterruptedException {
+    public void checkParseTruncatedPCAPFrame2() throws InterruptedException {
         // Confirm that attempts to parse invalid PCAP return a clean
         // IOException exception.
         final PCAPImportFileParser parser = new PCAPImportFileParser();
         try {
-            List<String[]> results = parser.parse(new InputSource(new File(this.getClass().getResource("./resources/PCAP-truncated_frame1.pcap").getFile())), null);
-            Assert.assertEquals(results.size(), 1, "results.size():");
+            List<String[]> results = parser.parse(new InputSource(new File(this.getClass().getResource("./resources/PCAP-truncated_frame2.pcap").getFile())), null);
+            Assert.assertEquals(results.size(), 2, "results.size():");
             Assert.assertEquals(expectedHeadings, results.get(0), "results[0]:");
+            Assert.assertEquals(expectedRow1, results.get(1), "results[1]:");
             
         } catch (Exception ex) {
             Assert.fail("Unexpected exception received: " + ex.getClass().getName());
         }
     }
     
-//    @Test
-//    public void checkParseTruncatedPCAPFrame2() throws InterruptedException {
-//        // Confirm that attempts to parse invalid PCAP return a clean
-//        // IOException exception.
-//        final PCAPImportFileParser parser = new PCAPImportFileParser();
-//        try {
-//            List<String[]> results = parser.parse(new InputSource(new File(this.getClass().getResource("./resources/PCAP-truncated_frame2.pcap").getFile())), null);
-//            Assert.assertEquals(results.size(), 2, "results.size():");
-//            Assert.assertEquals(expectedHeadings, results.get(0), "results[0]:");
-//            Assert.assertEquals(expectedRow1, results.get(1), "results[1]:");
-//            
-//        } catch (Exception ex) {
-//            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
-//        }
-//    }
-//    
     @Test
     public void checkPreviewInvalidPCAP() throws InterruptedException {
         // Confirm that attempts to preview invalid PCAP return a clean
@@ -261,36 +261,37 @@ public class PCAPImportFileParserNGTest {
         }
     }
 
-    @Test
-    public void checkPreviewTruncatedPCAPFrame1() throws InterruptedException {
-        // Confirm that attempts to preview invalid PCAP return a clean
-        // IOException exception.
-        final PCAPImportFileParser parser = new PCAPImportFileParser();
-        try {
-            List<String[]> results = parser.preview(new InputSource(new File(this.getClass().getResource("./resources/PCAP-truncated_frame1.pcap").getFile())), null, 100);
-            Assert.assertEquals(results.size(), 1, "results.size():");
-            Assert.assertEquals(expectedHeadings, results.get(0), "results[0]:");
-
-        } catch (Exception ex) {
-            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
-        }
-    }
-
 //    @Test
-//    public void checkPreviewTruncatedPCAPFrame2() throws InterruptedException {
+//    public void checkPreviewTruncatedPCAPFrame1() throws InterruptedException {
 //        // Confirm that attempts to preview invalid PCAP return a clean
 //        // IOException exception.
 //        final PCAPImportFileParser parser = new PCAPImportFileParser();
 //        try {
-//            List<String[]> results = parser.preview(new InputSource(new File(this.getClass().getResource("./resources/PCAP-truncated_frame2.pcap").getFile())), null, 100);
-//            Assert.assertEquals(results.size(), 2, "results.size():");
+//            List<String[]> results = parser.preview(new InputSource(new File(this.getClass().getResource("./resources/PCAP-truncated_frame1.pcap").getFile())), null, 100);
+//            Assert.assertEquals(results.size(), 1, "results.size():");
 //            Assert.assertEquals(expectedHeadings, results.get(0), "results[0]:");
-//            Assert.assertEquals(expectedRow1, results.get(1), "results[1]:");
 //
 //        } catch (Exception ex) {
 //            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
 //        }
 //    }
+
+    @Test
+    public void checkPreviewTruncatedPCAPFrame2() throws InterruptedException {
+        // Confirm that attempts to preview invalid PCAP return a clean
+        // IOException exception.
+        final PCAPImportFileParser parser = new PCAPImportFileParser();
+        try {
+            List<String[]> results = parser.preview(new InputSource(new File(this.getClass().getResource("./resources/PCAP-truncated_frame2.pcap").getFile())), null, 100);
+            Assert.assertEquals(results.size(), 2, "results.size():");
+            Assert.assertEquals(expectedHeadings, results.get(0), "results[0]:");
+            Assert.assertEquals(expectedRow1, results.get(1), "results[1]:");
+
+        } catch (Exception ex) {
+            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
+        }
+    }
+    
     @Test
     public void checkbyteToInt() throws InterruptedException {
         final PCAPImportFileParser parser = new PCAPImportFileParser();
@@ -838,7 +839,7 @@ public class PCAPImportFileParserNGTest {
 
             String result10 = (String) private_bytesToIpv6Str.invoke(parser, testSrcArrayLarge, 9);
             Assert.assertEquals(result10, "1920:2122:2324:2526:2728::", "result10");
-            
+
             String result11 = (String) private_bytesToIpv6Str.invoke(parser, testSrcArrayLarge, 10);
             Assert.assertEquals(result11, "2021:2223:2425:2627:2800::", "result11");
 
