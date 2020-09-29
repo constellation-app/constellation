@@ -15,37 +15,42 @@
  */
 package au.gov.asd.tac.constellation.views.notes.state;
 
+import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import java.time.LocalDateTime;
-import org.apache.commons.lang3.StringUtils;
 
 /**
- * An entry note into the Notes View
+ * A note entry into the Notes View.
  *
  * @author sol695510
  */
 public class NotesViewEntry {
 
-    private final Boolean isUserNote;
-    private final String timestamp;
+    private static int noteIdCounter = 1;
+    private final int noteId;
+    
+    private final Boolean userCreated;
+    private final String dateTime;
     private String noteTitle;
     private String noteContent;
 
-    public NotesViewEntry(final Boolean isUserNote, final String timestamp,
-            final String noteTitle, final String noteContent) {
-        this.isUserNote = isUserNote;
-        this.timestamp = StringUtils.isEmpty(timestamp) ? LocalDateTime.now().toString() : timestamp;
+    // Constructor.
+    public NotesViewEntry(final String noteDateTime, final String noteTitle, final String noteContent, final Boolean userCreated) {
+        this.userCreated = userCreated;
+        this.dateTime = noteDateTime;
         this.noteTitle = noteTitle;
         this.noteContent = noteContent;
+        this.noteId = noteIdCounter++;
     }
 
-    // copy constructor
+    // Copy constructor.
     public NotesViewEntry(final NotesViewEntry note) {
-        this.isUserNote = note.isUserNote();
-        this.timestamp = note.getTimestamp();
+        this.userCreated = note.isUserCreated();
+        this.dateTime = note.getDateTime();
         this.noteTitle = note.getNoteTitle();
         this.noteContent = note.getNoteContent();
+        this.noteId = noteIdCounter++;
     }
-
+    
     public void setNoteTitle(final String noteTitle) {
         this.noteTitle = noteTitle;
     }
@@ -54,12 +59,12 @@ public class NotesViewEntry {
         this.noteContent = noteContent;
     }
 
-    public Boolean isUserNote() {
-        return isUserNote;
+    public Boolean isUserCreated() {
+        return userCreated;
     }
 
-    public String getTimestamp() {
-        return timestamp;
+    public String getDateTime() {
+        return dateTime;
     }
 
     public String getNoteTitle() {
@@ -68,5 +73,9 @@ public class NotesViewEntry {
 
     public String getNoteContent() {
         return noteContent;
+    }
+    
+    public int getNoteId() {
+        return noteId;
     }
 }

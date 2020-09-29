@@ -52,7 +52,8 @@ public class NotesViewConcept extends SchemaConcept {
             throw new IllegalStateException("Concept class");
         }
 
-        public static final SchemaAttribute NOTES_VIEW_STATE = new SchemaAttribute.Builder(GraphElementType.META, NotesViewStateAttributeDescription.ATTRIBUTE_NAME, "layers_view_state")
+        public static final SchemaAttribute NOTES_VIEW_STATE = new SchemaAttribute
+                .Builder(GraphElementType.META, NotesViewStateAttributeDescription.ATTRIBUTE_NAME, "notes_view_state")
                 .setDescription("The current state of the notes view with relation to the active graph")
                 .build();
     }

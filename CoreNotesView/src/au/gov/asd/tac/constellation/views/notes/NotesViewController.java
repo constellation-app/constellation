@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.views.notes;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.NotesConcept;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -26,6 +25,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
+import au.gov.asd.tac.constellation.views.notes.state.NotesViewConcept;
 import au.gov.asd.tac.constellation.views.notes.state.NotesViewEntry;
 import au.gov.asd.tac.constellation.views.notes.state.NotesViewState;
 import java.util.List;
@@ -37,21 +37,36 @@ import java.util.List;
 public class NotesViewController {
 
     private final NotesViewTopComponent parent;
+    
+    private static final String NOTES_ADD_ATTRIBUTE = "Notes View: Add Required Attributes";
+    private static final String NOTES_READ_STATE = "Notes View: Read State";
+    private static final String NOTES_WRITE_STATE = "Notes View: Write State";
 
     public NotesViewController(final NotesViewTopComponent parent) {
         this.parent = parent;
     }
+    
+    public String getAddAttributeText() {
+        return NOTES_ADD_ATTRIBUTE;
+    }
 
+    public String getReadStateText() {
+        return NOTES_READ_STATE;
+    }
+    
+    public String getWriteStateText() {
+        return NOTES_WRITE_STATE;
+    }
     /**
      * Add attributes required by the Notes View for it to function
      */
     public void addAttributes() {
         final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
         if (activeGraph != null) {
-            PluginExecution.withPlugin(new SimpleEditPlugin("Notes View: Add Required Attributes") {
+            PluginExecution.withPlugin(new SimpleEditPlugin(NOTES_ADD_ATTRIBUTE) {
                 @Override
                 public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-                    NotesConcept.MetaAttribute.NOTES_VIEW_STATE.ensure(graph);
+                    NotesViewConcept.MetaAttribute.NOTES_VIEW_STATE.ensure(graph);
                 }
             }).executeLater(activeGraph);
         }
@@ -67,8 +82,7 @@ public class NotesViewController {
         if (pane == null || graph == null) {
             return;
         }
-        PluginExecution.withPlugin(new NotesViewStateReader(pane))
-                .executeLater(graph);
+        PluginExecution.withPlugin(new NotesViewStateReader(pane)).executeLater(graph);
     }
 
     /**
@@ -81,14 +95,13 @@ public class NotesViewController {
         if (pane == null || graph == null) {
             return;
         }
-        PluginExecution.withPlugin(new NotesViewStateWriter(pane.getNotes()))
-                .executeLater(graph);
+        PluginExecution.withPlugin(new NotesViewStateWriter(pane.getNotes())).executeLater(graph);
     }
 
     /**
      * Read the current state from the graph.
      */
-    private static final class NotesViewStateReader extends SimpleReadPlugin {
+    public static final class NotesViewStateReader extends SimpleReadPlugin {
 
         private final NotesViewPane pane;
 
@@ -102,7 +115,7 @@ public class NotesViewController {
                 return;
             }
 
-            final int notesViewStateAttributeId = NotesConcept.MetaAttribute.NOTES_VIEW_STATE.get(graph);
+            final int notesViewStateAttributeId = NotesViewConcept.MetaAttribute.NOTES_VIEW_STATE.get(graph);
             if (notesViewStateAttributeId == Graph.NOT_FOUND) {
                 return;
             }
@@ -111,12 +124,12 @@ public class NotesViewController {
             if (currentState == null || pane == null) {
                 return;
             }
-            pane.setNotes(currentState.getNotes());
+            pane.setNoteEntries(currentState.getNotes());
         }
 
         @Override
         public String getName() {
-            return "Notes View: Read State";
+            return NOTES_READ_STATE;
         }
     }
 
@@ -137,7 +150,7 @@ public class NotesViewController {
                 return;
             }
 
-            final int stateAttributeId = NotesConcept.MetaAttribute.NOTES_VIEW_STATE.ensure(graph);
+            final int stateAttributeId = NotesViewConcept.MetaAttribute.NOTES_VIEW_STATE.ensure(graph);
             final NotesViewState currentState = graph.getObjectValue(stateAttributeId, 0);
 
             final NotesViewState newState = currentState == null ? new NotesViewState() : new NotesViewState(currentState);
@@ -153,7 +166,7 @@ public class NotesViewController {
 
         @Override
         public String getName() {
-            return "Notes View: Write State";
+            return NOTES_WRITE_STATE;
         }
     }
 }

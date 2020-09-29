@@ -19,13 +19,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A state for the notes view.
+ * Stores all notes currently created for this graph's state for the Notes View.
  *
  * @author sol695510
  */
 public class NotesViewState {
 
-    // list of entries
+    // List of note entries.
     private final List<NotesViewEntry> notesViewEntries;
 
     public NotesViewState() {
@@ -41,9 +41,9 @@ public class NotesViewState {
     }
 
     /**
-     * gets a list of all notes entries
+     * Gets a list of all note entries.
      *
-     * @return a list of all entries.
+     * @return a list of all note entries.
      */
     public List<NotesViewEntry> getNotes() {
         return notesViewEntries;

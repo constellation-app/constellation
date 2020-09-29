@@ -16,8 +16,12 @@
 package au.gov.asd.tac.constellation.views.notes;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.NotesConcept;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.plugins.reporting.GraphReportListener;
+import au.gov.asd.tac.constellation.plugins.reporting.GraphReportManager;
+import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
+import au.gov.asd.tac.constellation.views.notes.state.NotesViewConcept;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -49,13 +53,13 @@ import org.openide.windows.TopComponent;
     "CTL_NotesViewTopComponent=Notes View",
     "HINT_NotesViewTopComponent=Notes View"})
 
-public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> {
+public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> implements GraphReportListener {
 
     private final NotesViewController notesViewController;
     private final NotesViewPane notesViewPane;
 
     /**
-     * Creates new NotesViewTopComponent
+     * Creates a new NotesViewTopComponent.
      */
     public NotesViewTopComponent() {
         setName(Bundle.CTL_NotesViewTopComponent());
@@ -67,7 +71,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> {
 
         initContent();
 
-        addAttributeValueChangeHandler(NotesConcept.MetaAttribute.NOTES_VIEW_STATE, graph -> {
+        addAttributeValueChangeHandler(NotesViewConcept.MetaAttribute.NOTES_VIEW_STATE, graph -> {
             if (!needsUpdate()) {
                 return;
             }
@@ -104,7 +108,14 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> {
 
     @Override
     protected void handleComponentOpened() {
+        GraphReportManager.addGraphReportListener(this);
         preparePane();
+    }
+    
+    @Override
+    protected void handleComponentClosed() {
+        notesViewPane.clearContents();
+        notesViewPane.closeEditNote();
     }
 
     @Override
@@ -120,6 +131,30 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> {
         notesViewController.addAttributes();
     }
 
+        @Override
+    protected String createStyle() {
+        return "resources/notes-view.css";
+    }
+
+    @Override
+    protected NotesViewPane createContent() {
+        return notesViewPane;
+    }
+
+    // Triggers when plugin reports are added or removed.
+    @Override
+    public void newPluginReport(PluginReport pluginReport) {
+
+        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+        
+        if (!pluginReport.getPluginName().contains("Note")) {
+            preparePane();
+            if (activeGraph != null) {
+                notesViewPane.setGraphRecord(activeGraph.getId());
+            }
+        }
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -129,16 +164,6 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> {
         setLayout(new java.awt.BorderLayout());
 
     }//GEN-END:initComponents
-
-    @Override
-    protected String createStyle() {
-        return "resources/notes-view.css";
-    }
-
-    @Override
-    protected NotesViewPane createContent() {
-        return notesViewPane;
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
