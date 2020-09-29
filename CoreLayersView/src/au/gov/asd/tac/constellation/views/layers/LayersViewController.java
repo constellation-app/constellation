@@ -85,7 +85,7 @@ public class LayersViewController {
 
     public void setListenedAttributes() {
         parent.removeValueHandlers(valueMonitors);
-        valueMonitors.addAll(parent.setChangeListeners(changeListeners));
+        valueMonitors.addAll(parent.setChangeListeners(List.copyOf(changeListeners)));
     }
 
     /**
@@ -152,7 +152,8 @@ public class LayersViewController {
         newBitmask = (newBitmask == 0) ? 0b1 : (newBitmask > 1) ? newBitmask & ~0b1 : newBitmask;
         // TODO: use activequeries to make bitmask
 
-        PluginExecution.withPlugin(new UpdateLayerSelectionPlugin(newBitmask))
+        PluginExecution
+                .withPlugin(new UpdateLayerSelectionPlugin(newBitmask))
                 .executeLater(GraphManager.getDefault().getActiveGraph());
     }
 
@@ -187,7 +188,7 @@ public class LayersViewController {
     }
 
     public void updateQueries(final Graph currentGraph) {
-        final LayersViewController.UpdateQueryPlugin vxPlugin = new LayersViewController.UpdateQueryPlugin(vxBitMaskCollection);
+        final LayersViewController.UpdateQueryPlugin vxPlugin = new LayersViewController.UpdateQueryPlugin(vxBitMaskCollection, txBitMaskCollection);
         PluginExecution.withPlugin(vxPlugin).executeLater(currentGraph);
         // TODO: How do we call both and make them work.
         //final LayersViewController.UpdateQueryPlugin txPlugin = new LayersViewController.UpdateQueryPlugin(txBitMaskCollection);
@@ -280,10 +281,12 @@ public class LayersViewController {
 
     public static class UpdateQueryPlugin extends SimpleEditPlugin {
 
-        private final BitMaskQueryCollection bitMasks;
+        private final BitMaskQueryCollection vxbitMasks;
+        private final BitMaskQueryCollection txbitMasks;
 
-        public UpdateQueryPlugin(final BitMaskQueryCollection bitMasks) {
-            this.bitMasks = bitMasks;
+        public UpdateQueryPlugin(final BitMaskQueryCollection vxbitMasks, final BitMaskQueryCollection txbitMasks) {
+            this.vxbitMasks = vxbitMasks;
+            this.txbitMasks = txbitMasks;
         }
 
         @Override
@@ -296,11 +299,16 @@ public class LayersViewController {
             final int graphCurrentBitMaskAttrId = LayersViewConcept.GraphAttribute.LAYER_MASK_SELECTED.ensure(graph);
             final long currentBitmask = graph.getLongValue(graphCurrentBitMaskAttrId, 0);
 
-            final int bitmaskAttrId = LayersViewConcept.VertexAttribute.LAYER_MASK.get(graph);
-            final int bitmaskVisibilityAttrId = LayersViewConcept.VertexAttribute.LAYER_VISIBILITY.get(graph);
+            final int vxbitmaskAttrId = LayersViewConcept.VertexAttribute.LAYER_MASK.get(graph);
+            final int vxbitmaskVisibilityAttrId = LayersViewConcept.VertexAttribute.LAYER_VISIBILITY.get(graph);
 
-            bitMasks.setActiveQueries(currentBitmask);
-            bitMasks.updateBitMasks(graph, bitmaskAttrId, bitmaskVisibilityAttrId);
+            final int txbitmaskAttrId = LayersViewConcept.TransactionAttribute.LAYER_MASK.get(graph);
+            final int txbitmaskVisibilityAttrId = LayersViewConcept.TransactionAttribute.LAYER_VISIBILITY.get(graph);
+
+            vxbitMasks.setActiveQueries(currentBitmask);
+            vxbitMasks.updateBitMasks(graph, vxbitmaskAttrId, vxbitmaskVisibilityAttrId);
+            txbitMasks.setActiveQueries(currentBitmask);
+            txbitMasks.updateBitMasks(graph, txbitmaskAttrId, txbitmaskVisibilityAttrId);
 
             final int stateAttributeId = LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.ensure(graph);
             final LayersViewState currentState = graph.getObjectValue(stateAttributeId, 0);

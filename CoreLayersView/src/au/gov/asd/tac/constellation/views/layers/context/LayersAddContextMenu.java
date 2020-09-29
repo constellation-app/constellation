@@ -70,9 +70,9 @@ public class LayersAddContextMenu implements ContextMenuProvider {
                         final BitMaskQuery txQuery = currentState.getTxQueriesCollection().getQuery(position);
 
                         if (vxQuery != null && vxQuery.getIndex() > 0) {
-                            final String description = StringUtils.isBlank(txQuery.getDescription())
-                                    ? NO_LAYER_TEXT : txQuery.getDescription();
-                            currentLayers.add(String.valueOf(txQuery.getIndex()) + " - " + description);
+                            final String description = StringUtils.isBlank(vxQuery.getDescription())
+                                    ? NO_LAYER_TEXT : vxQuery.getDescription();
+                            currentLayers.add(String.valueOf(vxQuery.getIndex()) + " - " + description);
                         } else if (txQuery != null && txQuery.getIndex() > 0) {
                             final String description = StringUtils.isBlank(txQuery.getDescription())
                                     ? NO_LAYER_TEXT : txQuery.getDescription();

@@ -103,10 +103,6 @@ public class Query {
         return result;
     }
 
-    public void setQueryString(final String queryString) {
-        this.queryString = queryString;
-    }
-
     public int[] getAttributeIds() {
         return attributeIds;
     }

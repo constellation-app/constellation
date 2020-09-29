@@ -61,12 +61,6 @@ public class BitMaskQuery {
         this.visible = visible;
     }
 
-    public void setQueryString(final String queryString) {
-        if (query != null) {
-            this.query.setQueryString(queryString);
-        }
-    }
-
     public void setQuery(final Query query) {
         this.query = query;
     }

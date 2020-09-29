@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -55,38 +56,39 @@ public class LayersViewStateIoProvider extends AbstractGraphIOProvider {
             final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap,
             final GraphByteReader byteReader, final ImmutableObjectCache cache) throws IOException {
         if (!jnode.isNull()) {
-            final List<BitMaskQuery> layerDescriptions = new ArrayList<>();
+            final List<BitMaskQuery> vxlayerDescriptions = new ArrayList<>();
             final ArrayNode vertexLayersArray = (ArrayNode) jnode.withArray("vertexLayers");
             for (int i = 0; i < vertexLayersArray.size(); i++) {
                 if (vertexLayersArray.get(i).isNull()) {
-                    layerDescriptions.add(null);
+                    vxlayerDescriptions.add(null);
                 } else {
                     // create LayerDescription with index, visibility, query and description
 
                     // TODO: Hardcoded vertex where it should read Tx or Vx
-                    final BitMaskQuery query = new BitMaskQuery(new Query(GraphElementType.VERTEX, vertexLayersArray.get(i).get(2).asText()),
+                    final BitMaskQuery query = new BitMaskQuery(new Query(GraphElementType.VERTEX, StringUtils.equals("null", vertexLayersArray.get(i).get(2).asText()) ? "" : vertexLayersArray.get(i).get(2).asText()),
                             vertexLayersArray.get(i).get(0).asInt(),
                             vertexLayersArray.get(i).get(3).asText()
                     );
                     query.setVisibility(vertexLayersArray.get(i).get(1).asBoolean());
-                    layerDescriptions.add(query);
+                    vxlayerDescriptions.add(query);
 
                 }
             }
 
+            final List<BitMaskQuery> txlayerDescriptions = new ArrayList<>();
             final ArrayNode transactionLayersArray = (ArrayNode) jnode.withArray("transactionLayers");
             for (int i = 0; i < transactionLayersArray.size(); i++) {
                 if (transactionLayersArray.get(i).isNull()) {
-                    layerDescriptions.add(null);
+                    txlayerDescriptions.add(null);
                 } else {
                     // create LayerDescription with index, visibility, query and description
 
-                    final BitMaskQuery query = new BitMaskQuery(new Query(GraphElementType.TRANSACTION, transactionLayersArray.get(i).get(2).asText()),
+                    final BitMaskQuery query = new BitMaskQuery(new Query(GraphElementType.TRANSACTION, StringUtils.equals("null", transactionLayersArray.get(i).get(2).asText()) ? "" : transactionLayersArray.get(i).get(2).asText()),
                             transactionLayersArray.get(i).get(0).asInt(),
                             transactionLayersArray.get(i).get(3).asText()
                     );
                     query.setVisibility(transactionLayersArray.get(i).get(1).asBoolean());
-                    layerDescriptions.add(query);
+                    txlayerDescriptions.add(query);
 
                 }
             }
@@ -104,10 +106,10 @@ public class LayersViewStateIoProvider extends AbstractGraphIOProvider {
 
             // TODO: only add to array if itis visible within.
             BitMaskQueryCollection vxQueries = new BitMaskQueryCollection(GraphElementType.VERTEX);
-            vxQueries.setQueries(layerDescriptions.toArray(new BitMaskQuery[64]));
+            vxQueries.setQueries(vxlayerDescriptions.toArray(new BitMaskQuery[64]));
 
             BitMaskQueryCollection txQueries = new BitMaskQueryCollection(GraphElementType.TRANSACTION);
-            txQueries.setQueries(layerDescriptions.toArray(new BitMaskQuery[64]));
+            txQueries.setQueries(txlayerDescriptions.toArray(new BitMaskQuery[64]));
 
             final LayersViewState state = new LayersViewState(layerAttributes, vxQueries, txQueries);
             graph.setObjectValue(attributeId, elementId, state);
