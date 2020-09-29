@@ -16,11 +16,11 @@
 package au.gov.asd.tac.constellation.graph.interaction.visual;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.interaction.framework.GraphVisualManagerFactory;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
 import au.gov.asd.tac.constellation.graph.visual.framework.GraphVisualAccess;
 import au.gov.asd.tac.constellation.preferences.DeveloperPreferenceKeys;
-import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
 import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
 import java.util.prefs.Preferences;
 import org.openide.util.NbPreferences;
@@ -44,7 +44,10 @@ public class GLInteractiveVisualManagerFactory extends GraphVisualManagerFactory
 
     @Override
     public VisualManager constructVisualManager(Graph graph) {
-        final VisualAccess access = new GraphVisualAccess(graph);
+        final GraphVisualAccess access = new GraphVisualAccess(graph);
+        try(ReadableGraph rg = graph.getReadableGraph()) {
+            access.updateModCounts(rg);
+        }
         final Preferences prefs = NbPreferences.forModule(DeveloperPreferenceKeys.class);
         final InteractiveGLVisualProcessor processor = new InteractiveGLVisualProcessor(prefs.getBoolean(DeveloperPreferenceKeys.DEBUG_GL, DeveloperPreferenceKeys.DEBUG_GL_DEFAULT), prefs.getBoolean(DeveloperPreferenceKeys.PRINT_GL_CAPABILITIES, DeveloperPreferenceKeys.PRINT_GL_CAPABILITIES_DEFAULT));
         final VisualManager manager = new VisualManager(access, processor);
