@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
+import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.codec.binary.Hex;
@@ -552,6 +552,9 @@ public class PCAPImportFileParser extends ImportFileParser {
                     // Extract timestamp and frame counter strings
                     final SimpleDateFormat formatter =
                             new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+                    // Set a default timezone to ensure consistant times across multiple locations
+                    // Currently set to GMT +0
+                    formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
                     final Date pktDate = new Date(packet.getArrivalTime() / 1000);
                     final String timestamp = formatter.format(pktDate);
 

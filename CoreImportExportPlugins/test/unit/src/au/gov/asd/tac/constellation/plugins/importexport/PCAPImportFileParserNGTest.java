@@ -17,6 +17,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.logging.Level;
 import org.testng.Assert;
 import static org.testng.Assert.assertTrue;
@@ -57,7 +58,7 @@ public class PCAPImportFileParserNGTest {
         "Dest MAC", "Dest IP", "Dest Port", "Dest Type",
         "Ethertype", "Protocol", "Length", "Info"};
     static String[] expectedRow1 = {
-        "1", "2005-07-04 19:02:20.839",
+        "1", "2005-07-04 09:32:20.839",
         "00:e0:ed:01:6e:bd", "192.168.1.2", "137", "IPv4 Address",
         "BROADCAST ff:ff:ff:ff:ff:ff", "192.168.1.255", "137", "IPv4 Address",
         "0800", "UDP", "92", ""};
@@ -211,21 +212,21 @@ public class PCAPImportFileParserNGTest {
         }
     }
     
-//    @Test
-//    public void checkParseTruncatedPCAPFrame2() throws InterruptedException {
-//        // Confirm that attempts to parse invalid PCAP return a clean
-//        // IOException exception.
-//        final PCAPImportFileParser parser = new PCAPImportFileParser();
-//        try {
-//            List<String[]> results = parser.parse(new InputSource(new File(this.getClass().getResource("./resources/PCAP-truncated_frame2.pcap").getFile())), null);
-//            Assert.assertEquals(results.size(), 2, "results.size():");
-//            Assert.assertEquals(expectedHeadings, results.get(0), "results[0]:");
-//            Assert.assertEquals(expectedRow1, results.get(1), "results[1]:");
-//            
-//        } catch (Exception ex) {
-//            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
-//        }
-//    }
+    @Test
+    public void checkParseTruncatedPCAPFrame2() throws InterruptedException {
+        // Confirm that attempts to parse invalid PCAP return a clean
+        // IOException exception.
+        final PCAPImportFileParser parser = new PCAPImportFileParser();
+        try {
+            List<String[]> results = parser.parse(new InputSource(new File(this.getClass().getResource("./resources/PCAP-truncated_frame2.pcap").getFile())), null);
+            Assert.assertEquals(results.size(), 2, "results.size():");
+            Assert.assertEquals(expectedHeadings, results.get(0), "results[0]:");
+            Assert.assertEquals(expectedRow1, results.get(1), "results[1]:");
+            
+        } catch (Exception ex) {
+            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
+        }
+    }
     
     @Test
     public void checkPreviewInvalidPCAP() throws InterruptedException {
@@ -279,38 +280,14 @@ public class PCAPImportFileParserNGTest {
         final PCAPImportFileParser parser = new PCAPImportFileParser();
          List<String[]> results = null;
         try {
-            LOGGER.log(Level.INFO, "Start Get Data - checkPreviewTruncatedPCAPFrame2");
             results = parser.preview(new InputSource(new File(this.getClass().getResource("./resources/PCAP-truncated_frame2.pcap").getFile())), null, 100);
-            LOGGER.log(Level.INFO, "After Get Data - checkPreviewTruncatedPCAPFrame2");
+            
             Assert.assertEquals(results.size(), 2, "results.size():");
             Assert.assertEquals(results.get(0), expectedHeadings, "results[0]:");
             Assert.assertEquals(results.get(1), expectedRow1, "results[1]:");
-            LOGGER.log(Level.INFO, "After Assert Row1 Check - checkPreviewTruncatedPCAPFrame2 \n" + resultsCheck(results) + "\n\n" + resultsCheck(expectedRow1));
-            
         } catch (Exception ex) {
-            LOGGER.log(Level.INFO, "Exception checkPreviewTruncatedPCAPFrame2");
             Assert.fail("Unexpected exception received: " + ex.getClass().getName());
-        }  catch (final AssertionError e) {
-            LOGGER.log(Level.INFO, "AssertionError" + resultsCheck(results) + "\n\n" + resultsCheck(expectedRow1) );
-        }
-    }
-    
-    private String resultsCheck(List<String[]> results) {
-        String resultsString = "";
-        for (int i = 0; i < results.size(); i++) {
-            for (int j = 0; j < results.get(i).length; j++) {
-                resultsString += results.get(i)[j] + "\n";
-            }
-        }
-        return resultsString;
-    }
-    private String resultsCheck(String[] results) {
-        String resultsString = "";
-        
-        for (int j = 0; j < results.length; j++) {
-                resultsString += results[j] + "\n";
-        }
-        return resultsString;
+        } 
     }
       
     @Test
@@ -343,7 +320,6 @@ public class PCAPImportFileParserNGTest {
         } catch (Exception ex) {
             Assert.fail("Unexpected exception received: " + ex.getClass().getName());
         }
-
     }
 
     @Test
@@ -358,7 +334,7 @@ public class PCAPImportFileParserNGTest {
             for (int i = 0; i < bytesArray.length; i++) {
                 Assert.assertEquals(intsArray[i], (int) private_byteToIPVersion.invoke(parser, bytesArray[i]));
             }
-
+        
         } catch (Exception ex) {
             Assert.fail("Unexpected exception received: " + ex.getClass().getName());
         }
@@ -874,67 +850,67 @@ public class PCAPImportFileParserNGTest {
         }
     }
 
-//    @Test
-//    public void checkGetResultsData() throws InterruptedException {
-//        // Overall check that getResults() method correctly retrieves
-//        // and sets all the necessary data
-//        final PCAPImportFileParser parser = new PCAPImportFileParser();
-//
-//        try {
-//            List<String[]> results = (List<String[]>) private_getResults.invoke(parser,
-//                    new InputSource(new File(this.getClass().getResource("./resources/PCAP-truncated_frame2.pcap").getFile())), 0);
-//            // Check Frame sets properly
-//            Assert.assertEquals(results.get(1)[0], expectedRow1[0]);
-//            // Check DateTime
-//            Assert.assertEquals(results.get(1)[1], expectedRow1[1]);
-//            // Check Src MAC address
-//            Assert.assertEquals(results.get(1)[2], expectedRow1[2]);
-//            // Check Src IP address
-//            Assert.assertEquals(results.get(1)[3], expectedRow1[3]);
-//            // Check Src Port
-//            Assert.assertEquals(results.get(1)[4], expectedRow1[4]);
-//            // Check Src Type
-//            Assert.assertEquals(results.get(1)[5], expectedRow1[5]);
-//            // Check Dest MAC address
-//            Assert.assertEquals(results.get(1)[6], expectedRow1[6]);
-//            // Check Dest IP address
-//            Assert.assertEquals(results.get(1)[7], expectedRow1[7]);
-//            // Check Dest Port
-//            Assert.assertEquals(results.get(1)[8], expectedRow1[8]);
-//            // Check Dest Type
-//            Assert.assertEquals(results.get(1)[9], expectedRow1[9]);
-//            // Check Ethertype
-//            Assert.assertEquals(results.get(1)[10], expectedRow1[10]);
-//            // Check Protocol
-//            Assert.assertEquals(results.get(1)[11], expectedRow1[11]);
-//            // Check Packet Length
-//            Assert.assertEquals(results.get(1)[12], expectedRow1[12]);
-//            // Check Extra Info
-//            Assert.assertEquals(results.get(1)[13], expectedRow1[13]);
-//            
-//        } catch (Exception ex) {
-//            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
-//        } 
-//    }
-//    
-//    @Test
-//    public void checkGetResultsOverall() throws InterruptedException {
-//        // Does an overall check on the data returned
-//        // This includes the packet headers 
-//        final PCAPImportFileParser parser = new PCAPImportFileParser();
-//        
-//        expectedResults.add(expectedHeadings);
-//        expectedResults.add(expectedRow1);
-//
-//        try {
-//            List<String[]> results = (List<String[]>) private_getResults.invoke(parser, 
-//                    new InputSource(new File(this.getClass().getResource("./resources/PCAP-truncated_frame2.pcap").getFile())), 0);                        
-//            Assert.assertEquals(expectedResults, results);
-//
-//        } catch (Exception ex) {
-//            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
-//        }  
-//    } 
+    @Test
+    public void checkGetResultsData() throws InterruptedException {
+        // Overall check that getResults() method correctly retrieves
+        // and sets all the necessary data
+        final PCAPImportFileParser parser = new PCAPImportFileParser();
+
+        try {
+            List<String[]> results = (List<String[]>) private_getResults.invoke(parser,
+                    new InputSource(new File(this.getClass().getResource("./resources/PCAP-truncated_frame2.pcap").getFile())), 0);
+            // Check Frame sets properly
+            Assert.assertEquals(results.get(1)[0], expectedRow1[0]);
+            // Check DateTime
+            Assert.assertEquals(results.get(1)[1], expectedRow1[1]);
+            // Check Src MAC address
+            Assert.assertEquals(results.get(1)[2], expectedRow1[2]);
+            // Check Src IP address
+            Assert.assertEquals(results.get(1)[3], expectedRow1[3]);
+            // Check Src Port
+            Assert.assertEquals(results.get(1)[4], expectedRow1[4]);
+            // Check Src Type
+            Assert.assertEquals(results.get(1)[5], expectedRow1[5]);
+            // Check Dest MAC address
+            Assert.assertEquals(results.get(1)[6], expectedRow1[6]);
+            // Check Dest IP address
+            Assert.assertEquals(results.get(1)[7], expectedRow1[7]);
+            // Check Dest Port
+            Assert.assertEquals(results.get(1)[8], expectedRow1[8]);
+            // Check Dest Type
+            Assert.assertEquals(results.get(1)[9], expectedRow1[9]);
+            // Check Ethertype
+            Assert.assertEquals(results.get(1)[10], expectedRow1[10]);
+            // Check Protocol
+            Assert.assertEquals(results.get(1)[11], expectedRow1[11]);
+            // Check Packet Length
+            Assert.assertEquals(results.get(1)[12], expectedRow1[12]);
+            // Check Extra Info
+            Assert.assertEquals(results.get(1)[13], expectedRow1[13]);
+            
+        } catch (Exception ex) {
+            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
+        } 
+    }
+    
+    @Test
+    public void checkGetResultsOverall() throws InterruptedException {
+        // Does an overall check on the data returned
+        // This includes the packet headers 
+        final PCAPImportFileParser parser = new PCAPImportFileParser();
+        
+        expectedResults.add(expectedHeadings);
+        expectedResults.add(expectedRow1);
+
+        try {
+            List<String[]> results = (List<String[]>) private_getResults.invoke(parser, 
+                    new InputSource(new File(this.getClass().getResource("./resources/PCAP-truncated_frame2.pcap").getFile())), 0);                        
+            Assert.assertEquals(expectedResults, results);
+
+        } catch (Exception ex) {
+            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
+        }  
+    } 
     
     @Test
     public void checkFileExists() throws InterruptedException {
@@ -970,7 +946,6 @@ public class PCAPImportFileParserNGTest {
              Assert.assertEquals(expectedFile, readFile);
         } catch (Exception ex) {
             Assert.fail("File data not readable: " + ex.getClass().getName());
-        }
-        
+        }   
     }
 }
