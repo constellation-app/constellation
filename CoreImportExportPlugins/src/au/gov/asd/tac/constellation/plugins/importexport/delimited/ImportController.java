@@ -47,9 +47,11 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
+import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import org.apache.commons.collections4.CollectionUtils;
+import javax.swing.SwingUtilities;
+import org.apache.commons.collections.CollectionUtils;
 import org.openide.util.NbPreferences;
 
 /**
@@ -69,7 +71,7 @@ public class ImportController {
      */
     private static final int PREVIEW_ROW_LIMIT = 100;
 
-    private final DelimitedFileImporterStage stage;
+    private final DelimitedImportPane importPane;
     private final List<File> files;
     private File sampleFile = null;
     private List<String[]> currentData = new ArrayList<>();
@@ -101,8 +103,8 @@ public class ImportController {
 
     private final RefreshRequest refreshRequest = this::updateSampleData;
 
-    public ImportController(final DelimitedFileImporterStage stage) {
-        this.stage = stage;
+    public ImportController(final DelimitedImportPane importPane) {
+        this.importPane = importPane;
         files = new ArrayList<>();
         importFileParser = ImportFileParser.DEFAULT_PARSER;
         schemaInitialised = true;
@@ -138,8 +140,8 @@ public class ImportController {
         dialog.showAndWait();
     }
 
-    public DelimitedFileImporterStage getStage() {
-        return stage;
+    public DelimitedImportPane getStage() {
+        return importPane;
     }
 
     public ConfigurationPane getConfigurationPane() {
@@ -210,10 +212,11 @@ public class ImportController {
         }
         keys.clear();
 
-        final boolean showSchemaAttributes = importExportPrefs.getBoolean(ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES, ImportExportPreferenceKeys.DEFAULT_SHOW_SCHEMA_ATTRIBUTES);
-        loadAllSchemaAttributes(currentDestination, showSchemaAttributes);
-
-        updateDisplayedAttributes();
+        Platform.runLater(() -> {
+            final boolean showSchemaAttributes = importExportPrefs.getBoolean(ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES, ImportExportPreferenceKeys.DEFAULT_SHOW_SCHEMA_ATTRIBUTES);
+            loadAllSchemaAttributes(currentDestination, showSchemaAttributes);
+            updateDisplayedAttributes();
+        });
     }
 
     /**
@@ -387,7 +390,7 @@ public class ImportController {
     }
 
     public String showSetDefaultValueDialog(final String attributeName, final String currentDefaultValue) {
-        DefaultAttributeValueDialog dialog = new DefaultAttributeValueDialog(stage, attributeName, currentDefaultValue);
+        final DefaultAttributeValueDialog dialog = new DefaultAttributeValueDialog(importPane.getParentWindow(), attributeName, currentDefaultValue);
         dialog.showAndWait();
         return dialog.getDefaultValue();
     }
@@ -457,7 +460,9 @@ public class ImportController {
     }
 
     public void cancelImport() {
-        stage.close();
+        SwingUtilities.invokeLater(() -> {
+            importPane.close();
+        });
     }
 
     private void updateSampleData() {
@@ -476,13 +481,13 @@ public class ImportController {
                 LOGGER.log(Level.INFO, warningMsg);
                 displayAlert("Invalid file selected", warningMsg, Alert.AlertType.WARNING);
                 files.remove(sampleFile);
-                stage.getSourcePane().removeFile(sampleFile);
+                importPane.getSourcePane().removeFile(sampleFile);
             } catch (IOException ex) {
                 final String warningMsg = "The following file could not be parsed and has been excluded from the import set:\n  " + sampleFile.getPath();
                 LOGGER.log(Level.INFO, warningMsg);
                 displayAlert("Invalid file selected", warningMsg, Alert.AlertType.WARNING);
                 files.remove(sampleFile);
-                stage.getSourcePane().removeFile(sampleFile);
+                importPane.getSourcePane().removeFile(sampleFile);
             }
         }
 
@@ -511,7 +516,7 @@ public class ImportController {
                 }
                 importFileParser.updateParameters(currentParameters, inputSources);
             }
-            stage.getSourcePane().setParameters(currentParameters);
+            importPane.getSourcePane().setParameters(currentParameters);
 
             updateSampleData();
         }
@@ -535,8 +540,6 @@ public class ImportController {
 
     public void setShowAllSchemaAttributes(final boolean showAllSchemaAttributes) {
         this.showAllSchemaAttributes = showAllSchemaAttributes;
-        importExportPrefs.putBoolean(ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES, showAllSchemaAttributes);
-        // TODO: the tick box could have changed but the menu item isn't updated, fix it
     }
 
     public void setAttributeFilter(final String attributeFilter) {
@@ -552,7 +555,7 @@ public class ImportController {
     }
 
     public Attribute showNewAttributeDialog(final GraphElementType elementType) {
-        NewAttributeDialog dialog = new NewAttributeDialog(stage, elementType);
+        final NewAttributeDialog dialog = new NewAttributeDialog(importPane.getParentWindow(), elementType);
         dialog.showAndWait();
         return dialog.getAttribute();
     }

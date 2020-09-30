@@ -167,7 +167,8 @@ public class ProjectUpdater extends Task {
                             extractMatchingPackages(jarFile, packages, publicPackages);
                         }
                     } else {
-                        throw new IllegalStateException("Not a JAR file: " + jarFile.getAbsolutePath());
+//                        throw new IllegalStateException("Not a JAR file: " + jarFile.getAbsolutePath());
+                        logMessage("\tWARNING: Not a JAR file: " + jarFile.getAbsolutePath());
                     }
                 }
 
