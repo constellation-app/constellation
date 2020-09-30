@@ -277,26 +277,42 @@ public class PCAPImportFileParserNGTest {
         // Confirm that attempts to preview invalid PCAP return a clean
         // IOException exception.
         final PCAPImportFileParser parser = new PCAPImportFileParser();
+         List<String[]> results = null;
         try {
             LOGGER.log(Level.INFO, "Start Get Data - checkPreviewTruncatedPCAPFrame2");
-
-            List<String[]> results = parser.preview(new InputSource(new File(this.getClass().getResource("./resources/PCAP-truncated_frame2.pcap").getFile())), null, 100);
+            results = parser.preview(new InputSource(new File(this.getClass().getResource("./resources/PCAP-truncated_frame2.pcap").getFile())), null, 100);
             LOGGER.log(Level.INFO, "After Get Data - checkPreviewTruncatedPCAPFrame2");
             Assert.assertEquals(results.size(), 2, "results.size():");
-            LOGGER.log(Level.INFO, "After Assert Size - checkPreviewTruncatedPCAPFrame2");
             Assert.assertEquals(results.get(0), expectedHeadings, "results[0]:");
-            LOGGER.log(Level.INFO, "After Assert Headings - checkPreviewTruncatedPCAPFrame2");
             Assert.assertEquals(results.get(1), expectedRow1, "results[1]:");
-            LOGGER.log(Level.INFO, "After Assert Row1 Check - checkPreviewTruncatedPCAPFrame2");
+            LOGGER.log(Level.INFO, "After Assert Row1 Check - checkPreviewTruncatedPCAPFrame2 \n" + resultsCheck(results) + "\n\n" + resultsCheck(expectedRow1));
             
         } catch (Exception ex) {
             LOGGER.log(Level.INFO, "Exception checkPreviewTruncatedPCAPFrame2");
             Assert.fail("Unexpected exception received: " + ex.getClass().getName());
         }  catch (final AssertionError e) {
-            LOGGER.log(Level.INFO, "AssertionError");
+            LOGGER.log(Level.INFO, "AssertionError" + resultsCheck(results) + "\n\n" + resultsCheck(expectedRow1) );
         }
     }
     
+    private String resultsCheck(List<String[]> results) {
+        String resultsString = "";
+        for (int i = 0; i < results.size(); i++) {
+            for (int j = 0; j < results.get(i).length; j++) {
+                resultsString += results.get(i)[j] + "\n";
+            }
+        }
+        return resultsString;
+    }
+    private String resultsCheck(String[] results) {
+        String resultsString = "";
+        
+        for (int j = 0; j < results.length; j++) {
+                resultsString += results[j] + "\n";
+        }
+        return resultsString;
+    }
+      
     @Test
     public void checkbyteToInt() throws InterruptedException {
         final PCAPImportFileParser parser = new PCAPImportFileParser();
