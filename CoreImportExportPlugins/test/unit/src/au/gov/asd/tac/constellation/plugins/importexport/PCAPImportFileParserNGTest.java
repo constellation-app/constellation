@@ -166,25 +166,6 @@ public class PCAPImportFileParserNGTest {
     public void tearDownMethod() throws Exception {
     }
     
-    
-//    @Test
-//    public void checkOpenPcap() throws InterruptedException {
-//        final PCAPImportFileParser parser = new PCAPImportFileParser();
-//        Pcap pcap = null;
-//        try {
-//            pcap = pcap.openStream("./resources/PCAP-truncated_frame2.pcap");
-//        } catch (Exception ex) {
-//            Assert.fail("Unexpected setup exception received" + ex);
-//        }
-//                
-//        try { 
-//            Pcap openedPcap = (Pcap) private_openPcap.invoke(parser, new File(this.getClass().getResource("./resources/PCAP-truncated_frame2.pcap").getFile()));
-//            Assert.assertEquals(pcap, openedPcap);
-//        } catch (Exception ex) {
-//            Assert.fail("Unexpected exception received: " + ex);
-//        }
-//    }
-
     @Test
     public void checkParseInvalidPCAP() throws InterruptedException {
         // Confirm that attempts to parse invalid PCAP return a clean
@@ -302,17 +283,17 @@ public class PCAPImportFileParserNGTest {
             List<String[]> results = parser.preview(new InputSource(new File(this.getClass().getResource("./resources/PCAP-truncated_frame2.pcap").getFile())), null, 100);
             LOGGER.log(Level.INFO, "After Get Data - checkPreviewTruncatedPCAPFrame2");
             Assert.assertEquals(results.size(), 2, "results.size():");
+            LOGGER.log(Level.INFO, "After Assert Size - checkPreviewTruncatedPCAPFrame2");
             Assert.assertEquals(results.get(0), expectedHeadings, "results[0]:");
+            LOGGER.log(Level.INFO, "After Assert Headings - checkPreviewTruncatedPCAPFrame2");
             Assert.assertEquals(results.get(1), expectedRow1, "results[1]:");
-            LOGGER.log(Level.INFO, "After Assertions - checkPreviewTruncatedPCAPFrame2");
+            LOGGER.log(Level.INFO, "After Assert Row1 Check - checkPreviewTruncatedPCAPFrame2");
             
         } catch (Exception ex) {
             LOGGER.log(Level.INFO, "Exception checkPreviewTruncatedPCAPFrame2");
             Assert.fail("Unexpected exception received: " + ex.getClass().getName());
         }  catch (final AssertionError e) {
             LOGGER.log(Level.INFO, "AssertionError");
-
-        
         }
     }
     
