@@ -115,42 +115,42 @@ public class SingleChoiceInputPane extends HBox {
             SingleChoiceParameterType.setChoiceData(parameter, field.getSelectionModel().getSelectedItem());
         });
 
-        parameter.addListener((final PluginParameter<?> parameter1, final ParameterChange change) -> {
+        parameter.addListener((final PluginParameter<?> scParameter, final ParameterChange change) -> {
             Platform.runLater(() -> {
-                @SuppressWarnings("unchecked") //scParameter1 is SingleChoiceParameter
-                PluginParameter<SingleChoiceParameterValue> scParameter1 = (PluginParameter<SingleChoiceParameterValue>) parameter1;
+                assert(scParameter.getParameterValue() instanceof SingleChoiceParameterValue);
+                final SingleChoiceParameterValue scParameterValue = (SingleChoiceParameterValue) scParameter.getParameterValue();
                 switch (change) {
                     case VALUE:
                         // Don't change the value if it isn't necessary.
-                        final ParameterValue param = scParameter1.getParameterValue().getChoiceData();
+                        final ParameterValue param = scParameterValue.getChoiceData();
                         final ParameterValue value = field.getSelectionModel().getSelectedItem();
                         if (!Objects.equals(value, param)) {
                             field.getSelectionModel().select(param);
                         }
                         break;
                     case PROPERTY:
-                        final List<ParameterValue> choices = SingleChoiceParameterType.getOptionsData(scParameter1);
+                        final List<ParameterValue> options = scParameterValue.getOptionsData();
                         EventHandler<ActionEvent> handler = field.getOnAction();
                         field.setOnAction(null);
-                        field.setItems(FXCollections.observableList(choices));
+                        field.setItems(FXCollections.observableList(options));
                         field.setOnAction(handler);
 
                         // Only keep the value if it's in the new choices.
-                        if (choices.contains((ParameterValue) parameter1.getObjectValue())) {
-                            field.getSelectionModel().select((ParameterValue) parameter1.getObjectValue());
+                        if (options.contains(scParameterValue.getChoiceData())) {
+                            field.getSelectionModel().select(scParameter.getSingleChoice());
                         } else {
                             field.getSelectionModel().clearSelection();
                         }
 
                         break;
                     case ENABLED:
-                        field.setDisable(!parameter1.isEnabled());
+                        field.setDisable(!scParameter.isEnabled());
                         break;
                     case VISIBLE:
-                        field.setManaged(parameter.isVisible());
-                        field.setVisible(parameter.isVisible());
-                        this.setVisible(parameter.isVisible());
-                        this.setManaged(parameter.isVisible());
+                        field.setManaged(scParameter.isVisible());
+                        field.setVisible(scParameter.isVisible());
+                        this.setVisible(scParameter.isVisible());
+                        this.setManaged(scParameter.isVisible());
                         break;
                     default:
                         LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);

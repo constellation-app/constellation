@@ -208,6 +208,7 @@ public class ConfigurationPane extends AnchorPane {
         for (Tab tab : tabPane.getTabs()) {
             RunPane runPane = (RunPane) tab.getContent();
             runPane.setDisplayedAttributes(vertexAttributes, transactionAttributes, keys);
+            runPane.setAttributePaneHeight();
         }
     }
 
