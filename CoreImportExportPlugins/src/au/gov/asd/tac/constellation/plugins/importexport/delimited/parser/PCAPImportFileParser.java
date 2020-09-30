@@ -522,7 +522,7 @@ public class PCAPImportFileParser extends ImportFileParser {
      * @throws IOException
      */
     private List<String[]> getResults(final InputSource input, final int limit) throws IOException {
-
+                    LOGGER.log(Level.INFO, "Start of Get Results");
         // Define names of 'columns' that will be extracted from PCAP
         final String[] headings = {
             "Frame", "Time",
@@ -756,6 +756,7 @@ public class PCAPImportFileParser extends ImportFileParser {
                         results.add(row);
 
                     } catch (final AssertionError e) {
+                        LOGGER.log(Level.INFO, "In assertion error");
                         final String[] row = {
                             frame, timestamp,
                             srcMacAddress, srcIP, srcPort, srcType,
@@ -777,9 +778,11 @@ public class PCAPImportFileParser extends ImportFileParser {
 
                     // Increment frame counter. If limit of frames has been reached no further processing will occur
                     frameCounter++;
+                    LOGGER.log(Level.INFO, "Frame counter return");
                     return (frameCounter <= limit || limit == 0);
                 }
             });
+            LOGGER.log(Level.INFO, "Main Return");
 
             return results;
 
