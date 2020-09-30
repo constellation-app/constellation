@@ -249,7 +249,7 @@ public class NotesViewPane extends BorderPane {
         
         final Button saveButton = new Button("Save");
         saveButton.setOnAction(e -> {
-            editStage.close();
+            
             e.consume();
         });
         
@@ -269,8 +269,10 @@ public class NotesViewPane extends BorderPane {
         editStage.show();
     }
     
-    public synchronized void closeEditNote() {
-        editStage.close();
+    public void closeEditNote() {
+        Platform.runLater(() -> {
+            editStage.close();
+        });
     }
     
     public synchronized void setNoteEntries(final List<NotesViewEntry> noteEntries) {

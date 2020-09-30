@@ -40,11 +40,6 @@ public class NotesViewState {
         this.notesViewEntries = noteEntries;
     }
 
-    /**
-     * Gets a list of all note entries.
-     *
-     * @return a list of all note entries.
-     */
     public List<NotesViewEntry> getNotes() {
         return notesViewEntries;
     }
