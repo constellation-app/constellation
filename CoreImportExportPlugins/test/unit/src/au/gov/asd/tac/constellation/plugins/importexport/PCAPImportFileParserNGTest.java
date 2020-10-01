@@ -58,10 +58,16 @@ public class PCAPImportFileParserNGTest {
         "Dest MAC", "Dest IP", "Dest Port", "Dest Type",
         "Ethertype", "Protocol", "Length", "Info"};
     static String[] expectedRow1 = {
-        "1", "2005-07-04 09:32:20.839",
+        "1", "2005-07-04 09:32:20.839 GMT",
         "00:e0:ed:01:6e:bd", "192.168.1.2", "137", "IPv4 Address",
         "BROADCAST ff:ff:ff:ff:ff:ff", "192.168.1.255", "137", "IPv4 Address",
         "0800", "UDP", "92", ""};
+    static String[] expectedIPv6Row1 = {
+        "1", "2016-05-30 19:37:47.681 GMT",
+        "86:93:23:d3:37:8e", "fc00:2:0:2::1", "43424", "IPv6 Address",
+        "22:1a:95:d6:7a:23", "fc00:2:0:1::1", "8080", "IPv6 Address",
+        "86dd", "TCP", "94", ""
+    };
     static List<String[]> expectedResults = new ArrayList<String[]>();
     
     static String[] expectedDataTruncatedFrame2 = {
@@ -867,7 +873,7 @@ public class PCAPImportFileParserNGTest {
             Assert.assertEquals(results.get(1)[2], expectedRow1[2]);
             // Check Src IP address
             Assert.assertEquals(results.get(1)[3], expectedRow1[3]);
-            // Check Src Port
+            // Check TCP Src Port
             Assert.assertEquals(results.get(1)[4], expectedRow1[4]);
             // Check Src Type
             Assert.assertEquals(results.get(1)[5], expectedRow1[5]);
@@ -875,7 +881,7 @@ public class PCAPImportFileParserNGTest {
             Assert.assertEquals(results.get(1)[6], expectedRow1[6]);
             // Check Dest IP address
             Assert.assertEquals(results.get(1)[7], expectedRow1[7]);
-            // Check Dest Port
+            // Check TCP Dest Port
             Assert.assertEquals(results.get(1)[8], expectedRow1[8]);
             // Check Dest Type
             Assert.assertEquals(results.get(1)[9], expectedRow1[9]);
@@ -905,7 +911,7 @@ public class PCAPImportFileParserNGTest {
         try {
             List<String[]> results = (List<String[]>) private_getResults.invoke(parser, 
                     new InputSource(new File(this.getClass().getResource("./resources/PCAP-truncated_frame2.pcap").getFile())), 0);                        
-            Assert.assertEquals(expectedResults, results);
+            Assert.assertEquals(results, expectedResults);
 
         } catch (Exception ex) {
             Assert.fail("Unexpected exception received: " + ex.getClass().getName());
@@ -913,39 +919,58 @@ public class PCAPImportFileParserNGTest {
     } 
     
     @Test
-    public void checkFileExists() throws InterruptedException {
+    public void checkGetResultsARP() throws InterruptedException {
+        // Completes a check into ARP specific packet handelling
+        final PCAPImportFileParser parser = new PCAPImportFileParser();
+        
         try {
-            File testFile = new File(this.getClass().getResource("./resources/PCAP-truncated_frame2.pcap").getFile());
-            assertTrue(testFile.exists());
+            List<String[]> results = (List<String[]>) private_getResults.invoke(parser, 
+                    new InputSource(new File(this.getClass().getResource("./resources/PCAP-Arp.pcap").getFile())), 0); 
+            LOGGER.log(Level.INFO, "Before ARP Check");
+            // Check Info message is correct
+            Assert.assertEquals(results.get(1)[13], "Who has 24.166.173.159? Tell 24.166.172.1 ");
+            
+            //Check Protocol
+            Assert.assertEquals(results.get(1)[11], "ARP");
+            
+           
         } catch (Exception ex) {
-            Assert.fail("File not Found: " + ex.getClass().getName());
-        }
+            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
+        }  
     }
     
     @Test
-    public void checkFileData() throws InterruptedException {
-        InputStream inputStream;
-        int i;
-        final int EOF = -1;
-        ArrayList<String> readFile = new ArrayList<String>();
-        ArrayList<String> expectedFile = new ArrayList<String>();
+    public void checkGetResultsIPv6() throws InterruptedException {
+        // Completes an overall check into IPv6 packet handelling
+        final PCAPImportFileParser parser = new PCAPImportFileParser();
+        
         try {
-            File testFile = new File(this.getClass().getResource("./resources/PCAP-truncated_frame2.pcap").getFile());
-            inputStream = new FileInputStream(testFile);
-            for(int j = 0; j < expectedDataTruncatedFrame2.length; j++) {
-                expectedFile.add(expectedDataTruncatedFrame2[j]);
-            }
-            try {
-                while ((i = inputStream.read()) != EOF) {
-                    readFile.add(Integer.toString(i));
-                }
-               
-            } catch ( IOException ex) {
-                Assert.fail("Unexpected Exception: " + ex.getClass().getName());
-            }
-             Assert.assertEquals(expectedFile, readFile);
+            List<String[]> results = (List<String[]>) private_getResults.invoke(parser, 
+                    new InputSource(new File(this.getClass().getResource("./resources/PCAP-IPv6_TCP.pcap").getFile())), 0);
+            Assert.assertEquals(results.get(1), expectedIPv6Row1);
         } catch (Exception ex) {
-            Assert.fail("File data not readable: " + ex.getClass().getName());
-        }   
+            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
+        }  
+    }
+    
+    @Test
+    public void checkGetResultsIPv4UDP() throws InterruptedException {
+        //Completes a check into IPv4 UDP packet handelling
+       final PCAPImportFileParser parser = new PCAPImportFileParser();
+        
+        try {
+            List<String[]> results = (List<String[]>) private_getResults.invoke(parser, 
+                    new InputSource(new File(this.getClass().getResource("./resources/PCAP-IPv4_UDP-TCP.pcap").getFile())), 0);   
+            
+            // Check UDP Src Port
+            Assert.assertEquals(results.get(1)[4], "138");
+            // Check UDP Dest Port
+            Assert.assertEquals(results.get(1)[8], "138");
+            // Check Protocol 
+            Assert.assertEquals(results.get(1)[11], "UDP");
+            
+        } catch (Exception ex) {
+            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
+        } 
     }
 }

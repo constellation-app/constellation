@@ -522,7 +522,6 @@ public class PCAPImportFileParser extends ImportFileParser {
      * @throws IOException
      */
     private List<String[]> getResults(final InputSource input, final int limit) throws IOException {
-                    LOGGER.log(Level.INFO, "Start of Get Results");
         // Define names of 'columns' that will be extracted from PCAP
         final String[] headings = {
             "Frame", "Time",
@@ -551,7 +550,7 @@ public class PCAPImportFileParser extends ImportFileParser {
 
                     // Extract timestamp and frame counter strings
                     final SimpleDateFormat formatter =
-                            new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+                            new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS z");
                     // Set a default timezone to ensure consistant times across multiple locations
                     // Currently set to GMT +0
                     formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -715,7 +714,7 @@ public class PCAPImportFileParser extends ImportFileParser {
                                 final byte[] arpBufferArray = getBytes(ethIIBufferArray, HDR_ETHERNET_II_SIZE,
                                         (ethIIBuffer.capacity() - HDR_ETHERNET_II_SIZE));
 
-                                // xtract key output fields based on values contained in ARP message
+                                // Extract key output fields based on values contained in ARP message
                                 srcType = getEtherTypeStr(bytesToInt(arpBufferArray, HDR_ARP_PROTOCOL_OFFSET,
                                         HDR_ARP_PROTOCOL_SIZE, infoBuilder, INFO_TRUNCATED_ETHERTYPE));
                                 destType = srcType;
