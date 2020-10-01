@@ -35,7 +35,7 @@ import java.util.Map;
 public class Query {
 
     private final GraphElementType elementType;
-    private String queryString;
+    private final String queryString;
 
     private String graphId = null;
 
@@ -55,7 +55,7 @@ public class Query {
         return queryString;
     }
 
-    public GraphElementType getQueryElementType() {
+    public GraphElementType getElementType() {
         return elementType;
     }
 
@@ -78,7 +78,6 @@ public class Query {
                 }
             }
         }
-
         return false;
     }
 

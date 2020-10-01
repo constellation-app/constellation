@@ -61,6 +61,7 @@ public class LayersAddContextMenu implements ContextMenuProvider {
         if (elementType == GraphElementType.VERTEX || elementType == GraphElementType.TRANSACTION) {
             final int stateAttributeId = LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.get(graph);
             final List<String> currentLayers = new ArrayList<>();
+
             if (stateAttributeId != GraphConstants.NOT_FOUND) {
                 final LayersViewState currentState = graph.getObjectValue(stateAttributeId, 0);
 

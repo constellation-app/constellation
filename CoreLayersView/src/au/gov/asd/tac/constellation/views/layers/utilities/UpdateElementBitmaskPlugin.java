@@ -49,7 +49,7 @@ public final class UpdateElementBitmaskPlugin extends SimpleEditPlugin {
         final int vertexBitmaskAttributeId = LayersViewConcept.VertexAttribute.LAYER_MASK.ensure(graph);
         final int vertexCount = graph.getVertexCount();
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
-            final int vertexId = graph.getVertex(vertexPosition); // elementtype.getid()
+            final int vertexId = graph.getVertex(vertexPosition);
             if (graph.getBooleanValue(vertexSelectedAttributeId, vertexId)) {
                 if (layerAction.equals(LayersAddContextMenu.LayerAction.ADD)) {
                     graph.setLongValue(vertexBitmaskAttributeId, vertexId, graph.getLongValue(vertexBitmaskAttributeId, vertexId) | (1 << targetMask));

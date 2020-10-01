@@ -35,9 +35,11 @@ public class BitMaskQueryCollection {
     private static final Logger LOGGER = Logger.getLogger(BitMaskQueryCollection.class.getName());
 
     public final static int MAX_QUERY_AMT = 64;
+
     public final static BitMaskQuery[] DEFAULT_VX_QUERIES = new BitMaskQuery[]{
         new BitMaskQuery(new Query(null, BitMaskQuery.DEFAULT_QUERY_STRING), 0, BitMaskQuery.DEFAULT_QUERY_DESCRIPTION),
         new BitMaskQuery(new Query(GraphElementType.VERTEX, null), 1, StringUtils.EMPTY)};
+
     public final static BitMaskQuery[] DEFAULT_TX_QUERIES = new BitMaskQuery[]{
         new BitMaskQuery(new Query(null, BitMaskQuery.DEFAULT_QUERY_STRING), 0, BitMaskQuery.DEFAULT_QUERY_DESCRIPTION),
         new BitMaskQuery(new Query(GraphElementType.TRANSACTION, null), 1, StringUtils.EMPTY)};
@@ -97,16 +99,12 @@ public class BitMaskQueryCollection {
         return queries[index];
     }
 
-    public long getActiveQueriesBitMask() {
-        return activeQueriesBitMask;
-    }
-
     public boolean update(final GraphReadMethods graph) {
         updateQueries.clear();
         for (final BitMaskQuery activeQuery : activeQueries) {
             if (activeQuery != null && activeQuery.update(graph, index)) {
-                if (activeQuery.getIndex() != 0) {
-                    updateQueries.remove(0);// removing default
+                if (activeQuery.getIndex() != 0 && updateQueries.size() > 0) {
+                    updateQueries.remove(0);
                 }
                 updateQueries.add(activeQuery);
             }
@@ -129,7 +127,6 @@ public class BitMaskQueryCollection {
                 index.writeInt(elementId);
                 final long bitMask = graph.getLongValue(bitMaskAttributeId, elementId);
                 final long updatedBitMask = updateBitMask(bitMask);
-                //graph.setLongValue(bitMaskAttributeId, elementId, updatedBitMask);
                 graph.setFloatValue(visibleAttributeId, elementId, (updatedBitMask & activeQueriesBitMask) == 0 ? 0.0f : 1.0f);
             }
         }
@@ -184,7 +181,7 @@ public class BitMaskQueryCollection {
                 continue;
             }
             if (query.getQuery() != null && query.getQuery().getAttributeIds() != null) {
-                for (int currentAttrId : query.getQuery().getAttributeIds()) {
+                for (final int currentAttrId : query.getQuery().getAttributeIds()) {
                     attributes.add(SchemaAttributeUtilities.getAttribute(this.elementType, wg.getAttributeName(currentAttrId)));
                 }
             }

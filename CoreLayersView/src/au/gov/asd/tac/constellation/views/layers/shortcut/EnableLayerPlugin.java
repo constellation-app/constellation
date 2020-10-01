@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
@@ -26,9 +27,11 @@ import au.gov.asd.tac.constellation.views.layers.LayersViewController;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQuery;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewState;
+import au.gov.asd.tac.constellation.views.layers.utilities.LayersUtilities;
+import au.gov.asd.tac.constellation.views.layers.utilities.UpdateLayerSelectionPlugin;
 
 /**
- * A plugin that deselects all layers in the layers view
+ * A plugin that enables a layer in the layers view
  *
  * @author formalhaut69
  */
@@ -48,45 +51,39 @@ public class EnableLayerPlugin extends SimpleEditPlugin {
         }
 
         LayersViewState currentState = graph.getObjectValue(layersViewStateAttributeId, 0);
-        if (currentState != null) {
-            if (currentState.getLayerCount() >= layerIndex) {
-
-                final BitMaskQuery vxQuery = currentState.getVxQueriesCollection().getQuery(layerIndex);
-                final BitMaskQuery txQuery = currentState.getTxQueriesCollection().getQuery(layerIndex);
-
-                if (vxQuery != null) {
-                    vxQuery.setVisibility(true);
-                }
-                if (txQuery != null) {
-                    txQuery.setVisibility(true);
-                }
-
-                final int bitmaskAttributeId = LayersViewConcept.GraphAttribute.LAYER_MASK_SELECTED.ensure(graph);
-                final long newBitMask = graph.getLongValue(bitmaskAttributeId, 0) ^ (1 << layerIndex + 1);
-                graph.setLongValue(bitmaskAttributeId, 0, newBitMask);
-            }
-        } else {
-            // state = null
+        if (currentState == null) {
             currentState = new LayersViewState();
             currentState.getVxQueriesCollection().setDefaultQueries();
             currentState.getTxQueriesCollection().setDefaultQueries();
-            if (currentState.getLayerCount() >= layerIndex) {
-
-                final BitMaskQuery vxQuery = currentState.getVxQueriesCollection().getQuery(layerIndex);
-                final BitMaskQuery txQuery = currentState.getTxQueriesCollection().getQuery(layerIndex);
-
-                if (vxQuery != null) {
-                    vxQuery.setVisibility(true);
-                }
-                if (txQuery != null) {
-                    txQuery.setVisibility(true);
-                }
-
-                final int bitmaskAttributeId = LayersViewConcept.GraphAttribute.LAYER_MASK_SELECTED.ensure(graph);
-                final long newBitMask = graph.getLongValue(bitmaskAttributeId, 0) ^ (1 << layerIndex + 1);
-                graph.setLongValue(bitmaskAttributeId, 0, newBitMask);
-            }
         }
+        if (currentState.getLayerCount() >= layerIndex) {
+
+            final BitMaskQuery vxQuery = currentState.getVxQueriesCollection().getQuery(layerIndex);
+            final BitMaskQuery txQuery = currentState.getTxQueriesCollection().getQuery(layerIndex);
+
+            if (vxQuery != null) {
+                vxQuery.setVisibility(!vxQuery.getVisibility());
+            }
+            if (txQuery != null) {
+                txQuery.setVisibility(!txQuery.getVisibility());
+            }
+
+            currentState.getVxQueriesCollection().add(vxQuery);
+            currentState.getTxQueriesCollection().add(txQuery);
+            LayersViewController.getDefault().getVxQueryCollection().setQueries(currentState.getVxQueriesCollection().getQueries());
+            LayersViewController.getDefault().getTxQueryCollection().setQueries(currentState.getTxQueriesCollection().getQueries());
+
+            graph.setObjectValue(layersViewStateAttributeId, 0, new LayersViewState(currentState));
+
+            final int bitmaskAttributeId = LayersViewConcept.GraphAttribute.LAYER_MASK_SELECTED.ensure(graph);
+            final long newBitMask = graph.getLongValue(bitmaskAttributeId, 0) ^ (1 << layerIndex + 1);
+            graph.setLongValue(bitmaskAttributeId, 0, newBitMask);
+        }
+
+        final int newBitmask = LayersUtilities.calculateCurrentLayerSelectionBitMask(currentState.getVxQueriesCollection(), currentState.getTxQueriesCollection());
+
+        PluginExecution.withPlugin(new UpdateLayerSelectionPlugin(newBitmask))
+                .executeNow(graph);
 
         LayersViewController.getDefault().updateQueries(GraphManager.getDefault().getAllGraphs().get(graph.getId()));
     }

@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.layers;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.monitor.AttributeValueMonitor;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
@@ -80,26 +81,30 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
         });
     }
 
+    public void update() {
+        layersViewController.readState();
+        layersViewController.updateQueries(GraphManager.getDefault().getActiveGraph());
+    }
+
     public void removeValueHandlers(final List<AttributeValueMonitor> valueMonitors) {
         // remove all monitors before re-adding updated ones
-        for (final AttributeValueMonitor monitor : valueMonitors) {
+        valueMonitors.forEach(monitor -> {
             removeAttributeValueChangeHandler(monitor);
-        }
+        });
     }
 
     public synchronized List<AttributeValueMonitor> setChangeListeners(final List<SchemaAttribute> changeListeners) {
         final List<AttributeValueMonitor> valueMonitors = new ArrayList<>();
-        for (final SchemaAttribute attribute : changeListeners) {
+        changeListeners.forEach(attribute -> {
             valueMonitors.add(
                     addAttributeValueChangeHandler(attribute, changedGraph -> {
                         layersViewController.updateQueries(changedGraph);
                     })
             );
-        }
+        });
         return List.copyOf(valueMonitors);
     }
 
-    // adding change handlers for attribute changes based on current layer selection
     @Override
     protected String createStyle() {
         return "resources/layers-view.css";

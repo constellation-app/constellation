@@ -59,7 +59,9 @@ public class LayersViewState {
         }
     }
 
-    // returns the highest no of layers
+    /**
+     * returns the highest no of layers
+     */
     public int getLayerCount() {
         return Math.max(vxQueries.getHighestQueryIndex(), txQueries.getHighestQueryIndex());
     }

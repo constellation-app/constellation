@@ -38,7 +38,7 @@ public class BitMaskQuery {
     private final long mask;
     private BooleanReadable result;
 
-    public BitMaskQuery(Query query, int bitIndex, final String description) {
+    public BitMaskQuery(final Query query, final int bitIndex, final String description) {
         this.query = query;
         this.description = description;
         this.bitIndex = bitIndex;
@@ -69,16 +69,12 @@ public class BitMaskQuery {
         return query;
     }
 
-    public boolean isQueryLayer() {
-        return query != null ? StringUtils.isNotBlank(query.getQueryString()) : false;
-    }
-
     public String getQueryString() {
-        return query != null ? query.getQueryString() : null;
+        return query.getQueryString();
     }
 
     public GraphElementType getQueryElementType() {
-        return query != null ? query.getQueryElementType() : null;
+        return query.getElementType();
     }
 
     public void setDescription(final String description) {
@@ -90,8 +86,8 @@ public class BitMaskQuery {
     }
 
     public boolean update(final GraphReadMethods graph, final IntReadable index) {
-        if (query == null || query.requiresUpdate(graph)) {
-            if (isQueryLayer() && bitIndex != 0) {
+        if (query.requiresUpdate(graph)) {
+            if (StringUtils.isNotBlank(query.getQueryString()) && bitIndex != 0) {
                 final Object compiledExpression = query.compile(graph, index);
                 this.result = Access.getDefault().getRegistry(BooleanReadable.class).convert(compiledExpression);
             }
@@ -101,7 +97,7 @@ public class BitMaskQuery {
         }
     }
 
-    public long updateBitMask(long original) {
+    public long updateBitMask(final long original) {
         if (result != null && result.readBoolean()) {
             return original | (1L << bitIndex);
         } else {

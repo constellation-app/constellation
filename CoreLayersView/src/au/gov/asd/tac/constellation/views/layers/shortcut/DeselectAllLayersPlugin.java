@@ -24,9 +24,9 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.layers.LayersViewController;
-import au.gov.asd.tac.constellation.views.layers.query.BitMaskQuery;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewState;
+import au.gov.asd.tac.constellation.views.layers.utilities.LayersUtilities;
 import au.gov.asd.tac.constellation.views.layers.utilities.UpdateLayerSelectionPlugin;
 
 /**
@@ -59,24 +59,12 @@ public class DeselectAllLayersPlugin extends SimpleEditPlugin {
         final LayersViewState newState = new LayersViewState(currentState);
         graph.setObjectValue(layersViewStateAttributeId, 0, newState);
 
-        int newBitmask = 0b0;
-        for (int position = 0; position <= Math.max(currentState.getVxQueriesCollection().getHighestQueryIndex(), currentState.getTxQueriesCollection().getHighestQueryIndex()); position++) {
-            final BitMaskQuery vxQuery = currentState.getVxQueriesCollection().getQuery(position);
-            final BitMaskQuery txQuery = currentState.getTxQueriesCollection().getQuery(position);
-
-            if (vxQuery != null) {// can use vx
-                newBitmask |= vxQuery.getVisibility() ? (1 << vxQuery.getIndex()) : 0;
-            } else if (txQuery != null) {// have to use tx
-                newBitmask |= txQuery.getVisibility() ? (1 << txQuery.getIndex()) : 0;
-            } else {
-                // cannot use any.
-            }
-        }
-        // if the newBitmask is 1, it means none of the boxes are checked. therefore display default layer 1 (All nodes)
-        newBitmask = (newBitmask == 0) ? 0b1 : (newBitmask > 1) ? newBitmask & ~0b1 : newBitmask;
+        final int newBitmask = LayersUtilities.calculateCurrentLayerSelectionBitMask(
+                currentState.getVxQueriesCollection(), currentState.getTxQueriesCollection());
 
         PluginExecution.withPlugin(new UpdateLayerSelectionPlugin(newBitmask))
                 .executeLater(GraphManager.getDefault().getActiveGraph());
+
         LayersViewController.getDefault().updateQueries(GraphManager.getDefault().getAllGraphs().get(graph.getId()));
     }
 

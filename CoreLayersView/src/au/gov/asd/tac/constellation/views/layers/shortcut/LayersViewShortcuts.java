@@ -17,12 +17,16 @@ package au.gov.asd.tac.constellation.views.layers.shortcut;
 
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.views.layers.LayersViewController;
 import java.awt.event.ActionEvent;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import javax.swing.AbstractAction;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
 /**
@@ -50,6 +54,7 @@ public class LayersViewShortcuts extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        Future<?> enableLayerFuture = null;
 
         final String hotkey = e.getActionCommand();
         switch (hotkey) {
@@ -60,34 +65,52 @@ public class LayersViewShortcuts extends AbstractAction {
                 PluginExecution.withPlugin(new DeselectAllLayersPlugin()).executeLater(GraphManager.getDefault().getActiveGraph());
                 break;
             case "CA-1":
-                PluginExecution.withPlugin(new EnableLayerPlugin(1)).executeLater(GraphManager.getDefault().getActiveGraph());
+                enableLayerFuture = PluginExecution.withPlugin(new EnableLayerPlugin(1)).executeLater(GraphManager.getDefault().getActiveGraph());
                 break;
             case "CA-2":
-                PluginExecution.withPlugin(new EnableLayerPlugin(2)).executeLater(GraphManager.getDefault().getActiveGraph());
+                enableLayerFuture = PluginExecution.withPlugin(new EnableLayerPlugin(2)).executeLater(GraphManager.getDefault().getActiveGraph());
                 break;
             case "CA-3":
-                PluginExecution.withPlugin(new EnableLayerPlugin(3)).executeLater(GraphManager.getDefault().getActiveGraph());
+                enableLayerFuture = PluginExecution.withPlugin(new EnableLayerPlugin(3)).executeLater(GraphManager.getDefault().getActiveGraph());
                 break;
             case "CA-4":
-                PluginExecution.withPlugin(new EnableLayerPlugin(4)).executeLater(GraphManager.getDefault().getActiveGraph());
+                enableLayerFuture = PluginExecution.withPlugin(new EnableLayerPlugin(4)).executeLater(GraphManager.getDefault().getActiveGraph());
                 break;
             case "CA-5":
-                PluginExecution.withPlugin(new EnableLayerPlugin(5)).executeLater(GraphManager.getDefault().getActiveGraph());
+                enableLayerFuture = PluginExecution.withPlugin(new EnableLayerPlugin(5)).executeLater(GraphManager.getDefault().getActiveGraph());
                 break;
             case "CA-6":
-                PluginExecution.withPlugin(new EnableLayerPlugin(6)).executeLater(GraphManager.getDefault().getActiveGraph());
+                enableLayerFuture = PluginExecution.withPlugin(new EnableLayerPlugin(6)).executeLater(GraphManager.getDefault().getActiveGraph());
                 break;
             case "CA-7":
-                PluginExecution.withPlugin(new EnableLayerPlugin(7)).executeLater(GraphManager.getDefault().getActiveGraph());
+                enableLayerFuture = PluginExecution.withPlugin(new EnableLayerPlugin(7)).executeLater(GraphManager.getDefault().getActiveGraph());
                 break;
             case "CA-8":
-                PluginExecution.withPlugin(new EnableLayerPlugin(8)).executeLater(GraphManager.getDefault().getActiveGraph());
+                enableLayerFuture = PluginExecution.withPlugin(new EnableLayerPlugin(8)).executeLater(GraphManager.getDefault().getActiveGraph());
                 break;
             case "CA-9":
-                PluginExecution.withPlugin(new EnableLayerPlugin(9)).executeLater(GraphManager.getDefault().getActiveGraph());
+                enableLayerFuture = PluginExecution.withPlugin(new EnableLayerPlugin(9)).executeLater(GraphManager.getDefault().getActiveGraph());
                 break;
             default:
                 break;
+        }
+
+        // wait for future, execute and update the state.
+        if (enableLayerFuture != null) {
+            try {
+                enableLayerFuture.get();
+            } catch (InterruptedException | ExecutionException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+            LayersViewController.getDefault().execute();
+            final Future<?> writeStateFuture = LayersViewController.getDefault().writeState();
+            if (writeStateFuture != null) {
+                try {
+                    writeStateFuture.get();
+                } catch (InterruptedException | ExecutionException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
+            }
         }
     }
 }
