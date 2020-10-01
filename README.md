@@ -68,9 +68,9 @@ for Windows or run the `bin\constellation` shell script for Linux and MacOSX.
 To build Constellation from source code do the following:
 
 * Download Azul's Zulu distribution of JDK 11 with JFX 11, either the 
-[Windows 64 bit](https://cdn.azul.com/zulu/bin/zulu11.37.19-ca-fx-jre11.0.6-win_x64.zip),
-[Linux 64 bit](https://cdn.azul.com/zulu/bin/zulu11.37.19-ca-fx-jre11.0.6-linux_x64.tar.gz)
-or [MacOSX 64 bit](https://cdn.azul.com/zulu/bin/zulu11.37.19-ca-fx-jre11.0.6-macosx_x64.tar.gz)
+[Windows 64 bit](https://cdn.azul.com/zulu/bin/zulu11.37.19-ca-fx-jdk11.0.6-win_x64.zip),
+[Linux 64 bit](https://cdn.azul.com/zulu/bin/zulu11.37.19-ca-fx-jdk11.0.6-linux_x64.tar.gz)
+or [MacOSX 64 bit](https://cdn.azul.com/zulu/bin/zulu11.37.19-ca-fx-jdk11.0.6-macosx_x64.tar.gz)
 
 * Download [NetBeans 12](https://netbeans.apache.org/download/nb120/nb120.html)
 * Update `netbeans_jdkhome` in netbeans.conf to point to the Azul Zulu JDK you 

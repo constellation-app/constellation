@@ -36,7 +36,9 @@ public class DefaultConversationDatetimeProvider implements ConversationDatetime
     @Override
     public void updateDatetimes(GraphReadMethods graph, List<ConversationMessage> messages) {
         assert !SwingUtilities.isEventDispatchThread();
-
+        if (messages.isEmpty()) {
+            return; // No messages means nothing to do.
+        }
         final int datetimeAttribute = TemporalConcept.TransactionAttribute.DATETIME.get(graph);
         if (datetimeAttribute == Graph.NOT_FOUND) {
             for (ConversationMessage message : messages) {
