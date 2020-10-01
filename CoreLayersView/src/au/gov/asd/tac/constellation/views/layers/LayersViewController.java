@@ -37,6 +37,7 @@ import au.gov.asd.tac.constellation.views.layers.utilities.UpdateLayerSelectionP
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
+import java.util.logging.Logger;
 
 /**
  * Controls interaction of UI to layers and filtering of nodes and transactions.
@@ -45,6 +46,7 @@ import java.util.concurrent.Future;
  */
 public class LayersViewController {
 
+    private static final Logger LOGGER = Logger.getLogger(LayersViewController.class.getName());
     // Layers view controller instance
     private static LayersViewController INSTANCE = null;
     private LayersViewTopComponent parent;
@@ -108,6 +110,7 @@ public class LayersViewController {
                     if (state != null) {
                         changeListeners.clear();
                         changeListeners.addAll(state.getLayerAttributes());
+                        LayersViewController.getDefault().setListenedAttributes();
                     }
                 }
             }).executeLater(activeGraph);
@@ -157,8 +160,6 @@ public class LayersViewController {
         }
         PluginExecution.withPlugin(new LayersViewStateReader(pane))
                 .executeLater(graph);
-
-        updateListenedAttributes();
     }
 
     /**
@@ -304,6 +305,7 @@ public class LayersViewController {
             final LayersViewState currentState = graph.getObjectValue(stateAttributeId, 0);
             if (currentState != null) {
                 currentState.extractLayerAttributes(graph);
+                LayersViewController.getDefault().updateListenedAttributes();
             }
         }
     }

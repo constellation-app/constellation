@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
-import au.gov.asd.tac.constellation.views.layers.LayersViewController;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQuery;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQueryCollection;
 import au.gov.asd.tac.constellation.views.layers.query.Query;
@@ -106,6 +105,5 @@ public class LayersViewState {
 
         this.layerAttributes.clear();
         this.layerAttributes.addAll(newLayerAttributes);
-        LayersViewController.getDefault().setListenedAttributes();
     }
 }
