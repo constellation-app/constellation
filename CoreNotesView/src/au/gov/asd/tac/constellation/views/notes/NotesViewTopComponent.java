@@ -79,14 +79,10 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
         });
     }
 
-    // TODO: This view sometimes doesnt update itself when two graphs are active, and only one is closed
-    // It could be something to do with preparing the pane, and then loading the graphreport
-    // A possible race condition with the javafx run thread.
-    // Below are actions that are called when graph is opened - can use these to reload notes when change graph occurs
     @Override
     protected void handleNewGraph(final Graph graph) {
         if (needsUpdate() && graph != null) {
-            preparePane();
+            notesViewPane.prepareNotesViewPane(notesViewController, notesViewPane);
             notesViewPane.setGraphRecord(graph.getId());
         }
     }
@@ -94,7 +90,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
     @Override
     protected void handleGraphOpened(final Graph graph) {
         if (needsUpdate() && graph != null) {
-            preparePane();
+            notesViewPane.prepareNotesViewPane(notesViewController, notesViewPane);
             notesViewPane.setGraphRecord(graph.getId());
         }
     }
@@ -102,36 +98,29 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
     @Override
     protected void handleGraphClosed(final Graph graph) {
         if (needsUpdate() && graph != null) {
-            preparePane();
+            notesViewPane.prepareNotesViewPane(notesViewController, notesViewPane);
         }
     }
 
     @Override
     protected void handleComponentOpened() {
         GraphReportManager.addGraphReportListener(this);
-        preparePane();
+        notesViewPane.prepareNotesViewPane(notesViewController, notesViewPane);
     }
     
     @Override
     protected void handleComponentClosed() {
-        notesViewPane.clearContents();
+        notesViewPane.clearNotes();
         notesViewPane.closeEditNote();
     }
 
     @Override
     protected void componentShowing() {
         super.componentShowing();
-        preparePane();
+        notesViewPane.prepareNotesViewPane(notesViewController, notesViewPane);
     }
 
-    private void preparePane() {
-        // TODO: setup pane with any graphreports
-        notesViewPane.clearContents();
-        notesViewController.readState();
-        notesViewController.addAttributes();
-    }
-
-        @Override
+    @Override
     protected String createStyle() {
         return "resources/notes-view.css";
     }
@@ -144,11 +133,11 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
     // Triggers when plugin reports are added or removed.
     @Override
     public void newPluginReport(PluginReport pluginReport) {
-
         final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
         
         if (!pluginReport.getPluginName().contains("Note")) {
-            preparePane();
+            notesViewPane.prepareNotesViewPane(notesViewController, notesViewPane);
+            
             if (activeGraph != null) {
                 notesViewPane.setGraphRecord(activeGraph.getId());
             }

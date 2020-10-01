@@ -62,6 +62,7 @@ public class NotesViewController {
      */
     public void addAttributes() {
         final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+        
         if (activeGraph != null) {
             PluginExecution.withPlugin(new SimpleEditPlugin(NOTES_ADD_ATTRIBUTE) {
                 @Override
@@ -79,9 +80,11 @@ public class NotesViewController {
     public void readState() {
         final NotesViewPane pane = parent.getContent();
         final Graph graph = GraphManager.getDefault().getActiveGraph();
+        
         if (pane == null || graph == null) {
             return;
         }
+        
         PluginExecution.withPlugin(new NotesViewStateReader(pane)).executeLater(graph);
     }
 
@@ -92,10 +95,12 @@ public class NotesViewController {
     public void writeState() {
         final NotesViewPane pane = parent.getContent();
         final Graph graph = GraphManager.getDefault().getActiveGraph();
+        
         if (pane == null || graph == null) {
             return;
         }
-        PluginExecution.withPlugin(new NotesViewStateWriter(pane.getNotes())).executeLater(graph);
+        
+        PluginExecution.withPlugin(new NotesViewStateWriter(pane.getNoteEntries())).executeLater(graph);
     }
 
     /**
@@ -124,6 +129,7 @@ public class NotesViewController {
             if (currentState == null || pane == null) {
                 return;
             }
+            
             pane.setNoteEntries(currentState.getNotes());
         }
 

@@ -15,9 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.notes.state;
 
-import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
-import java.time.LocalDateTime;
-
 /**
  * A note entry into the Notes View.
  *
@@ -35,32 +32,24 @@ public class NotesViewEntry {
 
     // Constructor.
     public NotesViewEntry(final String noteDateTime, final String noteTitle, final String noteContent, final Boolean userCreated) {
-        this.userCreated = userCreated;
+        this.noteId = noteIdCounter++;
         this.dateTime = noteDateTime;
         this.noteTitle = noteTitle;
         this.noteContent = noteContent;
-        this.noteId = noteIdCounter++;
+        this.userCreated = userCreated;
     }
 
     // Copy constructor.
     public NotesViewEntry(final NotesViewEntry note) {
-        this.userCreated = note.isUserCreated();
+        this.noteId = noteIdCounter++;
         this.dateTime = note.getDateTime();
         this.noteTitle = note.getNoteTitle();
         this.noteContent = note.getNoteContent();
-        this.noteId = noteIdCounter++;
-    }
-    
-    public void setNoteTitle(final String noteTitle) {
-        this.noteTitle = noteTitle;
+        this.userCreated = note.isUserCreated();
     }
 
-    public void setNoteContent(final String noteContent) {
-        this.noteContent = noteContent;
-    }
-
-    public Boolean isUserCreated() {
-        return userCreated;
+    public int getNoteId() {
+        return noteId;
     }
 
     public String getDateTime() {
@@ -75,7 +64,15 @@ public class NotesViewEntry {
         return noteContent;
     }
     
-    public int getNoteId() {
-        return noteId;
+    public Boolean isUserCreated() {
+        return userCreated;
+    }
+    
+    public void setNoteTitle(final String noteTitle) {
+        this.noteTitle = noteTitle;
+    }
+
+    public void setNoteContent(final String noteContent) {
+        this.noteContent = noteContent;
     }
 }
