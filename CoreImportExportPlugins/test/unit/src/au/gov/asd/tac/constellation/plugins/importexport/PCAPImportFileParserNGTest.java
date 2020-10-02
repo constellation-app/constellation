@@ -925,7 +925,7 @@ public class PCAPImportFileParserNGTest {
         
         try {
             List<String[]> results = (List<String[]>) private_getResults.invoke(parser, 
-                    new InputSource(new File(this.getClass().getResource("./resources/PCAP-ARP.pcap").getFile())), 0); 
+                    new InputSource(new File(this.getClass().getResource("./resources/PCAP-ARP_Reply-Response.pcap").getFile())), 0); 
             // Check Info message is correct
             Assert.assertEquals(results.get(1)[13], "Who has 10.10.10.1? Tell 10.10.10.2 ");
             //Check Protocol
@@ -943,7 +943,7 @@ public class PCAPImportFileParserNGTest {
         
         try {
             List<String[]> results = (List<String[]>) private_getResults.invoke(parser, 
-                    new InputSource(new File(this.getClass().getResource("./resources/PCAP-ARP.pcap").getFile())), 0); 
+                    new InputSource(new File(this.getClass().getResource("./resources/PCAP-ARP_Reply-Response.pcap").getFile())), 0); 
             // Check Info message is correct
             Assert.assertEquals(results.get(2)[13], "10.10.10.1 is at 10.10.10.2 ");
             //Check Protocol
