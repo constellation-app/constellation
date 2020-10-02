@@ -354,6 +354,7 @@ public final class GraphRenderable implements GLRenderable {
         graphDisplayer.init(drawable);
 
         GLTools.checkFramebufferStatus(gl, "gr-check");
+        parent.rebuild();
 
     }
 
@@ -362,7 +363,6 @@ public final class GraphRenderable implements GLRenderable {
         // Sets the number of pixels per world unit at distance 1
         this.pixelDensity = (float) (height * 0.5 / Math.tan(Math.toRadians(GLRenderer.FIELD_OF_VIEW)));
         graphDisplayer.reshape(x, y, width, height);
-        parent.rebuild();
     }
 
     @Override
@@ -578,6 +578,7 @@ public final class GraphRenderable implements GLRenderable {
 
         // Get the graph displayer to render its contents to the screen
         graphDisplayer.display(drawable, pMatrix);
+        
     }
 
     /**
@@ -600,6 +601,5 @@ public final class GraphRenderable implements GLRenderable {
         xyzTexturiser.dispose().run(gl);
         vertexFlagsTexturiser.dispose().run(gl);
         graphDisplayer.dispose(drawable);
-//        parent.rebuild();
     }
 }
