@@ -919,26 +919,59 @@ public class PCAPImportFileParserNGTest {
     } 
     
     @Test
-    public void checkGetResultsARP() throws InterruptedException {
+    public void checkGetResultsARPRequest() throws InterruptedException {
         // Completes a check into ARP specific packet handelling
         final PCAPImportFileParser parser = new PCAPImportFileParser();
         
         try {
             List<String[]> results = (List<String[]>) private_getResults.invoke(parser, 
-                    new InputSource(new File(this.getClass().getResource("./resources/PCAP-Arp.pcap").getFile())), 0); 
-            LOGGER.log(Level.INFO, "Before ARP Check");
+                    new InputSource(new File(this.getClass().getResource("./resources/PCAP-ARP.pcap").getFile())), 0); 
             // Check Info message is correct
-            Assert.assertEquals(results.get(1)[13], "Who has 24.166.173.159? Tell 24.166.172.1 ");
-            
+            Assert.assertEquals(results.get(1)[13], "Who has 10.10.10.1? Tell 10.10.10.2 ");
             //Check Protocol
             Assert.assertEquals(results.get(1)[11], "ARP");
             
-           
         } catch (Exception ex) {
             Assert.fail("Unexpected exception received: " + ex.getClass().getName());
         }  
     }
     
+        @Test
+    public void checkGetResultsARPReply() throws InterruptedException {
+        // Completes a check into ARP specific packet handelling
+        final PCAPImportFileParser parser = new PCAPImportFileParser();
+        
+        try {
+            List<String[]> results = (List<String[]>) private_getResults.invoke(parser, 
+                    new InputSource(new File(this.getClass().getResource("./resources/PCAP-ARP.pcap").getFile())), 0); 
+            // Check Info message is correct
+            Assert.assertEquals(results.get(2)[13], "10.10.10.1 is at 10.10.10.2 ");
+            //Check Protocol
+            Assert.assertEquals(results.get(2)[11], "ARP");
+            
+        } catch (Exception ex) {
+            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
+        }  
+    }
+    
+    @Test
+    public void checkGetResultsUnsupportedARP() throws InterruptedException {
+        // Complete a check into Unsupported ARP packet types
+                // Completes a check into ARP specific packet handelling
+        final PCAPImportFileParser parser = new PCAPImportFileParser();
+        
+        try {
+            List<String[]> results = (List<String[]>) private_getResults.invoke(parser, 
+                    new InputSource(new File(this.getClass().getResource("./resources/PCAP-unsupported_ARP.cap").getFile())), 0); 
+            // Check Info message is correct
+            Assert.assertEquals(results.get(1)[13], "ARP op code 0x0003 currently not supported. ");
+            //Check Protocol
+            Assert.assertEquals(results.get(1)[11], "ARP");
+            
+        } catch (Exception ex) {
+            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
+        }  
+    }
     @Test
     public void checkGetResultsIPv6() throws InterruptedException {
         // Completes an overall check into IPv6 packet handelling
@@ -948,9 +981,30 @@ public class PCAPImportFileParserNGTest {
             List<String[]> results = (List<String[]>) private_getResults.invoke(parser, 
                     new InputSource(new File(this.getClass().getResource("./resources/PCAP-IPv6_TCP.pcap").getFile())), 0);
             Assert.assertEquals(results.get(1), expectedIPv6Row1);
+            
         } catch (Exception ex) {
             Assert.fail("Unexpected exception received: " + ex.getClass().getName());
         }  
+    }
+    
+    @Test
+    public void checkGetResultsIPv6UDP() throws InterruptedException {
+        //Completes a check into IPv6 UDP packet handelling
+        final PCAPImportFileParser parser = new PCAPImportFileParser();
+        
+        try {
+            List<String[]> results = (List<String[]>) private_getResults.invoke(parser, 
+                    new InputSource(new File(this.getClass().getResource("./resources/PCAP-IPv6_UDP.pcap").getFile())), 0);
+            // Check UDP Src Port
+            Assert.assertEquals(results.get(1)[4], "6363");
+            // Check UDP Dest Port
+            Assert.assertEquals(results.get(1)[8], "6363");
+            // Check Protoc
+            Assert.assertEquals(results.get(1)[11], "UDP");
+            
+        } catch ( Exception ex) {
+            Assert.fail("Uxexpected exception received: " + ex.getClass().getName());
+        }
     }
     
     @Test
