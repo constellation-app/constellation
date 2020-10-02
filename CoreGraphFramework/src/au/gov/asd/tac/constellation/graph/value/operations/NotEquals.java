@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2020 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,9 +25,13 @@ import java.util.Objects;
  * @author sirius
  */
 public class NotEquals {
-    
-    public static final String NAME = new String("NOT_EQUALS");
-    
+
+    public static final String NAME = "NOT_EQUALS";
+
+    private NotEquals() {
+        // added private constructor to hide implicit public constructor - S1118.
+    }
+
     public static final ComparisonOperation COMPARISON_OPERATION = new ComparisonOperation() {
         @Override
         public boolean execute(double p1, double p2) {
@@ -48,22 +52,22 @@ public class NotEquals {
         public boolean execute(int p1, int p2) {
             return p1 != p2;
         }
-        
+
         @Override
         public boolean execute(String p1, String p2) {
             return !Objects.equals(p1, p2);
         }
     };
-    
+
     public static void register(Operators operators) {
         final var registry = operators.getRegistry(NAME);
         COMPARISON_OPERATION.register(registry);
-        
-        registry.register(BooleanReadable.class, BooleanReadable.class, BooleanReadable.class, (p1, p2) -> { 
-            return () -> p1.readBoolean() != p2.readBoolean(); 
+
+        registry.register(BooleanReadable.class, BooleanReadable.class, BooleanReadable.class, (p1, p2) -> {
+            return () -> p1.readBoolean() != p2.readBoolean();
         });
     }
-    
+
     static {
         register(Operators.getDefault());
     }

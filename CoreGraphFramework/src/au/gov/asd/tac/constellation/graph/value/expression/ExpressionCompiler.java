@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2020 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,9 +17,6 @@ package au.gov.asd.tac.constellation.graph.value.expression;
 
 import au.gov.asd.tac.constellation.graph.value.Operators;
 import au.gov.asd.tac.constellation.graph.value.constants.StringConstant;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
 import au.gov.asd.tac.constellation.graph.value.expression.ExpressionParser.Expression;
 import au.gov.asd.tac.constellation.graph.value.expression.ExpressionParser.Operator;
 import au.gov.asd.tac.constellation.graph.value.expression.ExpressionParser.OperatorExpression;
@@ -48,15 +45,19 @@ import au.gov.asd.tac.constellation.graph.value.operations.Quotient;
 import au.gov.asd.tac.constellation.graph.value.operations.StartsWith;
 import au.gov.asd.tac.constellation.graph.value.operations.Sum;
 import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
  * @author sirius
  */
 public class ExpressionCompiler {
-    
+
     private static final Map<Operator, String> OPERATOR_CLASSES = new EnumMap<>(Operator.class);
     private static final Map<Operator, String> CONVERTER_CLASSES = new EnumMap<>(Operator.class);
+
     static {
         OPERATOR_CLASSES.put(Operator.ADD, Sum.NAME);
         OPERATOR_CLASSES.put(Operator.SUBTRACT, Difference.NAME);
@@ -78,20 +79,24 @@ public class ExpressionCompiler {
         OPERATOR_CLASSES.put(Operator.STARTS_WITH, StartsWith.NAME);
         OPERATOR_CLASSES.put(Operator.ENDS_WITH, EndsWith.NAME);
         OPERATOR_CLASSES.put(Operator.ASSIGN, Assign.NAME);
-        
+
         CONVERTER_CLASSES.put(Operator.SUBTRACT, Negative.NAME);
         CONVERTER_CLASSES.put(Operator.ADD, Positive.NAME);
         CONVERTER_CLASSES.put(Operator.NOT, Not.NAME);
     }
-    
+
+    private ExpressionCompiler() {
+        // added private constructor to hide implicit public constructor - S1118.
+    }
+
     public static Object compileSequenceExpression(SequenceExpression expression, VariableProvider variableProvider, IntReadable indexReadable, Operators operators) {
-        final List<Expression> children = expression.getChildren();
+        final List<Expression> children = expression.getUnmodifiableChildren();
         switch (children.size()) {
             case 1:
                 return compileExpression(children.get(0), variableProvider, indexReadable, operators);
-            
+
             case 2: {
-                final var operator = (OperatorExpression)children.get(0);
+                final var operator = (OperatorExpression) children.get(0);
                 final var right = compileExpression(children.get(1), variableProvider, indexReadable, operators);
                 final String operatorName = CONVERTER_CLASSES.get(operator.getOperator());
                 final var result = operators.getRegistry(operatorName).apply(right);
@@ -100,36 +105,36 @@ public class ExpressionCompiler {
                 }
                 return result;
             }
-            
+
             case 3: {
                 final var left = compileExpression(children.get(0), variableProvider, indexReadable, operators);
-                final var operator = (OperatorExpression)children.get(1);
+                final var operator = (OperatorExpression) children.get(1);
                 final var right = compileExpression(children.get(2), variableProvider, indexReadable, operators);
                 final String operatorName = OPERATOR_CLASSES.get(operator.getOperator());
-                final var result = operators.getRegistry(operatorName).apply(left, right); 
+                final var result = operators.getRegistry(operatorName).apply(left, right);
                 if (result == null) {
                     throw new ExpressionException("Unable to find implementation of operator: " + operatorName + " (" + left.getClass().getCanonicalName() + ", " + right.getClass().getCanonicalName() + ")");
                 }
                 return result;
             }
-            
+
             default:
                 throw new IllegalArgumentException("Invalid expression size: " + children.size());
         }
     }
-    
+
     private static Object compileExpression(Expression expression, VariableProvider variableProvider, IntReadable indexReadable, Operators operators) {
         if (expression instanceof SequenceExpression) {
-            return compileSequenceExpression((SequenceExpression)expression, variableProvider, indexReadable, operators);
+            return compileSequenceExpression((SequenceExpression) expression, variableProvider, indexReadable, operators);
         } else if (expression instanceof VariableExpression) {
-            final var variableName = ((VariableExpression)expression).getContent();
+            final var variableName = ((VariableExpression) expression).getContent();
             final var variable = variableProvider.getVariable(variableName, indexReadable);
             if (variable == null) {
                 throw new ExpressionException("Unknown variable: " + variableName);
             }
             return variable;
         } else if (expression instanceof StringExpression) {
-            final var content = ((StringExpression)expression).getContent();
+            final var content = ((StringExpression) expression).getContent();
             return (StringConstant) () -> content;
         } else {
             throw new IllegalArgumentException("Should never get here");

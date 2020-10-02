@@ -101,7 +101,10 @@ public class LayersViewShortcuts extends AbstractAction {
                 enableLayerFuture.get();
             } catch (InterruptedException | ExecutionException ex) {
                 Exceptions.printStackTrace(ex);
+                // Restore interrupted state...
+                Thread.currentThread().interrupt();
             }
+
             LayersViewController.getDefault().execute();
             final Future<?> writeStateFuture = LayersViewController.getDefault().writeState();
             if (writeStateFuture != null) {
@@ -109,6 +112,8 @@ public class LayersViewShortcuts extends AbstractAction {
                     writeStateFuture.get();
                 } catch (InterruptedException | ExecutionException ex) {
                     Exceptions.printStackTrace(ex);
+                    // Restore interrupted state...
+                    Thread.currentThread().interrupt();
                 }
             }
         }

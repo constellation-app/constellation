@@ -28,6 +28,10 @@ import java.util.Map;
 public class ExpressionParser {
 
     public static final char NO_TOKEN = 0;
+    private static final String NESTED_PARENTHESIS_ERROR = "Invalid nesting of parenthesis";
+    private static final String ENDS_WITH_OPERATOR_ERROR = "An expression cannot end with an operator";
+    private static final String END_OF_QUOTED_STRING_ERROR = "Unexpected end of expression while in quoted string";
+    private static final String UNEXPECTED_CHARACTER_ERROR = "Unexpected character: ";
 
     private static enum ParseState {
         READING_WHITESPACE,
@@ -89,7 +93,7 @@ public class ExpressionParser {
         private static final Map<Character, Operator> OPERATOR_TOKENS = new HashMap<>();
 
         static {
-            for (Operator operator : Operator.values()) {
+            for (final Operator operator : Operator.values()) {
                 if (operator.token != NO_TOKEN) {
                     OPERATOR_TOKENS.put(operator.token, operator);
                 }
@@ -107,6 +111,10 @@ public class ExpressionParser {
         WORD_OPERATORS.put("and", Operator.AND);
         WORD_OPERATORS.put("equals", Operator.EQUALS);
         WORD_OPERATORS.put("notequals", Operator.NOT_EQUALS);
+    }
+
+    private ExpressionParser() {
+        // added private constructor to hide implicit public constructor - S1118.
     }
 
     public static abstract class Expression {
@@ -197,7 +205,7 @@ public class ExpressionParser {
             super(parent);
         }
 
-        public List<Expression> getChildren() {
+        public List<Expression> getUnmodifiableChildren() {
             return unmodifiableChildren;
         }
 
@@ -213,7 +221,7 @@ public class ExpressionParser {
                         break;
                     default:
                         if (tokenSequence.children.get(tokenSequence.children.size() - 1) instanceof OperatorExpression) {
-                            throw new IllegalArgumentException("An expression cannot end with an operator");
+                            throw new IllegalArgumentException(ENDS_WITH_OPERATOR_ERROR);
                         }
                 }
             }
@@ -337,7 +345,7 @@ public class ExpressionParser {
                             currentExpression = new SequenceExpression(currentExpression);
                         } else if (c == ')') {
                             if (currentExpression == rootExpression) {
-                                throw new IllegalArgumentException("Invalid nesting of parenthesis");
+                                throw new IllegalArgumentException(NESTED_PARENTHESIS_ERROR);
                             }
                             final var parentExpression = currentExpression.getParent();
                             parentExpression.addChild(currentExpression);
@@ -345,7 +353,7 @@ public class ExpressionParser {
                         } else if (Operator.OPERATOR_TOKENS.containsKey(c)) {
                             currentExpression.addChild(new OperatorExpression(currentExpression, Operator.OPERATOR_TOKENS.get(c)));
                         } else {
-                            throw new IllegalArgumentException("Unexpected character: " + c);
+                            throw new IllegalArgumentException(UNEXPECTED_CHARACTER_ERROR + c);
                         }
                     }
                     break;
@@ -363,7 +371,7 @@ public class ExpressionParser {
                         currentExpression = new SequenceExpression(currentExpression);
                     } else if (c == ')') {
                         if (currentExpression == rootExpression) {
-                            throw new IllegalArgumentException("Invalid nesting of parenthesis");
+                            throw new IllegalArgumentException(NESTED_PARENTHESIS_ERROR);
                         }
                         currentExpression.addChild(new VariableExpression(currentExpression, content, contentLength));
                         contentLength = 0;
@@ -377,7 +385,7 @@ public class ExpressionParser {
                         currentExpression.addChild(new OperatorExpression(currentExpression, Operator.OPERATOR_TOKENS.get(c)));
                         state = ParseState.READING_WHITESPACE;
                     } else {
-                        throw new IllegalArgumentException("Unexpected character: " + c);
+                        throw new IllegalArgumentException(UNEXPECTED_CHARACTER_ERROR + c);
                     }
                     break;
 
@@ -389,7 +397,7 @@ public class ExpressionParser {
                     } else if (c == '\\') {
                         state = ParseState.READING_SINGLE_ESCAPED;
                     } else if (c == 0) {
-                        throw new IllegalArgumentException("Unexpected end of expression while in quoted string");
+                        throw new IllegalArgumentException(END_OF_QUOTED_STRING_ERROR);
                     } else {
                         content[contentLength++] = c;
                     }
@@ -403,7 +411,7 @@ public class ExpressionParser {
                     } else if (c == '\\') {
                         state = ParseState.READING_DOUBLE_ESCAPED;
                     } else if (c == 0) {
-                        throw new IllegalArgumentException("Unexpected end of expression while in quoted string");
+                        throw new IllegalArgumentException(END_OF_QUOTED_STRING_ERROR);
                     } else {
                         content[contentLength++] = c;
                     }
@@ -411,7 +419,7 @@ public class ExpressionParser {
 
                 case READING_SINGLE_ESCAPED:
                     if (c == 0) {
-                        throw new IllegalArgumentException("Unexpected end of expression while in quoted string");
+                        throw new IllegalArgumentException(END_OF_QUOTED_STRING_ERROR);
                     } else {
                         content[contentLength++] = c;
                         state = ParseState.READING_SINGLE_STRING;
@@ -420,7 +428,7 @@ public class ExpressionParser {
 
                 case READING_DOUBLE_ESCAPED:
                     if (c == 0) {
-                        throw new IllegalArgumentException("Unexpected end of expression while in quoted string");
+                        throw new IllegalArgumentException(END_OF_QUOTED_STRING_ERROR);
                     } else {
                         content[contentLength++] = c;
                         state = ParseState.READING_DOUBLE_STRING;
@@ -430,7 +438,7 @@ public class ExpressionParser {
         }
 
         if (currentExpression != rootExpression) {
-            throw new IllegalArgumentException("Invalid nesting of parenthesis");
+            throw new IllegalArgumentException(NESTED_PARENTHESIS_ERROR);
         }
         if (rootExpression.children.size() == 1) {
             final var onlyChild = rootExpression.children.get(0);
@@ -440,7 +448,7 @@ public class ExpressionParser {
         }
         // TODO: errors as indexoutofbounds when it is 0.
         if (!currentExpression.children.isEmpty() && currentExpression.children.get(currentExpression.children.size() - 1) instanceof OperatorExpression) {
-            throw new IllegalArgumentException("An expression cannot end with an operator");
+            throw new IllegalArgumentException(ENDS_WITH_OPERATOR_ERROR);
         }
 
         rootExpression.normalize();

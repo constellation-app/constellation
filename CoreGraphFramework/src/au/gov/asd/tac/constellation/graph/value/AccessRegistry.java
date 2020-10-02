@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2020 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,7 +24,7 @@ import java.util.function.Function;
  * @author sirius
  */
 public class AccessRegistry<D> {
-    
+
     private final Class<D> destinationClass;
     private final List<FunctionRecord<?, D>> functions = new ArrayList<>();
 
@@ -36,7 +36,7 @@ public class AccessRegistry<D> {
         functions.add(new FunctionRecord<>(sourceClass, destinationClass, function));
         return this;
     }
-    
+
     public D convert(Object source) {
         final var sourceClass = source.getClass();
         final List<FunctionRecord<?, D>> applicableRecords = new ArrayList<>();
@@ -54,6 +54,9 @@ public class AccessRegistry<D> {
                             applicableRecords.remove(i);
                             i -= 1;
                             break;
+                        default:
+                            // Default case added - S131
+                            break;
                     }
                 }
                 if (insert) {
@@ -63,18 +66,19 @@ public class AccessRegistry<D> {
         });
         switch (applicableRecords.size()) {
             case 0:
-                return destinationClass.isAssignableFrom(sourceClass) ? (D)source : null;
+                return destinationClass.isAssignableFrom(sourceClass) ? (D) source : null;
             case 1:
                 return applicableRecords.get(0).apply(source);
             default:
                 throw new IllegalArgumentException("Ambiguous operator, requested " + sourceClass.getCanonicalName() + " -> " + destinationClass.getCanonicalName() + ", found " + applicableRecords);
         }
     }
-    
+
     private static class FunctionRecord<S, D> implements Comparable<FunctionRecord> {
+
         private final Class<S> sourceClass;
         private final Class<D> destinationClass;
-        private final Function<? super S, ? extends D> function; 
+        private final Function<? super S, ? extends D> function;
 
         public FunctionRecord(Class<S> sourceClass, Class<D> destinationClass, Function<? super S, ? extends D> function) {
             this.sourceClass = sourceClass;
@@ -85,11 +89,11 @@ public class AccessRegistry<D> {
         public boolean isApplicable(Class sourceClass) {
             return this.sourceClass.isAssignableFrom(sourceClass);
         }
-        
+
         public D apply(Object parameter) {
-            return function.apply((S)parameter);
+            return function.apply((S) parameter);
         }
-        
+
         @Override
         public int compareTo(FunctionRecord functionRecord) {
             if (sourceClass == functionRecord.sourceClass) {
@@ -102,7 +106,7 @@ public class AccessRegistry<D> {
                 return 0;
             }
         }
-        
+
         @Override
         public String toString() {
             return sourceClass.getCanonicalName() + " -> " + destinationClass.getCanonicalName();

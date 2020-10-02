@@ -23,7 +23,6 @@ import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -58,7 +57,6 @@ import org.openide.windows.TopComponent;
     "HINT_LayersViewTopComponent=Layers View"})
 public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewPane> {
 
-    private static final Logger LOGGER = Logger.getLogger(LayersViewTopComponent.class.getName());
     private final LayersViewController layersViewController;
     private final LayersViewPane layersViewPane;
 

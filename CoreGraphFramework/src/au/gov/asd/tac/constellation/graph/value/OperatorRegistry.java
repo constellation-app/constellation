@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2020 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,25 +25,25 @@ import java.util.function.Function;
  * @author sirius
  */
 public class OperatorRegistry {
-    
+
     private final String name;
     private final List<FunctionRecord> functions = new ArrayList<>();
     private final List<BiFunctionRecord> biFunctions = new ArrayList<>();
-    
+
     public OperatorRegistry(String name) {
         this.name = name;
     }
-    
+
     public final <P, R> OperatorRegistry register(Class<P> parameterClass, Class<R> resultClass, Function<? super P, ? extends R> function) {
         functions.add(new FunctionRecord(parameterClass, function));
         return this;
     }
-    
+
     public final <P1, P2, R> OperatorRegistry register(Class<P1> parameter1Class, Class<P2> parameter2Class, Class<R> resultClass, BiFunction<? super P1, ? super P2, ? extends R> biFunction) {
         biFunctions.add(new BiFunctionRecord(parameter1Class, parameter2Class, biFunction));
         return this;
     }
-    
+
     public Object apply(Object parameter) {
         final var parameterClass = parameter.getClass();
         final List<FunctionRecord> applicableRecords = new ArrayList<>();
@@ -61,6 +61,9 @@ public class OperatorRegistry {
                             applicableRecords.remove(i);
                             i -= 1;
                             break;
+                        default:
+                            // Default case added - S131
+                            break;
                     }
                 }
                 if (insert) {
@@ -77,7 +80,7 @@ public class OperatorRegistry {
                 throw new IllegalArgumentException("Ambiguous operator");
         }
     }
-    
+
     public Object apply(Object parameter1, Object parameter2) {
         final var parameter1Class = parameter1.getClass();
         final var parameter2Class = parameter2.getClass();
@@ -96,6 +99,9 @@ public class OperatorRegistry {
                             applicableRecords.remove(i);
                             i -= 1;
                             break;
+                        default:
+                            // Default case added - S131
+                            break;
                     }
                 }
                 if (insert) {
@@ -112,10 +118,11 @@ public class OperatorRegistry {
                 throw new IllegalArgumentException("Ambiguous operator");
         }
     }
-    
+
     private static class FunctionRecord<P, R> implements Comparable<FunctionRecord> {
+
         private final Class<P> parameterClass;
-        private final Function<? super P, ? extends R> function; 
+        private final Function<? super P, ? extends R> function;
 
         public FunctionRecord(Class<P> parameterClass, Function<? super P, ? extends R> function) {
             this.parameterClass = parameterClass;
@@ -125,11 +132,11 @@ public class OperatorRegistry {
         public boolean isApplicable(Class parameter) {
             return parameterClass.isAssignableFrom(parameter);
         }
-        
+
         public R apply(Object parameter) {
-            return function.apply((P)parameter);
+            return function.apply((P) parameter);
         }
-        
+
         @Override
         public int compareTo(FunctionRecord functionRecord) {
             if (parameterClass == functionRecord.parameterClass) {
@@ -143,11 +150,12 @@ public class OperatorRegistry {
             }
         }
     }
-    
+
     private static class BiFunctionRecord<P1, P2, R> implements Comparable<BiFunctionRecord> {
+
         private final Class<P1> parameter1Class;
         private final Class<P2> parameter2Class;
-        private final BiFunction<? super P1, ? super P2, ? extends R> biFunction; 
+        private final BiFunction<? super P1, ? super P2, ? extends R> biFunction;
 
         public BiFunctionRecord(Class<P1> parameter1Class, Class<P2> parameter2Class, BiFunction<? super P1, ? super P2, ? extends R> biFunction) {
             this.parameter1Class = parameter1Class;
@@ -158,11 +166,11 @@ public class OperatorRegistry {
         public boolean isApplicable(Class parameter1, Class parameter2) {
             return parameter1Class.isAssignableFrom(parameter1) && parameter2Class.isAssignableFrom(parameter2);
         }
-        
+
         public R apply(Object parameter1, Object parameter2) {
-            return biFunction.apply((P1)parameter1, (P2)parameter2);
+            return biFunction.apply((P1) parameter1, (P2) parameter2);
         }
-        
+
         @Override
         public int compareTo(BiFunctionRecord functionRecord) {
             if (parameter1Class == functionRecord.parameter1Class) {

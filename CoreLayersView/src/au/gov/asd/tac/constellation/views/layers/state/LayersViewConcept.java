@@ -36,6 +36,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = SchemaConcept.class)
 public class LayersViewConcept extends SchemaConcept {
 
+    private final static String CONCEPT_STRING = "Concept class";
+
     @Override
     public String getName() {
         return "Layers View";
@@ -51,7 +53,7 @@ public class LayersViewConcept extends SchemaConcept {
     public static class MetaAttribute {
 
         private MetaAttribute() {
-            throw new IllegalStateException("Concept class");
+            throw new IllegalStateException(CONCEPT_STRING);
         }
 
         public static final SchemaAttribute LAYERS_VIEW_STATE = new SchemaAttribute.Builder(GraphElementType.META, LayersViewStateAttributeDescription.ATTRIBUTE_NAME, "layers_view_state")
@@ -62,7 +64,7 @@ public class LayersViewConcept extends SchemaConcept {
     public static class GraphAttribute {
 
         private GraphAttribute() {
-            throw new IllegalStateException("Concept class");
+            throw new IllegalStateException(CONCEPT_STRING);
         }
 
         public static final SchemaAttribute LAYER_MASK_SELECTED = new SchemaAttribute.Builder(GraphElementType.GRAPH, LongAttributeDescription.ATTRIBUTE_NAME, "layer_bitmask_selected")
@@ -75,7 +77,7 @@ public class LayersViewConcept extends SchemaConcept {
     public static class VertexAttribute {
 
         private VertexAttribute() {
-            throw new IllegalStateException("Concept class");
+            throw new IllegalStateException(CONCEPT_STRING);
         }
 
         public static final SchemaAttribute LAYER_MASK = new SchemaAttribute.Builder(GraphElementType.VERTEX, LongAttributeDescription.ATTRIBUTE_NAME, "layer_mask")
@@ -93,7 +95,7 @@ public class LayersViewConcept extends SchemaConcept {
     public static class TransactionAttribute {
 
         private TransactionAttribute() {
-            throw new IllegalStateException("Concept class");
+            throw new IllegalStateException(CONCEPT_STRING);
         }
 
         public static final SchemaAttribute LAYER_MASK = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, LongAttributeDescription.ATTRIBUTE_NAME, "layer_mask")

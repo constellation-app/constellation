@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2020 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,32 +15,36 @@
  */
 package au.gov.asd.tac.constellation.graph.value.types.doubleType;
 
+import au.gov.asd.tac.constellation.graph.value.converter.Biconverter;
+import au.gov.asd.tac.constellation.graph.value.converter.Converter;
 import au.gov.asd.tac.constellation.graph.value.converter.ConverterRegistry;
 import au.gov.asd.tac.constellation.graph.value.readables.Comparison;
 import au.gov.asd.tac.constellation.graph.value.readables.Difference;
 import au.gov.asd.tac.constellation.graph.value.readables.Equals;
 import au.gov.asd.tac.constellation.graph.value.readables.GreaterThan;
-import au.gov.asd.tac.constellation.graph.value.readables.LessThan;
-import au.gov.asd.tac.constellation.graph.value.readables.Product;
-import au.gov.asd.tac.constellation.graph.value.readables.Sum;
-import au.gov.asd.tac.constellation.graph.value.types.booleanType.BooleanValue;
-import au.gov.asd.tac.constellation.graph.value.types.integerType.IntValue;
-import au.gov.asd.tac.constellation.graph.value.converter.Biconverter;
-import au.gov.asd.tac.constellation.graph.value.converter.Converter;
 import au.gov.asd.tac.constellation.graph.value.readables.GreaterThanOrEquals;
+import au.gov.asd.tac.constellation.graph.value.readables.LessThan;
 import au.gov.asd.tac.constellation.graph.value.readables.LessThanOrEquals;
 import au.gov.asd.tac.constellation.graph.value.readables.Modulus;
 import au.gov.asd.tac.constellation.graph.value.readables.Negative;
 import au.gov.asd.tac.constellation.graph.value.readables.NotEquals;
 import au.gov.asd.tac.constellation.graph.value.readables.Positive;
+import au.gov.asd.tac.constellation.graph.value.readables.Product;
 import au.gov.asd.tac.constellation.graph.value.readables.Quotient;
+import au.gov.asd.tac.constellation.graph.value.readables.Sum;
+import au.gov.asd.tac.constellation.graph.value.types.booleanType.BooleanValue;
+import au.gov.asd.tac.constellation.graph.value.types.integerType.IntValue;
 
 /**
  *
  * @author sirius
  */
 public class DoubleArithmeticConverters {
-    
+
+    private DoubleArithmeticConverters() {
+        // added private constructor to hide implicit public constructor - S1118.
+    }
+
     public static <P1 extends DoubleReadable, P2 extends DoubleReadable> void register(ConverterRegistry r, Class<P1> parameterClass1, Class<P2> parameterClass2) {
         r.register(parameterClass1, parameterClass2, Product.class, new ProductConverter());
         r.register(parameterClass1, parameterClass2, Quotient.class, new QuotientConverter());
@@ -55,13 +59,14 @@ public class DoubleArithmeticConverters {
         r.register(parameterClass1, parameterClass2, LessThan.class, new LessThanConverter());
         r.register(parameterClass1, parameterClass2, LessThanOrEquals.class, new LessThanOrEqualsConverter());
     }
-    
+
     public static <P1 extends DoubleReadable> void register(ConverterRegistry r, Class<P1> parameterClass) {
         r.register(parameterClass, Negative.class, new NegativeConverter());
         r.register(parameterClass, Positive.class, new PositiveConverter());
     }
-    
+
     public static class NegativeConverter implements Converter<DoubleReadable, Negative<DoubleValue>> {
+
         @Override
         public Negative<DoubleValue> convert(DoubleReadable source) {
             return new Negative<>() {
@@ -77,8 +82,9 @@ public class DoubleArithmeticConverters {
             };
         }
     }
-    
+
     public static class PositiveConverter implements Converter<DoubleReadable, Positive<DoubleValue>> {
+
         @Override
         public Positive<DoubleValue> convert(DoubleReadable source) {
             return new Positive<>() {
@@ -94,8 +100,9 @@ public class DoubleArithmeticConverters {
             };
         }
     }
-    
+
     public static class ComparisonConverter implements Biconverter<DoubleReadable, DoubleReadable, Comparison> {
+
         @Override
         public Comparison convert(DoubleReadable source1, DoubleReadable source2) {
             return new Comparison() {
@@ -111,8 +118,9 @@ public class DoubleArithmeticConverters {
             };
         }
     }
-    
+
     public static class DifferenceConverter implements Biconverter<DoubleReadable, DoubleReadable, Difference<DoubleValue>> {
+
         @Override
         public Difference<DoubleValue> convert(DoubleReadable source1, DoubleReadable source2) {
             return new Difference<>() {
@@ -128,8 +136,9 @@ public class DoubleArithmeticConverters {
             };
         }
     }
-    
+
     public static class EqualsConverter implements Biconverter<DoubleReadable, DoubleReadable, Equals> {
+
         @Override
         public Equals convert(DoubleReadable source1, DoubleReadable source2) {
             return new Equals() {
@@ -145,8 +154,9 @@ public class DoubleArithmeticConverters {
             };
         }
     }
-    
+
     public static class NotEqualsConverter implements Biconverter<DoubleReadable, DoubleReadable, NotEquals> {
+
         @Override
         public NotEquals convert(DoubleReadable source1, DoubleReadable source2) {
             return new NotEquals() {
@@ -162,8 +172,9 @@ public class DoubleArithmeticConverters {
             };
         }
     }
-    
+
     public static class GreaterThanConverter implements Biconverter<DoubleReadable, DoubleReadable, GreaterThan> {
+
         @Override
         public GreaterThan convert(DoubleReadable source1, DoubleReadable source2) {
             return new GreaterThan() {
@@ -179,8 +190,9 @@ public class DoubleArithmeticConverters {
             };
         }
     }
-    
+
     public static class GreaterThanOrEqualsConverter implements Biconverter<DoubleReadable, DoubleReadable, GreaterThanOrEquals> {
+
         @Override
         public GreaterThanOrEquals convert(DoubleReadable source1, DoubleReadable source2) {
             return new GreaterThanOrEquals() {
@@ -196,8 +208,9 @@ public class DoubleArithmeticConverters {
             };
         }
     }
-    
+
     public static class LessThanConverter implements Biconverter<DoubleReadable, DoubleReadable, LessThan> {
+
         @Override
         public LessThan convert(DoubleReadable source1, DoubleReadable source2) {
             return new LessThan() {
@@ -213,8 +226,9 @@ public class DoubleArithmeticConverters {
             };
         }
     }
-    
+
     public static class LessThanOrEqualsConverter implements Biconverter<DoubleReadable, DoubleReadable, LessThanOrEquals> {
+
         @Override
         public LessThanOrEquals convert(DoubleReadable source1, DoubleReadable source2) {
             return new LessThanOrEquals() {
@@ -230,8 +244,9 @@ public class DoubleArithmeticConverters {
             };
         }
     }
-    
+
     public static class ProductConverter implements Biconverter<DoubleReadable, DoubleReadable, Product<DoubleValue>> {
+
         @Override
         public Product<DoubleValue> convert(DoubleReadable source1, DoubleReadable source2) {
             return new Product<>() {
@@ -247,8 +262,9 @@ public class DoubleArithmeticConverters {
             };
         }
     }
-    
+
     public static class QuotientConverter implements Biconverter<DoubleReadable, DoubleReadable, Quotient<DoubleValue>> {
+
         @Override
         public Quotient<DoubleValue> convert(DoubleReadable source1, DoubleReadable source2) {
             return new Quotient<>() {
@@ -264,8 +280,9 @@ public class DoubleArithmeticConverters {
             };
         }
     }
-    
+
     public static class ModulusConverter implements Biconverter<DoubleReadable, DoubleReadable, Modulus<DoubleValue>> {
+
         @Override
         public Modulus<DoubleValue> convert(DoubleReadable source1, DoubleReadable source2) {
             return new Modulus<>() {
@@ -281,8 +298,9 @@ public class DoubleArithmeticConverters {
             };
         }
     }
-    
+
     public static class SumConverter implements Biconverter<DoubleReadable, DoubleReadable, Sum<DoubleValue>> {
+
         @Override
         public Sum<DoubleValue> convert(DoubleReadable source1, DoubleReadable source2) {
             return new Sum<>() {

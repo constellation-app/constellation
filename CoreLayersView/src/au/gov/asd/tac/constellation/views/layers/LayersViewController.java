@@ -37,7 +37,6 @@ import au.gov.asd.tac.constellation.views.layers.utilities.UpdateLayerSelectionP
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
-import java.util.logging.Logger;
 
 /**
  * Controls interaction of UI to layers and filtering of nodes and transactions.
@@ -46,7 +45,6 @@ import java.util.logging.Logger;
  */
 public class LayersViewController {
 
-    private static final Logger LOGGER = Logger.getLogger(LayersViewController.class.getName());
     // Layers view controller instance
     private static LayersViewController INSTANCE = null;
     private LayersViewTopComponent parent;

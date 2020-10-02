@@ -24,6 +24,10 @@ import au.gov.asd.tac.constellation.views.layers.query.BitMaskQueryCollection;
  */
 public class LayersUtilities {
 
+    private LayersUtilities() {
+        // added private constructor to hide implicit public constructor - S1118.
+    }
+
     public static int calculateCurrentLayerSelectionBitMask(final BitMaskQueryCollection vxQueriesCollection, final BitMaskQueryCollection txQueriesCollection) {
         int newBitmask = 0b0;
         final int iteratorEnd = Math.max(vxQueriesCollection.getHighestQueryIndex(), txQueriesCollection.getHighestQueryIndex());

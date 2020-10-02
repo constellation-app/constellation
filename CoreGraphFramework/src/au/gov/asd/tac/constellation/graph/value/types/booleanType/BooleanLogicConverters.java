@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2020 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,22 +15,26 @@
  */
 package au.gov.asd.tac.constellation.graph.value.types.booleanType;
 
-import au.gov.asd.tac.constellation.graph.value.converter.ConverterRegistry;
-import au.gov.asd.tac.constellation.graph.value.readables.And;
-import au.gov.asd.tac.constellation.graph.value.readables.Or;
 import au.gov.asd.tac.constellation.graph.value.converter.Biconverter;
 import au.gov.asd.tac.constellation.graph.value.converter.Converter;
+import au.gov.asd.tac.constellation.graph.value.converter.ConverterRegistry;
+import au.gov.asd.tac.constellation.graph.value.readables.And;
 import au.gov.asd.tac.constellation.graph.value.readables.Equals;
 import au.gov.asd.tac.constellation.graph.value.readables.ExclusiveOr;
 import au.gov.asd.tac.constellation.graph.value.readables.Not;
 import au.gov.asd.tac.constellation.graph.value.readables.NotEquals;
+import au.gov.asd.tac.constellation.graph.value.readables.Or;
 
 /**
  *
  * @author sirius
  */
 public class BooleanLogicConverters {
-    
+
+    private BooleanLogicConverters() {
+        // added private constructor to hide implicit public constructor - S1118.
+    }
+
     public static <P1 extends BooleanReadable, P2 extends BooleanReadable> void register(ConverterRegistry r, Class<P1> parameterClass1, Class<P2> parameterClass2) {
         r.register(parameterClass1, parameterClass2, And.class, new AndConverter());
         r.register(parameterClass1, parameterClass2, Or.class, new OrConverter());
@@ -38,12 +42,13 @@ public class BooleanLogicConverters {
         r.register(parameterClass1, parameterClass2, Equals.class, new EqualsConverter());
         r.register(parameterClass1, parameterClass2, NotEquals.class, new NotEqualsConverter());
     }
-    
+
     public static <P extends BooleanReadable> void register(ConverterRegistry r, Class<P> parameterClass) {
         r.register(parameterClass, Not.class, new NotConverter());
     }
-    
+
     public static class NotConverter implements Converter<BooleanReadable, Not> {
+
         @Override
         public Not convert(BooleanReadable source) {
             return new Not() {
@@ -59,8 +64,9 @@ public class BooleanLogicConverters {
             };
         }
     }
-    
+
     public static class AndConverter implements Biconverter<BooleanReadable, BooleanReadable, And<BooleanValue>> {
+
         @Override
         public And<BooleanValue> convert(BooleanReadable source1, BooleanReadable source2) {
             return new And<>() {
@@ -76,8 +82,9 @@ public class BooleanLogicConverters {
             };
         }
     }
-    
+
     public static class OrConverter implements Biconverter<BooleanReadable, BooleanReadable, Or<BooleanValue>> {
+
         @Override
         public Or<BooleanValue> convert(BooleanReadable source1, BooleanReadable source2) {
             return new Or<>() {
@@ -93,8 +100,9 @@ public class BooleanLogicConverters {
             };
         }
     }
-    
+
     public static class ExclusiveOrConverter implements Biconverter<BooleanReadable, BooleanReadable, ExclusiveOr<BooleanValue>> {
+
         @Override
         public ExclusiveOr<BooleanValue> convert(BooleanReadable source1, BooleanReadable source2) {
             return new ExclusiveOr<>() {
@@ -110,8 +118,9 @@ public class BooleanLogicConverters {
             };
         }
     }
-    
+
     public static class EqualsConverter implements Biconverter<BooleanReadable, BooleanReadable, Equals> {
+
         @Override
         public Equals convert(BooleanReadable source1, BooleanReadable source2) {
             return new Equals() {
@@ -127,8 +136,9 @@ public class BooleanLogicConverters {
             };
         }
     }
-    
+
     public static class NotEqualsConverter implements Biconverter<BooleanReadable, BooleanReadable, NotEquals> {
+
         @Override
         public NotEquals convert(BooleanReadable source1, BooleanReadable source2) {
             return new NotEquals() {

@@ -23,7 +23,6 @@ import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttributeUtilit
 import au.gov.asd.tac.constellation.graph.value.values.IntValue;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -32,9 +31,8 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class BitMaskQueryCollection {
 
-    private static final Logger LOGGER = Logger.getLogger(BitMaskQueryCollection.class.getName());
-
     public final static int MAX_QUERY_AMT = 64;
+    private final static String INVALID_INDEX_ERROR = " is not a valid index for a layer";
 
     public final static BitMaskQuery[] DEFAULT_VX_QUERIES = new BitMaskQuery[]{
         new BitMaskQuery(new Query(null, BitMaskQuery.DEFAULT_QUERY_STRING), 0, BitMaskQuery.DEFAULT_QUERY_DESCRIPTION),
@@ -63,7 +61,7 @@ public class BitMaskQueryCollection {
 
     public void setQuery(final String query, final int bitMaskIndex) {
         if (bitMaskIndex > MAX_QUERY_AMT) {
-            throw new IndexOutOfBoundsException(bitMaskIndex + " is not a valid index for a layer");
+            throw new IndexOutOfBoundsException(bitMaskIndex + INVALID_INDEX_ERROR);
         }
         queries[bitMaskIndex] = new BitMaskQuery(new Query(elementType, query), bitMaskIndex, StringUtils.EMPTY);
     }
@@ -94,7 +92,7 @@ public class BitMaskQueryCollection {
 
     public BitMaskQuery getQuery(final int index) {
         if (index >= MAX_QUERY_AMT || index < 0) {
-            throw new IndexOutOfBoundsException(index + " is not a valid index for a layer");
+            throw new IndexOutOfBoundsException(index + INVALID_INDEX_ERROR);
         }
         return queries[index];
     }
@@ -151,7 +149,7 @@ public class BitMaskQueryCollection {
     public void add(final BitMaskQuery query) {
         if (query != null) {
             if (query.getIndex() >= MAX_QUERY_AMT) {
-                throw new IndexOutOfBoundsException(query.getIndex() + " is not a valid index for a layer");
+                throw new IndexOutOfBoundsException(query.getIndex() + INVALID_INDEX_ERROR);
             }
             queries[query.getIndex()] = query;
         }
@@ -159,7 +157,7 @@ public class BitMaskQueryCollection {
 
     public void add(final Query query, final int bitIndex, final String description) {
         if (bitIndex >= MAX_QUERY_AMT || bitIndex < 0) {
-            throw new IndexOutOfBoundsException(bitIndex + " is not a valid index for a layer");
+            throw new IndexOutOfBoundsException(bitIndex + INVALID_INDEX_ERROR);
         }
         queries[bitIndex] = new BitMaskQuery(query, bitIndex, description);
     }
@@ -208,7 +206,7 @@ public class BitMaskQueryCollection {
 
     public void removeQuery(final int index) {
         if (index >= MAX_QUERY_AMT || index < 0) {
-            throw new IndexOutOfBoundsException(index + " is not a valid index for a layer");
+            throw new IndexOutOfBoundsException(index + INVALID_INDEX_ERROR);
         }
         queries[index] = null;
     }
