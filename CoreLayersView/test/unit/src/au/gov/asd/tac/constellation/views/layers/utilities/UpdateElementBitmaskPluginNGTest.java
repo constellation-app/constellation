@@ -15,12 +15,12 @@
  */
 package au.gov.asd.tac.constellation.views.layers.utilities;
 
-import au.gov.asd.tac.constellation.views.layers.context.LayersAddContextMenu;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.views.layers.context.LayersAddContextMenu;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
@@ -162,7 +162,7 @@ public class UpdateElementBitmaskPluginNGTest {
         graph.setBooleanValue(selectedT, txId2, true);
         graph.setBooleanValue(selectedV, vxId2, true);
 
-        PluginExecution.withPlugin(new UpdateElementBitmaskPlugin(0b10, LayersAddContextMenu.LayerAction.ADD)).executeNow(graph);
+        PluginExecution.withPlugin(new UpdateElementBitmaskPlugin(1, LayersAddContextMenu.LayerAction.ADD)).executeNow(graph);
 
         // Check Vertex values
         assertTrue(1 == graph.getIntValue(layerMaskV, vxId1));
@@ -183,7 +183,7 @@ public class UpdateElementBitmaskPluginNGTest {
         assertTrue(true == graph.getBooleanValue(selectedT, txId2));
 
         // Remove from layers
-        PluginExecution.withPlugin(new UpdateElementBitmaskPlugin(0b10, LayersAddContextMenu.LayerAction.REMOVE)).executeNow(graph);
+        PluginExecution.withPlugin(new UpdateElementBitmaskPlugin(1, LayersAddContextMenu.LayerAction.REMOVE)).executeNow(graph);
 
         // check vertices set correctly
         assertTrue(1 == graph.getIntValue(layerMaskV, vxId1));

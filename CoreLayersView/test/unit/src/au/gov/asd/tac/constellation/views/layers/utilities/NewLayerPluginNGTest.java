@@ -71,8 +71,7 @@ public class NewLayerPluginNGTest {
 
         final LayersViewState currentState = graph.getObjectValue(layersViewStateAttributeId, 0);
 
-        //TODO: CurrentState will be null and needs to be created
-        assertTrue(currentState.getLayerCount() == 3);
+        assertTrue(currentState.getLayerCount() == 2);
 
     }
 }

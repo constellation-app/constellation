@@ -15,13 +15,13 @@
  */
 package au.gov.asd.tac.constellation.views.layers.utilities;
 
-import au.gov.asd.tac.constellation.views.layers.shortcut.DeselectAllLayersPlugin;
-import au.gov.asd.tac.constellation.views.layers.shortcut.NewLayerPlugin;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQuery;
+import au.gov.asd.tac.constellation.views.layers.shortcut.DeselectAllLayersPlugin;
+import au.gov.asd.tac.constellation.views.layers.shortcut.NewLayerPlugin;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewState;
 import static org.testng.Assert.assertTrue;
@@ -86,7 +86,7 @@ public class DeselectAllLayersPluginNGTest {
         PluginExecution.withPlugin(new DeselectAllLayersPlugin()).executeNow(graph);
 
         for (final BitMaskQuery query : vxLayers) {
-            assertTrue(query.getVisibility() == false);
+            assertTrue(query != null ? query.getVisibility() == false : true);
         }
     }
 }
