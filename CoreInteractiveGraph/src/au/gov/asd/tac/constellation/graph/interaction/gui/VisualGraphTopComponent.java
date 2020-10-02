@@ -451,7 +451,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         }
 
         content = new InstanceContent();
-        visualManager.refreshVisualProcessor();
         init();
         MemoryManager.newObject(VisualGraphTopComponent.class);
     }
