@@ -45,7 +45,7 @@ public class GLInteractiveVisualManagerFactory extends GraphVisualManagerFactory
     @Override
     public VisualManager constructVisualManager(Graph graph) {
         final GraphVisualAccess access = new GraphVisualAccess(graph);
-        try(ReadableGraph rg = graph.getReadableGraph()) {
+        try(final ReadableGraph rg = graph.getReadableGraph()) {
             access.updateModCounts(rg);
         }
         final Preferences prefs = NbPreferences.forModule(DeveloperPreferenceKeys.class);

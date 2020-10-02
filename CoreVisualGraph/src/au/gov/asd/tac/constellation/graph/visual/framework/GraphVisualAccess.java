@@ -617,7 +617,7 @@ public final class GraphVisualAccess implements VisualAccess {
         transactionWidth = VisualConcept.TransactionAttribute.WIDTH.get(rg);
     }
 
-    private void recalculateVertexColorAttribute(ReadableGraph readGraph) {
+    private void recalculateVertexColorAttribute(final ReadableGraph readGraph) {
         int referredAttr = Graph.NOT_FOUND;
         if (graphVertexColorRef != Graph.NOT_FOUND) {
             final String colorAttrName = readGraph.getStringValue(graphVertexColorRef, 0);
@@ -629,7 +629,7 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
 
-    private void recalculateTransactionColorAttribute(ReadableGraph readGraph) {
+    private void recalculateTransactionColorAttribute(final ReadableGraph readGraph) {
         int referredAttr = Graph.NOT_FOUND;
         if (graphTransactionColorRef != Graph.NOT_FOUND) {
             final String colorAttrName = readGraph.getStringValue(graphTransactionColorRef, 0);
@@ -640,11 +640,11 @@ public final class GraphVisualAccess implements VisualAccess {
         transactionColor = referredAttr != Graph.NOT_FOUND && readGraph.getAttributeType(referredAttr).equals(ColorAttributeDescription.ATTRIBUTE_NAME) ? referredAttr : VisualConcept.TransactionAttribute.COLOR.get(readGraph);
     }
 
-    private void recalculateConnectionMode(ReadableGraph readGraph) {
+    private void recalculateConnectionMode(final ReadableGraph readGraph) {
         connectionMode = graphConnectionMode != Graph.NOT_FOUND ? readGraph.getObjectValue(graphConnectionMode, 0) : VisualGraphDefaults.DEFAULT_CONNECTION_MODE;
     }
 
-    private void recalculateTopLabels(ReadableGraph readGraph) {
+    private void recalculateTopLabels(final ReadableGraph readGraph) {
         final GraphLabels topLabels = graphTopLabels != Graph.NOT_FOUND ? readGraph.getObjectValue(graphTopLabels, 0) : VisualGraphDefaults.DEFAULT_TOP_LABELS;
         final int numLabels = topLabels.getNumberOfLabels();
         topLabelAttrs = new int[numLabels];
@@ -659,7 +659,7 @@ public final class GraphVisualAccess implements VisualAccess {
         }
     }
 
-    private void recalculateBottomLabels(ReadableGraph readGraph) {
+    private void recalculateBottomLabels(final ReadableGraph readGraph) {
         final GraphLabels bottomLabels = graphBottomLabels != Graph.NOT_FOUND ? readGraph.getObjectValue(graphBottomLabels, 0) : VisualGraphDefaults.DEFAULT_BOTTOM_LABELS;
         final int numLabels = bottomLabels.getNumberOfLabels();
         bottomLabelAttrs = new int[numLabels];
@@ -675,7 +675,7 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
 
-    private void recalculateConnectionLabels(ReadableGraph readGraph) {
+    private void recalculateConnectionLabels(final ReadableGraph readGraph) {
         final GraphLabels connectionLabels = graphConnectionLabels != Graph.NOT_FOUND ? readGraph.getObjectValue(graphConnectionLabels, 0) : VisualGraphDefaults.DEFAULT_CONNECTION_LABELS;
         final int numLabels = connectionLabels.getNumberOfLabels();
         connectionLabelAttrs = new int[numLabels];
@@ -690,7 +690,7 @@ public final class GraphVisualAccess implements VisualAccess {
         }
     }
 
-    private void recalculateDecorators(ReadableGraph readGraph) {
+    private void recalculateDecorators(final ReadableGraph readGraph) {
         final VertexDecorators decorators = graphDecorators != Graph.NOT_FOUND ? readGraph.getObjectValue(graphDecorators, 0) : VisualGraphDefaults.DEFAULT_DECORATORS;
         nwDecorator = readGraph.getAttribute(GraphElementType.VERTEX, decorators.getNorthWestDecoratorAttribute());
         neDecorator = readGraph.getAttribute(GraphElementType.VERTEX, decorators.getNorthEastDecoratorAttribute());
@@ -698,12 +698,12 @@ public final class GraphVisualAccess implements VisualAccess {
         swDecorator = readGraph.getAttribute(GraphElementType.VERTEX, decorators.getSouthWestDecoratorAttribute());
     }
 
-    private void recalculateStructure(ReadableGraph readGraph) {
+    private void recalculateStructure(final ReadableGraph readGraph) {
         rebuildConnections(readGraph);
     }
 
     @SuppressWarnings("fallthrough")
-    private void rebuildConnections(ReadableGraph readGraph) {
+    private void rebuildConnections(final ReadableGraph readGraph) {
         final int linkCount = readGraph.getLinkCount();
         final int maxTransactions = graphMaxTransactions != Graph.NOT_FOUND ? readGraph.getIntValue(graphMaxTransactions, 0) : VisualGraphDefaults.DEFAULT_MAX_TRANSACTION_TO_DRAW;
         final int connectionUpperBound = connectionMode == ConnectionMode.LINK ? linkCount : connectionMode == ConnectionMode.EDGE ? readGraph.getEdgeCount() : readGraph.getTransactionCount();
@@ -812,37 +812,37 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public int getConnectionLabelCount(int connection) {
+    public int getConnectionLabelCount(final int connection) {
         return connectionElementTypes[connection] == GraphElementType.TRANSACTION ? connectionLabelAttrs.length : 1;
     }
 
     @Override
-    public boolean getIsLabelSummary(int connection) {
+    public boolean getIsLabelSummary(final int connection) {
         return connectionElementTypes[connection] != GraphElementType.TRANSACTION;
     }
 
     @Override
-    public ConstellationColor getTopLabelColor(int labelNum) {
+    public ConstellationColor getTopLabelColor(final int labelNum) {
         return topLabelColors[labelNum];
     }
 
     @Override
-    public ConstellationColor getBottomLabelColor(int labelNum) {
+    public ConstellationColor getBottomLabelColor(final int labelNum) {
         return bottomLabelColors[labelNum];
     }
 
     @Override
-    public ConstellationColor getConnectionLabelColor(int labelNum) {
+    public ConstellationColor getConnectionLabelColor(final int labelNum) {
         return connectionLabelColors[labelNum];
     }
 
     @Override
-    public float getTopLabelSize(int labelNum) {
+    public float getTopLabelSize(final int labelNum) {
         return topLabelSizes[labelNum];
     }
 
     @Override
-    public float getBottomLabelSize(int labelNum) {
+    public float getBottomLabelSize(final int labelNum) {
         return bottomLabelSizes[labelNum];
     }
 
@@ -852,7 +852,7 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public int getConnectionId(int connection) {
+    public int getConnectionId(final int connection) {
         switch (connectionElementTypes[connection]) {
             case LINK:
                 return accessGraph.getLinkTransaction(connectionElementIds[connection], 0);
@@ -865,7 +865,7 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public ConnectionDirection getConnectionDirection(int connection) {
+    public ConnectionDirection getConnectionDirection(final int connection) {
         switch (connectionElementTypes[connection]) {
             case LINK:
                 final int uphillCount = accessGraph.getLinkTransactionCount(connectionElementIds[connection], Graph.UPHILL);
@@ -906,7 +906,7 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public boolean getConnectionDirected(int connection) {
+    public boolean getConnectionDirected(final int connection) {
         if (transactionDirected != Graph.NOT_FOUND) {
             switch (connectionElementTypes[connection]) {
                 case LINK:
@@ -934,42 +934,42 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public int getVertexId(int vertex) {
+    public int getVertexId(final int vertex) {
         return accessGraph.getVertex(vertex);
     }
 
     @Override
-    public float getX(int vertex) {
+    public float getX(final int vertex) {
         return vertexX != Graph.NOT_FOUND ? accessGraph.getFloatValue(vertexX, accessGraph.getVertex(vertex)) : VisualGraphDefaults.getDefaultX(accessGraph.getVertex(vertex));
     }
 
     @Override
-    public float getY(int vertex) {
+    public float getY(final int vertex) {
         return vertexY != Graph.NOT_FOUND ? accessGraph.getFloatValue(vertexY, accessGraph.getVertex(vertex)) : VisualGraphDefaults.getDefaultY(accessGraph.getVertex(vertex));
     }
 
     @Override
-    public float getZ(int vertex) {
+    public float getZ(final int vertex) {
         return vertexZ != Graph.NOT_FOUND ? accessGraph.getFloatValue(vertexZ, accessGraph.getVertex(vertex)) : VisualGraphDefaults.getDefaultZ(accessGraph.getVertex(vertex));
     }
 
     @Override
-    public float getX2(int vertex) {
+    public float getX2(final int vertex) {
         return vertexX2 != Graph.NOT_FOUND ? accessGraph.getFloatValue(vertexX2, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_X2;
     }
 
     @Override
-    public float getY2(int vertex) {
+    public float getY2(final int vertex) {
         return vertexY2 != Graph.NOT_FOUND ? accessGraph.getFloatValue(vertexY2, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_Y2;
     }
 
     @Override
-    public float getZ2(int vertex) {
+    public float getZ2(final int vertex) {
         return vertexZ2 != Graph.NOT_FOUND ? accessGraph.getFloatValue(vertexZ2, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_Z2;
     }
 
     @Override
-    public ConstellationColor getVertexColor(int vertex) {
+    public ConstellationColor getVertexColor(final int vertex) {
         ConstellationColor color = null;
         if (vertexColor != Graph.NOT_FOUND) {
             color = accessGraph.getObjectValue(vertexColor, accessGraph.getVertex(vertex));
@@ -978,76 +978,76 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public String getBackgroundIcon(int vertex) {
+    public String getBackgroundIcon(final int vertex) {
         return vertexBackgroundIcon != Graph.NOT_FOUND ? accessGraph.getStringValue(vertexBackgroundIcon, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_BACKGROUND_ICON;
     }
 
     @Override
-    public String getForegroundIcon(int vertex) {
+    public String getForegroundIcon(final int vertex) {
         return vertexForegroundIcon != Graph.NOT_FOUND ? accessGraph.getStringValue(vertexForegroundIcon, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_FOREGROUND_ICON;
     }
 
     @Override
-    public boolean getVertexSelected(int vertex) {
+    public boolean getVertexSelected(final int vertex) {
         return vertexSelected != Graph.NOT_FOUND ? accessGraph.getBooleanValue(vertexSelected, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_SELECTED;
     }
 
     @Override
-    public float getVertexVisibility(int vertex) {
+    public float getVertexVisibility(final int vertex) {
         float layerVisibility = vertexLayerVisibility != Graph.NOT_FOUND ? accessGraph.getFloatValue(vertexLayerVisibility, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_FILTER_VISIBILITY;
         return layerVisibility * (vertexVisibility != Graph.NOT_FOUND ? accessGraph.getFloatValue(vertexVisibility, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_VISIBILITY);
     }
 
     @Override
-    public boolean getVertexDimmed(int vertex) {
+    public boolean getVertexDimmed(final int vertex) {
         return vertexDimmed != Graph.NOT_FOUND ? accessGraph.getBooleanValue(vertexDimmed, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_DIMMED;
     }
 
     @Override
-    public float getRadius(int vertex) {
+    public float getRadius(final int vertex) {
         return vertexRadius != Graph.NOT_FOUND ? accessGraph.getFloatValue(vertexRadius, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_RADIUS;
     }
 
     @Override
-    public boolean getBlazed(int vertex) {
+    public boolean getBlazed(final int vertex) {
         final Blaze blaze = vertexBlaze != Graph.NOT_FOUND ? accessGraph.getObjectValue(vertexBlaze, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_BLAZE;
         return blaze != null;
     }
 
     @Override
-    public int getBlazeAngle(int vertex) {
+    public int getBlazeAngle(final int vertex) {
         final Blaze blaze = vertexBlaze != Graph.NOT_FOUND ? accessGraph.getObjectValue(vertexBlaze, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_BLAZE;
         return blaze == null ? VisualGraphDefaults.DEFAULT_BLAZE_ANGLE : blaze.getAngle();
     }
 
     @Override
-    public ConstellationColor getBlazeColor(int vertex) {
+    public ConstellationColor getBlazeColor(final int vertex) {
         final Blaze blaze = accessGraph.getObjectValue(vertexBlaze, accessGraph.getVertex(vertex));
         return blaze == null ? VisualGraphDefaults.DEFAULT_BLAZE_COLOR : blaze.getColor();
     }
 
     @Override
-    public String getNWDecorator(int vertex) {
+    public String getNWDecorator(final int vertex) {
         return nwDecorator != Graph.NOT_FOUND ? accessGraph.getStringValue(nwDecorator, accessGraph.getVertex(vertex)) : null;
     }
 
     @Override
-    public String getNEDecorator(int vertex) {
+    public String getNEDecorator(final int vertex) {
         return neDecorator != Graph.NOT_FOUND ? accessGraph.getStringValue(neDecorator, accessGraph.getVertex(vertex)) : null;
     }
 
     @Override
-    public String getSEDecorator(int vertex) {
+    public String getSEDecorator(final int vertex) {
         return seDecorator != Graph.NOT_FOUND ? accessGraph.getStringValue(seDecorator, accessGraph.getVertex(vertex)) : null;
     }
 
     @Override
-    public String getSWDecorator(int vertex) {
+    public String getSWDecorator(final int vertex) {
         return swDecorator != Graph.NOT_FOUND ? accessGraph.getStringValue(swDecorator, accessGraph.getVertex(vertex)) : null;
     }
 
     @Override
-    public ConstellationColor getConnectionColor(int connection) {
+    public ConstellationColor getConnectionColor(final int connection) {
         ConstellationColor color = null;
         ConstellationColor mixColor;
         if (transactionColor != Graph.NOT_FOUND) {
@@ -1088,7 +1088,7 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public boolean getConnectionSelected(int connection) {
+    public boolean getConnectionSelected(final int connection) {
         if (transactionSelected != Graph.NOT_FOUND) {
             switch (connectionElementTypes[connection]) {
                 case LINK:
@@ -1116,7 +1116,7 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public float getConnectionVisibility(int connection) {
+    public float getConnectionVisibility(final int connection) {
         if (transactionVisibility != Graph.NOT_FOUND) {
             switch (connectionElementTypes[connection]) {
                 case LINK:
@@ -1157,7 +1157,7 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public boolean getConnectionDimmed(int connection) {
+    public boolean getConnectionDimmed(final int connection) {
         if (transactionDimmed != Graph.NOT_FOUND) {
             switch (connectionElementTypes[connection]) {
                 case LINK:
@@ -1185,7 +1185,7 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public LineStyle getConnectionLineStyle(int connection) {
+    public LineStyle getConnectionLineStyle(final int connection) {
         LineStyle style = null;
         LineStyle mixStyle = LineStyle.SOLID;
         if (transactionLineStyle != Graph.NOT_FOUND) {
@@ -1224,7 +1224,7 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public float getConnectionWidth(int connection) {
+    public float getConnectionWidth(final int connection) {
         if (transactionWidth != Graph.NOT_FOUND) {
             switch (connectionElementTypes[connection]) {
                 case LINK:
@@ -1252,7 +1252,7 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public int getConnectionLowVertex(int connection) {
+    public int getConnectionLowVertex(final int connection) {
         final int linkId;
         switch (connectionElementTypes[connection]) {
             case LINK:
@@ -1270,7 +1270,7 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public int getConnectionHighVertex(int connection) {
+    public int getConnectionHighVertex(final int connection) {
         final int linkId;
         switch (connectionElementTypes[connection]) {
             case LINK:
@@ -1293,29 +1293,29 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public int getLinkLowVertex(int link) {
+    public int getLinkLowVertex(final int link) {
         return accessGraph.getVertexPosition(accessGraph.getLinkLowVertex(accessGraph.getLink(link)));
     }
 
     @Override
-    public int getLinkHighVertex(int link) {
+    public int getLinkHighVertex(final int link) {
         return accessGraph.getVertexPosition(accessGraph.getLinkHighVertex(accessGraph.getLink(link)));
     }
 
     @Override
-    public int getLinkSource(int link) {
+    public int getLinkSource(final int link) {
         final int linkId = accessGraph.getLink(link);
         return accessGraph.getLinkTransactionCount(linkId, Graph.DOWNHILL) > 0 && accessGraph.getLinkTransactionCount(linkId, Graph.UPHILL) == 0 ? accessGraph.getVertexPosition(accessGraph.getLinkHighVertex(linkId)) : accessGraph.getVertexPosition(accessGraph.getLinkLowVertex(linkId));
     }
 
     @Override
-    public int getLinkDestination(int link) {
+    public int getLinkDestination(final int link) {
         final int linkId = accessGraph.getLink(link);
         return accessGraph.getLinkTransactionCount(linkId, Graph.DOWNHILL) > 0 && accessGraph.getLinkTransactionCount(linkId, Graph.UPHILL) == 0 ? accessGraph.getVertexPosition(accessGraph.getLinkLowVertex(linkId)) : accessGraph.getVertexPosition(accessGraph.getLinkHighVertex(linkId));
     }
 
     @Override
-    public int getLinkConnectionCount(int link) {
+    public int getLinkConnectionCount(final int link) {
         switch (connectionElementTypes[linkStartingPositions[link]]) {
             case LINK:
                 return 1;
@@ -1328,22 +1328,22 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public int getLinkConnection(int link, int pos) {
+    public int getLinkConnection(final int link, final int pos) {
         return linkStartingPositions[link] + pos;
     }
 
     @Override
-    public String getVertexTopLabelText(int vertex, int labelNum) {
+    public String getVertexTopLabelText(final int vertex, final int labelNum) {
         return topLabelAttrs[labelNum] != Graph.NOT_FOUND ? accessGraph.getStringValue(topLabelAttrs[labelNum], accessGraph.getVertex(vertex)) : "";
     }
 
     @Override
-    public String getVertexBottomLabelText(int vertex, int labelNum) {
+    public String getVertexBottomLabelText(final int vertex, final int labelNum) {
         return bottomLabelAttrs[labelNum] != Graph.NOT_FOUND ? accessGraph.getStringValue(bottomLabelAttrs[labelNum], accessGraph.getVertex(vertex)) : "";
     }
 
     @Override
-    public String getConnectionLabelText(int connection, int labelNum) {
+    public String getConnectionLabelText(final int connection, final int labelNum) {
         switch (connectionElementTypes[connection]) {
             case LINK:
                 return String.valueOf(accessGraph.getLinkTransactionCount(connectionElementIds[connection]));
