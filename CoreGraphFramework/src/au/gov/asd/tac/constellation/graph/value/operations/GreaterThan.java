@@ -56,7 +56,7 @@ public class GreaterThan {
             if (p1 == null) {
                 return false;
             } else {
-                return p2 == null ? true : p1.compareTo(p2) > 0;
+                return p2 == null || p1.compareTo(p2) > 0;
             }
         }
     };

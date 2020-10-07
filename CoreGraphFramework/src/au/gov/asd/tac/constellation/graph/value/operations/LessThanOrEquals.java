@@ -56,7 +56,7 @@ public class LessThanOrEquals {
             if (p1 == null) {
                 return true;
             } else {
-                return p2 == null ? false : p1.compareTo(p2) <= 0;
+                return p2 != null && p1.compareTo(p2) <= 0;
             }
         }
     };

@@ -33,7 +33,7 @@ public class ExpressionParser {
     private static final String END_OF_QUOTED_STRING_ERROR = "Unexpected end of expression while in quoted string";
     private static final String UNEXPECTED_CHARACTER_ERROR = "Unexpected character: ";
 
-    private static enum ParseState {
+    private enum ParseState {
         READING_WHITESPACE,
         READING_SINGLE_STRING,
         READING_DOUBLE_STRING,
@@ -42,7 +42,7 @@ public class ExpressionParser {
         READING_DOUBLE_ESCAPED
     }
 
-    public static enum Operator {
+    public enum Operator {
         AND_AND(NO_TOKEN, 11),
         AND('&', 11, null, AND_AND),
         OR_OR(NO_TOKEN, 12),
@@ -117,7 +117,7 @@ public class ExpressionParser {
         // added private constructor to hide implicit public constructor - S1118.
     }
 
-    public static abstract class Expression {
+    public abstract static class Expression {
 
         private SequenceExpression parent;
 
@@ -446,7 +446,6 @@ public class ExpressionParser {
                 rootExpression = (SequenceExpression) onlyChild;
             }
         }
-        // TODO: errors as indexoutofbounds when it is 0.
         if (!currentExpression.children.isEmpty() && currentExpression.children.get(currentExpression.children.size() - 1) instanceof OperatorExpression) {
             throw new IllegalArgumentException(ENDS_WITH_OPERATOR_ERROR);
         }

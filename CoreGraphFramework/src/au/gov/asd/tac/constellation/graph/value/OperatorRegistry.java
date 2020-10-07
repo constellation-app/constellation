@@ -82,8 +82,8 @@ public class OperatorRegistry {
     }
 
     public Object apply(Object parameter1, Object parameter2) {
-        final var parameter1Class = parameter1.getClass();
-        final var parameter2Class = parameter2.getClass();
+        final Class<?> parameter1Class = parameter1.getClass();
+        final Class<?> parameter2Class = parameter2.getClass();
         final List<BiFunctionRecord> applicableRecords = new ArrayList<>();
         biFunctions.forEach((biFunction) -> {
             if (biFunction.isApplicable(parameter1Class, parameter2Class)) {

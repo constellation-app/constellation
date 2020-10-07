@@ -99,10 +99,12 @@ public class LayersViewShortcuts extends AbstractAction {
         if (enableLayerFuture != null) {
             try {
                 enableLayerFuture.get();
-            } catch (InterruptedException | ExecutionException ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (InterruptedException ex) {
                 // Restore interrupted state...
                 Thread.currentThread().interrupt();
+                Exceptions.printStackTrace(ex);
+            } catch (ExecutionException ex) {
+                Exceptions.printStackTrace(ex);
             }
 
             LayersViewController.getDefault().execute();
@@ -110,10 +112,12 @@ public class LayersViewShortcuts extends AbstractAction {
             if (writeStateFuture != null) {
                 try {
                     writeStateFuture.get();
-                } catch (InterruptedException | ExecutionException ex) {
-                    Exceptions.printStackTrace(ex);
+                } catch (InterruptedException ex) {
                     // Restore interrupted state...
                     Thread.currentThread().interrupt();
+                    Exceptions.printStackTrace(ex);
+                } catch (ExecutionException ex) {
+                    Exceptions.printStackTrace(ex);
                 }
             }
         }

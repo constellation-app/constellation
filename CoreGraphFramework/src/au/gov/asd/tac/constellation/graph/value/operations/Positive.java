@@ -36,19 +36,19 @@ public class Positive {
     public static void register(Operators operators) {
         final var registry = operators.getRegistry(NAME);
 
-        registry.register(DoubleReadable.class, DoubleReadable.class, (p1) -> {
+        registry.register(DoubleReadable.class, DoubleReadable.class, p1 -> {
             return p1;
         });
 
-        registry.register(FloatReadable.class, FloatReadable.class, (p1) -> {
+        registry.register(FloatReadable.class, FloatReadable.class, p1 -> {
             return p1;
         });
 
-        registry.register(LongReadable.class, LongReadable.class, (p1) -> {
+        registry.register(LongReadable.class, LongReadable.class, p1 -> {
             return p1;
         });
 
-        registry.register(IntReadable.class, IntReadable.class, (p1) -> {
+        registry.register(IntReadable.class, IntReadable.class, p1 -> {
             return p1;
         });
     }

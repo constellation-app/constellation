@@ -68,7 +68,7 @@ public class LayersViewController {
      *
      * @return the instance, if one is not made, it will make one.
      */
-    public synchronized static LayersViewController getDefault() {
+    public static synchronized LayersViewController getDefault() {
         if (INSTANCE == null) {
             INSTANCE = new LayersViewController();
         }

@@ -38,7 +38,7 @@ public class AccessRegistry<D> {
     }
 
     public D convert(Object source) {
-        final var sourceClass = source.getClass();
+        final Class<?> sourceClass = source.getClass();
         final List<FunctionRecord<?, D>> applicableRecords = new ArrayList<>();
         functions.forEach((function) -> {
             if (function.isApplicable(sourceClass)) {

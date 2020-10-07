@@ -277,7 +277,7 @@ public final class StringAttributeDescription extends AbstractAttributeDescripti
 
             @Override
             public void writeString(String value) {
-                graph.setObjectValue(attribute, indexReadable.readInt(), value);
+                graph.setStringValue(attribute, indexReadable.readInt(), value);
             }
         };
     }

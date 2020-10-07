@@ -31,14 +31,14 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class BitMaskQueryCollection {
 
-    public final static int MAX_QUERY_AMT = 64;
-    private final static String INVALID_INDEX_ERROR = " is not a valid index for a layer";
+    public static final int MAX_QUERY_AMT = 64;
+    private static final String INVALID_INDEX_ERROR = " is not a valid index for a layer";
 
-    public final static BitMaskQuery[] DEFAULT_VX_QUERIES = new BitMaskQuery[]{
+    public static final BitMaskQuery[] DEFAULT_VX_QUERIES = new BitMaskQuery[]{
         new BitMaskQuery(new Query(null, BitMaskQuery.DEFAULT_QUERY_STRING), 0, BitMaskQuery.DEFAULT_QUERY_DESCRIPTION),
         new BitMaskQuery(new Query(GraphElementType.VERTEX, null), 1, StringUtils.EMPTY)};
 
-    public final static BitMaskQuery[] DEFAULT_TX_QUERIES = new BitMaskQuery[]{
+    public static final BitMaskQuery[] DEFAULT_TX_QUERIES = new BitMaskQuery[]{
         new BitMaskQuery(new Query(null, BitMaskQuery.DEFAULT_QUERY_STRING), 0, BitMaskQuery.DEFAULT_QUERY_DESCRIPTION),
         new BitMaskQuery(new Query(GraphElementType.TRANSACTION, null), 1, StringUtils.EMPTY)};
 
