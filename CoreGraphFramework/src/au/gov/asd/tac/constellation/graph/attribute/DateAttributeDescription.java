@@ -90,7 +90,7 @@ public final class DateAttributeDescription extends AbstractAttributeDescription
      * @return A Calendar representing the input datetime.
      */
     public long convertFromString(final String string) throws IllegalArgumentException {
-        if (StringUtils.isBlank(string)) {
+        if (StringUtils.isBlank(string) || String.valueOf(DEFAULT_VALUE).equals(string)) {
             return (long) getDefault();
         } else {
             try {

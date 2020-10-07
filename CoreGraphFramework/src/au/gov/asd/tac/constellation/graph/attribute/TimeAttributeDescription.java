@@ -85,7 +85,7 @@ public final class TimeAttributeDescription extends AbstractAttributeDescription
      * @return A Calendar representing the input datetime.
      */
     private int convertFromString(final String string) throws IllegalArgumentException {
-        if (StringUtils.isBlank(string)) {
+        if (StringUtils.isBlank(string) || String.valueOf(DEFAULT_VALUE).equals(string)) {
             return (int) getDefault();
         } else {
             try {
