@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.plugins.importexport.delimited.parser;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import com.google.common.net.InetAddresses;
 import io.pkts.PacketHandler;
 import io.pkts.Pcap;
@@ -398,7 +399,7 @@ public class PCAPImportFileParser extends ImportFileParser {
             builder.append(rawString.charAt(byteIndex * 2));
             builder.append(rawString.charAt(byteIndex * 2 + 1));
             if (byteIndex < (HDR_ETHERNET_II_MAC_SIZE - 1)) {
-                builder.append(":");
+                builder.append(SeparatorConstants.COLON);
             }
             byteIndex++;
         }
@@ -463,7 +464,7 @@ public class PCAPImportFileParser extends ImportFileParser {
         final StringBuilder builder = new StringBuilder();
         for (byte element : getBytes(bytes, offset, IPV4_IP_SIZE)) {
             builder.append(String.valueOf(element & 0xff));
-            builder.append(".");
+            builder.append(SeparatorConstants.PERIOD);
         }
         return builder.toString().substring(0, builder.toString().length() - 1);
     }
@@ -488,7 +489,7 @@ public class PCAPImportFileParser extends ImportFileParser {
         for (int i = 0; i < (IPV6_IP_SIZE / 2); i++) {
             final String segmentStr =
                     Hex.encodeHexString(Arrays.copyOfRange(getBytes(bytes, offset, IPV6_IP_SIZE), (2 * i), (2 * (i + 1))));
-            builder.append(segmentStr).append(":");
+            builder.append(segmentStr).append(SeparatorConstants.COLON);
         }
         return InetAddresses.toAddrString(
                 InetAddresses.forString(builder.toString().substring(0, builder.toString().length() - 1)));
