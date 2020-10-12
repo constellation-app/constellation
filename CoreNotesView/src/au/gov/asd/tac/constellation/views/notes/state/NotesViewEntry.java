@@ -25,15 +25,15 @@ public class NotesViewEntry {
     private static int noteIdCounter = 1;
     private final int noteId;
     
-    private final Boolean userCreated;
     private final String dateTime;
     private String noteTitle;
     private String noteContent;
+    private final Boolean userCreated;
 
     // Constructor.
-    public NotesViewEntry(final String noteDateTime, final String noteTitle, final String noteContent, final Boolean userCreated) {
+    public NotesViewEntry(final String dateTime, final String noteTitle, final String noteContent, final Boolean userCreated) {
         this.noteId = noteIdCounter++;
-        this.dateTime = noteDateTime;
+        this.dateTime = dateTime;
         this.noteTitle = noteTitle;
         this.noteContent = noteContent;
         this.userCreated = userCreated;
@@ -41,11 +41,11 @@ public class NotesViewEntry {
 
     // Copy constructor.
     public NotesViewEntry(final NotesViewEntry note) {
-        this.noteId = noteIdCounter++;
-        this.dateTime = note.getDateTime();
-        this.noteTitle = note.getNoteTitle();
-        this.noteContent = note.getNoteContent();
-        this.userCreated = note.isUserCreated();
+        noteId = noteIdCounter++;
+        dateTime = note.getDateTime();
+        noteTitle = note.getNoteTitle();
+        noteContent = note.getNoteContent();
+        userCreated = note.isUserCreated();
     }
 
     public int getNoteId() {

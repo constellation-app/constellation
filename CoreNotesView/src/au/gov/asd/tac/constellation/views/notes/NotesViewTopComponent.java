@@ -22,12 +22,9 @@ import au.gov.asd.tac.constellation.plugins.reporting.GraphReportManager;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.notes.state.NotesViewConcept;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
 
@@ -78,6 +75,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
             if (!needsUpdate()) {
                 return;
             }
+            
             notesViewController.readState();
         });
     }
@@ -109,27 +107,14 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
     protected void handleComponentOpened() {
         GraphReportManager.addGraphReportListener(this);
         notesViewPane.prepareNotesViewPane(notesViewController, notesViewPane);
+        notesViewPane.updateNoteEntries(); // If plugin reports are altered on a graph before the Notes View is opened.
     }
     
     @Override
     protected void handleComponentClosed() {
         notesViewPane.clearNotes();
-        notesViewPane.closeEditNote();
+        notesViewPane.closeEdit();
     }
-    
-//    private void writeNotes(){
-//        Future<?> f = notesViewController.writeState();
-//        if(f!=null){
-//            try {
-//                f.get();
-//            } catch (InterruptedException ex) {
-//                Thread.currentThread().interrupt();
-//                Exceptions.printStackTrace(ex);
-//            } catch (ExecutionException ex) {
-//                Exceptions.printStackTrace(ex);
-//            }
-//        }
-//    }
 
     @Override
     protected void componentShowing() {
