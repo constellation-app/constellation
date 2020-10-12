@@ -29,6 +29,7 @@ import au.gov.asd.tac.constellation.views.notes.state.NotesViewConcept;
 import au.gov.asd.tac.constellation.views.notes.state.NotesViewEntry;
 import au.gov.asd.tac.constellation.views.notes.state.NotesViewState;
 import java.util.List;
+import java.util.concurrent.Future;
 
 /**
  *
@@ -92,15 +93,15 @@ public class NotesViewController {
      * Executes a plugin to write the current notes to the graph's
      * notes_view_state Attribute.
      */
-    public void writeState() {
+    public Future<?> writeState() {
         final NotesViewPane pane = parent.getContent();
         final Graph graph = GraphManager.getDefault().getActiveGraph();
         
         if (pane == null || graph == null) {
-            return;
+            return null;
         }
         
-        PluginExecution.withPlugin(new NotesViewStateWriter(pane.getNoteEntries())).executeLater(graph);
+        return PluginExecution.withPlugin(new NotesViewStateWriter(pane.getNoteEntries())).executeLater(graph);
     }
 
     /**

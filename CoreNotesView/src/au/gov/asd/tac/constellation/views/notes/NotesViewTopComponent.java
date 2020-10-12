@@ -22,9 +22,12 @@ import au.gov.asd.tac.constellation.plugins.reporting.GraphReportManager;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.notes.state.NotesViewConcept;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
 
@@ -113,6 +116,20 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
         notesViewPane.clearNotes();
         notesViewPane.closeEditNote();
     }
+    
+//    private void writeNotes(){
+//        Future<?> f = notesViewController.writeState();
+//        if(f!=null){
+//            try {
+//                f.get();
+//            } catch (InterruptedException ex) {
+//                Thread.currentThread().interrupt();
+//                Exceptions.printStackTrace(ex);
+//            } catch (ExecutionException ex) {
+//                Exceptions.printStackTrace(ex);
+//            }
+//        }
+//    }
 
     @Override
     protected void componentShowing() {
