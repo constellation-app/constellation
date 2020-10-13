@@ -50,21 +50,23 @@ public class OperatorRegistry {
         functions.forEach((function) -> {
             if (function.isApplicable(parameterClass)) {
                 boolean insert = true;
-                for (int i = 0; i < applicableRecords.size(); i++) {
-                    switch (function.compareTo(applicableRecords.get(i))) {
+                int count = 0;
+                while (count < applicableRecords.size()) {
+                    switch (function.compareTo(applicableRecords.get(count))) {
                         case -1:
                             insert = false;
                             break;
                         case 0:
                             break;
                         case 1:
-                            applicableRecords.remove(i);
-                            i -= 1;
+                            applicableRecords.remove(count);
+                            count -= 1;
                             break;
                         default:
                             // Default case added - S131
                             break;
                     }
+                    count++;
                 }
                 if (insert) {
                     applicableRecords.add(function);
