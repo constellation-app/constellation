@@ -62,6 +62,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
      * Creates a new NotesViewTopComponent.
      */
     public NotesViewTopComponent() {
+        
         setName(Bundle.CTL_NotesViewTopComponent());
         setToolTipText(Bundle.HINT_NotesViewTopComponent());
         initComponents();
@@ -82,6 +83,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
 
     @Override
     protected void handleNewGraph(final Graph graph) {
+        
         if (needsUpdate() && graph != null) {
             notesViewPane.prepareNotesViewPane(notesViewController, notesViewPane);
             notesViewPane.setGraphRecord(graph.getId());
@@ -90,6 +92,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
 
     @Override
     protected void handleGraphOpened(final Graph graph) {
+        
         if (needsUpdate() && graph != null) {
             notesViewPane.prepareNotesViewPane(notesViewController, notesViewPane);
             notesViewPane.setGraphRecord(graph.getId());
@@ -98,6 +101,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
 
     @Override
     protected void handleGraphClosed(final Graph graph) {
+        
         if (needsUpdate() && graph != null) {
             notesViewPane.prepareNotesViewPane(notesViewController, notesViewPane);
         }
@@ -135,6 +139,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
     // Triggers when plugin reports are added or removed.
     @Override
     public void newPluginReport(PluginReport pluginReport) {
+        
         final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
         
         if (!pluginReport.getPluginName().contains("Note")) {

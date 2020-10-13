@@ -62,6 +62,7 @@ public class NotesViewController {
      * Add attributes required by the Notes View for it to function
      */
     public void addAttributes() {
+        
         final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
         
         if (activeGraph != null) {
@@ -79,6 +80,7 @@ public class NotesViewController {
      * pane.
      */
     public void readState() {
+        
         final NotesViewPane pane = parent.getContent();
         final Graph graph = GraphManager.getDefault().getActiveGraph();
         
@@ -94,6 +96,7 @@ public class NotesViewController {
      * notes_view_state Attribute.
      */
     public Future<?> writeState() {
+        
         final NotesViewPane pane = parent.getContent();
         final Graph graph = GraphManager.getDefault().getActiveGraph();
         
@@ -117,6 +120,7 @@ public class NotesViewController {
 
         @Override
         public void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            
             if (graph == null) {
                 return;
             }

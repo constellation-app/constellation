@@ -45,9 +45,9 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
     }
 
     @Override
-    public void readObject(final int attributeId, final int elementId, final JsonNode jnode, final GraphWriteMethods graph,
-        final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap,
-        final GraphByteReader byteReader, final ImmutableObjectCache cache) throws IOException {
+    public void readObject(final int attributeId, final int elementId, final JsonNode jnode,
+            final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap,
+            final GraphByteReader byteReader, final ImmutableObjectCache cache) throws IOException {
         
         if (!jnode.isNull()) {
             final List<NotesViewEntry> noteEntries = new ArrayList<>();
@@ -56,15 +56,16 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
             for (int i = 0; i < notesArray.size(); i++) {
                 if (notesArray.get(i).isNull()) {
                     noteEntries.add(null);
-                } else { // create NotesViewEntry with dateTime, title, content and userCreated.
+                } else {
                     noteEntries.add(new NotesViewEntry(
+                        notesArray.get(i).get(0).asText(),
                         notesArray.get(i).get(1).asText(),
                         notesArray.get(i).get(2).asText(),
-                        notesArray.get(i).get(3).asText(),
-                        notesArray.get(i).get(0).asBoolean()
+                        notesArray.get(i).get(3).asBoolean()
                     ));
                 }
             }
+            
             final NotesViewState state = new NotesViewState(noteEntries);
             graph.setObjectValue(attributeId, elementId, state);
         }
@@ -90,13 +91,14 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                         jsonGenerator.writeNull();
                     } else {
                         jsonGenerator.writeStartArray();
-                        jsonGenerator.writeBoolean(note.isUserCreated());
                         jsonGenerator.writeString(note.getDateTime());
                         jsonGenerator.writeString(note.getNoteTitle());
                         jsonGenerator.writeString(note.getNoteContent());
+                        jsonGenerator.writeBoolean(note.isUserCreated());
                         jsonGenerator.writeEndArray();
                     }
                 }
+                
                 jsonGenerator.writeEndArray();
                 jsonGenerator.writeEndObject();
             }

@@ -27,7 +27,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = AttributeDescription.class)
 public class NotesViewStateAttributeDescription extends ObjectAttributeDescription {
 
-    public static final String ATTRIBUTE_NAME = "notes_view_state";
+    protected static final String ATTRIBUTE_NAME = "notes_view_state";
 
     public NotesViewStateAttributeDescription() {
         super(ATTRIBUTE_NAME);
