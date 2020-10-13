@@ -202,11 +202,11 @@ public class StringConverters {
 
                 @Override
                 public void read(BooleanValue value) {
-                    final var source1Value = source1.readString();
+                    final String source1Value = source1.readString();
                     if (source1Value == null) {
                         value.writeBoolean(false);
                     } else {
-                        final var source2Value = source2.readString();
+                        final String source2Value = source2.readString();
                         value.writeBoolean(source2Value != null && source1Value.contains(source2Value));
                     }
                 }
@@ -226,11 +226,11 @@ public class StringConverters {
 
                 @Override
                 public void read(BooleanValue value) {
-                    final var source1Value = source1.readString();
+                    final String source1Value = source1.readString();
                     if (source1Value == null) {
                         value.writeBoolean(false);
                     } else {
-                        final var source2Value = source2.readString();
+                        final String source2Value = source2.readString();
                         value.writeBoolean(source2Value != null && source1Value.startsWith(source2Value));
                     }
                 }
@@ -250,11 +250,11 @@ public class StringConverters {
 
                 @Override
                 public void read(BooleanValue value) {
-                    final var source1Value = source1.readString();
+                    final String source1Value = source1.readString();
                     if (source1Value == null) {
                         value.writeBoolean(false);
                     } else {
-                        final var source2Value = source2.readString();
+                        final String source2Value = source2.readString();
                         value.writeBoolean(source2Value != null && source1Value.endsWith(source2Value));
                     }
                 }
@@ -274,11 +274,11 @@ public class StringConverters {
 
                 @Override
                 public void read(StringValue value) {
-                    final var value1 = source1.readString();
+                    final String value1 = source1.readString();
                     if (value1 == null) {
                         value.writeString(source2.readString());
                     } else {
-                        final var value2 = source2.readString();
+                        final String value2 = source2.readString();
                         value.writeString(value2 == null ? value1 : (value1 + value2));
                     }
                 }

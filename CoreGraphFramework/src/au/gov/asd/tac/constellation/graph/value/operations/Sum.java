@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.graph.value.operations;
 
 import au.gov.asd.tac.constellation.graph.value.ArithmeticOperation;
+import au.gov.asd.tac.constellation.graph.value.OperatorRegistry;
 import au.gov.asd.tac.constellation.graph.value.Operators;
 import au.gov.asd.tac.constellation.graph.value.constants.StringConstant;
 import au.gov.asd.tac.constellation.graph.value.readables.StringReadable;
@@ -55,15 +56,14 @@ public class Sum {
     };
 
     public static void register(Operators operators) {
-        final var registry = operators.getRegistry(NAME);
+        final OperatorRegistry registry = operators.getRegistry(NAME);
         ARITHMETIC_OPERATION.register(registry);
 
         registry.register(StringReadable.class, StringReadable.class, StringReadable.class, (p1, p2) -> {
             return () -> p1.readString() + p2.readString();
         });
         registry.register(StringConstant.class, StringConstant.class, StringConstant.class, (p1, p2) -> {
-            final var result = p1.readString() + p2.readString();
-            return () -> result;
+            return () -> p1.readString() + p2.readString();
         });
     }
 

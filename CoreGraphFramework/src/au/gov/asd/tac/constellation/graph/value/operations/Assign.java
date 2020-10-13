@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.value.operations;
 
+import au.gov.asd.tac.constellation.graph.value.OperatorRegistry;
 import au.gov.asd.tac.constellation.graph.value.Operators;
 import au.gov.asd.tac.constellation.graph.value.readables.BooleanReadable;
 import au.gov.asd.tac.constellation.graph.value.readables.DoubleReadable;
@@ -44,11 +45,11 @@ public class Assign {
     }
 
     public static void register(Operators operators) {
-        final var registry = operators.getRegistry(NAME);
+        final OperatorRegistry registry = operators.getRegistry(NAME);
 
         registry.register(DoubleWritable.class, DoubleReadable.class, DoubleReadable.class, (p1, p2) -> {
             return () -> {
-                final var result = p2.readDouble();
+                final double result = p2.readDouble();
                 p1.writeDouble(result);
                 return result;
             };
@@ -56,7 +57,7 @@ public class Assign {
 
         registry.register(FloatWritable.class, FloatReadable.class, FloatReadable.class, (p1, p2) -> {
             return () -> {
-                final var result = p2.readFloat();
+                final float result = p2.readFloat();
                 p1.writeFloat(result);
                 return result;
             };
@@ -64,7 +65,7 @@ public class Assign {
 
         registry.register(LongWritable.class, LongReadable.class, LongReadable.class, (p1, p2) -> {
             return () -> {
-                final var result = p2.readLong();
+                final long result = p2.readLong();
                 p1.writeLong(result);
                 return result;
             };
@@ -72,7 +73,7 @@ public class Assign {
 
         registry.register(IntWritable.class, IntReadable.class, IntReadable.class, (p1, p2) -> {
             return () -> {
-                final var result = p2.readInt();
+                final int result = p2.readInt();
                 p1.writeInt(result);
                 return result;
             };
@@ -80,7 +81,7 @@ public class Assign {
 
         registry.register(BooleanWritable.class, BooleanReadable.class, BooleanReadable.class, (p1, p2) -> {
             return () -> {
-                final var result = p2.readBoolean();
+                final boolean result = p2.readBoolean();
                 p1.writeBoolean(result);
                 return result;
             };
@@ -88,7 +89,7 @@ public class Assign {
 
         registry.register(StringWritable.class, StringReadable.class, StringReadable.class, (p1, p2) -> {
             return () -> {
-                final var result = p2.readString();
+                final String result = p2.readString();
                 p1.writeString(result);
                 return result;
             };
@@ -96,7 +97,7 @@ public class Assign {
 
         registry.register(ObjectWritable.class, ObjectReadable.class, ObjectReadable.class, (p1, p2) -> {
             return () -> {
-                final var result = p2.readObject();
+                final Object result = p2.readObject();
                 p1.writeObject(result);
                 return result;
             };
@@ -104,7 +105,7 @@ public class Assign {
 
         registry.register(StringWritable.class, LongReadable.class, StringReadable.class, (p1, p2) -> {
             return () -> {
-                final var result = String.valueOf(p2.readLong());
+                final String result = String.valueOf(p2.readLong());
                 p1.writeString(result);
                 return result;
             };
@@ -112,7 +113,7 @@ public class Assign {
 
         registry.register(StringWritable.class, DoubleReadable.class, StringReadable.class, (p1, p2) -> {
             return () -> {
-                final var result = String.valueOf(p2.readDouble());
+                final String result = String.valueOf(p2.readDouble());
                 p1.writeString(result);
                 return result;
             };

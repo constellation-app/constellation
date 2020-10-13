@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2020 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,8 +17,8 @@ package au.gov.asd.tac.constellation.graph.value.types.booleanType;
 
 import au.gov.asd.tac.constellation.graph.value.converters.Copyable;
 import au.gov.asd.tac.constellation.graph.value.types.LogicConverters;
-import au.gov.asd.tac.constellation.graph.value.types.stringType.StringWritable;
 import au.gov.asd.tac.constellation.graph.value.types.stringType.StringReadable;
+import au.gov.asd.tac.constellation.graph.value.types.stringType.StringWritable;
 
 /**
  *
@@ -29,40 +29,40 @@ public class BooleanValue implements Copyable, BooleanReadable, BooleanWritable,
     static {
         LogicConverters.register();
     }
-    
+
     private boolean value = false;
 
     @Override
     public Object copy() {
-        var copy = new BooleanValue();
+        final BooleanValue copy = new BooleanValue();
         copy.value = value;
         return copy;
     }
-    
+
     @Override
     public String readString() {
         return String.valueOf(value);
     }
-    
+
     @Override
     public void writeString(String value) {
         this.value = Boolean.valueOf(value);
     }
-    
+
     @Override
     public boolean readBoolean() {
         return value;
     }
-    
+
     @Override
     public void writeBoolean(boolean value) {
         this.value = value;
     }
-    
+
     @Override
     public boolean equals(Object other) {
         if (other instanceof BooleanValue) {
-            return value == ((BooleanValue)other).value;
+            return value == ((BooleanValue) other).value;
         }
         return false;
     }
@@ -71,12 +71,12 @@ public class BooleanValue implements Copyable, BooleanReadable, BooleanWritable,
     public int hashCode() {
         return Boolean.hashCode(value);
     }
-    
+
     @Override
     public int compareTo(BooleanValue value) {
         return Boolean.compare(this.value, value.value);
     }
-    
+
     @Override
     public String toString() {
         return String.valueOf(value);

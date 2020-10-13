@@ -133,7 +133,7 @@ public class ExpressionParser {
 
         @Override
         public String toString() {
-            final var out = new StringBuilder();
+            final StringBuilder out = new StringBuilder();
             print("", out);
             return out.toString();
         }
@@ -212,7 +212,7 @@ public class ExpressionParser {
         private void addChild(Expression expression) {
 
             if (expression instanceof SequenceExpression) {
-                final var tokenSequence = (SequenceExpression) expression;
+                final SequenceExpression tokenSequence = (SequenceExpression) expression;
                 switch (tokenSequence.children.size()) {
                     case 0:
                         return;
@@ -227,11 +227,11 @@ public class ExpressionParser {
             }
 
             if (expression instanceof OperatorExpression && !children.isEmpty()) {
-                final var lastChild = children.get(children.size() - 1);
+                final Expression lastChild = children.get(children.size() - 1);
                 if (lastChild instanceof OperatorExpression) {
-                    final var tokenOperator = (OperatorExpression) expression;
-                    final var lastChildOperator = (OperatorExpression) lastChild;
-                    final var combinedOperator = tokenOperator.operator.combinations.get(lastChildOperator.operator);
+                    final OperatorExpression tokenOperator = (OperatorExpression) expression;
+                    final OperatorExpression lastChildOperator = (OperatorExpression) lastChild;
+                    final Operator combinedOperator = tokenOperator.operator.combinations.get(lastChildOperator.operator);
                     if (combinedOperator != null) {
                         children.remove(children.size() - 1);
                         tokenOperator.operator = combinedOperator;
@@ -240,10 +240,10 @@ public class ExpressionParser {
             }
 
             if (!(expression instanceof OperatorExpression) && !children.isEmpty()) {
-                final var lastChild = children.get(children.size() - 1);
+                final Expression lastChild = children.get(children.size() - 1);
                 if (lastChild instanceof OperatorExpression) {
                     if (children.size() == 1 || children.get(children.size() - 2) instanceof OperatorExpression) {
-                        final var childSequence = new SequenceExpression(this);
+                        final SequenceExpression childSequence = new SequenceExpression(this);
                         lastChild.parent = childSequence;
                         childSequence.children.add(lastChild);
                         expression.parent = childSequence;
@@ -254,8 +254,8 @@ public class ExpressionParser {
                     }
                 } else {
                     if (expression instanceof VariableExpression) {
-                        final var tokenVariable = (VariableExpression) expression;
-                        final var wordOperator = WORD_OPERATORS.get(tokenVariable.content.toLowerCase());
+                        final VariableExpression tokenVariable = (VariableExpression) expression;
+                        final Operator wordOperator = WORD_OPERATORS.get(tokenVariable.content.toLowerCase());
                         if (wordOperator != null) {
                             children.add(new OperatorExpression(this, wordOperator));
                             return;
@@ -272,8 +272,8 @@ public class ExpressionParser {
             normalizeChildren();
 
             while (children.size() > 3) {
-                var lowestPrecedence = Integer.MAX_VALUE;
-                var lowestIndex = -1;
+                int lowestPrecedence = Integer.MAX_VALUE;
+                int lowestIndex = -1;
                 for (int i = 1; i < children.size(); i += 2) {
                     final int precedence = ((OperatorExpression) children.get(i)).getOperator().getPrecedence();
                     if (precedence < lowestPrecedence) {
@@ -282,17 +282,17 @@ public class ExpressionParser {
                     }
                 }
 
-                final var childSequence = new SequenceExpression(this);
+                final SequenceExpression childSequence = new SequenceExpression(this);
 
-                final var left = children.remove(lowestIndex - 1);
+                final Expression left = children.remove(lowestIndex - 1);
                 left.parent = childSequence;
                 childSequence.addChild(left);
 
-                final var operator = children.remove(lowestIndex - 1);
+                final Expression operator = children.remove(lowestIndex - 1);
                 operator.parent = childSequence;
                 childSequence.addChild(operator);
 
-                final var right = children.get(lowestIndex - 1);
+                final Expression right = children.get(lowestIndex - 1);
                 right.parent = childSequence;
                 childSequence.addChild(right);
 
@@ -302,7 +302,7 @@ public class ExpressionParser {
 
         private void normalizeChildren() {
             for (int i = children.size() - 1; i >= 0; i--) {
-                final var child = children.get(i);
+                final Expression child = children.get(i);
                 if (child instanceof SequenceExpression) {
                     ((SequenceExpression) child).normalize();
                 }
@@ -321,12 +321,12 @@ public class ExpressionParser {
 
     public static SequenceExpression parse(String expression) {
 
-        var state = ParseState.READING_WHITESPACE;
-        var content = new char[expression.length()];
-        var contentLength = 0;
+        ParseState state = ParseState.READING_WHITESPACE;
+        final char[] content = new char[expression.length()];
+        int contentLength = 0;
 
-        var rootExpression = new SequenceExpression(null);
-        var currentExpression = rootExpression;
+        SequenceExpression rootExpression = new SequenceExpression(null);
+        SequenceExpression currentExpression = rootExpression;
 
         for (int i = 0; i <= expression.length(); i++) {
             final char c = i < expression.length() ? expression.charAt(i) : 0;
@@ -347,7 +347,7 @@ public class ExpressionParser {
                             if (currentExpression == rootExpression) {
                                 throw new IllegalArgumentException(NESTED_PARENTHESIS_ERROR);
                             }
-                            final var parentExpression = currentExpression.getParent();
+                            final SequenceExpression parentExpression = currentExpression.getParent();
                             parentExpression.addChild(currentExpression);
                             currentExpression = parentExpression;
                         } else if (Operator.OPERATOR_TOKENS.containsKey(c)) {
@@ -375,7 +375,7 @@ public class ExpressionParser {
                         }
                         currentExpression.addChild(new VariableExpression(currentExpression, content, contentLength));
                         contentLength = 0;
-                        final var parentExpression = currentExpression.getParent();
+                        final SequenceExpression parentExpression = currentExpression.getParent();
                         parentExpression.addChild(currentExpression);
                         currentExpression = parentExpression;
                         state = ParseState.READING_WHITESPACE;
@@ -441,7 +441,7 @@ public class ExpressionParser {
             throw new IllegalArgumentException(NESTED_PARENTHESIS_ERROR);
         }
         if (rootExpression.children.size() == 1) {
-            final var onlyChild = rootExpression.children.get(0);
+            final Expression onlyChild = rootExpression.children.get(0);
             if (onlyChild instanceof SequenceExpression) {
                 rootExpression = (SequenceExpression) onlyChild;
             }

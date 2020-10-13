@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.graph.value.operations;
 
 import au.gov.asd.tac.constellation.graph.value.ComparisonOperation;
+import au.gov.asd.tac.constellation.graph.value.OperatorRegistry;
 import au.gov.asd.tac.constellation.graph.value.Operators;
 
 /**
@@ -62,7 +63,7 @@ public class GreaterThan {
     };
 
     public static void register(Operators operators) {
-        final var registry = operators.getRegistry(NAME);
+        final OperatorRegistry registry = operators.getRegistry(NAME);
         COMPARISON_OPERATION.register(registry);
     }
 

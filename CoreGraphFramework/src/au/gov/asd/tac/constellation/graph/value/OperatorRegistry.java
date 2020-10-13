@@ -45,7 +45,7 @@ public class OperatorRegistry {
     }
 
     public Object apply(Object parameter) {
-        final var parameterClass = parameter.getClass();
+        final Class<?> parameterClass = parameter.getClass();
         final List<FunctionRecord> applicableRecords = new ArrayList<>();
         functions.forEach((function) -> {
             if (function.isApplicable(parameterClass)) {

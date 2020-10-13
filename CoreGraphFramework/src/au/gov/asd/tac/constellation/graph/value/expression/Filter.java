@@ -28,7 +28,7 @@ public class Filter {
 
     public static <P1, V, O extends Readable<V>> IndexedReadable<V> createFilter(IndexedReadable<P1> parameter1, Class<O> operationClass, ConverterRegistry converterRegistry) {
         final P1 parameter1Value = parameter1.createValue();
-        final var operation = converterRegistry.convert(parameter1Value, operationClass);
+        final O operation = converterRegistry.convert(parameter1Value, operationClass);
 
         return new IndexedReadable<V>() {
             @Override
@@ -55,7 +55,7 @@ public class Filter {
     public static <P1, P2, V, O extends Readable<V>> IndexedReadable<V> createFilter(IndexedReadable<P1> parameter1, IndexedReadable<P2> parameter2, Class<O> operationClass, ConverterRegistry converterRegistry) {
         final P1 parameter1Value = parameter1.createValue();
         final P2 parameter2Value = parameter2.createValue();
-        final var operation = converterRegistry.convert(parameter1Value, parameter2Value, operationClass);
+        final O operation = converterRegistry.convert(parameter1Value, parameter2Value, operationClass);
 
         return new IndexedReadable<V>() {
             @Override
@@ -77,13 +77,13 @@ public class Filter {
     }
 
     public static <P1, V, O extends Readable<V>> IndexedReadable<V> createFilter(IndexedReadable<P1> parameter1, String parameter2, Class<O> operationClass, ConverterRegistry converterRegistry) {
-        final var parameter1Value = parameter1.createValue();
-        final var parameter2Value = parameter1.createValue();
+        final P1 parameter1Value = parameter1.createValue();
+        final P1 parameter2Value = parameter1.createValue();
 
-        final var stringWritable = converterRegistry.convert(parameter2Value, StringWritable.class);
+        final StringWritable stringWritable = converterRegistry.convert(parameter2Value, StringWritable.class);
         stringWritable.writeString(parameter2);
 
-        final var operation = converterRegistry.convert(parameter1Value, parameter2Value, operationClass);
+        final O operation = converterRegistry.convert(parameter1Value, parameter2Value, operationClass);
 
         return new IndexedReadable<V>() {
             @Override
@@ -104,13 +104,13 @@ public class Filter {
     }
 
     public static <P2, V, O extends Readable<V>> IndexedReadable<V> createFilter(String parameter1, IndexedReadable<P2> parameter2, Class<O> operationClass, ConverterRegistry converterRegistry) {
-        final var parameter1Value = parameter2.createValue();
-        final var parameter2Value = parameter2.createValue();
+        final P2 parameter1Value = parameter2.createValue();
+        final P2 parameter2Value = parameter2.createValue();
 
-        final var stringWritable = converterRegistry.convert(parameter1Value, StringWritable.class);
+        final StringWritable stringWritable = converterRegistry.convert(parameter1Value, StringWritable.class);
         stringWritable.writeString(parameter1);
 
-        final var operation = converterRegistry.convert(parameter1Value, parameter2Value, operationClass);
+        final O operation = converterRegistry.convert(parameter1Value, parameter2Value, operationClass);
 
         return new IndexedReadable<V>() {
             @Override

@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.value.operations;
 
+import au.gov.asd.tac.constellation.graph.value.OperatorRegistry;
 import au.gov.asd.tac.constellation.graph.value.Operators;
 import au.gov.asd.tac.constellation.graph.value.readables.DoubleReadable;
 import au.gov.asd.tac.constellation.graph.value.readables.FloatReadable;
@@ -34,7 +35,7 @@ public class Positive {
     }
 
     public static void register(Operators operators) {
-        final var registry = operators.getRegistry(NAME);
+        final OperatorRegistry registry = operators.getRegistry(NAME);
 
         registry.register(DoubleReadable.class, DoubleReadable.class, p1 -> {
             return p1;

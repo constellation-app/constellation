@@ -89,7 +89,7 @@ public class ExpressionFilter {
         final List<Expression> children = expression.getUnmodifiableChildren();
         switch (children.size()) {
             case 1: {
-                final var indexedReadable = createIndexedReadable(children.get(0), indexedReadableProvider, converterRegistry);
+                final IndexedReadable<?> indexedReadable = createIndexedReadable(children.get(0), indexedReadableProvider, converterRegistry);
                 if (indexedReadable == null) {
                     throw new IllegalArgumentException("Invalid expression size: " + children.size());
                 }
@@ -102,7 +102,7 @@ public class ExpressionFilter {
 
                 final Class converterClass = CONVERTER_CLASSES.get(operator.getOperator());
 
-                final var rightIndexedReadable = createIndexedReadable(right, indexedReadableProvider, converterRegistry);
+                final IndexedReadable<?> rightIndexedReadable = createIndexedReadable(right, indexedReadableProvider, converterRegistry);
 
                 if (rightIndexedReadable == null) {
                     throw new IllegalArgumentException("Unable to perform unary operation on constant");
@@ -118,17 +118,17 @@ public class ExpressionFilter {
 
                 final Class operatorClass = OPERATOR_CLASSES.get(operator.getOperator());
 
-                final var leftIndexedReadable = createIndexedReadable(left, indexedReadableProvider, converterRegistry);
-                final var rightIndexedReadable = createIndexedReadable(right, indexedReadableProvider, converterRegistry);
+                final IndexedReadable<?> leftIndexedReadable = createIndexedReadable(left, indexedReadableProvider, converterRegistry);
+                final IndexedReadable<?> rightIndexedReadable = createIndexedReadable(right, indexedReadableProvider, converterRegistry);
 
                 if (leftIndexedReadable == null) {
-                    final var leftContent = ((StringExpression) left).getContent();
+                    final String leftContent = ((StringExpression) left).getContent();
                     if (rightIndexedReadable == null) {
                         throw new IllegalArgumentException("Unable to perform operator on 2 constants");
                     }
                     return Filter.createFilter(leftContent, rightIndexedReadable, operatorClass, converterRegistry);
                 } else if (rightIndexedReadable == null) {
-                    final var rightContent = ((StringExpression) right).getContent();
+                    final String rightContent = ((StringExpression) right).getContent();
                     return Filter.createFilter(leftIndexedReadable, rightContent, operatorClass, converterRegistry);
                 } else {
                     return Filter.createFilter(leftIndexedReadable, rightIndexedReadable, operatorClass, converterRegistry);
@@ -144,8 +144,8 @@ public class ExpressionFilter {
         if (expression instanceof SequenceExpression) {
             return createExpressionReadable((SequenceExpression) expression, indexedReadableProvider, converterRegistry);
         } else if (expression instanceof VariableExpression) {
-            final var variableName = ((VariableExpression) expression).getContent();
-            final var indexedReadable = indexedReadableProvider.getIndexedReadable(variableName);
+            final String variableName = ((VariableExpression) expression).getContent();
+            final IndexedReadable<?> indexedReadable = indexedReadableProvider.getIndexedReadable(variableName);
             if (indexedReadable == null) {
                 throw new IllegalArgumentException("Unknown variable: " + variableName);
             }

@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.graph.value.operations;
 
 import au.gov.asd.tac.constellation.graph.value.ArithmeticOperation;
+import au.gov.asd.tac.constellation.graph.value.OperatorRegistry;
 import au.gov.asd.tac.constellation.graph.value.Operators;
 
 /**
@@ -53,7 +54,7 @@ public class Difference {
     };
 
     public static void register(Operators operators) {
-        final var registry = operators.getRegistry(NAME);
+        final OperatorRegistry registry = operators.getRegistry(NAME);
         ARITHMETIC_OPERATION.register(registry);
     }
 

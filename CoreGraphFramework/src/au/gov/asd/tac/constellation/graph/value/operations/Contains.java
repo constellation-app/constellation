@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.value.operations;
 
+import au.gov.asd.tac.constellation.graph.value.OperatorRegistry;
 import au.gov.asd.tac.constellation.graph.value.Operators;
 import au.gov.asd.tac.constellation.graph.value.StringOperation;
 
@@ -38,7 +39,7 @@ public class Contains {
     };
 
     public static void register(Operators operators) {
-        final var registry = operators.getRegistry(NAME);
+        final OperatorRegistry registry = operators.getRegistry(NAME);
         STRING_OPERATION.register(registry);
     }
 

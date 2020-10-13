@@ -96,10 +96,10 @@ public class ExpressionCompiler {
                 return compileExpression(children.get(0), variableProvider, indexReadable, operators);
 
             case 2: {
-                final var operator = (OperatorExpression) children.get(0);
-                final var right = compileExpression(children.get(1), variableProvider, indexReadable, operators);
+                final OperatorExpression operator = (OperatorExpression) children.get(0);
+                final Object right = compileExpression(children.get(1), variableProvider, indexReadable, operators);
                 final String operatorName = CONVERTER_CLASSES.get(operator.getOperator());
-                final var result = operators.getRegistry(operatorName).apply(right);
+                final Object result = operators.getRegistry(operatorName).apply(right);
                 if (result == null) {
                     throw new ExpressionException("Unable to find implementation of operator: " + operatorName + " (" + right.getClass().getCanonicalName() + ")");
                 }
@@ -107,11 +107,11 @@ public class ExpressionCompiler {
             }
 
             case 3: {
-                final var left = compileExpression(children.get(0), variableProvider, indexReadable, operators);
-                final var operator = (OperatorExpression) children.get(1);
-                final var right = compileExpression(children.get(2), variableProvider, indexReadable, operators);
+                final Object left = compileExpression(children.get(0), variableProvider, indexReadable, operators);
+                final OperatorExpression operator = (OperatorExpression) children.get(1);
+                final Object right = compileExpression(children.get(2), variableProvider, indexReadable, operators);
                 final String operatorName = OPERATOR_CLASSES.get(operator.getOperator());
-                final var result = operators.getRegistry(operatorName).apply(left, right);
+                final Object result = operators.getRegistry(operatorName).apply(left, right);
                 if (result == null) {
                     throw new ExpressionException("Unable to find implementation of operator: " + operatorName + " (" + left.getClass().getCanonicalName() + ", " + right.getClass().getCanonicalName() + ")");
                 }
@@ -127,14 +127,14 @@ public class ExpressionCompiler {
         if (expression instanceof SequenceExpression) {
             return compileSequenceExpression((SequenceExpression) expression, variableProvider, indexReadable, operators);
         } else if (expression instanceof VariableExpression) {
-            final var variableName = ((VariableExpression) expression).getContent();
-            final var variable = variableProvider.getVariable(variableName, indexReadable);
+            final String variableName = ((VariableExpression) expression).getContent();
+            final Object variable = variableProvider.getVariable(variableName, indexReadable);
             if (variable == null) {
                 throw new ExpressionException("Unknown variable: " + variableName);
             }
             return variable;
         } else if (expression instanceof StringExpression) {
-            final var content = ((StringExpression) expression).getContent();
+            final String content = ((StringExpression) expression).getContent();
             return (StringConstant) () -> content;
         } else {
             throw new IllegalArgumentException("Should never get here");
