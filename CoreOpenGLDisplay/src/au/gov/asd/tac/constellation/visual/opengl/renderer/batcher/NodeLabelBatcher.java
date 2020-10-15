@@ -17,27 +17,30 @@ package au.gov.asd.tac.constellation.visual.opengl.renderer.batcher;
 
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.graphics.FloatArray;
-import au.gov.asd.tac.constellation.utilities.graphics.IntArray;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable.GLRenderableUpdateTask;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.TextureUnits;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.LabelUtilities;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
-import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManager;
+import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.NodeGlyphStream;
+import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.NodeGlyphStreamContext;
 import com.jogamp.opengl.GL3;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import org.openide.util.Exceptions;
 
 /**
  *
  * @author twilight_sparkle
  */
-public class NodeLabelBatcher implements GlyphManager.GlyphStream, SceneBatcher {
+public class NodeLabelBatcher implements SceneBatcher {
 
     // Shader variable names corresponding to data in the topBatch
     private static final String LABEL_FLOATS_SHADER_NAME = "glyphLocationData";
@@ -46,15 +49,8 @@ public class NodeLabelBatcher implements GlyphManager.GlyphStream, SceneBatcher 
     // Batch and shader
     private final Batch topBatch;
     private final Batch bottomBatch;
-    private FloatArray currentFloats;
-    private IntArray currentInts;
     private int shader;
 
-    // State information for populating the topBatch
-    private int currentNodeId;
-    private float currentVisibility;
-    private int currentTotalScale;
-    private int currentLabelNumber;
 
     // Objects providing label information which is constant across the graph
     private final Matrix44f labelBottomInfo = new Matrix44f();
@@ -96,25 +92,6 @@ public class NodeLabelBatcher implements GlyphManager.GlyphStream, SceneBatcher 
         bottomBatch = new Batch(topBatch);
     }
 
-    private void setCurrentContext(final int nodeId, final int totalScale, final float visibility, final int labelNumber) {
-        currentNodeId = nodeId;
-        currentTotalScale = totalScale;
-        currentVisibility = visibility;
-        currentLabelNumber = labelNumber;
-    }
-
-    @Override
-    public void addGlyph(int glyphPosition, float x, float y) {
-        currentFloats.add(glyphPosition, x, y, currentVisibility);
-        currentInts.add(currentNodeId, currentTotalScale, currentLabelNumber, 0);
-    }
-
-    @Override
-    public void newLine(float width) {
-        currentFloats.add(SharedDrawable.getLabelBackgroundGlyphPosition(), -width / 2.0f - 0.2f, 0.0f, currentVisibility);
-        currentInts.add(currentNodeId, currentTotalScale, currentLabelNumber, 0);
-    }
-
     @Override
     public boolean batchReady() {
         return topBatch.isDrawable() && bottomBatch.isDrawable();
@@ -146,89 +123,103 @@ public class NodeLabelBatcher implements GlyphManager.GlyphStream, SceneBatcher 
 
     @Override
     public GLRenderableUpdateTask createBatch(final VisualAccess access) {
-        final FloatArray topLabelFloats = new FloatArray();
-        final IntArray topLabelInts = new IntArray();
-        final FloatArray bottomLabelFloats = new FloatArray();
-        final IntArray bottomLabelInts = new IntArray();
+        final NodeGlyphStream topGlyphStream = new NodeGlyphStream();
+        final NodeGlyphStream bottomGlyphStream = new NodeGlyphStream();
         
-        fillTopLabels(access, topLabelFloats, topLabelInts);
-        fillBottomLabels(access, bottomLabelFloats, bottomLabelInts);
-
+        Thread topLabelThread = new FillTopLabels(access, topGlyphStream);
+        topLabelThread.start();
+        
+        Thread bottomLabelThread = new FillBottomLabels(access, bottomGlyphStream);
+        bottomLabelThread.start();
+        
+        try {
+            topLabelThread.join();
+            bottomLabelThread.join();
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        }
         return gl -> {
-            topBatch.initialise(topLabelFloats.size() / FLOAT_BUFFERS_WIDTH);
-            topBatch.buffer(gl, labelFloatsTarget, FloatBuffer.wrap(topLabelFloats.rawArray()));
-            topBatch.buffer(gl, labelIntsTarget, IntBuffer.wrap(topLabelInts.rawArray()));
+            topBatch.initialise(topGlyphStream.getCurrentFloats().size() / FLOAT_BUFFERS_WIDTH);
+            topBatch.buffer(gl, labelFloatsTarget, FloatBuffer.wrap(topGlyphStream.getCurrentFloats().rawArray()));
+            topBatch.buffer(gl, labelIntsTarget, IntBuffer.wrap(topGlyphStream.getCurrentInts().rawArray()));
             topBatch.finalise(gl);
-            bottomBatch.initialise(bottomLabelFloats.size() / FLOAT_BUFFERS_WIDTH);
-            bottomBatch.buffer(gl, labelFloatsTarget, FloatBuffer.wrap(bottomLabelFloats.rawArray()));
-            bottomBatch.buffer(gl, labelIntsTarget, IntBuffer.wrap(bottomLabelInts.rawArray()));
+            bottomBatch.initialise(bottomGlyphStream.getCurrentFloats().size() / FLOAT_BUFFERS_WIDTH);
+            bottomBatch.buffer(gl, labelFloatsTarget, FloatBuffer.wrap(bottomGlyphStream.getCurrentFloats().rawArray()));
+            bottomBatch.buffer(gl, labelIntsTarget, IntBuffer.wrap(bottomGlyphStream.getCurrentInts().rawArray()));
             bottomBatch.finalise(gl);
         };
     }
 
     public GLRenderableUpdateTask updateTopLabels(final VisualAccess access) {
         // We build the whole batch again - can't update labels in place at this stage.
-        final FloatArray topLabelFloats = new FloatArray();
-        final IntArray topLabelInts = new IntArray();
-        fillTopLabels(access, topLabelFloats, topLabelInts);
+        NodeGlyphStream glyphStream = new NodeGlyphStream();
+        fillTopLabels(access, glyphStream);
         return gl -> {
             topBatch.dispose(gl);
-            topBatch.initialise(topLabelFloats.size() / FLOAT_BUFFERS_WIDTH);
-            topBatch.buffer(gl, labelFloatsTarget, FloatBuffer.wrap(topLabelFloats.rawArray()));
-            topBatch.buffer(gl, labelIntsTarget, IntBuffer.wrap(topLabelInts.rawArray()));
+            topBatch.initialise(glyphStream.getCurrentFloats().size() / FLOAT_BUFFERS_WIDTH);
+            topBatch.buffer(gl, labelFloatsTarget, FloatBuffer.wrap(glyphStream.getCurrentFloats().rawArray()));
+            topBatch.buffer(gl, labelIntsTarget, IntBuffer.wrap(glyphStream.getCurrentInts().rawArray()));
             topBatch.finalise(gl);
         };
     }
 
     public GLRenderableUpdateTask updateBottomLabels(final VisualAccess access) {
         // We build the whole batch again - can't update labels in place at this stage.
-        final FloatArray bottomLabelFloats = new FloatArray();
-        final IntArray bottomLabelInts = new IntArray();
-        fillBottomLabels(access, bottomLabelFloats, bottomLabelInts);
+        NodeGlyphStream glyphStream = new NodeGlyphStream();
+        fillBottomLabels(access, glyphStream);
         return gl -> {
             bottomBatch.dispose(gl);
-            bottomBatch.initialise(bottomLabelFloats.size() / FLOAT_BUFFERS_WIDTH);
-            bottomBatch.buffer(gl, labelFloatsTarget, FloatBuffer.wrap(bottomLabelFloats.rawArray()));
-            bottomBatch.buffer(gl, labelIntsTarget, IntBuffer.wrap(bottomLabelInts.rawArray()));
+            bottomBatch.initialise(glyphStream.getCurrentFloats().size() / FLOAT_BUFFERS_WIDTH);
+            bottomBatch.buffer(gl, labelFloatsTarget, FloatBuffer.wrap(glyphStream.getCurrentFloats().rawArray()));
+            bottomBatch.buffer(gl, labelIntsTarget, IntBuffer.wrap(glyphStream.getCurrentInts().rawArray()));
             bottomBatch.finalise(gl);
         };
     }
     
-    private void fillTopLabels(final VisualAccess access, final FloatArray topLabelFloats, final IntArray topLabelInts) {
-        currentFloats = topLabelFloats;
-        currentInts = topLabelInts;
+    private void fillTopLabels(final VisualAccess access, NodeGlyphStream glyphStream) {
+        ExecutorService pool = Executors.newFixedThreadPool(10);  
         for (int pos = 0; pos < access.getVertexCount(); pos++) {
-            bufferTopLabel(pos, access);
+            Thread thread = new BufferTopLabel(pos, access, glyphStream);
+            pool.submit(thread);
         }
-        topLabelFloats.trimToSize();
-        topLabelInts.trimToSize();
+        pool.shutdown();
+        try {
+            pool.awaitTermination(10, TimeUnit.MINUTES);
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        glyphStream.trimToSize();
     }
 
-    private void fillBottomLabels(final VisualAccess access, final FloatArray bottomLabelFloats, final IntArray bottomLabelInts) {
-        currentFloats = bottomLabelFloats;
-        currentInts = bottomLabelInts;
+    private void fillBottomLabels(final VisualAccess access, NodeGlyphStream glyphStream) {
+        ExecutorService pool = Executors.newFixedThreadPool(10);  
         for (int pos = 0; pos < access.getVertexCount(); pos++) {
-            bufferBottomLabel(pos, access);
+            Thread thread = new BufferBottomLabel(pos, access, glyphStream);
+            pool.submit(thread);
         }
-        bottomLabelFloats.trimToSize();
-        bottomLabelInts.trimToSize();
+        pool.shutdown();
+        try {
+            pool.awaitTermination(10, TimeUnit.MINUTES);
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        glyphStream.trimToSize();
     }
 
-    private void bufferBottomLabel(final int pos, final VisualAccess access) {
+    private void bufferBottomLabel(final int pos, final VisualAccess access, NodeGlyphStream glyphStream) {
         final float visibility = access.getVertexVisibility(pos);
         int totalScale = LabelUtilities.NRADIUS_TO_LABEL_UNITS;
         for (int label = 0; label < access.getBottomLabelCount(); label++) {
             final String labelText = access.getVertexBottomLabelText(pos, label);
             ArrayList<String> lines = LabelUtilities.splitTextIntoLines(labelText);
             for (final String line : lines) {
-                setCurrentContext(pos, -totalScale, visibility, label);
-                SharedDrawable.getGlyphManager().renderTextAsLigatures(line, this);
+                SharedDrawable.getGlyphManager().renderTextAsLigatures(line, glyphStream, new NodeGlyphStreamContext(pos, -totalScale, visibility, label));
                 totalScale += labelBottomInfoReference.get(label, 3);
             }
         }
     }
 
-    private void bufferTopLabel(final int pos, final VisualAccess access) {
+    private void bufferTopLabel(final int pos, final VisualAccess access, final NodeGlyphStream glyphStream) {
         final float visibility = access.getVertexVisibility(pos);
         int totalScale = LabelUtilities.NRADIUS_TO_LABEL_UNITS;
         for (int label = 0; label < access.getTopLabelCount(); label++) {
@@ -236,8 +227,7 @@ public class NodeLabelBatcher implements GlyphManager.GlyphStream, SceneBatcher 
             ArrayList<String> lines = LabelUtilities.splitTextIntoLines(text);
             Collections.reverse(lines);
             for (final String line : lines) {
-                setCurrentContext(pos, totalScale, visibility, label);
-                SharedDrawable.getGlyphManager().renderTextAsLigatures(line, this);
+                SharedDrawable.getGlyphManager().renderTextAsLigatures(line, glyphStream, new NodeGlyphStreamContext(pos, totalScale, visibility, label));
                 totalScale += labelTopInfoReference.get(label, 3);
             }
         }
@@ -339,5 +329,68 @@ public class NodeLabelBatcher implements GlyphManager.GlyphStream, SceneBatcher 
                 bottomBatch.draw(gl);
             }
         }
+    }
+
+    
+    class FillTopLabels extends Thread {
+        final private VisualAccess access;
+        final private NodeGlyphStream glyphStream;
+        
+        FillTopLabels(final VisualAccess access, final NodeGlyphStream glyphStream) {
+            this.access = access;
+            this.glyphStream = glyphStream;
+        }
+   
+        public void run() {
+            fillTopLabels(access, glyphStream);
+        }
+    }   
+    
+    class FillBottomLabels extends Thread {
+            final private VisualAccess access;
+            final private NodeGlyphStream glyphStream;
+
+            FillBottomLabels(final VisualAccess access, final NodeGlyphStream glyphStream) {
+                this.access = access;
+                this.glyphStream = glyphStream;
+            }
+
+            public void run() {
+                fillBottomLabels(access, glyphStream);
+            }
+    }
+    
+    class BufferBottomLabel extends Thread {
+        final private int pos;
+        final private VisualAccess access;
+        final private NodeGlyphStream glyphStream;
+        
+        BufferBottomLabel(final int pos, final VisualAccess access, final NodeGlyphStream glyphStream){
+            this.pos = pos;
+            this.access = access;
+            this.glyphStream = glyphStream;
+        }
+        
+        public void run() {
+            bufferBottomLabel(pos, access, glyphStream);
+        }
+        
+    }
+
+    class BufferTopLabel extends Thread {
+        final private int pos;
+        final private VisualAccess access;
+        final private NodeGlyphStream glyphStream;
+        
+        BufferTopLabel(final int pos, final VisualAccess access, final NodeGlyphStream glyphStream){
+            this.pos = pos;
+            this.access = access;
+            this.glyphStream = glyphStream;
+        }
+        
+        public void run() {
+            bufferTopLabel(pos, access, glyphStream);
+        }
+        
     }
 }
