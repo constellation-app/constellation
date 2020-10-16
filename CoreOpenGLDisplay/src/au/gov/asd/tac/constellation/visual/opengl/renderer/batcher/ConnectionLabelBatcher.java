@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.visual.opengl.renderer.TextureUnits;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.LabelUtilities;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManager;
+import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphStreamContext;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import java.io.IOException;
@@ -139,13 +140,13 @@ public class ConnectionLabelBatcher implements GlyphManager.GlyphStream, SceneBa
     }
 
     @Override
-    public void addGlyph(int glyphPosition, float x, float y) {
+    public void addGlyph(int glyphPosition, float x, float y, GlyphStreamContext context) {
         currentFloats.add(currentWidth, x, y, currentVisiblity);
         currentInts.add(currentLowNodeId, currentHighNodeId, (currentOffset << 16) + (currentTotalScale << 2) + currentLabelNumber, (glyphPosition << 8) + currentStagger * 256 / (Math.min(currentLinkLabelCount, MAX_STAGGERS) + 1));
     }
 
     @Override
-    public void newLine(float width) {
+    public void newLine(float width, GlyphStreamContext context) {
         currentWidth = -width / 2.0f - 0.2f;
         currentFloats.add(currentWidth, currentWidth, 0.0f, currentVisiblity);
         currentInts.add(currentLowNodeId, currentHighNodeId, (currentOffset << 16) + (currentTotalScale << 2) + currentLabelNumber, (SharedDrawable.getLabelBackgroundGlyphPosition() << 8) + currentStagger * 256 / (Math.min(currentLinkLabelCount, MAX_STAGGERS) + 1));
@@ -246,7 +247,7 @@ public class ConnectionLabelBatcher implements GlyphManager.GlyphStream, SceneBa
             ArrayList<String> lines = LabelUtilities.splitTextIntoLines(text);
             for (final String line : lines) {
                 setCurrentContext(totalScale, visibility, label);
-                SharedDrawable.getGlyphManager().renderTextAsLigatures(line, this);
+                SharedDrawable.getGlyphManager().renderTextAsLigatures(line, this, new GlyphStreamContext(totalScale, visibility, label));
                 totalScale += currentLabelInfo.get(label, 3);
             }
         }
