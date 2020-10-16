@@ -128,28 +128,27 @@ public class TutorialViewPane extends BorderPane {
             splitPane.getDividers().get(0).setPosition(SPLIT_POS);
             
             // Create a checkbox to change users preference regarding showing the Tutorial Page on startup
-            CheckBox ShowOnStartUpCheckBox = new CheckBox("Show On Startup");
-            rightVBox.getChildren().add(ShowOnStartUpCheckBox);
+            final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+            CheckBox showOnStartUpCheckBox = new CheckBox("Show On Startup");
+            rightVBox.getChildren().add(showOnStartUpCheckBox);
             rightVBox.setAlignment(Pos.TOP_RIGHT);
             rightVBox.setBackground(new Background(new BackgroundFill(Color.valueOf("#333333"), CornerRadii.EMPTY, Insets.EMPTY)));
             rightVBox.paddingProperty().set(new Insets(5, 5, 5, 5));
-            ShowOnStartUpCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            showOnStartUpCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
                 @Override
                 public void changed(ObservableValue<? extends Boolean> ov,
-                        Boolean old_val, Boolean new_val) {
-                    final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-                    prefs.putBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, new_val);                     
+                        Boolean oldVal, Boolean newVal) {
+                    prefs.putBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, newVal);                     
                 }
             });        
-            ShowOnStartUpCheckBox.setSelected(true);
+            showOnStartUpCheckBox.setSelected(prefs.getBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, showOnStartUpCheckBox.isSelected()));
             
             // Create a preferenceListener in order to identify when user preference is changed
             // Keeps tutorial page and options tutorial selections in-sync when both are open
-            final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
             prefs.addPreferenceChangeListener(new PreferenceChangeListener() {
                 @Override
                 public void preferenceChange(PreferenceChangeEvent evt) {
-                    ShowOnStartUpCheckBox.setSelected(prefs.getBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, ShowOnStartUpCheckBox.isSelected()));
+                    showOnStartUpCheckBox.setSelected(prefs.getBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, showOnStartUpCheckBox.isSelected()));
                 }
             });
             
