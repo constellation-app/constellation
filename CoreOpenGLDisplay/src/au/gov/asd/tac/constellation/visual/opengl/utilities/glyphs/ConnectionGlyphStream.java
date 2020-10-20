@@ -42,7 +42,6 @@ public class ConnectionGlyphStream implements GlyphManager.GlyphStream {
     public void addGlyph(int glyphPosition, float x, float y, final GlyphStreamContext streamContext) {
         if (streamContext instanceof ConnectionGlyphStreamContext) {
             ConnectionGlyphStreamContext context = (ConnectionGlyphStreamContext) streamContext;
-//        TODO: Create ConnectionGlyphStream and move this method there
             synchronized(addLock) {
                 currentFloats.add(currentWidth, x, y, context.visibility);
                 currentInts.add(context.currentLowNodeId, context.currentHighNodeId, (context.currentOffset << 16) + (context.totalScale << 2) + context.labelNumber, (glyphPosition << 8) + context.currentStagger * 256 / (Math.min(context.currentLinkLabelCount, ConnectionLabelBatcher.MAX_STAGGERS) + 1));
@@ -54,7 +53,6 @@ public class ConnectionGlyphStream implements GlyphManager.GlyphStream {
     public void newLine(float width, final GlyphStreamContext streamContext) {
         if (streamContext instanceof ConnectionGlyphStreamContext) {
             ConnectionGlyphStreamContext context = (ConnectionGlyphStreamContext) streamContext;
-        //        TODO: Create ConnectionGlyphStream and move this method there
             synchronized (addLock) {
                 currentWidth = -width / 2.0f - 0.2f;
                 currentFloats.add(currentWidth, currentWidth, 0.0f, context.visibility);

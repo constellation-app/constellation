@@ -177,7 +177,6 @@ public class ConnectionLabelBatcher implements SceneBatcher {
             final int connectionCount = access.getLinkConnectionCount(link);
             setCurrentConnection(access.getLinkLowVertex(link), access.getLinkHighVertex(link), connectionCount, context);
             for (int pos = 0; pos < connectionCount; pos++) {
-                // TODO parrallelise so that multiple connections have labels buffered at same time (See NodeLabelBuffer)
                 final int connection = access.getLinkConnection(link, pos);
                 nextParallelConnection((int) (LabelUtilities.NRADIUS_TO_LINE_WIDTH_UNITS * Math.min(LabelUtilities.MAX_TRANSACTION_WIDTH, access.getConnectionWidth(connection))), context);
                 Matrix44f currentLabelInfo = access.getIsLabelSummary(connection) ? summaryLabelInfo : attributeLabelInfoReference;
@@ -205,7 +204,6 @@ public class ConnectionLabelBatcher implements SceneBatcher {
             final String text = access.getConnectionLabelText(pos, label);
             ArrayList<String> lines = LabelUtilities.splitTextIntoLines(text);
             for (final String line : lines) {
-//              TODO: Replace GlyphStreamContext with bespoke ConnectionGlyphStreamContext
                 context.totalScale = totalScale;
                 SharedDrawable.getGlyphManager().renderTextAsLigatures(line, glyphStream, context);
                 totalScale += currentLabelInfo.get(label, 3);
