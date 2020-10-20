@@ -153,7 +153,13 @@ public class NodeLabelBatcher implements SceneBatcher {
     public GLRenderableUpdateTask updateTopLabels(final VisualAccess access) {
         // We build the whole batch again - can't update labels in place at this stage.
         NodeGlyphStream glyphStream = new NodeGlyphStream();
-        fillTopLabels(access, glyphStream);
+        Thread topLabelThread = new FillTopLabels(access, glyphStream);
+        topLabelThread.start();
+        try {
+            topLabelThread.join();
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        }
         return gl -> {
             topBatch.dispose(gl);
             topBatch.initialise(glyphStream.getCurrentFloats().size() / FLOAT_BUFFERS_WIDTH);
@@ -166,7 +172,13 @@ public class NodeLabelBatcher implements SceneBatcher {
     public GLRenderableUpdateTask updateBottomLabels(final VisualAccess access) {
         // We build the whole batch again - can't update labels in place at this stage.
         NodeGlyphStream glyphStream = new NodeGlyphStream();
-        fillBottomLabels(access, glyphStream);
+        Thread bottomLabelThread = new FillBottomLabels(access, glyphStream);
+        bottomLabelThread.start();
+        try {
+            bottomLabelThread.join();
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        }
         return gl -> {
             bottomBatch.dispose(gl);
             bottomBatch.initialise(glyphStream.getCurrentFloats().size() / FLOAT_BUFFERS_WIDTH);
