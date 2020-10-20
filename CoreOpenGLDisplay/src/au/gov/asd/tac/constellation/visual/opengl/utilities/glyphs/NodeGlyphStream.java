@@ -28,6 +28,7 @@ public class NodeGlyphStream implements GlyphManager.GlyphStream {
 
     private final FloatArray currentFloats;
     private final IntArray currentInts;
+    private final Object addLock = new Object();
 
     public NodeGlyphStream() {
         this.currentFloats = new FloatArray();
@@ -40,10 +41,8 @@ public class NodeGlyphStream implements GlyphManager.GlyphStream {
         if (streamContext instanceof NodeGlyphStreamContext){
             NodeGlyphStreamContext context = (NodeGlyphStreamContext) streamContext;
 //            TODO: Experiment with multiple independent NodeGlyphStream which are then combined, removing need for this synchronization
-            synchronized(currentFloats) {
+            synchronized(addLock) {
                 currentFloats.add(glyphPosition, x, y, context.visibility);
-            }
-            synchronized(currentInts) {
                 currentInts.add(context.getCurrentNodeID(), context.totalScale, context.labelNumber, 0);
             }
         }
@@ -57,10 +56,8 @@ public class NodeGlyphStream implements GlyphManager.GlyphStream {
         if (streamContext instanceof NodeGlyphStreamContext) {
             NodeGlyphStreamContext context = (NodeGlyphStreamContext) streamContext;
 //            TODO: Experiment with multiple independent NodeGlyphStream which are then combined, removing need for this synchronization
-            synchronized(currentFloats) {
+            synchronized(addLock) {
                 currentFloats.add(SharedDrawable.getLabelBackgroundGlyphPosition(), -width / 2.0f - 0.2f, 0.0f, streamContext.visibility);
-            }
-            synchronized(currentInts) {
                 currentInts.add(context.getCurrentNodeID(), streamContext.totalScale, streamContext.labelNumber, 0);
             }
         }
@@ -78,8 +75,10 @@ public class NodeGlyphStream implements GlyphManager.GlyphStream {
     }
     
     public void trimToSize() {
-        currentFloats.trimToSize();
-        currentInts.trimToSize();
+        synchronized(addLock) {
+            currentFloats.trimToSize();
+            currentInts.trimToSize();
+        }
     }
     
 }
