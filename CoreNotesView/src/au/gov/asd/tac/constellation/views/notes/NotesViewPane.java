@@ -22,14 +22,15 @@ import au.gov.asd.tac.constellation.plugins.reporting.GraphReportManager;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReportListener;
 import au.gov.asd.tac.constellation.views.notes.state.NotesViewEntry;
-import java.awt.Font;
 import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -43,9 +44,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -56,6 +55,8 @@ import org.apache.commons.collections.CollectionUtils;
 public class NotesViewPane extends BorderPane implements PluginReportListener {
 
     private final NotesViewController notesViewController;
+    private final List<NotesViewEntry> notesViewEntries;
+    private final Map<String, NotesViewEntry> notesMap;
     private GraphReport currentGraphReport;
     
     private final VBox notesViewPaneVBox;
@@ -70,16 +71,12 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
     private final String AUTO_COLOUR = "#588BC1";
     private final String DATETIME_PATTERN = "hh:mm:ss a 'on' dd/MM/yyyy";
 
-    private final List<PluginReport> pluginReports;
-    private final List<NotesViewEntry> noteEntries;
-
     public NotesViewPane(final NotesViewController controller) {
         
-        pluginReports = new ArrayList<>();
-        noteEntries = new ArrayList<>();
-        
         // Create controller.
-        this.notesViewController = controller;
+        notesViewController = controller;
+        notesViewEntries = new ArrayList<>();
+        notesMap = new HashMap<>();
 
         // TextField to enter new note title.
         final TextField titleField = new TextField();
@@ -103,17 +100,17 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
                     JOptionPane.showMessageDialog(null, "Type in missing fields.", "Invalid Text", JOptionPane.WARNING_MESSAGE);
                 } else {
                     final NotesViewEntry newNote = new NotesViewEntry(
-                        Long.toString(ZonedDateTime.now().toInstant().toEpochMilli()),
-                        titleField.getText(),
-                        contentField.getText(),
-                        true
+                            Long.toString(ZonedDateTime.now().toInstant().toEpochMilli()),
+                            titleField.getText(),
+                            contentField.getText(),
+                            true
                     );
 
                     titleField.clear();
                     contentField.clear();
                     createNote(newNote);
 
-                    noteEntries.add(newNote);
+                    notesViewEntries.add(newNote);
                     controller.writeState();
                     event.consume();
                 }
@@ -137,83 +134,75 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
         // Main Notes View Pane VBox.
         notesViewPaneVBox = new VBox(DEFAULT_SPACING, notesListScrollPane, addNoteVBox);
         notesViewPaneVBox.setAlignment(Pos.BOTTOM_CENTER);
-        this.setCenter(notesViewPaneVBox);
+        setCenter(notesViewPaneVBox);
     }
     
-    protected void prepareNotesViewPane(final NotesViewController controller, NotesViewPane pane) {
-        pane.clearNotes();
+    protected void prepareNotesViewPane(final NotesViewController controller, final NotesViewPane pane) {
         controller.readState();
         controller.addAttributes();
     }
 
     protected void setGraphRecord(final String currentGraphId) {
-        this.currentGraphReport = GraphReportManager.getGraphReport(currentGraphId);
+        currentGraphReport = GraphReportManager.getGraphReport(currentGraphId);
         if (currentGraphId != null && currentGraphReport != null) {
             setPluginReports(currentGraphReport.getPluginReports());
         }
     }
 
-    protected List<NotesViewEntry> getNoteEntries() {
-        return Collections.unmodifiableList(noteEntries);
-    }
-
-    protected synchronized void setNoteEntries(final List<NotesViewEntry> noteEntries) {
-        Platform.runLater(() -> {
-            this.noteEntries.clear();
-            noteEntries.forEach((entry) -> {
-                this.noteEntries.add(entry);
-            });
-            
-            updateNoteEntries();
-        });
-    }
-
     protected synchronized void setPluginReports(final List<PluginReport> pluginReports) {
         Platform.runLater(() -> {
-            this.pluginReports.clear();
             pluginReports.forEach((report) -> {
                 if (!report.getPluginName().contains("Note")) {
-                    this.pluginReports.add(report);
-                }
-            });
-            
-            updateNoteEntries();
-        });
-    }
-
-    protected synchronized void updateNoteEntries() {
-        Platform.runLater(() -> {
-            final List<NotesViewEntry> notesToRender = new ArrayList<>();
-
-            // Clear the UI first.
-            notesListVBox.getChildren().removeAll(notesListVBox.getChildren());
-
-            // Add user notes to the render list.
-            if (CollectionUtils.isNotEmpty(noteEntries)) {
-                noteEntries.forEach((entry) -> {
-                    notesToRender.add(entry);
-                });
-            }
-
-            // Add plugin notes to the render list.
-            if (CollectionUtils.isNotEmpty(pluginReports)) {
-                pluginReports.forEach((report) -> {
                     // Monitors changes to the plugin report as it executes and finishes.
                     // Affects the output of getMessage() so the note UI updates automatically.
                     report.addPluginReportListener(this);
-                    notesToRender.add(new NotesViewEntry(
-                        Long.toString(report.getStartTime()),
-                        report.getPluginName(),
-                        report.getMessage(),
-                        false
+                    
+                    notesViewEntries.add(new NotesViewEntry(
+                            Long.toString(report.getStartTime()),
+                            report.getPluginName(),
+                            report.getMessage(),
+                            false
                     ));
-                });
-            }
 
-            // Sort notes by dateTime and render them in the UI.
-            if(CollectionUtils.isNotEmpty(notesToRender)){
-                notesToRender.sort(Comparator.comparing(NotesViewEntry::getDateTime));
-                notesToRender.forEach((note) -> {
+                    if (report.getStopTime() != -1) {
+                        notesViewController.writeState();
+                    }
+                }
+            });
+            
+            updateNotes();
+        });
+    }
+    
+    protected synchronized void clearPluginReportsOnly() {
+        Platform.runLater(() -> {
+            notesListVBox.getChildren().removeAll(notesListVBox.getChildren());
+            notesViewEntries.removeIf(note -> !note.isUserCreated());
+        });
+    }
+
+    protected synchronized void setNotes(final List<NotesViewEntry> notesViewEntries) {
+        Platform.runLater(() -> {
+            this.notesViewEntries.clear();
+            notesViewEntries.forEach((entry) -> {
+                this.notesViewEntries.add(entry);
+            });
+            
+            updateNotes();
+        });
+    }
+
+    protected List<NotesViewEntry> getNotes() {
+        return Collections.unmodifiableList(notesViewEntries);
+    }
+
+    protected synchronized void updateNotes() {
+        Platform.runLater(() -> {
+            notesListVBox.getChildren().removeAll(notesListVBox.getChildren());
+            
+            if (CollectionUtils.isNotEmpty(notesViewEntries)) {
+                notesViewEntries.sort(Comparator.comparing(NotesViewEntry::getDateTime));
+                notesViewEntries.forEach((note) -> {
                     createNote(note);
                 });
             }
@@ -222,8 +211,8 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
 
     protected synchronized void clearNotes() {
         Platform.runLater(() -> {
-            noteEntries.clear();
             notesListVBox.getChildren().removeAll(notesListVBox.getChildren());
+            notesViewEntries.clear();
         });
     }    
     
@@ -263,7 +252,7 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
         notesListVBox.getChildren().add(noteBody);
         
         deleteButton.setOnAction(event -> {
-            if (noteEntries.removeIf(note -> note.getNoteId() == newNote.getNoteId())) {
+            if (notesViewEntries.removeIf(note -> note.getDateTime().equals(newNote.getDateTime()))) {
                 notesListVBox.getChildren().remove(noteBody);
                 notesViewController.writeState();
             }
@@ -272,7 +261,9 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
         });
 
         // Keeps the scroll bar at the bottom?
-        notesListScrollPane.setVvalue(notesListScrollPane.getVmax());   
+        Platform.runLater(() -> {
+            notesListScrollPane.setVvalue(notesListScrollPane.getVmax()); 
+        });
     }
 
     /**
@@ -306,7 +297,7 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
             } else {
                 noteToEdit.setNoteTitle(newTitle.getText());
                 noteToEdit.setNoteContent(newContent.getText());
-                updateNoteEntries();
+                updateNotes();
                 notesViewController.writeState();
                 closeEdit();
             }
@@ -333,27 +324,30 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
     
     protected void closeEdit() {
         Platform.runLater(() -> {
-            if (editBox != null){
+            if (editBox != null) {
                 editBox.close();
             }
         });
     }
 
+    // Triggers when plugin reports undergo a change, such as when they go between executing and finishing.
     @Override
     public void pluginReportChanged(PluginReport pluginReport) {
         
         final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
         
         if (!pluginReport.getPluginName().contains("Note")) {
-            this.prepareNotesViewPane(notesViewController, this);
+            clearPluginReportsOnly();
+            prepareNotesViewPane(notesViewController, this);
+            
             if (activeGraph != null) {
-                this.setGraphRecord(activeGraph.getId());
+                setGraphRecord(activeGraph.getId());
             }
         }
     }
 
     @Override
     public void addedChildReport(PluginReport parentReport, PluginReport childReport) {
-        // TODO: Implement visually similar functionality as that in PluginReporter.
+        
     }
 }

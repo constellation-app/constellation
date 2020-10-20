@@ -25,7 +25,6 @@ import java.util.List;
  */
 public class NotesViewState {
 
-    // List of note entries.
     private final List<NotesViewEntry> notesViewEntries;
 
     public NotesViewState() {
@@ -36,8 +35,8 @@ public class NotesViewState {
         this.notesViewEntries = currentState.getNotes();
     }
 
-    public NotesViewState(final List<NotesViewEntry> noteEntries) {
-        this.notesViewEntries = noteEntries;
+    public NotesViewState(final List<NotesViewEntry> notesViewEntries) {
+        this.notesViewEntries = notesViewEntries;
     }
 
     public List<NotesViewEntry> getNotes() {

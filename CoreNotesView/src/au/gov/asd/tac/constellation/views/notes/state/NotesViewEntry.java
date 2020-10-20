@@ -21,9 +21,6 @@ package au.gov.asd.tac.constellation.views.notes.state;
  * @author sol695510
  */
 public class NotesViewEntry {
-
-    private static int noteIdCounter = 1;
-    private final int noteId;
     
     private final String dateTime;
     private String noteTitle;
@@ -31,15 +28,10 @@ public class NotesViewEntry {
     private final Boolean userCreated;
 
     public NotesViewEntry(final String dateTime, final String noteTitle, final String noteContent, final Boolean userCreated) {
-        this.noteId = noteIdCounter++;
         this.dateTime = dateTime;
         this.noteTitle = noteTitle;
         this.noteContent = noteContent;
         this.userCreated = userCreated;
-    }
-
-    public int getNoteId() {
-        return noteId;
     }
 
     public String getDateTime() {

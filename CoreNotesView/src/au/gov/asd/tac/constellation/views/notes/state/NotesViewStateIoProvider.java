@@ -58,10 +58,10 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                     noteEntries.add(null);
                 } else {
                     noteEntries.add(new NotesViewEntry(
-                        notesArray.get(i).get(0).asText(),
-                        notesArray.get(i).get(1).asText(),
-                        notesArray.get(i).get(2).asText(),
-                        notesArray.get(i).get(3).asBoolean()
+                            notesArray.get(i).get(0).asText(),
+                            notesArray.get(i).get(1).asText(),
+                            notesArray.get(i).get(2).asText(),
+                            notesArray.get(i).get(3).asBoolean()
                     ));
                 }
             }
