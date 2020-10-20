@@ -40,7 +40,6 @@ public class NodeGlyphStream implements GlyphManager.GlyphStream {
     public void addGlyph(final int glyphPosition, final float x, final float y, final GlyphStreamContext streamContext) {
         if (streamContext instanceof NodeGlyphStreamContext){
             NodeGlyphStreamContext context = (NodeGlyphStreamContext) streamContext;
-//            TODO: Experiment with multiple independent NodeGlyphStream which are then combined, removing need for this synchronization
             synchronized(addLock) {
                 currentFloats.add(glyphPosition, x, y, context.visibility);
                 currentInts.add(context.currentNodeID, context.totalScale, context.labelNumber, 0);
@@ -55,7 +54,6 @@ public class NodeGlyphStream implements GlyphManager.GlyphStream {
     public void newLine(float width, final GlyphStreamContext streamContext) {
         if (streamContext instanceof NodeGlyphStreamContext) {
             NodeGlyphStreamContext context = (NodeGlyphStreamContext) streamContext;
-//            TODO: Experiment with multiple independent NodeGlyphStream which are then combined, removing need for this synchronization
             synchronized(addLock) {
                 currentFloats.add(SharedDrawable.getLabelBackgroundGlyphPosition(), -width / 2.0f - 0.2f, 0.0f, streamContext.visibility);
                 currentInts.add(context.currentNodeID, streamContext.totalScale, streamContext.labelNumber, 0);
