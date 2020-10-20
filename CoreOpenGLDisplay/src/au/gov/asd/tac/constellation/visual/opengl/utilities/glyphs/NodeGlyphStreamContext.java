@@ -23,19 +23,10 @@ package au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs;
  */
 public class NodeGlyphStreamContext extends GlyphStreamContext{
     
-    private int currentNodeID;
+    public int currentNodeID;
 
     public NodeGlyphStreamContext(int currentNodeID, int totalScale, float visibility, int labelNumber) {
         super(totalScale, visibility, labelNumber);
         this.currentNodeID = currentNodeID;
     }
-
-    public void setCurrentNodeID(int currentNodeID) {
-        this.currentNodeID = currentNodeID;
-    }
-
-    public int getCurrentNodeID() {
-        return currentNodeID;
-    }
-    
 }

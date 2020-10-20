@@ -43,7 +43,7 @@ public class NodeGlyphStream implements GlyphManager.GlyphStream {
 //            TODO: Experiment with multiple independent NodeGlyphStream which are then combined, removing need for this synchronization
             synchronized(addLock) {
                 currentFloats.add(glyphPosition, x, y, context.visibility);
-                currentInts.add(context.getCurrentNodeID(), context.totalScale, context.labelNumber, 0);
+                currentInts.add(context.currentNodeID, context.totalScale, context.labelNumber, 0);
             }
         }
         else {
@@ -58,7 +58,7 @@ public class NodeGlyphStream implements GlyphManager.GlyphStream {
 //            TODO: Experiment with multiple independent NodeGlyphStream which are then combined, removing need for this synchronization
             synchronized(addLock) {
                 currentFloats.add(SharedDrawable.getLabelBackgroundGlyphPosition(), -width / 2.0f - 0.2f, 0.0f, streamContext.visibility);
-                currentInts.add(context.getCurrentNodeID(), streamContext.totalScale, streamContext.labelNumber, 0);
+                currentInts.add(context.currentNodeID, streamContext.totalScale, streamContext.labelNumber, 0);
             }
         }
         else {

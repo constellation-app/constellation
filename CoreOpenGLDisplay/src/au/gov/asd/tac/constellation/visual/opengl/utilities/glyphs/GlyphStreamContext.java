@@ -22,28 +22,16 @@ package au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs;
  * @author Nova
  */
 public class GlyphStreamContext {
-    public final int totalScale;
-    public final float visibility;
-    public final int labelNumber;
+    public int totalScale;
+    public float visibility;
+    public int labelNumber;
 
+    public GlyphStreamContext() {
+    };
+    
     public GlyphStreamContext(int totalScale, float visibility, int labelNumber) {
         this.totalScale = totalScale;
         this.visibility = visibility;
         this.labelNumber = labelNumber;
     }
-
-    public int getTotalScale() {
-        return totalScale;
-    }
-
-    public float getVisibility() {
-        return visibility;
-    }
-
-    public int getLabelNumber() {
-        return labelNumber;
-    }
-    
-    
-  
 }
