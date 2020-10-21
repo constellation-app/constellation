@@ -171,8 +171,9 @@ public class ConnectionLabelBatcher implements SceneBatcher {
     }
 
     private void fillLabels(final VisualAccess access, ConnectionGlyphStream glyphStream) {
+        int NUM_CORES = Runtime.getRuntime().availableProcessors();
         ConnectionGlyphStreamContext context = new ConnectionGlyphStreamContext();
-        ExecutorService pool = Executors.newFixedThreadPool(10);
+        ExecutorService pool = Executors.newFixedThreadPool(NUM_CORES);
         for (int link = 0; link < access.getLinkCount(); link++) {
             final int connectionCount = access.getLinkConnectionCount(link);
             setCurrentConnection(access.getLinkLowVertex(link), access.getLinkHighVertex(link), connectionCount, context);

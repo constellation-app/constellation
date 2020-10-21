@@ -42,6 +42,8 @@ import org.openide.util.Exceptions;
  */
 public class NodeLabelBatcher implements SceneBatcher {
 
+    private static int NUM_CORES = Runtime.getRuntime().availableProcessors();
+    
     // Shader variable names corresponding to data in the topBatch
     private static final String LABEL_FLOATS_SHADER_NAME = "glyphLocationData";
     private static final String LABEL_INTS_SHADER_NAME = "graphLocationData";
@@ -189,7 +191,7 @@ public class NodeLabelBatcher implements SceneBatcher {
     }
     
     private void fillTopLabels(final VisualAccess access, NodeGlyphStream glyphStream) {
-        ExecutorService pool = Executors.newFixedThreadPool(10);  
+        ExecutorService pool = Executors.newFixedThreadPool(NUM_CORES);  
         for (int pos = 0; pos < access.getVertexCount(); pos++) {
             Thread thread = new BufferTopLabel(pos, access, glyphStream);
             pool.submit(thread);
@@ -204,7 +206,8 @@ public class NodeLabelBatcher implements SceneBatcher {
     }
 
     private void fillBottomLabels(final VisualAccess access, NodeGlyphStream glyphStream) {
-        ExecutorService pool = Executors.newFixedThreadPool(10);  
+        ExecutorService pool = Executors.newFixedThreadPool(NUM_CORES);  
+        
         for (int pos = 0; pos < access.getVertexCount(); pos++) {
             Thread thread = new BufferBottomLabel(pos, access, glyphStream);
             pool.submit(thread);
