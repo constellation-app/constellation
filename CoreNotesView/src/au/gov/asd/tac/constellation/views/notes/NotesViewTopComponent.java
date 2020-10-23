@@ -150,7 +150,6 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
         final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
         
         if (!pluginReport.getPluginName().contains("Note")) {
-            notesViewPane.clearPluginReportsOnly();
             notesViewPane.prepareNotesViewPane(notesViewController, notesViewPane);
             
             if (activeGraph != null) {

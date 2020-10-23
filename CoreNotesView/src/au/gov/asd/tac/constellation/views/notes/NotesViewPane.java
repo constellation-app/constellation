@@ -28,9 +28,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -55,9 +53,10 @@ import org.apache.commons.collections.CollectionUtils;
 public class NotesViewPane extends BorderPane implements PluginReportListener {
 
     private final NotesViewController notesViewController;
-    private final List<NotesViewEntry> notesViewEntries;
-    private final Map<String, NotesViewEntry> notesMap;
     private GraphReport currentGraphReport;
+    
+    private final List<NotesViewEntry> notesViewEntries;
+    private final List<PluginReport> pluginReports;
     
     private final VBox notesViewPaneVBox;
     private final VBox addNoteVBox;
@@ -75,8 +74,9 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
         
         // Create controller.
         notesViewController = controller;
+        
         notesViewEntries = new ArrayList<>();
-        notesMap = new HashMap<>();
+        pluginReports = new ArrayList<>();
 
         // TextField to enter new note title.
         final TextField titleField = new TextField();
@@ -151,22 +151,13 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
 
     protected synchronized void setPluginReports(final List<PluginReport> pluginReports) {
         Platform.runLater(() -> {
+            this.pluginReports.clear();
+            
             pluginReports.forEach((report) -> {
                 if (!report.getPluginName().contains("Note")) {
-                    // Monitors changes to the plugin report as it executes and finishes.
-                    // Affects the output of getMessage() so the note UI updates automatically.
+                    // Listener monitors changes to the plugin report as it executes and finishes. Affects the output of getMessage().
                     report.addPluginReportListener(this);
-                    
-                    notesViewEntries.add(new NotesViewEntry(
-                            Long.toString(report.getStartTime()),
-                            report.getPluginName(),
-                            report.getMessage(),
-                            false
-                    ));
-
-                    if (report.getStopTime() != -1) {
-                        notesViewController.writeState();
-                    }
+                    this.pluginReports.add(report);
                 }
             });
             
@@ -174,16 +165,10 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
         });
     }
     
-    protected synchronized void clearPluginReportsOnly() {
-        Platform.runLater(() -> {
-            notesListVBox.getChildren().removeAll(notesListVBox.getChildren());
-            notesViewEntries.removeIf(note -> !note.isUserCreated());
-        });
-    }
-
     protected synchronized void setNotes(final List<NotesViewEntry> notesViewEntries) {
         Platform.runLater(() -> {
             this.notesViewEntries.clear();
+            
             notesViewEntries.forEach((entry) -> {
                 this.notesViewEntries.add(entry);
             });
@@ -195,14 +180,26 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
     protected List<NotesViewEntry> getNotes() {
         return Collections.unmodifiableList(notesViewEntries);
     }
-
+    
     protected synchronized void updateNotes() {
         Platform.runLater(() -> {
             notesListVBox.getChildren().removeAll(notesListVBox.getChildren());
             
-            if (CollectionUtils.isNotEmpty(notesViewEntries)) {
-                notesViewEntries.sort(Comparator.comparing(NotesViewEntry::getDateTime));
-                notesViewEntries.forEach((note) -> {
+            final List<NotesViewEntry> notesToRender = new ArrayList<>();
+            notesToRender.addAll(notesViewEntries);
+            
+            pluginReports.forEach((report) -> {
+                notesToRender.add(new NotesViewEntry(
+                        Long.toString(report.getStartTime()),
+                        report.getPluginName(),
+                        report.getMessage(),
+                        false
+                ));
+            });
+            
+            if (CollectionUtils.isNotEmpty(notesToRender)) {            
+                notesToRender.sort(Comparator.comparing(NotesViewEntry::getDateTime));
+                notesToRender.forEach((note) -> {
                     createNote(note);
                 });
             }
@@ -214,8 +211,13 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
             notesListVBox.getChildren().removeAll(notesListVBox.getChildren());
             notesViewEntries.clear();
         });
-    }    
+    }
     
+    /**
+     * Creates the UI for notes in the Notes View.
+     * 
+     * @param newNote
+     */
     private void createNote(final NotesViewEntry newNote) {
         
         final String noteColour = newNote.isUserCreated() ? USER_COLOUR : AUTO_COLOUR;
@@ -337,7 +339,6 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
         final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
         
         if (!pluginReport.getPluginName().contains("Note")) {
-            clearPluginReportsOnly();
             prepareNotesViewPane(notesViewController, this);
             
             if (activeGraph != null) {
