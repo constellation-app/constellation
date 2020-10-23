@@ -94,6 +94,7 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
         addNoteButton.setOnAction(event -> {
 
             final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+            
             if (activeGraph != null) {
 
                 if ((titleField.getText().isBlank() && titleField.getText().isEmpty())
@@ -111,7 +112,6 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
                     contentField.clear();
                     createNote(newNote);
 
-                    //LOGGER.log(Level.WARNING, "entries: " + notesViewEntries.size())
                     notesViewEntries.add(newNote);
                     controller.writeState();
                     event.consume();
@@ -151,6 +151,7 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
             currentGraphReport.getPluginReports().forEach((report) -> {
 
                 if (!report.getPluginName().contains("Note")) {
+                    // Listener monitors changes to the plugin report as it executes and finishes. Affects the output of getMessage().
                     report.addPluginReportListener(this);
                     notesViewEntries.add(new NotesViewEntry(
                             Long.toString(report.getStartTime()),
@@ -195,8 +196,6 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
 
             pluginReports.forEach((report) -> {
                 if (!report.getPluginName().contains("Note")) {
-                    // Listener monitors changes to the plugin report as it executes and finishes. Affects the output of getMessage().
-                    //report.addPluginReportListener(this);
                     this.pluginReports.add(report);
                 }
             });
