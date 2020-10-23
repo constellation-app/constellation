@@ -93,7 +93,8 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
         final Button addNoteButton = new Button("Add Note");
         addNoteButton.setOnAction(event -> {
 
-            if (currentGraphReport != null) {
+            final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+            if (activeGraph != null) {
 
                 if ((titleField.getText().isBlank() && titleField.getText().isEmpty())
                         || (contentField.getText().isBlank() && contentField.getText().isEmpty())) {
@@ -110,6 +111,7 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
                     contentField.clear();
                     createNote(newNote);
 
+                    //LOGGER.log(Level.WARNING, "entries: " + notesViewEntries.size())
                     notesViewEntries.add(newNote);
                     controller.writeState();
                     event.consume();
@@ -145,8 +147,11 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
     protected void setGraphRecord(final String currentGraphId) {
         currentGraphReport = GraphReportManager.getGraphReport(currentGraphId);
         if (currentGraphId != null && currentGraphReport != null) {
+
             currentGraphReport.getPluginReports().forEach((report) -> {
+
                 if (!report.getPluginName().contains("Note")) {
+                    report.addPluginReportListener(this);
                     notesViewEntries.add(new NotesViewEntry(
                             Long.toString(report.getStartTime()),
                             report.getPluginName(),
@@ -168,20 +173,16 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
     // finished plugin report should be added instead.
     private List<NotesViewEntry> makeUniqueList(final List<NotesViewEntry> duplicatedEntries) {
         final List<NotesViewEntry> uniqueNotes = new ArrayList();
-
+        Collections.reverse(duplicatedEntries);
         duplicatedEntries.forEach((report) -> {
-            if (uniqueNotes.isEmpty()) { // add if empty
+            boolean isUnique = true;
+            for (final NotesViewEntry uniqueReport : uniqueNotes) {
+                if (report.getDateTime().equals(uniqueReport.getDateTime())) {
+                    isUnique = false;
+                }
+            }
+            if (isUnique) { // add only unique notes to new list.
                 uniqueNotes.add(report);
-            } else {
-                boolean isUnique = true;
-                for (final NotesViewEntry uniqueReport : uniqueNotes) {
-                    if (report.getDateTime().equals(uniqueReport.getDateTime())) {
-                        isUnique = false;
-                    }
-                }
-                if (isUnique) { // add only unique notes to new list.
-                    uniqueNotes.add(report);
-                }
             }
 
         });
@@ -195,7 +196,7 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
             pluginReports.forEach((report) -> {
                 if (!report.getPluginName().contains("Note")) {
                     // Listener monitors changes to the plugin report as it executes and finishes. Affects the output of getMessage().
-                    report.addPluginReportListener(this);
+                    //report.addPluginReportListener(this);
                     this.pluginReports.add(report);
                 }
             });
@@ -378,10 +379,20 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
         final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
 
         if (!pluginReport.getPluginName().contains("Note")) {
-            prepareNotesViewPane(notesViewController, this);
 
             if (activeGraph != null) {
-                setGraphRecord(activeGraph.getId());
+                final NotesViewEntry entry = new NotesViewEntry(
+                        Long.toString(pluginReport.getStartTime()),
+                        pluginReport.getPluginName(),
+                        pluginReport.getMessage(),
+                        false
+                );
+                notesViewEntries.add(entry);
+                // remove duplicates and replace the current notes.
+                final List<NotesViewEntry> uniqueNotes = makeUniqueList(notesViewEntries);
+                notesViewEntries.clear();
+                notesViewEntries.addAll(uniqueNotes);
+                notesViewController.writeState();
             }
         }
     }
