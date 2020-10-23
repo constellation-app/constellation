@@ -37,7 +37,7 @@ import java.util.List;
 public class NotesViewController {
 
     private final NotesViewTopComponent parent;
-    
+
     private static final String NOTES_ADD_ATTRIBUTE = "Notes View: Add Required Attributes";
     private static final String NOTES_READ_STATE = "Notes View: Read State";
     private static final String NOTES_WRITE_STATE = "Notes View: Write State";
@@ -45,7 +45,7 @@ public class NotesViewController {
     public NotesViewController(final NotesViewTopComponent parent) {
         this.parent = parent;
     }
-    
+
     public String getAddAttributeText() {
         return NOTES_ADD_ATTRIBUTE;
     }
@@ -53,17 +53,18 @@ public class NotesViewController {
     public String getReadStateText() {
         return NOTES_READ_STATE;
     }
-    
+
     public String getWriteStateText() {
         return NOTES_WRITE_STATE;
     }
+
     /**
      * Add attributes required by the Notes View for it to function
      */
     public void addAttributes() {
-        
+
         final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-        
+
         if (activeGraph != null) {
             PluginExecution.withPlugin(new SimpleEditPlugin(NOTES_ADD_ATTRIBUTE) {
                 @Override
@@ -79,14 +80,14 @@ public class NotesViewController {
      * pane.
      */
     public void readState() {
-        
+
         final NotesViewPane pane = parent.getContent();
         final Graph graph = GraphManager.getDefault().getActiveGraph();
-        
+
         if (pane == null || graph == null) {
             return;
         }
-        
+
         PluginExecution.withPlugin(new NotesViewStateReader(pane)).executeLater(graph);
     }
 
@@ -95,14 +96,14 @@ public class NotesViewController {
      * notes_view_state Attribute.
      */
     public void writeState() {
-        
+
         final NotesViewPane pane = parent.getContent();
         final Graph graph = GraphManager.getDefault().getActiveGraph();
-        
+
         if (pane == null || graph == null) {
             return;
         }
-        
+
         PluginExecution.withPlugin(new NotesViewStateWriter(pane.getNotes())).executeLater(graph);
     }
 
@@ -119,7 +120,7 @@ public class NotesViewController {
 
         @Override
         public void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-            
+
             if (graph == null) {
                 return;
             }
@@ -133,7 +134,7 @@ public class NotesViewController {
             if (currentState == null || pane == null) {
                 return;
             }
-            
+
             pane.setNotes(currentState.getNotes());
         }
 

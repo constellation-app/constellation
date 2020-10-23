@@ -62,7 +62,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
      * Creates a new NotesViewTopComponent.
      */
     public NotesViewTopComponent() {
-        
+
         setName(Bundle.CTL_NotesViewTopComponent());
         setToolTipText(Bundle.HINT_NotesViewTopComponent());
         initComponents();
@@ -76,34 +76,32 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
             if (!needsUpdate()) {
                 return;
             }
-            
+
             notesViewController.readState();
         });
     }
 
     @Override
     protected void handleNewGraph(final Graph graph) {
-        
+
         if (needsUpdate() && graph != null) {
             notesViewPane.clearNotes();
             notesViewPane.prepareNotesViewPane(notesViewController, notesViewPane);
-            notesViewPane.setGraphRecord(graph.getId());
         }
     }
 
     @Override
     protected void handleGraphOpened(final Graph graph) {
-        
+
         if (needsUpdate() && graph != null) {
             notesViewPane.clearNotes();
             notesViewPane.prepareNotesViewPane(notesViewController, notesViewPane);
-            notesViewPane.setGraphRecord(graph.getId());
         }
     }
 
     @Override
     protected void handleGraphClosed(final Graph graph) {
-        
+
         if (needsUpdate() && graph != null) {
             notesViewPane.clearNotes();
             notesViewPane.prepareNotesViewPane(notesViewController, notesViewPane);
@@ -117,7 +115,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
         notesViewPane.prepareNotesViewPane(notesViewController, notesViewPane);
         notesViewPane.updateNotes(); // If plugin reports are altered on a graph before the Notes View is opened.
     }
-    
+
     @Override
     protected void handleComponentClosed() {
         GraphReportManager.removeGraphReportListener(this);
@@ -146,18 +144,19 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
     // Triggers when plugin reports are added or removed.
     @Override
     public void newPluginReport(PluginReport pluginReport) {
-        
+
         final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-        
+
         if (!pluginReport.getPluginName().contains("Note")) {
             notesViewPane.prepareNotesViewPane(notesViewController, notesViewPane);
-            
+
             if (activeGraph != null) {
                 notesViewPane.setGraphRecord(activeGraph.getId());
+                notesViewController.writeState();
             }
         }
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
