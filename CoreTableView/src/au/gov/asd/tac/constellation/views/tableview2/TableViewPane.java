@@ -158,6 +158,7 @@ public final class TableViewPane extends BorderPane {
     private final BorderPane progress;
     private SortedList<ObservableList<String>> sortedRowList;
     private List<ObservableList<String>> filteredRowList;
+    private Pagination pagination = new Pagination();
 
     private Button columnVisibilityButton;
     private ToggleButton selectedOnlyButton;
@@ -278,13 +279,13 @@ public final class TableViewPane extends BorderPane {
         copyButton.setPopupSide(Side.RIGHT);
         final MenuItem copyTableMenu = new MenuItem(COPY_TABLE);
         copyTableMenu.setOnAction(e -> {
-            final String data = TableViewUtilities.getTableData(table, false, false);
+            final String data = TableViewUtilities.getTableData(table, pagination, false, false);
             TableViewUtilities.copyToClipboard(data);
             e.consume();
         });
         final MenuItem copyTableSelectionMenu = new MenuItem(COPY_TABLE_SELECTION);
         copyTableSelectionMenu.setOnAction(e -> {
-            final String selectedData = TableViewUtilities.getTableData(table, false, true);
+            final String selectedData = TableViewUtilities.getTableData(table, pagination, false, true);
             TableViewUtilities.copyToClipboard(selectedData);
             e.consume();
         });
@@ -297,14 +298,14 @@ public final class TableViewPane extends BorderPane {
         final MenuItem exportCsvItem = new MenuItem(EXPORT_CSV);
         exportCsvItem.setOnAction(e -> {
             if (parent.getCurrentGraph() != null) {
-                TableViewUtilities.exportToCsv(table, false);
+                TableViewUtilities.exportToCsv(table, pagination, false);
             }
             e.consume();
         });
         final MenuItem exportCsvSelectionItem = new MenuItem(EXPORT_CSV_SELECTION);
         exportCsvSelectionItem.setOnAction(e -> {
             if (parent.getCurrentGraph() != null) {
-                TableViewUtilities.exportToCsv(table, true);
+                TableViewUtilities.exportToCsv(table, pagination, true);
             }
             e.consume();
         });
@@ -1055,7 +1056,7 @@ public final class TableViewPane extends BorderPane {
     }
     
     protected void paginate(final List<ObservableList<String>> rows) {
-        final Pagination pagination = new Pagination(rows == null || rows.isEmpty() ? 1 : (int) Math.ceil(rows.size() / (double) maxRowsPerPage));
+        pagination = new Pagination(rows == null || rows.isEmpty() ? 1 : (int) Math.ceil(rows.size() / (double) maxRowsPerPage));
         pagination.setPageFactory(index -> createPage(index, rows));
         Platform.runLater(() -> {
             setCenter(pagination);

@@ -38,8 +38,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Pagination;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.input.Clipboard;
@@ -57,6 +59,8 @@ import org.openide.filesystems.FileChooserBuilder;
  * @author cygnus_x-1
  */
 public class TableViewUtilities {
+    
+    private static final Logger LOGGER = Logger.getLogger(TableViewUtilities.class.getName());
 
     private static final String EXPORT_TO_DELIMITED_FILE_PLUGIN = "Table View: Export to Delimited File";
     private static final String EXPORT_TO_EXCEL_FILE_PLUGIN = "Table View: Export to Excel File";
@@ -77,7 +81,7 @@ public class TableViewUtilities {
      * table will be included in the output.
      * @return a String of comma-separated values representing the table.
      */
-    public static String getTableData(final TableView<ObservableList<String>> table,
+    public static String getTableData(final TableView<ObservableList<String>> table, final Pagination pagination,
             final boolean includeHeader, final boolean selectedOnly) {
         final List<Integer> visibleIndices = table.getVisibleLeafColumns().stream()
                 .map(column -> table.getColumns().indexOf(column))
@@ -93,6 +97,8 @@ public class TableViewUtilities {
             data.append(SeparatorConstants.NEWLINE);
         }
 
+        // get the current page index so we can go back to it afterwards
+        final int currentPage = pagination.getCurrentPageIndex();
         if (selectedOnly) {
             table.getSelectionModel().getSelectedItems().forEach(selectedItem -> {
                 data.append(visibleIndices.stream()
@@ -101,17 +107,22 @@ public class TableViewUtilities {
                         .reduce((cell1, cell2) -> cell1 + SeparatorConstants.COMMA + cell2)
                         .get());
                 data.append(SeparatorConstants.NEWLINE);
-            });
+            });                
         } else {
-            table.getItems().forEach(item -> {
-                data.append(visibleIndices.stream()
-                        .filter(Objects::nonNull)
-                        .map(index -> item.get(index))
-                        .reduce((cell1, cell2) -> cell1 + SeparatorConstants.COMMA + cell2)
-                        .get());
-                data.append(SeparatorConstants.NEWLINE);
-            });
+            for (int i = 0; i < pagination.getPageCount(); i++) {
+                final TableView<ObservableList<String>> page = (TableView<ObservableList<String>>) pagination.getPageFactory().call(i);
+                page.getItems().forEach(item -> {
+                    data.append(visibleIndices.stream()
+                            .filter(Objects::nonNull)
+                            .map(index -> item.get(index))
+                            .reduce((cell1, cell2) -> cell1 + SeparatorConstants.COMMA + cell2)
+                            .get());
+                    data.append(SeparatorConstants.NEWLINE);
+                });
+            }
         }
+        // Call the page factory function once more to go back to the original page index
+        pagination.getPageFactory().call(currentPage);
 
         return data.toString();
     }
@@ -135,7 +146,8 @@ public class TableViewUtilities {
      * @param selectedOnly if true, only the data from selected rows in the
      * table will be included in the output file.
      */
-    public static void exportToCsv(final TableView<ObservableList<String>> table, final boolean selectedOnly) {
+    public static void exportToCsv(final TableView<ObservableList<String>> table, final Pagination pagination,
+            final boolean selectedOnly) {
         final FileChooserBuilder fChooser = new FileChooserBuilder(EXPORT_CSV)
                 .setTitle(EXPORT_CSV)
                 .setFileFilter(new FileFilter() {
@@ -162,7 +174,7 @@ public class TableViewUtilities {
                     : fileName.getAbsolutePath() + CSV_EXT;
 
             final File file = new File(filePath);
-            PluginExecution.withPlugin(new ExportToCsvFilePlugin(file, table, selectedOnly)).executeLater(null);
+            PluginExecution.withPlugin(new ExportToCsvFilePlugin(file, table, pagination, selectedOnly)).executeLater(null);
         }
     }
 
@@ -222,20 +234,23 @@ public class TableViewUtilities {
 
         private final File file;
         private final TableView<ObservableList<String>> table;
+        private final Pagination pagination;
         private final boolean selectedOnly;
 
         public ExportToCsvFilePlugin(final File file,
                 final TableView<ObservableList<String>> table,
+                final Pagination pagination,
                 final boolean selectedOnly) {
             this.file = file;
             this.table = table;
+            this.pagination = pagination;
             this.selectedOnly = selectedOnly;
         }
 
         @Override
         public void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
             try {
-                final String csvData = getTableData(table, true, selectedOnly);
+                final String csvData = getTableData(table, pagination, true, selectedOnly);
                 try (final FileWriter fileWriter = new FileWriter(file)) {
                     fileWriter.write(csvData);
                 }
