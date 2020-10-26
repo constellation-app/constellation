@@ -16,17 +16,17 @@
 package au.gov.asd.tac.constellation.graph.value.types;
 
 import au.gov.asd.tac.constellation.graph.value.converter.ConverterRegistry;
-import au.gov.asd.tac.constellation.graph.value.types.byteType.ByteValue;
-import au.gov.asd.tac.constellation.graph.value.types.charType.CharValue;
-import au.gov.asd.tac.constellation.graph.value.types.doubleType.DoubleArithmeticConverters;
-import au.gov.asd.tac.constellation.graph.value.types.doubleType.DoubleValue;
-import au.gov.asd.tac.constellation.graph.value.types.floatType.FloatArithmeticConverters;
-import au.gov.asd.tac.constellation.graph.value.types.floatType.FloatValue;
-import au.gov.asd.tac.constellation.graph.value.types.integerType.IntArithmeticConverters;
-import au.gov.asd.tac.constellation.graph.value.types.integerType.IntValue;
-import au.gov.asd.tac.constellation.graph.value.types.longType.LongArithmeticConverters;
-import au.gov.asd.tac.constellation.graph.value.types.longType.LongValue;
-import au.gov.asd.tac.constellation.graph.value.types.shortType.ShortValue;
+import au.gov.asd.tac.constellation.graph.value.types.bytes.ByteValue;
+import au.gov.asd.tac.constellation.graph.value.types.chars.CharValue;
+import au.gov.asd.tac.constellation.graph.value.types.doubles.DoubleArithmeticConverters;
+import au.gov.asd.tac.constellation.graph.value.types.doubles.DoubleValue;
+import au.gov.asd.tac.constellation.graph.value.types.floats.FloatArithmeticConverters;
+import au.gov.asd.tac.constellation.graph.value.types.floats.FloatValue;
+import au.gov.asd.tac.constellation.graph.value.types.integers.IntArithmeticConverters;
+import au.gov.asd.tac.constellation.graph.value.types.integers.IntValue;
+import au.gov.asd.tac.constellation.graph.value.types.longs.LongArithmeticConverters;
+import au.gov.asd.tac.constellation.graph.value.types.longs.LongValue;
+import au.gov.asd.tac.constellation.graph.value.types.shorts.ShortValue;
 
 /**
  *
@@ -34,16 +34,16 @@ import au.gov.asd.tac.constellation.graph.value.types.shortType.ShortValue;
  */
 public class ArithmeticConverters {
 
-    private static boolean REGISTERED = false;
+    private static boolean registered = false;
 
     private ArithmeticConverters() {
         // added private constructor to hide implicit public constructor - S1118.
     }
 
     public static synchronized void register() {
-        if (!REGISTERED) {
+        if (!registered) {
             register(ConverterRegistry.getDefault());
-            REGISTERED = true;
+            registered = true;
         }
     }
 

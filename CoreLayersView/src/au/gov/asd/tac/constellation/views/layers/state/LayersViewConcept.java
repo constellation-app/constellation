@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.layers.state;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.LongAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
@@ -36,7 +35,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = SchemaConcept.class)
 public class LayersViewConcept extends SchemaConcept {
 
-    private final static String CONCEPT_STRING = "Concept class";
+    private static final String CONCEPT_STRING = "Concept class";
 
     @Override
     public String getName() {
@@ -74,50 +73,10 @@ public class LayersViewConcept extends SchemaConcept {
                 .build();
     }
 
-    public static class VertexAttribute {
-
-        private VertexAttribute() {
-            throw new IllegalStateException(CONCEPT_STRING);
-        }
-
-        public static final SchemaAttribute LAYER_MASK = new SchemaAttribute.Builder(GraphElementType.VERTEX, LongAttributeDescription.ATTRIBUTE_NAME, "layer_mask")
-                .setDescription("Bitmask identifying the layers this vertex belongs to")
-                .setDefaultValue(1)
-                .create()
-                .build();
-        public static final SchemaAttribute LAYER_VISIBILITY = new SchemaAttribute.Builder(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "layer_visibility")
-                .setDescription("The visibility of the vertex given the layers it belongs to")
-                .setDefaultValue(1.0f)
-                .create()
-                .build();
-    }
-
-    public static class TransactionAttribute {
-
-        private TransactionAttribute() {
-            throw new IllegalStateException(CONCEPT_STRING);
-        }
-
-        public static final SchemaAttribute LAYER_MASK = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, LongAttributeDescription.ATTRIBUTE_NAME, "layer_mask")
-                .setDescription("Bitmask identifying the layers this transaction belongs to")
-                .setDefaultValue(1)
-                .create()
-                .build();
-        public static final SchemaAttribute LAYER_VISIBILITY = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, FloatAttributeDescription.ATTRIBUTE_NAME, "layer_visibility")
-                .setDescription("The visibility of the transaction given the layers it belongs to")
-                .setDefaultValue(1.0f)
-                .create()
-                .build();
-    }
-
     @Override
     public Collection<SchemaAttribute> getSchemaAttributes() {
         final List<SchemaAttribute> schemaAttributes = new ArrayList<>();
         schemaAttributes.add(GraphAttribute.LAYER_MASK_SELECTED);
-        schemaAttributes.add(VertexAttribute.LAYER_MASK);
-        schemaAttributes.add(VertexAttribute.LAYER_VISIBILITY);
-        schemaAttributes.add(TransactionAttribute.LAYER_MASK);
-        schemaAttributes.add(TransactionAttribute.LAYER_VISIBILITY);
         schemaAttributes.add(MetaAttribute.LAYERS_VIEW_STATE);
         return Collections.unmodifiableCollection(schemaAttributes);
     }

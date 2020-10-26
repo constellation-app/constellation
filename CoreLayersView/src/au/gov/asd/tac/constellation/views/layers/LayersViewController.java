@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.LayersConcept;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.monitor.AttributeValueMonitor;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
@@ -46,7 +47,7 @@ import java.util.concurrent.Future;
 public class LayersViewController {
 
     // Layers view controller instance
-    private static LayersViewController INSTANCE = null;
+    private static LayersViewController instance = null;
     private LayersViewTopComponent parent;
 
     private final List<AttributeValueMonitor> valueMonitors;
@@ -69,10 +70,10 @@ public class LayersViewController {
      * @return the instance, if one is not made, it will make one.
      */
     public static synchronized LayersViewController getDefault() {
-        if (INSTANCE == null) {
-            INSTANCE = new LayersViewController();
+        if (instance == null) {
+            instance = new LayersViewController();
         }
-        return INSTANCE;
+        return instance;
     }
 
     /**
@@ -82,7 +83,7 @@ public class LayersViewController {
      */
     public LayersViewController init(final LayersViewTopComponent parent) {
         this.parent = parent;
-        return INSTANCE;
+        return instance;
     }
 
     public void setListenedAttributes() {
@@ -126,10 +127,10 @@ public class LayersViewController {
                 public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
                     LayersViewConcept.GraphAttribute.LAYER_MASK_SELECTED.ensure(graph);
                     LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.ensure(graph);
-                    LayersViewConcept.VertexAttribute.LAYER_MASK.ensure(graph);
-                    LayersViewConcept.VertexAttribute.LAYER_VISIBILITY.ensure(graph);
-                    LayersViewConcept.TransactionAttribute.LAYER_MASK.ensure(graph);
-                    LayersViewConcept.TransactionAttribute.LAYER_VISIBILITY.ensure(graph);
+                    LayersConcept.VertexAttribute.LAYER_MASK.ensure(graph);
+                    LayersConcept.VertexAttribute.LAYER_VISIBILITY.ensure(graph);
+                    LayersConcept.TransactionAttribute.LAYER_MASK.ensure(graph);
+                    LayersConcept.TransactionAttribute.LAYER_VISIBILITY.ensure(graph);
                 }
             }).executeLater(activeGraph);
         }
@@ -288,11 +289,11 @@ public class LayersViewController {
             final int graphCurrentBitMaskAttrId = LayersViewConcept.GraphAttribute.LAYER_MASK_SELECTED.ensure(graph);
             final long currentBitmask = graph.getLongValue(graphCurrentBitMaskAttrId, 0);
 
-            final int vxbitmaskAttrId = LayersViewConcept.VertexAttribute.LAYER_MASK.get(graph);
-            final int vxbitmaskVisibilityAttrId = LayersViewConcept.VertexAttribute.LAYER_VISIBILITY.get(graph);
+            final int vxbitmaskAttrId = LayersConcept.VertexAttribute.LAYER_MASK.get(graph);
+            final int vxbitmaskVisibilityAttrId = LayersConcept.VertexAttribute.LAYER_VISIBILITY.get(graph);
 
-            final int txbitmaskAttrId = LayersViewConcept.TransactionAttribute.LAYER_MASK.get(graph);
-            final int txbitmaskVisibilityAttrId = LayersViewConcept.TransactionAttribute.LAYER_VISIBILITY.get(graph);
+            final int txbitmaskAttrId = LayersConcept.TransactionAttribute.LAYER_MASK.get(graph);
+            final int txbitmaskVisibilityAttrId = LayersConcept.TransactionAttribute.LAYER_VISIBILITY.get(graph);
 
             vxBitMasks.setActiveQueries(currentBitmask);
             vxBitMasks.updateBitMasks(graph, vxbitmaskAttrId, vxbitmaskVisibilityAttrId);

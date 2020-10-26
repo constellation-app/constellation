@@ -39,37 +39,37 @@ public class Access {
 
     static {
         Access.getDefault().getRegistry(CharReadable.class)
-                .register(ByteReadable.class, (s) -> () -> (char) s.readShort())
-                .register(ShortReadable.class, (s) -> () -> (char) s.readShort())
-                .register(IntReadable.class, (s) -> () -> (char) s.readInt())
-                .register(LongReadable.class, (s) -> () -> (char) s.readLong())
-                .register(FloatReadable.class, (s) -> () -> (char) s.readFloat())
-                .register(DoubleReadable.class, (s) -> () -> (char) s.readDouble());
+                .register(ByteReadable.class, s -> () -> (char) s.readShort())
+                .register(ShortReadable.class, s -> () -> (char) s.readShort())
+                .register(IntReadable.class, s -> () -> (char) s.readInt())
+                .register(LongReadable.class, s -> () -> (char) s.readLong())
+                .register(FloatReadable.class, s -> () -> (char) s.readFloat())
+                .register(DoubleReadable.class, s -> () -> (char) s.readDouble());
 
         Access.getDefault().getRegistry(ByteReadable.class)
-                .register(ShortReadable.class, (s) -> () -> (byte) s.readShort())
-                .register(IntReadable.class, (s) -> () -> (byte) s.readInt())
-                .register(LongReadable.class, (s) -> () -> (byte) s.readLong())
-                .register(FloatReadable.class, (s) -> () -> (byte) s.readFloat())
-                .register(DoubleReadable.class, (s) -> () -> (byte) s.readDouble());
+                .register(ShortReadable.class, s -> () -> (byte) s.readShort())
+                .register(IntReadable.class, s -> () -> (byte) s.readInt())
+                .register(LongReadable.class, s -> () -> (byte) s.readLong())
+                .register(FloatReadable.class, s -> () -> (byte) s.readFloat())
+                .register(DoubleReadable.class, s -> () -> (byte) s.readDouble());
 
         Access.getDefault().getRegistry(ShortReadable.class)
-                .register(IntReadable.class, (s) -> () -> (byte) s.readInt())
-                .register(LongReadable.class, (s) -> () -> (byte) s.readLong())
-                .register(FloatReadable.class, (s) -> () -> (byte) s.readFloat())
-                .register(DoubleReadable.class, (s) -> () -> (byte) s.readDouble());
+                .register(IntReadable.class, s -> () -> (byte) s.readInt())
+                .register(LongReadable.class, s -> () -> (byte) s.readLong())
+                .register(FloatReadable.class, s -> () -> (byte) s.readFloat())
+                .register(DoubleReadable.class, s -> () -> (byte) s.readDouble());
 
         Access.getDefault().getRegistry(IntReadable.class)
-                .register(LongReadable.class, (s) -> () -> (byte) s.readLong())
-                .register(FloatReadable.class, (s) -> () -> (byte) s.readFloat())
-                .register(DoubleReadable.class, (s) -> () -> (byte) s.readDouble());
+                .register(LongReadable.class, s -> () -> (byte) s.readLong())
+                .register(FloatReadable.class, s -> () -> (byte) s.readFloat())
+                .register(DoubleReadable.class, s -> () -> (byte) s.readDouble());
 
         Access.getDefault().getRegistry(LongReadable.class)
-                .register(FloatReadable.class, (s) -> () -> (byte) s.readFloat())
-                .register(DoubleReadable.class, (s) -> () -> (byte) s.readDouble());
+                .register(FloatReadable.class, s -> () -> (byte) s.readFloat())
+                .register(DoubleReadable.class, s -> () -> (byte) s.readDouble());
 
         Access.getDefault().getRegistry(FloatReadable.class)
-                .register(DoubleReadable.class, (s) -> () -> (byte) s.readDouble());
+                .register(DoubleReadable.class, s -> () -> (byte) s.readDouble());
     }
 
     private final Map<Class, AccessRegistry> registries = new HashMap<>();

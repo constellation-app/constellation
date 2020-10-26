@@ -47,7 +47,7 @@ public class OperatorRegistry {
     public Object apply(Object parameter) {
         final Class<?> parameterClass = parameter.getClass();
         final List<FunctionRecord> applicableRecords = new ArrayList<>();
-        functions.forEach((function) -> {
+        functions.forEach(function -> {
             if (function.isApplicable(parameterClass)) {
                 boolean insert = true;
                 int count = 0;
@@ -87,7 +87,7 @@ public class OperatorRegistry {
         final Class<?> parameter1Class = parameter1.getClass();
         final Class<?> parameter2Class = parameter2.getClass();
         final List<BiFunctionRecord> applicableRecords = new ArrayList<>();
-        biFunctions.forEach((biFunction) -> {
+        biFunctions.forEach(biFunction -> {
             if (biFunction.isApplicable(parameter1Class, parameter2Class)) {
                 boolean insert = true;
                 for (int i = 0; i < applicableRecords.size(); i++) {

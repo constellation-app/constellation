@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.layers.utilities;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.LayersConcept;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
@@ -70,21 +71,21 @@ public class LayersDualGraphSyncNGTest {
             bitmaskAttributeId = LayersViewConcept.GraphAttribute.LAYER_MASK_SELECTED.ensure(writableGraph);
 
             // Create LayerMask attributes
-            layerMaskV = LayersViewConcept.VertexAttribute.LAYER_MASK.ensure(writableGraph);
+            layerMaskV = LayersConcept.VertexAttribute.LAYER_MASK.ensure(writableGraph);
             if (layerMaskV == Graph.NOT_FOUND) {
                 fail();
             }
-            layerMaskT = LayersViewConcept.TransactionAttribute.LAYER_MASK.ensure(writableGraph);
+            layerMaskT = LayersConcept.TransactionAttribute.LAYER_MASK.ensure(writableGraph);
             if (layerMaskT == Graph.NOT_FOUND) {
                 fail();
             }
 
             // Create LayerVisilibity Attributes
-            layerVisibilityV = LayersViewConcept.VertexAttribute.LAYER_VISIBILITY.ensure(writableGraph);
+            layerVisibilityV = LayersConcept.VertexAttribute.LAYER_VISIBILITY.ensure(writableGraph);
             if (layerVisibilityV == Graph.NOT_FOUND) {
                 fail();
             }
-            layerVisibilityT = LayersViewConcept.TransactionAttribute.LAYER_VISIBILITY.ensure(writableGraph);
+            layerVisibilityT = LayersConcept.TransactionAttribute.LAYER_VISIBILITY.ensure(writableGraph);
             if (layerVisibilityT == Graph.NOT_FOUND) {
                 fail();
             }

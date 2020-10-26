@@ -40,7 +40,7 @@ public class AccessRegistry<D> {
     public D convert(Object source) {
         final Class<?> sourceClass = source.getClass();
         final List<FunctionRecord<?, D>> applicableRecords = new ArrayList<>();
-        functions.forEach((function) -> {
+        functions.forEach(function -> {
             if (function.isApplicable(sourceClass)) {
                 boolean insert = true;
                 int count = 0;

@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.graph.value.readables;
 
 import au.gov.asd.tac.constellation.graph.value.Readable;
-import au.gov.asd.tac.constellation.graph.value.types.booleanType.BooleanValue;
+import au.gov.asd.tac.constellation.graph.value.types.booleans.BooleanValue;
 
 /**
  *

@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.graph.value.readables;
 
 import au.gov.asd.tac.constellation.graph.value.Readable;
-import au.gov.asd.tac.constellation.graph.value.types.integerType.IntValue;
+import au.gov.asd.tac.constellation.graph.value.types.integers.IntValue;
 
 /**
  *

@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.graph.value.expression;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,7 +68,7 @@ public class ExpressionParser {
 
         private final char token;
         private final int precedence;
-        private final Map<Operator, Operator> combinations = new HashMap<>();
+        private final Map<Operator, Operator> combinations = new EnumMap<>(Operator.class);
 
         private Operator(char token, int precedence, Operator... combinations) {
             this.token = token;

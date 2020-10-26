@@ -16,12 +16,12 @@
 package au.gov.asd.tac.constellation.views.layers.utilities;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.LayersConcept;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.views.layers.context.LayersAddContextMenu;
-import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 import org.testng.annotations.Test;
@@ -43,21 +43,21 @@ public class UpdateElementBitmaskPluginNGTest {
         graph = new StoreGraph();
 
         // Create LayerMask attributes
-        layerMaskV = LayersViewConcept.VertexAttribute.LAYER_MASK.ensure(graph);
+        layerMaskV = LayersConcept.VertexAttribute.LAYER_MASK.ensure(graph);
         if (layerMaskV == Graph.NOT_FOUND) {
             fail();
         }
-        layerMaskT = LayersViewConcept.TransactionAttribute.LAYER_MASK.ensure(graph);
+        layerMaskT = LayersConcept.TransactionAttribute.LAYER_MASK.ensure(graph);
         if (layerMaskT == Graph.NOT_FOUND) {
             fail();
         }
 
         // Create LayerVisilibity Attributes
-        layerVisibilityV = LayersViewConcept.VertexAttribute.LAYER_VISIBILITY.ensure(graph);
+        layerVisibilityV = LayersConcept.VertexAttribute.LAYER_VISIBILITY.ensure(graph);
         if (layerVisibilityV == Graph.NOT_FOUND) {
             fail();
         }
-        layerVisibilityT = LayersViewConcept.TransactionAttribute.LAYER_VISIBILITY.ensure(graph);
+        layerVisibilityT = LayersConcept.TransactionAttribute.LAYER_VISIBILITY.ensure(graph);
         if (layerVisibilityT == Graph.NOT_FOUND) {
             fail();
         }

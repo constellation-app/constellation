@@ -16,12 +16,12 @@
 package au.gov.asd.tac.constellation.views.layers.utilities;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.LayersConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.layers.context.LayersAddContextMenu;
-import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 
 /**
  * Updates each selected element's bitmask for viewing them on different layers
@@ -46,7 +46,7 @@ public final class UpdateElementBitmaskPlugin extends SimpleEditPlugin {
 
     private void setVertices(final GraphWriteMethods graph) {
         final int vertexSelectedAttributeId = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
-        final int vertexBitmaskAttributeId = LayersViewConcept.VertexAttribute.LAYER_MASK.ensure(graph);
+        final int vertexBitmaskAttributeId = LayersConcept.VertexAttribute.LAYER_MASK.ensure(graph);
         final int vertexCount = graph.getVertexCount();
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
             final int vertexId = graph.getVertex(vertexPosition);
@@ -62,7 +62,7 @@ public final class UpdateElementBitmaskPlugin extends SimpleEditPlugin {
 
     private void setTransactions(final GraphWriteMethods graph) {
         final int transactionSelectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
-        final int transactionBitmaskAttributeId = LayersViewConcept.TransactionAttribute.LAYER_MASK.ensure(graph);
+        final int transactionBitmaskAttributeId = LayersConcept.TransactionAttribute.LAYER_MASK.ensure(graph);
         final int transactionCount = graph.getTransactionCount();
         for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
             final int transactionId = graph.getTransaction(transactionPosition);

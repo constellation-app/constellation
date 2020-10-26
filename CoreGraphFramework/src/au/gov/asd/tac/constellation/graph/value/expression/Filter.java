@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.graph.value.expression;
 import au.gov.asd.tac.constellation.graph.value.IndexedReadable;
 import au.gov.asd.tac.constellation.graph.value.Readable;
 import au.gov.asd.tac.constellation.graph.value.converter.ConverterRegistry;
-import au.gov.asd.tac.constellation.graph.value.types.stringType.StringWritable;
+import au.gov.asd.tac.constellation.graph.value.types.strings.StringWritable;
 
 /**
  *

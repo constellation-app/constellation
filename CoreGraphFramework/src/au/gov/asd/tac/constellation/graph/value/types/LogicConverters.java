@@ -16,8 +16,8 @@
 package au.gov.asd.tac.constellation.graph.value.types;
 
 import au.gov.asd.tac.constellation.graph.value.converter.ConverterRegistry;
-import au.gov.asd.tac.constellation.graph.value.types.booleanType.BooleanLogicConverters;
-import au.gov.asd.tac.constellation.graph.value.types.booleanType.BooleanValue;
+import au.gov.asd.tac.constellation.graph.value.types.booleans.BooleanLogicConverters;
+import au.gov.asd.tac.constellation.graph.value.types.booleans.BooleanValue;
 
 /**
  *
@@ -25,16 +25,16 @@ import au.gov.asd.tac.constellation.graph.value.types.booleanType.BooleanValue;
  */
 public class LogicConverters {
 
-    private static boolean REGISTERED = false;
+    private static boolean registered = false;
 
     private LogicConverters() {
         // added private constructor to hide implicit public constructor - S1118.
     }
 
     public static synchronized void register() {
-        if (!REGISTERED) {
+        if (!registered) {
             register(ConverterRegistry.getDefault());
-            REGISTERED = true;
+            registered = true;
         }
     }
 
