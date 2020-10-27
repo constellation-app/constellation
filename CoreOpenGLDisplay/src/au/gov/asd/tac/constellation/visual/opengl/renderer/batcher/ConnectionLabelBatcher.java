@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import org.openide.util.Exceptions;
 
 /**
  *
@@ -144,7 +143,7 @@ public class ConnectionLabelBatcher implements SceneBatcher {
     }
 
     @Override
-    public GLRenderableUpdateTask createBatch(final VisualAccess access) {
+    public GLRenderableUpdateTask createBatch(final VisualAccess access) throws InterruptedException {
 
         ConnectionGlyphStream glyphStream = new ConnectionGlyphStream();
         fillLabels(access, glyphStream);
@@ -157,7 +156,7 @@ public class ConnectionLabelBatcher implements SceneBatcher {
         };
     }
 
-    public GLRenderableUpdateTask updateLabels(final VisualAccess access) {
+    public GLRenderableUpdateTask updateLabels(final VisualAccess access) throws InterruptedException {
         // We build the whole batch again - can't update labels in place at this stage.
         ConnectionGlyphStream glyphStream = new ConnectionGlyphStream();
         fillLabels(access, glyphStream);
@@ -170,7 +169,7 @@ public class ConnectionLabelBatcher implements SceneBatcher {
         };
     }
 
-    private void fillLabels(final VisualAccess access, ConnectionGlyphStream glyphStream) {
+    private void fillLabels(final VisualAccess access, ConnectionGlyphStream glyphStream) throws InterruptedException {
         int NUM_CORES = Runtime.getRuntime().availableProcessors();
         ConnectionGlyphStreamContext context = new ConnectionGlyphStreamContext();
         ExecutorService pool = Executors.newFixedThreadPool(NUM_CORES);
@@ -187,13 +186,8 @@ public class ConnectionLabelBatcher implements SceneBatcher {
 
         }
         pool.shutdown();
-        try {
-            pool.awaitTermination(10, TimeUnit.MINUTES);
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
-        }
+        pool.awaitTermination(10, TimeUnit.MINUTES);
             
-        
         glyphStream.trimToSize();
     }
 

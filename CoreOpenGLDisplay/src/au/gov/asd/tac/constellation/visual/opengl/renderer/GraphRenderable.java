@@ -45,6 +45,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
+import org.openide.util.Exceptions;
 import org.openide.util.Utilities;
 
 /**
@@ -159,7 +160,11 @@ public final class GraphRenderable implements GLRenderable {
                     addTask(iconBatcher.disposeBatch());
                     addTask(iconBatcher.createBatch(access));
                     addTask(nodeLabelBatcher.disposeBatch());
-                    addTask(nodeLabelBatcher.createBatch(access));
+                    try {
+                        addTask(nodeLabelBatcher.createBatch(access));
+                    } catch (InterruptedException ex) {
+                        Exceptions.printStackTrace(ex);
+                    }
                     addTask(blazeBatcher.disposeBatch());
                     addTask(blazeBatcher.createBatch(access));
                     addTask(gl -> {
@@ -179,7 +184,11 @@ public final class GraphRenderable implements GLRenderable {
                     addTask(loopBatcher.disposeBatch());
                     addTask(loopBatcher.createBatch(access));
                     addTask(connectionLabelBatcher.disposeBatch());
-                    addTask(connectionLabelBatcher.createBatch(access));
+                    try {
+                        addTask(connectionLabelBatcher.createBatch(access));
+                    } catch (InterruptedException ex) {
+                        Exceptions.printStackTrace(ex);
+                    }
                 };
             case BACKGROUND_COLOR:
                 return (change, access) -> {
@@ -220,8 +229,12 @@ public final class GraphRenderable implements GLRenderable {
                 return (change, access) -> {
                     addTask(nodeLabelBatcher.setBottomLabelColors(access));
                     addTask(nodeLabelBatcher.setBottomLabelSizes(access));
-                    // Note that updating bottom labels always rebuilds from scratch, so it is not an issue if the batch was not 'ready'.
-                    addTask(nodeLabelBatcher.updateBottomLabels(access));
+                    try {
+                        // Note that updating bottom labels always rebuilds from scratch, so it is not an issue if the batch was not 'ready'.
+                        addTask(nodeLabelBatcher.updateBottomLabels(access));
+                    } catch (InterruptedException ex) {
+                        Exceptions.printStackTrace(ex);
+                    }
                 };
             case CAMERA:
                 return (change, access) -> {
@@ -240,8 +253,12 @@ public final class GraphRenderable implements GLRenderable {
                 return (change, access) -> {
                     addTask(connectionLabelBatcher.setLabelColors(access));
                     addTask(connectionLabelBatcher.setLabelSizes(access));
-                    // Note that updating connection labels always rebuilds from scratch, so it is not an issue if the batch was not 'ready'.
-                    addTask(connectionLabelBatcher.updateLabels(access));
+                    try {
+                        // Note that updating connection labels always rebuilds from scratch, so it is not an issue if the batch was not 'ready'.
+                        addTask(connectionLabelBatcher.updateLabels(access));
+                    } catch (InterruptedException ex) {
+                        Exceptions.printStackTrace(ex);
+                    }
                 };
             case TOP_LABEL_COLOR:
                 return (change, access) -> {
@@ -251,8 +268,12 @@ public final class GraphRenderable implements GLRenderable {
                 return (change, access) -> {
                     addTask(nodeLabelBatcher.setTopLabelColors(access));
                     addTask(nodeLabelBatcher.setTopLabelSizes(access));
-                    // Note that updating top labels always rebuilds from scratch, so it is not an issue if the batch was not 'ready'.
-                    addTask(nodeLabelBatcher.updateTopLabels(access));
+                    try {
+                        // Note that updating top labels always rebuilds from scratch, so it is not an issue if the batch was not 'ready'.
+                        addTask(nodeLabelBatcher.updateTopLabels(access));
+                    } catch (InterruptedException ex) {
+                        Exceptions.printStackTrace(ex);
+                    }
                 };
             case CONNECTION_COLOR:
                 return (change, access) -> {

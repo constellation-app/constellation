@@ -124,7 +124,7 @@ public class NodeLabelBatcher implements SceneBatcher {
     }
 
     @Override
-    public GLRenderableUpdateTask createBatch(final VisualAccess access) {
+    public GLRenderableUpdateTask createBatch(final VisualAccess access) throws InterruptedException {
         final NodeGlyphStream topGlyphStream = new NodeGlyphStream();
         final NodeGlyphStream bottomGlyphStream = new NodeGlyphStream();
         
@@ -133,13 +133,10 @@ public class NodeLabelBatcher implements SceneBatcher {
         
         Thread bottomLabelThread = new FillBottomLabels(access, bottomGlyphStream);
         bottomLabelThread.start();
+                    
+        topLabelThread.join();
+        bottomLabelThread.join();
         
-        try {
-            topLabelThread.join();
-            bottomLabelThread.join();
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
-        }
         return gl -> {
             topBatch.initialise(topGlyphStream.getCurrentFloats().size() / FLOAT_BUFFERS_WIDTH);
             topBatch.buffer(gl, labelFloatsTarget, FloatBuffer.wrap(topGlyphStream.getCurrentFloats().rawArray()));
@@ -152,16 +149,14 @@ public class NodeLabelBatcher implements SceneBatcher {
         };
     }
 
-    public GLRenderableUpdateTask updateTopLabels(final VisualAccess access) {
+    public GLRenderableUpdateTask updateTopLabels(final VisualAccess access) throws InterruptedException {
         // We build the whole batch again - can't update labels in place at this stage.
         NodeGlyphStream glyphStream = new NodeGlyphStream();
         Thread topLabelThread = new FillTopLabels(access, glyphStream);
         topLabelThread.start();
-        try {
-            topLabelThread.join();
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
-        }
+
+        topLabelThread.join();
+
         return gl -> {
             topBatch.dispose(gl);
             topBatch.initialise(glyphStream.getCurrentFloats().size() / FLOAT_BUFFERS_WIDTH);
@@ -171,16 +166,14 @@ public class NodeLabelBatcher implements SceneBatcher {
         };
     }
 
-    public GLRenderableUpdateTask updateBottomLabels(final VisualAccess access) {
+    public GLRenderableUpdateTask updateBottomLabels(final VisualAccess access) throws InterruptedException {
         // We build the whole batch again - can't update labels in place at this stage.
         NodeGlyphStream glyphStream = new NodeGlyphStream();
         Thread bottomLabelThread = new FillBottomLabels(access, glyphStream);
         bottomLabelThread.start();
-        try {
-            bottomLabelThread.join();
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
-        }
+
+        bottomLabelThread.join();
+
         return gl -> {
             bottomBatch.dispose(gl);
             bottomBatch.initialise(glyphStream.getCurrentFloats().size() / FLOAT_BUFFERS_WIDTH);
@@ -190,22 +183,20 @@ public class NodeLabelBatcher implements SceneBatcher {
         };
     }
     
-    private void fillTopLabels(final VisualAccess access, NodeGlyphStream glyphStream) {
+    private void fillTopLabels(final VisualAccess access, NodeGlyphStream glyphStream) throws InterruptedException {
         ExecutorService pool = Executors.newFixedThreadPool(NUM_CORES);  
         for (int pos = 0; pos < access.getVertexCount(); pos++) {
             Thread thread = new BufferTopLabel(pos, access, glyphStream);
             pool.submit(thread);
         }
         pool.shutdown();
-        try {
-            pool.awaitTermination(10, TimeUnit.MINUTES);
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
-        }
+
+        pool.awaitTermination(10, TimeUnit.MINUTES);
+
         glyphStream.trimToSize();
     }
 
-    private void fillBottomLabels(final VisualAccess access, NodeGlyphStream glyphStream) {
+    private void fillBottomLabels(final VisualAccess access, NodeGlyphStream glyphStream) throws InterruptedException {
         ExecutorService pool = Executors.newFixedThreadPool(NUM_CORES);  
         
         for (int pos = 0; pos < access.getVertexCount(); pos++) {
@@ -213,11 +204,9 @@ public class NodeLabelBatcher implements SceneBatcher {
             pool.submit(thread);
         }
         pool.shutdown();
-        try {
-            pool.awaitTermination(10, TimeUnit.MINUTES);
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
-        }
+
+        pool.awaitTermination(10, TimeUnit.MINUTES);
+
         glyphStream.trimToSize();
     }
 
@@ -357,7 +346,11 @@ public class NodeLabelBatcher implements SceneBatcher {
         }
    
         public void run() {
-            fillTopLabels(access, glyphStream);
+            try {
+                fillTopLabels(access, glyphStream);
+            } catch (InterruptedException ex) {
+                Exceptions.printStackTrace(ex);
+            }
         }
     }   
     
@@ -371,7 +364,11 @@ public class NodeLabelBatcher implements SceneBatcher {
             }
 
             public void run() {
-                fillBottomLabels(access, glyphStream);
+                try {
+                    fillBottomLabels(access, glyphStream);
+                } catch (InterruptedException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
             }
     }
     
