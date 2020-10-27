@@ -973,14 +973,13 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
         List<Integer> selectedIds = new ArrayList<>();
         final int vertexSelctedAttribute = VisualConcept.VertexAttribute.SELECTED.get(rg);
         if (vertexSelctedAttribute != Graph.NOT_FOUND) {
-            for (int position = 0; position < rg.getVertexCount(); position++) {
-                final int vertexId = rg.getVertex(position);
+            rg.vertexStream().forEach(vertexId -> {
                 if (rg.getBooleanValue(vertexSelctedAttribute, vertexId)) {
                     selectedIds.add(vertexId);
                 }
-            }
+            });
         }
-
+        
         final int hitId = eventState.getCurrentHitId();
         if (eventState.getCurrentHitType().equals(HitType.VERTEX) && !selectedIds.contains(hitId)) {
             selectedIds.add(hitId);
