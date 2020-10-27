@@ -55,6 +55,7 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
 import au.gov.asd.tac.constellation.utilities.visual.VisualOperation;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
+import com.google.common.primitives.Ints;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -318,14 +319,14 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
         operationQueue.add(withOperation == null ? cameraChange : cameraChange.join(withOperation));
     }
 
-    private void scheduleXYZChangeOperation(final int vertexCount) {
+    private void scheduleXYZChangeOperation(final int[] verticiesMoved) {
         operationQueue.add(manager.constructMultiChangeOperation(Arrays.asList(
-                new VisualChangeBuilder(VisualProperty.VERTEX_X).forItems(vertexCount).withId(currentXYZChangeIds[0]).build(),
-                new VisualChangeBuilder(VisualProperty.VERTEX_Y).forItems(vertexCount).withId(currentXYZChangeIds[1]).build(),
-                new VisualChangeBuilder(VisualProperty.VERTEX_Z).forItems(vertexCount).withId(currentXYZChangeIds[2]).build()
+                new VisualChangeBuilder(VisualProperty.VERTEX_X).forItems(verticiesMoved).withId(currentXYZChangeIds[0]).build(),
+                new VisualChangeBuilder(VisualProperty.VERTEX_Y).forItems(verticiesMoved).withId(currentXYZChangeIds[1]).build(),
+                new VisualChangeBuilder(VisualProperty.VERTEX_Z).forItems(verticiesMoved).withId(currentXYZChangeIds[2]).build()
         )));
     }
-
+    
     /**
      * Respond to a key press event on the graph. This will respond to keys that
      * interact directly with the graph's visuals, such as W,A,S,D to pan. Most
@@ -1012,7 +1013,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
             VisualGraphUtilities.setVertexCoordinates(wg, currentPos, vertexId);
         });
 
-        scheduleXYZChangeOperation(wg.getVertexCount());
+        scheduleXYZChangeOperation(Ints.toArray(draggedNodeIds));
     }
 
     private void performPointSelection(final boolean toggleSelection, final boolean clearSelection, final GraphElementType elementType, final int elementId) {
