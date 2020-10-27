@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2020 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -111,6 +111,7 @@ public class TimeAttributeDescriptionNGTest {
     public void testSetDefault() {
         Object value = null;
         instance.setDefault(value);
+        assertEquals(instance.getDefault(), TimeAttributeDescription.DEFAULT_VALUE);
     }
 
     /**
@@ -130,6 +131,7 @@ public class TimeAttributeDescriptionNGTest {
     public void testSetCapacity() {
         int capacity = 0;
         instance.setCapacity(capacity);
+        assertEquals(instance.getCapacity(), capacity);
     }
 
     /**
@@ -151,6 +153,7 @@ public class TimeAttributeDescriptionNGTest {
         int id = 0;
         int value = 0;
         instance.setInt(id, value);
+        assertEquals(instance.getInt(id), value);
     }
 
     /**
@@ -172,6 +175,7 @@ public class TimeAttributeDescriptionNGTest {
         int id = 0;
         long value = 0L;
         instance.setLong(id, value);
+        assertEquals(instance.getLong(id), value);
     }
 
     /**
@@ -193,6 +197,7 @@ public class TimeAttributeDescriptionNGTest {
         int id = 0;
         String value = "";
         instance.setString(id, value);
+        assertEquals(instance.getString(id), null);
     }
 
     /**
@@ -225,6 +230,7 @@ public class TimeAttributeDescriptionNGTest {
         int id = 0;
         Object value = null;
         instance.setObject(id, value);
+        assertEquals(instance.getObject(id), value);
     }
 
     /**

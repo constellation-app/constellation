@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2020 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -93,6 +93,7 @@ public class StringAttributeDescriptionNGTest {
     public void testSetDefault() {
         Object value = null;
         instance.setDefault(value);
+        assertEquals(instance.getDefault(), value);
     }
 
     /**
@@ -112,6 +113,7 @@ public class StringAttributeDescriptionNGTest {
     public void testSetCapacity() {
         int capacity = 0;
         instance.setCapacity(capacity);
+        assertEquals(instance.getCapacity(), capacity);
     }
 
     /**
@@ -133,6 +135,7 @@ public class StringAttributeDescriptionNGTest {
         int id = 0;
         byte value = 0;
         instance.setByte(id, value);
+        assertEquals(instance.getByte(id), value);
     }
 
     /**
@@ -154,6 +157,7 @@ public class StringAttributeDescriptionNGTest {
         int id = 0;
         short value = 0;
         instance.setShort(id, value);
+        assertEquals(instance.getShort(id), value);
     }
 
     /**
@@ -175,6 +179,7 @@ public class StringAttributeDescriptionNGTest {
         int id = 0;
         int value = 0;
         instance.setInt(id, value);
+        assertEquals(instance.getInt(id), value);
     }
 
     /**
@@ -196,6 +201,7 @@ public class StringAttributeDescriptionNGTest {
         int id = 0;
         long value = 0L;
         instance.setLong(id, value);
+        assertEquals(instance.getLong(id), value);
     }
 
     /**
@@ -217,6 +223,7 @@ public class StringAttributeDescriptionNGTest {
         int id = 0;
         float value = 0.0F;
         instance.setFloat(id, value);
+        assertEquals(instance.getFloat(id), value);
     }
 
     /**
@@ -238,6 +245,7 @@ public class StringAttributeDescriptionNGTest {
         int id = 0;
         double value = 0.0;
         instance.setDouble(id, value);
+        assertEquals(instance.getDouble(id), value);
     }
 
     /**
@@ -259,6 +267,7 @@ public class StringAttributeDescriptionNGTest {
         int id = 0;
         boolean value = false;
         instance.setBoolean(id, value);
+        assertEquals(instance.getBoolean(id), value);
     }
 
     /**
@@ -301,6 +310,7 @@ public class StringAttributeDescriptionNGTest {
         int id = 0;
         String value = "";
         instance.setString(id, value);
+        assertEquals(instance.getString(id), value);
     }
 
     /**
@@ -322,6 +332,7 @@ public class StringAttributeDescriptionNGTest {
         int id = 0;
         Object value = null;
         instance.setObject(id, value);
+        assertEquals(instance.getObject(id), value);
     }
 
     /**
