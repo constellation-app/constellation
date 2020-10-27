@@ -186,7 +186,8 @@ public class TableViewUtilities {
      * table will be included in the output file.
      * @param sheetName the name of the workbook sheet in the output file.
      */
-    public static void exportToExcel(final TableView<ObservableList<String>> table, final boolean selectedOnly, final String sheetName) {
+    public static void exportToExcel(final TableView<ObservableList<String>> table, final Pagination pagination, 
+            final int rowsPerPage, final boolean selectedOnly, final String sheetName) {
         final FileChooserBuilder fChooser = new FileChooserBuilder(EXPORT_XLSX)
                 .setTitle(EXPORT_XLSX)
                 .setFileFilter(new FileFilter() {
@@ -213,7 +214,7 @@ public class TableViewUtilities {
                     : fileName.getAbsolutePath() + XLSX_EXT;
 
             final File excelFile = new File(filePath);
-            PluginExecution.withPlugin(new ExportToExcelFilePlugin(excelFile, table, selectedOnly, sheetName)).executeLater(null);
+            PluginExecution.withPlugin(new ExportToExcelFilePlugin(excelFile, table, pagination, rowsPerPage, selectedOnly, sheetName)).executeLater(null);
         }
     }
 
@@ -269,14 +270,18 @@ public class TableViewUtilities {
 
         private final File file;
         private final TableView<ObservableList<String>> table;
+        private final Pagination pagination;
+        private final int rowsPerPage;
         private final boolean selectedOnly;
         private final String sheetName;
 
-        public ExportToExcelFilePlugin(final File file,
-                final TableView<ObservableList<String>> table,
+        public ExportToExcelFilePlugin(final File file, final TableView<ObservableList<String>> table, 
+                final Pagination pagination, final int rowsPerPage,
                 final boolean selectedOnly, final String sheetName) {
             this.file = file;
             this.table = table;
+            this.pagination = pagination;
+            this.rowsPerPage = rowsPerPage;
             this.selectedOnly = selectedOnly;
             this.sheetName = sheetName;
         }
@@ -298,15 +303,21 @@ public class TableViewUtilities {
                     headerCell.setCellValue(column.getText());
                 });
 
+                final int currentPage = pagination.getCurrentPageIndex();
                 if (selectedOnly) {
                     // get a copy of the table data so that users are continue working
                     final List<ObservableList<String>> data = table.getSelectionModel().getSelectedItems();
-                    writeRecords(sheet, visibleIndices, data);
+                    writeRecords(sheet, visibleIndices, data, 1);
                 } else {
-                    // get a copy of the table data so that users are continue working
-                    final List<ObservableList<String>> data = table.getItems();
-                    writeRecords(sheet, visibleIndices, data);
+                    for (int i = 0; i < pagination.getPageCount(); i++) {
+                        pagination.getPageFactory().call(i);
+                        // get a copy of the table data so that users are continue working
+                        final List<ObservableList<String>> data = table.getItems();
+                        final int startIndex = rowsPerPage * i + 1; // + 1 to skip the header
+                        writeRecords(sheet, visibleIndices, data, startIndex);                      
+                    }
                 }
+                pagination.getPageFactory().call(currentPage);
 
                 workbook.write(new FileOutputStream(file));
                 workbook.dispose();
@@ -328,9 +339,9 @@ public class TableViewUtilities {
      * @param visibleIndices The visible columns
      * @param data The table data
      */
-    private static void writeRecords(final Sheet sheet, final List<Integer> visibleIndices, final List<ObservableList<String>> data) {
+    private static void writeRecords(final Sheet sheet, final List<Integer> visibleIndices, final List<ObservableList<String>> data, final int startIndex) {
         final int[] rowIndex = new int[1];
-        rowIndex[0] = 1; // setting the list's index to 1 to skip the heading
+        rowIndex[0] = startIndex;
         data.forEach(item -> {
             final Row itemRow = sheet.createRow(rowIndex[0]++);
             visibleIndices.forEach(index -> {

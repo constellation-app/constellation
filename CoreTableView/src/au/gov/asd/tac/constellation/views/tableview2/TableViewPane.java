@@ -229,7 +229,7 @@ public final class TableViewPane extends BorderPane {
 
         this.scheduledExecutorService = Executors.newScheduledThreadPool(1);
     }
-
+    
     private ToolBar initToolbar() {
         this.columnVisibilityButton = new Button();
         columnVisibilityButton.setGraphic(COLUMNS_ICON);
@@ -312,14 +312,14 @@ public final class TableViewPane extends BorderPane {
         final MenuItem exportExcelItem = new MenuItem(EXPORT_XLSX);
         exportExcelItem.setOnAction(e -> {
             if (parent.getCurrentGraph() != null) {
-                TableViewUtilities.exportToExcel(table, false, parent.getCurrentGraph().getId());
+                TableViewUtilities.exportToExcel(table, pagination, maxRowsPerPage, false, parent.getCurrentGraph().getId());
             }
             e.consume();
         });
         final MenuItem exportExcelSelectionItem = new MenuItem(EXPORT_XLSX_SELECTION);
         exportExcelSelectionItem.setOnAction(e -> {
             if (parent.getCurrentGraph() != null) {
-                TableViewUtilities.exportToExcel(table, true, parent.getCurrentGraph().getId());
+                TableViewUtilities.exportToExcel(table, pagination, maxRowsPerPage, true, parent.getCurrentGraph().getId());
             }
             e.consume();
         });
