@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan.utils;
 
+import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import static org.lwjgl.system.MemoryUtil.*;
 import static org.lwjgl.vulkan.VK10.*;
 import static org.lwjgl.vulkan.EXTDebugUtils.VK_EXT_DEBUG_UTILS_EXTENSION_NAME;
@@ -45,6 +46,8 @@ public class CVKUtils {
     // Constants
     public static final int UINT32_MAX = 0xFFFFFFFF;
     public static final long UINT64_MAX = 0xFFFFFFFFFFFFFFFFL;
+    public static final Vector3f ZERO_3F = new Vector3f(0, 0, 0);
+    public static final Matrix44f IDENTITY_44F = Matrix44f.identity();
     
     // Extra error codes that don't collide with VkResult
     public static final int CVK_ERROR_INVALID_ARGS                              = 0xFFFF0000;
@@ -72,7 +75,7 @@ public class CVKUtils {
     
     // Enable this for additional logging, thread verification and other checks
     public static final boolean CVK_DEBUGGING = false;
-    public static final Level CVK_DEFAULT_LOG_LEVEL = Level.WARNING;  
+    public static final Level CVK_DEFAULT_LOG_LEVEL = Level.INFO;  
     public static int CVK_VKALLOCATIONS = 0;
    
 

@@ -15,16 +15,15 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan.renderables;
 
+import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.*;
 import static org.lwjgl.system.MemoryUtil.*;
 import static org.lwjgl.vulkan.VK10.*;
 import static org.lwjgl.system.MemoryStack.stackPush;
-import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
 import java.nio.ByteBuffer;
 import java.nio.LongBuffer;
-import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkPipelineLayoutCreateInfo;
@@ -33,40 +32,48 @@ import org.lwjgl.vulkan.VkVertexInputAttributeDescription;
 import org.lwjgl.vulkan.VkVertexInputBindingDescription;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
+import au.gov.asd.tac.constellation.utilities.visual.NewLineModel;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDescriptorPool.CVKDescriptorPoolRequirements;
-import au.gov.asd.tac.constellation.visual.vulkan.CVKRenderUpdateTask;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKCommandBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.LinkedBlockingDeque;
+import org.lwjgl.PointerBuffer;
 import org.lwjgl.vulkan.VkPushConstantRange;
 
 
-public class CVKAxesRenderable extends CVKRenderable {
-    // FROM AxesRenderable...
-    private static final float LEN = 0.5f;
-    private static final float HEAD = 0.05f;
-    private static final int AXES_OFFSET = 50;
-    private static final Vector4f XCOLOR = new Vector4f(1, 0.5f, 0.5f, 0.75f);
-    private static final Vector4f YCOLOR = new Vector4f(0.5f, 1, 0.5f, 0.75f);
-    private static final Vector4f ZCOLOR = new Vector4f(0, 0.5f, 1, 0.75f);
+/*******************************************************************************
+ * CVKNewLineRenderable
+ * 
+ * This class renders the indicator line when the user has selected a node in 
+ * the add connection mode.  It is not the line for the connection (which uses
+ * different shaders).  There is only ever one indicator line.  This renderable
+ * is very similar to CVKAxesRenderable in that is draws its line in screen
+ * space and uses the same shaders.
+ * 
+ * This is the equivalent of au.gov.asd.tac.constellation.graph.interaction.
+ * visual.renderables.NewLineRenderable in the JOGL display version.
+ *******************************************************************************/
 
+public class CVKNewLineRenderable extends CVKRenderable {
+    // From CoreInteractiveGraph\src\au\gov\asd\tac\constellation\graph\interaction\visual\renderables\NewLineRenderable.java    
+    public static final int NEW_LINE_WIDTH = 2;
+    public static final Vector4f NEW_LINE_COLOR = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
+    private static final int NUMBER_OF_VERTICES = 2;
 
-    // All the verts are manually calculated for the Axes in CreateVertexBuffer():
-    // - (3 x 2) = X, Y, Z lines for Axes
-    // - (4, 4, 4) =  Arrows at the end of the Axes
-    // - (4, 6, 6) = X, Y, Z labels
-    private static final int NUMBER_OF_VERTICES = 3 * 2 + 4 + 4 + 4 + 4 + 6 + 6;
-    
-    private final Vector3f topRightCorner = new Vector3f();
-    private float pScale = 0;
+    // Copied from NewLineRenderable this is the mechanism for synchronising input
+    // and rendering threads.  Only the last 'model' is used.
+    private NewLineModel model = null;
+    private final BlockingDeque<NewLineModel> modelQueue = new LinkedBlockingDeque<>();    
     
     private final Vertex[] vertices = new Vertex[NUMBER_OF_VERTICES];
     private final VertexUniformBufferObject vertexUBO = new VertexUniformBufferObject();
+    private CVKBuffer cvkStagingBuffer = null;
     private CVKBuffer cvkVertexBuffer = null;
     private List<CVKCommandBuffer> displayCommandBuffers = null;
-    private boolean needsDisplayUpdate = false;
     private ByteBuffer pushConstants = null;
  
     
@@ -176,12 +183,16 @@ public class CVKAxesRenderable extends CVKRenderable {
     
     // ========================> Lifetime <======================== \\
     
-    public CVKAxesRenderable(CVKVisualProcessor visualProcessor) {
+    public CVKNewLineRenderable(CVKVisualProcessor visualProcessor) {
         super(visualProcessor);
-        colourBlend = false;
-        depthTest = false;
-        depthWrite = false;     
-        assemblyTopology = VK_PRIMITIVE_TOPOLOGY_LINE_LIST;
+        colourBlend = true;
+        depthTest = true;
+        depthWrite = true;     
+        depthCompareOperation = VK_COMPARE_OP_ALWAYS;
+        assemblyTopology = VK_PRIMITIVE_TOPOLOGY_LINE_LIST;        
+        logicOpEnable = true;
+        logicOp = VK_LOGIC_OP_INVERT;
+        colourWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT;      
     }
         
     @Override
@@ -220,7 +231,6 @@ public class CVKAxesRenderable extends CVKRenderable {
         cvkVisualProcessor.VerifyInRenderThread();
         CVKAssertNotNull(cvkSwapChain);
         int ret = VK_SUCCESS;
-
                 
         // We only need to recreate these resources if the number of images in 
         // the swapchain changes or if this is the first call after the initial
@@ -238,9 +248,6 @@ public class CVKAxesRenderable extends CVKRenderable {
                 ret = CreatePipelines(cvkSwapChain.GetRenderPassHandle(), displayPipelines);
                 if (VkFailed(ret)) { return ret; }                                                       
             }      
-        } else {
-            // This is the resize path, image count is unchanged.       
-            UpdatePushConstants();
         }
         
         swapChainResourcesDirty = false;
@@ -266,7 +273,7 @@ public class CVKAxesRenderable extends CVKRenderable {
             CVKAssertNull(displayPipelines);
             CVKAssertNull(cvkVertexBuffer);
             CVKAssertNull(displayCommandBuffers);
-        }
+         }
         
         return ret;
     }
@@ -276,161 +283,95 @@ public class CVKAxesRenderable extends CVKRenderable {
     
     private int CreateVertexBuffer(MemoryStack stack) {
         CVKAssertNotNull(cvkSwapChain);
-        int ret = VK_SUCCESS;
         
-        // Size to upper limit, we don't have to draw each one.
-        int size = vertices.length * Vertex.SIZEOF;
-        
-        // Converted from AxesRenderable.java. Keeping comments for reference.
-        int i =  0;
-        // x axis
-        // axesBatch.stage(colorTarget, XCOLOR);
-        // axesBatch.stage(vertexTarget, ZERO_3F);
-        vertices[i++] = new Vertex(ZERO_3F, XCOLOR);
-        // axesBatch.stage(colorTarget, XCOLOR);
-        // axesBatch.stage(vertexTarget, LEN, 0, 0);      
-        vertices[i++] = new Vertex(new Vector3f(LEN,0f,0f), XCOLOR);
-        
-        // arrow
-        // axesBatch.stage(colorTarget, XCOLOR);
-        // axesBatch.stage(vertexTarget, LEN - HEAD, HEAD, 0);
-        vertices[i++] = new Vertex(new Vector3f(LEN - HEAD, HEAD, 0f), XCOLOR);
-        // axesBatch.stage(colorTarget, XCOLOR);
-        // axesBatch.stage(vertexTarget, LEN, 0, 0);
-        vertices[i++] = new Vertex(new Vector3f(LEN, 0f, 0f), XCOLOR);
-        // axesBatch.stage(colorTarget, XCOLOR);
-        // axesBatch.stage(vertexTarget, LEN, 0, 0);
-        vertices[i++] = new Vertex(new Vector3f(LEN, 0f, 0f), XCOLOR);
-        // axesBatch.stage(colorTarget, XCOLOR);
-        // axesBatch.stage(vertexTarget, LEN - HEAD, -HEAD, 0);
-        vertices[i++] = new Vertex(new Vector3f(LEN - HEAD, -HEAD, 0f), XCOLOR);
-
-        // X
-        // axesBatch.stage(colorTarget, XCOLOR);
-        // axesBatch.stage(vertexTarget, LEN + HEAD, HEAD, HEAD);
-        vertices[i++] = new Vertex(new Vector3f(LEN + HEAD, HEAD, HEAD), XCOLOR);
-        // axesBatch.stage(colorTarget, XCOLOR);
-        // axesBatch.stage(vertexTarget, LEN + HEAD, -HEAD, -HEAD);
-        vertices[i++] = new Vertex(new Vector3f(LEN + HEAD, -HEAD, -HEAD), XCOLOR);
-        // axesBatch.stage(colorTarget, XCOLOR);
-        // axesBatch.stage(vertexTarget, LEN + HEAD, HEAD, -HEAD);
-        vertices[i++] = new Vertex(new Vector3f(LEN + HEAD, HEAD, -HEAD), XCOLOR);
-        // axesBatch.stage(colorTarget, XCOLOR);
-        // axesBatch.stage(vertexTarget, LEN + HEAD, -HEAD, HEAD);
-        vertices[i++] = new Vertex(new Vector3f(LEN + HEAD, -HEAD, HEAD), XCOLOR);
-
-        // y axis
-        // axesBatch.stage(colorTarget, YCOLOR);
-        // axesBatch.stage(vertexTarget, ZERO_3F);
-        vertices[i++] = new Vertex(ZERO_3F, YCOLOR);
-        // axesBatch.stage(colorTarget, YCOLOR);
-        // axesBatch.stage(vertexTarget, 0, LEN, 0);
-        vertices[i++] = new Vertex(new Vector3f(0f, LEN, 0f), YCOLOR);
-        // arrow
-        // axesBatch.stage(colorTarget, YCOLOR);
-        // axesBatch.stage(vertexTarget, 0, LEN - HEAD, HEAD);
-        vertices[i++] = new Vertex(new Vector3f(0f, LEN - HEAD, HEAD), YCOLOR);
-        // axesBatch.stage(colorTarget, YCOLOR);
-        // axesBatch.stage(vertexTarget, 0, LEN, 0);
-        vertices[i++] = new Vertex(new Vector3f(0f, LEN, 0f), YCOLOR);
-        // axesBatch.stage(colorTarget, YCOLOR);
-        // axesBatch.stage(vertexTarget, 0, LEN, 0);
-        vertices[i++] = new Vertex(new Vector3f(0f, LEN, 0f), YCOLOR);
-        // axesBatch.stage(colorTarget, YCOLOR);
-        // axesBatch.stage(vertexTarget, 0, LEN - HEAD, -HEAD);
-        vertices[i++] = new Vertex(new Vector3f(0f, LEN - HEAD, -HEAD), YCOLOR);
-        // Y
-        // axesBatch.stage(colorTarget, YCOLOR);
-        // axesBatch.stage(vertexTarget, -HEAD, LEN + HEAD, -HEAD);
-        vertices[i++] = new Vertex(new Vector3f(-HEAD, LEN + HEAD, -HEAD), YCOLOR);
-        // axesBatch.stage(colorTarget, YCOLOR);
-        // axesBatch.stage(vertexTarget, 0, LEN + HEAD, 0);
-        vertices[i++] = new Vertex(new Vector3f(0f, LEN + HEAD, 0f), YCOLOR);
-        // axesBatch.stage(colorTarget, YCOLOR);
-        // axesBatch.stage(vertexTarget, HEAD, LEN + HEAD, -HEAD);
-        vertices[i++] = new Vertex(new Vector3f(HEAD, LEN + HEAD, -HEAD), YCOLOR);
-        // axesBatch.stage(colorTarget, YCOLOR);
-        // axesBatch.stage(vertexTarget, 0, LEN + HEAD, 0);
-        vertices[i++] = new Vertex(new Vector3f(0f, LEN + HEAD, 0f), YCOLOR);
-        // axesBatch.stage(colorTarget, YCOLOR);
-        // axesBatch.stage(vertexTarget, 0, LEN + HEAD, 0);
-        vertices[i++] = new Vertex(new Vector3f(0f, LEN + HEAD, 0f), YCOLOR);
-        // axesBatch.stage(colorTarget, YCOLOR);
-        // axesBatch.stage(vertexTarget, 0, LEN + HEAD, HEAD);
-        vertices[i++] = new Vertex(new Vector3f(0f, LEN + HEAD, HEAD), YCOLOR);
-
-        // z axis
-        // axesBatch.stage(colorTarget, ZCOLOR);
-        // axesBatch.stage(vertexTarget, ZERO_3F);
-        vertices[i++] = new Vertex(ZERO_3F, ZCOLOR);
-        // axesBatch.stage(colorTarget, ZCOLOR);
-        // axesBatch.stage(vertexTarget, 0, 0, LEN);
-        vertices[i++] = new Vertex(new Vector3f(0f, 0f, LEN), ZCOLOR);
-        // arrow
-        // axesBatch.stage(colorTarget, ZCOLOR);
-        // axesBatch.stage(vertexTarget, -HEAD, 0, LEN - HEAD);
-        vertices[i++] = new Vertex(new Vector3f(-HEAD, 0f, LEN - HEAD), ZCOLOR);
-        // axesBatch.stage(colorTarget, ZCOLOR);
-        // axesBatch.stage(vertexTarget, 0, 0, LEN);
-        vertices[i++] = new Vertex(new Vector3f(0f, 0f, LEN), ZCOLOR);
-        // axesBatch.stage(colorTarget, ZCOLOR);
-        // axesBatch.stage(vertexTarget, 0, 0, LEN);
-        vertices[i++] = new Vertex(new Vector3f(0f, 0f, LEN), ZCOLOR);
-        // axesBatch.stage(colorTarget, ZCOLOR);
-        // axesBatch.stage(vertexTarget, HEAD, 0, LEN - HEAD);
-        vertices[i++] = new Vertex(new Vector3f(HEAD, 0f, LEN - HEAD), ZCOLOR);
-        // Z
-        // axesBatch.stage(colorTarget, ZCOLOR);
-        // axesBatch.stage(vertexTarget, -HEAD, HEAD, LEN + HEAD);
-        vertices[i++] = new Vertex(new Vector3f(-HEAD, HEAD, LEN + HEAD), ZCOLOR);
-        // axesBatch.stage(colorTarget, ZCOLOR);
-        // axesBatch.stage(vertexTarget, HEAD, HEAD, LEN + HEAD);
-        vertices[i++] = new Vertex(new Vector3f(HEAD, HEAD, LEN + HEAD), ZCOLOR);
-        // axesBatch.stage(colorTarget, ZCOLOR);
-        // axesBatch.stage(vertexTarget, HEAD, HEAD, LEN + HEAD);
-        vertices[i++] = new Vertex(new Vector3f(HEAD, HEAD, LEN + HEAD), ZCOLOR);
-        // axesBatch.stage(colorTarget, ZCOLOR);
-        // axesBatch.stage(vertexTarget, -HEAD, -HEAD, LEN + HEAD);
-        vertices[i++] = new Vertex(new Vector3f(-HEAD, -HEAD, LEN + HEAD), ZCOLOR);
-        // axesBatch.stage(colorTarget, ZCOLOR);
-        // axesBatch.stage(vertexTarget, -HEAD, -HEAD, LEN + HEAD);
-        vertices[i++] = new Vertex(new Vector3f(-HEAD, -HEAD, LEN + HEAD), ZCOLOR);
-        // axesBatch.stage(colorTarget, ZCOLOR);
-        // axesBatch.stage(vertexTarget, HEAD, -HEAD, LEN + HEAD);
-        vertices[i++] = new Vertex(new Vector3f(HEAD, -HEAD, LEN + HEAD), ZCOLOR);
-        
+        // Allocate the vertex objects
+        vertices[0] = new Vertex(ZERO_3F, NEW_LINE_COLOR);
+        vertices[1] = new Vertex(ZERO_3F, NEW_LINE_COLOR);        
          
         // Staging buffer so our VB can be device local (most performant memory)
-        CVKBuffer cvkStagingBuffer = CVKBuffer.Create(size,
-                                                      VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-                                                      VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-                                                      GetLogger(),
-                                                      "CVKAxesRenderable.CreateVertexBuffer cvkStagingBuffer");
-
-        PointerBuffer data = stack.mallocPointer(1);
-        vkMapMemory(CVKDevice.GetVkDevice(), cvkStagingBuffer.GetMemoryBufferHandle(), 0, size, 0, data);
-        if (VkFailed(ret)) { return ret; }
-        {
-            Vertex.CopyTo(data.getByteBuffer(0, size), vertices);
-        }
-        vkUnmapMemory(CVKDevice.GetVkDevice(), cvkStagingBuffer.GetMemoryBufferHandle());
+        final int size = vertices.length * Vertex.SIZEOF;
+        cvkStagingBuffer = CVKBuffer.Create(size,
+                                            VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                                            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                                            GetLogger(),
+                                            "CVKNewLineRenderable.CreateVertexBuffer cvkStagingBuffer");
         
-        // Create and stage into the actual VB which will be device local
+        // Create the actual VB which will be device local
         cvkVertexBuffer = CVKBuffer.Create(size,
                                            VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
                                            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
                                            GetLogger(),
-                                           "CVKAxesRenderable.CreateVertexBuffers cvkStagingBuffer");
+                                           "CVKNewLineRenderable.CreateVertexBuffers cvkStagingBuffer");
         cvkVertexBuffer.CopyFrom(cvkStagingBuffer);
-        
-        // Cleanup
-        cvkStagingBuffer.Destroy();
-        
-        return ret;  
+       
+        return UpdateVertexBuffer(stack);  
     }
     
+    private int UpdateVertexBuffer(MemoryStack stack) {
+        int ret = VK_SUCCESS;
+        
+        final Camera camera = cvkVisualProcessor.getDisplayCamera();
+        NewLineModel updatedModel = modelQueue.peek();
+        
+        // Logic copied from NewLineRenderable.  Looks like it is purging the 
+        // queue of any models with a different camera to the current one.
+        while (updatedModel != null && updatedModel.getCamera() != camera) {
+            modelQueue.remove();
+            updatedModel = modelQueue.peek();
+        }     
+        
+        // This looks like it is finding the last (most recent) model that matches
+        // the current camera, adding it back to the queue after removing all other
+        // model.
+        if (updatedModel != null) {
+            updatedModel = modelQueue.remove();
+            NewLineModel nextModel = modelQueue.peek();
+            while (nextModel != null && nextModel.getCamera() == camera) {
+                updatedModel = modelQueue.remove();
+                nextModel = modelQueue.peek();
+            }
+            modelQueue.addFirst(updatedModel);
+        }
+        model = updatedModel;
+        
+        if (model != null && !model.isClear()) {        
+            // Update our vertex objects.  Note there was a weird bug when instead
+            // of setting a vertex to a new object vertices[n].vertex.set() was
+            // used.  The result would move the axes renderable.  I didn't have
+            // time to investigate but there could be something hokey going with
+            // memory on the Java heap?
+            vertices[0] = new Vertex(model.getStartLocation(), NEW_LINE_COLOR);
+            vertices[1] = new Vertex(model.getEndLocation(), NEW_LINE_COLOR);
+            // BROKEN.  Hopefully someone more knowledgable about Java might be
+            // able to spot the problem.
+//            vertices[0].vertex.set(model.getStartLocation());
+//            vertices[1].vertex.set(model.getEndLocation());
+
+            // Update the staging buffer
+            final int size = vertices.length * Vertex.SIZEOF;
+            PointerBuffer data = stack.mallocPointer(1);
+            vkMapMemory(CVKDevice.GetVkDevice(), cvkStagingBuffer.GetMemoryBufferHandle(), 0, size, 0, data);
+            if (VkFailed(ret)) { return ret; }
+            {
+                Vertex.CopyTo(data.getByteBuffer(0, size), vertices);
+            }
+            vkUnmapMemory(CVKDevice.GetVkDevice(), cvkStagingBuffer.GetMemoryBufferHandle());     
+
+            // Update the vertex buffer
+            cvkVertexBuffer.CopyFrom(cvkStagingBuffer);
+        }
+        
+        return ret;
+    }
+            
     @Override
-    public int GetVertexCount() { return NUMBER_OF_VERTICES; }    
+    public int GetVertexCount() { 
+        if (model != null && !model.isClear()) {
+            return NUMBER_OF_VERTICES;
+        } else {
+            return 0;
+        }
+    }    
     
     private void DestroyVertexBuffer() {
         if (null != cvkVertexBuffer) {
@@ -457,34 +398,8 @@ public class CVKAxesRenderable extends CVKRenderable {
     
     private void UpdatePushConstants(){
         CVKAssertNotNull(cvkSwapChain);
-            
-        final int[] viewport = cvkSwapChain.GetViewport();             
-        final int dx = cvkSwapChain.GetWidth() / 2 - AXES_OFFSET;
-        final int dy = cvkSwapChain.GetHeight() / 2 - AXES_OFFSET;
-        pScale = CalculateProjectionScale(viewport);
-        Graphics3DUtilities.moveByProjection(ZERO_3F, IDENTITY_44F, viewport, dx, dy, topRightCorner);
         
-        // LIFTED FROM AxesRenerable.display(...)
-        // Extract the rotation matrix from the mvp matrix.
-        final Matrix44f rotationMatrix = new Matrix44f();
-        cvkVisualProcessor.getDisplayModelViewProjectionMatrix().getRotationMatrix(rotationMatrix);
-
-        // Scale down to size.
-        final Matrix44f scalingMatrix = new Matrix44f();
-        scalingMatrix.makeScalingMatrix(pScale, pScale, 0);
-        final Matrix44f srMatrix = new Matrix44f();
-        srMatrix.multiply(scalingMatrix, rotationMatrix);
-
-        // Translate to the top right corner.
-        final Matrix44f translationMatrix = new Matrix44f();
-        translationMatrix.makeTranslationMatrix(topRightCorner.getX(), 
-                                                topRightCorner.getY(), 
-                                                topRightCorner.getZ());       
-        
-        // Calculate the model-view-projection matrix
-        vertexUBO.mvpMatrix.multiply(translationMatrix, srMatrix);
-        
-        // Update the push constants data
+        vertexUBO.mvpMatrix.set(cvkVisualProcessor.getDisplayModelViewProjectionMatrix());        
         vertexUBO.CopyTo(pushConstants);
         pushConstants.flip();        
     }
@@ -510,17 +425,17 @@ public class CVKAxesRenderable extends CVKRenderable {
         for (int i = 0; i < imageCount; ++i) {
             CVKCommandBuffer buffer = CVKCommandBuffer.Create(VK_COMMAND_BUFFER_LEVEL_SECONDARY,
                                                               GetLogger(),
-                                                              String.format("CVKAxesRenderable %d", i));
+                                                              String.format("CVKNewLineRenderable %d", i));
             displayCommandBuffers.add(buffer);
         }
         
-        GetLogger().info("Init Command Buffer - CVKAxesRenderable");
+        GetLogger().info("Init Command Buffer - CVKNewLineRenderable");
         
         return ret;
     }
     
     @Override
-    public VkCommandBuffer GetDisplayCommandBuffer(int imageIndex) {
+    public VkCommandBuffer GetDisplayCommandBuffer(int imageIndex) {        
         return displayCommandBuffers.get(imageIndex).GetVKCommandBuffer(); 
     }     
     
@@ -528,7 +443,7 @@ public class CVKAxesRenderable extends CVKRenderable {
     public int RecordDisplayCommandBuffer(VkCommandBufferInheritanceInfo inheritanceInfo, int imageIndex) {
         CVKAssertNotNull(cvkSwapChain);
         cvkVisualProcessor.VerifyInRenderThread();
-        int ret;
+        int ret = VK_SUCCESS;
                     
         CVKCommandBuffer commandBuffer = displayCommandBuffers.get(imageIndex);
         CVKAssertNotNull(commandBuffer);
@@ -565,7 +480,7 @@ public class CVKAxesRenderable extends CVKRenderable {
     
     @Override
     public void IncrementDescriptorTypeRequirements(CVKDescriptorPoolRequirements reqs, CVKDescriptorPoolRequirements perImageReqs) {
-        // No descriptor sets required because axes use push constants instead of descriptor bound uniform buffers.
+        // No descriptor sets required because this class uses push constants instead of descriptor bound uniform buffers.
     }
   
     @Override
@@ -611,7 +526,7 @@ public class CVKAxesRenderable extends CVKRenderable {
     
     @Override
     public boolean NeedsDisplayUpdate() {
-        return needsDisplayUpdate | descriptorPoolResourcesDirty | swapChainResourcesDirty;
+        return  modelQueue.size() > 0;
     }
 
     @Override
@@ -623,44 +538,20 @@ public class CVKAxesRenderable extends CVKRenderable {
         if (swapChainResourcesDirty) {
             ret = CreateSwapChainResources();
             if (VkFailed(ret)) { return ret; }
-        }           
+        }    
+        try (MemoryStack stack = stackPush()) {
+            ret = UpdateVertexBuffer(stack);
+            if (VkFailed(ret)) { return ret; }
+        }    
 
-        UpdatePushConstants();
- 
-        needsDisplayUpdate = false;
+        UpdatePushConstants(); 
         return ret;
     }
     
     
     // ========================> Tasks <======================== \\
     
-    public CVKRenderUpdateTask TaskUpdateCamera() {
-        //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
-
-        
-        //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.ProcessRenderTasks) ===//
-        return () -> {
-            cvkVisualProcessor.VerifyInRenderThread();                      
-            needsDisplayUpdate = true;
-        };
-    }  
-
-
-    // ========================> Helpers <======================== \\ 
-         
-    private float CalculateProjectionScale(final int[] viewport) {
-        // calculate the number of pixels a scene object of y-length 1 projects to.
-        final Vector3f unitPosition = new Vector3f(0, 1, 0);
-        final Vector4f projectedOrigin = new Vector4f();
-        Graphics3DUtilities.project(ZERO_3F, IDENTITY_44F, viewport, projectedOrigin);
-        final Vector4f projectedIdentity = new Vector4f();
-        Graphics3DUtilities.project(unitPosition, IDENTITY_44F, viewport, projectedIdentity);
-        float yScale = projectedIdentity.a[1] - projectedOrigin.a[1];
-        
-        // Vulkan flips the Y compared to GL, this has no effect in world space but when we are premultiplying
-        // by the projection matrix we enter clip space, and here we do need to flip Y.
-        yScale = -yScale;
-
-        return 25.0f / yScale;
-    } 
+    public void queueModel(final NewLineModel model) {
+        modelQueue.add(model);
+    }
 }

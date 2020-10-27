@@ -114,12 +114,21 @@ public abstract class CVKRenderable {
     protected Long hFragmentShaderModule = VK_NULL_HANDLE;    
     protected List<Long> displayPipelines = null;
     
-    // Render states that need to be overridden by each subclass
+    // Render states that can be overridden by each subclass
     protected boolean colourBlend = true;
     protected boolean depthTest = true;
     protected boolean depthWrite = true;
+    protected boolean logicOpEnable = false;
     protected int depthCompareOperation = VK_COMPARE_OP_LESS_OR_EQUAL;
     protected int assemblyTopology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
+    protected int srcColourBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+    protected int dstColourBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+    protected int colourBlendOp = VK_BLEND_OP_ADD;
+    protected int srcAlphaBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+    protected int dstAlphaBlendFactor = VK_BLEND_FACTOR_DST_ALPHA;
+    protected int alphaBlendOp = VK_BLEND_OP_ADD;    
+    protected int logicOp = VK_LOGIC_OP_COPY;
+    protected int colourWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     
     // Resource states, not every type will be used by each renderable
     protected CVKRenderableResourceState vertexUBOState = CVK_RESOURCE_CLEAN;
@@ -462,21 +471,21 @@ public abstract class CVKRenderable {
     
                 // ===> COLOR BLENDING <===
                 VkPipelineColorBlendAttachmentState.Buffer colorBlendAttachment = VkPipelineColorBlendAttachmentState.callocStack(1, stack);
-                colorBlendAttachment.colorWriteMask(VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT);
-                colorBlendAttachment.blendEnable(colourBlend);   
+                colorBlendAttachment.colorWriteMask(colourWriteMask);
+                colorBlendAttachment.blendEnable(colourBlend);
                 if (colourBlend) {
-                    colorBlendAttachment.srcColorBlendFactor(VK_BLEND_FACTOR_SRC_ALPHA);
-                    colorBlendAttachment.dstColorBlendFactor(VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA);
-                    colorBlendAttachment.colorBlendOp(VK_BLEND_OP_ADD);
-                    colorBlendAttachment.srcAlphaBlendFactor(VK_BLEND_FACTOR_SRC_ALPHA);
-                    colorBlendAttachment.dstAlphaBlendFactor(VK_BLEND_FACTOR_DST_ALPHA);
-                    colorBlendAttachment.alphaBlendOp(VK_BLEND_OP_ADD);   
+                    colorBlendAttachment.srcColorBlendFactor(srcColourBlendFactor);
+                    colorBlendAttachment.dstColorBlendFactor(dstColourBlendFactor);
+                    colorBlendAttachment.colorBlendOp(colourBlendOp);
+                    colorBlendAttachment.srcAlphaBlendFactor(srcAlphaBlendFactor);
+                    colorBlendAttachment.dstAlphaBlendFactor(dstAlphaBlendFactor);
+                    colorBlendAttachment.alphaBlendOp(alphaBlendOp);  
                 }
 
                 VkPipelineColorBlendStateCreateInfo colorBlending = VkPipelineColorBlendStateCreateInfo.callocStack(stack);
                 colorBlending.sType(VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO);
-                colorBlending.logicOpEnable(false);
-                colorBlending.logicOp(VK_LOGIC_OP_COPY);
+                colorBlending.logicOpEnable(logicOpEnable);
+                colorBlending.logicOp(logicOp);
                 colorBlending.pAttachments(colorBlendAttachment);
                 colorBlending.blendConstants(stack.floats(0.0f, 0.0f, 0.0f, 0.0f));
 

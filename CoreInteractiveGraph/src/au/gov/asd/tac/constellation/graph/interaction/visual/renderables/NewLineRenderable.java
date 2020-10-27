@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.visual.renderables;
 
+import au.gov.asd.tac.constellation.utilities.visual.NewLineModel;
 import static au.gov.asd.tac.constellation.graph.interaction.visual.renderables.NewLineRenderable.NEW_LINE_COLOR;
 import static au.gov.asd.tac.constellation.graph.interaction.visual.renderables.NewLineRenderable.NEW_LINE_WIDTH;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;

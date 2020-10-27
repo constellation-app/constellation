@@ -15,8 +15,11 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan;
 
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKMissingEnums;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
+import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
+import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDescriptorPool.CVKDescriptorPoolRequirements;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
@@ -384,7 +387,10 @@ public class CVKRenderer implements ComponentListener {
 
                 // TODO Hydra: may be more efficient to add all the visible command buffers to a master list then 
                 // call the following line once with the whole list
-                vkCmdExecuteCommands(primaryCommandBuffer, el.GetDisplayCommandBuffer(imageIndex));
+                VkCommandBuffer commandBuffer = el.GetDisplayCommandBuffer(imageIndex);
+                if (commandBuffer != null) {
+                    vkCmdExecuteCommands(primaryCommandBuffer, commandBuffer);
+                }
             }
         }
         
@@ -691,6 +697,7 @@ public class CVKRenderer implements ComponentListener {
     
    /**
      * @param file to save the screenshot to
+     * @return 
      */
     public CVKRenderUpdateTask TaskRequestScreenshot(File file) {
         //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
@@ -701,6 +708,16 @@ public class CVKRenderer implements ComponentListener {
             requestScreenshotFile = file;
         };
     }
+    
+    public CVKRenderUpdateTask BackgroundColourChanged(final VisualChange change, final VisualAccess access) {
+        final ConstellationColor backgroundColour = access.getBackgroundColor();
+        
+        return () -> {
+            clr.setR(backgroundColour.getRed());
+            clr.setG(backgroundColour.getGreen());
+            clr.setB(backgroundColour.getBlue());
+        };
+    }    
 
     int[] getViewport() {
         final int[] viewport = new int[4];

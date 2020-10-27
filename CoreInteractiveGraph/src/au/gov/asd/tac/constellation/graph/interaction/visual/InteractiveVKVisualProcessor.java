@@ -22,7 +22,7 @@ import au.gov.asd.tac.constellation.graph.interaction.framework.InteractionEvent
 import au.gov.asd.tac.constellation.graph.interaction.framework.VisualAnnotator;
 import au.gov.asd.tac.constellation.graph.interaction.framework.VisualInteraction;
 import au.gov.asd.tac.constellation.graph.hittest.HitTestRequest;
-import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.NewLineModel;
+import au.gov.asd.tac.constellation.utilities.visual.NewLineModel;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionBoxModel;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionBoxRenderable;
 import au.gov.asd.tac.constellation.graph.visual.utilities.VisualGraphUtilities;
@@ -35,8 +35,6 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualChangeBuilder;
 import au.gov.asd.tac.constellation.utilities.visual.VisualOperation;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
-import au.gov.asd.tac.constellation.utilities.graphics.Vector2i;
-import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssertNotNull;
@@ -50,7 +48,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * An extension of the {@link GLVisualProcessor} that adds support for user
@@ -178,7 +175,7 @@ public class InteractiveVKVisualProcessor extends CVKVisualProcessor implements 
 
     @Override
     public VisualOperation setNewLineModel(NewLineModel model) {
-//        newLineRenderable.queueModel(model);
+        cvkNewLineRenderable.queueModel(model);
         return () -> Arrays.asList(new VisualChangeBuilder(VisualProperty.EXTERNAL_CHANGE)
                 .withId(newLineUpdateId).build());
     }

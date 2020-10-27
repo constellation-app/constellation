@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.visual.vulkan;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKIconTextureAtlas;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
-import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.graphics.Frustum;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
@@ -29,12 +28,12 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualOperation;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor.VisualChangeProcessor;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKAxesRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKFPSRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKHitTester;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKIconsRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKLabelsRenderable;
+import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKNewLineRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKPointsRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKGraphLogger;
@@ -71,6 +70,7 @@ public class CVKVisualProcessor extends VisualProcessor {
     private final Frustum viewFrustum = new Frustum();
     private final Matrix44f projectionMatrix = new Matrix44f();       
     protected final CVKHitTester cvkHitTester;
+    protected final CVKNewLineRenderable cvkNewLineRenderable;
     private final CVKAxesRenderable cvkAxes;
     private final CVKFPSRenderable cvkFPS;
     private final CVKIconsRenderable cvkIcons;
@@ -111,11 +111,13 @@ public class CVKVisualProcessor extends VisualProcessor {
             cvkCanvas = new CVKCanvas(this);   
 
             cvkHitTester = new CVKHitTester(this);     
-            cvkCanvas.AddRenderable(cvkHitTester);  
+            cvkCanvas.AddRenderable(cvkHitTester);              
             cvkIcons = new CVKIconsRenderable(this);
             cvkCanvas.AddRenderable(cvkIcons);
             cvkLabels = new CVKLabelsRenderable(this);
             cvkCanvas.AddRenderable(cvkLabels);
+            cvkNewLineRenderable = new CVKNewLineRenderable(this);
+            cvkCanvas.AddRenderable(cvkNewLineRenderable); 
             cvkAxes = new CVKAxesRenderable(this);
             cvkCanvas.AddRenderable(cvkAxes);            
             cvkPoints = new CVKPointsRenderable(this);   
@@ -596,7 +598,9 @@ public class CVKVisualProcessor extends VisualProcessor {
                 };
             case BACKGROUND_COLOR:
                 return (change, access) -> {
-                    final ConstellationColor backgroundColor = access.getBackgroundColor();
+                    if (cvkCanvas.GetRenderer() != null) {
+                        addTask(cvkCanvas.GetRenderer().BackgroundColourChanged(change, access));
+                    }                                  
 //                    addTask(gl -> {
 //                        graphBackgroundColor = new float[]{backgroundColor.getRed(), backgroundColor.getGreen(), backgroundColor.getBlue(), 1};
 //                    });
@@ -717,7 +721,7 @@ public class CVKVisualProcessor extends VisualProcessor {
                 };
         }     
     }
-        
+         
     public void SwapChainRecreated(CVKSwapChain cvkSwapChain) {     
         // Create the projection matrix, and load it on the projection matrix stack.
         viewFrustum.setPerspective(FIELD_OF_VIEW, (float)cvkSwapChain.GetWidth() / (float)cvkSwapChain.GetHeight(), PERSPECTIVE_NEAR, PERSPECTIVE_FAR);           

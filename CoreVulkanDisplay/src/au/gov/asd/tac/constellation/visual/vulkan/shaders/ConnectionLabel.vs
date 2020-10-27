@@ -34,15 +34,16 @@ const float LABEL_DEPTH_PUSHBACK = 0.001;
 const float DEPTH_NEAR = -1.0;
 
 
-// === UNIFORMS ===
-// .xyz = world coordinates of node.
-// .a = radius of node.
-layout(binding = 0) uniform samplerBuffer xyzTexture;
-
-layout(std140, binding = 1) uniform UniformBlock {
+// === PUSH CONSTANTS ===
+layout(std140, push_constant) uniform VertexPushConstant {
     // Matrix to project from world coordinates to camera coordinates
     mat4 mvMatrix;
+} vpc;
 
+
+// === UNIFORMS ===
+
+layout(std140, binding = 0) uniform UniformBlock {
     // Each column is a connection label with the following structure:
     // [0..2] rgb colour (note label colours do not habve an alpha)
     // [3] label size
@@ -59,6 +60,10 @@ layout(std140, binding = 1) uniform UniformBlock {
     // Used to draw the label background.
     vec4 backgroundColor;
 } ub;
+
+// .xyz = world coordinates of node.
+// .a = radius of node.
+layout(binding = 1) uniform samplerBuffer xyzTexture;
 
 
 // === PER VERTEX DATA IN ===

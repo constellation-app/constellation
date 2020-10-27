@@ -56,8 +56,6 @@ public class CVKFPSRenderable extends CVKRenderable {
     private static final int ICON_MASK = 0xffff;    
     private static final int DIGIT_ICON_OFFSET = 4;
     private static final int FPS_OFFSET = 50;
-    private static final Matrix44f IDENTITY_44F = Matrix44f.identity();
-    private static final Vector3f ZERO_3F = new Vector3f(0, 0, 0);
     
     private final Vector3f bottomRightCorner = new Vector3f();
     private float pyScale = 0;
