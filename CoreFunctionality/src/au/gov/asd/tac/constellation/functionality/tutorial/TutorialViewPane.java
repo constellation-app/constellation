@@ -73,7 +73,7 @@ import org.w3c.dom.events.EventTarget;
 public class TutorialViewPane extends BorderPane {
 
     private final BorderPane tutorialViewPane;
-
+    
     public static final String MOUSE_IMAGE = "resources/mouse3.png";
     public static final String MENU_IMAGE = "resources/sidebar.png";
     public static final String ERROR_BUTTON_MESSAGE = String.format("%s Information", BrandingUtilities.APPLICATION_NAME);
@@ -96,7 +96,7 @@ public class TutorialViewPane extends BorderPane {
     private final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
     public TutorialViewPane() {
-        tutorialViewPane = new BorderPane();
+        tutorialViewPane = new BorderPane(); 
         ConstellationSecurityManager.startSecurityLaterFX(() -> {
             Platform.setImplicitExit(false);
 
@@ -124,12 +124,12 @@ public class TutorialViewPane extends BorderPane {
             //or error messages
             VBox rightVBox = new VBox();
             splitPane.getItems().add(rightVBox);
-
+            
             splitPane.getDividers().get(0).setPosition(SPLIT_POS);
             
-            // Create a checkbox to change users preference regarding showing the Tutorial Page on startup
+            // Create a checkbox to change users preference regarding showing the Tutorial Page on startup 
             final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-            CheckBox showOnStartUpCheckBox = new CheckBox("Show On Startup");
+            final CheckBox showOnStartUpCheckBox = new CheckBox("Show on Startup");
             rightVBox.getChildren().add(showOnStartUpCheckBox);
             rightVBox.setAlignment(Pos.TOP_RIGHT);
             rightVBox.setBackground(new Background(new BackgroundFill(Color.valueOf("#333333"), CornerRadii.EMPTY, Insets.EMPTY)));
