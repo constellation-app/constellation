@@ -18,8 +18,6 @@ package au.gov.asd.tac.constellation.graph.attribute;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -94,16 +92,10 @@ public class ZonedDateTimeAttributeDescriptionNGTest {
         assertEquals(result, expResult);
     }
 
-    @Test
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void testParseWithInvalidDate() {
         final ZonedDateTimeAttributeDescription instance = new ZonedDateTimeAttributeDescription();
         final String value = "0000-00-00T00:00:00.000";
-        try {
-            final ZonedDateTime result = instance.convertFromString(value);
-        } catch (final IllegalArgumentException ex) {
-            assertTrue(ex != null);
-            return;
-        }
-        fail("The invalid datetime was parsed successfully?");
+        instance.convertFromString(value);
     }
 }
