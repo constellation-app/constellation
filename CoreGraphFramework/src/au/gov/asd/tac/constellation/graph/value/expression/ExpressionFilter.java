@@ -53,8 +53,8 @@ import java.util.Map;
  */
 public class ExpressionFilter {
 
-    private static final Map<Operator, Class> OPERATOR_CLASSES = new EnumMap<>(Operator.class);
-    private static final Map<Operator, Class> CONVERTER_CLASSES = new EnumMap<>(Operator.class);
+    private static final Map<Operator, Class<?>> OPERATOR_CLASSES = new EnumMap<>(Operator.class);
+    private static final Map<Operator, Class<?>> CONVERTER_CLASSES = new EnumMap<>(Operator.class);
 
     static {
         OPERATOR_CLASSES.put(Operator.ADD, Sum.class);
@@ -84,57 +84,63 @@ public class ExpressionFilter {
         // added private constructor to hide implicit public constructor - S1118.
     }
 
+    private static IndexedReadable<?> createOneReadable(List<Expression> children, IndexedReadableProvider indexedReadableProvider, ConverterRegistry converterRegistry) {
+        final IndexedReadable<?> indexedReadable = createIndexedReadable(children.get(0), indexedReadableProvider, converterRegistry);
+        if (indexedReadable == null) {
+            throw new IllegalArgumentException("Invalid expression size: " + children.size());
+        }
+        return indexedReadable;
+    }
+
+    private static IndexedReadable<?> createTwoReadable(List<Expression> children, IndexedReadableProvider indexedReadableProvider, ConverterRegistry converterRegistry) {
+        final OperatorExpression operator = (OperatorExpression) children.get(0);
+        final Expression right = children.get(1);
+
+        final Class converterClass = CONVERTER_CLASSES.get(operator.getOperator());
+
+        final IndexedReadable<?> rightIndexedReadable = createIndexedReadable(right, indexedReadableProvider, converterRegistry);
+
+        if (rightIndexedReadable == null) {
+            throw new IllegalArgumentException("Unable to perform unary operation on constant");
+        }
+
+        return Filter.createFilter(rightIndexedReadable, converterClass, converterRegistry);
+    }
+
+    private static IndexedReadable<?> createThreeReadable(List<Expression> children, IndexedReadableProvider indexedReadableProvider, ConverterRegistry converterRegistry) {
+        final Expression left = children.get(0);
+        final OperatorExpression operator = (OperatorExpression) children.get(1);
+        final Expression right = children.get(2);
+
+        final Class operatorClass = OPERATOR_CLASSES.get(operator.getOperator());
+
+        final IndexedReadable<?> leftIndexedReadable = createIndexedReadable(left, indexedReadableProvider, converterRegistry);
+        final IndexedReadable<?> rightIndexedReadable = createIndexedReadable(right, indexedReadableProvider, converterRegistry);
+
+        if (leftIndexedReadable == null) {
+            final String leftContent = ((StringExpression) left).getContent();
+            if (rightIndexedReadable == null) {
+                throw new IllegalArgumentException("Unable to perform operator on 2 constants");
+            }
+            return Filter.createFilter(leftContent, rightIndexedReadable, operatorClass, converterRegistry);
+        } else if (rightIndexedReadable == null) {
+            final String rightContent = ((StringExpression) right).getContent();
+            return Filter.createFilter(leftIndexedReadable, rightContent, operatorClass, converterRegistry);
+        } else {
+            return Filter.createFilter(leftIndexedReadable, rightIndexedReadable, operatorClass, converterRegistry);
+        }
+    }
+
     public static IndexedReadable<?> createExpressionReadable(SequenceExpression expression, IndexedReadableProvider indexedReadableProvider, ConverterRegistry converterRegistry) {
 
         final List<Expression> children = expression.getUnmodifiableChildren();
         switch (children.size()) {
-            case 1: {
-                final IndexedReadable<?> indexedReadable = createIndexedReadable(children.get(0), indexedReadableProvider, converterRegistry);
-                if (indexedReadable == null) {
-                    throw new IllegalArgumentException("Invalid expression size: " + children.size());
-                }
-                return indexedReadable;
-            }
-
-            case 2: {
-                final OperatorExpression operator = (OperatorExpression) children.get(0);
-                final Expression right = children.get(1);
-
-                final Class converterClass = CONVERTER_CLASSES.get(operator.getOperator());
-
-                final IndexedReadable<?> rightIndexedReadable = createIndexedReadable(right, indexedReadableProvider, converterRegistry);
-
-                if (rightIndexedReadable == null) {
-                    throw new IllegalArgumentException("Unable to perform unary operation on constant");
-                }
-
-                return Filter.createFilter(rightIndexedReadable, converterClass, converterRegistry);
-            }
-
-            case 3: {
-                final Expression left = children.get(0);
-                final OperatorExpression operator = (OperatorExpression) children.get(1);
-                final Expression right = children.get(2);
-
-                final Class operatorClass = OPERATOR_CLASSES.get(operator.getOperator());
-
-                final IndexedReadable<?> leftIndexedReadable = createIndexedReadable(left, indexedReadableProvider, converterRegistry);
-                final IndexedReadable<?> rightIndexedReadable = createIndexedReadable(right, indexedReadableProvider, converterRegistry);
-
-                if (leftIndexedReadable == null) {
-                    final String leftContent = ((StringExpression) left).getContent();
-                    if (rightIndexedReadable == null) {
-                        throw new IllegalArgumentException("Unable to perform operator on 2 constants");
-                    }
-                    return Filter.createFilter(leftContent, rightIndexedReadable, operatorClass, converterRegistry);
-                } else if (rightIndexedReadable == null) {
-                    final String rightContent = ((StringExpression) right).getContent();
-                    return Filter.createFilter(leftIndexedReadable, rightContent, operatorClass, converterRegistry);
-                } else {
-                    return Filter.createFilter(leftIndexedReadable, rightIndexedReadable, operatorClass, converterRegistry);
-                }
-            }
-
+            case 1:
+                return createOneReadable(children, indexedReadableProvider, converterRegistry);
+            case 2:
+                return createTwoReadable(children, indexedReadableProvider, converterRegistry);
+            case 3:
+                return createThreeReadable(children, indexedReadableProvider, converterRegistry);
             default:
                 throw new IllegalArgumentException("Invalid expression size: " + children.size());
         }

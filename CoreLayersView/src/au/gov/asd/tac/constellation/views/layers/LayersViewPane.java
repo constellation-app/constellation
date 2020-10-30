@@ -260,26 +260,21 @@ public class LayersViewPane extends BorderPane {
             }
 
             switch (GridPane.getColumnIndex(item)) {
-                case 0: {
+                case 0:
                     index = Integer.parseInt(((Label) item).getText());
                     break;
-                }
-                case 1: {
+                case 1:
                     visible = ((CheckBox) item).isSelected();
                     break;
-                }
-                case 2: {
+                case 2:
                     vxQuery = ((TextArea) item).getText();
                     break;
-                }
-                case 3: {
+                case 3:
                     txQuery = ((TextArea) item).getText();
                     break;
-                }
-                case 4: {
+                case 4:
                     description = ((TextArea) item).getText();
                     break;
-                }
                 default: {
                     break;
                 }

@@ -27,26 +27,26 @@ import java.util.function.Function;
 public class OperatorRegistry {
 
     private final String name;
-    private final List<FunctionRecord> functions = new ArrayList<>();
-    private final List<BiFunctionRecord> biFunctions = new ArrayList<>();
+    private final List<FunctionRecord<?, ?>> functions = new ArrayList<>();
+    private final List<BiFunctionRecord<?, ?, ?>> biFunctions = new ArrayList<>();
 
     public OperatorRegistry(String name) {
         this.name = name;
     }
 
     public final <P, R> OperatorRegistry register(Class<P> parameterClass, Class<R> resultClass, Function<? super P, ? extends R> function) {
-        functions.add(new FunctionRecord(parameterClass, function));
+        functions.add(new FunctionRecord<P, R>(parameterClass, function));
         return this;
     }
 
     public final <P1, P2, R> OperatorRegistry register(Class<P1> parameter1Class, Class<P2> parameter2Class, Class<R> resultClass, BiFunction<? super P1, ? super P2, ? extends R> biFunction) {
-        biFunctions.add(new BiFunctionRecord(parameter1Class, parameter2Class, biFunction));
+        biFunctions.add(new BiFunctionRecord<P1, P2, R>(parameter1Class, parameter2Class, biFunction));
         return this;
     }
 
     public Object apply(Object parameter) {
         final Class<?> parameterClass = parameter.getClass();
-        final List<FunctionRecord> applicableRecords = new ArrayList<>();
+        final List<FunctionRecord<?, ?>> applicableRecords = new ArrayList<>();
         functions.forEach(function -> {
             if (function.isApplicable(parameterClass)) {
                 boolean insert = true;
@@ -86,25 +86,27 @@ public class OperatorRegistry {
     public Object apply(Object parameter1, Object parameter2) {
         final Class<?> parameter1Class = parameter1.getClass();
         final Class<?> parameter2Class = parameter2.getClass();
-        final List<BiFunctionRecord> applicableRecords = new ArrayList<>();
+        final List<BiFunctionRecord<?, ?, ?>> applicableRecords = new ArrayList<>();
         biFunctions.forEach(biFunction -> {
             if (biFunction.isApplicable(parameter1Class, parameter2Class)) {
                 boolean insert = true;
-                for (int i = 0; i < applicableRecords.size(); i++) {
-                    switch (biFunction.compareTo(applicableRecords.get(i))) {
+                int count = 0;
+                while (count < applicableRecords.size()) {
+                    switch (biFunction.compareTo(applicableRecords.get(count))) {
                         case -1:
                             insert = false;
                             break;
                         case 0:
                             break;
                         case 1:
-                            applicableRecords.remove(i);
-                            i -= 1;
+                            applicableRecords.remove(count);
+                            count -= 1;
                             break;
                         default:
                             // Default case added - S131
                             break;
                     }
+                    count++;
                 }
                 if (insert) {
                     applicableRecords.add(biFunction);
@@ -121,7 +123,7 @@ public class OperatorRegistry {
         }
     }
 
-    private static class FunctionRecord<P, R> implements Comparable<FunctionRecord> {
+    private static class FunctionRecord<P, R> implements Comparable<FunctionRecord<P, R>> {
 
         private final Class<P> parameterClass;
         private final Function<? super P, ? extends R> function;
@@ -131,7 +133,7 @@ public class OperatorRegistry {
             this.function = function;
         }
 
-        public boolean isApplicable(Class parameter) {
+        public boolean isApplicable(Class<?> parameter) {
             return parameterClass.isAssignableFrom(parameter);
         }
 
@@ -165,7 +167,7 @@ public class OperatorRegistry {
             this.biFunction = biFunction;
         }
 
-        public boolean isApplicable(Class parameter1, Class parameter2) {
+        public boolean isApplicable(Class<?> parameter1, Class<?> parameter2) {
             return parameter1Class.isAssignableFrom(parameter1) && parameter2Class.isAssignableFrom(parameter2);
         }
 

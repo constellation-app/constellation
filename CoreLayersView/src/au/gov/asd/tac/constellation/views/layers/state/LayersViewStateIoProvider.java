@@ -62,10 +62,10 @@ public class LayersViewStateIoProvider extends AbstractGraphIOProvider {
                 if (vertexLayersArray.get(i).isNull()) {
                     vxlayerDescriptions.add(null);
                 } else {
-                    // create LayerDescription with index, visibility, query and description
-
-                    // TODO: Hardcoded vertex where it should read Tx or Vx
-                    final BitMaskQuery query = new BitMaskQuery(new Query(GraphElementType.VERTEX, StringUtils.equals("null", vertexLayersArray.get(i).get(2).asText()) ? "" : vertexLayersArray.get(i).get(2).asText()),
+                    final BitMaskQuery query = new BitMaskQuery(
+                            new Query(GraphElementType.VERTEX,
+                                    StringUtils.equals("null", vertexLayersArray.get(i).get(2).asText()) ? ""
+                                    : vertexLayersArray.get(i).get(2).asText()),
                             vertexLayersArray.get(i).get(0).asInt(),
                             vertexLayersArray.get(i).get(3).asText()
                     );
@@ -81,9 +81,10 @@ public class LayersViewStateIoProvider extends AbstractGraphIOProvider {
                 if (transactionLayersArray.get(i).isNull()) {
                     txlayerDescriptions.add(null);
                 } else {
-                    // create LayerDescription with index, visibility, query and description
-
-                    final BitMaskQuery query = new BitMaskQuery(new Query(GraphElementType.TRANSACTION, StringUtils.equals("null", transactionLayersArray.get(i).get(2).asText()) ? "" : transactionLayersArray.get(i).get(2).asText()),
+                    final BitMaskQuery query = new BitMaskQuery(
+                            new Query(GraphElementType.TRANSACTION,
+                                    StringUtils.equals("null", transactionLayersArray.get(i).get(2).asText()) ? ""
+                                    : transactionLayersArray.get(i).get(2).asText()),
                             transactionLayersArray.get(i).get(0).asInt(),
                             transactionLayersArray.get(i).get(3).asText()
                     );
@@ -104,7 +105,6 @@ public class LayersViewStateIoProvider extends AbstractGraphIOProvider {
                 }
             }
 
-            // TODO: only add to array if itis visible within.
             BitMaskQueryCollection vxQueries = new BitMaskQueryCollection(GraphElementType.VERTEX);
             vxQueries.setQueries(vxlayerDescriptions.toArray(new BitMaskQuery[64]));
 
@@ -131,7 +131,7 @@ public class LayersViewStateIoProvider extends AbstractGraphIOProvider {
                 jsonGenerator.writeObjectFieldStart(attribute.getName());
                 jsonGenerator.writeArrayFieldStart("vertexLayers");
 
-                for (final BitMaskQuery layer : state.getVxQueriesCollection().getQueries()) { // TODO: Fix this to iterate both lists and save correctly
+                for (final BitMaskQuery layer : state.getVxQueriesCollection().getQueries()) {
                     if (layer == null) {
                         jsonGenerator.writeNull();
                     } else {
@@ -147,7 +147,7 @@ public class LayersViewStateIoProvider extends AbstractGraphIOProvider {
 
                 jsonGenerator.writeArrayFieldStart("transactionLayers");
 
-                for (final BitMaskQuery layer : state.getTxQueriesCollection().getQueries()) { // TODO: Fix this to iterate both lists and save correctly
+                for (final BitMaskQuery layer : state.getTxQueriesCollection().getQueries()) {
                     if (layer == null) {
                         jsonGenerator.writeNull();
                     } else {

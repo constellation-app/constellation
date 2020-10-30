@@ -76,7 +76,7 @@ public class AccessRegistry<D> {
         }
     }
 
-    private static class FunctionRecord<S, D> implements Comparable<FunctionRecord> {
+    private static class FunctionRecord<S, D> implements Comparable<FunctionRecord<S, D>> {
 
         private final Class<S> sourceClass;
         private final Class<D> destinationClass;
@@ -88,7 +88,7 @@ public class AccessRegistry<D> {
             this.function = function;
         }
 
-        public boolean isApplicable(Class sourceClass) {
+        public boolean isApplicable(Class<?> sourceClass) {
             return this.sourceClass.isAssignableFrom(sourceClass);
         }
 

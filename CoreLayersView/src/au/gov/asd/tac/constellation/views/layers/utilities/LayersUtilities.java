@@ -44,7 +44,11 @@ public class LayersUtilities {
             }
         }
         // if the newBitmask is 1, it means none of the boxes are checked. therefore display default layer 1 (All nodes)
-        newBitmask = (newBitmask == 0) ? 0b1 : (newBitmask > 1) ? newBitmask & ~0b1 : newBitmask;
+        if (newBitmask == 0) {
+            newBitmask = 0b1;
+        } else if (newBitmask > 1) {
+            newBitmask = newBitmask & ~0b1;
+        }
 
         return newBitmask;
     }
