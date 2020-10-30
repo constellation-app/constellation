@@ -38,6 +38,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
@@ -66,6 +68,8 @@ public class TableViewUtilities {
     private static final String EXPORT_XLSX = "Export To XLSX";
     private static final String CSV_EXT = ".csv";
     private static final String XLSX_EXT = ".xlsx";
+    
+    private static final Logger LOGGER = Logger.getLogger(TableViewUtilities.class.getName());
 
     /**
      * Retrieve data from the given table as comma-separated values.
@@ -292,8 +296,10 @@ public class TableViewUtilities {
                     final List<ObservableList<String>> data = table.getItems();
                     writeRecords(sheet, visibleIndices, data);
                 }
-
-                workbook.write(new FileOutputStream(file));
+                FileOutputStream fileStream = new FileOutputStream(file);
+                workbook.write(fileStream);
+                fileStream.close();
+                LOGGER.log(Level.INFO, "Table View Data Written to Excel");
                 workbook.dispose();
             } catch (IOException ex) {
                 throw new PluginException(PluginNotificationLevel.ERROR, ex);
