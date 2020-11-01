@@ -27,7 +27,7 @@ public class ObjectValue<V> implements Copyable, ObjectReadable<V>, ObjectWritab
 
     @Override
     public Object copy() {
-        final ObjectValue<V> copy = new ObjectValue<V>();
+        final ObjectValue<V> copy = new ObjectValue<>();
         copy.value = value;
         return copy;
     }

@@ -275,9 +275,8 @@ public class LayersViewPane extends BorderPane {
                 case 4:
                     description = ((TextArea) item).getText();
                     break;
-                default: {
+                default:
                     break;
-                }
             }
 
             if (description != null) {
