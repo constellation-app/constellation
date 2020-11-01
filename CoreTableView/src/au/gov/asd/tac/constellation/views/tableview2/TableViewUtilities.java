@@ -296,10 +296,10 @@ public class TableViewUtilities {
                     final List<ObservableList<String>> data = table.getItems();
                     writeRecords(sheet, visibleIndices, data);
                 }
-                FileOutputStream fileStream = new FileOutputStream(file);
-                workbook.write(fileStream);
-                fileStream.close();
-                LOGGER.log(Level.INFO, "Table View Data Written to Excel");
+                try (final FileOutputStream fileStream = new FileOutputStream(file)) {
+                    workbook.write(fileStream);
+                }
+                LOGGER.log(Level.INFO, "Table View data written to Excel file");
                 workbook.dispose();
             } catch (IOException ex) {
                 throw new PluginException(PluginNotificationLevel.ERROR, ex);
