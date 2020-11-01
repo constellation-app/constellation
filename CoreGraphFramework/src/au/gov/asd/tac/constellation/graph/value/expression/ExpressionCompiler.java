@@ -89,38 +89,30 @@ public class ExpressionCompiler {
         // added private constructor to hide implicit public constructor - S1118.
     }
 
-    private static Object compileTwoChildrenExpression(final List<Expression> children, final VariableProvider variableProvider, final IntReadable indexReadable, final Operators operators) {
-        final OperatorExpression operator = (OperatorExpression) children.get(0);
-        final Object right = compileExpression(children.get(1), variableProvider, indexReadable, operators);
-        final String operatorName = CONVERTER_CLASSES.get(operator.getOperator());
-        final Object result = operators.getRegistry(operatorName).apply(right);
-        if (result == null) {
-            throw new ExpressionException("Unable to find implementation of operator: " + operatorName + " (" + right.getClass().getCanonicalName() + ")");
-        }
-        return result;
-    }
-
-    private static Object compileThreeChildrenExpression(final List<Expression> children, final VariableProvider variableProvider, final IntReadable indexReadable, final Operators operators) {
-        final Object left = compileExpression(children.get(0), variableProvider, indexReadable, operators);
-        final OperatorExpression operator = (OperatorExpression) children.get(1);
-        final Object right = compileExpression(children.get(2), variableProvider, indexReadable, operators);
-        final String operatorName = OPERATOR_CLASSES.get(operator.getOperator());
-        final Object result = operators.getRegistry(operatorName).apply(left, right);
-        if (result == null) {
-            throw new ExpressionException("Unable to find implementation of operator: " + operatorName + " (" + left.getClass().getCanonicalName() + ", " + right.getClass().getCanonicalName() + ")");
-        }
-        return result;
-    }
-
     public static Object compileSequenceExpression(SequenceExpression expression, VariableProvider variableProvider, IntReadable indexReadable, Operators operators) {
         final List<Expression> children = expression.getUnmodifiableChildren();
         switch (children.size()) {
             case 1:
                 return compileExpression(children.get(0), variableProvider, indexReadable, operators);
             case 2:
-                return compileTwoChildrenExpression(children, variableProvider, indexReadable, operators);
+                final OperatorExpression operator = (OperatorExpression) children.get(0);
+                final Object right = compileExpression(children.get(1), variableProvider, indexReadable, operators);
+                final String operatorName = CONVERTER_CLASSES.get(operator.getOperator());
+                final Object result = operators.getRegistry(operatorName).apply(right);
+                if (result == null) {
+                    throw new ExpressionException("Unable to find implementation of operator: " + operatorName + " (" + right.getClass().getCanonicalName() + ")");
+                }
+                return result;
             case 3:
-                return compileThreeChildrenExpression(children, variableProvider, indexReadable, operators);
+                final Object left = compileExpression(children.get(0), variableProvider, indexReadable, operators);
+                final OperatorExpression secondOperator = (OperatorExpression) children.get(1);
+                final Object right2 = compileExpression(children.get(2), variableProvider, indexReadable, operators);
+                final String operatorName2 = OPERATOR_CLASSES.get(secondOperator.getOperator());
+                final Object result2 = operators.getRegistry(operatorName2).apply(left, right2);
+                if (result2 == null) {
+                    throw new ExpressionException("Unable to find implementation of operator: " + operatorName2 + " (" + left.getClass().getCanonicalName() + ", " + right2.getClass().getCanonicalName() + ")");
+                }
+                return result2;
             default:
                 throw new IllegalArgumentException("Invalid expression size: " + children.size());
         }
