@@ -26,11 +26,11 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class FloatObjectAttributeDescriptionNGTest {
+public class LongObjectAttributeDescriptionNGTest {
 
-    FloatObjectAttributeDescription instance;
+    LongObjectAttributeDescription instance;
 
-    public FloatObjectAttributeDescriptionNGTest() {
+    public LongObjectAttributeDescriptionNGTest() {
     }
 
     @BeforeClass
@@ -43,7 +43,7 @@ public class FloatObjectAttributeDescriptionNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        instance = new FloatObjectAttributeDescription();
+        instance = new LongObjectAttributeDescription();
         instance.setCapacity(1);
     }
 
@@ -53,30 +53,30 @@ public class FloatObjectAttributeDescriptionNGTest {
 
     /**
      * Test of convertFromObject method, of class
-     * FloatObjectAttributeDescription.
+     * LongObjectAttributeDescription.
      */
     @Test
     public void testConvertFromObject() {
         Object object = null;
-        Float expResult = null;
-        Float result = instance.convertFromObject(object);
+        Long expResult = null;
+        Long result = instance.convertFromObject(object);
         assertEquals(result, expResult);
     }
 
     /**
      * Test of convertFromString method, of class
-     * FloatObjectAttributeDescription.
+     * LongObjectAttributeDescription.
      */
     @Test
     public void testConvertFromString() {
         String string = "";
-        Float expResult = null;
-        Float result = instance.convertFromString(string);
+        Long expResult = null;
+        Long result = instance.convertFromString(string);
         assertEquals(result, expResult);
     }
 
     /**
-     * Test of getByte method, of class FloatObjectAttributeDescription.
+     * Test of getByte method, of class LongObjectAttributeDescription.
      */
     @Test
     public void testGetByte() {
@@ -87,7 +87,7 @@ public class FloatObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of setByte method, of class FloatObjectAttributeDescription.
+     * Test of setByte method, of class LongObjectAttributeDescription.
      */
     @Test
     public void testSetByte() {
@@ -98,7 +98,7 @@ public class FloatObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of getShort method, of class FloatObjectAttributeDescription.
+     * Test of getShort method, of class LongObjectAttributeDescription.
      */
     @Test
     public void testGetShort() {
@@ -109,7 +109,7 @@ public class FloatObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of setShort method, of class FloatObjectAttributeDescription.
+     * Test of setShort method, of class LongObjectAttributeDescription.
      */
     @Test
     public void testSetShort() {
@@ -120,7 +120,7 @@ public class FloatObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of getInt method, of class FloatObjectAttributeDescription.
+     * Test of getInt method, of class LongObjectAttributeDescription.
      */
     @Test
     public void testGetInt() {
@@ -131,7 +131,7 @@ public class FloatObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of setInt method, of class FloatObjectAttributeDescription.
+     * Test of setInt method, of class LongObjectAttributeDescription.
      */
     @Test
     public void testSetInt() {
@@ -142,7 +142,7 @@ public class FloatObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of getLong method, of class FloatObjectAttributeDescription.
+     * Test of getLong method, of class LongObjectAttributeDescription.
      */
     @Test
     public void testGetLong() {
@@ -153,7 +153,7 @@ public class FloatObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of setLong method, of class FloatObjectAttributeDescription.
+     * Test of setLong method, of class LongObjectAttributeDescription.
      */
     @Test
     public void testSetLong() {
@@ -164,7 +164,7 @@ public class FloatObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of getFloat method, of class FloatObjectAttributeDescription.
+     * Test of getFloat method, of class LongObjectAttributeDescription.
      */
     @Test
     public void testGetFloat() {
@@ -175,7 +175,7 @@ public class FloatObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of setFloat method, of class FloatObjectAttributeDescription.
+     * Test of setFloat method, of class LongObjectAttributeDescription.
      */
     @Test
     public void testSetFloat() {
@@ -186,7 +186,7 @@ public class FloatObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of getDouble method, of class FloatObjectAttributeDescription.
+     * Test of getDouble method, of class LongObjectAttributeDescription.
      */
     @Test
     public void testGetDouble() {
@@ -197,7 +197,7 @@ public class FloatObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of setDouble method, of class FloatObjectAttributeDescription.
+     * Test of setDouble method, of class LongObjectAttributeDescription.
      */
     @Test
     public void testSetDouble() {
@@ -208,7 +208,7 @@ public class FloatObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of getBoolean method, of class FloatObjectAttributeDescription.
+     * Test of getBoolean method, of class LongObjectAttributeDescription.
      */
     @Test
     public void testGetBoolean() {
@@ -219,7 +219,7 @@ public class FloatObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of setBoolean method, of class FloatObjectAttributeDescription.
+     * Test of setBoolean method, of class LongObjectAttributeDescription.
      */
     @Test
     public void testSetBoolean() {
@@ -230,7 +230,7 @@ public class FloatObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of getChar method, of class FloatObjectAttributeDescription.
+     * Test of getChar method, of class LongObjectAttributeDescription.
      */
     @Test
     public void testGetChar() {
@@ -241,23 +241,23 @@ public class FloatObjectAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of setChar method, of class FloatObjectAttributeDescription.
+     * Test of setChar method, of class LongObjectAttributeDescription.
      */
     @Test
     public void testSetChar() {
         int id = 0;
-        char value = (char) 0;
+        char value = ' ';
         instance.setChar(id, value);
         assertEquals(instance.getChar(id), value);
     }
 
 //    /**
-//     * Test of hashCode method, of class FloatObjectAttributeDescription.
+//     * Test of hashCode method, of class LongObjectAttributeDescription.
 //     */
 //    @Test
 //    public void testHashCode() {
 //        int id = 0;
-//        int expResult = Float.floatToIntBits(0F);
+//        int expResult = 0;
 //        int result = instance.hashCode(id);
 //        assertEquals(result, expResult);
 //    }

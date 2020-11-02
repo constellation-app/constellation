@@ -46,7 +46,7 @@ public final class DateAttributeDescription extends AbstractAttributeDescription
     public static final int ATTRIBUTE_VERSION = 1;
     public static final Class<Long> NATIVE_CLASS = Long.class;
     public static final NativeAttributeType NATIVE_TYPE = NativeAttributeType.LONG;
-    public static final long DEFAULT_VALUE = Long.MIN_VALUE;
+    public static final long DEFAULT_VALUE = 0L;
 
     private long[] data = new long[0];
     private long defaultValue = DEFAULT_VALUE;
@@ -90,7 +90,7 @@ public final class DateAttributeDescription extends AbstractAttributeDescription
      * @return A Calendar representing the input datetime.
      */
     public long convertFromString(final String string) throws IllegalArgumentException {
-        if (StringUtils.isBlank(string)) {
+        if (StringUtils.isBlank(string) || String.valueOf(DEFAULT_VALUE).equals(string)) {
             return (long) getDefault();
         } else {
             try {
