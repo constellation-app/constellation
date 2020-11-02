@@ -1041,7 +1041,7 @@ public final class TableViewPane extends BorderPane {
             }
             
             sortedRowList.comparatorProperty().bind(table.comparatorProperty());
-            updateSelectionFromJAT(parent.getCurrentGraph(), parent.getCurrentState());
+            updateSelectionFromFXThread(parent.getCurrentGraph(), parent.getCurrentState());
             sortedRowList.comparatorProperty().addListener(tableComparatorListener);
             selectedProperty.addListener(tableSelectionListener);
         }
@@ -1260,7 +1260,7 @@ public final class TableViewPane extends BorderPane {
      * @param graph the graph to read selection from.
      * @param state the current table view state.
      */
-    private void updateSelectionFromJAT(final Graph graph, final TableViewState state) {
+    private void updateSelectionFromFXThread(final Graph graph, final TableViewState state) {
         synchronized (LOCK) {
             if (graph != null && state != null) {
 
