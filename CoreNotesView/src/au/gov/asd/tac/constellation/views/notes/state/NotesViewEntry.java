@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.views.notes.state;
 
 /**
- * A note entry into the Notes View.
+ * Holds the information for a note in the Notes View.
  *
  * @author sol695510
  */

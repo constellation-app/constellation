@@ -47,7 +47,8 @@ import javax.swing.JOptionPane;
 import org.apache.commons.collections.CollectionUtils;
 
 /**
- *
+ * Handles generating UI elements for the Notes View pane and its notes.
+ * 
  * @author sol695510
  */
 public class NotesViewPane extends BorderPane implements PluginReportListener {
@@ -56,7 +57,6 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
     private GraphReport currentGraphReport;
 
     private final List<NotesViewEntry> notesViewEntries;
-    private final List<PluginReport> pluginReports;
 
     private final VBox notesViewPaneVBox;
     private final VBox addNoteVBox;
@@ -76,7 +76,6 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
         notesViewController = controller;
 
         notesViewEntries = new ArrayList<>();
-        pluginReports = new ArrayList<>();
 
         // TextField to enter new note title.
         final TextField titleField = new TextField();
@@ -139,17 +138,28 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
         setCenter(notesViewPaneVBox);
     }
 
+    /**
+     * Prepares the pane used by the Notes View.
+     * 
+     * @param controller 
+     * @param pane 
+     */
     protected void prepareNotesViewPane(final NotesViewController controller, final NotesViewPane pane) {
         controller.readState();
         controller.addAttributes();
     }
 
+    /**
+     * Get the current graph report and get the plugin reports of plugins that have executed on that graph.
+     * 
+     * @param currentGraphId 
+     */
     protected void setGraphRecord(final String currentGraphId) {
         currentGraphReport = GraphReportManager.getGraphReport(currentGraphId);
         if (currentGraphId != null && currentGraphReport != null) {
-
+            // Get the list of currently executed plugins.
             currentGraphReport.getPluginReports().forEach((report) -> {
-
+                // If the plugin is not a plugin of Notes View.
                 if (!report.getPluginName().contains("Note")) {
                     // Listener monitors changes to the plugin report as it executes and finishes. Affects the output of getMessage().
                     report.addPluginReportListener(this);
@@ -161,49 +171,46 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
                     ));
                 }
             });
-            // remove duplicates and replace the current notes.
-            final List<NotesViewEntry> uniqueNotes = makeUniqueList(notesViewEntries);
+            // Clears duplicates from the list.
+            final List<NotesViewEntry> uniqueNotes = clearDuplicates(notesViewEntries);
             notesViewEntries.clear();
             notesViewEntries.addAll(uniqueNotes);
         }
     }
 
-    // Iterates the list of duplicated notes and only adds unique entries
-    // based on the timestamp related to the entry.
-    // Currently removes the entry which is labeled "finished"
-    // finished plugin report should be added instead.
-    private List<NotesViewEntry> makeUniqueList(final List<NotesViewEntry> duplicatedEntries) {
+    /**
+     * Iterates list of NoteEntry objects and removes objects
+     * that share the same dateTime.
+     * 
+     * @param duplicatedNotes A list with duplicates.
+     * @return A list with no duplicates.
+     */
+    private List<NotesViewEntry> clearDuplicates(final List<NotesViewEntry> duplicatedNotes) {
         final List<NotesViewEntry> uniqueNotes = new ArrayList();
-        Collections.reverse(duplicatedEntries);
-        duplicatedEntries.forEach((report) -> {
+        Collections.reverse(duplicatedNotes);
+        
+        duplicatedNotes.forEach((report) -> {
             boolean isUnique = true;
+            
             for (final NotesViewEntry uniqueReport : uniqueNotes) {
                 if (report.getDateTime().equals(uniqueReport.getDateTime())) {
                     isUnique = false;
                 }
             }
-            if (isUnique) { // add only unique notes to new list.
+            // Adds only unique notes to the list.
+            if (isUnique) {
                 uniqueNotes.add(report);
             }
-
         });
+        
         return uniqueNotes;
     }
 
-    protected synchronized void setPluginReports(final List<PluginReport> pluginReports) {
-        Platform.runLater(() -> {
-            this.pluginReports.clear();
-
-            pluginReports.forEach((report) -> {
-                if (!report.getPluginName().contains("Note")) {
-                    this.pluginReports.add(report);
-                }
-            });
-
-            updateNotes();
-        });
-    }
-
+    /**
+     * Sets notesViewEntries.
+     * 
+     * @param notesViewEntries A list of NotesViewEntry objects to add to notesViewEntries.
+     */
     protected synchronized void setNotes(final List<NotesViewEntry> notesViewEntries) {
         Platform.runLater(() -> {
             this.notesViewEntries.clear();
@@ -216,25 +223,24 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
         });
     }
 
+    /**
+     * Returns an unmodifiable view of notesViewEntries.
+     * 
+     * @return Unmodifiable view of notesViewEntries.
+     */
     protected List<NotesViewEntry> getNotes() {
         return Collections.unmodifiableList(notesViewEntries);
     }
 
+    /**
+     * Updates the UI of the notes currently being displayed in the Notes View.
+     */
     protected synchronized void updateNotes() {
         Platform.runLater(() -> {
             notesListVBox.getChildren().removeAll(notesListVBox.getChildren());
 
             final List<NotesViewEntry> notesToRender = new ArrayList<>();
             notesToRender.addAll(notesViewEntries);
-
-            pluginReports.forEach((report) -> {
-                notesToRender.add(new NotesViewEntry(
-                        Long.toString(report.getStartTime()),
-                        report.getPluginName(),
-                        report.getMessage(),
-                        false
-                ));
-            });
 
             if (CollectionUtils.isNotEmpty(notesToRender)) {
                 notesToRender.sort(Comparator.comparing(NotesViewEntry::getDateTime));
@@ -245,6 +251,9 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
         });
     }
 
+    /**
+     * Clears UI elements in the Notes View and clears the list of NoteEntry objects.
+     */
     protected synchronized void clearNotes() {
         Platform.runLater(() -> {
             notesListVBox.getChildren().removeAll(notesListVBox.getChildren());
@@ -253,9 +262,9 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
     }
 
     /**
-     * Creates the UI for notes in the Notes View.
+     * Takes a NoteEntry object and creates the UI for it in the Notes View.
      *
-     * @param newNote
+     * @param newNote NoteEntry object used to create a the note UI in the Notes View.
      */
     private void createNote(final NotesViewEntry newNote) {
 
@@ -308,10 +317,11 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
     }
 
     /**
-     * Pop-up window for editing existing user created notes.
-     *
+     * Pop-up window for editing user created notes.
+     * 
      * @param title
      * @param content
+     * @param noteToEdit
      */
     private void openEdit(final String title, final String content, final NotesViewEntry noteToEdit) {
 
@@ -363,6 +373,9 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
         editBox.show();
     }
 
+    /**
+     * Convenience method to close the pop-up window for editing user created notes.
+     */
     protected void closeEdit() {
         Platform.runLater(() -> {
             if (editBox != null) {
@@ -388,7 +401,7 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
                 );
                 notesViewEntries.add(entry);
                 // remove duplicates and replace the current notes.
-                final List<NotesViewEntry> uniqueNotes = makeUniqueList(notesViewEntries);
+                final List<NotesViewEntry> uniqueNotes = clearDuplicates(notesViewEntries);
                 notesViewEntries.clear();
                 notesViewEntries.addAll(uniqueNotes);
                 notesViewController.writeState();
@@ -398,6 +411,6 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
 
     @Override
     public void addedChildReport(PluginReport parentReport, PluginReport childReport) {
-
+        // Intentionally left blank.
     }
 }

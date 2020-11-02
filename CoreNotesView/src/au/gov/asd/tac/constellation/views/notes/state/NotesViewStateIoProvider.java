@@ -81,7 +81,7 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
             if (originalState == null) {
                 jsonGenerator.writeNullField(attribute.getName());
             } else {
-                // make a copy in case the state on the graph is currently being modified.
+                // Make a copy in case the state on the graph is currently being modified.
                 final NotesViewState state = new NotesViewState(originalState);
                 jsonGenerator.writeObjectFieldStart(attribute.getName());
                 jsonGenerator.writeArrayFieldStart("notes");

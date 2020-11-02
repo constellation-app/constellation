@@ -31,7 +31,8 @@ import au.gov.asd.tac.constellation.views.notes.state.NotesViewState;
 import java.util.List;
 
 /**
- *
+ * Handles reading and writing to the state to save notes to the graph.
+ * 
  * @author sol695510
  */
 public class NotesViewController {
@@ -59,7 +60,7 @@ public class NotesViewController {
     }
 
     /**
-     * Add attributes required by the Notes View for it to function
+     * Add attributes required by the Notes View for it to function.
      */
     public void addAttributes() {
 
@@ -76,8 +77,7 @@ public class NotesViewController {
     }
 
     /**
-     * Reads the graph's notes_view_state attribute and populates the Notes View
-     * pane.
+     * Reads the graph's NOTES_VIEW_STATE attribute and populates the Notes View pane.
      */
     public void readState() {
 
@@ -92,8 +92,7 @@ public class NotesViewController {
     }
 
     /**
-     * Executes a plugin to write the current notes to the graph's
-     * notes_view_state Attribute.
+     * Executes a plugin to write the current notes to the graph's NOTES_VIEW_STATE attribute.
      */
     public void writeState() {
 
