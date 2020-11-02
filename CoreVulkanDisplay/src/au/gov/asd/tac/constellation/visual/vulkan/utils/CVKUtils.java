@@ -71,11 +71,12 @@ public class CVKUtils {
     public static final int CVK_ERROR_SHADER_SPIRV_WRITE_FAILED                 = 0xFFFF0012;
     public static final int CVK_ERROR_SHADER_MD5_WRITE_FAILED                   = 0xFFFF0013;
     public static final int CVK_ERROR_SHADER_SOURCE_FILE_NOT_FOUND              = 0xFFFF0014;
+    public static final int CVK_RENDERABLE_INITIALISATION_FAILED                = 0xFFFF0015;
     
     
     // Enable this for additional logging, thread verification and other checks
-    public static final boolean CVK_DEBUGGING = false;
-    public static final Level CVK_DEFAULT_LOG_LEVEL = Level.INFO;  
+    public static final boolean CVK_DEBUGGING = true;
+    public static final Level CVK_DEFAULT_LOG_LEVEL = Level.FINE;  
     public static int CVK_VKALLOCATIONS = 0;
    
 
@@ -146,7 +147,9 @@ public class CVKUtils {
      */
     public static PointerBuffer GetRequiredVKPhysicalDeviceExtensions(MemoryStack stack) {
         ByteBuffer VK_EXT_DEBUG_UTILS_EXTENSION = stack.UTF8(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
-        ByteBuffer VK_KHR_SURFACE_EXTENSION = stack.UTF8(VK_KHR_SURFACE_EXTENSION_NAME);        
+        ByteBuffer VK_KHR_SURFACE_EXTENSION = stack.UTF8(VK_KHR_SURFACE_EXTENSION_NAME);   
+        //ByteBuffer VK_EXT_DEBUG_REPORT_EXTENSION = stack.UTF8(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);   
+     
         ByteBuffer VK_KHR_OS_SURFACE_EXTENSION;
 
         switch (Platform.get()) {
@@ -168,6 +171,7 @@ public class CVKUtils {
         pbEnabledExtensionNames.put(VK_EXT_DEBUG_UTILS_EXTENSION);
         pbEnabledExtensionNames.put(VK_KHR_SURFACE_EXTENSION);
         pbEnabledExtensionNames.put(VK_KHR_OS_SURFACE_EXTENSION);
+        //pbEnabledExtensionNames.put(VK_EXT_DEBUG_REPORT_EXTENSION);
 
         // Flipping an org.lwjgl.system.CustomBuffer ends writes and prepares it for reads.  In practice
         // this resets the current index to 0

@@ -87,7 +87,7 @@ public class CVKFPSRenderable extends CVKRenderable {
     private static class Vertex {
         // This looks a little weird for Java, but LWJGL and JOGL both require
         // contiguous memory which is passed to the native GL or VK libraries.        
-        private static final int SIZEOF = 2 * Integer.BYTES + 4 * Float.BYTES;
+        private static final int BYTES = 2 * Integer.BYTES + Vector4f.BYTES;
         private static final int OFFSETOF_DATA = 0;
         private static final int OFFSET_BKGCLR = 2 * Integer.BYTES;
         private static final int BINDING = 0;
@@ -131,7 +131,7 @@ public class CVKFPSRenderable extends CVKRenderable {
             // this is the index of this description occupies in the array of
             // bound descriptions.
             bindingDescription.binding(BINDING);
-            bindingDescription.stride(Vertex.SIZEOF);
+            bindingDescription.stride(Vertex.BYTES);
             bindingDescription.inputRate(VK_VERTEX_INPUT_RATE_VERTEX);
 
             return bindingDescription;
@@ -183,7 +183,7 @@ public class CVKFPSRenderable extends CVKRenderable {
     }     
         
     private static class VertexUniformBufferObject {
-        private static final int SIZEOF = (16 + 1 + 1) * Float.BYTES;
+        private static final int BYTES = Matrix44f.BYTES + 2 * Float.BYTES;
 
         public Matrix44f mvMatrix;
         public float visibilityLow = 0;
@@ -425,7 +425,7 @@ public class CVKFPSRenderable extends CVKRenderable {
         CVKAssertNotNull(CVKDevice.GetVkDevice());
         
         // Maximum vertex count is fixed so create the staging buffer here
-        int size = vertices.length * Vertex.SIZEOF;
+        int size = vertices.length * Vertex.BYTES;
         cvkStagingBuffer = CVKBuffer.Create(size,
                                             VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                                             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
@@ -465,7 +465,7 @@ public class CVKFPSRenderable extends CVKRenderable {
         vertexBuffers = new ArrayList<>();
         
         // Size to upper limit, we don't have to draw each one.
-        int size = vertices.length * Vertex.SIZEOF;
+        int size = vertices.length * Vertex.BYTES;
         
         //TODO_TT: most if not all of Constellation's vertex buffers won't change after creation
         // so they should probably be allocated as VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT and staged
@@ -517,7 +517,7 @@ public class CVKFPSRenderable extends CVKRenderable {
             }
             
             // Copy to our staging buffer (host read/write)
-            int size = vertices.length * Vertex.SIZEOF;         
+            int size = vertices.length * Vertex.BYTES;         
             PointerBuffer data = stack.mallocPointer(1);
             vkMapMemory(CVKDevice.GetVkDevice(), cvkStagingBuffer.GetMemoryBufferHandle(), 0, size, 0, data);
             {
@@ -654,7 +654,7 @@ public class CVKFPSRenderable extends CVKRenderable {
  
     private int CreatePushConstants() {
         // Initialise push constants to identity mtx
-        vertexPushConstants = memAlloc(VertexUniformBufferObject.SIZEOF);
+        vertexPushConstants = memAlloc(VertexUniformBufferObject.BYTES);
         for (int iRow = 0; iRow < 4; ++iRow) {
             for (int iCol = 0; iCol < 4; ++iCol) {
                 vertexPushConstants.putFloat(IDENTITY_44F.get(iRow, iCol));
@@ -948,7 +948,7 @@ public class CVKFPSRenderable extends CVKRenderable {
             VkPushConstantRange.Buffer pushConstantRange;
             pushConstantRange = VkPushConstantRange.callocStack(1, stack);
             pushConstantRange.stageFlags(VK_SHADER_STAGE_VERTEX_BIT);
-            pushConstantRange.size(VertexUniformBufferObject.SIZEOF);
+            pushConstantRange.size(VertexUniformBufferObject.BYTES);
             pushConstantRange.offset(0);
 
             VkPipelineLayoutCreateInfo pipelineLayoutInfo = VkPipelineLayoutCreateInfo.callocStack(stack);

@@ -47,7 +47,6 @@ import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceFeatures;
 import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceMemoryProperties;
 import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceProperties;
 import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceQueueFamilyProperties;
-import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceFormatProperties;
 import org.lwjgl.vulkan.VkCommandPoolCreateInfo;
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkDeviceCreateInfo;
@@ -68,11 +67,8 @@ import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.GetRequi
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.InitVKValidationLayers;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkSucceeded;
-import static org.lwjgl.vulkan.KHRSurface.vkDestroySurfaceKHR;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_FEATURE_BLIT_DST_BIT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_FEATURE_BLIT_SRC_BIT;
-import static org.lwjgl.vulkan.VK10.VK_FORMAT_R8G8B8A8_UNORM;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_UNDEFINED;
 import static org.lwjgl.vulkan.VK10.vkDestroyCommandPool;
 import static org.lwjgl.vulkan.VK10.vkDestroyDevice;
 import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceFormatProperties;
@@ -329,6 +325,31 @@ public class CVKDevice {
             // And features
             vkPhysicalDeviceFeatures = VkPhysicalDeviceFeatures.malloc();
             vkGetPhysicalDeviceFeatures(vkPhysicalDevice, vkPhysicalDeviceFeatures);
+            
+            // TODO: in order to use the smooth lines line rasterization extension we first have to
+            // query it is enabled.  The code below didn't work and isn't a high priority atm, but 
+            // it would be good to use some newer features on cards that support them.
+            
+//            VkPhysicalDeviceLineRasterizationFeaturesEXT physicalDeviceLineRasterFeatures = VkPhysicalDeviceLineRasterizationFeaturesEXT.malloc();
+//            physicalDeviceLineRasterFeatures.sType(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES_EXT);
+//            physicalDeviceLineRasterFeatures.pNext(VK_NULL_HANDLE);
+//            
+//            
+//            VkPhysicalDeviceFeatures2 physicalDeviceFeatures2 = VkPhysicalDeviceFeatures2.malloc();
+//            try {
+//                
+//                long functionHandle = vkGetInstanceProcAddr(CVKInstance.GetVkInstance(), memUTF8("vkGetPhysicalDeviceFeatures2"));
+//                if (functionHandle != VK_NULL_HANDLE) {
+//                    physicalDeviceFeatures2.sType(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2);
+//                    physicalDeviceFeatures2.pNext(physicalDeviceLineRasterFeatures.address());
+//                    vkGetPhysicalDeviceFeatures2(vkPhysicalDevice, physicalDeviceFeatures2);
+//                }
+//            } catch (Exception e) {
+//                GetLogger().LogException(e, "Oh dear");
+//            }
+//
+//            physicalDeviceLineRasterFeatures.free();
+//            physicalDeviceFeatures2.free();
             
             // What memory types are available
             vkPhysicalDeviceMemoryProperties = VkPhysicalDeviceMemoryProperties.malloc();

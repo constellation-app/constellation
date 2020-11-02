@@ -18,23 +18,29 @@
 // Keep this in sync with SceneBatchStore.
 const int LINE_INFO_ARROW = 1;
 const int LINE_INFO_OVERFLOW = 2;
-
-// Keep this in sync with LineArrow.gs.
 const float EDGE_SEPARATION_SCALE = 32;
 const float VISIBLE_ARROW_DISTANCE = 100;
-
 const float FLOAT_MULTIPLIER = 1024;
 
 
+// === PUSH CONSTANTS ===
+layout(std140, push_constant) uniform HitTestPushConstant {
+    // If non-zero, use the texture to color the icon.
+    // Otherwise, use a unique color for hit testing.
+    // Offset is 64 as the projection matrix (in Line.vs) 
+    // is before it in the pushConstant buffer.
+    layout(offset = 64) int drawHitTest;
+} htpc;
+
+
 // === UNIFORMS ===
-layout(std140, binding = 0) uniform UniformBlock {
+layout(std140, binding = 2) uniform UniformBlock {
     mat4 pMatrix;
+    vec4 highlightColor;
     float visibilityLow;
     float visibilityHigh;
-    float directionMotion;
-    vec4 highlightColor;
+    float directionMotion;    
     float alpha;
-    int drawHitTest;
 } ub;
 
 
@@ -57,7 +63,7 @@ void main() {
     // Lines are explicitly not drawn if they have visibility <= 0.
     // See au.gov.asd.tac.constellation.visual.opengl.task;
     float visibility = vpointColor[0][3];
-    if(visibility > max(ub.visibilityLow, 0) && (visibility <= ub.visibilityHigh || visibility > 1.0)) {
+    if (visibility > max(ub.visibilityLow, 0) && (visibility <= ub.visibilityHigh || visibility > 1.0)) {
         // The ends of the line.
         vec4 end0 = gl_in[0].gl_Position;
         vec4 end1 = gl_in[1].gl_Position;
@@ -67,7 +73,7 @@ void main() {
         int seldim = gData[0][2];
         bool isSelected = (seldim&1)!=0;
         bool isDim = (seldim&2) != 0;
-        if(isSelected) {
+        if (isSelected) {
             end0.z += 0.001;
             end1.z += 0.001;
         }
@@ -77,7 +83,7 @@ void main() {
 
         // Only draw line lines if the width is not greater than normal.
         // (There's probably some optimisation at a further distance, but this will do for now.)
-        if(lineDistance > VISIBLE_ARROW_DISTANCE && width <= 1) {
+        if (true == true) { //lineDistance > VISIBLE_ARROW_DISTANCE && width <= 1) {
             lineStyle = gData[1].q & 0x3;
 
             // The lines currently end at the centre of the 2*2 point sprite.
@@ -96,9 +102,6 @@ void main() {
             end0.xy += 2 * offset * dir.xy / 32;
             end1.xy += 2 * offset * dir.xy / 32;
 
-//            end0.z += offset * 0.0001;
-//            end1.z += offset * 0.0001;
-
             // If we're drawing into the hit buffer, the alpha is left alone, because hit testing depends on the edge id
             // stored in the alpha of the color.
             // If we're drawing into the display buffer, vary the alpha depending on the distance of the line from the camera.
@@ -113,7 +116,7 @@ void main() {
             // Therefore, we'll pass the txId in a separate int that has no chance of being interpolated.
             int hti;
 
-            if (ub.drawHitTest==0) {
+            if (htpc.drawHitTest == 0) {
                 color0 = vpointColor[0];
                 color1 = vpointColor[1];
 
@@ -162,7 +165,7 @@ void main() {
             // Draw the motion bars.
             bool arrow0 = (gData[0].t & LINE_INFO_ARROW) != 0;
             bool arrow1 = (gData[1].t & LINE_INFO_ARROW) != 0;
-            if (ub.drawHitTest == 0 && ub.directionMotion != -1 && lineLength > 1 && arrow0 != arrow1) {
+            if (htpc.drawHitTest == 0 && ub.directionMotion != -1 && lineLength > 1 && arrow0 != arrow1) {
                 end0.z += 0.001;
                 end1.z += 0.001;
 
@@ -170,7 +173,7 @@ void main() {
                 float motionLen = lineLength / 32.0;
                 float motionPos = ub.directionMotion - (floor(ub.directionMotion / lineLength) * lineLength);
 
-                if(arrow1) {
+                if (arrow1) {
                     motionPos = lineLength - motionPos;
                     motionLen = -motionLen;
                 }

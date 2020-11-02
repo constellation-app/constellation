@@ -38,7 +38,7 @@ const float DEPTH_NEAR = -1.0;
 layout(std140, push_constant) uniform VertexPushConstant {
     // Matrix to project from world coordinates to camera coordinates
     mat4 mvMatrix;
-} vpc;
+} pc;
 
 
 // === UNIFORMS ===
@@ -127,8 +127,8 @@ void main(void) {
     vec4 mixedV2 = mix(v2, v2End, ub.morphMix);
 
     // Calculate the unit vector parallel to the connection
-    v1 = ub.mvMatrix * vec4(mixedV1.xyz, 1);
-    v2 = ub.mvMatrix * vec4(mixedV2.xyz, 1);
+    v1 = pc.mvMatrix * vec4(mixedV1.xyz, 1);
+    v2 = pc.mvMatrix * vec4(mixedV2.xyz, 1);
     vec3 connectionDirection = normalize(v1.xyz - v2.xyz);
 
     // The unit vector perpendicular to the connection in the x-y plane

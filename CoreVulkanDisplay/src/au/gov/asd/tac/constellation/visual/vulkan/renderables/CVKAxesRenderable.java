@@ -74,9 +74,9 @@ public class CVKAxesRenderable extends CVKRenderable {
     
     private static class Vertex {
 
-        private static final int SIZEOF = (3 + 4) * Float.BYTES;
+        private static final int BYTES = Vector3f.BYTES + Vector4f.BYTES;
         private static final int OFFSETOF_POS = 0;
-        private static final int OFFSETOF_COLOR = 3 * Float.BYTES;
+        private static final int OFFSETOF_COLOR = Vector3f.BYTES;
 
         private final Vector3f vertex;
         private final Vector4f color;
@@ -105,7 +105,7 @@ public class CVKAxesRenderable extends CVKRenderable {
                     VkVertexInputBindingDescription.callocStack(1);
 
             bindingDescription.binding(0);
-            bindingDescription.stride(Vertex.SIZEOF);
+            bindingDescription.stride(Vertex.BYTES);
             bindingDescription.inputRate(VK_VERTEX_INPUT_RATE_VERTEX);
 
             return bindingDescription;
@@ -145,7 +145,7 @@ public class CVKAxesRenderable extends CVKRenderable {
     }     
     
     private static class VertexUniformBufferObject {
-        private static final int SIZEOF = 16 * Float.BYTES;
+        private static final int BYTES = Matrix44f.BYTES;
         public Matrix44f mvpMatrix;
       
         public VertexUniformBufferObject() {
@@ -279,7 +279,7 @@ public class CVKAxesRenderable extends CVKRenderable {
         int ret = VK_SUCCESS;
         
         // Size to upper limit, we don't have to draw each one.
-        int size = vertices.length * Vertex.SIZEOF;
+        int size = vertices.length * Vertex.BYTES;
         
         // Converted from AxesRenderable.java. Keeping comments for reference.
         int i =  0;
@@ -444,7 +444,7 @@ public class CVKAxesRenderable extends CVKRenderable {
     
     private int CreatePushConstants() {
         // Initialise push constants to identity mtx
-        pushConstants = memAlloc(VertexUniformBufferObject.SIZEOF);
+        pushConstants = memAlloc(VertexUniformBufferObject.BYTES);
         for (int iRow = 0; iRow < 4; ++iRow) {
             for (int iCol = 0; iCol < 4; ++iCol) {
                 pushConstants.putFloat(IDENTITY_44F.get(iRow, iCol));
@@ -584,7 +584,7 @@ public class CVKAxesRenderable extends CVKRenderable {
             VkPushConstantRange.Buffer pushConstantRange;
             pushConstantRange = VkPushConstantRange.callocStack(1, stack);
             pushConstantRange.stageFlags(VK_SHADER_STAGE_VERTEX_BIT);
-            pushConstantRange.size(VertexUniformBufferObject.SIZEOF);
+            pushConstantRange.size(VertexUniformBufferObject.BYTES);
             pushConstantRange.offset(0);                     
             
             VkPipelineLayoutCreateInfo pipelineLayoutInfo = VkPipelineLayoutCreateInfo.callocStack(stack);

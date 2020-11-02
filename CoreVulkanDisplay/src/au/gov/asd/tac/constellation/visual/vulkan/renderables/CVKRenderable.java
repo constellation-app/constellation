@@ -141,6 +141,9 @@ public abstract class CVKRenderable {
     
     // ========================> Debuggering <======================== \\
     
+    public boolean DEBUG_skipRender = false;
+    public boolean DebugSkipRender() { return DEBUG_skipRender; }
+    
     protected static boolean LOGSTATECHANGE = false;
     protected void SetVertexUBOState(final CVKRenderableResourceState state) {
         CVKAssert(!(vertexUBOState == CVK_RESOURCE_NEEDS_REBUILD && state == CVK_RESOURCE_NEEDS_UPDATE));
@@ -453,6 +456,13 @@ public abstract class CVKRenderable {
                 rasterizer.cullMode(VK_CULL_MODE_BACK_BIT);
                 rasterizer.frontFace(VK_FRONT_FACE_COUNTER_CLOCKWISE);
                 rasterizer.depthBiasEnable(false);
+
+// TODO: hook this up.  See the block in CVKDevice where we query physical device caps.                
+//                VkPipelineRasterizationLineStateCreateInfoEXT lineRasterInfo = VkPipelineRasterizationLineStateCreateInfoEXT.callocStack(stack);
+//                lineRasterInfo.sType(VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO_EXT);
+//                lineRasterInfo.lineRasterizationMode(VK_LINE_RASTERIZATION_MODE_RECTANGULAR_SMOOTH_EXT);
+//                lineRasterInfo.stippledLineEnable(false);                               
+//                rasterizer.pNext(lineRasterInfo.address());                
 
                 // ===> MULTISAMPLING <===
                 VkPipelineMultisampleStateCreateInfo multisampling = VkPipelineMultisampleStateCreateInfo.callocStack(stack);

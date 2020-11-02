@@ -14,10 +14,15 @@ const int LINE_STYLE_DIAMOND = 3;
 const float LINE_DOT_SIZE = 0.3;
 
 
-// === UNIFORMS ===
-layout(std140, binding = 3) uniform UniformBlock {
-    int drawHitTest;
-} ub;
+// === PUSH CONSTANTS ===
+layout(std140, push_constant) uniform HitTestPushConstant {
+    // If non-zero, use the texture to color the icon.
+    // Otherwise, use a unique color for hit testing.
+    // Offset is 64 as the projection matrix (in Line.vs) 
+    // is before it in the pushConstant buffer.
+    // Note this is also read by Line.gs
+    layout(offset = 64) int drawHitTest;
+} pc;
 
 
 // === PER FRAGMENT DATA IN ===
@@ -57,7 +62,7 @@ void main(void) {
         }
     }
 
-    if (ub.drawHitTest == 0) {
+    if (pc.drawHitTest == 0) {
         // Make the edges of the line darker so the viewer can distinguish between lines.
         if (abs(pointCoord.x) > 0.20) {
             fragColor = (1.2 - abs(pointCoord.x)) * pointColor;

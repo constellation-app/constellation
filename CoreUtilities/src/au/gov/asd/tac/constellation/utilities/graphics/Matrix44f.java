@@ -32,6 +32,7 @@ public final class Matrix44f {
 
     public final float[] a;
     public static final int LENGTH = 16;
+    public static final int BYTES = LENGTH * Float.BYTES;
 
     private static final float[] IDENTITY44F
             = {

@@ -49,6 +49,7 @@ import java.nio.LongBuffer;
 import java.util.concurrent.CountDownLatch;
 import static org.lwjgl.vulkan.KHRSwapchain.VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_DEBUGGING;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_RENDERABLE_INITIALISATION_FAILED;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -204,9 +205,14 @@ public class CVKRenderer implements ComponentListener {
         
         synchronized (newRenderables) {
             for (CVKRenderable r : newRenderables) {
-                ret = r.Initialise();
-                if (VkFailed(ret)) { return ret; }               
-                renderables.add(r);
+                try {
+                    ret = r.Initialise();
+                    if (VkFailed(ret)) { return ret; }               
+                    renderables.add(r);
+                } catch (Exception e) {
+                    GetLogger().LogException(e, "Exception initialising %s", r.getClass().getName());
+                    return CVK_RENDERABLE_INITIALISATION_FAILED;
+                }
             }
             newRenderables.clear();
         }
@@ -381,6 +387,9 @@ public class CVKRenderer implements ComponentListener {
             
         // Loop through renderables and record their buffers
         for (CVKRenderable el : renderables) {
+            if (CVK_DEBUGGING && el.DebugSkipRender()) {
+                continue;
+            }
             if (el.GetVertexCount() > 0) {
                 ret = el.RecordDisplayCommandBuffer(inheritanceInfo, imageIndex);
                 if (VkFailed(ret)) { return ret; }

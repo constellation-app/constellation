@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.visual.opengl.renderer;
+package au.gov.asd.tac.constellation.utilities.visual;
 
 import java.awt.event.ActionEvent;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -27,7 +27,7 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.actions.Presenter;
 
-@ActionID(category = "Display", id = "au.gov.asd.tac.constellation.visual.opengl.renderer.DirectionIndicatorsAction")
+@ActionID(category = "Display", id = "au.gov.asd.tac.constellation.utilities.visual.DirectionIndicatorsAction")
 @ActionRegistration(displayName = "#CTL_DirectionIndicatorsAction", surviveFocusChange = true, lazy = false)
 @ActionReference(path = "Menu/Display", position = 1200)
 @Messages("CTL_DirectionIndicatorsAction=Direction Indicators")

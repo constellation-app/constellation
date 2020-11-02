@@ -26,6 +26,8 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.StreamHandler;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_DEFAULT_LOG_LEVEL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class CVKGraphLogger {
     // Static logger used by static code like shader loading or by code that doesn't know
@@ -203,7 +205,12 @@ public class CVKGraphLogger {
         }
 
         StreamHandler streamHanlder = new StreamHandler(System.out, new CVKGraphLogFormatter());
-        logger.addHandler(streamHanlder);   
+        logger.addHandler(streamHanlder);    
+        
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
+        LocalDateTime now = LocalDateTime.now();
+        CVKGraphLogRecord record = new CVKGraphLogRecord(level, dateTimeFormatter.format(now), 0, 0, false, false);     
+        logger.log(record);
         
         return logger;
     }       
@@ -230,6 +237,7 @@ public class CVKGraphLogger {
         } else {
             graphLogger = null;
         }        
+        
         DoLog(Level.SEVERE, String.format("Graph %s using logger %d", graphId, loggerId), loggerId, 0, false);
     }
     
@@ -242,12 +250,11 @@ public class CVKGraphLogger {
     }
     
     private void DoLog(Level level, String msg, final int loggerId, final int indentation, boolean formatted) {
-        CVKGraphLogRecord record = new CVKGraphLogRecord(level, msg, loggerId, indentation, formatted, true);            
+        CVKGraphLogRecord record = new CVKGraphLogRecord(level, msg, loggerId, indentation, formatted, false);            
         if (graphLogger != null) {            
             graphLogger.log(record);
-        } else {
-            record.graphAnnotation = false;
-        }        
+            record.graphAnnotation = true;
+        }      
         CVKLOGGER.log(record);
     }    
     

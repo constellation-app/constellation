@@ -5,15 +5,22 @@
 
 
 // === CONSTANTS ===
-// Keep this in sync with SceneBatchStore.
 const int LINE_INFO_ARROW = 1;
 const int LINE_INFO_OVERFLOW = 2;
-
-// Keep this in sync with LineArrow.gs.
 const float EDGE_SEPARATION_SCALE = 32;
 const float VISIBLE_ARROW_DISTANCE = 100;
-
 const float FLOAT_MULTIPLIER = 1024;
+
+
+// === PUSH CONSTANTS ===
+layout(std140, push_constant) uniform HitTestPushConstant {
+    // If non-zero, use the texture to color the icon.
+    // Otherwise, use a unique color for hit testing.
+    // Offset is 64 as the projection matrix (in Line.vs) 
+    // is before it in the pushConstant buffer.
+    // Note this is also read by Line.fs
+    layout(offset = 64) int drawHitTest;
+} htpc;
 
 
 // === UNIFORMS ===
@@ -24,7 +31,6 @@ layout(std140, binding = 2) uniform UniformBlock {
     float directionMotion;
     vec4 highlightColor;
     float alpha;
-    int drawHitTest;
 } ub;
 
 
@@ -46,7 +52,7 @@ void main() {
     // Lines are explicitly not drawn if they have visibility <= 0.
     // See au.gov.asd.tac.constellation.visual.opengl.task;
     float visibility = vpointColor[0][3];
-    if(visibility > max(ub.visibilityLow, 0) && (visibility <= ub.visibilityHigh || visibility > 1.0)) {
+    if (visibility > max(ub.visibilityLow, 0) && (visibility <= ub.visibilityHigh || visibility > 1.0)) {
         // The ends of the line.
         vec4 end0 = gl_in[0].gl_Position;
         vec4 end1 = gl_in[1].gl_Position;
@@ -56,7 +62,7 @@ void main() {
         int seldim = gData[0][2];
         bool isSelected = (seldim & 1) != 0;
         bool isDim = (seldim & 2) != 0;
-        if(isSelected) {
+        if (isSelected) {
             end0.z += 0.001;
             end1.z += 0.001;
         }
@@ -66,7 +72,7 @@ void main() {
 
         // Always draw full lines and arrows if the width is greater than normal.
         // (There's probably some optimisation at a further distance, but this will do for now.)
-        if(lineDistance <= VISIBLE_ARROW_DISTANCE || width > 1) {
+        if (lineDistance <= VISIBLE_ARROW_DISTANCE || width > 1) {
             float lineStyle = gData[1].q & 0x3;
 
             // The lines currently end at the centre of the 2*2 point sprite.
@@ -86,16 +92,12 @@ void main() {
             end0.xy += 2 * offset*dir.xy / 32;
             end1.xy += 2 * offset*dir.xy / 32;
 
-//            end0.z += offset * 0.0001;
-//            end1.z += offset * 0.0001;
-
             vec4 halfWidth = vec4(dir.xy / 32, 0, 0);
             int lineInfo0 = gData[0].t;
             int lineInfo1 = gData[1].t;
 
             bool outgoing0 = (lineInfo0&LINE_INFO_ARROW) != 0;
             bool outgoing1 = (lineInfo1&LINE_INFO_ARROW) != 0;
-
 
             // Adjust the width as specified by the graph attribute.
             halfWidth *= width;
@@ -104,7 +106,7 @@ void main() {
             // If this line is selected and we're not drawing into the hit test buffer,
             // or we've been told to draw it fatter (presumably to indicate many transactions in this edge),
             // draw it fatter.
-            if((isSelected && ub.drawHitTest == 0) || (lineInfo0 & LINE_INFO_OVERFLOW) != 0 || (lineInfo1 & LINE_INFO_OVERFLOW) != 0) {
+            if ((isSelected && htpc.drawHitTest == 0) || (lineInfo0 & LINE_INFO_OVERFLOW) != 0 || (lineInfo1 & LINE_INFO_OVERFLOW) != 0) {
                 halfWidth *= 2;
                 arrowVector *= 1.5;
             }
@@ -116,11 +118,11 @@ void main() {
             vec4 color0;
             vec4 color1;
 
-            if(ub.drawHitTest==0) {
+            if (htpc.drawHitTest==0) {
                 color0 = vpointColor[0];
                 color1 = vpointColor[1];
 
-                if(isSelected){
+                if (isSelected){
                     color0 = ub.highlightColor;
                     color1 = ub.highlightColor;
                 } else if (isDim) {
@@ -145,7 +147,7 @@ void main() {
             //
             // If end1 has an outgoing arrow and end0 is not
             // too far away then draw an arrow at end0.
-            if(outgoing1 && (end0.z>-100 || width>1)) {
+            if (outgoing1 && (end0.z>-100 || width>1)) {
                 // Draw a triangle to represent the arrow
                 pointColor = color0;
                 gl_Position = ub.pMatrix * end0;
@@ -187,7 +189,7 @@ void main() {
 
             // If end0 has an outgoing arrow and end1 is not
             // too far away then draw an arrow at end1.
-            if(outgoing0 && (end1.z > -100 || width > 1)) {
+            if (outgoing0 && (end1.z > -100 || width > 1)) {
                 // Draw a triangle to represent the arrow
                 pointColor = color1;
                 gl_Position = ub.pMatrix * end1;
@@ -262,14 +264,14 @@ void main() {
             EndPrimitive();
 
             // Draw the motion bars
-            if(ub.drawHitTest == 0 && ub.directionMotion != -1 && lineLength > 1 && outgoing0 != outgoing1) {
+            if (htpc.drawHitTest == 0 && ub.directionMotion != -1 && lineLength > 1 && outgoing0 != outgoing1) {
                 end0.z += 0.001;
                 end1.z += 0.001;
 
                 float motionLen = lineLength / 32.0;
                 float motionPos = ub.directionMotion - (floor(ub.directionMotion / lineLength) * lineLength);
 
-                if(outgoing1) {
+                if (outgoing1) {
                     motionPos = lineLength - motionPos;
                     motionLen = -motionLen;
                 }
@@ -278,7 +280,7 @@ void main() {
                 float motionEnd = clamp(motionPos + motionLen, 0, lineLength);
 
                 vec4 color;
-                if (ub.drawHitTest == 0) {
+                if (htpc.drawHitTest == 0) {
                     color = mix(vpointColor[0], vpointColor[1], motionPos / (lineLength - motionLen));
                     if (!isDim && !isSelected) {
                         float luminosity = 0.21 * color.r + 0.71 * color.g + 0.08 * color.b;

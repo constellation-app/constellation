@@ -23,17 +23,17 @@ layout(location = 0) out vec4 fragColor;
 
 void main(void) {
     // Line style.
-    if(lineStyle != LINE_STYLE_SOLID && lineLength > 0) {
+    if (lineStyle != LINE_STYLE_SOLID && lineLength > 0) {
         float segmentSize = LINE_DOT_SIZE * (lineLength / (0.25 + lineLength));
 
-        if(lineStyle == LINE_STYLE_DOTTED || lineStyle == LINE_STYLE_DIAMOND) {
+        if (lineStyle == LINE_STYLE_DOTTED || lineStyle == LINE_STYLE_DIAMOND) {
             float seg = mod(pointCoord, 2 * segmentSize);
             if(seg>(1 * segmentSize) && seg < (2 * segmentSize)) {
                 discard;
             }
-        } else if(lineStyle == LINE_STYLE_DASHED) {
+        } else if (lineStyle == LINE_STYLE_DASHED) {
             float seg = mod(pointCoord, 3 * segmentSize);
-            if(seg > (2 * segmentSize) && seg < (3 * segmentSize)) {
+            if (seg > (2 * segmentSize) && seg < (3 * segmentSize)) {
                 discard;
             }
         }

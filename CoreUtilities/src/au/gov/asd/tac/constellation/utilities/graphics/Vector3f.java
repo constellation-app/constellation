@@ -28,6 +28,11 @@ public final class Vector3f implements Serializable {
      * The length of a vector.
      */
     public static final int LENGTH = 3;
+    
+    /**
+     * Size in bytes of a vector
+     */
+    public static final int BYTES = LENGTH * Float.BYTES;    
 
     /**
      * The contents of this vector.

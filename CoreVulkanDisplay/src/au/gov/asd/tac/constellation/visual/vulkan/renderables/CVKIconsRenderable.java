@@ -67,13 +67,11 @@ import org.lwjgl.vulkan.VkWriteDescriptorSet;
  *  - fs: fragment ubo (hit test flag)
  * 
  */
-public class CVKIconsRenderable extends CVKRenderable{
+public class CVKIconsRenderable extends CVKRenderable {
     private static final int ICON_BITS = 16;
     private static final int ICON_MASK = 0xffff;
     public static final int SELECTED_BIT = 1;
     public static final int DIMMED_BIT = 2;
-    private static final Matrix44f IDENTITY_44F = Matrix44f.identity();      
-
 
     // Resource states. The atlas sampler handle is cached so we know the atlas 
     // state, ie if it doesn't match the one returned by the atlas, we know we
@@ -85,7 +83,6 @@ public class CVKIconsRenderable extends CVKRenderable{
         
     // Resources recreated with the swap chain (dependent on the image count)    
     private LongBuffer pDescriptorSets = null; 
-    private List<Long> displayPipelines = null;
     private List<Long> hitTestPipelines = null;
     private List<CVKCommandBuffer> displayCommandBuffers = null;
     private List<CVKCommandBuffer> hittestCommandBuffers = null;    
@@ -141,8 +138,8 @@ public class CVKIconsRenderable extends CVKRenderable{
     private static class Vertex {
         // This looks a little weird for Java, but LWJGL and JOGL both require
         // contiguous memory which is passed to the native GL or VK libraries.        
-        private static final int SIZEOF = 4 * Float.BYTES + 4 * Integer.BYTES;
-        private static final int OFFSETOF_DATA = 4 * Float.BYTES;
+        private static final int BYTES = Vector4f.BYTES + Vector4i.BYTES;
+        private static final int OFFSETOF_DATA = Vector4f.BYTES;
         private static final int OFFSET_BKGCLR = 0;
         private static final int BINDING = 0;
         private Vector4f backgroundIconColour = new Vector4f();
@@ -199,7 +196,7 @@ public class CVKIconsRenderable extends CVKRenderable{
             // this is the index of this description occupies in the array of
             // bound descriptions.
             bindingDescription.binding(BINDING);
-            bindingDescription.stride(Vertex.SIZEOF);
+            bindingDescription.stride(Vertex.BYTES);
             bindingDescription.inputRate(VK_VERTEX_INPUT_RATE_VERTEX);
 
             return bindingDescription;
@@ -250,7 +247,7 @@ public class CVKIconsRenderable extends CVKRenderable{
     }     
     
     private static class Position {
-        private static final int SIZEOF = 2 * 4 * Float.BYTES;
+        private static final int BYTES = 2 * Vector4f.BYTES;
         public final Vector4f position1;
         public final Vector4f position2;
         
@@ -978,7 +975,7 @@ public class CVKIconsRenderable extends CVKRenderable{
         commandBuffer.PushConstants(hPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, vertexPushConstants);
 
         // Push drawHitTest flag to the shaders
-        commandBuffer.PushConstants(hPipelineLayout, VK_SHADER_STAGE_GEOMETRY_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 64, hitTestPushConstants);
+        commandBuffer.PushConstants(hPipelineLayout, VK_SHADER_STAGE_GEOMETRY_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, Matrix44f.BYTES, hitTestPushConstants);
 
         commandBuffer.BindGraphicsDescriptorSets(hPipelineLayout, pDescriptorSets.get(imageIndex));
 
@@ -1020,7 +1017,7 @@ public class CVKIconsRenderable extends CVKRenderable{
         commandBuffer.PushConstants(hPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, vertexPushConstants);
 
         // Push drawHitTest flag to the shaders
-        commandBuffer.PushConstants(hPipelineLayout, VK_SHADER_STAGE_GEOMETRY_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 64, hitTestPushConstants);
+        commandBuffer.PushConstants(hPipelineLayout, VK_SHADER_STAGE_GEOMETRY_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, Matrix44f.BYTES, hitTestPushConstants);
 
         commandBuffer.BindGraphicsDescriptorSets(hPipelineLayout, pDescriptorSets.get(imageIndex));
 
@@ -1568,7 +1565,7 @@ public class CVKIconsRenderable extends CVKRenderable{
     }    
     
     private void RebuildVertexStagingBuffer(Vertex[] vertices) {        
-        final int newSizeBytes = (vertices != null ? vertices.length : 0) * Vertex.SIZEOF;
+        final int newSizeBytes = (vertices != null ? vertices.length : 0) * Vertex.BYTES;
         final boolean recreate = cvkVertexStagingBuffer == null || newSizeBytes != cvkVertexStagingBuffer.GetBufferSize();
         
         if (recreate) {
@@ -1597,8 +1594,8 @@ public class CVKIconsRenderable extends CVKRenderable{
         CVKAssert(vertices.length > 0 && vertices.length > last);
         CVKAssert(last >= 0 && last >= first && first >= 0);
 
-        int offset = first * Vertex.SIZEOF;
-        int size = ((last - first) + 1) * Vertex.SIZEOF;
+        int offset = first * Vertex.BYTES;
+        int size = ((last - first) + 1) * Vertex.BYTES;
 
         ByteBuffer pMemory = cvkVertexStagingBuffer.StartMemoryMap(offset, size);
         for (Vertex vertex : vertices) {
@@ -1609,7 +1606,7 @@ public class CVKIconsRenderable extends CVKRenderable{
     }         
     
     private void RebuildPositionStagingBuffer(Position[] positions) {
-        final int newSizeBytes = (positions != null ? positions.length : 0) * Position.SIZEOF;
+        final int newSizeBytes = (positions != null ? positions.length : 0) * Position.BYTES;
         final boolean recreate = cvkPositionStagingBuffer == null || newSizeBytes != cvkPositionStagingBuffer.GetBufferSize();
         
         if (recreate) {
@@ -1638,8 +1635,8 @@ public class CVKIconsRenderable extends CVKRenderable{
         CVKAssert(positions.length > 0 && positions.length > last);
         CVKAssert(last >= 0 && last >= first && first >= 0);
 
-        int offset = first * Position.SIZEOF;
-        int size = ((last - first) + 1) * Position.SIZEOF;
+        int offset = first * Position.BYTES;
+        int size = ((last - first) + 1) * Position.BYTES;
 
         ByteBuffer pMemory = cvkPositionStagingBuffer.StartMemoryMap(offset, size);
         for (Position position : positions) {
@@ -1688,20 +1685,20 @@ public class CVKIconsRenderable extends CVKRenderable{
     
     public CVKRenderUpdateTask TaskUpdateIcons(final VisualChange change, final VisualAccess access) {
         //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
-        GetLogger().fine("TaskUpdateIcons frame %d: %d verts", cvkVisualProcessor.GetFrameNumber(), access.getVertexCount());
-        
         // If we have had an update task called before a rebuild task we first have to build
         // the staging buffer.  Rebuild also if we our vertex count has somehow changed.
         final boolean rebuildRequired = cvkVertexStagingBuffer == null || 
-                                        access.getVertexCount() * Vertex.SIZEOF != cvkVertexStagingBuffer.GetBufferSize() || 
+                                        access.getVertexCount() * Vertex.BYTES != cvkVertexStagingBuffer.GetBufferSize() || 
                                         change.isEmpty();
         final int changedVerticeRange[];
         final Vertex vertices[];
         if (rebuildRequired) {
+            GetLogger().fine("TaskUpdateIcons frame %d: all (%d) verts", cvkVisualProcessor.GetFrameNumber(), access.getVertexCount());
             vertices = BuildVertexArray(access, 0, access.getVertexCount() - 1);
             changedVerticeRange = null;
         } else {
             changedVerticeRange = change.getRange();
+            GetLogger().fine("TaskUpdateIcons frame %d: %d verts", cvkVisualProcessor.GetFrameNumber(), (changedVerticeRange[1] - changedVerticeRange[0]) + 1);
             vertices = BuildVertexArray(access, changedVerticeRange[0], changedVerticeRange[1]);         
         }
         
@@ -1719,21 +1716,21 @@ public class CVKIconsRenderable extends CVKRenderable{
     }            
     
     public CVKRenderUpdateTask TaskUpdatePositions(final VisualChange change, final VisualAccess access) {
-        //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
-        GetLogger().fine("TaskUpdatePositions frame %d: %d verts", cvkVisualProcessor.GetFrameNumber(), access.getVertexCount());
-        
+        //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//                
         // If we have had an update task called before a rebuild task we first have to build
         // the staging buffer.  Rebuild also if we our vertex count has somehow changed.
         final boolean rebuildRequired = cvkPositionStagingBuffer == null || 
-                                        access.getVertexCount() * Position.SIZEOF != cvkPositionStagingBuffer.GetBufferSize() || 
+                                        access.getVertexCount() * Position.BYTES != cvkPositionStagingBuffer.GetBufferSize() || 
                                         change.isEmpty();
         final int changedVerticeRange[];
         final Position positions[];
         if (rebuildRequired) {
+            GetLogger().fine("TaskUpdatePositions frame %d: all (%d) verts", cvkVisualProcessor.GetFrameNumber(), access.getVertexCount());
             positions = BuildPositionArray(access, 0, access.getVertexCount() - 1);
             changedVerticeRange = null;
         } else {
             changedVerticeRange = change.getRange();
+            GetLogger().fine("TaskUpdatePositions frame %d: %d verts", cvkVisualProcessor.GetFrameNumber(), (changedVerticeRange[1] - changedVerticeRange[0]) + 1);
             positions = BuildPositionArray(access, changedVerticeRange[0], changedVerticeRange[1]);         
         }
         
@@ -1756,7 +1753,7 @@ public class CVKIconsRenderable extends CVKRenderable{
         // If we have had an update task called before a rebuild task we first have to build
         // the staging buffer.  Rebuild also if we our vertex count has somehow changed.
         final boolean rebuildRequired = cvkVertexFlagsStagingBuffer == null || 
-                                        access.getVertexCount() * Position.SIZEOF != cvkVertexFlagsStagingBuffer.GetBufferSize() ||
+                                        access.getVertexCount() * Position.BYTES != cvkVertexFlagsStagingBuffer.GetBufferSize() ||
                                         change.isEmpty();
         final int changedVerticeRange[];
         final byte vertexFlags[];
@@ -1819,7 +1816,7 @@ public class CVKIconsRenderable extends CVKRenderable{
     }
     
     
-    // ========================> Helpers <======================== \\      
+    // ========================> Helpers <======================== \\
     
     private Vector4i MakeIconIndexes(final int pos, final VisualAccess access) {
         CVKAssert(access != null);

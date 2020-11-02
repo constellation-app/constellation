@@ -47,7 +47,7 @@ import org.lwjgl.vulkan.VkVertexInputBindingDescription;
 
 public class CVKPointsRenderable extends CVKRenderable {    
     // The UBO staging buffers are a known size so created outside user events
-    private VertexUniformBufferObject vertexUBO = new VertexUniformBufferObject();
+    private final VertexUniformBufferObject vertexUBO = new VertexUniformBufferObject();
     private CVKBuffer cvkVertexUBStagingBuffer = null;    
     
     // Resources recreated only through user events
@@ -68,7 +68,7 @@ public class CVKPointsRenderable extends CVKRenderable {
     // ========================> Classes <======================== \\         
         
     private static class Vertex {
-        private static final int SIZEOF = Vector3f.LENGTH * Float.BYTES;
+        private static final int BYTES = Vector3f.BYTES;
         private final Vector3f vertex;
 
         public Vertex(final Vector3f vertex) {
@@ -86,7 +86,7 @@ public class CVKPointsRenderable extends CVKRenderable {
         private static VkVertexInputBindingDescription.Buffer GetBindingDescription() {
             VkVertexInputBindingDescription.Buffer bindingDescription = VkVertexInputBindingDescription.callocStack(1);
             bindingDescription.binding(0);
-            bindingDescription.stride(Vertex.SIZEOF);
+            bindingDescription.stride(Vertex.BYTES);
             bindingDescription.inputRate(VK_VERTEX_INPUT_RATE_VERTEX);
             return bindingDescription;
         }
@@ -113,7 +113,7 @@ public class CVKPointsRenderable extends CVKRenderable {
     }       
     
     private static class VertexUniformBufferObject {
-        private static final int SIZEOF = 16 * Float.BYTES;
+        private static final int BYTES = Matrix44f.BYTES;
         public Matrix44f mvpMatrix;
       
         public VertexUniformBufferObject() {
@@ -146,7 +146,7 @@ public class CVKPointsRenderable extends CVKRenderable {
     }          
     
     private void CreateUBOStagingBuffers() {
-        cvkVertexUBStagingBuffer = CVKBuffer.Create(VertexUniformBufferObject.SIZEOF,
+        cvkVertexUBStagingBuffer = CVKBuffer.Create(VertexUniformBufferObject.BYTES,
                                                     VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                                                     VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
                                                     GetLogger(),
@@ -255,7 +255,7 @@ public class CVKPointsRenderable extends CVKRenderable {
     
         // We can only create vertex buffers if we have something to put in them
         if (vertexCount > 0) {
-            int vertexBufferSizeBytes = Vertex.SIZEOF * vertexCount;
+            int vertexBufferSizeBytes = Vertex.BYTES * vertexCount;
             cvkVertexBuffer = CVKBuffer.Create(vertexBufferSizeBytes,
                                                VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
                                                VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
@@ -311,7 +311,7 @@ public class CVKPointsRenderable extends CVKRenderable {
     
     private void CreatePushConstants() {
         // Initialise push constants to identity mtx
-        pushConstants = memAlloc(VertexUniformBufferObject.SIZEOF);
+        pushConstants = memAlloc(VertexUniformBufferObject.BYTES);
         UpdatePushConstants();
     }
     
@@ -420,7 +420,7 @@ public class CVKPointsRenderable extends CVKRenderable {
             VkPushConstantRange.Buffer pushConstantRange;
             pushConstantRange = VkPushConstantRange.callocStack(1, stack);
             pushConstantRange.stageFlags(VK_SHADER_STAGE_VERTEX_BIT);
-            pushConstantRange.size(VertexUniformBufferObject.SIZEOF);
+            pushConstantRange.size(VertexUniformBufferObject.BYTES);
             pushConstantRange.offset(0);                     
             
             VkPipelineLayoutCreateInfo pipelineLayoutInfo = VkPipelineLayoutCreateInfo.callocStack(stack);
@@ -512,7 +512,7 @@ public class CVKPointsRenderable extends CVKRenderable {
             }                
             
             if (newVertexCount > 0) {
-                int vertexBufferSizeBytes = Vertex.SIZEOF * newVertexCount;
+                int vertexBufferSizeBytes = Vertex.BYTES * newVertexCount;
                 cvkVertexStagingBuffer = CVKBuffer.Create(vertexBufferSizeBytes, 
                                                           VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                                                           VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
@@ -521,7 +521,7 @@ public class CVKPointsRenderable extends CVKRenderable {
                 
                 ByteBuffer pVertexMemory = cvkVertexStagingBuffer.StartMemoryMap(0, vertexBufferSizeBytes);
                 for (int pos = 0; pos < newVertexCount; pos++) {
-                    final int offset = Vertex.SIZEOF * pos;
+                    final int offset = Vertex.BYTES * pos;
                     pVertexMemory.position(offset);
                     pVertexMemory.putFloat(access.getX(pos));
                     pVertexMemory.putFloat(access.getY(pos));
@@ -579,7 +579,7 @@ public class CVKPointsRenderable extends CVKRenderable {
             final int numChanges = change.getSize();
             for (int i = 0; i < numChanges; ++i) {
                 int pos = change.getElement(i);
-                final int offset = Vertex.SIZEOF * pos;
+                final int offset = Vertex.BYTES * pos;
                 pVertexMemory.position(offset);
                 pVertexMemory.putFloat(access.getX(pos));
                 pVertexMemory.putFloat(access.getY(pos));

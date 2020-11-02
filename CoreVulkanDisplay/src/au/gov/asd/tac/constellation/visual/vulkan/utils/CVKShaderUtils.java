@@ -69,7 +69,7 @@ public class CVKShaderUtils {
         try {
             String stringBytes = new String(source.readAllBytes());
             return CompileShader(shaderFile, stringBytes, shaderKind);
-        } catch (IOException e) {
+        } catch (Exception e) {
             CVKGraphLogger.GetStaticLogger().LogException(e, "CompileShaderFile threw exception for shader: %s", shaderFile);
         }
         
@@ -315,11 +315,14 @@ public class CVKShaderUtils {
         
     public static int LoadShader(String shaderName, MutableLong hShaderModule) {
         hShaderModule.setValue(VK_NULL_HANDLE);
+        CVKGraphLogger.GetStaticLogger().fine("Loading shader '%s'", shaderName);
         
         if (SHADER_MAP.containsKey(shaderName)) {
+            CVKGraphLogger.GetStaticLogger().fine("  shader '%s' found in shader map", shaderName);
             hShaderModule.setValue(SHADER_MAP.get(shaderName));
             return VK_SUCCESS;
         }
+        CVKGraphLogger.GetStaticLogger().fine("  shader '%s' not found in shader map, looking on disk", shaderName);
         
         // First load the static MD5 digest instance
         if (md5 == null) {
@@ -372,10 +375,16 @@ public class CVKShaderUtils {
                 }    
                 buffers.Destroy();
                 SHADER_MAP.put(shaderName, hShaderModule.longValue());
+                CVKGraphLogger.GetStaticLogger().fine("  shader '%s' was up to date, loaded '%s' from disk", shaderName, compiledFileName);
                 return VK_SUCCESS;
-            }                
+            } else {
+                CVKGraphLogger.GetStaticLogger().fine("  compiled shader '%s' is out of date, compiling", compiledFileName);
+            }   
+             
             buffers.Destroy();
-        }            
+        } else {
+            CVKGraphLogger.GetStaticLogger().fine("  no compiled shader found for '%s', compiling", shaderName);
+        }       
                    
 
         // Shader needs to be compiled

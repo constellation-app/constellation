@@ -81,9 +81,9 @@ public class CVKNewLineRenderable extends CVKRenderable {
     
     private static class Vertex {
 
-        private static final int SIZEOF = (3 + 4) * Float.BYTES;
+        private static final int BYTES = Vector3f.BYTES + Vector4f.BYTES;
         private static final int OFFSETOF_POS = 0;
-        private static final int OFFSETOF_COLOR = 3 * Float.BYTES;
+        private static final int OFFSETOF_COLOR = Vector3f.BYTES;
 
         private final Vector3f vertex;
         private final Vector4f color;
@@ -112,7 +112,7 @@ public class CVKNewLineRenderable extends CVKRenderable {
                     VkVertexInputBindingDescription.callocStack(1);
 
             bindingDescription.binding(0);
-            bindingDescription.stride(Vertex.SIZEOF);
+            bindingDescription.stride(Vertex.BYTES);
             bindingDescription.inputRate(VK_VERTEX_INPUT_RATE_VERTEX);
 
             return bindingDescription;
@@ -152,7 +152,7 @@ public class CVKNewLineRenderable extends CVKRenderable {
     }     
     
     private static class VertexUniformBufferObject {
-        private static final int SIZEOF = 16 * Float.BYTES;
+        private static final int BYTES = Matrix44f.BYTES;
         public Matrix44f mvpMatrix;
       
         public VertexUniformBufferObject() {
@@ -289,7 +289,7 @@ public class CVKNewLineRenderable extends CVKRenderable {
         vertices[1] = new Vertex(ZERO_3F, NEW_LINE_COLOR);        
          
         // Staging buffer so our VB can be device local (most performant memory)
-        final int size = vertices.length * Vertex.SIZEOF;
+        final int size = vertices.length * Vertex.BYTES;
         cvkStagingBuffer = CVKBuffer.Create(size,
                                             VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                                             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
@@ -348,7 +348,7 @@ public class CVKNewLineRenderable extends CVKRenderable {
 //            vertices[1].vertex.set(model.getEndLocation());
 
             // Update the staging buffer
-            final int size = vertices.length * Vertex.SIZEOF;
+            final int size = vertices.length * Vertex.BYTES;
             PointerBuffer data = stack.mallocPointer(1);
             vkMapMemory(CVKDevice.GetVkDevice(), cvkStagingBuffer.GetMemoryBufferHandle(), 0, size, 0, data);
             if (VkFailed(ret)) { return ret; }
@@ -385,7 +385,7 @@ public class CVKNewLineRenderable extends CVKRenderable {
     
     private int CreatePushConstants() {
         // Initialise push constants to identity mtx
-        pushConstants = memAlloc(VertexUniformBufferObject.SIZEOF);
+        pushConstants = memAlloc(VertexUniformBufferObject.BYTES);
         for (int iRow = 0; iRow < 4; ++iRow) {
             for (int iCol = 0; iCol < 4; ++iCol) {
                 pushConstants.putFloat(IDENTITY_44F.get(iRow, iCol));
@@ -499,7 +499,7 @@ public class CVKNewLineRenderable extends CVKRenderable {
             VkPushConstantRange.Buffer pushConstantRange;
             pushConstantRange = VkPushConstantRange.callocStack(1, stack);
             pushConstantRange.stageFlags(VK_SHADER_STAGE_VERTEX_BIT);
-            pushConstantRange.size(VertexUniformBufferObject.SIZEOF);
+            pushConstantRange.size(VertexUniformBufferObject.BYTES);
             pushConstantRange.offset(0);                     
             
             VkPipelineLayoutCreateInfo pipelineLayoutInfo = VkPipelineLayoutCreateInfo.callocStack(stack);

@@ -108,7 +108,7 @@ public final class GlyphRectangleBuffer {
      * only need grayscale). Use BufferedImage.TYPE_INT_ARGB for standalone to
      * see the pretty colors.
      */
-    GlyphRectangleBuffer(final int width, final int height, final int bufferType) {
+    public GlyphRectangleBuffer(final int width, final int height, final int bufferType) {
         this.width = width;
         this.height = height;
         this.bufferType = bufferType;

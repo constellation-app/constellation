@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
+import au.gov.asd.tac.constellation.utilities.visual.DirectionIndicatorsAction;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
