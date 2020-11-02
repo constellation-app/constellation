@@ -1041,13 +1041,7 @@ public final class TableViewPane extends BorderPane {
             }
             
             sortedRowList.comparatorProperty().bind(table.comparatorProperty());
-            final Thread t = new Thread() {
-                @Override
-                public void run() {
-                    updateSelection(parent.getCurrentGraph(), parent.getCurrentState());
-                }
-            };
-            t.start();
+            updateSelectionFromJAT(parent.getCurrentGraph(), parent.getCurrentState());
             sortedRowList.comparatorProperty().addListener(tableComparatorListener);
             selectedProperty.addListener(tableSelectionListener);
         }
@@ -1240,44 +1234,99 @@ public final class TableViewPane extends BorderPane {
                 if (!state.isSelectedOnly()) {
                     final List<Integer> selectedIds = new ArrayList<>();
                     final ReadableGraph readableGraph = graph.getReadableGraph();
-                    try {
-                        final boolean isVertex = state.getElementType() == GraphElementType.VERTEX;
-                        final int selectedAttributeId = isVertex
-                                ? VisualConcept.VertexAttribute.SELECTED.get(readableGraph)
-                                : VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
-                        final int elementCount = isVertex
-                                ? readableGraph.getVertexCount()
-                                : readableGraph.getTransactionCount();
-                        for (int elementPosition = 0; elementPosition < elementCount; elementPosition++) {
-                            final int elementId = isVertex
-                                    ? readableGraph.getVertex(elementPosition)
-                                    : readableGraph.getTransaction(elementPosition);
-                            boolean isSelected = false;
-                            if (selectedAttributeId != Graph.NOT_FOUND) {
-                                isSelected = readableGraph.getBooleanValue(selectedAttributeId, elementId);
-                            }
-                            if (isSelected) {
-                                selectedIds.add(elementId);
-                            }
-                        }
-                    } finally {
-                        readableGraph.release();
-                    }
+                    addToSelectedIds(selectedIds, readableGraph, state);
 
                     // update table selection
                     final int[] selectedIndices = selectedIds.stream().map(id -> elementIdToRowIndex.get(id))
                             .map(row -> table.getItems().indexOf(row)).mapToInt(i -> i).toArray();
-
-                    Platform.runLater(() -> {
+                    
+                    Platform.runLater(() -> {                        
                         selectedProperty.removeListener(tableSelectionListener);
                         table.getSelectionModel().clearSelection();
                         if (!selectedIds.isEmpty()) {
                             table.getSelectionModel().selectIndices(selectedIndices[0], selectedIndices);
                         }
-                        selectedProperty.addListener(tableSelectionListener);
+                        selectedProperty.addListener(tableSelectionListener);                            
                     });
                 }
             }
+        }
+    }
+       
+    /**
+     * A version of the updateSelection(Graph, TableViewState) function which is
+     * to be run on the JavaFX Application Thread
+     * 
+     * @param graph the graph to read selection from.
+     * @param state the current table view state.
+     */
+    private void updateSelectionFromJAT(final Graph graph, final TableViewState state) {
+        synchronized (LOCK) {
+            if (graph != null && state != null) {
+
+                if (!Platform.isFxApplicationThread()) {
+                    throw new IllegalStateException("Not processing on the JavaFX Application Thread");
+                }
+
+                // get graph selection
+                if (!state.isSelectedOnly()) {
+                    final List<Integer> selectedIds = new ArrayList<>();
+                    final int[][] selectedIndices = new int[1][1];
+                    final Thread t = new Thread() {
+                        @Override
+                        public void run() {
+                            final ReadableGraph readableGraph = graph.getReadableGraph();
+                            addToSelectedIds(selectedIds, readableGraph, state);
+
+                            // update table selection
+                            selectedIndices[0] = selectedIds.stream().map(id -> elementIdToRowIndex.get(id))
+                                    .map(row -> table.getItems().indexOf(row)).mapToInt(i -> i).toArray();
+                        }
+                    };
+                    t.start();
+                    try {
+                        t.join();
+                    } catch (InterruptedException ex) {
+                        Thread.currentThread().interrupt();
+                    }
+                                          
+                    table.getSelectionModel().clearSelection();
+                    if (!selectedIds.isEmpty()) {
+                        table.getSelectionModel().selectIndices(selectedIndices[0][0], selectedIndices[0]);
+                    }                           
+                }
+            }
+        }
+    }
+    
+    /**
+     * Adds vertex/transaction ids from a graph to a list of ids if the 
+     * vertex/transaction is selected
+     * 
+     * @param selectedIds the list that is being added to
+     * @param readableGraph the graph to read from
+     * @param state the current table view state
+     */
+    private void addToSelectedIds(final List<Integer> selectedIds, final ReadableGraph readableGraph, final TableViewState state) {
+        try {
+            final boolean isVertex = state.getElementType() == GraphElementType.VERTEX;
+            final int selectedAttributeId = isVertex
+                    ? VisualConcept.VertexAttribute.SELECTED.get(readableGraph)
+                    : VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
+            final int elementCount = isVertex
+                    ? readableGraph.getVertexCount()
+                    : readableGraph.getTransactionCount();
+            for (int elementPosition = 0; elementPosition < elementCount; elementPosition++) {
+                final int elementId = isVertex
+                        ? readableGraph.getVertex(elementPosition)
+                        : readableGraph.getTransaction(elementPosition);
+                if (selectedAttributeId != Graph.NOT_FOUND 
+                        && readableGraph.getBooleanValue(selectedAttributeId, elementId)) {
+                    selectedIds.add(elementId);
+                }
+            }
+        } finally {
+            readableGraph.release();
         }
     }
 }

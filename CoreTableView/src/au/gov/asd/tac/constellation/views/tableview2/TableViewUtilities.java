@@ -100,14 +100,17 @@ public class TableViewUtilities {
         // get the current page index so we can go back to it afterwards
         final int currentPage = pagination.getCurrentPageIndex();
         if (selectedOnly) {
-            table.getSelectionModel().getSelectedItems().forEach(selectedItem -> {
-                data.append(visibleIndices.stream()
-                        .filter(Objects::nonNull)
-                        .map(index -> selectedItem.get(index))
-                        .reduce((cell1, cell2) -> cell1 + SeparatorConstants.COMMA + cell2)
-                        .get());
-                data.append(SeparatorConstants.NEWLINE);
-            });                
+            for (int i = 0; i < pagination.getPageCount(); i++) {
+                final TableView<ObservableList<String>> page = (TableView<ObservableList<String>>) pagination.getPageFactory().call(i);
+                page.getSelectionModel().getSelectedItems().forEach(selectedItem -> {
+                    data.append(visibleIndices.stream()
+                            .filter(Objects::nonNull)
+                            .map(index -> selectedItem.get(index))
+                            .reduce((cell1, cell2) -> cell1 + SeparatorConstants.COMMA + cell2)
+                            .get());
+                    data.append(SeparatorConstants.NEWLINE);
+                });                                
+            }
         } else {
             for (int i = 0; i < pagination.getPageCount(); i++) {
                 final TableView<ObservableList<String>> page = (TableView<ObservableList<String>>) pagination.getPageFactory().call(i);
@@ -305,9 +308,13 @@ public class TableViewUtilities {
 
                 final int currentPage = pagination.getCurrentPageIndex();
                 if (selectedOnly) {
-                    // get a copy of the table data so that users are continue working
-                    final List<ObservableList<String>> data = table.getSelectionModel().getSelectedItems();
-                    writeRecords(sheet, visibleIndices, data, 1);
+                    for (int i = 0; i < pagination.getPageCount(); i++) {
+                        pagination.getPageFactory().call(i);
+                        // get a copy of the table data so that users are continue working
+                        final List<ObservableList<String>> data = table.getSelectionModel().getSelectedItems();
+                        final int startIndex = rowsPerPage * i + 1; // + 1 to skip the header
+                        writeRecords(sheet, visibleIndices, data, startIndex);                      
+                    }
                 } else {
                     for (int i = 0; i < pagination.getPageCount(); i++) {
                         pagination.getPageFactory().call(i);
@@ -317,6 +324,7 @@ public class TableViewUtilities {
                         writeRecords(sheet, visibleIndices, data, startIndex);                      
                     }
                 }
+                // Call the page factory function once more to go back to the original page index
                 pagination.getPageFactory().call(currentPage);
 
                 workbook.write(new FileOutputStream(file));
