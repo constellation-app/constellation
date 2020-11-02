@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javafx.collections.ObservableList;
@@ -326,8 +327,11 @@ public class TableViewUtilities {
                 }
                 // Call the page factory function once more to go back to the original page index
                 pagination.getPageFactory().call(currentPage);
-
-                workbook.write(new FileOutputStream(file));
+                
+                try (final FileOutputStream fileStream = new FileOutputStream(file)) {
+                    workbook.write(fileStream);
+                }
+                LOGGER.log(Level.INFO, "Table View data written to Excel file");
                 workbook.dispose();
             } catch (IOException ex) {
                 throw new PluginException(PluginNotificationLevel.ERROR, ex);

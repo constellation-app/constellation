@@ -46,7 +46,7 @@ public class ShortAttributeDescription extends AbstractAttributeDescription {
     public static final String ATTRIBUTE_NAME = "short";
     public static final Class<Short> NATIVE_CLASS = short.class;
     public static final NativeAttributeType NATIVE_TYPE = NativeAttributeType.SHORT;
-    private static final short DEFAULT_VALUE = (short) 0;
+    public static final short DEFAULT_VALUE = (short) 0;
 
     private short[] data = new short[0];
     private short defaultValue = DEFAULT_VALUE;
