@@ -53,6 +53,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.openide.filesystems.FileChooserBuilder;
+import org.openide.util.Exceptions;
 
 /**
  * Table View Utilities.
@@ -178,7 +179,14 @@ public class TableViewUtilities {
                     : fileName.getAbsolutePath() + CSV_EXT;
 
             final File file = new File(filePath);
-            PluginExecution.withPlugin(new ExportToCsvFilePlugin(file, table, pagination, selectedOnly)).executeLater(null);
+            try {
+                PluginExecution.withPlugin(new ExportToCsvFilePlugin(file, table, pagination, selectedOnly)).executeNow((Graph) null);
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+                Exceptions.printStackTrace(ex);
+            } catch (PluginException ex) {
+                Exceptions.printStackTrace(ex);
+            }
         }
     }
 
@@ -218,7 +226,14 @@ public class TableViewUtilities {
                     : fileName.getAbsolutePath() + XLSX_EXT;
 
             final File excelFile = new File(filePath);
-            PluginExecution.withPlugin(new ExportToExcelFilePlugin(excelFile, table, pagination, rowsPerPage, selectedOnly, sheetName)).executeLater(null);
+            try {
+                PluginExecution.withPlugin(new ExportToExcelFilePlugin(excelFile, table, pagination, rowsPerPage, selectedOnly, sheetName)).executeNow((Graph) null);
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+                Exceptions.printStackTrace(ex);
+            } catch (PluginException ex) {
+                Exceptions.printStackTrace(ex);
+            }
         }
     }
 
