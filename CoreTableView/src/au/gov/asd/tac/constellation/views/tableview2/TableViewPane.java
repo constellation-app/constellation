@@ -1272,7 +1272,7 @@ public final class TableViewPane extends BorderPane {
                 if (!state.isSelectedOnly()) {
                     final List<Integer> selectedIds = new ArrayList<>();
                     final int[][] selectedIndices = new int[1][1];
-                    final Thread t = new Thread() {
+                    final Thread selectedIdsThread = new Thread("Update Selection from FX Thread: Get Selected Ids") {
                         @Override
                         public void run() {
                             final ReadableGraph readableGraph = graph.getReadableGraph();
@@ -1283,9 +1283,9 @@ public final class TableViewPane extends BorderPane {
                                     .map(row -> table.getItems().indexOf(row)).mapToInt(i -> i).toArray();
                         }
                     };
-                    t.start();
+                    selectedIdsThread.start();
                     try {
-                        t.join();
+                        selectedIdsThread.join();
                     } catch (InterruptedException ex) {
                         Thread.currentThread().interrupt();
                     }

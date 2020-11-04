@@ -269,14 +269,19 @@ public class TableViewUtilities {
 
         @Override
         public void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-            try {
-                final String csvData = getTableData(table, pagination, true, selectedOnly);
-                try (final FileWriter fileWriter = new FileWriter(file)) {
-                    fileWriter.write(csvData);
-                }
-            } catch (IOException ex) {
-                throw new PluginException(PluginNotificationLevel.ERROR, ex);
-            }
+            final String csvData = getTableData(table, pagination, true, selectedOnly);
+            final Thread outputThread = new Thread("Export to CSV File: Writing File") {
+                @Override
+                public void run() {
+                    try (final FileWriter fileWriter = new FileWriter(file)) {
+                        fileWriter.write(csvData);
+                    } catch (IOException ex) {
+                        Exceptions.printStackTrace(ex);
+                    }
+                }                    
+            };
+            outputThread.start();
+            outputThread.join();
         }
 
         @Override
@@ -326,28 +331,51 @@ public class TableViewUtilities {
                 if (selectedOnly) {
                     for (int i = 0; i < pagination.getPageCount(); i++) {
                         pagination.getPageFactory().call(i);
-                        // get a copy of the table data so that users are continue working
-                        final List<ObservableList<String>> data = table.getSelectionModel().getSelectedItems();
                         final int startIndex = rowsPerPage * i + 1; // + 1 to skip the header
-                        writeRecords(sheet, visibleIndices, data, startIndex);                      
+                        final Thread writeSheetThread = new Thread("Export to Excel File: Writing Sheet") {
+                            @Override
+                            public void run() {
+                                // get a copy of the table data so that users are continue working
+                                final List<ObservableList<String>> data = table.getSelectionModel().getSelectedItems();                               
+                                writeRecords(sheet, visibleIndices, data, startIndex);
+                            }                            
+                        };
+                        writeSheetThread.start();
+                        writeSheetThread.join();                      
                     }
                 } else {
                     for (int i = 0; i < pagination.getPageCount(); i++) {
                         pagination.getPageFactory().call(i);
-                        // get a copy of the table data so that users are continue working
-                        final List<ObservableList<String>> data = table.getItems();
                         final int startIndex = rowsPerPage * i + 1; // + 1 to skip the header
-                        writeRecords(sheet, visibleIndices, data, startIndex);                      
+                        final Thread writeSheetThread = new Thread("Export to Excel File: Writing Sheet") {
+                            @Override
+                            public void run() {
+                                // get a copy of the table data so that users are continue working
+                                final List<ObservableList<String>> data = table.getItems();                               
+                                writeRecords(sheet, visibleIndices, data, startIndex);
+                            }                            
+                        };
+                        writeSheetThread.start();
+                        writeSheetThread.join();
                     }
                 }
                 // Call the page factory function once more to go back to the original page index
                 pagination.getPageFactory().call(currentPage);
                 
-                try (final FileOutputStream fileStream = new FileOutputStream(file)) {
-                    workbook.write(fileStream);
-                }
-                LOGGER.log(Level.INFO, "Table View data written to Excel file");
-                workbook.dispose();
+                final Thread outputThread = new Thread("Export to Excel File: Writing File") {
+                    @Override
+                    public void run() {
+                        try (final FileOutputStream fileStream = new FileOutputStream(file)) {
+                            workbook.write(fileStream);
+                            LOGGER.log(Level.INFO, "Table View data written to Excel file");
+                        } catch (IOException ex) {
+                            Exceptions.printStackTrace(ex);
+                        }
+                        workbook.dispose();
+                    }                   
+                };
+                outputThread.start();
+                outputThread.join();
             } catch (IOException ex) {
                 throw new PluginException(PluginNotificationLevel.ERROR, ex);
             }
