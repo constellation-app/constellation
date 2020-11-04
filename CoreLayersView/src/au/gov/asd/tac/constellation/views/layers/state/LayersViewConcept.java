@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.layers.state;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.attribute.LongAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import java.util.ArrayList;
@@ -34,6 +35,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = SchemaConcept.class)
 public class LayersViewConcept extends SchemaConcept {
 
+    private static final String CONCEPT_STRING = "Concept class";
+
     @Override
     public String getName() {
         return "Layers View";
@@ -49,7 +52,7 @@ public class LayersViewConcept extends SchemaConcept {
     public static class MetaAttribute {
 
         private MetaAttribute() {
-            throw new IllegalStateException("Concept class");
+            throw new IllegalStateException(CONCEPT_STRING);
         }
 
         public static final SchemaAttribute LAYERS_VIEW_STATE = new SchemaAttribute.Builder(GraphElementType.META, LayersViewStateAttributeDescription.ATTRIBUTE_NAME, "layers_view_state")
@@ -57,9 +60,23 @@ public class LayersViewConcept extends SchemaConcept {
                 .build();
     }
 
+    public static class GraphAttribute {
+
+        private GraphAttribute() {
+            throw new IllegalStateException(CONCEPT_STRING);
+        }
+
+        public static final SchemaAttribute LAYER_MASK_SELECTED = new SchemaAttribute.Builder(GraphElementType.GRAPH, LongAttributeDescription.ATTRIBUTE_NAME, "layer_bitmask_selected")
+                .setDescription("The layers currently enabled for display")
+                .setDefaultValue(1)
+                .create()
+                .build();
+    }
+
     @Override
     public Collection<SchemaAttribute> getSchemaAttributes() {
         final List<SchemaAttribute> schemaAttributes = new ArrayList<>();
+        schemaAttributes.add(GraphAttribute.LAYER_MASK_SELECTED);
         schemaAttributes.add(MetaAttribute.LAYERS_VIEW_STATE);
         return Collections.unmodifiableCollection(schemaAttributes);
     }
