@@ -54,8 +54,6 @@ import org.apache.commons.collections.CollectionUtils;
 public class NotesViewPane extends BorderPane implements PluginReportListener {
 
     private final NotesViewController notesViewController;
-    private GraphReport currentGraphReport;
-
     private final List<NotesViewEntry> notesViewEntries;
 
     private final VBox notesViewPaneVBox;
@@ -72,9 +70,7 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
 
     public NotesViewPane(final NotesViewController controller) {
 
-        // Create controller.
         notesViewController = controller;
-
         notesViewEntries = new ArrayList<>();
 
         // TextField to enter new note title.
@@ -150,31 +146,46 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
     }
 
     /**
-     * Get the current graph report and get the plugin reports of plugins that have executed on that graph.
-     * 
-     * @param currentGraphId 
+     * Set the plugin reports that have executed on the current graph report.
      */
-    protected void setGraphRecord(final String currentGraphId) {
-        currentGraphReport = GraphReportManager.getGraphReport(currentGraphId);
-        if (currentGraphId != null && currentGraphReport != null) {
-            // Get the list of currently executed plugins.
-            currentGraphReport.getPluginReports().forEach((report) -> {
-                // If the plugin is not a plugin of Notes View.
-                if (!report.getPluginName().contains("Note")) {
-                    // Listener monitors changes to the plugin report as it executes and finishes. Affects the output of getMessage().
-                    report.addPluginReportListener(this);
-                    notesViewEntries.add(new NotesViewEntry(
-                            Long.toString(report.getStartTime()),
-                            report.getPluginName(),
-                            report.getMessage(),
-                            false
-                    ));
-                }
+    protected void setGraphReport() {
+        
+        final GraphReport currentGraphReport = GraphReportManager.getGraphReport(GraphManager.getDefault().getActiveGraph().getId());
+        
+        if (currentGraphReport != null) {
+            // Iterates the list of currently executed plugins.
+            currentGraphReport.getPluginReports().forEach((pluginReport) -> {
+                setPluginReport(pluginReport);
             });
             // Clears duplicates from the list.
             final List<NotesViewEntry> uniqueNotes = clearDuplicates(notesViewEntries);
             notesViewEntries.clear();
             notesViewEntries.addAll(uniqueNotes);
+            // Update the Notes View UI.
+            updateNotes();
+            notesViewController.writeState();
+        }
+    }
+    
+    /**
+     * Adds a plugin report to notesViewEntries as a Notes View Entry object.
+     * 
+     * @param pluginReport Plugin report to be added.
+     */
+    protected void setPluginReport(final PluginReport pluginReport) {
+        // Omit plugin reports from the Notes View and Quality Control View.
+        if (!pluginReport.getPluginName().contains("Notes View")) {
+            if (!pluginReport.getPluginName().contains("Quality Control View")) {
+                // Listener monitors changes to the plugin report as it executes and finishes. Affects the output of getMessage().
+                pluginReport.addPluginReportListener(this);
+                
+                notesViewEntries.add(new NotesViewEntry(
+                        Long.toString(pluginReport.getStartTime()),
+                        pluginReport.getPluginName(),
+                        pluginReport.getMessage(),
+                        false
+                ));
+            }
         }
     }
 
@@ -387,26 +398,15 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
     // Triggers when plugin reports undergo a change, such as when they go between executing and finishing.
     @Override
     public void pluginReportChanged(PluginReport pluginReport) {
-
-        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-
-        if (!pluginReport.getPluginName().contains("Note")) {
-
-            if (activeGraph != null) {
-                final NotesViewEntry entry = new NotesViewEntry(
-                        Long.toString(pluginReport.getStartTime()),
-                        pluginReport.getPluginName(),
-                        pluginReport.getMessage(),
-                        false
-                );
-                notesViewEntries.add(entry);
-                // remove duplicates and replace the current notes.
-                final List<NotesViewEntry> uniqueNotes = clearDuplicates(notesViewEntries);
-                notesViewEntries.clear();
-                notesViewEntries.addAll(uniqueNotes);
-                notesViewController.writeState();
-            }
-        }
+        setPluginReport(pluginReport);
+        
+        // Clears duplicates from the list.
+        final List<NotesViewEntry> uniqueNotes = clearDuplicates(notesViewEntries);
+        notesViewEntries.clear();
+        notesViewEntries.addAll(uniqueNotes);
+        // Update the Notes View UI.
+        updateNotes();
+        notesViewController.writeState();
     }
 
     @Override

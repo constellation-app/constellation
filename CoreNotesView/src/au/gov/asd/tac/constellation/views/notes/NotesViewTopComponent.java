@@ -29,7 +29,8 @@ import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
 
 /**
- *
+ * UI component associated with the Notes View.
+ * 
  * @author sol695510
  */
 @TopComponent.Description(
@@ -114,10 +115,9 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
         notesViewPane.clearNotes();
         notesViewPane.prepareNotesViewPane(notesViewController, notesViewPane);
 
-        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-        // Ensures plugin reports that are created on a graph while the Notes View is not open will appear when it is later opened.
-        if (activeGraph != null) {
-            notesViewPane.setGraphRecord(activeGraph.getId());
+        // Ensures plugin reports created while the Notes View is not open will appear when it is opened later.
+        if (GraphManager.getDefault().getActiveGraph() != null) {
+            notesViewPane.setGraphReport();
             notesViewController.writeState();
         }
     }
@@ -150,15 +150,12 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
     // Triggers when plugin reports are added or removed.
     @Override
     public void newPluginReport(PluginReport pluginReport) {
-
-        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-
-        if (!pluginReport.getPluginName().contains("Note")) {
-            notesViewPane.prepareNotesViewPane(notesViewController, notesViewPane);
-
-            if (activeGraph != null) {
-                notesViewPane.setGraphRecord(activeGraph.getId());
-                notesViewController.writeState();
+        // Omit plugin reports from the Notes View and Quality Control View.
+        if (!pluginReport.getPluginName().contains("Notes View")) {
+            if (!pluginReport.getPluginName().contains("Quality Control View")) {
+                
+                notesViewPane.prepareNotesViewPane(notesViewController, notesViewPane);
+                notesViewPane.setGraphReport();
             }
         }
     }
