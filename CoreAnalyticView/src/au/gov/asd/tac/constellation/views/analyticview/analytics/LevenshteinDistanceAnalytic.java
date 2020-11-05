@@ -29,6 +29,8 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -79,16 +81,19 @@ public class LevenshteinDistanceAnalytic extends ScoreAnalyticPlugin {
 
     @Override
     public void onPrerequisiteAttributeChange(final Graph graph, final PluginParameters parameters) {
+        
         final List<String> stringAttributes = AttributeUtilities.getAttributeNames(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME);
-
         updateParameters(parameters);
-
+        
         stringAttributes.sort(String::compareTo);
+        
         @SuppressWarnings("unchecked") //ATTRIBUTE_PARAMETER always of type SingleChoiceParameter
         final PluginParameter<SingleChoiceParameterValue> attributeParam = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(ATTRIBUTE_PARAMETER_ID);
+        
         SingleChoiceParameterType.setOptions(attributeParam, stringAttributes);
+        
         if (stringAttributes.contains(VisualConcept.VertexAttribute.IDENTIFIER.getName())) {
             SingleChoiceParameterType.setChoice(attributeParam, VisualConcept.VertexAttribute.IDENTIFIER.getName());
-        }
+        } 
     }
 }

@@ -122,10 +122,16 @@ public class SingleChoiceInputPane extends HBox {
                 switch (change) {
                     case VALUE:
                         // Don't change the value if it isn't necessary.
-                        final ParameterValue param = scParameterValue.getChoiceData();
+                        final List<ParameterValue> param = scParameterValue.getOptionsData();
                         final ParameterValue value = field.getSelectionModel().getSelectedItem();
-                        if (!Objects.equals(value, param)) {
+                        //This if statement was causing the Levenshtein Distance Analytic to reset to the identifier value
+                        // each time the selection on the graph changed
+                       /* if (!Objects.equals(value, param)) {
                             field.getSelectionModel().select(param);
+                        }*/
+                        //Checks that the currently selected value is in the new parameters list
+                        if (!param.contains(value)) {
+                            field.getSelectionModel().select(scParameterValue.getChoiceData());
                         }
                         break;
                     case PROPERTY:
