@@ -155,9 +155,6 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
      * the given parameter.
      */
     public static String getChoice(final PluginParameter<SingleChoiceParameterValue> parameter) {
-        if (parameter.getParameterValue().getChoice() == null) {
-            return null;
-        }
         return parameter.getParameterValue().getChoice();
     }
 
@@ -169,9 +166,6 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
      * selection for the given parameter.
      */
     public static ParameterValue getChoiceData(final PluginParameter<SingleChoiceParameterValue> parameter) {
-        if (parameter.getParameterValue().getChoiceData() == null) {
-            return null;
-        }
         return parameter.getParameterValue().getChoiceData();
     }
 
@@ -356,9 +350,6 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
          * @return A String representing the currently selected value.
          */
         public String getChoice() {
-            if (choice == null){
-                return null;
-            }
             return choice.toString();
         }
 
@@ -385,9 +376,6 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
          * selected value.
          */
         public ParameterValue getChoiceData() {
-            if (choice == null){
-                return null;
-            }
             return choice;
         }
 
