@@ -1261,40 +1261,39 @@ public final class TableViewPane extends BorderPane {
      * @param state the current table view state.
      */
     private void updateSelectionFromFXThread(final Graph graph, final TableViewState state) {
-        synchronized (LOCK) {
-            if (graph != null && state != null) {
+        if (graph != null && state != null) {
 
-                if (!Platform.isFxApplicationThread()) {
-                    throw new IllegalStateException("Not processing on the JavaFX Application Thread");
-                }
+            if (!Platform.isFxApplicationThread()) {
+                throw new IllegalStateException("Not processing on the JavaFX Application Thread");
+            }
 
-                // get graph selection
-                if (!state.isSelectedOnly()) {
-                    final List<Integer> selectedIds = new ArrayList<>();
-                    final int[][] selectedIndices = new int[1][1];
-                    final Thread selectedIdsThread = new Thread("Update Selection from FX Thread: Get Selected Ids") {
-                        @Override
-                        public void run() {
-                            final ReadableGraph readableGraph = graph.getReadableGraph();
-                            addToSelectedIds(selectedIds, readableGraph, state);
+            // get graph selection
+            if (!state.isSelectedOnly()) {
+                final List<Integer> selectedIds = new ArrayList<>();
+                final int[][] selectedIndices = new int[1][1];
+                final Thread selectedIdsThread = new Thread("Update Selection from FX Thread: Get Selected Ids") {
+                    @Override
+                    public void run() {
+                        final ReadableGraph readableGraph = graph.getReadableGraph();
+                        addToSelectedIds(selectedIds, readableGraph, state);
 
-                            // update table selection
-                            selectedIndices[0] = selectedIds.stream().map(id -> elementIdToRowIndex.get(id))
-                                    .map(row -> table.getItems().indexOf(row)).mapToInt(i -> i).toArray();
-                        }
-                    };
-                    selectedIdsThread.start();
-                    try {
-                        selectedIdsThread.join();
-                    } catch (InterruptedException ex) {
-                        Thread.currentThread().interrupt();
+                        // update table selection
+                        selectedIndices[0] = selectedIds.stream().map(id -> elementIdToRowIndex.get(id))
+                                .map(row -> table.getItems().indexOf(row)).mapToInt(i -> i).toArray();
                     }
-                                          
-                    table.getSelectionModel().clearSelection();
-                    if (!selectedIds.isEmpty()) {
-                        table.getSelectionModel().selectIndices(selectedIndices[0][0], selectedIndices[0]);
-                    }                           
+                };
+                selectedIdsThread.start();
+                try {
+                    selectedIdsThread.join();
+                } catch (InterruptedException ex) {
+                    LOGGER.log(Level.WARNING, "InterruptedException encountered while updating table selection");
+                    Thread.currentThread().interrupt();
                 }
+
+                table.getSelectionModel().clearSelection();
+                if (!selectedIds.isEmpty()) {
+                    table.getSelectionModel().selectIndices(selectedIndices[0][0], selectedIndices[0]);
+                }                           
             }
         }
     }

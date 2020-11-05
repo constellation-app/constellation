@@ -53,7 +53,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.openide.filesystems.FileChooserBuilder;
-import org.openide.util.Exceptions;
 
 /**
  * Table View Utilities.
@@ -182,10 +181,10 @@ public class TableViewUtilities {
             try {
                 PluginExecution.withPlugin(new ExportToCsvFilePlugin(file, table, pagination, selectedOnly)).executeNow((Graph) null);
             } catch (InterruptedException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                 Thread.currentThread().interrupt();
-                Exceptions.printStackTrace(ex);
             } catch (PluginException ex) {
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
             }
         }
     }
@@ -229,10 +228,10 @@ public class TableViewUtilities {
             try {
                 PluginExecution.withPlugin(new ExportToExcelFilePlugin(excelFile, table, pagination, rowsPerPage, selectedOnly, sheetName)).executeNow((Graph) null);
             } catch (InterruptedException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                 Thread.currentThread().interrupt();
-                Exceptions.printStackTrace(ex);
             } catch (PluginException ex) {
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
             }
         }
     }
@@ -276,7 +275,7 @@ public class TableViewUtilities {
                     try (final FileWriter fileWriter = new FileWriter(file)) {
                         fileWriter.write(csvData);
                     } catch (IOException ex) {
-                        Exceptions.printStackTrace(ex);
+                        interaction.notify(PluginNotificationLevel.ERROR, ex.getLocalizedMessage());
                     }
                 }                    
             };
@@ -369,7 +368,7 @@ public class TableViewUtilities {
                             workbook.write(fileStream);
                             LOGGER.log(Level.INFO, "Table View data written to Excel file");
                         } catch (IOException ex) {
-                            Exceptions.printStackTrace(ex);
+                            interaction.notify(PluginNotificationLevel.ERROR, ex.getLocalizedMessage());
                         }
                         workbook.dispose();
                     }                   
