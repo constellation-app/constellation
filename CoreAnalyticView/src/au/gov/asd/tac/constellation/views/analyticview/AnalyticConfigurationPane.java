@@ -512,15 +512,11 @@ public class AnalyticConfigurationPane extends VBox {
             LOGGER.log(Level.INFO, "Update selectable plugins parameters in analytic config pane.");
             pluginList.getItems().forEach(selectablePlugin -> {
                 selectablePlugin.parameters.updateParameterValues(selectablePlugin.updatedParameters);
-                //get the current choice and give to plugin here 
-
-               // selectablePlugin.plugin.onPrerequisiteAttributeChange(GraphManager.getDefault().getActiveGraph(), selectablePlugin.updatedParameters);
             });
             
         } else if (questionListPane.isExpanded() && currentQuestion != null) {
             pluginList.getItems().forEach(selectablePlugin -> {
                 selectablePlugin.parameters.updateParameterValues(selectablePlugin.updatedParameters);
-                //selectablePlugin.plugin.onPrerequisiteAttributeChange(GraphManager.getDefault().getActiveGraph(), selectablePlugin.updatedParameters);
                 currentQuestion.initialiseParameters(selectablePlugin.plugin, selectablePlugin.parameters);
             });
         }
