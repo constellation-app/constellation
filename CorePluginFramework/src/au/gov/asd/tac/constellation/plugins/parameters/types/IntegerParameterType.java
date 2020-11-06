@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import javafx.util.converter.NumberStringConverter;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -229,7 +230,7 @@ public class IntegerParameterType extends PluginParameterType<IntegerParameterVa
 
         @Override
         public String validateString(final String s) {
-            if (s == null || s.trim().isEmpty()) {
+            if (StringUtils.isBlank(s)) {
                 return "Value required";
             }
 

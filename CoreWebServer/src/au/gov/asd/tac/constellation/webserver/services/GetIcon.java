@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValu
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import static au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities.IMAGE_PNG;
 import java.io.IOException;
 import java.io.InputStream;
@@ -69,6 +70,9 @@ public class GetIcon extends RestService {
     @Override
     public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
         final String iconName = parameters.getStringValue(ICON_PARAMETER_ID);
+        if (!IconManager.iconExists(iconName)) {
+            throw new RestServiceException(HTTP_UNPROCESSABLE_ENTITY, "No icon with name " + iconName);
+        }
         final ConstellationIcon icon = IconManager.getIcon(iconName);
         out.write(icon.buildByteArray());
     }

@@ -77,6 +77,7 @@ import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
+import org.apache.commons.collections4.CollectionUtils;
 import org.openide.util.Lookup;
 
 /**
@@ -1093,7 +1094,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
             final List<String> items = pmp.getItems(rg, elementType, clickedId);
             if (!items.isEmpty()) {
                 final List<String> menuPath = pmp.getMenuPath(elementType);
-                if (menuPath == null || menuPath.isEmpty()) {
+                if (CollectionUtils.isEmpty(menuPath)) {
                     items.forEach(item -> {
                         popup.add(new AbstractAction(item) {
                             @Override

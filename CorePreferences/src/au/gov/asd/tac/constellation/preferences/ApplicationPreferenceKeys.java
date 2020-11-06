@@ -180,6 +180,11 @@ public final class ApplicationPreferenceKeys {
     public static final String DEFAULT_TEMPLATE = "defaultTemplate";
     public static final String DEFAULT_TEMPLATE_DEFAULT = null;
 
+    /**
+     * Quality Control View Priorities
+     */
+    public static final String RULE_PRIORITIES = "customRules";
+
     private ApplicationPreferenceKeys() {
     }
 }

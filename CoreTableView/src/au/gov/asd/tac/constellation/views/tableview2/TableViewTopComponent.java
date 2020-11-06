@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.monitor.AttributeValueMonitor;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -90,6 +91,9 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
         initContent();
 
         addStructureChangeHandler(graph -> {
+            if (!needsUpdate()) {
+                return;
+            }
             final Thread thread = new Thread(UPDATE_DATA) {
                 @Override
                 public void run() {
@@ -100,11 +104,13 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
         });
 
         addAttributeCountChangeHandler(graph -> {
-            pane.updateTable(graph, currentState);
+            if (needsUpdate()) {
+                pane.updateTable(graph, currentState);
+            }
         });
 
         addAttributeValueChangeHandler(VisualConcept.VertexAttribute.SELECTED, graph -> {
-            if (currentState != null && currentState.getElementType() == GraphElementType.VERTEX) {
+            if (needsUpdate() && currentState != null && currentState.getElementType() == GraphElementType.VERTEX) {
                 if (currentState.isSelectedOnly()) {
                     final Thread thread = new Thread(UPDATE_DATA) {
                         @Override
@@ -126,7 +132,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
         });
 
         addAttributeValueChangeHandler(VisualConcept.TransactionAttribute.SELECTED, graph -> {
-            if (currentState != null && currentState.getElementType() == GraphElementType.TRANSACTION) {
+            if (needsUpdate() && currentState != null && currentState.getElementType() == GraphElementType.TRANSACTION) {
                 final Thread thread;
                 if (currentState.isSelectedOnly()) {
                     thread = new Thread(UPDATE_DATA) {
@@ -149,6 +155,9 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
         });
 
         addAttributeValueChangeHandler(TableViewConcept.MetaAttribute.TABLE_VIEW_STATE, graph -> {
+            if (!needsUpdate()) {
+                return;
+            }
             final TableViewState previousState = currentState;
             updateState(graph);
             final Tuple<Set<Tuple<String, Attribute>>, Set<Tuple<String, Attribute>>> columnAttributeChanges = getColumnAttributeChanges(previousState, currentState);
@@ -218,17 +227,17 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
                 while (stateLock != null && currentState == stateSnapshot) {
                     try {
                         // TODO: remove sleep
-                        // ...but there is an async issue which needs to be 
-                        // resolved first. When showSelected() is called, the 
-                        // order of operations is to update the Table View 
-                        // state (if required) and then to select the rows in 
-                        // the table based on the current graph selection. The 
-                        // issue is that the state is updated by writing a 
-                        // TableViewState object to the graph and letting a 
-                        // Table View listener respond to that. Unfortunately, 
-                        // there is no obvious way for this operation to know 
-                        // when the Table View listener has finished responding, 
-                        // so for now we just wait until the currentState object 
+                        // ...but there is an async issue which needs to be
+                        // resolved first. When showSelected() is called, the
+                        // order of operations is to update the Table View
+                        // state (if required) and then to select the rows in
+                        // the table based on the current graph selection. The
+                        // issue is that the state is updated by writing a
+                        // TableViewState object to the graph and letting a
+                        // Table View listener respond to that. Unfortunately,
+                        // there is no obvious way for this operation to know
+                        // when the Table View listener has finished responding,
+                        // so for now we just wait until the currentState object
                         // matches the state object we updated it to.
                         Thread.sleep(10);
                     } catch (final InterruptedException ex) {
@@ -335,7 +344,16 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
     }
 
     @Override
+    protected void componentShowing() {
+        super.componentShowing();
+        handleNewGraph(GraphManager.getDefault().getActiveGraph());
+    }
+
+    @Override
     protected void handleNewGraph(final Graph graph) {
+        if (!needsUpdate()) {
+            return;
+        }
         final TableViewState previousState = currentState;
         updateState(graph);
         final Tuple<Set<Tuple<String, Attribute>>, Set<Tuple<String, Attribute>>> columnAttributeChanges = getColumnAttributeChanges(previousState, currentState);
@@ -373,12 +391,13 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
             });
         }
     }
+    
 
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
+    @Override
+    protected void handleGraphClosed(Graph graph) {
+        pane.paginate(null);
+    }
+
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 

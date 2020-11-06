@@ -38,19 +38,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
-import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
+import javax.swing.filechooser.FileFilter;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.openide.filesystems.FileChooserBuilder;
 
 /**
  * Table View Utilities.
@@ -63,6 +64,12 @@ public class TableViewUtilities {
     private static final String EXPORT_TO_EXCEL_FILE_PLUGIN = "Table View: Export to Excel File";
     public static final String SELECT_ON_GRAPH_PLUGIN = "Table View: Select on Graph";
     private static final String UPDATE_STATE_PLUGIN = "Table View: Update State";
+    private static final String EXPORT_CSV = "Export To CSV";
+    private static final String EXPORT_XLSX = "Export To XLSX";
+    private static final String CSV_EXT = ".csv";
+    private static final String XLSX_EXT = ".xlsx";
+    
+    private static final Logger LOGGER = Logger.getLogger(TableViewUtilities.class.getName());
 
     /**
      * Retrieve data from the given table as comma-separated values.
@@ -133,15 +140,34 @@ public class TableViewUtilities {
      * table will be included in the output file.
      */
     public static void exportToCsv(final TableView<ObservableList<String>> table, final boolean selectedOnly) {
-        Platform.runLater(() -> {
-            final FileChooser fileChooser = new FileChooser();
-            final ExtensionFilter csvFilter = new ExtensionFilter("CSV files", "*.csv");
-            fileChooser.getExtensionFilters().add(csvFilter);
-            final File csvFile = fileChooser.showSaveDialog(null);
-            if (csvFile != null) {
-                PluginExecution.withPlugin(new ExportToCsvFilePlugin(csvFile, table, selectedOnly)).executeLater(null);
-            }
-        });
+        final FileChooserBuilder fChooser = new FileChooserBuilder(EXPORT_CSV)
+                .setTitle(EXPORT_CSV)
+                .setFileFilter(new FileFilter() {
+                    @Override
+                    public boolean accept(final File pathName) {
+                        final String name = pathName.getName();
+                        if (pathName.isFile() && name.toLowerCase().endsWith(CSV_EXT)) {
+                            return true;
+                        }
+                        return name.endsWith(CSV_EXT);
+                    }
+
+                    @Override
+                    public String getDescription() {
+                        return "CSV files (*" + CSV_EXT + ")";
+                    }
+                });
+
+        final File fileName = fChooser.showSaveDialog();
+
+        if (fileName != null && fileName.getAbsolutePath() != null) {
+            final String filePath = fileName.getAbsolutePath().toLowerCase().endsWith(CSV_EXT)
+                    ? fileName.getAbsolutePath()
+                    : fileName.getAbsolutePath() + CSV_EXT;
+
+            final File file = new File(filePath);
+            PluginExecution.withPlugin(new ExportToCsvFilePlugin(file, table, selectedOnly)).executeLater(null);
+        }
     }
 
     /**
@@ -153,15 +179,34 @@ public class TableViewUtilities {
      * @param sheetName the name of the workbook sheet in the output file.
      */
     public static void exportToExcel(final TableView<ObservableList<String>> table, final boolean selectedOnly, final String sheetName) {
-        Platform.runLater(() -> {
-            final FileChooser fileChooser = new FileChooser();
-            final ExtensionFilter excelFilter = new ExtensionFilter("Excel files", "*.xlsx");
-            fileChooser.getExtensionFilters().add(excelFilter);
-            final File excelFile = fileChooser.showSaveDialog(null);
-            if (excelFile != null) {
-                PluginExecution.withPlugin(new ExportToExcelFilePlugin(excelFile, table, selectedOnly, sheetName)).executeLater(null);
-            }
-        });
+        final FileChooserBuilder fChooser = new FileChooserBuilder(EXPORT_XLSX)
+                .setTitle(EXPORT_XLSX)
+                .setFileFilter(new FileFilter() {
+                    @Override
+                    public boolean accept(final File pathName) {
+                        final String name = pathName.getName();
+                        if (pathName.isFile() && name.toLowerCase().endsWith(XLSX_EXT)) {
+                            return true;
+                        }
+                        return name.endsWith(XLSX_EXT);
+                    }
+
+                    @Override
+                    public String getDescription() {
+                        return "Excel files (*" + XLSX_EXT + ")";
+                    }
+                });
+
+        final File fileName = fChooser.showSaveDialog();
+
+        if (fileName != null && fileName.getAbsolutePath() != null) {
+            final String filePath = fileName.getAbsolutePath().toLowerCase().endsWith(XLSX_EXT)
+                    ? fileName.getAbsolutePath()
+                    : fileName.getAbsolutePath() + XLSX_EXT;
+
+            final File excelFile = new File(filePath);
+            PluginExecution.withPlugin(new ExportToExcelFilePlugin(excelFile, table, selectedOnly, sheetName)).executeLater(null);
+        }
     }
 
     /**
@@ -251,8 +296,10 @@ public class TableViewUtilities {
                     final List<ObservableList<String>> data = table.getItems();
                     writeRecords(sheet, visibleIndices, data);
                 }
-
-                workbook.write(new FileOutputStream(file));
+                try (final FileOutputStream fileStream = new FileOutputStream(file)) {
+                    workbook.write(fileStream);
+                }
+                LOGGER.log(Level.INFO, "Table View data written to Excel file");
                 workbook.dispose();
             } catch (IOException ex) {
                 throw new PluginException(PluginNotificationLevel.ERROR, ex);

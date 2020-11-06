@@ -63,6 +63,10 @@ public class SpatialReferenceParameterValue extends ParameterValue {
         return spatialReference;
     }
 
+    public Shape.SpatialReference getSpatialReference() {
+        return spatialReference;
+    }
+
     @Override
     public boolean setObjectValue(final Object o) {
         if (o instanceof Shape.SpatialReference) {

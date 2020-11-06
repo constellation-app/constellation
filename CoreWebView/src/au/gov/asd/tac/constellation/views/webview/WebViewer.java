@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.webview;
 
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.JFXPanel;
 import javafx.event.ActionEvent;
@@ -74,19 +73,13 @@ public class WebViewer extends JFXPanel {
             webView.setContextMenuEnabled(false);
             final WebEngine webEngine = webView.getEngine();
             webEngine.load(url);
-            webEngine.locationProperty().addListener(new ChangeListener<String>() {
-                @Override
-                public void changed(final ObservableValue<? extends String> observable, final String oldValue, final String newValue) {
-                    webEngine.load(newValue);
-                }
+            webEngine.locationProperty().addListener((final ObservableValue<? extends String> observable, final String oldValue, final String newValue) -> {
+                webEngine.load(newValue);
             });
-            EventHandler<ActionEvent> goAction = new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(final ActionEvent event) {
-                    webEngine.load(url.startsWith("http://")
-                            ? url
-                            : "http://" + url);
-                }
+            EventHandler<ActionEvent> goAction = (final ActionEvent event) -> {
+                webEngine.load(url.startsWith("http://")
+                        ? url
+                        : "http://" + url);
             };
         });
     }

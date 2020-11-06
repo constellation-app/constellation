@@ -19,6 +19,8 @@ import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPane.ParameterLa
 import au.gov.asd.tac.constellation.plugins.parameters.types.DateTimeRange;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -325,6 +327,23 @@ public class PluginParameters implements PluginParameterListener {
      */
     public final boolean hasParameter(final String id) {
         return uParameters.containsKey(id);
+    }
+    
+    /**
+     * 
+     * Check if any of the parameters is a multi-line string parameter
+     * 
+     * @return true if such a parameter exists, false otherwise
+     */
+    public boolean hasMultiLineStringParameter() {
+        for (PluginParameter<?> parameter : uParameters.values()) {
+            if (parameter.getParameterValue() instanceof StringParameterValue
+                    && parameter.getProperty(StringParameterType.LINES) != null
+                    && (int) parameter.getProperty(StringParameterType.LINES) > 1) {
+                return true;                 
+            }
+        }
+        return false;
     }
 
     /**

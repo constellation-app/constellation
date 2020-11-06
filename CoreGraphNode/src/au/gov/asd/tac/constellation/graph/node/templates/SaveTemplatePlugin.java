@@ -74,6 +74,7 @@ public class SaveTemplatePlugin extends SimplePlugin {
         ReadableGraph rg = graph.getReadableGraph();
         try {
             saveTemplate(rg, parameters.getStringValue(TEMPLATE_NAME_PARAMETER_ID));
+            parameters.getParameters().get(TEMPLATE_NAME_PARAMETER_ID).storeRecentValue();
         } finally {
             rg.release();
         }

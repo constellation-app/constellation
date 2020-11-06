@@ -99,7 +99,7 @@ public class WebServer {
             final String header = request.getHeader(SECRET_HEADER);
             final boolean ok = header != null && SECRET.equals(header);
             if (!ok) {
-                final String msg = String.format("REST API secret %s not provided.", SECRET_HEADER);
+                final String msg = String.format("REST API secret %s is invalid.", SECRET_HEADER);
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, msg);
 
                 final String msg2 = String.format("<html>REST API secret %s not provided.<br>Please download the external scripting Python client again.</html>",
@@ -125,6 +125,10 @@ public class WebServer {
     protected static final String CONSTELLATION_CLIENT = "constellation_client.py";
     private static final String IPYTHON = ".ipython";
     private static final String RESOURCES = "resources/";
+
+    public static boolean isRunning() {
+        return running;
+    }
 
     public static synchronized int start() {
         if (!running) {

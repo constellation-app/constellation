@@ -65,7 +65,7 @@ import java.util.Objects;
 public final class GraphVisualAccess implements VisualAccess {
 
     //TODO: Determine whether this field is needed
-    private int[] visualAttributes = new int[VisualProperty.values().length];
+    private final int[] visualAttributes = new int[VisualProperty.values().length];
 
     private int graphBackgroundColor = Graph.NOT_FOUND;
     private int graphHighlightColor = Graph.NOT_FOUND;
@@ -208,7 +208,7 @@ public final class GraphVisualAccess implements VisualAccess {
                 if (recordChanges) {
                     modCounts.put(VisualConcept.GraphAttribute.CONNECTION_MODE, count);
                 }
-                recalculateConnectionMode();
+                recalculateConnectionMode(accessGraph);
                 connectionsRebuilding = true;
             }
 
@@ -228,7 +228,7 @@ public final class GraphVisualAccess implements VisualAccess {
                 final int oldNeDecorator = neDecorator;
                 final int oldSeDecorator = seDecorator;
                 final int oldSwDecorator = swDecorator;
-                recalculateDecorators();
+                recalculateDecorators(accessGraph);
                 if (recordChanges) {
                     modCounts.put(VisualConcept.GraphAttribute.DECORATORS, count);
                     if (oldNwDecorator != nwDecorator) {
@@ -276,7 +276,7 @@ public final class GraphVisualAccess implements VisualAccess {
             if (!Objects.equals(count, modCounts.get(VisualConcept.GraphAttribute.TOP_LABELS)) || attributesChanged) {
                 final ConstellationColor[] oldTopLabelColors = Arrays.copyOf(topLabelColors, topLabelColors.length);
                 final float[] oldTopLabelSizes = Arrays.copyOf(topLabelSizes, topLabelSizes.length);
-                recalculateTopLabels();
+                recalculateTopLabels(accessGraph);
 
                 if (recordChanges) {
                     modCounts.put(VisualConcept.GraphAttribute.TOP_LABELS, count);
@@ -315,7 +315,7 @@ public final class GraphVisualAccess implements VisualAccess {
             if (!Objects.equals(count, modCounts.get(VisualConcept.GraphAttribute.BOTTOM_LABELS)) || attributesChanged) {
                 final ConstellationColor[] oldBottomLabelColors = Arrays.copyOf(bottomLabelColors, bottomLabelColors.length);
                 final float[] oldBottomLabelSizes = Arrays.copyOf(bottomLabelSizes, bottomLabelSizes.length);
-                recalculateBottomLabels();
+                recalculateBottomLabels(accessGraph);
                 if (recordChanges) {
                     modCounts.put(VisualConcept.GraphAttribute.BOTTOM_LABELS, count);
                     if (!Arrays.equals(bottomLabelAttrs, oldBottomLabels)) {
@@ -353,7 +353,7 @@ public final class GraphVisualAccess implements VisualAccess {
             if (!Objects.equals(count, modCounts.get(VisualConcept.GraphAttribute.TRANSACTION_LABELS)) || attributesChanged) {
                 final ConstellationColor[] oldConnectionLabelColors = Arrays.copyOf(connectionLabelColors, connectionLabelColors.length);
                 final float[] oldConnectionLabelSizes = Arrays.copyOf(connectionLabelSizes, connectionLabelSizes.length);
-                recalculateConnectionLabels();
+                recalculateConnectionLabels(accessGraph);
                 if (recordChanges) {
                     modCounts.put(VisualConcept.GraphAttribute.TRANSACTION_LABELS, count);
                     if (!Arrays.equals(connectionLabelAttrs, oldConnectionLabels)) {
@@ -390,7 +390,7 @@ public final class GraphVisualAccess implements VisualAccess {
             count = graphVertexColorRef == Graph.NOT_FOUND ? -1 : accessGraph.getValueModificationCounter(graphVertexColorRef);
             if (!Objects.equals(count, modCounts.get(VisualConcept.GraphAttribute.NODE_COLOR_REFERENCE)) || attributesChanged) {
                 final int oldVertexColor = vertexColor;
-                recalculateVertexColorAttribute();
+                recalculateVertexColorAttribute(accessGraph);
                 if (recordChanges) {
                     modCounts.put(VisualConcept.GraphAttribute.NODE_COLOR_REFERENCE, count);
                     vertexColorChanged = oldVertexColor != vertexColor;
@@ -410,7 +410,7 @@ public final class GraphVisualAccess implements VisualAccess {
             count = graphTransactionColorRef == Graph.NOT_FOUND ? -1 : accessGraph.getValueModificationCounter(graphTransactionColorRef);
             if (!Objects.equals(count, modCounts.get(VisualConcept.GraphAttribute.TRANSACTION_COLOR_REFERENCE)) || attributesChanged) {
                 final int oldTransactionColor = transactionColor;
-                recalculateTransactionColorAttribute();
+                recalculateTransactionColorAttribute(accessGraph);
                 if (recordChanges) {
                     modCounts.put(VisualConcept.GraphAttribute.TRANSACTION_COLOR_REFERENCE, count);
                     transactionColorChanged = oldTransactionColor != transactionColor;
@@ -427,7 +427,7 @@ public final class GraphVisualAccess implements VisualAccess {
 
             // Do all structural stuff
             if (verticesRebuilding || connectionsRebuilding) {
-                recalculateStructure();
+                recalculateStructure(accessGraph);
                 if (recordChanges && verticesRebuilding) {
                     changes.add(new VisualChangeBuilder(VisualProperty.VERTICES_REBUILD).build());
                 }
@@ -617,116 +617,118 @@ public final class GraphVisualAccess implements VisualAccess {
         transactionWidth = VisualConcept.TransactionAttribute.WIDTH.get(rg);
     }
 
-    private void recalculateVertexColorAttribute() {
+    private void recalculateVertexColorAttribute(final ReadableGraph readGraph) {
         int referredAttr = Graph.NOT_FOUND;
         if (graphVertexColorRef != Graph.NOT_FOUND) {
-            final String colorAttrName = accessGraph.getStringValue(graphVertexColorRef, 0);
+            final String colorAttrName = readGraph.getStringValue(graphVertexColorRef, 0);
             if (colorAttrName != null) {
-                referredAttr = accessGraph.getAttribute(GraphElementType.VERTEX, colorAttrName);
+                referredAttr = readGraph.getAttribute(GraphElementType.VERTEX, colorAttrName);
             }
         }
-        vertexColor = referredAttr != Graph.NOT_FOUND && accessGraph.getAttributeType(referredAttr).equals(ColorAttributeDescription.ATTRIBUTE_NAME) ? referredAttr : VisualConcept.VertexAttribute.COLOR.get(accessGraph);
+        vertexColor = referredAttr != Graph.NOT_FOUND && readGraph.getAttributeType(referredAttr).equals(ColorAttributeDescription.ATTRIBUTE_NAME) ? referredAttr : VisualConcept.VertexAttribute.COLOR.get(readGraph);
     }
 
-    private void recalculateTransactionColorAttribute() {
+
+    private void recalculateTransactionColorAttribute(final ReadableGraph readGraph) {
         int referredAttr = Graph.NOT_FOUND;
         if (graphTransactionColorRef != Graph.NOT_FOUND) {
-            final String colorAttrName = accessGraph.getStringValue(graphTransactionColorRef, 0);
+            final String colorAttrName = readGraph.getStringValue(graphTransactionColorRef, 0);
             if (colorAttrName != null) {
-                referredAttr = accessGraph.getAttribute(GraphElementType.TRANSACTION, colorAttrName);
+                referredAttr = readGraph.getAttribute(GraphElementType.TRANSACTION, colorAttrName);
             }
         }
-        transactionColor = referredAttr != Graph.NOT_FOUND && accessGraph.getAttributeType(referredAttr).equals(ColorAttributeDescription.ATTRIBUTE_NAME) ? referredAttr : VisualConcept.TransactionAttribute.COLOR.get(accessGraph);
+        transactionColor = referredAttr != Graph.NOT_FOUND && readGraph.getAttributeType(referredAttr).equals(ColorAttributeDescription.ATTRIBUTE_NAME) ? referredAttr : VisualConcept.TransactionAttribute.COLOR.get(readGraph);
     }
 
-    private void recalculateConnectionMode() {
-        connectionMode = graphConnectionMode != Graph.NOT_FOUND ? accessGraph.getObjectValue(graphConnectionMode, 0) : VisualGraphDefaults.DEFAULT_CONNECTION_MODE;
+    private void recalculateConnectionMode(final ReadableGraph readGraph) {
+        connectionMode = graphConnectionMode != Graph.NOT_FOUND ? readGraph.getObjectValue(graphConnectionMode, 0) : VisualGraphDefaults.DEFAULT_CONNECTION_MODE;
     }
 
-    private void recalculateTopLabels() {
-        final GraphLabels topLabels = graphTopLabels != Graph.NOT_FOUND ? accessGraph.getObjectValue(graphTopLabels, 0) : VisualGraphDefaults.DEFAULT_TOP_LABELS;
+    private void recalculateTopLabels(final ReadableGraph readGraph) {
+        final GraphLabels topLabels = graphTopLabels != Graph.NOT_FOUND ? readGraph.getObjectValue(graphTopLabels, 0) : VisualGraphDefaults.DEFAULT_TOP_LABELS;
         final int numLabels = topLabels.getNumberOfLabels();
         topLabelAttrs = new int[numLabels];
         topLabelSizes = new float[numLabels];
         topLabelColors = new ConstellationColor[numLabels];
         int i = 0;
         for (GraphLabel label : topLabels.getLabels()) {
-            topLabelAttrs[i] = accessGraph.getAttribute(GraphElementType.VERTEX, label.getAttributeName());
+            topLabelAttrs[i] = readGraph.getAttribute(GraphElementType.VERTEX, label.getAttributeName());
             topLabelSizes[i] = label.getSize();
             topLabelColors[i] = label.getColor() != null ? label.getColor() : VisualGraphDefaults.DEFAULT_LABEL_COLOR;
             i++;
         }
     }
 
-    private void recalculateBottomLabels() {
-        final GraphLabels bottomLabels = graphBottomLabels != Graph.NOT_FOUND ? accessGraph.getObjectValue(graphBottomLabels, 0) : VisualGraphDefaults.DEFAULT_BOTTOM_LABELS;
+    private void recalculateBottomLabels(final ReadableGraph readGraph) {
+        final GraphLabels bottomLabels = graphBottomLabels != Graph.NOT_FOUND ? readGraph.getObjectValue(graphBottomLabels, 0) : VisualGraphDefaults.DEFAULT_BOTTOM_LABELS;
         final int numLabels = bottomLabels.getNumberOfLabels();
         bottomLabelAttrs = new int[numLabels];
         bottomLabelSizes = new float[numLabels];
         bottomLabelColors = new ConstellationColor[numLabels];
         int i = 0;
         for (GraphLabel label : bottomLabels.getLabels()) {
-            bottomLabelAttrs[i] = accessGraph.getAttribute(GraphElementType.VERTEX, label.getAttributeName());
+            bottomLabelAttrs[i] = readGraph.getAttribute(GraphElementType.VERTEX, label.getAttributeName());
             bottomLabelSizes[i] = label.getSize();
             bottomLabelColors[i] = label.getColor() != null ? label.getColor() : VisualGraphDefaults.DEFAULT_LABEL_COLOR;
             i++;
         }
     }
 
-    private void recalculateConnectionLabels() {
-        final GraphLabels connectionLabels = graphConnectionLabels != Graph.NOT_FOUND ? accessGraph.getObjectValue(graphConnectionLabels, 0) : VisualGraphDefaults.DEFAULT_CONNECTION_LABELS;
+
+    private void recalculateConnectionLabels(final ReadableGraph readGraph) {
+        final GraphLabels connectionLabels = graphConnectionLabels != Graph.NOT_FOUND ? readGraph.getObjectValue(graphConnectionLabels, 0) : VisualGraphDefaults.DEFAULT_CONNECTION_LABELS;
         final int numLabels = connectionLabels.getNumberOfLabels();
         connectionLabelAttrs = new int[numLabels];
         connectionLabelSizes = new float[numLabels];
         connectionLabelColors = new ConstellationColor[numLabels];
         int i = 0;
         for (GraphLabel label : connectionLabels.getLabels()) {
-            connectionLabelAttrs[i] = accessGraph.getAttribute(GraphElementType.TRANSACTION, label.getAttributeName());
+            connectionLabelAttrs[i] = readGraph.getAttribute(GraphElementType.TRANSACTION, label.getAttributeName());
             connectionLabelSizes[i] = label.getSize();
             connectionLabelColors[i] = label.getColor() != null ? label.getColor() : VisualGraphDefaults.DEFAULT_LABEL_COLOR;
             i++;
         }
     }
 
-    private void recalculateDecorators() {
-        final VertexDecorators decorators = graphDecorators != Graph.NOT_FOUND ? accessGraph.getObjectValue(graphDecorators, 0) : VisualGraphDefaults.DEFAULT_DECORATORS;
-        nwDecorator = accessGraph.getAttribute(GraphElementType.VERTEX, decorators.getNorthWestDecoratorAttribute());
-        neDecorator = accessGraph.getAttribute(GraphElementType.VERTEX, decorators.getNorthEastDecoratorAttribute());
-        seDecorator = accessGraph.getAttribute(GraphElementType.VERTEX, decorators.getSouthEastDecoratorAttribute());
-        swDecorator = accessGraph.getAttribute(GraphElementType.VERTEX, decorators.getSouthWestDecoratorAttribute());
+    private void recalculateDecorators(final ReadableGraph readGraph) {
+        final VertexDecorators decorators = graphDecorators != Graph.NOT_FOUND ? readGraph.getObjectValue(graphDecorators, 0) : VisualGraphDefaults.DEFAULT_DECORATORS;
+        nwDecorator = readGraph.getAttribute(GraphElementType.VERTEX, decorators.getNorthWestDecoratorAttribute());
+        neDecorator = readGraph.getAttribute(GraphElementType.VERTEX, decorators.getNorthEastDecoratorAttribute());
+        seDecorator = readGraph.getAttribute(GraphElementType.VERTEX, decorators.getSouthEastDecoratorAttribute());
+        swDecorator = readGraph.getAttribute(GraphElementType.VERTEX, decorators.getSouthWestDecoratorAttribute());
     }
 
-    private void recalculateStructure() {
-        rebuildConnections();
+    private void recalculateStructure(final ReadableGraph readGraph) {
+        rebuildConnections(readGraph);
     }
 
     @SuppressWarnings("fallthrough")
-    private void rebuildConnections() {
-        final int linkCount = accessGraph.getLinkCount();
-        final int maxTransactions = graphMaxTransactions != Graph.NOT_FOUND ? accessGraph.getIntValue(graphMaxTransactions, 0) : VisualGraphDefaults.DEFAULT_MAX_TRANSACTION_TO_DRAW;
-        final int connectionUpperBound = connectionMode == ConnectionMode.LINK ? linkCount : connectionMode == ConnectionMode.EDGE ? accessGraph.getEdgeCount() : accessGraph.getTransactionCount();
+    private void rebuildConnections(final ReadableGraph readGraph) {
+        final int linkCount = readGraph.getLinkCount();
+        final int maxTransactions = graphMaxTransactions != Graph.NOT_FOUND ? readGraph.getIntValue(graphMaxTransactions, 0) : VisualGraphDefaults.DEFAULT_MAX_TRANSACTION_TO_DRAW;
+        final int connectionUpperBound = connectionMode == ConnectionMode.LINK ? linkCount : connectionMode == ConnectionMode.EDGE ? readGraph.getEdgeCount() : readGraph.getTransactionCount();
         connectionElementTypes = new GraphElementType[connectionUpperBound];
         connectionElementIds = new int[connectionUpperBound];
         linkStartingPositions = new int[linkCount];
         int currentPos = 0;
         for (int i = 0; i < linkCount; i++) {
-            final int linkId = accessGraph.getLink(i);
+            final int linkId = readGraph.getLink(i);
             linkStartingPositions[i] = currentPos;
             switch (connectionMode) {
                 case TRANSACTION:
-                    if (accessGraph.getLinkTransactionCount(linkId) <= maxTransactions) {
-                        for (int j = 0; j < accessGraph.getLinkTransactionCount(linkId); j++) {
+                    if (readGraph.getLinkTransactionCount(linkId) <= maxTransactions) {
+                        for (int j = 0; j < readGraph.getLinkTransactionCount(linkId); j++) {
                             connectionElementTypes[currentPos] = GraphElementType.TRANSACTION;
-                            connectionElementIds[currentPos] = accessGraph.getLinkTransaction(linkId, j);
+                            connectionElementIds[currentPos] = readGraph.getLinkTransaction(linkId, j);
                             currentPos++;
                         }
                         break;
                     }
                 // fall through
                 case EDGE:
-                    for (int j = 0; j < accessGraph.getLinkEdgeCount(linkId); j++) {
+                    for (int j = 0; j < readGraph.getLinkEdgeCount(linkId); j++) {
                         connectionElementTypes[currentPos] = GraphElementType.EDGE;
-                        connectionElementIds[currentPos] = accessGraph.getLinkEdge(linkId, j);
+                        connectionElementIds[currentPos] = readGraph.getLinkEdge(linkId, j);
                         currentPos++;
                     }
                     break;
@@ -810,37 +812,37 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public int getConnectionLabelCount(int connection) {
+    public int getConnectionLabelCount(final int connection) {
         return connectionElementTypes[connection] == GraphElementType.TRANSACTION ? connectionLabelAttrs.length : 1;
     }
 
     @Override
-    public boolean getIsLabelSummary(int connection) {
+    public boolean getIsLabelSummary(final int connection) {
         return connectionElementTypes[connection] != GraphElementType.TRANSACTION;
     }
 
     @Override
-    public ConstellationColor getTopLabelColor(int labelNum) {
+    public ConstellationColor getTopLabelColor(final int labelNum) {
         return topLabelColors[labelNum];
     }
 
     @Override
-    public ConstellationColor getBottomLabelColor(int labelNum) {
+    public ConstellationColor getBottomLabelColor(final int labelNum) {
         return bottomLabelColors[labelNum];
     }
 
     @Override
-    public ConstellationColor getConnectionLabelColor(int labelNum) {
+    public ConstellationColor getConnectionLabelColor(final int labelNum) {
         return connectionLabelColors[labelNum];
     }
 
     @Override
-    public float getTopLabelSize(int labelNum) {
+    public float getTopLabelSize(final int labelNum) {
         return topLabelSizes[labelNum];
     }
 
     @Override
-    public float getBottomLabelSize(int labelNum) {
+    public float getBottomLabelSize(final int labelNum) {
         return bottomLabelSizes[labelNum];
     }
 
@@ -850,7 +852,7 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public int getConnectionId(int connection) {
+    public int getConnectionId(final int connection) {
         switch (connectionElementTypes[connection]) {
             case LINK:
                 return accessGraph.getLinkTransaction(connectionElementIds[connection], 0);
@@ -863,7 +865,7 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public ConnectionDirection getConnectionDirection(int connection) {
+    public ConnectionDirection getConnectionDirection(final int connection) {
         switch (connectionElementTypes[connection]) {
             case LINK:
                 final int uphillCount = accessGraph.getLinkTransactionCount(connectionElementIds[connection], Graph.UPHILL);
@@ -904,7 +906,7 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public boolean getConnectionDirected(int connection) {
+    public boolean getConnectionDirected(final int connection) {
         if (transactionDirected != Graph.NOT_FOUND) {
             switch (connectionElementTypes[connection]) {
                 case LINK:
@@ -932,42 +934,42 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public int getVertexId(int vertex) {
+    public int getVertexId(final int vertex) {
         return accessGraph.getVertex(vertex);
     }
 
     @Override
-    public float getX(int vertex) {
+    public float getX(final int vertex) {
         return vertexX != Graph.NOT_FOUND ? accessGraph.getFloatValue(vertexX, accessGraph.getVertex(vertex)) : VisualGraphDefaults.getDefaultX(accessGraph.getVertex(vertex));
     }
 
     @Override
-    public float getY(int vertex) {
+    public float getY(final int vertex) {
         return vertexY != Graph.NOT_FOUND ? accessGraph.getFloatValue(vertexY, accessGraph.getVertex(vertex)) : VisualGraphDefaults.getDefaultY(accessGraph.getVertex(vertex));
     }
 
     @Override
-    public float getZ(int vertex) {
+    public float getZ(final int vertex) {
         return vertexZ != Graph.NOT_FOUND ? accessGraph.getFloatValue(vertexZ, accessGraph.getVertex(vertex)) : VisualGraphDefaults.getDefaultZ(accessGraph.getVertex(vertex));
     }
 
     @Override
-    public float getX2(int vertex) {
+    public float getX2(final int vertex) {
         return vertexX2 != Graph.NOT_FOUND ? accessGraph.getFloatValue(vertexX2, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_X2;
     }
 
     @Override
-    public float getY2(int vertex) {
+    public float getY2(final int vertex) {
         return vertexY2 != Graph.NOT_FOUND ? accessGraph.getFloatValue(vertexY2, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_Y2;
     }
 
     @Override
-    public float getZ2(int vertex) {
+    public float getZ2(final int vertex) {
         return vertexZ2 != Graph.NOT_FOUND ? accessGraph.getFloatValue(vertexZ2, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_Z2;
     }
 
     @Override
-    public ConstellationColor getVertexColor(int vertex) {
+    public ConstellationColor getVertexColor(final int vertex) {
         ConstellationColor color = null;
         if (vertexColor != Graph.NOT_FOUND) {
             color = accessGraph.getObjectValue(vertexColor, accessGraph.getVertex(vertex));
@@ -976,76 +978,76 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public String getBackgroundIcon(int vertex) {
+    public String getBackgroundIcon(final int vertex) {
         return vertexBackgroundIcon != Graph.NOT_FOUND ? accessGraph.getStringValue(vertexBackgroundIcon, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_BACKGROUND_ICON;
     }
 
     @Override
-    public String getForegroundIcon(int vertex) {
+    public String getForegroundIcon(final int vertex) {
         return vertexForegroundIcon != Graph.NOT_FOUND ? accessGraph.getStringValue(vertexForegroundIcon, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_FOREGROUND_ICON;
     }
 
     @Override
-    public boolean getVertexSelected(int vertex) {
+    public boolean getVertexSelected(final int vertex) {
         return vertexSelected != Graph.NOT_FOUND ? accessGraph.getBooleanValue(vertexSelected, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_SELECTED;
     }
 
     @Override
-    public float getVertexVisibility(int vertex) {
+    public float getVertexVisibility(final int vertex) {
         float layerVisibility = vertexLayerVisibility != Graph.NOT_FOUND ? accessGraph.getFloatValue(vertexLayerVisibility, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_FILTER_VISIBILITY;
         return layerVisibility * (vertexVisibility != Graph.NOT_FOUND ? accessGraph.getFloatValue(vertexVisibility, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_VISIBILITY);
     }
 
     @Override
-    public boolean getVertexDimmed(int vertex) {
+    public boolean getVertexDimmed(final int vertex) {
         return vertexDimmed != Graph.NOT_FOUND ? accessGraph.getBooleanValue(vertexDimmed, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_DIMMED;
     }
 
     @Override
-    public float getRadius(int vertex) {
+    public float getRadius(final int vertex) {
         return vertexRadius != Graph.NOT_FOUND ? accessGraph.getFloatValue(vertexRadius, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_RADIUS;
     }
 
     @Override
-    public boolean getBlazed(int vertex) {
+    public boolean getBlazed(final int vertex) {
         final Blaze blaze = vertexBlaze != Graph.NOT_FOUND ? accessGraph.getObjectValue(vertexBlaze, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_BLAZE;
         return blaze != null;
     }
 
     @Override
-    public int getBlazeAngle(int vertex) {
+    public int getBlazeAngle(final int vertex) {
         final Blaze blaze = vertexBlaze != Graph.NOT_FOUND ? accessGraph.getObjectValue(vertexBlaze, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_BLAZE;
         return blaze == null ? VisualGraphDefaults.DEFAULT_BLAZE_ANGLE : blaze.getAngle();
     }
 
     @Override
-    public ConstellationColor getBlazeColor(int vertex) {
+    public ConstellationColor getBlazeColor(final int vertex) {
         final Blaze blaze = accessGraph.getObjectValue(vertexBlaze, accessGraph.getVertex(vertex));
         return blaze == null ? VisualGraphDefaults.DEFAULT_BLAZE_COLOR : blaze.getColor();
     }
 
     @Override
-    public String getNWDecorator(int vertex) {
+    public String getNWDecorator(final int vertex) {
         return nwDecorator != Graph.NOT_FOUND ? accessGraph.getStringValue(nwDecorator, accessGraph.getVertex(vertex)) : null;
     }
 
     @Override
-    public String getNEDecorator(int vertex) {
+    public String getNEDecorator(final int vertex) {
         return neDecorator != Graph.NOT_FOUND ? accessGraph.getStringValue(neDecorator, accessGraph.getVertex(vertex)) : null;
     }
 
     @Override
-    public String getSEDecorator(int vertex) {
+    public String getSEDecorator(final int vertex) {
         return seDecorator != Graph.NOT_FOUND ? accessGraph.getStringValue(seDecorator, accessGraph.getVertex(vertex)) : null;
     }
 
     @Override
-    public String getSWDecorator(int vertex) {
+    public String getSWDecorator(final int vertex) {
         return swDecorator != Graph.NOT_FOUND ? accessGraph.getStringValue(swDecorator, accessGraph.getVertex(vertex)) : null;
     }
 
     @Override
-    public ConstellationColor getConnectionColor(int connection) {
+    public ConstellationColor getConnectionColor(final int connection) {
         ConstellationColor color = null;
         ConstellationColor mixColor;
         if (transactionColor != Graph.NOT_FOUND) {
@@ -1086,7 +1088,7 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public boolean getConnectionSelected(int connection) {
+    public boolean getConnectionSelected(final int connection) {
         if (transactionSelected != Graph.NOT_FOUND) {
             switch (connectionElementTypes[connection]) {
                 case LINK:
@@ -1114,7 +1116,7 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public float getConnectionVisibility(int connection) {
+    public float getConnectionVisibility(final int connection) {
         if (transactionVisibility != Graph.NOT_FOUND) {
             switch (connectionElementTypes[connection]) {
                 case LINK:
@@ -1155,7 +1157,7 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public boolean getConnectionDimmed(int connection) {
+    public boolean getConnectionDimmed(final int connection) {
         if (transactionDimmed != Graph.NOT_FOUND) {
             switch (connectionElementTypes[connection]) {
                 case LINK:
@@ -1183,7 +1185,7 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public LineStyle getConnectionLineStyle(int connection) {
+    public LineStyle getConnectionLineStyle(final int connection) {
         LineStyle style = null;
         LineStyle mixStyle = LineStyle.SOLID;
         if (transactionLineStyle != Graph.NOT_FOUND) {
@@ -1222,7 +1224,7 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public float getConnectionWidth(int connection) {
+    public float getConnectionWidth(final int connection) {
         if (transactionWidth != Graph.NOT_FOUND) {
             switch (connectionElementTypes[connection]) {
                 case LINK:
@@ -1250,7 +1252,7 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public int getConnectionLowVertex(int connection) {
+    public int getConnectionLowVertex(final int connection) {
         final int linkId;
         switch (connectionElementTypes[connection]) {
             case LINK:
@@ -1268,7 +1270,7 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public int getConnectionHighVertex(int connection) {
+    public int getConnectionHighVertex(final int connection) {
         final int linkId;
         switch (connectionElementTypes[connection]) {
             case LINK:
@@ -1291,29 +1293,29 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public int getLinkLowVertex(int link) {
+    public int getLinkLowVertex(final int link) {
         return accessGraph.getVertexPosition(accessGraph.getLinkLowVertex(accessGraph.getLink(link)));
     }
 
     @Override
-    public int getLinkHighVertex(int link) {
+    public int getLinkHighVertex(final int link) {
         return accessGraph.getVertexPosition(accessGraph.getLinkHighVertex(accessGraph.getLink(link)));
     }
 
     @Override
-    public int getLinkSource(int link) {
+    public int getLinkSource(final int link) {
         final int linkId = accessGraph.getLink(link);
         return accessGraph.getLinkTransactionCount(linkId, Graph.DOWNHILL) > 0 && accessGraph.getLinkTransactionCount(linkId, Graph.UPHILL) == 0 ? accessGraph.getVertexPosition(accessGraph.getLinkHighVertex(linkId)) : accessGraph.getVertexPosition(accessGraph.getLinkLowVertex(linkId));
     }
 
     @Override
-    public int getLinkDestination(int link) {
+    public int getLinkDestination(final int link) {
         final int linkId = accessGraph.getLink(link);
         return accessGraph.getLinkTransactionCount(linkId, Graph.DOWNHILL) > 0 && accessGraph.getLinkTransactionCount(linkId, Graph.UPHILL) == 0 ? accessGraph.getVertexPosition(accessGraph.getLinkLowVertex(linkId)) : accessGraph.getVertexPosition(accessGraph.getLinkHighVertex(linkId));
     }
 
     @Override
-    public int getLinkConnectionCount(int link) {
+    public int getLinkConnectionCount(final int link) {
         switch (connectionElementTypes[linkStartingPositions[link]]) {
             case LINK:
                 return 1;
@@ -1326,22 +1328,22 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public int getLinkConnection(int link, int pos) {
+    public int getLinkConnection(final int link, final int pos) {
         return linkStartingPositions[link] + pos;
     }
 
     @Override
-    public String getVertexTopLabelText(int vertex, int labelNum) {
+    public String getVertexTopLabelText(final int vertex, final int labelNum) {
         return topLabelAttrs[labelNum] != Graph.NOT_FOUND ? accessGraph.getStringValue(topLabelAttrs[labelNum], accessGraph.getVertex(vertex)) : "";
     }
 
     @Override
-    public String getVertexBottomLabelText(int vertex, int labelNum) {
+    public String getVertexBottomLabelText(final int vertex, final int labelNum) {
         return bottomLabelAttrs[labelNum] != Graph.NOT_FOUND ? accessGraph.getStringValue(bottomLabelAttrs[labelNum], accessGraph.getVertex(vertex)) : "";
     }
 
     @Override
-    public String getConnectionLabelText(int connection, int labelNum) {
+    public String getConnectionLabelText(final int connection, final int labelNum) {
         switch (connectionElementTypes[connection]) {
             case LINK:
                 return String.valueOf(accessGraph.getLinkTransactionCount(connectionElementIds[connection]));
@@ -1354,5 +1356,177 @@ public final class GraphVisualAccess implements VisualAccess {
                 }
                 return "";
         }
+    }
+    
+    public void updateModCounts(final ReadableGraph readGraph) {
+        recalculateVisualAttributes(readGraph);
+        globalModCount = readGraph.getGlobalModificationCounter();
+        structureModCount = readGraph.getStructureModificationCounter();
+        attributeModCount = readGraph.getAttributeModificationCounter();
+        long count;
+        
+        count = graphConnectionMode == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(graphConnectionMode);
+        modCounts.put(VisualConcept.GraphAttribute.CONNECTION_MODE, count);
+        recalculateConnectionMode(readGraph);
+        
+        count = graphMaxTransactions == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(graphMaxTransactions);
+        modCounts.put(VisualConcept.GraphAttribute.MAX_TRANSACTIONS, count);
+
+        count = graphDecorators == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(graphDecorators);
+        recalculateDecorators(readGraph);
+        modCounts.put(VisualConcept.GraphAttribute.DECORATORS, count);
+
+        count = nwDecorator == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(nwDecorator);
+        nwDecoratorModCount = count;
+
+        count = neDecorator == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(neDecorator);
+        neDecoratorModCount = count;
+
+        count = seDecorator == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(seDecorator);
+        seDecoratorModCount = count;
+
+        count = swDecorator == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(swDecorator);
+        swDecoratorModCount = count;
+
+        count = graphTopLabels == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(graphTopLabels);
+        recalculateTopLabels(readGraph);
+        modCounts.put(VisualConcept.GraphAttribute.TOP_LABELS, count);
+
+        topLabelModCounts = Arrays.copyOf(topLabelModCounts, topLabelAttrs.length);
+        for (int i = 0; i < topLabelAttrs.length; i++) {
+            final int attr = topLabelAttrs[i];
+            count = attr == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(attr);
+            topLabelModCounts[i] = count;
+        }
+       
+        count = graphBottomLabels == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(graphBottomLabels);
+        recalculateBottomLabels(readGraph);
+        modCounts.put(VisualConcept.GraphAttribute.BOTTOM_LABELS, count);
+
+        bottomLabelModCounts = Arrays.copyOf(bottomLabelModCounts, bottomLabelAttrs.length);
+        for (int i = 0; i < bottomLabelAttrs.length; i++) {
+            final int attr = bottomLabelAttrs[i];
+            count = attr == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(attr);
+            bottomLabelModCounts[i] = count;
+        }
+
+        count = graphConnectionLabels == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(graphConnectionLabels);
+        recalculateConnectionLabels(readGraph);
+        modCounts.put(VisualConcept.GraphAttribute.TRANSACTION_LABELS, count);
+
+        connectionLabelModCounts = Arrays.copyOf(connectionLabelModCounts, connectionLabelAttrs.length);
+        for (int i = 0; i < connectionLabelAttrs.length; i++) {
+            final int attr = connectionLabelAttrs[i];
+            count = attr == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(attr);
+            connectionLabelModCounts[i] = count;
+        }
+
+        count = graphVertexColorRef == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(graphVertexColorRef);
+        recalculateVertexColorAttribute(readGraph);
+        modCounts.put(VisualConcept.GraphAttribute.NODE_COLOR_REFERENCE, count);
+        count = vertexColor == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(vertexColor);
+        modCounts.put(VisualConcept.VertexAttribute.COLOR, count);
+
+        count = graphTransactionColorRef == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(graphTransactionColorRef);
+        recalculateTransactionColorAttribute(readGraph);
+        modCounts.put(VisualConcept.GraphAttribute.TRANSACTION_COLOR_REFERENCE, count);
+        count = transactionColor == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(transactionColor);
+        modCounts.put(VisualConcept.TransactionAttribute.COLOR, count);
+        
+        recalculateStructure(readGraph);
+
+        count = graphBackgroundColor == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(graphBackgroundColor);
+        modCounts.put(VisualConcept.GraphAttribute.BACKGROUND_COLOR, count);
+               
+        count = graphHighlightColor == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(graphHighlightColor);
+        modCounts.put(VisualConcept.GraphAttribute.HIGHLIGHT_COLOR, count);
+                
+        count = graphBlazeOpacity == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(graphBlazeOpacity);
+        modCounts.put(VisualConcept.GraphAttribute.BLAZE_OPACITY, count);
+                
+        count = graphBlazeSize == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(graphBlazeSize);
+        modCounts.put(VisualConcept.GraphAttribute.BLAZE_SIZE, count);
+                
+        count = graphConnectionOpacity == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(graphConnectionOpacity);
+        modCounts.put(VisualConcept.GraphAttribute.CONNECTION_OPACITY, count);
+               
+        count = graphDrawFlags == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(graphDrawFlags);
+        modCounts.put(VisualConcept.GraphAttribute.DRAW_FLAGS, count);
+
+        count = graphCamera == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(graphCamera);
+        modCounts.put(VisualConcept.GraphAttribute.CAMERA, count);
+
+        count = graphMixColor == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(graphMixColor);
+        modCounts.put(VisualConcept.GraphAttribute.MIX_COLOR, count);
+
+        count = graphVisibleAboveThreshold == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(graphVisibleAboveThreshold);
+        modCounts.put(VisualConcept.GraphAttribute.VISIBLE_ABOVE_THRESHOLD, count);
+        
+        count = graphVisibilityThreshold == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(graphVisibilityThreshold);
+        modCounts.put(VisualConcept.GraphAttribute.VISIBILITY_THRESHOLD, count);
+
+        count = vertexX == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(vertexX);
+        modCounts.put(VisualConcept.VertexAttribute.X, count);
+                
+        count = vertexY == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(vertexY);
+        modCounts.put(VisualConcept.VertexAttribute.Y, count);
+        
+        count = vertexZ == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(vertexZ);
+        modCounts.put(VisualConcept.VertexAttribute.Z, count);
+
+        count = vertexX2 == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(vertexX2);
+        modCounts.put(VisualConcept.VertexAttribute.X2, count);
+
+        count = vertexY2 == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(vertexY2);
+        modCounts.put(VisualConcept.VertexAttribute.Y2, count);
+                
+        count = vertexZ2 == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(vertexZ2);
+        modCounts.put(VisualConcept.VertexAttribute.Z2, count);
+        
+        count = vertexBackgroundIcon == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(vertexBackgroundIcon);
+        modCounts.put(VisualConcept.VertexAttribute.BACKGROUND_ICON, count);
+                
+        count = vertexForegroundIcon == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(vertexForegroundIcon);
+        modCounts.put(VisualConcept.VertexAttribute.FOREGROUND_ICON, count);
+                
+        count = vertexSelected == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(vertexSelected);
+        modCounts.put(VisualConcept.VertexAttribute.SELECTED, count);
+                
+        count = vertexVisibility == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(vertexVisibility);
+        modCounts.put(VisualConcept.VertexAttribute.VISIBILITY, count);
+
+        count = vertexLayerVisibility == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(vertexLayerVisibility);
+        modCounts.put(LayersConcept.VertexAttribute.LAYER_VISIBILITY, count);
+        
+        count = vertexDimmed == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(vertexDimmed);
+        modCounts.put(VisualConcept.VertexAttribute.DIMMED, count);
+                
+        count = vertexRadius == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(vertexRadius);
+        modCounts.put(VisualConcept.VertexAttribute.NODE_RADIUS, count);
+                
+        count = vertexBlaze == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(vertexBlaze);
+        modCounts.put(VisualConcept.VertexAttribute.BLAZE, count);
+
+        count = transactionSelected == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(transactionSelected);
+        modCounts.put(VisualConcept.TransactionAttribute.SELECTED, count);
+                
+        count = transactionDirected == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(transactionDirected);
+        modCounts.put(VisualConcept.TransactionAttribute.DIRECTED, count);
+
+        count = transactionVisibility == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(transactionVisibility);
+        modCounts.put(VisualConcept.TransactionAttribute.VISIBILITY, count);
+
+        count = transactionLayerVisibility == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(transactionLayerVisibility);
+        modCounts.put(LayersConcept.TransactionAttribute.LAYER_VISIBILITY, count);
+                
+        count = transactionDimmed == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(transactionDimmed);
+        modCounts.put(VisualConcept.TransactionAttribute.DIMMED, count);
+                
+        count = transactionLineStyle == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(transactionLineStyle);
+        modCounts.put(VisualConcept.TransactionAttribute.LINE_STYLE, count);
+
+        count = transactionWidth == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(transactionWidth);
+        modCounts.put(VisualConcept.TransactionAttribute.WIDTH, count);
+        
     }
 }

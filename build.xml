@@ -3,13 +3,18 @@
     <description>Builds the Constellation module suite</description>
 
     <import file="nbproject/build-impl.xml"/>
-
+    
+    <property name="ivy.jar.file" value="${user.home}/.ivy2/ivy-2.5.0.jar"/>
+    <property name="dependency.dir" value="CoreDependencies"/>
+    
     <target name="update-dependencies-clean-build" 
             description="Download dependencies and build all modules in the suite.">
         <ant target="clean"/>
         <ant target="build">
             <property name="update.dependencies" value="true"/>
-            <property name="ivy.lib.dir" value="${basedir}/CoreDependencies/release/modules/ext"/>
+            <property name="ivy.lib.dir" value="${basedir}/${dependency.dir}/release/modules/ext"/>
+            <property name="projectupdater.dir" value="../ProjectUpdater/"/>
+            <property name="third.party.depdendencies" value="true"/>
         </ant>
     </target>
 
@@ -18,25 +23,37 @@
         <ant target="clean"/>
         <ant target="build">
             <property name="update.dependencies" value="true"/>
+            <property name="ivy.lib.dir" value="${basedir}/${dependency.dir}/release/modules/ext"/>
             <property name="build.compiler.debug" value="false"/>
-            <property name="ivy.lib.dir" value="${basedir}/CoreDependencies/release/modules/ext"/>
+            <property name="projectupdater.dir" value="../ProjectUpdater/"/>
+            <property name="third.party.depdendencies" value="true"/>
         </ant>
     </target>
+    
+    <!-- Useful Dependency Utilities -->
+    <target name="check-latest-version" depends="-load-ivy-tasks" 
+            description="Check whether there is a new release of a dependency.">
+        <ivy:checkdepsupdate showTransitive="false" revisionToCheck="latest.release"/>
+    </target>
+    
+    <target name="dependency-tree" depends="-load-ivy-tasks" 
+            description="Output the dependencies in a tree layout to the console.">
+        <ivy:dependencytree/>
+    </target>
+    
+    <target name="dependency-report-html" depends="-load-ivy-tasks" 
+            description="Generate a detailed dependency report">
+        <delete dir="./ivy-reports"/>
+        <mkdir dir="./ivy-reports" />
 
-    <!-- Override build to add branding update: algol -->
-    <!-- Commented out because propertyfile writes a timestamp to the properties file, which is a problem for source control. -->
-    <!-- <target name="build" depends="build-brand,suite.build"/> -->
-
-    <target name="build-brand" depends="-init">
-        <propertyfile file="${basedir}/branding/core/core.jar/org/netbeans/core/startup/Bundle.properties">
-            <!-- comment="Updated by build script"> -->
-            <entry key="currentVersion" value="${app.title} ${app.version}" />
-        </propertyfile>
-
-        <propertyfile file="${basedir}/branding/modules/org-netbeans-core-windows.jar/org/netbeans/core/windows/view/ui/Bundle.properties">
-            <!-- comment="Updated by build script"> -->
-            <entry key="CTL_MainWindow_Title" value="${app.title} ${app.version}" />
-            <entry key="CTL_MainWindow_Title_No_Project" value="${app.title} ${app.version}" />
-        </propertyfile>
+        <ivy:report todir="./ivy-reports" graph="false" xml="false"/>
+    </target>
+    
+    <target name="-load-ivy-tasks">
+        <path id="ivy.lib.path">
+            <pathelement location="${ivy.jar.file}"/>
+        </path>
+        <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
+        <ivy:resolve file="./${dependency.dir}/src/ivy.xml" />
     </target>
 </project>

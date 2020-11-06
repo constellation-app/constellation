@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE map PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Map Version 2.0//EN" "http://java.sun.com/products/javahelp/map_2_0.dtd">
 <map version="2.0">
-    <mapID target="au.gov.asd.tac.constellation.views.dataaccess.GlobalCoreParameters" url="data-access-global-parameters.html"/>
+    <mapID target="au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters" url="data-access-global-parameters.html"/>
     <mapID target="au.gov.asd.tac.constellation.views.dataaccess.io.ParameterIO" url="data-access-options.html"/>
     <mapID target="au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessViewTopComponent" url="data-access-view.html"/>
     <mapID target="au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.SplitNodesPlugin" url="split-nodes.html"/>

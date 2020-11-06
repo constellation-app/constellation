@@ -15,9 +15,10 @@
  */
 package au.gov.asd.tac.constellation.views.qualitycontrol;
 
+import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
-import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetter;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlListener;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlState;
@@ -62,7 +63,7 @@ public final class QualityControlViewTopComponent extends JavaFxTopComponent<Qua
 
         initComponents();
 
-        qualityControlViewPane = new QualityControlViewPane(QualityControlViewTopComponent.this);
+        qualityControlViewPane = new QualityControlViewPane();
         initContent();
     }
 
@@ -80,6 +81,7 @@ public final class QualityControlViewTopComponent extends JavaFxTopComponent<Qua
     public void handleComponentOpened() {
         QualityControlAutoVetter.getInstance().addListener(this);
         QualityControlAutoVetter.getInstance().invokeListener(this);
+        QualityControlAutoVetter.getInstance().init();
         PreferenceUtilites.addPreferenceChangeListener(ApplicationPreferenceKeys.OUTPUT2_PREFERENCE, this);
     }
 
@@ -91,7 +93,20 @@ public final class QualityControlViewTopComponent extends JavaFxTopComponent<Qua
 
     @Override
     public void qualityControlChanged(QualityControlState state) {
-        qualityControlViewPane.refreshQualityControlView(state);
+        if (needsUpdate()) {
+            qualityControlViewPane.refreshQualityControlView(state);
+        }
+    }
+
+    @Override
+    protected void componentShowing() {
+        super.componentShowing();
+        QualityControlAutoVetter.getInstance().initWithRefresh(true);
+    }
+
+    @Override
+    protected void handleGraphClosed(final Graph graph) {
+        qualityControlViewPane.refreshQualityControlView(null);
     }
 
     /**

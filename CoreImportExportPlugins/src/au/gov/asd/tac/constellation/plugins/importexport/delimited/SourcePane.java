@@ -19,14 +19,18 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.ImportFileParser;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPane;
+import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.ImportFileParser;
+import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.InputSource;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -34,6 +38,7 @@ import javafx.event.ActionEvent;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -63,16 +68,18 @@ import javafx.stage.FileChooser.ExtensionFilter;
 public class SourcePane extends GridPane {
 
     private static File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
+    private static final Logger LOGGER = Logger.getLogger(SourcePane.class.getName());
 
     private final ComboBox<ImportDestination<?>> graphComboBox;
     private final ComboBox<ImportFileParser> importFileParserComboBox;
     private final CheckBox schemaCheckBox;
     private final Pane parametersPane = new Pane();
+    private final ListView<File> fileListView = new ListView<>();
+    private final ImportController importController;
 
-    //    private final ImportController importController;
     public SourcePane(final ImportController importController) {
+        this.importController = importController;
 
-//        this.importController = importController;
         setMinHeight(USE_PREF_SIZE);
         setMinWidth(0);
         setPadding(new Insets(5));
@@ -91,10 +98,9 @@ public class SourcePane extends GridPane {
 
         getColumnConstraints().addAll(column0Constraints, column1Constraints, column2Constraints);
 
-        Label fileLabel = new Label("Files:");
+        final Label fileLabel = new Label("Files:");
         GridPane.setConstraints(fileLabel, 0, 0, 1, 1, HPos.LEFT, VPos.TOP);
 
-        final ListView<File> fileListView = new ListView<>();
         fileListView.setMinHeight(0);
         fileListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         fileListView.setMaxWidth(Double.MAX_VALUE);
@@ -135,90 +141,76 @@ public class SourcePane extends GridPane {
         });
 
         fileAddButton.setOnAction((ActionEvent t) -> {
-            FileChooser fileChooser = new FileChooser();
+            final FileChooser fileChooser = new FileChooser();
             fileChooser.setInitialDirectory(DEFAULT_DIRECTORY);
 
-            ImportFileParser parser = SourcePane.this.importFileParserComboBox.getSelectionModel().getSelectedItem();
+            final ImportFileParser parser = SourcePane.this.importFileParserComboBox.getSelectionModel().getSelectedItem();
             if (parser != null) {
-                ExtensionFilter extensionFilter = parser.getExtensionFilter();
+                final ExtensionFilter extensionFilter = parser.getExtensionFilter();
                 if (extensionFilter != null) {
                     fileChooser.getExtensionFilters().add(extensionFilter);
                     fileChooser.setSelectedExtensionFilter(extensionFilter);
                 }
             }
+            fileChooser.getExtensionFilters().add(new ExtensionFilter("All Files", "*.*"));
 
-            List<File> newFiles = fileChooser.showOpenMultipleDialog(SourcePane.this.getScene().getWindow());
+            final List<File> newFiles = fileChooser.showOpenMultipleDialog(SourcePane.this.getScene().getWindow());
 
             if (newFiles != null) {
                 if (!newFiles.isEmpty()) {
                     DEFAULT_DIRECTORY = newFiles.get(0).getParentFile();
                     SourcePane.this.importFileParserComboBox.setDisable(true);
                 }
-                ObservableList<File> files = FXCollections.observableArrayList(fileListView.getItems());
-                for (File file : newFiles) {
-                    if (!files.contains(file)) {
+                final ObservableList<File> files = FXCollections.observableArrayList(fileListView.getItems());
+                final StringBuilder sb = new StringBuilder();
+                sb.append("The following files could not be parsed and have been excluded from import set:");
+                boolean foundInvalidFile = false;
+                for (final File file : newFiles) {
+                    // Iterate over files and attempt to parse/preview, if a failure is detected don't add the file to the
+                    // set of files to import.
+                    try {
+                        parser.preview(new InputSource(file), null, 100);
                         files.add(file);
+                    } catch (IOException ex) {
+                        foundInvalidFile = true;
+                        LOGGER.log(Level.INFO, "Unable to parse the file {0}, excluding from import set.", new Object[]{file.toString()});
+                        sb.append("\n    " + file.toString());
                     }
+                }
+                // If at least one file was found to be invalid then raise a dialog to indicate to user of import failures.
+                if (foundInvalidFile) {
+                    importController.displayAlert("Invalid file(s) found", sb.toString(), Alert.AlertType.WARNING);
                 }
                 fileListView.setItems(files);
                 if (!newFiles.isEmpty()) {
                     fileListView.getSelectionModel().select(newFiles.get(0));
                     fileListView.requestFocus();
                 }
-                ObservableList<File> selectedFiles = fileListView.getSelectionModel().getSelectedItems();
+                final ObservableList<File> selectedFiles = fileListView.getSelectionModel().getSelectedItems();
                 importController.setFiles(files, selectedFiles.isEmpty() ? null : selectedFiles.get(0));
             }
         });
 
         fileRemoveButton.setOnAction((ActionEvent t) -> {
-            ObservableList<File> selectedFiles = fileListView.getSelectionModel().getSelectedItems();
-            ObservableList<File> allFiles = fileListView.getItems();
-            ObservableList<File> files = FXCollections.observableArrayList(allFiles);
+            final ObservableList<File> selectedFiles = fileListView.getSelectionModel().getSelectedItems();
+            final ObservableList<File> allFiles = fileListView.getItems();
+            final ObservableList<File> files = FXCollections.observableArrayList(allFiles);
             files.removeAll(selectedFiles);
             fileListView.setItems(files);
             importController.setFiles(files, null);
-
             if (files.isEmpty()) {
                 SourcePane.this.importFileParserComboBox.setDisable(false);
             }
         });
 
-        Label destinationLabel = new Label("Destination:");
-
-        ObservableList<ImportDestination<?>> destinations = FXCollections.observableArrayList();
-
-        Map<String, Graph> graphs = GraphManager.getDefault().getAllGraphs();
-        Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-        ImportDestination<?> defaultDestination = null;
-        for (Graph graph : graphs.values()) {
-            GraphDestination destination = new GraphDestination(graph);
-            destinations.add(destination);
-            if (graph == activeGraph) {
-                defaultDestination = destination;
-            }
-        }
-
-        Map<String, SchemaFactory> schemaFactories = SchemaFactoryUtilities.getSchemaFactories();
-        for (SchemaFactory schemaFactory : schemaFactories.values()) {
-            SchemaDestination destination = new SchemaDestination(schemaFactory);
-            destinations.add(destination);
-            if (defaultDestination == null) {
-                defaultDestination = destination;
-            }
-        }
-
+        final Label destinationLabel = new Label("Destination:");
         graphComboBox = new ComboBox<>();
-        graphComboBox.setItems(destinations);
-        graphComboBox.setOnAction((final ActionEvent t) -> {
-            importController.setDestination(graphComboBox.getSelectionModel().getSelectedItem());
-        });
-        graphComboBox.getSelectionModel().select(defaultDestination);
-        importController.setDestination(defaultDestination);
+        updateDestinationGraphCombo();
 
         // IMPORT FILE PARSER
-        Label importFileParserLabel = new Label("Import File Parser:");
+        final Label importFileParserLabel = new Label("Import File Parser:");
 
-        ObservableList<ImportFileParser> parsers = FXCollections.observableArrayList();
+        final ObservableList<ImportFileParser> parsers = FXCollections.observableArrayList();
         parsers.addAll(ImportFileParser.getParsers().values());
         importFileParserComboBox = new ComboBox<>();
         importFileParserComboBox.setItems(parsers);
@@ -228,7 +220,7 @@ public class SourcePane extends GridPane {
         });
 
         //SCHEMA
-        Label schemaLabel = new Label("Initialise With Schema:");
+        final Label schemaLabel = new Label("Initialise With Schema:");
 
         schemaCheckBox = new CheckBox();
         schemaCheckBox.setSelected(importController.isSchemaInitialised());
@@ -238,8 +230,6 @@ public class SourcePane extends GridPane {
 
         final ToolBar optionsBox = new ToolBar();
         optionsBox.setMinWidth(0);
-//        optionsBox.setHgap(10);
-//        optionsBox.setVgap(10);
         GridPane.setConstraints(optionsBox, 0, 1, 3, 1);
         optionsBox.getItems().addAll(destinationLabel, graphComboBox, importFileParserLabel, importFileParserComboBox, schemaLabel, schemaCheckBox);
         getChildren().add(optionsBox);
@@ -248,9 +238,23 @@ public class SourcePane extends GridPane {
     public void setParameters(final PluginParameters parameters) {
         parametersPane.getChildren().clear();
         if (parameters != null) {
-            PluginParametersPane pluginParametersPane = PluginParametersPane.buildPane(parameters, null);
+            final PluginParametersPane pluginParametersPane = PluginParametersPane.buildPane(parameters, null);
             parametersPane.getChildren().add(pluginParametersPane);
         }
+    }
+
+    /**
+     * Allow a file to be removed from fileListView. This would be triggered by
+     * code in InputController if the file was found to be missing or invalid -
+     * these checks are triggered when a new file is selected in the
+     * fileListView.
+     *
+     * @param file The file to remove.
+     */
+    public void removeFile(File file) {
+        final ObservableList<File> files = fileListView.getItems();
+        files.remove(file);
+        fileListView.setItems(files);
     }
 
     /**
@@ -271,5 +275,46 @@ public class SourcePane extends GridPane {
      */
     public final ImportDestination<?> getDestination() {
         return graphComboBox.getSelectionModel().getSelectedItem();
+    }
+
+    /**
+     * Helper method to update the destination graph combo box. Also used for
+     * value loading when this pane is being initialized.
+     */
+    public void updateDestinationGraphCombo() {
+        // previousDestinationObject is the previously selected item in the combobox
+        final ImportDestination<?> previousDestinationObject = graphComboBox.getSelectionModel().getSelectedItem();
+        final ObservableList<ImportDestination<?>> destinations = FXCollections.observableArrayList();
+
+        final Map<String, Graph> graphs = GraphManager.getDefault().getAllGraphs();
+        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+        ImportDestination<?> defaultDestination = null;
+        for (final Graph graph : graphs.values()) {
+            final GraphDestination destination = new GraphDestination(graph);
+            destinations.add(destination);
+            if (graph == activeGraph) {
+                defaultDestination = destination;
+            }
+        }
+
+        final Map<String, SchemaFactory> schemaFactories = SchemaFactoryUtilities.getSchemaFactories();
+        for (final SchemaFactory schemaFactory : schemaFactories.values()) {
+            final SchemaDestination destination = new SchemaDestination(schemaFactory);
+            destinations.add(destination);
+            if (defaultDestination == null) {
+                defaultDestination = destination;
+            }
+        }
+        // resets the combo box when set correctly.
+        graphComboBox.setItems(destinations);
+        graphComboBox.setOnAction((final ActionEvent t) -> {
+            importController.setDestination(graphComboBox.getSelectionModel().getSelectedItem());
+        });
+        // Select null triggers the combobox to update to the correct value for
+        // some unknown reason. Removal will mean that the combobox will
+        // not keep it's state when a graph event occurs
+        // ClearSelection() did not work to fix this.
+        graphComboBox.getSelectionModel().select(null);
+        importController.setDestination(previousDestinationObject != null ? previousDestinationObject : defaultDestination);
     }
 }

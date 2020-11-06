@@ -43,17 +43,20 @@
  */
 package au.gov.asd.tac.constellation.graph.file.open;
 
-import au.gov.asd.tac.constellation.graph.StoreGraph;
-import au.gov.asd.tac.constellation.graph.file.GraphPluginRegistry;
-import au.gov.asd.tac.constellation.plugins.PluginException;
-import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import javax.swing.JFileChooser;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
-import org.openide.util.Exceptions;
+import org.openide.filesystems.FileUtil;
+import org.openide.loaders.DataObject;
+import org.openide.util.HelpCtx;
+import org.openide.util.UserCancelException;
+import org.openide.windows.TopComponent;
+import org.openide.windows.WindowManager;
 
 /**
  * Action which allows user open file from disk. It is installed in Menu | File
@@ -61,7 +64,6 @@ import org.openide.util.Exceptions;
  *
  * @author Jesse Glick
  * @author Marian Petras
- * @author canis_majoris
  */
 @ActionRegistration(
         displayName = "#LBL_openFile",
@@ -71,10 +73,53 @@ import org.openide.util.Exceptions;
 @ActionReferences({
     @ActionReference(path = "Menu/File", position = 300),
     @ActionReference(path = "Shortcuts", name = "C-O")})
-public class OpenFileAction implements ActionListener {   
+public class OpenFileAction implements ActionListener {
 
-    public OpenFileAction() {
+    /**
+     * stores the last current directory of the file chooser
+     */
+    private static File currentDirectory = null;
+
+    private HelpCtx getHelpCtx() {
+        return new HelpCtx(this.getClass().getName());
     }
+
+    /**
+     * Creates and initializes a file chooser.
+     *
+     * @return the initialized file chooser
+     */
+    protected JFileChooser prepareFileChooser() {
+        JFileChooser chooser = new FileChooser();
+        chooser.setCurrentDirectory(getCurrentDirectory());
+        HelpCtx.setHelpIDString(chooser, getHelpCtx().getHelpID());
+
+        return chooser;
+    }
+
+    /**
+     * Displays the specified file chooser and returns a list of selected files.
+     *
+     * @param chooser file chooser to display
+     * @return array of selected files,
+     * @exception org.openide.util.UserCancelException if the user cancelled the
+     * operation
+     */
+    public static File[] chooseFilesToOpen(final JFileChooser chooser)
+            throws UserCancelException {
+        File[] files;
+        do {
+            int selectedOption = chooser.showOpenDialog(
+                    WindowManager.getDefault().getMainWindow());
+
+            if (selectedOption != JFileChooser.APPROVE_OPTION) {
+                throw new UserCancelException();
+            }
+            files = chooser.getSelectedFiles();
+        } while (files.length == 0);
+        return files;
+    }
+    private static boolean running;
 
     /**
      * {@inheritDoc} Displays a file chooser dialog and opens the selected
@@ -82,11 +127,47 @@ public class OpenFileAction implements ActionListener {
      */
     @Override
     public void actionPerformed(final ActionEvent e) {
-        final StoreGraph sg = new StoreGraph();
-        try {
-            PluginExecution.withPlugin(GraphPluginRegistry.OPEN_FILE).executeNow(sg);
-        } catch (InterruptedException | PluginException ex) {
-            Exceptions.printStackTrace(ex);
+        if (running) {
+            return;
         }
+        try {
+            running = true;
+            JFileChooser chooser = prepareFileChooser();
+            File[] files;
+            try {
+                files = chooseFilesToOpen(chooser);
+                currentDirectory = chooser.getCurrentDirectory();
+            } catch (UserCancelException ex) {
+                return;
+            }
+            for (File file : files) {
+                OpenFile.openFile(file, -1);
+            }
+        } finally {
+            running = false;
+        }
+    }
+
+    private static File getCurrentDirectory() {
+        if (Boolean.getBoolean("netbeans.openfile.197063")) {
+            // Prefer to open from parent of active editor, if any.
+            TopComponent activated = TopComponent.getRegistry().getActivated();
+            if (activated != null && WindowManager.getDefault().isOpenedEditorTopComponent(activated)) {
+                DataObject d = activated.getLookup().lookup(DataObject.class);
+                if (d != null) {
+                    File f = FileUtil.toFile(d.getPrimaryFile());
+                    if (f != null) {
+                        return f.getParentFile();
+                    }
+                }
+            }
+        }
+        // Otherwise, use last-selected directory, if any.
+        if (currentDirectory != null && currentDirectory.exists()) {
+            return currentDirectory;
+        }
+        // Fall back to default location ($HOME or similar).
+        currentDirectory = new File(System.getProperty("user.home"));  // algol
+        return currentDirectory;
     }
 }

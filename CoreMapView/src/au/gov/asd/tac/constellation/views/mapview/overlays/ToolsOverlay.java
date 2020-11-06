@@ -358,7 +358,7 @@ public class ToolsOverlay extends MapOverlay {
                 }
             }
         }
-        
+
         active = measureActive || drawActive;
     }
 

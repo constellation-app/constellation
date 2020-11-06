@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.visual.opengl;
 
 import au.gov.asd.tac.constellation.utilities.gui.InfoTextPanel;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2ES2;
@@ -79,7 +80,7 @@ public final class JoglVersionAction implements ActionListener {
 
         sb.append("\nGL Strings\n");
         JoglVersion.getGLStrings(gl, sb, true);
-        sb.append("\n");
+        sb.append(SeparatorConstants.NEWLINE);
 
         final InfoTextPanel itp = new InfoTextPanel(sb.toString());
         final NotifyDescriptor.Message msg = new NotifyDescriptor.Message(itp);

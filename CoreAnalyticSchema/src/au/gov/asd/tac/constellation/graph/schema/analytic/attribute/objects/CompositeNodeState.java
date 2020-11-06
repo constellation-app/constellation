@@ -29,6 +29,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * A CompositeNodeState holds the details of a node that is either a composite
@@ -216,7 +217,7 @@ public class CompositeNodeState {
      */
     public static CompositeNodeState createFromString(final String s) {
 
-        if (s == null || s.isEmpty()) {
+        if (StringUtils.isBlank(s)) {
             return null;
         }
         try (final JsonParser parser = new MappingJsonFactory().createParser(s)) {
@@ -262,7 +263,6 @@ public class CompositeNodeState {
 
             return new CompositeNodeState(nodeId, expandedState, contractedState);
         } catch (IOException ex) {
-            System.out.println(ex.getLocalizedMessage());
             throw new IllegalArgumentException("Error converting this string to a composite node state");
         }
 

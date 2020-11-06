@@ -41,15 +41,15 @@ public class DoubleObjectIOProvider extends AbstractGraphIOProvider {
     }
 
     @Override
-    public void readObject(final int attributeId, final int elementId, final JsonNode jnode, 
-            final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, 
+    public void readObject(final int attributeId, final int elementId, final JsonNode jnode,
+            final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap,
             final GraphByteReader byteReader, final ImmutableObjectCache cache) throws IOException {
         final Double attributeValue = jnode.isNull() ? null : jnode.doubleValue();
         graph.setObjectValue(attributeId, elementId, attributeValue);
     }
 
     @Override
-    public void writeObject(final Attribute attribute, final int elementId, final JsonGenerator jsonGenerator, 
+    public void writeObject(final Attribute attribute, final int elementId, final JsonGenerator jsonGenerator,
             final GraphReadMethods graph, final GraphByteWriter byteWriter, final boolean verbose) throws IOException {
         if (verbose || !graph.isDefaultValue(attribute.getId(), elementId)) {
             final Double attributeValue = graph.getObjectValue(attribute.getId(), elementId);

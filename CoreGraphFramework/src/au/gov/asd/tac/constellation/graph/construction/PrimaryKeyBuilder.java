@@ -47,20 +47,28 @@ public class PrimaryKeyBuilder extends GraphBuilder {
         final int[] transactionKeys = makeKeys(graph, GraphElementType.TRANSACTION, numberOfTransactionKeys, transactionKeyType, transactionDefaultValue);
 
         KeySetter vertexKeySetter;
-        if (vertexKeyType.equals(DEFAULT_KEY_TYPE)) {
-            vertexKeySetter = new IntegerKeySetter();
-        } else if (vertexKeyType.equals("float")) {
-            vertexKeySetter = new FloatKeySetter();
-        } else {
-            vertexKeySetter = new StringKeySetter();
+        switch (vertexKeyType) {
+            case DEFAULT_KEY_TYPE:
+                vertexKeySetter = new IntegerKeySetter();
+                break;
+            case "float":
+                vertexKeySetter = new FloatKeySetter();
+                break;
+            default:
+                vertexKeySetter = new StringKeySetter();
+                break;
         }
         KeySetter transactionKeySetter;
-        if (transactionKeyType.equals(DEFAULT_KEY_TYPE)) {
-            transactionKeySetter = new IntegerKeySetter();
-        } else if (transactionKeyType.equals("float")) {
-            transactionKeySetter = new FloatKeySetter();
-        } else {
-            transactionKeySetter = new StringKeySetter();
+        switch (transactionKeyType) {
+            case DEFAULT_KEY_TYPE:
+                transactionKeySetter = new IntegerKeySetter();
+                break;
+            case "float":
+                transactionKeySetter = new FloatKeySetter();
+                break;
+            default:
+                transactionKeySetter = new StringKeySetter();
+                break;
         }
 
         if (fillVertexKeys) {

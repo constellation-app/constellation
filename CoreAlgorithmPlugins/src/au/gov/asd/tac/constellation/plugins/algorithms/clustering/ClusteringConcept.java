@@ -15,15 +15,15 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms.clustering;
 
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.hierarchical.HierarchicalStateAttributeDescription;
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ktruss.KTrussStateAttributeDescription;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttributeDescription;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.plugins.algorithms.clustering.hierarchical.HierarchicalStateAttributeDescription;
+import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ktruss.KTrussStateAttributeDescription;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;

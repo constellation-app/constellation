@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.namedselection.utilities;
 import au.gov.asd.tac.constellation.views.namedselection.NamedSelection;
 import java.util.List;
 import javax.swing.DefaultListModel;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -37,7 +38,7 @@ public class SelectNamedSelectionPanel extends javax.swing.JPanel {
         final DefaultListModel<String> listModel = new DefaultListModel<>();
         for (final NamedSelection ns : namedSelections) {
             final String descr = ns.getDescription();
-            final String s = descr != null && !descr.isEmpty() ? String.format("%s: %s", ns.getName(), ns.getDescription()) : ns.getName();
+            final String s = StringUtils.isNotBlank(descr) ? String.format("%s: %s", ns.getName(), ns.getDescription()) : ns.getName();
             listModel.addElement(s);
         }
 

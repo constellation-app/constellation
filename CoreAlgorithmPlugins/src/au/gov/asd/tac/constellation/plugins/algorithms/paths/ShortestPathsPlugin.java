@@ -76,7 +76,7 @@ public class ShortestPathsPlugin extends SimpleEditPlugin {
             }
 
             final int vxCount = graph.getVertexCount();
-            int vxSelectedAttr = VisualConcept.VertexAttribute.SELECTED.get(graph);
+            final int vxSelectedAttr = VisualConcept.VertexAttribute.SELECTED.get(graph);
             if (vxSelectedAttr != Graph.NOT_FOUND) {
                 for (int position = 0; position < vxCount; position++) {
                     final int vxId = graph.getVertex(position);
@@ -88,7 +88,7 @@ public class ShortestPathsPlugin extends SimpleEditPlugin {
                     }
                 }
 
-                DijkstraServices ds = new DijkstraServices(graph, verticesToPath, false);
+                final DijkstraServices ds = new DijkstraServices(graph, verticesToPath, false);
                 ds.queryPaths(true);
             }
         }

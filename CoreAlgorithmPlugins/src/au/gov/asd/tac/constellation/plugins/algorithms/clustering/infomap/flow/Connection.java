@@ -37,7 +37,7 @@ public class Connection {
         return source;
     }
 
-    public void setSource(int source) {
+    public void setSource(final int source) {
         this.source = source;
     }
 
@@ -45,7 +45,7 @@ public class Connection {
         return target;
     }
 
-    public void setTarget(int target) {
+    public void setTarget(final int target) {
         this.target = target;
     }
 
@@ -53,7 +53,7 @@ public class Connection {
         return weight;
     }
 
-    public void setWeight(double weight) {
+    public void setWeight(final double weight) {
         this.weight = weight;
     }
 
@@ -61,7 +61,7 @@ public class Connection {
         return flow;
     }
 
-    public void setFlow(double flow) {
+    public void setFlow(final double flow) {
         this.flow = flow;
     }
 }

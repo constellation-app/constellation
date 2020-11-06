@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.utilities.geospatial;
 
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+
 /**
  * Geospatial Utilities.
  *
@@ -50,7 +52,7 @@ public class Distance {
      * @return The coordinate in decimal degrees as a double
      */
     public static double dmsToDd(final String dms) {
-        final String[] dmsComponents = dms.split(":");
+        final String[] dmsComponents = dms.split(SeparatorConstants.COLON);
 
         assert dmsComponents.length == 3 : "DMS should always have 3 components";
 

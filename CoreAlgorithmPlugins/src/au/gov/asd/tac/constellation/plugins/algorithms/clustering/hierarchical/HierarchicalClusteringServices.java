@@ -16,8 +16,8 @@
 package au.gov.asd.tac.constellation.plugins.algorithms.clustering.hierarchical;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,10 +27,10 @@ import java.util.Set;
  */
 public class HierarchicalClusteringServices {
 
-    public static void fastNewmanWithPendantsClusteredFinal(GraphWriteMethods graph, final PluginInteraction interaction, final boolean interactiveMode) throws InterruptedException {
-        Set<Integer> initialLinkIds = new HashSet<>();
+    public static void fastNewmanWithPendantsClusteredFinal(final GraphWriteMethods graph, final PluginInteraction interaction, final boolean interactiveMode) throws InterruptedException {
+        final Set<Integer> initialLinkIds = new HashSet<>();
         for (int i = 0; i < graph.getVertexCount(); i++) {
-            int vxId = graph.getVertex(i);
+            final int vxId = graph.getVertex(i);
             if (graph.getVertexNeighbourCount(vxId) == 1) {
                 initialLinkIds.add(graph.getVertexLink(vxId, 0));
             }

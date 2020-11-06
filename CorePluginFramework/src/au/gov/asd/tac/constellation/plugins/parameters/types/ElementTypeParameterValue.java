@@ -35,6 +35,10 @@ public class ElementTypeParameterValue extends ParameterValue {
         this.elementType = elementType;
     }
 
+    public GraphElementType getGraphElementType() {
+        return elementType;
+    }
+
     @Override
     public String validateString(final String s) {
         try {
@@ -82,4 +86,26 @@ public class ElementTypeParameterValue extends ParameterValue {
     public String toString() {
         return elementType == null ? "No Value" : elementType.getShortLabel();
     }
+
+    @Override
+    public int hashCode() {
+        return 41 * 5 + Objects.hashCode(this.elementType);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ElementTypeParameterValue other = (ElementTypeParameterValue) obj;
+        return this.elementType == other.elementType;
+    }
+    
+    
 }

@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.graph;
 
 import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
-import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.LongAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import java.util.ArrayList;
@@ -53,7 +53,7 @@ public class LayersConcept extends SchemaConcept {
             throw new IllegalStateException("Concept class");
         }
 
-        public static final SchemaAttribute LAYER_MASK_SELECTED = new SchemaAttribute.Builder(GraphElementType.GRAPH, IntegerAttributeDescription.ATTRIBUTE_NAME, "layer_bitmask_selected")
+        public static final SchemaAttribute LAYER_MASK_SELECTED = new SchemaAttribute.Builder(GraphElementType.GRAPH, LongAttributeDescription.ATTRIBUTE_NAME, "layer_bitmask_selected")
                 .setDescription("The layers currently enabled for display")
                 .setDefaultValue(1)
                 .create()
@@ -66,7 +66,7 @@ public class LayersConcept extends SchemaConcept {
             throw new IllegalStateException("Concept class");
         }
 
-        public static final SchemaAttribute LAYER_MASK = new SchemaAttribute.Builder(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, "layer_mask")
+        public static final SchemaAttribute LAYER_MASK = new SchemaAttribute.Builder(GraphElementType.VERTEX, LongAttributeDescription.ATTRIBUTE_NAME, "layer_mask")
                 .setDescription("Bitmask identifying the layers this vertex belongs to")
                 .setDefaultValue(1)
                 .create()
@@ -84,7 +84,7 @@ public class LayersConcept extends SchemaConcept {
             throw new IllegalStateException("Concept class");
         }
 
-        public static final SchemaAttribute LAYER_MASK = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, IntegerAttributeDescription.ATTRIBUTE_NAME, "layer_mask")
+        public static final SchemaAttribute LAYER_MASK = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, LongAttributeDescription.ATTRIBUTE_NAME, "layer_mask")
                 .setDescription("Bitmask identifying the layers this transaction belongs to")
                 .setDefaultValue(1)
                 .create()

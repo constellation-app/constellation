@@ -69,7 +69,7 @@ import org.openide.windows.TopComponent;
 })
 public final class TutorialTopComponent extends JavaFxTopComponent<TutorialViewPane> implements java.awt.event.ActionListener {
 
-    private TutorialViewPane pane;
+    private final TutorialViewPane pane;
 
     public TutorialTopComponent() {
         initComponents();

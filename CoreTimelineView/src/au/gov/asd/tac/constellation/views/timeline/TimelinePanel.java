@@ -37,7 +37,6 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -449,12 +448,9 @@ public class TimelinePanel extends Region {
 
         cmbDatetimeAttributes = new ComboBox<>();
         cmbDatetimeAttributes.setPrefWidth(150.0);
-        cmbDatetimeAttributes.valueProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(final ObservableValue<? extends String> observable, final String oldValue, final String newValue) {
-                if (oldValue != null && newValue != null && !newValue.equals(oldValue)) {
-                    coordinator.setCurrentDatetimeAttr(newValue);
-                }
+        cmbDatetimeAttributes.valueProperty().addListener((final ObservableValue<? extends String> observable, final String oldValue, final String newValue) -> {
+            if (oldValue != null && newValue != null && !newValue.equals(oldValue)) {
+                coordinator.setCurrentDatetimeAttr(newValue);
             }
         });
 
@@ -495,17 +491,14 @@ public class TimelinePanel extends Region {
 
         cmbExcludedNodes.setItems(excludedNodeList);
         cmbExcludedNodes.setValue(excludedNodeList.get(0));
-        cmbExcludedNodes.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(final ObservableValue<? extends String> observable, final String oldValue, final String newValue) {
-                if (!Objects.equals(oldValue, newValue) && coordinator != null) {
-                    if (newValue.equals(Bundle.DimNodesLabel())) {
-                        coordinator.setExclusionState(1);
-                    } else if (newValue.equals(Bundle.HideNodesLabel())) {
-                        coordinator.setExclusionState(2);
-                    } else {
-                        coordinator.setExclusionState(0);
-                    }
+        cmbExcludedNodes.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observable, final String oldValue, final String newValue) -> {
+            if (!Objects.equals(oldValue, newValue) && coordinator != null) {
+                if (newValue.equals(Bundle.DimNodesLabel())) {
+                    coordinator.setExclusionState(1);
+                } else if (newValue.equals(Bundle.HideNodesLabel())) {
+                    coordinator.setExclusionState(2);
+                } else {
+                    coordinator.setExclusionState(0);
                 }
             }
         });
@@ -522,14 +515,11 @@ public class TimelinePanel extends Region {
         });*/
         // Handle
         btnShowLabels = new ToggleButton(Bundle.ShowLabels());
-        btnShowLabels.selectedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue) {
-//                if(oldValue != newValue)
+        btnShowLabels.selectedProperty().addListener((final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue) -> {
+            //                if(oldValue != newValue)
 //                {
-                coordinator.setIsShowingNodeLabels(newValue);
+            coordinator.setIsShowingNodeLabels(newValue);
 //                }
-            }
         });
 
         btnZoomToSelection = new Button(Bundle.ZoomtoSelection());
