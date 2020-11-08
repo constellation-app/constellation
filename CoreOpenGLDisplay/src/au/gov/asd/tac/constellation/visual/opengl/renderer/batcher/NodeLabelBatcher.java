@@ -34,7 +34,8 @@ import java.util.Collections;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -42,7 +43,7 @@ import org.openide.util.Exceptions;
  */
 public class NodeLabelBatcher implements SceneBatcher {
 
-    private static int NUM_CORES = Runtime.getRuntime().availableProcessors();
+    private static final int NUM_CORES = Runtime.getRuntime().availableProcessors();
 
     // Shader variable names corresponding to data in the topBatch
     private static final String LABEL_FLOATS_SHADER_NAME = "glyphLocationData";
@@ -83,6 +84,8 @@ public class NodeLabelBatcher implements SceneBatcher {
 
     private static final int FLOAT_BUFFERS_WIDTH = 4;
     private static final int INT_BUFFERS_WIDTH = 4;
+
+    private static final Logger LOGGER = Logger.getLogger(NodeLabelBatcher.class.getName());
 
     public NodeLabelBatcher() {
         // Create the batches
@@ -183,7 +186,7 @@ public class NodeLabelBatcher implements SceneBatcher {
     private void fillTopLabels(final VisualAccess access, NodeGlyphStream glyphStream) throws InterruptedException {
         final ExecutorService pool = Executors.newFixedThreadPool(NUM_CORES);
         for (int pos = 0; pos < access.getVertexCount(); pos++) {
-            final Thread thread = new BufferTopLabel(pos, access, glyphStream);
+            final Runnable thread = new BufferTopLabel(pos, access, glyphStream);
             pool.submit(thread);
         }
         pool.shutdown();
@@ -197,7 +200,7 @@ public class NodeLabelBatcher implements SceneBatcher {
         final ExecutorService pool = Executors.newFixedThreadPool(NUM_CORES);
 
         for (int pos = 0; pos < access.getVertexCount(); pos++) {
-            final Thread thread = new BufferBottomLabel(pos, access, glyphStream);
+            final Runnable thread = new BufferBottomLabel(pos, access, glyphStream);
             pool.submit(thread);
         }
         pool.shutdown();
@@ -341,11 +344,13 @@ public class NodeLabelBatcher implements SceneBatcher {
             this.glyphStream = glyphStream;
         }
 
+        @Override
         public void run() {
             try {
                 fillTopLabels(access, glyphStream);
             } catch (InterruptedException ex) {
-                Exceptions.printStackTrace(ex);
+                Thread.currentThread().interrupt();
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         }
     }
@@ -360,11 +365,13 @@ public class NodeLabelBatcher implements SceneBatcher {
             this.glyphStream = glyphStream;
         }
 
+        @Override
         public void run() {
             try {
                 fillBottomLabels(access, glyphStream);
             } catch (InterruptedException ex) {
-                Exceptions.printStackTrace(ex);
+                Thread.currentThread().interrupt();
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         }
     }
@@ -381,6 +388,7 @@ public class NodeLabelBatcher implements SceneBatcher {
             this.glyphStream = glyphStream;
         }
 
+        @Override
         public void run() {
             bufferBottomLabel(pos, access, glyphStream);
         }

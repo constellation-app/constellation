@@ -178,7 +178,7 @@ public class ConnectionLabelBatcher implements SceneBatcher {
                 final int connection = access.getLinkConnection(link, pos);
                 nextParallelConnection((int) (LabelUtilities.NRADIUS_TO_LINE_WIDTH_UNITS * Math.min(LabelUtilities.MAX_TRANSACTION_WIDTH, access.getConnectionWidth(connection))), context);
                 final Matrix44f currentLabelInfo = access.getIsLabelSummary(connection) ? summaryLabelInfo : attributeLabelInfoReference;
-                final Thread bufferThread = new BufferLabel(connection, access, glyphStream, currentLabelInfo, context);
+                final Runnable bufferThread = new BufferLabel(connection, access, glyphStream, currentLabelInfo, context);
                 pool.execute(bufferThread);
             }
 
