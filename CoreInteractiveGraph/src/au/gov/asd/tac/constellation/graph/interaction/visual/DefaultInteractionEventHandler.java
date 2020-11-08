@@ -1006,10 +1006,18 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
 
         final Vector3f delta = visualInteraction.convertTranslationToDrag(camera, position, from, to);
 
+        final int xAttribute = VisualConcept.VertexAttribute.X.get(wg);
+        final int yAttribute = VisualConcept.VertexAttribute.Y.get(wg);
+        final int zAttribute = VisualConcept.VertexAttribute.Z.get(wg);
+        final int x2Attribute = VisualConcept.VertexAttribute.X2.get(wg);
+        final int y2Attribute = VisualConcept.VertexAttribute.Y2.get(wg);
+        final int z2Attribute = VisualConcept.VertexAttribute.Z2.get(wg);
+        final int cameraAttribute = VisualConcept.GraphAttribute.CAMERA.get(wg);
+        
         draggedNodeIds.forEach(vertexId -> {
-            final Vector3f currentPos = VisualGraphUtilities.getMixedVertexCoordinates(wg, vertexId);
+            final Vector3f currentPos = VisualGraphUtilities.getMixedVertexCoordinates(wg, vertexId, xAttribute, x2Attribute, yAttribute, y2Attribute, zAttribute, z2Attribute, cameraAttribute);
             currentPos.add(delta);
-            VisualGraphUtilities.setVertexCoordinates(wg, currentPos, vertexId);
+            VisualGraphUtilities.setVertexCoordinates(wg, currentPos, vertexId, xAttribute, yAttribute, zAttribute);
         });
 
         scheduleXYZChangeOperation(Ints.toArray(draggedNodeIds));
