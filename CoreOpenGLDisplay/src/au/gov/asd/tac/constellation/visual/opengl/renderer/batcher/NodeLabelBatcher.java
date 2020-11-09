@@ -45,8 +45,6 @@ public class NodeLabelBatcher implements SceneBatcher {
 
     private static final int NUM_CORES = Runtime.getRuntime().availableProcessors();
 
-    private static int NUM_CORES = Runtime.getRuntime().availableProcessors();
-    
     // Shader variable names corresponding to data in the topBatch
     private static final String LABEL_FLOATS_SHADER_NAME = "glyphLocationData";
     private static final String LABEL_INTS_SHADER_NAME = "graphLocationData";

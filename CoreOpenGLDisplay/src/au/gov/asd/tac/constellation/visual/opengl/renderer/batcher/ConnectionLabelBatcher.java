@@ -281,21 +281,6 @@ public class ConnectionLabelBatcher implements SceneBatcher {
 
         }
     }
-    
-    private class BufferLabel extends Thread {
-        private final int pos;
-        private final VisualAccess access;
-        private final ConnectionGlyphStream glyphStream;
-        private final Matrix44f currentLabelInfo;
-        private final ConnectionGlyphStreamContext context;
-        
-        BufferLabel(final int pos, final VisualAccess access, final ConnectionGlyphStream glyphStream, final Matrix44f currentLabelInfo, ConnectionGlyphStreamContext context) {
-            this.pos = pos;
-            this.access = access;
-            this.glyphStream = glyphStream;
-            this.currentLabelInfo = currentLabelInfo;
-            this.context = new ConnectionGlyphStreamContext(context);
-        }
 
     private class BufferLabel extends Thread {
 

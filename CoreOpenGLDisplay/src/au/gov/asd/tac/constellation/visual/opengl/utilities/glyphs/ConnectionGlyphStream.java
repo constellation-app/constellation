@@ -74,3 +74,4 @@ public class ConnectionGlyphStream implements GlyphManager.GlyphStream {
             currentInts.trimToSize();
         }
     }
+}
