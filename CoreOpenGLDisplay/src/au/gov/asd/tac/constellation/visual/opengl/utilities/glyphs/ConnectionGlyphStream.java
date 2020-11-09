@@ -26,7 +26,7 @@ import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
  * @author Nova
  */
 public class ConnectionGlyphStream implements GlyphManager.GlyphStream {
-    
+
     private final FloatArray currentFloats;
     private final IntArray currentInts;
     private float currentWidth;
@@ -36,13 +36,12 @@ public class ConnectionGlyphStream implements GlyphManager.GlyphStream {
         this.currentFloats = new FloatArray();
         this.currentInts = new IntArray();
     }
-    
-    
+
     @Override
     public void addGlyph(int glyphPosition, float x, float y, final GlyphStreamContext streamContext) {
         if (streamContext instanceof ConnectionGlyphStreamContext) {
-            ConnectionGlyphStreamContext context = (ConnectionGlyphStreamContext) streamContext;
-            synchronized(addLock) {
+            final ConnectionGlyphStreamContext context = (ConnectionGlyphStreamContext) streamContext;
+            synchronized (addLock) {
                 currentFloats.add(currentWidth, x, y, context.visibility);
                 currentInts.add(context.currentLowNodeId, context.currentHighNodeId, (context.currentOffset << 16) + (context.totalScale << 2) + context.labelNumber, (glyphPosition << 8) + context.currentStagger * 256 / (Math.min(context.currentLinkLabelCount, ConnectionLabelBatcher.MAX_STAGGERS) + 1));
             }
@@ -52,7 +51,7 @@ public class ConnectionGlyphStream implements GlyphManager.GlyphStream {
     @Override
     public void newLine(float width, final GlyphStreamContext streamContext) {
         if (streamContext instanceof ConnectionGlyphStreamContext) {
-            ConnectionGlyphStreamContext context = (ConnectionGlyphStreamContext) streamContext;
+            final ConnectionGlyphStreamContext context = (ConnectionGlyphStreamContext) streamContext;
             synchronized (addLock) {
                 currentWidth = -width / 2.0f - 0.2f;
                 currentFloats.add(currentWidth, currentWidth, 0.0f, context.visibility);
@@ -60,7 +59,7 @@ public class ConnectionGlyphStream implements GlyphManager.GlyphStream {
             }
         }
     }
-    
+
     public FloatArray getCurrentFloats() {
         return currentFloats;
     }
@@ -68,11 +67,10 @@ public class ConnectionGlyphStream implements GlyphManager.GlyphStream {
     public IntArray getCurrentInts() {
         return currentInts;
     }
-    
+
     public void trimToSize() {
-        synchronized(addLock) {
+        synchronized (addLock) {
             currentFloats.trimToSize();
             currentInts.trimToSize();
         }
     }
-}

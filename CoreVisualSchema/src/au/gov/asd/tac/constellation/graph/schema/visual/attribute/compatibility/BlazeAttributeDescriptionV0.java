@@ -16,8 +16,12 @@
 package au.gov.asd.tac.constellation.graph.schema.visual.attribute.compatibility;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.AbstractAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
+import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
+import au.gov.asd.tac.constellation.graph.value.readables.ObjectReadable;
+import au.gov.asd.tac.constellation.graph.value.variables.ObjectVariable;
 import java.util.Arrays;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -231,5 +235,25 @@ public final class BlazeAttributeDescriptionV0 extends AbstractAttributeDescript
     public void restoreData(final Object savedData) {
         final BlazeV0[] sd = (BlazeV0[]) savedData;
         data = Arrays.copyOf(sd, sd.length);
+    }
+
+    @Override
+    public Object createReadObject(IntReadable indexReadable) {
+        return (ObjectReadable) () -> data[indexReadable.readInt()];
+    }
+
+    @Override
+    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+        return new ObjectVariable() {
+            @Override
+            public Object readObject() {
+                return data[indexReadable.readInt()];
+            }
+
+            @Override
+            public void writeObject(Object value) {
+                graph.setObjectValue(attribute, indexReadable.readInt(), value);
+            }
+        };
     }
 }

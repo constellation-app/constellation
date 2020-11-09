@@ -90,8 +90,9 @@ public interface SceneBatcher {
      * @param access the VisualAccess object describing the data to be
      * visualised.
      * @return The GLUpdateTask to create this batch.
+     * @throws java.lang.InterruptedException
      */
-    public GLRenderableUpdateTask createBatch(final VisualAccess access);
+    public GLRenderableUpdateTask createBatch(final VisualAccess access) throws InterruptedException;
 
     @FunctionalInterface
     public static interface IntBufferOperation {

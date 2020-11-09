@@ -27,8 +27,8 @@ public class GlyphStreamContext {
     public int labelNumber;
 
     public GlyphStreamContext() {
-    };
-    
+    }
+
     public GlyphStreamContext(int totalScale, float visibility, int labelNumber) {
         this.totalScale = totalScale;
         this.visibility = visibility;
