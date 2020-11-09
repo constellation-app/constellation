@@ -59,6 +59,11 @@ public class VisualGraphUtilities {
         return camera != null ? camera : VisualGraphDefaults.DEFAULT_CAMERA;
     }
 
+    public static Camera getCamera(final GraphReadMethods graph, final int cameraAttribute) {
+        final Camera camera = cameraAttribute != Graph.NOT_FOUND ? graph.getObjectValue(cameraAttribute, 0) : VisualGraphDefaults.DEFAULT_CAMERA;
+        return camera != null ? camera : VisualGraphDefaults.DEFAULT_CAMERA;
+    }
+    
     public static void setVertexCoordinates(final GraphWriteMethods graph, final Vector3f coordinates, final int vertexId) {
         final int xAttribute = VisualConcept.VertexAttribute.X.get(graph);
         final int yAttribute = VisualConcept.VertexAttribute.Y.get(graph);
@@ -70,6 +75,14 @@ public class VisualGraphUtilities {
         }
     }
 
+    public static void setVertexCoordinates(final GraphWriteMethods graph, final Vector3f coordinates, final int vertexId, final int xAttribute, final int yAttribute, final int zAttribute) {
+        if (xAttribute != Graph.NOT_FOUND && yAttribute != Graph.NOT_FOUND && zAttribute != Graph.NOT_FOUND) {
+            graph.setFloatValue(xAttribute, vertexId, coordinates.getX());
+            graph.setFloatValue(yAttribute, vertexId, coordinates.getY());
+            graph.setFloatValue(zAttribute, vertexId, coordinates.getZ());
+        }
+    }
+    
     public static Vector3f getVertexCoordinates(final GraphReadMethods graph, final int vertexId) {
         final int xAttribute = VisualConcept.VertexAttribute.X.get(graph);
         final int yAttribute = VisualConcept.VertexAttribute.Y.get(graph);
@@ -79,6 +92,12 @@ public class VisualGraphUtilities {
                 zAttribute != Graph.NOT_FOUND ? graph.getFloatValue(zAttribute, vertexId) : VisualGraphDefaults.getDefaultZ(vertexId));
     }
 
+    public static Vector3f getVertexCoordinates(final GraphReadMethods graph, final int vertexId, final int xAttribute, final int yAttribute, final int zAttribute) {
+        return new Vector3f(xAttribute != Graph.NOT_FOUND ? graph.getFloatValue(xAttribute, vertexId) : VisualGraphDefaults.getDefaultX(vertexId),
+                yAttribute != Graph.NOT_FOUND ? graph.getFloatValue(yAttribute, vertexId) : VisualGraphDefaults.getDefaultY(vertexId),
+                zAttribute != Graph.NOT_FOUND ? graph.getFloatValue(zAttribute, vertexId) : VisualGraphDefaults.getDefaultZ(vertexId));
+    }
+    
     public static Vector3f getAlternateVertexCoordinates(final GraphReadMethods graph, final int vertexId) {
         final int x2Attribute = VisualConcept.VertexAttribute.X2.get(graph);
         final int y2Attribute = VisualConcept.VertexAttribute.Y2.get(graph);
@@ -89,6 +108,12 @@ public class VisualGraphUtilities {
                 z2Attribute != Graph.NOT_FOUND ? graph.getFloatValue(z2Attribute, vertexId) : VisualGraphDefaults.DEFAULT_VERTEX_Z2);
     }
 
+    public static Vector3f getAlternateVertexCoordinates(final GraphReadMethods graph, final int vertexId, final int x2Attribute, final int y2Attribute, final int z2Attribute) {
+        return new Vector3f(x2Attribute != Graph.NOT_FOUND ? graph.getFloatValue(x2Attribute, vertexId) : VisualGraphDefaults.DEFAULT_VERTEX_X2,
+                y2Attribute != Graph.NOT_FOUND ? graph.getFloatValue(y2Attribute, vertexId) : VisualGraphDefaults.DEFAULT_VERTEX_Y2,
+                z2Attribute != Graph.NOT_FOUND ? graph.getFloatValue(z2Attribute, vertexId) : VisualGraphDefaults.DEFAULT_VERTEX_Z2);
+    }
+    
     public static Vector3f getMixedVertexCoordinates(final GraphReadMethods graph, final int vertexId) {
         final Vector3f coordinates = getVertexCoordinates(graph, vertexId);
         final Vector3f altCoordinates = getAlternateVertexCoordinates(graph, vertexId);
@@ -99,6 +124,16 @@ public class VisualGraphUtilities {
         return coordinates;
     }
 
+    public static Vector3f getMixedVertexCoordinates(final GraphReadMethods graph, final int vertexId, final int xAttribute, final int x2Attribute, final int yAttribute, final int y2Attribute, final int zAttribute, final int z2Attribute, final int cameraAttribute) {
+        final Vector3f coordinates = getVertexCoordinates(graph, vertexId, xAttribute, yAttribute, zAttribute);
+        final Vector3f altCoordinates = getAlternateVertexCoordinates(graph, vertexId, x2Attribute, y2Attribute, z2Attribute);
+        final float mixRatio = getCamera(graph, cameraAttribute).getMixRatio();
+        if (coordinates != null && altCoordinates != null) {
+            coordinates.convexCombineWith(altCoordinates, mixRatio);
+        }
+        return coordinates;
+    }
+    
     public static ConnectionMode getConnectionMode(final GraphReadMethods graph) {
         final int connectionModeAttribute = VisualConcept.GraphAttribute.CONNECTION_MODE.get(graph);
         return connectionModeAttribute != Graph.NOT_FOUND ? graph.getObjectValue(connectionModeAttribute, 0) : VisualGraphDefaults.DEFAULT_CONNECTION_MODE;
