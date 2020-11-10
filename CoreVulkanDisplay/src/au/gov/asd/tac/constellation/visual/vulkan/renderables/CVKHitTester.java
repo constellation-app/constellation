@@ -357,6 +357,13 @@ public class CVKHitTester extends CVKRenderable {
             if (VkFailed(ret)) { return ret; }  
         }
                       
+        ServiceHitRequests();
+        
+        needsDisplayUpdate = false;
+        return ret;
+    }  
+    
+    public void ServiceHitRequests() {
         if (requestQueue != null && !requestQueue.isEmpty()) {
             requestQueue.forEach(request -> notificationQueues.add(request.getNotificationQueue()));
             hitTestRequest = requestQueue.getLast();
@@ -396,11 +403,8 @@ public class CVKHitTester extends CVKRenderable {
                     }
                 }
             }
-        }
-        
-        needsDisplayUpdate = false;
-        return ret;
-    }  
+        }        
+    }
 
     @Override
     public int OffscreenRender(List<CVKRenderable> hitTestRenderables) {

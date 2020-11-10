@@ -597,7 +597,11 @@ public class CVKLabelsRenderable extends CVKRenderable implements GlyphManager.G
     }  
     
     @Override
-    public int GetVertexCount() { return vertexCount; }      
+    public int GetVertexCount() {
+        return cvkVisualProcessor.GetDrawFlags().drawNodes() && 
+               cvkVisualProcessor.GetDrawFlags().drawNodeLabels() ? 
+                   vertexCount : 0; 
+    }   
     
     private void DestroyVertexBuffers() {
         if (vertexBuffers != null) {

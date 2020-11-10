@@ -69,6 +69,7 @@ public class CVKVisualProcessor extends VisualProcessor {
     private static final float PERSPECTIVE_FAR = 500000;
     
     private final BlockingQueue<CVKRenderUpdateTask> taskQueue = new LinkedBlockingQueue<>();
+    private DrawFlags drawFlags = DrawFlags.NONE;
     private final CVKCanvas cvkCanvas;
     private final Frustum viewFrustum = new Frustum();
     private final Matrix44f projectionMatrix = new Matrix44f();       
@@ -112,6 +113,7 @@ public class CVKVisualProcessor extends VisualProcessor {
     public long GetVertexFlagsBufferViewHandle() { return cvkIcons.GetVertexFlagsBufferViewHandle(); }
     public float GetMotion() { return motion; }
     public List<CVKRenderable> GetHitTesterList() { return hitTesters; }
+    public DrawFlags GetDrawFlags() { return drawFlags; }
     
     
     public CVKVisualProcessor(final String graphId) throws Throwable {  
@@ -182,6 +184,7 @@ public class CVKVisualProcessor extends VisualProcessor {
     
     
     void addTask(final CVKRenderUpdateTask task) {
+        shouldRender = true;
         taskQueue.add(task);
     }
     
@@ -292,10 +295,13 @@ public class CVKVisualProcessor extends VisualProcessor {
                 motion = -1;
             }        
         
-        //if (shouldRender) {
+        if (shouldRender) {
             cvkCanvas.repaint();
             shouldRender = false;
-        //}
+        } else {
+            cvkHitTester.ServiceHitRequests();
+            signalProcessorIdle();
+        }
     }
 
     @Override
@@ -562,7 +568,6 @@ public class CVKVisualProcessor extends VisualProcessor {
 
     @Override
     protected final VisualChangeProcessor getChangeProcessor(final VisualProperty property) {
-        shouldRender = true;
         if (DEBUGGING_POINTS) {
             switch (property) {
                 case VERTICES_REBUILD:
@@ -592,7 +597,6 @@ public class CVKVisualProcessor extends VisualProcessor {
                 };      
             case EXTERNAL_CHANGE:
             default:
-                shouldRender = false;
                 return (change, access) -> {
                 };                
             }
@@ -610,6 +614,9 @@ public class CVKVisualProcessor extends VisualProcessor {
                         addTask(cvkLabels.TaskUpdateLabels(change, access));
                         addTask(cvkLabels.TaskUpdateColours(change, access));
                         addTask(cvkLabels.TaskUpdateSizes(change, access));
+                        
+                        final DrawFlags updatedDrawFlags = access.getDrawFlags();
+                        addTask(() -> { drawFlags = updatedDrawFlags; });                        
 
 
     //                    addTask(xyzTexturiser.dispose());
@@ -662,12 +669,9 @@ public class CVKVisualProcessor extends VisualProcessor {
                         addTask(cvkLinks.TaskSetHighlightColour(access));
                     };
                 case DRAW_FLAGS:
-                    GetLogger().warning("Event DRAW_FLAGS unhandled!");
                     return (change, access) -> {
                         final DrawFlags updatedDrawFlags = access.getDrawFlags();
-    //                    addTask(gl -> {
-    //                        drawFlags = updatedDrawFlags;
-    //                    });
+                        addTask(() -> { drawFlags = updatedDrawFlags; });    
                     };
                 case BLAZE_SIZE:
                     GetLogger().warning("Event BLAZE_SIZE unhandled!");
@@ -762,7 +766,6 @@ public class CVKVisualProcessor extends VisualProcessor {
                     };
                 case EXTERNAL_CHANGE:
                 default:
-                    shouldRender = false;
                     return (change, access) -> {
                     };
             }   

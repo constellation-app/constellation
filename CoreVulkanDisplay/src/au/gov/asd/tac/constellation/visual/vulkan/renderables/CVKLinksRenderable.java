@@ -579,7 +579,7 @@ public class CVKLinksRenderable extends CVKRenderable {
     }  
     
     @Override
-    public int GetVertexCount() { return vertexCount; }      
+    public int GetVertexCount() { return cvkVisualProcessor.GetDrawFlags().drawConnections() ? vertexCount : 0; }     
     
     private void DestroyVertexBuffers() {
         if (vertexBuffers != null) {
