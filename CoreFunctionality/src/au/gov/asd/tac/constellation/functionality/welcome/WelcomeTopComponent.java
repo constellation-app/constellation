@@ -28,6 +28,7 @@ import javafx.concurrent.Worker.State;
 import javafx.embed.swing.JFXPanel;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
@@ -144,17 +145,20 @@ public final class WelcomeTopComponent extends TopComponent {
             VBox left_vbox = new VBox();
             splitPane.getItems().add(left_vbox);
             
+            HBox logo_hbox = new HBox();
+            logo_hbox.setBackground(new Background(new BackgroundFill(Color.valueOf("white"), CornerRadii.EMPTY, Insets.EMPTY)));
             ImageView logoView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(LOGO)));
-            logoView.setFitHeight(220);
-            logoView.setFitWidth(400);
-            left_vbox.getChildren().add(logoView);
+            logoView.setFitHeight(100);
+            logoView.setFitWidth(150);
+            logo_hbox.getChildren().add(logoView);
+            logo_hbox.setAlignment(Pos.CENTER);
+            left_vbox.getChildren().add(logo_hbox);
             
             //Create right VBox for graph controls
             VBox right_vbox = new VBox();
             right_vbox.setPadding(new Insets(50, 50, 50, 50));
             right_vbox.setBackground(new Background(new BackgroundFill(Color.valueOf("#14161a"), CornerRadii.EMPTY, Insets.EMPTY)));
-            splitPane.getItems().add(right_vbox);
-            
+            splitPane.getItems().add(right_vbox);  
             
             //Create HBoxes for the right_vbox
             HBox top_hbox = new HBox();
@@ -193,7 +197,6 @@ public final class WelcomeTopComponent extends TopComponent {
             setButtonProps(importButton);
             top_hbox.getChildren().add(importButton);
             
-            
             //formatting for bottom hbox
             Label recent = new Label("Recent");
             recent.setFont(new Font("Arial Unicode MS", 24));
@@ -201,14 +204,15 @@ public final class WelcomeTopComponent extends TopComponent {
             right_vbox.getChildren().add(top_hbox);
             right_vbox.getChildren().add(recent);
             right_vbox.getChildren().add(bottom_hbox);
-            
-            
+             
             FlowPane flow = new FlowPane();
             flow.setPrefWrapLength(1000);
             flow.setHgap(20);
             flow.setVgap(20);
             
             //Create the buttons for the recent page
+            //These have just been created to be able to view them on a page
+            //and get the layout right
             Button recentBtn1 = new Button();
             createRecentButtons(recentBtn1);
             flow.getChildren().add(recentBtn1);
@@ -239,12 +243,9 @@ public final class WelcomeTopComponent extends TopComponent {
             Button recentBtn10 = new Button();
             createRecentButtons(recentBtn10);
             flow.getChildren().add(recentBtn10);
-            
-            
+             
             bottom_hbox.getChildren().add(flow);
-            
             splitPane.getDividers().get(0).setPosition(SPLIT_POS);
-            //HBox.setHgrow(bottom_hbox, Priority.ALWAYS);
             VBox.setVgrow(right_vbox, Priority.ALWAYS);
 
             final WebView welcomeView = new WebView();
