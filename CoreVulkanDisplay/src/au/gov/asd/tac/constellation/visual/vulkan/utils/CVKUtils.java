@@ -37,6 +37,7 @@ import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.Platform;
 import org.lwjgl.vulkan.VkLayerProperties;
 import org.lwjgl.system.MemoryUtil;
+import static org.lwjgl.vulkan.EXTDebugReport.VK_EXT_DEBUG_REPORT_EXTENSION_NAME;
 import org.lwjgl.vulkan.VkClearColorValue;
 import org.lwjgl.vulkan.VkClearValue;
 
@@ -147,8 +148,8 @@ public class CVKUtils {
      */
     public static PointerBuffer GetRequiredVKPhysicalDeviceExtensions(MemoryStack stack) {
         ByteBuffer VK_EXT_DEBUG_UTILS_EXTENSION = stack.UTF8(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
-        ByteBuffer VK_KHR_SURFACE_EXTENSION = stack.UTF8(VK_KHR_SURFACE_EXTENSION_NAME);   
-        //ByteBuffer VK_EXT_DEBUG_REPORT_EXTENSION = stack.UTF8(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);   
+        ByteBuffer VK_KHR_SURFACE_EXTENSION = stack.UTF8(VK_KHR_SURFACE_EXTENSION_NAME);  
+        ByteBuffer VK_EXT_DEBUG_REPORT_EXTENSION = stack.UTF8(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);  
      
         ByteBuffer VK_KHR_OS_SURFACE_EXTENSION;
 
@@ -167,11 +168,18 @@ public class CVKUtils {
                 throw new RuntimeException("Unknown platform trying it initialise Vulkan");
         }
 
-        PointerBuffer pbEnabledExtensionNames = stack.mallocPointer(3);
-        pbEnabledExtensionNames.put(VK_EXT_DEBUG_UTILS_EXTENSION);
-        pbEnabledExtensionNames.put(VK_KHR_SURFACE_EXTENSION);
-        pbEnabledExtensionNames.put(VK_KHR_OS_SURFACE_EXTENSION);
-        //pbEnabledExtensionNames.put(VK_EXT_DEBUG_REPORT_EXTENSION);
+        PointerBuffer pbEnabledExtensionNames;
+        if (CVK_DEBUGGING) {
+            pbEnabledExtensionNames = stack.mallocPointer(4);
+            pbEnabledExtensionNames.put(VK_EXT_DEBUG_UTILS_EXTENSION);
+            pbEnabledExtensionNames.put(VK_EXT_DEBUG_REPORT_EXTENSION);
+            pbEnabledExtensionNames.put(VK_KHR_SURFACE_EXTENSION);
+            pbEnabledExtensionNames.put(VK_KHR_OS_SURFACE_EXTENSION);
+        } else {
+            pbEnabledExtensionNames = stack.mallocPointer(2);
+            pbEnabledExtensionNames.put(VK_KHR_SURFACE_EXTENSION);
+            pbEnabledExtensionNames.put(VK_KHR_OS_SURFACE_EXTENSION);            
+        }
 
         // Flipping an org.lwjgl.system.CustomBuffer ends writes and prepares it for reads.  In practice
         // this resets the current index to 0

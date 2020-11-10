@@ -26,10 +26,10 @@ layout(std140, push_constant) uniform HitTestPushConstant {
 // === UNIFORMS ===
 layout(std140, binding = 2) uniform UniformBlock {
     mat4 pMatrix;
+    vec4 highlightColor;
     float visibilityLow;
     float visibilityHigh;
-    float directionMotion;
-    vec4 highlightColor;
+    float directionMotion;    
     float alpha;
 } ub;
 
@@ -89,8 +89,8 @@ void main() {
 
             vec3 dir = normalize(cross(vec3(end0.xy - end1.xy, 0), vec3(0, 0, 1)));
             float offset = gData[0].q / FLOAT_MULTIPLIER;
-            end0.xy += 2 * offset*dir.xy / 32;
-            end1.xy += 2 * offset*dir.xy / 32;
+            end0.xy += 2 * offset * dir.xy / 32;
+            end1.xy += 2 * offset * dir.xy / 32;
 
             vec4 halfWidth = vec4(dir.xy / 32, 0, 0);
             int lineInfo0 = gData[0].t;
@@ -118,11 +118,11 @@ void main() {
             vec4 color0;
             vec4 color1;
 
-            if (htpc.drawHitTest==0) {
+            if (htpc.drawHitTest == 0) {
                 color0 = vpointColor[0];
                 color1 = vpointColor[1];
 
-                if (isSelected){
+                if (isSelected) {
                     color0 = ub.highlightColor;
                     color1 = ub.highlightColor;
                 } else if (isDim) {

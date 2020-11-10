@@ -25,7 +25,6 @@ import au.gov.asd.tac.constellation.visual.vulkan.shaders.CVKShaderPlaceHolder;
 import java.io.File;
 import java.io.FileInputStream;
 import org.lwjgl.system.NativeResource;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.ByteBuffer;

@@ -57,6 +57,11 @@ import org.lwjgl.vulkan.VkSubmitInfo;
 import org.lwjgl.vulkan.VkViewport;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKGraphLogger;
+import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKMissingEnums;
+import org.lwjgl.system.MemoryUtil;
+import static org.lwjgl.vulkan.EXTDebugUtils.VK_STRUCTURE_TYPE_DEBUG_UTILS_LABEL_EXT;
+import static org.lwjgl.vulkan.EXTDebugUtils.vkCmdBeginDebugUtilsLabelEXT;
+import static org.lwjgl.vulkan.EXTDebugUtils.vkCmdEndDebugUtilsLabelEXT;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT;
 import static org.lwjgl.vulkan.VK10.VK_DEPENDENCY_BY_REGION_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_COLOR_BIT;
@@ -71,6 +76,7 @@ import static org.lwjgl.vulkan.VK10.vkCmdDraw;
 import static org.lwjgl.vulkan.VK10.vkCmdDrawIndexed;
 import static org.lwjgl.vulkan.VK10.vkCmdPipelineBarrier;
 import static org.lwjgl.vulkan.VK10.vkResetCommandBuffer;
+import org.lwjgl.vulkan.VkDebugUtilsLabelEXT;
 import org.lwjgl.vulkan.VkImageMemoryBarrier;
 import org.lwjgl.vulkan.VkMemoryBarrier;
 
@@ -79,6 +85,7 @@ public class CVKCommandBuffer {
     private VkCommandBuffer vkCommandBuffer = null;
     private CVKGraphLogger cvkGraphLogger = null;
     private String DEBUGNAME;
+    private VkDebugUtilsLabelEXT vkDebugLabel = null;
     private CVKGraphLogger GetLogger() { return cvkGraphLogger != null ? cvkGraphLogger : CVKGraphLogger.GetStaticLogger(); }
 
     private CVKCommandBuffer() {}
@@ -149,6 +156,10 @@ public class CVKCommandBuffer {
 
             ret = vkBeginCommandBuffer(vkCommandBuffer, beginInfo);
             if (VkFailed(ret)) { return ret; }
+            
+            if (CVK_DEBUGGING && vkDebugLabel != null) {
+                vkCmdBeginDebugUtilsLabelEXT(vkCommandBuffer, vkDebugLabel);
+            }
         }
         
         return ret;
@@ -174,6 +185,10 @@ public class CVKCommandBuffer {
 	
     public int FinishRecord() {
         int ret;
+        
+        if (CVK_DEBUGGING && vkDebugLabel != null) {
+            vkCmdEndDebugUtilsLabelEXT(vkCommandBuffer);
+        }
 
         ret = vkEndCommandBuffer(vkCommandBuffer);
         if (VkFailed(ret)) { return ret; }
@@ -399,7 +414,24 @@ public class CVKCommandBuffer {
                 cvkCommandBuffer.DEBUGNAME = debugName;
                 ++CVK_VKALLOCATIONS;
                 cvkCommandBuffer.GetLogger().fine("CVK_VKALLOCATIONS(%d+) vkAllocateCommandBuffers for %s 0x%016X", 
-                        CVK_VKALLOCATIONS, cvkCommandBuffer.DEBUGNAME, cvkCommandBuffer.vkCommandBuffer.address());                
+                        CVK_VKALLOCATIONS, cvkCommandBuffer.DEBUGNAME, cvkCommandBuffer.vkCommandBuffer.address());   
+                ret = CVKDevice.GetInstance().SetDebugName(cvkCommandBuffer.vkCommandBuffer.address(),
+                                                           CVKMissingEnums.VkObjectType.VK_OBJECT_TYPE_COMMAND_BUFFER.Value(),
+                                                           debugName);
+                if (VkFailed(ret)) {
+                    cvkCommandBuffer.GetLogger().warning("Failed to set debug object name for command buffer '%s'", debugName);
+                }
+                
+                if (CVKDevice.IsVkCmdBeginDebugUtilsLabelEXTAvailable()) {
+                    cvkCommandBuffer.vkDebugLabel = VkDebugUtilsLabelEXT.malloc();
+                    cvkCommandBuffer.vkDebugLabel.sType(VK_STRUCTURE_TYPE_DEBUG_UTILS_LABEL_EXT);
+                    cvkCommandBuffer.vkDebugLabel.pNext(VK_NULL_HANDLE);
+                    cvkCommandBuffer.vkDebugLabel.pLabelName(MemoryUtil.memASCII(debugName));
+                    cvkCommandBuffer.vkDebugLabel.color(0, 1.0f);
+                    cvkCommandBuffer.vkDebugLabel.color(1, 1.0f);
+                    cvkCommandBuffer.vkDebugLabel.color(2, 1.0f);
+                    cvkCommandBuffer.vkDebugLabel.color(3, 1.0f);
+                }
             }              
         }
         return cvkCommandBuffer;

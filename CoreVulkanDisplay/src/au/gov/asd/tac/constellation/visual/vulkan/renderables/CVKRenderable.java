@@ -119,6 +119,7 @@ public abstract class CVKRenderable {
     protected boolean depthTest = true;
     protected boolean depthWrite = true;
     protected boolean logicOpEnable = false;
+    protected int cullMode = VK_CULL_MODE_BACK_BIT;
     protected int depthCompareOperation = VK_COMPARE_OP_LESS_OR_EQUAL;
     protected int assemblyTopology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
     protected int srcColourBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
@@ -453,7 +454,7 @@ public abstract class CVKRenderable {
                 rasterizer.rasterizerDiscardEnable(false);
                 rasterizer.polygonMode(VK_POLYGON_MODE_FILL);
                 rasterizer.lineWidth(1.0f);
-                rasterizer.cullMode(VK_CULL_MODE_BACK_BIT);
+                rasterizer.cullMode(cullMode);
                 rasterizer.frontFace(VK_FRONT_FACE_COUNTER_CLOCKWISE);
                 rasterizer.depthBiasEnable(false);
 

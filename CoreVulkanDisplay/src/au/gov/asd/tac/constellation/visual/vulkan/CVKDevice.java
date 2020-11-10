@@ -67,11 +67,20 @@ import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.GetRequi
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.InitVKValidationLayers;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkSucceeded;
+import org.lwjgl.system.MemoryUtil;
+import static org.lwjgl.vulkan.EXTDebugUtils.VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT;
+import static org.lwjgl.vulkan.EXTDebugUtils.vkCmdBeginDebugUtilsLabelEXT;
+import static org.lwjgl.vulkan.EXTDebugUtils.vkSetDebugUtilsObjectNameEXT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_FEATURE_BLIT_DST_BIT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_FEATURE_BLIT_SRC_BIT;
+import static org.lwjgl.vulkan.VK10.VK_VERSION_MAJOR;
+import static org.lwjgl.vulkan.VK10.VK_VERSION_MINOR;
+import static org.lwjgl.vulkan.VK10.VK_VERSION_PATCH;
 import static org.lwjgl.vulkan.VK10.vkDestroyCommandPool;
 import static org.lwjgl.vulkan.VK10.vkDestroyDevice;
+import static org.lwjgl.vulkan.VK10.vkGetDeviceProcAddr;
 import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceFormatProperties;
+import org.lwjgl.vulkan.VkDebugUtilsObjectNameInfoEXT;
 
 
 public class CVKDevice {
@@ -90,6 +99,8 @@ public class CVKDevice {
     private int maxImageLayers = 0;
     private int maxTexelBufferElements = 0;   
     private int minUniformBufferAlignment = 1;
+    private boolean vkSetDebugUtilsObjectNameEXT_available = false;
+    private boolean vkCmdBeginDebugUtilsLabelEXT_available = false;
     
     
     // ========================> Getters <======================== \\
@@ -104,8 +115,8 @@ public class CVKDevice {
     public static int GetMaxImageLayers()  { return GetInstance().maxImageLayers; }
     public static int GetMaxTexelBufferElements() { return GetInstance().maxTexelBufferElements; }
     public static int GetMinUniformBufferAlignment() { return GetInstance().minUniformBufferAlignment; }
-    private CVKGraphLogger GetLogger() { return CVKGraphLogger.GetStaticLogger(); }
-    
+    private static CVKGraphLogger GetLogger() { return CVKGraphLogger.GetStaticLogger(); }
+    public static boolean IsVkCmdBeginDebugUtilsLabelEXTAvailable() { return GetInstance().vkCmdBeginDebugUtilsLabelEXT_available; }
     
     
     /**
@@ -136,11 +147,45 @@ public class CVKDevice {
             StoreVKQueue(stack);    
             ret = CreateVKCommandPool(stack);
             if (VkFailed(ret)) return ret;
+            
+            if (CVK_DEBUGGING) {
+                // Get function pointer for the debug label annotations
+                if (vkDevice.getCapabilities().vkSetDebugUtilsObjectNameEXT == VK_NULL_HANDLE) {
+                    GetLogger().warning("Failed to get pointer to vkSetDebugUtilsObjectNameEXT");
+                } else {
+                    vkSetDebugUtilsObjectNameEXT_available = true;
+                    GetLogger().info("Found pointer to vkSetDebugUtilsObjectNameEXT");
+                }  
+                
+                if (vkDevice.getCapabilities().vkCmdBeginDebugUtilsLabelEXT == VK_NULL_HANDLE) {
+                    GetLogger().warning("Failed to get pointer to vkCmdBeginDebugUtilsLabelEXT");
+                } else {
+                    vkCmdBeginDebugUtilsLabelEXT_available = true;
+                    GetLogger().info("Found pointer to vkCmdBeginDebugUtilsLabelEXT");
+                }  
+            }
         } finally {
             GetLogger().EndLogSection("Initialising CVKDevice");
         }
         
         return ret;
+    }
+    
+    public int SetDebugName(long objectHandle, int objectType, String debugName) {
+        if (vkSetDebugUtilsObjectNameEXT_available) {
+            try (MemoryStack stack = stackPush()) {
+                VkDebugUtilsObjectNameInfoEXT objectNameInfo = VkDebugUtilsObjectNameInfoEXT.mallocStack(stack);
+                objectNameInfo.sType(VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT);
+                objectNameInfo.pNext(VK_NULL_HANDLE);
+                objectNameInfo.objectType(objectType);
+                objectNameInfo.objectHandle(objectHandle);
+                objectNameInfo.pObjectName(MemoryUtil.memASCII(debugName));
+                
+                return vkSetDebugUtilsObjectNameEXT(vkDevice, objectNameInfo);
+            }
+        }
+         
+        return VK_SUCCESS;
     }
     
     /**
@@ -350,7 +395,7 @@ public class CVKDevice {
 //
 //            physicalDeviceLineRasterFeatures.free();
 //            physicalDeviceFeatures2.free();
-            
+
             // What memory types are available
             vkPhysicalDeviceMemoryProperties = VkPhysicalDeviceMemoryProperties.malloc();
             vkGetPhysicalDeviceMemoryProperties(vkPhysicalDevice, vkPhysicalDeviceMemoryProperties);
@@ -364,11 +409,12 @@ public class CVKDevice {
             minUniformBufferAlignment = (int)limits.minUniformBufferOffsetAlignment();
             vkMaxFramebufferExtent.set(limits.maxFramebufferWidth(), limits.maxFramebufferHeight());             
             
-            if (CVK_DEBUGGING) {                
+            if (CVK_DEBUGGING) {   
+                // Log device properties we're interested in
                 GetLogger().info("Physcial device properties:\n"
                         + "\tdeviceName: %s\n"
                         + "\tdeviceType: %s\n"
-                        + "\tapiVersion: %d\n"
+                        + "\tapiVersion: %d.%d.%d\n"
                         + "\tdriverVersion: %d\n"
                         + "\tvendorID: %d\n"
                         + "\tdeviceID: %d\n"
@@ -402,7 +448,9 @@ public class CVKDevice {
                         + "\t\t lineWidthRange: %f - %f\n",
                         vkPhysicalDeviceProperties.deviceNameString(),
                         CVKMissingEnums.VkPhysicalDeviceType.GetByValue(vkPhysicalDeviceProperties.deviceType()).name(),
-                        vkPhysicalDeviceProperties.apiVersion(),
+                        VK_VERSION_MAJOR(vkPhysicalDeviceProperties.apiVersion()),
+                        VK_VERSION_MINOR(vkPhysicalDeviceProperties.apiVersion()),
+                        VK_VERSION_PATCH(vkPhysicalDeviceProperties.apiVersion()),
                         vkPhysicalDeviceProperties.driverVersion(),
                         vkPhysicalDeviceProperties.vendorID(),
                         vkPhysicalDeviceProperties.deviceID(),
@@ -433,7 +481,7 @@ public class CVKDevice {
                         limits.pointSizeRange().get(0), limits.pointSizeRange().get(1),
                         limits.lineWidthGranularity(),
                         limits.lineWidthRange().get(0), limits.lineWidthRange().get(1)                                                
-                        );
+                        );                
             }                                       
         } else {
             // Sad face

@@ -71,8 +71,8 @@ void main() {
         // If the line is selected then move it slightly forward so
         // that it is drawn in front of unselected lines.
         int seldim = gData[0][2];
-        bool isSelected = (seldim&1)!=0;
-        bool isDim = (seldim&2) != 0;
+        bool isSelected = (seldim & 1) != 0;
+        bool isDim = (seldim & 2) != 0;
         if (isSelected) {
             end0.z += 0.001;
             end1.z += 0.001;
@@ -83,7 +83,7 @@ void main() {
 
         // Only draw line lines if the width is not greater than normal.
         // (There's probably some optimisation at a further distance, but this will do for now.)
-        if (true == true) { //lineDistance > VISIBLE_ARROW_DISTANCE && width <= 1) {
+        if (lineDistance > VISIBLE_ARROW_DISTANCE && width <= 1) {
             lineStyle = gData[1].q & 0x3;
 
             // The lines currently end at the centre of the 2*2 point sprite.
@@ -92,7 +92,8 @@ void main() {
             // As the ends of the line approach each other, the ends should move towards the centres of the points.
             lineLength = distance(end0, end1);
             vec4 lineDirection = normalize(end1 - end0);
-            vec4 arrowVector = lineDirection * (clamp(lineLength, 0.0, 3.0)) * 0.29167;
+            float arrowLength = (clamp(lineLength, 0.0, 3.0)) * 0.29167;
+            vec4 arrowVector = lineDirection * arrowLength;
 
             end1 -= arrowVector;
             end0 += arrowVector;
@@ -132,7 +133,7 @@ void main() {
 
                 // This overwrites the visibility value in vpointcolor[][3].
                 // TODO: The fade-out distance should depend on the current bounding box / camera distance.
-                float lineAlpha = 1-smoothstep(10, 500000, lineDistance);
+                float lineAlpha = 1 - smoothstep(10, 500000, lineDistance);
                 color0.a = lineAlpha * ub.alpha;
                 color1.a = lineAlpha * ub.alpha;
 
