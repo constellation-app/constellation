@@ -9,7 +9,9 @@ body {
 }
 
 h2 {
-    color: lightsteelblue;
+    color: white;
+    text-align: center;
+    font-size: 20px;
 }
 
 strong {

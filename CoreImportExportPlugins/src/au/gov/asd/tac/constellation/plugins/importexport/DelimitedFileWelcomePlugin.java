@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.plugins.importexport;
 
 import au.gov.asd.tac.constellation.functionality.welcome.WelcomePageProvider;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.DelimitedFileImporterStage;
+//import au.gov.asd.tac.constellation.plugins.importexport.delimited.DelimitedFileImporterStage;
 import javafx.application.Platform;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -86,8 +86,8 @@ public class DelimitedFileWelcomePlugin extends WelcomePageProvider {
     @Override
     public void run() {
         Platform.runLater(() -> {
-            final DelimitedFileImporterStage stage = new DelimitedFileImporterStage();
-            stage.show();
+            //final DelimitedFileImporterStage stage = new DelimitedFileImporterStage();
+            //stage.show();
         });      
     }
 

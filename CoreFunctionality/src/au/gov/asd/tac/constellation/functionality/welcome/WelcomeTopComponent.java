@@ -26,13 +26,25 @@ import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker;
 import javafx.concurrent.Worker.State;
 import javafx.embed.swing.JFXPanel;
+import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.web.WebView;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
@@ -93,6 +105,17 @@ public final class WelcomeTopComponent extends TopComponent {
     public static final String ERROR_BUTTON_MESSAGE = String.format("%s Information", BrandingUtilities.APPLICATION_NAME);
     public static final String WELCOME_TEXT = "Welcome to Constellation";
     public static final double SPLIT_POS = 0.2;
+    
+    //Place holder images
+    public static final String NEW_GRAPH = "resources/welcome_add_graph.png";
+    public static final String NEW_SPHERE = "resources/welcome_add_box.png";
+    public static final String OPEN = "resources/welcome_open_folder.png";
+    public static final String IMPORT = "resources/welcome_import.png";
+    public static final String GETTING_STARTED = "resources/welcome_getting_started.png";
+    public static final String WHATS_NEW = "resources/welcome_new.png";
+    public static final String FEEDBACK = "resources/welcome_feedback.png";
+    public static final String JOIN = "resources/welcome_join.png";
+    public static final String LOGO = "resources/constellation-logo.png";
 
     public WelcomeTopComponent() {
         setName(Bundle.CTL_WelcomeTopComponentTopComponent());
@@ -115,15 +138,114 @@ public final class WelcomeTopComponent extends TopComponent {
 
             splitPane.setStyle("-fx-background-color: transparent;");
             root.setCenter(splitPane);
-
-            //Create Right VBox to handle Browser and controls,
+            
+            //Create VBox to handle Browser and controls,
             //or error messages
-            VBox vbox = new VBox();
-            splitPane.getItems().add(vbox);
+            VBox left_vbox = new VBox();
+            splitPane.getItems().add(left_vbox);
+            
+            ImageView logoView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(LOGO)));
+            logoView.setFitHeight(220);
+            logoView.setFitWidth(400);
+            left_vbox.getChildren().add(logoView);
+            
+            //Create right VBox for graph controls
+            VBox right_vbox = new VBox();
+            right_vbox.setPadding(new Insets(50, 50, 50, 50));
+            right_vbox.setBackground(new Background(new BackgroundFill(Color.valueOf("#14161a"), CornerRadii.EMPTY, Insets.EMPTY)));
+            splitPane.getItems().add(right_vbox);
+            
+            
+            //Create HBoxes for the right_vbox
+            HBox top_hbox = new HBox();
+            HBox bottom_hbox = new HBox();
+            
+            //hbox formatting
+            top_hbox.setPadding(new Insets(50, 0, 50, 0));
+            top_hbox.setSpacing(10);
+            bottom_hbox.setPadding(new Insets(50, 0, 50, 0));
+            bottom_hbox.setSpacing(10);
+            
+            //Buttons for the top h box
+            ImageView addView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(NEW_GRAPH)));
+            addView.setFitHeight(75);
+            addView.setFitWidth(75);
+            ImageView newSphere = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(NEW_SPHERE)));
+            newSphere.setFitHeight(75);
+            newSphere.setFitWidth(75);
+            ImageView openImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(OPEN)));
+            openImage.setFitHeight(75);
+            openImage.setFitWidth(75);
+            ImageView importImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(IMPORT)));
+            importImage.setFitHeight(75);
+            importImage.setFitWidth(75);
 
-            //splitPane.getDividers().get(0).setPosition(SPLIT_POS);
-//            HBox.setHgrow(right_vbox, Priority.ALWAYS);
-//            VBox.setVgrow(right_vbox, Priority.ALWAYS);
+            Button new_graph = new Button("New Graph\nAdd mode", addView);
+            setButtonProps(new_graph);
+            top_hbox.getChildren().add(new_graph);            
+            Button new_sphere_graph = new Button("New Sphere Graph\nSphere network", newSphere);
+            setButtonProps(new_sphere_graph);
+            top_hbox.getChildren().add(new_sphere_graph);
+            Button open_file = new Button("Open File\nFile Explorer", openImage);
+            setButtonProps(open_file);
+            top_hbox.getChildren().add(open_file);
+            Button importButton = new Button("Import File\nDelimited File Importer", importImage);
+            setButtonProps(importButton);
+            top_hbox.getChildren().add(importButton);
+            
+            
+            //formatting for bottom hbox
+            Label recent = new Label("Recent");
+            recent.setFont(new Font("Arial Unicode MS", 24));
+            
+            right_vbox.getChildren().add(top_hbox);
+            right_vbox.getChildren().add(recent);
+            right_vbox.getChildren().add(bottom_hbox);
+            
+            
+            FlowPane flow = new FlowPane();
+            flow.setPrefWrapLength(1000);
+            flow.setHgap(20);
+            flow.setVgap(20);
+            
+            //Create the buttons for the recent page
+            Button recentBtn1 = new Button();
+            createRecentButtons(recentBtn1);
+            flow.getChildren().add(recentBtn1);
+            Button recentBtn2 = new Button();
+            createRecentButtons(recentBtn2);
+            flow.getChildren().add(recentBtn2);
+            Button recentBtn3 = new Button();
+            createRecentButtons(recentBtn3);
+            flow.getChildren().add(recentBtn3);
+            Button recentBtn4 = new Button();
+            createRecentButtons(recentBtn4);
+            flow.getChildren().add(recentBtn4);
+            Button recentBtn5 = new Button();
+            createRecentButtons(recentBtn5);
+            flow.getChildren().add(recentBtn5);
+            Button recentBtn6 = new Button();
+            createRecentButtons(recentBtn6);
+            flow.getChildren().add(recentBtn6);
+            Button recentBtn7 = new Button();
+            createRecentButtons(recentBtn7);
+            flow.getChildren().add(recentBtn7);
+            Button recentBtn8 = new Button();
+            createRecentButtons(recentBtn8);
+            flow.getChildren().add(recentBtn8);
+            Button recentBtn9 = new Button();
+            createRecentButtons(recentBtn9);
+            flow.getChildren().add(recentBtn9);
+            Button recentBtn10 = new Button();
+            createRecentButtons(recentBtn10);
+            flow.getChildren().add(recentBtn10);
+            
+            
+            bottom_hbox.getChildren().add(flow);
+            
+            splitPane.getDividers().get(0).setPosition(SPLIT_POS);
+            //HBox.setHgrow(bottom_hbox, Priority.ALWAYS);
+            VBox.setVgrow(right_vbox, Priority.ALWAYS);
 
             final WebView welcomeView = new WebView();
             VBox.setVgrow(welcomeView, Priority.ALWAYS);
@@ -168,7 +290,7 @@ public final class WelcomeTopComponent extends TopComponent {
             } catch (ParseException ex) {
                 Exceptions.printStackTrace(ex);
             }
-            vbox.getChildren().add(welcomeView);
+            left_vbox.getChildren().add(welcomeView);
 
             //Finally, insert the root object into a scene, and insert the
             //scene into the JavaFX panel.
@@ -179,6 +301,20 @@ public final class WelcomeTopComponent extends TopComponent {
         });
     }
 
+    public void setButtonProps(Button button){
+        button.setPrefSize(125, 125);
+        button.setMaxSize(150, 150);
+        button.setStyle("-fx-background-color: #2e4973;");
+        button.setContentDisplay(ContentDisplay.TOP);
+    }
+    
+    public void createRecentButtons(Button button){
+        button.setPrefSize(160, 160);
+        button.setMaxSize(175, 175);
+        button.setStyle("-fx-background-color: #333333; -fx-background-radius: 10px;");
+        button.setContentDisplay(ContentDisplay.TOP);
+    }
+    
     private String getWelcomeContent() throws ParseException {
 
         final StringBuilder buf = new StringBuilder();
