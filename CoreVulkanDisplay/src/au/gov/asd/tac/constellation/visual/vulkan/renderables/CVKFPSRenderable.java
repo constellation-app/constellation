@@ -79,7 +79,13 @@ public class CVKFPSRenderable extends CVKRenderable {
     private long hAtlasImageView = VK_NULL_HANDLE;
     
     private ByteBuffer vertexPushConstants = null;  
-    private int counter = 0;
+    private static final int MAX_SAMPLES = 100;
+    private int numSamples = 0;
+    private int currentSample = 0;
+    private int numDigits = 0;
+    private long lastNanoTime = 0;
+    private long frameNanoTimes[] = new long[MAX_SAMPLES];
+    private int digitIconIndices[] = new int[10];
 
 
     // ========================> Classes <======================== \\ 
@@ -299,7 +305,7 @@ public class CVKFPSRenderable extends CVKRenderable {
          
         for (int digit = 0; digit < 10; ++digit) {
             // Returns the index of the icon, not a success code
-            CVKIconTextureAtlas.GetInstance().AddIcon(Integer.toString(digit));
+            digitIconIndices[digit] = CVKIconTextureAtlas.GetInstance().AddIcon(Integer.toString(digit));
         }
         
         ret = CreatePushConstants();
@@ -536,7 +542,7 @@ public class CVKFPSRenderable extends CVKRenderable {
     }
     
     @Override
-    public int GetVertexCount(){ return 4; }      
+    public int GetVertexCount(){ return numDigits; }      
     
     private void DestroyVertexBuffers() {
         if (null != vertexBuffers) {
@@ -986,7 +992,7 @@ public class CVKFPSRenderable extends CVKRenderable {
         int ret = VK_SUCCESS;
         cvkVisualProcessor.VerifyInRenderThread();
         
-        DebugUpdateFPS();
+        UpdateFPS();
         
         boolean atlasChanged =  hAtlasSampler != CVKIconTextureAtlas.GetInstance().GetAtlasSamplerHandle() ||
                                 hAtlasImageView != CVKIconTextureAtlas.GetInstance().GetAtlasImageViewHandle();   
@@ -1057,19 +1063,54 @@ public class CVKFPSRenderable extends CVKRenderable {
         return (256.0f / 64) / yScale;
     }    
     
-    private void DebugUpdateFPS() {
-
-        // Debug code to update every 100 frames
-        if (++counter % 20 != 0) { return; }
-
-        currentFPS.set(0, GetRandom(0,9));
-        currentFPS.set(1, GetRandom(0,9));
-        currentFPS.set(2, GetRandom(10, CVKIconTextureAtlas.GetInstance().GetAtlasIconCount()));
-        currentFPS.set(3, GetRandom(10, CVKIconTextureAtlas.GetInstance().GetAtlasIconCount()));       
-
-    }
-    
-    private int GetRandom(int min, int max){
-        return Math.min(max, (int)(Math.random() * ((max - min) + 1)) + min);
+    private void UpdateFPS() {
+        long now = System.nanoTime();
+        
+        // If this is the first frame, mark the start time and return
+        if (numSamples == 0 && lastNanoTime == 0) {
+            lastNanoTime = now;
+            return;
+        }
+        
+        // Elapsed nanoseconds(ish) since the last update        
+        long elapsedNanos = now - lastNanoTime;
+        lastNanoTime = now;
+        frameNanoTimes[currentSample] = elapsedNanos;
+        
+        // Advance the sample and count
+        currentSample = (currentSample + 1) % MAX_SAMPLES;
+        numSamples = numSamples == MAX_SAMPLES ? MAX_SAMPLES : (numSamples + 1);
+        
+        // Calculate the average
+        long sumNanoTimes = 0;
+        for (int i = 0; i < numSamples; ++i) {
+            sumNanoTimes += frameNanoTimes[i];
+        }
+        double averageNanoTime = (double)sumNanoTimes / (double)numSamples;
+        
+        // There are <dr evil> one billion </dr evil> nanoseconds in a second so
+        // that's the denominator to figure out how many frames we're getting
+        // per second over the number of samples we've selected.  NB: instantaneous
+        // FPS/frame times are great for spotting spikes but an average is
+        // better for guaging overall performance.
+        int fps = (int)(1000000000.0 / averageNanoTime);
+        
+        // Update the characters to display
+        int[] fpsDigits = Long.toString(fps).chars().map(c -> c -= '0').toArray();
+        if (fpsDigits.length == 0) {
+            numDigits = 1;
+            currentFPS.set(0, digitIconIndices[0]);
+        } else if (fpsDigits.length > 4) {
+            numDigits = 4;
+            currentFPS.set(0, digitIconIndices[9]);
+            currentFPS.set(1, digitIconIndices[9]);
+            currentFPS.set(2, digitIconIndices[9]);
+            currentFPS.set(3, digitIconIndices[9]);
+        } else {
+            numDigits = fpsDigits.length;
+            for (int i = 0; i < fpsDigits.length; ++i) {
+                currentFPS.add(i, fpsDigits[i]);
+            }
+        }   
     }
 }
