@@ -45,11 +45,11 @@ import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetListener;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 /**
  * An extension of the {@link GLVisualProcessor} that adds support for user
@@ -269,46 +269,22 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
         worldPosition.add(camera.lookAtEye);
         return worldPosition;
     }
-
+    
     @Override
     public Vector3f closestNodeCameraCoordinates(GraphReadMethods graph, Camera camera, Point p) {
 
         // Calculate the height and width of the viewing frustrum as a function of distance from the camera
         final float verticalScale = (float) (Math.tan(Math.toRadians(Camera.FIELD_OF_VIEW / 2.0)));
         final float horizontalScale = verticalScale * getCanvas().getWidth() / getCanvas().getHeight();
-        float closestDistance = Float.MAX_VALUE;
-        Vector3f closestNode = null;
-        boolean foundScreenNode = false;
 
         // Iterate through the camera locations of each node in the graph
-        Iterator<Vector3f> nodeLocations = VisualGraphUtilities.streamVertexSceneLocations(graph, camera).iterator();
-        while (nodeLocations.hasNext()) {
-
-            final Vector3f nodeLoaction = nodeLocations.next();
-            final float zDistanceFromCamera = nodeLoaction.getZ();
-            final float distanceFromCamera = nodeLoaction.getLength();
-
-            // Is the vertex in front of the camera?
-            if (zDistanceFromCamera < 0) {
-                final float horizontalOffset = nodeLoaction.getX() / zDistanceFromCamera;
-                final float verticalOffset = nodeLoaction.getY() / zDistanceFromCamera;
-
-                // Is this vertex visible on the screen?
-                if (horizontalOffset > -horizontalScale && horizontalOffset < horizontalScale && verticalOffset > -verticalScale && verticalOffset < verticalScale) {
-                    // Is the first or closest node visible on the screen, record it as the closest node
-                    if (!foundScreenNode || distanceFromCamera < closestDistance) {
-                        closestNode = nodeLoaction;
-                        closestDistance = closestNode.getLength();
-                        foundScreenNode = true;
-                    }
-                } else if (!foundScreenNode && distanceFromCamera < closestDistance) {
-                    // If no vertices on the screen have been found, this vertex is in front of the camera, and is the closest (or first) such vertex, record it as the closest node.
-                    closestNode = nodeLoaction;
-                    closestDistance = closestNode.getLength();
-                }
-            }
-        }
-        return closestNode;
+        Stream<NodeCameraDistance> nodeCameraDistances = VisualGraphUtilities.streamVertexSceneLocations(graph, camera)
+                                                .parallel()
+                                                .map(vector -> new NodeCameraDistance(vector, horizontalScale, verticalScale));
+                                                
+        NodeCameraDistance closest = nodeCameraDistances.parallel().reduce(new NodeCameraDistance(), (ncd1, ncd2) -> NodeCameraDistance.getClosestNode(ncd1, ncd2));
+        
+        return closest.nodeLocation;
     }
 
     @Override
@@ -334,5 +310,72 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
             LOGGER.log(Level.WARNING, "Null exception accessing interactionGraph", ex);
             return 1.0f;
         }
+    }
+    
+        
+    private static class NodeCameraDistance{
+        Vector3f nodeLocation;
+        Float distanceFromCamera;
+
+        public NodeCameraDistance() {
+            this.nodeLocation = null;
+            this.distanceFromCamera = null;
+        }
+        
+        public NodeCameraDistance(Vector3f nodeLocation, final float horizontalScale, final float verticalScale) {
+            this.nodeLocation = nodeLocation;
+            this.distanceFromCamera = getDistanceFromCamera(nodeLocation, horizontalScale, verticalScale);
+        }
+        
+        static NodeCameraDistance getClosestNode(NodeCameraDistance ncd1, NodeCameraDistance ncd2) {
+            NodeCameraDistance closest = null;
+            if(ncd1.distanceFromCamera == null) {
+                closest = ncd2;
+            } else if(ncd2.distanceFromCamera == null) {
+                closest = ncd1;
+            } else if (ncd1.distanceFromCamera < 0) {
+                if (ncd2.distanceFromCamera > ncd1.distanceFromCamera) {
+                    closest = ncd2;
+                } else {
+                    closest = ncd1;
+                }
+            } else if (ncd2.distanceFromCamera < 0) {
+                if (ncd1.distanceFromCamera > ncd2.distanceFromCamera) {
+                    closest = ncd1;
+                } else {
+                    closest = ncd2;
+                }
+            } else {
+                if (ncd1.distanceFromCamera < ncd2.distanceFromCamera) {
+                    closest = ncd1;
+                } else {
+                    closest = ncd2;
+                }
+            }
+            return closest;  
+        }
+        
+            
+        private static Float getDistanceFromCamera(Vector3f nodeLocation, final float horizontalScale, final float verticalScale) {
+            final float zDistanceFromCamera = nodeLocation.getZ();
+            final float distanceFromCamera = nodeLocation.getLength();
+
+            // Is the vertex in front of the camera?
+            if (zDistanceFromCamera < 0) {
+                final float horizontalOffset = nodeLocation.getX() / zDistanceFromCamera;
+                final float verticalOffset = nodeLocation.getY() / zDistanceFromCamera;
+
+                // Is this vertex visible on the screen?
+                if (horizontalOffset > -horizontalScale && horizontalOffset < horizontalScale && verticalOffset > -verticalScale && verticalOffset < verticalScale) {
+                    // Is the first or closest node visible on the screen, record it as the closest node
+                    return distanceFromCamera;
+                } else  {
+                    // If no vertices on the screen have been found, this vertex is in front of the camera, and is the closest (or first) such vertex, record it as the closest node.
+                    return -distanceFromCamera;
+                }
+            }
+            return null;
+        }
+        
     }
 }
