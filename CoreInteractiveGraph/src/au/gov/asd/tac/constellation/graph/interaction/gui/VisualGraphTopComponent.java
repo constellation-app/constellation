@@ -423,7 +423,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         visualManager.startProcessing();
         graphNode = new GraphNode(graph, gdo, this, visualManager);
         content = new InstanceContent();
-
         init();
         MemoryManager.newObject(VisualGraphTopComponent.class);
     }
@@ -452,7 +451,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         }
 
         content = new InstanceContent();
-
         init();
         MemoryManager.newObject(VisualGraphTopComponent.class);
     }

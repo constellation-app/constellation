@@ -50,7 +50,7 @@ public class ByteAttributeDescription extends AbstractAttributeDescription {
     public static final String ATTRIBUTE_NAME = "byte";
     public static final Class<Byte> NATIVE_CLASS = byte.class;
     public static final NativeAttributeType NATIVE_TYPE = NativeAttributeType.BYTE;
-    private static final byte DEFAULT_VALUE = 0;
+    public static final byte DEFAULT_VALUE = 0;
 
     private byte[] data = new byte[0];
     private byte defaultValue = DEFAULT_VALUE;

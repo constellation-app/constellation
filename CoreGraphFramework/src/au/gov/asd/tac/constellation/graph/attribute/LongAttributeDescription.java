@@ -51,7 +51,7 @@ public final class LongAttributeDescription extends AbstractAttributeDescription
     public static final String ATTRIBUTE_NAME = "long";
     public static final Class<Long> NATIVE_CLASS = long.class;
     public static final NativeAttributeType NATIVE_TYPE = NativeAttributeType.LONG;
-    private static final long DEFAULT_VALUE = 0L;
+    public static final long DEFAULT_VALUE = 0L;
 
     private long[] data = new long[0];
     private long defaultValue = DEFAULT_VALUE;

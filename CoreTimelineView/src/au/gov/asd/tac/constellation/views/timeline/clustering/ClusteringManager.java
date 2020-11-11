@@ -91,8 +91,6 @@ public class ClusteringManager {
                     final boolean isSelected = graph.getBooleanValue(selectedTransAttributeId, transactionID);
                     if (isSelected || !selectedOnly) {
                         final boolean nodesSelected = graph.getBooleanValue(selectedNodeAttributeId, vertexA) || graph.getBooleanValue(selectedNodeAttributeId, vertexB);
-
-                        System.out.println("ADDING::" + datetimeAttributeType + "::" + transactionValue);
                         leaves.add(new TreeLeaf(transactionID, transactionValue, isSelected, nodesSelected, lowerY, upperY, Math.min(vertexA, vertexB), Math.max(vertexA, vertexB)));
                     }
                 }

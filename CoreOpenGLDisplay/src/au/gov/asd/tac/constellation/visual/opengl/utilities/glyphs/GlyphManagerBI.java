@@ -71,7 +71,6 @@ public final class GlyphManagerBI implements GlyphManager {
     // The buffer that we draw text into to get glyph boundaries and images.
     //
     private final int bufferType;
-    private final BufferedImage drawing;
 
     /**
      * The size of the rectangle buffer. An arbitrary number, not too small that
@@ -105,12 +104,12 @@ public final class GlyphManagerBI implements GlyphManager {
      */
     private static final GlyphStream DEFAULT_GLYPH_STREAM = new GlyphStream() {
         @Override
-        public void newLine(final float width) {
+        public void newLine(final float width, final GlyphStreamContext context) {
             LOGGER.log(Level.INFO, "GlyphStream newLine {0}%n", width);
         }
 
         @Override
-        public void addGlyph(final int glyphPosition, final float x, final float y) {
+        public void addGlyph(final int glyphPosition, final float x, final float y, final GlyphStreamContext context) {
             LOGGER.log(Level.INFO, "GlyphStream addGlyph {0} {1} {2}%n", new Object[]{glyphPosition, x, y});
         }
     };
@@ -149,10 +148,7 @@ public final class GlyphManagerBI implements GlyphManager {
         // doesn't mean that something can't be drawn beyond that height: see
         // Zalgo text. We'll choose a reasonable height.
         //
-        final int drawingWidth = 50 * maxFontHeight;
-        final int drawingHeight = 2 * maxFontHeight;
-        LOGGER.log(Level.INFO, "Drawing buffer size: width={0} height={1} type={2}", new Object[]{drawingWidth, drawingHeight, bufferType});
-        drawing = new BufferedImage(drawingWidth, drawingHeight, bufferType);
+
         basey = maxFontHeight;
 
         drawRuns = false;
@@ -161,7 +157,8 @@ public final class GlyphManagerBI implements GlyphManager {
     }
 
     public BufferedImage getImage() {
-        return drawing;
+//        TODO: Check that GlyphsFrame still works correctly, may need to delete both it and this method as this method has fundamentally changes its behaviour, the old behaviour is no longer meaningful.
+        return new BufferedImage(50 * maxFontHeight, 2 * maxFontHeight, bufferType);
     }
 
     /**
@@ -317,7 +314,7 @@ public final class GlyphManagerBI implements GlyphManager {
      * @param text The text top be rendered.
      */
     @Override
-    public synchronized void renderTextAsLigatures(final String text, GlyphStream glyphStream) {
+    public void renderTextAsLigatures(final String text, GlyphStream glyphStream, GlyphStreamContext context) {
         if (StringUtils.isBlank(text)) {
             return;
         }
@@ -326,9 +323,9 @@ public final class GlyphManagerBI implements GlyphManager {
             glyphStream = DEFAULT_GLYPH_STREAM;
         }
 
+        final BufferedImage drawing = new BufferedImage(50 * maxFontHeight, 2 * maxFontHeight, bufferType);
         final Graphics2D g2d = drawing.createGraphics();
         g2d.setBackground(new Color(0, 0, 0, 0));
-        g2d.clearRect(0, 0, drawing.getWidth(), drawing.getHeight());
         g2d.setColor(Color.WHITE);
 
         g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
@@ -467,7 +464,7 @@ public final class GlyphManagerBI implements GlyphManager {
 
         // Add the background for this text.
         //
-        glyphStream.newLine((right - left) / (float) maxFontHeight);
+        glyphStream.newLine((right - left) / (float) maxFontHeight, context);
 
         // The glyphRectangles list contains the absolute positions of each glyph rectangle
         // in pixels as drawn above.
@@ -487,7 +484,7 @@ public final class GlyphManagerBI implements GlyphManager {
 //            final float cy = (gr.rect.y-top+((maxFontHeight-(bottom-top))/2f))/(float)maxFontHeight;
 //            final float cy = (2*gr.rect.y-top+maxFontHeight-bottom)/(2f*maxFontHeight);
             final float cy = (gr.rect.y - (top + bottom) / 2f) / (float) (maxFontHeight) + 0.5f;
-            glyphStream.addGlyph(gr.position, cx, cy);
+            glyphStream.addGlyph(gr.position, cx, cy, context);
         }
     }
 
