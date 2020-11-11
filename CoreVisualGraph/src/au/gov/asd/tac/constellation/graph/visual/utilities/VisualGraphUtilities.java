@@ -118,9 +118,7 @@ public class VisualGraphUtilities {
         final Vector3f coordinates = getVertexCoordinates(graph, vertexId);
         final Vector3f altCoordinates = getAlternateVertexCoordinates(graph, vertexId);
         final float mixRatio = getCamera(graph).getMixRatio();
-        if (coordinates != null && altCoordinates != null) {
-            coordinates.convexCombineWith(altCoordinates, mixRatio);
-        }
+        coordinates.convexCombineWith(altCoordinates, mixRatio);
         return coordinates;
     }
 
@@ -128,9 +126,7 @@ public class VisualGraphUtilities {
         final Vector3f coordinates = getVertexCoordinates(graph, vertexId, xAttribute, yAttribute, zAttribute);
         final Vector3f altCoordinates = getAlternateVertexCoordinates(graph, vertexId, x2Attribute, y2Attribute, z2Attribute);
         final float mixRatio = getCamera(graph, cameraAttribute).getMixRatio();
-        if (coordinates != null && altCoordinates != null) {
-            coordinates.convexCombineWith(altCoordinates, mixRatio);
-        }
+        coordinates.convexCombineWith(altCoordinates, mixRatio);
         return coordinates;
     }
     
