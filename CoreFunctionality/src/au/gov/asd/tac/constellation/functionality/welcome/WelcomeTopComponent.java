@@ -163,22 +163,20 @@ public final class WelcomeTopComponent extends TopComponent {
             bottomHBox.setPadding(new Insets(50, 0, 50, 0));
             bottomHBox.setSpacing(10);        
             
-            getWelcomeTopContent();
+            getWelcomeContent();
             
             for (int i = 0; i < 10; i++){
                 if (pluginButtons[i] != null){
-                    Button currentButton = pluginButtons[i];
-                                        
+                    Button currentButton = pluginButtons[i];                  
                     pluginButtons[i].setOnAction(new EventHandler<ActionEvent>() {
                         @Override public void handle(ActionEvent e) {
                             Lookup.getDefault().lookupAll(WelcomePageProvider.class).forEach(plugin -> {
                                     if (currentButton == plugin.getButton()) {
                                         plugin.run();
                                     }
-                                });
+                            });
                         }
                     });
-                    
                     if (i < 4){
                         setButtonProps(pluginButtons[i]);
                         topHBox.getChildren().add(pluginButtons[i]);
@@ -247,7 +245,7 @@ public final class WelcomeTopComponent extends TopComponent {
         button.setAlignment(Pos.CENTER_LEFT);
     }
     
-    private void getWelcomeTopContent() {   
+    private void getWelcomeContent() {   
         Lookup.getDefault().lookupAll(WelcomePageProvider.class).forEach(plugin -> {
             if (plugin.isVisible()) {
                 for (int i = 0; i < 10; i++){

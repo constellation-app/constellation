@@ -18,12 +18,17 @@ package au.gov.asd.tac.constellation.plugins.importexport;
 import au.gov.asd.tac.constellation.functionality.welcome.WelcomePageProvider;
 import au.gov.asd.tac.constellation.functionality.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
+import au.gov.asd.tac.constellation.plugins.importexport.delimited.DelimitedImportPane;
+import au.gov.asd.tac.constellation.plugins.importexport.delimited.DelimitedImportTopComponent;
 import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javax.swing.SwingUtilities;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
+import org.openide.windows.TopComponent;
+import org.openide.windows.WindowManager;
 
 
 /**
@@ -57,10 +62,16 @@ public class DelimitedFileWelcomePlugin extends WelcomePageProvider {
      */
     @Override
     public void run() {
-        Platform.runLater(() -> {
-            //final DelimitedFileImporterStage stage = new DelimitedFileImporterStage();
-            //stage.show();
-        });      
+        SwingUtilities.invokeLater(() -> {
+            final TopComponent stage = WindowManager.getDefault().findTopComponent(DelimitedImportTopComponent.class.getSimpleName());
+            if (stage != null) {
+                if (!stage.isOpened()) {
+                    stage.open();
+                }
+                stage.setEnabled(true);
+                stage.requestActive();
+            }
+        });   
     }
 
     /**

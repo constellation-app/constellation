@@ -45,7 +45,7 @@ public class SphereGraphWelcomePlugin extends WelcomePageProvider {
     
     public static final String NEW_SPHERE = "resources/welcome_add_box.png";
     ImageView newSphere = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(NEW_SPHERE)));   
-    Button new_sphere_graph = new Button("New Sphere Graph\nSphere network", newSphere);
+    Button sphereGraphButton = new Button("New Sphere Graph\nSphere network", newSphere);
 
     /**  
      * Get a unique reference that is used to identify the plugin
@@ -103,6 +103,6 @@ public class SphereGraphWelcomePlugin extends WelcomePageProvider {
     public Button getButton(){
         newSphere.setFitHeight(75);
         newSphere.setFitWidth(75);
-        return new_sphere_graph;
+        return sphereGraphButton;
     }
 }

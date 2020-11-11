@@ -15,14 +15,18 @@
  */
 package au.gov.asd.tac.constellation.functionality.welcome.plugins;
 
+import au.gov.asd.tac.constellation.functionality.tutorial.TutorialTopComponent;
 import au.gov.asd.tac.constellation.functionality.welcome.WelcomePageProvider;
 import au.gov.asd.tac.constellation.functionality.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javax.swing.SwingUtilities;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
+import org.openide.windows.TopComponent;
+import org.openide.windows.WindowManager;
 
 /**
  * The plugin for the Welcome Page that leads to the Getting Started guides and resources
@@ -56,6 +60,16 @@ public class GettingStartedWelcomePlugin extends WelcomePageProvider {
      */
     @Override
     public void run() {
+         SwingUtilities.invokeLater(() -> {
+                final TopComponent welcome = WindowManager.getDefault().findTopComponent(TutorialTopComponent.class.getSimpleName());
+                if (welcome != null) {
+                    if (!welcome.isOpened()) {
+                        welcome.open();
+                    }
+                    welcome.setEnabled(true);
+                    welcome.requestActive();
+                }
+            });
     }
 
     /**
