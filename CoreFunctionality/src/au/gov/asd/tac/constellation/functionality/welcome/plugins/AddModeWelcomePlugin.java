@@ -43,7 +43,7 @@ import org.openide.util.lookup.ServiceProvider;
 @NbBundle.Messages("AddModeWelcomePlugin=Add Mode Welcome Plugin")
 public class AddModeWelcomePlugin extends WelcomePageProvider {
     
-    final String NEW_GRAPH = "resources/welcome_add_graph.png";
+    public static final String NEW_GRAPH = "resources/welcome_add_graph.png";
     ImageView addView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(NEW_GRAPH)));
     Button new_graph = new Button("New Graph\nAdd mode", addView);
         

@@ -21,9 +21,6 @@ import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import java.awt.BorderLayout;
 import javafx.application.Platform;
-import javafx.beans.value.ObservableValue;
-import javafx.concurrent.Worker;
-import javafx.concurrent.Worker.State;
 import javafx.embed.swing.JFXPanel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -47,21 +44,13 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.web.WebView;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
-import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.events.Event;
-import org.w3c.dom.events.EventListener;
-import org.w3c.dom.events.EventTarget;
 
 /**
  *
@@ -108,13 +97,9 @@ public final class WelcomeTopComponent extends TopComponent {
     public static final double SPLIT_POS = 0.2;
     
     //Place holder images
-    public static final String GETTING_STARTED = "resources/welcome_getting_started.png";
-    public static final String WHATS_NEW = "resources/welcome_new.png";
-    public static final String FEEDBACK = "resources/welcome_feedback.png";
-    public static final String JOIN = "resources/welcome_join.png";
     public static final String LOGO = "resources/constellation-logo.png";
     
-    public Button[] topButtons = new Button[10];
+    public Button[] pluginButtons = new Button[10];
     public Button[] recentGraphButtons = new Button[10];
 
     public WelcomeTopComponent() {
@@ -143,6 +128,10 @@ public final class WelcomeTopComponent extends TopComponent {
             //or error messages
             VBox left_vbox = new VBox();
             splitPane.getItems().add(left_vbox);
+            left_vbox.setSpacing(20);
+            left_vbox.setMinWidth(350);
+            left_vbox.setPrefWidth(400);
+            left_vbox.setMaxWidth(450);
             
             HBox logo_hbox = new HBox();
             logo_hbox.setBackground(new Background(new BackgroundFill(Color.valueOf("white"), CornerRadii.EMPTY, Insets.EMPTY)));
@@ -152,6 +141,12 @@ public final class WelcomeTopComponent extends TopComponent {
             logo_hbox.getChildren().add(logoView);
             logo_hbox.setAlignment(Pos.CENTER);
             left_vbox.getChildren().add(logo_hbox);
+            
+             //Create the labels for the left pane
+            Label welcome = new Label("Welcome to Constellation");
+            welcome.setFont(new Font("Arial Unicode MS", 26));
+            welcome.setAlignment(Pos.CENTER);
+            left_vbox.getChildren().add(welcome);
             
             //Create right VBox for graph controls
             VBox right_vbox = new VBox();
@@ -172,12 +167,10 @@ public final class WelcomeTopComponent extends TopComponent {
             getWelcomeTopContent();
             
             for (int i = 0; i < 10; i++){
-                if (topButtons[i] != null){
-                    Button currentButton = topButtons[i];
-                    setButtonProps(topButtons[i]);
-                    top_hbox.getChildren().add(topButtons[i]);
-                    
-                    topButtons[i].setOnAction(new EventHandler<ActionEvent>() {
+                if (pluginButtons[i] != null){
+                    Button currentButton = pluginButtons[i];
+                                        
+                    pluginButtons[i].setOnAction(new EventHandler<ActionEvent>() {
                         @Override public void handle(ActionEvent e) {
                             Lookup.getDefault().lookupAll(WelcomePageProvider.class).forEach(plugin -> {
                                     if (currentButton == plugin.getButton()) {
@@ -186,8 +179,18 @@ public final class WelcomeTopComponent extends TopComponent {
                                 });
                         }
                     });
+                    
+                    if (i < 4){
+                        setButtonProps(pluginButtons[i]);
+                        top_hbox.getChildren().add(pluginButtons[i]);
+                    } else {
+                        setInfoButtons(pluginButtons[i]);
+                        left_vbox.getChildren().add(pluginButtons[i]);
+                    }
                 }
-            }         
+            }
+            
+            left_vbox.setAlignment(Pos.TOP_CENTER);
             
             //formatting for bottom hbox
             Label recent = new Label("Recent");
@@ -238,12 +241,19 @@ public final class WelcomeTopComponent extends TopComponent {
         button.setContentDisplay(ContentDisplay.TOP);
     }
     
+    public void setInfoButtons(Button button){
+        button.setPrefSize(300, 45);
+        button.setMaxSize(325, 50);
+        button.setStyle("-fx-background-color: transparent;");
+        button.setAlignment(Pos.CENTER_LEFT);
+    }
+    
     private void getWelcomeTopContent() {   
         Lookup.getDefault().lookupAll(WelcomePageProvider.class).forEach(plugin -> {
             if (plugin.isVisible()) {
                 for (int i = 0; i < 10; i++){
-                    if (topButtons[i] == null){
-                        topButtons[i] = plugin.getButton();
+                    if (pluginButtons[i] == null){
+                        pluginButtons[i] = plugin.getButton();
                         break;
                     }
                 }

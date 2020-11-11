@@ -37,7 +37,7 @@ import org.openide.util.lookup.ServiceProvider;
 @NbBundle.Messages("DelimitedFileWelcomePlugin=Delimited File Welcome Plugin")
 public class DelimitedFileWelcomePlugin extends WelcomePageProvider {
     
-    final String IMPORT = "resources/welcome_import.png";
+    public static final String IMPORT = "resources/welcome_import.png";
     ImageView importImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(IMPORT)));
     Button importButton = new Button("Import File\nDelimited File Importer", importImage);
 

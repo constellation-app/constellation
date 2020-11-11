@@ -43,7 +43,7 @@ import org.openide.util.lookup.ServiceProvider;
 @NbBundle.Messages("SphereGraphWelcomePlugin=Sphere Graph Welcome Plugin")
 public class SphereGraphWelcomePlugin extends WelcomePageProvider {
     
-    final String NEW_SPHERE = "resources/welcome_add_box.png";
+    public static final String NEW_SPHERE = "resources/welcome_add_box.png";
     ImageView newSphere = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(NEW_SPHERE)));   
     Button new_sphere_graph = new Button("New Sphere Graph\nSphere network", newSphere);
 

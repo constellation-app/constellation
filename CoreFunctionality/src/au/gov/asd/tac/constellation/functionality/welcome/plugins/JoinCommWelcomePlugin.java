@@ -17,33 +17,29 @@ package au.gov.asd.tac.constellation.functionality.welcome.plugins;
 
 import au.gov.asd.tac.constellation.functionality.welcome.WelcomePageProvider;
 import au.gov.asd.tac.constellation.functionality.welcome.WelcomeTopComponent;
-import au.gov.asd.tac.constellation.graph.StoreGraph;
-import au.gov.asd.tac.constellation.graph.file.GraphPluginRegistry;
-import au.gov.asd.tac.constellation.plugins.PluginException;
-import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * The Open Graph plugin for the Welcome Page.
+ * The plugin for the Welcome Page that allows the user to join the 
+ * Constellation community
  *
- * @author canis_majoris
+ * @author Delphinus8821
  */
 
-@ServiceProvider(service = WelcomePageProvider.class, position = 3)
+@ServiceProvider(service = WelcomePageProvider.class, position = 8)
 @PluginInfo(tags = {"WELCOME"})
-@NbBundle.Messages("OpenGraphWelcomePlugin=Open Graph Welcome Plugin")
-public class OpenGraphWelcomePlugin extends WelcomePageProvider {
+@NbBundle.Messages("JoinCommWelcomePlugin=Join Comm Welcome Plugin")
+public class JoinCommWelcomePlugin extends WelcomePageProvider {
     
-    public static final String OPEN = "resources/welcome_open_folder.png";
-    ImageView openImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(OPEN)));
-    Button open_file = new Button("Open File\nFile Explorer", openImage);
-    
+    public static final String JOIN = "resources/welcome_join.png";
+    ImageView joinView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(JOIN)));
+    Button joinBtn = new Button("Join our Community\nBecome a member", joinView);
+        
     /**
      * Get a unique reference that is used to identify the plugin 
      *
@@ -51,7 +47,7 @@ public class OpenGraphWelcomePlugin extends WelcomePageProvider {
      */
     @Override
     public String getName() {
-        return OpenGraphWelcomePlugin.class.getName();
+        return JoinCommWelcomePlugin.class.getName();
     }
     
     /**
@@ -61,7 +57,7 @@ public class OpenGraphWelcomePlugin extends WelcomePageProvider {
      */
     @Override
     public String getLinkDescription() {
-        return "Select a graph to open from File Explorer";
+        return "Allows for users to join the Constellation Community";
     }
     
     /**
@@ -73,7 +69,7 @@ public class OpenGraphWelcomePlugin extends WelcomePageProvider {
     public String getDescription() {
         StringBuilder buf = new StringBuilder();
         buf.append("<br>");
-        buf.append("If you have an existing graph, you can open it here.");
+        buf.append("Allows for users to join the Constellation Community. ");
         return buf.toString();
     }
     
@@ -93,13 +89,6 @@ public class OpenGraphWelcomePlugin extends WelcomePageProvider {
      */
     @Override
     public void run() {
-        final StoreGraph sg = new StoreGraph();
-        try {
-            PluginExecution.withPlugin(GraphPluginRegistry.OPEN_FILE).executeNow(sg);
-        } catch (InterruptedException | PluginException ex) {
-            Exceptions.printStackTrace(ex);
-        }
-
     }
 
     /**
@@ -112,7 +101,6 @@ public class OpenGraphWelcomePlugin extends WelcomePageProvider {
         return true;
     }
     
-    
      /**
      * Creates the button object to represent this plugin
      * 
@@ -120,8 +108,8 @@ public class OpenGraphWelcomePlugin extends WelcomePageProvider {
      */
     @Override
     public Button getButton(){
-        openImage.setFitHeight(75);
-        openImage.setFitWidth(75);
-        return open_file;
+        joinView.setFitHeight(25);
+        joinView.setFitWidth(25);
+        return joinBtn;
     }
 }
