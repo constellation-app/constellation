@@ -91,7 +91,6 @@ public final class WelcomeTopComponent extends TopComponent {
 
     private JFXPanel panel = new JFXPanel();
     private static final String WELCOME_THEME = "resources/welcome_theme.css";
-    private static final String WELCOME_WEBVIEW = "resources/welcome_webview.css";
     public static final String ERROR_BUTTON_MESSAGE = String.format("%s Information", BrandingUtilities.APPLICATION_NAME);
     public static final String WELCOME_TEXT = "Welcome to Constellation";
     public static final double SPLIT_POS = 0.2;
@@ -99,8 +98,8 @@ public final class WelcomeTopComponent extends TopComponent {
     //Place holder images
     public static final String LOGO = "resources/constellation-logo.png";
     
-    public Button[] pluginButtons = new Button[10];
-    public Button[] recentGraphButtons = new Button[10];
+    public static final Button[] pluginButtons = new Button[10];
+    public static final Button[] recentGraphButtons = new Button[10];
 
     public WelcomeTopComponent() {
         setName(Bundle.CTL_WelcomeTopComponentTopComponent());
@@ -126,43 +125,43 @@ public final class WelcomeTopComponent extends TopComponent {
             
             //Create VBox to handle Browser and controls,
             //or error messages
-            VBox left_vbox = new VBox();
-            splitPane.getItems().add(left_vbox);
-            left_vbox.setSpacing(20);
-            left_vbox.setMinWidth(350);
-            left_vbox.setPrefWidth(400);
-            left_vbox.setMaxWidth(450);
+            VBox left_vBox = new VBox();
+            splitPane.getItems().add(left_vBox);
+            left_vBox.setSpacing(20);
+            left_vBox.setMinWidth(350);
+            left_vBox.setPrefWidth(400);
+            left_vBox.setMaxWidth(450);
             
-            HBox logo_hbox = new HBox();
-            logo_hbox.setBackground(new Background(new BackgroundFill(Color.valueOf("white"), CornerRadii.EMPTY, Insets.EMPTY)));
+            HBox logo_hBox = new HBox();
+            logo_hBox.setBackground(new Background(new BackgroundFill(Color.valueOf("white"), CornerRadii.EMPTY, Insets.EMPTY)));
             ImageView logoView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(LOGO)));
             logoView.setFitHeight(100);
             logoView.setFitWidth(150);
-            logo_hbox.getChildren().add(logoView);
-            logo_hbox.setAlignment(Pos.CENTER);
-            left_vbox.getChildren().add(logo_hbox);
+            logo_hBox.getChildren().add(logoView);
+            logo_hBox.setAlignment(Pos.CENTER);
+            left_vBox.getChildren().add(logo_hBox);
             
              //Create the labels for the left pane
-            Label welcome = new Label("Welcome to Constellation");
+            Label welcome = new Label(WELCOME_TEXT);
             welcome.setFont(new Font("Arial Unicode MS", 26));
             welcome.setAlignment(Pos.CENTER);
-            left_vbox.getChildren().add(welcome);
+            left_vBox.getChildren().add(welcome);
             
             //Create right VBox for graph controls
-            VBox right_vbox = new VBox();
-            right_vbox.setPadding(new Insets(50, 50, 50, 50));
-            right_vbox.setBackground(new Background(new BackgroundFill(Color.valueOf("#14161a"), CornerRadii.EMPTY, Insets.EMPTY)));
-            splitPane.getItems().add(right_vbox);  
+            VBox right_vBox = new VBox();
+            right_vBox.setPadding(new Insets(50, 50, 50, 50));
+            right_vBox.setBackground(new Background(new BackgroundFill(Color.valueOf("#14161a"), CornerRadii.EMPTY, Insets.EMPTY)));
+            splitPane.getItems().add(right_vBox);  
             
             //Create HBoxes for the right_vbox
-            HBox top_hbox = new HBox();
-            HBox bottom_hbox = new HBox();
+            HBox top_hBox = new HBox();
+            HBox bottom_hBox = new HBox();
             
             //hbox formatting
-            top_hbox.setPadding(new Insets(50, 0, 50, 0));
-            top_hbox.setSpacing(10);
-            bottom_hbox.setPadding(new Insets(50, 0, 50, 0));
-            bottom_hbox.setSpacing(10);        
+            top_hBox.setPadding(new Insets(50, 0, 50, 0));
+            top_hBox.setSpacing(10);
+            bottom_hBox.setPadding(new Insets(50, 0, 50, 0));
+            bottom_hBox.setSpacing(10);        
             
             getWelcomeTopContent();
             
@@ -182,23 +181,23 @@ public final class WelcomeTopComponent extends TopComponent {
                     
                     if (i < 4){
                         setButtonProps(pluginButtons[i]);
-                        top_hbox.getChildren().add(pluginButtons[i]);
+                        top_hBox.getChildren().add(pluginButtons[i]);
                     } else {
                         setInfoButtons(pluginButtons[i]);
-                        left_vbox.getChildren().add(pluginButtons[i]);
+                        left_vBox.getChildren().add(pluginButtons[i]);
                     }
                 }
             }
             
-            left_vbox.setAlignment(Pos.TOP_CENTER);
+            left_vBox.setAlignment(Pos.TOP_CENTER);
             
             //formatting for bottom hbox
             Label recent = new Label("Recent");
             recent.setFont(new Font("Arial Unicode MS", 24));
             
-            right_vbox.getChildren().add(top_hbox);
-            right_vbox.getChildren().add(recent);
-            right_vbox.getChildren().add(bottom_hbox);
+            right_vBox.getChildren().add(top_hBox);
+            right_vBox.getChildren().add(recent);
+            right_vBox.getChildren().add(bottom_hBox);
              
             FlowPane flow = new FlowPane();
             flow.setPrefWrapLength(1000);
@@ -214,9 +213,9 @@ public final class WelcomeTopComponent extends TopComponent {
                 flow.getChildren().add(recentGraphButtons[i]);
             }
              
-            bottom_hbox.getChildren().add(flow);
+            bottom_hBox.getChildren().add(flow);
             splitPane.getDividers().get(0).setPosition(SPLIT_POS);
-            VBox.setVgrow(right_vbox, Priority.ALWAYS); 
+            VBox.setVgrow(right_vBox, Priority.ALWAYS); 
             
             //Finally, insert the root object into a scene, and insert the
             //scene into the JavaFX panel.

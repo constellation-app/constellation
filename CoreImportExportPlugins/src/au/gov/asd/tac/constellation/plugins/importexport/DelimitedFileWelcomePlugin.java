@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.plugins.importexport;
 import au.gov.asd.tac.constellation.functionality.welcome.WelcomePageProvider;
 import au.gov.asd.tac.constellation.functionality.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
-//import au.gov.asd.tac.constellation.plugins.importexport.delimited.DelimitedFileImporterStage;
 import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;

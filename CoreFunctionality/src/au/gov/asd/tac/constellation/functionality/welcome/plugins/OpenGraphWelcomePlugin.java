@@ -42,7 +42,7 @@ public class OpenGraphWelcomePlugin extends WelcomePageProvider {
     
     public static final String OPEN = "resources/welcome_open_folder.png";
     ImageView openImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(OPEN)));
-    Button open_file = new Button("Open File\nFile Explorer", openImage);
+    Button openFile = new Button("Open File\nFile Explorer", openImage);
     
     /**
      * Get a unique reference that is used to identify the plugin 
@@ -122,6 +122,6 @@ public class OpenGraphWelcomePlugin extends WelcomePageProvider {
     public Button getButton(){
         openImage.setFitHeight(75);
         openImage.setFitWidth(75);
-        return open_file;
+        return openFile;
     }
 }

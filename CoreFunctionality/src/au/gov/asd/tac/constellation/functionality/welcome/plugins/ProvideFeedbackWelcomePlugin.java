@@ -38,7 +38,7 @@ public class ProvideFeedbackWelcomePlugin extends WelcomePageProvider {
     
     public static final String FEEDBACK = "resources/welcome_feedback.png";
     ImageView feedView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(FEEDBACK)));
-    Button feedback = new Button("Provide Feedback\nLet use know your thoughts", feedView);
+    Button feedbackButton = new Button("Provide Feedback\nLet use know your thoughts", feedView);
         
     /**
      * Get a unique reference that is used to identify the plugin 
@@ -110,6 +110,6 @@ public class ProvideFeedbackWelcomePlugin extends WelcomePageProvider {
     public Button getButton(){
         feedView.setFitHeight(25);
         feedView.setFitWidth(25);
-        return feedback;
+        return feedbackButton;
     }
 }

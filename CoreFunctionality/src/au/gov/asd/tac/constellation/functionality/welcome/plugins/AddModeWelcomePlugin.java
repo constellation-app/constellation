@@ -45,7 +45,7 @@ public class AddModeWelcomePlugin extends WelcomePageProvider {
     
     public static final String NEW_GRAPH = "resources/welcome_add_graph.png";
     ImageView addView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(NEW_GRAPH)));
-    Button new_graph = new Button("New Graph\nAdd mode", addView);
+    Button newButton = new Button("New Graph\nAdd mode", addView);
         
     /**
      * Get a unique reference that is used to identify the plugin 
@@ -134,6 +134,6 @@ public class AddModeWelcomePlugin extends WelcomePageProvider {
     public Button getButton(){
         addView.setFitHeight(75);
         addView.setFitWidth(75);
-        return new_graph;
+        return newButton;
     }
 }
