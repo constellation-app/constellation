@@ -33,49 +33,6 @@ public abstract class WelcomePageProvider {
     }
     
     /**
-     * Get a description for the link that will appear on the Welcome Page 
-     *
-     * @return a unique reference
-     */
-    public String getLinkDescription() {
-        return null;
-    }
-    
-    /**
-     * Get a link to appear on the Welcome Page
-     *
-     * @return a link address
-     */
-    public String getLink() {
-        StringBuilder href = new StringBuilder();
-        href.append("<a href=\"");
-        href.append(getName());
-        href.append("\">");
-        href.append(getLinkDescription());
-        href.append("</a>");
-        href.append(getDescription());
-        return href.toString();
-    }
-    
-    /**
-     * Get an optional textual description that appears on the Welcome Page.
-     *
-     * @return a unique reference
-     */
-    public String getDescription() {
-        return "";
-    }
-    
-    /**
-     * Returns a link to a resource that can be used instead of text.
-     *
-     * @return a unique reference
-     */
-    public String getImage() {
-        return null;
-    }
-
-    /**
      * This method describes what action should be taken when the 
      * link is clicked on the Welcome Page
      *

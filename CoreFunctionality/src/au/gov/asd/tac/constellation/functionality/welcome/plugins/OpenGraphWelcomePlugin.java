@@ -55,38 +55,6 @@ public class OpenGraphWelcomePlugin extends WelcomePageProvider {
     }
     
     /**
-     * Get a description for the link that will appear on the Welcome Page 
-     *
-     * @return a unique reference
-     */
-    @Override
-    public String getLinkDescription() {
-        return "Select a graph to open from File Explorer";
-    }
-    
-    /**
-     * Get an optional textual description that appears on the Welcome Page.
-     *
-     * @return a unique reference
-     */
-    @Override
-    public String getDescription() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<br>");
-        buf.append("If you have an existing graph, you can open it here.");
-        return buf.toString();
-    }
-    
-    /**
-     * Returns a link to a resource that can be used instead of text.
-     *
-     * @return a unique reference
-     */
-    @Override
-    public String getImage() {
-        return null;
-    }
-    /**
      * This method describes what action should be taken when the 
      * link is clicked on the Welcome Page
      *

@@ -51,38 +51,6 @@ public class JoinCommWelcomePlugin extends WelcomePageProvider {
     }
     
     /**
-     * Get a description for the link that will appear on the Welcome Page 
-     *
-     * @return a unique reference
-     */
-    @Override
-    public String getLinkDescription() {
-        return "Allows for users to join the Constellation Community";
-    }
-    
-    /**
-     * Get an optional textual description that appears on the Welcome Page.
-     *
-     * @return a unique reference
-     */
-    @Override
-    public String getDescription() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<br>");
-        buf.append("Allows for users to join the Constellation Community. ");
-        return buf.toString();
-    }
-    
-    /**
-     * Returns a link to a resource that can be used instead of text.
-     *
-     * @return a unique reference
-     */
-    @Override
-    public String getImage() {
-        return null;
-    }
-    /**
      * This method describes what action should be taken when the 
      * link is clicked on the Welcome Page
      *

@@ -56,36 +56,6 @@ public class SphereGraphWelcomePlugin extends WelcomePageProvider {
         return SphereGraphWelcomePlugin.class.getName();
     }
 
-    /**   
-     * Get a description for the link that will appear on the Welcome Page  
-     * @return a unique reference      
-     */
-    @Override
-    public String getLinkDescription() {
-        return "Open up a new graph with a Sphere Network";
-    }
-
-    /**
-     * Get an optional textual description that appears on the Welcome Page.
-     * @return a unique reference
-     */
-    @Override
-    public String getDescription() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<br>");
-        buf.append("This will open a new graph with nodes arranged in a sphere.");
-        return buf.toString();
-    }
-
-    /**
-     * Returns a link to a resource that can be used instead of text.
-     * @return a unique reference
-     */
-    @Override
-    public String getImage() {
-        return null;
-    }
-
     /**
      * This method describes what action should be taken when the
      * link is clicked on the Welcome Page

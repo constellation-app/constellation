@@ -51,38 +51,6 @@ public class WhatsNewWelcomePlugin extends WelcomePageProvider {
     }
     
     /**
-     * Get a description for the link that will appear on the Welcome Page 
-     *
-     * @return a unique reference
-     */
-    @Override
-    public String getLinkDescription() {
-        return "Open up the Whats New page";
-    }
-    
-    /**
-     * Get an optional textual description that appears on the Welcome Page.
-     *
-     * @return a unique reference
-     */
-    @Override
-    public String getDescription() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<br>");
-        buf.append("Displays what is new with the Constellation app. ");
-        return buf.toString();
-    }
-    
-    /**
-     * Returns a link to a resource that can be used instead of text.
-     *
-     * @return a unique reference
-     */
-    @Override
-    public String getImage() {
-        return null;
-    }
-    /**
      * This method describes what action should be taken when the 
      * link is clicked on the Welcome Page
      *

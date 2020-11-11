@@ -98,8 +98,8 @@ public final class WelcomeTopComponent extends TopComponent {
     //Place holder images
     public static final String LOGO = "resources/constellation-logo.png";
     
-    public static final Button[] pluginButtons = new Button[10];
-    public static final Button[] recentGraphButtons = new Button[10];
+    protected static final Button[] pluginButtons = new Button[10];
+    protected static final Button[] recentGraphButtons = new Button[10];
 
     public WelcomeTopComponent() {
         setName(Bundle.CTL_WelcomeTopComponentTopComponent());
@@ -125,43 +125,43 @@ public final class WelcomeTopComponent extends TopComponent {
             
             //Create VBox to handle Browser and controls,
             //or error messages
-            VBox left_vBox = new VBox();
-            splitPane.getItems().add(left_vBox);
-            left_vBox.setSpacing(20);
-            left_vBox.setMinWidth(350);
-            left_vBox.setPrefWidth(400);
-            left_vBox.setMaxWidth(450);
+            VBox leftVBox = new VBox();
+            splitPane.getItems().add(leftVBox);
+            leftVBox.setSpacing(20);
+            leftVBox.setMinWidth(350);
+            leftVBox.setPrefWidth(400);
+            leftVBox.setMaxWidth(450);
             
-            HBox logo_hBox = new HBox();
-            logo_hBox.setBackground(new Background(new BackgroundFill(Color.valueOf("white"), CornerRadii.EMPTY, Insets.EMPTY)));
+            HBox logoHBox = new HBox();
+            logoHBox.setBackground(new Background(new BackgroundFill(Color.valueOf("white"), CornerRadii.EMPTY, Insets.EMPTY)));
             ImageView logoView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(LOGO)));
             logoView.setFitHeight(100);
             logoView.setFitWidth(150);
-            logo_hBox.getChildren().add(logoView);
-            logo_hBox.setAlignment(Pos.CENTER);
-            left_vBox.getChildren().add(logo_hBox);
+            logoHBox.getChildren().add(logoView);
+            logoHBox.setAlignment(Pos.CENTER);
+            leftVBox.getChildren().add(logoHBox);
             
              //Create the labels for the left pane
             Label welcome = new Label(WELCOME_TEXT);
             welcome.setFont(new Font("Arial Unicode MS", 26));
             welcome.setAlignment(Pos.CENTER);
-            left_vBox.getChildren().add(welcome);
+            leftVBox.getChildren().add(welcome);
             
             //Create right VBox for graph controls
-            VBox right_vBox = new VBox();
-            right_vBox.setPadding(new Insets(50, 50, 50, 50));
-            right_vBox.setBackground(new Background(new BackgroundFill(Color.valueOf("#14161a"), CornerRadii.EMPTY, Insets.EMPTY)));
-            splitPane.getItems().add(right_vBox);  
+            VBox rightVBox = new VBox();
+            rightVBox.setPadding(new Insets(50, 50, 50, 50));
+            rightVBox.setBackground(new Background(new BackgroundFill(Color.valueOf("#14161a"), CornerRadii.EMPTY, Insets.EMPTY)));
+            splitPane.getItems().add(rightVBox);  
             
             //Create HBoxes for the right_vbox
-            HBox top_hBox = new HBox();
-            HBox bottom_hBox = new HBox();
+            HBox topHBox = new HBox();
+            HBox bottomHBox = new HBox();
             
             //hbox formatting
-            top_hBox.setPadding(new Insets(50, 0, 50, 0));
-            top_hBox.setSpacing(10);
-            bottom_hBox.setPadding(new Insets(50, 0, 50, 0));
-            bottom_hBox.setSpacing(10);        
+            topHBox.setPadding(new Insets(50, 0, 50, 0));
+            topHBox.setSpacing(10);
+            bottomHBox.setPadding(new Insets(50, 0, 50, 0));
+            bottomHBox.setSpacing(10);        
             
             getWelcomeTopContent();
             
@@ -181,23 +181,23 @@ public final class WelcomeTopComponent extends TopComponent {
                     
                     if (i < 4){
                         setButtonProps(pluginButtons[i]);
-                        top_hBox.getChildren().add(pluginButtons[i]);
+                        topHBox.getChildren().add(pluginButtons[i]);
                     } else {
                         setInfoButtons(pluginButtons[i]);
-                        left_vBox.getChildren().add(pluginButtons[i]);
+                        leftVBox.getChildren().add(pluginButtons[i]);
                     }
                 }
             }
             
-            left_vBox.setAlignment(Pos.TOP_CENTER);
+            leftVBox.setAlignment(Pos.TOP_CENTER);
             
             //formatting for bottom hbox
             Label recent = new Label("Recent");
             recent.setFont(new Font("Arial Unicode MS", 24));
             
-            right_vBox.getChildren().add(top_hBox);
-            right_vBox.getChildren().add(recent);
-            right_vBox.getChildren().add(bottom_hBox);
+            rightVBox.getChildren().add(topHBox);
+            rightVBox.getChildren().add(recent);
+            rightVBox.getChildren().add(bottomHBox);
              
             FlowPane flow = new FlowPane();
             flow.setPrefWrapLength(1000);
@@ -213,9 +213,9 @@ public final class WelcomeTopComponent extends TopComponent {
                 flow.getChildren().add(recentGraphButtons[i]);
             }
              
-            bottom_hBox.getChildren().add(flow);
+            bottomHBox.getChildren().add(flow);
             splitPane.getDividers().get(0).setPosition(SPLIT_POS);
-            VBox.setVgrow(right_vBox, Priority.ALWAYS); 
+            VBox.setVgrow(rightVBox, Priority.ALWAYS); 
             
             //Finally, insert the root object into a scene, and insert the
             //scene into the JavaFX panel.
