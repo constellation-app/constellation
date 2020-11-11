@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.functionality.welcome;
 
+import javafx.scene.control.Button;
+
 /**
  * A plugin designed to be supported by the Welcome Page.
  *
@@ -88,5 +90,14 @@ public abstract class WelcomePageProvider {
      */
     public boolean isVisible() {
         return true;
+    }
+    
+    /**
+     * Creates the button object to represent this plugin
+     * 
+     * @return the button object
+     */
+    public Button getButton() {
+        return null;
     }
 }

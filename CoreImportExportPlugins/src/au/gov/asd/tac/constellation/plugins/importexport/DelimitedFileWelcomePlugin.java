@@ -16,9 +16,13 @@
 package au.gov.asd.tac.constellation.plugins.importexport;
 
 import au.gov.asd.tac.constellation.functionality.welcome.WelcomePageProvider;
+import au.gov.asd.tac.constellation.functionality.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 //import au.gov.asd.tac.constellation.plugins.importexport.delimited.DelimitedFileImporterStage;
 import javafx.application.Platform;
+import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -28,10 +32,14 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author canis_majoris
  */
-@ServiceProvider(service = WelcomePageProvider.class)
+@ServiceProvider(service = WelcomePageProvider.class, position = 4)
 @PluginInfo(tags = {"WELCOME"})
 @NbBundle.Messages("DelimitedFileWelcomePlugin=Delimited File Welcome Plugin")
 public class DelimitedFileWelcomePlugin extends WelcomePageProvider {
+    
+    final String IMPORT = "resources/welcome_import.png";
+    ImageView importImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(IMPORT)));
+    Button importButton = new Button("Import File\nDelimited File Importer", importImage);
 
     /**
      * Get a unique reference that is used to identify the plugin 
@@ -99,5 +107,17 @@ public class DelimitedFileWelcomePlugin extends WelcomePageProvider {
     @Override
     public boolean isVisible() {
         return true;
+    }
+    
+     /**
+     * Creates the button object to represent this plugin
+     * 
+     * @return the button object
+     */
+    @Override
+    public Button getButton(){
+        importImage.setFitHeight(75);
+        importImage.setFitWidth(75);
+        return importButton;
     }
 }

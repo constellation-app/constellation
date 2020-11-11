@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.testing;
 
 import au.gov.asd.tac.constellation.functionality.welcome.WelcomePageProvider;
+import au.gov.asd.tac.constellation.functionality.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.file.opener.GraphOpener;
@@ -27,6 +28,9 @@ import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.testing.construction.SphereGraphBuilderPlugin;
+import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -34,10 +38,14 @@ import org.openide.util.lookup.ServiceProvider;
  * The New Graph with a Sphere plugin for the Welcome Page.  
  * @author canis_majoris
  */
-@ServiceProvider(service = WelcomePageProvider.class)
+@ServiceProvider(service = WelcomePageProvider.class, position = 2)
 @PluginInfo(tags = {"WELCOME"})
 @NbBundle.Messages("SphereGraphWelcomePlugin=Sphere Graph Welcome Plugin")
 public class SphereGraphWelcomePlugin extends WelcomePageProvider {
+    
+    final String NEW_SPHERE = "resources/welcome_add_box.png";
+    ImageView newSphere = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(NEW_SPHERE)));   
+    Button new_sphere_graph = new Button("New Sphere Graph\nSphere network", newSphere);
 
     /**  
      * Get a unique reference that is used to identify the plugin
@@ -114,5 +122,17 @@ public class SphereGraphWelcomePlugin extends WelcomePageProvider {
     @Override
     public boolean isVisible() {
         return true;
+    }
+    
+    /**
+     * Creates the button object to represent this plugin
+     * 
+     * @return the button object
+     */
+    @Override
+    public Button getButton(){
+        newSphere.setFitHeight(75);
+        newSphere.setFitWidth(75);
+        return new_sphere_graph;
     }
 }

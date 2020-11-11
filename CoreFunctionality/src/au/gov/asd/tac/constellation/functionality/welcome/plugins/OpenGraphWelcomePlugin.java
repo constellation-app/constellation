@@ -16,11 +16,15 @@
 package au.gov.asd.tac.constellation.functionality.welcome.plugins;
 
 import au.gov.asd.tac.constellation.functionality.welcome.WelcomePageProvider;
+import au.gov.asd.tac.constellation.functionality.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.file.GraphPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
+import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -31,10 +35,14 @@ import org.openide.util.lookup.ServiceProvider;
  * @author canis_majoris
  */
 
-@ServiceProvider(service = WelcomePageProvider.class)
+@ServiceProvider(service = WelcomePageProvider.class, position = 3)
 @PluginInfo(tags = {"WELCOME"})
 @NbBundle.Messages("OpenGraphWelcomePlugin=Open Graph Welcome Plugin")
 public class OpenGraphWelcomePlugin extends WelcomePageProvider {
+    
+    final String OPEN = "resources/welcome_open_folder.png";
+    ImageView openImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(OPEN)));
+    Button open_file = new Button("Open File\nFile Explorer", openImage);
     
     /**
      * Get a unique reference that is used to identify the plugin 
@@ -102,5 +110,18 @@ public class OpenGraphWelcomePlugin extends WelcomePageProvider {
     @Override
     public boolean isVisible() {
         return true;
+    }
+    
+    
+     /**
+     * Creates the button object to represent this plugin
+     * 
+     * @return the button object
+     */
+    @Override
+    public Button getButton(){
+        openImage.setFitHeight(75);
+        openImage.setFitWidth(75);
+        return open_file;
     }
 }

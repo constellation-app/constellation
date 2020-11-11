@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.functionality.welcome.plugins;
 
 import au.gov.asd.tac.constellation.functionality.welcome.WelcomePageProvider;
+import au.gov.asd.tac.constellation.functionality.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.file.opener.GraphOpener;
@@ -25,6 +26,9 @@ import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
+import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -34,11 +38,15 @@ import org.openide.util.lookup.ServiceProvider;
  * @author canis_majoris
  */
 
-@ServiceProvider(service = WelcomePageProvider.class)
+@ServiceProvider(service = WelcomePageProvider.class, position = 1)
 @PluginInfo(tags = {"WELCOME"})
 @NbBundle.Messages("AddModeWelcomePlugin=Add Mode Welcome Plugin")
 public class AddModeWelcomePlugin extends WelcomePageProvider {
-
+    
+    final String NEW_GRAPH = "resources/welcome_add_graph.png";
+    ImageView addView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(NEW_GRAPH)));
+    Button new_graph = new Button("New Graph\nAdd mode", addView);
+        
     /**
      * Get a unique reference that is used to identify the plugin 
      *
@@ -115,5 +123,17 @@ public class AddModeWelcomePlugin extends WelcomePageProvider {
     @Override
     public boolean isVisible() {
         return true;
+    }
+    
+     /**
+     * Creates the button object to represent this plugin
+     * 
+     * @return the button object
+     */
+    @Override
+    public Button getButton(){
+        addView.setFitHeight(75);
+        addView.setFitWidth(75);
+        return new_graph;
     }
 }
