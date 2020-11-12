@@ -86,6 +86,7 @@ import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERRO
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_SAVE_TO_FILE_FAILED;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_VKALLOCATIONS;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkSucceeded;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.checkVKret;
 import java.awt.Point;
 import java.awt.Transparency;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
@@ -760,7 +761,7 @@ public class CVKImage {
      * @param stack
      * @return buffer filled with memory
      */
-    private PointerBuffer StartMemoryMap(MemoryStack stack) {
+    private int StartMemoryMap(MemoryStack stack) {
         CVKAssert(pWriteMemory == null);    
         int ret = VK_SUCCESS;
         
@@ -774,14 +775,7 @@ public class CVKImage {
         pWriteMemory = MemoryUtil.memAllocPointer(1);
         long offset = subResourceLayout.offset();
 
-        ret = vkMapMemory(CVKDevice.GetVkDevice(), GetMemoryImageHandle(), offset, VK_WHOLE_SIZE, 0, pWriteMemory);
-        if (VkFailed(ret)) 
-        { 
-            GetLogger().severe("Mapping image memory failed");
-            return null; 
-        }
-        
-        return pWriteMemory;     
+        return vkMapMemory(CVKDevice.GetVkDevice(), GetMemoryImageHandle(), offset, VK_WHOLE_SIZE, 0, pWriteMemory);    
     }       
     
     
@@ -957,7 +951,8 @@ public class CVKImage {
         int r;
         
         try (MemoryStack stack = stackPush()) {
-            StartMemoryMap(stack);                 
+            int ret = StartMemoryMap(stack);
+            checkVKret(ret);
             r = ReadPixel(stack, x, y);
             EndMemoryMap();
         }

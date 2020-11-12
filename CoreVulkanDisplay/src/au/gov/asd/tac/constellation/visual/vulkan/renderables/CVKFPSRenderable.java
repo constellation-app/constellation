@@ -332,10 +332,7 @@ public class CVKFPSRenderable extends CVKRenderable {
         CVKAssertNull(pDescriptorSets);
         CVKAssertNull(geometryUniformBuffers);
         CVKAssertNull(vertexBuffers);
-        CVKAssertNull(displayCommandBuffers);
-        CVKAssertNull(hVertexShaderModule);
-        CVKAssertNull(hGeometryShaderModule);
-        CVKAssertNull(hFragmentShaderModule);        
+        CVKAssertNull(displayCommandBuffers);     
         CVKAssertNull(vertexPushConstants);
         CVKAssertNull(cvkStagingBuffer);
     }     

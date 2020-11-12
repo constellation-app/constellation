@@ -180,7 +180,6 @@ public class CVKPerspectiveLinksRenderable extends CVKRenderable {
         DestroyPipelineLayout();
         DestroyCommandBuffers();
         
-        CVKAssertNull(hPositionBufferView); 
         CVKAssertNull(pDescriptorSets);
         CVKAssertNull(hDescriptorLayout);  
         CVKAssertNull(displayCommandBuffers);        

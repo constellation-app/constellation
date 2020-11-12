@@ -33,7 +33,8 @@ import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKAxesRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKFPSRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKHitTester;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKIconsRenderable;
-import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKLabelsRenderable;
+import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKIconLabelsRenderable;
+import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKLinkLabelsRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKLinksRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKNewLineRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKPerspectiveLinksRenderable;
@@ -81,7 +82,8 @@ public class CVKVisualProcessor extends VisualProcessor {
     private final CVKIconsRenderable cvkIcons;
     private final CVKLinksRenderable cvkLinks;
     private final CVKPerspectiveLinksRenderable cvkPerspectiveLinks;    
-    private final CVKLabelsRenderable cvkLabels;
+    private final CVKIconLabelsRenderable cvkIconLabels;
+    private final CVKLinkLabelsRenderable cvkLinkLabels;
     private final CVKPointsRenderable cvkPoints;
     private final Matrix44f modelViewMatrix = new Matrix44f();  
     private Camera camera = null;
@@ -136,8 +138,10 @@ public class CVKVisualProcessor extends VisualProcessor {
             cvkCanvas.AddRenderable(cvkLinks);
             cvkPerspectiveLinks = new CVKPerspectiveLinksRenderable(cvkLinks);
             cvkCanvas.AddRenderable(cvkPerspectiveLinks);
-            cvkLabels = new CVKLabelsRenderable(this);
-            cvkCanvas.AddRenderable(cvkLabels);
+            cvkIconLabels = new CVKIconLabelsRenderable(this);
+            cvkCanvas.AddRenderable(cvkIconLabels);
+            cvkLinkLabels = new CVKLinkLabelsRenderable(this);
+            cvkCanvas.AddRenderable(cvkLinkLabels);            
             cvkNewLineRenderable = new CVKNewLineRenderable(this);
             cvkCanvas.AddRenderable(cvkNewLineRenderable); 
             cvkAxes = new CVKAxesRenderable(this);
@@ -611,9 +615,9 @@ public class CVKVisualProcessor extends VisualProcessor {
                         addTask(cvkIcons.TaskUpdatePositions(change, access));                         
                         addTask(cvkIcons.TaskUpdateVertexFlags(change, access));
 
-                        addTask(cvkLabels.TaskUpdateLabels(change, access));
-                        addTask(cvkLabels.TaskUpdateColours(change, access));
-                        addTask(cvkLabels.TaskUpdateSizes(change, access));
+                        addTask(cvkIconLabels.TaskUpdateLabels(change, access));
+                        addTask(cvkIconLabels.TaskUpdateColours(change, access));
+                        addTask(cvkIconLabels.TaskUpdateSizes(change, access));
                         
                         final DrawFlags updatedDrawFlags = access.getDrawFlags();
                         addTask(() -> { drawFlags = updatedDrawFlags; });                        
@@ -640,6 +644,9 @@ public class CVKVisualProcessor extends VisualProcessor {
                 case CONNECTIONS_REBUILD:
                     return (change, access) -> {
                         addTask(cvkLinks.TaskUpdateLinks(change, access));
+                        addTask(cvkLinkLabels.TaskUpdateSizes(change, access));
+                        addTask(cvkLinkLabels.TaskUpdateColours(change, access));
+                        addTask(cvkLinkLabels.TaskUpdateLabels(change, access));                        
 
     //                    addTask(connectionLabelBatcher.setLabelColors(access));
     //                    addTask(connectionLabelBatcher.setLabelSizes(access));
@@ -655,17 +662,14 @@ public class CVKVisualProcessor extends VisualProcessor {
                         if (cvkCanvas.GetRenderer() != null) {
                             addTask(cvkCanvas.GetRenderer().BackgroundColourChanged(change, access));
                         }                                  
-    //                    addTask(gl -> {
-    //                        graphBackgroundColor = new float[]{backgroundColor.getRed(), backgroundColor.getGreen(), backgroundColor.getBlue(), 1};
-    //                    });
-    //                    addTask(connectionLabelBatcher.setBackgroundColor(access));
-                        addTask(cvkLabels.TaskSetBackgroundColor(access));
+                        addTask(cvkLinkLabels.TaskSetBackgroundColor(access));
+                        addTask(cvkIconLabels.TaskSetBackgroundColor(access));
                     };
                 case HIGHLIGHT_COLOUR:
                     return (change, access) -> {
                         addTask(cvkIcons.TaskSetHighlightColour(access));                   
-                        addTask(cvkLabels.TaskSetHighlightColor(access));
-    //                    addTask(connectionLabelBatcher.setHighlightColor(access));
+                        addTask(cvkIconLabels.TaskSetHighlightColor(access));
+                        addTask(cvkLinkLabels.TaskSetHighlightColor(access));
                         addTask(cvkLinks.TaskSetHighlightColour(access));
                     };
                 case DRAW_FLAGS:
@@ -684,13 +688,13 @@ public class CVKVisualProcessor extends VisualProcessor {
                     };
                 case BOTTOM_LABEL_COLOR:
                     return (change, access) -> {
-                        addTask(cvkLabels.TaskUpdateColours(change, access));
+                        addTask(cvkIconLabels.TaskUpdateColours(change, access));
                     };
                 case BOTTOM_LABELS_REBUILD:
                     return (change, access) -> {
-                        addTask(cvkLabels.TaskUpdateLabels(change, access));
-                        addTask(cvkLabels.TaskUpdateColours(change, access));
-                        addTask(cvkLabels.TaskUpdateSizes(change, access));
+                        addTask(cvkIconLabels.TaskUpdateLabels(change, access));
+                        addTask(cvkIconLabels.TaskUpdateColours(change, access));
+                        addTask(cvkIconLabels.TaskUpdateSizes(change, access));
                     };
                 case CAMERA:
                     return (change, access) -> {
@@ -702,31 +706,29 @@ public class CVKVisualProcessor extends VisualProcessor {
                             addTask(cvkAxes.TaskUpdateCamera());
                         }
                         addTask(cvkIcons.TaskUpdateCamera());
-                        addTask(cvkLabels.TaskUpdateCamera());
+                        addTask(cvkIconLabels.TaskUpdateCamera());
+                        addTask(cvkLinkLabels.TaskUpdateCamera());
                         addTask(cvkLinks.TaskUpdateCamera());
                     };
                 case CONNECTION_LABEL_COLOR:
-                    GetLogger().warning("Event CONNECTION_LABEL_COLOR unhandled!");
                     return (change, access) -> {
-    //                    addTask(connectionLabelBatcher.setLabelColors(access));
+                        addTask(cvkLinkLabels.TaskUpdateColours(change, access));
                     };
                 case CONNECTION_LABELS_REBUILD:
-                    GetLogger().warning("Event CONNECTION_LABELS_REBUILD unhandled!");
                     return (change, access) -> {
-    //                    addTask(connectionLabelBatcher.setLabelColors(access));
-    //                    addTask(connectionLabelBatcher.setLabelSizes(access));
-    //                    // Note that updating connection labels always rebuilds from scratch, so it is not an issue if the batch was not 'ready'.
-    //                    addTask(connectionLabelBatcher.updateLabels(access));
+                        addTask(cvkLinkLabels.TaskUpdateSizes(change, access));
+                        addTask(cvkLinkLabels.TaskUpdateColours(change, access));
+                        addTask(cvkLinkLabels.TaskUpdateLabels(change, access));
                     };
                 case TOP_LABEL_COLOR:
                     return (change, access) -> {
-                        addTask(cvkLabels.TaskUpdateColours(change, access));
+                        addTask(cvkIconLabels.TaskUpdateColours(change, access));
                     };
                 case TOP_LABELS_REBUILD:
                     return (change, access) -> {
-                        addTask(cvkLabels.TaskUpdateLabels(change, access));
-                        addTask(cvkLabels.TaskUpdateColours(change, access));
-                        addTask(cvkLabels.TaskUpdateSizes(change, access));                    
+                        addTask(cvkIconLabels.TaskUpdateLabels(change, access));
+                        addTask(cvkIconLabels.TaskUpdateColours(change, access));
+                        addTask(cvkIconLabels.TaskUpdateSizes(change, access));                    
                     };
                 case CONNECTION_COLOR:
                     return (change, access) -> {
@@ -734,7 +736,6 @@ public class CVKVisualProcessor extends VisualProcessor {
                         addTask(cvkLinks.TaskUpdateLinks(change, access));
                     };
                 case CONNECTION_SELECTED:
-                    GetLogger().warning("Event CONNECTION_SELECTED unhandled!");
                     return (change, access) -> {
     //                    addTaskIfReady(loopBatcher.updateInfo(access, change), loopBatcher);
                         addTask(cvkLinks.TaskUpdateLinks(change, access));

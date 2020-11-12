@@ -15,13 +15,19 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan.renderables;
 
+import static au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableResourceState.*;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.*;
+import static org.lwjgl.system.MemoryStack.stackPush;
+import static org.lwjgl.system.MemoryUtil.*;
+import static org.lwjgl.vulkan.VK10.*;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.glyphs.GlyphManager;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4i;
 import au.gov.asd.tac.constellation.utilities.text.LabelUtilities;
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
-import au.gov.asd.tac.constellation.utilities.visual.VisualAccess.ConnectionDirection;
 import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDescriptorPool;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDescriptorPool.CVKDescriptorPoolRequirements;
@@ -29,61 +35,20 @@ import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKRenderUpdateTask;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
-import static au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableResourceState.CVK_RESOURCE_CLEAN;
-import static au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableResourceState.CVK_RESOURCE_NEEDS_REBUILD;
-import static au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableResourceState.CVK_RESOURCE_NEEDS_UPDATE;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKCommandBuffer;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssertNotNull;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssertNull;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.IDENTITY_44F;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkSucceeded;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.checkVKret;
+import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKGlyphTextureAtlas;
 import java.nio.ByteBuffer;
 import java.nio.LongBuffer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
 import org.lwjgl.system.MemoryStack;
-import static org.lwjgl.system.MemoryStack.stackPush;
 import org.lwjgl.system.MemoryUtil;
-import static org.lwjgl.system.MemoryUtil.memFree;
-import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_TRANSFER_DST_BIT;
-import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
-import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
-import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
-import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_SECONDARY;
-import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT;
-import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER;
-import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32B32A32_SFLOAT;
-import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32B32A32_SINT;
-import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
-import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
-import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
-import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
-import static org.lwjgl.vulkan.VK10.VK_PRIMITIVE_TOPOLOGY_LINE_LIST;
-import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_GEOMETRY_BIT;
-import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_VERTEX_BIT;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
-import static org.lwjgl.vulkan.VK10.VK_VERTEX_INPUT_RATE_VERTEX;
-import static org.lwjgl.vulkan.VK10.vkAllocateDescriptorSets;
-import static org.lwjgl.vulkan.VK10.vkCreateDescriptorSetLayout;
-import static org.lwjgl.vulkan.VK10.vkCreatePipelineLayout;
-import static org.lwjgl.vulkan.VK10.vkDestroyDescriptorSetLayout;
-import static org.lwjgl.vulkan.VK10.vkDestroyPipelineLayout;
-import static org.lwjgl.vulkan.VK10.vkFreeDescriptorSets;
-import static org.lwjgl.vulkan.VK10.vkUpdateDescriptorSets;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkCommandBufferInheritanceInfo;
 import org.lwjgl.vulkan.VkDescriptorBufferInfo;
+import org.lwjgl.vulkan.VkDescriptorImageInfo;
 import org.lwjgl.vulkan.VkDescriptorSetAllocateInfo;
 import org.lwjgl.vulkan.VkDescriptorSetLayoutBinding;
 import org.lwjgl.vulkan.VkDescriptorSetLayoutCreateInfo;
@@ -93,125 +58,107 @@ import org.lwjgl.vulkan.VkVertexInputAttributeDescription;
 import org.lwjgl.vulkan.VkVertexInputBindingDescription;
 import org.lwjgl.vulkan.VkWriteDescriptorSet;
 
+/**
+ * Requirements: 
+ * - labels on connections (these can be multiline)
+ * - labels above or below icons
+ * - icon labels can be in any language
+ * - icon label determined by attribute 'identifier', can be multiline
+ * - icon label top determined by graph array attribute 'node_labels_top' (array of attributes, first 4 displayed)
+ * - icon label bottom determined by graph array attribute 'node_labels_bottom'
+ * - appears only 1 font at present, SansSerif 64 Plain.  This is likely configurable
+ */
 
-/*******************************************************************************
- * CVKLinksRenderable
- * 
- * This class renders links between nodes as lines.  It is paired with CVKPerspectiveLinksRenderable
- * which renders links between nodes with triangles in order to achieve perspective
- * and to add direction arrows.
- * 
- * These bonded pair of classes fulfill the same role as au.gov.asd.tac.constellation.
- * visual.opengl.renderer.batcher.LineBatcher in the JOGL version.
- * 
- * LineBatcher draws both a line and triangle-line between two nodes.  When the 
- * camera is close only the triangle-line is visible.  As the camera pans out
- * the triangle-line becomes less visible eventually becoming sub-pixel.  The
- * line which was previously not visible becomes visible.  It's surprisingly 
- * effective.
- * 
- * The reason this was split into two renderables in the Vulkan display project
- * is that CVKRenderables encapsulate a single pipeline which have a single shader
- * for each assembly step (vert, geo, frag).  Subsequently they only output a single
- * primitive type (triangle_strip, line_list, point_list etc).  So rather than
- * introduce the complexity of multiple display pipelines into the rest of the 
- * renderables we just share data and have a renderable for each pipeline.
- *******************************************************************************/
-
-public class CVKLinksRenderable extends CVKRenderable {
+/**
+ * What resources do node labels have
+ *  - vs: vertex push constant (camera matrix)
+ *  0 vs: vertex ubo (label meta data)
+ *  1 vs: xyzw buffer sampler (icon positions owned by CVKIconsRenderable)
+ *  2 gs: geometry ubo (proj mtx and render data)
+ *  3 gs: glyphInfoTexture buffer sampler (glyph coordinates)
+ *  4 fs: atlas texture sampler (rastered glyphs owned by CVKGlyphTextureAtlas)
+ */
+public class CVKIconLabelsRenderable extends CVKRenderable implements GlyphManager.GlyphStream {     
+    
     // Resources recreated with the swap chain (dependent on the image count)    
     private LongBuffer pDescriptorSets = null; 
-    private List<Long> hitTestPipelines = null;
     private List<CVKCommandBuffer> displayCommandBuffers = null;
-    private List<CVKCommandBuffer> hittestCommandBuffers = null;    
     private List<CVKBuffer> vertexBuffers = null;   
     private List<CVKBuffer> vertexUniformBuffers = null;
-    private List<CVKBuffer> geometryUniformBuffers = null;      
+    private List<CVKBuffer> geometryUniformBuffers = null;    
     
-    // The UBO staging buffers are a known size so created outside user events
-    private CVKBuffer cvkVertexUBStagingBuffer = null;
-    private CVKBuffer cvkGeometryUBStagingBuffer = null;
+    private ByteBuffer vertexPushConstants = null;
     private final VertexUniformBufferObject vertexUBO = new VertexUniformBufferObject();
-    private final GeometryUniformBufferObject geometryUBO = new GeometryUniformBufferObject(); 
+    private final GeometryUniformBufferObject geometryUBO = new GeometryUniformBufferObject();     
     
     // Resources recreated only through user events
     private int vertexCount = 0;
+    private final GlyphContext glyphContext = new GlyphContext();
+    private List<Vertex> vertices = null;
     private CVKBuffer cvkVertexStagingBuffer = null;  
 
+    private CVKBuffer cvkVertexUBStagingBuffer = null;
+    private CVKBuffer cvkGeometryUBStagingBuffer = null;
+    private final Vector4i topLabelRowSizes = new Vector4i();
+    private final Vector4i bottomLabelRowSizes = new Vector4i();
+    private final Vector3f[] topLabelColours = new Vector3f[LabelUtilities.MAX_LABELS_TO_DRAW];
+    private final Vector3f[] bottomLabelColours = new Vector3f[LabelUtilities.MAX_LABELS_TO_DRAW]; 
+    
     // Resources we don't own but use and must track so we know when to update
     // our descriptors
+    private long hGlyphAtlasSampler = VK_NULL_HANDLE;
+    private long hGlyphAtlasImageView = VK_NULL_HANDLE;     
+    private long hGlyphCoordinateBuffer = VK_NULL_HANDLE;
+    private long hGlyphCoordinateBufferView = VK_NULL_HANDLE;
     private long hPositionBuffer = VK_NULL_HANDLE;
-    private long hPositionBufferView = VK_NULL_HANDLE;    
-    
-    // Push constants for shaders contains the MV matrix and drawHitTest int
-    private ByteBuffer modelViewPushConstants = null;
-    private ByteBuffer hitTestPushConstants = null;
-    private static final int MODEL_VIEW_PUSH_CONSTANT_STAGES = VK_SHADER_STAGE_VERTEX_BIT;
-    private static final int HIT_TEST_PUSH_CONSTANT_STAGES = VK_SHADER_STAGE_GEOMETRY_BIT;
-    private static final int MODEL_VIEW_PUSH_CONSTANT_SIZE = Matrix44f.BYTES;
-    private static final int HIT_TEST_PUSH_CONSTANT_SIZE = Integer.BYTES;    
-    
-    private static final int LINE_INFO_ARROW = 1;
-    private static final int LINE_INFO_BITS_AVOID = 4;
-    private static final int FLOAT_MULTIPLIER = 1024;
-    private static final int NEW_LINK = -345;
-    
-    private float leftOffset;
-    private float rightOffset;
-    private Vector4f highlightColour = new Vector4f();
-    private float opacity;      
-    
+    private long hPositionBufferView = VK_NULL_HANDLE;
+   
     
     // ========================> Classes <======================== \\
     
-    protected static class Vertex {
+    private static class GlyphContext {
+        private float visibility;
+        private int nodeId;
+        private int totalScale;
+        private int labelNumber;     
+    }
+    
+    private static class Vertex {
         // This looks a little weird for Java, but LWJGL and JOGL both require
         // contiguous memory which is passed to the native GL or VK libraries.        
-        private static final int BYTES = Vector4f.BYTES + Vector4i.BYTES;
-        private static final int OFFSETOF_DATA = Vector4f.BYTES;
-        private static final int OFFSET_CLR = 0;
-        private static final int BINDING = 0;
-        private Vector4f colour = new Vector4f();
-        private Vector4i data = new Vector4i();
+        private static final int BYTES = Vector3f.BYTES + Vector4i.BYTES;
+        private static final int OFFSETOF_GLYPH_DATA = 0;
+        private static final int OFFSETOF_GRAPH_DATA = 3 * Float.BYTES;        
+        private static final int BINDING = 0;        
         
-        private Vertex() {}
-                    
-        /**
-         * 
-         * @param inColour
-         * @param visibility: alpha
-         * @param transactionID: transaction ID used for hit test pick colour
-         * @param encodedNodeIndex: encoded node index (used to lookup the positions texel buffer)
-         * @param flags: encoded selected and dimmed flags
-         * @param encodedWidthAndStyle: encoded width and line style (referenced via iVec4.q in the shaders)
-         */            
-        public Vertex(ConstellationColor inColour, 
-                      float visibility,
-                      int transactionID,
-                      int encodedNodeIndex,
-                      int flags,
-                      int encodedWidthAndStyle) {
-            colour.a[0] = inColour.getRed();
-            colour.a[1] = inColour.getGreen();
-            colour.a[2] = inColour.getBlue();
-            colour.a[3] = visibility;
-            data.a[0]   = transactionID;
-            data.a[1]   = encodedNodeIndex;
-            data.a[2]   = flags;
-            data.a[3]   = encodedWidthAndStyle;
-        }
+        // [0..1] x and y offsets of this glyph from the top centre of the line of text
+        // [2] The visibility of this glyph (constant for a node, but easier to pass in the batch).
+        private final Vector3f glyphLocationData = new Vector3f();
         
-
+        // [0] the index of the glyph in the glyphInfoTexture
+        // [1] The index of the node containg this glyph in the xyzTexture
+        // [2] The total scale of the lines and their labels up to this point (< 0 if this is a glyph in a bottom label)
+        // [3] The label number in which this glyph occurs     
+        private final Vector4i graphLocationData = new Vector4i();
+        
+        public Vertex(int glyphIndex, float x, float y, float visibility, int nodeId, int totalScale, int labelNumber) {
+            glyphLocationData.setX(x);
+            glyphLocationData.setY(y);
+            glyphLocationData.setZ(visibility);
+            graphLocationData.a[0] = glyphIndex;
+            graphLocationData.a[1] = nodeId;
+            graphLocationData.a[2] = totalScale;
+            graphLocationData.a[3] = labelNumber;
+        }           
         
         public void CopyToSequentially(ByteBuffer buffer) {
-            buffer.putFloat(colour.a[0]);
-            buffer.putFloat(colour.a[1]);
-            buffer.putFloat(colour.a[2]);
-            buffer.putFloat(colour.a[3]);
-            buffer.putInt(data.a[0]);
-            buffer.putInt(data.a[1]);
-            buffer.putInt(data.a[2]);
-            buffer.putInt(data.a[3]);              
+            buffer.putFloat(glyphLocationData.a[0]);
+            buffer.putFloat(glyphLocationData.a[1]);
+            buffer.putFloat(glyphLocationData.a[2]);            
+            buffer.putInt(graphLocationData.a[0]);
+            buffer.putInt(graphLocationData.a[1]);
+            buffer.putInt(graphLocationData.a[2]);
+            buffer.putInt(graphLocationData.a[3]);              
         }        
 
         /**
@@ -224,7 +171,7 @@ public class CVKLinksRenderable extends CVKRenderable {
          * 
          * @return Binding description for the FPS vertex type
          */
-        protected static VkVertexInputBindingDescription.Buffer GetBindingDescription() {
+        private static VkVertexInputBindingDescription.Buffer GetBindingDescription() {
 
             VkVertexInputBindingDescription.Buffer bindingDescription =
                     VkVertexInputBindingDescription.callocStack(1);
@@ -250,24 +197,24 @@ public class CVKLinksRenderable extends CVKRenderable {
          * 
          * @return 
          */
-        protected static VkVertexInputAttributeDescription.Buffer GetAttributeDescriptions() {
+        private static VkVertexInputAttributeDescription.Buffer GetAttributeDescriptions() {
 
             VkVertexInputAttributeDescription.Buffer attributeDescriptions =
                     VkVertexInputAttributeDescription.callocStack(2);
 
-            // backgroundIconColor
+            // glyphLocationData
             VkVertexInputAttributeDescription posDescription = attributeDescriptions.get(0);
             posDescription.binding(BINDING);
             posDescription.location(0);
-            posDescription.format(VK_FORMAT_R32G32B32A32_SFLOAT);
-            posDescription.offset(OFFSET_CLR);
+            posDescription.format(VK_FORMAT_R32G32B32_SFLOAT);
+            posDescription.offset(OFFSETOF_GLYPH_DATA);
 
-            // data
+            // graphLocationData
             VkVertexInputAttributeDescription colorDescription = attributeDescriptions.get(1);
             colorDescription.binding(BINDING);
             colorDescription.location(1);
             colorDescription.format(VK_FORMAT_R32G32B32A32_SINT);
-            colorDescription.offset(OFFSETOF_DATA);
+            colorDescription.offset(OFFSETOF_GRAPH_DATA);
 
             return attributeDescriptions.rewind();
         }
@@ -281,146 +228,214 @@ public class CVKLinksRenderable extends CVKRenderable {
     @Override
     protected VkVertexInputAttributeDescription.Buffer GetVertexAttributeDescriptions() {
         return Vertex.GetAttributeDescriptions();
-    }             
-    
-    protected static class VertexUniformBufferObject {
-        public float morphMix = 0;  
-        private static Integer padding = null;
+    }    
+
+    private static class VertexUniformBufferObject {                
+        // Each column is a node (bottom or top) label with the following structure:
+        // [0..2] rgb colour (note label colours do not habve an alpha)
+        // [3] label size
+        private final Matrix44f labelBottomInfo = new Matrix44f();
+        private final Matrix44f labelTopInfo = new Matrix44f();
+
+        // Information from the graph's visual state
+        private float morphMix = 0;
+        private float visibilityLow = 0;
+        private float visibilityHigh = 0;
+
+        // The index of the background glyph in the glyphInfo texture
+        private int backgroundGlyphIndex = 0;
+
+        // Used to draw the label background.
+        private final Vector4f backgroundColor = new Vector4f();        
         
-        protected static int SizeOf() {
-            if (padding == null) {
+        private static Integer padding1 = null;
+        private static Integer padding2 = null;
+        
+        
+        private static int SizeOf() {
+            if (padding1 == null) {
                 CVKAssertNotNull(CVKDevice.GetVkDevice()); 
                 final int minAlignment = CVKDevice.GetMinUniformBufferAlignment();
                 
                 // The matrices are 64 bytes each so should line up on a boundary (unless the minimum alignment is huge)
                 CVKAssert(minAlignment <= (16 * Float.BYTES));
 
-                int sizeof = 1 * Float.BYTES; // morphMix
-                final int overrun = sizeof % minAlignment;
-                padding = overrun > 0 ? minAlignment - overrun : 0;             
+                int sizeof = Matrix44f.BYTES +   // labelBottomInfo
+                             Matrix44f.BYTES +   // labelTopInfo
+                             1 * Float.BYTES +   // morphMix
+                             1 * Float.BYTES +   // visibilityLow
+                             1 * Float.BYTES +   // visibilityHigh 
+                             1 * Integer.BYTES;  // backgroundGlyphIndex
+
+                int overrun = sizeof % minAlignment;
+                padding1 = overrun > 0 ? minAlignment - overrun : 0;
+                
+                sizeof += padding1 +
+                          Vector4f.BYTES; //backgroundColor
+                
+                overrun = sizeof % minAlignment;
+                padding2 = overrun > 0 ? minAlignment - overrun : 0;                
+                
             }
             
-            return 1 * Float.BYTES + // morphMix
-                   padding;
+            return Matrix44f.BYTES +   // labelBottomInfo
+                   Matrix44f.BYTES +   // labelTopInfo
+                   1 * Float.BYTES +   // morphMix
+                   1 * Float.BYTES +   // visibilityLow
+                   1 * Float.BYTES +   // visibilityHigh 
+                   1 * Integer.BYTES + // backgroundGlyphIndex
+                   padding1 + 
+                   Vector4f.BYTES +    //backgroundColor 
+                   padding2;
         }        
         
         private void CopyTo(ByteBuffer buffer) {
+            for (int iRow = 0; iRow < 4; ++iRow) {
+                for (int iCol = 0; iCol < 4; ++iCol) {
+                    buffer.putFloat(labelBottomInfo.get(iRow, iCol));
+                }
+            }    
+            for (int iRow = 0; iRow < 4; ++iRow) {
+                for (int iCol = 0; iCol < 4; ++iCol) {
+                    buffer.putFloat(labelTopInfo.get(iRow, iCol));
+                }
+            }              
             buffer.putFloat(morphMix);
+            buffer.putFloat(visibilityLow);
+            buffer.putFloat(visibilityHigh);
+            buffer.putInt(backgroundGlyphIndex);
             
-            for (int i = 0; i < padding; ++i) {
+            for (int i = 0; i < padding1; ++i) {
                 buffer.put((byte)0);
-            }            
+            }  
+            
+            for (int i = 0; i < Vector4f.LENGTH; ++i) {
+                buffer.putFloat(backgroundColor.a[i]);
+            }      
+            
+            for (int i = 0; i < padding2; ++i) {
+                buffer.put((byte)0);
+            }             
         }         
-    }      
+    } 
     
-    protected static class GeometryUniformBufferObject {                                           
-        private final Matrix44f pMatrix = new Matrix44f();    
-        private final Vector4f highlightColour = new Vector4f();
-        private float visibilityLow;
-        private float visibilityHigh;
-        private float directionMotion;
-        private float alpha;
-        private static Integer padding = null;   
-                    
-        protected static int SizeOf() {
-            if (padding == null) {
+    private static class GeometryUniformBufferObject {                
+        // Matrix to convert from camera coordinates to scene coordinates.
+        private final Matrix44f pMatrix = new Matrix44f();
+
+        // The scaling factor to convert from texture coordinates to world unit coordinates
+        private float widthScalingFactor;
+        private float heightScalingFactor;
+
+        // Used to draw the connection indicator on the label background.
+        private final Vector4f highlightColor = new Vector4f();
+        
+        private static Integer padding1 = null;
+        private static Integer padding2 = null;
+        
+        
+        private static int SizeOf() {
+            if (padding1 == null) {
                 CVKAssertNotNull(CVKDevice.GetVkDevice()); 
                 final int minAlignment = CVKDevice.GetMinUniformBufferAlignment();
                 
                 // The matrices are 64 bytes each so should line up on a boundary (unless the minimum alignment is huge)
-                CVKAssert(minAlignment <= (Matrix44f.BYTES));
+                CVKAssert(minAlignment <= (16 * Float.BYTES));
 
-                int sizeof = Matrix44f.BYTES +      // pMatrix
-                             Vector4f.BYTES  +      // highlightColour
-                              1 * Float.BYTES +     // visibilityLow
-                              1 * Float.BYTES +     // visibilityHigh  
-                              1 * Float.BYTES +     // directionMotion
-                              1 * Float.BYTES;      // alpha  
+                int sizeof = Matrix44f.BYTES +   // pMatrix
+                             1 * Float.BYTES +   // widthScalingFactor
+                             1 * Float.BYTES;    // heightScalingFactor
 
-                final int overrun = sizeof % minAlignment;
-                padding = overrun > 0 ? minAlignment - overrun : 0;             
+                int overrun = sizeof % minAlignment;
+                padding1 = overrun > 0 ? minAlignment - overrun : 0;
+                
+                sizeof += padding1 +
+                          Vector4f.LENGTH * Float.BYTES;        //highlightColor
+                
+                overrun = sizeof % minAlignment;
+                padding2 = overrun > 0 ? minAlignment - overrun : 0;                                
             }
             
-            return Matrix44f.BYTES  +     // pMatrix
-                   Vector4f.BYTES   +     // highlightColour
-                    1 * Float.BYTES +     // visibilityLow
-                    1 * Float.BYTES +     // visibilityHigh  
-                    1 * Float.BYTES +     // directionMotion
-                    1 * Float.BYTES +     // alpha  
-                    padding;
-        }
+            return Matrix44f.BYTES +   // pMatrix
+                   1 * Float.BYTES +   // widthScalingFactor
+                   1 * Float.BYTES +   // heightScalingFactor
+                   padding1 + 
+                   Vector4f.BYTES +    //highlightColor 
+                   padding2;
+        }        
         
-        private void CopyTo(ByteBuffer buffer) {  
+        private void CopyTo(ByteBuffer buffer) {
             for (int iRow = 0; iRow < 4; ++iRow) {
                 for (int iCol = 0; iCol < 4; ++iCol) {
                     buffer.putFloat(pMatrix.get(iRow, iCol));
                 }
-            } 
-            for (int i = 0; i < 4; ++i) {
-                buffer.putFloat(highlightColour.a[i]);
-            }
-            buffer.putFloat(visibilityLow);
-            buffer.putFloat(visibilityHigh);
-            buffer.putFloat(directionMotion);
-            buffer.putFloat(alpha);            
-                        
-            for (int i = 0; i < padding; ++i) {
+            }                 
+            buffer.putFloat(widthScalingFactor);
+            buffer.putFloat(heightScalingFactor);
+            
+            for (int i = 0; i < padding1; ++i) {
                 buffer.put((byte)0);
-            }          
+            }  
+            
+            for (int i = 0; i < Vector4f.LENGTH; ++i) {
+                buffer.putFloat(highlightColor.a[i]);
+            }      
+            
+            for (int i = 0; i < padding2; ++i) {
+                buffer.put((byte)0);
+            }             
         }         
     }   
-                      
+    
     
     // ========================> Shaders <======================== \\
     
     @Override
-    protected String GetVertexShaderName() { return "Line.vs"; }
+    protected String GetVertexShaderName() { return "NodeLabel.vs"; }
     
     @Override
-    protected String GetGeometryShaderName() { return "LineLine.gs"; }
+    protected String GetGeometryShaderName() { return "Label.gs"; }
     
     @Override
-    protected String GetFragmentShaderName() { return "LineLine.fs"; }   
-        
+    protected String GetFragmentShaderName() { return "Label.fs"; }      
+                
     
     // ========================> Lifetime <======================== \\
     
-    public CVKLinksRenderable(CVKVisualProcessor visualProcessor) {
+    public CVKIconLabelsRenderable(CVKVisualProcessor visualProcessor) {
         super(visualProcessor);
-        
-        //points?
-        assemblyTopology = VK_PRIMITIVE_TOPOLOGY_LINE_LIST;
-    }              
+        for (int i = 0; i < LabelUtilities.MAX_LABELS_TO_DRAW; ++i) {
+            topLabelColours[i] = new Vector3f();
+            bottomLabelColours[i] = new Vector3f();
+        }      
+    }       
     
     private void CreateUBOStagingBuffers() {
         cvkVertexUBStagingBuffer = CVKBuffer.Create(VertexUniformBufferObject.SizeOf(),
                                                     VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                                                     VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
                                                     GetLogger(),
-                                                    "CVKLinksRenderable.CreateUBOStagingBuffers cvkVertexUBStagingBuffer");   
+                                                    "CVKIconLabelsRenderable.CreateUBOStagingBuffers cvkVertexUBStagingBuffer");   
         cvkGeometryUBStagingBuffer = CVKBuffer.Create(GeometryUniformBufferObject.SizeOf(),
                                                       VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                                                       VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
                                                       GetLogger(),
-                                                      "CVKLinksRenderable.CreateUBOStagingBuffers cvkGeometryUBStagingBuffer"); 
+                                                      "CVKIconLabelsRenderable.CreateUBOStagingBuffers cvkGeometryUBStagingBuffer");         
     }
     
     @Override
     public int Initialise() {
-        int ret = super.Initialise();
-        if (VkFailed(ret)) { return ret; }
+        int ret = super.Initialise();  
+        if (VkFailed(ret)) { return ret; }   
         
-        // Check for double initialisation
-        CVKAssert(hDescriptorLayout == VK_NULL_HANDLE);
-
-        CreatePushConstants();         
+        CreatePushConstants();                 
         
         ret = CreateDescriptorLayout();
         if (VkFailed(ret)) { return ret; }   
         
         ret = CreatePipelineLayout();
-        if (VkFailed(ret)) { return ret; }          
-                
+        if (VkFailed(ret)) { return ret; }  
+          
         CreateUBOStagingBuffers();
         
         return ret;
@@ -430,7 +445,7 @@ public class CVKLinksRenderable extends CVKRenderable {
         if (cvkVertexStagingBuffer != null) {
             cvkVertexStagingBuffer.Destroy();
             cvkVertexStagingBuffer = null;
-        }        
+        }       
         if (cvkVertexUBStagingBuffer != null) {
             cvkVertexUBStagingBuffer.Destroy();
             cvkVertexUBStagingBuffer = null;
@@ -438,7 +453,7 @@ public class CVKLinksRenderable extends CVKRenderable {
         if (cvkGeometryUBStagingBuffer != null) {
             cvkGeometryUBStagingBuffer.Destroy();
             cvkGeometryUBStagingBuffer = null;
-        }
+        }                
     }
     
     @Override
@@ -454,19 +469,23 @@ public class CVKLinksRenderable extends CVKRenderable {
         DestroyStagingBuffers();
         DestroyPushConstants();
         
-        CVKAssertNull(vertexBuffers);
-        CVKAssertNull(vertexUniformBuffers);
-        CVKAssertNull(geometryUniformBuffers);
-        CVKAssertNull(pDescriptorSets);
-        CVKAssertNull(hDescriptorLayout);  
-        CVKAssertNull(displayCommandBuffers);        
-        CVKAssertNull(displayPipelines);
-        CVKAssertNull(hPipelineLayout);    
-        CVKAssertNull(modelViewPushConstants);
-        CVKAssertNull(hitTestPushConstants);
-    }
+        // Reset our cached handles
+        hGlyphAtlasSampler = VK_NULL_HANDLE;
+        hGlyphAtlasImageView = VK_NULL_HANDLE;     
+        hGlyphCoordinateBufferView = VK_NULL_HANDLE;
+        hPositionBufferView = VK_NULL_HANDLE;
+
+        CVKAssert(vertexBuffers == null);
+        CVKAssert(vertexUniformBuffers == null);
+        CVKAssert(geometryUniformBuffers == null);
+        CVKAssert(pDescriptorSets == null);
+        CVKAssert(hDescriptorLayout == VK_NULL_HANDLE);  
+        CVKAssert(displayCommandBuffers == null);        
+        CVKAssert(displayPipelines == null);
+        CVKAssert(hPipelineLayout == VK_NULL_HANDLE);    
+    }    
     
-       
+    
     // ========================> Swap chain <======================== \\
        
     @Override
@@ -533,7 +552,7 @@ public class CVKLinksRenderable extends CVKRenderable {
                                                              VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
                                                              VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
                                                              GetLogger(),
-                                                             String.format("CVKLinksRenderable cvkVertexBuffer %d", i));
+                                                             String.format("CVKIconLabelsRenderable cvkVertexBuffer %d", i));
                 vertexBuffers.add(cvkVertexBuffer);        
             }
 
@@ -550,18 +569,7 @@ public class CVKLinksRenderable extends CVKRenderable {
         CVKAssert(vertexBuffers != null);
         CVKAssert(vertexBuffers.size() > 0);
         CVKAssert(cvkVertexStagingBuffer.GetBufferSize() == vertexBuffers.get(0).GetBufferSize());
-        int ret = VK_SUCCESS;
-
-//            List<DEBUG_CVKBufferElementDescriptor> DEBUG_vertexDescriptors = new ArrayList<>();
-//            DEBUG_vertexDescriptors.add(new DEBUG_CVKBufferElementDescriptor("r", Float.TYPE));
-//            DEBUG_vertexDescriptors.add(new DEBUG_CVKBufferElementDescriptor("g", Float.TYPE));
-//            DEBUG_vertexDescriptors.add(new DEBUG_CVKBufferElementDescriptor("b", Float.TYPE));
-//            DEBUG_vertexDescriptors.add(new DEBUG_CVKBufferElementDescriptor("a", Float.TYPE));
-//            DEBUG_vertexDescriptors.add(new DEBUG_CVKBufferElementDescriptor("mainIconIndices", Integer.TYPE));
-//            DEBUG_vertexDescriptors.add(new DEBUG_CVKBufferElementDescriptor("decoratorWestIconIndices", Integer.TYPE));
-//            DEBUG_vertexDescriptors.add(new DEBUG_CVKBufferElementDescriptor("decoratorEastIconIndices", Integer.TYPE));
-//            DEBUG_vertexDescriptors.add(new DEBUG_CVKBufferElementDescriptor("vertexIndex", Integer.TYPE)); 
-//            cvkVertexStagingBuffer.DEBUGPRINT(DEBUG_vertexDescriptors);            
+        int ret = VK_SUCCESS;     
             
         for (int i = 0; i < vertexBuffers.size(); ++i) {   
             CVKBuffer cvkVertexBuffer = vertexBuffers.get(i);
@@ -577,7 +585,11 @@ public class CVKLinksRenderable extends CVKRenderable {
     }  
     
     @Override
-    public int GetVertexCount() { return cvkVisualProcessor.GetDrawFlags().drawConnections() ? vertexCount : 0; }     
+    public int GetVertexCount() {
+        return cvkVisualProcessor.GetDrawFlags().drawNodes() && 
+               cvkVisualProcessor.GetDrawFlags().drawNodeLabels() ? 
+                   vertexCount : 0; 
+    }   
     
     private void DestroyVertexBuffers() {
         if (vertexBuffers != null) {
@@ -585,13 +597,13 @@ public class CVKLinksRenderable extends CVKRenderable {
             vertexBuffers.clear();
             vertexBuffers = null;
         }           
-    }               
+    }    
     
-    
+
     // ========================> Uniform buffers <======================== \\
     
-    private int CreateVertexUniformBuffers() {
-        CVKAssertNotNull(cvkSwapChain);
+    private int CreateVertexUniformBuffers(MemoryStack stack) {
+        CVKAssert(cvkSwapChain != null);
         CVKAssert(vertexUniformBuffers == null);
  
         vertexUniformBuffers = new ArrayList<>();
@@ -600,40 +612,46 @@ public class CVKLinksRenderable extends CVKRenderable {
                                                              VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
                                                              VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
                                                              GetLogger(),
-                                                             String.format("CVKLinksRenderable vertexUniformBuffer %d", i));   
+                                                             String.format("CVKIconLabelsRenderable vertexUniformBuffer %d", i));   
             vertexUniformBuffers.add(vertexUniformBuffer);                     
         }        
-        return UpdateVertexUniformBuffers();
+        return UpdateVertexUniformBuffers(stack);
     }
         
-    private int UpdateVertexUniformBuffers() {
-        CVKAssertNotNull(cvkSwapChain);
-        CVKAssertNotNull(cvkVertexUBStagingBuffer);
-        CVKAssertNotNull(vertexUniformBuffers);
+    private int UpdateVertexUniformBuffers(MemoryStack stack) {
+        CVKAssert(cvkSwapChain != null);
+        CVKAssert(cvkVertexUBStagingBuffer != null);
+        CVKAssert(vertexUniformBuffers != null);
         CVKAssert(vertexUniformBuffers.size() > 0);
         
         int ret = VK_SUCCESS;
         
-        // Populate the UBO.  This is easy to deal with, but not super efficient
-        // as we are effectively staging into the staging buffer below.
-        vertexUBO.morphMix = cvkVisualProcessor.getDisplayCamera().getMix();
+        // While this never changes we won't know it when the UBO is created as the
+        // background glyph won't be added until the first render as we need the
+        // device to be initialised.  
+        // TODO: check this is correct, it comes from the glyphmanager not the atlas
+        vertexUBO.backgroundGlyphIndex = CVKGlyphTextureAtlas.BACKGROUND_GLYPH_INDEX;
         
+        vertexUBO.morphMix = cvkVisualProcessor.getDisplayCamera().getMix();
+
+        // TODO: replace with constants.  In the JOGL version these were in a static var CAMERA that never changed
+        vertexUBO.visibilityLow = cvkVisualProcessor.getDisplayCamera().getVisibilityLow();
+        vertexUBO.visibilityHigh = cvkVisualProcessor.getDisplayCamera().getVisibilityHigh();            
+
         // Staging buffer so our VBO can be device local (most performant memory)
         ByteBuffer pMemory = cvkVertexUBStagingBuffer.StartMemoryMap(0, VertexUniformBufferObject.SizeOf());
         {
             vertexUBO.CopyTo(pMemory);
         }
         cvkVertexUBStagingBuffer.EndMemoryMap();
-        pMemory = null;
-        
+        pMemory = null;  
+     
         // Copy the staging buffer into the uniform buffer on the device
         final int imageCount = cvkSwapChain.GetImageCount(); 
         for (int i = 0; i < imageCount; ++i) {   
             ret = vertexUniformBuffers.get(i).CopyFrom(cvkVertexUBStagingBuffer);   
             if (VkFailed(ret)) { return ret; }
         }
-        
-        UpdateVertexPushConstants();
         
         // We are done, reset the resource state
         SetVertexUBOState(CVK_RESOURCE_CLEAN);
@@ -648,7 +666,7 @@ public class CVKLinksRenderable extends CVKRenderable {
         }    
     }      
     
-    private int CreateGeometryUniformBuffers() {
+    private int CreateGeometryUniformBuffers(MemoryStack stack) {
         CVKAssertNotNull(cvkSwapChain);
         CVKAssert(geometryUniformBuffers == null);
 
@@ -658,13 +676,13 @@ public class CVKLinksRenderable extends CVKRenderable {
                                                                VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
                                                                VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
                                                                GetLogger(),
-                                                               String.format("CVKLinksRenderable geometryUniformBuffer %d", i));
+                                                               String.format("CVKIconLabelsRenderable geometryUniformBuffer %d", i));
             geometryUniformBuffers.add(geometryUniformBuffer);              
         }
-        return UpdateGeometryUniformBuffers();
+        return UpdateGeometryUniformBuffers(stack);
     }
     
-    private int UpdateGeometryUniformBuffers() {
+    private int UpdateGeometryUniformBuffers(MemoryStack stack) {
         CVKAssertNotNull(cvkSwapChain);
         CVKAssertNotNull(cvkGeometryUBStagingBuffer);
         CVKAssertNotNull(geometryUniformBuffers);
@@ -672,14 +690,9 @@ public class CVKLinksRenderable extends CVKRenderable {
         
         int ret = VK_SUCCESS;
         
-        // Populate the UBO.  This is easy to deal with, but not super efficient
-        // as we are effectively staging into the staging buffer below.
         geometryUBO.pMatrix.set(cvkVisualProcessor.GetProjectionMatrix());
-        geometryUBO.highlightColour.set(highlightColour);
-        geometryUBO.visibilityLow = cvkVisualProcessor.getDisplayCamera().getVisibilityLow();
-        geometryUBO.visibilityHigh = cvkVisualProcessor.getDisplayCamera().getVisibilityHigh();           
-        geometryUBO.directionMotion = cvkVisualProcessor.GetMotion();
-        geometryUBO.alpha = opacity;                      
+        geometryUBO.widthScalingFactor  = CVKGlyphTextureAtlas.GetInstance().GetWidthScalingFactor();
+        geometryUBO.heightScalingFactor = CVKGlyphTextureAtlas.GetInstance().GetWidthScalingFactor();
         
         // Staging buffer so our VBO can be device local (most performant memory)
         ByteBuffer pMemory = cvkGeometryUBStagingBuffer.StartMemoryMap(0, GeometryUniformBufferObject.SizeOf());
@@ -707,25 +720,20 @@ public class CVKLinksRenderable extends CVKRenderable {
             geometryUniformBuffers.forEach(el -> {el.Destroy();});
             geometryUniformBuffers = null;
         }                
-    }
+    }         
+    
 
     // ========================> Push constants <======================== \\
     
     private int CreatePushConstants() {
         // Initialise push constants to identity mtx
-        modelViewPushConstants = MemoryUtil.memAlloc(MODEL_VIEW_PUSH_CONSTANT_SIZE);
+        vertexPushConstants = memAlloc(64);
         for (int iRow = 0; iRow < 4; ++iRow) {
             for (int iCol = 0; iCol < 4; ++iCol) {
-                modelViewPushConstants.putFloat(IDENTITY_44F.get(iRow, iCol));
+                vertexPushConstants.putFloat(IDENTITY_44F.get(iRow, iCol));
             }
-        }
-        
-        // Set DrawHitTest to false
-        hitTestPushConstants = MemoryUtil.memAlloc(HIT_TEST_PUSH_CONSTANT_SIZE);
-        hitTestPushConstants.putInt(0);
-        
-        modelViewPushConstants.flip();
-        hitTestPushConstants.flip();
+        }       
+        vertexPushConstants.flip();
         
         return VK_SUCCESS;
     }
@@ -733,40 +741,23 @@ public class CVKLinksRenderable extends CVKRenderable {
     private void UpdateVertexPushConstants(){
         CVKAssertNotNull(cvkSwapChain);
         
-        modelViewPushConstants.clear();
+        vertexPushConstants.clear();
+        
+        // Update MV Matrix
         Matrix44f mvMatrix = cvkVisualProcessor.getDisplayModelViewMatrix();
         for (int iRow = 0; iRow < 4; ++iRow) {
             for (int iCol = 0; iCol < 4; ++iCol) {
-                modelViewPushConstants.putFloat(mvMatrix.get(iRow, iCol));
+                vertexPushConstants.putFloat(mvMatrix.get(iRow, iCol));
             }
         }
         
-        modelViewPushConstants.flip();        
-    }
-    
-    protected void UpdatePushConstantsHitTest(boolean drawHitTest){
-        CVKAssertNotNull(cvkSwapChain);
-        
-        hitTestPushConstants.clear();
-        
-        if (drawHitTest) {
-            hitTestPushConstants.putInt(1);
-        } else {
-            hitTestPushConstants.putInt(0);
-        }
-
-        hitTestPushConstants.flip();        
+        vertexPushConstants.flip();        
     }
     
     private void DestroyPushConstants() {
-        if (modelViewPushConstants != null) {
-            memFree(modelViewPushConstants);
-            modelViewPushConstants = null;
-        }
-        
-        if (hitTestPushConstants != null) {
-            memFree(hitTestPushConstants);
-            hitTestPushConstants = null;
+        if (vertexPushConstants != null) {
+            memFree(vertexPushConstants);
+            vertexPushConstants = null;
         }
     }
     
@@ -780,14 +771,10 @@ public class CVKLinksRenderable extends CVKRenderable {
         int imageCount = cvkSwapChain.GetImageCount();
         
         displayCommandBuffers = new ArrayList<>(imageCount);
-        hittestCommandBuffers = new ArrayList<>(imageCount);
         
         for (int i = 0; i < imageCount; ++i) {
-            CVKCommandBuffer buffer = CVKCommandBuffer.Create(VK_COMMAND_BUFFER_LEVEL_SECONDARY, GetLogger(), String.format("CVKLinksRenderable %d", i));
+            CVKCommandBuffer buffer = CVKCommandBuffer.Create(VK_COMMAND_BUFFER_LEVEL_SECONDARY, GetLogger(), String.format("CVKIconLabelsRenderable %d", i));
             displayCommandBuffers.add(buffer);
-            
-            CVKCommandBuffer offscreenBuffer = CVKCommandBuffer.Create(VK_COMMAND_BUFFER_LEVEL_SECONDARY, GetLogger(), String.format("CVKLinksRenderable Offscreen Buffer %d", i));
-            hittestCommandBuffers.add(offscreenBuffer);
         }
         
         SetCommandBuffersState(CVK_RESOURCE_CLEAN);
@@ -799,11 +786,6 @@ public class CVKLinksRenderable extends CVKRenderable {
     public VkCommandBuffer GetDisplayCommandBuffer(int imageIndex) {
         return displayCommandBuffers.get(imageIndex).GetVKCommandBuffer(); 
     }       
-    
-    @Override
-    public VkCommandBuffer GetHitTestCommandBuffer(int imageIndex) {
-        return hittestCommandBuffers.get(imageIndex).GetVKCommandBuffer(); 
-    }
     
     @Override
     public int RecordDisplayCommandBuffer(VkCommandBufferInheritanceInfo inheritanceInfo, int imageIndex){
@@ -826,11 +808,8 @@ public class CVKLinksRenderable extends CVKRenderable {
         commandBuffer.BindGraphicsPipeline(displayPipelines.get(imageIndex));
         commandBuffer.BindVertexInput(vertexBuffers.get(imageIndex).GetBufferHandle());
 
-        // Push MV matrix to the vertex shader
-        commandBuffer.PushConstants(hPipelineLayout, MODEL_VIEW_PUSH_CONSTANT_STAGES, 0, modelViewPushConstants);
-
-        // Push drawHitTest flag to the geometry shader
-        commandBuffer.PushConstants(hPipelineLayout, HIT_TEST_PUSH_CONSTANT_STAGES, Matrix44f.BYTES, hitTestPushConstants);
+        // Push MV matrix to the shader
+        commandBuffer.PushConstants(hPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, vertexPushConstants);
 
         commandBuffer.BindGraphicsDescriptorSets(hPipelineLayout, pDescriptorSets.get(imageIndex));
 
@@ -840,71 +819,14 @@ public class CVKLinksRenderable extends CVKRenderable {
         if (VkFailed(ret)) { return ret; }
         
         return ret;
-    }
-    
-    @Override
-    public int RecordHitTestCommandBuffer(VkCommandBufferInheritanceInfo inheritanceInfo, int imageIndex){
-        cvkVisualProcessor.VerifyInRenderThread();
-        CVKAssertNotNull(CVKDevice.GetVkDevice());
-        CVKAssert(CVKDevice.GetCommandPoolHandle() != VK_NULL_HANDLE);
-        CVKAssertNotNull(cvkSwapChain);
-
-        int ret;     
-        
-        // Set the hit test flag in the shaders to true
-        UpdatePushConstantsHitTest(true);            
-
-        CVKCommandBuffer commandBuffer = hittestCommandBuffers.get(imageIndex);          
-        CVKAssertNotNull(commandBuffer);
-        CVKAssertNotNull(hitTestPipelines.get(imageIndex));
-
-        ret = commandBuffer.BeginRecordSecondary(VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT,
-                                                       inheritanceInfo);
-        if (VkFailed(ret)) { return ret; }
-
-        commandBuffer.SetViewPort(cvkSwapChain.GetWidth(), cvkSwapChain.GetHeight());
-        commandBuffer.SetScissor(cvkVisualProcessor.GetCanvas().GetCurrentSurfaceExtent());
-
-        commandBuffer.BindGraphicsPipeline(hitTestPipelines.get(imageIndex));
-        commandBuffer.BindVertexInput(vertexBuffers.get(imageIndex).GetBufferHandle());
-
-        // Push MV matrix to the vertex shader
-        commandBuffer.PushConstants(hPipelineLayout, 
-                                    MODEL_VIEW_PUSH_CONSTANT_STAGES, 
-                                    0, 
-                                    modelViewPushConstants);
-
-        // Push drawHitTest flag to the geometry shader
-        commandBuffer.PushConstants(hPipelineLayout, 
-                                    HIT_TEST_PUSH_CONSTANT_STAGES,
-                                    MODEL_VIEW_PUSH_CONSTANT_SIZE,
-                                    hitTestPushConstants);
-
-        commandBuffer.BindGraphicsDescriptorSets(hPipelineLayout, pDescriptorSets.get(imageIndex));
-
-        commandBuffer.Draw(GetVertexCount());
-
-        ret = commandBuffer.FinishRecord();
-        if (VkFailed(ret)) { return ret; }
-
-        // Reset hit test flag to false
-        UpdatePushConstantsHitTest(false);
-        
-        return ret;
-    }
+    }       
     
     private void DestroyCommandBuffers() {         
-        if (null != displayCommandBuffers) {
+        if (displayCommandBuffers != null) {
             displayCommandBuffers.forEach(el -> {el.Destroy();});
             displayCommandBuffers.clear();
             displayCommandBuffers = null;
-        }
-        
-        if (null != hittestCommandBuffers) {
-            hittestCommandBuffers.forEach(el -> {el.Destroy();});
-            hittestCommandBuffers.clear();
-            hittestCommandBuffers = null;
-        }  
+        }      
     }        
     
         
@@ -912,9 +834,9 @@ public class CVKLinksRenderable extends CVKRenderable {
     
     private int CreateDescriptorLayout() {
         int ret;
-        
+
         try (MemoryStack stack = stackPush()) {
-            VkDescriptorSetLayoutBinding.Buffer bindings = VkDescriptorSetLayoutBinding.callocStack(3, stack);
+            VkDescriptorSetLayoutBinding.Buffer bindings = VkDescriptorSetLayoutBinding.callocStack(5, stack);
 
             // 0: Vertex uniform buffer
             VkDescriptorSetLayoutBinding vertexUBDSLB = bindings.get(0);
@@ -938,8 +860,23 @@ public class CVKLinksRenderable extends CVKRenderable {
             geometryUBDSLB.descriptorCount(1);
             geometryUBDSLB.descriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
             geometryUBDSLB.pImmutableSamplers(null);
-            geometryUBDSLB.stageFlags(VK_SHADER_STAGE_GEOMETRY_BIT);                
-                          
+            geometryUBDSLB.stageFlags(VK_SHADER_STAGE_GEOMETRY_BIT);      
+            
+            // 3: Geometry samplerBuffer (glyph coordinate buffer)
+            VkDescriptorSetLayoutBinding geometrySamplerDSLB = bindings.get(3);
+            geometrySamplerDSLB.binding(3);
+            geometrySamplerDSLB.descriptorCount(1);
+            geometrySamplerDSLB.descriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER);
+            geometrySamplerDSLB.pImmutableSamplers(null);
+            geometrySamplerDSLB.stageFlags(VK_SHADER_STAGE_GEOMETRY_BIT);               
+
+            // 4: Fragment sampler2Darray (atlas)
+            VkDescriptorSetLayoutBinding fragmentSamplerDSLB = bindings.get(4);
+            fragmentSamplerDSLB.binding(4);
+            fragmentSamplerDSLB.descriptorCount(1);
+            fragmentSamplerDSLB.descriptorType(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
+            fragmentSamplerDSLB.pImmutableSamplers(null);
+            fragmentSamplerDSLB.stageFlags(VK_SHADER_STAGE_FRAGMENT_BIT);              
 
             VkDescriptorSetLayoutCreateInfo layoutInfo = VkDescriptorSetLayoutCreateInfo.callocStack(stack);
             layoutInfo.sType(VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO);
@@ -950,14 +887,14 @@ public class CVKLinksRenderable extends CVKRenderable {
             ret = vkCreateDescriptorSetLayout(CVKDevice.GetVkDevice(), layoutInfo, null, pDescriptorSetLayout);
             if (VkSucceeded(ret)) {
                 hDescriptorLayout = pDescriptorSetLayout.get(0);
-                GetLogger().info("CVKLinksRenderable created hDescriptorLayout: 0x%016X", hDescriptorLayout);
+                GetLogger().info("CVKIconLabelsRenderable created hDescriptorLayout: 0x%016X", hDescriptorLayout);
             }
         }        
         return ret;
     }      
     
     private void DestroyDescriptorLayout() {
-        GetLogger().info("CVKLinksRenderable destroying hDescriptorLayout: 0x%016X", hDescriptorLayout);
+        GetLogger().info("CVKIconLabelsRenderable destroying hDescriptorLayout: 0x%016X", hDescriptorLayout);
         vkDestroyDescriptorSetLayout(CVKDevice.GetVkDevice(), hDescriptorLayout, null);
         hDescriptorLayout = VK_NULL_HANDLE;
     }
@@ -968,9 +905,8 @@ public class CVKLinksRenderable extends CVKRenderable {
         
         int ret;    
 
-        // The same layout is used for each descriptor set. Each image has a 
-        // an identical copy of the descriptor set so allow the GPU and CPU to
-        // desynchronise (when there are 2 or more images in the swapchain).
+        // The same layout is used for each descriptor set (each descriptor set is
+        // identical but allow the GPU and CPU to desynchronise.
         final int imageCount = cvkSwapChain.GetImageCount();
         LongBuffer layouts = stack.mallocLong(imageCount);
         for (int i = 0; i < imageCount; ++i) {
@@ -988,7 +924,7 @@ public class CVKLinksRenderable extends CVKRenderable {
         if (VkFailed(ret)) { return ret; }
         
         for (int i = 0; i < pDescriptorSets.capacity(); ++i) {
-            GetLogger().info("CVKLinksRenderable allocated hDescriptorSet %d: 0x%016X", i, pDescriptorSets.get(i));
+            GetLogger().info("CVKIconLabelsRenderable allocated hDescriptorSet %d: 0x%016X", i, pDescriptorSets.get(i));
         }
         
         return UpdateDescriptorSets(stack);
@@ -1009,40 +945,60 @@ public class CVKLinksRenderable extends CVKRenderable {
      
         final int imageCount = cvkSwapChain.GetImageCount();
         
-        final long positionBufferSize = cvkVisualProcessor.GetPositionBufferSize();
+        // Cache atlas handles so we know when to recreate descriptors
+        hGlyphAtlasSampler = CVKGlyphTextureAtlas.GetInstance().GetAtlasSamplerHandle();
+        hGlyphAtlasImageView = CVKGlyphTextureAtlas.GetInstance().GetAtlasImageViewHandle(); 
+        hGlyphCoordinateBuffer = CVKGlyphTextureAtlas.GetInstance().GetCoordinateBufferHandle();
+        hGlyphCoordinateBufferView = CVKGlyphTextureAtlas.GetInstance().GetCoordinateBufferViewHandle();
         hPositionBuffer = cvkVisualProcessor.GetPositionBufferHandle();
         hPositionBufferView = cvkVisualProcessor.GetPositionBufferViewHandle();  
+        CVKAssertNotNull(hGlyphAtlasSampler);
+        CVKAssertNotNull(hGlyphAtlasImageView);
+        CVKAssertNotNull(hGlyphCoordinateBuffer);
+        CVKAssertNotNull(hGlyphCoordinateBufferView);
         CVKAssertNotNull(hPositionBuffer);
-        CVKAssertNotNull(hPositionBufferView);        
+        CVKAssertNotNull(hPositionBufferView);
         
         // - Descriptor info structs -
         // We create these to describe the different resources we want to address
         // in shaders.  We have one info struct per resource.  We then create a 
         // write descriptor set structure for each resource for each image.  For
         // buffered resources like the the uniform buffers we wait to set the 
-        // buffer resource until the image loop below.
-        
-        // Struct for the uniform buffer used by VertexIcon.vs
+        // buffer resource until the image loop below.       
+                      
+        // Struct for the uniform buffer used by NodeLabel.vs
         VkDescriptorBufferInfo.Buffer vertexUniformBufferInfo = VkDescriptorBufferInfo.callocStack(1, stack);
         // vertexUniformBufferInfo.buffer is set per imageIndex
         vertexUniformBufferInfo.offset(0);
-        vertexUniformBufferInfo.range(VertexUniformBufferObject.SizeOf());        
+        vertexUniformBufferInfo.range(VertexUniformBufferObject.SizeOf());  
         
-        // Struct for texel buffer (positions) used by VertexIcon.vs
+        // Struct for texel buffer (positions) used by NodeLabel.vs
         VkDescriptorBufferInfo.Buffer positionsTexelBufferInfo = VkDescriptorBufferInfo.callocStack(1, stack);
         positionsTexelBufferInfo.buffer(hPositionBuffer);
         positionsTexelBufferInfo.offset(0);
-        positionsTexelBufferInfo.range(positionBufferSize);               
+        positionsTexelBufferInfo.range(cvkVisualProcessor.GetPositionBufferSize());             
 
-        // Struct for the uniform buffer used by VertexIcon.gs
+        // Struct for the uniform buffer used by Label.gs
         VkDescriptorBufferInfo.Buffer geometryUniformBufferInfo = VkDescriptorBufferInfo.callocStack(1, stack);
         // geometryBufferInfo.buffer is set per imageIndex
         geometryUniformBufferInfo.offset(0);
-        geometryUniformBufferInfo.range(GeometryUniformBufferObject.SizeOf());                      
+        geometryUniformBufferInfo.range(GeometryUniformBufferObject.SizeOf());      
+        
+        // Struct for texel buffer (glyph coordinates) used by Label.gs
+        VkDescriptorBufferInfo.Buffer glyphCoordinateTexelBufferInfo = VkDescriptorBufferInfo.callocStack(1, stack);
+        glyphCoordinateTexelBufferInfo.buffer(hGlyphCoordinateBuffer);
+        glyphCoordinateTexelBufferInfo.offset(0);
+        glyphCoordinateTexelBufferInfo.range(CVKGlyphTextureAtlas.GetInstance().GetCoordinateBufferSize());            
 
-        // We need 3 write descriptors, 2 for uniform buffers and 1 for texel buffers                  
-        VkWriteDescriptorSet.Buffer descriptorWrites = VkWriteDescriptorSet.callocStack(3, stack);
+        // Struct for the size of the image sampler (atlas) used by Label.fs
+        VkDescriptorImageInfo.Buffer imageInfo = VkDescriptorImageInfo.callocStack(1, stack);
+        imageInfo.imageLayout(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+        imageInfo.imageView(hGlyphAtlasImageView);
+        imageInfo.sampler(hGlyphAtlasSampler);
 
+        // We need 5 write descriptors, 2 for uniform buffers, 2 for texel buffers and 1 for texture sampler                       
+        VkWriteDescriptorSet.Buffer descriptorWrites = VkWriteDescriptorSet.callocStack(5, stack);         
+        
         // Vertex uniform buffer
         VkWriteDescriptorSet vertexUBDescriptorWrite = descriptorWrites.get(0);
         vertexUBDescriptorWrite.sType(VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET);
@@ -1069,7 +1025,26 @@ public class CVKLinksRenderable extends CVKRenderable {
         geometryUBDescriptorWrite.dstArrayElement(0);
         geometryUBDescriptorWrite.descriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
         geometryUBDescriptorWrite.descriptorCount(1);
-        geometryUBDescriptorWrite.pBufferInfo(geometryUniformBufferInfo);     
+        geometryUBDescriptorWrite.pBufferInfo(geometryUniformBufferInfo);   
+        
+        // Geometry texel buffer (glyph coordinates)
+        VkWriteDescriptorSet vertexFlagsTBDescriptorWrite = descriptorWrites.get(3);
+        vertexFlagsTBDescriptorWrite.sType(VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET);
+        vertexFlagsTBDescriptorWrite.dstBinding(3);
+        vertexFlagsTBDescriptorWrite.dstArrayElement(0);
+        vertexFlagsTBDescriptorWrite.descriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER);
+        vertexFlagsTBDescriptorWrite.descriptorCount(1);
+        vertexFlagsTBDescriptorWrite.pBufferInfo(glyphCoordinateTexelBufferInfo);       
+        vertexFlagsTBDescriptorWrite.pTexelBufferView(stack.longs(hGlyphCoordinateBufferView));
+
+        // Fragment image (atlas) sampler
+        VkWriteDescriptorSet atlasSamplerDescriptorWrite = descriptorWrites.get(4);
+        atlasSamplerDescriptorWrite.sType(VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET);
+        atlasSamplerDescriptorWrite.dstBinding(4);
+        atlasSamplerDescriptorWrite.dstArrayElement(0);
+        atlasSamplerDescriptorWrite.descriptorType(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
+        atlasSamplerDescriptorWrite.descriptorCount(1);
+        atlasSamplerDescriptorWrite.pImageInfo(imageInfo);   
         
         for (int i = 0; i < imageCount; ++i) {                        
             // Update the buffered resource buffers
@@ -1081,9 +1056,9 @@ public class CVKLinksRenderable extends CVKRenderable {
             descriptorWrites.forEach(el -> {el.dstSet(descriptorSet);});
 
             // Update the descriptors with a write and no copy
-            GetLogger().info("CVKLinksRenderable updating descriptorSet: 0x%016X", descriptorSet);
+            GetLogger().info("CVKIconLabelsRenderable updating descriptorSet: 0x%016X", descriptorSet);
             vkUpdateDescriptorSets(CVKDevice.GetVkDevice(), descriptorWrites, null);
-        }           
+        }                  
         
         SetDescriptorSetsState(CVK_RESOURCE_CLEAN);
         
@@ -1096,10 +1071,10 @@ public class CVKLinksRenderable extends CVKRenderable {
         if (pDescriptorSets != null) {
             CVKAssertNotNull(cvkDescriptorPool);
             CVKAssertNotNull(cvkDescriptorPool.GetDescriptorPoolHandle());            
-            GetLogger().fine("CVKLinksRenderable returning %d descriptor sets to the pool", pDescriptorSets.capacity());
+            GetLogger().fine("CVKIconLabelsRenderable returning %d descriptor sets to the pool", pDescriptorSets.capacity());
             
             for (int i = 0; i < pDescriptorSets.capacity(); ++i) {
-                GetLogger().info("CVKLinksRenderable freeing hDescriptorSet %d: 0x%016X", i, pDescriptorSets.get(i));
+                GetLogger().info("CVKIconLabelsRenderable freeing hDescriptorSet %d: 0x%016X", i, pDescriptorSets.get(i));
             }            
             
             // After calling vkFreeDescriptorSets, all descriptor sets in pDescriptorSets are invalid.
@@ -1124,12 +1099,16 @@ public class CVKLinksRenderable extends CVKRenderable {
     
     @Override
     public void IncrementDescriptorTypeRequirements(CVKDescriptorPoolRequirements reqs, CVKDescriptorPoolRequirements perImageReqs) {
-        // Line.vs
+        // NodeLabel.vs
         ++perImageReqs.poolDescriptorTypeCounts[VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER];
         ++perImageReqs.poolDescriptorTypeCounts[VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER];
         
-        // LineLine.gs
+        // Label.gs
         ++perImageReqs.poolDescriptorTypeCounts[VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER];
+        ++perImageReqs.poolDescriptorTypeCounts[VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER];
+        
+        // Label.fs
+        ++perImageReqs.poolDescriptorTypeCounts[VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER];
         
         // One set per image
         ++perImageReqs.poolDesciptorSetCount;
@@ -1153,14 +1132,10 @@ public class CVKLinksRenderable extends CVKRenderable {
         int ret;       
         try (MemoryStack stack = stackPush()) {  
             VkPushConstantRange.Buffer pushConstantRange;
-            pushConstantRange = VkPushConstantRange.calloc(2);
-            pushConstantRange.get(0).stageFlags(MODEL_VIEW_PUSH_CONSTANT_STAGES);
-            pushConstantRange.get(0).size(MODEL_VIEW_PUSH_CONSTANT_SIZE);
+            pushConstantRange = VkPushConstantRange.calloc(1);
+            pushConstantRange.get(0).stageFlags(VK_SHADER_STAGE_VERTEX_BIT);
+            pushConstantRange.get(0).size(64);
             pushConstantRange.get(0).offset(0);
-
-            pushConstantRange.get(1).stageFlags(HIT_TEST_PUSH_CONSTANT_STAGES);
-            pushConstantRange.get(1).size(HIT_TEST_PUSH_CONSTANT_SIZE);
-            pushConstantRange.get(1).offset(MODEL_VIEW_PUSH_CONSTANT_SIZE);           
 
             VkPipelineLayoutCreateInfo pipelineLayoutInfo = VkPipelineLayoutCreateInfo.callocStack(stack);
             pipelineLayoutInfo.sType(VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO);
@@ -1173,7 +1148,7 @@ public class CVKLinksRenderable extends CVKRenderable {
             CVKAssert(hPipelineLayout != VK_NULL_HANDLE);                
         }        
         return ret;        
-    }    
+    }      
     
     private void DestroyPipelineLayout() {
         if (hPipelineLayout != VK_NULL_HANDLE) {
@@ -1186,9 +1161,13 @@ public class CVKLinksRenderable extends CVKRenderable {
     // ========================> Display <======================== \\
     
     @Override
-    public boolean NeedsDisplayUpdate() {   
+    public boolean NeedsDisplayUpdate() {    
         if (hPositionBuffer != cvkVisualProcessor.GetPositionBufferHandle() ||
-            hPositionBufferView != cvkVisualProcessor.GetPositionBufferViewHandle()) {
+            hPositionBufferView != cvkVisualProcessor.GetPositionBufferViewHandle() ||
+            hGlyphAtlasSampler != CVKGlyphTextureAtlas.GetInstance().GetAtlasSamplerHandle() ||
+            hGlyphAtlasImageView != CVKGlyphTextureAtlas.GetInstance().GetAtlasImageViewHandle() ||
+            hGlyphCoordinateBuffer != CVKGlyphTextureAtlas.GetInstance().GetCoordinateBufferHandle() ||
+            hGlyphCoordinateBufferView != CVKGlyphTextureAtlas.GetInstance().GetCoordinateBufferViewHandle()) {
             if (descriptorSetsState != CVK_RESOURCE_NEEDS_REBUILD) {
                 descriptorSetsState = CVK_RESOURCE_NEEDS_UPDATE;
             }
@@ -1199,7 +1178,7 @@ public class CVKLinksRenderable extends CVKRenderable {
                 vertexBuffersState != CVK_RESOURCE_CLEAN ||
                 commandBuffersState != CVK_RESOURCE_CLEAN ||
                 descriptorSetsState != CVK_RESOURCE_CLEAN ||
-                pipelinesState != CVK_RESOURCE_CLEAN);                
+                pipelinesState != CVK_RESOURCE_CLEAN); 
     }
     
     @Override
@@ -1218,21 +1197,21 @@ public class CVKLinksRenderable extends CVKRenderable {
                 if (VkFailed(ret)) { return ret; }           
             }                
         
-            // Vertex uniform buffer
+            // Vertex uniform buffer (camera guff)
             if (vertexUBOState == CVK_RESOURCE_NEEDS_REBUILD) {
-                ret = CreateVertexUniformBuffers();
+                ret = CreateVertexUniformBuffers(stack);
                 if (VkFailed(ret)) { return ret; }
             } else if (vertexUBOState == CVK_RESOURCE_NEEDS_UPDATE) {
-                ret = UpdateVertexUniformBuffers();
+                ret = UpdateVertexUniformBuffers(stack);
                 if (VkFailed(ret)) { return ret; }               
             }
 
-            // Geometry uniform buffer
+            // Geometry uniform buffer (projection, highlight colour)
             if (geometryUBOState == CVK_RESOURCE_NEEDS_REBUILD) {
-                ret = CreateGeometryUniformBuffers();
+                ret = CreateGeometryUniformBuffers(stack);
                 if (VkFailed(ret)) { return ret; }
             } else if (geometryUBOState == CVK_RESOURCE_NEEDS_UPDATE) {
-                ret = UpdateGeometryUniformBuffers();
+                ret = UpdateGeometryUniformBuffers(stack);
                 if (VkFailed(ret)) { return ret; }               
             }                   
 
@@ -1257,118 +1236,72 @@ public class CVKLinksRenderable extends CVKRenderable {
                 ret = CreatePipelines(cvkSwapChain.GetRenderPassHandle(), displayPipelines);
                 if (VkFailed(ret)) { return ret; }
  
-                hitTestPipelines = new ArrayList<>(cvkSwapChain.GetImageCount());
-                ret = CreatePipelines(cvkSwapChain.GetOffscreenRenderPassHandle(), hitTestPipelines);
-                if (VkFailed(ret)) { return ret; }                  
             }                                            
         }                                     
         
         return ret;
-    }        
+    }         
     
     
-    // ========================> Tasks <======================== \\    
-    // NOTE:  we effectively have two levels of staging.  The second level is pretty
-    // straightforward, we need the resources we render with to be in the most
-    // optimal memory possible: resident GPU memory.  This memory cannot be written
-    // by the CPU so we can't update it directly, instead we update staging buffers
-    // that are both GPU and CPU writable then copy from that into the final GPU
-    // buffers.
-    // The first level of staging is required as our staging buffers are VkDevice
-    // resources and the device may not be initialised when these tasks are called.
-    // This is the case when a graph is loaded into a new tab, we need to be able
-    // to process the tasks that load the graph vertices etc before the device is
-    // ready to create staging buffers.  For this reason we update local arrays
-    // in the Build<blah>Array functions, then copy these to our staging buffers
-    // during the renderer's display loop (when the rendering lambda of each task
-    // is executed).  This also means we don't need to synchronise these arrays
-    // created by the visual processor's thread with the staging buffers that have
-    // a lifespan entirely within the rendering thread (AWT event thread).  This
-    // is possible because the arrays are locals in the task functions and aren't
-    // modified by the visual processor thread after they've been added to the 
-    // queue of tasks for the renderer to process.
-
+    // ========================> Tasks <======================== \\
     
-    /**
-     *
-     * @param access: the view of this graph
-     * @param first: the index of the first link to process
-     * @param last: the index of the last link to process
-     * @return: an array of vertex objects ready to copy into the VB
-     */     
+    @Override
+    public void addGlyph(int glyphPosition, float x, float y) {
+        vertices.add(new Vertex(glyphPosition, x, y, glyphContext.visibility,
+                                glyphContext.nodeId, glyphContext.totalScale, glyphContext.labelNumber));
+    }    
+    
+    @Override
+    public void newLine(float width) {
+        vertices.add(new Vertex(CVKGlyphTextureAtlas.BACKGROUND_GLYPH_INDEX, -width / 2.0f - 0.2f, 0.0f, glyphContext.visibility,
+                                glyphContext.nodeId, glyphContext.totalScale, glyphContext.labelNumber));        
+    }    
+    
     private Vertex[] BuildVertexArray(final VisualAccess access, int first, int last) {
-        Vertex[] vertices = null;
-        if ((last - first) >= 0) {
-            final SortedMap<Integer, Integer> connectionPosToBufferPos = new TreeMap<>();
-            final List<Integer> connections = new ArrayList<>();
-
-            int lineCounter = 0;
-            for (int link = first; link <= last; ++link) {
-                if (access.getLinkSource(link) != access.getLinkDestination(link)) {
-                    connections.add(NEW_LINK);
-                    for (int pos = 0; pos < access.getLinkConnectionCount(link); pos++) {
-                        final int connection = access.getLinkConnection(link, pos);
-                        connectionPosToBufferPos.put(connection, lineCounter++);
-                        connections.add(connection);
-                    }
+        vertices = new ArrayList<>();
+        final int newVertexCount = (last - first) + 1;
+        if (newVertexCount > 0) {         
+            for (int pos = first; pos <= last; ++pos) {
+                glyphContext.visibility = access.getVertexVisibility(pos);     
+                
+                // Top labels
+                int totalScale = LabelUtilities.NRADIUS_TO_LABEL_UNITS;
+                for (int label = 0; label < access.getTopLabelCount(); label++) {
+                    glyphContext.nodeId      = pos;
+                    glyphContext.totalScale  = totalScale;
+                    glyphContext.labelNumber = label;
+                    
+                    final String text = access.getVertexTopLabelText(pos, label);
+                    ArrayList<String> lines = LabelUtilities.splitTextIntoLines(text);
+                    Collections.reverse(lines);
+                    for (final String line : lines) {
+                        CVKGlyphTextureAtlas.GetInstance().RenderTextAsLigatures(line, this);
+                        totalScale += topLabelRowSizes.a[label];
+                    }                    
                 }
-            } 
-
-            vertices = new Vertex[lineCounter * 2];
-            int iConnection = 0;
-            for (int pos : connections) {
-                if (pos == NEW_LINK) {
-                    leftOffset = 0;
-                } else {
-                    if (connectionPosToBufferPos.containsKey(pos)) {
-                        final float width = Math.min(LabelUtilities.MAX_TRANSACTION_WIDTH, access.getConnectionWidth(pos));
-                        final float offset;
-                        if (leftOffset == 0) {
-                            offset = 0;
-                            leftOffset += width / 2;
-                            rightOffset = leftOffset;
-                        } else if (leftOffset < rightOffset) {
-                            offset = -(leftOffset + width / 2 + 1);
-                            leftOffset += width + 1;
-                        } else {
-                            offset = rightOffset + width / 2 + 1;
-                            rightOffset += width + 1;
-                        }
-
-                        final int representativeTransactionId = access.getConnectionId(pos);
-                        final int lowVertex = access.getConnectionLowVertex(pos);
-                        final int highVertex = access.getConnectionHighVertex(pos);
-                        final int flags = (access.getConnectionDimmed(pos) ? 2 : 0) | (access.getConnectionSelected(pos) ? 1 : 0);
-                        final int lineStyle = access.getConnectionLineStyle(pos).ordinal();
-                        final ConnectionDirection connectionDirection = access.getConnectionDirection(pos);
-
-                        int iStart = iConnection * 2;
-                        int iEnd   = iStart + 1;
-                        ++iConnection;
-                        CVKAssert(iStart < vertices.length);
-                        CVKAssert(iEnd < vertices.length);
-                        
-                        final ConstellationColor colour = access.getConnectionColor(pos);
-                        final float visibility = access.getConnectionVisibility(pos);
-                        vertices[iStart] = new Vertex(colour,
-                                                      visibility,
-                                                      representativeTransactionId,
-                                                      lowVertex * LINE_INFO_BITS_AVOID + ((connectionDirection == ConnectionDirection.LOW_TO_HIGH || connectionDirection == ConnectionDirection.BIDIRECTED) ? LINE_INFO_ARROW : 0),
-                                                      flags,
-                                                      (int) (offset * FLOAT_MULTIPLIER));
-                        vertices[iEnd]   = new Vertex(colour,
-                                                      visibility,
-                                                      representativeTransactionId,
-                                                      highVertex * LINE_INFO_BITS_AVOID + ((connectionDirection == ConnectionDirection.HIGH_TO_LOW || connectionDirection == ConnectionDirection.BIDIRECTED) ? LINE_INFO_ARROW : 0),
-                                                      flags,
-                                                      ((int) (width * FLOAT_MULTIPLIER)) << 2 | lineStyle);                    
-                    } 
-                }
-            }
-        }
-
-        return vertices;
-    }      
+                
+                // Bottom labels
+                totalScale = LabelUtilities.NRADIUS_TO_LABEL_UNITS;
+                for (int label = 0; label < access.getBottomLabelCount(); label++) {
+                    glyphContext.nodeId      = pos;
+                    glyphContext.totalScale  = -totalScale;
+                    glyphContext.labelNumber = label;
+                    
+                    final String text = access.getVertexBottomLabelText(pos, label);
+                    ArrayList<String> lines = LabelUtilities.splitTextIntoLines(text);
+                    for (final String line : lines) {
+                        CVKGlyphTextureAtlas.GetInstance().RenderTextAsLigatures(line, this);
+                        totalScale += bottomLabelRowSizes.a[label];
+                    }                    
+                }                
+            }                       
+            
+            Vertex[] verticesCopy = new Vertex[vertices.size()];
+            return vertices.toArray(verticesCopy);
+        } else {
+            return null;
+        } 
+    }  
     
     private void RebuildVertexStagingBuffer(Vertex[] vertices) {      
         vertexCount = (vertices != null ? vertices.length : 0);
@@ -1386,7 +1319,7 @@ public class CVKLinksRenderable extends CVKRenderable {
                                                           VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                                                           VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
                                                           GetLogger(),
-                                                          "CVKLabelsRenderable.RebuildVertexStagingBuffer cvkVertexStagingBuffer");
+                                                          "CVKIconLabelsRenderable.RebuildVertexStagingBuffer cvkVertexStagingBuffer");
             }
         }       
 
@@ -1410,19 +1343,19 @@ public class CVKLinksRenderable extends CVKRenderable {
         }
         cvkVertexStagingBuffer.EndMemoryMap();
         pMemory = null; // now unmapped, do not use           
-    }      
+    }                    
     
-    public CVKRenderUpdateTask TaskUpdateLinks(final VisualChange change, final VisualAccess access) {
+    public CVKRenderUpdateTask TaskUpdateLabels(final VisualChange change, final VisualAccess access) {
         //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
-        GetLogger().fine("TaskUpdateLinks frame %d: %d verts", cvkVisualProcessor.GetFrameNumber(), access.getVertexCount());              
+        cvkVisualProcessor.GetLogger().fine("TaskUpdateLabels frame %d: %d verts", cvkVisualProcessor.GetFrameNumber(), access.getVertexCount());
         
         final boolean rebuildRequired = cvkVertexStagingBuffer == null || 
-                                        access.getLinkCount() * Vertex.BYTES != cvkVertexStagingBuffer.GetBufferSize() || 
+                                        access.getVertexCount() * Vertex.BYTES != cvkVertexStagingBuffer.GetBufferSize() || 
                                         change.isEmpty();
         final int changedVerticeRange[];
         final Vertex vertexArray[];
         if (rebuildRequired) {
-            vertexArray = BuildVertexArray(access, 0, access.getLinkCount() - 1);
+            vertexArray = BuildVertexArray(access, 0, access.getVertexCount() - 1);
             changedVerticeRange = null;
         } else {
             changedVerticeRange = change.getRange();
@@ -1439,41 +1372,97 @@ public class CVKLinksRenderable extends CVKRenderable {
                 UpdateVertexStagingBuffer(vertexArray, changedVerticeRange[0], changedVerticeRange[1]);
                 SetVertexBuffersState(CVK_RESOURCE_NEEDS_UPDATE);
             }
-        };  
-    }         
+        };         
+    }
     
-    // GraphVisualAccess sends an empty changelist after building the visual 
-    // change with what looks like the full set of transactions.  If this is 
-    // ever fixed so we receive just the transaction that was selected implement
-    // this method and change CVKVisualProcessor to call it instead of TaskUpdateLinks
-    // for CONNECTION_SELECTED and CONNECTION_COLOR.
-//    public CVKRenderUpdateTask TaskConnectionSelected(final VisualChange change, final VisualAccess access)                       
-//    public CVKRenderUpdateTask TaskUpdateColours(final VisualChange change, final VisualAccess access) 
-      
-    
-    public CVKRenderUpdateTask TaskSetHighlightColour(final VisualAccess access) {
+    public CVKRenderUpdateTask TaskUpdateColours(final VisualChange change, final VisualAccess access) {
         //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
-        final ConstellationColor updatedHighlightColour = access.getHighlightColor();
+        cvkVisualProcessor.GetLogger().fine("TaskUpdateColours frame %d: %d verts", cvkVisualProcessor.GetFrameNumber(), access.getVertexCount());
+                
+        final int numTopLabels = Math.min(LabelUtilities.MAX_LABELS_TO_DRAW, access.getTopLabelCount());
+        for (int i = 0; i < numTopLabels; i++) {
+            topLabelColours[i].setR(access.getBottomLabelColor(i).getRed());
+            topLabelColours[i].setG(access.getBottomLabelColor(i).getGreen());
+            topLabelColours[i].setB(access.getBottomLabelColor(i).getBlue());
+        }      
+        
+        final int numBottomLabels = Math.min(LabelUtilities.MAX_LABELS_TO_DRAW, access.getBottomLabelCount());
+        for (int i = 0; i < numBottomLabels; i++) {
+            bottomLabelColours[i].setR(access.getBottomLabelColor(i).getRed());
+            bottomLabelColours[i].setG(access.getBottomLabelColor(i).getGreen());
+            bottomLabelColours[i].setB(access.getBottomLabelColor(i).getBlue());            
+        }           
         
         //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.ProcessRenderTasks) ===//
         return () -> {
-            highlightColour.set(updatedHighlightColour.getRed(),
-                                updatedHighlightColour.getGreen(),
-                                updatedHighlightColour.getBlue(),
-                                updatedHighlightColour.getAlpha());
+            for (int i = 0; i < numTopLabels; i++) {
+                vertexUBO.labelTopInfo.setRow(topLabelColours[i], i);
+            }
+            for (int i = 0; i < numBottomLabels; i++) {
+                vertexUBO.labelBottomInfo.setRow(bottomLabelColours[i], i);
+            }            
+            if (vertexUBOState != CVK_RESOURCE_NEEDS_REBUILD) {
+                SetVertexUBOState(CVK_RESOURCE_NEEDS_UPDATE);
+            }
+        };        
+    }
+    
+    public CVKRenderUpdateTask TaskUpdateSizes(final VisualChange change, final VisualAccess access) {
+        //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
+        cvkVisualProcessor.GetLogger().fine("TaskUpdateSizes frame %d: %d verts", cvkVisualProcessor.GetFrameNumber(), access.getVertexCount());
+                
+        final int numTopLabels = Math.min(LabelUtilities.MAX_LABELS_TO_DRAW, access.getTopLabelCount());
+        for (int i = 0; i < numTopLabels; i++) {
+            topLabelRowSizes.a[i] = (int)(LabelUtilities.NRADIUS_TO_LABEL_UNITS * Math.min(access.getTopLabelSize(i), LabelUtilities.MAX_LABEL_SIZE));
+        }      
+        
+        final int numBottomLabels = Math.min(LabelUtilities.MAX_LABELS_TO_DRAW, access.getBottomLabelCount());
+        for (int i = 0; i < numBottomLabels; i++) {
+            bottomLabelRowSizes.a[i] = (int)(LabelUtilities.NRADIUS_TO_LABEL_UNITS * Math.min(access.getBottomLabelSize(i), LabelUtilities.MAX_LABEL_SIZE));
+        }           
+        
+        //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.ProcessRenderTasks) ===//
+        return () -> {
+            for (int i = 0; i < numTopLabels; i++) {
+                vertexUBO.labelTopInfo.set(i, 3, topLabelRowSizes.a[i]);
+            }
+            for (int i = 0; i < numBottomLabels; i++) {
+                vertexUBO.labelBottomInfo.set(i, 3, bottomLabelRowSizes.a[i]);
+            }            
+            if (vertexUBOState != CVK_RESOURCE_NEEDS_REBUILD) {
+                SetVertexUBOState(CVK_RESOURCE_NEEDS_UPDATE);
+            }
         };         
     }    
     
-    public CVKRenderUpdateTask TaskUpdateOpacity(final VisualAccess access) {
+    public CVKRenderUpdateTask TaskSetBackgroundColor(final VisualAccess access) {
         //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
-        final float updatedOpacity = access.getConnectionOpacity();
+        cvkVisualProcessor.GetLogger().fine("TaskSetBackgroundColor frame %d: %d verts", cvkVisualProcessor.GetFrameNumber(), access.getVertexCount());
+        final ConstellationColor colour = access.getBackgroundColor();
         
         //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.ProcessRenderTasks) ===//
         return () -> {
-            opacity = updatedOpacity;
-        };         
-    }     
+            vertexUBO.backgroundColor.set(colour.getRed(), colour.getGreen(), colour.getBlue(), 1.0f);            
+            if (vertexUBOState != CVK_RESOURCE_NEEDS_REBUILD) {
+                SetVertexUBOState(CVK_RESOURCE_NEEDS_UPDATE);
+            }            
+        };        
+    }   
     
+    public CVKRenderUpdateTask TaskSetHighlightColor(final VisualAccess access) {
+        //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
+        cvkVisualProcessor.GetLogger().fine("TaskSetHighlightColor frame %d: %d verts", cvkVisualProcessor.GetFrameNumber(), access.getVertexCount());
+        final ConstellationColor colour = access.getHighlightColor();
+            
+        //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.ProcessRenderTasks) ===//
+        return () -> {
+            geometryUBO.highlightColor.set(colour.getRed(), colour.getGreen(), colour.getBlue(), 1.0f);            
+            if (geometryUBOState != CVK_RESOURCE_NEEDS_REBUILD) {
+                SetGeometryUBOState(CVK_RESOURCE_NEEDS_UPDATE);
+            }            
+        };         
+    }  
+
     public CVKRenderUpdateTask TaskUpdateCamera() {
         //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
                                                 
@@ -1481,17 +1470,5 @@ public class CVKLinksRenderable extends CVKRenderable {
         return () -> {  
             UpdateVertexPushConstants();
         };           
-    }       
-
-    
-    
-    // ========================> Helpers <======================== \\
-    
-    protected long GetVertexBufferHandle(int imageIndex) { return vertexBuffers.get(imageIndex).GetBufferHandle(); }
-    protected long GetVertexUniformBufferHandle(int imageIndex) { return vertexUniformBuffers.get(imageIndex).GetBufferHandle(); }
-    protected long GetGeometryUniformBufferHandle(int imageIndex) { return geometryUniformBuffers.get(imageIndex).GetBufferHandle(); }
-    protected ByteBuffer GetModelViewPushConstants() { return modelViewPushConstants; }
-    protected int GetModelViewPushConstantsSize() { return MODEL_VIEW_PUSH_CONSTANT_SIZE; }
-    protected ByteBuffer GetHitTestPushConstants() { return hitTestPushConstants; }
-    protected int GetHitTestPushConstantsSize() { return HIT_TEST_PUSH_CONSTANT_SIZE; }    
+    }    
 }

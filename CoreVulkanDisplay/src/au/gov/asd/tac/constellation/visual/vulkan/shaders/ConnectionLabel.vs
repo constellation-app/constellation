@@ -35,11 +35,17 @@ const float DEPTH_NEAR = -1.0;
 
 
 // === PUSH CONSTANTS ===
-layout(std140, push_constant) uniform VertexPushConstant {
+layout(std140, push_constant) uniform ModelViewPushConstant {
     // Matrix to project from world coordinates to camera coordinates
     mat4 mvMatrix;
-} pc;
 
+    // This push constant allows connection labels to draw summary and attribute
+    // labels with different vertex buffers but without requiring dynamic uniform
+    // buffers.  The switch determines which label info matrix in the UBO below
+    // to use.
+    // 1 for attribute label, 0 for summary label
+    int isAttributeLabel;
+} pc;
 
 // === UNIFORMS ===
 
@@ -47,7 +53,8 @@ layout(std140, binding = 0) uniform UniformBlock {
     // Each column is a connection label with the following structure:
     // [0..2] rgb colour (note label colours do not habve an alpha)
     // [3] label size
-    mat4 labelInfo;
+    mat4 attributeLabelInfo;
+    mat4 summaryLabelInfo;
 
     // Information from the graph's visual state
     float morphMix;
@@ -67,15 +74,16 @@ layout(binding = 1) uniform samplerBuffer xyzTexture;
 
 
 // === PER VERTEX DATA IN ===
-// [0] the index of the glyph in the glyphInfoTexture
+
+// [0] label width
 // [1..2] x and y offsets of this glyph from the top centre of the line of text
 // [3] The visibility of this glyph (constant for a node, but easier to pass in the batch).
 layout(location = 0) in vec4 glyphLocationData;
 
-// [0] The index of the node containg this glyph in the xyzTexture
-// [1] The total scale of the lines and their labels up to this point (< 0 if this is a glyph in a bottom label)
-// [2] The label number in which this glyph occurs
-// [3] Unused
+// [0] The index of the low node containing this glyph in the xyzTexture
+// [1] The index of the high node containing this glyph in the xyzTexture
+// [2] Packed value: The label number in which this glyph occurs, total scale and offset
+// [3] Packed value: Glyph index and stagger
 layout(location = 1) in ivec4 graphLocationData;
 
 
@@ -147,7 +155,11 @@ void main(void) {
     vec4 connectionLocation = vec4(mix(v1.xyz, v2.xyz, stagger), 1);
 
     // Get the size and colour of this label from the relevant label information matrix
-    glyphScale = ub.labelInfo[labelNumber][3] * LABEL_TO_NRADIUS_UNITS * LABEL_AESTHETIC_SCALE;
+    if (pc.isAttributeLabel == 1) {
+        glyphScale = ub.attributeLabelInfo[labelNumber][3] * LABEL_TO_NRADIUS_UNITS * LABEL_AESTHETIC_SCALE;
+    } else {
+        glyphScale = ub.summaryLabelInfo[labelNumber][3] * LABEL_TO_NRADIUS_UNITS * LABEL_AESTHETIC_SCALE;
+    }
 
     // Determine visiblity of this label based both on the visibility of the associated node, and the fade out distance for labels.
     float distance = -connectionLocation.z;
@@ -158,12 +170,23 @@ void main(void) {
     float labelYOffset = (totalScale * LABEL_TO_NRADIUS_UNITS * LABEL_AESTHETIC_SCALE);
     // We need to subtract half the size of the first connection label from every line's Y offset,
     // since we want the connection to align with the first label's centre (rather than its top).
-    labelYOffset -= 0.5 * ub.labelInfo[0][3] * LABEL_TO_NRADIUS_UNITS * LABEL_AESTHETIC_SCALE;
+    if (pc.isAttributeLabel == 1) {
+        labelYOffset -= 0.5 * ub.attributeLabelInfo[0][3] * LABEL_TO_NRADIUS_UNITS * LABEL_AESTHETIC_SCALE;
+    } else {
+        labelYOffset -= 0.5 * ub.summaryLabelInfo[0][3] * LABEL_TO_NRADIUS_UNITS * LABEL_AESTHETIC_SCALE;
+    }
 
     // Set the colour appropritely - this comes from the ub.labelInfo matrix for a normal glyph, or the graph background colour
     // if it is a background glyph.
-    labelColor = glyphIndex == ub.backgroundGlyphIndex ?
-        vec4(ub.backgroundColor.xyz * BACKGROUND_DARKENING_FACTOR, alpha) : vec4(ub.labelInfo[labelNumber].xyz, alpha);
+    if (pc.isAttributeLabel == 1) {
+        labelColor = glyphIndex == ub.backgroundGlyphIndex ?
+                      vec4(ub.backgroundColor.xyz * BACKGROUND_DARKENING_FACTOR, alpha) : 
+                      vec4(ub.attributeLabelInfo[labelNumber].xyz, alpha);
+    } else {
+        labelColor = glyphIndex == ub.backgroundGlyphIndex ?
+                      vec4(ub.backgroundColor.xyz * BACKGROUND_DARKENING_FACTOR, alpha) : 
+                      vec4(ub.summaryLabelInfo[labelNumber].xyz, alpha);
+    }    
 
     // Calculate the pixel coordinates of the glyph's location on the graph
     vec4 locationOffset = vec4(glyphXOffset * glyphScale, -(glyphYOffset * glyphScale) - labelYOffset, 0, 0);
@@ -362,5 +385,5 @@ void main(void) {
     depth += bringForward;
 
     // Output the location of this glyph.
-    gl_Position = connectionLocation+locationOffset;
+    gl_Position = connectionLocation + locationOffset;
 }
