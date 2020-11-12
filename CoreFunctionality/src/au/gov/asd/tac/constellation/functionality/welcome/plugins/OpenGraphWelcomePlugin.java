@@ -64,7 +64,10 @@ public class OpenGraphWelcomePlugin extends WelcomePageProvider {
         final StoreGraph sg = new StoreGraph();
         try {
             PluginExecution.withPlugin(GraphFilePluginRegistry.OPEN_FILE).executeNow(sg);
-        } catch (InterruptedException | PluginException ex) {
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+            Thread.currentThread().interrupt();
+        } catch (PluginException ex) {
             Exceptions.printStackTrace(ex);
         }
 

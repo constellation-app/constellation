@@ -72,14 +72,14 @@ public class JoinCommWelcomePlugin extends WelcomePageProvider {
             try {
                 desktop.browse(new URI(url));
             } catch (IOException | URISyntaxException e) {
-                LOGGER.log(Level.WARNING, "Couldn't open url");
+                LOGGER.log(Level.WARNING, e.getMessage());
             }
         } else {
             Runtime runtime = Runtime.getRuntime();
             try {
                 runtime.exec("xdg-open " + url);
             } catch (IOException e) {
-                LOGGER.log(Level.WARNING, "Couldn't open url");
+                LOGGER.log(Level.WARNING, e.getMessage());
             }
         }
     }
