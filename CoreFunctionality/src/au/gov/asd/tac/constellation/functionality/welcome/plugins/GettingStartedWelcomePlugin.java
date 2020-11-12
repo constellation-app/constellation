@@ -15,18 +15,20 @@
  */
 package au.gov.asd.tac.constellation.functionality.welcome.plugins;
 
-import au.gov.asd.tac.constellation.functionality.tutorial.TutorialTopComponent;
 import au.gov.asd.tac.constellation.functionality.welcome.WelcomePageProvider;
 import au.gov.asd.tac.constellation.functionality.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
+import java.awt.Desktop;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javax.swing.SwingUtilities;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
-import org.openide.windows.TopComponent;
-import org.openide.windows.WindowManager;
 
 /**
  * The plugin for the Welcome Page that leads to the Getting Started guides and resources
@@ -42,6 +44,8 @@ public class GettingStartedWelcomePlugin extends WelcomePageProvider {
     public static final String GETTING_STARTED = "resources/welcome_getting_started.png";
     ImageView started = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(GETTING_STARTED)));
     Button startedBtn = new Button("Getting Started\nGuides & resources", started);
+    
+    private static final Logger LOGGER = Logger.getLogger(GettingStartedWelcomePlugin.class.getName());
         
     /**
      * Get a unique reference that is used to identify the plugin 
@@ -60,16 +64,23 @@ public class GettingStartedWelcomePlugin extends WelcomePageProvider {
      */
     @Override
     public void run() {
-         SwingUtilities.invokeLater(() -> {
-                final TopComponent welcome = WindowManager.getDefault().findTopComponent(TutorialTopComponent.class.getSimpleName());
-                if (welcome != null) {
-                    if (!welcome.isOpened()) {
-                        welcome.open();
-                    }
-                    welcome.setEnabled(true);
-                    welcome.requestActive();
-                }
-            });
+        String url = "https://constellation.readthedocs.io/en/latest/";
+
+        if(Desktop.isDesktopSupported()){
+            Desktop desktop = Desktop.getDesktop();
+            try {
+                desktop.browse(new URI(url));
+            } catch (IOException | URISyntaxException e) {
+                LOGGER.log(Level.WARNING, "Couldn't open url");
+            }
+        } else {
+            Runtime runtime = Runtime.getRuntime();
+            try {
+                runtime.exec("xdg-open " + url);
+            } catch (IOException e) {
+                LOGGER.log(Level.WARNING, "Couldn't open url");
+            }
+        }
     }
 
     /**

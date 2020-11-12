@@ -18,6 +18,12 @@ package au.gov.asd.tac.constellation.functionality.welcome.plugins;
 import au.gov.asd.tac.constellation.functionality.welcome.WelcomePageProvider;
 import au.gov.asd.tac.constellation.functionality.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
+import java.awt.Desktop;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -39,6 +45,8 @@ public class ProvideFeedbackWelcomePlugin extends WelcomePageProvider {
     public static final String FEEDBACK = "resources/welcome_feedback.png";
     ImageView feedView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(FEEDBACK)));
     Button feedbackButton = new Button("Provide Feedback\nLet use know your thoughts", feedView);
+    
+    private static final Logger LOGGER = Logger.getLogger(ProvideFeedbackWelcomePlugin.class.getName());
         
     /**
      * Get a unique reference that is used to identify the plugin 
@@ -57,6 +65,23 @@ public class ProvideFeedbackWelcomePlugin extends WelcomePageProvider {
      */
     @Override
     public void run() {
+        String url = "https://github.com/constellation-app/constellation/issues/new";
+
+        if(Desktop.isDesktopSupported()){
+            Desktop desktop = Desktop.getDesktop();
+            try {
+                desktop.browse(new URI(url));
+            } catch (IOException | URISyntaxException e) {
+                LOGGER.log(Level.WARNING, "Couldn't open url");
+            }
+        } else {
+            Runtime runtime = Runtime.getRuntime();
+            try {
+                runtime.exec("xdg-open " + url);
+            } catch (IOException e) {
+                LOGGER.log(Level.WARNING, "Couldn't open url");
+            }
+        }
     }
 
     /**

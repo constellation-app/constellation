@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.functionality.welcome.plugins;
 import au.gov.asd.tac.constellation.functionality.welcome.WelcomePageProvider;
 import au.gov.asd.tac.constellation.functionality.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
-import au.gov.asd.tac.constellation.graph.file.GraphPluginRegistry;
+import au.gov.asd.tac.constellation.graph.file.GraphFilePluginRegistry;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
@@ -63,7 +63,7 @@ public class OpenGraphWelcomePlugin extends WelcomePageProvider {
     public void run() {
         final StoreGraph sg = new StoreGraph();
         try {
-            PluginExecution.withPlugin(GraphPluginRegistry.OPEN_FILE).executeNow(sg);
+            PluginExecution.withPlugin(GraphFilePluginRegistry.OPEN_FILE).executeNow(sg);
         } catch (InterruptedException | PluginException ex) {
             Exceptions.printStackTrace(ex);
         }

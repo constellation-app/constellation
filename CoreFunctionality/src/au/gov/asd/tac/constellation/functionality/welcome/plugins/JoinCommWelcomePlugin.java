@@ -18,6 +18,12 @@ package au.gov.asd.tac.constellation.functionality.welcome.plugins;
 import au.gov.asd.tac.constellation.functionality.welcome.WelcomePageProvider;
 import au.gov.asd.tac.constellation.functionality.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
+import java.awt.Desktop;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -39,6 +45,8 @@ public class JoinCommWelcomePlugin extends WelcomePageProvider {
     public static final String JOIN = "resources/welcome_join.png";
     ImageView joinView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(JOIN)));
     Button joinBtn = new Button("Join our Community\nBecome a member", joinView);
+    
+    private static final Logger LOGGER = Logger.getLogger(JoinCommWelcomePlugin.class.getName());
         
     /**
      * Get a unique reference that is used to identify the plugin 
@@ -57,6 +65,23 @@ public class JoinCommWelcomePlugin extends WelcomePageProvider {
      */
     @Override
     public void run() {
+        String url = "https://gitter.im/constellation-app/community";
+
+        if(Desktop.isDesktopSupported()){
+            Desktop desktop = Desktop.getDesktop();
+            try {
+                desktop.browse(new URI(url));
+            } catch (IOException | URISyntaxException e) {
+                LOGGER.log(Level.WARNING, "Couldn't open url");
+            }
+        } else {
+            Runtime runtime = Runtime.getRuntime();
+            try {
+                runtime.exec("xdg-open " + url);
+            } catch (IOException e) {
+                LOGGER.log(Level.WARNING, "Couldn't open url");
+            }
+        }
     }
 
     /**

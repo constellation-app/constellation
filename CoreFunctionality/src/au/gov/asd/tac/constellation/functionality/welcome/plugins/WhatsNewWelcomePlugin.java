@@ -15,14 +15,18 @@
  */
 package au.gov.asd.tac.constellation.functionality.welcome.plugins;
 
+import au.gov.asd.tac.constellation.functionality.tutorial.TutorialTopComponent;
 import au.gov.asd.tac.constellation.functionality.welcome.WelcomePageProvider;
 import au.gov.asd.tac.constellation.functionality.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javax.swing.SwingUtilities;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
+import org.openide.windows.TopComponent;
+import org.openide.windows.WindowManager;
 
 /**
  * The plugin for the Welcome Page that leads to the Whats New in Constellation
@@ -57,6 +61,16 @@ public class WhatsNewWelcomePlugin extends WelcomePageProvider {
      */
     @Override
     public void run() {
+        SwingUtilities.invokeLater(() -> {
+            final TopComponent tutorial = WindowManager.getDefault().findTopComponent(TutorialTopComponent.class.getSimpleName());
+            if (tutorial != null) {
+                if (!tutorial.isOpened()) {
+                    tutorial.open();
+                }
+                tutorial.setEnabled(true);
+                tutorial.requestActive();
+            }
+        });
     }
 
     /**

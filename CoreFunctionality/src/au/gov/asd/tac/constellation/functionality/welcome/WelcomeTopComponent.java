@@ -27,6 +27,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
@@ -125,14 +126,14 @@ public final class WelcomeTopComponent extends TopComponent {
             
             //Create VBox to handle Browser and controls,
             //or error messages
-            VBox leftVBox = new VBox();
+            final VBox leftVBox = new VBox();
             splitPane.getItems().add(leftVBox);
             leftVBox.setSpacing(20);
             leftVBox.setMinWidth(350);
             leftVBox.setPrefWidth(400);
             leftVBox.setMaxWidth(450);
             
-            HBox logoHBox = new HBox();
+            final HBox logoHBox = new HBox();
             logoHBox.setBackground(new Background(new BackgroundFill(Color.valueOf("white"), CornerRadii.EMPTY, Insets.EMPTY)));
             ImageView logoView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(LOGO)));
             logoView.setFitHeight(100);
@@ -148,14 +149,14 @@ public final class WelcomeTopComponent extends TopComponent {
             leftVBox.getChildren().add(welcome);
             
             //Create right VBox for graph controls
-            VBox rightVBox = new VBox();
+            final VBox rightVBox = new VBox();
             rightVBox.setPadding(new Insets(50, 50, 50, 50));
             rightVBox.setBackground(new Background(new BackgroundFill(Color.valueOf("#14161a"), CornerRadii.EMPTY, Insets.EMPTY)));
             splitPane.getItems().add(rightVBox);  
             
             //Create HBoxes for the right_vbox
-            HBox topHBox = new HBox();
-            HBox bottomHBox = new HBox();
+            final HBox topHBox = new HBox();
+            final HBox bottomHBox = new HBox();
             
             //hbox formatting
             topHBox.setPadding(new Insets(50, 0, 50, 0));
@@ -167,7 +168,7 @@ public final class WelcomeTopComponent extends TopComponent {
             
             for (int i = 0; i < 10; i++){
                 if (pluginButtons[i] != null){
-                    Button currentButton = pluginButtons[i];                  
+                    Button currentButton = pluginButtons[i]; 
                     pluginButtons[i].setOnAction(new EventHandler<ActionEvent>() {
                         @Override public void handle(ActionEvent e) {
                             Lookup.getDefault().lookupAll(WelcomePageProvider.class).forEach(plugin -> {
@@ -228,6 +229,7 @@ public final class WelcomeTopComponent extends TopComponent {
         button.setPrefSize(125, 125);
         button.setMaxSize(150, 150);
         button.setStyle("-fx-background-color: #2e4973;");
+        button.setCursor(Cursor.HAND);
         button.setContentDisplay(ContentDisplay.TOP);
     }
     
@@ -235,6 +237,7 @@ public final class WelcomeTopComponent extends TopComponent {
         button.setPrefSize(160, 160);
         button.setMaxSize(175, 175);
         button.setStyle("-fx-background-color: #333333; -fx-background-radius: 10px;");
+        button.setCursor(Cursor.HAND);
         button.setContentDisplay(ContentDisplay.TOP);
     }
     
@@ -242,6 +245,7 @@ public final class WelcomeTopComponent extends TopComponent {
         button.setPrefSize(300, 45);
         button.setMaxSize(325, 50);
         button.setStyle("-fx-background-color: transparent;");
+        button.setCursor(Cursor.HAND);
         button.setAlignment(Pos.CENTER_LEFT);
     }
     
