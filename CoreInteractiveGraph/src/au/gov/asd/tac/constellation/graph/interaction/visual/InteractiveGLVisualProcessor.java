@@ -269,7 +269,7 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
         worldPosition.add(camera.lookAtEye);
         return worldPosition;
     }
-    
+
     @Override
     public Vector3f closestNodeCameraCoordinates(GraphReadMethods graph, Camera camera, Point p) {
 
@@ -278,12 +278,12 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
         final float horizontalScale = verticalScale * getCanvas().getWidth() / getCanvas().getHeight();
 
         // Iterate through the camera locations of each node in the graph
-        Stream<NodeCameraDistance> nodeCameraDistances = VisualGraphUtilities.streamVertexSceneLocations(graph, camera)
-                                                .parallel()
-                                                .map(vector -> new NodeCameraDistance(vector, horizontalScale, verticalScale));
-                                                
-        NodeCameraDistance closest = nodeCameraDistances.parallel().reduce(new NodeCameraDistance(), (ncd1, ncd2) -> NodeCameraDistance.getClosestNode(ncd1, ncd2));
-        
+        final Stream<NodeCameraDistance> nodeCameraDistances = VisualGraphUtilities.streamVertexSceneLocations(graph, camera)
+                .parallel()
+                .map(vector -> new NodeCameraDistance(vector, horizontalScale, verticalScale));
+
+        final NodeCameraDistance closest = nodeCameraDistances.parallel().reduce(new NodeCameraDistance(), (ncd1, ncd2) -> NodeCameraDistance.getClosestNode(ncd1, ncd2));
+
         return closest.nodeLocation;
     }
 
@@ -311,27 +311,27 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
             return 1.0f;
         }
     }
-    
-        
-    private static class NodeCameraDistance{
-        Vector3f nodeLocation;
-        Float distanceFromCamera;
+
+    private static class NodeCameraDistance {
+
+        final Vector3f nodeLocation;
+        final Float distanceFromCamera;
 
         public NodeCameraDistance() {
             this.nodeLocation = null;
             this.distanceFromCamera = null;
         }
-        
+
         public NodeCameraDistance(Vector3f nodeLocation, final float horizontalScale, final float verticalScale) {
             this.nodeLocation = nodeLocation;
             this.distanceFromCamera = getDistanceFromCamera(nodeLocation, horizontalScale, verticalScale);
         }
-        
+
         static NodeCameraDistance getClosestNode(NodeCameraDistance ncd1, NodeCameraDistance ncd2) {
             NodeCameraDistance closest = null;
-            if(ncd1.distanceFromCamera == null) {
+            if (ncd1.distanceFromCamera == null) {
                 closest = ncd2;
-            } else if(ncd2.distanceFromCamera == null) {
+            } else if (ncd2.distanceFromCamera == null) {
                 closest = ncd1;
             } else if (ncd1.distanceFromCamera < 0) {
                 if (ncd2.distanceFromCamera > ncd1.distanceFromCamera) {
@@ -352,10 +352,9 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
                     closest = ncd2;
                 }
             }
-            return closest;  
+            return closest;
         }
-        
-            
+
         private static Float getDistanceFromCamera(Vector3f nodeLocation, final float horizontalScale, final float verticalScale) {
             final float zDistanceFromCamera = nodeLocation.getZ();
             final float distanceFromCamera = nodeLocation.getLength();
@@ -369,13 +368,13 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
                 if (horizontalOffset > -horizontalScale && horizontalOffset < horizontalScale && verticalOffset > -verticalScale && verticalOffset < verticalScale) {
                     // Is the first or closest node visible on the screen, record it as the closest node
                     return distanceFromCamera;
-                } else  {
+                } else {
                     // If no vertices on the screen have been found, this vertex is in front of the camera, and is the closest (or first) such vertex, record it as the closest node.
                     return -distanceFromCamera;
                 }
             }
             return null;
         }
-        
+
     }
 }
