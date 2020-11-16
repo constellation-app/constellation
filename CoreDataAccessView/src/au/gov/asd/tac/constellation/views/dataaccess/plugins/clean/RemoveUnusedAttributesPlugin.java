@@ -43,7 +43,7 @@ public class RemoveUnusedAttributesPlugin extends SimpleEditPlugin implements Da
 
     @Override
     public String getName() {
-        return "Remove Unsued Attributes";
+        return "Remove Unused Attributes";
     }
 
     @Override
