@@ -15,11 +15,13 @@
  */
 package au.gov.asd.tac.constellation.functionality.welcome;
 
+import au.gov.asd.tac.constellation.graph.file.open.RecentFilesWelcomePage;
 import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
 import au.gov.asd.tac.constellation.security.proxy.ProxyUtilities;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import java.awt.BorderLayout;
+import java.util.List;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.event.ActionEvent;
@@ -206,9 +208,21 @@ public final class WelcomeTopComponent extends TopComponent {
             //Create the buttons for the recent page
             //These have just been created to be able to view them on a page
             //and get the layout right
+            List<String> fileNames = RecentFilesWelcomePage.getFileNames();
             for (int i = 0; i < 10; i++){
                 recentGraphButtons[i] = new Button();
+                //if the user has recent files get the names
+                //and make them the text of the buttons
                 createRecentButtons(recentGraphButtons[i]);
+                if (i < fileNames.size()){
+                    recentGraphButtons[i].setText(fileNames.get(i));
+                }
+                final String text = recentGraphButtons[i].getText();
+                recentGraphButtons[i].setOnAction(new EventHandler<ActionEvent>() {
+                        @Override public void handle(ActionEvent e) {
+                            RecentFilesWelcomePage.openGraph(text);
+                        }
+                    });
                 flow.getChildren().add(recentGraphButtons[i]);
             }
              
@@ -236,14 +250,14 @@ public final class WelcomeTopComponent extends TopComponent {
     public void createRecentButtons(Button button){
         button.setPrefSize(160, 160);
         button.setMaxSize(175, 175);
-        button.setStyle("-fx-background-color: #333333; -fx-background-radius: 10px;");
+        button.setStyle("-fx-background-color: #333333; -fx-background-radius: 10px; -fx-text-fill: white;");
         button.setCursor(Cursor.HAND);
         button.setContentDisplay(ContentDisplay.TOP);
     }
     
     public void setInfoButtons(Button button){
-        button.setPrefSize(300, 45);
-        button.setMaxSize(325, 50);
+        button.setPrefSize(325, 45);
+        button.setMaxSize(350, 50);
         button.setStyle("-fx-background-color: transparent;");
         button.setCursor(Cursor.HAND);
         button.setAlignment(Pos.CENTER_LEFT);
