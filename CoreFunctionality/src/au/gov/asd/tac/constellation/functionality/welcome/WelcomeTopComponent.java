@@ -206,8 +206,6 @@ public final class WelcomeTopComponent extends TopComponent {
             flow.setVgap(20);
             
             //Create the buttons for the recent page
-            //These have just been created to be able to view them on a page
-            //and get the layout right
             List<String> fileNames = RecentFilesWelcomePage.getFileNames();
             for (int i = 0; i < 10; i++){
                 recentGraphButtons[i] = new Button();
@@ -218,6 +216,9 @@ public final class WelcomeTopComponent extends TopComponent {
                     recentGraphButtons[i].setText(fileNames.get(i));
                 }
                 final String text = recentGraphButtons[i].getText();
+                
+                //Calls the method for the recent graphs to open 
+                // on the button action 
                 recentGraphButtons[i].setOnAction(new EventHandler<ActionEvent>() {
                         @Override public void handle(ActionEvent e) {
                             RecentFilesWelcomePage.openGraph(text);

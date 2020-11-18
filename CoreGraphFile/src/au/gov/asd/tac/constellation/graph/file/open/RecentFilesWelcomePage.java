@@ -16,13 +16,9 @@
 
 package au.gov.asd.tac.constellation.graph.file.open;
 
-import java.awt.Toolkit;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JMenuItem;
-import org.apache.commons.lang3.StringUtils;
-import org.openide.awt.StatusDisplayer;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 
@@ -55,29 +51,24 @@ public class RecentFilesWelcomePage {
         return fileNames;
     }
     
+    /**
+     * Opens the file that matches the name of the parameter
+     * 
+     * @param fileName 
+     */
     public static void openGraph(String fileName){
         int index = -1;
         for (int i = 0; i < files.size(); i++){
             if(fileName.equals(files.get(i).getFileName())){
                 index = i;
             }
-        }
-        
+        }  
         if (index != -1){
             String path = files.get(index).getPath();
         
             File f = new File(path);
             File nf = FileUtil.normalizeFile(f);
             OpenFile.open(FileUtil.toFileObject(nf), -1);
-        
-            /*if (msg != null) {
-                StatusDisplayer.getDefault().setStatusText(msg);
-                Toolkit.getDefaultToolkit().beep();
-                RecentFiles.pruneHistory();
-            }*/
-        }
-        
-    }
-    
-    
+        } 
+    }  
 }
