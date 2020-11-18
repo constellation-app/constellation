@@ -31,12 +31,14 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.FloatParameterType.
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -95,7 +97,7 @@ public class PagerankCentralityPlugin extends SimpleEditPlugin {
 
         return parameters;
     }
-
+ 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
         final boolean treatUndirectedBidirectional = parameters.getBooleanValue(TREAT_UNDIRECTED_BIDIRECTIONAL_PARAMETER_ID);
@@ -105,89 +107,88 @@ public class PagerankCentralityPlugin extends SimpleEditPlugin {
         final boolean normaliseByAvailable = parameters.getBooleanValue(NORMALISE_AVAILABLE_PARAMETER_ID);
 
         // identify incoming connections and store connected vertices and their outgoing connection count
-        final Set<Integer> verticesWithZeroOutLinks = new HashSet<>();
-        final Map<Integer, Set<Tuple<Integer, Integer>>> vertexInLinks = new HashMap<>();
         final int vertexCount = graph.getVertexCount();
+        final Map<Integer, Integer> outCounts = new HashMap();
+        final Map<Integer, Set<Integer>> neighboursLinkingToVertex = new HashMap();
+        final Set<Integer> verticesWithZeroOutLinks = new HashSet<>();
+
+        
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
+            // For every vertex
             final int vertexId = graph.getVertex(vertexPosition);
-            vertexInLinks.put(vertexId, new HashSet<>());
+            // add default value to neighbour tracking map.
+            neighboursLinkingToVertex.put(vertexId, new HashSet<>());
 
             if (graph.getVertexEdgeCount(vertexId, GraphConstants.OUTGOING) == 0) {
                 verticesWithZeroOutLinks.add(vertexId);
             }
-
+            
+            outCounts.put(vertexId, 0);
             final int linkCount = graph.getVertexLinkCount(vertexId);
             for (int linkPosition = 0; linkPosition < linkCount; linkPosition++) {
+//              For each link
                 final int linkId = graph.getVertexLink(vertexId, linkPosition);
                 final int linkLowId = graph.getLinkLowVertex(linkId);
                 final int linkHighId = graph.getLinkHighVertex(linkId);
                 if (linkLowId != linkHighId) {
-                    final int neighbourId = vertexId == linkLowId ? linkHighId : linkLowId;
+                    // If it isnt a link to itself
+                    final Integer neighbourId = vertexId == linkLowId ? linkHighId : linkLowId;
                     final int edgeCount = graph.getLinkEdgeCount(linkId);
                     for (int edgePosition = 0; edgePosition < edgeCount; edgePosition++) {
+                        // Then for every edge in the link
                         final int edgeId = graph.getLinkEdge(linkId, edgePosition);
                         final int edgeDirection = graph.getEdgeDirection(edgeId);
                         if ((treatUndirectedBidirectional && edgeDirection == GraphConstants.FLAT)
-                                || (vertexId < neighbourId && edgeDirection == GraphConstants.DOWNHILL)
-                                || (vertexId > neighbourId && edgeDirection == GraphConstants.UPHILL)) {
-                            int neighbourOutCount = 0;
-                            final int transactionCount = graph.getVertexTransactionCount(neighbourId);
-                            for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
-                                final int transactionId = graph.getVertexTransaction(neighbourId, transactionPosition);
-                                final int transactionDirection = graph.getTransactionDirection(transactionId);
-                                final int transactionSourceId = graph.getTransactionSourceVertex(transactionId);
-                                final int transactionDestinationId = graph.getTransactionDestinationVertex(transactionId);
-                                if (transactionSourceId != transactionDestinationId) {
-                                    final int otherId = neighbourId == transactionSourceId ? transactionDestinationId : transactionSourceId;
-                                    if ((treatUndirectedBidirectional && transactionDirection == GraphConstants.FLAT)
-                                            || (neighbourId < otherId && transactionDirection == GraphConstants.UPHILL)
-                                            || (neighbourId > otherId && transactionDirection == GraphConstants.DOWNHILL)) {
-                                        neighbourOutCount++;
-                                    }
-                                }
-                            }
-
-                            vertexInLinks.get(vertexId).add(Tuple.create(neighbourId, neighbourOutCount));
+                                || graph.getEdgeSourceVertex(edgeId) == vertexId) {
+                            // If egde is facing outwards, add 1 to outcount.
+                            outCounts.put(vertexId, outCounts.get(vertexId)+1);
+                        } else if ((treatUndirectedBidirectional && edgeDirection == GraphConstants.FLAT)
+                                || graph.getEdgeDestinationVertex(edgeId) == vertexId) {
+                            // If edge is facing towards vertex add the source as a neighbour.
+                            neighboursLinkingToVertex.get(vertexId).add(neighbourId);
                         }
                     }
                 }
             }
         }
 
-        // handle dangling vertices by linking them to all pages
-        for (final int neighbourId : verticesWithZeroOutLinks) {
-            final int updatedCount = vertexInLinks.size();
-            for (final int vertexId : vertexInLinks.keySet()) {
-                vertexInLinks.get(vertexId).add(Tuple.create(neighbourId, updatedCount));
-            }
-        }
+        // Now we have records of all the verticies we can add sinks as a neighbour to all veritices
+        verticesWithZeroOutLinks.parallelStream().forEach(vertexId -> outCounts.put(vertexId, neighboursLinkingToVertex.size() - 1));
 
         // initialise pagerank values
-        final double[] tempPageranks = new double[graph.getVertexCapacity()];
-        final double[] pageranks = new double[graph.getVertexCapacity()];
-        Arrays.fill(pageranks, (double) 1 / vertexInLinks.size());
-
+        final double[] tempPageranks = new double[vertexCount];
+        final double[] pageranks = new double[vertexCount];
+        Arrays.fill(pageranks, (double) 1 / neighboursLinkingToVertex.size());
+        
         // calculate pagerank for each vertex
         for (int iteration = 0; iteration < iterations; iteration++) {
+            interaction.setProgress(iteration, iterations, "Iteration " + iteration + " of " + iterations, true);
             Arrays.fill(tempPageranks, 0);
 
-            double maxPagerank = 0;
-            double delta = 0;
-            for (final int vertexId : vertexInLinks.keySet()) {
+            for (final int vertexId : neighboursLinkingToVertex.keySet()) {
+                // For every vertex
                 double neighbourContribution = 0.0;
-                final Set<Tuple<Integer, Integer>> neighbours = vertexInLinks.get(vertexId);
-                for (final Tuple<Integer, Integer> neighbour : neighbours) {
-                    final int neighbourId = neighbour.getFirst();
-                    final int neighbourOutCount = neighbour.getSecond();
-                    final int neighbourPosition = graph.getVertexPosition(neighbourId);
-                    neighbourContribution += (pageranks[neighbourPosition] / neighbourOutCount);
+                
+                for (final Integer neighbour : neighboursLinkingToVertex.get(vertexId)) {
+                    // For each neghbour add to neighbourcontribution
+                    final int neighbourPosition = graph.getVertexPosition(neighbour);
+                    neighbourContribution += (pageranks[neighbourPosition] / outCounts.get(neighbour));
+                }
+                
+                for (final Integer neighbour : verticesWithZeroOutLinks) {
+                    if (neighbour != vertexId) {
+                        // For each neghbour add to neighbourcontribution
+                        final int neighbourPosition = graph.getVertexPosition(neighbour);
+                        neighbourContribution += (pageranks[neighbourPosition] / outCounts.get(neighbour));
+                    }
                 }
 
                 final int vertexPosition = graph.getVertexPosition(vertexId);
-                tempPageranks[vertexPosition] = ((1 - dampingFactor) / vertexInLinks.size()) + (dampingFactor * neighbourContribution);
-                maxPagerank = Math.max(tempPageranks[vertexPosition], maxPagerank);
-                delta += Math.abs(pageranks[vertexPosition] - tempPageranks[vertexPosition]);
+                tempPageranks[vertexPosition] = ((1 - dampingFactor) / vertexCount) + (dampingFactor * neighbourContribution);
+                
             }
+            
+            double maxPagerank = Arrays.stream(tempPageranks).max().getAsDouble();
 
             for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
                 if (normaliseByAvailable && maxPagerank > 0) {
@@ -197,9 +198,15 @@ public class PagerankCentralityPlugin extends SimpleEditPlugin {
                 }
             }
 
-            if (delta < epsilon) {
-                break;
-            }
+            if (epsilon > 0) {
+                List<Double> differences = IntStream.range(0, pageranks.length)
+                    .mapToObj(i -> pageranks[i] - tempPageranks[i])
+                    .collect(Collectors.toList());
+                double delta = differences.stream().mapToDouble(Double::doubleValue).sum();
+                if (delta < epsilon) {
+                    break;
+                }
+            }   
         }
 
         // update the graph with pagerank values
@@ -209,4 +216,5 @@ public class PagerankCentralityPlugin extends SimpleEditPlugin {
             graph.setFloatValue(pagerankAttribute, vertexId, (float) pageranks[vertexPosition]);
         }
     }
+
 }
