@@ -190,6 +190,14 @@ public class PagerankCentralityPlugin extends SimpleEditPlugin {
             
             double maxPagerank = Arrays.stream(tempPageranks).max().getAsDouble();
 
+            double delta = 0;
+            if (epsilon > 0) {
+                List<Double> differences = IntStream.range(0, pageranks.length)
+                    .mapToObj(i -> Math.abs(pageranks[i] - tempPageranks[i]))
+                    .collect(Collectors.toList());
+                delta = differences.stream().mapToDouble(Double::doubleValue).sum();
+            }   
+            
             for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
                 if (normaliseByAvailable && maxPagerank > 0) {
                     pageranks[vertexPosition] = tempPageranks[vertexPosition] / maxPagerank;
@@ -197,16 +205,11 @@ public class PagerankCentralityPlugin extends SimpleEditPlugin {
                     pageranks[vertexPosition] = tempPageranks[vertexPosition];
                 }
             }
+            
+            if (delta < epsilon) {
+                break;
+            }
 
-            if (epsilon > 0) {
-                List<Double> differences = IntStream.range(0, pageranks.length)
-                    .mapToObj(i -> pageranks[i] - tempPageranks[i])
-                    .collect(Collectors.toList());
-                double delta = differences.stream().mapToDouble(Double::doubleValue).sum();
-                if (delta < epsilon) {
-                    break;
-                }
-            }   
         }
 
         // update the graph with pagerank values
