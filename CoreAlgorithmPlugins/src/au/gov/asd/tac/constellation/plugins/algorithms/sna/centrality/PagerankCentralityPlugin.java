@@ -40,7 +40,7 @@ import org.openide.util.lookup.ServiceProvider;
  * Calculates pagerank centrality for each vertex. This centrality measure does
  * not include loops.
  *
- * @author cygnus_x-1
+ * @author Nova
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages("PagerankCentralityPlugin=Pagerank Centrality")
