@@ -121,7 +121,7 @@ public class PagerankCentralityPlugin extends SimpleEditPlugin {
     
     static class PagerankVertex {
         private static GraphWriteMethods graph;
-        private final static Set<PagerankVertex> sinks = new HashSet<>();
+        private static final Set<PagerankVertex> sinks = new HashSet<>();
         private static boolean treatUndirectedBidirectional;
         private static boolean normaliseByAvailable;
         private static double dampingFactor = 0;
@@ -132,7 +132,6 @@ public class PagerankCentralityPlugin extends SimpleEditPlugin {
         private static int pagerankAttribute;
         private static double baseContribution;
         private final int vertexId;
-        private final int vertexPosition;
         private final Set<PagerankVertex> neighbours = new HashSet<>();
         private int outCount = 0;
         private double pagerank;
@@ -141,13 +140,9 @@ public class PagerankCentralityPlugin extends SimpleEditPlugin {
         private boolean isSink = false;
 
         private PagerankVertex(int vertexPosition) {
-            this.vertexPosition = vertexPosition;
             this.vertexId = graph.getVertex(vertexPosition);
             this.pagerank = 1.0/vertexCount;
             this.pagerankContribution = 0;
-            
-            pagerankVertices[vertexPosition] = this;
-
         }
         
         static void initialiseAllPagerankVertices(final GraphWriteMethods graph, final boolean treatUndirectedBidirectional, final double dampingFactor, final boolean normaliseByAvailable) {
