@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.graph.value.operations;
 
 import au.gov.asd.tac.constellation.graph.value.ComparisonOperation;
-import au.gov.asd.tac.constellation.graph.value.OperatorRegistry;
 import au.gov.asd.tac.constellation.graph.value.Operators;
 import au.gov.asd.tac.constellation.graph.value.readables.BooleanReadable;
 import java.util.Objects;
@@ -27,7 +26,7 @@ import java.util.Objects;
  */
 public class Equals {
 
-    public static final String NAME = "EQUALS";
+    public static final String NAME = new String("EQUALS");
 
     private Equals() {
         // added private constructor to hide implicit public constructor - S1118.
@@ -61,7 +60,7 @@ public class Equals {
     };
 
     public static void register(Operators operators) {
-        final OperatorRegistry registry = operators.getRegistry(NAME);
+        final var registry = operators.getRegistry(NAME);
         COMPARISON_OPERATION.register(registry);
 
         registry.register(BooleanReadable.class, BooleanReadable.class, BooleanReadable.class, (p1, p2) -> {

@@ -27,7 +27,7 @@ import au.gov.asd.tac.constellation.graph.value.readables.StringReadable;
  */
 public class Sum {
 
-    public static final String NAME = "SUM";
+    public static final String NAME = new String("SUM");
 
     private Sum() {
         // added private constructor to hide implicit public constructor - S1118.

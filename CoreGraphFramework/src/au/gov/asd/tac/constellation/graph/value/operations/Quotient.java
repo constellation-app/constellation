@@ -25,7 +25,7 @@ import au.gov.asd.tac.constellation.graph.value.Operators;
  */
 public class Quotient {
 
-    public static final String NAME = "QUOTIENT";
+    public static final String NAME = new String("QUOTIENT");
 
     private Quotient() {
         // added private constructor to hide implicit public constructor - S1118.

@@ -25,7 +25,7 @@ import au.gov.asd.tac.constellation.graph.value.readables.BooleanReadable;
  */
 public class Not {
 
-    public static final String NAME = "NOT";
+    public static final String NAME = new String("NOT");
 
     private Not() {
         // added private constructor to hide implicit public constructor - S1118.

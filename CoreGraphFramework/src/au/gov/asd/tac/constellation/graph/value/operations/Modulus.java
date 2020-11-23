@@ -25,7 +25,7 @@ import au.gov.asd.tac.constellation.graph.value.Operators;
  */
 public class Modulus {
 
-    public static final String NAME = "MODULUS";
+    public static final String NAME = new String("MODULUS");
 
     private Modulus() {
         // added private constructor to hide implicit public constructor - S1118.

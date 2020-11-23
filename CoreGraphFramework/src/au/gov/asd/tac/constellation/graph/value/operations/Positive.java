@@ -28,7 +28,7 @@ import au.gov.asd.tac.constellation.graph.value.readables.LongReadable;
  */
 public class Positive {
 
-    public static final String NAME = "POSITIVE";
+    public static final String NAME = new String("POSITIVE");
 
     private Positive() {
         // added private constructor to hide implicit public constructor - S1118.

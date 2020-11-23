@@ -25,7 +25,7 @@ import au.gov.asd.tac.constellation.graph.value.StringOperation;
  */
 public class Contains {
 
-    public static final String NAME = "CONTAINS";
+    public static final String NAME = new String("CONTAINS");
 
     private Contains() {
         // added private constructor to hide implicit public constructor - S1118.

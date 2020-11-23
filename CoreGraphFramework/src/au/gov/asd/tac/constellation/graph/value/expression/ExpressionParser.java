@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.graph.value.expression;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,7 +67,7 @@ public class ExpressionParser {
 
         private final char token;
         private final int precedence;
-        private final Map<Operator, Operator> combinations = new EnumMap<>(Operator.class);
+        private final Map<Operator, Operator> combinations = new HashMap<>();
 
         private Operator(char token, int precedence, Operator... combinations) {
             this.token = token;
@@ -322,12 +321,12 @@ public class ExpressionParser {
 
     public static SequenceExpression parse(String expression) {
 
-        ParseState state = ParseState.READING_WHITESPACE;
-        final char[] content = new char[expression.length()];
-        int contentLength = 0;
+        var state = ParseState.READING_WHITESPACE;
+        var content = new char[expression.length()];
+        var contentLength = 0;
 
-        SequenceExpression rootExpression = new SequenceExpression(null);
-        SequenceExpression currentExpression = rootExpression;
+        var rootExpression = new SequenceExpression(null);
+        var currentExpression = rootExpression;
 
         for (int i = 0; i <= expression.length(); i++) {
             final char c = i < expression.length() ? expression.charAt(i) : 0;

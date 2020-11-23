@@ -27,7 +27,7 @@ import java.util.Objects;
  */
 public class NotEquals {
 
-    public static final String NAME = "NOT_EQUALS";
+    public static final String NAME = new String("NOT_EQUALS");
 
     private NotEquals() {
         // added private constructor to hide implicit public constructor - S1118.

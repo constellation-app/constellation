@@ -25,7 +25,7 @@ import au.gov.asd.tac.constellation.graph.value.readables.BooleanReadable;
  */
 public class And {
 
-    public static final String NAME = "AND";
+    public static final String NAME = new String("AND");
 
     private And() {
         // added private constructor to hide implicit public constructor - S1118.

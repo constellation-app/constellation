@@ -25,7 +25,7 @@ import au.gov.asd.tac.constellation.graph.value.Operators;
  */
 public class GreaterThan {
 
-    public static final String NAME = "GREATER_THAN";
+    public static final String NAME = new String("GREATER_THAN");
 
     private GreaterThan() {
         // added private constructor to hide implicit public constructor - S1118.

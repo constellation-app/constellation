@@ -25,7 +25,7 @@ import au.gov.asd.tac.constellation.graph.value.Operators;
  */
 public class LessThanOrEquals {
 
-    public static final String NAME = "LESS_THAN_OR_EQUALS";
+    public static final String NAME = new String("LESS_THAN_OR_EQUALS");
 
     private LessThanOrEquals() {
         // added private constructor to hide implicit public constructor - S1118.

@@ -25,7 +25,7 @@ import au.gov.asd.tac.constellation.graph.value.StringOperation;
  */
 public class EndsWith {
 
-    public static final String NAME = "ENDS_WITH";
+    public static final String NAME = new String("ENDS_WITH");
 
     private EndsWith() {
         // added private constructor to hide implicit public constructor - S1118.

@@ -25,7 +25,7 @@ import au.gov.asd.tac.constellation.graph.value.StringOperation;
  */
 public class StartsWith {
 
-    public static final String NAME = "STARTS_WITH";
+    public static final String NAME = new String("STARTS_WITH");
 
     private StartsWith() {
         // added private constructor to hide implicit public constructor - S1118.

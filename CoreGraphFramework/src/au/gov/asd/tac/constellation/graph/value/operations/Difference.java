@@ -25,7 +25,7 @@ import au.gov.asd.tac.constellation.graph.value.Operators;
  */
 public class Difference {
 
-    public static final String NAME = "DIFFERENCE";
+    public static final String NAME = new String("DIFFERENCE");
 
     private Difference() {
         // added private constructor to hide implicit public constructor - S1118.
