@@ -50,7 +50,7 @@ import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_B_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_G_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_R_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COMPARE_OP_LESS_OR_EQUAL;
-import static org.lwjgl.vulkan.VK10.VK_CULL_MODE_BACK_BIT;
+import static org.lwjgl.vulkan.VK10.VK_CULL_MODE_NONE;
 import static org.lwjgl.vulkan.VK10.VK_DYNAMIC_STATE_SCISSOR;
 import static org.lwjgl.vulkan.VK10.VK_DYNAMIC_STATE_VIEWPORT;
 import static org.lwjgl.vulkan.VK10.VK_FRONT_FACE_COUNTER_CLOCKWISE;
@@ -119,7 +119,7 @@ public abstract class CVKRenderable {
     protected boolean depthTest = true;
     protected boolean depthWrite = true;
     protected boolean logicOpEnable = false;
-    protected int cullMode = VK_CULL_MODE_BACK_BIT;
+    protected int cullMode = VK_CULL_MODE_NONE;
     protected int depthCompareOperation = VK_COMPARE_OP_LESS_OR_EQUAL;
     protected int assemblyTopology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
     protected int srcColourBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;

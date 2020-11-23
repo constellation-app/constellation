@@ -478,7 +478,7 @@ public class CVKIconTextureAtlas {
                 Vector3i dstOffset = new Vector3i(texIndices.getU() * ICON_DIMENSION, texIndices.getV() * ICON_DIMENSION, texIndices.getW());
                 Vector3i dstExtent = new Vector3i(ICON_DIMENSION, ICON_DIMENSION, 1);
                 
-                GetLogger().info("Icon %d copying into %s", iIcon, dstOffset);
+                GetLogger().finer("Icon %d copying into %s", iIcon, dstOffset);
 
                 
                 ret = cvkAtlasImage.CopyFrom(cvkStagingBuffer, 0, dstOffset, dstExtent);

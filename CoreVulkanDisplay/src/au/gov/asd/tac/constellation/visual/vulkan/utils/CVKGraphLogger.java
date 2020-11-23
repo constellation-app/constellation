@@ -131,7 +131,9 @@ public class CVKGraphLogger {
                 // is at element 8                
                 if (stackTrace.length >= stackLevel) {
                     StackTraceElement ste = stackTrace[stackLevel];
-                    String fileAndLine = String.format("%s:%d>", ste.getFileName(), ste.getLineNumber());
+                    String fileAndLine = String.format("%-7s %s:%d>", record.getLevel().toString(),
+                                                                      ste.getFileName(), 
+                                                                      ste.getLineNumber());
                     lineBuilder.append(fileAndLine);                   
 
                     // Right pad (additional to indent padding) up to PADLEN so we have 

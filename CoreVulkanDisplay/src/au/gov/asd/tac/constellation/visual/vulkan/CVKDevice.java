@@ -69,7 +69,6 @@ import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkSucceeded;
 import org.lwjgl.system.MemoryUtil;
 import static org.lwjgl.vulkan.EXTDebugUtils.VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT;
-import static org.lwjgl.vulkan.EXTDebugUtils.vkCmdBeginDebugUtilsLabelEXT;
 import static org.lwjgl.vulkan.EXTDebugUtils.vkSetDebugUtilsObjectNameEXT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_FEATURE_BLIT_DST_BIT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_FEATURE_BLIT_SRC_BIT;
@@ -78,7 +77,6 @@ import static org.lwjgl.vulkan.VK10.VK_VERSION_MINOR;
 import static org.lwjgl.vulkan.VK10.VK_VERSION_PATCH;
 import static org.lwjgl.vulkan.VK10.vkDestroyCommandPool;
 import static org.lwjgl.vulkan.VK10.vkDestroyDevice;
-import static org.lwjgl.vulkan.VK10.vkGetDeviceProcAddr;
 import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceFormatProperties;
 import org.lwjgl.vulkan.VkDebugUtilsObjectNameInfoEXT;
 
@@ -101,6 +99,7 @@ public class CVKDevice {
     private int minUniformBufferAlignment = 1;
     private boolean vkSetDebugUtilsObjectNameEXT_available = false;
     private boolean vkCmdBeginDebugUtilsLabelEXT_available = false;
+    private boolean vkLogicOpSupported = false;
     
     
     // ========================> Getters <======================== \\
@@ -117,6 +116,7 @@ public class CVKDevice {
     public static int GetMinUniformBufferAlignment() { return GetInstance().minUniformBufferAlignment; }
     private static CVKGraphLogger GetLogger() { return CVKGraphLogger.GetStaticLogger(); }
     public static boolean IsVkCmdBeginDebugUtilsLabelEXTAvailable() { return GetInstance().vkCmdBeginDebugUtilsLabelEXT_available; }
+    public static boolean AreVkLogicOpsSupported() { return GetInstance().vkLogicOpSupported; }
     
     
     /**
@@ -343,6 +343,10 @@ public class CVKDevice {
                                 if (VkSucceeded(ret)) {
                                     queueFamilyIndex = iQueueFamily;
                                     vkPhysicalDevice = candidate;
+                                    
+                                    if (candidatePhysicalDeviceFeatures.logicOp()) {
+                                        vkLogicOpSupported = true;
+                                    }
                                 }
                             }
                         } //end queue family loop  

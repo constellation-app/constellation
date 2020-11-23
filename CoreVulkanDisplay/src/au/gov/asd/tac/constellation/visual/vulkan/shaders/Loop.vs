@@ -1,12 +1,17 @@
 #version 450
 
 
-// === UNIFORMS ===
-layout(binding = 0) uniform samplerBuffer xyzTexture;
-layout(std140, binding = 1) uniform UniformBlock {
+// === PUSH CONSTANT ===
+layout(std140, push_constant) uniform PushConstant {
     mat4 mvMatrix;
+} pc;
+
+
+// === UNIFORMS ===
+layout(std140, binding = 0) uniform UniformBlock {
     float morphMix;
 } ub;
+layout(binding = 1) uniform samplerBuffer xyzTexture;
 
 
 // === PER VERTEX DATA IN ===
@@ -33,7 +38,7 @@ void main(void) {
     vec3 vEnd = texelFetch(xyzTexture, offset + 1).stp;
     vec3 mixedVertex = mix(v, vEnd, ub.morphMix);
 
-    gl_Position = ub.mvMatrix * vec4(mixedVertex, 1);
+    gl_Position = pc.mvMatrix * vec4(mixedVertex, 1);
 
     // Get the side radius of the associated vertex and pass that through
     // so the text is drawn relative to the node size.

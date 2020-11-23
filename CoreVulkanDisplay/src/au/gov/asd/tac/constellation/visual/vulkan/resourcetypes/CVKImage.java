@@ -79,6 +79,7 @@ import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKGraphLogger;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssertNotNull;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssertNull;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ALLOCATION_LOG_LEVEL;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_DEBUGGING;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_DEST_IMAGE_CREATE_FAILED;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_IMAGE_GET_ID_FAILED;
@@ -168,14 +169,17 @@ public class CVKImage {
     
     public void DestroyImage() {
         if (CVK_DEBUGGING && pImage.get(0) != VK_NULL_HANDLE) {
-            if (pImageMemory != null && pImageMemory.get(0) != VK_NULL_HANDLE) {
-                --CVK_VKALLOCATIONS;
-                GetLogger().info("CVK_VKALLOCATIONS (%d-) Destroy called on CVKimage %s (image:0x%016X memory:0x%016X), vkFreeMemory will be called", 
-                        CVK_VKALLOCATIONS, DEBUGNAME, pImage.get(0), pImageMemory.get(0));                      
-            } else {
-                GetLogger().info("CVK_VKALLOCATIONS (%d!) Destroy called on CVKimage %s (image:0x%016X memory:0x%016X), vkFreeMemory will NOT be called", 
-                        CVK_VKALLOCATIONS, DEBUGNAME, pImage.get(0), pImageMemory.get(0));  
-            }            
+            final CVKGraphLogger logger = GetLogger();
+            if (logger.isLoggable(CVK_ALLOCATION_LOG_LEVEL)) {            
+                if (pImageMemory != null && pImageMemory.get(0) != VK_NULL_HANDLE) {
+                    --CVK_VKALLOCATIONS;
+                    logger.log(CVK_ALLOCATION_LOG_LEVEL, "CVK_VKALLOCATIONS (%d-) Destroy called on CVKimage %s (image:0x%016X memory:0x%016X), vkFreeMemory will be called", 
+                            CVK_VKALLOCATIONS, DEBUGNAME, pImage.get(0), pImageMemory.get(0));                      
+                } else {
+                    logger.log(CVK_ALLOCATION_LOG_LEVEL, "CVK_VKALLOCATIONS (%d!) Destroy called on CVKimage %s (image:0x%016X memory:0x%016X), vkFreeMemory will NOT be called", 
+                            CVK_VKALLOCATIONS, DEBUGNAME, pImage.get(0), pImageMemory.get(0));  
+                }  
+            }
         }                
         if (pImage.get(0) != VK_NULL_HANDLE) {
             vkDestroyImage(CVKDevice.GetVkDevice(), pImage.get(0), null);
@@ -595,9 +599,12 @@ public class CVKImage {
                 throw new RuntimeException("Failed to allocate image memory");
             }
             if (CVK_DEBUGGING) {
-                ++CVK_VKALLOCATIONS;
-                cvkImage.GetLogger().info("CVK_VKALLOCATIONS(%d+) vkAllocateMemory(%d) for CVKimage %s (image:0x%016X memory:0x%016X)", 
-                        CVK_VKALLOCATIONS, vkMemoryRequirements.size(), cvkImage.DEBUGNAME, cvkImage.pImage.get(0), cvkImage.pImageMemory.get(0));
+                final CVKGraphLogger logger = cvkImage.GetLogger();
+                if (logger.isLoggable(CVK_ALLOCATION_LOG_LEVEL)) {                   
+                    ++CVK_VKALLOCATIONS;
+                    logger.log(CVK_ALLOCATION_LOG_LEVEL, "CVK_VKALLOCATIONS(%d+) vkAllocateMemory(%d) for CVKimage %s (image:0x%016X memory:0x%016X)", 
+                            CVK_VKALLOCATIONS, vkMemoryRequirements.size(), cvkImage.DEBUGNAME, cvkImage.pImage.get(0), cvkImage.pImageMemory.get(0));
+                }
             }        
 
             vkBindImageMemory(CVKDevice.GetVkDevice(), cvkImage.pImage.get(0), cvkImage.pImageMemory.get(0), 0);
@@ -763,7 +770,6 @@ public class CVKImage {
      */
     private int StartMemoryMap(MemoryStack stack) {
         CVKAssert(pWriteMemory == null);    
-        int ret = VK_SUCCESS;
         
         // Get layout of the image to determine the offset
         VkImageSubresource subResource = VkImageSubresource.callocStack(stack);

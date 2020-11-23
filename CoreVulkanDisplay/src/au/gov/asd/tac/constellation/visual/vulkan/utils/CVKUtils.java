@@ -77,7 +77,8 @@ public class CVKUtils {
     
     // Enable this for additional logging, thread verification and other checks
     public static final boolean CVK_DEBUGGING = true;
-    public static final Level CVK_DEFAULT_LOG_LEVEL = Level.FINE;  
+    public static final Level CVK_ALLOCATION_LOG_LEVEL = Level.FINEST;
+    public static final Level CVK_DEFAULT_LOG_LEVEL = Level.INFO;  
     public static int CVK_VKALLOCATIONS = 0;
    
 

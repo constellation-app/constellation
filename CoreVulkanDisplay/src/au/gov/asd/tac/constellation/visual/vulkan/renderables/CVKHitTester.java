@@ -364,46 +364,50 @@ public class CVKHitTester extends CVKRenderable {
     }  
     
     public void ServiceHitRequests() {
-        if (requestQueue != null && !requestQueue.isEmpty()) {
-            requestQueue.forEach(request -> notificationQueues.add(request.getNotificationQueue()));
-            hitTestRequest = requestQueue.getLast();
-            requestQueue.clear();
-        }
-        
-        if (!notificationQueues.isEmpty()) {
-            final int x = hitTestRequest.getX();
-            final int y = hitTestRequest.getY();
-            int redPixel = 0;
-
-            if (cvkImage.GetLayout() != VK_IMAGE_LAYOUT_UNDEFINED) {
-                redPixel = cvkImage.ReadPixel(x, y);
+        try {
+            if (requestQueue != null && !requestQueue.isEmpty()) {
+                requestQueue.forEach(request -> notificationQueues.add(request.getNotificationQueue()));
+                hitTestRequest = requestQueue.getLast();
+                requestQueue.clear();
             }
 
-            final int id;
-            final HitType currentHitType;
-            if (redPixel == 0) {
-                currentHitType = HitType.NO_ELEMENT;
-                id = -1;
-            } else {
-                currentHitType = redPixel > 0 ? HitType.VERTEX : HitType.TRANSACTION;
-                id = redPixel > 0 ? redPixel - 1 : -redPixel - 1;
-            }
-             
-            final HitState hitState = hitTestRequest.getHitState();
-            hitState.setCurrentHitId(id);
-            hitState.setCurrentHitType(currentHitType);
-            if (hitTestRequest.getFollowUpOperation() != null) {
-                hitTestRequest.getFollowUpOperation().accept(hitState);
-            }
-            synchronized (this.notificationQueues) {
-                while (!notificationQueues.isEmpty()) {
-                    final Queue<HitState> queue = notificationQueues.remove();
-                    if (queue != null) {
-                        queue.add(hitState);
+            if (!notificationQueues.isEmpty()) {
+                final int x = hitTestRequest.getX();
+                final int y = hitTestRequest.getY();
+                int redPixel = 0;
+
+                if (cvkImage.GetLayout() != VK_IMAGE_LAYOUT_UNDEFINED) {
+                    redPixel = cvkImage.ReadPixel(x, y);
+                }
+
+                final int id;
+                final HitType currentHitType;
+                if (redPixel == 0) {
+                    currentHitType = HitType.NO_ELEMENT;
+                    id = -1;
+                } else {
+                    currentHitType = redPixel > 0 ? HitType.VERTEX : HitType.TRANSACTION;
+                    id = redPixel > 0 ? redPixel - 1 : -redPixel - 1;
+                }
+
+                final HitState hitState = hitTestRequest.getHitState();
+                hitState.setCurrentHitId(id);
+                hitState.setCurrentHitType(currentHitType);
+                if (hitTestRequest.getFollowUpOperation() != null) {
+                    hitTestRequest.getFollowUpOperation().accept(hitState);
+                }
+                synchronized (this.notificationQueues) {
+                    while (!notificationQueues.isEmpty()) {
+                        final Queue<HitState> queue = notificationQueues.remove();
+                        if (queue != null) {
+                            queue.add(hitState);
+                        }
                     }
                 }
-            }
-        }        
+            }  
+        } finally {
+            
+        }
     }
 
     @Override

@@ -189,14 +189,19 @@ public class CVKNewLineRenderable extends CVKRenderable {
         depthTest = true;
         depthWrite = true;     
         depthCompareOperation = VK_COMPARE_OP_ALWAYS;
-        assemblyTopology = VK_PRIMITIVE_TOPOLOGY_LINE_LIST;        
-        logicOpEnable = true;
-        logicOp = VK_LOGIC_OP_INVERT;
+        assemblyTopology = VK_PRIMITIVE_TOPOLOGY_LINE_LIST;       
         colourWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT;      
     }
         
     @Override
     public int Initialise() {
+        // Do this here rather than ctor as the CVKDevice won't be initialised
+        // during the ctor call.
+        if (CVKDevice.AreVkLogicOpsSupported()) {
+            logicOpEnable = true;
+            logicOp = VK_LOGIC_OP_INVERT;
+        }
+        
         int ret = super.Initialise();
         if (VkFailed(ret)) { return ret; }       
 
@@ -553,5 +558,6 @@ public class CVKNewLineRenderable extends CVKRenderable {
     
     public void queueModel(final NewLineModel model) {
         modelQueue.add(model);
+        cvkVisualProcessor.RequestRedraw();
     }
 }

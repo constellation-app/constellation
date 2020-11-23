@@ -36,6 +36,7 @@ import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKIconsRenderable
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKIconLabelsRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKLinkLabelsRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKLinksRenderable;
+import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKLoopsRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKNewLineRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKPerspectiveLinksRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKPointsRenderable;
@@ -76,11 +77,12 @@ public class CVKVisualProcessor extends VisualProcessor {
     private final Matrix44f projectionMatrix = new Matrix44f();       
     protected final CVKHitTester cvkHitTester;
     private List<CVKRenderable> hitTesters = new ArrayList<>();
-    protected final CVKNewLineRenderable cvkNewLineRenderable;
+    protected final CVKNewLineRenderable cvkNewLine;
     private final CVKAxesRenderable cvkAxes;
     private final CVKFPSRenderable cvkFPS;
     private final CVKIconsRenderable cvkIcons;
     private final CVKLinksRenderable cvkLinks;
+    private final CVKLoopsRenderable cvkLoops;
     private final CVKPerspectiveLinksRenderable cvkPerspectiveLinks;    
     private final CVKIconLabelsRenderable cvkIconLabels;
     private final CVKLinkLabelsRenderable cvkLinkLabels;
@@ -138,12 +140,14 @@ public class CVKVisualProcessor extends VisualProcessor {
             cvkCanvas.AddRenderable(cvkLinks);
             cvkPerspectiveLinks = new CVKPerspectiveLinksRenderable(cvkLinks);
             cvkCanvas.AddRenderable(cvkPerspectiveLinks);
+            cvkLoops = new CVKLoopsRenderable(this);
+            cvkCanvas.AddRenderable(cvkLoops);            
             cvkIconLabels = new CVKIconLabelsRenderable(this);
             cvkCanvas.AddRenderable(cvkIconLabels);
             cvkLinkLabels = new CVKLinkLabelsRenderable(this);
             cvkCanvas.AddRenderable(cvkLinkLabels);            
-            cvkNewLineRenderable = new CVKNewLineRenderable(this);
-            cvkCanvas.AddRenderable(cvkNewLineRenderable); 
+            cvkNewLine = new CVKNewLineRenderable(this);
+            cvkCanvas.AddRenderable(cvkNewLine); 
             cvkAxes = new CVKAxesRenderable(this);
             cvkCanvas.AddRenderable(cvkAxes);            
             cvkPoints = new CVKPointsRenderable(this);   
@@ -158,7 +162,7 @@ public class CVKVisualProcessor extends VisualProcessor {
             
 //            cvkIcons.DEBUG_skipRender = true;
 //            cvkLabels.DEBUG_skipRender = true;
-//            cvkNewLineRenderable.DEBUG_skipRender = true;
+//            cvkNewLine.DEBUG_skipRender = true;
 //            cvkAxes.DEBUG_skipRender = true;
 //            cvkFPS.DEBUG_skipRender = true;
             
@@ -186,8 +190,11 @@ public class CVKVisualProcessor extends VisualProcessor {
         }
     }      
     
+    public void RequestRedraw() {
+        shouldRender = true;
+    }
     
-    void addTask(final CVKRenderUpdateTask task) {
+    protected void addTask(final CVKRenderUpdateTask task) {
         shouldRender = true;
         taskQueue.add(task);
     }
@@ -297,7 +304,13 @@ public class CVKVisualProcessor extends VisualProcessor {
                 motion = (System.currentTimeMillis() - initialMotion) / 100f;
             } else {
                 motion = -1;
-            }        
+            }  
+            
+        // If we are currently rendering the newLine to indicate where a connection will
+        // will go then we must repaint.
+        if (cvkNewLine.GetVertexCount() > 0) {
+            shouldRender = true;
+        }
         
         if (shouldRender) {
             cvkCanvas.repaint();
@@ -646,16 +659,8 @@ public class CVKVisualProcessor extends VisualProcessor {
                         addTask(cvkLinks.TaskUpdateLinks(change, access));
                         addTask(cvkLinkLabels.TaskUpdateSizes(change, access));
                         addTask(cvkLinkLabels.TaskUpdateColours(change, access));
-                        addTask(cvkLinkLabels.TaskUpdateLabels(change, access));                        
-
-    //                    addTask(connectionLabelBatcher.setLabelColors(access));
-    //                    addTask(connectionLabelBatcher.setLabelSizes(access));
-    //                    addTask(lineBatcher.disposeBatch());
-    //                    addTask(lineBatcher.createBatch(access));
-    //                    addTask(loopBatcher.disposeBatch());
-    //                    addTask(loopBatcher.createBatch(access));
-    //                    addTask(connectionLabelBatcher.disposeBatch());
-    //                    addTask(connectionLabelBatcher.createBatch(access));
+                        addTask(cvkLinkLabels.TaskUpdateLabels(change, access));
+                        addTask(cvkLoops.TaskUpdateLoops(change, access));
                     };
                 case BACKGROUND_COLOR:
                     return (change, access) -> {
@@ -709,6 +714,7 @@ public class CVKVisualProcessor extends VisualProcessor {
                         addTask(cvkIconLabels.TaskUpdateCamera());
                         addTask(cvkLinkLabels.TaskUpdateCamera());
                         addTask(cvkLinks.TaskUpdateCamera());
+                        addTask(cvkLoops.TaskUpdateCamera());
                     };
                 case CONNECTION_LABEL_COLOR:
                     return (change, access) -> {
@@ -732,13 +738,13 @@ public class CVKVisualProcessor extends VisualProcessor {
                     };
                 case CONNECTION_COLOR:
                     return (change, access) -> {
-    //                    addTaskIfReady(loopBatcher.updateColors(access, change), loopBatcher);
                         addTask(cvkLinks.TaskUpdateLinks(change, access));
+                        addTask(cvkLoops.TaskUpdateLoops(change, access));
                     };
                 case CONNECTION_SELECTED:
                     return (change, access) -> {
-    //                    addTaskIfReady(loopBatcher.updateInfo(access, change), loopBatcher);
                         addTask(cvkLinks.TaskUpdateLinks(change, access));
+                        addTask(cvkLoops.TaskUpdateLoops(change, access));
                     };
                 case VERTEX_BLAZED:
                     GetLogger().warning("Event VERTEX_BLAZED unhandled!");

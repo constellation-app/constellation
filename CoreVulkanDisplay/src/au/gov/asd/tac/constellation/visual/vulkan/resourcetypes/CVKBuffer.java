@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.visual.vulkan.resourcetypes;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
 import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKGraphLogger;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ALLOCATION_LOG_LEVEL;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.checkVKret;
 import java.nio.ByteBuffer;
@@ -217,14 +218,16 @@ public class CVKBuffer {
     public void Destroy() {
         if (CVK_DEBUGGING && pBuffer != null) {
             final CVKGraphLogger logger = cvkGraphLogger != null ? cvkGraphLogger : CVKGraphLogger.GetStaticLogger();
-            if (pBufferMemory != null && pBufferMemory.get(0) != VK_NULL_HANDLE) {
-                --CVK_VKALLOCATIONS;
-                logger.info("CVK_VKALLOCATIONS (%d-) Destroy called on CVKBuffer %s (Buffer:0x%016X Memory:0x%016X), vkFreeMemory will be called",
-                        CVK_VKALLOCATIONS, DEBUGNAME, pBuffer.get(0), pBufferMemory.get(0));
-            } else {                
-                logger.info("CVK_VKALLOCATIONS (%d!) Destroy called on CVKBuffer %s (Buffer:0x%016X Memory:0x%016X), vkFreeMemory will NOT be called", 
-                        CVK_VKALLOCATIONS, CVK_VKALLOCATIONS, DEBUGNAME, pBuffer.get(0), pBufferMemory.get(0));                              
-            }            
+            if (logger.isLoggable(CVK_ALLOCATION_LOG_LEVEL)) {
+                if (pBufferMemory != null && pBufferMemory.get(0) != VK_NULL_HANDLE) {
+                    --CVK_VKALLOCATIONS;
+                    logger.log(CVK_ALLOCATION_LOG_LEVEL, "CVK_VKALLOCATIONS (%d-) Destroy called on CVKBuffer %s (Buffer:0x%016X Memory:0x%016X), vkFreeMemory will be called",
+                            CVK_VKALLOCATIONS, DEBUGNAME, pBuffer.get(0), pBufferMemory.get(0));
+                } else {                
+                    logger.log(CVK_ALLOCATION_LOG_LEVEL, "CVK_VKALLOCATIONS (%d!) Destroy called on CVKBuffer %s (Buffer:0x%016X Memory:0x%016X), vkFreeMemory will NOT be called", 
+                            CVK_VKALLOCATIONS, CVK_VKALLOCATIONS, DEBUGNAME, pBuffer.get(0), pBufferMemory.get(0));                              
+                }           
+            }
         }
         if (pBuffer != null && pBuffer.get(0) != VK_NULL_HANDLE) {
             vkDestroyBuffer(CVKDevice.GetVkDevice(), pBuffer.get(0), null);
@@ -312,9 +315,12 @@ public class CVKBuffer {
             
             if (CVK_DEBUGGING) {
                 cvkBuffer.DEBUGNAME = debugName;
-                ++CVK_VKALLOCATIONS;
-                cvkBuffer.GetLogger().info(String.format("CVK_VKALLOCATIONS(%d+) vkAllocateMemory(%d) for CVKBuffer %s (Buffer:0x%016X Memory:0x%016X)", 
-                        CVK_VKALLOCATIONS, vkMemoryRequirements.size(), cvkBuffer.DEBUGNAME, cvkBuffer.pBuffer.get(0), cvkBuffer.pBufferMemory.get(0)));                
+                final CVKGraphLogger logger = cvkBuffer.GetLogger();
+                if (logger.isLoggable(CVK_ALLOCATION_LOG_LEVEL)) {
+                    ++CVK_VKALLOCATIONS;
+                    logger.log(CVK_ALLOCATION_LOG_LEVEL, String.format("CVK_VKALLOCATIONS(%d+) vkAllocateMemory(%d) for CVKBuffer %s (Buffer:0x%016X Memory:0x%016X)", 
+                            CVK_VKALLOCATIONS, vkMemoryRequirements.size(), cvkBuffer.DEBUGNAME, cvkBuffer.pBuffer.get(0), cvkBuffer.pBufferMemory.get(0)));                
+                }
             }
             
             return cvkBuffer;

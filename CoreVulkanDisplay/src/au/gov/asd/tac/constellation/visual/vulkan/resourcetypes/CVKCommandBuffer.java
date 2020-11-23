@@ -106,9 +106,12 @@ public class CVKCommandBuffer {
     public void Destroy(){        
         if (vkCommandBuffer != null) {
             if (CVK_DEBUGGING) {
-                --CVK_VKALLOCATIONS;
-                GetLogger().fine("CVK_VKALLOCATIONS(%d-) vkFreeCommandBuffers for %s 0x%016X", 
-                        CVK_VKALLOCATIONS, DEBUGNAME, vkCommandBuffer.address());                
+                final CVKGraphLogger logger = GetLogger();
+                if (logger.isLoggable(CVK_ALLOCATION_LOG_LEVEL)) {
+                    --CVK_VKALLOCATIONS;
+                    logger.log(CVK_ALLOCATION_LOG_LEVEL, "CVK_VKALLOCATIONS(%d-) vkFreeCommandBuffers for %s 0x%016X", 
+                            CVK_VKALLOCATIONS, DEBUGNAME, vkCommandBuffer.address());    
+                }
             }             
             
             vkFreeCommandBuffers(CVKDevice.GetVkDevice(), CVKDevice.GetCommandPoolHandle(), vkCommandBuffer);
@@ -412,14 +415,17 @@ public class CVKCommandBuffer {
             
             if (CVK_DEBUGGING) {
                 cvkCommandBuffer.DEBUGNAME = debugName;
-                ++CVK_VKALLOCATIONS;
-                cvkCommandBuffer.GetLogger().fine("CVK_VKALLOCATIONS(%d+) vkAllocateCommandBuffers for %s 0x%016X", 
-                        CVK_VKALLOCATIONS, cvkCommandBuffer.DEBUGNAME, cvkCommandBuffer.vkCommandBuffer.address());   
+                final CVKGraphLogger logger = cvkCommandBuffer.GetLogger();
+                if (logger.isLoggable(CVK_ALLOCATION_LOG_LEVEL)) {                
+                    ++CVK_VKALLOCATIONS;
+                    logger.log(CVK_ALLOCATION_LOG_LEVEL, "CVK_VKALLOCATIONS(%d+) vkAllocateCommandBuffers for %s 0x%016X", 
+                            CVK_VKALLOCATIONS, cvkCommandBuffer.DEBUGNAME, cvkCommandBuffer.vkCommandBuffer.address());   
+                }
                 ret = CVKDevice.GetInstance().SetDebugName(cvkCommandBuffer.vkCommandBuffer.address(),
                                                            CVKMissingEnums.VkObjectType.VK_OBJECT_TYPE_COMMAND_BUFFER.Value(),
                                                            debugName);
                 if (VkFailed(ret)) {
-                    cvkCommandBuffer.GetLogger().warning("Failed to set debug object name for command buffer '%s'", debugName);
+                    logger.warning("Failed to set debug object name for command buffer '%s'", debugName);
                 }
                 
                 if (CVKDevice.IsVkCmdBeginDebugUtilsLabelEXTAvailable()) {

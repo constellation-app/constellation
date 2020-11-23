@@ -6,13 +6,19 @@ const int LOOP_DIRECTED_INDEX = 2;
 const int LOOP_UNDIRECTED_INDEX = 3;
 
 
-// === UNIFORMS ===
-layout(binding = 3) uniform sampler2DArray images;
-layout(std140, binding = 4) uniform UniformBlock {
+// === PUSH CONSTANTS ===
+layout(std140, push_constant) uniform HitTestPushConstant {
     // If non-zero, use the texture to color the icon.
     // Otherwise, use a unique color for hit testing.
-    int drawHitTest;
-} ub;
+    // Offset is 64 as the projection matrix (in Line.vs) 
+    // is before it in the pushConstant buffer.
+    // Note this is also read by Line.gs
+    layout(offset = 64) int drawHitTest;
+} pc;
+
+
+// === UNIFORMS ===
+layout(binding = 3) uniform sampler2DArray images;
 
 
 // === PER FRAGMENT DATA IN ===
@@ -37,7 +43,7 @@ void main() {
         discard;
     }
 
-    if (ub.drawHitTest == 0) {
+    if (pc.drawHitTest == 0) {
         int seldim = fData.p;
         bool isSelected = (seldim & 1) != 0;
         bool isDim = (seldim & 2) != 0;

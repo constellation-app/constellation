@@ -148,8 +148,6 @@ public class CVKPerspectiveLinksRenderable extends CVKRenderable {
         
         cvkLinks = links;
         
-        cullMode = VK_CULL_MODE_NONE;
-        
         // Assembly
         assemblyTopology = VK_PRIMITIVE_TOPOLOGY_LINE_LIST;
     }              

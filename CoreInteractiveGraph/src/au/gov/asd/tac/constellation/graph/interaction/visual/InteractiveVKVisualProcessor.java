@@ -175,7 +175,7 @@ public class InteractiveVKVisualProcessor extends CVKVisualProcessor implements 
 
     @Override
     public VisualOperation setNewLineModel(NewLineModel model) {
-        cvkNewLineRenderable.queueModel(model);
+        cvkNewLine.queueModel(model);
         return () -> Arrays.asList(new VisualChangeBuilder(VisualProperty.EXTERNAL_CHANGE)
                 .withId(newLineUpdateId).build());
     }
