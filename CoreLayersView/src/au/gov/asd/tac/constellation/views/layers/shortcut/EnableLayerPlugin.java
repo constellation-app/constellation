@@ -17,18 +17,16 @@ package au.gov.asd.tac.constellation.views.layers.shortcut;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginException;
-import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.views.layers.LayersViewController;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQuery;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewState;
 import au.gov.asd.tac.constellation.views.layers.utilities.LayersUtilities;
-import au.gov.asd.tac.constellation.views.layers.utilities.UpdateLayerSelectionPlugin;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A plugin that enables a layer in the layers view
@@ -37,6 +35,7 @@ import au.gov.asd.tac.constellation.views.layers.utilities.UpdateLayerSelectionP
  */
 public class EnableLayerPlugin extends SimpleEditPlugin {
 
+    private static final Logger LOGGER = Logger.getLogger(EnableLayerPlugin.class.getName());
     final int layerIndex;
 
     public EnableLayerPlugin(final int layerIndex) {
@@ -45,6 +44,7 @@ public class EnableLayerPlugin extends SimpleEditPlugin {
 
     @Override
     protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+        LOGGER.log(Level.WARNING, "EnableLayerPlugin");
         final int layersViewStateAttributeId = LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.ensure(graph);
         if (layersViewStateAttributeId == Graph.NOT_FOUND) {
             return;
@@ -53,6 +53,11 @@ public class EnableLayerPlugin extends SimpleEditPlugin {
         LayersViewState currentState = graph.getObjectValue(layersViewStateAttributeId, 0);
         if (currentState == null) {
             currentState = new LayersViewState();
+//            currentState.getVxQueriesCollection().setDefaultQueries();
+//            currentState.getTxQueriesCollection().setDefaultQueries();
+        }
+        if (currentState.getVxQueriesCollection().getHighestQueryIndex() == 0
+                && currentState.getTxQueriesCollection().getHighestQueryIndex() == 0) {
             currentState.getVxQueriesCollection().setDefaultQueries();
             currentState.getTxQueriesCollection().setDefaultQueries();
         }
@@ -70,22 +75,26 @@ public class EnableLayerPlugin extends SimpleEditPlugin {
 
             currentState.getVxQueriesCollection().add(vxQuery);
             currentState.getTxQueriesCollection().add(txQuery);
-            LayersViewController.getDefault().getVxQueryCollection().setQueries(currentState.getVxQueriesCollection().getQueries());
-            LayersViewController.getDefault().getTxQueryCollection().setQueries(currentState.getTxQueriesCollection().getQueries());
 
-            graph.setObjectValue(layersViewStateAttributeId, 0, new LayersViewState(currentState));
-
-            final int bitmaskAttributeId = LayersViewConcept.GraphAttribute.LAYER_MASK_SELECTED.ensure(graph);
-            final long newBitMask = graph.getLongValue(bitmaskAttributeId, 0) ^ (1 << layerIndex + 1);
-            graph.setLongValue(bitmaskAttributeId, 0, newBitMask);
+//            LayersViewController.getDefault().getVxQueryCollection().setQueries(currentState.getVxQueriesCollection().getQueries());
+//            LayersViewController.getDefault().getTxQueryCollection().setQueries(currentState.getTxQueriesCollection().getQueries());
+            //graph.setObjectValue(layersViewStateAttributeId, 0, new LayersViewState(currentState));
+            //final int bitmaskAttributeId = LayersViewConcept.GraphAttribute.LAYER_MASK_SELECTED.ensure(graph);
+            //final long newBitMask = graph.getLongValue(bitmaskAttributeId, 0) ^ (1 << layerIndex + 1);
+            //graph.setLongValue(bitmaskAttributeId, 0, newBitMask);
         }
-
+        LOGGER.log(Level.WARNING, "Query 1 Visible: " + currentState.getVxQueriesCollection().getQuery(1).getVisibility());
         final int newBitmask = LayersUtilities.calculateCurrentLayerSelectionBitMask(currentState.getVxQueriesCollection(), currentState.getTxQueriesCollection());
+        //LOGGER.log(Level.WARNING, "new bitmask: " + newBitmask);
+        final int bitmaskAttributeId = LayersViewConcept.GraphAttribute.LAYER_MASK_SELECTED.ensure(graph);
+        graph.setLongValue(bitmaskAttributeId, 0, newBitmask);
+        //PluginExecution.withPlugin(new UpdateLayerSelectionPlugin(newBitmask))
+        //        .executeLater(GraphManager.getDefault().getActiveGraph());
 
-        PluginExecution.withPlugin(new UpdateLayerSelectionPlugin(newBitmask))
-                .executeNow(graph);
+        final LayersViewState newState = new LayersViewState(currentState);
+        graph.setObjectValue(layersViewStateAttributeId, 0, newState);
 
-        LayersViewController.getDefault().updateQueries(GraphManager.getDefault().getAllGraphs().get(graph.getId()));
+        //LayersViewController.getDefault().updateQueries(GraphManager.getDefault().getAllGraphs().get(graph.getId()));
     }
 
     @Override
@@ -95,6 +104,6 @@ public class EnableLayerPlugin extends SimpleEditPlugin {
 
     @Override
     public String getName() {
-        return "Layers View: Deselect All Layers Plugin";
+        return "Layers View: Enable Layer Plugin";
     }
 }

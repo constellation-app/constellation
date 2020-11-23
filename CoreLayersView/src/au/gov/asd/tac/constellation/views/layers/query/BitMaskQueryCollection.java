@@ -23,6 +23,8 @@ import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttributeUtilit
 import au.gov.asd.tac.constellation.graph.value.values.IntValue;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -31,6 +33,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class BitMaskQueryCollection {
 
+    private static final Logger LOGGER = Logger.getLogger(BitMaskQueryCollection.class.getName());
     public static final int MAX_QUERY_AMT = 64;
     private static final String INVALID_INDEX_ERROR = " is not a valid index for a layer";
 
@@ -99,8 +102,11 @@ public class BitMaskQueryCollection {
 
     public boolean update(final GraphReadMethods graph) {
         updateQueries.clear();
+        LOGGER.log(Level.WARNING, "items in activeQueries: " + activeQueries.size());
         for (final BitMaskQuery activeQuery : activeQueries) {
+            LOGGER.log(Level.WARNING, activeQuery != null ? "Query isnt null" : " Query was null");
             if (activeQuery != null && activeQuery.update(graph, index)) {
+                LOGGER.log(Level.WARNING, "this query needs update: " + activeQuery.getIndex());
                 if (activeQuery.getIndex() != 0 && updateQueries.size() > 0) {
                     updateQueries.remove(0);
                 }
@@ -111,6 +117,7 @@ public class BitMaskQueryCollection {
     }
 
     public long updateBitMask(long bitMask) {
+        LOGGER.log(Level.WARNING, "items in updatequeries: " + updateQueries.size());
         for (final BitMaskQuery updateQuery : updateQueries) {
             bitMask = updateQuery.updateBitMask(bitMask);
         }
@@ -126,6 +133,9 @@ public class BitMaskQueryCollection {
                 final long bitMask = graph.getLongValue(bitMaskAttributeId, elementId);
                 final long updatedBitMask = updateBitMask(bitMask);
                 graph.setFloatValue(visibleAttributeId, elementId, (updatedBitMask & activeQueriesBitMask) == 0 ? 0.0f : 1.0f);
+                if (this.elementType == GraphElementType.VERTEX) {
+                    LOGGER.log(Level.WARNING, (updatedBitMask & activeQueriesBitMask) == 0 ? "***not setting visible: elid" + elementId + " aqbm" + activeQueriesBitMask + " ubm: " + updatedBitMask : "***Setting to visible: elid:" + elementId + " aqm: " + activeQueriesBitMask + " ubm: " + updatedBitMask);
+                }
             }
         }
     }

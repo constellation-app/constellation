@@ -37,7 +37,11 @@ import au.gov.asd.tac.constellation.views.layers.utilities.LayersUtilities;
 import au.gov.asd.tac.constellation.views.layers.utilities.UpdateLayerSelectionPlugin;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.openide.util.Exceptions;
 
 /**
  * Controls interaction of UI to layers and filtering of nodes and transactions.
@@ -45,6 +49,8 @@ import java.util.concurrent.Future;
  * @author aldebaran30701
  */
 public class LayersViewController {
+
+    private static final Logger LOGGER = Logger.getLogger(LayersViewController.class.getName());
 
     // Layers view controller instance
     private static LayersViewController instance = null;
@@ -62,6 +68,8 @@ public class LayersViewController {
     private LayersViewController() {
         this.valueMonitors = new ArrayList<>();
         this.changeListeners = new ArrayList<>();
+        vxBitMaskCollection.setQueries(BitMaskQueryCollection.DEFAULT_VX_QUERIES);
+        txBitMaskCollection.setQueries(BitMaskQueryCollection.DEFAULT_TX_QUERIES);
     }
 
     /**
@@ -147,6 +155,22 @@ public class LayersViewController {
                 .executeLater(GraphManager.getDefault().getActiveGraph());
     }
 
+    public void executeFuture() {
+        final int newBitmask = LayersUtilities.calculateCurrentLayerSelectionBitMask(vxBitMaskCollection, txBitMaskCollection);
+
+        Future<?> f = PluginExecution.withPlugin(new UpdateLayerSelectionPlugin(newBitmask))
+                .executeLater(GraphManager.getDefault().getActiveGraph());
+
+        try {
+            f.get();
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+    }
+
     /**
      * Reads the graph's layers_view_state attribute and populates the Layers
      * View pane.
@@ -155,10 +179,30 @@ public class LayersViewController {
         final LayersViewPane pane = parent.getContent();
         final Graph graph = GraphManager.getDefault().getActiveGraph();
         if (pane == null || graph == null) {
+            LOGGER.log(Level.WARNING, "Graph was found to be non-existent! - Read State");
             return;
         }
         PluginExecution.withPlugin(new LayersViewStateReader(pane))
                 .executeLater(graph);
+    }
+
+    public void readStateFuture() {
+        final LayersViewPane pane = parent.getContent();
+        final Graph graph = GraphManager.getDefault().getActiveGraph();
+        if (pane == null || graph == null) {
+            LOGGER.log(Level.WARNING, "Graph was found to be non-existent! - Read State");
+            return;
+        }
+        Future<?> f = PluginExecution.withPlugin(new LayersViewStateReader(pane))
+                .executeLater(graph);
+        try {
+            f.get();
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException ex) {
+            Exceptions.printStackTrace(ex);
+        }
     }
 
     /**
@@ -170,15 +214,45 @@ public class LayersViewController {
     public Future<?> writeState() {
         final Graph graph = GraphManager.getDefault().getActiveGraph();
         if (graph == null) {
+            LOGGER.log(Level.WARNING, "Graph was found to be non-existent! - Write State");
             return null;
         }
+
         return PluginExecution.withPlugin(new LayersViewStateWriter(vxBitMaskCollection.getQueries(), txBitMaskCollection.getQueries()))
                 .executeLater(graph);
+
     }
 
     public void updateQueries(final Graph currentGraph) {
+        final Graph graph = GraphManager.getDefault().getActiveGraph();
+        if (graph == null) {
+            LOGGER.log(Level.WARNING, "Graph was found to be non-existent! - Write State");
+            return;
+        }
+        // hwere is this triggerign from
+        LOGGER.log(Level.WARNING, "about to update queries: layer 1: " + vxBitMaskCollection.getQuery(1).getVisibility());
         final UpdateQueryPlugin updatePlugin = new UpdateQueryPlugin(vxBitMaskCollection, txBitMaskCollection);
-        PluginExecution.withPlugin(updatePlugin).executeLater(currentGraph);
+        PluginExecution.withPlugin(updatePlugin).executeLater(graph);
+    }
+
+    public void updateQueriesFuture(final Graph currentGraph) {
+        final Graph graph = GraphManager.getDefault().getActiveGraph();
+        if (graph == null) {
+            LOGGER.log(Level.WARNING, "Graph was found to be non-existent! - Write State");
+            return;
+        }
+        LOGGER.log(Level.WARNING, "before update query future layer 1: " + vxBitMaskCollection.getQuery(1).getVisibility());
+        final UpdateQueryPlugin updatePlugin = new UpdateQueryPlugin(vxBitMaskCollection, txBitMaskCollection);
+        Future<?> f = PluginExecution.withPlugin(updatePlugin).executeLater(graph);
+        try {
+            f.get();
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        LOGGER.log(Level.WARNING, "aftewr update query future");
     }
 
     public BitMaskQueryCollection getVxQueryCollection() {
@@ -202,20 +276,25 @@ public class LayersViewController {
 
         @Override
         public void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            LOGGER.log(Level.WARNING, "ReadSTatePlugin");
             if (graph == null) {
+                //LOGGER.log(Level.WARNING, "Error Reading State!");
                 return;
             }
 
+            //LOGGER.log(Level.WARNING, "Readoing state now!");
             final int layersViewStateAttributeId = LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.get(graph);
             if (layersViewStateAttributeId == Graph.NOT_FOUND) {
+                //LOGGER.log(Level.WARNING, "Error Reading State!layersViewStateAttributeId null");
                 return;
             }
 
             final LayersViewState currentState = graph.getObjectValue(layersViewStateAttributeId, 0);
             if (currentState == null || pane == null) {
+                // LOGGER.log(Level.WARNING, "Error Reading State!currentStatenull");
                 return;
             }
-
+            //LOGGER.log(Level.WARNING, "Setting paneto VX: " + currentState.getVxQueriesCollection().getHighestQueryIndex() + " TX: " + currentState.getTxQueriesCollection().getHighestQueryIndex());
             pane.setLayers(currentState.getVxQueriesCollection().getQueries(), currentState.getTxQueriesCollection().getQueries());
         }
 
@@ -240,18 +319,37 @@ public class LayersViewController {
 
         @Override
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            LOGGER.log(Level.WARNING, "WriteSTatePlugin");
             if (graph == null) {
+                LOGGER.log(Level.WARNING, "Error writing state!");
                 return;
+
             }
 
+            //LOGGER.log(Level.WARNING, "Writing state now!");
             final int stateAttributeId = LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.ensure(graph);
-            final LayersViewState currentState = graph.getObjectValue(stateAttributeId, 0);
+            LayersViewState currentState = graph.getObjectValue(stateAttributeId, 0);
+            //LOGGER.log(Level.WARNING, currentState == null ? " null" : currentState.toString());
+            if (currentState == null) {
+                currentState = new LayersViewState();
+                currentState.setVxLayers(BitMaskQueryCollection.DEFAULT_VX_QUERIES);
+                currentState.setTxLayers(BitMaskQueryCollection.DEFAULT_TX_QUERIES);
+            } else {
+                currentState = new LayersViewState(currentState);
+            }
 
-            final LayersViewState newState = currentState == null ? new LayersViewState() : new LayersViewState(currentState);
-            newState.setVxLayers(vxLayers);
-            newState.setTxLayers(txLayers);
+            //final LayersViewState newState = currentState == null ? new LayersViewState() : new LayersViewState(currentState);
+            currentState.setVxLayers(vxLayers);
+            currentState.setTxLayers(txLayers);
+            LOGGER.log(Level.WARNING, "Setting layers to state: Layer 1 = " + (vxLayers[1] != null ? vxLayers[1].getVisibility() : "null"));
+            if (currentState.getVxQueriesCollection().getHighestQueryIndex() == 0 && currentState.getTxQueriesCollection().getHighestQueryIndex() == 0) {
 
-            graph.setObjectValue(stateAttributeId, 0, newState);
+                currentState.setVxLayers(BitMaskQueryCollection.DEFAULT_VX_QUERIES);
+                currentState.setTxLayers(BitMaskQueryCollection.DEFAULT_TX_QUERIES);
+            }
+
+            graph.setObjectValue(stateAttributeId, 0, currentState);
+            LOGGER.log(Level.WARNING, "ENDWriteSTatePlugin");
         }
 
         @Override
@@ -286,6 +384,7 @@ public class LayersViewController {
 
         @Override
         protected void edit(GraphWriteMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+            LOGGER.log(Level.WARNING, "UpdateQueryPlugin");
             final int graphCurrentBitMaskAttrId = LayersViewConcept.GraphAttribute.LAYER_MASK_SELECTED.ensure(graph);
             final long currentBitmask = graph.getLongValue(graphCurrentBitMaskAttrId, 0);
 
@@ -295,17 +394,20 @@ public class LayersViewController {
             final int txbitmaskAttrId = LayersConcept.TransactionAttribute.LAYER_MASK.get(graph);
             final int txbitmaskVisibilityAttrId = LayersConcept.TransactionAttribute.LAYER_VISIBILITY.get(graph);
 
-            vxBitMasks.setActiveQueries(currentBitmask);
-            vxBitMasks.updateBitMasks(graph, vxbitmaskAttrId, vxbitmaskVisibilityAttrId);
-            txBitMasks.setActiveQueries(currentBitmask);
-            txBitMasks.updateBitMasks(graph, txbitmaskAttrId, txbitmaskVisibilityAttrId);
-
             final int stateAttributeId = LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.ensure(graph);
             final LayersViewState currentState = graph.getObjectValue(stateAttributeId, 0);
             if (currentState != null) {
+                //LayersViewController.getDefault().getVxQueryCollection().setActiveQueries(currentBitmask);
+                //LayersViewController.getDefault().getVxQueryCollection().updateBitMasks(graph, vxbitmaskAttrId, vxbitmaskVisibilityAttrId);
+                LOGGER.log(Level.WARNING, "Query 1 Visible: " + currentState.getVxQueriesCollection().getQuery(1).getVisibility() + "current butmask: " + currentBitmask);
+                currentState.getVxQueriesCollection().setActiveQueries(currentBitmask);
+                currentState.getVxQueriesCollection().updateBitMasks(graph, vxbitmaskAttrId, vxbitmaskVisibilityAttrId);
+                currentState.getTxQueriesCollection().setActiveQueries(currentBitmask);
+                currentState.getTxQueriesCollection().updateBitMasks(graph, txbitmaskAttrId, txbitmaskVisibilityAttrId);
                 currentState.extractLayerAttributes(graph);
                 LayersViewController.getDefault().updateListenedAttributes();
             }
+            LOGGER.log(Level.WARNING, "ENDUpdateQueryPlugin");
         }
     }
 }

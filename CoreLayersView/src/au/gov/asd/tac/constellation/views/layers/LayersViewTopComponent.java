@@ -23,6 +23,8 @@ import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -57,6 +59,8 @@ import org.openide.windows.TopComponent;
     "HINT_LayersViewTopComponent=Layers View"})
 public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewPane> {
 
+    private static final Logger LOGGER = Logger.getLogger(LayersViewTopComponent.class.getName());
+
     private final LayersViewController layersViewController;
     private final LayersViewPane layersViewPane;
 
@@ -71,16 +75,19 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
         initContent();
 
         addAttributeValueChangeHandler(LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE, graph -> {
+            LOGGER.log(Level.WARNING, "statechangedTC");
             if (!needsUpdate()) {
                 return;
             }
 
-            layersViewController.readState();
-            layersViewController.updateQueries(graph);
+            layersViewController.readStateFuture(); // was reasstatefuture after messing with it
+            //LOGGER.log(Level.WARNING, "statechanged, updain queries layer 1: " + layersViewController.getTxQueryCollection().getQuery(1).getVisibility());
+            layersViewController.updateQueries(graph); // try futues?
         });
     }
 
     public void update() {
+        LOGGER.log(Level.WARNING, "updaing in tc");
         layersViewController.readState();
         layersViewController.updateQueries(GraphManager.getDefault().getActiveGraph());
     }
@@ -147,6 +154,7 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
     }
 
     private void preparePane() {
+        LOGGER.log(Level.WARNING, "preparing pane in TC");
         layersViewPane.setDefaultLayers();
         layersViewController.readState();
         layersViewController.addAttributes();
