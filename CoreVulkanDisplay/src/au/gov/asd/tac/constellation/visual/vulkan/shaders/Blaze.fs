@@ -6,7 +6,6 @@ const float ICON_BORDER = 0.125;
 
 
 // === UNIFORMS ===
-layout(binding = 2) uniform sampler2DArray images;
 layout(std140, binding = 3) uniform UniformBlock {
     float opacity;
 } ub;
@@ -27,14 +26,7 @@ void main() {
 
     // Blazes don't do icons for now.
     // Comment out the rest of the code to avoid "fData not used" errors when linking on some drivers.
-    if(isPointer != 0) {
+    if (isPointer != 0) {
         fragColor = vec4(fColor.rgb * (1.0 - pointCoord.x * pointCoord.x), ub.opacity);
     }
-/*
-    else {
-        vec4 icon = texture(images, vec3(pointCoord, fData[1]));
-        fragColor.rgb = mix(fColor.rgb, icon.rgb, icon.a);
-        fragColor.a = 1;
-    }
-*/
 }

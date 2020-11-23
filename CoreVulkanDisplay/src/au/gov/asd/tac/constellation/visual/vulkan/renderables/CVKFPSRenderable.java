@@ -285,11 +285,12 @@ public class CVKFPSRenderable extends CVKRenderable {
     public CVKFPSRenderable(CVKVisualProcessor visualProcessor) {
         super(visualProcessor);
         
+        depthWrite = false; 
         currentFPS = new ArrayList<>();
-        currentFPS.add(7);
-        currentFPS.add(3);
-        currentFPS.add(0);  // unused
-        currentFPS.add(0);  // unused
+        currentFPS.add(0);
+        currentFPS.add(0);
+        currentFPS.add(0);
+        currentFPS.add(0);
     }  
     
     @Override

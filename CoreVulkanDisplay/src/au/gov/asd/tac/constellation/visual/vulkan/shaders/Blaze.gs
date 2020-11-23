@@ -7,7 +7,7 @@ const float border = 0.002;
 
 
 // === UNIFORMS ===
-layout(std140, binding = 1) uniform UniformBlock {
+layout(std140, binding = 2) uniform UniformBlock {
     mat4 pMatrix;
     float scale;
     float visibilityLow;
@@ -27,7 +27,7 @@ layout(triangle_strip, max_vertices=3) out;
 layout(location = 0) flat out vec4 fColor;
 layout(location = 1) out vec2 pointCoord;
 layout(location = 2) out float fnradius;
-layout(location = 3) flat out int isPointer;
+layout(location = 3) flat out int isPointer; //<- remove this
 
 
 vec4 rotate(vec4 v, float dx, float dy, float x, float y) {

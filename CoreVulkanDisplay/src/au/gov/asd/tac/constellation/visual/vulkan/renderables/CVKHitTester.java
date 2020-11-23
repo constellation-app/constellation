@@ -363,7 +363,7 @@ public class CVKHitTester extends CVKRenderable {
         return ret;
     }  
     
-    public void ServiceHitRequests() {
+    public synchronized void ServiceHitRequests() {
         try {
             if (requestQueue != null && !requestQueue.isEmpty()) {
                 requestQueue.forEach(request -> notificationQueues.add(request.getNotificationQueue()));

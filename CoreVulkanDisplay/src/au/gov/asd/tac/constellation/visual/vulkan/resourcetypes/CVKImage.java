@@ -954,16 +954,22 @@ public class CVKImage {
     
     
     public int ReadPixel(int x, int y) {
-        int r;
+        int pixel = 0;
         
         try (MemoryStack stack = stackPush()) {
             int ret = StartMemoryMap(stack);
             checkVKret(ret);
-            r = ReadPixel(stack, x, y);
-            EndMemoryMap();
+            
+            // It's possible the mapping will fail as both the event and render
+            // thread access the pick buffer for hit testing.  Missing a frame
+            // of hit testing won't cause any issues so let it slide.
+            if (pWriteMemory != null) {
+                pixel = ReadPixel(stack, x, y);
+                EndMemoryMap();
+            }
         }
         
-        return r;
+        return pixel;
     }
     
     private int ReadPixel(MemoryStack stack, int x, int y) {

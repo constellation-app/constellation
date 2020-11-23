@@ -30,6 +30,7 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor.VisualChangeProcessor;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKAxesRenderable;
+import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKBlazesRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKFPSRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKHitTester;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKIconsRenderable;
@@ -84,6 +85,7 @@ public class CVKVisualProcessor extends VisualProcessor {
     private final CVKLinksRenderable cvkLinks;
     private final CVKLoopsRenderable cvkLoops;
     private final CVKPerspectiveLinksRenderable cvkPerspectiveLinks;    
+    private final CVKBlazesRenderable cvkBlazes;
     private final CVKIconLabelsRenderable cvkIconLabels;
     private final CVKLinkLabelsRenderable cvkLinkLabels;
     private final CVKPointsRenderable cvkPoints;
@@ -143,6 +145,8 @@ public class CVKVisualProcessor extends VisualProcessor {
             cvkLoops = new CVKLoopsRenderable(this);
             cvkCanvas.AddRenderable(cvkLoops);            
             cvkIconLabels = new CVKIconLabelsRenderable(this);
+            cvkBlazes = new CVKBlazesRenderable(this);
+            cvkCanvas.AddRenderable(cvkBlazes);
             cvkCanvas.AddRenderable(cvkIconLabels);
             cvkLinkLabels = new CVKLinkLabelsRenderable(this);
             cvkCanvas.AddRenderable(cvkLinkLabels);            
@@ -158,6 +162,7 @@ public class CVKVisualProcessor extends VisualProcessor {
             hitTesters.add(cvkIcons);
             hitTesters.add(cvkLinks);  
             hitTesters.add(cvkPerspectiveLinks);
+            hitTesters.add(cvkLoops);
             
             
 //            cvkIcons.DEBUG_skipRender = true;
@@ -632,27 +637,11 @@ public class CVKVisualProcessor extends VisualProcessor {
                         addTask(cvkIconLabels.TaskUpdateColours(change, access));
                         addTask(cvkIconLabels.TaskUpdateSizes(change, access));
                         
+                        addTask(cvkBlazes.TaskUpdateBlazes(change, access));
+                        
+                        // Visibility flags to control what is drawn
                         final DrawFlags updatedDrawFlags = access.getDrawFlags();
                         addTask(() -> { drawFlags = updatedDrawFlags; });                        
-
-
-    //                    addTask(xyzTexturiser.dispose());
-    //                    addTask(xyzTexturiser.createTexture(access));
-    //                    addTask(vertexFlagsTexturiser.dispose());
-    //                    addTask(vertexFlagsTexturiser.createTexture(access));
-    //                    addTask(iconBatcher.disposeBatch());
-    //                    addTask(iconBatcher.createBatch(access));
-    //                    addTask(nodeLabelBatcher.disposeBatch());
-    //                    addTask(nodeLabelBatcher.createBatch(access));
-    //                    addTask(blazeBatcher.disposeBatch());
-    //                    addTask(blazeBatcher.createBatch(access));
-    //                    addTask(gl -> {
-    //                        iconTextureArray = iconBatcher.updateIconTexture(gl);
-    //                    });
-    //                    final DrawFlags updatedDrawFlags = access.getDrawFlags();
-    //                    addTask(gl -> {
-    //                        drawFlags = updatedDrawFlags;
-    //                    });
                     };
                 case CONNECTIONS_REBUILD:
                     return (change, access) -> {
@@ -683,9 +672,8 @@ public class CVKVisualProcessor extends VisualProcessor {
                         addTask(() -> { drawFlags = updatedDrawFlags; });    
                     };
                 case BLAZE_SIZE:
-                    GetLogger().warning("Event BLAZE_SIZE unhandled!");
                     return (change, access) -> {
-    //                    addTask(blazeBatcher.updateSizeAndOpacity(access));
+                        addTask(cvkBlazes.TaskUpdateSizeAndOpacity(access));
                     };
                 case CONNECTIONS_OPACITY:
                     return (change, access) -> {
@@ -715,6 +703,7 @@ public class CVKVisualProcessor extends VisualProcessor {
                         addTask(cvkLinkLabels.TaskUpdateCamera());
                         addTask(cvkLinks.TaskUpdateCamera());
                         addTask(cvkLoops.TaskUpdateCamera());
+                        addTask(cvkBlazes.TaskUpdateCamera());
                     };
                 case CONNECTION_LABEL_COLOR:
                     return (change, access) -> {
@@ -750,7 +739,7 @@ public class CVKVisualProcessor extends VisualProcessor {
                     GetLogger().warning("Event VERTEX_BLAZED unhandled!");
                     return (change, access) -> {
                         // Note that updating blazes always rebuilds from scratch, so it is not an issue if the batch was not 'ready'.
-    //                    addTask(blazeBatcher.updateBlazes(access, change));
+                        addTask(cvkBlazes.TaskUpdateBlazes(change, access));
                     };
                 case VERTEX_COLOR:
                     return (change, access) -> {

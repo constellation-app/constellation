@@ -32,7 +32,6 @@ import static au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderab
 import static au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableResourceState.CVK_RESOURCE_NEEDS_UPDATE;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKCommandBuffer;
-import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKIconTextureAtlas;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssert;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssertNotNull;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssertNull;
@@ -54,13 +53,10 @@ import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_SECONDARY;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT;
-import static org.lwjgl.vulkan.VK10.VK_CULL_MODE_NONE;
-import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32B32A32_SFLOAT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32B32A32_SINT;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
@@ -84,7 +80,6 @@ import static org.lwjgl.vulkan.VK10.vkUpdateDescriptorSets;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkCommandBufferInheritanceInfo;
 import org.lwjgl.vulkan.VkDescriptorBufferInfo;
-import org.lwjgl.vulkan.VkDescriptorImageInfo;
 import org.lwjgl.vulkan.VkDescriptorSetAllocateInfo;
 import org.lwjgl.vulkan.VkDescriptorSetLayoutBinding;
 import org.lwjgl.vulkan.VkDescriptorSetLayoutCreateInfo;
@@ -96,12 +91,12 @@ import org.lwjgl.vulkan.VkWriteDescriptorSet;
 
 
 /*******************************************************************************
- * CVKLoopsRenderable
+ * CVKBlazesRenderable
  * 
  * 
  *******************************************************************************/
 
-public class CVKLoopsRenderable extends CVKRenderable {
+public class CVKBlazesRenderable extends CVKRenderable {
     // Resources recreated with the swap chain (dependent on the image count)    
     private LongBuffer pDescriptorSets = null; 
     private List<Long> hitTestPipelines = null;
@@ -110,12 +105,15 @@ public class CVKLoopsRenderable extends CVKRenderable {
     private List<CVKBuffer> vertexBuffers = null;   
     private List<CVKBuffer> vertexUniformBuffers = null;
     private List<CVKBuffer> geometryUniformBuffers = null;      
+    private List<CVKBuffer> fragmentUniformBuffers = null; 
     
     // The UBO staging buffers are a known size so created outside user events
     private CVKBuffer cvkVertexUBStagingBuffer = null;
     private CVKBuffer cvkGeometryUBStagingBuffer = null;
+    private CVKBuffer cvkFragmentUBStagingBuffer = null;
     private final VertexUniformBufferObject vertexUBO = new VertexUniformBufferObject();
     private final GeometryUniformBufferObject geometryUBO = new GeometryUniformBufferObject(); 
+    private final FragmentUniformBufferObject fragmentUBO = new FragmentUniformBufferObject();
     
     // Resources recreated only through user events
     private int vertexCount = 0;
@@ -125,8 +123,6 @@ public class CVKLoopsRenderable extends CVKRenderable {
     // our descriptors
     private long hPositionBuffer = VK_NULL_HANDLE;
     private long hPositionBufferView = VK_NULL_HANDLE;    
-    private long hIconAtlasSampler = VK_NULL_HANDLE;
-    private long hIconAtlasImageView = VK_NULL_HANDLE;    
     
     // Push constants for shaders contains the MV matrix and drawHitTest int
     private ByteBuffer modelViewPushConstants = null;
@@ -154,21 +150,18 @@ public class CVKLoopsRenderable extends CVKRenderable {
        
         public Vertex(ConstellationColor inColour, 
                       float visibility,
-                      int connectionID,
                       int vertexID,
-                      int flags,
-                      int iconID) {
+                      int angle) {
             colour.a[0] = inColour.getRed();
             colour.a[1] = inColour.getGreen();
             colour.a[2] = inColour.getBlue();
             colour.a[3] = visibility;
-            data.a[0]   = connectionID;
-            data.a[1]   = vertexID;
-            data.a[2]   = flags;
-            data.a[3]   = iconID;
-        }
-        
-
+            
+            data.a[0]   = vertexID;
+            data.a[1]   = -1;
+            data.a[2]   = angle;
+            data.a[3]   = 0;
+        }       
         
         public void CopyToSequentially(ByteBuffer buffer) {
             buffer.putFloat(colour.a[0]);
@@ -281,7 +274,8 @@ public class CVKLoopsRenderable extends CVKRenderable {
     }      
     
     protected static class GeometryUniformBufferObject {                                           
-        private final Matrix44f pMatrix = new Matrix44f();    
+        private final Matrix44f pMatrix = new Matrix44f();  
+        private float scale;
         private float visibilityLow;
         private float visibilityHigh;
         private static Integer padding = null;   
@@ -295,6 +289,7 @@ public class CVKLoopsRenderable extends CVKRenderable {
                 CVKAssert(minAlignment <= (Matrix44f.BYTES));
 
                 int sizeof = Matrix44f.BYTES +     // pMatrix
+                             1 * Float.BYTES +     // scale
                              1 * Float.BYTES +     // visibilityLow
                              1 * Float.BYTES;      // visibilityHigh  
 
@@ -303,6 +298,7 @@ public class CVKLoopsRenderable extends CVKRenderable {
             }
             
             return Matrix44f.BYTES  +     // pMatrix
+                    1 * Float.BYTES +     // scale
                     1 * Float.BYTES +     // visibilityLow
                     1 * Float.BYTES +     // visibilityHigh  
                     padding;
@@ -314,6 +310,7 @@ public class CVKLoopsRenderable extends CVKRenderable {
                     buffer.putFloat(pMatrix.get(iRow, iCol));
                 }
             } 
+            buffer.putFloat(scale);
             buffer.putFloat(visibilityLow);
             buffer.putFloat(visibilityHigh);         
                         
@@ -322,24 +319,56 @@ public class CVKLoopsRenderable extends CVKRenderable {
             }          
         }         
     }   
+    
+    protected static class FragmentUniformBufferObject {                                           
+        private float opacity;
+        private static Integer padding = null;   
+                    
+        protected static int SizeOf() {
+            if (padding == null) {
+                CVKAssertNotNull(CVKDevice.GetVkDevice()); 
+                final int minAlignment = CVKDevice.GetMinUniformBufferAlignment();
+                
+                // The matrices are 64 bytes each so should line up on a boundary (unless the minimum alignment is huge)
+                CVKAssert(minAlignment <= (Matrix44f.BYTES));
+
+                int sizeof = 1 * Float.BYTES;      // opacity  
+
+                final int overrun = sizeof % minAlignment;
+                padding = overrun > 0 ? minAlignment - overrun : 0;             
+            }
+            
+            return 1 * Float.BYTES +     // opacity  
+                    padding;
+        }
+        
+        private void CopyTo(ByteBuffer buffer) {  
+            buffer.putFloat(opacity);     
+                        
+            for (int i = 0; i < padding; ++i) {
+                buffer.put((byte)0);
+            }          
+        }         
+    }    
                       
     
     // ========================> Shaders <======================== \\
     
     @Override
-    protected String GetVertexShaderName() { return "Loop.vs"; }
+    protected String GetVertexShaderName() { return "Blaze.vs"; }
     
     @Override
-    protected String GetGeometryShaderName() { return "Loop.gs"; }
+    protected String GetGeometryShaderName() { return "Blaze.gs"; }
     
     @Override
-    protected String GetFragmentShaderName() { return "Loop.fs"; }   
+    protected String GetFragmentShaderName() { return "Blaze.fs"; }   
         
     
     // ========================> Lifetime <======================== \\
     
-    public CVKLoopsRenderable(CVKVisualProcessor visualProcessor) {
+    public CVKBlazesRenderable(CVKVisualProcessor visualProcessor) {
         super(visualProcessor);
+        depthTest = false;
     }              
     
     private void CreateUBOStagingBuffers() {
@@ -347,12 +376,17 @@ public class CVKLoopsRenderable extends CVKRenderable {
                                                     VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                                                     VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
                                                     GetLogger(),
-                                                    "CVKLoopsRenderable.CreateUBOStagingBuffers cvkVertexUBStagingBuffer");   
+                                                    "CVKBlazesRenderable.CreateUBOStagingBuffers cvkVertexUBStagingBuffer");   
         cvkGeometryUBStagingBuffer = CVKBuffer.Create(GeometryUniformBufferObject.SizeOf(),
                                                       VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                                                       VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
                                                       GetLogger(),
-                                                      "CVKLoopsRenderable.CreateUBOStagingBuffers cvkGeometryUBStagingBuffer"); 
+                                                      "CVKBlazesRenderable.CreateUBOStagingBuffers cvkGeometryUBStagingBuffer"); 
+        cvkFragmentUBStagingBuffer = CVKBuffer.Create(FragmentUniformBufferObject.SizeOf(),
+                                                      VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                                                      VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                                                      GetLogger(),
+                                                      "CVKBlazesRenderable.CreateUBOStagingBuffers cvkFragmentUBStagingBuffer");        
     }
     
     @Override
@@ -389,6 +423,10 @@ public class CVKLoopsRenderable extends CVKRenderable {
             cvkGeometryUBStagingBuffer.Destroy();
             cvkGeometryUBStagingBuffer = null;
         }
+        if (cvkFragmentUBStagingBuffer != null) {
+            cvkFragmentUBStagingBuffer.Destroy();
+            cvkFragmentUBStagingBuffer = null;
+        }        
     }
     
     @Override
@@ -396,6 +434,7 @@ public class CVKLoopsRenderable extends CVKRenderable {
         DestroyVertexBuffers();
         DestroyVertexUniformBuffers();
         DestroyGeometryUniformBuffers();
+        DestroyFragmentUniformBuffers();
         DestroyDescriptorSets();
         DestroyDescriptorLayout();
         DestroyPipelines();
@@ -407,6 +446,7 @@ public class CVKLoopsRenderable extends CVKRenderable {
         CVKAssertNull(vertexBuffers);
         CVKAssertNull(vertexUniformBuffers);
         CVKAssertNull(geometryUniformBuffers);
+        CVKAssertNull(fragmentUniformBuffers);
         CVKAssertNull(pDescriptorSets);
         CVKAssertNull(hDescriptorLayout);  
         CVKAssertNull(displayCommandBuffers);        
@@ -430,6 +470,7 @@ public class CVKLoopsRenderable extends CVKRenderable {
             DestroyVertexBuffers();
             DestroyVertexUniformBuffers();
             DestroyGeometryUniformBuffers();
+            DestroyFragmentUniformBuffers();
             DestroyDescriptorSets();
             DestroyCommandBuffers();     
             DestroyPipelines();
@@ -449,6 +490,7 @@ public class CVKLoopsRenderable extends CVKRenderable {
             // buffered resources
             SetVertexUBOState(CVK_RESOURCE_NEEDS_REBUILD);
             SetGeometryUBOState(CVK_RESOURCE_NEEDS_REBUILD);       
+            SetFragmentUBOState(CVK_RESOURCE_NEEDS_REBUILD);  
             SetVertexBuffersState(CVK_RESOURCE_NEEDS_REBUILD);
             SetCommandBuffersState(CVK_RESOURCE_NEEDS_REBUILD);
             SetDescriptorSetsState(CVK_RESOURCE_NEEDS_REBUILD);
@@ -483,7 +525,7 @@ public class CVKLoopsRenderable extends CVKRenderable {
                                                              VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
                                                              VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
                                                              GetLogger(),
-                                                             String.format("CVKLoopsRenderable cvkVertexBuffer %d", i));
+                                                             String.format("CVKBlazesRenderable cvkVertexBuffer %d", i));
                 vertexBuffers.add(cvkVertexBuffer);        
             }
 
@@ -539,7 +581,7 @@ public class CVKLoopsRenderable extends CVKRenderable {
                                                              VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
                                                              VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
                                                              GetLogger(),
-                                                             String.format("CVKLoopsRenderable vertexUniformBuffer %d", i));   
+                                                             String.format("CVKBlazesRenderable vertexUniformBuffer %d", i));   
             vertexUniformBuffers.add(vertexUniformBuffer);                     
         }        
         return UpdateVertexUniformBuffers();
@@ -615,7 +657,7 @@ public class CVKLoopsRenderable extends CVKRenderable {
         // as we are effectively staging into the staging buffer below.
         geometryUBO.pMatrix.set(cvkVisualProcessor.GetProjectionMatrix());
         geometryUBO.visibilityLow = cvkVisualProcessor.getDisplayCamera().getVisibilityLow();
-        geometryUBO.visibilityHigh = cvkVisualProcessor.getDisplayCamera().getVisibilityHigh();                             
+        geometryUBO.visibilityHigh = cvkVisualProcessor.getDisplayCamera().getVisibilityHigh();    
         
         // Staging buffer so our VBO can be device local (most performant memory)
         ByteBuffer pMemory = cvkGeometryUBStagingBuffer.StartMemoryMap(0, GeometryUniformBufferObject.SizeOf());
@@ -644,6 +686,58 @@ public class CVKLoopsRenderable extends CVKRenderable {
             geometryUniformBuffers = null;
         }                
     }
+    
+    private int CreateFragmentUniformBuffers() {
+        CVKAssertNotNull(cvkSwapChain);
+        CVKAssert(fragmentUniformBuffers == null);
+ 
+        fragmentUniformBuffers = new ArrayList<>();
+        for (int i = 0; i < cvkSwapChain.GetImageCount(); ++i) {   
+            CVKBuffer fragmentUniformBuffer = CVKBuffer.Create(FragmentUniformBufferObject.SizeOf(),
+                                                               VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+                                                               VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+                                                               GetLogger(),
+                                                               String.format("CVKBlazesRenderable fragmentUniformBuffer %d", i));   
+            fragmentUniformBuffers.add(fragmentUniformBuffer);                     
+        }        
+        return UpdateFragmentUniformBuffers();
+    }
+        
+    private int UpdateFragmentUniformBuffers() {
+        CVKAssertNotNull(cvkSwapChain);
+        CVKAssertNotNull(cvkFragmentUBStagingBuffer);
+        CVKAssertNotNull(fragmentUniformBuffers);
+        CVKAssert(fragmentUniformBuffers.size() > 0);
+        
+        int ret = VK_SUCCESS;
+        
+        // Staging buffer so our VBO can be device local (most performant memory)
+        ByteBuffer pMemory = cvkFragmentUBStagingBuffer.StartMemoryMap(0, FragmentUniformBufferObject.SizeOf());
+        {
+            fragmentUBO.CopyTo(pMemory);
+        }
+        cvkFragmentUBStagingBuffer.EndMemoryMap();
+        pMemory = null;
+        
+        // Copy the staging buffer into the uniform buffer on the device
+        final int imageCount = cvkSwapChain.GetImageCount(); 
+        for (int i = 0; i < imageCount; ++i) {   
+            ret = fragmentUniformBuffers.get(i).CopyFrom(cvkFragmentUBStagingBuffer);   
+            if (VkFailed(ret)) { return ret; }
+        }
+        
+        // We are done, reset the resource state
+        SetFragmentUBOState(CVK_RESOURCE_CLEAN);
+
+        return ret;
+    }  
+    
+    private void DestroyFragmentUniformBuffers() {
+        if (fragmentUniformBuffers != null) {
+            fragmentUniformBuffers.forEach(el -> {el.Destroy();});
+            fragmentUniformBuffers = null;
+        }    
+    }       
 
     // ========================> Push constants <======================== \\
     
@@ -876,15 +970,14 @@ public class CVKLoopsRenderable extends CVKRenderable {
             geometryUBDSLB.pImmutableSamplers(null);
             geometryUBDSLB.stageFlags(VK_SHADER_STAGE_GEOMETRY_BIT);       
             
-            // 3: Fragment sampler2Darray (atlas)
-            VkDescriptorSetLayoutBinding fragmentSamplerDSLB = bindings.get(3);
-            fragmentSamplerDSLB.binding(3);
-            fragmentSamplerDSLB.descriptorCount(1);
-            fragmentSamplerDSLB.descriptorType(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
-            fragmentSamplerDSLB.pImmutableSamplers(null);
-            fragmentSamplerDSLB.stageFlags(VK_SHADER_STAGE_FRAGMENT_BIT);            
+            // 3: Fragment uniform buffer
+            VkDescriptorSetLayoutBinding fragmentUBDSLB = bindings.get(3);
+            fragmentUBDSLB.binding(3);
+            fragmentUBDSLB.descriptorCount(1);
+            fragmentUBDSLB.descriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
+            fragmentUBDSLB.pImmutableSamplers(null);
+            fragmentUBDSLB.stageFlags(VK_SHADER_STAGE_FRAGMENT_BIT);            
                           
-
             VkDescriptorSetLayoutCreateInfo layoutInfo = VkDescriptorSetLayoutCreateInfo.callocStack(stack);
             layoutInfo.sType(VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO);
             layoutInfo.pBindings(bindings);
@@ -894,14 +987,14 @@ public class CVKLoopsRenderable extends CVKRenderable {
             ret = vkCreateDescriptorSetLayout(CVKDevice.GetVkDevice(), layoutInfo, null, pDescriptorSetLayout);
             if (VkSucceeded(ret)) {
                 hDescriptorLayout = pDescriptorSetLayout.get(0);
-                GetLogger().info("CVKLoopsRenderable created hDescriptorLayout: 0x%016X", hDescriptorLayout);
+                GetLogger().info("CVKBlazesRenderable created hDescriptorLayout: 0x%016X", hDescriptorLayout);
             }
         }        
         return ret;
     }      
     
     private void DestroyDescriptorLayout() {
-        GetLogger().info("CVKLoopsRenderable destroying hDescriptorLayout: 0x%016X", hDescriptorLayout);
+        GetLogger().info("CVKBlazesRenderable destroying hDescriptorLayout: 0x%016X", hDescriptorLayout);
         vkDestroyDescriptorSetLayout(CVKDevice.GetVkDevice(), hDescriptorLayout, null);
         hDescriptorLayout = VK_NULL_HANDLE;
     }
@@ -932,7 +1025,7 @@ public class CVKLoopsRenderable extends CVKRenderable {
         if (VkFailed(ret)) { return ret; }
         
         for (int i = 0; i < pDescriptorSets.capacity(); ++i) {
-            GetLogger().info("CVKLoopsRenderable allocated hDescriptorSet %d: 0x%016X", i, pDescriptorSets.get(i));
+            GetLogger().info("CVKBlazesRenderable allocated hDescriptorSet %d: 0x%016X", i, pDescriptorSets.get(i));
         }
         
         return UpdateDescriptorSets(stack);
@@ -956,12 +1049,8 @@ public class CVKLoopsRenderable extends CVKRenderable {
         final long positionBufferSize = cvkVisualProcessor.GetPositionBufferSize();
         hPositionBuffer = cvkVisualProcessor.GetPositionBufferHandle();
         hPositionBufferView = cvkVisualProcessor.GetPositionBufferViewHandle(); 
-        hIconAtlasSampler = CVKIconTextureAtlas.GetInstance().GetAtlasSamplerHandle();
-        hIconAtlasImageView = CVKIconTextureAtlas.GetInstance().GetAtlasImageViewHandle();
         CVKAssertNotNull(hPositionBuffer);
         CVKAssertNotNull(hPositionBufferView);        
-        CVKAssertNotNull(hIconAtlasSampler);
-        CVKAssertNotNull(hIconAtlasImageView);
         
         // - Descriptor info structs -
         // We create these to describe the different resources we want to address
@@ -970,31 +1059,31 @@ public class CVKLoopsRenderable extends CVKRenderable {
         // buffered resources like the the uniform buffers we wait to set the 
         // buffer resource until the image loop below.
         
-        // Struct for the uniform buffer used by Loop.vs
+        // Struct for the uniform buffer used by Blaze.vs
         VkDescriptorBufferInfo.Buffer vertexUniformBufferInfo = VkDescriptorBufferInfo.callocStack(1, stack);
         // vertexUniformBufferInfo.buffer is set per imageIndex
         vertexUniformBufferInfo.offset(0);
         vertexUniformBufferInfo.range(VertexUniformBufferObject.SizeOf());        
         
-        // Struct for texel buffer (positions) used by Loop.vs
+        // Struct for texel buffer (positions) used by Blaze.vs
         VkDescriptorBufferInfo.Buffer positionsTexelBufferInfo = VkDescriptorBufferInfo.callocStack(1, stack);
         positionsTexelBufferInfo.buffer(hPositionBuffer);
         positionsTexelBufferInfo.offset(0);
         positionsTexelBufferInfo.range(positionBufferSize);               
 
-        // Struct for the uniform buffer used by Loop.gs
+        // Struct for the uniform buffer used by Blaze.gs
         VkDescriptorBufferInfo.Buffer geometryUniformBufferInfo = VkDescriptorBufferInfo.callocStack(1, stack);
         // geometryBufferInfo.buffer is set per imageIndex
         geometryUniformBufferInfo.offset(0);
         geometryUniformBufferInfo.range(GeometryUniformBufferObject.SizeOf());  
         
-        // Struct for the size of the image sampler (atlas) used by Loop.fs
-        VkDescriptorImageInfo.Buffer imageInfo = VkDescriptorImageInfo.callocStack(1, stack);
-        imageInfo.imageLayout(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-        imageInfo.imageView(hIconAtlasImageView);
-        imageInfo.sampler(hIconAtlasSampler);        
+        // Struct for the uniform buffer used by Blaze.fs
+        VkDescriptorBufferInfo.Buffer fragmentUniformBufferInfo = VkDescriptorBufferInfo.callocStack(1, stack);
+        // fragmentUniformBufferInfo.buffer is set per imageIndex
+        fragmentUniformBufferInfo.offset(0);
+        fragmentUniformBufferInfo.range(FragmentUniformBufferObject.SizeOf());        
 
-        // We need 4 write descriptors, 2 for uniform buffers, 1 for texel buffers and 1 for the texture sampler               
+        // We need 4 write descriptors, 3 for uniform buffers and 1 for texel buffers           
         VkWriteDescriptorSet.Buffer descriptorWrites = VkWriteDescriptorSet.callocStack(4, stack);
 
         // Vertex uniform buffer
@@ -1025,26 +1114,27 @@ public class CVKLoopsRenderable extends CVKRenderable {
         geometryUBDescriptorWrite.descriptorCount(1);
         geometryUBDescriptorWrite.pBufferInfo(geometryUniformBufferInfo);     
         
-        // Fragment image (atlas) sampler
-        VkWriteDescriptorSet atlasSamplerDescriptorWrite = descriptorWrites.get(3);
-        atlasSamplerDescriptorWrite.sType(VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET);
-        atlasSamplerDescriptorWrite.dstBinding(3);
-        atlasSamplerDescriptorWrite.dstArrayElement(0);
-        atlasSamplerDescriptorWrite.descriptorType(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
-        atlasSamplerDescriptorWrite.descriptorCount(1);
-        atlasSamplerDescriptorWrite.pImageInfo(imageInfo);         
+        // Fragment uniform buffer
+        VkWriteDescriptorSet fragmentUBDescriptorWrite = descriptorWrites.get(3);
+        fragmentUBDescriptorWrite.sType(VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET);
+        fragmentUBDescriptorWrite.dstBinding(3);
+        fragmentUBDescriptorWrite.dstArrayElement(0);
+        fragmentUBDescriptorWrite.descriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
+        fragmentUBDescriptorWrite.descriptorCount(1);
+        fragmentUBDescriptorWrite.pBufferInfo(fragmentUniformBufferInfo);           
         
         for (int i = 0; i < imageCount; ++i) {                        
             // Update the buffered resource buffers
             vertexUniformBufferInfo.buffer(vertexUniformBuffers.get(i).GetBufferHandle());
             geometryUniformBufferInfo.buffer(geometryUniformBuffers.get(i).GetBufferHandle());
+            fragmentUniformBufferInfo.buffer(fragmentUniformBuffers.get(i).GetBufferHandle());
                     
             // Set the descriptor set we're updating in each write struct
             long descriptorSet = pDescriptorSets.get(i);
             descriptorWrites.forEach(el -> {el.dstSet(descriptorSet);});
 
             // Update the descriptors with a write and no copy
-            GetLogger().info("CVKLoopsRenderable updating descriptorSet: 0x%016X", descriptorSet);
+            GetLogger().info("CVKBlazesRenderable updating descriptorSet: 0x%016X", descriptorSet);
             vkUpdateDescriptorSets(CVKDevice.GetVkDevice(), descriptorWrites, null);
         }           
         
@@ -1059,10 +1149,10 @@ public class CVKLoopsRenderable extends CVKRenderable {
         if (pDescriptorSets != null) {
             CVKAssertNotNull(cvkDescriptorPool);
             CVKAssertNotNull(cvkDescriptorPool.GetDescriptorPoolHandle());            
-            GetLogger().fine("CVKLoopsRenderable returning %d descriptor sets to the pool", pDescriptorSets.capacity());
+            GetLogger().fine("CVKBlazesRenderable returning %d descriptor sets to the pool", pDescriptorSets.capacity());
             
             for (int i = 0; i < pDescriptorSets.capacity(); ++i) {
-                GetLogger().info("CVKLoopsRenderable freeing hDescriptorSet %d: 0x%016X", i, pDescriptorSets.get(i));
+                GetLogger().info("CVKBlazesRenderable freeing hDescriptorSet %d: 0x%016X", i, pDescriptorSets.get(i));
             }            
             
             // After calling vkFreeDescriptorSets, all descriptor sets in pDescriptorSets are invalid.
@@ -1087,15 +1177,15 @@ public class CVKLoopsRenderable extends CVKRenderable {
     
     @Override
     public void IncrementDescriptorTypeRequirements(CVKDescriptorPoolRequirements reqs, CVKDescriptorPoolRequirements perImageReqs) {
-        // Loop.vs
+        // Blaze.vs
         ++perImageReqs.poolDescriptorTypeCounts[VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER];
         ++perImageReqs.poolDescriptorTypeCounts[VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER];
         
-        // Loop.gs
+        // Blaze.gs
         ++perImageReqs.poolDescriptorTypeCounts[VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER];
         
-        // Loop.fs
-        ++perImageReqs.poolDescriptorTypeCounts[VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER];
+        // Blaze.fs
+        ++perImageReqs.poolDescriptorTypeCounts[VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER];
         
         // One set per image
         ++perImageReqs.poolDesciptorSetCount;
@@ -1154,9 +1244,7 @@ public class CVKLoopsRenderable extends CVKRenderable {
     @Override
     public boolean NeedsDisplayUpdate() {   
         if (hPositionBuffer != cvkVisualProcessor.GetPositionBufferHandle() ||
-            hPositionBufferView != cvkVisualProcessor.GetPositionBufferViewHandle() ||
-            hIconAtlasSampler != CVKIconTextureAtlas.GetInstance().GetAtlasSamplerHandle() ||
-            hIconAtlasImageView != CVKIconTextureAtlas.GetInstance().GetAtlasImageViewHandle()) {
+            hPositionBufferView != cvkVisualProcessor.GetPositionBufferViewHandle()) {
             if (descriptorSetsState != CVK_RESOURCE_NEEDS_REBUILD) {
                 descriptorSetsState = CVK_RESOURCE_NEEDS_UPDATE;
             }
@@ -1165,6 +1253,7 @@ public class CVKLoopsRenderable extends CVKRenderable {
         return vertexCount > 0 &&
                (vertexUBOState != CVK_RESOURCE_CLEAN ||
                 geometryUBOState != CVK_RESOURCE_CLEAN ||            
+                fragmentUBOState != CVK_RESOURCE_CLEAN || 
                 vertexBuffersState != CVK_RESOURCE_CLEAN ||
                 commandBuffersState != CVK_RESOURCE_CLEAN ||
                 descriptorSetsState != CVK_RESOURCE_CLEAN ||
@@ -1203,7 +1292,16 @@ public class CVKLoopsRenderable extends CVKRenderable {
             } else if (geometryUBOState == CVK_RESOURCE_NEEDS_UPDATE) {
                 ret = UpdateGeometryUniformBuffers();
                 if (VkFailed(ret)) { return ret; }               
-            }                   
+            }    
+            
+            // Fragment uniform buffer
+            if (fragmentUBOState == CVK_RESOURCE_NEEDS_REBUILD) {
+                ret = CreateFragmentUniformBuffers();
+                if (VkFailed(ret)) { return ret; }
+            } else if (fragmentUBOState == CVK_RESOURCE_NEEDS_UPDATE) {
+                ret = UpdateFragmentUniformBuffers();
+                if (VkFailed(ret)) { return ret; }               
+            }               
 
             // Descriptors (binding values to shaders parameters)
             if (descriptorSetsState == CVK_RESOURCE_NEEDS_REBUILD) {
@@ -1256,37 +1354,23 @@ public class CVKLoopsRenderable extends CVKRenderable {
     // is possible because the arrays are locals in the task functions and aren't
     // modified by the visual processor thread after they've been added to the 
     // queue of tasks for the renderer to process.
-
     
-    /**
-     *
-     * @param access: the view of this graph
-     * @param loopedConnections: list of node vertices that have looped connections
-     * @return: an array of vertex objects ready to copy into the VB
-     */     
-    private Vertex[] BuildVertexArray(final VisualAccess access, List<Integer> loopedConnections) {
-        Vertex[] vertices = null;
-        if (!loopedConnections.isEmpty()) {
-            vertices = new Vertex[loopedConnections.size()];
-            for (int i = 0; i < loopedConnections.size(); ++i) {
-                int pos = loopedConnections.get(i);
-                final ConstellationColor colour = access.getConnectionColor(pos);
-                final float visibility = access.getConnectionVisibility(pos);
-                final int connectionID = access.getConnectionId(pos);
-                final int vertexID = access.getConnectionLowVertex(pos);
-                final int flags = (access.getConnectionDimmed(pos) ? 2 : 0) | (access.getConnectionSelected(pos) ? 1 : 0);                
-                final int iconID = access.getConnectionDirected(pos) ? CVKIconTextureAtlas.LOOP_DIRECTED_ICON_INDEX : CVKIconTextureAtlas.LOOP_UNDIRECTED_ICON_INDEX;                                       
-                vertices[i] = new Vertex(colour,
-                                         visibility,
-                                         connectionID,
-                                         vertexID,
-                                         flags,
-                                         iconID);
-            }
-        }
-
-        return vertices;
-    }      
+     private Vertex[] BuildVertexArray(final VisualAccess access, int first, int last) {
+        final int newVertexCount = (last - first) + 1;
+        if (newVertexCount > 0) {
+            Vertex vertices[] = new Vertex[newVertexCount];            
+            for (int pos = first; pos <= last; ++pos) {  
+                vertices[pos] = new Vertex(access.getBlazeColor(pos),
+                                           access.getVertexVisibility(pos),
+                                           pos,
+                                           access.getBlazeAngle(pos));
+            }            
+            
+            return vertices;
+        } else {
+            return null;
+        } 
+    }       
     
     private void RebuildVertexStagingBuffer(Vertex[] vertices) {      
         vertexCount = (vertices != null ? vertices.length : 0);
@@ -1330,40 +1414,57 @@ public class CVKLoopsRenderable extends CVKRenderable {
         pMemory = null; // now unmapped, do not use           
     }      
     
-    public CVKRenderUpdateTask TaskUpdateLoops(final VisualChange change, final VisualAccess access) {
+    public CVKRenderUpdateTask TaskUpdateBlazes(final VisualChange change, final VisualAccess access) {
         //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
-        
-        // Loops aren't separate data, they're just connections where both vertices are the same
-        final int changedVerticeRange[] = change.getRange();
-        List<Integer> loopedConnections = new ArrayList<>();
-        for (int i = 0; i < access.getConnectionCount(); i++) {
-            if (access.getConnectionLowVertex(i) == access.getConnectionHighVertex(i)) {
-                if (changedVerticeRange == null || (i >= changedVerticeRange[0] && i <= changedVerticeRange[1])) {
-                    loopedConnections.add(i);
-                }
-            }
-        }
-        
-        GetLogger().fine("TaskUpdateLoops frame %d: %d loops", cvkVisualProcessor.GetFrameNumber(), loopedConnections.size());                      
+        // If we have had an update task called before a rebuild task we first have to build
+        // the staging buffer.  Rebuild also if we our vertex count has somehow changed.
         final boolean rebuildRequired = cvkVertexStagingBuffer == null || 
-                                        loopedConnections.size() * Vertex.BYTES != cvkVertexStagingBuffer.GetBufferSize() || 
+                                        access.getVertexCount() * Vertex.BYTES != cvkVertexStagingBuffer.GetBufferSize() || 
                                         change.isEmpty();
-        
-        final Vertex vertexArray[];
-        vertexArray = BuildVertexArray(access, loopedConnections);
+        final int changedVerticeRange[];
+        final Vertex vertices[];
+        if (rebuildRequired) {
+            GetLogger().fine("TaskUpdateBlazes frame %d: all (%d) verts", cvkVisualProcessor.GetFrameNumber(), access.getVertexCount());
+            vertices = BuildVertexArray(access, 0, access.getVertexCount() - 1);
+            changedVerticeRange = null;
+        } else {
+            changedVerticeRange = change.getRange();
+            GetLogger().fine("TaskUpdateBlazes frame %d: %d verts", cvkVisualProcessor.GetFrameNumber(), (changedVerticeRange[1] - changedVerticeRange[0]) + 1);
+            vertices = BuildVertexArray(access, changedVerticeRange[0], changedVerticeRange[1]);         
+        }
         
         //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.ProcessRenderTasks) ===//
         return () -> {
             if (rebuildRequired) {                
-                RebuildVertexStagingBuffer(vertexArray);
+                RebuildVertexStagingBuffer(vertices);
                 SetVertexBuffersState(CVK_RESOURCE_NEEDS_REBUILD);
-                vertexCount = vertexArray != null ? vertexArray.length : 0;
+                vertexCount = vertices != null ? vertices.length : 0;
             } else if (vertexBuffersState != CVK_RESOURCE_NEEDS_REBUILD) {
-                UpdateVertexStagingBuffer(vertexArray, changedVerticeRange[0], changedVerticeRange[1]);
+                UpdateVertexStagingBuffer(vertices, changedVerticeRange[0], changedVerticeRange[1]);
                 SetVertexBuffersState(CVK_RESOURCE_NEEDS_UPDATE);
             }
-        };  
-    }              
+        }; 
+    }           
+    
+    public CVKRenderUpdateTask TaskUpdateSizeAndOpacity(final VisualAccess access) {
+        //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
+        final float updatedBlazeSize = access.getBlazeSize();
+        final float updatedBlazeOpacity = access.getBlazeOpacity();
+        
+        //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.ProcessRenderTasks) ===//
+        return () -> {
+            geometryUBO.scale = updatedBlazeSize;
+            fragmentUBO.opacity = updatedBlazeOpacity;
+            
+            if (geometryUBOState != CVK_RESOURCE_NEEDS_REBUILD) {
+                SetGeometryUBOState(CVK_RESOURCE_NEEDS_UPDATE);
+            }  
+
+            if (fragmentUBOState != CVK_RESOURCE_NEEDS_REBUILD) {
+                SetFragmentUBOState(CVK_RESOURCE_NEEDS_UPDATE);
+            }              
+        }; 
+    }    
     
     public CVKRenderUpdateTask TaskUpdateCamera() {
         //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//

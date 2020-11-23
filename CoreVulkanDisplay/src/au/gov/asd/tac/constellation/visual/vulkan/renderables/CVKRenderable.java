@@ -134,6 +134,7 @@ public abstract class CVKRenderable {
     // Resource states, not every type will be used by each renderable
     protected CVKRenderableResourceState vertexUBOState = CVK_RESOURCE_CLEAN;
     protected CVKRenderableResourceState geometryUBOState = CVK_RESOURCE_CLEAN;
+    protected CVKRenderableResourceState fragmentUBOState = CVK_RESOURCE_CLEAN;
     protected CVKRenderableResourceState vertexBuffersState = CVK_RESOURCE_CLEAN;
     protected CVKRenderableResourceState commandBuffersState = CVK_RESOURCE_CLEAN;
     protected CVKRenderableResourceState descriptorSetsState = CVK_RESOURCE_CLEAN;
@@ -162,6 +163,14 @@ public abstract class CVKRenderable {
         }
         geometryUBOState = state;
     }
+    protected void SetFragmentUBOState(final CVKRenderableResourceState state) {
+        CVKAssert(!(fragmentUBOState == CVK_RESOURCE_NEEDS_REBUILD && state == CVK_RESOURCE_NEEDS_UPDATE));
+        if (LOGSTATECHANGE) {
+            GetLogger().info("%d\t fragmentUBOState %s -> %s\tSource: %s", 
+                    cvkVisualProcessor.GetFrameNumber(), fragmentUBOState.name(), state.name(), GetParentMethodName());        
+        }
+        fragmentUBOState = state;
+    }    
     protected void SetVertexBuffersState(final CVKRenderableResourceState state) {
         CVKAssert(!(vertexBuffersState == CVK_RESOURCE_NEEDS_REBUILD && state == CVK_RESOURCE_NEEDS_UPDATE));
         if (LOGSTATECHANGE) {

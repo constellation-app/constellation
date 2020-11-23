@@ -609,7 +609,8 @@ public class CVKIconsRenderable extends CVKRenderable {
                                              VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
                                              VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
                                              GetLogger(),
-                                             "CVKIconsRenderable.CreatePositionBuffer cvkPositionBuffer");       
+                                             "CVKIconsRenderable.CreatePositionBuffer cvkPositionBuffer"); 
+        CVKAssertNotNull(cvkPositionBuffer.GetBufferHandle());
                 
         try (MemoryStack stack = stackPush()) {
             // NB: we have already checked VK_FORMAT_R32G32B32A32_SFLOAT can be used as a texel buffer
