@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.graph.GraphAttributeMerger;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
-import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import org.testng.annotations.Test;
 
 /**

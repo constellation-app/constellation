@@ -61,12 +61,11 @@ public class MissingTypeRuleNGTest {
     @Test
     public void testExecuteRule() throws InterruptedException {
         final StoreGraph graph = new StoreGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
-        graph.addVertex();
+        final int vx0 = graph.addVertex();
 
-        final int vertex = 0;
         final MissingTypeRule instance = new MissingTypeRule();
         final boolean expResult = true;
-        final boolean result = instance.executeRule(graph, vertex);
+        final boolean result = instance.executeRule(graph, vx0);
         assertEquals(result, expResult);
     }
 
@@ -78,16 +77,13 @@ public class MissingTypeRuleNGTest {
     @Test
     public void testExecuteRuleWithType() throws InterruptedException {
         final StoreGraph graph = new StoreGraph(SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema());
-
         final int typeAttr = AnalyticConcept.VertexAttribute.TYPE.ensure(graph);
-
         final int vx0 = graph.addVertex();
         graph.setObjectValue(typeAttr, vx0, AnalyticConcept.VertexType.COUNTRY);
 
-        final int vertex = 0;
         final MissingTypeRule instance = new MissingTypeRule();
         final boolean expResult = false;
-        final boolean result = instance.executeRule(graph, vertex);
+        final boolean result = instance.executeRule(graph, vx0);
         assertEquals(result, expResult);
     }
 }

@@ -253,8 +253,8 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
                 || isFilterMatchText(treeItem.getHierachy())
                 || !(treeItem.getProperties().keySet().isEmpty())
                 && treeItem.getProperties().keySet().stream().anyMatch(property
-                -> property != null && isFilterMatchText(property.toString())
-        );
+                        -> property != null && isFilterMatchText(property)
+                );
     }
 
     private boolean isFilterMatchText(final String propertyValue) {
@@ -382,7 +382,7 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
                         gridPosition++;
                         Label propertyLabel = new Label(propertyValue.toString());
                         propertyLabel.setWrapText(true);
-                        grid.add(boldLabel(property + ":"), 0, gridPosition);
+                        grid.add(boldLabel(property + SeparatorConstants.COLON), 0, gridPosition);
                         grid.add(propertyLabel, 1, gridPosition);
                     }
                 }
@@ -390,9 +390,9 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
                     final Integer column = GridPane.getColumnIndex(child);
                     final Integer row = GridPane.getRowIndex(child);
                     if ((column > 0 && row != null && child instanceof Label) && (isFilterMatchText(((Label) child).getText()))) {
-                            child.getStyleClass().add("schemaview-highlight-blue");
-                        }
+                        child.getStyleClass().add("schemaview-highlight-blue");
                     }
+                }
                 detailsView.getChildren().addAll(iconGroup, grid);
             }
         });
@@ -485,15 +485,15 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
                     for (final SchemaVertexType vertexType : vertexTypes) {
                         if ((vertexType.getSuperType() == vertexType) && (isFilterMatchCurrentNodeOrAnyChildren(vertexType) || filterText.getText().isEmpty())) {
                             children.add(createNode(vertexType));
-                            }
                         }
+                    }
                 } else {
                     for (final SchemaVertexType vertexType : vertexTypes) {
                         if ((vertexType.getSuperType() == value && vertexType != value) && (isFilterMatchCurrentNodeOrAnyChildren(vertexType) || filterText.getText().isEmpty())) {
                             children.add(createNode(vertexType));
-                            }
                         }
                     }
+                }
                 return children;
             }
         };

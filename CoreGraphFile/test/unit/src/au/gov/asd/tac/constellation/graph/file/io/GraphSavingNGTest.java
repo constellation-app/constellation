@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.graph.file.io;
 
-import au.gov.asd.tac.constellation.utilities.gui.TextIoProgress;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
@@ -24,6 +23,7 @@ import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
+import au.gov.asd.tac.constellation.utilities.gui.TextIoProgress;
 import java.io.File;
 import static org.testng.Assert.fail;
 import static org.testng.AssertJUnit.assertEquals;

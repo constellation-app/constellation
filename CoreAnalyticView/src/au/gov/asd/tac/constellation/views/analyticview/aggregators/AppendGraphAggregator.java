@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.GraphResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.GraphResult.GraphScore;
 import java.util.List;
+import org.apache.commons.collections4.CollectionUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -34,7 +35,7 @@ public class AppendGraphAggregator implements AnalyticAggregator<GraphResult> {
     public GraphResult aggregate(final List<GraphResult> results) {
         final GraphResult aggregateResult = new GraphResult();
 
-        if (results == null || results.isEmpty()) {
+        if (CollectionUtils.isEmpty(results)) {
             return aggregateResult;
         }
 

@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.timeline.components;
 
 import au.gov.asd.tac.constellation.views.timeline.GraphManager;
-import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
@@ -55,29 +54,20 @@ public class Interaction extends Group {
         transaction.toBack();
 
         // Brings the interaction under the mouse to the front:
-        setOnMouseEntered(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(final MouseEvent t) {
-                final Interaction current = (Interaction) t.getSource();
-                current.toFront();
-                current.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.BLACK,
-                        20.0, 0.85, 0.0, 0.0)); // Very dark and wide shadow to combat effects of cluttered ui.
-            }
+        setOnMouseEntered((final MouseEvent t) -> {
+            final Interaction current = (Interaction) t.getSource();
+            current.toFront();
+            current.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.BLACK,
+                    20.0, 0.85, 0.0, 0.0)); // Very dark and wide shadow to combat effects of cluttered ui.
         });
-        setOnMouseExited(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(final MouseEvent t) {
-                final Interaction current = (Interaction) t.getSource();
-                current.setEffect(null);
-            }
+        setOnMouseExited((final MouseEvent t) -> {
+            final Interaction current = (Interaction) t.getSource();
+            current.setEffect(null);
         });
 
-        setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(final MouseEvent t) {
-                GraphManager.getDefault().select(vertexA.getVertexID(), vertexB.getVertexID(), transaction.getTransactionID(), t.isControlDown());
-                t.consume();
-            }
+        setOnMouseClicked((final MouseEvent t) -> {
+            GraphManager.getDefault().select(vertexA.getVertexID(), vertexB.getVertexID(), transaction.getTransactionID(), t.isControlDown());
+            t.consume();
         });
 //        setOnMouseReleased(new EventHandler<MouseEvent>()
 //        {

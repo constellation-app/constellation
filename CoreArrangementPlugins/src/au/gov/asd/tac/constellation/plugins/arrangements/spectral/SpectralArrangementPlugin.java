@@ -15,6 +15,11 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.spectral;
 
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.arrangements.AbstractInclusionGraph.Connections;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.GraphComponentArranger;
@@ -22,11 +27,6 @@ import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomyArranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.SelectedInclusionGraph;
 import au.gov.asd.tac.constellation.plugins.arrangements.SetRadiusForArrangement;
 import au.gov.asd.tac.constellation.plugins.arrangements.grid.GridArranger;
-import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.plugins.Plugin;
-import au.gov.asd.tac.constellation.plugins.PluginException;
-import au.gov.asd.tac.constellation.plugins.PluginInfo;
-import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import org.openide.util.NbBundle.Messages;

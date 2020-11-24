@@ -41,15 +41,15 @@ public class ByteIOProvider extends AbstractGraphIOProvider {
     }
 
     @Override
-    public void readObject(final int attributeId, final int elementId, final JsonNode jnode, 
-            final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, 
+    public void readObject(final int attributeId, final int elementId, final JsonNode jnode,
+            final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap,
             final GraphByteReader byteReader, final ImmutableObjectCache cache) throws IOException {
         final byte attributeValue = (byte) jnode.intValue();
         graph.setByteValue(attributeId, elementId, attributeValue);
     }
 
     @Override
-    public void writeObject(final Attribute attribute, final int elementId, final JsonGenerator jsonGenerator, 
+    public void writeObject(final Attribute attribute, final int elementId, final JsonGenerator jsonGenerator,
             final GraphReadMethods graph, final GraphByteWriter byteWriter, final boolean verbose) throws IOException {
         if (verbose || !graph.isDefaultValue(attribute.getId(), elementId)) {
             final int attributeValue = graph.getIntValue(attribute.getId(), elementId);

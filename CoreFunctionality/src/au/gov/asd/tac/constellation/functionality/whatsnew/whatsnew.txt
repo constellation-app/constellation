@@ -1,14 +1,106 @@
 == 3030-12-31 Getting Started
 <p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
+== 2020-10-28 Tutorial Page Showing on Startup
+<p>A checkbox has been added to the top right corner of this page to set preference for the Tutorial Page showing on startup.</p>
+
+== 2020-09-02 Table View
+<p>Table View has been updated to include a paging system. This helps improve the Table view performance on larger graphs.</p>
+<p>A menu item has also been added to set the size of a page in the table. Click on the cog and go to 'Set Page Size'. Default is 500.</p>
+
+== 2020-08-28 Split Nodes Plugin
+<p>A new option is added to split nodes, duplicating the transactions of the selected node.</p>
+
+== 2020-08-26 Delimited File Importer
+<p>Conversion of the importer to a view has allowed a more consistent user experience.</p>
+<p>Multiple bug fixes with selection of check-boxes and loading of dropdowns are now in effect.</p>
+
+== 2020-08-24 Layers View Keyboard Shortcuts
+<p>Keyboard shortcuts have been added to the Layers View. "Ctrl+Alt+L" will add a new layer and "Ctrl+Alt+D" will deselect all layers.</p>
+
+== 2020-08-21 Histogram Copying Options
+<p>You can now copy a selection from the bars within the histogram in the Histogram View via two options:</p>
+<ul>
+<li>Ctrl+C - Will copy the property values of the selection to the clipboard.</li>
+<li>Right-Click Context Menu - Options to either copy the property values or both the property values and counts of the selection to the clipboard.</li>
+</ul>
+
+== 2020-08-06 Quality Control Categories
+<p>The Quality Control View now ranks and lists the quality of an element as a category instead of a score. This is also implemented in the Data Access View.</p>
+<p>Categories can be mapped to each individual rule through the Quality Control View</p>
+<p><strong>Categories</strong> - from lowest to highest priority.</p>
+<ul>
+<li>Default</li>
+<li>Info</li>
+<li>Warning</li>
+<li>Severe</li>
+<li>Fatal</li>
+</ul>
+
+== 2020-07-23 Delimited File Importer
+<p>Dramatically improve the preview performance of a CSV file import.</p>
+
+== 2020-07-20 Version 2
+<p>Constellation v2.0.0 is officially released!</p>
+
+== 2020-07-17 Named Selection
+<p>A number of bugs with the Named Selection have been fixed.</p>
+
+== 2020-07-16 Attribute Calculator
+<p>The Attribute Calculator has been removed with other views and features.</p>
+
+== 2020-07-08 Rendering Labels Bug Fixed
+<p>A bug with labels being rendered with unreadable text after opening views has been fixed.</p>
+
+== 2020-07-07 Manage Templates Layout Improvements
+<p>The File &gt; Manage Templates window's layout has been improved.</p>
+
+== 2020-07-07 Import from Delimited Fixes
+<p>A number of improvements have been made to the Import from Delimited:</p>
+<ul>
+<li>The filtering options from the preview table have been fixed so that doing <strong>Row !=1</strong> works again.</li>
+<li>A UX improvement has been made to allow you to import files of one type per session. After importing the first file, the <strong>Import File Parser</strong> is grayed out</li>
+</ul>
+
+== 2020-06-18 Info Map Bug Fixed
+<p>A bug preventing running the Clustering &gt; Info Map plugins has been fixed.</p>
+
+== 2020-06-09 Select Top N Bug Fixed
+<p>A bug preventing running the <strong>Select Top N</strong> plugin from the Data Access View has been fixed.</p>
+
+== 2020-05-21 Schema View
+<p>The Node and Transaction type tabs in the Schema View are now searchable.</p>
+
+== 2020-05-21 Hierarchical Clustering Improvements
+<p>A bug preventing the running of the hierachical clustering plugin sometimes has been fixed.</p>
+
+== 2020-05-21 Merge Nodes by Geospatial Distance
+<p>A bug preventing running the <strong>Merge Nodes</strong> &gt; <strong>Geospatial Distance</strong> plugin from the Data Access View has been fixed.</p>
+
 == 2020-05-18 Map Controls
 <p>We have updated the Map View mouse controls to be consistent with the graph view.</p>
+
+== 2020-05-12 Table View
+<p>A number of improvements have been added to the table view:</p>
+<ul>
+<li>The column selection has been improved to include sub categories for source, destination and transactions</li>
+<li>Each column selection now includes a search filter</li>
+</ul>
+
+== 2020-05-12 Support for MacOSX
+<p>Constellation officially supports MacOSX!</p>
 
 == 2020-05-11 Two New Arrangement Options
 <p>Two new arrangement options are available via the Arrange menu and toolbar. These options are horizontal and vertical lines. Selecting these options allow selected (or all) elements to be arranged in either horizontal or vertical lines.</p>
 
-== 2020-05-11 Delimiter importer
+== 2020-05-11 Delimiter Importer
 <p>Added feedback dialogs for the Delimiter importer, showing information about a successful import and any failures.</p>
+
+== 2020-05-11 Timeline View
+<p>A bug resulting in the summary box shrinking when dragged past the summary bounds has been fixed.</p>
+
+== 2020-05-05 Layer by Time
+<p>A bug preventing the running of the Arrange &gt; Layer By Time occasionally has been fixed.</p>
 
 == 2020-04-20 Data Access View
 <p>You can now remove a previously saved preference in Data Access View under Options &gt; Load.</p>
@@ -21,6 +113,9 @@ Access to the Layers view is achieved through Experimental &gt; Views &gt; Layer
 This will either hide or show the subsets based on element visibility changes to reduce clutter when analysing large data sets.</p>
 <p>For more information on how to use this see the <a href="https://github.com/constellation-app/constellation/issues/223">layers view page</a>.
 Feel free to comment on the issue with your feedback.</p>
+
+== 2020-04-08 Data Access View Date Range
+<p>You can now enter a date and time in the absolute date range section of the Data Access View.</p>
 
 == 2020-03-24 REST API
 <p>The module that implements the REST API (providing access from Jupyter notebooks, for example) has been
@@ -36,7 +131,7 @@ generated by the REST server, so the display is always up to date.</p>
 
 == 2020-02-07 Font Improvements
 <p>Support for rendering fonts in a Constellation graph has been overhauled enabling support for multiple fonts.
-Font preferences for the graph can be made by going to Setup &gt; Options &gt; Constellation &gt; Label Fonts. 
+Font preferences for the graph can be made by going to Setup &gt; Options &gt; Constellation &gt; Label Fonts.
 For more information click on the help button located at the bottom right corner within this preference window.</p>
 
 == 2020-02-06 Analytic View
@@ -94,7 +189,7 @@ For more information click on the help button located at the bottom right corner
 <p>The Data Access View plugin search usability has been improved by having the search text field enabled always.</p>
 
 == 2019-06-25 Data Access View Context Menu Update
-<p>The menu positions of the right click context menu available from the Data 
+<p>The menu positions of the right click context menu available from the Data
 Access View has been modified based on UX feedback.</p>
 
 == 2019-05-30 New graph icons

@@ -16,10 +16,10 @@
 package au.gov.asd.tac.constellation.graph.interaction.visual;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.visual.dragdrop.GraphDropper;
-import au.gov.asd.tac.constellation.graph.visual.dragdrop.GraphDropper.DropInfo;
 import au.gov.asd.tac.constellation.graph.interaction.framework.HitState;
 import au.gov.asd.tac.constellation.graph.interaction.framework.HitState.HitType;
+import au.gov.asd.tac.constellation.graph.visual.dragdrop.GraphDropper;
+import au.gov.asd.tac.constellation.graph.visual.dragdrop.GraphDropper.DropInfo;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
 import java.awt.Point;

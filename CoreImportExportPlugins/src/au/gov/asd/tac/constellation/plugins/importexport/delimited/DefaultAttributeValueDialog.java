@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.plugins.importexport.delimited;
 
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -29,6 +28,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.Window;
 
 /**
  * The DefaultAttributeValueDialog is a dialog that allows the user to specify a
@@ -45,7 +45,7 @@ public class DefaultAttributeValueDialog extends Stage {
     private final TextField labelText;
     private String defaultValue = null;
 
-    public DefaultAttributeValueDialog(Stage owner, String attributeName, String initialValue) {
+    public DefaultAttributeValueDialog(final Window owner, final String attributeName, final String initialValue) {
 
         defaultValue = initialValue;
 
@@ -55,18 +55,18 @@ public class DefaultAttributeValueDialog extends Stage {
 
         setTitle("Set Default Value: " + attributeName);
 
-        BorderPane root = new BorderPane();
+        final BorderPane root = new BorderPane();
         root.setStyle("-fx-background-color: #DDDDDD;");
-        Scene scene = new Scene(root);
+        final Scene scene = new Scene(root);
         setScene(scene);
 
-        GridPane fieldPane = new GridPane();
+        final GridPane fieldPane = new GridPane();
         fieldPane.setHgap(5);
         fieldPane.setVgap(5);
         fieldPane.setPadding(new Insets(10));
         root.setCenter(fieldPane);
 
-        Label labelLabel = new Label("Label:");
+        final Label labelLabel = new Label("Label:");
         GridPane.setConstraints(labelLabel, 0, 1);
         fieldPane.getChildren().add(labelLabel);
 
@@ -81,38 +81,29 @@ public class DefaultAttributeValueDialog extends Stage {
         fieldPane.getChildren().add(labelText);
         labelText.requestFocus();
 
-        FlowPane buttonPane = new FlowPane();
+        final FlowPane buttonPane = new FlowPane();
         buttonPane.setAlignment(Pos.BOTTOM_RIGHT);
         buttonPane.setPadding(new Insets(5));
         buttonPane.setHgap(5);
         root.setBottom(buttonPane);
 
-        Button okButton = new Button("Ok");
-        okButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                defaultValue = labelText.getText();
-                DefaultAttributeValueDialog.this.hide();
-            }
+        final Button okButton = new Button("Ok");
+        okButton.setOnAction((ActionEvent event) -> {
+            defaultValue = labelText.getText();
+            DefaultAttributeValueDialog.this.hide();
         });
         buttonPane.getChildren().add(okButton);
 
-        Button cancelButton = new Button("Cancel");
-        cancelButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                DefaultAttributeValueDialog.this.hide();
-            }
+        final Button cancelButton = new Button("Cancel");
+        cancelButton.setOnAction((ActionEvent event) -> {
+            DefaultAttributeValueDialog.this.hide();
         });
         buttonPane.getChildren().add(cancelButton);
 
-        Button clearButton = new Button("Clear");
-        clearButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                defaultValue = null;
-                DefaultAttributeValueDialog.this.hide();
-            }
+        final Button clearButton = new Button("Clear");
+        clearButton.setOnAction((ActionEvent event) -> {
+            defaultValue = null;
+            DefaultAttributeValueDialog.this.hide();
         });
         buttonPane.getChildren().add(clearButton);
     }

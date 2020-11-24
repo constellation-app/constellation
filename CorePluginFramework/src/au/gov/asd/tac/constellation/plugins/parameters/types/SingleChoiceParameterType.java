@@ -437,23 +437,41 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
             return false;
         }
 
+        /**
+         * getObjectValue will return the whole SingleChoiceParameterType
+         * similar to how the MultiChoiceParameterType does also.
+         *
+         * @return this whole object.
+         */
         @Override
         public Object getObjectValue() {
-            return choice;
+            return this;
         }
 
         @Override
         public boolean setObjectValue(final Object o) {
-            if (o != null && !innerClass.equals(o.getClass())) {
-                throw new IllegalArgumentException(String.format("Object value [%s] (class %s) must be of class %s", o, o.getClass(), innerClass));
+            boolean valueChanged = false;
+            if (o instanceof SingleChoiceParameterValue) {
+                final SingleChoiceParameterValue sc = (SingleChoiceParameterValue) o;
+                if (!Objects.equals(options, sc.options)) {
+                    options.clear();
+                    options.addAll(sc.options);
+                    valueChanged = true;
+                }
+                if (!Objects.equals(choice, sc.choice)) {
+                    choice = sc.choice;
+                    valueChanged = true;
+                }
+            } 
+            else if (o instanceof ParameterValue) {
+                setChoiceData(this.innerClass.cast(o)); 
+                valueChanged = true;
             }
-            final ParameterValue newChoice = (ParameterValue) o;
-            if (!Objects.equals(choice, newChoice)) {
-                choice = newChoice;
-                return true;
+            else {
+                throw new IllegalArgumentException("Invalid argument");
             }
 
-            return false;
+            return valueChanged;
         }
 
         @Override

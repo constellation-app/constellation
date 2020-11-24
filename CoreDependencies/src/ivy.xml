@@ -69,7 +69,6 @@
         <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.10.3"/>
         <dependency org="com.fifesoft" name="rsyntaxtextarea" rev="3.1.1"/>
         <dependency org="gov.nasa" name="worldwind" rev="2.0.0"/>
-        <!--<dependency org="javax.help" name="javahelp" rev="2.0.05"/>-->
         <dependency org="log4j" name="log4j" rev="1.2.17"/>
         <dependency org="org.controlsfx" name="controlsfx" rev="11.0.1"/>
         <dependency org="org.eclipse.jetty" name="jetty-server" rev="9.4.27.v20200227"/>
@@ -80,9 +79,10 @@
         <dependency org="org.python" name="jython-standalone" rev="2.7.2"/>
         <!--<dependency org="org.python" name="jython-jyni" rev="2.7-alpha5"/>-->
         <dependency org="org.swinglabs" name="swingx" rev="1.6.1"/>
+        <dependency org="javax.help" name="javahelp" rev="2.0.05"/>
         <!--<dependency org="unfolding" name="unfolding" rev="0.9.6"/>-->
-        
-        
+        <dependency org="org.assertj" name="assertj-core" rev="3.16.1" />
+
         <!--Light Weight Java Game Library-->
         <!-- https://mvnrepository.com/artifact/org.lwjgl/lwjgl -->
         <dependency org="org.lwjgl" name="lwjgl" rev="3.2.3">

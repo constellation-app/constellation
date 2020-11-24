@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.swing.event.ChangeListener;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.WizardDescriptor;
 import org.openide.WizardValidationException;
 import org.openide.util.HelpCtx;
@@ -138,7 +139,7 @@ public class ConnectionPanelController implements WizardDescriptor.ExtendedAsync
             throw new WizardValidationException(panel.findJarButton, "JDBC JAR file cannot be read", null);
         }
 
-        if (panel.getDriverName() == null || panel.getDriverName().isEmpty()) {
+        if (StringUtils.isBlank(panel.getDriverName())) {
             throw new WizardValidationException(panel.driverCombo, "JDBC driver must be specified", null);
         }
 

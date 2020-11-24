@@ -34,9 +34,11 @@ import org.openide.util.NbBundle.Messages;
         category = "Help",
         id = "au.gov.asd.tac.constellation.utilities.support.SupportAction")
 @ActionRegistration(
-        displayName = "#CTL_SupportAction")
+        displayName = "#CTL_SupportAction",
+        iconBase = "au/gov/asd/tac/constellation/utilities/support/submitTicket.png"
+)
 @ActionReference(path = "Menu/Help", position = 900)
-@Messages("CTL_SupportAction=Submit a ticket")
+@Messages("CTL_SupportAction=Submit a Ticket")
 public final class SupportAction implements ActionListener {
 
     @Override

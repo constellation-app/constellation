@@ -93,8 +93,8 @@ public abstract class AbstractGraphIOProvider {
      * @param attributeId The id of the attribute being read.
      * @param elementId The id of the element being read.
      * @param jnode The JsonNode to read from.
-     * @param writableGraph The graph that the resulting object will be placed in. Provided
-     * in case the object requires some graph data.
+     * @param writableGraph The graph that the resulting object will be placed
+     * in. Provided in case the object requires some graph data.
      * @param vertexMap A mapping from a vertex id in the file to the vertex id
      * in th graph.
      * @param transactionMap A mapping from a transaction id in the file to the
@@ -106,8 +106,8 @@ public abstract class AbstractGraphIOProvider {
      *
      * @throws java.io.IOException If there's a problem reading the document.
      */
-    public abstract void readObject(final int attributeId, final int elementId, final JsonNode jnode, 
-            final GraphWriteMethods writableGraph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, 
+    public abstract void readObject(final int attributeId, final int elementId, final JsonNode jnode,
+            final GraphWriteMethods writableGraph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap,
             final GraphByteReader byteReader, final ImmutableObjectCache cache) throws IOException;
 
     /**
@@ -127,8 +127,8 @@ public abstract class AbstractGraphIOProvider {
      * @param elementId The id of the element being written.
      * @param jsonGenerator The JsonGenerator used to write to the JSON
      * document.
-     * @param readableGraph The graph that the object belongs to. Provided in case the
-     * object requires some graph data.
+     * @param readableGraph The graph that the object belongs to. Provided in
+     * case the object requires some graph data.
      * @param byteWriter For ancillary data (e.g. images) that doesn't easily
      * fit into a JSON document.
      * @param verbose Determines whether to write default values of attributes
@@ -136,7 +136,7 @@ public abstract class AbstractGraphIOProvider {
      *
      * @throws IOException If there's a problem writing.
      */
-    public abstract void writeObject(final Attribute attribute, final int elementId, final JsonGenerator jsonGenerator, 
+    public abstract void writeObject(final Attribute attribute, final int elementId, final JsonGenerator jsonGenerator,
             final GraphReadMethods readableGraph, final GraphByteWriter byteWriter, final boolean verbose) throws IOException;
 
     /**

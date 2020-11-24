@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.interaction.animation.Animation;
 import au.gov.asd.tac.constellation.graph.interaction.animation.PanAnimation;
 import au.gov.asd.tac.constellation.graph.visual.utilities.BoundingBoxUtilities;
-import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
 import au.gov.asd.tac.constellation.graph.visual.utilities.VisualGraphUtilities;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
@@ -30,6 +29,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.camera.BoundingBox;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
+import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 

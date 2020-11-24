@@ -21,6 +21,8 @@ import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
+import static au.gov.asd.tac.constellation.webserver.restapi.RestService.HTTP_UNPROCESSABLE_ENTITY;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import static au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities.IMAGE_PNG;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -58,6 +60,9 @@ public class GetGraphImage extends RestService {
     @Override
     public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
         final Graph graph = GraphManager.getDefault().getActiveGraph();
+        if (graph == null) {
+            throw new RestServiceException(HTTP_UNPROCESSABLE_ENTITY, "No graph is opened in Constellation");
+        }
 
         // This is asynchronous, so we need a Semaphore.
         //

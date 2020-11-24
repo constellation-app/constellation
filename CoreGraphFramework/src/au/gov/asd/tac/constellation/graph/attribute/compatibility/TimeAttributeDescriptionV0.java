@@ -16,14 +16,18 @@
 package au.gov.asd.tac.constellation.graph.attribute.compatibility;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.graph.attribute.AbstractAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
+import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
+import au.gov.asd.tac.constellation.graph.value.variables.IntVariable;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -184,7 +188,7 @@ public final class TimeAttributeDescriptionV0 extends AbstractAttributeDescripti
      * @return A Calendar representing the input datetime.
      */
     public static int parseTime(final String time) {
-        if (time == null || time.isEmpty()) {
+        if (StringUtils.isBlank(time)) {
             return NULL_VALUE;
         }
 
@@ -345,5 +349,25 @@ public final class TimeAttributeDescriptionV0 extends AbstractAttributeDescripti
     @Override
     public NativeAttributeType getNativeType() {
         return NativeAttributeType.INT;
+    }
+
+    @Override
+    public Object createReadObject(IntReadable indexReadable) {
+        return (IntReadable) () -> data[indexReadable.readInt()];
+    }
+
+    @Override
+    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+        return new IntVariable() {
+            @Override
+            public int readInt() {
+                return data[indexReadable.readInt()];
+            }
+
+            @Override
+            public void writeInt(int value) {
+                graph.setIntValue(attribute, indexReadable.readInt(), value);
+            }
+        };
     }
 }

@@ -244,7 +244,11 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
         boolean result = false;
 
         final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(promptName, parameters);
-        dialog.showAndWait();
+        if (!parameters.hasMultiLineStringParameter()) {
+            dialog.showAndWait();
+        } else {
+            dialog.showAndWaitNoFocus();
+        }
         if (PluginParametersDialog.OK.equals(dialog.getResult())) {
             result = true;
         }

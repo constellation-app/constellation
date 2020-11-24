@@ -62,6 +62,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 import javafx.util.converter.IntegerStringConverter;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * A pane that allows the entry of a relative or absolute date-time range, along
@@ -549,7 +550,7 @@ public final class DateTimeRangeInputPane extends Pane {
 
             @Override
             public LocalDate fromString(final String s) {
-                return s != null && !s.isEmpty() ? LocalDate.parse(s, DATE_FORMATTER) : null;
+                return StringUtils.isNotBlank(s) ? LocalDate.parse(s, DATE_FORMATTER) : null;
             }
         });
         dpLabel.setLabelFor(dp);

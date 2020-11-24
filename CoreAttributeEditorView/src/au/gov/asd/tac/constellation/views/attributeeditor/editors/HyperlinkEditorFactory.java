@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
-import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.graph.attribute.HyperlinkAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import java.net.URI;

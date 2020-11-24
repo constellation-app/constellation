@@ -49,8 +49,8 @@ public class FlowNetwork {
         final TreeMap<NodePair, Double> connMap = network.getMap();
         final int numConns = connMap.size();
         flowConns = new Connection[numConns];
-        double totalConnWeight = network.getTotalWeight();
-        double sumUndirConnWeight = (config.isUndirected() ? 1 : 2) * totalConnWeight;
+        final double totalConnWeight = network.getTotalWeight();
+        final double sumUndirConnWeight = (config.isUndirected() ? 1 : 2) * totalConnWeight;
 
         int connIndex = 0;
         for (final Map.Entry<NodePair, Double> entry : connMap.entrySet()) {

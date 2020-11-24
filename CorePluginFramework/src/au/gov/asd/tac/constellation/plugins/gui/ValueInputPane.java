@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.RecentValuesChangeEvent;
 import au.gov.asd.tac.constellation.plugins.parameters.RecentValuesListener;
 import au.gov.asd.tac.constellation.plugins.parameters.types.PasswordParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
@@ -94,7 +95,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
             field = null;
             recentValuesCombo = null;
             recentValueSelectionListener = null;
-            final Label l = new Label(parameter.getStringValue().replace("\n", " "));
+            final Label l = new Label(parameter.getStringValue().replace(SeparatorConstants.NEWLINE, " "));
             l.setWrapText(true);
             l.setPrefWidth(defaultWidth);
             getChildren().add(l);

@@ -15,10 +15,10 @@
  */
 package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
-import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.TransactionTypeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.TransactionTypeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConceptUtilities;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;

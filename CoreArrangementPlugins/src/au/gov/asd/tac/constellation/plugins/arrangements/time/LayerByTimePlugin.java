@@ -138,7 +138,6 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
     private static final String ORIGINAL_ID_LABEL = "layer_original_id";
     private static final String LAYER_NAME = "layer";
     private static final String NLAYERS = "layers";
-    private static final String VISIBILITY = "visibility";
 
     private static final Map<String, Integer> LAYER_INTERVALS = new HashMap<>();
     private static final Map<String, Integer> BIN_CALENDAR_UNITS = new HashMap<>();
@@ -354,11 +353,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             //Create and store graph attributes.
             final LayerName defaultName = new LayerName(Graph.NOT_FOUND, "Default");
             final int timeLayerAttr = wgcopy.addAttribute(GraphElementType.TRANSACTION, LayerNameAttributeDescription.ATTRIBUTE_NAME, LAYER_NAME, "time layer", defaultName, null);
-
-            final int zAttr = wgcopy.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z", "z", 0, null);
-            final int vxVisibilityAttr = wgcopy.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, VISIBILITY, VISIBILITY, 1, null);
-            final int txVisibilityAttr = wgcopy.addAttribute(GraphElementType.TRANSACTION, FloatAttributeDescription.ATTRIBUTE_NAME, VISIBILITY, VISIBILITY, 1, null);
-
+            wgcopy.addAttribute(GraphElementType.GRAPH, IntegerAttributeDescription.ATTRIBUTE_NAME, NLAYERS, "The number of layers to layer by time", 1, null);
             final int txColorAttr = wgcopy.getAttribute(GraphElementType.TRANSACTION, "color");
             final int txGuideline = wgcopy.addAttribute(GraphElementType.TRANSACTION, BooleanAttributeDescription.ATTRIBUTE_NAME, "layer_guideline", "This transaction is a layer guideline", false, null);
             final ConstellationColor guidelineColor = ConstellationColor.getColorValue(0.25f, 0.25f, 0.25f, 1f);
@@ -399,7 +394,6 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                             wgcopy.setObjectValue(timeLayerAttr, txId, dn);
 
                             final float normLayer = newLayer / (remappedLayers.keySet().size() * 1f);
-                            wgcopy.setFloatValue(txVisibilityAttr, txId, normLayer);
 
                             if (!keepTxColors) {
                                 final Color heatmap = new Color(Color.HSBtoRGB((1 - normLayer) * 2f / 3f, 0.5f, 1));
@@ -410,7 +404,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                             if (isTransactionLayers) {
                                 transactionsAsLayers(wgcopy, txId, z, step);
                             } else {
-                                nodesAsLayers(wgcopy, txId, newLayer, normLayer);
+                                nodesAsLayers(wgcopy, txId, newLayer);
                             }
                         }
                     }
@@ -438,22 +432,6 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                 if (nTx == 0) {
                     vertices.add(vertexId);
                 }
-                //Tag on the back of this loop and update the visibility of each node to match it's z value
-                if (isTransactionLayers) {
-                    float vxZ = wgcopy.getFloatValue(zAttr, vertexId);
-                    wgcopy.setFloatValue(vxVisibilityAttr, vertexId, vxZ / (z + 1));
-                }
-            }
-
-            if (isTransactionLayers) {
-                for (int pos = 0; pos < wgcopy.getTransactionCount(); pos++) {
-                    final int txId = wgcopy.getTransaction(pos);
-                    final int srcVxId = wgcopy.getTransactionSourceVertex(txId);
-                    final int dstVxId = wgcopy.getTransactionDestinationVertex(txId);
-                    final float srcVxz = wgcopy.getFloatValue(zAttr, srcVxId);
-                    final float dstVxz = wgcopy.getFloatValue(zAttr, dstVxId);
-                    wgcopy.setFloatValue(txVisibilityAttr, txId, (srcVxz + dstVxz) / 2 / (z + 1));
-                }
             }
 
             vertices.stream().forEach(wgcopy::removeVertex);
@@ -473,7 +451,6 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                                 final int sTxId = wgcopy.addTransaction(prevNodeId, nodeId, false);
                                 wgcopy.setBooleanValue(txGuideline, sTxId, true);
                                 wgcopy.setObjectValue(txColorAttr, sTxId, guidelineColor);
-                                wgcopy.setFloatValue(txVisibilityAttr, sTxId, 1.1f);
                                 LayerName dn = new LayerName(1107, "Guideline");
                                 wgcopy.setObjectValue(timeLayerAttr, sTxId, dn);
                             }
@@ -482,10 +459,6 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                     });
                 }
             }
-
-//            //Set Display Mode to 3D
-//            GraphNode graphNode = Utilities.actionsGlobalContext().lookup(GraphNode.class);
-//            graphNode.getVisual().setDisplayMode(GraphDraw.MODE_3D);
         } finally {
             wgcopy.commit();
         }
@@ -547,9 +520,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             remappedLayers.put(i, runningLayers);
         }
 
-        // Now that we have the total number of layers, tell the graph so it
-        // can handle the visibility toggle.
-        wgcopy.addAttribute(GraphElementType.GRAPH, "integer", NLAYERS, "The number of layers to layer by time", 1, null);
+        // Now that we have the total number of layers, tell the graph so it can handle the visibility toggle.
         final int nLayersAttr = wgcopy.getAttribute(GraphElementType.GRAPH, NLAYERS);
         wgcopy.setIntValue(nLayersAttr, 0, remappedLayers.keySet().size());
 
@@ -711,25 +682,22 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
     /**
      * Procedure for reordering the graph using nodes as layers on the z-axis.
      */
-    private void nodesAsLayers(final GraphWriteMethods graph, final int txId, final int layer, final float normLayer) {
+    private void nodesAsLayers(final GraphWriteMethods graph, final int txId, final int layer) {
         final int xAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", 0, null);
         final int yAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y", "y", 0, null);
         final int zAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z", "z", 0, null);
         final int x2Attr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x2", "x2", 0, null);
         final int y2Attr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y2", "y2", 0, null);
         final int z2Attr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z2", "z2", 0, null);
-        final int vxVisibilityAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, VISIBILITY, VISIBILITY, 1, null);
         final int sNodeId = graph.getTransactionSourceVertex(txId);
         graph.setFloatValue(x2Attr, sNodeId, graph.getFloatValue(xAttr, sNodeId));
         graph.setFloatValue(y2Attr, sNodeId, graph.getFloatValue(yAttr, sNodeId));
         graph.setFloatValue(z2Attr, sNodeId, graph.getFloatValue(zAttr, sNodeId));
-        graph.setFloatValue(vxVisibilityAttr, sNodeId, 0);
 
         final int dNodeId = graph.getTransactionDestinationVertex(txId);
         graph.setFloatValue(x2Attr, dNodeId, graph.getFloatValue(xAttr, dNodeId));
         graph.setFloatValue(y2Attr, dNodeId, graph.getFloatValue(yAttr, dNodeId));
         graph.setFloatValue(z2Attr, dNodeId, graph.getFloatValue(zAttr, dNodeId));
-        graph.setFloatValue(vxVisibilityAttr, dNodeId, 0);
 
         // The nodes on the ends of this transaction will be in this layer.
         if (!nodeIdToLayers.containsKey(sNodeId)) {
@@ -748,13 +716,10 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             // Do they already exist?
             // Create (or fetch the already created) two duplicate nodes;
             // move the duplicates up the z axis by layer;
-            // set their visibility by layer.
             final int dupSNodeId = getDuplicateNode(graph, nodeDups, sNodeId, layer);
             graph.setFloatValue(zAttr, dupSNodeId, layer * 20);
-            graph.setFloatValue(vxVisibilityAttr, dupSNodeId, normLayer);
             final int dupDNodeId = getDuplicateNode(graph, nodeDups, dNodeId, layer);
             graph.setFloatValue(zAttr, dupDNodeId, layer * 20);
-            graph.setFloatValue(vxVisibilityAttr, dupDNodeId, normLayer);
 
             final int edgeId = graph.getTransactionEdge(txId);
             final boolean isDirected = graph.getEdgeDirection(edgeId) != Graph.FLAT;
@@ -790,20 +755,17 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         final int x2Attr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x2", "x2", 0, null);
         final int y2Attr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y2", "y2", 0, null);
         final int z2Attr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z2", "z2", 0, null);
-        final int vxVisibilityAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, VISIBILITY, VISIBILITY, 1, null);
         final int nodeAttr = graph.getAttribute(GraphElementType.VERTEX, ORIGINAL_ID_LABEL);
 
         final int srcVxId = graph.getTransactionSourceVertex(txId);
         graph.setFloatValue(x2Attr, srcVxId, graph.getFloatValue(xAttr, srcVxId));
         graph.setFloatValue(y2Attr, srcVxId, graph.getFloatValue(yAttr, srcVxId));
         graph.setFloatValue(z2Attr, srcVxId, graph.getFloatValue(zAttr, srcVxId));
-        graph.setFloatValue(vxVisibilityAttr, srcVxId, 0);
 
         final int dstVxId = graph.getTransactionDestinationVertex(txId);
         graph.setFloatValue(x2Attr, dstVxId, graph.getFloatValue(xAttr, dstVxId));
         graph.setFloatValue(y2Attr, dstVxId, graph.getFloatValue(yAttr, dstVxId));
         graph.setFloatValue(z2Attr, dstVxId, graph.getFloatValue(zAttr, dstVxId));
-        graph.setFloatValue(vxVisibilityAttr, dstVxId, 0);
 
         final int tlSrcVxId;
         if (srcVxMap.containsKey(srcVxId)) {

@@ -16,7 +16,11 @@
 package au.gov.asd.tac.constellation.graph.attribute;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType;
+import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
+import au.gov.asd.tac.constellation.graph.value.readables.LongReadable;
+import au.gov.asd.tac.constellation.graph.value.variables.LongVariable;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalConstants;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
 import java.time.LocalDate;
@@ -46,7 +50,7 @@ public final class DateAttributeDescription extends AbstractAttributeDescription
     public static final int ATTRIBUTE_VERSION = 1;
     public static final Class<Long> NATIVE_CLASS = Long.class;
     public static final NativeAttributeType NATIVE_TYPE = NativeAttributeType.LONG;
-    public static final long DEFAULT_VALUE = Long.MIN_VALUE;
+    public static final long DEFAULT_VALUE = 0L;
 
     private long[] data = new long[0];
     private long defaultValue = DEFAULT_VALUE;
@@ -90,7 +94,7 @@ public final class DateAttributeDescription extends AbstractAttributeDescription
      * @return A Calendar representing the input datetime.
      */
     public long convertFromString(final String string) throws IllegalArgumentException {
-        if (StringUtils.isBlank(string)) {
+        if (StringUtils.isBlank(string) || String.valueOf(DEFAULT_VALUE).equals(string)) {
             return (long) getDefault();
         } else {
             try {
@@ -234,5 +238,25 @@ public final class DateAttributeDescription extends AbstractAttributeDescription
     public void restoreData(final Object savedData) {
         final long[] sd = (long[]) savedData;
         data = Arrays.copyOf(sd, sd.length);
+    }
+
+    @Override
+    public Object createReadObject(IntReadable indexReadable) {
+        return (LongReadable) () -> data[indexReadable.readInt()];
+    }
+
+    @Override
+    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+        return new LongVariable() {
+            @Override
+            public long readLong() {
+                return data[indexReadable.readInt()];
+            }
+
+            @Override
+            public void writeLong(long value) {
+                graph.setLongValue(attribute, indexReadable.readInt(), value);
+            }
+        };
     }
 }

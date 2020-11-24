@@ -16,8 +16,8 @@
 package au.gov.asd.tac.constellation.plugins.importexport.delimited;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.translator.AttributeTranslator;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersDialog;
+import au.gov.asd.tac.constellation.plugins.importexport.delimited.translator.AttributeTranslator;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
@@ -38,6 +38,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.Window;
 
 /**
  * A representation of an Attribute on the GUI.
@@ -86,7 +87,13 @@ public final class AttributeNode extends Label implements Comparable<AttributeNo
 
         setMaxWidth(Double.MAX_VALUE);
         setAlignment(Pos.CENTER);
-        setStyle("-fx-background-color: " + attributeList.getAttributeType().getColor().getHtmlColor() + "; -fx-border-color: black; -fx-border-radius: 5; -fx-background-radius: 5;");
+        final String attributeColor = attributeList.getAttributeType().getColor().getHtmlColor();
+        final String attributeContrastingColor = ConstellationColor.getContrastHtmlColor(attributeColor).getHtmlColor();
+        setStyle("-fx-background-color: " + attributeColor + "; "
+                + "-fx-text-fill:" + attributeContrastingColor + "; "
+                + "-fx-border-color: black; "
+                + "-fx-border-radius: 5; "
+                + "-fx-background-radius: 5;");
 
         // Create a context menu.
         final ContextMenu menu = new ContextMenu();
@@ -123,7 +130,11 @@ public final class AttributeNode extends Label implements Comparable<AttributeNo
                         attributeList.getRunPane().validate(AttributeNode.this.column);
                     }
                 } else {
-                    PluginParametersDialog dialog = new PluginParametersDialog(attributeList.importController.getStage(), ap.getLabel() + " Parameters", parameters, "Ok", "Cancel");
+                    final Window parent = attributeList.importController.getStage().getParentWindow();
+                    final PluginParametersDialog dialog = new PluginParametersDialog(
+                            parent, ap.getLabel() + " Parameters",
+                            parameters, "Ok", "Cancel");
+
                     dialog.showAndWait();
                     if ("Ok".equals(dialog.getResult())) {
                         translator = ap;

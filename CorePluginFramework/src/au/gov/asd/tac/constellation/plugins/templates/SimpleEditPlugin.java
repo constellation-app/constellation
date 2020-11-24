@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.plugins.PluginGraphs;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openide.util.NbBundle.Messages;
@@ -117,20 +118,20 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
                         }
                     } catch (InterruptedException e) {
                         cancelled = true;
-                        interaction.notify(PluginNotificationLevel.INFO, "Action cancelled: " + graphs.getGraph() + ": " + getName());
+                        interaction.notify(PluginNotificationLevel.INFO, "Action cancelled: " + graphs.getGraph() + SeparatorConstants.COLON + " " + getName());
                         throw e;
                     } catch (PluginException e) {
                         final String msg = Bundle.MSG_Edit_Failed(graph, getName());
-                        interaction.notify(PluginNotificationLevel.ERROR, msg + "\n" + e.getMessage());
+                        interaction.notify(PluginNotificationLevel.ERROR, msg + SeparatorConstants.NEWLINE + e.getMessage());
                         cancelled = true;
                         LOGGER.log(Level.WARNING, msg, e);
                         throw e;
                     } catch (Exception ex) {
                         final String msg0 = String.format("Unexpected non-plugin exception caught in %s.run()", SimpleEditPlugin.class.getName());
                         final String msg = Bundle.MSG_Edit_Failed(graph, getName());
-                        interaction.notify(PluginNotificationLevel.ERROR, msg0 + ";\n" + msg + "\n" + ex.getMessage());
+                        interaction.notify(PluginNotificationLevel.ERROR, msg0 + SeparatorConstants.SEMICOLON + SeparatorConstants.NEWLINE + msg + SeparatorConstants.NEWLINE + ex.getMessage());
                         cancelled = true;
-                        LOGGER.log(Level.WARNING, ex, () -> msg0 + "; " + msg);
+                        LOGGER.log(Level.WARNING, ex, () -> msg0 + SeparatorConstants.SEMICOLON + " " + msg);
                         throw new RuntimeException(ex);
                     }
 

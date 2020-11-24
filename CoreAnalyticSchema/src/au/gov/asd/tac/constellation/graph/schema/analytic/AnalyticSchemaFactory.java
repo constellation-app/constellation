@@ -47,6 +47,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -174,11 +175,11 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
             // set the type - preference is type > raw > label > unknown
             if (type == null) {
                 type = SchemaVertexTypeUtilities.getDefaultType();
-                if (raw.getRawType() != null && !raw.getRawType().isEmpty()) {
+                if (StringUtils.isNotBlank(raw.getRawType())) {
                     type = graph.getSchema().resolveVertexType(raw.getRawType());
-                } else if (label != null && !label.isEmpty()) {
+                } else if (StringUtils.isNotBlank(label)) {
                     final RawData rawLabel = new RawData(label);
-                    if (rawLabel.getRawType() != null && !rawLabel.getRawType().isEmpty()) {
+                    if (StringUtils.isNotBlank(rawLabel.getRawType())) {
                         type = graph.getSchema().resolveVertexType(rawLabel.getRawType());
                     }
                 }
@@ -187,13 +188,13 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
             }
 
             // set the identifier - preference is identifier > raw > label > unknown
-            if (identifier == null || identifier.isEmpty()) {
+            if (StringUtils.isBlank(identifier)) {
                 identifier = "unknown";
-                if (raw.getRawIdentifier() != null && !raw.getRawIdentifier().isEmpty()) {
+                if (StringUtils.isNotBlank(raw.getRawIdentifier())) {
                     identifier = raw.getRawIdentifier();
-                } else if (label != null && !label.isEmpty()) {
+                } else if (StringUtils.isNotBlank(label)) {
                     final RawData rawLabel = new RawData(label);
-                    if (rawLabel.getRawIdentifier() != null && !rawLabel.getRawIdentifier().isEmpty()) {
+                    if (StringUtils.isNotBlank(rawLabel.getRawIdentifier())) {
                         identifier = rawLabel.getRawIdentifier();
                     }
                 }
@@ -298,9 +299,9 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
 
             // set the type - preference is type > label > unknown
             if (type == null) {
-                if (label != null && !label.isEmpty()) {
+                if (StringUtils.isNotBlank(label)) {
                     final RawData rawLabel = new RawData(label);
-                    if (rawLabel.getRawType() != null && !rawLabel.getRawType().isEmpty()) {
+                    if (StringUtils.isNotBlank(rawLabel.getRawType())) {
                         type = resolveTransactionType(rawLabel.getRawType());
                     }
                 } else {
@@ -311,11 +312,11 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
             }
 
             // set the identifier - preference is identifier > label > unknown
-            if (identifier == null || identifier.isEmpty()) {
+            if (StringUtils.isBlank(identifier)) {
                 identifier = "unknown";
-                if (label != null && !label.isEmpty()) {
+                if (StringUtils.isNotBlank(label)) {
                     final RawData rawLabel = new RawData(label);
-                    if (rawLabel.getRawIdentifier() != null && !rawLabel.getRawIdentifier().isEmpty()) {
+                    if (StringUtils.isNotBlank(rawLabel.getRawIdentifier())) {
                         identifier = rawLabel.getRawIdentifier();
                     }
                 }
@@ -346,9 +347,12 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
                     && !Objects.equals(type.getStyle(), graph.getObjectValue(transactionStyleAttribute, transactionId))) {
                 graph.setObjectValue(transactionStyleAttribute, transactionId, type.getStyle());
             }
-
-            if (type != null && type != SchemaTransactionTypeUtilities.getDefaultType()
-                    && !Objects.equals(type.isDirected(), graph.getBooleanValue(transactionDirectedAttribute, transactionId))) {
+            // Previously, null and empty types were treated separately.
+            // Since treating them the same (which makes sense), we were seeing
+            // some unexpected behaviour with blank types.
+            // see https://github.com/constellation-app/constellation/issues/723#issuecomment-662241467
+            // see also https://github.com/constellation-app/constellation/pull/735
+            if (type != null && type != SchemaTransactionTypeUtilities.getDefaultType() && !Objects.equals(type.isDirected(), graph.getBooleanValue(transactionDirectedAttribute, transactionId))) {
                 graph.setBooleanValue(transactionDirectedAttribute, transactionId, type.isDirected());
             }
 

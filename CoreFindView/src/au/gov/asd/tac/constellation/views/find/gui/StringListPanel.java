@@ -47,7 +47,7 @@ public class StringListPanel extends javax.swing.JPanel {
         lblStringDelimiter.setVisible(false);
         txtStringDelimiter.setVisible(false);
 
-        txtContent.setText(content.replace(',', '\n'));
+        txtContent.setText(content.replace(SeparatorConstants.COMMA, SeparatorConstants.NEWLINE));
         txtContent.setCaretPosition(content.length());
     }
 
@@ -59,7 +59,7 @@ public class StringListPanel extends javax.swing.JPanel {
      * ",".
      */
     public String getContent() {
-        return txtContent.getText().replace('\n', ',');
+        return txtContent.getText().replace(SeparatorConstants.NEWLINE, SeparatorConstants.COMMA);
     }
 
     /**
@@ -157,25 +157,26 @@ public class StringListPanel extends javax.swing.JPanel {
     private void splitLinesButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_splitLinesButtonActionPerformed
     {//GEN-HEADEREND:event_splitLinesButtonActionPerformed
         final String delim;
-        if (delimiter.equals(COMMA)) {
-            delim = ",";
-        } //        else if (delimiter.equals(NEW_LINE))
-        //        {
-        //            delim = "\n";
-        //        }
-        else if (delimiter.equals(TAB)) {
-            delim = "\t";
-        } else if (delimiter.equals(SEMI_COLON)) {
-            delim = SeparatorConstants.SEMICOLON;
-        } else {
-            delim = txtStringDelimiter.getText();
+        switch (delimiter) {
+            case COMMA:
+                delim = SeparatorConstants.COMMA;
+                break;
+            case TAB:
+                delim = SeparatorConstants.TAB;
+                break;
+            case SEMI_COLON:
+                delim = SeparatorConstants.SEMICOLON;
+                break;
+            default:
+                delim = txtStringDelimiter.getText();
+                break;
         }
 
         final String[] lines = txtContent.getText().split(delim);
         final StringBuilder b = new StringBuilder();
         for (final String line : lines) {
             if (b.length() > 0) {
-                b.append('\n');
+                b.append(SeparatorConstants.NEWLINE);
             }
 
             b.append(line);

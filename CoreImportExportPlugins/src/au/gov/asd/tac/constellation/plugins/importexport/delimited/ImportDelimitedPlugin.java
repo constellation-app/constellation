@@ -26,7 +26,6 @@ import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
-import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.arrangements.AbstractInclusionGraph;
 import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
@@ -44,11 +43,15 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType.ObjectParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -113,6 +116,60 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
         return params;
     }
 
+    /**
+     * Build up an import summary dialog detailing successful and unsuccessful
+     * file imports.
+     *
+     * @param title Title to add to status dialog
+     * @param importedRows Number of rows successfully imported (from valid
+     * files)
+     * @param validFilenames List of filenames that were imported from
+     * @param invalidFilenames List of files that couldn't be opened/parsed. We
+     * try to limit this possibility by pre-screening files during the initial
+     * file selection.
+     */
+    private void displaySummaryAlert(final int importedRows, final List<String> validFilenames, final List<String> invalidFilenames) {
+        Platform.runLater(() -> {
+            final Alert dialog;
+            dialog = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
+            String header = "";
+            String message = "";
+
+            if (importedRows > 0) {
+                // At least 1 row was successfully imported. List all successful file imports, as well as any files that there were
+                // issues for. If there were any files with issues use a warning dialog.
+
+                header = "Imported " + importedRows + " rows of data from " + validFilenames.size() + " files";
+                message = "The following file(s) contained data:";
+                for (final String filename : validFilenames) {
+                    message = message + "\n  " + filename;
+                }
+                if (invalidFilenames.size() > 0) {
+                    // some invalid files were found - warning condition.
+                    dialog.setAlertType(Alert.AlertType.WARNING);
+                    message = message + "\n\nThe following file(s) could not be parsed. No data was extracted:";
+                    for (final String filename : invalidFilenames) {
+                        message = message + "\n  " + filename;
+                    }
+                }
+            } else {
+                // No rows were imported list all files that resulted in failures.
+                dialog.setAlertType(Alert.AlertType.WARNING);
+                header = "No data found to import";
+                message = message + "The following file(s) could not be parsed. no data was extracted:";
+                if (invalidFilenames.size() > 0) {
+                    for (final String filename : invalidFilenames) {
+                        message = message + "\n  " + filename;
+                    }
+                }
+            }
+            dialog.setTitle("Delimited Importer");
+            dialog.setHeaderText(header);
+            dialog.setContentText(message);
+            dialog.showAndWait();
+        });
+    }
+
     @Override
     protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         final ImportFileParser parser = (ImportFileParser) parameters.getParameters().get(PARSER_PARAMETER_ID).getObjectValue();
@@ -124,32 +181,49 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
         final PluginParameters parserParameters = (PluginParameters) parameters.getParameters().get(PARSER_PARAMETER_IDS_PARAMETER_ID).getObjectValue();
         final List<Integer> newVertices = new ArrayList<>();
         boolean positionalAtrributesExist = false;
+        final List<String> validFiles = new ArrayList<>();
+        final List<String> invalidFiles = new ArrayList<>();
+        int importRows = 0;
 
         for (final File file : files) {
             interaction.setProgress(0, 0, "Reading File: " + file.getName(), true);
             List<String[]> data = null;
+
             try {
                 data = parser.parse(new InputSource(file), parserParameters);
+                importRows = importRows + data.size() - 1;
+                validFiles.add(file.getPath());
+                LOGGER.log(Level.INFO, "Imported {0} rows of data from file {1}. {2} total rows imported", new Object[]{(data.size() - 1), file.getPath(), importRows});
+            } catch (FileNotFoundException ex) {
+                final String errorMsg = file.getPath() + " could not be found. Ignoring file during import.";
+                LOGGER.log(Level.INFO, errorMsg);
+                invalidFiles.add(file.getPath());
             } catch (IOException ex) {
-                throw new PluginException(this, PluginNotificationLevel.ERROR, "Error reading file: " + file.getName(), ex);
+                final String errorMsg = file.getPath() + " could not be parsed. Removing file during import.";
+                LOGGER.log(Level.INFO, errorMsg);
+                invalidFiles.add(file.getPath());
             }
 
-            for (final ImportDefinition definition : definitions) {
-                if (definition.getDefinitions(AttributeType.SOURCE_VERTEX).isEmpty()) {
-                    if (!definition.getDefinitions(AttributeType.DESTINATION_VERTEX).isEmpty()) {
-                        processVertices(definition, graph, data, AttributeType.DESTINATION_VERTEX, initialiseWithSchema, interaction, file.getName(), newVertices);
+            if (data != null) {
+                for (final ImportDefinition definition : definitions) {
+                    if (definition.getDefinitions(AttributeType.SOURCE_VERTEX).isEmpty()) {
+                        if (!definition.getDefinitions(AttributeType.DESTINATION_VERTEX).isEmpty()) {
+                            processVertices(definition, graph, data, AttributeType.DESTINATION_VERTEX, initialiseWithSchema, interaction, file.getName(), newVertices);
+                        }
+                    } else if (definition.getDefinitions(AttributeType.DESTINATION_VERTEX).isEmpty()) {
+                        processVertices(definition, graph, data, AttributeType.SOURCE_VERTEX, initialiseWithSchema, interaction, file.getName(), newVertices);
+                    } else {
+                        processTransactions(definition, graph, data, initialiseWithSchema, interaction, file.getName());
                     }
-                } else if (definition.getDefinitions(AttributeType.DESTINATION_VERTEX).isEmpty()) {
-                    processVertices(definition, graph, data, AttributeType.SOURCE_VERTEX, initialiseWithSchema, interaction, file.getName(), newVertices);
-                } else {
-                    processTransactions(definition, graph, data, initialiseWithSchema, interaction, file.getName());
-                }
 
-                // Determine if a positional attribute has been defined, if so update the overall flag
-                final boolean isPositional = attributeDefintionIsPositional(definition.getDefinitions(AttributeType.SOURCE_VERTEX), definition.getDefinitions(AttributeType.DESTINATION_VERTEX));
-                positionalAtrributesExist = (positionalAtrributesExist || isPositional);
+                    // Determine if a positional attribute has been defined, if so update the overall flag
+                    final boolean isPositional = attributeDefintionIsPositional(definition.getDefinitions(AttributeType.SOURCE_VERTEX), definition.getDefinitions(AttributeType.DESTINATION_VERTEX));
+                    positionalAtrributesExist = (positionalAtrributesExist || isPositional);
+                }
             }
         }
+        LOGGER.log(Level.INFO, "Imported {0} rows of data. {1} files contained data. {2} files were ignored.", new Object[]{importRows, validFiles.size(), invalidFiles.size()});
+        displaySummaryAlert(importRows, validFiles, invalidFiles);
 
         ConstellationLoggerHelper.importPropertyBuilder(
                 this,

@@ -99,15 +99,12 @@ public class ItemsDialog<T> extends ConstellationDialog {
         table.setItems(rows);
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         table.getSelectionModel().clearSelection();
-        table.getSelectionModel().getSelectedIndices().addListener(new ListChangeListener<>() {
-            @Override
-            public void onChanged(ListChangeListener.Change<? extends Integer> c) {
-                try {
-                    List<ItemsRow<T>> selectedRows = table.getSelectionModel().getSelectedItems();
-                    selectRows(selectedRows);
-                } catch (InterruptedException ex) {
-                    Thread.currentThread().interrupt();
-                }
+        table.getSelectionModel().getSelectedIndices().addListener((ListChangeListener.Change<? extends Integer> c) -> {
+            try {
+                List<ItemsRow<T>> selectedRows = table.getSelectionModel().getSelectedItems();
+                selectRows(selectedRows);
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
             }
         });
 
@@ -125,27 +122,21 @@ public class ItemsDialog<T> extends ConstellationDialog {
         root.setBottom(buttonPane);
 
         final Button copyToClipboardButton = new Button("Copy Selection to Clipboard");
-        copyToClipboardButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                final StringBuilder sb = new StringBuilder();
-
-                final ObservableList<ItemsRow<T>> selectedRows = table.getSelectionModel().getSelectedItems();
-                for (ItemsRow<?> r : selectedRows) {
-                    sb.append(String.format("%s,%s\n", r.labelProperty().getValue(), r.descriptionProperty().getValue()));
-                }
-
-                ClipboardUtilities.copyToClipboard(sb.toString());
+        copyToClipboardButton.setOnAction((ActionEvent event) -> {
+            final StringBuilder sb = new StringBuilder();
+            
+            final ObservableList<ItemsRow<T>> selectedRows = table.getSelectionModel().getSelectedItems();
+            for (ItemsRow<?> r : selectedRows) {
+                sb.append(String.format("%s,%s\n", r.labelProperty().getValue(), r.descriptionProperty().getValue()));
             }
+            
+            ClipboardUtilities.copyToClipboard(sb.toString());
         });
         buttonPane.getChildren().add(copyToClipboardButton);
 
         final Button selectAllButton = new Button("Select All");
-        selectAllButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                table.getSelectionModel().selectAll();
-            }
+        selectAllButton.setOnAction((ActionEvent event) -> {
+            table.getSelectionModel().selectAll();
         });
         buttonPane.getChildren().add(selectAllButton);
 
@@ -153,11 +144,8 @@ public class ItemsDialog<T> extends ConstellationDialog {
         buttonPane.getChildren().add(okButton);
 
         cancelButton = new Button("Cancel");
-        cancelButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                hideDialog();
-            }
+        cancelButton.setOnAction((ActionEvent event) -> {
+            hideDialog();
         });
         buttonPane.getChildren().add(cancelButton);
 

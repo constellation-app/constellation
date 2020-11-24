@@ -16,9 +16,12 @@
 package au.gov.asd.tac.constellation.graph.attribute;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
 import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
+import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
+import au.gov.asd.tac.constellation.graph.value.variables.IntVariable;
 import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
@@ -280,5 +283,25 @@ public final class IntegerAttributeDescription extends AbstractAttributeDescript
     public void restoreData(final Object savedData) {
         final int[] sd = (int[]) savedData;
         data = Arrays.copyOf(sd, sd.length);
+    }
+
+    @Override
+    public Object createReadObject(IntReadable indexReadable) {
+        return (IntReadable) () -> data[indexReadable.readInt()];
+    }
+
+    @Override
+    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+        return new IntVariable() {
+            @Override
+            public int readInt() {
+                return data[indexReadable.readInt()];
+            }
+
+            @Override
+            public void writeInt(int value) {
+                graph.setIntValue(attribute, indexReadable.readInt(), value);
+            }
+        };
     }
 }

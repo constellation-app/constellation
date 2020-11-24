@@ -70,7 +70,7 @@ import org.openide.windows.TopComponent;
  */
 @TopComponent.Description(
         preferredID = "FindTopComponent",
-        iconBase = "au/gov/asd/tac/constellation/views/find/resources/find-view.png",
+        iconBase = "au/gov/asd/tac/constellation/views/find/resources/find.png",
         persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
 @TopComponent.Registration(
@@ -147,24 +147,20 @@ public final class FindTopComponent extends TopComponent implements GraphChangeL
         lblMatchPB.setVisible(false);
         lblMatchPB.setEnabled(false);
         basicFindPanel = new BasicFindPanel(this);
-        basicFindPanel.setValidationListener(new ValidationListener() {
-            @Override
-            public void validityChanged(boolean valid) {
-                if (jTabbedPane1.getSelectedIndex() == 0) { //basic find panel is active
-                    btnFind.setEnabled(valid);
-                }
+        basicFindPanel.setValidationListener((boolean valid1) -> {
+            if (jTabbedPane1.getSelectedIndex() == 0) {
+                //basic find panel is active
+                btnFind.setEnabled(valid1);
             }
         });
         basicFindScrollpane.setViewportView(basicFindPanel);
 
         //replace panel setup
         replacePanel = new ReplacePanel();
-        replacePanel.setValidationListener(new ValidationListener() {
-            @Override
-            public void validityChanged(boolean valid) {
-                if (jTabbedPane1.getSelectedIndex() == 1) { //replace panel is active
-                    btnFind.setEnabled(valid);
-                }
+        replacePanel.setValidationListener((boolean valid1) -> {
+            if (jTabbedPane1.getSelectedIndex() == 1) {
+                //replace panel is active
+                btnFind.setEnabled(valid1);
             }
         });
         replaceScrollPane.setViewportView(replacePanel);
@@ -399,52 +395,27 @@ public final class FindTopComponent extends TopComponent implements GraphChangeL
         org.openide.awt.Mnemonics.setLocalizedText(btnFind, "Find");
         btnFind.setToolTipText("Select on the graph all data that matches the criteria specified.");
         btnFind.setEnabled(false);
-        btnFind.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnFindActionPerformed(evt);
-            }
-        });
+        btnFind.addActionListener(this::btnFindActionPerformed);
 
         org.openide.awt.Mnemonics.setLocalizedText(lblMatchPA, "that match");
 
         cmbMatch.setMaximumRowCount(2);
         cmbMatch.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{Bundle.Find_ALL(), Bundle.Find_ANY()}));
-        cmbMatch.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbMatchActionPerformed(evt);
-            }
-        });
+        cmbMatch.addActionListener(this::cmbMatchActionPerformed);
 
         org.openide.awt.Mnemonics.setLocalizedText(lblMatchPB, "of the following criteria:");
 
         org.openide.awt.Mnemonics.setLocalizedText(btnReset, "Reset To Default");
         btnReset.setToolTipText("Removes all of the currently defined criteria and resets the find window to the default.");
-        btnReset.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnResetActionPerformed(evt);
-            }
-        });
+        btnReset.addActionListener(this::btnResetActionPerformed);
 
         org.openide.awt.Mnemonics.setLocalizedText(lblSelect, "Find");
 
         cmbGraphElementType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{Bundle.Find_VERTEX(), Bundle.Find_TRANSACTION(), Bundle.Find_EDGE(), Bundle.Find_LINK()}));
-        cmbGraphElementType.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbGraphElementTypeActionPerformed(evt);
-            }
-        });
+        cmbGraphElementType.addActionListener(this::cmbGraphElementTypeActionPerformed);
 
         org.openide.awt.Mnemonics.setLocalizedText(chkAddToSelection, "Add results to current selection");
-        chkAddToSelection.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chkAddToSelectionActionPerformed(evt);
-            }
-        });
+        chkAddToSelection.addActionListener(this::chkAddToSelectionActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

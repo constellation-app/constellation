@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.testing.memory;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManager.ClassStats;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManagerListener;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -139,7 +140,7 @@ public final class MemoryManagerTopComponent extends TopComponent implements Mem
             result.append(stats.getTotalCount());
             result.append(", max = ");
             result.append(stats.getMaxCount());
-            result.append("\n");
+            result.append(SeparatorConstants.NEWLINE);
         }
 
         objectCountsTextArea.setText(result.toString());

@@ -15,13 +15,14 @@
  */
 package au.gov.asd.tac.constellation.graph.schema.visual.attribute.compatibility;
 
-import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
-import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * A description of a label: the attribute from which the label's value is
@@ -120,7 +121,7 @@ public final class GraphLabelV0 implements Serializable {
         String thisLabel = null;
         ConstellationColor thisColor = null;
         Float thisRadius = null;
-        if (graphLabelString != null && !graphLabelString.isEmpty()) {
+        if (StringUtils.isNotBlank(graphLabelString)) {
             Set<Character> splitChar = new HashSet<>();
             splitChar.add(';');
             List<String> graphLabelComponents = StringUtilities.splitLabelsWithEscapeCharacters(graphLabelString.substring(graphLabelString.indexOf(':') + 1, graphLabelString.lastIndexOf(']')), splitChar);

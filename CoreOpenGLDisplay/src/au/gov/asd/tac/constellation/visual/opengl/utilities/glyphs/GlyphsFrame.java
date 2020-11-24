@@ -85,7 +85,7 @@ public class GlyphsFrame extends JFrame {
         glyphManager = new GlyphManagerBI(fontsInfo, textureBufferSize, BufferedImage.TYPE_INT_ARGB);
 
         final GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        final String[] availablefonts = Arrays.stream(ge.getAvailableFontFamilyNames(Locale.US))
+        final String[] availablefonts = Arrays.stream(ge.getAvailableFontFamilyNames(Locale.ENGLISH))
                 .filter(f -> !f.startsWith(Font.DIALOG))
                 .sorted()
                 .toArray(String[]::new);
@@ -103,7 +103,7 @@ public class GlyphsFrame extends JFrame {
         glyphPanel.setPreferredSize(new Dimension(img.getWidth() + 1, img.getHeight() + 1));
 
         final String line = getLine();
-        glyphManager.renderTextAsLigatures(line, null);
+        glyphManager.renderTextAsLigatures(line, null, null);
 
         showTextureBuffer();
     }
@@ -310,7 +310,7 @@ public class GlyphsFrame extends JFrame {
 
     private void textLinesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textLinesActionPerformed
         final String line = getLine();
-        glyphManager.renderTextAsLigatures(line, null);
+        glyphManager.renderTextAsLigatures(line, null, null);
         repaint();
         showTextureBuffer();
     }//GEN-LAST:event_textLinesActionPerformed
@@ -364,7 +364,7 @@ public class GlyphsFrame extends JFrame {
         final boolean drawCombined = cbCGlyphs.isSelected();
         glyphManager.setBoundaries(drawRuns, drawIndividual, drawCombined);
         final String line = getLine();
-        glyphManager.renderTextAsLigatures(line, null);
+        glyphManager.renderTextAsLigatures(line, null, null);
         repaint();
     }
 
@@ -381,7 +381,7 @@ public class GlyphsFrame extends JFrame {
 
         showTextureBuffer();
         final String line = getLine();
-        glyphManager.renderTextAsLigatures(line, null);
+        glyphManager.renderTextAsLigatures(line, null, null);
 
         repaint();
     }

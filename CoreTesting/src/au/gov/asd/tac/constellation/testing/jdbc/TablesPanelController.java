@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.event.ChangeListener;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.WizardDescriptor;
 import org.openide.WizardValidationException;
 import org.openide.util.HelpCtx;
@@ -104,7 +105,7 @@ public class TablesPanelController implements WizardDescriptor.ExtendedAsynchron
             final File jarFile = new File(data.jar);
             try (final Connection conn = JdbcUtilities.getConnection(jarFile, data.driverName, data.url, data.username, data.password)) {
                 final String vxTable = panel.getVxTable() != null ? panel.getVxTable().trim() : null;
-                if (vxTable != null && !vxTable.isEmpty()) {
+                if (StringUtils.isNotBlank(vxTable)) {
                     getColumns(conn, vxTable, vxColumns);
                 }
                 if (vxTable != null && !vxTable.equals(data.vxTable)) {
@@ -114,7 +115,7 @@ public class TablesPanelController implements WizardDescriptor.ExtendedAsynchron
                 data.vxColumns = vxColumns;
 
                 final String txTable = panel.getTxTable() != null ? panel.getTxTable().trim() : null;
-                if (txTable != null && !txTable.isEmpty()) {
+                if (StringUtils.isNotBlank(txTable)) {
                     getColumns(conn, txTable, txColumns);
                 }
                 if (txTable != null && !txTable.equals(data.txTable)) {

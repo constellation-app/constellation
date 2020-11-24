@@ -74,17 +74,18 @@ public final class HashmodAction implements ActionListener {
                 final Hashmod[] chainedHashmods = hashmodPanel.getChainedHashmods();
                 final int numChainedHashmods = hashmodPanel.numChainedHashmods();
                 final Boolean createNonMatchingKeysVertexes = hashmodPanel.getCreateVertexes();
+                final Boolean createTransactions = hashmodPanel.getCreateTransactions();
                 hashmodPanel.setAttributeNames(hashmod1.getCSVKey(), hashmod1.getCSVHeader(1), hashmod1.getCSVHeader(2));
 
                 PluginExecution.withPlugin(new SimpleEditPlugin(Bundle.CTL_HashmodAction()) {
                     @Override
                     public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
                         if (hashmod1 != null) {
-                            HashmodAction.run(wg, interaction, hashmod1, createNonMatchingKeysVertexes, true, createAttributes);
+                            HashmodAction.run(wg, interaction, hashmod1, createNonMatchingKeysVertexes, createTransactions, true, createAttributes);
                         }
                         if (isChainedHashmods && numChainedHashmods >= 2) {
                             for (int i = 1; i < numChainedHashmods; i++) {
-                                HashmodAction.run(wg, interaction, chainedHashmods[i], false, false, createAttributes);
+                                HashmodAction.run(wg, interaction, chainedHashmods[i], false, false, false, createAttributes);
                             }
                         }
                     }
@@ -94,10 +95,10 @@ public final class HashmodAction implements ActionListener {
         DialogDisplayer.getDefault().notify(dialog);
     }
 
-    private static void run(final GraphWriteMethods wg, final PluginInteraction interaction, final Hashmod hashmod, final Boolean createAllKeys, final Boolean setPrimary, final Boolean createAttributes) throws InterruptedException {
+    private static void run(final GraphWriteMethods wg, final PluginInteraction interaction, final Hashmod hashmod, final Boolean createAllKeys, final Boolean createTransactions, final Boolean setPrimary, final Boolean createAttributes) throws InterruptedException {
 
         if (wg != null && hashmod != null) {
-            if (hashmod.getNumberCSVColumns() < 2) {
+            if (hashmod.getNumberCSVDataColumns() < 2) {
                 interaction.notify(PluginNotificationLevel.ERROR, "CSV file requires at least one key and one value attribute");
                 return;
             }
@@ -105,8 +106,8 @@ public final class HashmodAction implements ActionListener {
             return;
         }
 
-        final int[] attributeValues = new int[hashmod.getNumberCSVColumns() + 1];
-        final int[] csvValues = new int[hashmod.getNumberCSVColumns() + 1];
+        final int[] attributeValues = new int[hashmod.getNumberCSVDataColumns() + 1];
+        final int[] csvValues = new int[hashmod.getNumberCSVDataColumns() + 1];
         String nextAttr;
         int i = 0;
         int attrCount = 0;
@@ -146,10 +147,10 @@ public final class HashmodAction implements ActionListener {
         String keyValue;
         int numberSuccessful = 0;
 
+        final int[] vxOrder = new int[vxCount];
+        int vxPos = 0;
         if (vxCount > 0) {
             final BitSet vertices = HashmodUtilities.vertexBits(wg);
-            int vxPos = 0;
-            final int[] vxOrder = new int[vxCount];
             for (int vxId = vertices.nextSetBit(0); vxId >= 0; vxId = vertices.nextSetBit(vxId + 1)) {
                 if (Thread.interrupted()) {
                     throw new InterruptedException();
@@ -197,6 +198,54 @@ public final class HashmodAction implements ActionListener {
                 wg.setPrimaryKey(GraphElementType.VERTEX, attributeValues[0]);
             }
             interaction.notify(PluginNotificationLevel.WARNING, "Successfully added in " + numberSuccessful + " new nodes");
+        }
+
+        if (createTransactions) {
+            final BitSet vertices = HashmodUtilities.vertexBits(wg);
+            vxPos = 0;
+
+            final int vxCount2 = wg.getVertexCount();
+            final int[] vxOrder2 = new int[vxCount2];
+            for (int vxId = vertices.nextSetBit(0); vxId >= 0; vxId = vertices.nextSetBit(vxId + 1)) {
+                if (Thread.interrupted()) {
+                    throw new InterruptedException();
+                }
+                vxOrder2[vxPos++] = vxId;
+                vertices.clear(vxId);
+            }
+
+            numberSuccessful = 0;
+            for (int transaction = 0; transaction < hashmod.getNumberCSVTransactionColumns(); transaction++) {
+                String attribute1 = hashmod.getFirstColumnOfTransaction(transaction);
+                String attribute2 = hashmod.getSecondColumnOfTransaction(transaction);
+
+                final int transaction1Attribute = wg.getSchema().getFactory().ensureAttribute(wg, GraphElementType.VERTEX, attribute1);
+                final int transaction2Attribute = wg.getSchema().getFactory().ensureAttribute(wg, GraphElementType.VERTEX, attribute2);
+
+                if (transaction1Attribute != Graph.NOT_FOUND && transaction2Attribute != Graph.NOT_FOUND) {
+                    for (int j = 0; j < vxPos; j++) {
+                        if (Thread.interrupted()) {
+                            throw new InterruptedException();
+                        }
+                        final int vxId = vxOrder2[j];
+
+                        String attr1Value = wg.getObjectValue(transaction1Attribute, vxId);
+                        for (int k = 0; k < vxPos && attr1Value != null && attr1Value.length() > 0; k++) {
+                            if (Thread.interrupted()) {
+                                throw new InterruptedException();
+                            }
+                            final int vx2Id = vxOrder2[k];
+
+                            String attr2Value = wg.getObjectValue(transaction2Attribute, vx2Id);
+                            if (attr1Value.equals(attr2Value) && vxId != vx2Id) {
+                                wg.addTransaction(vxId, vx2Id, false);
+                            }
+                        }
+                    }
+                }
+            }
+
+            interaction.notify(PluginNotificationLevel.WARNING, "Successfully added in " + numberSuccessful + " new transactions");
         }
     }
 }
