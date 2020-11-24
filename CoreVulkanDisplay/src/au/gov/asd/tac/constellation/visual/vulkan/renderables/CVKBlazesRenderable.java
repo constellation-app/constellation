@@ -99,7 +99,6 @@ import org.lwjgl.vulkan.VkWriteDescriptorSet;
 public class CVKBlazesRenderable extends CVKRenderable {
     // Resources recreated with the swap chain (dependent on the image count)    
     private LongBuffer pDescriptorSets = null; 
-    private List<Long> hitTestPipelines = null;
     private List<CVKCommandBuffer> displayCommandBuffers = null;
     private List<CVKCommandBuffer> hittestCommandBuffers = null;    
     private List<CVKBuffer> vertexBuffers = null;   
@@ -870,58 +869,7 @@ public class CVKBlazesRenderable extends CVKRenderable {
         if (VkFailed(ret)) { return ret; }
         
         return ret;
-    }
-    
-    @Override
-    public int RecordHitTestCommandBuffer(VkCommandBufferInheritanceInfo inheritanceInfo, int imageIndex){
-        cvkVisualProcessor.VerifyInRenderThread();
-        CVKAssertNotNull(CVKDevice.GetVkDevice());
-        CVKAssert(CVKDevice.GetCommandPoolHandle() != VK_NULL_HANDLE);
-        CVKAssertNotNull(cvkSwapChain);
-
-        int ret;     
-        
-        // Set the hit test flag in the shaders to true
-        UpdatePushConstantsHitTest(true);            
-
-        CVKCommandBuffer commandBuffer = hittestCommandBuffers.get(imageIndex);          
-        CVKAssertNotNull(commandBuffer);
-        CVKAssertNotNull(hitTestPipelines.get(imageIndex));
-
-        ret = commandBuffer.BeginRecordSecondary(VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT,
-                                                       inheritanceInfo);
-        if (VkFailed(ret)) { return ret; }
-
-        commandBuffer.SetViewPort(cvkSwapChain.GetWidth(), cvkSwapChain.GetHeight());
-        commandBuffer.SetScissor(cvkVisualProcessor.GetCanvas().GetCurrentSurfaceExtent());
-
-        commandBuffer.BindGraphicsPipeline(hitTestPipelines.get(imageIndex));
-        commandBuffer.BindVertexInput(vertexBuffers.get(imageIndex).GetBufferHandle());
-
-        // Push MV matrix to the vertex shader
-        commandBuffer.PushConstants(hPipelineLayout, 
-                                    MODEL_VIEW_PUSH_CONSTANT_STAGES, 
-                                    0, 
-                                    modelViewPushConstants);
-
-        // Push drawHitTest flag to the geometry shader
-        commandBuffer.PushConstants(hPipelineLayout, 
-                                    HIT_TEST_PUSH_CONSTANT_STAGES,
-                                    MODEL_VIEW_PUSH_CONSTANT_SIZE,
-                                    hitTestPushConstants);
-
-        commandBuffer.BindGraphicsDescriptorSets(hPipelineLayout, pDescriptorSets.get(imageIndex));
-
-        commandBuffer.Draw(GetVertexCount());
-
-        ret = commandBuffer.FinishRecord();
-        if (VkFailed(ret)) { return ret; }
-
-        // Reset hit test flag to false
-        UpdatePushConstantsHitTest(false);
-        
-        return ret;
-    }
+    }       
     
     private void DestroyCommandBuffers() {         
         if (null != displayCommandBuffers) {
@@ -1322,11 +1270,7 @@ public class CVKBlazesRenderable extends CVKRenderable {
             if (pipelinesState == CVK_RESOURCE_NEEDS_REBUILD) {
                 displayPipelines = new ArrayList<>(cvkSwapChain.GetImageCount());
                 ret = CreatePipelines(cvkSwapChain.GetRenderPassHandle(), displayPipelines);
-                if (VkFailed(ret)) { return ret; }
- 
-                hitTestPipelines = new ArrayList<>(cvkSwapChain.GetImageCount());
-                ret = CreatePipelines(cvkSwapChain.GetOffscreenRenderPassHandle(), hitTestPipelines);
-                if (VkFailed(ret)) { return ret; }                  
+                if (VkFailed(ret)) { return ret; }            
             }                                            
         }                                     
         
@@ -1358,15 +1302,18 @@ public class CVKBlazesRenderable extends CVKRenderable {
      private Vertex[] BuildVertexArray(final VisualAccess access, int first, int last) {
         final int newVertexCount = (last - first) + 1;
         if (newVertexCount > 0) {
-            Vertex vertices[] = new Vertex[newVertexCount];            
+            List<Vertex> vertices = new ArrayList<>();
             for (int pos = first; pos <= last; ++pos) {  
-                vertices[pos] = new Vertex(access.getBlazeColor(pos),
-                                           access.getVertexVisibility(pos),
-                                           pos,
-                                           access.getBlazeAngle(pos));
+                if (access.getBlazed(pos)) {
+                    vertices.add(new Vertex(access.getBlazeColor(pos),
+                                            access.getVertexVisibility(pos),
+                                            pos,
+                                            access.getBlazeAngle(pos)));
+                }
             }            
             
-            return vertices;
+            Vertex[] verticesCopy = new Vertex[vertices.size()];
+            return vertices.toArray(verticesCopy);
         } else {
             return null;
         } 
@@ -1415,23 +1362,24 @@ public class CVKBlazesRenderable extends CVKRenderable {
     }      
     
     public CVKRenderUpdateTask TaskUpdateBlazes(final VisualChange change, final VisualAccess access) {
-        //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
-        // If we have had an update task called before a rebuild task we first have to build
-        // the staging buffer.  Rebuild also if we our vertex count has somehow changed.
-        final boolean rebuildRequired = cvkVertexStagingBuffer == null || 
-                                        access.getVertexCount() * Vertex.BYTES != cvkVertexStagingBuffer.GetBufferSize() || 
-                                        change.isEmpty();
+        //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//                                  
         final int changedVerticeRange[];
         final Vertex vertices[];
-        if (rebuildRequired) {
-            GetLogger().fine("TaskUpdateBlazes frame %d: all (%d) verts", cvkVisualProcessor.GetFrameNumber(), access.getVertexCount());
+        if (cvkVertexStagingBuffer == null || change.isEmpty()) {            
             vertices = BuildVertexArray(access, 0, access.getVertexCount() - 1);
             changedVerticeRange = null;
         } else {
-            changedVerticeRange = change.getRange();
-            GetLogger().fine("TaskUpdateBlazes frame %d: %d verts", cvkVisualProcessor.GetFrameNumber(), (changedVerticeRange[1] - changedVerticeRange[0]) + 1);
+            changedVerticeRange = change.getRange();            
             vertices = BuildVertexArray(access, changedVerticeRange[0], changedVerticeRange[1]);         
         }
+        
+        GetLogger().fine("TaskUpdateBlazes frame %d: (%d) blazed verts", cvkVisualProcessor.GetFrameNumber(), vertices.length);
+        
+        // We have to enumerate the vertices to see which are blazed before we can compare the old and new buffer sizes
+        final boolean rebuildRequired = cvkVertexStagingBuffer == null ||
+                                        change.isEmpty() || 
+                                        vertices.length * Vertex.BYTES != cvkVertexStagingBuffer.GetBufferSize();   
+   
         
         //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.ProcessRenderTasks) ===//
         return () -> {

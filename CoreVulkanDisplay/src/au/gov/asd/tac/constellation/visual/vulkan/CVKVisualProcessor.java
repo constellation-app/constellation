@@ -145,9 +145,9 @@ public class CVKVisualProcessor extends VisualProcessor {
             cvkLoops = new CVKLoopsRenderable(this);
             cvkCanvas.AddRenderable(cvkLoops);            
             cvkIconLabels = new CVKIconLabelsRenderable(this);
-            cvkBlazes = new CVKBlazesRenderable(this);
-            cvkCanvas.AddRenderable(cvkBlazes);
             cvkCanvas.AddRenderable(cvkIconLabels);
+            cvkBlazes = new CVKBlazesRenderable(this);            
+            cvkCanvas.AddRenderable(cvkBlazes);            
             cvkLinkLabels = new CVKLinkLabelsRenderable(this);
             cvkCanvas.AddRenderable(cvkLinkLabels);            
             cvkNewLine = new CVKNewLineRenderable(this);

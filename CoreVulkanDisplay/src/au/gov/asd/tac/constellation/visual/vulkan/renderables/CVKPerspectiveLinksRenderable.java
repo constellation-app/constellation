@@ -650,12 +650,23 @@ public class CVKPerspectiveLinksRenderable extends CVKRenderable {
     
     @Override
     public boolean NeedsDisplayUpdate() { 
+        // Race condition: icons owns the position buffer and the update task (on
+        // the visual processor thread) may not yet be complete.  If this happens
+        // before the first update is finished icons will have a vertexCount of 
+        // 0 so it won't be able to create the position buffer yet.  If we can't
+        // get a handle to the current position buffer then we just skip updating
+        // until we can.
+        if (cvkVisualProcessor.GetPositionBufferHandle() == VK_NULL_HANDLE) {
+            return false;
+        } 
+        
         if (hPositionBuffer != cvkVisualProcessor.GetPositionBufferHandle() ||
             hPositionBufferView != cvkVisualProcessor.GetPositionBufferViewHandle()) {
             if (descriptorSetsState != CVK_RESOURCE_NEEDS_REBUILD) {
                 descriptorSetsState = CVK_RESOURCE_NEEDS_UPDATE;
             }
-        }        
+        }                      
+        
 //!! Do we need to track the UBO and vertex states of links some how?
 // Could change renderer to cache the results of NeedsDisplayUpdate and use that
 // to decide which renderables to call DisplayUpdate on.  This would allow

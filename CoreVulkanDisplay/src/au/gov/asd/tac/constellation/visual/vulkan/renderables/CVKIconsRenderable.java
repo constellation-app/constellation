@@ -749,6 +749,8 @@ public class CVKIconsRenderable extends CVKRenderable {
         CVKAssertNotNull(cvkSwapChain);
         CVKAssertNotNull(cvkVertexUBStagingBuffer);
         CVKAssertNotNull(vertexUniformBuffers);
+        CVKAssertNotNull(cvkVisualProcessor);
+        CVKAssertNotNull(cvkVisualProcessor.getDisplayCamera());
         CVKAssert(vertexUniformBuffers.size() > 0);
         
         int ret = VK_SUCCESS;
