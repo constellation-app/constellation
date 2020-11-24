@@ -56,6 +56,7 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
 import au.gov.asd.tac.constellation.utilities.visual.VisualOperation;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
+import com.google.common.primitives.Ints;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -78,6 +79,7 @@ import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
+import org.apache.commons.collections4.CollectionUtils;
 import org.openide.util.Lookup;
 
 /**
@@ -318,14 +320,14 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
         operationQueue.add(withOperation == null ? cameraChange : cameraChange.join(withOperation));
     }
 
-    private void scheduleXYZChangeOperation(final int vertexCount) {
+    private void scheduleXYZChangeOperation(final int[] verticiesMoved) {
         operationQueue.add(manager.constructMultiChangeOperation(Arrays.asList(
-                new VisualChangeBuilder(VisualProperty.VERTEX_X).forItems(vertexCount).withId(currentXYZChangeIds[0]).build(),
-                new VisualChangeBuilder(VisualProperty.VERTEX_Y).forItems(vertexCount).withId(currentXYZChangeIds[1]).build(),
-                new VisualChangeBuilder(VisualProperty.VERTEX_Z).forItems(vertexCount).withId(currentXYZChangeIds[2]).build()
+                new VisualChangeBuilder(VisualProperty.VERTEX_X).forItems(verticiesMoved).withId(currentXYZChangeIds[0]).build(),
+                new VisualChangeBuilder(VisualProperty.VERTEX_Y).forItems(verticiesMoved).withId(currentXYZChangeIds[1]).build(),
+                new VisualChangeBuilder(VisualProperty.VERTEX_Z).forItems(verticiesMoved).withId(currentXYZChangeIds[2]).build()
         )));
     }
-
+    
     /**
      * Respond to a key press event on the graph. This will respond to keys that
      * interact directly with the graph's visuals, such as W,A,S,D to pan. Most
@@ -973,14 +975,13 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
         List<Integer> selectedIds = new ArrayList<>();
         final int vertexSelctedAttribute = VisualConcept.VertexAttribute.SELECTED.get(rg);
         if (vertexSelctedAttribute != Graph.NOT_FOUND) {
-            for (int position = 0; position < rg.getVertexCount(); position++) {
-                final int vertexId = rg.getVertex(position);
+            rg.vertexStream().forEach(vertexId -> {
                 if (rg.getBooleanValue(vertexSelctedAttribute, vertexId)) {
                     selectedIds.add(vertexId);
                 }
-            }
+            });
         }
-
+        
         final int hitId = eventState.getCurrentHitId();
         if (eventState.getCurrentHitType().equals(HitType.VERTEX) && !selectedIds.contains(hitId)) {
             selectedIds.add(hitId);
@@ -1007,13 +1008,21 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
 
         final Vector3f delta = visualInteraction.convertTranslationToDrag(camera, position, from, to);
 
+        final int xAttribute = VisualConcept.VertexAttribute.X.get(wg);
+        final int yAttribute = VisualConcept.VertexAttribute.Y.get(wg);
+        final int zAttribute = VisualConcept.VertexAttribute.Z.get(wg);
+        final int x2Attribute = VisualConcept.VertexAttribute.X2.get(wg);
+        final int y2Attribute = VisualConcept.VertexAttribute.Y2.get(wg);
+        final int z2Attribute = VisualConcept.VertexAttribute.Z2.get(wg);
+        final int cameraAttribute = VisualConcept.GraphAttribute.CAMERA.get(wg);
+        
         draggedNodeIds.forEach(vertexId -> {
-            final Vector3f currentPos = VisualGraphUtilities.getMixedVertexCoordinates(wg, vertexId);
+            final Vector3f currentPos = VisualGraphUtilities.getMixedVertexCoordinates(wg, vertexId, xAttribute, x2Attribute, yAttribute, y2Attribute, zAttribute, z2Attribute, cameraAttribute);
             currentPos.add(delta);
-            VisualGraphUtilities.setVertexCoordinates(wg, currentPos, vertexId);
+            VisualGraphUtilities.setVertexCoordinates(wg, currentPos, vertexId, xAttribute, yAttribute, zAttribute);
         });
 
-        scheduleXYZChangeOperation(wg.getVertexCount());
+        scheduleXYZChangeOperation(Ints.toArray(draggedNodeIds));
     }
 
     private void performPointSelection(final boolean toggleSelection, final boolean clearSelection, final GraphElementType elementType, final int elementId) {
@@ -1095,7 +1104,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
             final List<String> items = pmp.getItems(rg, elementType, clickedId);
             if (!items.isEmpty()) {
                 final List<String> menuPath = pmp.getMenuPath(elementType);
-                if (menuPath == null || menuPath.isEmpty()) {
+                if (CollectionUtils.isEmpty(menuPath)) {
                     items.forEach(item -> {
                         popup.add(new AbstractAction(item) {
                             @Override

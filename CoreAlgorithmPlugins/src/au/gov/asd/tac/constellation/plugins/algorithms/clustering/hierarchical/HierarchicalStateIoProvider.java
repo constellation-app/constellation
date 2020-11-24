@@ -22,8 +22,8 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.io.AbstractGraphIOProvider;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteReader;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteWriter;
-import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -107,11 +107,8 @@ public class HierarchicalStateIoProvider extends AbstractGraphIOProvider {
 
             final ArrayNode groupsNode = (ArrayNode) jnode.get("groups");
             for (final JsonNode jn : groupsNode) {
-                final FastNewman.Group group;
-                if (jn.isNull()) {
-                    group = null;
-                } else {
-                    group = new FastNewman.Group();
+                if (!jn.isNull()) {
+                    final FastNewman.Group group = new FastNewman.Group();
                     final int jsonId = jn.get("vertex").asInt();
                     group.setVertex(vertexMap.get(jsonId));
                     group.setMergeStep(jn.get("merge_step").asInt());

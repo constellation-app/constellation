@@ -37,7 +37,7 @@ import org.openide.util.NbBundle.Messages;
         surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Arrange", position = 1400),
-    @ActionReference(path = "Shortcuts", name = "C-A-L")
+    @ActionReference(path = "Shortcuts", name = "C-A-A")
 })
 @Messages("CTL_SpectralArrangementAction=Spectral 3D")
 public class SpectralArrangementAction extends AbstractAction {

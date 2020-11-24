@@ -20,6 +20,7 @@ import static org.lwjgl.vulkan.VK10.*;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import au.gov.asd.tac.constellation.utilities.glyphs.GlyphManager;
 import au.gov.asd.tac.constellation.utilities.glyphs.GlyphManagerBI;
+import au.gov.asd.tac.constellation.utilities.glyphs.GlyphStreamContext;
 import au.gov.asd.tac.constellation.utilities.glyphs.LabelFontsPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3i;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
@@ -304,8 +305,8 @@ public class CVKGlyphTextureAtlas {
     
     // ========================> Helpers <======================== \\
     
-    public void RenderTextAsLigatures(final String text, GlyphManager.GlyphStream glyphStream) { 
-        glyphManager.renderTextAsLigatures(text, glyphStream);
+    public void RenderTextAsLigatures(final String text, GlyphManager.GlyphStream glyphStream, GlyphStreamContext context) { 
+        glyphManager.renderTextAsLigatures(text, glyphStream, context);
     }
     
     public float GetWidthScalingFactor() { return glyphManager.getWidthScalingFactor(); }

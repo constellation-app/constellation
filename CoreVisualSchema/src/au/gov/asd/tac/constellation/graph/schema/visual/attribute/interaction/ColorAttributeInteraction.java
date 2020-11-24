@@ -23,6 +23,7 @@ import java.util.List;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -47,7 +48,7 @@ public class ColorAttributeInteraction extends AbstractAttributeInteraction<Cons
         ConstellationColor colorValue = (ConstellationColor) value;
 
         String strValue = colorValue.getName();
-        if (strValue == null || strValue.isEmpty()) {
+        if (StringUtils.isBlank(strValue)) {
             strValue = colorValue.getHtmlColor();
         }
         return strValue;

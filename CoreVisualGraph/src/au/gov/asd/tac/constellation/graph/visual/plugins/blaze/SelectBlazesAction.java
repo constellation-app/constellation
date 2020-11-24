@@ -30,8 +30,8 @@ import org.openide.util.NbBundle;
  */
 @ActionID(category = "Selection", id = "au.gov.asd.tac.constellation.functionality.blaze.SelectBlazesAction")
 @ActionRegistration(displayName = "#CTL_SelectBlazesAction", iconBase = "au/gov/asd/tac/constellation/graph/visual/plugins/blaze/resources/selectblazes.png", surviveFocusChange = true)
-@NbBundle.Messages("CTL_SelectBlazesAction=Select Blazes")
 @ActionReference(path = "Menu/Selection", position = 450, separatorBefore = 449)
+@NbBundle.Messages("CTL_SelectBlazesAction=Select Blazes")
 public class SelectBlazesAction extends SimplePluginAction {
 
     public SelectBlazesAction(GraphNode context) {

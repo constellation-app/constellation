@@ -38,9 +38,15 @@ import java.io.OutputStream;
  * <p>
  * All services are accessed via RestServiceServlet; see that for more details.
  *
+ * This also stores status codes that are not available in the HttpURLConnection
+ * class.
+ *
  * @author algol
  */
 public abstract class RestService {
+
+    // Status codes that are not available in the HttpURLConnection class
+    public static final int HTTP_UNPROCESSABLE_ENTITY = 422;
 
     /**
      * The name of the service as it appears in the URL to be called.

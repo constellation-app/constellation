@@ -15,8 +15,6 @@ package au.gov.asd.tac.constellation.graph.node;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
@@ -91,7 +89,7 @@ public class MiscNGTest {
             Assert.fail("Nothing was interrupted.");
         } catch (PluginException ex) {
             Assert.fail("There shouldn't be a plugin exception.");
-        } catch (RuntimeException ex){
+        } catch (RuntimeException ex) {
             final boolean containsIllegalArgumentException = ex.getLocalizedMessage().contains("IllegalArgumentException: Attempt to create transaction to destination vertex that does not exist");
             Assert.assertTrue(containsIllegalArgumentException);
         }

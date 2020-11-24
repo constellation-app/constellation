@@ -145,12 +145,12 @@ public final class GlyphRectangleBuffer {
     }
 
     public void reset() {
-        
+
         // Start with room for an arbitrary number of rectangles
         // so we don't have to grow the array too quickly.
         //
         rectTextureCoordinates = new float[256 * FLOATS_PER_RECT];
-        
+
         rectBuffers.clear();
         memory.clear();
         if (g2d != null) {
@@ -162,8 +162,7 @@ public final class GlyphRectangleBuffer {
 
         newRectBuffer();
     }
-    
-        
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -205,11 +204,11 @@ public final class GlyphRectangleBuffer {
         }
         if (this.rectBuffers.size() != other.rectBuffers.size()) {
             return false;
-        } 
+        }
         if (!Arrays.equals(this.rectTextureCoordinates, other.rectTextureCoordinates)) {
             return false;
         }
-        for (int i = 0; this.rectBuffers.size()>i ; i++) {
+        for (int i = 0; this.rectBuffers.size() > i; i++) {
             if (!bufferedImagesEqual(this.rectBuffers.get(i), other.rectBuffers.get(i))) {
                 return false;
             }
@@ -233,8 +232,6 @@ public final class GlyphRectangleBuffer {
         hash = 47 * hash + this.height;
         return hash;
     }
-    
-    
 
     /**
      * Add a rectangle containing an image to the buffers.
@@ -259,14 +256,15 @@ public final class GlyphRectangleBuffer {
         //
         final int hashCode = Arrays.hashCode(img.getRGB(0, 0, w, h, null, 0, w));
 
-        final int rectIndex;
-        if (memory.containsKey(hashCode)) {
-            // We've seen this image before: return the index of the existing image.
-            //
+        Integer rectIndex = memory.putIfAbsent(hashCode, memory.size());
+        if (rectIndex == null) {
             rectIndex = memory.get(hashCode);
-        } else {
-            // This is a new image. Add it to the buffer, creating a new buffer if necessary.
-            //
+            addImageToBuffer(img, rectIndex, extra, w, h);
+        }
+        return rectIndex;
+    }
+    
+    private synchronized int addImageToBuffer(final BufferedImage img, final int rectIndex, final int extra, final int w, final int h) {
             if ((x + w + PADDING) >= width) {
                 newRectLine();
             }
@@ -280,21 +278,17 @@ public final class GlyphRectangleBuffer {
             g2d.drawImage(img, x, y, null);
 //            g2d.drawImage(img, IDENTITY_OP, x, y);
 
-            rectIndex = putImageInMemory(hashCode, extra, w, h);
+            putImageInRectTextureCoordinates(rectIndex, extra, w, h);
 
             x += w + PADDING;
             maxHeight = Math.max(h, maxHeight);
 
             rectangleCount++;
-        }
-
-        return rectIndex;
+            
+            return rectIndex;
     }
-    
-    private synchronized int putImageInMemory(final int hashCode, final int extra , final int w, final int h) {
-        // Add the image to memory
-        int rectIndex = memory.size();
-        memory.put(hashCode, rectIndex);
+            
+    private int putImageInRectTextureCoordinates(int rectIndex, final int extra, final int w, final int h) {
 
         final int ptr = rectIndex * FLOATS_PER_RECT;
 
@@ -313,7 +307,7 @@ public final class GlyphRectangleBuffer {
         rectTextureCoordinates[ptr + 1] = (y + extra) / (float) height;
         rectTextureCoordinates[ptr + 2] = (w - extra * 2) / (float) width;
         rectTextureCoordinates[ptr + 3] = (h - extra * 2) / (float) height;
-        
+
         return rectIndex;
     }
 
@@ -346,19 +340,20 @@ public final class GlyphRectangleBuffer {
         y += maxHeight + PADDING;
         maxHeight = 0;
     }
-    
+
     private boolean bufferedImagesEqual(BufferedImage img1, BufferedImage img2) {
-    // Code copied from https://stackoverflow.com/questions/15305037/java-compare-one-bufferedimage-to-another
-    if (img1.getWidth() == img2.getWidth() && img1.getHeight() == img2.getHeight()) {
-        for (int xCoord = 0; xCoord < img1.getWidth(); xCoord++) {
-            for (int yCoord = 0; yCoord < img1.getHeight(); yCoord++) {
-                if (img1.getRGB(xCoord, yCoord) != img2.getRGB(xCoord, yCoord))
-                    return false;
+        // Code copied from https://stackoverflow.com/questions/15305037/java-compare-one-bufferedimage-to-another
+        if (img1.getWidth() == img2.getWidth() && img1.getHeight() == img2.getHeight()) {
+            for (int xCoord = 0; xCoord < img1.getWidth(); xCoord++) {
+                for (int yCoord = 0; yCoord < img1.getHeight(); yCoord++) {
+                    if (img1.getRGB(xCoord, yCoord) != img2.getRGB(xCoord, yCoord)) {
+                        return false;
+                    }
+                }
             }
+        } else {
+            return false;
         }
-    } else {
-        return false;
+        return true;
     }
-    return true;
-}
 }

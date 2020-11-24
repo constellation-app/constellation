@@ -35,6 +35,7 @@ import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import org.apache.commons.io.FilenameUtils;
 import org.openide.util.Utilities;
 
 /**
@@ -140,11 +141,7 @@ public final class SharedDrawable {
         if (glyphManager != null) {
             Platform.runLater(() -> {
                 String baseFileName = baseFile.getAbsolutePath();
-                final int extensionStart = baseFileName.lastIndexOf('.');
-                if (extensionStart > 0) {
-                    baseFileName = baseFileName.substring(0, extensionStart);
-                }
-
+                baseFileName = FilenameUtils.removeExtension(baseFileName);
                 for (int page = 0; page < glyphManager.getGlyphPageCount(); page++) {
                     final File outputFile = new File(baseFileName + SeparatorConstants.UNDERSCORE + page + ".png");
                     try (final OutputStream out = new FileOutputStream(outputFile)) {

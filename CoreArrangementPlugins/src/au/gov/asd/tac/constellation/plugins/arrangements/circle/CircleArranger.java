@@ -20,8 +20,8 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
-import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
 import au.gov.asd.tac.constellation.plugins.arrangements.SetRadiusForArrangement;
+import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
 
 /**
  *

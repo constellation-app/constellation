@@ -29,6 +29,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.DefaultPluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.file.ConstellationInstalledFileLocator;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -147,7 +148,7 @@ public class ScriptingViewPane extends JPanel {
             try (final BufferedReader reader = new BufferedReader(new FileReader(new File(GET_STARTED_FILE.getPath())))) {
                 StringBuilder getStartedText = new StringBuilder();
                 reader.lines().forEach(line -> {
-                    getStartedText.append(line).append("\n");
+                    getStartedText.append(line).append(SeparatorConstants.NEWLINE);
                 });
                 scriptEditor.setText(getStartedText.toString());
             } catch (IOException ex) {
@@ -289,7 +290,7 @@ public class ScriptingViewPane extends JPanel {
                                 if (s == null) {
                                     break;
                                 }
-                                b.append(s).append("\n");
+                                b.append(s).append(SeparatorConstants.NEWLINE);
                             }
 
                             SwingUtilities.invokeLater(() -> {

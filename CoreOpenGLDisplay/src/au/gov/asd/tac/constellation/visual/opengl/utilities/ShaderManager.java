@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.visual.opengl.utilities;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import com.jogamp.opengl.GL3;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -121,7 +122,7 @@ public class ShaderManager {
                     key = line.substring(0, line.length() - 1).trim();
                     value = "";
                 } else if (line.length() != 0) {
-                    value += line + "\n";
+                    value += line + SeparatorConstants.NEWLINE;
                 }
             }
         }

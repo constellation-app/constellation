@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.support;
 
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,7 +24,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.JFileChooser;
-import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -36,7 +36,8 @@ import org.openide.windows.WindowManager;
         id = "au.gov.asd.tac.constellation.utilities.support.SupportPackageAction"
 )
 @ActionRegistration(
-        displayName = "#CTL_SupportPackageAction"
+        displayName = "#CTL_SupportPackageAction",
+        iconBase = "au/gov/asd/tac/constellation/utilities/support/supportPackage.png"
 )
 @ActionReference(path = "Menu/Help", position = 920)
 @Messages({
@@ -59,11 +60,9 @@ public final class SupportPackageAction implements ActionListener {
             final Thread supportPackageThread = new Thread(() -> {
                 try {
                     supportPackage.createSupportPackage(new File(SupportPackage.getUserLogDirectory()), destination);
-                    final NotifyDescriptor nd = new NotifyDescriptor.Message("Support package saved successfully to " + destination.getPath(), NotifyDescriptor.INFORMATION_MESSAGE);
-                    DialogDisplayer.getDefault().notify(nd);
+                    NotifyDisplayer.display("Support package saved successfully to " + destination.getPath(), NotifyDescriptor.INFORMATION_MESSAGE);
                 } catch (IOException ex) {
-                    final NotifyDescriptor nd = new NotifyDescriptor.Message("Failed to save support package. The error was " + ex.getLocalizedMessage(), NotifyDescriptor.ERROR_MESSAGE);
-                    DialogDisplayer.getDefault().notify(nd);
+                    NotifyDisplayer.display("Failed to save support package. The error was " + ex.getLocalizedMessage(), NotifyDescriptor.ERROR_MESSAGE);
                 }
             });
             supportPackageThread.setName("Support Package Thread");

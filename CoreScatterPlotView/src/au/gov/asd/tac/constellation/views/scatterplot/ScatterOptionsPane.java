@@ -95,18 +95,13 @@ public class ScatterOptionsPane extends BorderPane {
     public ScatterOptionsPane(ScatterPlotPane parent) {
         this.scatterPlot = parent;
 
-        this.cellFactory = new Callback<ListView<Attribute>, ListCell<Attribute>>() {
+        this.cellFactory = (ListView<Attribute> p) -> new ListCell<Attribute>() {
             @Override
-            public ListCell<Attribute> call(ListView<Attribute> p) {
-                return new ListCell<Attribute>() {
-                    @Override
-                    public void updateItem(Attribute item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (item != null) {
-                            this.setText(item.getName());
-                        }
-                    }
-                };
+            public void updateItem(Attribute item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item != null) {
+                    this.setText(item.getName());
+                }
             }
         };
 

@@ -15,6 +15,10 @@
  */
 package au.gov.asd.tac.constellation.utilities.glyphs;
 
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import au.gov.asd.tac.constellation.utilities.glyphs.ConstellationLabelFonts;
+import au.gov.asd.tac.constellation.utilities.glyphs.FontInfo;
+import au.gov.asd.tac.constellation.utilities.glyphs.GlyphManagerBI;
 import java.util.prefs.Preferences;
 import org.openide.util.NbPreferences;
 
@@ -46,7 +50,7 @@ public class LabelFontsPreferenceKeys {
 
     public static FontInfo[] getFontInfo() {
         final String text = getFontText();
-        final FontInfo.ParsedFontInfo pfi = FontInfo.parseFontInfo(text.split("\n"), GlyphManagerBI.DEFAULT_FONT_SIZE);
+        final FontInfo.ParsedFontInfo pfi = FontInfo.parseFontInfo(text.split(SeparatorConstants.NEWLINE), GlyphManagerBI.DEFAULT_FONT_SIZE);
 
         return pfi.fontsInfo;
     }

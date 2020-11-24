@@ -43,7 +43,7 @@ public class RemoveUnusedAttributesPlugin extends SimpleEditPlugin implements Da
 
     @Override
     public String getName() {
-        return "Remove Unsued Attributes";
+        return "Remove Unused Attributes";
     }
 
     @Override
@@ -63,40 +63,42 @@ public class RemoveUnusedAttributesPlugin extends SimpleEditPlugin implements Da
 
     @Override
     protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-        final Set<GraphElementType> graphElements = new HashSet<>();
-        graphElements.add(GraphElementType.VERTEX);
-        graphElements.add(GraphElementType.TRANSACTION);
-        final Set<Integer> nullSet = new HashSet<>();
+        if (graph.getVertexCount() > 0) {
+            final Set<GraphElementType> graphElements = new HashSet<>();
+            graphElements.add(GraphElementType.VERTEX);
+            graphElements.add(GraphElementType.TRANSACTION);
+            final Set<Integer> nullSet = new HashSet<>();
 
-        for (final GraphElementType element : graphElements) {
-            final int elementCount = (element == GraphElementType.VERTEX) ? graph.getVertexCount() : graph.getTransactionCount();
-            final int elementAttributeCount = graph.getAttributeCount(element);
+            for (final GraphElementType element : graphElements) {
+                final int elementCount = (element == GraphElementType.VERTEX) ? graph.getVertexCount() : graph.getTransactionCount();
+                final int elementAttributeCount = graph.getAttributeCount(element);
 
-            for (int i = 0; i < elementAttributeCount; i++) {
-                final int attributeId = graph.getAttribute(element, i);
+                for (int i = 0; i < elementAttributeCount; i++) {
+                    final int attributeId = graph.getAttribute(element, i);
 
-                if (graph.isPrimaryKey(attributeId)) {
-                    continue;
-                }
+                    if (graph.isPrimaryKey(attributeId)) {
+                        continue;
+                    }
 
-                boolean hasValue = false;
+                    boolean hasValue = false;
 
-                for (int j = 0; j < elementCount; j++) {
-                    final int elementId = (element == GraphElementType.VERTEX) ? graph.getVertex(j) : graph.getTransaction(j);
-                    if (graph.getStringValue(attributeId, elementId) != null) {
-                        hasValue = true;
-                        break;
+                    for (int j = 0; j < elementCount; j++) {
+                        final int elementId = (element == GraphElementType.VERTEX) ? graph.getVertex(j) : graph.getTransaction(j);
+                        if (graph.getStringValue(attributeId, elementId) != null) {
+                            hasValue = true;
+                            break;
+                        }
+                    }
+
+                    if (!hasValue) {
+                        nullSet.add(attributeId);
                     }
                 }
-
-                if (!hasValue) {
-                    nullSet.add(attributeId);
-                }
             }
-        }
 
-        for (final int attribute : nullSet) {
-            graph.removeAttribute(attribute);
+            for (final int attribute : nullSet) {
+                graph.removeAttribute(attribute);
+            }
         }
     }
 }

@@ -16,7 +16,10 @@
 package au.gov.asd.tac.constellation.graph.attribute;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType;
+import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
+import au.gov.asd.tac.constellation.graph.value.variables.IntVariable;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalConstants;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
 import java.time.LocalTime;
@@ -45,7 +48,7 @@ public final class TimeAttributeDescription extends AbstractAttributeDescription
     public static final int ATTRIBUTE_VERSION = 1;
     public static final Class<Integer> NATIVE_CLASS = Integer.class;
     public static final NativeAttributeType NATIVE_TYPE = NativeAttributeType.INT;
-    public static final int DEFAULT_VALUE = Integer.MIN_VALUE;
+    public static final int DEFAULT_VALUE = 0;
 
     private int[] data = new int[0];
     private int defaultValue = DEFAULT_VALUE;
@@ -85,7 +88,7 @@ public final class TimeAttributeDescription extends AbstractAttributeDescription
      * @return A Calendar representing the input datetime.
      */
     private int convertFromString(final String string) throws IllegalArgumentException {
-        if (StringUtils.isBlank(string)) {
+        if (StringUtils.isBlank(string) || String.valueOf(DEFAULT_VALUE).equals(string)) {
             return (int) getDefault();
         } else {
             try {
@@ -246,5 +249,25 @@ public final class TimeAttributeDescription extends AbstractAttributeDescription
     public void restoreData(final Object savedData) {
         final int[] sd = (int[]) savedData;
         data = Arrays.copyOf(sd, sd.length);
+    }
+
+    @Override
+    public Object createReadObject(IntReadable indexReadable) {
+        return (IntReadable) () -> data[indexReadable.readInt()];
+    }
+
+    @Override
+    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+        return new IntVariable() {
+            @Override
+            public int readInt() {
+                return data[indexReadable.readInt()];
+            }
+
+            @Override
+            public void writeInt(int value) {
+                graph.setIntValue(attribute, indexReadable.readInt(), value);
+            }
+        };
     }
 }

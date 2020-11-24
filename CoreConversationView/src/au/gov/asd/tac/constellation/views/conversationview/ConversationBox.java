@@ -136,17 +136,14 @@ public final class ConversationBox extends StackPane {
             tipsPane.setEnabled(showToolTip.isSelected());
         });
 
-        conversation.setSenderAttributeListener(new ConversationSenderAttributeListener() {
-            @Override
-            public void senderAttributesChanged(List<String> possibleSenderAttributes, List<String> senderAttributes) {
-                isAdjustingSenderLabels = true;
-                senderAttributesCombo.getCheckModel().clearChecks();
-                senderAttributesChoices.setAll(possibleSenderAttributes);
-                for (String senderAttribute : senderAttributes) {
-                    senderAttributesCombo.getCheckModel().check(senderAttribute);
-                }
-                isAdjustingSenderLabels = false;
+        conversation.setSenderAttributeListener((List<String> possibleSenderAttributes, List<String> senderAttributes) -> {
+            isAdjustingSenderLabels = true;
+            senderAttributesCombo.getCheckModel().clearChecks();
+            senderAttributesChoices.setAll(possibleSenderAttributes);
+            for (String senderAttribute : senderAttributes) {
+                senderAttributesCombo.getCheckModel().check(senderAttribute);
             }
+            isAdjustingSenderLabels = false;
         });
 
         senderAttributesCombo.getCheckModel().getCheckedItems().addListener((ListChangeListener.Change<? extends String> c) -> {

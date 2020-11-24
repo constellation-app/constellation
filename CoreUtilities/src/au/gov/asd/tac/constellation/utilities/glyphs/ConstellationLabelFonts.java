@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.glyphs;
 
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.List;
 import org.openide.util.Lookup;
 
@@ -49,7 +50,7 @@ public interface ConstellationLabelFonts {
     public default String getFontListString() {
         final StringBuilder fontList = new StringBuilder();
         getFontList().forEach(font -> {
-            fontList.append(font).append("\n");
+            fontList.append(font).append(SeparatorConstants.NEWLINE);
         });
         return fontList.toString();
     }

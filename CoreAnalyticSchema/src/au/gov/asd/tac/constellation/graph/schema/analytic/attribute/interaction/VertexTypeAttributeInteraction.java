@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.graph.schema.analytic.attribute.interaction;
 
-import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.VertexTypeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.AbstractAttributeInteraction;
+import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.VertexTypeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
 import org.openide.util.lookup.ServiceProvider;
 

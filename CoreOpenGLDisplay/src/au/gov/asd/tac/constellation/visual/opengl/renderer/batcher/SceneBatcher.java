@@ -17,9 +17,9 @@ package au.gov.asd.tac.constellation.visual.opengl.renderer.batcher;
 
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
-import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable.GLRenderableUpdateTask;
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
 import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
+import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable.GLRenderableUpdateTask;
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL3;
 import java.io.IOException;
@@ -90,8 +90,9 @@ public interface SceneBatcher {
      * @param access the VisualAccess object describing the data to be
      * visualised.
      * @return The GLUpdateTask to create this batch.
+     * @throws java.lang.InterruptedException
      */
-    public GLRenderableUpdateTask createBatch(final VisualAccess access);
+    public GLRenderableUpdateTask createBatch(final VisualAccess access) throws InterruptedException;
 
     @FunctionalInterface
     public static interface IntBufferOperation {

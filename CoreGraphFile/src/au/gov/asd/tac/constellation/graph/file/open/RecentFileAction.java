@@ -66,6 +66,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
@@ -289,7 +290,7 @@ public class RecentFileAction extends AbstractAction
      * @return error message or {@code null} on success.
      */
     private String openFile(final String path) {
-        if (path == null || path.length() == 0) {
+        if (StringUtils.isBlank(path)) {
             return OFMSG_PATH_IS_NOT_DEFINED;
         }
         File f = new File(path);

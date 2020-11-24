@@ -26,13 +26,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.geometry.Side;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -108,38 +106,26 @@ public class ConfigurationPane extends AnchorPane {
         final Tab tab = new Tab();
         tab.setGraphic(label);
 
-        tab.setOnClosed(new EventHandler<Event>() {
-            @Override
-            public void handle(Event event) {
-                importController.updateDisplayedAttributes();
-            }
+        tab.setOnClosed((Event event) -> {
+            importController.updateDisplayedAttributes();
         });
 
-        label.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                if (event.getClickCount() == 2) {
-                    final TextField field = new TextField(label.getText());
-                    field.setOnAction(new EventHandler<ActionEvent>() {
-                        @Override
-                        public void handle(ActionEvent event) {
-                            label.setText(field.getText());
-                            tab.setGraphic(label);
-                        }
-                    });
-                    field.focusedProperty().addListener(new ChangeListener<Boolean>() {
-                        @Override
-                        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                            if (!newValue) {
-                                label.setText(field.getText());
-                                tab.setGraphic(label);
-                            }
-                        }
-                    });
-                    tab.setGraphic(field);
-                    field.selectAll();
-                    field.requestFocus();
-                }
+        label.setOnMouseClicked((MouseEvent event) -> {
+            if (event.getClickCount() == 2) {
+                final TextField field = new TextField(label.getText());
+                field.setOnAction((ActionEvent event1) -> {
+                    label.setText(field.getText());
+                    tab.setGraphic(label);
+                });
+                field.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                    if (!newValue) {
+                        label.setText(field.getText());
+                        tab.setGraphic(label);
+                    }
+                });
+                tab.setGraphic(field);
+                field.selectAll();
+                field.requestFocus();
             }
         });
 
@@ -180,6 +166,7 @@ public class ConfigurationPane extends AnchorPane {
         for (final Tab tab : tabPane.getTabs()) {
             final RunPane runPane = (RunPane) tab.getContent();
             runPane.setSampleData(columnLabels, createTableRows(currentData));
+            runPane.refreshDataView();
         }
     }
 
@@ -221,6 +208,7 @@ public class ConfigurationPane extends AnchorPane {
         for (Tab tab : tabPane.getTabs()) {
             RunPane runPane = (RunPane) tab.getContent();
             runPane.setDisplayedAttributes(vertexAttributes, transactionAttributes, keys);
+            runPane.setAttributePaneHeight();
         }
     }
 

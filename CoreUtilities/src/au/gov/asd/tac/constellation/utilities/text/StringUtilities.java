@@ -37,19 +37,19 @@ public class StringUtilities {
      * A "\" is used to escape the specified characters, and is therefore also
      * escaped. There are no special characters: "\n" is just an escaped "n".
      *
-     * @param string The string to escape.
+     * @param unescapedString The unescapedString to escape.
      * @param characters The characters to be escaped.
      *
-     * @return An escaped string.
+     * @return An escaped unescapedString.
      */
-    public static String escape(final String string, final String characters) {
-        if (string == null) {
+    public static String escape(final String unescapedString, final String characters) {
+        if (unescapedString == null) {
             return null;
         }
 
         final StringBuilder buffer = new StringBuilder();
-        for (int i = 0; i < string.length(); i++) {
-            final String character = string.substring(i, i + 1);
+        for (int i = 0; i < unescapedString.length(); i++) {
+            final String character = unescapedString.substring(i, i + 1);
             if (characters.contains(character) || character.equals(ESCAPE_CHARACTER)) {
                 buffer.append(ESCAPE_CHARACTER);
             }
@@ -66,18 +66,18 @@ public class StringUtilities {
      * A "\" is used to escape the delimiter character, and is therefore also
      * escaped. There are no special characters: "\n" is just an escaped "n".
      *
-     * @param strings The list of strings to escape then join.
+     * @param unescapedStrings The list of strings to escape then join.
      * @param delimiter The join delimiter, treated as a single character.
      *
      * @return An escaped string.
      */
-    public static String escape(final List<String> strings, final String delimiter) {
-        if (strings == null) {
+    public static String escape(final List<String> unescapedStrings, final String delimiter) {
+        if (unescapedStrings == null) {
             return null;
         }
 
         final StringJoiner buffer = new StringJoiner(delimiter);
-        strings.forEach(string -> buffer.add(escape(string, delimiter)));
+        unescapedStrings.forEach(string -> buffer.add(escape(string, delimiter)));
 
         return buffer.toString();
     }
@@ -87,20 +87,20 @@ public class StringUtilities {
      * <p>
      * It is assumed that the escape character is "\".
      *
-     * @param string The string to unescape.
+     * @param escapedString The string to unescape.
      * @param characters The characters to be unescaped.
      *
-     * @return An unescaped string.
+     * @return An unescaped String.
      */
-    public static String unescape(final String string, final String characters) {
-        if (string == null) {
+    public static String unescape(final String escapedString, final String characters) {
+        if (escapedString == null) {
             return null;
         }
 
         final StringBuilder buffer = new StringBuilder();
         boolean escaped = false;
-        for (int i = 0; i < string.length(); i++) {
-            final String character = string.substring(i, i + 1);
+        for (int i = 0; i < escapedString.length(); i++) {
+            final String character = escapedString.substring(i, i + 1);
             if (escaped) {
                 buffer.append(character);
                 escaped = false;
@@ -112,8 +112,8 @@ public class StringUtilities {
         }
 
         if (escaped) {
-            // The string ends with a single escape, which shouldn't happen.
-            throw new IllegalArgumentException(String.format("Invalid escaped string '%s'", string));
+            // The escapedString ends with a single escape, which shouldn't happen.
+            throw new IllegalArgumentException(String.format("Invalid escaped string '%s'", escapedString));
         }
 
         return buffer.toString();
@@ -122,37 +122,37 @@ public class StringUtilities {
     /**
      * Split an escaped String into its unescaped parts.
      *
-     * @param string The string to be split.
+     * @param escapedString The String to be split.
      * @param delimiter The delimiter character(s) to split on.
      *
      * @return A list of unescaped strings.
      */
-    public static List<String> splitEscaped(final String string, final String delimiter) {
+    public static List<String> splitEscaped(final String escapedString, final String delimiter) {
         final List<String> splits = new ArrayList<>();
 
-        if (string == null) {
+        if (escapedString == null) {
             return splits;
         }
 
-        if (string.isEmpty()) {
+        if (escapedString.isEmpty()) {
             splits.add("");
         } else {
             int part0 = 0; // where does the current part begin?
             boolean escaped = false;
-            for (int i = 0; i < string.length(); i++) {
-                final String character = string.substring(i, i + 1);
+            for (int i = 0; i < escapedString.length(); i++) {
+                final String character = escapedString.substring(i, i + 1);
                 if (escaped) {
                     escaped = false;
                 } else if (character.equals(ESCAPE_CHARACTER)) {
                     escaped = true;
                 } else if (delimiter.contains(character)) {
-                    splits.add(unescape(string.substring(part0, i), delimiter));
+                    splits.add(unescape(escapedString.substring(part0, i), delimiter));
                     part0 = i + 1;
                 }
             }
 
-            if (part0 < string.length()) {
-                splits.add(unescape(string.substring(part0, string.length()), delimiter));
+            if (part0 < escapedString.length()) {
+                splits.add(unescape(escapedString.substring(part0, escapedString.length()), delimiter));
             }
         }
 
@@ -162,20 +162,20 @@ public class StringUtilities {
     /**
      * Remove the specified characters from the given string, if they exist. For
      * example, when you convert a {@link java.util.Collection} to a
-     * {@link String}, square brackets are added to the edges of the string
-     * which may not be wanted.
+     * {@link String}, square brackets are added to the edges of the
+     * originalString which may not be wanted.
      *
-     * @param string the string to be modified.
+     * @param originalString the String to be modified.
      * @param characters the characters to remove.
-     * @param trim only remove characters from the edges of the string.
-     * @return A string with characters removed.
+     * @param trim only remove characters from the edges of the originalString.
+     * @return A String with characters removed.
      */
-    public static String remove(final String string, final String characters, final boolean trim) {
-        if (string == null) {
+    public static String remove(final String originalString, final String characters, final boolean trim) {
+        if (originalString == null) {
             return null;
         }
 
-        String removedString = string;
+        String removedString = originalString;
         for (int i = 0; i < characters.length(); i++) {
             final String character = characters.substring(i, i + 1);
             if (trim) {
@@ -193,20 +193,20 @@ public class StringUtilities {
         return removedString;
     }
 
-    public static String camelCase(final String string) {
-        if (string == null) {
+    public static String camelCase(final String originalString) {
+        if (originalString == null) {
             return null;
         }
 
         final StringBuilder camelCaseString = new StringBuilder();
         boolean whitespaceDetected = false;
-        for (int i = 0; i < string.length(); i++) {
-            final String character = string.substring(i, i + 1);
+        for (int i = 0; i < originalString.length(); i++) {
+            final String character = originalString.substring(i, i + 1);
             if (i == 0 || whitespaceDetected) {
                 whitespaceDetected = false;
                 camelCaseString.append(character.toUpperCase());
             } else {
-                if (character.matches("\\s")) {
+                if (character.matches(SeparatorConstants.WHITESPACE)) {
                     whitespaceDetected = true;
                 }
                 camelCaseString.append(character.toLowerCase());
@@ -225,7 +225,7 @@ public class StringUtilities {
      * @param toSplitOn the characters to split on.
      * @return the labels string split into individual labels.
      */
-    public static List<String> splitLabelsWithEscapeCharacters(final String labelsString, Set<Character> toSplitOn) {
+    public static List<String> splitLabelsWithEscapeCharacters(final String labelsString, final Set<Character> toSplitOn) {
 
         // Split up the components of the graph labels and decorators string by
         // toSplitOn, checking for escaped toSplitOns in attribute names.
@@ -261,7 +261,7 @@ public class StringUtilities {
         if (items == null) {
             return null;
         }
-        StringBuilder quotedDelimitedString = new StringBuilder();
+        final StringBuilder quotedDelimitedString = new StringBuilder();
         items.forEach(item -> {
             if (item != null) {
                 quotedDelimitedString.append(quote);
@@ -273,31 +273,31 @@ public class StringUtilities {
         return quotedDelimitedString.toString();
     }
 
-    public static List<String> unquoteAndSplitString(final String string, final char delimiter) {
-        return unquoteAndSplitString(string, delimiter, '"', '\\');
+    public static List<String> unquoteAndSplitString(final String originalString, final char delimiter) {
+        return unquoteAndSplitString(originalString, delimiter, '"', '\\');
     }
 
-    public static List<String> unquoteAndSplitString(String string, final char delimiter, final char quote, final char escapeCharacter) {
+    public static List<String> unquoteAndSplitString(String originalString, final char delimiter, final char quote, final char escapeCharacter) {
         final List<String> strings = new ArrayList<>();
 
-        if (string == null) {
+        if (originalString == null) {
             return strings;
         }
 
-        while (!string.isEmpty()) {
+        while (!originalString.isEmpty()) {
             int delimiterIndex = -1;
             do {
-                delimiterIndex = string.indexOf(delimiter, delimiterIndex + 1);
-            } while (delimiterIndex > 0 && string.charAt(delimiterIndex - 1) != quote);
+                delimiterIndex = originalString.indexOf(delimiter, delimiterIndex + 1);
+            } while (delimiterIndex > 0 && originalString.charAt(delimiterIndex - 1) != quote);
             if (delimiterIndex == -1) {
-                throw new IllegalArgumentException("No unescaped delimiters found in remaining portion of string: " + string);
+                throw new IllegalArgumentException("No unescaped delimiters found in remaining portion of string: " + originalString);
             }
             if (delimiterIndex == 0) {
                 strings.add(null);
             } else {
-                strings.add(unescapeString(string.substring(1, delimiterIndex - 1), new char[]{delimiter, quote}, escapeCharacter));
+                strings.add(unescapeString(originalString.substring(1, delimiterIndex - 1), new char[]{delimiter, quote}, escapeCharacter));
             }
-            string = string.substring(delimiterIndex + 1);
+            originalString = originalString.substring(delimiterIndex + 1);
         }
         return strings;
     }
@@ -306,52 +306,52 @@ public class StringUtilities {
      * Returns the supplied string with all characters in the supplied list
      * escaped with backslashes.
      *
-     * @param string The String to escape.
+     * @param originalString The String to escape.
      * @param metaCharacters An array of characters to be escaped
      * @return the supplied string with all characters in the supplied list
      * escaped with backslashes.
      */
-    public static String escapeString(String string, char[] metaCharacters) {
-        return escapeString(string, metaCharacters, '\\');
+    public static String escapeString(final String originalString, final char[] metaCharacters) {
+        return escapeString(originalString, metaCharacters, '\\');
     }
 
-    public static String escapeString(String string, char[] metaCharacters, char escapeCharacter) {
-        if (string == null) {
+    public static String escapeString(String originalString, final char[] metaCharacters, final char escapeCharacter) {
+        if (originalString == null) {
             return null;
         }
         final String escape = String.valueOf(escapeCharacter);
         final String escapedEscape = escape + escape;
-        string = string.replace(escape, escapedEscape);
-        for (char c : metaCharacters) {
-            string = string.replace(Character.toString(c), escape + Character.toString(c));
+        originalString = originalString.replace(escape, escapedEscape);
+        for (final char c : metaCharacters) {
+            originalString = originalString.replace(Character.toString(c), escape + Character.toString(c));
         }
-        return string;
+        return originalString;
     }
 
     /**
      * Returns the supplied string with all characters in the supplied list
      * unescaped with backslashes.
      *
-     * @param string The string to unescape
+     * @param escapedString The string to unescape
      * @param metaCharacters An array of characters to be unescaped
      * @return the supplied string with all characters in the supplied list
      * unescaped with backslashes.
      */
-    public static String unescapeString(String string, char[] metaCharacters) {
-        return unescapeString(string, metaCharacters, '\\');
+    public static String unescapeString(final String escapedString, final char[] metaCharacters) {
+        return unescapeString(escapedString, metaCharacters, '\\');
     }
 
-    public static String unescapeString(String string, char[] metaCharacters, char escapeCharacter) {
-        if (string == null) {
+    public static String unescapeString(String escapedString, final char[] metaCharacters, final char escapeCharacter) {
+        if (escapedString == null) {
             return null;
         }
         final String escape = String.valueOf(escapeCharacter);
         final String escapedEscape = escape + escape;
-        string = string.replace(escapedEscape, escape);
-        for (char c : metaCharacters) {
-            string = string.replace(escape + Character.toString(c), Character.toString(c));
+        escapedString = escapedString.replace(escapedEscape, escape);
+        for (final char c : metaCharacters) {
+            escapedString = escapedString.replace(escape + Character.toString(c), Character.toString(c));
         }
-        return string;
+        return escapedString;
     }
 
     /**
@@ -359,24 +359,24 @@ public class StringUtilities {
      * {@link java.util.Collection} to a {@link String}, square brackets are
      * added to the string.
      *
-     * @param text the string to be modified.
+     * @param originalString the string to be modified.
      * @return A {@link String} with outer square brackets removed
      */
-    public static String removeSquareBracketsFromString(final String text) {
-        if (text.startsWith("[") || text.endsWith("]")) {
-            return text.replaceAll("\\[", "").replaceFirst("]$", "");
+    public static String removeSquareBracketsFromString(final String originalString) {
+        if (originalString.startsWith("[") || originalString.endsWith("]")) {
+            return originalString.replaceAll("\\[", "").replaceFirst("]$", "");
         } else {
-            return text;
+            return originalString;
         }
     }
 
     /**
      * Remove special characters from the {@link String}
      *
-     * @param text the string to be modified.
+     * @param originalString the string to be modified.
      * @return A {@link String} without special characters
      */
-    public static String removeSpecialCharacters(final String text) {
-        return text != null ? text.replaceAll("[^A-Za-z0-9]", "") : null;
+    public static String removeSpecialCharacters(final String originalString) {
+        return originalString != null ? originalString.replaceAll("[^A-Za-z0-9]", "") : null;
     }
 }

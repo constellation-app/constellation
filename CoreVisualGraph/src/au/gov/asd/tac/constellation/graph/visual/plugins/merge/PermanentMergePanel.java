@@ -204,7 +204,7 @@ public final class PermanentMergePanel extends JPanel {
      */
     private Object[] populateTableRow(final ReadableGraph graph, final int vxId) {
         Object[] row = new Object[node_attributes.size() + 1];
-        row[0] = Boolean.valueOf(true);
+        row[0] = true;
         row[1] = Integer.toString(vxId);
 
         for (int i = 2; i < node_attributes.size(); i++) {

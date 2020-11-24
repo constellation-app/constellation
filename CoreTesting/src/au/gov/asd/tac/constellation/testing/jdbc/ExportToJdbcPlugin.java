@@ -244,14 +244,21 @@ public class ExportToJdbcPlugin extends SimpleReadPlugin {
                             final Attribute attr = entry.getValue();
 
                             if (attr.getId() == pseudoId) {
-                                if (label.equals(GraphFileConstants.TX_ID)) {
-                                    rs.updateInt(label, txId);
-                                } else if (label.equals(GraphFileConstants.SRC)) {
-                                    rs.updateInt(label, rg.getTransactionSourceVertex(txId));
-                                } else if (label.equals(GraphFileConstants.DST)) {
-                                    rs.updateInt(label, rg.getTransactionDestinationVertex(txId));
-                                } else if (label.equals(GraphFileConstants.DIR)) {
-                                    rs.updateBoolean(label, rg.getTransactionDirection(txId) != Graph.FLAT);
+                                switch (label) {
+                                    case GraphFileConstants.TX_ID:
+                                        rs.updateInt(label, txId);
+                                        break;
+                                    case GraphFileConstants.SRC:
+                                        rs.updateInt(label, rg.getTransactionSourceVertex(txId));
+                                        break;
+                                    case GraphFileConstants.DST:
+                                        rs.updateInt(label, rg.getTransactionDestinationVertex(txId));
+                                        break;
+                                    case GraphFileConstants.DIR:
+                                        rs.updateBoolean(label, rg.getTransactionDirection(txId) != Graph.FLAT);
+                                        break;
+                                    default:
+                                        break;
                                 }
                             } else {
                                 updateResultSetParam(rg, rs, label, attr, txId);

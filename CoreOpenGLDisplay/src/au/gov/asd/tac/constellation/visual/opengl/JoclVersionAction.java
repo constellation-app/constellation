@@ -30,7 +30,8 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
 @ActionID(category = "Help", id = "au.gov.asd.tac.constellation.visual.opengl.JoclVersionAction")
-@ActionRegistration(displayName = "#CTL_JoclVersionAction")
+@ActionRegistration(displayName = "#CTL_JoclVersionAction",
+        iconBase = "au/gov/asd/tac/constellation/visual/opengl/versionsJOCL.png")
 @ActionReference(path = "Menu/Help", position = 1401)
 @Messages("CTL_JoclVersionAction=JOCL Version")
 public final class JoclVersionAction implements ActionListener {

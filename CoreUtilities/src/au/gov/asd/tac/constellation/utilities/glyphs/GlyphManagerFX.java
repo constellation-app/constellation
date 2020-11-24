@@ -353,7 +353,7 @@ package au.gov.asd.tac.constellation.utilities.glyphs;
 //     */
 //    public synchronized void renderText(String text, GlyphStream glyphStream) {
 //
-//        if (text.contains("\n")) {
+//        if (text.contains(SeparatorConstants.NEWLINE)) {
 //            throw new RuntimeException("Cannot render a line of text containing '\n'");
 //        }
 //
@@ -405,7 +405,7 @@ package au.gov.asd.tac.constellation.utilities.glyphs;
 //    @Override
 //    public synchronized void renderTextAsLigatures(String text, GlyphStream glyphStream) {
 //
-//        if (text.contains("\n")) {
+//        if (text.contains(SeparatorConstants.NEWLINE)) {
 //            throw new RuntimeException("Cannot render a line of text containing '\n'");
 //        }
 //

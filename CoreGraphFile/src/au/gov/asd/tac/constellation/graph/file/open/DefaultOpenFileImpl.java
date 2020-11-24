@@ -344,7 +344,7 @@ public class DefaultOpenFileImpl implements OpenFileImpl, Runnable {
 
         class ScheduledOpenTask implements Runnable {
 
-            private AtomicInteger remainingTries = new AtomicInteger(MAX_TRIES);
+            private final AtomicInteger remainingTries = new AtomicInteger(MAX_TRIES);
 
             @Override
             public void run() {

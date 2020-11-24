@@ -21,6 +21,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.collections.CollectionUtils;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A text hashmod based on a supplied CSV file. Will modify attributes specified
@@ -73,7 +76,7 @@ public class Hashmod {
     }
 
     public String[] getCSVFileHeaders() {
-        if (data != null && !data.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(data)) {
             return data.get(0);
         }
         return null;
@@ -98,7 +101,7 @@ public class Hashmod {
 
     public HashMap<String, Integer> getCSVKeys() {
         final HashMap<String, Integer> keys = new HashMap<>();
-        if (data != null && !data.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(data)) {
             for (int i = 1; i < data.size(); i++) {
                 final String[] row = getCSVRow(i);
                 if (row[0] != null) {
@@ -109,12 +112,62 @@ public class Hashmod {
         return keys;
     }
 
-    public int getNumberCSVColumns() {
+    public int getNumberCSVDataColumns() {
         final String[] headers = getCSVFileHeaders();
         if (headers != null) {
+            
+            for (int i = 0; i < headers.length; i++) {
+                if (headers[i].matches(".*\\.\\.\\..*")) {
+                    return i;
+                }
+            }
             return headers.length;
         }
         return 0;
+    }
+
+    public int getNumberCSVTransactionColumns() {
+        final String[] headers = getCSVFileHeaders();
+        if (headers != null) {
+            int numTransactions = 0;
+            for (int i = getNumberCSVDataColumns(); i < headers.length; i++) {
+                if (!headers[i].matches(".*\\.\\.\\..*")) {
+                    return numTransactions;
+                }
+                numTransactions++;
+            }
+            return numTransactions;
+        }
+        return 0;
+    }
+
+    private String getColumnOfTransaction(int transactionCol, String regex) {
+        final Pattern cardNamePattern = Pattern.compile(regex);
+
+        final String[] headers = getCSVFileHeaders();
+        if (headers != null) {
+            int numTransactions = 0;
+            for (int i = getNumberCSVDataColumns(); i < headers.length; i++) {
+                if (headers[i].matches(".*\\.\\.\\..*")) {
+                    if (numTransactions == transactionCol) {
+                        Matcher matchPattern = cardNamePattern.matcher(headers[i]);
+                        if (matchPattern.find()) {
+                            return matchPattern.group(1);
+                        }
+                    }
+                }
+                numTransactions++;
+            }
+        }
+        return "";
+    }
+
+    public String getFirstColumnOfTransaction(int transactionCol) {
+        return getColumnOfTransaction(transactionCol, "([^\"]+)\\.\\.\\.");
+    }
+
+    public String getSecondColumnOfTransaction(int transactionCol) {
+        return getColumnOfTransaction(transactionCol, ".*?\\.\\.\\.([^\"]+)");
     }
 
     public String getCSVHeader(final int col) {
@@ -126,14 +179,14 @@ public class Hashmod {
     }
 
     public List<String[]> getCSVFileData() {
-        if (data != null && !data.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(data)) {
             return data;
         }
         return null;
     }
 
     public String getValueFromKey(final String key, final int value) {
-        if (data != null && !data.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(data)) {
             for (int i = 1; i < data.size(); i++) {
                 final String[] row = getCSVRow(i);
                 if (row[0].equalsIgnoreCase(key)) {
@@ -151,7 +204,7 @@ public class Hashmod {
         if (key == null) {
             return false;
         }
-        if (data != null && !data.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(data)) {
             for (int i = 1; i < data.size(); i++) {
                 final String[] row = getCSVRow(i);
                 if (row[0].equalsIgnoreCase(key)) {

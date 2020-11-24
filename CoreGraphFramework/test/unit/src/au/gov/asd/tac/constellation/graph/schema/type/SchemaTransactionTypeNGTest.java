@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.graph.schema.type;
 
-import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.util.HashMap;
 import org.testng.Assert;

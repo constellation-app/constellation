@@ -43,6 +43,7 @@ import java.util.prefs.Preferences;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.Exceptions;
@@ -185,7 +186,7 @@ public class ParameterIOUtilities {
                 globalParams.add(id);
 
                 // Remember the first non-null, non-blank query name.
-                if (queryName == null && id.equals(CoreGlobalParameters.QUERY_NAME_PARAMETER_ID) && value != null && !value.trim().isEmpty()) {
+                if (queryName == null && id.equals(CoreGlobalParameters.QUERY_NAME_PARAMETER_ID) && StringUtils.isNotBlank(value)) {
                     queryName = value;
                 }
             }

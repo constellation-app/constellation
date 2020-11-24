@@ -22,7 +22,9 @@ import static org.lwjgl.system.MemoryUtil.*;
 import static org.lwjgl.vulkan.VK10.*;
 import au.gov.asd.tac.constellation.graph.visual.framework.VisualGraphDefaults;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.glyphs.ConnectionGlyphStreamContext;
 import au.gov.asd.tac.constellation.utilities.glyphs.GlyphManager;
+import au.gov.asd.tac.constellation.utilities.glyphs.GlyphStreamContext;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
@@ -100,7 +102,6 @@ public class CVKLinkLabelsRenderable extends CVKRenderable implements GlyphManag
     // Resources recreated only through user events
     private int attributeVertexCount = 0;
     private int summaryVertexCount = 0;
-    private final GlyphContext glyphContext = new GlyphContext();
     
     // The vertex lists are transient are should not be used outside the update
     // task.  They are class members solely so the GlyphStream callback functions
@@ -115,6 +116,7 @@ public class CVKLinkLabelsRenderable extends CVKRenderable implements GlyphManag
     private CVKBuffer cvkGeometryUBStagingBuffer = null;
     private final Vector3f[] labelColours = new Vector3f[LabelUtilities.MAX_LABELS_TO_DRAW];
     private final Vector4i labelSizes = new Vector4i();
+    private float currentWidth;
     
     // Resources we don't own but use and must track so we know when to update
     // our descriptors
@@ -126,37 +128,7 @@ public class CVKLinkLabelsRenderable extends CVKRenderable implements GlyphManag
     private long hPositionBufferView = VK_NULL_HANDLE;
    
     
-    // ========================> Classes <======================== \\
-    
-    private static class GlyphContext {
-        private float width;
-        private float visibility;
-        private int nodeIndexLow;
-        private int nodeIndexHigh;        
-        private int labelNumber;  
-        private int totalScale;
-        private int offset;
-        private int nextLeftOffset;
-        private int nextRightOffset;
-        private int stagger;
-        private int labelCount;
-        private boolean isAttributeLabel;
-        
-        protected void Reset() {
-            width = 0.0f;
-            visibility = 0.0f;
-            nodeIndexLow = 0;
-            nodeIndexHigh = 0;
-            labelNumber = 0;
-            totalScale = 0;
-            offset = 0;
-            nextLeftOffset = 0;
-            nextRightOffset = 0;            
-            stagger = 0;
-            labelCount = 0;
-            isAttributeLabel = true;            
-        }
-    }
+    // ========================> Classes <======================== \\ 
         
     private static class Vertex {
         // This looks a little weird for Java, but LWJGL and JOGL both require
@@ -1351,106 +1323,118 @@ public class CVKLinkLabelsRenderable extends CVKRenderable implements GlyphManag
     // ========================> Tasks <======================== \\
     
     @Override
-    public void addGlyph(int glyphIndex, float x, float y) {
-        if (glyphContext.isAttributeLabel) {   
-            attributeVertices.add(new Vertex(glyphContext.width, 
-                                             x, y, 
-                                             glyphContext.visibility,
-                                             glyphContext.nodeIndexLow, 
-                                             glyphContext.nodeIndexHigh,
-                                             glyphContext.labelNumber,                                
-                                             glyphContext.totalScale, 
-                                             glyphContext.offset,
-                                             glyphIndex,
-                                             glyphContext.stagger,
-                                             glyphContext.labelCount));
+    public void addGlyph(int glyphIndex, float x, float y, GlyphStreamContext streamContext) {
+        if (streamContext instanceof ConnectionGlyphStreamContext) {
+            final ConnectionGlyphStreamContext context = (ConnectionGlyphStreamContext) streamContext;  
+
+            if (context.isAttributeLabel) {   
+                attributeVertices.add(new Vertex(currentWidth, 
+                                                 x, y, 
+                                                 context.visibility,
+                                                 context.currentLowNodeId, 
+                                                 context.currentHighNodeId,
+                                                 context.labelNumber,                                
+                                                 context.totalScale, 
+                                                 context.currentOffset,
+                                                 glyphIndex,
+                                                 context.currentStagger,
+                                                 context.currentLinkLabelCount));
+            } else {
+                summaryVertices.add(new Vertex(currentWidth, 
+                                               x, y, 
+                                               context.visibility,
+                                               context.currentLowNodeId, 
+                                               context.currentHighNodeId,
+                                               context.labelNumber,                                
+                                               context.totalScale, 
+                                               context.currentOffset,
+                                               glyphIndex,
+                                               context.currentStagger,
+                                               context.currentLinkLabelCount));            
+            }
         } else {
-            summaryVertices.add(new Vertex(glyphContext.width, 
-                                           x, y, 
-                                           glyphContext.visibility,
-                                           glyphContext.nodeIndexLow, 
-                                           glyphContext.nodeIndexHigh,
-                                           glyphContext.labelNumber,                                
-                                           glyphContext.totalScale, 
-                                           glyphContext.offset,
-                                           glyphIndex,
-                                           glyphContext.stagger,
-                                           glyphContext.labelCount));            
+            throw new IllegalArgumentException("Provided context lacks Connection information, please use a ConnectionGlyphStreamContext");
         }
     }
     
     @Override
-    public void newLine(float width) {
-        glyphContext.width = -width / 2.0f - 0.2f;
+    public void newLine(float width, GlyphStreamContext streamContext) {
+        currentWidth = -width / 2.0f - 0.2f;
+        
+        if (streamContext instanceof ConnectionGlyphStreamContext) {
+            final ConnectionGlyphStreamContext context = (ConnectionGlyphStreamContext) streamContext;          
     
-        if (glyphContext.isAttributeLabel) {   
-            attributeVertices.add(new Vertex(glyphContext.width, 
-                                             glyphContext.width, 0.0f, 
-                                             glyphContext.visibility,
-                                             glyphContext.nodeIndexLow, 
-                                             glyphContext.nodeIndexHigh,
-                                             glyphContext.labelNumber,                                
-                                             glyphContext.totalScale, 
-                                             glyphContext.offset,
-                                             CVKGlyphTextureAtlas.BACKGROUND_GLYPH_INDEX,
-                                             glyphContext.stagger,
-                                             glyphContext.labelCount));
+            if (context.isAttributeLabel) {   
+                attributeVertices.add(new Vertex(currentWidth, 
+                                                 currentWidth, 0.0f, 
+                                                 context.visibility,
+                                                 context.currentLowNodeId, 
+                                                 context.currentHighNodeId,
+                                                 context.labelNumber,                                
+                                                 context.totalScale, 
+                                                 context.currentOffset,
+                                                 CVKGlyphTextureAtlas.BACKGROUND_GLYPH_INDEX,
+                                                 context.currentStagger,
+                                                 context.currentLinkLabelCount));
+            } else {
+                summaryVertices.add(new Vertex(currentWidth, 
+                                               currentWidth, 0.0f, 
+                                               context.visibility,
+                                               context.currentLowNodeId, 
+                                               context.currentHighNodeId,
+                                               context.labelNumber,                                
+                                               context.totalScale, 
+                                               context.currentOffset,
+                                               CVKGlyphTextureAtlas.BACKGROUND_GLYPH_INDEX,
+                                               context.currentStagger,
+                                               context.currentLinkLabelCount));            
+            }     
         } else {
-            summaryVertices.add(new Vertex(glyphContext.width, 
-                                           glyphContext.width, 0.0f, 
-                                           glyphContext.visibility,
-                                           glyphContext.nodeIndexLow, 
-                                           glyphContext.nodeIndexHigh,
-                                           glyphContext.labelNumber,                                
-                                           glyphContext.totalScale, 
-                                           glyphContext.offset,
-                                           CVKGlyphTextureAtlas.BACKGROUND_GLYPH_INDEX,
-                                           glyphContext.stagger,
-                                           glyphContext.labelCount));            
-        }     
+            throw new IllegalArgumentException("Provided context lacks Connection information, please use a ConnectionGlyphStreamContext");
+        }            
     }    
     
     private void BuildVertexArrays(final VisualAccess access) {
         attributeVertices = new ArrayList<>();
         summaryVertices = new ArrayList<>();   
         final int numLinks = access.getLinkCount();
-        for (int link = 0; link < numLinks; ++link) {
-            glyphContext.Reset();            
-            glyphContext.labelCount = access.getLinkConnectionCount(link);
-            glyphContext.nodeIndexLow = access.getLinkLowVertex(link);
-            glyphContext.nodeIndexHigh = access.getLinkHighVertex(link);
+        for (int link = 0; link < numLinks; ++link) {     
+            final ConnectionGlyphStreamContext context = new ConnectionGlyphStreamContext();
+            context.currentLinkLabelCount = access.getLinkConnectionCount(link);
+            context.currentLowNodeId = access.getLinkLowVertex(link);
+            context.currentHighNodeId = access.getLinkHighVertex(link);
 
             final int numConnections = access.getLinkConnectionCount(link);
             for (int pos = 0; pos < numConnections; pos++) {
                 final int connection = access.getLinkConnection(link, pos);
                 final int width = (int) (LabelUtilities.NRADIUS_TO_LINE_WIDTH_UNITS * Math.min(LabelUtilities.MAX_TRANSACTION_WIDTH, access.getConnectionWidth(connection)));
-                glyphContext.isAttributeLabel = !access.getIsLabelSummary(connection);
+                context.isAttributeLabel = !access.getIsLabelSummary(connection);
 
-                glyphContext.stagger = glyphContext.stagger == MAX_STAGGERS ? 1 : glyphContext.stagger + 1;
-                if (glyphContext.nextLeftOffset == 0) {
-                    glyphContext.nextLeftOffset += ((width / 2) + LabelUtilities.NRADIUS_TO_LINE_WIDTH_UNITS);
-                    glyphContext.nextRightOffset -= ((width / 2) + LabelUtilities.NRADIUS_TO_LINE_WIDTH_UNITS);
-                } else if (glyphContext.nextLeftOffset <= -glyphContext.nextRightOffset) {
-                    glyphContext.offset = glyphContext.nextLeftOffset + (width / 2);
-                    glyphContext.nextLeftOffset += (width + LabelUtilities.NRADIUS_TO_LINE_WIDTH_UNITS);
+                context.currentStagger = context.currentStagger == MAX_STAGGERS ? 1 : context.currentStagger + 1;
+                if (context.nextLeftOffset == 0) {
+                    context.nextLeftOffset += ((width / 2) + LabelUtilities.NRADIUS_TO_LINE_WIDTH_UNITS);
+                    context.nextRightOffset -= ((width / 2) + LabelUtilities.NRADIUS_TO_LINE_WIDTH_UNITS);
+                } else if (context.nextLeftOffset <= -context.nextRightOffset) {
+                    context.currentOffset = context.nextLeftOffset + (width / 2);
+                    context.nextLeftOffset += (width + LabelUtilities.NRADIUS_TO_LINE_WIDTH_UNITS);
                 } else {
-                    glyphContext.offset = glyphContext.nextRightOffset - (width / 2);
-                    glyphContext.nextRightOffset -= (width + LabelUtilities.NRADIUS_TO_LINE_WIDTH_UNITS);
+                    context.currentOffset = context.nextRightOffset - (width / 2);
+                    context.nextRightOffset -= (width + LabelUtilities.NRADIUS_TO_LINE_WIDTH_UNITS);
                 }
 
-                glyphContext.totalScale = 0;
-                glyphContext.visibility = access.getConnectionVisibility(connection);
+                context.totalScale = 0;
+                context.visibility = access.getConnectionVisibility(connection);
                 for (int label = 0; label < access.getConnectionLabelCount(connection); label++) {
-                    glyphContext.labelNumber = label;
+                    context.labelNumber = label;
                     final String text = access.getConnectionLabelText(connection, label);
                     ArrayList<String> lines = LabelUtilities.splitTextIntoLines(text);
                     for (final String line : lines) {
-                        CVKGlyphTextureAtlas.GetInstance().RenderTextAsLigatures(line, this);
-                        if (glyphContext.isAttributeLabel) {
-                            glyphContext.totalScale += labelSizes.a[label];
+                        CVKGlyphTextureAtlas.GetInstance().RenderTextAsLigatures(line, this, context);
+                        if (context.isAttributeLabel) {
+                            context.totalScale += labelSizes.a[label];
                         } else {
                             // Should this be cached to prevent thread contention?
-                            glyphContext.totalScale += vertexUBO.summaryLabelInfo.get(label, 3);
+                            context.totalScale += vertexUBO.summaryLabelInfo.get(label, 3);
                         }
                     }
                 }  

@@ -22,6 +22,8 @@ import static org.lwjgl.system.MemoryUtil.*;
 import static org.lwjgl.vulkan.VK10.*;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.glyphs.GlyphManager;
+import au.gov.asd.tac.constellation.utilities.glyphs.GlyphStreamContext;
+import au.gov.asd.tac.constellation.utilities.glyphs.NodeGlyphStreamContext;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
@@ -93,7 +95,6 @@ public class CVKIconLabelsRenderable extends CVKRenderable implements GlyphManag
     
     // Resources recreated only through user events
     private int vertexCount = 0;
-    private final GlyphContext glyphContext = new GlyphContext();
     private List<Vertex> vertices = null;
     private CVKBuffer cvkVertexStagingBuffer = null;  
 
@@ -1246,15 +1247,25 @@ public class CVKIconLabelsRenderable extends CVKRenderable implements GlyphManag
     // ========================> Tasks <======================== \\
     
     @Override
-    public void addGlyph(int glyphPosition, float x, float y) {
-        vertices.add(new Vertex(glyphPosition, x, y, glyphContext.visibility,
-                                glyphContext.nodeId, glyphContext.totalScale, glyphContext.labelNumber));
+    public void addGlyph(int glyphPosition, float x, float y, GlyphStreamContext streamContext) {
+        if (streamContext instanceof NodeGlyphStreamContext) {
+            final NodeGlyphStreamContext context = (NodeGlyphStreamContext) streamContext;        
+            vertices.add(new Vertex(glyphPosition, x, y, context.visibility,
+                                    context.currentNodeID, context.totalScale, context.labelNumber));
+        } else {
+            throw new IllegalArgumentException("Provided context lacks Node information, please use a NodeGlyphStreamContext");
+        }
     }    
     
     @Override
-    public void newLine(float width) {
-        vertices.add(new Vertex(CVKGlyphTextureAtlas.BACKGROUND_GLYPH_INDEX, -width / 2.0f - 0.2f, 0.0f, glyphContext.visibility,
-                                glyphContext.nodeId, glyphContext.totalScale, glyphContext.labelNumber));        
+    public void newLine(float width, GlyphStreamContext streamContext) {
+        if (streamContext instanceof NodeGlyphStreamContext) {
+            final NodeGlyphStreamContext context = (NodeGlyphStreamContext) streamContext;          
+            vertices.add(new Vertex(CVKGlyphTextureAtlas.BACKGROUND_GLYPH_INDEX, -width / 2.0f - 0.2f, 0.0f, context.visibility,
+                                 context.currentNodeID, context.totalScale, context.labelNumber));   
+        } else {
+            throw new IllegalArgumentException("Provided context lacks Node information, please use a NodeGlyphStreamContext");
+        }            
     }    
     
     private Vertex[] BuildVertexArray(final VisualAccess access, int first, int last) {
@@ -1262,35 +1273,27 @@ public class CVKIconLabelsRenderable extends CVKRenderable implements GlyphManag
         final int newVertexCount = (last - first) + 1;
         if (newVertexCount > 0) {         
             for (int pos = first; pos <= last; ++pos) {
-                glyphContext.visibility = access.getVertexVisibility(pos);     
+                final float visibility = access.getVertexVisibility(pos);     
                 
                 // Top labels
                 int totalScale = LabelUtilities.NRADIUS_TO_LABEL_UNITS;
-                for (int label = 0; label < access.getTopLabelCount(); label++) {
-                    glyphContext.nodeId      = pos;
-                    glyphContext.totalScale  = totalScale;
-                    glyphContext.labelNumber = label;
-                    
+                for (int label = 0; label < access.getTopLabelCount(); label++) {                  
                     final String text = access.getVertexTopLabelText(pos, label);
                     ArrayList<String> lines = LabelUtilities.splitTextIntoLines(text);
                     Collections.reverse(lines);
                     for (final String line : lines) {
-                        CVKGlyphTextureAtlas.GetInstance().RenderTextAsLigatures(line, this);
+                        CVKGlyphTextureAtlas.GetInstance().RenderTextAsLigatures(line, this, new NodeGlyphStreamContext(pos, -totalScale, visibility, label));
                         totalScale += topLabelRowSizes.a[label];
                     }                    
                 }
                 
                 // Bottom labels
                 totalScale = LabelUtilities.NRADIUS_TO_LABEL_UNITS;
-                for (int label = 0; label < access.getBottomLabelCount(); label++) {
-                    glyphContext.nodeId      = pos;
-                    glyphContext.totalScale  = -totalScale;
-                    glyphContext.labelNumber = label;
-                    
+                for (int label = 0; label < access.getBottomLabelCount(); label++) {                    
                     final String text = access.getVertexBottomLabelText(pos, label);
                     ArrayList<String> lines = LabelUtilities.splitTextIntoLines(text);
                     for (final String line : lines) {
-                        CVKGlyphTextureAtlas.GetInstance().RenderTextAsLigatures(line, this);
+                        CVKGlyphTextureAtlas.GetInstance().RenderTextAsLigatures(line, this, new NodeGlyphStreamContext(pos, -totalScale, visibility, label));
                         totalScale += bottomLabelRowSizes.a[label];
                     }                    
                 }                

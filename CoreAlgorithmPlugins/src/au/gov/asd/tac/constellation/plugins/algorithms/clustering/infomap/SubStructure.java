@@ -35,7 +35,7 @@ public class SubStructure {
         return subInfomap;
     }
 
-    public void setSubInfomap(InfomapBase subInfomap) {
+    public void setSubInfomap(final InfomapBase subInfomap) {
         this.subInfomap = subInfomap;
     }
 
@@ -43,7 +43,7 @@ public class SubStructure {
         return exploredWithoutImprovement;
     }
 
-    public void setExploredWithoutImprovement(boolean exploredWithoutImprovement) {
+    public void setExploredWithoutImprovement(final boolean exploredWithoutImprovement) {
         this.exploredWithoutImprovement = exploredWithoutImprovement;
     }
 }

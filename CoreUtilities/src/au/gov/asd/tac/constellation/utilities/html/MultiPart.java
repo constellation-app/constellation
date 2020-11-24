@@ -112,8 +112,9 @@ public class MultiPart {
         }
 
         try {
-            buf.write(String.format(THREE_STRING_FORMAT, DASH_DASH, boundary, DASH_DASH).getBytes(StandardCharsets.UTF_8.name()));
-            buf.close();
+            try (buf) {
+                buf.write(String.format(THREE_STRING_FORMAT, DASH_DASH, boundary, DASH_DASH).getBytes(StandardCharsets.UTF_8.name()));
+            }
             isEnded = true;
         } catch (final IOException ex) {
             Exceptions.printStackTrace(ex);

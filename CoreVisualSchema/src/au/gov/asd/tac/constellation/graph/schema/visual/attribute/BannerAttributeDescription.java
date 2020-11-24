@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.graph.schema.visual.attribute;
 
+import au.gov.asd.tac.constellation.graph.attribute.AbstractObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
-import au.gov.asd.tac.constellation.graph.attribute.ObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Banner;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -26,9 +26,13 @@ import org.openide.util.lookup.ServiceProvider;
  * @author algol
  */
 @ServiceProvider(service = AttributeDescription.class)
-public final class BannerAttributeDescription extends ObjectAttributeDescription {
+public final class BannerAttributeDescription extends AbstractObjectAttributeDescription<Banner> {
+
+    public static final String ATTRIBUTE_NAME = "banner";
+    public static final Class<Banner> NATIVE_CLASS = Banner.class;
+    public static final Banner DEFAULT_VALUE = null;
 
     public BannerAttributeDescription() {
-        super(Banner.ATTRIBUTE_NAME);
+        super(ATTRIBUTE_NAME, NATIVE_CLASS, DEFAULT_VALUE);
     }
 }

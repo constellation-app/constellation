@@ -136,6 +136,10 @@ public class AddRecordStore extends RestService {
         final ObjectMapper mapper = new ObjectMapper();
         final JsonNode json = mapper.readTree(in);
 
+        final Graph graph = graphId == null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
+        if (graph == null) {
+            throw new RestServiceException(HTTP_UNPROCESSABLE_ENTITY, "No graph with id " + graphId);
+        }
         // We want to read a JSON document that looks like:
         //
         // {"columns":["A","B"],"data":[[1,"a"],[2,"b"],[3,"c"]]}
@@ -181,12 +185,10 @@ public class AddRecordStore extends RestService {
             }
         }
 
-        addToGraph(graphId, rs, completeWithSchema, arrange, resetView);
+        addToGraph(graph, rs, completeWithSchema, arrange, resetView);
     }
 
-    private static void addToGraph(final String graphId, final RecordStore recordStore, final boolean completeWithSchema, final String arrange, final boolean resetView) {
-        final Graph graph = graphId == null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
-
+    private static void addToGraph(final Graph graph, final RecordStore recordStore, final boolean completeWithSchema, final String arrange, final boolean resetView) {
         final Plugin p = new SimpleEditPlugin("Import from REST API") {
             @Override
             protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {

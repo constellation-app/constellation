@@ -30,6 +30,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
+import org.apache.commons.collections.CollectionUtils;
 
 /**
  * Maintain a hit test buffer.
@@ -138,7 +139,7 @@ public final class HitTester implements GLRenderable {
 
     @Override
     public void update(final GLAutoDrawable drawable) {
-        if (requestQueue != null && !requestQueue.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(requestQueue)) {
             requestQueue.forEach(request -> notificationQueues.add(request.getNotificationQueue()));
             hitTestRequest = requestQueue.getLast();
             requestQueue.clear();
@@ -166,7 +167,7 @@ public final class HitTester implements GLRenderable {
             //
             // If JOGL is ever fixed or another solution is found, either change
             // needsManualDPIScaling to return false (so there is effectively no
-            // DPI scaling here) or to remove dpiScaleY below.            
+            // DPI scaling here) or to remove dpiScaleY below.
             float dpiScaleY = 1.0f;
             if (GLTools.needsManualDPIScaling()) {
                 dpiScaleY = parent.getDPIScaleY();

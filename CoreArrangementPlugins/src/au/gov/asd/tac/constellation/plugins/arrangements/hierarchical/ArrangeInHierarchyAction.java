@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegi
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
 import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.views.namedselection.state.NamedSelectionState;
 import au.gov.asd.tac.constellation.views.namedselection.utilities.SelectNamedSelectionPanel;
 import java.awt.event.ActionEvent;
@@ -54,6 +55,7 @@ import org.openide.util.NbBundle;
 public class ArrangeInHierarchyAction extends AbstractAction {
 
     private final GraphNode context;
+    private static final String HELP_LOCATION = "au.gov.asd.tac.constellation.plugins.arrangements.hierarchical.HierarchicalAction";
 
     public ArrangeInHierarchyAction(final GraphNode context) {
         this.context = context;
@@ -73,7 +75,7 @@ public class ArrangeInHierarchyAction extends AbstractAction {
 
                     final SelectNamedSelectionPanel ssp = new SelectNamedSelectionPanel(nsState.getNamedSelections(), "Select a named selection to represent the top of the hierarchy.");
                     final DialogDescriptor dd = new DialogDescriptor(ssp, Bundle.CTL_ArrangeInHierarchyAction());
-                    dd.setHelpCtx(new HelpCtx("au.gov.asd.tac.constellation.plugins.arrangements.hierarchical.HierarchicalAction"));
+                    dd.setHelpCtx(new HelpCtx(HELP_LOCATION));
                     final Object result = DialogDisplayer.getDefault().notify(dd);
                     if (result == DialogDescriptor.OK_OPTION) {
                         final long selectionId = ssp.getNamedSelectionId();
@@ -100,8 +102,7 @@ public class ArrangeInHierarchyAction extends AbstractAction {
             }
 
             if (nsState == null) {
-                final NotifyDescriptor nd = new NotifyDescriptor.Message("There must be a named selection to specify the tree roots", NotifyDescriptor.WARNING_MESSAGE);
-                DialogDisplayer.getDefault().notify(nd);
+                NotifyDisplayer.display("There must be a named selection to specify the tree roots", NotifyDescriptor.WARNING_MESSAGE);
             }
         } finally {
             rg.release();
