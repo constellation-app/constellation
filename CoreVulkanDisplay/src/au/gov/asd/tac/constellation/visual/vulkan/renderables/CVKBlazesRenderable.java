@@ -99,7 +99,6 @@ import org.lwjgl.vulkan.VkWriteDescriptorSet;
 public class CVKBlazesRenderable extends CVKRenderable {
     // Resources recreated with the swap chain (dependent on the image count)    
     private LongBuffer pDescriptorSets = null; 
-    private List<Long> hitTestPipelines = null;
     private List<CVKCommandBuffer> displayCommandBuffers = null;
     private List<CVKCommandBuffer> hittestCommandBuffers = null;    
     private List<CVKBuffer> vertexBuffers = null;   
@@ -870,58 +869,7 @@ public class CVKBlazesRenderable extends CVKRenderable {
         if (VkFailed(ret)) { return ret; }
         
         return ret;
-    }
-    
-    @Override
-    public int RecordHitTestCommandBuffer(VkCommandBufferInheritanceInfo inheritanceInfo, int imageIndex){
-        cvkVisualProcessor.VerifyInRenderThread();
-        CVKAssertNotNull(CVKDevice.GetVkDevice());
-        CVKAssert(CVKDevice.GetCommandPoolHandle() != VK_NULL_HANDLE);
-        CVKAssertNotNull(cvkSwapChain);
-
-        int ret;     
-        
-        // Set the hit test flag in the shaders to true
-        UpdatePushConstantsHitTest(true);            
-
-        CVKCommandBuffer commandBuffer = hittestCommandBuffers.get(imageIndex);          
-        CVKAssertNotNull(commandBuffer);
-        CVKAssertNotNull(hitTestPipelines.get(imageIndex));
-
-        ret = commandBuffer.BeginRecordSecondary(VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT,
-                                                       inheritanceInfo);
-        if (VkFailed(ret)) { return ret; }
-
-        commandBuffer.SetViewPort(cvkSwapChain.GetWidth(), cvkSwapChain.GetHeight());
-        commandBuffer.SetScissor(cvkVisualProcessor.GetCanvas().GetCurrentSurfaceExtent());
-
-        commandBuffer.BindGraphicsPipeline(hitTestPipelines.get(imageIndex));
-        commandBuffer.BindVertexInput(vertexBuffers.get(imageIndex).GetBufferHandle());
-
-        // Push MV matrix to the vertex shader
-        commandBuffer.PushConstants(hPipelineLayout, 
-                                    MODEL_VIEW_PUSH_CONSTANT_STAGES, 
-                                    0, 
-                                    modelViewPushConstants);
-
-        // Push drawHitTest flag to the geometry shader
-        commandBuffer.PushConstants(hPipelineLayout, 
-                                    HIT_TEST_PUSH_CONSTANT_STAGES,
-                                    MODEL_VIEW_PUSH_CONSTANT_SIZE,
-                                    hitTestPushConstants);
-
-        commandBuffer.BindGraphicsDescriptorSets(hPipelineLayout, pDescriptorSets.get(imageIndex));
-
-        commandBuffer.Draw(GetVertexCount());
-
-        ret = commandBuffer.FinishRecord();
-        if (VkFailed(ret)) { return ret; }
-
-        // Reset hit test flag to false
-        UpdatePushConstantsHitTest(false);
-        
-        return ret;
-    }
+    }       
     
     private void DestroyCommandBuffers() {         
         if (null != displayCommandBuffers) {
@@ -1322,11 +1270,7 @@ public class CVKBlazesRenderable extends CVKRenderable {
             if (pipelinesState == CVK_RESOURCE_NEEDS_REBUILD) {
                 displayPipelines = new ArrayList<>(cvkSwapChain.GetImageCount());
                 ret = CreatePipelines(cvkSwapChain.GetRenderPassHandle(), displayPipelines);
-                if (VkFailed(ret)) { return ret; }
- 
-                hitTestPipelines = new ArrayList<>(cvkSwapChain.GetImageCount());
-                ret = CreatePipelines(cvkSwapChain.GetOffscreenRenderPassHandle(), hitTestPipelines);
-                if (VkFailed(ret)) { return ret; }                  
+                if (VkFailed(ret)) { return ret; }            
             }                                            
         }                                     
         
