@@ -119,7 +119,7 @@ public class PagerankCentralityPlugin extends SimpleEditPlugin {
         PagerankVertex.commitPageranksToGraph();
     }
     
-    static class PagerankVertex {
+    private static class PagerankVertex {
         private static GraphWriteMethods graph;
         private static final Set<PagerankVertex> sinks = new HashSet<>();
         private static boolean treatUndirectedBidirectional;
@@ -139,13 +139,13 @@ public class PagerankCentralityPlugin extends SimpleEditPlugin {
         private double stagedPagerank;
         private boolean isSink = false;
 
-        private PagerankVertex(int vertexPosition) {
+        private PagerankVertex(final int vertexPosition) {
             this.vertexId = graph.getVertex(vertexPosition);
             this.pagerank = 1.0/vertexCount;
             this.pagerankContribution = 0;
         }
         
-        static void initialiseAllPagerankVertices(final GraphWriteMethods graph, final boolean treatUndirectedBidirectional, final double dampingFactor, final boolean normaliseByAvailable) {
+        public static void initialiseAllPagerankVertices(final GraphWriteMethods graph, final boolean treatUndirectedBidirectional, final double dampingFactor, final boolean normaliseByAvailable) {
             PagerankVertex.graph = graph;
             PagerankVertex.vertexCount = graph.getVertexCount();
             PagerankVertex.treatUndirectedBidirectional = treatUndirectedBidirectional;
@@ -166,7 +166,7 @@ public class PagerankCentralityPlugin extends SimpleEditPlugin {
         }
         
         private static void calculateAllOutgoingAndNeighboursAndPagerankContribution() {
-            for (PagerankVertex pgVertex : pagerankVertices){
+            for (final PagerankVertex pgVertex : pagerankVertices){
             // identify incoming connections and store connected vertices and their outgoing connection count
                 final int linkCount = graph.getVertexLinkCount(pgVertex.vertexId);
                 for (int linkPosition = 0; linkPosition < linkCount; linkPosition++) {
@@ -215,7 +215,7 @@ public class PagerankCentralityPlugin extends SimpleEditPlugin {
         private static void updateAllPageranks() {
             delta = 0;
             double maxPagerank = 0;
-            for( PagerankVertex pgVertex: pagerankVertices) {
+            for(final PagerankVertex pgVertex: pagerankVertices) {
                 pgVertex.stageNewPagerank();
                 delta += Math.abs(pgVertex.pagerank - pgVertex.stagedPagerank);
                 if (pgVertex.stagedPagerank > maxPagerank) {
@@ -223,7 +223,7 @@ public class PagerankCentralityPlugin extends SimpleEditPlugin {
                 }
             }
 
-            for (PagerankVertex pgVertex: pagerankVertices) {
+            for (final PagerankVertex pgVertex: pagerankVertices) {
                 if (normaliseByAvailable && maxPagerank > 0) {
                     pgVertex.pagerank = pgVertex.stagedPagerank / maxPagerank;
                 } else {
@@ -235,7 +235,7 @@ public class PagerankCentralityPlugin extends SimpleEditPlugin {
         }
         
         private static void commitPageranksToGraph(){
-            for (PagerankVertex pgVertex : pagerankVertices) {
+            for (final PagerankVertex pgVertex : pagerankVertices) {
                 pgVertex.commitPagerankToGraph();
             }
             reset();
