@@ -16,10 +16,13 @@
 package au.gov.asd.tac.constellation.graph.attribute.compatibility;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.AbstractAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
+import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
+import au.gov.asd.tac.constellation.graph.value.readables.StringReadable;
+import au.gov.asd.tac.constellation.graph.value.variables.StringVariable;
 import java.util.Arrays;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
  * This describes a type of attribute whose values are lists of the names of
@@ -214,5 +217,25 @@ public final class AttrListAttributeDescriptionV0 extends AbstractAttributeDescr
     public void restoreData(final Object savedData) {
         final String[] sd = (String[]) savedData;
         data = Arrays.copyOf(sd, sd.length);
+    }
+
+    @Override
+    public Object createReadObject(IntReadable indexReadable) {
+        return (StringReadable) () -> data[indexReadable.readInt()];
+    }
+
+    @Override
+    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+        return new StringVariable() {
+            @Override
+            public String readString() {
+                return data[indexReadable.readInt()];
+            }
+
+            @Override
+            public void writeString(String value) {
+                graph.setObjectValue(attribute, indexReadable.readInt(), value);
+            }
+        };
     }
 }

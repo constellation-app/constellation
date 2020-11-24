@@ -119,10 +119,12 @@ public class GraphKey {
 
         out.append(Arrays.toString(elements));
         if (sourceKey != null) {
-            out.append(", sourceKey = " + sourceKey);
+            out.append(", sourceKey = ");
+            out.append(sourceKey);
         }
         if (destinationKey != null) {
-            out.append(", destinationKey = " + destinationKey);
+            out.append(", destinationKey = ");
+            out.append(destinationKey);
         }
         if (undirected) {
             out.append(", undirected");

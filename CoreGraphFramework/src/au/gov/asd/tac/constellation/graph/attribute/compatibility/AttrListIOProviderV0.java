@@ -26,7 +26,6 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.io.IOException;
 import java.util.Map;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
  * IOProvider for attributes described by

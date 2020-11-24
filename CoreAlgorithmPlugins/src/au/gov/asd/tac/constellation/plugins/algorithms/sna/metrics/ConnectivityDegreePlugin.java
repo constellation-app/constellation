@@ -163,7 +163,7 @@ public class ConnectivityDegreePlugin extends SimpleEditPlugin {
                 }
             } // if not on outskirts, will need to calculate how many subgraphs get created if removed
             else {
-                BitSet temp = new BitSet(vertexCount);
+                final BitSet temp = new BitSet(vertexCount);
                 temp.or(subgraph);
                 temp.set(vertexPosition, false);
                 int numPendantNeighbours = 0;

@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.graph;
 
-import au.gov.asd.tac.constellation.graph.operations.GraphOperation;
-import au.gov.asd.tac.constellation.utilities.datastructure.IntHashSet;
 import static au.gov.asd.tac.constellation.graph.GraphConstants.NOT_FOUND;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType.NativeValue;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
@@ -25,18 +23,17 @@ import au.gov.asd.tac.constellation.graph.locking.GraphOperationMode;
 import au.gov.asd.tac.constellation.graph.locking.LockingTarget;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
 import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
+import au.gov.asd.tac.constellation.graph.operations.GraphOperation;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.undo.GraphEdit;
 import au.gov.asd.tac.constellation.graph.utilities.MultiValueStore;
-import au.gov.asd.tac.constellation.utilities.camera.Camera;
+import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
+import au.gov.asd.tac.constellation.utilities.datastructure.IntHashSet;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
-import au.gov.asd.tac.constellation.utilities.query.QueryEvaluator;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
@@ -61,16 +58,6 @@ enum Operator {
  * @author sirius
  */
 public class StoreGraph extends LockingTarget implements GraphWriteMethods, Serializable {
-
-    private static final String CAMERA_ATTRIBUTE_LABEL = Camera.ATTRIBUTE_NAME;
-    private static final String SELECTED_ATTRIBUTE_LABEL = "selected";
-    private static final String X_ATTRIBUTE_LABEL = "x";
-    private static final String Y_ATTRIBUTE_LABEL = "y";
-    private static final String Z_ATTRIBUTE_LABEL = "z";
-    private static final String LAYER_MASK_SELECTED_ATTRIBUTE_LABEL = "layer_bitmask_selected";
-    private static final String LAYER_MASK_ATTRIBUTE_LABEL = "layer_mask";
-    private static final String LAYER_VISIBILITY_ATTRIBUTE_LABEL = "layer_visibility";
-    private static final String DEFAULT_LAYER_PLACEHOLDER = "default";
 
     private static final int HIGH_BIT = 0x80000000;
     private static final int LOW_BITS = 0x7FFFFFFF;
@@ -125,31 +112,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     private NativeValue oldValue = new NativeValue();
     private NativeValue newValue = new NativeValue();
     private GraphEdit graphEdit;
-    private int layerMaskSelectedAttributeId = Graph.NOT_FOUND;
-    private int vertexLayerMaskAttribureId = Graph.NOT_FOUND;
-    private int transactionLayerMaskAttrId = Graph.NOT_FOUND;
-    private int vertexLayerVisibilityAttributeId = Graph.NOT_FOUND;
-    private int transactionLayerVisibilityAttributeId = Graph.NOT_FOUND;
-    private int cameraAttributeId = Graph.NOT_FOUND;
-    private int vertexSelectedAttributeId = Graph.NOT_FOUND;
-    private int transactionSelectedAttributeId = Graph.NOT_FOUND;
-    private int vertexXAttributeId = Graph.NOT_FOUND;
-    private int vertexYAttributeId = Graph.NOT_FOUND;
-    private int vertexZAttributeId = Graph.NOT_FOUND;
-    private int transactionXAttributeId = Graph.NOT_FOUND;
-    private int transactionYAttributeId = Graph.NOT_FOUND;
-    private int transactionZAttributeId = Graph.NOT_FOUND;
-
-    // stores current graph bitmask
-    private int currentVisibleMask = 1;
-    private boolean avoidLayerUpdate = false;
-
-    // 0000
-    // first two bits are not used XX00
-    // second bit from right is boolean for if you have to display the layer 00X0
-    // last bit on right is whether it is a dynamic layer 000X
-    private final List<Byte> layerPrefs = new ArrayList<>();
-    private final List<String> layerQueries = new ArrayList<>();
 
     /**
      * Creates a new StoreGraph with the specified capacities.
@@ -174,37 +136,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     @Override
     public boolean isRecordingEdit() {
         return graphEdit != null;
-    }
-
-    @Override
-    public void setLayerQueries(final List<String> queries) {
-        int count = 0;
-        for (final String query : queries) {
-            // if old query was not null (dynamic), and old query is different from new (query updated)
-            if (count < layerQueries.size() && layerQueries.get(count) != null
-                    && !layerQueries.get(count).equals(DEFAULT_LAYER_PLACEHOLDER)
-                    && !layerQueries.get(count).equals(query)) {
-                // iterate all elements, remove that mask
-                // Loop through all vertexes and remove bitmasks
-                final int vertexCount = getVertexCount();
-                for (int i = 0; i < vertexCount; i++) {
-                    int bitmask = getIntValue(vertexLayerMaskAttribureId, i);
-                    bitmask = bitmask & ~(1 << count); // set bit to false
-                    setIntValue(vertexLayerMaskAttribureId, i, bitmask);
-                }
-
-                // Loop through all transactions and remove bitmasks
-                final int transactionCount = getTransactionCount();
-                for (int i = 0; i < transactionCount; i++) {
-                    int bitmask = getIntValue(transactionLayerMaskAttrId, i);
-                    bitmask = bitmask & ~(1 << count); // set bit to false
-                    setIntValue(transactionLayerMaskAttrId, i, bitmask);
-                }
-            }
-            count++;
-        }
-        layerQueries.clear();
-        layerQueries.addAll(queries);
     }
 
     /**
@@ -455,25 +386,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             }
         }
 
-        // New Parameters copied
-        this.layerMaskSelectedAttributeId = original.layerMaskSelectedAttributeId;
-        this.vertexLayerMaskAttribureId = original.vertexLayerMaskAttribureId;
-        this.transactionLayerMaskAttrId = original.transactionLayerMaskAttrId;
-        this.vertexLayerVisibilityAttributeId = original.vertexLayerVisibilityAttributeId;
-        this.transactionLayerVisibilityAttributeId = original.transactionLayerVisibilityAttributeId;
-        this.transactionXAttributeId = original.transactionXAttributeId;
-        this.transactionYAttributeId = original.transactionYAttributeId;
-        this.transactionZAttributeId = original.transactionZAttributeId;
-        this.vertexXAttributeId = original.vertexXAttributeId;
-        this.vertexYAttributeId = original.vertexYAttributeId;
-        this.vertexZAttributeId = original.vertexZAttributeId;
-        this.vertexSelectedAttributeId = original.vertexSelectedAttributeId;
-        this.transactionSelectedAttributeId = original.transactionSelectedAttributeId;
-        this.cameraAttributeId = original.cameraAttributeId;
-        this.layerPrefs.addAll(original.layerPrefs);
-
-        StoreGraph.this.setLayerQueries(original.layerQueries);
-
         MemoryManager.newObject(StoreGraph.class);
     }
 
@@ -533,7 +445,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 if (existingElement < 0) {
                     removed.remove(element);
 
-                // If the element was not unique then attempt a merge
+                    // If the element was not unique then attempt a merge
                 } else {
                     if (allowMerging && graphElementMerger != null) {
                         if (graphElementMerger.mergeElement(this, elementType, existingElement, element)) {
@@ -1717,22 +1629,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         if (graphEdit != null) {
             graphEdit.addAttribute(elementType, attributeType, label, description, defaultValue, attributeMergerId, attributeId);
         }
-
-        // Store IDs of key attributes used in subsequent ongoing calculations
-        cameraAttributeId = CAMERA_ATTRIBUTE_LABEL.equals(label) ? attributeId : cameraAttributeId;
-        vertexSelectedAttributeId = SELECTED_ATTRIBUTE_LABEL.equals(label) ? (elementType == GraphElementType.VERTEX ? attributeId : vertexSelectedAttributeId) : vertexSelectedAttributeId;
-        vertexYAttributeId = Y_ATTRIBUTE_LABEL.equals(label) ? (elementType == GraphElementType.VERTEX ? attributeId : vertexYAttributeId) : vertexYAttributeId;
-        vertexZAttributeId = Z_ATTRIBUTE_LABEL.equals(label) ? (elementType == GraphElementType.VERTEX ? attributeId : vertexZAttributeId) : vertexZAttributeId;
-        transactionSelectedAttributeId = SELECTED_ATTRIBUTE_LABEL.equals(label) ? (elementType == GraphElementType.TRANSACTION ? attributeId : transactionSelectedAttributeId) : transactionSelectedAttributeId;
-        transactionXAttributeId = X_ATTRIBUTE_LABEL.equals(label) ? (elementType == GraphElementType.TRANSACTION ? attributeId : transactionXAttributeId) : transactionXAttributeId;
-        transactionYAttributeId = Y_ATTRIBUTE_LABEL.equals(label) ? (elementType == GraphElementType.TRANSACTION ? attributeId : transactionYAttributeId) : transactionYAttributeId;
-        transactionZAttributeId = Z_ATTRIBUTE_LABEL.equals(label) ? (elementType == GraphElementType.TRANSACTION ? attributeId : transactionZAttributeId) : transactionZAttributeId;
-        layerMaskSelectedAttributeId = LAYER_MASK_SELECTED_ATTRIBUTE_LABEL.equals(label) ? attributeId : layerMaskSelectedAttributeId;
-        vertexLayerMaskAttribureId = LAYER_MASK_ATTRIBUTE_LABEL.equals(label) ? (elementType == GraphElementType.VERTEX ? attributeId : vertexLayerMaskAttribureId) : vertexLayerMaskAttribureId;
-        vertexLayerVisibilityAttributeId = LAYER_VISIBILITY_ATTRIBUTE_LABEL.equals(label) ? (elementType == GraphElementType.VERTEX ? attributeId : vertexLayerVisibilityAttributeId) : vertexLayerVisibilityAttributeId;
-        transactionLayerMaskAttrId = LAYER_MASK_ATTRIBUTE_LABEL.equals(label) ? (elementType == GraphElementType.TRANSACTION ? attributeId : transactionLayerMaskAttrId) : transactionLayerMaskAttrId;
-        transactionLayerVisibilityAttributeId = LAYER_VISIBILITY_ATTRIBUTE_LABEL.equals(label) ? (elementType == GraphElementType.TRANSACTION ? attributeId : transactionLayerVisibilityAttributeId) : transactionLayerVisibilityAttributeId;
-
         return attributeId;
     }
 
@@ -1849,6 +1745,16 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     }
 
     @Override
+    public Object createReadAttributeObject(final int attribute, IntReadable indexReadable) {
+        return attributeDescriptions[attribute].createReadObject(indexReadable);
+    }
+
+    @Override
+    public Object createWriteAttributeObject(final int attribute, IntReadable indexReadable) {
+        return attributeDescriptions[attribute].createWriteObject(this, attribute, indexReadable);
+    }
+
+    @Override
     public boolean isDefaultValue(final int attribute, final int id) {
         return attributeDescriptions[attribute].isClear(id);
     }
@@ -1949,297 +1855,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         }
     }
 
-    /**
-     * Recalculates layer visibilities with respect to which layers are toggled.
-     * Loops over all queries and determines if they are dynamic, static,
-     * activated or deactivated and appends certain bits in response.
-     * <p>
-     * Does not check all layers - only recalculates layers which are selected.
-     * <p>
-     * **KEY * <ul>
-     * <li>STATIC</li>
-     * <ul>
-     * <li>0b00 - NOT SHOWN</li>
-     * <li>0b10 - SHOWN</li>
-     * </ul>
-     * <li>DYNAMIC</li>
-     * <ul>
-     * <li>0b10 - NOT SHOWN</li>
-     * <li>0b11 - SHOWN</li>
-     * </ul>
-     * </ul>
-     */
-    private void recalculateLayerVisibilities() {
-        for (int i = 0; i < layerQueries.size(); i++) {
-            // if current mask has bit set, recheck
-            if ((currentVisibleMask & (1 << (i))) > 0) {
-                if (layerQueries.get(i) == null || layerQueries.get(i).equals(DEFAULT_LAYER_PLACEHOLDER)) {
-                    layerPrefs.remove(i);
-                    layerPrefs.add(i, (currentVisibleMask & (1 << (i))) > 0 ? (byte) 0b10 : (byte) 0b0);
-                } else {
-                    layerPrefs.remove(i);
-                    layerPrefs.add(i, (currentVisibleMask & (1 << (i))) > 0 ? (byte) 0b11 : (byte) 0b1);
-                }
-            }
-        }
-    }
-
-    /**
-     * Loop over all queries, recalculate dynamic ones. Append bit flag to
-     * bitmask when it satisfies the query.
-     *
-     * @param elementType the type of the element
-     * @param elementId the id of the element
-     * @return a 32 bit integer which represents a bitmask containing the layers
-     * the element belongs to.
-     */
-    private int recalculateLayerMask(final GraphElementType elementType, final int elementId) {
-        int bitmask = 0;
-        if (elementType == GraphElementType.VERTEX && vertexLayerMaskAttribureId != Graph.NOT_FOUND && vertexLayerVisibilityAttributeId != Graph.NOT_FOUND) {
-            vertexLayerMaskAttribureId = LayersConcept.VertexAttribute.LAYER_MASK.get(this);
-            if (vertexLayerMaskAttribureId != Graph.NOT_FOUND) {
-                bitmask = getIntValue(vertexLayerMaskAttribureId, elementId);
-            }
-        } else if (elementType == GraphElementType.TRANSACTION && transactionLayerMaskAttrId != Graph.NOT_FOUND && transactionLayerVisibilityAttributeId != Graph.NOT_FOUND) {
-            transactionLayerMaskAttrId = LayersConcept.TransactionAttribute.LAYER_MASK.get(this);
-            if (transactionLayerMaskAttrId != Graph.NOT_FOUND) {
-                bitmask = getIntValue(transactionLayerMaskAttrId, elementId);
-            }
-        }
-
-        synchronized (this) {
-            for (int i = 0; i < layerQueries.size(); i++) {
-                // calculate bitmask for dynamic layers that are displayed
-                if (i < layerPrefs.size() && (layerPrefs.get(i) & 0b11) == 3 && layerQueries.get(i) != null) {
-                    bitmask = (evaluateLayerQuery(elementType, elementId, QueryEvaluator.tokeniser(layerQueries.get(i)))
-                            ? bitmask | (1 << i) : bitmask & ~(1 << i)); // set bit to false
-                }
-            }
-        }
-        return bitmask;
-    }
-
-    /**
-     * Evaluates a string representation of a query in relation to a single
-     * element on the graph returns true when the node satisfies the condition,
-     * false otherwise.
-     * <p>
-     * A query should be structured as follows:
-     * vertex_color:<=:0,0,0 vertex_selected:==:true vertex_color:>:255,255,255
-     *
-     * @param elementType the type of the element
-     * @param elementId the id of the element
-     * @param query the query expression
-     * @return a boolean determining whether the element satisfied the
-     * constraints.
-     */
-    private boolean evaluateLayerQuery(final GraphElementType elementType, final int elementId, final List<String> queries) {
-        // exit condition for show all
-        if (queries.isEmpty()) {
-            return true;
-        }
-
-        // iterate over rules
-        String evaluatedResult = "";
-        Operator currentOperand = Operator.NOTFOUND;
-        boolean finalResult = true;
-        boolean ignoreResult = false;
-        for (final String rule : queries) {
-            String[] ruleSegments = rule.split(" == | != | < | > ");
-            if (rule.contains(" == ")) {
-                currentOperand = Operator.EQUALS;
-            } else if (rule.contains(" != ")) {
-                currentOperand = Operator.NOTEQUALS;
-            } else if (rule.contains(" > ")) {
-                currentOperand = Operator.GREATERTHAN;
-            } else if (rule.contains(" < ")) {
-                currentOperand = Operator.LESSTHAN;
-            }
-
-            // iterate over each segment and grab the values
-            AttributeDescription attributeDescription = null;
-            int attributeId = 1;
-            int segmentCount = 0;
-            for (final String ruleSegment : ruleSegments) {
-                segmentCount++;
-                switch (segmentCount) {
-                    case 1: {
-                        attributeId = getAttribute(elementType, ruleSegment);
-                        if (attributeId != Graph.NOT_FOUND) {
-                            attributeDescription = attributeDescriptions[attributeId];
-                        }
-                        break;
-                    }
-                    case 2: {
-                        switch (currentOperand) {
-                            case EQUALS: {
-                                finalResult = (attributeDescription != null && attributeDescription.getString(elementId) != null
-                                        && (attributeDescription.getString(elementId)).equals(ruleSegment));
-                                break;
-                            }
-                            case NOTEQUALS: {
-                                finalResult = (attributeDescription != null && attributeDescription.getString(elementId) != null
-                                        && !(attributeDescription.getString(elementId)).equals(ruleSegment));
-                                break;
-                            }
-                            case GREATERTHAN: {
-                                finalResult = (attributeDescription != null && attributeDescription.getString(elementId) != null
-                                        && (attributeDescription.getString(elementId)).compareTo(ruleSegment) > 0);
-                                break;
-                            }
-                            case LESSTHAN: {
-                                finalResult = (attributeDescription != null && attributeDescription.getString(elementId) != null
-                                        && (attributeDescription.getString(elementId)).compareTo(ruleSegment) < 0);
-                                break;
-                            }
-                            case NOTFOUND: {
-                                finalResult = false;
-                                break;
-                            }
-                            default:
-                                break;
-                        }
-                        break;
-                    }
-                    default:
-                        break;
-                }
-
-                // build the string to evaluate
-                if (ruleSegment.equals("&&")) {
-                    evaluatedResult += "&&" + ":";
-                    ignoreResult = true;
-                } else if (ruleSegment.equals("||")) {
-                    evaluatedResult += "||" + ":";
-                    ignoreResult = true;
-                }
-            }
-
-            // when you need to ignore the result and just use an operator || &&
-            if (ignoreResult) {
-                ignoreResult = false;
-            } else {
-                evaluatedResult += finalResult + ":";
-            }
-        }
-
-        evaluatedResult = evaluatedResult.length() == 0 ? evaluatedResult
-                : evaluatedResult.substring(0, evaluatedResult.length() - 1);
-        final String[] resultComponents = evaluatedResult.split(":");
-
-        String expression = "";
-        for (final String resultComponent : resultComponents) {
-            expression += resultComponent + " ";
-        }
-        expression = expression.substring(0, expression.length() - 1);
-
-        return QueryEvaluator.evaluatePostfix(expression);
-    }
-
-    // update the layer visibility of an element
-    private void updateLayerMask(final int attributeId, final GraphElementType elementType, final int elementId, final int selectedLayerMask) {
-        final int bitmask = recalculateLayerMask(elementType, elementId);
-        transactionLayerVisibilityAttributeId = LayersConcept.TransactionAttribute.LAYER_VISIBILITY.get(this);
-        vertexLayerVisibilityAttributeId = LayersConcept.VertexAttribute.LAYER_VISIBILITY.get(this);
-
-        if (elementType == GraphElementType.VERTEX) {
-            // when attr ids are found
-            if (vertexLayerMaskAttribureId != Graph.NOT_FOUND && vertexLayerVisibilityAttributeId != Graph.NOT_FOUND) {
-                // Attributes exist, update bitmask (this eventually becomes more comples to cover all layers). If the bitmask
-                // is non-zero value then the element can be displayed, if not, layer filters will result in it being hidden.
-
-                if (attributeId != vertexLayerMaskAttribureId) { // set filter bitmask when not updating (prevents infinite loop)
-                    avoidLayerUpdate = true; // cancels out the re-update when setting the int vals
-                    setIntValue(vertexLayerMaskAttribureId, elementId, bitmask);
-                    avoidLayerUpdate = false;
-                }
-                final float existingVisibility = getFloatValue(vertexLayerVisibilityAttributeId, elementId);
-                if ((bitmask & currentVisibleMask) > 0) {
-                    // A value > 0 indicates the object is mapped to at least one visible layer
-                    if (existingVisibility != 1.0f) {
-                        attributeDescriptions[vertexLayerVisibilityAttributeId].setFloat(elementId, 1.0f);
-                        attributeIndices[vertexLayerVisibilityAttributeId].updateElement(elementId);
-                        attributeModificationCounters[vertexLayerVisibilityAttributeId] += operationMode.getModificationIncrement();
-                    }
-                } else {
-                    // A value = 0 indicates the object is not mapped to at least one visible layer
-                    if (existingVisibility != 0.0f) {
-                        attributeDescriptions[vertexLayerVisibilityAttributeId].setFloat(elementId, 0.0f);
-                        attributeIndices[vertexLayerVisibilityAttributeId].updateElement(elementId);
-                        attributeModificationCounters[vertexLayerVisibilityAttributeId] += operationMode.getModificationIncrement();
-                    }
-                }
-            }
-        } else if (elementType == GraphElementType.TRANSACTION
-                && transactionLayerMaskAttrId != Graph.NOT_FOUND
-                && transactionLayerVisibilityAttributeId != Graph.NOT_FOUND) {
-            if (attributeId != transactionLayerMaskAttrId) {
-                avoidLayerUpdate = true;
-                setIntValue(transactionLayerMaskAttrId, elementId, bitmask);
-                avoidLayerUpdate = false;
-            }
-            final float existingVisibility = getFloatValue(transactionLayerVisibilityAttributeId, elementId);
-            if ((bitmask & currentVisibleMask) > 0) {
-                if (existingVisibility != 1.0f) {
-                    attributeDescriptions[transactionLayerVisibilityAttributeId].setFloat(elementId, 1.0f);
-                    attributeIndices[transactionLayerVisibilityAttributeId].updateElement(elementId);
-                    attributeModificationCounters[transactionLayerVisibilityAttributeId] += operationMode.getModificationIncrement();
-                }
-            } else {
-                if (existingVisibility != 0.0f) {
-                    attributeDescriptions[transactionLayerVisibilityAttributeId].setFloat(elementId, 0.0f);
-                    attributeIndices[transactionLayerVisibilityAttributeId].updateElement(elementId);
-                    attributeModificationCounters[transactionLayerVisibilityAttributeId] += operationMode.getModificationIncrement();
-                }
-            }
-        }
-    }
-
-    // update the layer visibility for an element when an attribute changes
-    private void updateLayerMask(final int attributeId, final int elementid) {
-        layerMaskSelectedAttributeId = LayersConcept.GraphAttribute.LAYER_MASK_SELECTED.get(this);
-        vertexLayerMaskAttribureId = LayersConcept.VertexAttribute.LAYER_MASK.get(this);
-        vertexLayerVisibilityAttributeId = LayersConcept.VertexAttribute.LAYER_VISIBILITY.get(this);
-        transactionLayerMaskAttrId = LayersConcept.TransactionAttribute.LAYER_MASK.get(this);
-        transactionLayerVisibilityAttributeId = LayersConcept.TransactionAttribute.LAYER_VISIBILITY.get(this);
-
-        if (attributeId != vertexLayerVisibilityAttributeId && attributeId != transactionLayerVisibilityAttributeId) {
-            // get the element type of selected layer mask and recalculate element mask
-            currentVisibleMask = (layerMaskSelectedAttributeId != Graph.NOT_FOUND)
-                    ? getIntValue(layerMaskSelectedAttributeId, 0) : 1;
-            final GraphElementType elementType = getAttributeElementType(attributeId);
-
-            // preload layerPrefs jit if it hasn't been instantiated
-            if (layerPrefs.isEmpty()) {
-                for (int i = 0; i < 31; i++) {
-                    layerPrefs.add((byte) 0b0);
-                }
-            }
-
-            updateLayerMask(attributeId, elementType, elementid, currentVisibleMask);
-        }
-    }
-
-    // update the layer visibility of all elements
-    private void updateAllLayerMasks() {
-        currentVisibleMask = (layerMaskSelectedAttributeId != Graph.NOT_FOUND)
-                ? getIntValue(layerMaskSelectedAttributeId, 0) : 1;
-
-        recalculateLayerVisibilities();
-
-        // loop through all vertexes and recalculate masks
-        final int vertexCount = getVertexCount();
-        for (int i = 0; i < vertexCount; i++) {
-            updateLayerMask(-1, GraphElementType.VERTEX, vStore.getElement(i), currentVisibleMask);
-        }
-
-        // loop through all transactions and recalculate masks
-        final int transactionCount = getTransactionCount();
-        for (int i = 0; i < transactionCount; i++) {
-            updateLayerMask(-1, GraphElementType.TRANSACTION, tStore.getElement(i), currentVisibleMask);
-        }
-    }
-
     @Override
     public void setByteValue(final int attribute, final int id, final byte value) {
         if (graphEdit == null) {
@@ -2268,7 +1883,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 }
             }
         }
-        updateLayerMask(attribute, id);
     }
 
     @Override
@@ -2299,7 +1913,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 }
             }
         }
-        updateLayerMask(attribute, id);
     }
 
     @Override
@@ -2329,17 +1942,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                     removeFromIndex(keyType, id);
                 }
             }
-        }
-
-        // if selected visible layers has changed then recalculate visibility of all objects, 
-        // otherwise check if the change impacts an objects visibility
-        if (attribute == layerMaskSelectedAttributeId && layerMaskSelectedAttributeId != Graph.NOT_FOUND) {
-            // one node changes, pass to change list then only iterate that?
-            // hits here when changing layers only. not on update of elements to layers
-            updateAllLayerMasks();
-        } else if (!avoidLayerUpdate) {
-            // Avoided update is only triggered on a graph bitmask selected attribute.
-            updateLayerMask(attribute, id);
         }
     }
 
@@ -2371,7 +1973,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 }
             }
         }
-        updateLayerMask(attribute, id);
     }
 
     @Override
@@ -2402,13 +2003,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 }
             }
         }
-        // ignore position attributes
-        if (attribute != vertexXAttributeId && attribute != transactionXAttributeId
-                && attribute != vertexYAttributeId && attribute != transactionYAttributeId
-                && attribute != vertexZAttributeId && attribute != transactionZAttributeId) {
-            updateLayerMask(attribute, id);
-        }
-
     }
 
     @Override
@@ -2439,7 +2033,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 }
             }
         }
-        updateLayerMask(attribute, id);
     }
 
     @Override
@@ -2469,10 +2062,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                     removeFromIndex(keyType, id);
                 }
             }
-        }
-        // ignore selected attributes
-        if (attribute != vertexSelectedAttributeId && attribute != transactionSelectedAttributeId) {
-            updateLayerMask(attribute, id);
         }
 
     }
@@ -2505,7 +2094,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 }
             }
         }
-        updateLayerMask(attribute, id);
     }
 
     @Override
@@ -2536,7 +2124,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 }
             }
         }
-        updateLayerMask(attribute, id);
     }
 
     @Override
@@ -2566,10 +2153,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                     removeFromIndex(keyType, id);
                 }
             }
-        }
-        // ignore camera attribute
-        if (attribute != cameraAttributeId) {
-            updateLayerMask(attribute, id);
         }
     }
 

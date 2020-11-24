@@ -228,7 +228,7 @@ public class GraphNode extends AbstractNode {
         return tc;
     }
 
-    public void makeBusy(final boolean busy) {
+    public synchronized void makeBusy(final boolean busy) {
         if (busy) {
             if (busyCount++ == 0) {
                 tc.makeBusy(true);

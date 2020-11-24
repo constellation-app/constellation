@@ -43,6 +43,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.F
 import au.gov.asd.tac.constellation.plugins.parameters.types.GraphAttributeParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
@@ -59,6 +60,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javafx.stage.FileChooser.ExtensionFilter;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Abstract geo export plugin.
@@ -155,7 +157,9 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                     final List<GraphAttributeParameterValue> attributeOptions = new ArrayList<>();
                     final ReadableGraph readableGraph = activeGraph.getReadableGraph();
                     try {
-                        final GraphElementType elementType = (GraphElementType) ((ElementTypeParameterValue) params.get(master.getId()).getObjectValue()).getObjectValue();
+                        final ParameterValue pv = params.get(master.getId()).getSingleChoice();
+                        assert(pv instanceof ElementTypeParameterValue);
+                        final GraphElementType elementType = ((ElementTypeParameterValue) pv).getGraphElementType();
                         switch (elementType) {
                             case TRANSACTION:
                                 final int transactionAttributeCount = readableGraph.getAttributeCount(GraphElementType.TRANSACTION);
@@ -241,7 +245,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
 
                     // if the vertex represents a valid geospatial shape, record it
                     boolean shapeFound = false;
-                    if ((!selectedOnly || vertexSelected) && vertexShape != null && !vertexShape.isEmpty()
+                    if ((!selectedOnly || vertexSelected) && StringUtils.isNotBlank(vertexShape)
                             && Shape.isValidGeoJson(vertexShape)) {
                         shapes.put(vertexIdentifier, vertexShape);
                         shapeFound = true;
@@ -299,7 +303,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
 
                     // if the transaction represents a valid geospatial shape, record it
                     boolean shapeFound = false;
-                    if ((!selectedOnly || transactionSelected) && transactionShape != null && !transactionShape.isEmpty()
+                    if ((!selectedOnly || transactionSelected) && StringUtils.isNotBlank(transactionShape)
                             && Shape.isValidGeoJson(transactionShape)) {
                         shapes.put(transactionIdentifier, transactionShape);
                         shapeFound = true;
@@ -344,7 +348,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
 
                     // if the source vertex represents a valid geospatial shape, record it
                     shapeFound = false;
-                    if ((!selectedOnly || transactionSelected) && sourceVertexShape != null && !sourceVertexShape.isEmpty()
+                    if ((!selectedOnly || transactionSelected) && StringUtils.isNotBlank(sourceVertexShape)
                             && Shape.isValidGeoJson(sourceVertexShape)) {
                         shapes.put(sourceVertexIdentifier, sourceVertexShape);
                         shapeFound = true;
@@ -389,7 +393,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
 
                     // if the destination vertex represents a valid geospatial shape, record it
                     shapeFound = false;
-                    if ((!selectedOnly || transactionSelected) && destinationVertexShape != null && !destinationVertexShape.isEmpty()
+                    if ((!selectedOnly || transactionSelected) && StringUtils.isNotBlank(destinationVertexShape)
                             && Shape.isValidGeoJson(destinationVertexShape)) {
                         shapes.put(destinationVertexIdentifier, destinationVertexShape);
                         shapeFound = true;

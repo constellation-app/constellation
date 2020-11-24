@@ -64,7 +64,7 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
     private Map<Integer, List<Integer>> childMapper;
     private Map<Integer, Integer> numDescendants;
 
-    public NestedKTrussDisplayPanel(KTrussState state, Graph graph) {
+    public NestedKTrussDisplayPanel(final KTrussState state, final Graph graph) {
         this.state = state;
         this.graph = graph;
         rectangleOffset = rectangleWidth / 2;
@@ -79,7 +79,7 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
             return;
         }
 
-        Graphics2D g2 = (Graphics2D) g;
+        final Graphics2D g2 = (Graphics2D) g;
 
         // Draw each rectangle.
         for (int i = 0; i < rectangles.length; i++) {
@@ -92,7 +92,7 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
         }
     }
 
-    public void selectRectangles(int k) {
+    public void selectRectangles(final int k) {
         selectedRectangles.clear();
         for (int i = 0; i < rectangles.length; i++) {
             if (state.getKTrussFromIndex(rectangles[i][0]) == k) {
@@ -103,7 +103,7 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
     }
 
     // Returns the x position on this panel of the given rectangle.
-    private int rectX(int rectangleNum) {
+    private int rectX(final int rectangleNum) {
         if (rectangles[rectangleNum][0] == 0) {
             return BORDER_SIZE - rectangleOffset;
         }
@@ -119,14 +119,14 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
     }
 
     // Returns the y position on this panel of the given rectangle.
-    private int rectY(int rectangleNum) {
-        int y = rectangles[rectangleNum][2];
+    private int rectY(final int rectangleNum) {
+        final int y = rectangles[rectangleNum][2];
         return expandHeight ? (y * PREFERRED_HEIGHT) / totalNeededHeight : y;
     }
 
     // Returns the height in this panel of the given rectangle
-    private int rectHeight(int rectangleNum) {
-        int h = rectangles[rectangleNum][1];
+    private int rectHeight(final int rectangleNum) {
+        final int h = rectangles[rectangleNum][1];
         return expandHeight ? (h * PREFERRED_HEIGHT) / totalNeededHeight : h;
     }
 
@@ -140,7 +140,7 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
         // Calculate the children of each component.
         for (int i = state.getNumComponents() - 1; i >= 0; i--) {
             // Get the parent (and its list of children) of the current component
-            int parent = state.getComponentParent(i);
+            final int parent = state.getComponentParent(i);
             List<Integer> childList = childMapper.get(parent);
 
             // These components are not K-trusses.
@@ -168,13 +168,13 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
                 if (numDescendants.get(i) == null) {
                     numDescendants.put(i, 0);
                 }
-                int currentDescendants = numDescendants.get(i) + (numDescendants.get(parent) == null ? 0 : numDescendants.get(parent));
+                final int currentDescendants = numDescendants.get(i) + (numDescendants.get(parent) == null ? 0 : numDescendants.get(parent));
                 numDescendants.put(parent, currentDescendants + 1);
             }
         }
 
         int totalGaps = 0;
-        for (int n : numDescendants.values()) {
+        for (final int n : numDescendants.values()) {
             totalGaps += (n == 0) ? 0 : (n - 1);
         }
         totalNeededHeight = state.getTotalVertsInTrusses() + (totalGaps * COMPONENT_VISUAL_GRAP);
@@ -182,7 +182,7 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
             expandHeight = true;
         }
 //        System.out.println(totalNeededHeight);
-        Dimension size = new Dimension(getWidth(), expandHeight ? PREFERRED_HEIGHT : totalNeededHeight);
+        final Dimension size = new Dimension(getWidth(), expandHeight ? PREFERRED_HEIGHT : totalNeededHeight);
         setSize(size);
 
         // Each rectangle will be of the form: {rectangle column, rectangle relative height, rectangle relative y-position}
@@ -196,10 +196,10 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
         for (int i = 0; i < state.getNumComponents(); i++) {
 
             //If we see a top level graph component which is not a k-truss, give it dummy values of 0 height and x/y positions.
-            List<Integer> childList = childMapper.get(i);
+            final List<Integer> childList = childMapper.get(i);
             if (childList == null) {
                 if (state.getComponentParent(i) == i) {
-                    int[] rect = {0, 0, 0};
+                    final int[] rect = {0, 0, 0};
                     rectangles[i] = rect;
                 }
                 continue;
@@ -207,31 +207,31 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
 
             // If the component has itself as a child, determine its height as the ratio of its size to the total number of vertices in trusses
             if (childList.contains(i)) {
-                int gaps = Math.max(0, numDescendants.get(i) - 1);
-                int height = state.getComponentSize(i) + (gaps * COMPONENT_VISUAL_GRAP);
+                final int gaps = Math.max(0, numDescendants.get(i) - 1);
+                final int height = state.getComponentSize(i) + (gaps * COMPONENT_VISUAL_GRAP);
                 // column number, height, ypos
-                int[] rect = {1, height, firstColumnHeight};
+                final int[] rect = {1, height, firstColumnHeight};
                 // Increase the cumulative height of the first column
                 firstColumnHeight += (height + COMPONENT_VISUAL_GRAP);
                 rectangles[i] = rect;
             }
 
             // Initialise the variables for position and size calculation of the children of the current component
-            Iterator<Integer> childIter = childList.iterator();
+            final Iterator<Integer> childIter = childList.iterator();
             // The cumulative height of the child column - used to determine the y-position of child components relative to the current component.
             int childColumnHeight = 0;
 
             // For each child of the current component, calculate its rectangle based on the the current component's rectangle.
             while (childIter.hasNext()) {
-                int child = childIter.next();
+                final int child = childIter.next();
                 if (child == i) {
                     continue;
                 }
                 // Calculate the height of the child based on the number of vertices it contains and the number of required gaps
-                int childGaps = Math.max(0, (numDescendants.get(child) - 1));
-                int childHeight = state.getComponentSize(child) + (childGaps * COMPONENT_VISUAL_GRAP);
+                final int childGaps = Math.max(0, (numDescendants.get(child) - 1));
+                final int childHeight = state.getComponentSize(child) + (childGaps * COMPONENT_VISUAL_GRAP);
                 // column number, height, ypos
-                int[] rect = {rectangles[i][0] + 1, childHeight, rectangles[i][2] + childColumnHeight};
+                final int[] rect = {rectangles[i][0] + 1, childHeight, rectangles[i][2] + childColumnHeight};
 //                System.out.println("x" + (rectangles[i][0] + 3) + "-truss : " + childHeight + " : " + (rectangles[i][2] + childColumnHeight));
                 rectangles[child] = rect;
                 // Increase the cumulative height of this child column
@@ -257,18 +257,18 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        int x = e.getX();
-        int y = e.getY();
+        final int x = e.getX();
+        final int y = e.getY();
         if (!e.isControlDown()) {
             selectedRectangles.clear();
         }
         // For each rectangle, check whether the mouse hit it, and if so, select the component corresponding to that rectangle
         for (int i = 0; i < rectangles.length; i++) {
-            int rectX = rectX(i);
-            int rectY = rectY(i);
-            int rectHeight = rectHeight(i);
+            final int rectX = rectX(i);
+            final int rectY = rectY(i);
+            final int rectHeight = rectHeight(i);
             if (x >= rectX && x <= rectX + rectangleWidth && y >= rectY && y <= rectY + rectHeight) {
-                int parent = state.getComponentParent(i);
+                final int parent = state.getComponentParent(i);
                 if (e.isControlDown() && selectedRectangles.contains(parent) && parent != i) {
                     return;
                 }
@@ -286,33 +286,33 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
         repaint();
     }
 
-    private void removeFromSelection(int i) {
+    private void removeFromSelection(final int i) {
         selectedRectangles.remove(i);
-        List<Integer> childList = childMapper.get(i);
+        final List<Integer> childList = childMapper.get(i);
         if (childList == null) {
             return;
         }
-        for (int child : childList) {
+        for (final int child : childList) {
             if (child != i) {
                 removeFromSelection(child);
             }
         }
     }
 
-    private void addToSelection(int i) {
+    private void addToSelection(final int i) {
         selectedRectangles.add(i);
-        List<Integer> childList = childMapper.get(i);
+        final List<Integer> childList = childMapper.get(i);
         if (childList == null) {
             return;
         }
-        for (int child : childList) {
+        for (final int child : childList) {
             if (child != i) {
                 addToSelection(child);
             }
         }
     }
 
-    private void selectComponent(int componentNum, int selectionMode) {
+    private void selectComponent(final int componentNum, final int selectionMode) {
         final NestedKTrussDisplayPanel.Select select = new NestedKTrussDisplayPanel.Select(state, componentNum, selectionMode);
         PluginExecution.withPlugin(select).interactively(true).executeLater(graph);
     }
@@ -358,7 +358,7 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
             // Update the selection of the graph's nodes
             for (int i = 0; i < graph.getVertexCount(); i++) {
                 // Determine whether we should select or deselect the current node based on whether it lies in the component of interest.
-                int vxID = graph.getVertex(i);
+                final int vxID = graph.getVertex(i);
 
                 if (state.isNodeInComponent(vxID, componentNum)) {
                     graph.setBooleanValue(vxSelectedAttr, vxID, selectionMode >= 0);
@@ -370,15 +370,15 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
             // Update the selection of the graph's links
             for (int i = 0; i < graph.getLinkCount(); i++) {
                 // Determine whether we should select or deselect all of the current link's transactions based on whether it lies in the component of interest.
-                int lnID = graph.getLink(i);
+                final int lnID = graph.getLink(i);
                 if (state.isLinkInComponent(lnID, componentNum)) {
                     for (int txPos = 0; txPos < graph.getLinkTransactionCount(lnID); txPos++) {
-                        int txID = graph.getLinkTransaction(lnID, txPos);
+                        final int txID = graph.getLinkTransaction(lnID, txPos);
                         graph.setBooleanValue(txSelectedAttr, txID, selectionMode >= 0);
                     }
                 } else if (selectionMode == 0) {
                     for (int txPos = 0; txPos < graph.getLinkTransactionCount(lnID); txPos++) {
-                        int txID = graph.getLinkTransaction(lnID, txPos);
+                        final int txID = graph.getLinkTransaction(lnID, txPos);
                         graph.setBooleanValue(txSelectedAttr, txID, false);
                     }
                 }

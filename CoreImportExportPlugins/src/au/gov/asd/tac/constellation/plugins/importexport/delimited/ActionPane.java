@@ -16,15 +16,10 @@
 package au.gov.asd.tac.constellation.plugins.importexport.delimited;
 
 import au.gov.asd.tac.constellation.plugins.PluginException;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -59,50 +54,27 @@ public class ActionPane extends BorderPane {
         dialog.showAndWait();
     }
 
-    public ActionPane(final ImportController importController) {
-        this.importController = importController;
+    public ActionPane(final ImportController controller) {
+        this.importController = controller;
 
-        HBox runBox = new HBox();
-        runBox.setSpacing(5);
-        runBox.setPadding(new Insets(5));
+        final HBox runBox = new HBox();
+        runBox.setPadding(new Insets(5, 5, 35, 5));
         setRight(runBox);
 
-        Button cancelButton = new Button("Cancel");
-        cancelButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent t) {
-                importController.cancelImport();
+        final Button importButton = new Button("Import");
+        importButton.setOnAction((ActionEvent t) -> {
+            try {
+                importController.processImport();
+            } catch (final IOException | PluginException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+                displayAlert("Import Failed", ex.getLocalizedMessage(), false);
+            } catch (final InterruptedException ex) {
+                Thread.currentThread().interrupt();
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+                displayAlert("import Failed", ex.getLocalizedMessage(), false);
             }
         });
 
-        Button importButton = new Button("Import");
-        importButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent t) {
-                try {
-
-                    final List<File> importedFiles = importController.processImport();
-                    final String[] filenames = new String[importedFiles.size()];
-                    long noOfRows = 0;
-                    for (int i = 0; i < importedFiles.size(); i++) {
-                        filenames[i] = importedFiles.get(i).getName();
-                        Path path = importedFiles.get(i).toPath();
-                        noOfRows += Files.lines(path).count();
-                    }
-                    displayAlert("Success", "Successfully imported " + noOfRows
-                            + " rows from the following file(s):\n" + String.join("\n", filenames), true);
-
-                } catch (final IOException | PluginException ex) {
-                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-                    displayAlert("Import Failed", ex.getLocalizedMessage(), false);
-                } catch (final InterruptedException ex) {
-                    Thread.currentThread().interrupt();
-                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-                    displayAlert("import Failed", ex.getLocalizedMessage(), false);
-                }
-            }
-        });
-
-        runBox.getChildren().addAll(cancelButton, importButton);
+        runBox.getChildren().add(importButton);
     }
 }

@@ -54,19 +54,15 @@ public class DualGraphFlushTester {
 
         final float[] coordSums = new float[1000];
 
-        GraphChangeListener gcl = new GraphChangeListener() {
-
-            @Override
-            public void graphChanged(GraphChangeEvent event) {
-                ReadableGraph rg = dg.getReadableGraph();
-                try {
-                    for (int i = 0; i < 1000; i++) {
-                        final int vxId = rg.getVertex(i);
-                        coordSums[i] = rg.getFloatValue(x, vxId) + rg.getFloatValue(y, vxId) + rg.getFloatValue(z, vxId);
-                    }
-                } finally {
-                    rg.release();
+        GraphChangeListener gcl = (GraphChangeEvent event) -> {
+            ReadableGraph rg = dg.getReadableGraph();
+            try {
+                for (int i = 0; i < 1000; i++) {
+                    final int vxId = rg.getVertex(i);
+                    coordSums[i] = rg.getFloatValue(x, vxId) + rg.getFloatValue(y, vxId) + rg.getFloatValue(z, vxId);
                 }
+            } finally {
+                rg.release();
             }
         };
         dg.addGraphChangeListener(gcl);

@@ -46,7 +46,7 @@ public abstract class GraphAttributeMerger {
 
     public abstract String getId();
 
-    public abstract boolean mergeAttribute(final GraphWriteMethods graph, final GraphElementType elementType, 
+    public abstract boolean mergeAttribute(final GraphWriteMethods graph, final GraphElementType elementType,
             final int survivingElement, final int mergedElement, final int attribute);
 
 }

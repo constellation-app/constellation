@@ -15,15 +15,16 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.plugins.clean;
 
-import au.gov.asd.tac.constellation.graph.processing.GraphRecordStore;
-import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
-import au.gov.asd.tac.constellation.graph.processing.RecordStore;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.plugins.PluginInteraction;
-import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.plugins.text.TextPluginInteraction;
+import au.gov.asd.tac.constellation.graph.StoreGraph;
+import au.gov.asd.tac.constellation.graph.schema.Schema;
+import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
+import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
-import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -39,6 +40,12 @@ import org.testng.annotations.Test;
  */
 public class SplitNodesPluginNGTest {
 
+    private int vertexIdentifierAttribute, vertexTypeAttribute, vertexLatitudeAttribute, vertexLongitudeAttribute, vertexSelectedAttribute,
+            vertexAttributeX, vertexAttributeY, vertexAttributeZ;
+    private int vxId1, vxId2, vxId3, vxId4, txId1, txId2, txId3;
+    private int transactionTypeAttributeId;
+    private StoreGraph graph;
+
     public SplitNodesPluginNGTest() {
     }
 
@@ -52,10 +59,90 @@ public class SplitNodesPluginNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // create an analytic graph
+        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
+        graph = new StoreGraph(schema);
+
+        transactionTypeAttributeId = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
+
+        final int attrX = VisualConcept.VertexAttribute.X.ensure(graph);
+        final int attrY = VisualConcept.VertexAttribute.Y.ensure(graph);
+        final int attrZ = VisualConcept.VertexAttribute.Z.ensure(graph);
+
+        // add attributes
+        vertexIdentifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
+        vertexAttributeX = VisualConcept.VertexAttribute.X.ensure(graph);
+        vertexAttributeY = VisualConcept.VertexAttribute.Y.ensure(graph);
+        vertexAttributeZ = VisualConcept.VertexAttribute.Z.ensure(graph);
+        vertexTypeAttribute = AnalyticConcept.VertexAttribute.TYPE.ensure(graph);
+        vertexLatitudeAttribute = SpatialConcept.VertexAttribute.LATITUDE.ensure(graph);
+        vertexLongitudeAttribute = SpatialConcept.VertexAttribute.LONGITUDE.ensure(graph);
+        vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
+
+        // add vertices
+        vxId1 = graph.addVertex();
+        vxId2 = graph.addVertex();
+        vxId3 = graph.addVertex();
+        vxId4 = graph.addVertex();
+
+        // set the identifier of four vertices to somthing unique but similar, and the remaining vertex to a duplicate
+        graph.setStringValue(vertexIdentifierAttribute, vxId1, "VERTEX_1@VERTEX_2@VERTEX_3");
+        graph.setStringValue(vertexIdentifierAttribute, vxId2, "VERTEX_4,VERTEX_5");
+        graph.setStringValue(vertexIdentifierAttribute, vxId3, "VERTEX_6,VERTEX_7");
+        graph.setStringValue(vertexIdentifierAttribute, vxId4, "YYY");
+
+        // set the x,y,z of the vertices that will be splitted
+        graph.setDoubleValue(vertexAttributeX, vxId1, attrX);
+        graph.setDoubleValue(vertexAttributeY, vxId1, attrY);
+        graph.setDoubleValue(vertexAttributeZ, vxId1, attrZ);
+        graph.setDoubleValue(vertexAttributeX, vxId2, attrX + 10);
+        graph.setDoubleValue(vertexAttributeY, vxId2, attrY + 10);
+        graph.setDoubleValue(vertexAttributeZ, vxId2, attrZ);
+
+        // set the type of four vertices to a schema type, and the remaining two vertices to a non-schema type
+        graph.setStringValue(vertexTypeAttribute, vxId1, "Online Identifier");
+        graph.setStringValue(vertexTypeAttribute, vxId2, "Online Identifier");
+        graph.setStringValue(vertexTypeAttribute, vxId3, "Special Identifier");
+        graph.setStringValue(vertexTypeAttribute, vxId4, "Special Identifier");
+
+        // set the latitude and longitude of each pair of vertices to be geospatially close
+        graph.setFloatValue(vertexLatitudeAttribute, vxId1, 25.0f);
+        graph.setFloatValue(vertexLongitudeAttribute, vxId1, 25.0f);
+        graph.setFloatValue(vertexLatitudeAttribute, vxId2, 26.0f);
+        graph.setFloatValue(vertexLongitudeAttribute, vxId2, 26.0f);
+        graph.setFloatValue(vertexLatitudeAttribute, vxId3, -25.0f);
+        graph.setFloatValue(vertexLongitudeAttribute, vxId3, -25.0f);
+        graph.setFloatValue(vertexLatitudeAttribute, vxId4, -30.0f);
+        graph.setFloatValue(vertexLongitudeAttribute, vxId4, -30.0f);
+
+        // set all vertices to be selected
+        graph.setBooleanValue(vertexSelectedAttribute, vxId1, true);
+        graph.setBooleanValue(vertexSelectedAttribute, vxId2, true);
+        graph.setBooleanValue(vertexSelectedAttribute, vxId3, true);
+        graph.setBooleanValue(vertexSelectedAttribute, vxId4, true);
+
+        //Add Transactions
+        txId1 = graph.addTransaction(vxId1, vxId3, true);
+        txId2 = graph.addTransaction(vxId2, vxId4, true);
+        txId3 = graph.addTransaction(vxId1, vxId2, true);
+
+        //Set Transaction Type to 'Network'
+        graph.setStringValue(transactionTypeAttributeId, txId1, "Network");
+        graph.setStringValue(transactionTypeAttributeId, txId2, "Network");
+        graph.setStringValue(transactionTypeAttributeId, txId3, "Network");
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        graph = null;
+    }
+
+    @Test
+    public void testGetType() {
+        MergeNodesPlugin instance = new MergeNodesPlugin();
+        String expResult = DataAccessPluginCoreType.CLEAN;
+        String result = instance.getType();
+        assertEquals(result, expResult);
     }
 
     /**
@@ -64,113 +151,230 @@ public class SplitNodesPluginNGTest {
      * @throws java.lang.Exception
      */
     @Test
-    public void testQueryWithNoTypes() throws Exception {
-        final RecordStore query = new GraphRecordStore();
-        query.add();
-        query.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, "abc@def");
-
-        final RecordStore expResult = new GraphRecordStore();
-        expResult.add();
-        expResult.set(GraphRecordStoreUtilities.SOURCE + GraphRecordStoreUtilities.ID, null);
-        expResult.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, "abc");
-        expResult.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, "def");
-        expResult.set(GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.TYPE, AnalyticConcept.TransactionType.CORRELATION);
-
-        final PluginInteraction interaction = new TextPluginInteraction();
+    public void testQueryWithNoTypes_WithoutDuplicateTransactions() throws Exception {
         final SplitNodesPlugin instance = new SplitNodesPlugin();
         final PluginParameters parameters = instance.createParameters();
-        parameters.getParameters().get(SplitNodesPlugin.SPLIT_PARAMETER_ID).setStringValue("@");
 
-        final RecordStore result = instance.query(query, interaction, parameters);
-        assertEquals(result, expResult);
+        parameters.setStringValue(SplitNodesPlugin.SPLIT_PARAMETER_ID, "@");
+        parameters.setStringValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, "false");
+        PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
+
+        assertEquals(graph.getVertexCount(), 5);
+        assertEquals(graph.getTransactionCount(), 4);
+        assertEquals(graph.getVertexTransactionCount(vxId1), 3);
+        // Check transactions of new node (Assumed the new node is at vxId4 + 1)
+        assertEquals(graph.getVertexTransactionCount(vxId4 + 1), 1);
+        //assert new transaction is of type 'Correlation'
+        assertEquals(graph.getStringValue(transactionTypeAttributeId, graph.getVertexTransaction(vxId4 + 1, 0)), "Correlation");
     }
 
     @Test
-    public void testQueryWithTypes() throws Exception {
-        final RecordStore query = new GraphRecordStore();
-        query.add();
-        query.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, "+123456789:192.168.1.1");
-
-        final RecordStore expResult = new GraphRecordStore();
-        expResult.add();
-        expResult.set(GraphRecordStoreUtilities.SOURCE + GraphRecordStoreUtilities.ID, null);
-        expResult.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, "+123456789");
-        expResult.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, AnalyticConcept.VertexType.TELEPHONE_IDENTIFIER);
-        expResult.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, "192.168.1.1");
-        expResult.set(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.TYPE, AnalyticConcept.VertexType.HOST_NAME);
-        expResult.set(GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.TYPE, AnalyticConcept.TransactionType.CORRELATION);
-
-        final PluginInteraction interaction = new TextPluginInteraction();
+    public void testQueryWithNoTypes_WithDuplicateTransactions() throws Exception {
         final SplitNodesPlugin instance = new SplitNodesPlugin();
         final PluginParameters parameters = instance.createParameters();
-        parameters.getParameters().get(SplitNodesPlugin.SPLIT_PARAMETER_ID).setStringValue(":");
 
-        final RecordStore result = instance.query(query, interaction, parameters);
-        assertEquals(result, expResult);
+        parameters.setStringValue(SplitNodesPlugin.SPLIT_PARAMETER_ID, "@");
+        parameters.setStringValue(SplitNodesPlugin.DUPLICATE_TRANSACTIONS_PARAMETER_ID, "true");
+        parameters.setStringValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, "false");
+        PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
+
+        assertEquals(graph.getVertexCount(), 5);
+        assertEquals(graph.getTransactionCount(), 5);
+        assertEquals(graph.getVertexTransactionCount(vxId1), 2);
+        // Check transactions of new node(Assumed the new node is at vxId4 + 1)
+        assertEquals(graph.getVertexTransactionCount(vxId4 + 1), 2);
+        //assert new transactions are of type 'Network'
+        assertEquals(graph.getStringValue(transactionTypeAttributeId, graph.getVertexTransaction(vxId4 + 1, 0)), "Network");
+        assertEquals(graph.getStringValue(transactionTypeAttributeId, graph.getVertexTransaction(vxId4 + 1, 1)), "Network");
     }
 
     @Test
-    public void testQueryAllOccurancesSelected() throws Exception {
-        final RecordStore query = new GraphRecordStore();
-        query.add();
-        query.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, "1:2:3:4");
-
-        final RecordStore expResult = new GraphRecordStore();
-        // adding each of the expected nodes
-        expResult.add();
-        expResult.set(GraphRecordStoreUtilities.SOURCE + GraphRecordStoreUtilities.ID, null);
-        expResult.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, "1");
-        expResult.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, "2");
-        expResult.set(GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.TYPE, AnalyticConcept.TransactionType.CORRELATION);
-        expResult.add();
-        expResult.set(GraphRecordStoreUtilities.SOURCE + GraphRecordStoreUtilities.ID, null);
-        expResult.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, "1");
-        expResult.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, "3");
-        expResult.set(GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.TYPE, AnalyticConcept.TransactionType.CORRELATION);
-        expResult.add();
-        expResult.set(GraphRecordStoreUtilities.SOURCE + GraphRecordStoreUtilities.ID, null);
-        expResult.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, "1");
-        expResult.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, "4");
-        expResult.set(GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.TYPE, AnalyticConcept.TransactionType.CORRELATION);
-
-        final PluginInteraction interaction = new TextPluginInteraction();
+    public void testQueryWithTypes_WithoutDuplicateTransactions() throws Exception {
         final SplitNodesPlugin instance = new SplitNodesPlugin();
         final PluginParameters parameters = instance.createParameters();
-        parameters.getParameters().get(SplitNodesPlugin.SPLIT_PARAMETER_ID).setStringValue(":");
-        parameters.getParameters().get(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID).setBooleanValue(true);
 
-        final RecordStore result = instance.query(query, interaction, parameters);
-        assertEquals(result, expResult);
+        parameters.setStringValue(SplitNodesPlugin.SPLIT_PARAMETER_ID, "@");
+        parameters.setStringValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, "false");
+        parameters.setStringValue(SplitNodesPlugin.TRANSACTION_TYPE_PARAMETER_ID, "Similarity");
+        PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
+
+        assertEquals(graph.getVertexCount(), 5);
+        assertEquals(graph.getTransactionCount(), 4);
+        assertEquals(graph.getVertexTransactionCount(vxId1), 3);
+        // Check transactions of new node (Assumed the new node is at vxId4 + 1)
+        assertEquals(graph.getVertexTransactionCount(vxId4 + 1), 1);
+        //assert new transaction is of type 'Correlation'
+        assertEquals(graph.getStringValue(transactionTypeAttributeId, graph.getVertexTransaction(vxId4 + 1, 0)), "Similarity");
+
     }
 
     @Test
-    public void testQueryWithMultipleNodes() throws Exception {
-        final RecordStore query = new GraphRecordStore();
-        query.add();
-        query.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, "hello world");
-        query.add();
-        query.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, "goodbye world");
-
-        final RecordStore expResult = new GraphRecordStore();
-        expResult.add();
-        expResult.set(GraphRecordStoreUtilities.SOURCE + GraphRecordStoreUtilities.ID, null);
-        expResult.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, "hello");
-        expResult.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, "world");
-        expResult.set(GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.TYPE, AnalyticConcept.TransactionType.CORRELATION);
-
-        expResult.add();
-        expResult.set(GraphRecordStoreUtilities.SOURCE + GraphRecordStoreUtilities.ID, null);
-        expResult.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, "goodbye");
-        expResult.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, "world");
-        expResult.set(GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.TYPE, AnalyticConcept.TransactionType.CORRELATION);
-
-        final PluginInteraction interaction = new TextPluginInteraction();
+    public void testQueryWithTypes_WithDuplicateTransactions() throws Exception {
         final SplitNodesPlugin instance = new SplitNodesPlugin();
         final PluginParameters parameters = instance.createParameters();
-        parameters.getParameters().get(SplitNodesPlugin.SPLIT_PARAMETER_ID).setStringValue(" ");
 
-        final RecordStore result = instance.query(query, interaction, parameters);
-        assertEquals(result, expResult);
+        parameters.setStringValue(SplitNodesPlugin.SPLIT_PARAMETER_ID, "@");
+        parameters.setStringValue(SplitNodesPlugin.DUPLICATE_TRANSACTIONS_PARAMETER_ID, "true");
+        parameters.setStringValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, "false");
+        parameters.setStringValue(SplitNodesPlugin.TRANSACTION_TYPE_PARAMETER_ID, "Similarity");
+        PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
+
+        assertEquals(graph.getVertexCount(), 5);
+        assertEquals(graph.getTransactionCount(), 5);
+        assertEquals(graph.getVertexTransactionCount(vxId1), 2);
+        // Check transactions of new node(Assumed the new node is at vxId4 + 1)
+        assertEquals(graph.getVertexTransactionCount(vxId4 + 1), 2);
+        //assert new transactions are of type 'Network'
+        assertEquals(graph.getStringValue(transactionTypeAttributeId, graph.getVertexTransaction(vxId4 + 1, 0)), "Network");
+        assertEquals(graph.getStringValue(transactionTypeAttributeId, graph.getVertexTransaction(vxId4 + 1, 1)), "Network");
     }
 
+    @Test
+    public void testQueryAllOccurancesSelected_WithoutDuplicateTransactions() throws Exception {
+        final SplitNodesPlugin instance = new SplitNodesPlugin();
+        final PluginParameters parameters = instance.createParameters();
+
+        parameters.setStringValue(SplitNodesPlugin.SPLIT_PARAMETER_ID, "@");
+        parameters.setStringValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, "true");
+        PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
+
+        assertEquals(graph.getVertexCount(), 6);
+        assertEquals(graph.getTransactionCount(), 5);
+        assertEquals(graph.getVertexTransactionCount(vxId1), 4);
+        // Check transactions of new nodes (Assumed the new nodes are at vxId4 + 1 and vxId4 + 2
+        assertEquals(graph.getVertexTransactionCount(vxId4 + 1), 1);
+        assertEquals(graph.getVertexTransactionCount(vxId4 + 2), 1);
+        //assert new transaction is of type 'Correlation'
+        assertEquals(graph.getStringValue(transactionTypeAttributeId, graph.getVertexTransaction(vxId4 + 1, 0)), "Correlation");
+        assertEquals(graph.getStringValue(transactionTypeAttributeId, graph.getVertexTransaction(vxId4 + 2, 0)), "Correlation");
+    }
+
+    @Test
+    public void testQueryAllOccurancesSelected_WithDuplicateTransactions() throws Exception {
+        final SplitNodesPlugin instance = new SplitNodesPlugin();
+        final PluginParameters parameters = instance.createParameters();
+
+        parameters.setStringValue(SplitNodesPlugin.SPLIT_PARAMETER_ID, "@");
+        parameters.setStringValue(SplitNodesPlugin.DUPLICATE_TRANSACTIONS_PARAMETER_ID, "true");
+        parameters.setStringValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, "true");
+        PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
+
+        assertEquals(graph.getVertexCount(), 6);
+        assertEquals(graph.getTransactionCount(), 7);
+        assertEquals(graph.getVertexTransactionCount(vxId1), 2);
+        // Check transactions of new nodes (Assumed the new nodes are at vxId4 + 1 and vxId4 + 2)
+        assertEquals(graph.getVertexTransactionCount(vxId4 + 1), 2);
+        assertEquals(graph.getVertexTransactionCount(vxId4 + 2), 2);
+        //assert new transactions are of type 'Network'
+        assertEquals(graph.getStringValue(transactionTypeAttributeId, graph.getVertexTransaction(vxId4 + 1, 0)), "Network");
+        assertEquals(graph.getStringValue(transactionTypeAttributeId, graph.getVertexTransaction(vxId4 + 1, 1)), "Network");
+        assertEquals(graph.getStringValue(transactionTypeAttributeId, graph.getVertexTransaction(vxId4 + 2, 0)), "Network");
+        assertEquals(graph.getStringValue(transactionTypeAttributeId, graph.getVertexTransaction(vxId4 + 2, 1)), "Network");
+    }
+
+    @Test
+    public void testQueryWithMultipleNodes_WithoutDuplicateTransactions() throws Exception {
+        final SplitNodesPlugin instance = new SplitNodesPlugin();
+        final PluginParameters parameters = instance.createParameters();
+
+        parameters.setStringValue(SplitNodesPlugin.SPLIT_PARAMETER_ID, ",");
+        parameters.setStringValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, "true");
+        PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
+
+        assertEquals(graph.getVertexCount(), 6);
+        assertEquals(graph.getTransactionCount(), 5);
+        assertEquals(graph.getVertexTransactionCount(vxId3), 2);
+        assertEquals(graph.getVertexTransactionCount(vxId2), 3);
+        // Check transactions of new nodes (Assumed the new nodes are at vxId4 + 1 and vxId4 + 2)
+        assertEquals(graph.getVertexTransactionCount(vxId4 + 1), 1);
+        assertEquals(graph.getVertexTransactionCount(vxId4 + 2), 1);
+        //assert new transaction is of type 'Correlation'
+        assertEquals(graph.getStringValue(transactionTypeAttributeId, graph.getVertexTransaction(vxId4 + 1, 0)), "Correlation");
+        assertEquals(graph.getStringValue(transactionTypeAttributeId, graph.getVertexTransaction(vxId4 + 2, 0)), "Correlation");
+    }
+
+    @Test
+    public void testQueryWithMultipleNodes_WithDuplicateTransactions() throws Exception {
+        final SplitNodesPlugin instance = new SplitNodesPlugin();
+        final PluginParameters parameters = instance.createParameters();
+
+        parameters.setStringValue(SplitNodesPlugin.SPLIT_PARAMETER_ID, ",");
+        parameters.setStringValue(SplitNodesPlugin.DUPLICATE_TRANSACTIONS_PARAMETER_ID, "true");
+        parameters.setStringValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, "true");
+        PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
+
+        assertEquals(graph.getVertexCount(), 6);
+        assertEquals(graph.getTransactionCount(), 6);
+        assertEquals(graph.getVertexTransactionCount(vxId3), 1);
+        assertEquals(graph.getVertexTransactionCount(vxId2), 2);
+        // Check transactions of new node(Assumed the new node from vxId2 is at vxId4 + 1 and the new node from vxId3 is at vxId4 + 2)
+        assertEquals(graph.getVertexTransactionCount(vxId4 + 1), 2);
+        assertEquals(graph.getVertexTransactionCount(vxId4 + 2), 1);
+        //assert new transactions are of type 'Network'
+        assertEquals(graph.getStringValue(transactionTypeAttributeId, graph.getVertexTransaction(vxId4 + 1, 0)), "Network");
+        assertEquals(graph.getStringValue(transactionTypeAttributeId, graph.getVertexTransaction(vxId4 + 1, 1)), "Network");
+        assertEquals(graph.getStringValue(transactionTypeAttributeId, graph.getVertexTransaction(vxId4 + 2, 0)), "Network");
+    }
+
+    @Test
+    public void testQueryWithNoResultingNodesToSplitTo_AllOccurancesNotSelected_WithoutDuplicateTransactions() throws Exception {
+        final SplitNodesPlugin instance = new SplitNodesPlugin();
+        final PluginParameters parameters = instance.createParameters();
+
+        parameters.setStringValue(SplitNodesPlugin.SPLIT_PARAMETER_ID, "Y");
+        parameters.setStringValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, "false");
+        PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
+
+        // Assert the node is renamed to "YY"
+        assertEquals(graph.getVertexCount(), 4);
+        assertEquals(graph.getTransactionCount(), 3);
+        assertEquals(graph.getStringValue(vertexIdentifierAttribute, vxId4), "YY");
+    }
+
+    @Test
+    public void testQueryWithNoResultingNodesToSplitTo_AllOccurancesSelected_WithoutDuplicateTransactions() throws Exception {
+        final SplitNodesPlugin instance = new SplitNodesPlugin();
+        final PluginParameters parameters = instance.createParameters();
+
+        parameters.setStringValue(SplitNodesPlugin.SPLIT_PARAMETER_ID, "Y");
+        parameters.setStringValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, "true");
+        PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
+
+        // Assert no new nodes are created
+        assertEquals(graph.getVertexCount(), 4);
+        assertEquals(graph.getTransactionCount(), 3);
+        assertEquals(graph.getStringValue(vertexIdentifierAttribute, vxId4), "YYY");
+    }
+
+    @Test
+    public void testQueryWithNoResultingNodesToSplitTo_AllOccurancesNotSelected_WithDuplicateTransactions() throws Exception {
+        final SplitNodesPlugin instance = new SplitNodesPlugin();
+        final PluginParameters parameters = instance.createParameters();
+
+        parameters.setStringValue(SplitNodesPlugin.SPLIT_PARAMETER_ID, "Y");
+        parameters.setStringValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, "false");
+        parameters.setStringValue(SplitNodesPlugin.DUPLICATE_TRANSACTIONS_PARAMETER_ID, "true");
+        PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
+
+        // Assert the node is renamed to "YY"
+        assertEquals(graph.getVertexCount(), 4);
+        assertEquals(graph.getTransactionCount(), 3);
+        assertEquals(graph.getStringValue(vertexIdentifierAttribute, vxId4), "YY");
+    }
+
+    @Test
+    public void testQueryWithNoResultingNodesToSplitTo_AllOccurancesSelected_WithDuplicateTransactions() throws Exception {
+        final SplitNodesPlugin instance = new SplitNodesPlugin();
+        final PluginParameters parameters = instance.createParameters();
+
+        parameters.setStringValue(SplitNodesPlugin.SPLIT_PARAMETER_ID, "Y");
+        parameters.setStringValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, "true");
+        parameters.setStringValue(SplitNodesPlugin.DUPLICATE_TRANSACTIONS_PARAMETER_ID, "true");
+        PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
+
+        // Assert no new nodes are created
+        assertEquals(graph.getVertexCount(), 4);
+        assertEquals(graph.getTransactionCount(), 3);
+        assertEquals(graph.getStringValue(vertexIdentifierAttribute, vxId4), "YYY");
+    }
 }

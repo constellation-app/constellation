@@ -186,6 +186,21 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     private static final Icon DIRECTED_ICON = UserInterfaceIconProvider.DIRECTED.buildIcon(16);
     private static final Icon UNDIRECTED_ICON = UserInterfaceIconProvider.UNDIRECTED.buildIcon(16);
 
+    private static final String MODE_2D_SHORT_DESCRIPTION = "Toggle 2D";
+    private static final String MODE_3D_SHORT_DESCRIPTION = "Toggle 3D";
+    private static final String DRAWING_MODE_SHORT_DESCRIPTION = "Toggle Draw Mode";
+    private static final String SELECTION_MODE_SHORT_DESCRIPTION = "Toggle Selection Mode";
+    private static final String DIRECTED_SHORT_DESCRIPTION = "Toggle Draw Directed Transactions";
+    private static final String UNDIRECTED_SHORT_DESCRIPTION = "Toggle Draw Undirected Transactions";
+    private static final String SHOW_BLAZES_SHORT_DESCRIPTION = "Show Blazes";
+    private static final String HIDE_BLAZES_SHORT_DESCRIPTION = "Hide Blazes";
+    private static final String SHOW_NODE_LABELS_SHORT_DESCRIPTION = "Show Node Labels";
+    private static final String HIDE_NODE_LABELS_SHORT_DESCRIPTION = "Hide Node Labels";
+    private static final String SHOW_CONNECTION_LABELS_SHORT_DESCRIPTION = "Show Connection Labels";
+    private static final String HIDE_CONNECTION_LABELS_SHORT_DESCRIPTION = "Hide Connection Labels";
+    private static final String ENABLE_GRAPH_VISIBILITY_THRESHOLD_LABELS_SHORT_DESCRIPTION = "Enable Graph Visibility Threshold";
+    private static final String DISABLE_GRAPH_VISIBILITY_THRESHOLD_LABELS_SHORT_DESCRIPTION = "Disable Graph Visibility Threshold";
+
     private final GraphVisualManagerFactory graphVisualManagerFactory;
     private VisualManager visualManager;
     private InstanceContent content;
@@ -405,6 +420,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
         graphVisualManagerFactory = Lookup.getDefault().lookup(GraphVisualManagerFactory.class);
         try {
+            // This may throw if we are constructing a Vulkan visual manager
             visualManager = graphVisualManagerFactory.constructVisualManager(graph);
             visualManager.startProcessing();
             graphNode = new GraphNode(graph, gdo, this, visualManager);
@@ -433,6 +449,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         this.graph = graph;
         graphVisualManagerFactory = Lookup.getDefault().lookup(GraphVisualManagerFactory.class);
         try {
+            // This may throw if we are constructing a Vulkan visual manager
             visualManager = graphVisualManagerFactory.constructVisualManager(graph);
             visualManager.startProcessing();
 
@@ -607,16 +624,23 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             drawNodesAction.putValue(Action.SELECTED_KEY, drawFlags.drawNodes());
             drawConnectionsAction.putValue(Action.SELECTED_KEY, drawFlags.drawConnections());
             drawNodeLabelsAction.putValue(Action.SELECTED_KEY, drawFlags.drawNodeLabels());
+            drawNodeLabelsAction.putValue(Action.SHORT_DESCRIPTION, drawFlags.drawNodeLabels() ? HIDE_NODE_LABELS_SHORT_DESCRIPTION : SHOW_NODE_LABELS_SHORT_DESCRIPTION);
             drawConnectionLabelsAction.putValue(Action.SELECTED_KEY, drawFlags.drawConnectionLabels());
+            drawConnectionLabelsAction.putValue(Action.SHORT_DESCRIPTION, drawFlags.drawConnectionLabels() ? HIDE_CONNECTION_LABELS_SHORT_DESCRIPTION : SHOW_CONNECTION_LABELS_SHORT_DESCRIPTION);
             drawBlazesAction.putValue(Action.SELECTED_KEY, drawFlags.drawBlazes());
+            drawBlazesAction.putValue(Action.SHORT_DESCRIPTION, drawFlags.drawBlazes() ? HIDE_BLAZES_SHORT_DESCRIPTION : SHOW_BLAZES_SHORT_DESCRIPTION);
             display3dAction.putValue(Action.SELECTED_KEY, isDisplay3D);
             display3dAction.putValue(Action.SMALL_ICON, isDisplay3D ? MODE_3D_ICON : MODE_2D_ICON);
+            display3dAction.putValue(Action.SHORT_DESCRIPTION, isDisplay3D ? MODE_3D_SHORT_DESCRIPTION : MODE_2D_SHORT_DESCRIPTION);
             toggleGraphVisibilityAction.putValue(Action.SELECTED_KEY, visibleAboveThreshold);
             toggleGraphVisibilityAction.putValue(Action.SMALL_ICON, visibleAboveThreshold ? VISIBLE_ICON : HIDDEN_ICON);
+            toggleGraphVisibilityAction.putValue(Action.SHORT_DESCRIPTION, visibleAboveThreshold ? DISABLE_GRAPH_VISIBILITY_THRESHOLD_LABELS_SHORT_DESCRIPTION : ENABLE_GRAPH_VISIBILITY_THRESHOLD_LABELS_SHORT_DESCRIPTION);
             toggleSelectModeAction.putValue(Action.SELECTED_KEY, isDrawingMode);
             toggleSelectModeAction.putValue(Action.SMALL_ICON, isDrawingMode ? DRAWING_MODE_ICON : SELECT_MODE_ICON);
+            toggleSelectModeAction.putValue(Action.SHORT_DESCRIPTION, isDrawingMode ? DRAWING_MODE_SHORT_DESCRIPTION : SELECTION_MODE_SHORT_DESCRIPTION);
             toggleDrawDirectedAction.putValue(Action.SELECTED_KEY, isDrawingDirectedTransactions);
             toggleDrawDirectedAction.putValue(Action.SMALL_ICON, isDrawingDirectedTransactions ? DIRECTED_ICON : UNDIRECTED_ICON);
+            toggleDrawDirectedAction.putValue(Action.SHORT_DESCRIPTION, isDrawingDirectedTransactions ? DIRECTED_SHORT_DESCRIPTION : UNDIRECTED_SHORT_DESCRIPTION);
             toggleDrawDirectedAction.setEnabled(isDrawingMode);
 
             switch (connectionMode) {
@@ -649,10 +673,10 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
             if (o.equals(DISCARD)) {
                 savable.setModified(false);
-            } else if (o.equals(SAVE)){
+            } else if (o.equals(SAVE)) {
                 try {
                     savable.handleSave();
-                    if (!savable.isSaved()){
+                    if (!savable.isSaved()) {
                         return false;
                     }
                 } catch (IOException ex) {
@@ -918,6 +942,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         public boolean isSaved() {
             return isSaved;
         }
+
         /**
          * register the instance if in modified state
          */
@@ -1070,7 +1095,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             this.deleteOldGdo = deleteOldGdo;
             cancelled = false;
 
-            makeBusy(true);
+            GraphNode.getGraphNode(graph).makeBusy(true);
         }
 
         @Override
@@ -1145,7 +1170,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 }
             }).executeLater(null);
 
-            makeBusy(false);
+            GraphNode.getGraphNode(graph).makeBusy(false);
         }
     }
 }

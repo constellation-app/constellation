@@ -25,6 +25,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 import java.util.TimeZone;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -175,7 +176,7 @@ public class LocalDateParameterType extends PluginParameterType<LocalDateParamet
 
         @Override
         public boolean setStringValue(final String s) {
-            final LocalDate newld = s == null || s.isEmpty() ? null : LocalDate.parse(s);
+            final LocalDate newld = StringUtils.isBlank(s) ? null : LocalDate.parse(s);
 
             return set(newld);
         }

@@ -17,9 +17,9 @@ package au.gov.asd.tac.constellation.plugins.algorithms.sna;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;

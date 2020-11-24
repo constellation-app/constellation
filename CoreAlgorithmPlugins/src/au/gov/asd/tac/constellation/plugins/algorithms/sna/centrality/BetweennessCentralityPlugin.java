@@ -15,13 +15,13 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms.sna.centrality;
 
-import au.gov.asd.tac.constellation.plugins.algorithms.sna.SnaConcept;
-import au.gov.asd.tac.constellation.plugins.algorithms.sna.centrality.PathScoringUtilities.ScoreType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.algorithms.sna.SnaConcept;
+import au.gov.asd.tac.constellation.plugins.algorithms.sna.centrality.PathScoringUtilities.ScoreType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
@@ -153,23 +153,26 @@ public class BetweennessCentralityPlugin extends SimpleEditPlugin {
         // update the graph with betweenness values
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
             final int vertexId = graph.getVertex(vertexPosition);
+            final float betweennessAttributeValue;
             if (normaliseByPossible) {
                 if (normaliseConnectedComponents) {
                     final float subgraphVertexCount = subgraphs[vertexPosition].cardinality();
-                    graph.setFloatValue(betweennessAttribute, vertexId, betweennesses[vertexPosition] / (((subgraphVertexCount - 1) * (subgraphVertexCount - 2)) / 2));
+                    betweennessAttributeValue = betweennesses[vertexPosition] / (((subgraphVertexCount - 1) * (subgraphVertexCount - 2)) / 2);
                 } else {
-                    graph.setFloatValue(betweennessAttribute, vertexId, betweennesses[vertexPosition] / (((vertexCount - 1) * (vertexCount - 2)) / 2f));
+                    betweennessAttributeValue = betweennesses[vertexPosition] / (((vertexCount - 1) * (vertexCount - 2)) / 2f);
                 }
             } else if (normaliseByAvailable && maxBetweenness > 0) {
                 if (normaliseConnectedComponents) {
                     final float maxBetweennessConnectedComponent = maxBetweennessConnectedComponents.get(subgraphs[vertexPosition]);
-                    graph.setFloatValue(betweennessAttribute, vertexId, betweennesses[vertexPosition] / maxBetweennessConnectedComponent);
+                    betweennessAttributeValue = betweennesses[vertexPosition] / maxBetweennessConnectedComponent;
                 } else {
-                    graph.setFloatValue(betweennessAttribute, vertexId, betweennesses[vertexPosition] / maxBetweenness);
+                    betweennessAttributeValue = betweennesses[vertexPosition] / maxBetweenness;
                 }
             } else {
-                graph.setFloatValue(betweennessAttribute, vertexId, betweennesses[vertexPosition]);
+                betweennessAttributeValue = betweennesses[vertexPosition];
             }
+            
+            graph.setFloatValue(betweennessAttribute, vertexId, Float.isNaN(betweennessAttributeValue) ? 0 : betweennessAttributeValue);
         }
     }
 }

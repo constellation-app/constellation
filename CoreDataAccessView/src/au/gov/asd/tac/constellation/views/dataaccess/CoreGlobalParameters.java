@@ -53,7 +53,7 @@ public class CoreGlobalParameters extends GlobalParameters {
     private static final int DATETIME_RANGE_PARAMETER_ID_INDEX = 1;
     public static final String DATETIME_RANGE_PARAMETER_ID = PluginParameter.buildId(CoreGlobalParameters.class, "datetime_range");
     public static final PluginParameter DATETIME_RANGE_PARAMETER = DateTimeRangeParameterType.build(DATETIME_RANGE_PARAMETER_ID);
-    
+
     @Override
     public List<PositionalPluginParameter> getParameterList(final PluginParameters previous) {
         if (CORE_GLOBAL_PARAMETER_IDS == null) {
@@ -73,7 +73,7 @@ public class CoreGlobalParameters extends GlobalParameters {
         final PluginParameter<DateTimeRangeParameterValue> datetimeRangeParameter = DATETIME_RANGE_PARAMETER;
         datetimeRangeParameter.setName("Range");
         datetimeRangeParameter.setDescription("The date and time range to query");
-        datetimeRangeParameter.setHelpID(this.getClass().getCanonicalName());
+        datetimeRangeParameter.setHelpID(CoreGlobalParameters.class.getName());
 
         final List<PositionalPluginParameter> positionalPluginParametersList = new ArrayList<>();
         positionalPluginParametersList.add(QUERY_NAME_PARAMETER_ID_INDEX, new PositionalPluginParameter(queryNameParameter, 0));

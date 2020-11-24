@@ -33,6 +33,7 @@ import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.collections.CollectionUtils;
 
 /**
  * Draw a selection rectangle.
@@ -117,7 +118,7 @@ public class SelectionBoxRenderable implements GLRenderable {
 
     @Override
     public void update(final GLAutoDrawable drawable) {
-        if (modelQueue != null && !modelQueue.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(modelQueue)) {
             selectionBoxModel = modelQueue.getLast();
             modelQueue.clear();
         }

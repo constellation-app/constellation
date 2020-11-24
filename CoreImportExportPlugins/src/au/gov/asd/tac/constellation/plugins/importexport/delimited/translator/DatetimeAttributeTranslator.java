@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParamet
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.time.DateTimeException;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
@@ -101,16 +102,22 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
             String format = parameters.getParameters().get(FORMAT_PARAMETER_ID).getStringValue();
 
             final TemporalAccessor dateTime;
-            if (format.equals("EPOCH")) {
-                dateTime = TemporalFormatting.zonedDateTimeFromLong(Long.parseLong(value));
-            } else if (format.equals(CUSTOM)) {
-                format = parameters.getParameters().get(CUSTOM_PARAMETER_ID).getStringValue();
-                DateTimeFormatter df = DateTimeFormatter.ofPattern(format);
-                dateTime = df.parse(value);
-            } else {
-                format = DATETIME_FORMATS.get(format);
-                DateTimeFormatter df = DateTimeFormatter.ofPattern(format);
-                dateTime = df.parse(value);
+            switch (format) {
+                case "EPOCH":
+                    dateTime = TemporalFormatting.zonedDateTimeFromLong(Long.parseLong(value));
+                    break;
+                case CUSTOM: {
+                    format = parameters.getParameters().get(CUSTOM_PARAMETER_ID).getStringValue();
+                    DateTimeFormatter df = DateTimeFormatter.ofPattern(format);
+                    dateTime = df.parse(value);
+                    break;
+                }
+                default: {
+                    format = DATETIME_FORMATS.get(format);
+                    DateTimeFormatter df = DateTimeFormatter.ofPattern(format);
+                    dateTime = df.parse(value);
+                    break;
+                }
             }
 
             return TemporalFormatting.formatAsZonedDateTime(dateTime);
@@ -136,7 +143,7 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
 
     @Override
     public void setParameterValues(final PluginParameters parameters, final String values) {
-        final String[] vals = values.split("\n");
+        final String[] vals = values.split(SeparatorConstants.NEWLINE);
         for (final String val : vals) {
             if (val.startsWith("d:")) {
                 parameters.getParameters().get(FORMAT_PARAMETER_ID).setStringValue(val.substring(2));

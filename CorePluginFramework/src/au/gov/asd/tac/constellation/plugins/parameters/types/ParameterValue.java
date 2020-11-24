@@ -76,7 +76,8 @@ public abstract class ParameterValue {
     public abstract boolean setStringValue(String s);
 
     /**
-     * Get the current value held by the ParameterValue.
+     * Get the current value held by the ParameterValue. Will retrieve the whole
+     * object when of type Single or MultiChoiceParameterType
      *
      * @return The current value as an arbitrary Object.
      */

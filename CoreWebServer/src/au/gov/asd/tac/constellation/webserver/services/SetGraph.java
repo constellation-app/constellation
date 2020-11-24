@@ -90,7 +90,7 @@ public class SetGraph extends RestService {
                 throw new RestServiceException(ex);
             }
         } else {
-            throw new RestServiceException(String.format("No graph with id '%s'", graphId));
+            throw new RestServiceException(HTTP_UNPROCESSABLE_ENTITY, "No graph with id " + graphId);
         }
     }
 }

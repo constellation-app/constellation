@@ -15,10 +15,10 @@
  */
 package au.gov.asd.tac.constellation.graph.attribute.io;
 
-import au.gov.asd.tac.constellation.graph.attribute.HyperlinkAttributeDescription;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.attribute.HyperlinkAttributeDescription;
 import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -39,15 +39,15 @@ public class HyperlinkIOProvider extends AbstractGraphIOProvider {
     }
 
     @Override
-    public void readObject(final int attributeId, final int elementId, final JsonNode jnode, 
-            final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, 
+    public void readObject(final int attributeId, final int elementId, final JsonNode jnode,
+            final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap,
             final GraphByteReader byteReader, final ImmutableObjectCache cache) throws IOException {
         final String attributeValue = jnode.isNull() ? null : jnode.textValue();
         graph.setStringValue(attributeId, elementId, attributeValue);
     }
 
     @Override
-    public void writeObject(final Attribute attr, final int elementId, final JsonGenerator jsonGenerator, 
+    public void writeObject(final Attribute attr, final int elementId, final JsonGenerator jsonGenerator,
             final GraphReadMethods graph, final GraphByteWriter byteWriter, final boolean verbose) throws IOException {
         if (verbose || !graph.isDefaultValue(attr.getId(), elementId)) {
             final String attributeValue = graph.getStringValue(attr.getId(), elementId);

@@ -16,8 +16,6 @@
 package au.gov.asd.tac.constellation.graph.schema.visual.attribute;
 
 import au.gov.asd.tac.constellation.graph.attribute.AbstractObjectAttributeDescription;
-import au.gov.asd.tac.constellation.graph.attribute.AbstractObjectAttributeDescription;
-import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
 import org.apache.commons.lang3.StringUtils;

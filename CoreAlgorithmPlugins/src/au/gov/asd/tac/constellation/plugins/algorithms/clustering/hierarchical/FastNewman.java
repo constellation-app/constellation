@@ -46,15 +46,15 @@ public class FastNewman {
 
     public static void run(final GraphWriteMethods graph, final PluginInteraction interaction, final boolean interactive, final Set<Integer> initialLinkIds, String weightAttribute) throws InterruptedException {
 
-        int vertexCount = graph.getVertexCount();
-        int linkCount = graph.getLinkCount();
-        int transactionCount = graph.getTransactionCount();
+        final int vertexCount = graph.getVertexCount();
+        final int linkCount = graph.getLinkCount();
+        final int transactionCount = graph.getTransactionCount();
 
-        ConstellationColor[] colors = ConstellationColor.createPalette(vertexCount, 0.5f, 0.95f);
+        final ConstellationColor[] colors = ConstellationColor.createPalette(vertexCount, 0.5f, 0.95f);
         int nextColor = vertexCount - 1;
 
-        Group[] groups = new Group[graph.getVertexCapacity()];
-        NavigableSet<Link> links = new TreeSet<>();
+        final Group[] groups = new Group[graph.getVertexCapacity()];
+        final NavigableSet<Link> links = new TreeSet<>();
 
         int weightAttributeId = Graph.NOT_FOUND;
         if (weightAttribute != null) {
@@ -63,7 +63,7 @@ public class FastNewman {
         float totalWeight = 0;
         if (weightAttributeId != Graph.NOT_FOUND) {
             for (int p = 0; p < transactionCount; p++) {
-                int transaction = graph.getTransaction(p);
+                final int transaction = graph.getTransaction(p);
                 if (graph.getTransactionSourceVertex(transaction) != graph.getTransactionDestinationVertex(transaction)) {
                     totalWeight += graph.getFloatValue(weightAttributeId, transaction);
                 }
@@ -75,16 +75,16 @@ public class FastNewman {
         // is it's position. Therefore, the index of groups[i].parent can be found
         // by graph.getVertexPosition(parent.vertex);
         for (int position = 0; position < vertexCount; position++) {
-            int vxId = graph.getVertex(position);
+            final int vxId = graph.getVertex(position);
 
             groups[position] = new Group();
             groups[position].vertex = vxId;
             if (weightAttributeId == Graph.NOT_FOUND) {
                 groups[position].weight = (float) graph.getVertexTransactionCount(vxId) / transactionCount;
             } else {
-                int vertexTransactionCount = graph.getVertexTransactionCount(vxId);
+                final int vertexTransactionCount = graph.getVertexTransactionCount(vxId);
                 for (int p = 0; p < vertexTransactionCount; p++) {
-                    int transaction = graph.getVertexTransaction(vxId, p);
+                    final int transaction = graph.getVertexTransaction(vxId, p);
                     groups[position].weight += graph.getFloatValue(weightAttributeId, transaction);
                 }
                 groups[position].weight /= totalWeight;
@@ -92,12 +92,12 @@ public class FastNewman {
         }
 
         for (int p = 0; p < linkCount; p++) {
-            int linkId = graph.getLink(p);
-            int highVertex = graph.getLinkHighVertex(linkId);
-            int lowVertex = graph.getLinkLowVertex(linkId);
+            final int linkId = graph.getLink(p);
+            final int highVertex = graph.getLinkHighVertex(linkId);
+            final int lowVertex = graph.getLinkLowVertex(linkId);
 
             if (highVertex != lowVertex) {
-                Link link = new Link();
+                final Link link = new Link();
 
                 // Connect the link to its groups
                 link.highGroup = groups[graph.getVertexPosition(highVertex)];
@@ -108,9 +108,9 @@ public class FastNewman {
                 if (weightAttributeId == Graph.NOT_FOUND) {
                     link.weight = (float) graph.getLinkTransactionCount(linkId) / transactionCount;
                 } else {
-                    int linkTransactionCount = graph.getLinkTransactionCount(linkId);
+                    final int linkTransactionCount = graph.getLinkTransactionCount(linkId);
                     for (int tp = 0; tp < linkTransactionCount; tp++) {
-                        int transaction = graph.getLinkTransaction(linkId, tp);
+                        final int transaction = graph.getLinkTransaction(linkId, tp);
                         link.weight += graph.getFloatValue(weightAttributeId, transaction);
                     }
                     link.weight /= totalWeight;
@@ -134,7 +134,7 @@ public class FastNewman {
             interaction.setProgress(step, vertexCount - 1, "Merging groups...", true);
 
             // Get the link with the highest deltaQ and remove it from the link set
-            Link removedLink = links.first();
+            final Link removedLink = links.first();
             links.remove(removedLink);
 
             // End initialisation and move onto the first proper step
@@ -180,11 +180,11 @@ public class FastNewman {
             parent.weight += child.weight;
 
             // Process each link that currently connects to the child...
-            for (Entry<Group, Link> childLinkEntry : child.links.entrySet()) {
+            for (final Entry<Group, Link> childLinkEntry : child.links.entrySet()) {
 
-                Group otherGroup = childLinkEntry.getKey();
-                Link childLink = childLinkEntry.getValue();
-                Link parentLink = parent.links.get(otherGroup);
+                final Group otherGroup = childLinkEntry.getKey();
+                final Link childLink = childLinkEntry.getValue();
+                final Link parentLink = parent.links.get(otherGroup);
 
                 // If the parent has no link to the other vertex then move the child link to the parent
                 if (parentLink == null) {
@@ -229,8 +229,8 @@ public class FastNewman {
         }
 
         for (int p = 0; p < vertexCount; p++) {
-            int vertex = graph.getVertex(p);
-            Group group = groups[graph.getVertexPosition(vertex)];
+            final int vertex = graph.getVertex(p);
+            final Group group = groups[graph.getVertexPosition(vertex)];
             if (group.color == null) {
                 group.color = colors[nextColor--];
             }
@@ -257,7 +257,7 @@ public class FastNewman {
             return vertex;
         }
 
-        public void setVertex(int vertex) {
+        public void setVertex(final int vertex) {
             this.vertex = vertex;
         }
 
@@ -265,7 +265,7 @@ public class FastNewman {
             return parent;
         }
 
-        public void setParent(Group parent) {
+        public void setParent(final Group parent) {
             this.parent = parent;
         }
 
@@ -273,7 +273,7 @@ public class FastNewman {
             return mergeStep;
         }
 
-        public void setMergeStep(int mergeStep) {
+        public void setMergeStep(final int mergeStep) {
             this.mergeStep = mergeStep;
         }
 
@@ -281,7 +281,7 @@ public class FastNewman {
             return color;
         }
 
-        public void setColor(ConstellationColor color) {
+        public void setColor(final ConstellationColor color) {
             this.color = color;
         }
 
@@ -289,7 +289,7 @@ public class FastNewman {
             return singleStep;
         }
 
-        public void setSingleStep(int singleStep) {
+        public void setSingleStep(final int singleStep) {
             this.singleStep = singleStep;
         }
     }

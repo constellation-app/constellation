@@ -20,14 +20,14 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphIndexResult;
 import au.gov.asd.tac.constellation.graph.GraphIndexType;
 import au.gov.asd.tac.constellation.graph.GraphKey;
-import au.gov.asd.tac.constellation.graph.operations.GraphOperation;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
+import au.gov.asd.tac.constellation.graph.operations.GraphOperation;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
+import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.IntStream;
 
@@ -676,6 +676,16 @@ public class ComponentSubgraph implements GraphWriteMethods {
     }
 
     @Override
+    public Object createWriteAttributeObject(int attribute, IntReadable indexReadable) {
+        return proxy.createWriteAttributeObject(attribute, indexReadable);
+    }
+
+    @Override
+    public Object createReadAttributeObject(int attribute, IntReadable indexReadable) {
+        return proxy.createReadAttributeObject(attribute, indexReadable);
+    }
+
+    @Override
     public boolean isPrimaryKey(int attribute) {
         return proxy.isPrimaryKey(attribute);
     }
@@ -793,10 +803,5 @@ public class ComponentSubgraph implements GraphWriteMethods {
     @Override
     public Object getAttributeDefaultValue(int attribute) {
         return proxy.getAttributeDefaultValue(attribute);
-    }
-
-    @Override
-    public void setLayerQueries(List<String> queries) {
-        throw new UnsupportedOperationException("Not supported yet."); // TODO: DISCOVER WHERE THIS IS USED
     }
 }

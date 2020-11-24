@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.plugins.composite;
 
-import au.gov.asd.tac.constellation.graph.visual.plugins.select.DeselectAllPlugin;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
@@ -26,14 +25,15 @@ import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.objects.CompositeNodeState;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.utilities.CompositeUtilities;
+import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.visual.VisualGraphPluginRegistry;
+import au.gov.asd.tac.constellation.graph.visual.plugins.select.DeselectAllPlugin;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
 import au.gov.asd.tac.constellation.plugins.PluginRegistry;
-import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.graph.visual.VisualGraphPluginRegistry;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
