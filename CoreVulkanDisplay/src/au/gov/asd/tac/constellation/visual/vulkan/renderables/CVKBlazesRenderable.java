@@ -1302,15 +1302,18 @@ public class CVKBlazesRenderable extends CVKRenderable {
      private Vertex[] BuildVertexArray(final VisualAccess access, int first, int last) {
         final int newVertexCount = (last - first) + 1;
         if (newVertexCount > 0) {
-            Vertex vertices[] = new Vertex[newVertexCount];            
+            List<Vertex> vertices = new ArrayList<>();
             for (int pos = first; pos <= last; ++pos) {  
-                vertices[pos] = new Vertex(access.getBlazeColor(pos),
-                                           access.getVertexVisibility(pos),
-                                           pos,
-                                           access.getBlazeAngle(pos));
+                if (access.getBlazed(pos)) {
+                    vertices.add(new Vertex(access.getBlazeColor(pos),
+                                            access.getVertexVisibility(pos),
+                                            pos,
+                                            access.getBlazeAngle(pos)));
+                }
             }            
             
-            return vertices;
+            Vertex[] verticesCopy = new Vertex[vertices.size()];
+            return vertices.toArray(verticesCopy);
         } else {
             return null;
         } 
@@ -1359,23 +1362,24 @@ public class CVKBlazesRenderable extends CVKRenderable {
     }      
     
     public CVKRenderUpdateTask TaskUpdateBlazes(final VisualChange change, final VisualAccess access) {
-        //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
-        // If we have had an update task called before a rebuild task we first have to build
-        // the staging buffer.  Rebuild also if we our vertex count has somehow changed.
-        final boolean rebuildRequired = cvkVertexStagingBuffer == null || 
-                                        access.getVertexCount() * Vertex.BYTES != cvkVertexStagingBuffer.GetBufferSize() || 
-                                        change.isEmpty();
+        //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//                                  
         final int changedVerticeRange[];
         final Vertex vertices[];
-        if (rebuildRequired) {
-            GetLogger().fine("TaskUpdateBlazes frame %d: all (%d) verts", cvkVisualProcessor.GetFrameNumber(), access.getVertexCount());
+        if (cvkVertexStagingBuffer == null || change.isEmpty()) {            
             vertices = BuildVertexArray(access, 0, access.getVertexCount() - 1);
             changedVerticeRange = null;
         } else {
-            changedVerticeRange = change.getRange();
-            GetLogger().fine("TaskUpdateBlazes frame %d: %d verts", cvkVisualProcessor.GetFrameNumber(), (changedVerticeRange[1] - changedVerticeRange[0]) + 1);
+            changedVerticeRange = change.getRange();            
             vertices = BuildVertexArray(access, changedVerticeRange[0], changedVerticeRange[1]);         
         }
+        
+        GetLogger().fine("TaskUpdateBlazes frame %d: (%d) blazed verts", cvkVisualProcessor.GetFrameNumber(), vertices.length);
+        
+        // We have to enumerate the vertices to see which are blazed before we can compare the old and new buffer sizes
+        final boolean rebuildRequired = cvkVertexStagingBuffer == null ||
+                                        change.isEmpty() || 
+                                        vertices.length * Vertex.BYTES != cvkVertexStagingBuffer.GetBufferSize();   
+   
         
         //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.ProcessRenderTasks) ===//
         return () -> {
