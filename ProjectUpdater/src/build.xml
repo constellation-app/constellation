@@ -78,6 +78,15 @@
              src="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/Processing%204.0/core.jar"
              dest="${suite.dir}/CoreDependencies/release/modules/ext" 
              usetimestamp="true"/>
+        
+        <echo message="installing lwjgl3-awt" if:set="third.party.depdendencies"/>
+        <get if:set="third.party.depdendencies" 
+             dest="${suite.dir}/CoreDependencies/release/modules/ext" 
+             usetimestamp="true">
+            <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/lwjgl3-awt/lwjgl3-awt-0.1.7.jar"/>
+            <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/lwjgl3-awt/lwjgl3-awt-0.1.7-javadoc.jar"/>
+            <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/lwjgl3-awt/lwjgl3-awt-0.1.7-sources.jar"/>
+        </get>        
         <!--- END OF DELETABLE SECTION WHEN THIS IS IN MAVEN -->    
         
         <!-- Update the project.xml file to include the downloaded jars -->
