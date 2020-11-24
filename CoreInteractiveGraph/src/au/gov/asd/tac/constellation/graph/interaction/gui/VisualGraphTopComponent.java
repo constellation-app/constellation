@@ -202,12 +202,12 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     private static final String DISABLE_GRAPH_VISIBILITY_THRESHOLD_LABELS_SHORT_DESCRIPTION = "Disable Graph Visibility Threshold";
 
     private final GraphVisualManagerFactory graphVisualManagerFactory;
-    private final VisualManager visualManager;
-    private final InstanceContent content;
+    private VisualManager visualManager;
+    private InstanceContent content;
     private final Graph graph;
     private MySaveAs saveAs = null;
     private MySavable savable = null;
-    private final GraphNode graphNode;
+    private GraphNode graphNode;
 
     /**
      * The countBase is the value of the counter at the most recent save when
@@ -419,12 +419,20 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         this.graph = new DualGraph(null);
 
         graphVisualManagerFactory = Lookup.getDefault().lookup(GraphVisualManagerFactory.class);
-        visualManager = graphVisualManagerFactory.constructVisualManager(graph);
-        visualManager.startProcessing();
-        graphNode = new GraphNode(graph, gdo, this, visualManager);
-        content = new InstanceContent();
-        init();
-        MemoryManager.newObject(VisualGraphTopComponent.class);
+        try {
+            // This may throw if we are constructing a Vulkan visual manager
+            visualManager = graphVisualManagerFactory.constructVisualManager(graph);
+            visualManager.startProcessing();
+            graphNode = new GraphNode(graph, gdo, this, visualManager);
+            content = new InstanceContent();
+
+            init();
+            MemoryManager.newObject(VisualGraphTopComponent.class);
+        } catch (Throwable t) {
+            visualManager = null;
+            graphNode = null;
+            content = null;
+        }
     }
 
     /**
@@ -440,20 +448,25 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
         this.graph = graph;
         graphVisualManagerFactory = Lookup.getDefault().lookup(GraphVisualManagerFactory.class);
-        visualManager = graphVisualManagerFactory.constructVisualManager(graph);
-        visualManager.startProcessing();
+        try {
+            // This may throw if we are constructing a Vulkan visual manager
+            visualManager = graphVisualManagerFactory.constructVisualManager(graph);
+            visualManager.startProcessing();
 
-        Schema schema = graph.getSchema();
-        if (schema instanceof GraphNodeFactory) {
-            graphNode = ((GraphNodeFactory) schema).createGraphNode(graph, gdo, this, visualManager);
-        } else {
-            graphNode = new GraphNode(graph, gdo, this, visualManager);
+            Schema schema = graph.getSchema();
+            if (schema instanceof GraphNodeFactory) {
+                graphNode = ((GraphNodeFactory) schema).createGraphNode(graph, gdo, this, visualManager);
+            } else {
+                graphNode = new GraphNode(graph, gdo, this, visualManager);
+            }
+
+            content = new InstanceContent();
+
+            init();
+            MemoryManager.newObject(VisualGraphTopComponent.class);
+        } catch (Throwable t) {
+            System.out.print(t);
         }
-//TODO_TT: CHECK BEFORE SUBMITTING
-
-//        content = new InstanceContent();
-//        init();
-//        MemoryManager.newObject(VisualGraphTopComponent.class);
     }
 
     @Override
