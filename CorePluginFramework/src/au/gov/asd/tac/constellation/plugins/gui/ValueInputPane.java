@@ -139,6 +139,14 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                     recentValuesCombo.setDisable(true);
                 }
 
+                if (recentValues != null) {
+                    if (recentValues.size() > 1) {
+                        parameter.setStringValue(recentValues.get(1));
+                    } else {
+                        parameter.setStringValue(recentValues.get(0));
+                    }
+                }
+
                 ListCell<String> button = new ListCell<String>() {
                     @Override
                     protected void updateItem(String item, boolean empty) {

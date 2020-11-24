@@ -46,14 +46,13 @@ public class BooleanInputPane extends Pane {
     private String parameterId;
 
     public BooleanInputPane(final PluginParameter<BooleanParameterValue> parameter) {
-        final List<String> recentValues = RecentParameterValues.getRecentValues(parameter.getId());
+//        final List<String> recentValues = RecentParameterValues.getRecentValues(parameter.getId());
         field = new CheckBox();
         final BooleanParameterValue pv = parameter.getParameterValue();
 
-        if (recentValues != null) {
-            field.setSelected(Boolean.parseBoolean(recentValues.get(0)));
-        }
-
+//        if (recentValues != null) {
+//            field.setSelected(Boolean.parseBoolean(recentValues.get(0)));
+//        }
         field.setSelected(pv.get());
 
         if (parameter.getParameterValue().getGuiInit() != null) {
@@ -99,11 +98,7 @@ public class BooleanInputPane extends Pane {
         parameterId = parameter.getId();
         List<String> booleanInputRecentValues = RecentParameterValues.getRecentValues(parameterId);
         if (booleanInputRecentValues != null) {
-            if (booleanInputRecentValues.size() > 1) {
-                parameter.setStringValue(booleanInputRecentValues.get(1));
-            } else {
-                parameter.setStringValue(booleanInputRecentValues.get(0));
-            }
+            parameter.setStringValue(booleanInputRecentValues.get(0));
         }
     }
 }

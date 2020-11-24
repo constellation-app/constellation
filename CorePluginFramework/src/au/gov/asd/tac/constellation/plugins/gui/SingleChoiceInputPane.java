@@ -21,7 +21,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
-import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -166,8 +165,15 @@ public class SingleChoiceInputPane extends HBox {
         getChildren().add(field);
         parameterId = parameter.getId();
         List<String> singleChoiceRecentValues = RecentParameterValues.getRecentValues(parameterId);
-        if (singleChoiceRecentValues != null) {
-            SingleChoiceParameterType.setChoiceData(parameter, new StringParameterValue(singleChoiceRecentValues.get(0)));
+        final List<ParameterValue> pvs = SingleChoiceParameterType.getOptionsData(parameter);
+        for (final ParameterValue pv : pvs) {
+            if (singleChoiceRecentValues != null) {
+                if (singleChoiceRecentValues.get(0).equals(pv.toString())) {
+                    SingleChoiceParameterType.setChoiceData(parameter, pv);
+                break;
+                }
+            }
         }
+
     }
-}
+    }

@@ -131,7 +131,11 @@ public class MultiChoiceInputPane extends HBox {
         parameterId = parameter.getId();
         List<String> multiChoiceRecentValues = RecentParameterValues.getRecentValues(parameterId);
         if (multiChoiceRecentValues != null) {
-            parameter.setStringValue(multiChoiceRecentValues.get(0));
+            if (multiChoiceRecentValues.size() > 1) {
+                parameter.setStringValue(multiChoiceRecentValues.get(1));
+            } else {
+                parameter.setStringValue(multiChoiceRecentValues.get(0));
+            }
         }
     }
 
