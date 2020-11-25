@@ -52,8 +52,6 @@ public class SingleChoiceInputPane extends HBox {
 
     private final ComboBox<ParameterValue> field;
     
-    private String parameterId;
-
     // Keep track of entered characters so the user can enter the prefixes of choices to get there quicker.
     private String prefix;
     private static final Logger LOGGER = Logger.getLogger(SingleChoiceInputPane.class.getName());
@@ -163,15 +161,13 @@ public class SingleChoiceInputPane extends HBox {
         });
          
         getChildren().add(field);
-        parameterId = parameter.getId();
+        final String parameterId = parameter.getId();
         List<String> singleChoiceRecentValues = RecentParameterValues.getRecentValues(parameterId);
         final List<ParameterValue> pvs = SingleChoiceParameterType.getOptionsData(parameter);
         for (final ParameterValue pv : pvs) {
-            if (singleChoiceRecentValues != null) {
-                if (singleChoiceRecentValues.get(0).equals(pv.toString())) {
-                    SingleChoiceParameterType.setChoiceData(parameter, pv);
+            if ((singleChoiceRecentValues != null) && (singleChoiceRecentValues.get(0).equals(pv.toString()))) {
+                SingleChoiceParameterType.setChoiceData(parameter, pv);
                 break;
-                }
             }
         }
 

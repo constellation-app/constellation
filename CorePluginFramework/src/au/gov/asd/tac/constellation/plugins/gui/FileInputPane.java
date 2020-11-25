@@ -58,7 +58,7 @@ public class FileInputPane extends HBox {
     public static final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
     private final Button fileAddButton;
     private final TextInputControl field;
-    private String parameterId;
+//    private String parameterId;
     private static final Logger LOGGER = Logger.getLogger(FileInputPane.class.getName());
 
     public FileInputPane(final PluginParameter<FileParameterValue> parameter) {
@@ -80,7 +80,6 @@ public class FileInputPane extends HBox {
         if (suggestedHeight == null) {
             suggestedHeight = 1;
         }
-        parameterId = parameter.getId();
 
         final FileParameterValue paramaterValue = parameter.getParameterValue();
         fileAddButton = new Button(paramaterValue.getKind() == FileParameterKind.SAVE ? "Save" : "Open");
@@ -239,14 +238,10 @@ public class FileInputPane extends HBox {
         fieldAndAddButton.setSpacing(2);
         fieldAndAddButton.getChildren().addAll(field, fileAddButton);
         getChildren().add(fieldAndAddButton);
-        parameterId = parameter.getId();
+        final String parameterId = parameter.getId();
         List<String> fileInputRecentValues = RecentParameterValues.getRecentValues(parameterId);
         if (fileInputRecentValues != null) {
-            if (fileInputRecentValues.size() > 1) {
-            parameter.setStringValue(fileInputRecentValues.get(1));
-         } else {
-            parameter.setStringValue(fileInputRecentValues.get(0));
-            }
+            parameter.setStringValue(fileInputRecentValues.get(fileInputRecentValues.size() > 1 ? 1 : 0));
         }
     }
 }

@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
+== 2020-11-25 Data Access View
+<p>Data Access View has been updated to remember plugin parameter selections between sessions.</p>
+
 == 2020-09-02 Table View
 <p>Table View has been updated to include a paging system. This helps improve the Table view performance on larger graphs.</p>
 <p>A menu item has also been added to set the size of a page in the table. Click on the cog and go to 'Set Page Size'. Default is 500.</p>

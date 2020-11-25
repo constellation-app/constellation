@@ -51,8 +51,6 @@ public class LocalDateInputPane extends Pane {
 
     private final DatePicker field;
 
-    private final String parameterId;
-
     public LocalDateInputPane(final PluginParameter<LocalDateParameterValue> parameter) {
         field = new DatePicker();
         final LocalDateParameterValue pv = parameter.getParameterValue();
@@ -114,14 +112,10 @@ public class LocalDateInputPane extends Pane {
         });
 
         getChildren().add(field);
-        parameterId = parameter.getId();
+        final String parameterId = parameter.getId();
         List<String> dateTimeRecentValues = RecentParameterValues.getRecentValues(parameterId);
         if (dateTimeRecentValues != null) {
-            if (dateTimeRecentValues.size() > 1) {
-                parameter.setStringValue(dateTimeRecentValues.get(1));
-            } else {
-                parameter.setStringValue(dateTimeRecentValues.get(0));
-            }
+            parameter.setStringValue(dateTimeRecentValues.get(dateTimeRecentValues.size() > 1 ? 1 : 0));
         }
     }
 }

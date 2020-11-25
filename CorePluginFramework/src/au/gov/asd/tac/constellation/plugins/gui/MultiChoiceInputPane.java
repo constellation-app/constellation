@@ -58,8 +58,6 @@ public class MultiChoiceInputPane extends HBox {
     private boolean isAdjusting = false;
     private static final Logger LOGGER = Logger.getLogger(MultiChoiceInputPane.class.getName());
 
-    private String parameterId;
-
     public MultiChoiceInputPane(final PluginParameter<MultiChoiceParameterValue> parameter) {
         options.addAll(MultiChoiceParameterType.getOptionsData(parameter));
         field = new MultiChoiceComboBox<>(options);
@@ -128,13 +126,11 @@ public class MultiChoiceInputPane extends HBox {
             });
         });
         getChildren().add(field);
-        parameterId = parameter.getId();
+        final String parameterId = parameter.getId();
         List<String> multiChoiceRecentValues = RecentParameterValues.getRecentValues(parameterId);
         if (multiChoiceRecentValues != null) {
-            if (multiChoiceRecentValues.size() > 1) {
-                parameter.setStringValue(multiChoiceRecentValues.get(1));
-            } else {
-                parameter.setStringValue(multiChoiceRecentValues.get(0));
+            if (multiChoiceRecentValues != null) {
+                parameter.setStringValue(multiChoiceRecentValues.get(multiChoiceRecentValues.size() > 1 ? 1 : 0));
             }
         }
     }

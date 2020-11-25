@@ -479,8 +479,8 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                             final String type = plugin.getType();
                             if (plugins.containsKey(type)) {
                                 // If plugin type is valid, add the plugin to the Data Access View.
-                                    plugins.get(type).add(plugin);
-                                    LOGGER.log(Level.INFO, "Discovered data access plugin {0} ({1})", new Object[]{plugin.getName(), plugin.getType()});
+                                plugins.get(type).add(plugin);
+                                LOGGER.log(Level.INFO, "Discovered data access plugin {0} ({1})", new Object[]{plugin.getName(), plugin.getType()});
                                 // If plugin overrides another, record which plugin should be removed for later processing.
                                 for (final String overriddenPluginName : plugin.getOverriddenPlugins()) {
                                     pluginOverrides.put(overriddenPluginName, plugin);
@@ -1018,12 +1018,12 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                         final Object obj = param.getValue().getObjectValue();
                         if (obj != null && obj.toString() != null && !obj.toString().isEmpty()) {
                             final String value = param.getValue().getStringValue();
-                                final String typeValue = param.getValue().getType().toString();
+                            final String typeValue = param.getValue().getType().toString();
                             if (!typeValue.contains("LocalDateParameterType")) {
-                                    RecentParameterValues.storeRecentValue(id, value);
-                                } else {
-                                    RecentParameterValues.storeRecentValue(id, obj.toString());
-                                }
+                                RecentParameterValues.storeRecentValue(id, value);
+                            } else {
+                                RecentParameterValues.storeRecentValue(id, obj.toString());
+                            }
                         }
                     }
                 }

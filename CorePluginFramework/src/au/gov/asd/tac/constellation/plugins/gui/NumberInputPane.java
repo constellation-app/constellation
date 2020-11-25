@@ -65,28 +65,18 @@ public class NumberInputPane<T> extends Pane {
     private static final Logger LOGGER = Logger.getLogger(NumberInputPane.class.getName());
 
     private static final String INVALID_ID = "invalid";
-    private String parameterId;
 
     public NumberInputPane(final PluginParameter<?> parameter) {
 
-        parameterId = parameter.getId();
+        final String parameterId = parameter.getId();
         List<String> numberRecentValues = RecentParameterValues.getRecentValues(parameterId);
         if (numberRecentValues != null) {
             switch (parameter.getType().getId()) {
                 case FloatParameterType.ID:
-                    if (numberRecentValues.size() > 1) {
-                        parameter.setFloatValue(Float.valueOf(numberRecentValues.get(1)));
-
-                    } else {
-                        parameter.setFloatValue(Float.valueOf(numberRecentValues.get(0)));
-                    }
+                    parameter.setFloatValue(Float.valueOf(numberRecentValues.get(numberRecentValues.size() > 1 ? 1 : 0)));
                     break;
                 case IntegerParameterType.ID:
-                    if (numberRecentValues.size() > 1) {
-                        parameter.setIntegerValue(Integer.valueOf(numberRecentValues.get(1)));
-                    } else {
-                        parameter.setIntegerValue(Integer.valueOf(numberRecentValues.get(0)));
-                    }
+                    parameter.setIntegerValue(Integer.valueOf(numberRecentValues.get(numberRecentValues.size() > 1 ? 1 : 0)));
                     break;
                 default:
                     break;
@@ -146,7 +136,7 @@ public class NumberInputPane<T> extends Pane {
         // For (FXcontrol) number spinners, we want to listen to the text property rather than the value property.
         // Just typing doesn't fire value property change events, and doesn't allow us to change the style
         // when the string doesn't validate.
-        field.getEditor().textProperty().addListener((final ObservableValue<? extends String> ov, final String oldValue, String newValue) -> {
+        field.getEditor().textProperty().addListener((final ObservableValue<? extends String> ov, final String oldValue, final String newValue) -> {
             final String error = parameter.validateString(field.getValueFactory().getValue().toString());
             if (error != null) {
                 tooltip.setText(error);

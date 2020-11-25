@@ -66,7 +66,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
     private final ChangeListener<Number> recentValueSelectionListener;
     private final ComboBox<String> recentValuesCombo;
     private final TextInputControl field;
-    private String parameterId;
+    private final String parameterId;
     private static final Logger LOGGER = Logger.getLogger(ValueInputPane.class.getName());
 
     public ValueInputPane(final PluginParameter<?> parameter) {
@@ -140,11 +140,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                 }
 
                 if (recentValues != null) {
-                    if (recentValues.size() > 1) {
-                        parameter.setStringValue(recentValues.get(1));
-                    } else {
-                        parameter.setStringValue(recentValues.get(0));
-                    }
+                    parameter.setStringValue(recentValues.get(recentValues.size() > 1 ? 1 : 0));
                 }
 
                 ListCell<String> button = new ListCell<String>() {
