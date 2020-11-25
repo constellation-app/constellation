@@ -19,9 +19,13 @@ import au.gov.asd.tac.constellation.functionality.welcome.WelcomePageProvider;
 import au.gov.asd.tac.constellation.functionality.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.DelimitedImportTopComponent;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javax.swing.SwingUtilities;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -41,7 +45,7 @@ public class DelimitedFileWelcomePlugin extends WelcomePageProvider {
     
     public static final String IMPORT = "resources/welcome_import.png";
     ImageView importImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(IMPORT)));
-    Button importButton = new Button("Import File\nDelimited File Importer", importImage);
+    Button importButton = new Button();
 
     /**
      * Get a unique reference that is used to identify the plugin 
@@ -91,6 +95,13 @@ public class DelimitedFileWelcomePlugin extends WelcomePageProvider {
     public Button getButton(){
         importImage.setFitHeight(75);
         importImage.setFitWidth(75);
+        Label imTitle = new Label("Import");
+        imTitle.setFont(new Font("Arial", 16));
+        Label imSubtitle = new Label("Delimited File Importer");
+        imSubtitle.setFont(new Font("Arial", 10));
+        VBox layoutVBox = new VBox(importImage, imTitle, imSubtitle);
+        layoutVBox.setAlignment(Pos.CENTER);
+        importButton.setGraphic(layoutVBox);
         return importButton;
     }
 }

@@ -24,9 +24,15 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -44,7 +50,7 @@ public class ProvideFeedbackWelcomePlugin extends WelcomePageProvider {
     
     public static final String FEEDBACK = "resources/welcome_feedback.png";
     ImageView feedView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(FEEDBACK)));
-    Button feedbackButton = new Button("Provide Feedback\nLet use know your thoughts", feedView);
+    Button feedbackButton = new Button();
     
     private static final Logger LOGGER = Logger.getLogger(ProvideFeedbackWelcomePlugin.class.getName());
         
@@ -103,6 +109,18 @@ public class ProvideFeedbackWelcomePlugin extends WelcomePageProvider {
     public Button getButton(){
         feedView.setFitHeight(25);
         feedView.setFitWidth(25);
+        Text title = new Text("Provide Feedback");
+        title.setFill(Color.WHITE);
+        title.setFont(new Font("Arial", 18));
+        Text subtitle = new Text("Let us know your thoughts");
+        subtitle.setFill(Color.WHITE);
+        subtitle.setFont(new Font("Arial", 10));
+        VBox layoutVBox = new VBox(title, subtitle);
+        layoutVBox.setAlignment(Pos.CENTER_LEFT);
+        HBox layoutHBox = new HBox(feedView, layoutVBox);
+        layoutHBox.setSpacing(8);
+        layoutHBox.setAlignment(Pos.CENTER_LEFT);
+        feedbackButton.setGraphic(layoutHBox);
         return feedbackButton;
     }
 }

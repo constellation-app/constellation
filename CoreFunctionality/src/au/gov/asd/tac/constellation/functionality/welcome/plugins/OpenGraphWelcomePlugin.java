@@ -22,9 +22,13 @@ import au.gov.asd.tac.constellation.graph.file.GraphFilePluginRegistry;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -42,7 +46,7 @@ public class OpenGraphWelcomePlugin extends WelcomePageProvider {
     
     public static final String OPEN = "resources/welcome_open_folder.png";
     ImageView openImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(OPEN)));
-    Button openFile = new Button("Open File\nFile Explorer", openImage);
+    Button openFile = new Button();
     
     /**
      * Get a unique reference that is used to identify the plugin 
@@ -93,6 +97,13 @@ public class OpenGraphWelcomePlugin extends WelcomePageProvider {
     public Button getButton(){
         openImage.setFitHeight(75);
         openImage.setFitWidth(75);
+        Label title = new Label("Open");
+        title.setFont(new Font("Arial", 16));
+        Label subtitle = new Label("File Explorer");
+        subtitle.setFont(new Font("Arial", 10));
+        VBox layoutVBox = new VBox(openImage, title, subtitle);
+        layoutVBox.setAlignment(Pos.CENTER);
+        openFile.setGraphic(layoutVBox);
         return openFile;
     }
 }

@@ -26,9 +26,13 @@ import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -45,7 +49,7 @@ public class AddModeWelcomePlugin extends WelcomePageProvider {
     
     public static final String NEW_GRAPH = "resources/welcome_add_graph.png";
     ImageView addView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(NEW_GRAPH)));
-    Button newButton = new Button("New Graph\nAdd mode", addView);
+    Button newButton = new Button();
         
     /**
      * Get a unique reference that is used to identify the plugin 
@@ -95,6 +99,13 @@ public class AddModeWelcomePlugin extends WelcomePageProvider {
     public Button getButton(){
         addView.setFitHeight(75);
         addView.setFitWidth(75);
+        Label title = new Label("New Graph");
+        title.setFont(new Font("Arial", 16));
+        Label subtitle = new Label("Add mode");
+        subtitle.setFont(new Font("Arial", 10));
+        VBox layoutVBox = new VBox(addView, title, subtitle);
+        layoutVBox.setAlignment(Pos.CENTER);
+        newButton.setGraphic(layoutVBox);
         return newButton;
     }
 }

@@ -24,9 +24,15 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.logging.Logger;
 import java.util.logging.Level;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -43,7 +49,7 @@ public class GettingStartedWelcomePlugin extends WelcomePageProvider {
     
     public static final String GETTING_STARTED = "resources/welcome_getting_started.png";
     ImageView started = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(GETTING_STARTED)));
-    Button startedBtn = new Button("Getting Started\nGuides & resources", started);
+    Button startedBtn = new Button();
     
     private static final Logger LOGGER = Logger.getLogger(GettingStartedWelcomePlugin.class.getName());
         
@@ -102,6 +108,18 @@ public class GettingStartedWelcomePlugin extends WelcomePageProvider {
     public Button getButton(){
         started.setFitHeight(25);
         started.setFitWidth(25);
+        Text title = new Text("Getting Started");
+        title.setFont(new Font("Arial", 18));
+        title.setFill(Color.WHITE);
+        Text subtitle = new Text("Guides & Resources");
+        subtitle.setFont(new Font("Arial", 10));
+        subtitle.setFill(Color.WHITE);
+        VBox layoutVBox = new VBox(title, subtitle);
+        layoutVBox.setAlignment(Pos.CENTER_LEFT);
+        HBox layoutHBox = new HBox(started, layoutVBox);
+        layoutHBox.setSpacing(8);
+        layoutHBox.setAlignment(Pos.CENTER_LEFT);
+        startedBtn.setGraphic(layoutHBox);
         return startedBtn;
     }
 }

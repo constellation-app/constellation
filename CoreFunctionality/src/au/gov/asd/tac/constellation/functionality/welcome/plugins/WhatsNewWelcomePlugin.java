@@ -19,9 +19,15 @@ import au.gov.asd.tac.constellation.functionality.tutorial.TutorialTopComponent;
 import au.gov.asd.tac.constellation.functionality.welcome.WelcomePageProvider;
 import au.gov.asd.tac.constellation.functionality.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javax.swing.SwingUtilities;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -42,7 +48,7 @@ public class WhatsNewWelcomePlugin extends WelcomePageProvider {
     
     public static final String WHATS_NEW = "resources/welcome_new.png";
     ImageView newView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(WHATS_NEW)));
-    Button whatsNewBtn = new Button("What's new?\nFeatures in the latest version", newView);
+    Button whatsNewBtn = new Button();
         
     /**
      * Get a unique reference that is used to identify the plugin 
@@ -92,6 +98,18 @@ public class WhatsNewWelcomePlugin extends WelcomePageProvider {
     public Button getButton(){
         newView.setFitHeight(25);
         newView.setFitWidth(25);
+        Text title = new Text("What's New?");
+        title.setFill(Color.WHITE);
+        title.setFont(new Font("Arial", 18));
+        Text subtitle = new Text("Features in the latest version");
+        subtitle.setFill(Color.WHITE);
+        subtitle.setFont(new Font("Arial", 10));
+        VBox layoutVBox = new VBox(title, subtitle);
+        layoutVBox.setAlignment(Pos.CENTER_LEFT);
+        HBox layoutHBox = new HBox(newView, layoutVBox);
+        layoutHBox.setSpacing(8);
+        layoutHBox.setAlignment(Pos.CENTER_LEFT);
+        whatsNewBtn.setGraphic(layoutHBox);
         return whatsNewBtn;
     }
 }

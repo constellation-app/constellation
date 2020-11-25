@@ -28,9 +28,13 @@ import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.testing.construction.SphereGraphBuilderPlugin;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -45,7 +49,7 @@ public class SphereGraphWelcomePlugin extends WelcomePageProvider {
     
     public static final String NEW_SPHERE = "resources/welcome_add_box.png";
     ImageView newSphere = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(NEW_SPHERE)));   
-    Button sphereGraphButton = new Button("New Sphere Graph\nSphere network", newSphere);
+    Button sphereGraphButton = new Button();
 
     /**  
      * Get a unique reference that is used to identify the plugin
@@ -103,6 +107,13 @@ public class SphereGraphWelcomePlugin extends WelcomePageProvider {
     public Button getButton(){
         newSphere.setFitHeight(75);
         newSphere.setFitWidth(75);
+        Label sTitle = new Label("New Graph");
+        sTitle.setFont(new Font("Arial", 16));
+        Label sSubtitle = new Label("Sphere network");
+        sSubtitle.setFont(new Font("Arial", 10));
+        VBox layoutVBox = new VBox(newSphere, sTitle, sSubtitle);
+        layoutVBox.setAlignment(Pos.CENTER);
+        sphereGraphButton.setGraphic(layoutVBox);
         return sphereGraphButton;
     }
 }
