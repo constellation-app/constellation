@@ -6,11 +6,12 @@ Copyright 2010-2020 Australian Signals Directorate
 
 import os
 import subprocess
+import hashlib
 from os import walk, environ
 from sys import platform, stdout, stderr
 
 
-def compile_shader(path_to_glslc, shader_path, stage, out_name):
+def compile_shader(path_to_glslc, shader_path, stage, out_name, md5_name):
     """
 
     -fauto-map-locations SPIR-V and later GLSL versions require inputs and outputs to be bound to an attribute location, this just assigns them automagically
@@ -32,10 +33,27 @@ def compile_shader(path_to_glslc, shader_path, stage, out_name):
                              stdin=None,
                              stdout=stdout,
                              stderr=stderr)
-    print(result)
+
+    # Write MD5 of source
+    md5_file = open(md5_name, 'wb')
+
+    hash_md5 = hashlib.md5()
+    with open(shader_path, "rb") as f:
+        for chunk in iter(lambda: f.read(4096), b""):
+            hash_md5.update(chunk)
+    md5_file.write(hash_md5.digest())
+    md5_file.close()
+
+    if result == 0:
+        print('Compiled {0}, MD5: {1}'.format(shader_path, hash_md5.hexdigest()))
+    else:
+        print(result)
 
 
 def compile_shaders(src_dir, dst_dir):
+    if not os.path.exists(dst_dir):
+        os.makedirs(dst_dir)
+
     # Check the GLSL compiler is available
     if platform == 'win32':
         VK_SDK_PATH = environ.get('VK_SDK_PATH')
@@ -58,7 +76,8 @@ def compile_shaders(src_dir, dst_dir):
 
                             in_name = os.path.join(dir_path, file_name)
                             out_name = os.path.join(dst_dir, file_name) + '.spv'
-                            compile_shader(path_to_glslc, in_name, stage, out_name)
+                            md5_name = os.path.join(dst_dir, file_name) + '.md5'
+                            compile_shader(path_to_glslc, in_name, stage, out_name, md5_name)
                     # Don't recurse
                     break; 
             else:

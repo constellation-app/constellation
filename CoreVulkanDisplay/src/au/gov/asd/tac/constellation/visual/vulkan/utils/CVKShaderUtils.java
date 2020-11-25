@@ -40,8 +40,10 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import javax.xml.bind.DatatypeConverter;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.mutable.MutableLong;
@@ -332,17 +334,6 @@ public class CVKShaderUtils {
                 return CVK_ERROR_MD5_ALGORITHM_LOAD_FAILED;
             }
         }  
-
-        // We have to compile, check we can load the shader compiler on this platform
-        if (!shaderCompilerVerified) {
-            long compiler = shaderc_compiler_initialize();
-            if (compiler == NULL) {
-                CVKGraphLogger.GetStaticLogger().severe("Failed to initialise shader compiler");
-                return CVK_ERROR_SHADER_COMPILER_LOAD_FAILED;
-            }
-            shaderc_compiler_release(compiler);
-            shaderCompilerVerified = true;
-        }
         
         final String md5FileName = String.format("compiled/%s.md5", shaderName);
         final String compiledFileName = String.format("compiled/%s.spv", shaderName);
@@ -377,16 +368,40 @@ public class CVKShaderUtils {
                 CVKGraphLogger.GetStaticLogger().fine("  shader '%s' was up to date, loaded '%s' from disk", shaderName, compiledFileName);
                 return VK_SUCCESS;
             } else {
-                CVKGraphLogger.GetStaticLogger().fine("  compiled shader '%s' is out of date, compiling", compiledFileName);
+                if (CVKGraphLogger.GetStaticLogger().isLoggable(Level.FINE)) {
+                    byte[] storedMD5Bytes = new byte[buffers.buf2.remaining()];
+                    buffers.buf2.get(storedMD5Bytes);
+                    byte[] calculatedMD5Bytes = new byte[sourceMD5.remaining()];
+                    sourceMD5.get(calculatedMD5Bytes);                
+
+                    String storedMD5 = DatatypeConverter.printHexBinary(storedMD5Bytes).toUpperCase();
+                    String calculatedMD5 = DatatypeConverter.printHexBinary(calculatedMD5Bytes).toUpperCase();
+
+                    CVKGraphLogger.GetStaticLogger().fine("  compiled shader '%s' is out of date, compiling.\r\n  Stored MD5 = %s\r\n  Calculated MD5 = %s",
+                            compiledFileName, storedMD5, calculatedMD5);
+                }
             }   
              
             buffers.Destroy();
         } else {
             CVKGraphLogger.GetStaticLogger().fine("  no compiled shader found for '%s', compiling", shaderName);
         }       
-                   
-
+        
         // Shader needs to be compiled
+        CVKGraphLogger.GetStaticLogger().warning("Compiling shader '%s' at runtime.  Shaders should be precompiled and packaged with Constellation.", shaderName);
+                   
+        // We have to compile, check we can load the shader compiler on this platform
+        if (!shaderCompilerVerified) {
+            long compiler = shaderc_compiler_initialize();
+            if (compiler == NULL) {
+                CVKGraphLogger.GetStaticLogger().severe("Failed to initialise shader compiler");
+                return CVK_ERROR_SHADER_COMPILER_LOAD_FAILED;
+            }
+            shaderc_compiler_release(compiler);
+            shaderCompilerVerified = true;
+        }        
+        
+        // Figure out the shader stage
         ShaderType shaderType = ShaderType.SHADER_TYPE_UNKNOWN;
         String fileExtension = FilenameUtils.getExtension(shaderName).toLowerCase();
         switch (fileExtension) {
@@ -408,6 +423,8 @@ public class CVKShaderUtils {
             CVKGraphLogger.GetStaticLogger().severe("Could not determine shader type for: %s", shaderName);
             return CVK_ERROR_SHADER_TYPE_UNKNOWN;
         }
+        
+        // Do the compilation
         SPIRV spirv = CompileShaderFile(CVKShaderPlaceHolder.class, shaderName, shaderType);
         if (spirv == null) {
             CVKGraphLogger.GetStaticLogger().severe("Failed to compile shader %s", shaderName);
@@ -415,6 +432,7 @@ public class CVKShaderUtils {
             return CVK_ERROR_SHADER_COMPILATION;
         }
 
+        // Create a shader module we can use from the compiled bytes
         hShaderModule.setValue(CVKShaderUtils.CreateShaderModule(spirv.bytecode(), CVKDevice.GetVkDevice()));
         if (hShaderModule.longValue() == VK_NULL_HANDLE) {       
             CVKGraphLogger.GetStaticLogger().severe("Failed to create shader module for %s", shaderName);
