@@ -249,7 +249,7 @@ public class CVKFPSRenderable extends CVKRenderable {
         }            
         
         private void CopyTo(ByteBuffer buffer) {
-            // TODO_TT: convert to a blat
+            // TODO: convert to a blat
             for (int iRow = 0; iRow < 4; ++iRow) {
                 for (int iCol = 0; iCol < 4; ++iCol) {
                     buffer.putFloat(pMatrix.get(iRow, iCol));
@@ -471,7 +471,7 @@ public class CVKFPSRenderable extends CVKRenderable {
         // Size to upper limit, we don't have to draw each one.
         int size = vertices.length * Vertex.BYTES;
         
-        //TODO_TT: most if not all of Constellation's vertex buffers won't change after creation
+        // TODO: most if not all of Constellation's vertex buffers won't change after creation
         // so they should probably be allocated as VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT and staged
         // to once to fill them (staging buffer this is host visible then copied to the device local)
         for (int i = 0; i < imageCount; ++i) {   

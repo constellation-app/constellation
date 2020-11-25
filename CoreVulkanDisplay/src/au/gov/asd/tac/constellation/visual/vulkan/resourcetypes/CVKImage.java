@@ -240,7 +240,7 @@ public class CVKImage {
      * reading from it..."
      * 
      * Some member variables aren't set until an image is transitioned for the first 
-     * time, TODO_TT add asserts to catch access before transition?
+     * time, TODO add asserts to catch access before transition?
      * 
      * @param cvkCmdBuf
      * @param newLayout
@@ -843,7 +843,7 @@ public class CVKImage {
         }
         
         
-        // TODO HYDRA need to handle images with layers like the atlas texture
+        // TODO need to handle images with layers like the atlas texture
         long fileLayers = subResourceLayout.depthPitch();
 
         try {

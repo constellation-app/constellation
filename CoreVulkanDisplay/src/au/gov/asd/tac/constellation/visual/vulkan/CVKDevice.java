@@ -502,7 +502,7 @@ public class CVKDevice {
 
         try (MemoryStack stack = stackPush()) {
             // Check blit support for source and destination
-            // TODO HYDRA do this once and store result in cvkdevice
+            // TODO: do this once and store result in cvkdevice
             VkFormatProperties formatProps = VkFormatProperties.callocStack(stack);
 
             // Check if the device supports blitting from optimal images (the swapchain images are in optimal format)
@@ -548,7 +548,7 @@ public class CVKDevice {
                 .queueFamilyIndex(queueFamilyIndex)
                 .pQueuePriorities(stack.floats(1.0f));
 
-        //TODO_TT: do we need this for Consty?
+        //TODO: do we need this for Consty?
         VkPhysicalDeviceFeatures features = VkPhysicalDeviceFeatures.callocStack(stack);
         features.geometryShader(true);
         if (vkPhysicalDeviceFeatures.shaderClipDistance()) {

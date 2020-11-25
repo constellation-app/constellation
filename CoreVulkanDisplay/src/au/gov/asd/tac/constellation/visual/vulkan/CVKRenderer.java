@@ -394,7 +394,7 @@ public class CVKRenderer implements ComponentListener {
                 ret = el.RecordDisplayCommandBuffer(inheritanceInfo, imageIndex);
                 if (VkFailed(ret)) { return ret; }
 
-                // TODO Hydra: may be more efficient to add all the visible command buffers to a master list then 
+                // TODO: may be more efficient to add all the visible command buffers to a master list then 
                 // call the following line once with the whole list
                 VkCommandBuffer commandBuffer = el.GetDisplayCommandBuffer(imageIndex);
                 if (commandBuffer != null) {
@@ -612,14 +612,13 @@ public class CVKRenderer implements ComponentListener {
                     }
                 }                
             } else {
-                // TODO: HYDRA to remove once the shouldRender code is figured out.
+                // TODO: remove once the shouldRender code is figured out.
                 return;
             }
         }
    
         // If the surface is not ready RecreateSwapChain won't have reset this flag        
-        if (cvkSwapChain != null && !swapChainNeedsRecreation && cvkDescriptorPool != null && !descriptorPoolNeedsRecreation) {
-                    
+        if (cvkSwapChain != null && !swapChainNeedsRecreation && cvkDescriptorPool != null && !descriptorPoolNeedsRecreation) {                    
             try (MemoryStack stack = stackPush()) {                
                 // The swapchain decides which image we should render to based on the
                 // mode we created with.

@@ -141,7 +141,7 @@ public class CVKUtils {
      * creating the VkInstance we need the following extensions. Note that KHR
      * indicates a KHRonos extension.
      *
-     * @TODO_TT: should be in a loop like layers that enumerates first. Also add
+     * @TODO: should be in a loop like layers that enumerates first. Also add
      * VK_EXT_DEBUG_REPORT_EXTENSION_NAME?
      *
      * @param stack
@@ -165,7 +165,6 @@ public class CVKUtils {
                 VK_KHR_OS_SURFACE_EXTENSION = stack.UTF8(VK_EXT_METAL_SURFACE_EXTENSION_NAME);
                 break;
             default:
-                //TODO_TT add exception
                 throw new RuntimeException("Unknown platform trying it initialise Vulkan");
         }
 
@@ -241,7 +240,7 @@ public class CVKUtils {
                 // Select the best set of validation layers.  If VK_LAYER_KHRONOS_validation
                 // is not available then fall back to VK_LAYER_LUNARG_standard_validation, if
                 // it's not available try a bunch of older validation layers.
-                // TODO_TT: these are borrowed from https://github.com/LWJGL/lwjgl3/blob/master/modules/samples/src/test/java/org/lwjgl/demo/vulkan/HelloVulkan.java
+                // TODO: these are borrowed from https://github.com/LWJGL/lwjgl3/blob/master/modules/samples/src/test/java/org/lwjgl/demo/vulkan/HelloVulkan.java
                 //          Find some logic behind layer selection and codify it here.
                 ArrayList<String> validationLayers = new ArrayList<>();
                 if (LayerPresent(availableLayers, "VK_LAYER_KHRONOS_validation")) {

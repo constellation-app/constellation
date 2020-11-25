@@ -457,7 +457,7 @@ public class CVKPerspectiveLinksRenderable extends CVKRenderable {
         return UpdateDescriptorSets(stack);
     }
     
-    // TODO_TT: do we gain anything by having buffered UBOs?
+    // TODO: do we gain anything by having buffered UBOs?
     private int UpdateDescriptorSets(MemoryStack stack) {
         CVKAssertNotNull(cvkSwapChain);
         CVKAssertNotNull(cvkDescriptorPool);

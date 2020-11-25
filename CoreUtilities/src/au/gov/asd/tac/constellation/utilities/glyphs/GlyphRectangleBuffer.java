@@ -247,7 +247,7 @@ public final class GlyphRectangleBuffer {
      * only record the size-extra.
      * @return rectIndex The index of the rectangle in this.memory.
      */
-    int addRectImage(final BufferedImage img, final int extra) {
+    public int addRectImage(final BufferedImage img, final int extra) {
         final int w = img.getWidth();
         final int h = img.getHeight();
 

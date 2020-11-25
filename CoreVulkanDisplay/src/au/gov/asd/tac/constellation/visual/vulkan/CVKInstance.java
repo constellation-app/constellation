@@ -218,7 +218,7 @@ Output at location 0 of the vertex shader did not match input at location 0 of t
 */
 
         
-        // TODO_TT: this has to be false because...
+        // TODO: this has to be false because...
         return VK_FALSE;
     }                
 }

@@ -130,7 +130,7 @@ public class CVKCanvas extends AWTVKCanvas {
             if (VkSucceeded(ret)) {
                 vkCurrentSurfaceExtent.set(vkSurfaceCapabilities.currentExtent());
                 if (vkCurrentSurfaceExtent.width() == UINT32_MAX) {
-                    //TODO_TT: find out how big our surface is somehow
+                    //TODO: find out how big our surface is somehow
                     vkCurrentSurfaceExtent.set(800, 600);
                     GetLogger().log(Level.WARNING, "vkGetPhysicalDeviceSurfaceCapabilitiesKHR returned extent with the magic don't care size");
                 }

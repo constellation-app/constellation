@@ -242,7 +242,7 @@ public class CVKSwapChain {
         }        
        
         
-        //TODO_TT: this needs a lot of commenting
+        // TODO: this needs a lot of commenting
         vkCurrentImageExtent.set(cvkCanvas.GetCurrentSurfaceExtent());
         VkSwapchainCreateInfoKHR createInfo = VkSwapchainCreateInfoKHR.callocStack(stack);
         createInfo.sType(VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR);
@@ -270,7 +270,7 @@ public class CVKSwapChain {
         // Check this swapchain supports the number of images we requested
         ret = vkGetSwapchainImagesKHR(CVKDevice.GetVkDevice(), hSwapChainHandle, pImageCount, null);
         if (VkFailed(ret)) return ret;
-        //TODO_TT: exception?
+        // TODO: exception?
         CVKAssert(imageCount == pImageCount.get(0));
 
         // Get the handles for each image
