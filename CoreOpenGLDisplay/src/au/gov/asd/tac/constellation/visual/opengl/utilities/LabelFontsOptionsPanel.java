@@ -17,10 +17,10 @@ package au.gov.asd.tac.constellation.visual.opengl.utilities;
 
 import au.gov.asd.tac.constellation.utilities.gui.JNumberedTextArea;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
-import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.ConstellationLabelFonts;
-import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.FontInfo;
-import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.FontStyle;
-import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManagerBI;
+import au.gov.asd.tac.constellation.utilities.glyphs.ConstellationLabelFonts;
+import au.gov.asd.tac.constellation.utilities.glyphs.FontInfo;
+import au.gov.asd.tac.constellation.utilities.glyphs.FontStyle;
+import au.gov.asd.tac.constellation.utilities.glyphs.GlyphManagerBI;
 import java.awt.Color;
 import java.awt.Component;
 import java.util.Arrays;

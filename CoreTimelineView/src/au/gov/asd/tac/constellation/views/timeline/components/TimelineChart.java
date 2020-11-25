@@ -404,6 +404,7 @@ public class TimelineChart extends XYChart<Number, Number> {
      * @param lowestObservedDisplayPos Sets the lowest yAxis value.
      * @param highestObservedDisplayPos Sets the highest yAxis value.
      */
+    @SuppressWarnings("unchecked")
     public void populate(final XYChart.Series<Number, Number> series, final long lowestObservedDisplayPos, final long highestObservedDisplayPos, final boolean selectedOnly, final ZoneId zoneId) {
         this.selectedOnly = selectedOnly;
         this.currentTimezone = TimeZone.getTimeZone(zoneId);

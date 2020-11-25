@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs;
 
+import au.gov.asd.tac.constellation.utilities.glyphs.GlyphManager;
 import com.jogamp.opengl.GL3;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;

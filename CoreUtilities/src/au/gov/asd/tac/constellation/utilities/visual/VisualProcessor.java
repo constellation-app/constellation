@@ -18,6 +18,8 @@ package au.gov.asd.tac.constellation.utilities.visual;
 import java.awt.Component;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -27,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Semaphore;
+import java.util.logging.Logger;
 
 /**
  * A VisualProcessor is responsible for providing a visualisation of an object
@@ -65,8 +68,10 @@ import java.util.concurrent.Semaphore;
 public abstract class VisualProcessor {
 
     protected boolean isInitialised = false;
-    private VisualManager manager;
+    protected VisualManager manager;
     private final Semaphore updateOccuring = new Semaphore(0);
+    
+    private static final Logger LOGGER = Logger.getLogger(VisualProcessor.class.getName());
 
     /**
      * Get the {@link Component} that this processor is using for its
@@ -167,6 +172,19 @@ public abstract class VisualProcessor {
     protected void signalProcessorIdle() {
         manager.signifyProcessorIdle();
     }
+    
+    /**
+     * Request the manager redraw us (visualupdate).  This is useful if we have 
+     * resized the canvas as the Vulkan display does this in two passes, the first
+     * recreates swapchain resources without rendering, the second, which occurs
+     * thanks to this request, redraws the canvas with the new resources.  
+     * This can also be used for continuous rendering if we want to test the frame
+     * rate or ever implement any non-event driven rendering updates (eg some
+     * in-graph animation).
+     */
+    protected void requestRedraw() {
+        manager.requestRedraw();
+    }
 
     /**
      * Informs the manager that this processor needs to recompute all visual
@@ -204,6 +222,14 @@ public abstract class VisualProcessor {
                     changes.addAll(getFullRefreshSet(access));
                 }
                 processChangeSet(changes, access);
+            } catch (Exception e) {
+                final StringWriter exceptionTraceWriter = new StringWriter();
+                final PrintWriter exceptionPrintWriter = new PrintWriter(exceptionTraceWriter);
+                e.printStackTrace(exceptionPrintWriter);
+                exceptionPrintWriter.flush();
+                final String exceptionMessage = exceptionTraceWriter.toString();
+                LOGGER.severe(String.format("Exception processing visual changes:\r\n%s", exceptionMessage));
+                throw e;
             } finally {
                 access.endUpdate();
             }

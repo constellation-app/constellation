@@ -83,6 +83,37 @@
         <!--<dependency org="unfolding" name="unfolding" rev="0.9.6"/>-->
         <dependency org="org.assertj" name="assertj-core" rev="3.16.1" />
 
+        <!--Light Weight Java Game Library-->
+        <!-- https://mvnrepository.com/artifact/org.lwjgl/lwjgl -->
+        <dependency org="org.lwjgl" name="lwjgl" rev="3.2.3">
+            <artifact name="lwjgl" type="jar" ext="jar"/>
+            <artifact name="lwjgl" type="jar" ext="jar" e:classifier="javadoc"/>
+            <artifact name="lwjgl" type="jar" ext="jar" e:classifier="sources"/>
+            <artifact name="lwjgl" type="jar" ext="jar" e:classifier="natives-linux"/>
+            <artifact name="lwjgl" type="jar" ext="jar" e:classifier="natives-macos"/>
+            <artifact name="lwjgl" type="jar" ext="jar" e:classifier="natives-windows-x86"/>
+            <artifact name="lwjgl" type="jar" ext="jar" e:classifier="natives-windows"/>
+        </dependency>      
+        <!--LWJGL Vulkan bindings, a very thin Java layer over the native API-->       
+        <!--https://mvnrepository.com/artifact/org.lwjgl/lwjgl-vulkan--> 
+        <dependency org="org.lwjgl" name="lwjgl-vulkan" rev="3.2.3">
+            <artifact name="lwjgl-vulkan" type="jar" ext="jar"/>
+            <artifact name="lwjgl-vulkan" type="jar" ext="jar" e:classifier="javadoc"/>
+            <artifact name="lwjgl-vulkan" type="jar" ext="jar" e:classifier="sources"/>            
+            <artifact name="lwjgl-vulkan" type="jar" ext="jar" e:classifier="natives-macos"/>          
+        </dependency>          
+        <!--Only needed if we want to compile GLSL to SPIR-V (this can be done offline)-->       
+        <!--https://mvnrepository.com/artifact/org.lwjgl/lwjgl-shaderc--> 
+        <dependency org="org.lwjgl" name="lwjgl-shaderc" rev="3.2.3">
+            <artifact name="lwjgl-shaderc" type="jar" ext="jar"/>
+            <artifact name="lwjgl-shaderc" type="jar" ext="jar" e:classifier="javadoc"/>
+            <artifact name="lwjgl-shaderc" type="jar" ext="jar" e:classifier="sources"/>            
+            <artifact name="lwjgl-shaderc" type="jar" ext="jar" e:classifier="natives-windows"/>          
+        </dependency>       
+        <!--Needed implicitly by the AWTVKCanvas--> 
+        <!-- https://mvnrepository.com/artifact/org.lwjgl/lwjgl-jawt -->
+        <dependency org="org.lwjgl" name="lwjgl-jawt" rev="3.2.3"/>
+
         <!-- Exclusions -->
         <exclude org="javax.media" module="jai_core"/>
         <exclude org="javax.media" module="jai_codec"/>

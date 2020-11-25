@@ -16,14 +16,14 @@
 package au.gov.asd.tac.constellation.graph.interaction.visual;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.graph.interaction.framework.HitState;
-import au.gov.asd.tac.constellation.graph.interaction.framework.HitState.HitType;
+import au.gov.asd.tac.constellation.graph.hittest.HitState;
+import au.gov.asd.tac.constellation.graph.hittest.HitState.HitType;
 import au.gov.asd.tac.constellation.graph.interaction.framework.InteractionEventHandler;
 import au.gov.asd.tac.constellation.graph.interaction.framework.VisualAnnotator;
 import au.gov.asd.tac.constellation.graph.interaction.framework.VisualInteraction;
-import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.HitTestRequest;
+import au.gov.asd.tac.constellation.graph.hittest.HitTestRequest;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.HitTester;
-import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.NewLineModel;
+import au.gov.asd.tac.constellation.utilities.visual.NewLineModel;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.NewLineRenderable;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.PlanesRenderable;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionBoxModel;

@@ -162,6 +162,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         return "Test the various input UIs";
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public PluginParameters createParameters() {
         final PluginParameters params = new PluginParameters();

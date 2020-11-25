@@ -15,6 +15,9 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs;
 
+import au.gov.asd.tac.constellation.utilities.glyphs.ConnectionGlyphStreamContext;
+import au.gov.asd.tac.constellation.utilities.glyphs.GlyphManager;
+import au.gov.asd.tac.constellation.utilities.glyphs.GlyphStreamContext;
 import au.gov.asd.tac.constellation.utilities.graphics.FloatArray;
 import au.gov.asd.tac.constellation.utilities.graphics.IntArray;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.ConnectionLabelBatcher;

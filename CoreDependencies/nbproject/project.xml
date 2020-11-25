@@ -1690,6 +1690,20 @@
                 <package>org.locationtech.jts.triangulate</package>
                 <package>org.locationtech.jts.triangulate.quadedge</package>
                 <package>org.locationtech.jts.util</package>
+                <package>org.lwjgl</package>
+                <package>org.lwjgl.awthacks</package>
+                <package>org.lwjgl.opengl.awt</package>
+                <package>org.lwjgl.system</package>
+                <package>org.lwjgl.system.dyncall</package>
+                <package>org.lwjgl.system.jawt</package>
+                <package>org.lwjgl.system.jni</package>
+                <package>org.lwjgl.system.libc</package>
+                <package>org.lwjgl.system.linux</package>
+                <package>org.lwjgl.system.macosx</package>
+                <package>org.lwjgl.system.windows</package>
+                <package>org.lwjgl.util.shaderc</package>
+                <package>org.lwjgl.vulkan</package>
+                <package>org.lwjgl.vulkan.awt</package>
                 <package>org.opengis.annotation</package>
                 <package>org.opengis.coverage</package>
                 <package>org.opengis.coverage.grid</package>
@@ -2637,136 +2651,136 @@
                 <binary-origin>release/modules/ext/jsr305-3.0.2-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jt-affine-1.1.12-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jt-affine-1.1.12-jar.jar</binary-origin>
+                <runtime-relative-path>ext/jt-affine-1.1.14-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-affine-1.1.14-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jt-algebra-1.1.12-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jt-algebra-1.1.12-jar.jar</binary-origin>
+                <runtime-relative-path>ext/jt-algebra-1.1.14-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-algebra-1.1.14-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jt-bandcombine-1.1.12-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jt-bandcombine-1.1.12-jar.jar</binary-origin>
+                <runtime-relative-path>ext/jt-bandcombine-1.1.14-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-bandcombine-1.1.14-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jt-bandmerge-1.1.12-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jt-bandmerge-1.1.12-jar.jar</binary-origin>
+                <runtime-relative-path>ext/jt-bandmerge-1.1.14-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-bandmerge-1.1.14-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jt-bandselect-1.1.12-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jt-bandselect-1.1.12-jar.jar</binary-origin>
+                <runtime-relative-path>ext/jt-bandselect-1.1.14-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-bandselect-1.1.14-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jt-binarize-1.1.12-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jt-binarize-1.1.12-jar.jar</binary-origin>
+                <runtime-relative-path>ext/jt-binarize-1.1.14-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-binarize-1.1.14-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jt-border-1.1.12-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jt-border-1.1.12-jar.jar</binary-origin>
+                <runtime-relative-path>ext/jt-border-1.1.14-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-border-1.1.14-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jt-buffer-1.1.12-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jt-buffer-1.1.12-jar.jar</binary-origin>
+                <runtime-relative-path>ext/jt-buffer-1.1.14-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-buffer-1.1.14-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jt-classifier-1.1.12-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jt-classifier-1.1.12-jar.jar</binary-origin>
+                <runtime-relative-path>ext/jt-classifier-1.1.14-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-classifier-1.1.14-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jt-colorconvert-1.1.12-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jt-colorconvert-1.1.12-jar.jar</binary-origin>
+                <runtime-relative-path>ext/jt-colorconvert-1.1.14-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-colorconvert-1.1.14-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jt-colorindexer-1.1.12-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jt-colorindexer-1.1.12-jar.jar</binary-origin>
+                <runtime-relative-path>ext/jt-colorindexer-1.1.14-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-colorindexer-1.1.14-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jt-crop-1.1.12-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jt-crop-1.1.12-jar.jar</binary-origin>
+                <runtime-relative-path>ext/jt-crop-1.1.14-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-crop-1.1.14-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jt-errordiffusion-1.1.12-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jt-errordiffusion-1.1.12-jar.jar</binary-origin>
+                <runtime-relative-path>ext/jt-errordiffusion-1.1.14-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-errordiffusion-1.1.14-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jt-format-1.1.12-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jt-format-1.1.12-jar.jar</binary-origin>
+                <runtime-relative-path>ext/jt-format-1.1.14-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-format-1.1.14-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jt-imagefunction-1.1.12-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jt-imagefunction-1.1.12-jar.jar</binary-origin>
+                <runtime-relative-path>ext/jt-imagefunction-1.1.14-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-imagefunction-1.1.14-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jt-iterators-1.1.12-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jt-iterators-1.1.12-jar.jar</binary-origin>
+                <runtime-relative-path>ext/jt-iterators-1.1.14-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-iterators-1.1.14-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jt-lookup-1.1.12-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jt-lookup-1.1.12-jar.jar</binary-origin>
+                <runtime-relative-path>ext/jt-lookup-1.1.14-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-lookup-1.1.14-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jt-mosaic-1.1.12-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jt-mosaic-1.1.12-jar.jar</binary-origin>
+                <runtime-relative-path>ext/jt-mosaic-1.1.14-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-mosaic-1.1.14-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jt-nullop-1.1.12-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jt-nullop-1.1.12-jar.jar</binary-origin>
+                <runtime-relative-path>ext/jt-nullop-1.1.14-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-nullop-1.1.14-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jt-orderdither-1.1.12-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jt-orderdither-1.1.12-jar.jar</binary-origin>
+                <runtime-relative-path>ext/jt-orderdither-1.1.14-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-orderdither-1.1.14-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jt-piecewise-1.1.12-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jt-piecewise-1.1.12-jar.jar</binary-origin>
+                <runtime-relative-path>ext/jt-piecewise-1.1.14-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-piecewise-1.1.14-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jt-rescale-1.1.12-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jt-rescale-1.1.12-jar.jar</binary-origin>
+                <runtime-relative-path>ext/jt-rescale-1.1.14-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-rescale-1.1.14-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jt-rlookup-1.1.12-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jt-rlookup-1.1.12-jar.jar</binary-origin>
+                <runtime-relative-path>ext/jt-rlookup-1.1.14-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-rlookup-1.1.14-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jt-scale-1.1.12-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jt-scale-1.1.12-jar.jar</binary-origin>
+                <runtime-relative-path>ext/jt-scale-1.1.14-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-scale-1.1.14-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jt-scale2-1.1.12-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jt-scale2-1.1.12-jar.jar</binary-origin>
+                <runtime-relative-path>ext/jt-scale2-1.1.14-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-scale2-1.1.14-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jt-shadedrelief-1.1.12-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jt-shadedrelief-1.1.12-jar.jar</binary-origin>
+                <runtime-relative-path>ext/jt-shadedrelief-1.1.14-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-shadedrelief-1.1.14-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jt-stats-1.1.12-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jt-stats-1.1.12-jar.jar</binary-origin>
+                <runtime-relative-path>ext/jt-stats-1.1.14-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-stats-1.1.14-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jt-translate-1.1.12-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jt-translate-1.1.12-jar.jar</binary-origin>
+                <runtime-relative-path>ext/jt-translate-1.1.14-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-translate-1.1.14-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jt-utilities-1.1.12-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jt-utilities-1.1.12-jar.jar</binary-origin>
+                <runtime-relative-path>ext/jt-utilities-1.1.14-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-utilities-1.1.14-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jt-utils-1.5.0-jar.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/jt-utils-1.5.0-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jt-vectorbin-1.1.12-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jt-vectorbin-1.1.12-jar.jar</binary-origin>
+                <runtime-relative-path>ext/jt-vectorbin-1.1.14-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-vectorbin-1.1.14-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jt-warp-1.1.12-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jt-warp-1.1.12-jar.jar</binary-origin>
+                <runtime-relative-path>ext/jt-warp-1.1.14-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-warp-1.1.14-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jt-zonal-1.1.12-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jt-zonal-1.1.12-jar.jar</binary-origin>
+                <runtime-relative-path>ext/jt-zonal-1.1.14-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-zonal-1.1.14-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jt-zonalstats-1.5.0-jar.jar</runtime-relative-path>
@@ -2787,6 +2801,82 @@
             <class-path-extension>
                 <runtime-relative-path>ext/log4j-1.2.17-bundle.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/log4j-1.2.17-bundle.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-3.2.3-jar-javadoc.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-3.2.3-jar-javadoc.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-3.2.3-jar-natives-linux.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-3.2.3-jar-natives-linux.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-3.2.3-jar-natives-macos.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-3.2.3-jar-natives-macos.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-3.2.3-jar-natives-windows-x86.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-3.2.3-jar-natives-windows-x86.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-3.2.3-jar-natives-windows.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-3.2.3-jar-natives-windows.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-3.2.3-jar-sources.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-3.2.3-jar-sources.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-3.2.3-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-3.2.3-jar.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-jawt-3.2.3-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-jawt-3.2.3-jar.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-shaderc-3.2.3-jar-javadoc.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-shaderc-3.2.3-jar-javadoc.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-shaderc-3.2.3-jar-natives-windows.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-shaderc-3.2.3-jar-natives-windows.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-shaderc-3.2.3-jar-sources.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-shaderc-3.2.3-jar-sources.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-shaderc-3.2.3-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-shaderc-3.2.3-jar.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-vulkan-3.2.3-jar-javadoc.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-vulkan-3.2.3-jar-javadoc.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-vulkan-3.2.3-jar-natives-macos.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-vulkan-3.2.3-jar-natives-macos.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-vulkan-3.2.3-jar-sources.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-vulkan-3.2.3-jar-sources.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-vulkan-3.2.3-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-vulkan-3.2.3-jar.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lwjgl3-awt-0.1.7-javadoc.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl3-awt-0.1.7-javadoc.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lwjgl3-awt-0.1.7-sources.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl3-awt-0.1.7-sources.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lwjgl3-awt-0.1.7.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl3-awt-0.1.7.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/nativewindow-natives-windows-i586.jar</runtime-relative-path>

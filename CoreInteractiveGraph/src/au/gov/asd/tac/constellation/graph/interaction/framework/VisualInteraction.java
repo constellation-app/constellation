@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.graph.interaction.framework;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector2i;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.awt.Point;
 
@@ -148,4 +149,5 @@ public interface VisualInteraction {
      * @return A float value describing the scale factor
      */
     public float getDPIScalingFactor();
+
 }

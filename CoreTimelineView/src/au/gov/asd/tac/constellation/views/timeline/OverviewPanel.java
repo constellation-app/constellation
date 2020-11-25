@@ -175,6 +175,7 @@ public class OverviewPanel extends Pane {
      * @param isFullRefresh is a full refresh needed.
      * @param selectedOnly only show selected items.
      */
+    @SuppressWarnings("unchecked")
     public void populateHistogram(final ReadableGraph graph, final String datetimeAttribute,
             final double lowestTimeExtent, final double highestTimeExtent, final boolean isFullRefresh,
             final boolean selectedOnly) {

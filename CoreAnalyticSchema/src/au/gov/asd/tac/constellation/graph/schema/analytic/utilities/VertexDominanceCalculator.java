@@ -30,6 +30,7 @@ import org.openide.util.Lookup;
  *
  * @author cygnus_x-1
  */
+@SuppressWarnings("rawtypes")
 public abstract class VertexDominanceCalculator<T> {
 
     public static VertexDominanceCalculator getDefault() {

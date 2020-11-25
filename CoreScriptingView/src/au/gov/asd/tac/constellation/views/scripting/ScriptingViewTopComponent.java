@@ -51,6 +51,7 @@ import org.openide.windows.TopComponent;
     "CTL_ScriptingViewAction=Scripting View",
     "CTL_ScriptingViewTopComponent=Scripting View",
     "HINT_ScriptingViewTopComponent=Scripting View"})
+@SuppressWarnings("rawtypes")
 public final class ScriptingViewTopComponent extends SwingTopComponent {
 
     private final ScriptingViewPane scriptingViewPane;

@@ -144,6 +144,7 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
     /**
      * Constructs a new <code>NamedSelectionTopComponent</code>.
      */
+    @SuppressWarnings("unchecked")
     public NamedSelectionTopComponent() {
         initComponents();
 

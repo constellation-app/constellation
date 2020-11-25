@@ -199,6 +199,7 @@ public final class QualityControlViewPane extends BorderPane {
      *
      * @param state The new state to display in the view.
      */
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public void refreshQualityControlView(final QualityControlState state) {
         Platform.runLater(() -> {
             final ProgressIndicator progress = new ProgressIndicator();

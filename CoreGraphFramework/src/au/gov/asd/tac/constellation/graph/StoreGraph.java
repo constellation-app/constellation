@@ -210,6 +210,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         MemoryManager.newObject(StoreGraph.class);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void finalize() {
         MemoryManager.finalizeObject(StoreGraph.class);

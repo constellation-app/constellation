@@ -859,6 +859,7 @@ public class AttributeEditorPanel extends BorderPane {
         dialog.showDialog();
     }
 
+    @SuppressWarnings("unchecked")
     private void editKeysAction(final GraphElementType elementType) {
         final List<String> currentKeyAttributes = new ArrayList<>();
         final List<String> allAttributes = new ArrayList<>();
@@ -885,6 +886,7 @@ public class AttributeEditorPanel extends BorderPane {
         }
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     private EventHandler<MouseEvent> getEditValueHandler(final AttributeData attributeData, final AttributeValueEditorFactory editorFactory, final Object[] values) {
         return e -> {
             final Object value = values.length == 1 ? values[0] : null;

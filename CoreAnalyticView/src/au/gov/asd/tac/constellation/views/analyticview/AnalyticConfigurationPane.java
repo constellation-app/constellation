@@ -101,6 +101,7 @@ public class AnalyticConfigurationPane extends VBox {
     private final Map<AnalyticQuestionDescription<?>, List<SelectableAnalyticPlugin>> questionToPluginsMap;
     private final PluginParameters globalAnalyticParameters = new PluginParameters();
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public AnalyticConfigurationPane() {
 
         // create the parameters needed for all analytic questions
@@ -358,6 +359,7 @@ public class AnalyticConfigurationPane extends VBox {
      *
      * @return the answered {@link AnalyticQuestion}.
      */
+    @SuppressWarnings({"unchecked", "rawtypes"})
     protected final AnalyticQuestion<?> answerCurrentQuestion() throws AnalyticException {
 
         // build question
@@ -507,6 +509,7 @@ public class AnalyticConfigurationPane extends VBox {
         updateGlobalParameters();
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public final void updateSelectablePluginsParameters() {
         if (categoryListPane.isExpanded()) {
             LOGGER.log(Level.INFO, "Update selectable plugins parameters in analytic config pane.");
@@ -538,6 +541,7 @@ public class AnalyticConfigurationPane extends VBox {
         selectionSuppressed = newValue;
     }
 
+    @SuppressWarnings("rawtypes")
     public final class SelectableAnalyticPlugin {
 
         private final CheckBox checkbox;

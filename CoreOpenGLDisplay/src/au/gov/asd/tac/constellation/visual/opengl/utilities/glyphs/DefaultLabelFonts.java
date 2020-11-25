@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs;
 
+import au.gov.asd.tac.constellation.utilities.glyphs.ConstellationLabelFonts;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

@@ -26,6 +26,11 @@ public final class Vector4f {
      * The length of a vector.
      */
     public static final int LENGTH = 4;
+    
+    /**
+     * Size in bytes of a vector
+     */
+    public static final int BYTES = LENGTH * Float.BYTES;
 
     /**
      * The contents of this vector.

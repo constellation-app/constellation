@@ -21,8 +21,8 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
-import au.gov.asd.tac.constellation.graph.interaction.framework.HitState;
-import au.gov.asd.tac.constellation.graph.interaction.framework.HitState.HitType;
+import au.gov.asd.tac.constellation.graph.hittest.HitState;
+import au.gov.asd.tac.constellation.graph.hittest.HitState.HitType;
 import au.gov.asd.tac.constellation.graph.interaction.framework.InteractionEventHandler;
 import au.gov.asd.tac.constellation.graph.interaction.framework.VisualAnnotator;
 import au.gov.asd.tac.constellation.graph.interaction.framework.VisualInteraction;
@@ -32,7 +32,7 @@ import au.gov.asd.tac.constellation.graph.interaction.plugins.select.BoxSelectio
 import au.gov.asd.tac.constellation.graph.interaction.plugins.select.PointSelectionPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.visual.EventState.CreationMode;
 import au.gov.asd.tac.constellation.graph.interaction.visual.EventState.SceneAction;
-import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.NewLineModel;
+import au.gov.asd.tac.constellation.utilities.visual.NewLineModel;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionBoxModel;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.visual.contextmenu.ContextMenuProvider;
@@ -49,6 +49,7 @@ import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
 import au.gov.asd.tac.constellation.utilities.graphics.IntArray;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector2i;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.visual.VisualChangeBuilder;
 import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
@@ -417,7 +418,8 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                             if (zAxisRotation) {
                                 CameraUtilities.spin(camera, visualInteraction.convertTranslationToSpin(from, to));
                             } else {
-                                CameraUtilities.rotate(camera, event.isShiftDown() ? 0 : (from.y - to.y) / 2.0f, event.isControlDown() ? 0 : (from.x - to.x) / 2.0f);
+                                Vector2i yawPitch = new Vector2i(from.x - to.x, from.y - to.y);
+                                CameraUtilities.rotate(camera, event.isShiftDown() ? 0 : yawPitch.getY() / 2.0f, event.isControlDown() ? 0 : yawPitch.getX() / 2.0f);
                             }
                             cameraChange = true;
                             break;
@@ -1160,6 +1162,6 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
         // HACK_DPI - Get the DPI scale factor and multiply the point by it
         final float dpiScalingFactor = this.visualInteraction.getDPIScalingFactor();
         pointToScale.x *= dpiScalingFactor;
-        pointToScale.y *= dpiScalingFactor;
+        pointToScale.y *= dpiScalingFactor;               
     }
 }
