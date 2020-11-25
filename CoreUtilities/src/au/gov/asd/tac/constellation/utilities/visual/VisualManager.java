@@ -75,6 +75,7 @@ public final class VisualManager {
     private static boolean continuousRedrawing = false; //TODO: change this after testing
     
     public static void ToggleContinuousRedraw() { continuousRedrawing = !continuousRedrawing; }
+    public static boolean ContinuoslyRedraw() { return continuousRedrawing; }
 
     /**
      * Construct a VisualManager to delegate between the supplied

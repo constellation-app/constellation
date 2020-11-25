@@ -1224,7 +1224,7 @@ public class CVKLinksRenderable extends CVKRenderable {
                 DestroyVertexBuffers();
                 ret = CreateVertexBuffers();
                 if (VkFailed(ret)) { return ret; }         
-            } else if (vertexBuffersState == CVK_RESOURCE_NEEDS_REBUILD) {
+            } else if (vertexBuffersState == CVK_RESOURCE_NEEDS_UPDATE) {
                 ret = UpdateVertexBuffers();
                 if (VkFailed(ret)) { return ret; }           
             }                

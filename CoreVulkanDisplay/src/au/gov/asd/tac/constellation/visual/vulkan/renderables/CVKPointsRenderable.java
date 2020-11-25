@@ -465,7 +465,7 @@ public class CVKPointsRenderable extends CVKRenderable {
             DestroyVertexBuffer();
             ret = CreateVertexBuffer();
             if (VkFailed(ret)) { return ret; }         
-        } else if (vertexBuffersState == CVK_RESOURCE_NEEDS_REBUILD) {
+        } else if (vertexBuffersState == CVK_RESOURCE_NEEDS_UPDATE) {
             ret = UpdateVertexBuffer();
             if (VkFailed(ret)) { return ret; }           
         }

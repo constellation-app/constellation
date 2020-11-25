@@ -65,7 +65,7 @@ public class CVKAxesRenderable extends CVKRenderable {
     private final Vertex[] vertices = new Vertex[NUMBER_OF_VERTICES];
     private final VertexUniformBufferObject vertexUBO = new VertexUniformBufferObject();
     private CVKBuffer cvkVertexBuffer = null;
-    private List<CVKCommandBuffer> displayCommandBuffers = null;
+    private CVKCommandBuffer cvkDisplayCommandBuffer;
     private boolean needsDisplayUpdate = false;
     private ByteBuffer pushConstants = null;
  
@@ -200,7 +200,7 @@ public class CVKAxesRenderable extends CVKRenderable {
     
     @Override
     public void Destroy() {
-        DestroyCommandBuffers();
+        DestroyCommandBuffer();
         DestroyVertexBuffer();
         DestroyPipelines();
         DestroyPipelineLayout();
@@ -209,7 +209,7 @@ public class CVKAxesRenderable extends CVKRenderable {
         CVKAssertNull(displayPipelines);
         CVKAssertNull(hPipelineLayout);
         CVKAssertNull(cvkVertexBuffer);
-        CVKAssertNull(displayCommandBuffers);
+        CVKAssertNull(cvkDisplayCommandBuffer);
         CVKAssertNull(pushConstants);
     }
     
@@ -231,7 +231,7 @@ public class CVKAxesRenderable extends CVKRenderable {
                 ret = CreateVertexBuffer(stack);
                 if (VkFailed(ret)) { return ret; }   
 
-                ret = CreateCommandBuffers();
+                ret = CreateCommandBuffer();
                 if (VkFailed(ret)) { return ret; }            
 
                 displayPipelines = new ArrayList<>(cvkSwapChain.GetImageCount());
@@ -259,13 +259,13 @@ public class CVKAxesRenderable extends CVKRenderable {
         // swapchain is created.
         if (displayPipelines != null && swapChainImageCountChanged) {        
             DestroyVertexBuffer();
-            DestroyCommandBuffers();
+            DestroyCommandBuffer();
             DestroyPipelines();
-            DestroyCommandBuffers(); 
+            DestroyCommandBuffer(); 
 
             CVKAssertNull(displayPipelines);
             CVKAssertNull(cvkVertexBuffer);
-            CVKAssertNull(displayCommandBuffers);
+            CVKAssertNull(cvkDisplayCommandBuffer);
         }
         
         return ret;
@@ -499,29 +499,18 @@ public class CVKAxesRenderable extends CVKRenderable {
     
     // ========================> Command buffers <======================== \\
     
-    public int CreateCommandBuffers() {       
+    public int CreateCommandBuffer() {       
         CVKAssertNotNull(cvkSwapChain);
         
-        int ret = VK_SUCCESS;
-        int imageCount = cvkSwapChain.GetImageCount();
-        
-        displayCommandBuffers = new ArrayList<>(imageCount);
-
-        for (int i = 0; i < imageCount; ++i) {
-            CVKCommandBuffer buffer = CVKCommandBuffer.Create(VK_COMMAND_BUFFER_LEVEL_SECONDARY,
-                                                              GetLogger(),
-                                                              String.format("CVKAxesRenderable %d", i));
-            displayCommandBuffers.add(buffer);
-        }
-        
-        GetLogger().info("Init Command Buffer - CVKAxesRenderable");
-        
-        return ret;
+        cvkDisplayCommandBuffer = CVKCommandBuffer.Create(VK_COMMAND_BUFFER_LEVEL_SECONDARY,
+                                                          GetLogger(),
+                                                          "CVKAxesRenderable cvkDisplayCommandBuffer");        
+        return VK_SUCCESS;
     }
     
     @Override
     public VkCommandBuffer GetDisplayCommandBuffer(int imageIndex) {
-        return displayCommandBuffers.get(imageIndex).GetVKCommandBuffer(); 
+        return cvkDisplayCommandBuffer.GetVKCommandBuffer(); 
     }     
     
     @Override
@@ -530,33 +519,31 @@ public class CVKAxesRenderable extends CVKRenderable {
         cvkVisualProcessor.VerifyInRenderThread();
         int ret;
                     
-        CVKCommandBuffer commandBuffer = displayCommandBuffers.get(imageIndex);
-        CVKAssertNotNull(commandBuffer);
+        CVKAssertNotNull(cvkDisplayCommandBuffer);
         CVKAssertNotNull(displayPipelines.get(imageIndex));
 
-        ret = commandBuffer.BeginRecordSecondary(VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT,
+        ret = cvkDisplayCommandBuffer.BeginRecordSecondary(VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT,
                                                        inheritanceInfo);
         if (VkFailed(ret)) { return ret; }
 
-        commandBuffer.SetViewPort(cvkSwapChain.GetWidth(), cvkSwapChain.GetHeight());
-        commandBuffer.SetScissor(cvkVisualProcessor.GetCanvas().GetCurrentSurfaceExtent());
-        commandBuffer.BindGraphicsPipeline(displayPipelines.get(imageIndex));
-        commandBuffer.BindVertexInput(cvkVertexBuffer.GetBufferHandle());
-        commandBuffer.PushConstants(hPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, pushConstants);
+        cvkDisplayCommandBuffer.SetViewPort(cvkSwapChain.GetWidth(), cvkSwapChain.GetHeight());
+        cvkDisplayCommandBuffer.SetScissor(cvkVisualProcessor.GetCanvas().GetCurrentSurfaceExtent());
+        cvkDisplayCommandBuffer.BindGraphicsPipeline(displayPipelines.get(imageIndex));
+        cvkDisplayCommandBuffer.BindVertexInput(cvkVertexBuffer.GetBufferHandle());
+        cvkDisplayCommandBuffer.PushConstants(hPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, pushConstants);
 
-        commandBuffer.Draw(GetVertexCount());
+        cvkDisplayCommandBuffer.Draw(GetVertexCount());
 
-        ret = commandBuffer.FinishRecord();
+        ret = cvkDisplayCommandBuffer.FinishRecord();
         if (VkFailed(ret)) { return ret; }
 
         return ret;
     }
     
-    private void DestroyCommandBuffers() {
-        if (null != displayCommandBuffers && displayCommandBuffers.size() > 0) {
-            displayCommandBuffers.forEach(el -> {el.Destroy();});
-            displayCommandBuffers.clear();
-            displayCommandBuffers = null;
+    private void DestroyCommandBuffer() {
+        if (null != cvkDisplayCommandBuffer) {
+            cvkDisplayCommandBuffer.Destroy();
+            cvkDisplayCommandBuffer = null;
         }       
     }
     

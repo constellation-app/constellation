@@ -751,6 +751,7 @@ public class CVKIconsRenderable extends CVKRenderable {
         CVKAssertNotNull(vertexUniformBuffers);
         CVKAssertNotNull(cvkVisualProcessor);
         CVKAssertNotNull(cvkVisualProcessor.getDisplayCamera());
+        CVKAssertNotNull(vertexUBO);
         CVKAssert(vertexUniformBuffers.size() > 0);
         
         int ret = VK_SUCCESS;
@@ -1418,7 +1419,7 @@ public class CVKIconsRenderable extends CVKRenderable {
                 DestroyVertexBuffers();
                 ret = CreateVertexBuffers();
                 if (VkFailed(ret)) { return ret; }         
-            } else if (vertexBuffersState == CVK_RESOURCE_NEEDS_REBUILD) {
+            } else if (vertexBuffersState == CVK_RESOURCE_NEEDS_UPDATE) {
                 ret = UpdateVertexBuffers();
                 if (VkFailed(ret)) { return ret; }           
             }
@@ -1428,7 +1429,7 @@ public class CVKIconsRenderable extends CVKRenderable {
                 DestroyPositionBuffer();
                 ret = CreatePositionBuffer();
                 if (VkFailed(ret)) { return ret; }            
-            } else if (positionBufferState == CVK_RESOURCE_NEEDS_REBUILD) {
+            } else if (positionBufferState == CVK_RESOURCE_NEEDS_UPDATE) {
                 ret = UpdatePositionBuffer();
                 if (VkFailed(ret)) { return ret; }            
             }
@@ -1438,7 +1439,7 @@ public class CVKIconsRenderable extends CVKRenderable {
                 DestroyVertexFlagsBuffer();
                 ret = CreateVertexFlagsBuffer();
                 if (VkFailed(ret)) { return ret; }            
-            } else if (vertexFlagsBufferState == CVK_RESOURCE_NEEDS_REBUILD) {
+            } else if (vertexFlagsBufferState == CVK_RESOURCE_NEEDS_UPDATE) {
                 ret = UpdateVertexFlagsBuffer();
                 if (VkFailed(ret)) { return ret; }            
             }                  
@@ -1542,7 +1543,7 @@ public class CVKIconsRenderable extends CVKRenderable {
                                               access.getX2(pos),
                                               access.getY2(pos),
                                               access.getZ2(pos),
-                                              access.getRadius(pos));                 
+                                              access.getRadius(pos));     
             }            
             
             return positions;
@@ -1741,10 +1742,12 @@ public class CVKIconsRenderable extends CVKRenderable {
         return () -> {
             if (rebuildRequired) {
                 RebuildPositionStagingBuffer(positions);
-                SetPositionBufferState(CVK_RESOURCE_NEEDS_REBUILD);
-            } else if (positionBufferState != CVK_RESOURCE_NEEDS_REBUILD) {
+                SetPositionBufferState(CVK_RESOURCE_NEEDS_REBUILD);              
+            } else {
                 UpdatePositionStagingBuffer(positions, changedVerticeRange[0], changedVerticeRange[1]);
-                SetPositionBufferState(CVK_RESOURCE_NEEDS_UPDATE);
+                if (positionBufferState != CVK_RESOURCE_NEEDS_REBUILD) {
+                    SetPositionBufferState(CVK_RESOURCE_NEEDS_UPDATE);
+                }
             }
         };         
     }    

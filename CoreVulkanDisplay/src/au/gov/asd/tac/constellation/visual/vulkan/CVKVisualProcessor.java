@@ -317,7 +317,7 @@ public class CVKVisualProcessor extends VisualProcessor {
             shouldRender = true;
         }
         
-        if (shouldRender) {
+        if (shouldRender || manager.ContinuoslyRedraw()) {
             cvkCanvas.repaint();
             shouldRender = false;
         } else {
@@ -629,6 +629,13 @@ public class CVKVisualProcessor extends VisualProcessor {
             switch (property) {
                 case VERTICES_REBUILD:
                     return (change, access) -> {
+                        // Why are we not getting a CAMERA change on some graphs?
+                        if (camera == null && access.getCamera() != null) {
+                            camera = access.getCamera();
+                            setDisplayCamera(camera);
+                            Graphics3DUtilities.getModelViewMatrix(camera.lookAtEye, camera.lookAtCentre, camera.lookAtUp, getDisplayModelViewMatrix());                            
+                        }
+                        
                         addTask(cvkIcons.TaskUpdateIcons(change, access));
                         addTask(cvkIcons.TaskUpdatePositions(change, access));                         
                         addTask(cvkIcons.TaskUpdateVertexFlags(change, access));

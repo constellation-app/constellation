@@ -1163,6 +1163,16 @@ public class CVKIconLabelsRenderable extends CVKRenderable implements GlyphManag
     
     @Override
     public boolean NeedsDisplayUpdate() {    
+        // Race condition: icons owns the position buffer and the update task (on
+        // the visual processor thread) may not yet be complete.  If this happens
+        // before the first update is finished icons will have a vertexCount of 
+        // 0 so it won't be able to create the position buffer yet.  If we can't
+        // get a handle to the current position buffer then we just skip updating
+        // until we can.
+        if (cvkVisualProcessor.GetPositionBufferHandle() == VK_NULL_HANDLE) {
+            return false;
+        } 
+        
         if (hPositionBuffer != cvkVisualProcessor.GetPositionBufferHandle() ||
             hPositionBufferView != cvkVisualProcessor.GetPositionBufferViewHandle() ||
             hGlyphAtlasSampler != CVKGlyphTextureAtlas.GetInstance().GetAtlasSamplerHandle() ||
@@ -1193,7 +1203,7 @@ public class CVKIconLabelsRenderable extends CVKRenderable implements GlyphManag
                 DestroyVertexBuffers();
                 ret = CreateVertexBuffers();
                 if (VkFailed(ret)) { return ret; }         
-            } else if (vertexBuffersState == CVK_RESOURCE_NEEDS_REBUILD) {
+            } else if (vertexBuffersState == CVK_RESOURCE_NEEDS_UPDATE) {
                 ret = UpdateVertexBuffers();
                 if (VkFailed(ret)) { return ret; }           
             }                
