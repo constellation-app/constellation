@@ -45,7 +45,10 @@ public class RecentFilesWelcomePage {
         for (int i = 0; i < num; i++){
             final FileObject fo = RecentFiles.convertPath2File(files.get(i).getPath());
             if (fo != null){
-                fileNames.add(files.get(i).getFileName());
+                if(!fileNames.contains(files.get(i).getFileName())){
+                    fileNames.add(files.get(i).getFileName());
+                }
+                
             }   
         } 
         return fileNames;

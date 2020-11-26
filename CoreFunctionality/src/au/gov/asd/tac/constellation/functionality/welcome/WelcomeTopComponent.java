@@ -31,6 +31,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -219,12 +220,14 @@ public final class WelcomeTopComponent extends TopComponent {
                     recentGraphButtons[i].setText(fileNames.get(i));
                 }
                 final String text = recentGraphButtons[i].getText();
-
+                
+                Rectangle2D value = new Rectangle2D(700, 150, 500, 500);
                 final String screenshotFilename = RecentGraphScreenshotUtilities.getScreenshotsDir() + File.separator + text + ".png";
                 if (new File(screenshotFilename).exists()) {
                     final ImageView imageView = new ImageView(new Image("File:/" + screenshotFilename));
-                    imageView.setFitHeight(recentGraphButtons[i].getPrefHeight());
-                    imageView.setFitWidth(recentGraphButtons[i].getPrefWidth());
+                    imageView.setViewport(value);
+                    imageView.setFitHeight(145);
+                    imageView.setFitWidth(145);
                     recentGraphButtons[i].setGraphic(imageView);
                 }
 
