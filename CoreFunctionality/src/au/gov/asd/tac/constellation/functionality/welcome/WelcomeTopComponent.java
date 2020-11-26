@@ -16,11 +16,13 @@
 package au.gov.asd.tac.constellation.functionality.welcome;
 
 import au.gov.asd.tac.constellation.graph.file.open.RecentFilesWelcomePage;
+import au.gov.asd.tac.constellation.graph.interaction.plugins.io.screenshot.RecentGraphScreenshotUtilities;
 import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
 import au.gov.asd.tac.constellation.security.proxy.ProxyUtilities;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import java.awt.BorderLayout;
+import java.io.File;
 import java.util.List;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
@@ -97,10 +99,10 @@ public final class WelcomeTopComponent extends TopComponent {
     public static final String ERROR_BUTTON_MESSAGE = String.format("%s Information", BrandingUtilities.APPLICATION_NAME);
     public static final String WELCOME_TEXT = "Welcome to Constellation";
     public static final double SPLIT_POS = 0.2;
-    
+
     //Place holder images
     public static final String LOGO = "resources/constellation-logo.png";
-    
+
     protected static final Button[] pluginButtons = new Button[10];
     protected static final Button[] recentGraphButtons = new Button[10];
 
@@ -125,7 +127,7 @@ public final class WelcomeTopComponent extends TopComponent {
 
             splitPane.setStyle("-fx-background-color: transparent;");
             root.setCenter(splitPane);
-            
+
             //Create VBox to handle Browser and controls,
             //or error messages
             final VBox leftVBox = new VBox();
@@ -134,7 +136,7 @@ public final class WelcomeTopComponent extends TopComponent {
             leftVBox.setMinWidth(350);
             leftVBox.setPrefWidth(400);
             leftVBox.setMaxWidth(450);
-            
+
             final HBox logoHBox = new HBox();
             logoHBox.setBackground(new Background(new BackgroundFill(Color.valueOf("white"), CornerRadii.EMPTY, Insets.EMPTY)));
             ImageView logoView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(LOGO)));
@@ -143,44 +145,45 @@ public final class WelcomeTopComponent extends TopComponent {
             logoHBox.getChildren().add(logoView);
             logoHBox.setAlignment(Pos.CENTER);
             leftVBox.getChildren().add(logoHBox);
-            
-             //Create the labels for the left pane
+
+            //Create the labels for the left pane
             Label welcome = new Label(WELCOME_TEXT);
             welcome.setFont(new Font("Arial Unicode MS", 26));
             welcome.setAlignment(Pos.CENTER);
             leftVBox.getChildren().add(welcome);
-            
+
             //Create right VBox for graph controls
             final VBox rightVBox = new VBox();
             rightVBox.setPadding(new Insets(50, 50, 50, 50));
             rightVBox.setBackground(new Background(new BackgroundFill(Color.valueOf("#14161a"), CornerRadii.EMPTY, Insets.EMPTY)));
-            splitPane.getItems().add(rightVBox);  
-            
+            splitPane.getItems().add(rightVBox);
+
             //Create HBoxes for the right_vbox
             final HBox topHBox = new HBox();
             final HBox bottomHBox = new HBox();
-            
+
             //hbox formatting
             topHBox.setPadding(new Insets(50, 0, 50, 0));
             topHBox.setSpacing(10);
             bottomHBox.setPadding(new Insets(50, 0, 50, 0));
-            bottomHBox.setSpacing(10);        
-            
+            bottomHBox.setSpacing(10);
+
             getWelcomeContent();
-            
-            for (int i = 0; i < 10; i++){
-                if (pluginButtons[i] != null){
-                    Button currentButton = pluginButtons[i]; 
+
+            for (int i = 0; i < 10; i++) {
+                if (pluginButtons[i] != null) {
+                    Button currentButton = pluginButtons[i];
                     pluginButtons[i].setOnAction(new EventHandler<ActionEvent>() {
-                        @Override public void handle(ActionEvent e) {
+                        @Override
+                        public void handle(ActionEvent e) {
                             Lookup.getDefault().lookupAll(WelcomePageProvider.class).forEach(plugin -> {
-                                    if (currentButton == plugin.getButton()) {
-                                        plugin.run();
-                                    }
+                                if (currentButton == plugin.getButton()) {
+                                    plugin.run();
+                                }
                             });
                         }
                     });
-                    if (i < 4){
+                    if (i < 4) {
                         setButtonProps(pluginButtons[i]);
                         topHBox.getChildren().add(pluginButtons[i]);
                     } else {
@@ -189,48 +192,57 @@ public final class WelcomeTopComponent extends TopComponent {
                     }
                 }
             }
-            
+
             leftVBox.setAlignment(Pos.TOP_CENTER);
-            
+
             //formatting for bottom hbox
             Label recent = new Label("Recent");
             recent.setFont(new Font("Arial Unicode MS", 24));
-            
+
             rightVBox.getChildren().add(topHBox);
             rightVBox.getChildren().add(recent);
             rightVBox.getChildren().add(bottomHBox);
-             
+
             FlowPane flow = new FlowPane();
             flow.setPrefWrapLength(1000);
             flow.setHgap(20);
             flow.setVgap(20);
-            
+
             //Create the buttons for the recent page
-            List<String> fileNames = RecentFilesWelcomePage.getFileNames();
-            for (int i = 0; i < 10; i++){
+            final List<String> fileNames = RecentFilesWelcomePage.getFileNames();
+            for (int i = 0; i < 10; i++) {
                 recentGraphButtons[i] = new Button();
                 //if the user has recent files get the names
                 //and make them the text of the buttons
                 createRecentButtons(recentGraphButtons[i]);
-                if (i < fileNames.size()){
+                if (i < fileNames.size()) {
                     recentGraphButtons[i].setText(fileNames.get(i));
                 }
                 final String text = recentGraphButtons[i].getText();
-                
-                //Calls the method for the recent graphs to open 
-                // on the button action 
+
+                final String screenshotFilename = RecentGraphScreenshotUtilities.getScreenshotsDir() + File.separator + text + ".png";
+                if (new File(screenshotFilename).exists()) {
+                    final ImageView imageView = new ImageView(new Image("File:/" + screenshotFilename));
+                    imageView.setFitHeight(recentGraphButtons[i].getPrefHeight());
+                    imageView.setFitWidth(recentGraphButtons[i].getPrefWidth());
+                    recentGraphButtons[i].setGraphic(imageView);
+                }
+
+                //Calls the method for the recent graphs to open
+                // on the button action
                 recentGraphButtons[i].setOnAction(new EventHandler<ActionEvent>() {
-                        @Override public void handle(ActionEvent e) {
-                            RecentFilesWelcomePage.openGraph(text);
-                        }
-                    });
+                    @Override
+                    public void handle(ActionEvent e) {
+                        RecentFilesWelcomePage.openGraph(text);
+                    }
+                });
                 flow.getChildren().add(recentGraphButtons[i]);
             }
-             
+
             bottomHBox.getChildren().add(flow);
             splitPane.getDividers().get(0).setPosition(SPLIT_POS);
-            VBox.setVgrow(rightVBox, Priority.ALWAYS); 
-            
+            VBox.setVgrow(rightVBox, Priority.ALWAYS);
+
             //Finally, insert the root object into a scene, and insert the
             //scene into the JavaFX panel.
             final Scene scene = new Scene(root, Color.web("1d1d1d"));
@@ -240,35 +252,35 @@ public final class WelcomeTopComponent extends TopComponent {
         });
     }
 
-    public void setButtonProps(Button button){
+    public void setButtonProps(Button button) {
         button.setPrefSize(125, 125);
         button.setMaxSize(150, 150);
         button.setStyle("-fx-background-color: #2e4973;");
         button.setCursor(Cursor.HAND);
         button.setContentDisplay(ContentDisplay.TOP);
     }
-    
-    public void createRecentButtons(Button button){
+
+    public void createRecentButtons(Button button) {
         button.setPrefSize(160, 160);
         button.setMaxSize(175, 175);
         button.setStyle("-fx-background-color: #333333; -fx-background-radius: 10px; -fx-text-fill: white;");
         button.setCursor(Cursor.HAND);
         button.setContentDisplay(ContentDisplay.TOP);
     }
-    
-    public void setInfoButtons(Button button){
+
+    public void setInfoButtons(Button button) {
         button.setPrefSize(325, 45);
         button.setMaxSize(350, 50);
         button.setStyle("-fx-background-color: transparent;");
         button.setCursor(Cursor.HAND);
         button.setAlignment(Pos.CENTER_LEFT);
     }
-    
-    private void getWelcomeContent() {   
+
+    private void getWelcomeContent() {
         Lookup.getDefault().lookupAll(WelcomePageProvider.class).forEach(plugin -> {
             if (plugin.isVisible()) {
-                for (int i = 0; i < 10; i++){
-                    if (pluginButtons[i] == null){
+                for (int i = 0; i < 10; i++) {
+                    if (pluginButtons[i] == null) {
                         pluginButtons[i] = plugin.getButton();
                         break;
                     }
