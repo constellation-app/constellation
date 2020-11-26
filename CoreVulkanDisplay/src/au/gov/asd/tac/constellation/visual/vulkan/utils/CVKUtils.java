@@ -50,6 +50,9 @@ public class CVKUtils {
     public static final Vector3f ZERO_3F = new Vector3f(0, 0, 0);
     public static final Matrix44f IDENTITY_44F = Matrix44f.identity();
     
+    // @Nova's threaded glyph optimisation
+    public static final int NUM_CORES = Runtime.getRuntime().availableProcessors();    
+    
     // Extra error codes that don't collide with VkResult
     public static final int CVK_ERROR_INVALID_ARGS                              = 0xFFFF0000;
     public static final int CVK_ERROR_IMAGE_TOO_SMALL_FOR_COPY                  = 0xFFFF0001;
@@ -76,9 +79,9 @@ public class CVKUtils {
     
     
     // Enable this for additional logging, thread verification and other checks
-    public static final boolean CVK_DEBUGGING = false;
+    public static final boolean CVK_DEBUGGING = true;
     public static final Level CVK_ALLOCATION_LOG_LEVEL = Level.FINEST;
-    public static final Level CVK_DEFAULT_LOG_LEVEL = Level.WARNING;  
+    public static final Level CVK_DEFAULT_LOG_LEVEL = Level.INFO;  
     public static int CVK_VKALLOCATIONS = 0;
    
 

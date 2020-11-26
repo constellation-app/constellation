@@ -823,7 +823,6 @@ public class CVKIconsRenderable extends CVKRenderable {
         geometryUBO.pMatrix.set(cvkVisualProcessor.GetProjectionMatrix());
         geometryUBO.pixelDensity = cvkVisualProcessor.GetPixelDensity();
         geometryUBO.highlightColor.set(mtxHighlightColour);
-
         geometryUBO.iconsPerRowColumn = CVKIconTextureAtlas.GetInstance().iconsPerRowColumn;
         geometryUBO.iconsPerLayer     = CVKIconTextureAtlas.GetInstance().iconsPerLayer;
         geometryUBO.atlas2DDimension  = CVKIconTextureAtlas.GetInstance().texture2DDimension;        

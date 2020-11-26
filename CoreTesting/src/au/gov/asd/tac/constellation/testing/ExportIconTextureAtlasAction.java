@@ -44,7 +44,12 @@ public final class ExportIconTextureAtlasAction implements ActionListener {
         fileChooser.setMultiSelectionEnabled(false);
         fileChooser.setFileFilter(new FileNameExtensionFilter("PNG Images", "png"));
         if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
-            final File file = fileChooser.getSelectedFile();
+            File file = fileChooser.getSelectedFile();
+            if (!file.getName().endsWith(".png")) {
+                String fileName = file.getName() + ".png";
+                file = new File(file.getParent(), fileName);  
+            }
+                
             CVKVisualProcessor.ExportIconTextureAtlas(file);
         }
     }
