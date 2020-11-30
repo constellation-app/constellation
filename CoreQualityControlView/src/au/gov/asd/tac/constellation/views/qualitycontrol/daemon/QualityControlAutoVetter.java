@@ -27,7 +27,9 @@ import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlEvent;
@@ -51,13 +53,15 @@ import org.openide.util.Lookup;
 public final class QualityControlAutoVetter implements GraphManagerListener, GraphChangeListener {
 
     private static QualityControlAutoVetter INSTANCE = null;
-
     private static final List<QualityControlAutoVetterListener> buttonListeners = new ArrayList<>();
 
     private QualityControlState state;
 
     private Graph currentGraph;
     private long lastGlobalModificationCounter;
+    private long lastCameraModificationCounter;
+    private long lastvxselectedAttributeModificationCounter;
+    private long lasttxselectedAttributeModificationCounter;
 
     private final List<QualityControlListener> listeners;
 
@@ -152,10 +156,25 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
         if (graph != null) {
             final ReadableGraph readableGraph = graph.getReadableGraph();
             try {
+                final int cameraAttribute = VisualConcept.GraphAttribute.CAMERA.get(readableGraph);
+                final int vxselectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(readableGraph);
+                final int txselectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(readableGraph);
+
                 final long thisGlobalModificationCounter = readableGraph.getGlobalModificationCounter();
+                final long thisCameraModificationCounter = readableGraph.getValueModificationCounter(cameraAttribute);
+                final long thisvxselectedAttributeModificationCounter = readableGraph.getValueModificationCounter(vxselectedAttribute);
+                final long thistxselectedAttributeModificationCounter = readableGraph.getValueModificationCounter(txselectedAttribute);
+
                 if (thisGlobalModificationCounter != lastGlobalModificationCounter) {
-                    updateQualityControlState(graph);
+                    if (lastCameraModificationCounter == thisCameraModificationCounter
+                            && lastvxselectedAttributeModificationCounter == thisvxselectedAttributeModificationCounter
+                            && lasttxselectedAttributeModificationCounter == thistxselectedAttributeModificationCounter) {
+                        updateQualityControlState(graph);
+                    }
                     lastGlobalModificationCounter = thisGlobalModificationCounter;
+                    lastCameraModificationCounter = thisCameraModificationCounter;
+                    lastvxselectedAttributeModificationCounter = thisvxselectedAttributeModificationCounter;
+                    lasttxselectedAttributeModificationCounter = thistxselectedAttributeModificationCounter;
                 }
             } finally {
                 readableGraph.release();
@@ -288,6 +307,7 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
         return INSTANCE;
     }
 
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
     private static class QualityControlViewStateUpdater extends SimpleReadPlugin {
 
         @Override
@@ -352,7 +372,7 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
 
         @Override
         public String getName() {
-            return "Quality Control View: Save State";
+            return "Quality Control View: Update State";
         }
     }
 
