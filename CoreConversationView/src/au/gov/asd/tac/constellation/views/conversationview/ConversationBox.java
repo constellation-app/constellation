@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.conversationview;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -33,6 +34,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeSet;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -50,10 +53,12 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -113,6 +118,9 @@ public final class ConversationBox extends StackPane {
 
     private volatile boolean isAdjustingContributionProviders = false;
     private volatile boolean isAdjustingSenderLabels;
+
+    // A string for search within the bubble
+    public static TextField searchBubbleTextField;
 
     /**
      * Create a ConversationBox with the given Conversation,
@@ -225,7 +233,44 @@ public final class ConversationBox extends StackPane {
         bubbles.setItems(messages);
         conversation.setResultList(messages);
 
-        content.getChildren().addAll(optionsPane, contributionsPane, bubbles);
+        //Create a text field for search within bubbles
+        searchBubbleTextField = new TextField();
+        searchBubbleTextField.setPromptText("Type to search for a text");
+        searchBubbleTextField.setVisible(true);
+        searchBubbleTextField.setStyle("-fx-prompt-text-fill: #868686;");
+//        searchBubbleTextField.setStyle(JavafxStyleManager.CSS_BACKGROUND_COLOR_TRANSPARENT);
+
+        ConversationSearchRefresh conversationSearchRefresh = new ConversationSearchRefresh(conversation);
+        //Use a dummy provider name to get the toggle pane state remain the same during the search
+        searchBubbleTextField.addEventHandler(KeyEvent.KEY_TYPED, e -> {
+            conversationSearchRefresh.updateContributionProviderRefresh("Refresh");
+        });
+//       This code below enables the graph in sync with the search results
+        searchBubbleTextField.textProperty().addListener((ov, oldValue, newValue) -> {
+            final Graph graph = conversation.getGraphUpdateManager().getActiveGraph();
+            ReadableGraph readableGraph = graph.getReadableGraph();
+            try {
+                List<ConversationContributionProvider> compatibleContributionProviders;
+                Set<ConversationContributionProvider> contributingContributionProviders = new TreeSet();
+                List<ConversationMessage> contributingMessages = new ArrayList<>();
+                compatibleContributionProviders = ConversationContributionProvider.getCompatibleProviders(readableGraph);
+                for (final ConversationMessage message1 : messages) {
+                    message1.getAllContributions().clear();
+                    for (final ConversationContributionProvider contributionProvider : compatibleContributionProviders) {
+                        final ConversationContribution contribution = contributionProvider.createContribution(readableGraph, message1);
+                        if (contribution != null) {
+                            contributingContributionProviders.add(contributionProvider);
+                            message1.getAllContributions().add(contribution);
+                        }
+                    }
+                }
+            } finally {
+                readableGraph.release();
+            }
+        });
+
+        content.getChildren().addAll(optionsPane, searchBubbleTextField, contributionsPane, bubbles);
+//        content.getChildren().addAll(optionsPane, contributionsPane, bubbles);
         getChildren().addAll(content, tipsPane);
     }
 

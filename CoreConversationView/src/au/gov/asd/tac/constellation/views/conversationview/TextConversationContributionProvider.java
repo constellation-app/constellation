@@ -25,11 +25,14 @@ import au.gov.asd.tac.constellation.graph.visual.plugins.select.ChangeSelectionP
 import au.gov.asd.tac.constellation.graph.visual.plugins.select.SelectionMode;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ElementTypeParameterValue;
+import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
+import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.Region;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -45,6 +48,8 @@ public class TextConversationContributionProvider extends ConversationContributi
     private static final String DISPLAY_NAME = "Text";
 
     private int contentAttribute = Graph.NOT_FOUND;
+
+    public static boolean textFound;
 
     public TextConversationContributionProvider() {
         super(DISPLAY_NAME, 0);
@@ -90,7 +95,21 @@ public class TextConversationContributionProvider extends ConversationContributi
                         .executeLater(GraphManager.getDefault().getActiveGraph());
             });
             menuItems.add(selectOnGraphMenuItem);
-
+            TextField searchText = ConversationBox.searchBubbleTextField;
+            textFound = false;
+            SelectableLabel selectableLabel = new SelectableLabel(text, true, null, tips, menuItems);
+            if (!searchText.getText().isEmpty()) {
+                List<Tuple<Integer, Integer>> textResults = new ArrayList<>();
+                textResults = StringUtilities.searchRange(text, searchText.getText());
+                if (!textResults.isEmpty()) {
+                    textFound = true;
+                    for (Tuple<Integer, Integer> textResult : textResults) {
+                        selectableLabel.setStyle("-fx-highlight-fill: lightgray; -fx-highlight-text-fill: firebrick;");
+                        selectableLabel.selectRange(textResult.getFirst(), textResult.getSecond());
+                        return selectableLabel;
+                    }
+                }
+            }
             return new SelectableLabel(text, true, null, tips, menuItems);
         }
 
