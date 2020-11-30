@@ -69,7 +69,7 @@ public class NumberInputPane<T> extends Pane {
     public NumberInputPane(final PluginParameter<?> parameter) {
 
         final String parameterId = parameter.getId();
-        List<String> numberRecentValues = RecentParameterValues.getRecentValues(parameterId);
+        final List<String> numberRecentValues = RecentParameterValues.getRecentValues(parameterId);
         if (numberRecentValues != null) {
             switch (parameter.getType().getId()) {
                 case FloatParameterType.ID:

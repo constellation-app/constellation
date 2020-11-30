@@ -90,7 +90,7 @@ public class BooleanInputPane extends Pane {
         });
         getChildren().add(field);
         final String parameterId = parameter.getId();
-        List<String> booleanInputRecentValues = RecentParameterValues.getRecentValues(parameterId);
+        final List<String> booleanInputRecentValues = RecentParameterValues.getRecentValues(parameterId);
         if (booleanInputRecentValues != null) {
             parameter.setStringValue(booleanInputRecentValues.get(0));
         }

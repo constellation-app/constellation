@@ -16,13 +16,18 @@
 package au.gov.asd.tac.constellation.views.layers.state;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
+import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.io.AbstractGraphIOProvider;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteReader;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteWriter;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttributeUtilities;
 import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
-import au.gov.asd.tac.constellation.views.layers.layer.LayerDescription;
+import au.gov.asd.tac.constellation.views.layers.query.BitMaskQuery;
+import au.gov.asd.tac.constellation.views.layers.query.BitMaskQueryCollection;
+import au.gov.asd.tac.constellation.views.layers.query.Query;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -30,6 +35,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -50,22 +56,62 @@ public class LayersViewStateIoProvider extends AbstractGraphIOProvider {
             final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap,
             final GraphByteReader byteReader, final ImmutableObjectCache cache) throws IOException {
         if (!jnode.isNull()) {
-            final List<LayerDescription> layerDescriptions = new ArrayList<>();
-            final ArrayNode layersArray = (ArrayNode) jnode.withArray("layers");
-            for (int i = 0; i < layersArray.size(); i++) {
-                if (layersArray.get(i).isNull()) {
-                    layerDescriptions.add(null);
+            final List<BitMaskQuery> vxlayerDescriptions = new ArrayList<>();
+            final ArrayNode vertexLayersArray = (ArrayNode) jnode.withArray("vertexLayers");
+            for (int i = 0; i < vertexLayersArray.size(); i++) {
+                if (vertexLayersArray.get(i).isNull()) {
+                    vxlayerDescriptions.add(null);
                 } else {
-                    // create LayerDescription with index, visibility, query and description
-                    layerDescriptions.add(new LayerDescription(
-                            layersArray.get(i).get(0).asInt(),
-                            layersArray.get(i).get(1).asBoolean(),
-                            layersArray.get(i).get(2).asText(),
-                            layersArray.get(i).get(3).asText()
-                    ));
+                    final BitMaskQuery query = new BitMaskQuery(
+                            new Query(GraphElementType.VERTEX,
+                                    StringUtils.equals("null", vertexLayersArray.get(i).get(2).asText()) ? ""
+                                    : vertexLayersArray.get(i).get(2).asText()),
+                            vertexLayersArray.get(i).get(0).asInt(),
+                            vertexLayersArray.get(i).get(3).asText()
+                    );
+                    query.setVisibility(vertexLayersArray.get(i).get(1).asBoolean());
+                    vxlayerDescriptions.add(query);
+
                 }
             }
-            final LayersViewState state = new LayersViewState(layerDescriptions);
+
+            final List<BitMaskQuery> txlayerDescriptions = new ArrayList<>();
+            final ArrayNode transactionLayersArray = (ArrayNode) jnode.withArray("transactionLayers");
+            for (int i = 0; i < transactionLayersArray.size(); i++) {
+                if (transactionLayersArray.get(i).isNull()) {
+                    txlayerDescriptions.add(null);
+                } else {
+                    final BitMaskQuery query = new BitMaskQuery(
+                            new Query(GraphElementType.TRANSACTION,
+                                    StringUtils.equals("null", transactionLayersArray.get(i).get(2).asText()) ? ""
+                                    : transactionLayersArray.get(i).get(2).asText()),
+                            transactionLayersArray.get(i).get(0).asInt(),
+                            transactionLayersArray.get(i).get(3).asText()
+                    );
+                    query.setVisibility(transactionLayersArray.get(i).get(1).asBoolean());
+                    txlayerDescriptions.add(query);
+
+                }
+            }
+            final List<SchemaAttribute> layerAttributes = new ArrayList<>();
+            final ArrayNode layerAttributesArray = (ArrayNode) jnode.withArray("layerAttributes");
+            for (int i = 0; i < layerAttributesArray.size(); i++) {
+                if (layerAttributesArray.get(i).isNull()) {
+                    layerAttributes.add(null);
+                } else {
+                    layerAttributes.add(SchemaAttributeUtilities.getAttribute(
+                            GraphElementType.getValue(layerAttributesArray.get(i).get(0).asText()),
+                            layerAttributesArray.get(i).get(1).asText()));
+                }
+            }
+
+            BitMaskQueryCollection vxQueries = new BitMaskQueryCollection(GraphElementType.VERTEX);
+            vxQueries.setQueries(vxlayerDescriptions.toArray(new BitMaskQuery[64]));
+
+            BitMaskQueryCollection txQueries = new BitMaskQueryCollection(GraphElementType.TRANSACTION);
+            txQueries.setQueries(txlayerDescriptions.toArray(new BitMaskQuery[64]));
+
+            final LayersViewState state = new LayersViewState(layerAttributes, vxQueries, txQueries);
             graph.setObjectValue(attributeId, elementId, state);
         }
     }
@@ -83,21 +129,52 @@ public class LayersViewStateIoProvider extends AbstractGraphIOProvider {
                 // make a copy in case the state on the graph is currently being modified.
                 final LayersViewState state = new LayersViewState(originalState);
                 jsonGenerator.writeObjectFieldStart(attribute.getName());
-                jsonGenerator.writeArrayFieldStart("layers");
+                jsonGenerator.writeArrayFieldStart("vertexLayers");
 
-                for (LayerDescription layer : state.getLayers()) {
+                for (final BitMaskQuery layer : state.getVxQueriesCollection().getQueries()) {
                     if (layer == null) {
                         jsonGenerator.writeNull();
                     } else {
-                        jsonGenerator.writeStartArray(layer.getLayerIndex());
-                        jsonGenerator.writeNumber(layer.getLayerIndex());
-                        jsonGenerator.writeBoolean(layer.getCurrentLayerVisibility());
-                        jsonGenerator.writeString(layer.getLayerQuery());
-                        jsonGenerator.writeString(layer.getLayerDescription());
+                        jsonGenerator.writeStartArray(layer.getIndex());
+                        jsonGenerator.writeNumber(layer.getIndex());
+                        jsonGenerator.writeBoolean(layer.getVisibility());
+                        jsonGenerator.writeString(layer.getQueryString());
+                        jsonGenerator.writeString(layer.getDescription());
                         jsonGenerator.writeEndArray();
                     }
                 }
                 jsonGenerator.writeEndArray();
+
+                jsonGenerator.writeArrayFieldStart("transactionLayers");
+
+                for (final BitMaskQuery layer : state.getTxQueriesCollection().getQueries()) {
+                    if (layer == null) {
+                        jsonGenerator.writeNull();
+                    } else {
+                        jsonGenerator.writeStartArray(layer.getIndex());
+                        jsonGenerator.writeNumber(layer.getIndex());
+                        jsonGenerator.writeBoolean(layer.getVisibility());
+                        jsonGenerator.writeString(layer.getQueryString());
+                        jsonGenerator.writeString(layer.getDescription());
+                        jsonGenerator.writeEndArray();
+                    }
+                }
+                jsonGenerator.writeEndArray();
+
+                jsonGenerator.writeArrayFieldStart("layerAttributes");
+                int count = 0;
+                for (final SchemaAttribute attr : state.getLayerAttributes()) {
+                    if (attr == null) {
+                        jsonGenerator.writeNull();
+                    } else {
+                        jsonGenerator.writeStartArray(count++);
+                        jsonGenerator.writeString(attr.getElementType().toString());
+                        jsonGenerator.writeString(attr.getName());
+                        jsonGenerator.writeEndArray();
+                    }
+                }
+                jsonGenerator.writeEndArray();
+
                 jsonGenerator.writeEndObject();
             }
         }

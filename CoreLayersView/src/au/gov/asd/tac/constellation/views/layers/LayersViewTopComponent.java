@@ -16,8 +16,13 @@
 package au.gov.asd.tac.constellation.views.layers;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.graph.monitor.AttributeValueMonitor;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
+import java.util.ArrayList;
+import java.util.List;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -60,16 +65,43 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
         setToolTipText(Bundle.HINT_LayersViewTopComponent());
         initComponents();
 
-        layersViewController = new LayersViewController(LayersViewTopComponent.this);
+        layersViewController = LayersViewController.getDefault().init(LayersViewTopComponent.this);
         layersViewPane = new LayersViewPane(layersViewController);
+
         initContent();
 
         addAttributeValueChangeHandler(LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE, graph -> {
             if (!needsUpdate()) {
                 return;
             }
+
             layersViewController.readState();
+            layersViewController.updateQueries(graph);
         });
+    }
+
+    public void update() {
+        layersViewController.readState();
+        layersViewController.updateQueries(GraphManager.getDefault().getActiveGraph());
+    }
+
+    public void removeValueHandlers(final List<AttributeValueMonitor> valueMonitors) {
+        // remove all monitors before re-adding updated ones
+        valueMonitors.forEach(monitor -> {
+            removeAttributeValueChangeHandler(monitor);
+        });
+    }
+
+    public synchronized List<AttributeValueMonitor> setChangeListeners(final List<SchemaAttribute> changeListeners) {
+        final List<AttributeValueMonitor> valueMonitors = new ArrayList<>();
+        changeListeners.forEach(attribute -> {
+            valueMonitors.add(
+                    addAttributeValueChangeHandler(attribute, changedGraph -> {
+                        layersViewController.updateQueries(changedGraph);
+                    })
+            );
+        });
+        return List.copyOf(valueMonitors);
     }
 
     @Override

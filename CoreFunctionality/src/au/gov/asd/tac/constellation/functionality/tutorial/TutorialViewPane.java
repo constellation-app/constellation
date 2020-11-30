@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
 import au.gov.asd.tac.constellation.functionality.browser.OpenInBrowserPlugin;
 import au.gov.asd.tac.constellation.functionality.whatsnew.WhatsNewProvider;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
@@ -29,23 +30,33 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.prefs.PreferenceChangeEvent;
+import java.util.prefs.PreferenceChangeListener;
+import java.util.prefs.Preferences;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.web.WebView;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
+import org.openide.util.NbPreferences;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -62,7 +73,7 @@ import org.w3c.dom.events.EventTarget;
 public class TutorialViewPane extends BorderPane {
 
     private final BorderPane tutorialViewPane;
-
+    
     public static final String MOUSE_IMAGE = "resources/mouse3.png";
     public static final String MENU_IMAGE = "resources/sidebar.png";
     public static final String ERROR_BUTTON_MESSAGE = String.format("%s Information", BrandingUtilities.APPLICATION_NAME);
@@ -85,7 +96,7 @@ public class TutorialViewPane extends BorderPane {
     private final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
     public TutorialViewPane() {
-        tutorialViewPane = new BorderPane();
+        tutorialViewPane = new BorderPane(); 
         ConstellationSecurityManager.startSecurityLaterFX(() -> {
             Platform.setImplicitExit(false);
 
@@ -113,9 +124,34 @@ public class TutorialViewPane extends BorderPane {
             //or error messages
             VBox rightVBox = new VBox();
             splitPane.getItems().add(rightVBox);
-
+            
             splitPane.getDividers().get(0).setPosition(SPLIT_POS);
-
+            
+            // Create a checkbox to change users preference regarding showing the Tutorial Page on startup 
+            final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+            final CheckBox showOnStartUpCheckBox = new CheckBox("Show on Startup");
+            rightVBox.getChildren().add(showOnStartUpCheckBox);
+            rightVBox.setAlignment(Pos.TOP_RIGHT);
+            rightVBox.setBackground(new Background(new BackgroundFill(Color.valueOf("#333333"), CornerRadii.EMPTY, Insets.EMPTY)));
+            rightVBox.paddingProperty().set(new Insets(5, 5, 5, 5));
+            showOnStartUpCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+                @Override
+                public void changed(ObservableValue<? extends Boolean> ov,
+                        Boolean oldVal, Boolean newVal) {
+                    prefs.putBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, newVal);                     
+                }
+            });        
+            showOnStartUpCheckBox.setSelected(prefs.getBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP_DEFAULT));
+            
+            // Create a preferenceListener in order to identify when user preference is changed
+            // Keeps tutorial page and options tutorial selections in-sync when both are open
+            prefs.addPreferenceChangeListener(new PreferenceChangeListener() {
+                @Override
+                public void preferenceChange(PreferenceChangeEvent evt) {
+                    showOnStartUpCheckBox.setSelected(prefs.getBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, showOnStartUpCheckBox.isSelected()));
+                }
+            });
+            
             final WebView whatsNewView = new WebView();
             VBox.setVgrow(whatsNewView, Priority.ALWAYS);
             whatsNewView.getEngine().getLoadWorker().stateProperty().addListener((final ObservableValue<? extends Worker.State> observable, final Worker.State oldValue, final Worker.State newValue) -> {
@@ -187,7 +223,7 @@ public class TutorialViewPane extends BorderPane {
         boolean headerDone = false;
         final StringBuilder buf = new StringBuilder();
         buf.append("<!DOCTYPE html><html><body>\n");
-        buf.append(String.format("<style>body{font-size:%spx;}</style>", FontUtilities.getOutputFontSize()));
+        buf.append(String.format("<style>body{font-size:%spx;}</style>", FontUtilities.getOutputFontSize() * 1.5));
 
         for (final WhatsNewProvider.WhatsNewEntry wne : wnList) {
             // Use a far-future date to indicate an undated fixed position at the top.

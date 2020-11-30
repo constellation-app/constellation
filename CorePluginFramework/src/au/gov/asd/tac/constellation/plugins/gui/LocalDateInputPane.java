@@ -113,7 +113,7 @@ public class LocalDateInputPane extends Pane {
 
         getChildren().add(field);
         final String parameterId = parameter.getId();
-        List<String> dateTimeRecentValues = RecentParameterValues.getRecentValues(parameterId);
+        final List<String> dateTimeRecentValues = RecentParameterValues.getRecentValues(parameterId);
         if (dateTimeRecentValues != null) {
             parameter.setStringValue(dateTimeRecentValues.get(dateTimeRecentValues.size() > 1 ? 1 : 0));
         }

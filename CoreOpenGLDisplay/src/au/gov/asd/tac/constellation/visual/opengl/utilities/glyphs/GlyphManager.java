@@ -36,7 +36,7 @@ public interface GlyphManager {
      * @param text the text containing the characters to be rendered.
      * @param glyphStream the glyph stream to output the characters to.
      */
-    public void renderTextAsLigatures(String text, GlyphManager.GlyphStream glyphStream);
+    public void renderTextAsLigatures(String text, GlyphManager.GlyphStream glyphStream, GlyphStreamContext context);
 
     /**
      * Returns the number of glyphs.
@@ -147,7 +147,7 @@ public interface GlyphManager {
      */
     public static interface GlyphStream {
 
-        public void newLine(float width);
+        public void newLine(float width, GlyphStreamContext context);
 
         /**
          * Called to indicate that a glyph should be drawn at the specified x,y
@@ -157,6 +157,6 @@ public interface GlyphManager {
          * @param x the x location of the glyph.
          * @param y the y location of the glyph.
          */
-        public void addGlyph(int glyphPosition, float x, float y);
+         public void addGlyph(int glyphPosition, float x, float y, GlyphStreamContext context);
     }
 }

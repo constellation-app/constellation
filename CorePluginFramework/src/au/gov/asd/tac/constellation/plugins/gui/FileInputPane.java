@@ -238,7 +238,7 @@ public class FileInputPane extends HBox {
         fieldAndAddButton.getChildren().addAll(field, fileAddButton);
         getChildren().add(fieldAndAddButton);
         final String parameterId = parameter.getId();
-        List<String> fileInputRecentValues = RecentParameterValues.getRecentValues(parameterId);
+        final List<String> fileInputRecentValues = RecentParameterValues.getRecentValues(parameterId);
         if (fileInputRecentValues != null) {
             parameter.setStringValue(fileInputRecentValues.get(fileInputRecentValues.size() > 1 ? 1 : 0));
         }

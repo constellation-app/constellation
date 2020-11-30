@@ -22,7 +22,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import java.util.List;
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -123,10 +122,12 @@ public class SingleChoiceInputPane extends HBox {
                 switch (change) {
                     case VALUE:
                         // Don't change the value if it isn't necessary.
-                        final ParameterValue param = scParameterValue.getChoiceData();
+                        final List<ParameterValue> param = scParameterValue.getOptionsData();
                         final ParameterValue value = field.getSelectionModel().getSelectedItem();
-                        if (!Objects.equals(value, param)) {
-                            field.getSelectionModel().select(param);
+
+                        //Checks that the currently selected value is in the new parameters list
+                        if (!param.contains(value)) {
+                            field.getSelectionModel().select(scParameterValue.getChoiceData());
                         }
                         break;
                     case PROPERTY:
@@ -162,7 +163,7 @@ public class SingleChoiceInputPane extends HBox {
          
         getChildren().add(field);
         final String parameterId = parameter.getId();
-        List<String> singleChoiceRecentValues = RecentParameterValues.getRecentValues(parameterId);
+        final List<String> singleChoiceRecentValues = RecentParameterValues.getRecentValues(parameterId);
         final List<ParameterValue> pvs = SingleChoiceParameterType.getOptionsData(parameter);
         for (final ParameterValue pv : pvs) {
             if ((singleChoiceRecentValues != null) && (singleChoiceRecentValues.get(0).equals(pv.toString()))) {
