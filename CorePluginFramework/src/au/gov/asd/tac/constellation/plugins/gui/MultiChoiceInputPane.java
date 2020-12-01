@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.plugins.gui;
 
 import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
@@ -125,6 +126,11 @@ public class MultiChoiceInputPane extends HBox {
             });
         });
         getChildren().add(field);
+        final String parameterId = parameter.getId();
+        final List<String> multiChoiceRecentValues = RecentParameterValues.getRecentValues(parameterId);
+        if (multiChoiceRecentValues != null) {
+            parameter.setStringValue(multiChoiceRecentValues.get(multiChoiceRecentValues.size() > 1 ? 1 : 0));
+        }
     }
 
     public class MultiChoiceComboBox<T extends Object> extends CheckComboBox<T> {

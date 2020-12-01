@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
+== 2020-11-25 Data Access View
+<p>Data Access View has been updated to remember plugin parameter selections between sessions.</p>
+
 == 2020-10-28 Tutorial Page Showing on Startup
 <p>A checkbox has been added to the top right corner of this page to set preference for the Tutorial Page showing on startup.</p>
 
