@@ -100,6 +100,7 @@ import org.controlsfx.control.table.TableFilter;
  *
  * @author elnath
  * @author cygnus_x-1
+ * @author antares
  */
 public final class TableViewPane extends BorderPane {
 
@@ -346,7 +347,7 @@ public final class TableViewPane extends BorderPane {
                 //TODO: Replace need to sleep before paginating
                 try {
                     Thread.sleep(1000);
-                } catch (InterruptedException ex) {
+                } catch (final InterruptedException ex) {
                     Thread.currentThread().interrupt();
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
@@ -370,17 +371,17 @@ public final class TableViewPane extends BorderPane {
         final List<CustomMenuItem> columnCheckboxesDestination = new ArrayList<>();
         final List<CustomMenuItem> columnCheckboxesTransaction = new ArrayList<>();
 
-        MenuButton splitSourceButton = new MenuButton("Source");
+        final MenuButton splitSourceButton = new MenuButton("Source");
         splitSourceButton.setGraphic(MENU_ICON_SOURCE);
         splitSourceButton.setMaxWidth(WIDTH);
         splitSourceButton.setPopupSide(Side.RIGHT);
 
-        MenuButton splitDestinationButton = new MenuButton("Destination");
+        final MenuButton splitDestinationButton = new MenuButton("Destination");
         splitDestinationButton.setGraphic(MENU_ICON_DESTINATION);
         splitDestinationButton.setMaxWidth(WIDTH);
         splitDestinationButton.setPopupSide(Side.RIGHT);
 
-        MenuButton splitTransactionButton = new MenuButton("Transaction");
+        final MenuButton splitTransactionButton = new MenuButton("Transaction");
         splitTransactionButton.setGraphic(MENU_ICON_TRANSACTION);
         splitTransactionButton.setMaxWidth(WIDTH);
         splitTransactionButton.setPopupSide(Side.RIGHT);
@@ -411,11 +412,11 @@ public final class TableViewPane extends BorderPane {
                 final ReadableGraph readableGraph = parent.getCurrentGraph().getReadableGraph();
                 try {
                     final int[] vertexKeys = readableGraph.getPrimaryKey(GraphElementType.VERTEX);
-                    for (int vertexKey : vertexKeys) {
+                    for (final int vertexKey : vertexKeys) {
                         keyAttributes.add(new GraphAttribute(readableGraph, vertexKey));
                     }
                     final int[] transactionKeys = readableGraph.getPrimaryKey(GraphElementType.TRANSACTION);
-                    for (int transactionKey : transactionKeys) {
+                    for (final int transactionKey : transactionKeys) {
                         keyAttributes.add(new GraphAttribute(readableGraph, transactionKey));
                     }
                 } finally {
@@ -498,13 +499,13 @@ public final class TableViewPane extends BorderPane {
             final String columnHeading = columnTuple.getFirst();
             if (null != columnHeading) {
                 switch (columnHeading) {
-                    case "source.":
+                    case GraphRecordStoreUtilities.SOURCE:
                         columnCheckboxesSource.add(getColumnVisibility(columnTuple));
                         break;
-                    case "destination.":
+                    case GraphRecordStoreUtilities.DESTINATION:
                         columnCheckboxesDestination.add(getColumnVisibility(columnTuple));
                         break;
-                    case "transaction.":
+                    case GraphRecordStoreUtilities.TRANSACTION:
                         columnCheckboxesTransaction.add(getColumnVisibility(columnTuple));
                         break;
                     default:
@@ -535,7 +536,7 @@ public final class TableViewPane extends BorderPane {
         return cm;
     }
 
-    private CustomMenuItem getColumnVisibility(ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>> columnTuple) {
+    private CustomMenuItem getColumnVisibility(final ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>> columnTuple) {
         final CheckBox columnCheckbox = new CheckBox(columnTuple.getThird().getText());
         columnCheckbox.selectedProperty().bindBidirectional(columnTuple.getThird().visibleProperty());
         columnCheckbox.setOnAction(e -> {
@@ -657,7 +658,7 @@ public final class TableViewPane extends BorderPane {
      * @param columnName The name of the column sorting is being done on
      * @param sortType Direction of sorting
      */
-    private void saveSortDetails(String columnName, TableColumn.SortType sortType) {
+    private void saveSortDetails(final String columnName, final TableColumn.SortType sortType) {
         sortByColumnName = columnName;
         sortByType = sortType;
     }
@@ -975,7 +976,7 @@ public final class TableViewPane extends BorderPane {
                     return;
                 }
 
-                for (String columnName : tablePrefs.getFirst()) {
+                for (final String columnName : tablePrefs.getFirst()) {
                     // Loop through column names found in prefs and add associated columns to newColumnOrder list all set to visible.
                     for (final TableColumn<ObservableList<String>, ?> column : table.getColumns()) {
                         if (column.getText().equals(columnName)) {
@@ -990,7 +991,7 @@ public final class TableViewPane extends BorderPane {
                 // to update table.
                 final List<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> orderedColumns
                         = newColumnOrder.stream().map(c -> {
-                            for (ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>> col : columnIndex) {
+                            for (final ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>> col : columnIndex) {
                                 if (c.getText().equals(col.getThird().getText())) {
                                     return col;
                                 }
@@ -1183,7 +1184,7 @@ public final class TableViewPane extends BorderPane {
                     filter.setSearchStrategy((t, u) -> {
                         try {
                             return u.toLowerCase().startsWith(t.toLowerCase());
-                        } catch (Exception ex) {
+                        } catch (final Exception ex) {
                             return false;
                         }
                     });
@@ -1201,7 +1202,7 @@ public final class TableViewPane extends BorderPane {
 
                 try {
                     updateDataLatch.await();
-                } catch (InterruptedException ex) {
+                } catch (final InterruptedException ex) {
                     LOGGER.log(Level.WARNING, "InterruptedException encountered while updating table data");
                     Thread.currentThread().interrupt();
                 }
@@ -1285,7 +1286,7 @@ public final class TableViewPane extends BorderPane {
                 selectedIdsThread.start();
                 try {
                     selectedIdsThread.join();
-                } catch (InterruptedException ex) {
+                } catch (final InterruptedException ex) {
                     LOGGER.log(Level.WARNING, "InterruptedException encountered while updating table selection");
                     Thread.currentThread().interrupt();
                 }
