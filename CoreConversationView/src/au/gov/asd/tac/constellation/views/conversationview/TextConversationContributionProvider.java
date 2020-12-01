@@ -95,7 +95,7 @@ public class TextConversationContributionProvider extends ConversationContributi
                         .executeLater(GraphManager.getDefault().getActiveGraph());
             });
             menuItems.add(selectOnGraphMenuItem);
-            TextField searchText = ConversationBox.searchBubbleTextField;
+            final TextField searchText = ConversationBox.searchBubbleTextField;
             textFound = false;
             SelectableLabel selectableLabel = new SelectableLabel(text, true, null, tips, menuItems);
             if (!searchText.getText().isEmpty()) {

@@ -382,8 +382,8 @@ public class StringUtilities {
     }
 
     /**
-     * Returns list of tuples of all found positions (Start and End) of a string
-     * within the supplied text.
+     * Returns list of tuples of all found hits of a search string (Start
+     * position and End position) within the supplied text.
      */
     public static List<Tuple<Integer, Integer>> searchRange(final String text, final String searchStr) {
         final List<Tuple<Integer, Integer>> expected = new ArrayList<>();

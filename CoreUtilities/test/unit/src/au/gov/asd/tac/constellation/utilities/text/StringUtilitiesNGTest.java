@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.utilities.text;
 
+import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import static org.testng.Assert.assertEquals;
@@ -161,5 +163,15 @@ public class StringUtilitiesNGTest {
         final String s = "@bcd3fgh! JklmnøP";
         final String expected = "bcd3fghJklmnP";
         assertEquals(StringUtilities.removeSpecialCharacters(s), expected);
+    }
+
+    @Test
+    public void searchRangeFindsSingleMatch() {
+        final String text = "The quick brown fox";
+        final String searchStr = "Quick";
+        final List<Tuple<Integer, Integer>> expected = new ArrayList<>();
+        Tuple<Integer, Integer> tuple = Tuple.create(4, 9);
+        expected.add(tuple);
+        assertEquals(StringUtilities.searchRange(text, searchStr), expected);
     }
 }

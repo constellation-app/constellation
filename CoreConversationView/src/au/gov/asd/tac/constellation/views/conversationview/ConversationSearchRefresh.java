@@ -81,7 +81,7 @@ public final class ConversationSearchRefresh {
                     }
                     if (contributionProviderName == null) {
 
-                    } else if (newState.getHiddenContributionProviders().add(contributionProviderName)) {
+                    } else if (newState.getHiddenContributionProviders().remove(contributionProviderName)) {
                         graph.setObjectValue(stateAttribute, 0, newState);
                     }
                 }

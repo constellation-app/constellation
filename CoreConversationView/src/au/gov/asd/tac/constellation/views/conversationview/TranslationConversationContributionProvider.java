@@ -26,12 +26,17 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
+import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.IndexRange;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.ColumnConstraints;
@@ -170,6 +175,7 @@ public class TranslationConversationContributionProvider extends ConversationCon
                     } else {
                         translationLabel.setSelectableText(text);
                         content.getChildren().addAll(translationLabel, editButton);
+                        searchMessagesByText(text);
                     }
                 }
             });
@@ -185,6 +191,7 @@ public class TranslationConversationContributionProvider extends ConversationCon
                 } else {
                     translationLabel.setSelectableText(text);
                     content.getChildren().addAll(translationLabel, editButton);
+                    searchMessagesByText(text);
                 }
             });
 
@@ -216,6 +223,7 @@ public class TranslationConversationContributionProvider extends ConversationCon
             if (text != null) {
                 translationLabel.setSelectableText(text);
                 content.getChildren().addAll(translationLabel, editButton);
+                searchMessagesByText(text);
             } else {
                 content.getChildren().add(createTranslationButton);
             }
@@ -226,6 +234,22 @@ public class TranslationConversationContributionProvider extends ConversationCon
         @Override
         public String toString() {
             return "Translation Contribution";
+        }
+
+        public void searchMessagesByText(final String text) {
+            TextField searchText = ConversationBox.searchBubbleTextField;
+            if (!searchText.getText().isEmpty()) {
+                Integer hitCount = 0;
+                List<Tuple<Integer, Integer>> transResults = new ArrayList<>();
+                transResults = StringUtilities.searchRange(text, searchText.getText());
+                for (Tuple<Integer, Integer> transResult : transResults) {
+                    hitCount++;
+                    if (hitCount == 1) {
+                        translationLabel.setStyle("-fx-highlight-fill: lightgray; -fx-highlight-text-fill: firebrick;");
+                        translationLabel.selectRange(transResult.getFirst(), transResult.getSecond());
+                    }
+                }
+            }
         }
     }
 

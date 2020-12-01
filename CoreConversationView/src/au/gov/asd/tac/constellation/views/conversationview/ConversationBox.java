@@ -243,6 +243,7 @@ public final class ConversationBox extends StackPane {
         ConversationSearchRefresh conversationSearchRefresh = new ConversationSearchRefresh(conversation);
         //Use a dummy provider name to get the toggle pane state remain the same during the search
         searchBubbleTextField.addEventHandler(KeyEvent.KEY_TYPED, e -> {
+//        searchBubbleTextField.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
             conversationSearchRefresh.updateContributionProviderRefresh("Refresh");
         });
 //       This code below enables the graph in sync with the search results
