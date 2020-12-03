@@ -18,62 +18,43 @@ package au.gov.asd.tac.constellation.visual.opengl.renderer.batcher;
 import au.gov.asd.tac.constellation.graph.visual.framework.VisualGraphDefaults;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.graphics.FloatArray;
-import au.gov.asd.tac.constellation.utilities.graphics.IntArray;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable.GLRenderableUpdateTask;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.TextureUnits;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.LabelUtilities;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
-import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManager;
+import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.ConnectionGlyphStream;
+import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.ConnectionGlyphStreamContext;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
  * @author twilight_sparkle
  */
-public class ConnectionLabelBatcher implements GlyphManager.GlyphStream, SceneBatcher {
+public class ConnectionLabelBatcher implements SceneBatcher {
 
     // Shader variable names corresponding to data in the batch
     private static final String LABEL_FLOATS_SHADER_NAME = "glyphLocationData";
     private static final String LABEL_INTS_SHADER_NAME = "graphLocationData";
-    private static final int MAX_STAGGERS = 7;
+    public static final int MAX_STAGGERS = 7;
 
     // Batch and shader
-    private final Batch attributeLabelBatch;
-    private final Batch summaryLabelBatch;
-    private FloatArray attributeLabelFloats;
-    private IntArray attributeLabelInts;
-    private FloatArray summaryLabelFloats;
-    private IntArray summaryLabelInts;
-    private FloatArray currentFloats;
-    private IntArray currentInts;
+    private final Batch labelBatch;
     private int shader;
-
-    // State information for populating the batch
-    private int currentLowNodeId;
-    private int currentHighNodeId;
-    private int currentLinkLabelCount;
-    private int currentStagger;
-    private int currentOffset;
-    private int nextLeftOffset;
-    private int nextRightOffset;
-    private float currentVisiblity;
-    private int currentTotalScale;
-    private int currentLabelNumber;
-    private float currentWidth;
 
     // Information which is constant across the graph
     private final Matrix44f attributeLabelInfo = new Matrix44f();
     private final Matrix44f attributeLabelInfoReference = new Matrix44f();
     private final Matrix44f summaryLabelInfo = new Matrix44f();
-    private Matrix44f currentLabelInfo;
     private float[] backgroundColor;
     private float[] highlightColor;
 
@@ -99,66 +80,48 @@ public class ConnectionLabelBatcher implements GlyphManager.GlyphStream, SceneBa
     private static final int FLOAT_BUFFER_WIDTH = 4;
     private static final int INT_BUFFER_WIDTH = 4;
 
-    public ConnectionLabelBatcher() {
+    private static final int NUM_CORES = Runtime.getRuntime().availableProcessors();
 
+    public ConnectionLabelBatcher() {
         // Create the batch
-        attributeLabelBatch = new Batch(GL3.GL_POINTS);
+        labelBatch = new Batch(GL3.GL_POINTS);
         final ConstellationColor summaryColor = VisualGraphDefaults.DEFAULT_LABEL_COLOR;
         summaryLabelInfo.setRow(summaryColor.getRed(), summaryColor.getGreen(), summaryColor.getBlue(), VisualGraphDefaults.DEFAULT_LABEL_SIZE * LabelUtilities.NRADIUS_TO_LABEL_UNITS, 0);
-        floatsTarget = attributeLabelBatch.newFloatBuffer(FLOAT_BUFFER_WIDTH, false);
-        intsTarget = attributeLabelBatch.newIntBuffer(INT_BUFFER_WIDTH, false);
-        summaryLabelBatch = new Batch(attributeLabelBatch);
+        floatsTarget = labelBatch.newFloatBuffer(FLOAT_BUFFER_WIDTH, false);
+        intsTarget = labelBatch.newIntBuffer(INT_BUFFER_WIDTH, false);
     }
 
-    public void setCurrentConnection(final int lowNodeId, final int highNodeId, final int linkLabelCount) {
-        currentStagger = 0;
-        currentOffset = nextLeftOffset = nextRightOffset = 0;
-        currentLowNodeId = lowNodeId;
-        currentHighNodeId = highNodeId;
-        currentLinkLabelCount = linkLabelCount;
+    public void setCurrentConnection(final int lowNodeId, final int highNodeId, final int linkLabelCount, ConnectionGlyphStreamContext context) {
+        context.currentStagger = 0;
+        context.currentOffset = 0;
+        context.nextLeftOffset = 0;
+        context.nextRightOffset = 0;
+        context.currentLowNodeId = lowNodeId;
+        context.currentHighNodeId = highNodeId;
+        context.currentLinkLabelCount = linkLabelCount;
     }
 
-    public void nextParallelConnection(final int width) {
-        currentStagger = currentStagger == MAX_STAGGERS ? 1 : currentStagger + 1;
-        if (nextLeftOffset == 0) {
-            nextLeftOffset += ((width / 2) + LabelUtilities.NRADIUS_TO_LINE_WIDTH_UNITS);
-            nextRightOffset -= ((width / 2) + LabelUtilities.NRADIUS_TO_LINE_WIDTH_UNITS);
-        } else if (nextLeftOffset <= -nextRightOffset) {
-            currentOffset = nextLeftOffset + (width / 2);
-            nextLeftOffset += (width + LabelUtilities.NRADIUS_TO_LINE_WIDTH_UNITS);
+    public void nextParallelConnection(final int width, ConnectionGlyphStreamContext context) {
+        context.currentStagger = context.currentStagger == MAX_STAGGERS ? 1 : context.currentStagger + 1;
+        if (context.nextLeftOffset == 0) {
+            context.nextLeftOffset += ((width / 2) + LabelUtilities.NRADIUS_TO_LINE_WIDTH_UNITS);
+            context.nextRightOffset -= ((width / 2) + LabelUtilities.NRADIUS_TO_LINE_WIDTH_UNITS);
+        } else if (context.nextLeftOffset <= -context.nextRightOffset) {
+            context.currentOffset = context.nextLeftOffset + (width / 2);
+            context.nextLeftOffset += (width + LabelUtilities.NRADIUS_TO_LINE_WIDTH_UNITS);
         } else {
-            currentOffset = nextRightOffset - (width / 2);
-            nextRightOffset -= (width + LabelUtilities.NRADIUS_TO_LINE_WIDTH_UNITS);
+            context.currentOffset = context.nextRightOffset - (width / 2);
+            context.nextRightOffset -= (width + LabelUtilities.NRADIUS_TO_LINE_WIDTH_UNITS);
         }
-    }
-
-    public void setCurrentContext(final int totalScale, final float visibility, final int labelNumber) {
-        currentVisiblity = visibility;
-        currentTotalScale = totalScale;
-        currentLabelNumber = labelNumber;
-    }
-
-    @Override
-    public void addGlyph(int glyphPosition, float x, float y) {
-        currentFloats.add(currentWidth, x, y, currentVisiblity);
-        currentInts.add(currentLowNodeId, currentHighNodeId, (currentOffset << 16) + (currentTotalScale << 2) + currentLabelNumber, (glyphPosition << 8) + currentStagger * 256 / (Math.min(currentLinkLabelCount, MAX_STAGGERS) + 1));
-    }
-
-    @Override
-    public void newLine(float width) {
-        currentWidth = -width / 2.0f - 0.2f;
-        currentFloats.add(currentWidth, currentWidth, 0.0f, currentVisiblity);
-        currentInts.add(currentLowNodeId, currentHighNodeId, (currentOffset << 16) + (currentTotalScale << 2) + currentLabelNumber, (SharedDrawable.getLabelBackgroundGlyphPosition() << 8) + currentStagger * 256 / (Math.min(currentLinkLabelCount, MAX_STAGGERS) + 1));
     }
 
     @Override
     public boolean batchReady() {
-        return attributeLabelBatch.isDrawable() || summaryLabelBatch.isDrawable();
+        return labelBatch.isDrawable();
     }
 
     @Override
     public void createShader(GL3 gl) throws IOException {
-
         // Create the shader
         shader = SharedDrawable.getConnectionLabelShader(gl, floatsTarget, LABEL_FLOATS_SHADER_NAME, intsTarget, LABEL_INTS_SHADER_NAME);
 
@@ -180,73 +143,62 @@ public class ConnectionLabelBatcher implements GlyphManager.GlyphStream, SceneBa
     }
 
     @Override
-    public GLRenderableUpdateTask createBatch(final VisualAccess access) {
-
-        attributeLabelFloats = new FloatArray();
-        attributeLabelInts = new IntArray();
-        summaryLabelFloats = new FloatArray();
-        summaryLabelInts = new IntArray();
-        fillLabels(access);
+    public GLRenderableUpdateTask createBatch(final VisualAccess access) throws InterruptedException {
+        final ConnectionGlyphStream glyphStream = new ConnectionGlyphStream();
+        fillLabels(access, glyphStream);
 
         return gl -> {
-            attributeLabelBatch.initialise(attributeLabelFloats.size() / FLOAT_BUFFER_WIDTH);
-            attributeLabelBatch.buffer(gl, intsTarget, IntBuffer.wrap(attributeLabelInts.rawArray()));
-            attributeLabelBatch.buffer(gl, floatsTarget, FloatBuffer.wrap(attributeLabelFloats.rawArray()));
-            attributeLabelBatch.finalise(gl);
-            summaryLabelBatch.initialise(summaryLabelFloats.size() / FLOAT_BUFFER_WIDTH);
-            summaryLabelBatch.buffer(gl, intsTarget, IntBuffer.wrap(summaryLabelInts.rawArray()));
-            summaryLabelBatch.buffer(gl, floatsTarget, FloatBuffer.wrap(summaryLabelFloats.rawArray()));
-            summaryLabelBatch.finalise(gl);
+            labelBatch.initialise(glyphStream.getCurrentFloats().size() / FLOAT_BUFFER_WIDTH);
+            labelBatch.buffer(gl, intsTarget, IntBuffer.wrap(glyphStream.getCurrentInts().rawArray()));
+            labelBatch.buffer(gl, floatsTarget, FloatBuffer.wrap(glyphStream.getCurrentFloats().rawArray()));
+            labelBatch.finalise(gl);
         };
     }
 
-    public GLRenderableUpdateTask updateLabels(final VisualAccess access) {
+    public GLRenderableUpdateTask updateLabels(final VisualAccess access) throws InterruptedException {
         // We build the whole batch again - can't update labels in place at this stage.
-        attributeLabelFloats.clear();
-        attributeLabelInts.clear();
-        fillLabels(access);
+        final ConnectionGlyphStream glyphStream = new ConnectionGlyphStream();
+        fillLabels(access, glyphStream);
         return gl -> {
-            attributeLabelBatch.dispose(gl);
-            attributeLabelBatch.initialise(attributeLabelFloats.size() / FLOAT_BUFFER_WIDTH);
-            attributeLabelBatch.buffer(gl, intsTarget, IntBuffer.wrap(attributeLabelInts.rawArray()));
-            attributeLabelBatch.buffer(gl, floatsTarget, FloatBuffer.wrap(attributeLabelFloats.rawArray()));
-            attributeLabelBatch.finalise(gl);
-            summaryLabelBatch.dispose(gl);
-            summaryLabelBatch.initialise(summaryLabelFloats.size() / FLOAT_BUFFER_WIDTH);
-            summaryLabelBatch.buffer(gl, intsTarget, IntBuffer.wrap(summaryLabelInts.rawArray()));
-            summaryLabelBatch.buffer(gl, floatsTarget, FloatBuffer.wrap(summaryLabelFloats.rawArray()));
-            summaryLabelBatch.finalise(gl);
+            labelBatch.dispose(gl);
+            labelBatch.initialise(glyphStream.getCurrentFloats().size() / FLOAT_BUFFER_WIDTH);
+            labelBatch.buffer(gl, intsTarget, IntBuffer.wrap(glyphStream.getCurrentInts().rawArray()));
+            labelBatch.buffer(gl, floatsTarget, FloatBuffer.wrap(glyphStream.getCurrentFloats().rawArray()));
+            labelBatch.finalise(gl);
         };
     }
 
-    private void fillLabels(final VisualAccess access) {
+    private void fillLabels(final VisualAccess access, ConnectionGlyphStream glyphStream) throws InterruptedException {
+        final ConnectionGlyphStreamContext context = new ConnectionGlyphStreamContext();
+        final ExecutorService pool = Executors.newFixedThreadPool(NUM_CORES);
         for (int link = 0; link < access.getLinkCount(); link++) {
             final int connectionCount = access.getLinkConnectionCount(link);
-            setCurrentConnection(access.getLinkLowVertex(link), access.getLinkHighVertex(link), connectionCount);
+            setCurrentConnection(access.getLinkLowVertex(link), access.getLinkHighVertex(link), connectionCount, context);
             for (int pos = 0; pos < connectionCount; pos++) {
                 final int connection = access.getLinkConnection(link, pos);
-                nextParallelConnection((int) (LabelUtilities.NRADIUS_TO_LINE_WIDTH_UNITS * Math.min(LabelUtilities.MAX_TRANSACTION_WIDTH, access.getConnectionWidth(connection))));
-                currentFloats = access.getIsLabelSummary(connection) ? summaryLabelFloats : attributeLabelFloats;
-                currentInts = access.getIsLabelSummary(connection) ? summaryLabelInts : attributeLabelInts;
-                currentLabelInfo = access.getIsLabelSummary(connection) ? summaryLabelInfo : attributeLabelInfoReference;
-                bufferLabel(connection, access);
+                nextParallelConnection((int) (LabelUtilities.NRADIUS_TO_LINE_WIDTH_UNITS * Math.min(LabelUtilities.MAX_TRANSACTION_WIDTH, access.getConnectionWidth(connection))), context);
+                final Matrix44f currentLabelInfo = access.getIsLabelSummary(connection) ? summaryLabelInfo : attributeLabelInfoReference;
+                final Runnable bufferThread = new BufferLabel(connection, access, glyphStream, currentLabelInfo, context);
+                pool.execute(bufferThread);
             }
+
         }
-        attributeLabelFloats.trimToSize();
-        attributeLabelInts.trimToSize();
-        summaryLabelFloats.trimToSize();
-        summaryLabelInts.trimToSize();
+        pool.shutdown();
+        pool.awaitTermination(10, TimeUnit.MINUTES);
+
+        glyphStream.trimToSize();
     }
 
-    private void bufferLabel(final int pos, final VisualAccess access) {
+    private void bufferLabel(final int pos, final VisualAccess access, final ConnectionGlyphStream glyphStream, Matrix44f currentLabelInfo, final ConnectionGlyphStreamContext context) {
         int totalScale = 0;
-        final float visibility = access.getConnectionVisibility(pos);
+        context.visibility = access.getConnectionVisibility(pos);
         for (int label = 0; label < access.getConnectionLabelCount(pos); label++) {
+            context.labelNumber = label;
             final String text = access.getConnectionLabelText(pos, label);
             ArrayList<String> lines = LabelUtilities.splitTextIntoLines(text);
             for (final String line : lines) {
-                setCurrentContext(totalScale, visibility, label);
-                SharedDrawable.getGlyphManager().renderTextAsLigatures(line, this);
+                context.totalScale = totalScale;
+                SharedDrawable.getGlyphManager().renderTextAsLigatures(line, glyphStream, context);
                 totalScale += currentLabelInfo.get(label, 3);
             }
         }
@@ -290,15 +242,13 @@ public class ConnectionLabelBatcher implements GlyphManager.GlyphStream, SceneBa
     @Override
     public GLRenderableUpdateTask disposeBatch() {
         return gl -> {
-            attributeLabelBatch.dispose(gl);
-            summaryLabelBatch.dispose(gl);
+            labelBatch.dispose(gl);
         };
     }
 
     @Override
     public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
-
-        if (attributeLabelBatch.isDrawable() || summaryLabelBatch.isDrawable()) {
+        if (labelBatch.isDrawable()) {
             gl.glUseProgram(shader);
 
             // Let the glyph controller bind the glyph info and glyph image textures
@@ -324,17 +274,33 @@ public class ConnectionLabelBatcher implements GlyphManager.GlyphStream, SceneBa
             gl.glUniform4fv(shaderBackgroundColor, 1, backgroundColor, 0);
             gl.glUniform4fv(shaderHighlightColor, 1, highlightColor, 0);
 
-            if (attributeLabelBatch.isDrawable()) {
+            if (labelBatch.isDrawable()) {
                 gl.glUniformMatrix4fv(shaderLabelInfo, 1, false, attributeLabelInfo.a, 0);
-                attributeLabelBatch.draw(gl);
-            }
-
-            if (summaryLabelBatch.isDrawable()) {
-                gl.glUniformMatrix4fv(shaderLabelInfo, 1, false, summaryLabelInfo.a, 0);
-                summaryLabelBatch.draw(gl);
+                labelBatch.draw(gl);
             }
 
         }
     }
 
+    private class BufferLabel extends Thread {
+
+        private final int pos;
+        private final VisualAccess access;
+        private final ConnectionGlyphStream glyphStream;
+        private final Matrix44f currentLabelInfo;
+        private final ConnectionGlyphStreamContext context;
+
+        BufferLabel(final int pos, final VisualAccess access, final ConnectionGlyphStream glyphStream, final Matrix44f currentLabelInfo, ConnectionGlyphStreamContext context) {
+            this.pos = pos;
+            this.access = access;
+            this.glyphStream = glyphStream;
+            this.currentLabelInfo = currentLabelInfo;
+            this.context = new ConnectionGlyphStreamContext(context);
+        }
+
+        @Override
+        public void run() {
+            bufferLabel(pos, access, glyphStream, currentLabelInfo, context);
+        }
+    }
 }
