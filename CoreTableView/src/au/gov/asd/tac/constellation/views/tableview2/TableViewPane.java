@@ -55,6 +55,7 @@ import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -153,6 +154,8 @@ public final class TableViewPane extends BorderPane {
     private final Map<Integer, ObservableList<String>> elementIdToRowIndex;
     private final Map<ObservableList<String>, Integer> rowToElementIdIndex;
     private Change<? extends TableColumn<ObservableList<String>, ?>> lastChange;
+    private List<ObservableList<String>> previousPageRows = null;
+    private final Set<ObservableList<String>> selectedOnlySelectedRows = new HashSet<>();
 
     private final TableView<ObservableList<String>> table;
     private TableFilter<ObservableList<String>> filter;
@@ -170,6 +173,7 @@ public final class TableViewPane extends BorderPane {
 
     private final ReadOnlyObjectProperty<ObservableList<String>> selectedProperty;
     private final ChangeListener<ObservableList<String>> tableSelectionListener;
+    private final ListChangeListener selectedOnlySelectionListener;
     
     private boolean sortingListenerActive = false;
     private final ChangeListener<? super Comparator<? super ObservableList<String>>> tableComparatorListener;
@@ -225,6 +229,21 @@ public final class TableViewPane extends BorderPane {
         this.selectedProperty = table.getSelectionModel().selectedItemProperty();
         selectedProperty.addListener(tableSelectionListener);
         
+        this.selectedOnlySelectionListener = c -> {
+            if (parent.getCurrentState() != null && parent.getCurrentState().isSelectedOnly()) {
+                final ObservableList<ObservableList<String>> rows = table.getItems();
+                for (final ObservableList<String> row : rows) {
+                    if (table.getSelectionModel().getSelectedItems().contains(row)) {
+                        selectedOnlySelectedRows.add(row);
+                    } else if (selectedOnlySelectedRows.contains(row)) {
+                        // remove the row from selected items as it's no longer selected in the table
+                        selectedOnlySelectedRows.remove(row);
+                    }
+                }
+            }
+        };
+        table.getSelectionModel().getSelectedItems().addListener(selectedOnlySelectionListener);
+        
         this.tableComparatorListener = (v, o, n) -> paginateForSortListener();
         this.tableSortTypeListener = (v, o, n) -> paginateForSortListener();
 
@@ -251,6 +270,7 @@ public final class TableViewPane extends BorderPane {
         selectedOnlyButton.setOnAction(e -> {
             selectedOnlyButton.setGraphic(selectedOnlyButton.getGraphic().equals(SELECTED_VISIBLE_ICON) ? ALL_VISIBLE_ICON : SELECTED_VISIBLE_ICON);
             if (parent.getCurrentState() != null) {
+                selectedOnlySelectedRows.clear();
                 final TableViewState newState = new TableViewState(parent.getCurrentState());
                 newState.setSelectedOnly(!parent.getCurrentState().isSelectedOnly());
                 PluginExecution.withPlugin(new TableViewUtilities.UpdateStatePlugin(newState)).executeLater(parent.getCurrentGraph());
@@ -916,6 +936,7 @@ public final class TableViewPane extends BorderPane {
 
                 Platform.runLater(() -> {
                     selectedProperty.removeListener(tableSelectionListener);
+                    table.getSelectionModel().getSelectedItems().removeListener(selectedOnlySelectionListener);
 
                     columnReferenceMap.forEach((columnName, column) -> column.setGraphic(null));
 
@@ -952,6 +973,7 @@ public final class TableViewPane extends BorderPane {
                         }
                     });
 
+                    table.getSelectionModel().getSelectedItems().addListener(selectedOnlySelectionListener);
                     selectedProperty.addListener(tableSelectionListener);
                 });
             }
@@ -1015,10 +1037,17 @@ public final class TableViewPane extends BorderPane {
     
     private Node createPage(final int pageIndex, final List<ObservableList<String>> rows) {
         if (rows != null) {
+            // if the list of rows making up pages changes, we need to clear the list of selected rows
+            if (previousPageRows == null || previousPageRows != rows) {
+                selectedOnlySelectedRows.clear();
+                previousPageRows = rows;
+            }
+            
             final int fromIndex = pageIndex * maxRowsPerPage;
             final int toIndex = Math.min(fromIndex + maxRowsPerPage, rows.size());
             
             selectedProperty.removeListener(tableSelectionListener);
+            table.getSelectionModel().getSelectedItems().removeListener(selectedOnlySelectionListener);
             sortedRowList.comparatorProperty().removeListener(tableComparatorListener);
                         
             //get the previous sort details so that we don't lose it upon switching pages
@@ -1043,7 +1072,17 @@ public final class TableViewPane extends BorderPane {
             
             sortedRowList.comparatorProperty().bind(table.comparatorProperty());
             updateSelectionFromFXThread(parent.getCurrentGraph(), parent.getCurrentState());
+            
+            if (parent.getCurrentState() != null && parent.getCurrentState().isSelectedOnly()) {
+                final int[] selectedIndices = selectedOnlySelectedRows.stream()
+                        .map(row -> table.getItems().indexOf(row)).mapToInt(i -> i).toArray();
+                if (!selectedOnlySelectedRows.isEmpty()) {
+                    table.getSelectionModel().selectIndices(selectedIndices[0], selectedIndices);
+                }
+            }
+            
             sortedRowList.comparatorProperty().addListener(tableComparatorListener);
+            table.getSelectionModel().getSelectedItems().addListener(selectedOnlySelectionListener);
             selectedProperty.addListener(tableSelectionListener);
         }
         
@@ -1170,6 +1209,7 @@ public final class TableViewPane extends BorderPane {
 
                 Platform.runLater(() -> {
                     selectedProperty.removeListener(tableSelectionListener);
+                    table.getSelectionModel().getSelectedItems().removeListener(selectedOnlySelectionListener);
                     sortedRowList.comparatorProperty().unbind();
 
                     // add table data to table
@@ -1197,6 +1237,7 @@ public final class TableViewPane extends BorderPane {
                     paginate(sortedRowList);
                     updateDataLatch.countDown();
                     
+                    table.getSelectionModel().getSelectedItems().addListener(selectedOnlySelectionListener);
                     selectedProperty.addListener(tableSelectionListener);
                 });
 
@@ -1243,10 +1284,12 @@ public final class TableViewPane extends BorderPane {
                     
                     Platform.runLater(() -> {                        
                         selectedProperty.removeListener(tableSelectionListener);
+                        table.getSelectionModel().getSelectedItems().removeListener(selectedOnlySelectionListener);
                         table.getSelectionModel().clearSelection();
                         if (!selectedIds.isEmpty()) {
                             table.getSelectionModel().selectIndices(selectedIndices[0], selectedIndices);
                         }
+                        table.getSelectionModel().getSelectedItems().addListener(selectedOnlySelectionListener);
                         selectedProperty.addListener(tableSelectionListener);                            
                     });
                 }
