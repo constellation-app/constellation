@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.testing;
 
-import au.gov.asd.tac.constellation.functionality.welcome.WelcomePageProvider;
-import au.gov.asd.tac.constellation.functionality.welcome.WelcomeTopComponent;
+import au.gov.asd.tac.constellation.views.welcome.WelcomePageProvider;
+import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.file.opener.GraphOpener;

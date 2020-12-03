@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.functionality.welcome.plugins;
+package au.gov.asd.tac.constellation.views.welcome.plugins;
 
-import au.gov.asd.tac.constellation.functionality.welcome.WelcomePageProvider;
-import au.gov.asd.tac.constellation.functionality.welcome.WelcomeTopComponent;
+import au.gov.asd.tac.constellation.views.welcome.WelcomePageProvider;
+import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.Level;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -37,22 +37,21 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * The plugin for the Welcome Page that allows the user to join the 
- * Constellation community
+ * The plugin for the Welcome Page that leads to the Getting Started guides and resources
  *
  * @author Delphinus8821
  */
 
-@ServiceProvider(service = WelcomePageProvider.class, position = 8)
+@ServiceProvider(service = WelcomePageProvider.class, position = 5)
 @PluginInfo(tags = {"WELCOME"})
-@NbBundle.Messages("JoinCommWelcomePlugin=Join Comm Welcome Plugin")
-public class JoinCommWelcomePlugin extends WelcomePageProvider {
+@NbBundle.Messages("GettingStartedWelcomePlugin=Getting Started Welcome Plugin")
+public class GettingStartedWelcomePlugin extends WelcomePageProvider {
     
-    public static final String JOIN = "resources/welcome_join.png";
-    ImageView joinView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(JOIN)));
-    Button joinBtn = new Button();
+    public static final String GETTING_STARTED = "resources/welcome_getting_started.png";
+    ImageView started = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(GETTING_STARTED)));
+    Button startedBtn = new Button();
     
-    private static final Logger LOGGER = Logger.getLogger(JoinCommWelcomePlugin.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(GettingStartedWelcomePlugin.class.getName());
         
     /**
      * Get a unique reference that is used to identify the plugin 
@@ -61,7 +60,7 @@ public class JoinCommWelcomePlugin extends WelcomePageProvider {
      */
     @Override
     public String getName() {
-        return JoinCommWelcomePlugin.class.getName();
+        return GettingStartedWelcomePlugin.class.getName();
     }
     
     /**
@@ -71,7 +70,7 @@ public class JoinCommWelcomePlugin extends WelcomePageProvider {
      */
     @Override
     public void run() {
-        String url = "https://gitter.im/constellation-app/community";
+        String url = "https://constellation.readthedocs.io/en/latest/";
 
         if(Desktop.isDesktopSupported()){
             Desktop desktop = Desktop.getDesktop();
@@ -107,20 +106,20 @@ public class JoinCommWelcomePlugin extends WelcomePageProvider {
      */
     @Override
     public Button getButton(){
-        joinView.setFitHeight(25);
-        joinView.setFitWidth(25);
-        Text title = new Text("Join our Community");
-        title.setFill(Color.WHITE);
+        started.setFitHeight(25);
+        started.setFitWidth(25);
+        Text title = new Text("Getting Started");
         title.setFont(new Font("Arial", 18));
-        Text subtitle = new Text("Become a member");
-        subtitle.setFill(Color.WHITE);
+        title.setFill(Color.WHITE);
+        Text subtitle = new Text("Guides & Resources");
         subtitle.setFont(new Font("Arial", 10));
+        subtitle.setFill(Color.WHITE);
         VBox layoutVBox = new VBox(title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER_LEFT);
-        HBox layoutHBox = new HBox(joinView, layoutVBox);
+        HBox layoutHBox = new HBox(started, layoutVBox);
         layoutHBox.setSpacing(8);
         layoutHBox.setAlignment(Pos.CENTER_LEFT);
-        joinBtn.setGraphic(layoutHBox);
-        return joinBtn;
+        startedBtn.setGraphic(layoutHBox);
+        return startedBtn;
     }
 }

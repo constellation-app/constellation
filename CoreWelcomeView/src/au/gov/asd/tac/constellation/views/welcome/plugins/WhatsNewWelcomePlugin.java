@@ -13,17 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.functionality.welcome.plugins;
+package au.gov.asd.tac.constellation.views.welcome.plugins;
 
-import au.gov.asd.tac.constellation.functionality.welcome.WelcomePageProvider;
-import au.gov.asd.tac.constellation.functionality.welcome.WelcomeTopComponent;
+import au.gov.asd.tac.constellation.functionality.tutorial.TutorialTopComponent;
+import au.gov.asd.tac.constellation.views.welcome.WelcomePageProvider;
+import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
-import java.awt.Desktop;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.logging.Logger;
-import java.util.logging.Level;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -33,25 +28,27 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javax.swing.SwingUtilities;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
+import org.openide.windows.TopComponent;
+import org.openide.windows.WindowManager;
 
 /**
- * The plugin for the Welcome Page that leads to the Getting Started guides and resources
+ * The plugin for the Welcome Page that leads to the Whats New in Constellation
+ * resources
  *
  * @author Delphinus8821
  */
 
-@ServiceProvider(service = WelcomePageProvider.class, position = 5)
+@ServiceProvider(service = WelcomePageProvider.class, position = 6)
 @PluginInfo(tags = {"WELCOME"})
-@NbBundle.Messages("GettingStartedWelcomePlugin=Getting Started Welcome Plugin")
-public class GettingStartedWelcomePlugin extends WelcomePageProvider {
+@NbBundle.Messages("WhatsNewWelcomePlugin=Whats New Welcome Plugin")
+public class WhatsNewWelcomePlugin extends WelcomePageProvider {
     
-    public static final String GETTING_STARTED = "resources/welcome_getting_started.png";
-    ImageView started = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(GETTING_STARTED)));
-    Button startedBtn = new Button();
-    
-    private static final Logger LOGGER = Logger.getLogger(GettingStartedWelcomePlugin.class.getName());
+    public static final String WHATS_NEW = "resources/welcome_new.png";
+    ImageView newView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(WHATS_NEW)));
+    Button whatsNewBtn = new Button();
         
     /**
      * Get a unique reference that is used to identify the plugin 
@@ -60,7 +57,7 @@ public class GettingStartedWelcomePlugin extends WelcomePageProvider {
      */
     @Override
     public String getName() {
-        return GettingStartedWelcomePlugin.class.getName();
+        return WhatsNewWelcomePlugin.class.getName();
     }
     
     /**
@@ -70,23 +67,16 @@ public class GettingStartedWelcomePlugin extends WelcomePageProvider {
      */
     @Override
     public void run() {
-        String url = "https://constellation.readthedocs.io/en/latest/";
-
-        if(Desktop.isDesktopSupported()){
-            Desktop desktop = Desktop.getDesktop();
-            try {
-                desktop.browse(new URI(url));
-            } catch (IOException | URISyntaxException e) {
-                LOGGER.log(Level.WARNING, e.getMessage());
+        SwingUtilities.invokeLater(() -> {
+            final TopComponent tutorial = WindowManager.getDefault().findTopComponent(TutorialTopComponent.class.getSimpleName());
+            if (tutorial != null) {
+                if (!tutorial.isOpened()) {
+                    tutorial.open();
+                }
+                tutorial.setEnabled(true);
+                tutorial.requestActive();
             }
-        } else {
-            Runtime runtime = Runtime.getRuntime();
-            try {
-                runtime.exec("xdg-open " + url);
-            } catch (IOException e) {
-                LOGGER.log(Level.WARNING, e.getMessage());
-            }
-        }
+        });
     }
 
     /**
@@ -106,20 +96,20 @@ public class GettingStartedWelcomePlugin extends WelcomePageProvider {
      */
     @Override
     public Button getButton(){
-        started.setFitHeight(25);
-        started.setFitWidth(25);
-        Text title = new Text("Getting Started");
-        title.setFont(new Font("Arial", 18));
+        newView.setFitHeight(25);
+        newView.setFitWidth(25);
+        Text title = new Text("What's New?");
         title.setFill(Color.WHITE);
-        Text subtitle = new Text("Guides & Resources");
-        subtitle.setFont(new Font("Arial", 10));
+        title.setFont(new Font("Arial", 18));
+        Text subtitle = new Text("Features in the latest version");
         subtitle.setFill(Color.WHITE);
+        subtitle.setFont(new Font("Arial", 10));
         VBox layoutVBox = new VBox(title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER_LEFT);
-        HBox layoutHBox = new HBox(started, layoutVBox);
+        HBox layoutHBox = new HBox(newView, layoutVBox);
         layoutHBox.setSpacing(8);
         layoutHBox.setAlignment(Pos.CENTER_LEFT);
-        startedBtn.setGraphic(layoutHBox);
-        return startedBtn;
+        whatsNewBtn.setGraphic(layoutHBox);
+        return whatsNewBtn;
     }
 }

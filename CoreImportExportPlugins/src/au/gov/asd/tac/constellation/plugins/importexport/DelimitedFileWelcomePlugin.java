@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport;
 
-import au.gov.asd.tac.constellation.functionality.welcome.WelcomePageProvider;
-import au.gov.asd.tac.constellation.functionality.welcome.WelcomeTopComponent;
+import au.gov.asd.tac.constellation.views.welcome.WelcomePageProvider;
+import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.DelimitedImportTopComponent;
 import javafx.geometry.Pos;

@@ -13,12 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.functionality.welcome.plugins;
+package au.gov.asd.tac.constellation.views.welcome.plugins;
 
-import au.gov.asd.tac.constellation.functionality.tutorial.TutorialTopComponent;
-import au.gov.asd.tac.constellation.functionality.welcome.WelcomePageProvider;
-import au.gov.asd.tac.constellation.functionality.welcome.WelcomeTopComponent;
+import au.gov.asd.tac.constellation.views.welcome.WelcomePageProvider;
+import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
+import java.awt.Desktop;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -28,27 +33,26 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javax.swing.SwingUtilities;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
-import org.openide.windows.TopComponent;
-import org.openide.windows.WindowManager;
 
 /**
- * The plugin for the Welcome Page that leads to the Whats New in Constellation
- * resources
+ * The plugin for the Welcome Page that allows the user to join the 
+ * Constellation community
  *
  * @author Delphinus8821
  */
 
-@ServiceProvider(service = WelcomePageProvider.class, position = 6)
+@ServiceProvider(service = WelcomePageProvider.class, position = 8)
 @PluginInfo(tags = {"WELCOME"})
-@NbBundle.Messages("WhatsNewWelcomePlugin=Whats New Welcome Plugin")
-public class WhatsNewWelcomePlugin extends WelcomePageProvider {
+@NbBundle.Messages("JoinCommWelcomePlugin=Join Comm Welcome Plugin")
+public class JoinCommWelcomePlugin extends WelcomePageProvider {
     
-    public static final String WHATS_NEW = "resources/welcome_new.png";
-    ImageView newView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(WHATS_NEW)));
-    Button whatsNewBtn = new Button();
+    public static final String JOIN = "resources/welcome_join.png";
+    ImageView joinView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(JOIN)));
+    Button joinBtn = new Button();
+    
+    private static final Logger LOGGER = Logger.getLogger(JoinCommWelcomePlugin.class.getName());
         
     /**
      * Get a unique reference that is used to identify the plugin 
@@ -57,7 +61,7 @@ public class WhatsNewWelcomePlugin extends WelcomePageProvider {
      */
     @Override
     public String getName() {
-        return WhatsNewWelcomePlugin.class.getName();
+        return JoinCommWelcomePlugin.class.getName();
     }
     
     /**
@@ -67,16 +71,23 @@ public class WhatsNewWelcomePlugin extends WelcomePageProvider {
      */
     @Override
     public void run() {
-        SwingUtilities.invokeLater(() -> {
-            final TopComponent tutorial = WindowManager.getDefault().findTopComponent(TutorialTopComponent.class.getSimpleName());
-            if (tutorial != null) {
-                if (!tutorial.isOpened()) {
-                    tutorial.open();
-                }
-                tutorial.setEnabled(true);
-                tutorial.requestActive();
+        String url = "https://gitter.im/constellation-app/community";
+
+        if(Desktop.isDesktopSupported()){
+            Desktop desktop = Desktop.getDesktop();
+            try {
+                desktop.browse(new URI(url));
+            } catch (IOException | URISyntaxException e) {
+                LOGGER.log(Level.WARNING, e.getMessage());
             }
-        });
+        } else {
+            Runtime runtime = Runtime.getRuntime();
+            try {
+                runtime.exec("xdg-open " + url);
+            } catch (IOException e) {
+                LOGGER.log(Level.WARNING, e.getMessage());
+            }
+        }
     }
 
     /**
@@ -96,20 +107,20 @@ public class WhatsNewWelcomePlugin extends WelcomePageProvider {
      */
     @Override
     public Button getButton(){
-        newView.setFitHeight(25);
-        newView.setFitWidth(25);
-        Text title = new Text("What's New?");
+        joinView.setFitHeight(25);
+        joinView.setFitWidth(25);
+        Text title = new Text("Join our Community");
         title.setFill(Color.WHITE);
         title.setFont(new Font("Arial", 18));
-        Text subtitle = new Text("Features in the latest version");
+        Text subtitle = new Text("Become a member");
         subtitle.setFill(Color.WHITE);
         subtitle.setFont(new Font("Arial", 10));
         VBox layoutVBox = new VBox(title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER_LEFT);
-        HBox layoutHBox = new HBox(newView, layoutVBox);
+        HBox layoutHBox = new HBox(joinView, layoutVBox);
         layoutHBox.setSpacing(8);
         layoutHBox.setAlignment(Pos.CENTER_LEFT);
-        whatsNewBtn.setGraphic(layoutHBox);
-        return whatsNewBtn;
+        joinBtn.setGraphic(layoutHBox);
+        return joinBtn;
     }
 }
