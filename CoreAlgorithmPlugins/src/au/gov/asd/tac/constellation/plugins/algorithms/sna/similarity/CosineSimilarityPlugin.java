@@ -34,9 +34,12 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -52,6 +55,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class CosineSimilarityPlugin extends SimpleEditPlugin {
 
     private static final SchemaAttribute COSINE_SIMILARITY_ATTRIBUTE = SnaConcept.TransactionAttribute.COSINE_SIMILARITY;
+    private static final Logger LOG = Logger.getLogger(CosineSimilarityPlugin.class.getName());
 
     public static final String INCLUDE_CONNECTIONS_IN_PARAMETER_ID = PluginParameter.buildId(CosineSimilarityPlugin.class, "include_connections_in");
     public static final String INCLUDE_CONNECTIONS_OUT_PARAMETER_ID = PluginParameter.buildId(CosineSimilarityPlugin.class, "include_connections_out");
@@ -109,18 +113,18 @@ public class CosineSimilarityPlugin extends SimpleEditPlugin {
 
         // map each vertex to its neighbour count
         final int vertexCount = graph.getVertexCount();
-        final int[][] neighbourWeights = new int[vertexCount][vertexCount];
-        final BitSet[] neighbours = new BitSet[vertexCount];
-        final BitSet update = new BitSet(vertexCount);
-        final BitSet selected = new BitSet(vertexCount);
-        for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
+        final List<VertexWithNeighbours> verticiesWithNeighbours = new ArrayList<>();
+
+        VertexWithNeighbours currentVertexWithNeighbour;
+        for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) { //For each vertex
+            currentVertexWithNeighbour = null;
             final int vertexId = graph.getVertex(vertexPosition);
-            neighbours[vertexPosition] = new BitSet(vertexCount);
-            for (int vertexNeighbourPosition = 0; vertexNeighbourPosition < graph.getVertexNeighbourCount(vertexId); vertexNeighbourPosition++) {
+            for (int vertexNeighbourPosition = 0; vertexNeighbourPosition < graph.getVertexNeighbourCount(vertexId); vertexNeighbourPosition++) { //For each neighbour
                 final int neighbourId = graph.getVertexNeighbour(vertexId, vertexNeighbourPosition);
                 final int neighbourPosition = graph.getVertexPosition(neighbourId);
 
                 if (vertexPosition == neighbourPosition) {
+                    // Exclude self  
                     continue;
                 }
 
@@ -131,44 +135,42 @@ public class CosineSimilarityPlugin extends SimpleEditPlugin {
                     final boolean isRequestedDirection = (treatUndirectedBidirectional && edgeDirection == GraphConstants.UNDIRECTED
                             || includeConnectionsIn && graph.getEdgeDestinationVertex(edgeId) == neighbourId
                             || includeConnectionsOut && graph.getEdgeSourceVertex(edgeId) == neighbourId);
-                    if (isRequestedDirection) {
-                        neighbourWeights[vertexPosition][neighbourPosition] += graph.getEdgeTransactionCount(edgeId);
-                        neighbourWeights[vertexPosition][neighbourPosition] -= SimilarityUtilities.countEdgeSimilarityTransactions(graph, edgeId);
-                        neighbours[vertexPosition].set(neighbourPosition, true);
-                        update.set(vertexPosition, true);
+                    if (isRequestedDirection) { // If it is a neighbour we are interested in, based on whetehr we are interest in incoing or outoing neighbours.
+                        // neighbour weight vertex-neighbour = Number of transaction of correct direction between them - number of transacions of type similarity.
+                        if (currentVertexWithNeighbour == null) {
+                            currentVertexWithNeighbour = new VertexWithNeighbours(vertexId, vertexCount, graph.getBooleanValue(vertexSelectedAttributeId, vertexId));
+                            verticiesWithNeighbours.add(currentVertexWithNeighbour);
+                        }
+                        
+                        int weight = graph.getEdgeTransactionCount(edgeId) - SimilarityUtilities.countEdgeSimilarityTransactions(graph, edgeId);
+                        currentVertexWithNeighbour.addNeighbour(neighbourPosition, weight);
                     }
                 }
             }
-            final boolean vertexSelected = graph.getBooleanValue(vertexSelectedAttributeId, vertexId);
-            selected.set(vertexPosition, vertexSelected);
         }
-
+        // At this point:
+        // neighbourweights[vertexPosition][neighbourposition] = number of relevant transactions between them - number of transaction of type similarity between them.
+        // neighbours[vertexPosition] = bitset representing whetehr each vertex is a neighbour or not
+        // update = bitset representing whether the vertex has any neighbours at all.
         // calculate cosine similarity for every pair of vertices on the graph
         final Map<Tuple<Integer, Integer>, Float> cosineSimilarities = new HashMap<>();
-        for (int vertexOnePosition = update.nextSetBit(0); vertexOnePosition >= 0; vertexOnePosition = update.nextSetBit(vertexOnePosition + 1)) {
-            for (int vertexTwoPosition = update.nextSetBit(0); vertexTwoPosition >= 0; vertexTwoPosition = update.nextSetBit(vertexTwoPosition + 1)) {
-                if (!selectedOnly || (selected.get(vertexOnePosition) || selected.get(vertexTwoPosition))) {
-                    if (vertexOnePosition >= vertexTwoPosition) {
+        for (int leftIndex = 0; leftIndex < verticiesWithNeighbours.size()-1; leftIndex++) {
+            VertexWithNeighbours leftVertexWithNeighbours = verticiesWithNeighbours.get(leftIndex);
+            for (int rightIndex = leftIndex+1; rightIndex < verticiesWithNeighbours.size(); rightIndex++) {
+                VertexWithNeighbours rightVertexWithNeighbours = verticiesWithNeighbours.get(rightIndex);
+                if (!selectedOnly || leftVertexWithNeighbours.selected || rightVertexWithNeighbours.selected) { // if we care about selected ensure that one of the verticies is selected.
+                    // Get a bitset that tells you which vertexPositions had both verticies as a neighbour.
+                    BitSet commonNeighbours = getCommonNeighbours(leftVertexWithNeighbours.neighbours, rightVertexWithNeighbours.neighbours);
+                    
+                    if (commonNeighbours.size() < minCommonFeatures) {
+                        // if the verticies doent have enough common neighbours then skip
                         continue;
                     }
 
-                    final BitSet intersection = (BitSet) neighbours[vertexOnePosition].clone();
-                    intersection.and(neighbours[vertexTwoPosition]);
-
-                    if (intersection.cardinality() < minCommonFeatures) {
-                        continue;
-                    }
-
-                    final int vertexOneId = graph.getVertex(vertexOnePosition);
-                    final int[] neighboursOne = neighbourWeights[vertexOnePosition];
-
-                    final int vertexTwoId = graph.getVertex(vertexTwoPosition);
-                    final int[] neighboursTwo = neighbourWeights[vertexTwoPosition];
-
-                    final float neighbourDotProduct = dot(neighboursOne, neighboursTwo);
-                    final float neighboursMagnitude = magnitude(neighboursOne) * magnitude(neighboursTwo);
+                    final float neighbourDotProduct = getNeighbourDotProduct(leftVertexWithNeighbours, rightVertexWithNeighbours, commonNeighbours);
+                    final float neighboursMagnitude = leftVertexWithNeighbours.getMagnitude() * rightVertexWithNeighbours.getMagnitude();
                     final float cosineSimilarity = neighboursMagnitude == 0 ? 0 : neighbourDotProduct / neighboursMagnitude;
-                    cosineSimilarities.put(Tuple.create(vertexOneId, vertexTwoId), cosineSimilarity);
+                    cosineSimilarities.put(Tuple.create(leftVertexWithNeighbours.vertexId, rightVertexWithNeighbours.vertexId), cosineSimilarity);
                 }
             }
         }
@@ -179,24 +181,80 @@ public class CosineSimilarityPlugin extends SimpleEditPlugin {
         // complete with schema
         PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
     }
+    
+    private class VertexWithNeighbours {
+        private int vertexId;
+//        private int[] neighbourWeights;
+        private HashMap<Integer, Integer> neighbourWeightsMap = new HashMap<>();
+        private BitSet neighbours;
+        private boolean selected;
+        private Float magnitude = null;
 
-    private float dot(final int[] vectorOne, final int[] vectorTwo) {
-        assert vectorOne.length == vectorTwo.length;
-
-        float dot = 0;
-        for (int index = 0; index < vectorOne.length; index++) {
-            dot += vectorOne[index] * vectorTwo[index];
+        public VertexWithNeighbours(int vertexId, int vertexCount, boolean selected) {
+            this.vertexId = vertexId;
+            this.selected = selected;
+            this.neighbours = new BitSet(vertexCount);
+//            this.neighbourWeights = new int[vertexCount];
         }
-
+           
+//        private void addNeighbour(int neighbourPosition, int weight) {
+//            neighbourWeights[neighbourPosition] = weight;
+//            neighbours.set(neighbourPosition, true);
+//        }
+        private void addNeighbour(int neighbourPosition, int additionalWeight) {
+            int currentWeight = neighbourWeightsMap.getOrDefault(neighbourPosition, 0);
+            neighbourWeightsMap.put(neighbourPosition,currentWeight + additionalWeight);
+            neighbours.set(neighbourPosition, true);
+        }
+        
+        private float getMagnitude() {
+            if (magnitude == null) {
+                magnitude = calculateMagnitude();
+            }
+            return magnitude;
+        }
+        
+        private float calculateMagnitude() {
+            float magnitude = 0;
+            for(int neighbourWeight : neighbourWeightsMap.values()) {
+                magnitude += Math.pow(neighbourWeight, 2);
+            }
+            return (float) Math.sqrt(magnitude);
+        }
+//        private float calculateMagnitude() {
+//            float magnitude = 0;
+//            for (int index = neighbours.nextSetBit(0); index >= 0; index = neighbours.nextSetBit(index + 1)) {
+//                magnitude += Math.pow(neighbourWeights[index], 2);
+//            }
+//            return (float) Math.sqrt(magnitude);
+//        }
+        
+    }
+    
+//    BitSet getCommonNeighbours(VertexWithNeighbours vertex1, VertexWithNeighbours vertex2) {
+//        final BitSet intersection = (BitSet) vertex1.neighbours.clone();
+//        intersection.and(vertex2.neighbours);
+//        return intersection;
+//    }
+    BitSet getCommonNeighbours(BitSet leftVertexNeighbours, BitSet rightVertexNeighbours) {
+        final BitSet intersection = (BitSet) leftVertexNeighbours.clone();
+        intersection.and(rightVertexNeighbours);
+        return intersection;
+    }
+    
+    float getNeighbourDotProduct(VertexWithNeighbours vertex1, VertexWithNeighbours vertex2, BitSet intersection) {
+        float dot=0;
+        for (int index = intersection.nextSetBit(0); index >= 0; index = intersection.nextSetBit(index + 1)) {
+            dot += vertex1.neighbourWeightsMap.get(index) * vertex2.neighbourWeightsMap.get(index);
+        }
         return dot;
     }
-
-    private float magnitude(final int[] vector) {
-        float magnitude = 0;
-        for (int index = 0; index < vector.length; index++) {
-            magnitude += Math.pow(vector[index], 2);
-        }
-
-        return (float) Math.sqrt(magnitude);
-    }
+//    float getNeighbourDotProduct(VertexWithNeighbours vertex1, VertexWithNeighbours vertex2, BitSet intersection) {
+//        float dot=0;
+//        for (int index = intersection.nextSetBit(0); index >= 0; index = intersection.nextSetBit(index + 1)) {
+//            dot += vertex1.neighbourWeights[index] * vertex2.neighbourWeights[index];
+//        }
+//        return dot;
+//    }
+    
 }
