@@ -60,8 +60,6 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
     private Graph currentGraph;
     private long lastGlobalModificationCounter;
     private long lastCameraModificationCounter;
-    private long lastvxselectedAttributeModificationCounter;
-    private long lasttxselectedAttributeModificationCounter;
 
     private final List<QualityControlListener> listeners;
 
@@ -157,24 +155,16 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
             final ReadableGraph readableGraph = graph.getReadableGraph();
             try {
                 final int cameraAttribute = VisualConcept.GraphAttribute.CAMERA.get(readableGraph);
-                final int vxselectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(readableGraph);
-                final int txselectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(readableGraph);
 
                 final long thisGlobalModificationCounter = readableGraph.getGlobalModificationCounter();
                 final long thisCameraModificationCounter = readableGraph.getValueModificationCounter(cameraAttribute);
-                final long thisvxselectedAttributeModificationCounter = readableGraph.getValueModificationCounter(vxselectedAttribute);
-                final long thistxselectedAttributeModificationCounter = readableGraph.getValueModificationCounter(txselectedAttribute);
 
                 if (thisGlobalModificationCounter != lastGlobalModificationCounter) {
-                    if (lastCameraModificationCounter == thisCameraModificationCounter
-                            && lastvxselectedAttributeModificationCounter == thisvxselectedAttributeModificationCounter
-                            && lasttxselectedAttributeModificationCounter == thistxselectedAttributeModificationCounter) {
+                    if (lastCameraModificationCounter == thisCameraModificationCounter) {
                         updateQualityControlState(graph);
                     }
                     lastGlobalModificationCounter = thisGlobalModificationCounter;
                     lastCameraModificationCounter = thisCameraModificationCounter;
-                    lastvxselectedAttributeModificationCounter = thisvxselectedAttributeModificationCounter;
-                    lasttxselectedAttributeModificationCounter = thistxselectedAttributeModificationCounter;
                 }
             } finally {
                 readableGraph.release();
