@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
+== 2020-12-04 Table View
+<p>A couple of bugs related to exporting in Selected Only mode and table selection have been fixed.</p>
+
 == 2020-11-25 Data Access View
 <p>Data Access View has been updated to remember plugin parameter selections between sessions.</p>
 

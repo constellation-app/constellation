@@ -425,14 +425,14 @@ public class TableViewUtilities {
 
         @Override
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            final Set<Integer> elements = table.getItems().stream()
+                    .map(item -> index.get(item)).collect(Collectors.toSet());
             final Set<Integer> selectedElements = table.getSelectionModel().getSelectedItems().stream()
                     .map(selectedItem -> index.get(selectedItem)).collect(Collectors.toSet());
             final boolean isVertex = elementType == GraphElementType.VERTEX;
             final int selectedAttributeId = isVertex ? VisualConcept.VertexAttribute.SELECTED.ensure(graph) : VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
-            final int elementCount = isVertex ? graph.getVertexCount() : graph.getTransactionCount();
-            for (int elementPosition = 0; elementPosition < elementCount; elementPosition++) {
-                final int elementId = isVertex ? graph.getVertex(elementPosition) : graph.getTransaction(elementPosition);
-                graph.setBooleanValue(selectedAttributeId, elementId, selectedElements.contains(elementId));
+            for (final Integer element : elements) {
+                graph.setBooleanValue(selectedAttributeId, element, selectedElements.contains(element));
             }
         }
 
