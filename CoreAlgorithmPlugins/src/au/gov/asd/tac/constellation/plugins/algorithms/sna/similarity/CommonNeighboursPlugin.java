@@ -181,7 +181,8 @@ public class CommonNeighboursPlugin extends SimpleEditPlugin {
         }
 
         // update the graph with common neighbours values
-        SimilarityUtilities.addScoresToGraph(graph, commonNeighbourScores, COMMON_NEIGHBOURS_ATTRIBUTE);
+        SimilarityUtilities.setGraphAndEnsureAttributes(graph, COMMON_NEIGHBOURS_ATTRIBUTE);
+        SimilarityUtilities.addScoresToGraph(commonNeighbourScores, COMMON_NEIGHBOURS_ATTRIBUTE);
 
         // complete with schema
         PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);

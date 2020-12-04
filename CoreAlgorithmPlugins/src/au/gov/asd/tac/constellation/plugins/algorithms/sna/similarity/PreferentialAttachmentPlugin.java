@@ -151,7 +151,8 @@ public class PreferentialAttachmentPlugin extends SimpleEditPlugin {
         }
 
         // update the graph with preferential attachment values
-        SimilarityUtilities.addScoresToGraph(graph, paScores, PREFERENTIAL_ATTACHMENT_ATTRIBUTE);
+        SimilarityUtilities.setGraphAndEnsureAttributes(graph, PREFERENTIAL_ATTACHMENT_ATTRIBUTE);
+        SimilarityUtilities.addScoresToGraph(paScores, PREFERENTIAL_ATTACHMENT_ATTRIBUTE);
         // complete with schema
         PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
     }

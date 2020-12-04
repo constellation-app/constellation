@@ -174,7 +174,8 @@ public class DiceSimilarityPlugin extends SimpleEditPlugin {
         }
 
         // update the graph with dice similarity values
-        SimilarityUtilities.addScoresToGraph(graph, diceSimilarities, DICE_SIMILARITY_ATTRIBUTE);
+        SimilarityUtilities.setGraphAndEnsureAttributes(graph, DICE_SIMILARITY_ATTRIBUTE);
+        SimilarityUtilities.addScoresToGraph(diceSimilarities, DICE_SIMILARITY_ATTRIBUTE);
         // complete with schema
         PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
     }

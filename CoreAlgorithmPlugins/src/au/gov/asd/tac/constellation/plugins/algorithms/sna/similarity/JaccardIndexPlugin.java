@@ -176,7 +176,8 @@ public class JaccardIndexPlugin extends SimpleEditPlugin {
         }
 
         // update the graph with jaccard index values
-        SimilarityUtilities.addScoresToGraph(graph, jaccardIndices, JACCARD_INDEX_ATTRIBUTE);
+        SimilarityUtilities.setGraphAndEnsureAttributes(graph, JACCARD_INDEX_ATTRIBUTE);
+        SimilarityUtilities.addScoresToGraph(jaccardIndices, JACCARD_INDEX_ATTRIBUTE);
         // complete with schema
         PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
     }

@@ -185,7 +185,8 @@ public class AdamicAdarIndexPlugin extends SimpleEditPlugin {
         }
 
         // update the graph with Adamic-Adar index values
-        SimilarityUtilities.addScoresToGraph(graph, aaiScores, ADAMIC_ADAR_INDEX_ATTRIBUTE);
+        SimilarityUtilities.setGraphAndEnsureAttributes(graph, ADAMIC_ADAR_INDEX_ATTRIBUTE);
+        SimilarityUtilities.addScoresToGraph(aaiScores, ADAMIC_ADAR_INDEX_ATTRIBUTE);
         // complete with schema
         PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
     }

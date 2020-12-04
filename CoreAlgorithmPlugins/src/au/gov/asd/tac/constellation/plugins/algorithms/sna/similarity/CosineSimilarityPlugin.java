@@ -176,7 +176,8 @@ public class CosineSimilarityPlugin extends SimpleEditPlugin {
         }
 
         // update the graph with cosine similarity values
-        SimilarityUtilities.addScoresToGraph(graph, cosineSimilarities, COSINE_SIMILARITY_ATTRIBUTE);
+        SimilarityUtilities.setGraphAndEnsureAttributes(graph, COSINE_SIMILARITY_ATTRIBUTE);
+        SimilarityUtilities.addScoresToGraph(cosineSimilarities, COSINE_SIMILARITY_ATTRIBUTE);
 
         // complete with schema
         PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
@@ -230,6 +231,13 @@ public class CosineSimilarityPlugin extends SimpleEditPlugin {
 //        }
         
     }
+    
+//    Set<Integer> getCommonNeighbours(VertexWithNeighbours vertex1, VertexWithNeighbours vertex2) {
+//        Set<Integer> commonNeighbours = new HashSet(vertex1.neighbourWeightsMap.keySet());
+//        commonNeighbours.removeIf(neighbour -> !vertex2.neighbourWeightsMap.keySet().contains(neighbour));
+//        
+//        return commonNeighbours;
+//    }
     
 //    BitSet getCommonNeighbours(VertexWithNeighbours vertex1, VertexWithNeighbours vertex2) {
 //        final BitSet intersection = (BitSet) vertex1.neighbours.clone();

@@ -185,7 +185,8 @@ public class ResourceAllocationIndexPlugin extends SimpleEditPlugin {
         }
 
         // update the graph with resource allocation index values
-        SimilarityUtilities.addScoresToGraph(graph, raiScores, RESOURCE_ALLOCATION_INDEX_ATTRIBUTE);
+        SimilarityUtilities.setGraphAndEnsureAttributes(graph, RESOURCE_ALLOCATION_INDEX_ATTRIBUTE);
+        SimilarityUtilities.addScoresToGraph(raiScores, RESOURCE_ALLOCATION_INDEX_ATTRIBUTE);
         // complete with schema
         PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
     }

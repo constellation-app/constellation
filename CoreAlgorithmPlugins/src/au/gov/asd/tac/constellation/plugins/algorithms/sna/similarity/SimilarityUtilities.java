@@ -30,7 +30,18 @@ import java.util.Map;
  * @author canis_majoris
  */
 public class SimilarityUtilities {
+    private static GraphWriteMethods graph;
+    private static int uniqueIdAttribute;
+    private static int typeAttribute;
+    private static int similarityAttribute;
 
+    public static void setGraphAndEnsureAttributes(final GraphWriteMethods graph, final SchemaAttribute schemaSimilarityAttribute) {
+        SimilarityUtilities.graph = graph;
+        uniqueIdAttribute = VisualConcept.TransactionAttribute.IDENTIFIER.ensure(graph);
+        typeAttribute = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
+        similarityAttribute = schemaSimilarityAttribute.ensure(graph);
+    }
+    
     /**
      * Adds similarity scores to the graph while ensuring there is only ever a
      * single similarity transactions between any pair of nodes.
@@ -39,10 +50,7 @@ public class SimilarityUtilities {
      * @param scores - the scores of each vertex pair
      * @param schemaSimilarityAttribute - similarity schema attribute to change
      */
-    public static void addScoresToGraph(final GraphWriteMethods graph, final Map<Tuple<Integer, Integer>, Float> scores, final SchemaAttribute schemaSimilarityAttribute) {
-        final int uniqueIdAttribute = VisualConcept.TransactionAttribute.IDENTIFIER.ensure(graph);
-        final int typeAttribute = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
-        final int similarityAttribute = schemaSimilarityAttribute.ensure(graph);
+    public static void addScoresToGraph(final Map<Tuple<Integer, Integer>, Float> scores, final SchemaAttribute schemaSimilarityAttribute) {
         for (final Tuple<Integer, Integer> vertexPair : scores.keySet()) {
             final int linkId = graph.getLink(vertexPair.getFirst(), vertexPair.getSecond());
             if (linkId == GraphConstants.NOT_FOUND) {
@@ -81,10 +89,10 @@ public class SimilarityUtilities {
      * @param score - score to add
      * @param schemaSimilarityAttribute - similarity schema attribute to change
      */
-    public static void addScoreToGraph(final GraphWriteMethods graph, final int vertexOne, final int vertexTwo, final float score, final SchemaAttribute schemaSimilarityAttribute) {
+    public static void addScoreToGraph(final int vertexOne, final int vertexTwo, final float score, final SchemaAttribute schemaSimilarityAttribute) {
         final Map<Tuple<Integer, Integer>, Float> scores = new HashMap<>();
         scores.put(new Tuple<>(vertexOne, vertexTwo), score);
-        addScoresToGraph(graph, scores, schemaSimilarityAttribute);
+        addScoresToGraph(scores, schemaSimilarityAttribute);
     }
 
     /**
