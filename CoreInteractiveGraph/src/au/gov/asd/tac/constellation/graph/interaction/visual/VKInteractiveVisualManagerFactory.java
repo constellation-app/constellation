@@ -26,7 +26,7 @@ import java.util.prefs.Preferences;
 import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
 
-@ServiceProvider(service = GraphVisualManagerFactory.class, position = 1)
+@ServiceProvider(service = GraphVisualManagerFactory.class)
 public class VKInteractiveVisualManagerFactory extends GraphVisualManagerFactory {
 
     @Override

@@ -104,6 +104,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -406,6 +408,31 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     public UndoRedo getUndoRedo() {
         return graphNode.getUndoRedoManager();
     }
+    
+    private GraphVisualManagerFactory GetVisualGraphFactory() {   
+        // TODO: this needs to be rewritten to get the renderer factory class
+        // from config, firstly from file then from JAR.  Preferrably by someone
+        // who has more of a clue about how Java resources work (ie anyone else).
+        
+        // Load render config in order to get visual manager factory class
+        Class<GraphVisualManagerFactory> visualMangerFactoryClass = GraphVisualManagerFactory.class;
+        try {
+            String userDirPath = System.getProperty("user.dir");
+            Path renderConfPath = Paths.get(userDirPath, "renderer.conf");
+            InputStream renderConfStream = new FileInputStream(renderConfPath.toString());
+            System.getProperties().load(renderConfStream);
+            String factoryName = System.getProperty("factory");
+            Class<GraphVisualManagerFactory> factoryClass = (Class<GraphVisualManagerFactory>)Class.forName(factoryName);
+            if (factoryClass != null) {
+                visualMangerFactoryClass = factoryClass;
+            }            
+        } catch (Exception e) {
+            
+        }
+              
+        GraphVisualManagerFactory factory = Lookup.getDefault().lookup(visualMangerFactoryClass);
+        return factory;
+    }
 
     /**
      * Construct a new TopComponent with an empty graph.
@@ -418,7 +445,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         final GraphDataObject gdo = GraphObjectUtilities.createMemoryDataObject("graph", true);
         this.graph = new DualGraph(null);
 
-        graphVisualManagerFactory = Lookup.getDefault().lookup(GraphVisualManagerFactory.class);
+        graphVisualManagerFactory = GetVisualGraphFactory();
         try {
             // This may throw if we are constructing a Vulkan visual manager
             visualManager = graphVisualManagerFactory.constructVisualManager(graph);
@@ -447,7 +474,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         setToolTipText(gdo.getToolTipText());
 
         this.graph = graph;
-        graphVisualManagerFactory = Lookup.getDefault().lookup(GraphVisualManagerFactory.class);
+        graphVisualManagerFactory = GetVisualGraphFactory();
         try {
             // This may throw if we are constructing a Vulkan visual manager
             visualManager = graphVisualManagerFactory.constructVisualManager(graph);
