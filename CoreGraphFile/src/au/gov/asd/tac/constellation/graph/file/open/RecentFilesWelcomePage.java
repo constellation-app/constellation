@@ -31,15 +31,19 @@ import org.openide.filesystems.FileUtil;
 
 public class RecentFilesWelcomePage { 
     
-    final static List<RecentFiles.HistoryItem> files = RecentFiles.getRecentFiles();
-    static List<String> fileNames = new ArrayList();
+    static final List<RecentFiles.HistoryItem> files = RecentFiles.getRecentFiles();
+    static List<String> fileNames = new ArrayList<String>();
+    
+    
+    private RecentFilesWelcomePage() {
+    }
     
     /**
      * Gets the names of the files that were recently saved
      * 
      * @return list of recent file names
      */
-    public static List getFileNames(){
+    public static List<String> getFileNames(){
         RecentFiles.init(); 
         int num = files.size();
         for (int i = 0; i < num; i++){
