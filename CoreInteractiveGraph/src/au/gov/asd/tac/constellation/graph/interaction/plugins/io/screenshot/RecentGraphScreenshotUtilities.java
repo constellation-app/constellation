@@ -33,6 +33,9 @@ public class RecentGraphScreenshotUtilities {
 
     private static final String SCREENSHOTS_DIR = "Screenshots";
     private static final Logger LOGGER = Logger.getLogger(RecentGraphScreenshotUtilities.class.getName());
+    
+    private RecentGraphScreenshotUtilities() {
+    }
 
     /**
      * Retrieve the screenshots user directory that is used to save a screenshot

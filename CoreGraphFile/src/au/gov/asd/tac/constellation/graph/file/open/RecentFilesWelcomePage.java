@@ -32,7 +32,7 @@ import org.openide.filesystems.FileUtil;
 public class RecentFilesWelcomePage { 
     
     static final List<RecentFiles.HistoryItem> files = RecentFiles.getRecentFiles();
-    static List<String> fileNames = new ArrayList<String>();
+    static List<String> fileNames = new ArrayList<>();
     
     
     private RecentFilesWelcomePage() {
