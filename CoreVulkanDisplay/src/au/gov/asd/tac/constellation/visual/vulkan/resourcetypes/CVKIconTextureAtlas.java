@@ -107,8 +107,7 @@ public class CVKIconTextureAtlas {
     private long hAtlasSampler = VK_NULL_HANDLE;
     private final LinkedHashMap<String, Integer> loadedIcons = new LinkedHashMap<>();
     private int lastTransferedIconCount = 0;
-    private boolean needsSaveToFile = false;
-    private File fileToSave = null;
+    private volatile boolean needsSaveToFile = false;
     
     
     // ========================> Classes <======================== \\ 
@@ -217,9 +216,12 @@ public class CVKIconTextureAtlas {
     public int DisplayUpdate() {
         int ret = VK_SUCCESS;
         
-        if (needsSaveToFile) {
-            ret = SaveToFile(fileToSave);
-            needsSaveToFile = false;
+        while (needsSaveToFile) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                GetLogger().LogException(e, "Exception while waiting for Atlas to save to file");
+            }
         }
         
         if (loadedIcons.size() > lastTransferedIconCount) {
@@ -235,12 +237,10 @@ public class CVKIconTextureAtlas {
     // ========================> Tasks <======================== \\
     
     public CVKRenderUpdateTask TaskSaveToFile(File file) {
-        //=== EXECUTED BY CALLING THREAD (VisualProcessor) ===//
-                
-        //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.ProcessRenderTasks) ===//
         return () -> {
             needsSaveToFile = true;
-            fileToSave = file;
+            SaveToFile(file);
+            needsSaveToFile = false;
         };
     }
     
@@ -274,7 +274,9 @@ public class CVKIconTextureAtlas {
     }
     
     public int SaveToFile(File file) {
-            return cvkAtlasImage.SaveToFile(file);
+        int ret = cvkAtlasImage.SaveToFile(file);
+        needsSaveToFile = false;
+        return ret;
     }
     
     /**

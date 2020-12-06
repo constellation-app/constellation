@@ -40,11 +40,15 @@ import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKCommandBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKGlyphTextureAtlas;
+import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils;
 import java.nio.ByteBuffer;
 import java.nio.LongBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 import org.lwjgl.vulkan.VkCommandBuffer;
@@ -112,17 +116,10 @@ public class CVKIconLabelsRenderable extends CVKRenderable implements GlyphManag
     private long hGlyphCoordinateBuffer = VK_NULL_HANDLE;
     private long hGlyphCoordinateBufferView = VK_NULL_HANDLE;
     private long hPositionBuffer = VK_NULL_HANDLE;
-    private long hPositionBufferView = VK_NULL_HANDLE;
+    private long hPositionBufferView = VK_NULL_HANDLE;   
    
     
-    // ========================> Classes <======================== \\
-    
-    private static class GlyphContext {
-        private float visibility;
-        private int nodeId;
-        private int totalScale;
-        private int labelNumber;     
-    }
+    // ========================> Classes <======================== \\   
     
     private static class Vertex {
         // This looks a little weird for Java, but LWJGL and JOGL both require
@@ -1278,36 +1275,103 @@ public class CVKIconLabelsRenderable extends CVKRenderable implements GlyphManag
         }            
     }    
     
+    private void BufferLabel(final boolean isTop, final int pos, final VisualAccess access, final float visibility) {                
+        int totalScale = LabelUtilities.NRADIUS_TO_LABEL_UNITS;
+        
+        if (isTop) {
+            for (int label = 0; label < access.getTopLabelCount(); label++) {                  
+                final String text = access.getVertexTopLabelText(pos, label);
+                ArrayList<String> lines = LabelUtilities.splitTextIntoLines(text);
+                Collections.reverse(lines);
+                for (final String line : lines) {
+                    CVKGlyphTextureAtlas.GetInstance().RenderTextAsLigatures(line, this, new NodeGlyphStreamContext(pos, totalScale, visibility, label));
+                    totalScale += topLabelRowSizes.a[label];
+                }                    
+            }    
+        } else {       
+            for (int label = 0; label < access.getBottomLabelCount(); label++) {                    
+                final String text = access.getVertexBottomLabelText(pos, label);
+                ArrayList<String> lines = LabelUtilities.splitTextIntoLines(text);
+                for (final String line : lines) {
+                    CVKGlyphTextureAtlas.GetInstance().RenderTextAsLigatures(line, this, new NodeGlyphStreamContext(pos, -totalScale, visibility, label));
+                    totalScale += bottomLabelRowSizes.a[label];
+                }                    
+            }         
+        }
+    }
+    
+    class BufferLabelWorker extends Thread {
+        private final boolean isTop;
+        private final int pos;
+        private final float visibility;
+        private final VisualAccess access;
+
+        BufferLabelWorker(final boolean isTop, final int pos, final VisualAccess access, final float visibility) {
+            this.pos = pos;
+            this.access = access;
+            this.visibility = visibility;
+            this.isTop = isTop;
+        }
+
+        @Override
+        public void run() {
+            BufferLabel(isTop, pos, access, visibility);
+        }
+    }    
+    
+    private void FillLabels(final boolean isTop, final VisualAccess access, final int first, final int last) throws InterruptedException {
+        final ExecutorService pool = Executors.newFixedThreadPool(CVKUtils.NUM_CORES);
+        for (int pos = first; pos <= last; ++pos) {
+            final float visibility = access.getVertexVisibility(pos);  
+            final Runnable thread = new BufferLabelWorker(isTop, pos, access, visibility);
+            pool.submit(thread);
+        }
+        pool.shutdown();
+
+        pool.awaitTermination(10, TimeUnit.MINUTES);
+    }    
+    
+    class FillLabelsWorker extends Thread {
+
+        private final VisualAccess access;
+        private final int first;
+        private final int last;
+        private final boolean isTop;
+
+        FillLabelsWorker(final boolean isTop, final VisualAccess access, final int first, final int last) {
+            this.access = access;
+            this.first = first;
+            this.last = last;
+            this.isTop = isTop;
+        }
+
+        @Override
+        public void run() {
+            try {
+                FillLabels(isTop, access, first, last);
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+                GetLogger().LogException(ex, "Exception thrown from FillTopLabelsWorker");
+            }
+        }
+    }    
+    
     private Vertex[] BuildVertexArray(final VisualAccess access, int first, int last) {
         vertices = new ArrayList<>();
         final int newVertexCount = (last - first) + 1;
         if (newVertexCount > 0) {         
-            for (int pos = first; pos <= last; ++pos) {
-                final float visibility = access.getVertexVisibility(pos);     
-                
-                // Top labels
-                int totalScale = LabelUtilities.NRADIUS_TO_LABEL_UNITS;
-                for (int label = 0; label < access.getTopLabelCount(); label++) {                  
-                    final String text = access.getVertexTopLabelText(pos, label);
-                    ArrayList<String> lines = LabelUtilities.splitTextIntoLines(text);
-                    Collections.reverse(lines);
-                    for (final String line : lines) {
-                        CVKGlyphTextureAtlas.GetInstance().RenderTextAsLigatures(line, this, new NodeGlyphStreamContext(pos, -totalScale, visibility, label));
-                        totalScale += topLabelRowSizes.a[label];
-                    }                    
-                }
-                
-                // Bottom labels
-                totalScale = LabelUtilities.NRADIUS_TO_LABEL_UNITS;
-                for (int label = 0; label < access.getBottomLabelCount(); label++) {                    
-                    final String text = access.getVertexBottomLabelText(pos, label);
-                    ArrayList<String> lines = LabelUtilities.splitTextIntoLines(text);
-                    for (final String line : lines) {
-                        CVKGlyphTextureAtlas.GetInstance().RenderTextAsLigatures(line, this, new NodeGlyphStreamContext(pos, -totalScale, visibility, label));
-                        totalScale += bottomLabelRowSizes.a[label];
-                    }                    
-                }                
-            }                       
+            final Thread topLabelThread = new FillLabelsWorker(true, access, first, last);
+            topLabelThread.start();
+
+            final Thread bottomLabelThread = new FillLabelsWorker(false, access, first, last);
+            bottomLabelThread.start();
+
+            try {
+                topLabelThread.join();
+                bottomLabelThread.join();                                                     
+            } catch (InterruptedException ex) {
+                GetLogger().LogException(ex, "Exception thrown from BuildVertexArray");
+            }
             
             Vertex[] verticesCopy = new Vertex[vertices.size()];
             return vertices.toArray(verticesCopy);

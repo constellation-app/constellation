@@ -284,6 +284,9 @@ public class CVKLoopsRenderable extends CVKRenderable {
         private final Matrix44f pMatrix = new Matrix44f();    
         private float visibilityLow;
         private float visibilityHigh;
+        private int iconsPerRowColumn;
+        private int iconsPerLayer;
+        private int atlas2DDimension;        
         private static Integer padding = null;   
                     
         protected static int SizeOf() {
@@ -296,7 +299,10 @@ public class CVKLoopsRenderable extends CVKRenderable {
 
                 int sizeof = Matrix44f.BYTES +     // pMatrix
                              1 * Float.BYTES +     // visibilityLow
-                             1 * Float.BYTES;      // visibilityHigh  
+                             1 * Float.BYTES +     // visibilityHigh  
+                             1 * Integer.BYTES +   // iconsPerRowColumn
+                             1 * Integer.BYTES +   // iconsPerLayer
+                             1 * Integer.BYTES;    // atlas2DDimension
 
                 final int overrun = sizeof % minAlignment;
                 padding = overrun > 0 ? minAlignment - overrun : 0;             
@@ -305,6 +311,9 @@ public class CVKLoopsRenderable extends CVKRenderable {
             return Matrix44f.BYTES  +     // pMatrix
                     1 * Float.BYTES +     // visibilityLow
                     1 * Float.BYTES +     // visibilityHigh  
+                    1 * Integer.BYTES +   // iconsPerRowColumn
+                    1 * Integer.BYTES +   // iconsPerLayer
+                    1 * Integer.BYTES +   // atlas2DDimension                    
                     padding;
         }
         
@@ -315,7 +324,10 @@ public class CVKLoopsRenderable extends CVKRenderable {
                 }
             } 
             buffer.putFloat(visibilityLow);
-            buffer.putFloat(visibilityHigh);         
+            buffer.putFloat(visibilityHigh);      
+            buffer.putInt(iconsPerRowColumn);
+            buffer.putInt(iconsPerLayer);
+            buffer.putInt(atlas2DDimension);
                         
             for (int i = 0; i < padding; ++i) {
                 buffer.put((byte)0);
@@ -615,7 +627,10 @@ public class CVKLoopsRenderable extends CVKRenderable {
         // as we are effectively staging into the staging buffer below.
         geometryUBO.pMatrix.set(cvkVisualProcessor.GetProjectionMatrix());
         geometryUBO.visibilityLow = cvkVisualProcessor.getDisplayCamera().getVisibilityLow();
-        geometryUBO.visibilityHigh = cvkVisualProcessor.getDisplayCamera().getVisibilityHigh();                             
+        geometryUBO.visibilityHigh = cvkVisualProcessor.getDisplayCamera().getVisibilityHigh();            
+        geometryUBO.iconsPerRowColumn = CVKIconTextureAtlas.GetInstance().iconsPerRowColumn;
+        geometryUBO.iconsPerLayer     = CVKIconTextureAtlas.GetInstance().iconsPerLayer;
+        geometryUBO.atlas2DDimension  = CVKIconTextureAtlas.GetInstance().texture2DDimension;           
         
         // Staging buffer so our VBO can be device local (most performant memory)
         ByteBuffer pMemory = cvkGeometryUBStagingBuffer.StartMemoryMap(0, GeometryUniformBufferObject.SizeOf());

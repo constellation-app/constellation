@@ -45,6 +45,9 @@ import java.nio.ByteBuffer;
 import java.nio.LongBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 import org.lwjgl.vulkan.VkCommandBuffer;
@@ -1404,9 +1407,115 @@ public class CVKLinkLabelsRenderable extends CVKRenderable implements GlyphManag
         }            
     }    
     
+    private void BufferLabel(final int pos, final int link, final VisualAccess access, final ConnectionGlyphStreamContext context) {                
+        final int connection = access.getLinkConnection(link, pos);
+        final int width = (int) (LabelUtilities.NRADIUS_TO_LINE_WIDTH_UNITS * Math.min(LabelUtilities.MAX_TRANSACTION_WIDTH, access.getConnectionWidth(connection)));
+        context.isAttributeLabel = !access.getIsLabelSummary(connection);
+
+        context.currentStagger = context.currentStagger == MAX_STAGGERS ? 1 : context.currentStagger + 1;
+        if (context.nextLeftOffset == 0) {
+            context.nextLeftOffset += ((width / 2) + LabelUtilities.NRADIUS_TO_LINE_WIDTH_UNITS);
+            context.nextRightOffset -= ((width / 2) + LabelUtilities.NRADIUS_TO_LINE_WIDTH_UNITS);
+        } else if (context.nextLeftOffset <= -context.nextRightOffset) {
+            context.currentOffset = context.nextLeftOffset + (width / 2);
+            context.nextLeftOffset += (width + LabelUtilities.NRADIUS_TO_LINE_WIDTH_UNITS);
+        } else {
+            context.currentOffset = context.nextRightOffset - (width / 2);
+            context.nextRightOffset -= (width + LabelUtilities.NRADIUS_TO_LINE_WIDTH_UNITS);
+        }
+
+        context.totalScale = 0;
+        context.visibility = access.getConnectionVisibility(connection);
+        for (int label = 0; label < access.getConnectionLabelCount(connection); label++) {
+            context.labelNumber = label;
+            final String text = access.getConnectionLabelText(connection, label);
+            ArrayList<String> lines = LabelUtilities.splitTextIntoLines(text);
+            for (final String line : lines) {
+                CVKGlyphTextureAtlas.GetInstance().RenderTextAsLigatures(line, this, context);
+                if (context.isAttributeLabel) {
+                    context.totalScale += labelSizes.a[label];
+                } else {
+                    // Should this be cached to prevent thread contention?
+                    context.totalScale += vertexUBO.summaryLabelInfo.get(label, 3);
+                }
+            }
+        }        
+    }
+    
+    class BufferLabelWorker extends Thread {
+        private final int pos;        
+        private final int link;
+        private final VisualAccess access;
+        private final ConnectionGlyphStreamContext context;
+
+        BufferLabelWorker(final int pos, final int link, final VisualAccess access, final ConnectionGlyphStreamContext context) {
+            this.pos = pos;
+            this.link = link;
+            this.access = access;
+            this.context = context;
+        }
+
+        @Override
+        public void run() {
+            BufferLabel(pos, link, access, context);
+        }
+    }    
+    
+    private void FillLabels(final VisualAccess access) throws InterruptedException {
+        final ExecutorService pool = Executors.newFixedThreadPool(NUM_CORES);
+        final int numLinks = access.getLinkCount();
+        for (int link = 0; link < numLinks; ++link) {     
+            final ConnectionGlyphStreamContext context = new ConnectionGlyphStreamContext();
+            context.currentLinkLabelCount = access.getLinkConnectionCount(link);
+            context.currentLowNodeId = access.getLinkLowVertex(link);
+            context.currentHighNodeId = access.getLinkHighVertex(link);
+
+            final int numConnections = access.getLinkConnectionCount(link);
+            for (int pos = 0; pos < numConnections; pos++) {
+                final Runnable thread = new BufferLabelWorker(pos, link, access, context);
+                pool.submit(thread);                
+            }
+        }        
+        
+        pool.shutdown();
+
+        pool.awaitTermination(10, TimeUnit.MINUTES);
+    }    
+    
+    class FillLabelsWorker extends Thread {
+
+        private final VisualAccess access;
+
+        FillLabelsWorker(final VisualAccess access) {
+            this.access = access;
+        }
+
+        @Override
+        public void run() {
+            try {
+                FillLabels(access);
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+                GetLogger().LogException(ex, "Exception thrown from FillLabelsWorker");
+            }
+        }
+    }     
+    
     private void BuildVertexArrays(final VisualAccess access) {
         attributeVertices = new ArrayList<>();
         summaryVertices = new ArrayList<>();   
+        
+        if (access.getLinkCount() > 0) {
+            final Thread labelThread = new FillLabelsWorker(access);
+            labelThread.start();
+
+            try {
+                labelThread.join();                                                    
+            } catch (InterruptedException ex) {
+                GetLogger().LogException(ex, "Exception thrown from BuildVertexArrays");
+            }        
+        }
+        
         final int numLinks = access.getLinkCount();
         for (int link = 0; link < numLinks; ++link) {     
             final ConnectionGlyphStreamContext context = new ConnectionGlyphStreamContext();

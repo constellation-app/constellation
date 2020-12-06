@@ -364,6 +364,11 @@ public class CVKHitTester extends CVKRenderable {
     }  
     
     public synchronized void ServiceHitRequests() {
+        // Hold off on servicing until we have a usable pick buffer
+        if (imagesState != CVK_RESOURCE_CLEAN) {
+            return;
+        }
+        
         try {
             if (requestQueue != null && !requestQueue.isEmpty()) {
                 requestQueue.forEach(request -> notificationQueues.add(request.getNotificationQueue()));

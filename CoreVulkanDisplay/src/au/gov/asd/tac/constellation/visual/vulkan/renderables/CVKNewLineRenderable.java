@@ -313,6 +313,10 @@ public class CVKNewLineRenderable extends CVKRenderable {
     }
     
     private int UpdateVertexBuffer(MemoryStack stack) {
+        CVKAssertNotNull(CVKDevice.GetVkDevice());
+        CVKAssertNotNull(cvkStagingBuffer);
+        CVKAssertNotNull(cvkStagingBuffer.GetMemoryBufferHandle());
+        
         int ret = VK_SUCCESS;
         
         final Camera camera = cvkVisualProcessor.getDisplayCamera();

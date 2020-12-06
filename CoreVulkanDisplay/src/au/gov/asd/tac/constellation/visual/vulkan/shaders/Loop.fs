@@ -24,7 +24,7 @@ layout(binding = 3) uniform sampler2DArray images;
 // === PER FRAGMENT DATA IN ===
 layout(location = 0) in vec4 pointColor;
 layout(location = 1) flat in ivec4 fData;
-layout(location = 2) in vec2 pointCoord;
+layout(location = 2) noperspective centroid in vec3 textureCoords;
 
 
 // === PER FRAGMENT DATA OUT ===
@@ -37,7 +37,7 @@ void main() {
     float iconOffsetX = float(imgIx % 8) / 8;
     float iconOffsetY = float((imgIx / 8) % 8) / 8;
 
-    vec4 pixel = texture(images, vec3(pointCoord.x + iconOffsetX, pointCoord.y + iconOffsetY, imgIx / 64));
+    vec4 pixel = texture(images, textureCoords);
     fragColor = pixel;
     if(fragColor.a == 0) {
         discard;
