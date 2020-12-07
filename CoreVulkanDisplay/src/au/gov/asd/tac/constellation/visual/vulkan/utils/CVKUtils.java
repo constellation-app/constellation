@@ -79,9 +79,13 @@ public class CVKUtils {
     
     
     // Enable this for additional logging, thread verification and other checks
-    public static final boolean CVK_DEBUGGING = true;
-    public static final Level CVK_ALLOCATION_LOG_LEVEL = Level.FINEST;
-    public static final Level CVK_DEFAULT_LOG_LEVEL = Level.INFO;  
+    public static final boolean CVK_DEBUGGING = Boolean.parseBoolean(System.getProperty("debug_renderer"));
+    public static final Level CVK_ALLOCATION_LOG_LEVEL = System.getProperty("renderer_allocation_log_level") != null ? 
+            Level.parse(System.getProperty("renderer_allocation_log_level")) :
+            Level.OFF;  
+    public static final Level CVK_DEFAULT_LOG_LEVEL = System.getProperty("renderer_log_level") != null ? 
+            Level.parse(System.getProperty("renderer_log_level")) :
+            Level.OFF;  
     public static int CVK_VKALLOCATIONS = 0;
    
 

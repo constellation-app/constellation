@@ -39,7 +39,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author twilight_sparkle
  */
-@ServiceProvider(service = GraphVisualManagerFactory.class)
+@ServiceProvider(service = GraphVisualManagerFactory.class, position = 1)
 public class GLInteractiveVisualManagerFactory extends GraphVisualManagerFactory {
 
     @Override

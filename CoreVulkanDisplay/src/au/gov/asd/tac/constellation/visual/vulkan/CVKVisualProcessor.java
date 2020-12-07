@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
 import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
 import au.gov.asd.tac.constellation.utilities.visual.VisualChangeBuilder;
+import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
 import au.gov.asd.tac.constellation.utilities.visual.VisualOperation;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor.VisualChangeProcessor;
@@ -317,7 +318,7 @@ public class CVKVisualProcessor extends VisualProcessor {
             shouldRender = true;
         }
         
-        if (shouldRender || manager.ContinuoslyRedraw()) {
+        if (shouldRender || VisualManager.ContinuoslyRedraw()) {
             cvkCanvas.repaint();
             shouldRender = false;
         } else {
