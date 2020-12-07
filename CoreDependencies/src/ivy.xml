@@ -109,6 +109,8 @@
             <artifact name="lwjgl-shaderc" type="jar" ext="jar" e:classifier="javadoc"/>
             <artifact name="lwjgl-shaderc" type="jar" ext="jar" e:classifier="sources"/>            
             <artifact name="lwjgl-shaderc" type="jar" ext="jar" e:classifier="natives-windows"/>          
+            <artifact name="lwjgl-shaderc" type="jar" ext="jar" e:classifier="natives-linux"/>   
+            <artifact name="lwjgl-shaderc" type="jar" ext="jar" e:classifier="natives-macos"/>   
         </dependency>       
         <!--Needed implicitly by the AWTVKCanvas--> 
         <!-- https://mvnrepository.com/artifact/org.lwjgl/lwjgl-jawt -->
