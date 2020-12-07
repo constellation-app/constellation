@@ -210,11 +210,11 @@ public class CosineSimilarityPlugin extends SimpleEditPlugin {
         }
         
         private float calculateMagnitude() {
-            float magnitude = 0;
+            float mag = 0;
             for(int neighbourWeight : neighbourWeightsMap.values()) {
-                magnitude += Math.pow(neighbourWeight, 2);
+                mag += Math.pow(neighbourWeight, 2);
             }
-            return (float) Math.sqrt(magnitude);
+            return (float) Math.sqrt(mag);
         }
         
     }
