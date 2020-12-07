@@ -48,8 +48,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class GettingStartedWelcomePlugin extends WelcomePageProvider {
     
     public static final String GETTING_STARTED = "resources/welcome_getting_started.png";
-    ImageView started = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(GETTING_STARTED)));
-    Button startedBtn = new Button();
+    final ImageView started = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(GETTING_STARTED)));
+    final Button startedBtn = new Button();
     
     private static final Logger LOGGER = Logger.getLogger(GettingStartedWelcomePlugin.class.getName());
         
@@ -60,7 +60,7 @@ public class GettingStartedWelcomePlugin extends WelcomePageProvider {
      */
     @Override
     public String getName() {
-        return GettingStartedWelcomePlugin.class.getName();
+        return "Getting Started Welcome";
     }
     
     /**
@@ -108,15 +108,15 @@ public class GettingStartedWelcomePlugin extends WelcomePageProvider {
     public Button getButton(){
         started.setFitHeight(25);
         started.setFitWidth(25);
-        Text title = new Text("Getting Started");
+        final Text title = new Text("Getting Started");
         title.setFont(new Font("Arial", 18));
         title.setFill(Color.WHITE);
         Text subtitle = new Text("Guides & Resources");
         subtitle.setFont(new Font("Arial", 10));
         subtitle.setFill(Color.WHITE);
-        VBox layoutVBox = new VBox(title, subtitle);
+        final VBox layoutVBox = new VBox(title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER_LEFT);
-        HBox layoutHBox = new HBox(started, layoutVBox);
+        final HBox layoutHBox = new HBox(started, layoutVBox);
         layoutHBox.setSpacing(8);
         layoutHBox.setAlignment(Pos.CENTER_LEFT);
         startedBtn.setGraphic(layoutHBox);

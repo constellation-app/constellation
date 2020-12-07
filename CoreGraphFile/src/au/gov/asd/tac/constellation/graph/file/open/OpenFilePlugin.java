@@ -54,7 +54,7 @@ public class OpenFilePlugin extends SimpleEditPlugin {
             try {
                 running = true;
                 JFileChooser chooser = prepareFileChooser();
-                File[] files;
+                final File[] files;
                 try {
                     files = chooseFilesToOpen(chooser);
                     currentDirectory = chooser.getCurrentDirectory();
@@ -116,9 +116,9 @@ public class OpenFilePlugin extends SimpleEditPlugin {
             // Prefer to open from parent of active editor, if any.
             TopComponent activated = TopComponent.getRegistry().getActivated();
             if (activated != null && WindowManager.getDefault().isOpenedEditorTopComponent(activated)) {
-                DataObject d = activated.getLookup().lookup(DataObject.class);
+                final DataObject d = activated.getLookup().lookup(DataObject.class);
                 if (d != null) {
-                    File f = FileUtil.toFile(d.getPrimaryFile());
+                    final File f = FileUtil.toFile(d.getPrimaryFile());
                     if (f != null) {
                         return f.getParentFile();
                     }

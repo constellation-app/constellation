@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ import org.openide.filesystems.FileUtil;
 public class RecentFilesWelcomePage { 
     
     static final List<RecentFiles.HistoryItem> files = RecentFiles.getRecentFiles();
-    static List<String> fileNames = new ArrayList<>();
+    static final List<String> fileNames = new ArrayList<>();
     
     
     private RecentFilesWelcomePage() {
@@ -68,10 +68,10 @@ public class RecentFilesWelcomePage {
             }
         }  
         if (index != -1){
-            String path = files.get(index).getPath();
+            final String path = files.get(index).getPath();
         
-            File f = new File(path);
-            File nf = FileUtil.normalizeFile(f);
+            final File f = new File(path);
+            final File nf = FileUtil.normalizeFile(f);
             OpenFile.open(FileUtil.toFileObject(nf), -1);
         } 
     }  

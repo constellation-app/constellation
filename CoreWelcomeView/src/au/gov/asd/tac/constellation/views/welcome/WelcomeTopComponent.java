@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,7 +79,7 @@ import org.openide.windows.TopComponent;
 )
 @ActionID(
         category = "Window",
-        id = "au.gov.asd.tac.constellation.functionality.welcome.WelcomeTopComponent"
+        id = "au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent"
 )
 @ActionReferences({
     @ActionReference(path = "Menu/Help", position = 0)
@@ -121,7 +121,7 @@ public final class WelcomeTopComponent extends TopComponent {
             Platform.setImplicitExit(false);
 
             //The root swing object to be inseted into a JFX Panel
-            BorderPane root = new BorderPane();
+            final BorderPane root = new BorderPane();
 
             final SplitPane splitPane = new SplitPane();
             splitPane.setOrientation(Orientation.HORIZONTAL);
@@ -148,7 +148,7 @@ public final class WelcomeTopComponent extends TopComponent {
             leftVBox.getChildren().add(logoHBox);
 
             //Create the labels for the left pane
-            Label welcome = new Label(WELCOME_TEXT);
+            final Label welcome = new Label(WELCOME_TEXT);
             welcome.setFont(new Font("Arial Unicode MS", 26));
             welcome.setAlignment(Pos.CENTER);
             leftVBox.getChildren().add(welcome);
@@ -197,14 +197,14 @@ public final class WelcomeTopComponent extends TopComponent {
             leftVBox.setAlignment(Pos.TOP_CENTER);
 
             //formatting for bottom hbox
-            Label recent = new Label("Recent");
+            final Label recent = new Label("Recent");
             recent.setFont(new Font("Arial Unicode MS", 24));
 
             rightVBox.getChildren().add(topHBox);
             rightVBox.getChildren().add(recent);
             rightVBox.getChildren().add(bottomHBox);
 
-            FlowPane flow = new FlowPane();
+            final FlowPane flow = new FlowPane();
             flow.setPrefWrapLength(1000);
             flow.setHgap(20);
             flow.setVgap(20);

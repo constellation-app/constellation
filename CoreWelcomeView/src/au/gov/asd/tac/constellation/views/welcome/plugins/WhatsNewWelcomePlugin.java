@@ -47,8 +47,8 @@ import org.openide.windows.WindowManager;
 public class WhatsNewWelcomePlugin extends WelcomePageProvider {
     
     public static final String WHATS_NEW = "resources/welcome_new.png";
-    ImageView newView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(WHATS_NEW)));
-    Button whatsNewBtn = new Button();
+    final ImageView newView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(WHATS_NEW)));
+    final Button whatsNewBtn = new Button();
         
     /**
      * Get a unique reference that is used to identify the plugin 
@@ -57,7 +57,7 @@ public class WhatsNewWelcomePlugin extends WelcomePageProvider {
      */
     @Override
     public String getName() {
-        return WhatsNewWelcomePlugin.class.getName();
+        return "What's New Welcome";
     }
     
     /**
@@ -98,15 +98,15 @@ public class WhatsNewWelcomePlugin extends WelcomePageProvider {
     public Button getButton(){
         newView.setFitHeight(25);
         newView.setFitWidth(25);
-        Text title = new Text("What's New?");
+        final Text title = new Text("What's New?");
         title.setFill(Color.WHITE);
         title.setFont(new Font("Arial", 18));
-        Text subtitle = new Text("Features in the latest version");
+        final Text subtitle = new Text("Features in the latest version");
         subtitle.setFill(Color.WHITE);
         subtitle.setFont(new Font("Arial", 10));
-        VBox layoutVBox = new VBox(title, subtitle);
+        final VBox layoutVBox = new VBox(title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER_LEFT);
-        HBox layoutHBox = new HBox(newView, layoutVBox);
+        final HBox layoutHBox = new HBox(newView, layoutVBox);
         layoutHBox.setSpacing(8);
         layoutHBox.setAlignment(Pos.CENTER_LEFT);
         whatsNewBtn.setGraphic(layoutHBox);

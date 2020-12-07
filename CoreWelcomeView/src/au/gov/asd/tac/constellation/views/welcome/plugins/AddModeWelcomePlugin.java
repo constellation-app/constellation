@@ -48,8 +48,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class AddModeWelcomePlugin extends WelcomePageProvider {
     
     public static final String NEW_GRAPH = "resources/welcome_add_graph.png";
-    ImageView addView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(NEW_GRAPH)));
-    Button newButton = new Button();
+    final ImageView addView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(NEW_GRAPH)));
+    final Button newButton = new Button();
         
     /**
      * Get a unique reference that is used to identify the plugin 
@@ -58,7 +58,7 @@ public class AddModeWelcomePlugin extends WelcomePageProvider {
      */
     @Override
     public String getName() {
-        return AddModeWelcomePlugin.class.getName();
+        return "Add Graph Welcome";
     }
     
     /**
@@ -99,11 +99,11 @@ public class AddModeWelcomePlugin extends WelcomePageProvider {
     public Button getButton(){
         addView.setFitHeight(75);
         addView.setFitWidth(75);
-        Label title = new Label("New Graph");
+        final Label title = new Label("New Graph");
         title.setFont(new Font("Arial", 16));
-        Label subtitle = new Label("Add mode");
+        final Label subtitle = new Label("Add mode");
         subtitle.setFont(new Font("Arial", 10));
-        VBox layoutVBox = new VBox(addView, title, subtitle);
+        final VBox layoutVBox = new VBox(addView, title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER);
         newButton.setGraphic(layoutVBox);
         return newButton;

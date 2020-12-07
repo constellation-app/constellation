@@ -49,8 +49,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class JoinCommWelcomePlugin extends WelcomePageProvider {
     
     public static final String JOIN = "resources/welcome_join.png";
-    ImageView joinView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(JOIN)));
-    Button joinBtn = new Button();
+    final ImageView joinView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(JOIN)));
+    final Button joinBtn = new Button();
     
     private static final Logger LOGGER = Logger.getLogger(JoinCommWelcomePlugin.class.getName());
         
@@ -61,7 +61,7 @@ public class JoinCommWelcomePlugin extends WelcomePageProvider {
      */
     @Override
     public String getName() {
-        return JoinCommWelcomePlugin.class.getName();
+        return "Join Community Welcome";
     }
     
     /**
@@ -109,15 +109,15 @@ public class JoinCommWelcomePlugin extends WelcomePageProvider {
     public Button getButton(){
         joinView.setFitHeight(25);
         joinView.setFitWidth(25);
-        Text title = new Text("Join our Community");
+        final Text title = new Text("Join our Community");
         title.setFill(Color.WHITE);
         title.setFont(new Font("Arial", 18));
-        Text subtitle = new Text("Become a member");
+        final Text subtitle = new Text("Become a member");
         subtitle.setFill(Color.WHITE);
         subtitle.setFont(new Font("Arial", 10));
-        VBox layoutVBox = new VBox(title, subtitle);
+        final VBox layoutVBox = new VBox(title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER_LEFT);
-        HBox layoutHBox = new HBox(joinView, layoutVBox);
+        final HBox layoutHBox = new HBox(joinView, layoutVBox);
         layoutHBox.setSpacing(8);
         layoutHBox.setAlignment(Pos.CENTER_LEFT);
         joinBtn.setGraphic(layoutHBox);

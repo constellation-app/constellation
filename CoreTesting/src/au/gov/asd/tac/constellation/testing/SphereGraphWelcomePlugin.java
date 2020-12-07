@@ -48,8 +48,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class SphereGraphWelcomePlugin extends WelcomePageProvider {
     
     public static final String NEW_SPHERE = "resources/welcome_add_sphere.png";
-    ImageView newSphere = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(NEW_SPHERE)));   
-    Button sphereGraphButton = new Button();
+    final ImageView newSphere = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(NEW_SPHERE)));   
+    final Button sphereGraphButton = new Button();
 
     /**  
      * Get a unique reference that is used to identify the plugin
@@ -57,7 +57,7 @@ public class SphereGraphWelcomePlugin extends WelcomePageProvider {
      */
     @Override
     public String getName() {
-        return SphereGraphWelcomePlugin.class.getName();
+        return "Add Sphere Graph Welcome";
     }
 
     /**
@@ -107,11 +107,11 @@ public class SphereGraphWelcomePlugin extends WelcomePageProvider {
     public Button getButton(){
         newSphere.setFitHeight(75);
         newSphere.setFitWidth(75);
-        Label sTitle = new Label("New Graph");
+        final Label sTitle = new Label("New Graph");
         sTitle.setFont(new Font("Arial", 16));
-        Label sSubtitle = new Label("Sphere network");
+        final Label sSubtitle = new Label("Sphere network");
         sSubtitle.setFont(new Font("Arial", 10));
-        VBox layoutVBox = new VBox(newSphere, sTitle, sSubtitle);
+        final VBox layoutVBox = new VBox(newSphere, sTitle, sSubtitle);
         layoutVBox.setAlignment(Pos.CENTER);
         sphereGraphButton.setGraphic(layoutVBox);
         return sphereGraphButton;

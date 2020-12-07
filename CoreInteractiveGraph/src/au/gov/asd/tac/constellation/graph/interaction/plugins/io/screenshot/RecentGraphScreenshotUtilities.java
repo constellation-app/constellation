@@ -35,6 +35,7 @@ public class RecentGraphScreenshotUtilities {
     private static final Logger LOGGER = Logger.getLogger(RecentGraphScreenshotUtilities.class.getName());
     
     private RecentGraphScreenshotUtilities() {
+        throw new IllegalArgumentException("Utility class");
     }
 
     /**

@@ -45,8 +45,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class OpenGraphWelcomePlugin extends WelcomePageProvider {
     
     public static final String OPEN = "resources/welcome_open_folder.png";
-    ImageView openImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(OPEN)));
-    Button openFile = new Button();
+    final ImageView openImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(OPEN)));
+    final Button openFile = new Button();
     
     /**
      * Get a unique reference that is used to identify the plugin 
@@ -55,7 +55,7 @@ public class OpenGraphWelcomePlugin extends WelcomePageProvider {
      */
     @Override
     public String getName() {
-        return OpenGraphWelcomePlugin.class.getName();
+        return "Open Graph Welcome";
     }
     
     /**
@@ -97,11 +97,11 @@ public class OpenGraphWelcomePlugin extends WelcomePageProvider {
     public Button getButton(){
         openImage.setFitHeight(75);
         openImage.setFitWidth(75);
-        Label title = new Label("Open");
+        final Label title = new Label("Open");
         title.setFont(new Font("Arial", 16));
-        Label subtitle = new Label("File Explorer");
+        final Label subtitle = new Label("File Explorer");
         subtitle.setFont(new Font("Arial", 10));
-        VBox layoutVBox = new VBox(openImage, title, subtitle);
+        final VBox layoutVBox = new VBox(openImage, title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER);
         openFile.setGraphic(layoutVBox);
         return openFile;

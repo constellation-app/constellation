@@ -49,8 +49,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class ProvideFeedbackWelcomePlugin extends WelcomePageProvider {
     
     public static final String FEEDBACK = "resources/welcome_feedback.png";
-    ImageView feedView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(FEEDBACK)));
-    Button feedbackButton = new Button();
+    final ImageView feedView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(FEEDBACK)));
+    final Button feedbackButton = new Button();
     
     private static final Logger LOGGER = Logger.getLogger(ProvideFeedbackWelcomePlugin.class.getName());
         
@@ -61,7 +61,7 @@ public class ProvideFeedbackWelcomePlugin extends WelcomePageProvider {
      */
     @Override
     public String getName() {
-        return ProvideFeedbackWelcomePlugin.class.getName();
+        return "Provide Feedback Welcome";
     }
     
     /**
@@ -109,15 +109,15 @@ public class ProvideFeedbackWelcomePlugin extends WelcomePageProvider {
     public Button getButton(){
         feedView.setFitHeight(25);
         feedView.setFitWidth(25);
-        Text title = new Text("Provide Feedback");
+        final Text title = new Text("Provide Feedback");
         title.setFill(Color.WHITE);
         title.setFont(new Font("Arial", 18));
-        Text subtitle = new Text("Let us know your thoughts");
+        final Text subtitle = new Text("Let us know your thoughts");
         subtitle.setFill(Color.WHITE);
         subtitle.setFont(new Font("Arial", 10));
-        VBox layoutVBox = new VBox(title, subtitle);
+        final VBox layoutVBox = new VBox(title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER_LEFT);
-        HBox layoutHBox = new HBox(feedView, layoutVBox);
+        final HBox layoutHBox = new HBox(feedView, layoutVBox);
         layoutHBox.setSpacing(8);
         layoutHBox.setAlignment(Pos.CENTER_LEFT);
         feedbackButton.setGraphic(layoutHBox);

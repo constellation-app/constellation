@@ -44,8 +44,8 @@ import org.openide.windows.WindowManager;
 public class DelimitedFileWelcomePlugin extends WelcomePageProvider {
     
     public static final String IMPORT = "resources/welcome_import.png";
-    ImageView importImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(IMPORT)));
-    Button importButton = new Button();
+    final ImageView importImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(IMPORT)));
+    final Button importButton = new Button();
 
     /**
      * Get a unique reference that is used to identify the plugin 
@@ -54,7 +54,7 @@ public class DelimitedFileWelcomePlugin extends WelcomePageProvider {
      */
     @Override
     public String getName() {
-        return DelimitedFileWelcomePlugin.class.getName();
+        return "Import Delimited File Welcome";
     }
     
     /**
@@ -95,11 +95,11 @@ public class DelimitedFileWelcomePlugin extends WelcomePageProvider {
     public Button getButton(){
         importImage.setFitHeight(75);
         importImage.setFitWidth(75);
-        Label imTitle = new Label("Import");
+        final Label imTitle = new Label("Import");
         imTitle.setFont(new Font("Arial", 16));
-        Label imSubtitle = new Label("Delimited File Importer");
+        final Label imSubtitle = new Label("Delimited File Importer");
         imSubtitle.setFont(new Font("Arial", 10));
-        VBox layoutVBox = new VBox(importImage, imTitle, imSubtitle);
+        final VBox layoutVBox = new VBox(importImage, imTitle, imSubtitle);
         layoutVBox.setAlignment(Pos.CENTER);
         importButton.setGraphic(layoutVBox);
         return importButton;
