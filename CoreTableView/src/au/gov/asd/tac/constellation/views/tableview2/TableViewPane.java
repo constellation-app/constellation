@@ -158,6 +158,7 @@ public final class TableViewPane extends BorderPane {
     private final BorderPane progress;
     private SortedList<ObservableList<String>> sortedRowList;
     private List<ObservableList<String>> filteredRowList;
+    private Pagination pagination = new Pagination();
 
     private Button columnVisibilityButton;
     private ToggleButton selectedOnlyButton;
@@ -228,7 +229,7 @@ public final class TableViewPane extends BorderPane {
 
         this.scheduledExecutorService = Executors.newScheduledThreadPool(1);
     }
-
+    
     private ToolBar initToolbar() {
         this.columnVisibilityButton = new Button();
         columnVisibilityButton.setGraphic(COLUMNS_ICON);
@@ -278,13 +279,13 @@ public final class TableViewPane extends BorderPane {
         copyButton.setPopupSide(Side.RIGHT);
         final MenuItem copyTableMenu = new MenuItem(COPY_TABLE);
         copyTableMenu.setOnAction(e -> {
-            final String data = TableViewUtilities.getTableData(table, false, false);
+            final String data = TableViewUtilities.getTableData(table, pagination, false, false);
             TableViewUtilities.copyToClipboard(data);
             e.consume();
         });
         final MenuItem copyTableSelectionMenu = new MenuItem(COPY_TABLE_SELECTION);
         copyTableSelectionMenu.setOnAction(e -> {
-            final String selectedData = TableViewUtilities.getTableData(table, false, true);
+            final String selectedData = TableViewUtilities.getTableData(table, pagination, false, true);
             TableViewUtilities.copyToClipboard(selectedData);
             e.consume();
         });
@@ -297,28 +298,28 @@ public final class TableViewPane extends BorderPane {
         final MenuItem exportCsvItem = new MenuItem(EXPORT_CSV);
         exportCsvItem.setOnAction(e -> {
             if (parent.getCurrentGraph() != null) {
-                TableViewUtilities.exportToCsv(table, false);
+                TableViewUtilities.exportToCsv(table, pagination, false);
             }
             e.consume();
         });
         final MenuItem exportCsvSelectionItem = new MenuItem(EXPORT_CSV_SELECTION);
         exportCsvSelectionItem.setOnAction(e -> {
             if (parent.getCurrentGraph() != null) {
-                TableViewUtilities.exportToCsv(table, true);
+                TableViewUtilities.exportToCsv(table, pagination, true);
             }
             e.consume();
         });
         final MenuItem exportExcelItem = new MenuItem(EXPORT_XLSX);
         exportExcelItem.setOnAction(e -> {
             if (parent.getCurrentGraph() != null) {
-                TableViewUtilities.exportToExcel(table, false, parent.getCurrentGraph().getId());
+                TableViewUtilities.exportToExcel(table, pagination, maxRowsPerPage, false, parent.getCurrentGraph().getId());
             }
             e.consume();
         });
         final MenuItem exportExcelSelectionItem = new MenuItem(EXPORT_XLSX_SELECTION);
         exportExcelSelectionItem.setOnAction(e -> {
             if (parent.getCurrentGraph() != null) {
-                TableViewUtilities.exportToExcel(table, true, parent.getCurrentGraph().getId());
+                TableViewUtilities.exportToExcel(table, pagination, maxRowsPerPage, true, parent.getCurrentGraph().getId());
             }
             e.consume();
         });
@@ -1040,13 +1041,7 @@ public final class TableViewPane extends BorderPane {
             }
             
             sortedRowList.comparatorProperty().bind(table.comparatorProperty());
-            final Thread t = new Thread() {
-                @Override
-                public void run() {
-                    updateSelection(parent.getCurrentGraph(), parent.getCurrentState());
-                }
-            };
-            t.start();
+            updateSelectionFromFXThread(parent.getCurrentGraph(), parent.getCurrentState());
             sortedRowList.comparatorProperty().addListener(tableComparatorListener);
             selectedProperty.addListener(tableSelectionListener);
         }
@@ -1055,7 +1050,7 @@ public final class TableViewPane extends BorderPane {
     }
     
     protected void paginate(final List<ObservableList<String>> rows) {
-        final Pagination pagination = new Pagination(rows == null || rows.isEmpty() ? 1 : (int) Math.ceil(rows.size() / (double) maxRowsPerPage));
+        pagination = new Pagination(rows == null || rows.isEmpty() ? 1 : (int) Math.ceil(rows.size() / (double) maxRowsPerPage));
         pagination.setPageFactory(index -> createPage(index, rows));
         Platform.runLater(() -> {
             setCenter(pagination);
@@ -1239,44 +1234,98 @@ public final class TableViewPane extends BorderPane {
                 if (!state.isSelectedOnly()) {
                     final List<Integer> selectedIds = new ArrayList<>();
                     final ReadableGraph readableGraph = graph.getReadableGraph();
-                    try {
-                        final boolean isVertex = state.getElementType() == GraphElementType.VERTEX;
-                        final int selectedAttributeId = isVertex
-                                ? VisualConcept.VertexAttribute.SELECTED.get(readableGraph)
-                                : VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
-                        final int elementCount = isVertex
-                                ? readableGraph.getVertexCount()
-                                : readableGraph.getTransactionCount();
-                        for (int elementPosition = 0; elementPosition < elementCount; elementPosition++) {
-                            final int elementId = isVertex
-                                    ? readableGraph.getVertex(elementPosition)
-                                    : readableGraph.getTransaction(elementPosition);
-                            boolean isSelected = false;
-                            if (selectedAttributeId != Graph.NOT_FOUND) {
-                                isSelected = readableGraph.getBooleanValue(selectedAttributeId, elementId);
-                            }
-                            if (isSelected) {
-                                selectedIds.add(elementId);
-                            }
-                        }
-                    } finally {
-                        readableGraph.release();
-                    }
+                    addToSelectedIds(selectedIds, readableGraph, state);
 
                     // update table selection
                     final int[] selectedIndices = selectedIds.stream().map(id -> elementIdToRowIndex.get(id))
                             .map(row -> table.getItems().indexOf(row)).mapToInt(i -> i).toArray();
-
-                    Platform.runLater(() -> {
+                    
+                    Platform.runLater(() -> {                        
                         selectedProperty.removeListener(tableSelectionListener);
                         table.getSelectionModel().clearSelection();
                         if (!selectedIds.isEmpty()) {
                             table.getSelectionModel().selectIndices(selectedIndices[0], selectedIndices);
                         }
-                        selectedProperty.addListener(tableSelectionListener);
+                        selectedProperty.addListener(tableSelectionListener);                            
                     });
                 }
             }
+        }
+    }
+       
+    /**
+     * A version of the updateSelection(Graph, TableViewState) function which is
+     * to be run on the JavaFX Application Thread
+     * 
+     * @param graph the graph to read selection from.
+     * @param state the current table view state.
+     */
+    private void updateSelectionFromFXThread(final Graph graph, final TableViewState state) {
+        if (graph != null && state != null) {
+
+            if (!Platform.isFxApplicationThread()) {
+                throw new IllegalStateException("Not processing on the JavaFX Application Thread");
+            }
+
+            // get graph selection
+            if (!state.isSelectedOnly()) {
+                final List<Integer> selectedIds = new ArrayList<>();
+                final int[][] selectedIndices = new int[1][1];
+                final Thread selectedIdsThread = new Thread("Update Selection from FX Thread: Get Selected Ids") {
+                    @Override
+                    public void run() {
+                        final ReadableGraph readableGraph = graph.getReadableGraph();
+                        addToSelectedIds(selectedIds, readableGraph, state);
+
+                        // update table selection
+                        selectedIndices[0] = selectedIds.stream().map(id -> elementIdToRowIndex.get(id))
+                                .map(row -> table.getItems().indexOf(row)).mapToInt(i -> i).toArray();
+                    }
+                };
+                selectedIdsThread.start();
+                try {
+                    selectedIdsThread.join();
+                } catch (InterruptedException ex) {
+                    LOGGER.log(Level.WARNING, "InterruptedException encountered while updating table selection");
+                    Thread.currentThread().interrupt();
+                }
+
+                table.getSelectionModel().clearSelection();
+                if (!selectedIds.isEmpty()) {
+                    table.getSelectionModel().selectIndices(selectedIndices[0][0], selectedIndices[0]);
+                }                           
+            }
+        }
+    }
+    
+    /**
+     * Adds vertex/transaction ids from a graph to a list of ids if the 
+     * vertex/transaction is selected
+     * 
+     * @param selectedIds the list that is being added to
+     * @param readableGraph the graph to read from
+     * @param state the current table view state
+     */
+    private void addToSelectedIds(final List<Integer> selectedIds, final ReadableGraph readableGraph, final TableViewState state) {
+        try {
+            final boolean isVertex = state.getElementType() == GraphElementType.VERTEX;
+            final int selectedAttributeId = isVertex
+                    ? VisualConcept.VertexAttribute.SELECTED.get(readableGraph)
+                    : VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
+            final int elementCount = isVertex
+                    ? readableGraph.getVertexCount()
+                    : readableGraph.getTransactionCount();
+            for (int elementPosition = 0; elementPosition < elementCount; elementPosition++) {
+                final int elementId = isVertex
+                        ? readableGraph.getVertex(elementPosition)
+                        : readableGraph.getTransaction(elementPosition);
+                if (selectedAttributeId != Graph.NOT_FOUND 
+                        && readableGraph.getBooleanValue(selectedAttributeId, elementId)) {
+                    selectedIds.add(elementId);
+                }
+            }
+        } finally {
+            readableGraph.release();
         }
     }
 }

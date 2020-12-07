@@ -38,8 +38,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Pagination;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.input.Clipboard;
@@ -57,6 +60,8 @@ import org.openide.filesystems.FileChooserBuilder;
  * @author cygnus_x-1
  */
 public class TableViewUtilities {
+    
+    private static final Logger LOGGER = Logger.getLogger(TableViewUtilities.class.getName());
 
     private static final String EXPORT_TO_DELIMITED_FILE_PLUGIN = "Table View: Export to Delimited File";
     private static final String EXPORT_TO_EXCEL_FILE_PLUGIN = "Table View: Export to Excel File";
@@ -77,7 +82,7 @@ public class TableViewUtilities {
      * table will be included in the output.
      * @return a String of comma-separated values representing the table.
      */
-    public static String getTableData(final TableView<ObservableList<String>> table,
+    public static String getTableData(final TableView<ObservableList<String>> table, final Pagination pagination,
             final boolean includeHeader, final boolean selectedOnly) {
         final List<Integer> visibleIndices = table.getVisibleLeafColumns().stream()
                 .map(column -> table.getColumns().indexOf(column))
@@ -93,25 +98,35 @@ public class TableViewUtilities {
             data.append(SeparatorConstants.NEWLINE);
         }
 
+        // get the current page index so we can go back to it afterwards
+        final int currentPage = pagination.getCurrentPageIndex();
         if (selectedOnly) {
-            table.getSelectionModel().getSelectedItems().forEach(selectedItem -> {
-                data.append(visibleIndices.stream()
-                        .filter(Objects::nonNull)
-                        .map(index -> selectedItem.get(index))
-                        .reduce((cell1, cell2) -> cell1 + SeparatorConstants.COMMA + cell2)
-                        .get());
-                data.append(SeparatorConstants.NEWLINE);
-            });
+            for (int i = 0; i < pagination.getPageCount(); i++) {
+                final TableView<ObservableList<String>> page = (TableView<ObservableList<String>>) pagination.getPageFactory().call(i);
+                page.getSelectionModel().getSelectedItems().forEach(selectedItem -> {
+                    data.append(visibleIndices.stream()
+                            .filter(Objects::nonNull)
+                            .map(index -> selectedItem.get(index))
+                            .reduce((cell1, cell2) -> cell1 + SeparatorConstants.COMMA + cell2)
+                            .get());
+                    data.append(SeparatorConstants.NEWLINE);
+                });                                
+            }
         } else {
-            table.getItems().forEach(item -> {
-                data.append(visibleIndices.stream()
-                        .filter(Objects::nonNull)
-                        .map(index -> item.get(index))
-                        .reduce((cell1, cell2) -> cell1 + SeparatorConstants.COMMA + cell2)
-                        .get());
-                data.append(SeparatorConstants.NEWLINE);
-            });
+            for (int i = 0; i < pagination.getPageCount(); i++) {
+                final TableView<ObservableList<String>> page = (TableView<ObservableList<String>>) pagination.getPageFactory().call(i);
+                page.getItems().forEach(item -> {
+                    data.append(visibleIndices.stream()
+                            .filter(Objects::nonNull)
+                            .map(index -> item.get(index))
+                            .reduce((cell1, cell2) -> cell1 + SeparatorConstants.COMMA + cell2)
+                            .get());
+                    data.append(SeparatorConstants.NEWLINE);
+                });
+            }
         }
+        // Call the page factory function once more to go back to the original page index
+        pagination.getPageFactory().call(currentPage);
 
         return data.toString();
     }
@@ -135,7 +150,8 @@ public class TableViewUtilities {
      * @param selectedOnly if true, only the data from selected rows in the
      * table will be included in the output file.
      */
-    public static void exportToCsv(final TableView<ObservableList<String>> table, final boolean selectedOnly) {
+    public static void exportToCsv(final TableView<ObservableList<String>> table, final Pagination pagination,
+            final boolean selectedOnly) {
         final FileChooserBuilder fChooser = new FileChooserBuilder(EXPORT_CSV)
                 .setTitle(EXPORT_CSV)
                 .setFileFilter(new FileFilter() {
@@ -162,7 +178,14 @@ public class TableViewUtilities {
                     : fileName.getAbsolutePath() + CSV_EXT;
 
             final File file = new File(filePath);
-            PluginExecution.withPlugin(new ExportToCsvFilePlugin(file, table, selectedOnly)).executeLater(null);
+            try {
+                PluginExecution.withPlugin(new ExportToCsvFilePlugin(file, table, pagination, selectedOnly)).executeNow((Graph) null);
+            } catch (InterruptedException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                Thread.currentThread().interrupt();
+            } catch (PluginException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+            }
         }
     }
 
@@ -174,7 +197,8 @@ public class TableViewUtilities {
      * table will be included in the output file.
      * @param sheetName the name of the workbook sheet in the output file.
      */
-    public static void exportToExcel(final TableView<ObservableList<String>> table, final boolean selectedOnly, final String sheetName) {
+    public static void exportToExcel(final TableView<ObservableList<String>> table, final Pagination pagination, 
+            final int rowsPerPage, final boolean selectedOnly, final String sheetName) {
         final FileChooserBuilder fChooser = new FileChooserBuilder(EXPORT_XLSX)
                 .setTitle(EXPORT_XLSX)
                 .setFileFilter(new FileFilter() {
@@ -201,7 +225,14 @@ public class TableViewUtilities {
                     : fileName.getAbsolutePath() + XLSX_EXT;
 
             final File excelFile = new File(filePath);
-            PluginExecution.withPlugin(new ExportToExcelFilePlugin(excelFile, table, selectedOnly, sheetName)).executeLater(null);
+            try {
+                PluginExecution.withPlugin(new ExportToExcelFilePlugin(excelFile, table, pagination, rowsPerPage, selectedOnly, sheetName)).executeNow((Graph) null);
+            } catch (InterruptedException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                Thread.currentThread().interrupt();
+            } catch (PluginException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+            }
         }
     }
 
@@ -222,26 +253,34 @@ public class TableViewUtilities {
 
         private final File file;
         private final TableView<ObservableList<String>> table;
+        private final Pagination pagination;
         private final boolean selectedOnly;
 
         public ExportToCsvFilePlugin(final File file,
                 final TableView<ObservableList<String>> table,
+                final Pagination pagination,
                 final boolean selectedOnly) {
             this.file = file;
             this.table = table;
+            this.pagination = pagination;
             this.selectedOnly = selectedOnly;
         }
 
         @Override
         public void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-            try {
-                final String csvData = getTableData(table, true, selectedOnly);
-                try (final FileWriter fileWriter = new FileWriter(file)) {
-                    fileWriter.write(csvData);
-                }
-            } catch (IOException ex) {
-                throw new PluginException(PluginNotificationLevel.ERROR, ex);
-            }
+            final String csvData = getTableData(table, pagination, true, selectedOnly);
+            final Thread outputThread = new Thread("Export to CSV File: Writing File") {
+                @Override
+                public void run() {
+                    try (final FileWriter fileWriter = new FileWriter(file)) {
+                        fileWriter.write(csvData);
+                    } catch (IOException ex) {
+                        interaction.notify(PluginNotificationLevel.ERROR, ex.getLocalizedMessage());
+                    }
+                }                    
+            };
+            outputThread.start();
+            outputThread.join();
         }
 
         @Override
@@ -254,14 +293,18 @@ public class TableViewUtilities {
 
         private final File file;
         private final TableView<ObservableList<String>> table;
+        private final Pagination pagination;
+        private final int rowsPerPage;
         private final boolean selectedOnly;
         private final String sheetName;
 
-        public ExportToExcelFilePlugin(final File file,
-                final TableView<ObservableList<String>> table,
+        public ExportToExcelFilePlugin(final File file, final TableView<ObservableList<String>> table, 
+                final Pagination pagination, final int rowsPerPage,
                 final boolean selectedOnly, final String sheetName) {
             this.file = file;
             this.table = table;
+            this.pagination = pagination;
+            this.rowsPerPage = rowsPerPage;
             this.selectedOnly = selectedOnly;
             this.sheetName = sheetName;
         }
@@ -283,18 +326,55 @@ public class TableViewUtilities {
                     headerCell.setCellValue(column.getText());
                 });
 
+                final int currentPage = pagination.getCurrentPageIndex();
                 if (selectedOnly) {
-                    // get a copy of the table data so that users are continue working
-                    final List<ObservableList<String>> data = table.getSelectionModel().getSelectedItems();
-                    writeRecords(sheet, visibleIndices, data);
+                    for (int i = 0; i < pagination.getPageCount(); i++) {
+                        pagination.getPageFactory().call(i);
+                        final int startIndex = rowsPerPage * i + 1; // + 1 to skip the header
+                        final Thread writeSheetThread = new Thread("Export to Excel File: Writing Sheet") {
+                            @Override
+                            public void run() {
+                                // get a copy of the table data so that users are continue working
+                                final List<ObservableList<String>> data = table.getSelectionModel().getSelectedItems();                               
+                                writeRecords(sheet, visibleIndices, data, startIndex);
+                            }                            
+                        };
+                        writeSheetThread.start();
+                        writeSheetThread.join();                      
+                    }
                 } else {
-                    // get a copy of the table data so that users are continue working
-                    final List<ObservableList<String>> data = table.getItems();
-                    writeRecords(sheet, visibleIndices, data);
+                    for (int i = 0; i < pagination.getPageCount(); i++) {
+                        pagination.getPageFactory().call(i);
+                        final int startIndex = rowsPerPage * i + 1; // + 1 to skip the header
+                        final Thread writeSheetThread = new Thread("Export to Excel File: Writing Sheet") {
+                            @Override
+                            public void run() {
+                                // get a copy of the table data so that users are continue working
+                                final List<ObservableList<String>> data = table.getItems();                               
+                                writeRecords(sheet, visibleIndices, data, startIndex);
+                            }                            
+                        };
+                        writeSheetThread.start();
+                        writeSheetThread.join();
+                    }
                 }
-
-                workbook.write(new FileOutputStream(file));
-                workbook.dispose();
+                // Call the page factory function once more to go back to the original page index
+                pagination.getPageFactory().call(currentPage);
+                
+                final Thread outputThread = new Thread("Export to Excel File: Writing File") {
+                    @Override
+                    public void run() {
+                        try (final FileOutputStream fileStream = new FileOutputStream(file)) {
+                            workbook.write(fileStream);
+                            LOGGER.log(Level.INFO, "Table View data written to Excel file");
+                        } catch (IOException ex) {
+                            interaction.notify(PluginNotificationLevel.ERROR, ex.getLocalizedMessage());
+                        }
+                        workbook.dispose();
+                    }                   
+                };
+                outputThread.start();
+                outputThread.join();
             } catch (IOException ex) {
                 throw new PluginException(PluginNotificationLevel.ERROR, ex);
             }
@@ -313,9 +393,9 @@ public class TableViewUtilities {
      * @param visibleIndices The visible columns
      * @param data The table data
      */
-    private static void writeRecords(final Sheet sheet, final List<Integer> visibleIndices, final List<ObservableList<String>> data) {
+    private static void writeRecords(final Sheet sheet, final List<Integer> visibleIndices, final List<ObservableList<String>> data, final int startIndex) {
         final int[] rowIndex = new int[1];
-        rowIndex[0] = 1; // setting the list's index to 1 to skip the heading
+        rowIndex[0] = startIndex;
         data.forEach(item -> {
             final Row itemRow = sheet.createRow(rowIndex[0]++);
             visibleIndices.forEach(index -> {

@@ -16,8 +16,12 @@
 package au.gov.asd.tac.constellation.graph.attribute;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
 import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
+import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
+import au.gov.asd.tac.constellation.graph.value.readables.ObjectReadable;
+import au.gov.asd.tac.constellation.graph.value.variables.ObjectVariable;
 import java.lang.reflect.InvocationTargetException;
 import java.security.SecureRandom;
 import java.util.Arrays;
@@ -183,5 +187,25 @@ public abstract class AbstractObjectAttributeDescription<T extends Object> exten
     public void restoreData(final Object savedData) {
         final Object[] arrayData = (Object[]) savedData;
         data = Arrays.copyOf(arrayData, arrayData.length);
+    }
+
+    @Override
+    public Object createReadObject(IntReadable indexReadable) {
+        return (ObjectReadable) () -> data[indexReadable.readInt()];
+    }
+
+    @Override
+    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+        return new ObjectVariable() {
+            @Override
+            public Object readObject() {
+                return data[indexReadable.readInt()];
+            }
+
+            @Override
+            public void writeObject(Object value) {
+                graph.setObjectValue(attribute, indexReadable.readInt(), value);
+            }
+        };
     }
 }

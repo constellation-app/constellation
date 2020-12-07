@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.plugins.gui;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterKind;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
@@ -57,7 +58,6 @@ public class FileInputPane extends HBox {
     public static final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
     private final Button fileAddButton;
     private final TextInputControl field;
-    private String parameterId;
     private static final Logger LOGGER = Logger.getLogger(FileInputPane.class.getName());
 
     public FileInputPane(final PluginParameter<FileParameterValue> parameter) {
@@ -79,7 +79,6 @@ public class FileInputPane extends HBox {
         if (suggestedHeight == null) {
             suggestedHeight = 1;
         }
-        parameterId = parameter.getId();
 
         final FileParameterValue paramaterValue = parameter.getParameterValue();
         fileAddButton = new Button(paramaterValue.getKind() == FileParameterKind.SAVE ? "Save" : "Open");
@@ -238,5 +237,10 @@ public class FileInputPane extends HBox {
         fieldAndAddButton.setSpacing(2);
         fieldAndAddButton.getChildren().addAll(field, fileAddButton);
         getChildren().add(fieldAndAddButton);
+        final String parameterId = parameter.getId();
+        final List<String> fileInputRecentValues = RecentParameterValues.getRecentValues(parameterId);
+        if (fileInputRecentValues != null) {
+            parameter.setStringValue(fileInputRecentValues.get(fileInputRecentValues.size() > 1 ? 1 : 0));
+        }
     }
 }

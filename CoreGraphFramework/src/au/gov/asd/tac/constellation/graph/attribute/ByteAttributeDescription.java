@@ -16,9 +16,13 @@
 package au.gov.asd.tac.constellation.graph.attribute;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
 import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
+import au.gov.asd.tac.constellation.graph.value.readables.ByteReadable;
+import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
+import au.gov.asd.tac.constellation.graph.value.variables.ByteVariable;
 import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
@@ -46,7 +50,7 @@ public class ByteAttributeDescription extends AbstractAttributeDescription {
     public static final String ATTRIBUTE_NAME = "byte";
     public static final Class<Byte> NATIVE_CLASS = byte.class;
     public static final NativeAttributeType NATIVE_TYPE = NativeAttributeType.BYTE;
-    private static final byte DEFAULT_VALUE = 0;
+    public static final byte DEFAULT_VALUE = 0;
 
     private byte[] data = new byte[0];
     private byte defaultValue = DEFAULT_VALUE;
@@ -277,5 +281,25 @@ public class ByteAttributeDescription extends AbstractAttributeDescription {
     public void restoreData(final Object savedData) {
         final byte[] sd = (byte[]) savedData;
         data = Arrays.copyOf(sd, sd.length);
+    }
+
+    @Override
+    public Object createReadObject(IntReadable indexReadable) {
+        return (ByteReadable) () -> data[indexReadable.readInt()];
+    }
+
+    @Override
+    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+        return new ByteVariable() {
+            @Override
+            public byte readByte() {
+                return data[indexReadable.readInt()];
+            }
+
+            @Override
+            public void writeByte(byte value) {
+                graph.setByteValue(attribute, indexReadable.readInt(), value);
+            }
+        };
     }
 }
