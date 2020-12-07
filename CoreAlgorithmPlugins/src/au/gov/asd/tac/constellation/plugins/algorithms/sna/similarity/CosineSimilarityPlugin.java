@@ -117,41 +117,50 @@ public class CosineSimilarityPlugin extends SimpleEditPlugin {
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) { //For each vertex
             currentVertexWithNeighbour = null;
             final int vertexId = graph.getVertex(vertexPosition);
-            for (int vertexNeighbourPosition = 0; vertexNeighbourPosition < graph.getVertexNeighbourCount(vertexId); vertexNeighbourPosition++) { //For each neighbour
-                final int neighbourId = graph.getVertexNeighbour(vertexId, vertexNeighbourPosition);
-                final int neighbourPosition = graph.getVertexPosition(neighbourId);
+            
+            int vertexNeighbourCount = 0;
+            if (graph.getVertexNeighbourCount(vertexId) > minCommonFeatures){ //Quick defeat, if there arnt enough potential neighbours to achieve the minimal common features then dont process the vertex.
+                for (int vertexNeighbourPosition = 0; vertexNeighbourPosition < graph.getVertexNeighbourCount(vertexId); vertexNeighbourPosition++) { //For each neighbour
+                    final int neighbourId = graph.getVertexNeighbour(vertexId, vertexNeighbourPosition);
+                    final int neighbourPosition = graph.getVertexPosition(neighbourId);
 
-                if (vertexPosition == neighbourPosition) {
-                    // Exclude self  
-                    continue;
-                }
+                    if (vertexPosition == neighbourPosition) {
+                        // Exclude self  
+                        continue;
+                    }
 
-                final int linkId = graph.getLink(vertexId, neighbourId);
-                for (int linkEdgePosition = 0; linkEdgePosition < graph.getLinkEdgeCount(linkId); linkEdgePosition++) {
-                    final int edgeId = graph.getLinkEdge(linkId, linkEdgePosition);
-                    final int edgeDirection = graph.getEdgeDirection(edgeId);
-                    final boolean isRequestedDirection = (treatUndirectedBidirectional && edgeDirection == GraphConstants.UNDIRECTED
-                            || includeConnectionsIn && graph.getEdgeDestinationVertex(edgeId) == neighbourId
-                            || includeConnectionsOut && graph.getEdgeSourceVertex(edgeId) == neighbourId);
-                    if (isRequestedDirection) { // If it is a neighbour we are interested in, based on whetehr we are interest in incoing or outoing neighbours.
-                        // neighbour weight vertex-neighbour = Number of transaction of correct direction between them - number of transacions of type similarity.
-                        if (currentVertexWithNeighbour == null) {
-                            currentVertexWithNeighbour = new VertexWithNeighbours(vertexId, vertexCount, graph.getBooleanValue(vertexSelectedAttributeId, vertexId));
-                            verticiesWithNeighbours.add(currentVertexWithNeighbour);
+                    final int linkId = graph.getLink(vertexId, neighbourId);
+                    for (int linkEdgePosition = 0; linkEdgePosition < graph.getLinkEdgeCount(linkId); linkEdgePosition++) {
+                        final int edgeId = graph.getLinkEdge(linkId, linkEdgePosition);
+                        final int edgeDirection = graph.getEdgeDirection(edgeId);
+                        final boolean isRequestedDirection = (treatUndirectedBidirectional && edgeDirection == GraphConstants.UNDIRECTED
+                                || includeConnectionsIn && graph.getEdgeDestinationVertex(edgeId) == neighbourId
+                                || includeConnectionsOut && graph.getEdgeSourceVertex(edgeId) == neighbourId);
+                        if (isRequestedDirection) { // If it is a neighbour we are interested in, based on whetehr we are interest in incoing or outoing neighbours.
+                            // neighbour weight vertex-neighbour = Number of transaction of correct direction between them - number of transacions of type similarity.
+                            if (currentVertexWithNeighbour == null) {
+                                currentVertexWithNeighbour = new VertexWithNeighbours(vertexId, vertexCount, graph.getBooleanValue(vertexSelectedAttributeId, vertexId));
+                            }
+
+                            int weight = graph.getEdgeTransactionCount(edgeId) - SimilarityUtilities.countEdgeSimilarityTransactions(graph, edgeId);
+                            currentVertexWithNeighbour.addNeighbour(neighbourPosition, weight);
+                            vertexNeighbourCount+=1; // Found  valid neighbour so track this.
                         }
-                        
-                        int weight = graph.getEdgeTransactionCount(edgeId) - SimilarityUtilities.countEdgeSimilarityTransactions(graph, edgeId);
-                        currentVertexWithNeighbour.addNeighbour(neighbourPosition, weight);
                     }
                 }
+            }
+            if (vertexNeighbourCount >= minCommonFeatures) {
+                // Add vertex to list of verticies with neighbours IFF it has enough neighbours to potentially pass the minCommonFeatures test later.
+                verticiesWithNeighbours.add(currentVertexWithNeighbour);
             }
         }
         // At this point:
         // neighbourweights[vertexPosition][neighbourposition] = number of relevant transactions between them - number of transaction of type similarity between them.
         // neighbours[vertexPosition] = bitset representing whetehr each vertex is a neighbour or not
         // update = bitset representing whether the vertex has any neighbours at all.
-        // calculate cosine similarity for every pair of vertices on the graph
+        
         SimilarityUtilities.setGraphAndEnsureAttributes(graph, COSINE_SIMILARITY_ATTRIBUTE);
+        // calculate cosine similarity for every pair of vertices on the graph
         for (int leftIndex = 0; leftIndex < verticiesWithNeighbours.size()-1; leftIndex++) {
             VertexWithNeighbours leftVertexWithNeighbours = verticiesWithNeighbours.get(leftIndex);
             for (int rightIndex = leftIndex+1; rightIndex < verticiesWithNeighbours.size(); rightIndex++) {
@@ -223,4 +232,6 @@ public class CosineSimilarityPlugin extends SimpleEditPlugin {
         }
         return dot;
     }
+    
+    
 }
