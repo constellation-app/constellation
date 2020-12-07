@@ -15,6 +15,9 @@
  */
 package au.gov.asd.tac.constellation.views.welcome.plugins;
 
+import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
+import au.gov.asd.tac.constellation.functionality.browser.OpenInBrowserPlugin;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.views.welcome.WelcomePageProvider;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
@@ -72,21 +75,10 @@ public class GettingStartedWelcomePlugin extends WelcomePageProvider {
     public void run() {
         String url = "https://constellation.readthedocs.io/en/latest/";
 
-        if(Desktop.isDesktopSupported()){
-            Desktop desktop = Desktop.getDesktop();
-            try {
-                desktop.browse(new URI(url));
-            } catch (IOException | URISyntaxException e) {
-                LOGGER.log(Level.WARNING, e.getMessage());
-            }
-        } else {
-            Runtime runtime = Runtime.getRuntime();
-            try {
-                runtime.exec("xdg-open " + url);
-            } catch (IOException e) {
-                LOGGER.log(Level.WARNING, e.getMessage());
-            }
-        }
+        PluginExecution.withPlugin(CorePluginRegistry.OPEN_IN_BROWSER)
+            .withParameter(OpenInBrowserPlugin.APPLICATION_PARAMETER_ID, "Open " + getName())
+            .withParameter(OpenInBrowserPlugin.URL_PARAMETER_ID, url)
+            .executeLater(null);
     }
 
     /**
