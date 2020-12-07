@@ -186,6 +186,10 @@ public class LayersViewController {
                 .executeLater(graph);
     }
 
+    public boolean getParentVisibility() {
+        return parent != null ? parent.getVisibility() : null;
+    }
+
     public void readStateFuture() {
         final LayersViewPane pane = parent.getContent();
         final Graph graph = GraphManager.getDefault().getActiveGraph();
