@@ -142,7 +142,7 @@ public class PreferentialAttachmentPlugin extends SimpleEditPlugin {
 
                     final float paScore = graph.getVertexNeighbourCount(vertexOneId) * graph.getVertexNeighbourCount(vertexTwoId);
 
-                    SimilarityUtilities.addScoreToGraph(vertexOneId, vertexTwoId, paScore, PREFERENTIAL_ATTACHMENT_ATTRIBUTE);
+                    SimilarityUtilities.addScoreToGraph(vertexOneId, vertexTwoId, paScore);
                 }
             }
         }

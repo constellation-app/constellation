@@ -167,7 +167,7 @@ public class JaccardIndexPlugin extends SimpleEditPlugin {
                     final int vertexTwoId = graph.getVertex(vertexTwoPosition);
 
                     final float jaccardIndex = union.cardinality() == 0 ? 0f : (float) intersection.cardinality() / union.cardinality();
-                    SimilarityUtilities.addScoreToGraph(vertexOneId, vertexTwoId, jaccardIndex, JACCARD_INDEX_ATTRIBUTE);
+                    SimilarityUtilities.addScoreToGraph(vertexOneId, vertexTwoId, jaccardIndex);
                 }
             }
         }

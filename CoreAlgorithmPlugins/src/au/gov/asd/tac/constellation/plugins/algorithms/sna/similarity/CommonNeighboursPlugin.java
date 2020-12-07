@@ -172,7 +172,7 @@ public class CommonNeighboursPlugin extends SimpleEditPlugin {
                     if (community && (selected.get(vertexOnePosition) && selected.get(vertexTwoPosition))) {
                         commonNeighbours += 1;
                     }
-                    SimilarityUtilities.addScoreToGraph(vertexOneId, vertexTwoId, commonNeighbours, COMMON_NEIGHBOURS_ATTRIBUTE);
+                    SimilarityUtilities.addScoreToGraph(vertexOneId, vertexTwoId, commonNeighbours);
                 }
             }
         }

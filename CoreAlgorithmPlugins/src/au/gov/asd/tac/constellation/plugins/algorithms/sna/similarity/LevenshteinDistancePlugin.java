@@ -180,7 +180,7 @@ public class LevenshteinDistancePlugin extends SimpleEditPlugin {
                 }
 
                 SimilarityUtilities.setGraphAndEnsureAttributes(graph, LEVENSHTEIN_DISTANCE_ATTRIBUTE);
-                SimilarityUtilities.addScoreToGraph(vxOneId, vxTwoId, (float) distance, LEVENSHTEIN_DISTANCE_ATTRIBUTE);
+                SimilarityUtilities.addScoreToGraph(vxOneId, vxTwoId, (float) distance);
 
             }
         }

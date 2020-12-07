@@ -50,7 +50,7 @@ public class SimilarityUtilities {
      * @param schemaSimilarityAttribute - similarity schema attribute to change
      */
     public static void addScoresToGraph(final Map<Tuple<Integer, Integer>, Float> scores, final SchemaAttribute schemaSimilarityAttribute) {
-        scores.forEach((pair,score) -> addScoreToGraph(pair.getFirst(), pair.getSecond(), score, schemaSimilarityAttribute));
+        scores.forEach((pair,score) -> addScoreToGraph(pair.getFirst(), pair.getSecond(), score));
     }
     /**
      * Adds a similarity score to the graph while ensuring there is only ever a
@@ -62,7 +62,7 @@ public class SimilarityUtilities {
      * @param score - score to add
      * @param schemaSimilarityAttribute - similarity schema attribute to change
      */
-    public static void addScoreToGraph(final int vertexOne, final int vertexTwo, final float score, final SchemaAttribute schemaSimilarityAttribute) {
+    public static void addScoreToGraph(final int vertexOne, final int vertexTwo, final float score) {
             final int linkId = graph.getLink(vertexOne, vertexTwo);
             if (linkId == GraphConstants.NOT_FOUND) {
                 final int transactionId = graph.addTransaction(vertexOne, vertexTwo, false);

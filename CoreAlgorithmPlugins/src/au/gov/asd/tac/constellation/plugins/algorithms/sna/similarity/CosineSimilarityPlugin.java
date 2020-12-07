@@ -174,7 +174,7 @@ public class CosineSimilarityPlugin extends SimpleEditPlugin {
                         final float neighbourDotProduct = getNeighbourDotProduct(leftVertexWithNeighbours, rightVertexWithNeighbours, commonNeighbours);
                         final float neighboursMagnitude = leftVertexWithNeighbours.getMagnitude() * rightVertexWithNeighbours.getMagnitude();
                         final float cosineSimilarity = neighboursMagnitude == 0 ? 0 : neighbourDotProduct / neighboursMagnitude;
-                        SimilarityUtilities.addScoreToGraph(leftVertexWithNeighbours.vertexId, rightVertexWithNeighbours.vertexId, cosineSimilarity, COSINE_SIMILARITY_ATTRIBUTE);
+                        SimilarityUtilities.addScoreToGraph(leftVertexWithNeighbours.vertexId, rightVertexWithNeighbours.vertexId, cosineSimilarity);
                     }
                 }
             }

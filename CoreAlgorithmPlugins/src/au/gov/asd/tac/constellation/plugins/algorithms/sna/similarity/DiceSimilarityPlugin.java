@@ -165,7 +165,7 @@ public class DiceSimilarityPlugin extends SimpleEditPlugin {
                     final int vertexTwoId = graph.getVertex(vertexTwoPosition);
 
                     final float diceSimilarity = halfSumDegree == 0 ? 0f : (float) intersection.cardinality() / halfSumDegree;
-                    SimilarityUtilities.addScoreToGraph(vertexOneId, vertexTwoId, diceSimilarity, DICE_SIMILARITY_ATTRIBUTE);
+                    SimilarityUtilities.addScoreToGraph(vertexOneId, vertexTwoId, diceSimilarity);
                 }
             }
         }

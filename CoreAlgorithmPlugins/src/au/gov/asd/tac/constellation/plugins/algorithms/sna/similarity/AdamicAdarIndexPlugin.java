@@ -176,7 +176,7 @@ public class AdamicAdarIndexPlugin extends SimpleEditPlugin {
                         sum += (1f / Math.log(graph.getVertexNeighbourCount(graph.getVertex(commonNeighbour))));
                     }
 
-                    SimilarityUtilities.addScoreToGraph(vertexOneId, vertexTwoId, sum, ADAMIC_ADAR_INDEX_ATTRIBUTE);
+                    SimilarityUtilities.addScoreToGraph(vertexOneId, vertexTwoId, sum);
                 }
             }
         }

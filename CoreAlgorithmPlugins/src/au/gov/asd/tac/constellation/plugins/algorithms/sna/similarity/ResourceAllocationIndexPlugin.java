@@ -175,7 +175,7 @@ public class ResourceAllocationIndexPlugin extends SimpleEditPlugin {
                     for (int commonNeighbour = intersection.nextSetBit(0); commonNeighbour >= 0; commonNeighbour = intersection.nextSetBit(commonNeighbour + 1)) {
                         sum += (1f / graph.getVertexNeighbourCount(graph.getVertex(commonNeighbour)));
                     }
-                    SimilarityUtilities.addScoreToGraph(vertexOneId, vertexTwoId, sum, RESOURCE_ALLOCATION_INDEX_ATTRIBUTE);
+                    SimilarityUtilities.addScoreToGraph(vertexOneId, vertexTwoId, sum);
                 }
             }
         }
