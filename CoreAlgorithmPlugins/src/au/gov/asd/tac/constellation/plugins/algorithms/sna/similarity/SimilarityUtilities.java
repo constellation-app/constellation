@@ -81,7 +81,7 @@ public class SimilarityUtilities {
 
                 if (similarityTransactionId == GraphConstants.NOT_FOUND) {
                     similarityTransactionId = graph.addTransaction(vertexOne, vertexTwo, false);
-                    graph.setStringValue(uniqueIdAttribute, similarityTransactionId, vertexOne + "% == similarity == " + vertexTwo);
+                    graph.setStringValue(uniqueIdAttribute, similarityTransactionId, vertexOne + " == similarity == " + vertexTwo);
                     graph.setObjectValue(typeAttribute, similarityTransactionId, AnalyticConcept.TransactionType.SIMILARITY);
                 }
 
