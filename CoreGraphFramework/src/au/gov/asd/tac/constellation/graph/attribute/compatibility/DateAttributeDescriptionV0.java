@@ -16,9 +16,13 @@
 package au.gov.asd.tac.constellation.graph.attribute.compatibility;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.graph.attribute.AbstractAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
+import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
+import au.gov.asd.tac.constellation.graph.value.readables.LongReadable;
+import au.gov.asd.tac.constellation.graph.value.variables.LongVariable;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -332,4 +336,23 @@ public final class DateAttributeDescriptionV0 extends AbstractAttributeDescripti
         return parseDate(value) == NULL_VALUE ? "Not a valid date (Expected yyyy-mm-dd)" : null;
     }
 
+    @Override
+    public Object createReadObject(IntReadable indexReadable) {
+        return (LongReadable) () -> data[indexReadable.readInt()];
+    }
+
+    @Override
+    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+        return new LongVariable() {
+            @Override
+            public long readLong() {
+                return data[indexReadable.readInt()];
+            }
+
+            @Override
+            public void writeLong(long value) {
+                graph.setLongValue(attribute, indexReadable.readInt(), value);
+            }
+        };
+    }
 }

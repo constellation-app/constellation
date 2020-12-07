@@ -16,9 +16,13 @@
 package au.gov.asd.tac.constellation.graph.attribute;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
 import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
+import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
+import au.gov.asd.tac.constellation.graph.value.readables.ShortReadable;
+import au.gov.asd.tac.constellation.graph.value.variables.ShortVariable;
 import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
@@ -46,7 +50,7 @@ public class ShortAttributeDescription extends AbstractAttributeDescription {
     public static final String ATTRIBUTE_NAME = "short";
     public static final Class<Short> NATIVE_CLASS = short.class;
     public static final NativeAttributeType NATIVE_TYPE = NativeAttributeType.SHORT;
-    private static final short DEFAULT_VALUE = (short) 0;
+    public static final short DEFAULT_VALUE = (short) 0;
 
     private short[] data = new short[0];
     private short defaultValue = DEFAULT_VALUE;
@@ -267,5 +271,25 @@ public class ShortAttributeDescription extends AbstractAttributeDescription {
     public void restoreData(final Object savedData) {
         final short[] sd = (short[]) savedData;
         data = Arrays.copyOf(sd, sd.length);
+    }
+
+    @Override
+    public Object createReadObject(IntReadable indexReadable) {
+        return (ShortReadable) () -> data[indexReadable.readInt()];
+    }
+
+    @Override
+    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+        return new ShortVariable() {
+            @Override
+            public short readShort() {
+                return data[indexReadable.readInt()];
+            }
+
+            @Override
+            public void writeShort(short value) {
+                graph.setShortValue(attribute, indexReadable.readInt(), value);
+            }
+        };
     }
 }

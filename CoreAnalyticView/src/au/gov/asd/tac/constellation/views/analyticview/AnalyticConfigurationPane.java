@@ -43,6 +43,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -67,6 +69,8 @@ import org.openide.util.Lookup;
  * @author cygnus_x-1
  */
 public class AnalyticConfigurationPane extends VBox {
+    
+    private static final Logger LOGGER = Logger.getLogger(AnalyticConfigurationPane.class.getName());
 
     public static final String AGGREGATOR_PARAMETER_ID = PluginParameter.buildId(AnalyticConfigurationPane.class, "aggregator");
     private static final String GLOBAL_PARAMS_GROUP = "Question Parameters";
@@ -505,9 +509,11 @@ public class AnalyticConfigurationPane extends VBox {
 
     public final void updateSelectablePluginsParameters() {
         if (categoryListPane.isExpanded()) {
+            LOGGER.log(Level.INFO, "Update selectable plugins parameters in analytic config pane.");
             pluginList.getItems().forEach(selectablePlugin -> {
                 selectablePlugin.parameters.updateParameterValues(selectablePlugin.updatedParameters);
             });
+            
         } else if (questionListPane.isExpanded() && currentQuestion != null) {
             pluginList.getItems().forEach(selectablePlugin -> {
                 selectablePlugin.parameters.updateParameterValues(selectablePlugin.updatedParameters);
