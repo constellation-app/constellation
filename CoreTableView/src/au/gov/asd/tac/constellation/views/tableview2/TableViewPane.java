@@ -158,7 +158,8 @@ public final class TableViewPane extends BorderPane {
     private final BorderPane progress;
     private SortedList<ObservableList<String>> sortedRowList;
     private List<ObservableList<String>> filteredRowList;
-    private Pagination pagination = new Pagination();
+    private Pagination pagination;
+    private ToolBar toolbar;
 
     private Button columnVisibilityButton;
     private ToggleButton selectedOnlyButton;
@@ -195,13 +196,15 @@ public final class TableViewPane extends BorderPane {
         this.rowToElementIdIndex = new HashMap<>();
         this.lastChange = null;
 
-        final ToolBar toolbar = initToolbar();
+        this.toolbar = initToolbar();
         setLeft(toolbar);
-
+        
         this.table = new TableView<>();
         table.itemsProperty().addListener((v, o, n) -> table.refresh());
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         table.setPadding(new Insets(5));
+
+        this.pagination = new Pagination();
         
         this.sortedRowList = new SortedList<>(FXCollections.observableArrayList());
         sortedRowList.comparatorProperty().bind(table.comparatorProperty());
