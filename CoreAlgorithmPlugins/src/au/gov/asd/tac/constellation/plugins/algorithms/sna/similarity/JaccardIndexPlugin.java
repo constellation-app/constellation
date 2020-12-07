@@ -33,10 +33,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.util.BitSet;
-import java.util.HashMap;
-import java.util.Map;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -144,7 +141,7 @@ public class JaccardIndexPlugin extends SimpleEditPlugin {
         }
 
         // calculate jaccard index for every pair of vertices on the graph
-        final Map<Tuple<Integer, Integer>, Float> jaccardIndices = new HashMap<>();
+        SimilarityUtilities.setGraphAndEnsureAttributes(graph, JACCARD_INDEX_ATTRIBUTE);
         for (int vertexOnePosition = update.nextSetBit(0); vertexOnePosition >= 0; vertexOnePosition = update.nextSetBit(vertexOnePosition + 1)) {
             for (int vertexTwoPosition = update.nextSetBit(0); vertexTwoPosition >= 0; vertexTwoPosition = update.nextSetBit(vertexTwoPosition + 1)) {
                 if (!selectedOnly || (selected.get(vertexOnePosition) || selected.get(vertexTwoPosition))) {
@@ -170,14 +167,10 @@ public class JaccardIndexPlugin extends SimpleEditPlugin {
                     final int vertexTwoId = graph.getVertex(vertexTwoPosition);
 
                     final float jaccardIndex = union.cardinality() == 0 ? 0f : (float) intersection.cardinality() / union.cardinality();
-                    jaccardIndices.put(Tuple.create(vertexOneId, vertexTwoId), jaccardIndex);
+                    SimilarityUtilities.addScoreToGraph(vertexOneId, vertexTwoId, jaccardIndex, JACCARD_INDEX_ATTRIBUTE);
                 }
             }
         }
-
-        // update the graph with jaccard index values
-        SimilarityUtilities.setGraphAndEnsureAttributes(graph, JACCARD_INDEX_ATTRIBUTE);
-        SimilarityUtilities.addScoresToGraph(jaccardIndices, JACCARD_INDEX_ATTRIBUTE);
         // complete with schema
         PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
     }
