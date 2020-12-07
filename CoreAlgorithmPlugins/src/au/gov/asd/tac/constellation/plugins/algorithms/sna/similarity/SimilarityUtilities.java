@@ -49,7 +49,7 @@ public class SimilarityUtilities {
      * @param scores - the scores of each vertex pair
      * @param schemaSimilarityAttribute - similarity schema attribute to change
      */
-    public static void addScoresToGraph(final Map<Tuple<Integer, Integer>, Float> scores, final SchemaAttribute schemaSimilarityAttribute) {
+    public static void addScoresToGraph(final Map<Tuple<Integer, Integer>, Float> scores) {
         scores.forEach((pair,score) -> addScoreToGraph(pair.getFirst(), pair.getSecond(), score));
     }
     /**
