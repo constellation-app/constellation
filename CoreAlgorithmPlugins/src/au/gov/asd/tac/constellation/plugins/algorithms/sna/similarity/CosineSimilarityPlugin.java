@@ -37,7 +37,6 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Logger;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -53,7 +52,6 @@ import org.openide.util.lookup.ServiceProvider;
 public class CosineSimilarityPlugin extends SimpleEditPlugin {
 
     private static final SchemaAttribute COSINE_SIMILARITY_ATTRIBUTE = SnaConcept.TransactionAttribute.COSINE_SIMILARITY;
-    private static final Logger LOG = Logger.getLogger(CosineSimilarityPlugin.class.getName());
 
     public static final String INCLUDE_CONNECTIONS_IN_PARAMETER_ID = PluginParameter.buildId(CosineSimilarityPlugin.class, "include_connections_in");
     public static final String INCLUDE_CONNECTIONS_OUT_PARAMETER_ID = PluginParameter.buildId(CosineSimilarityPlugin.class, "include_connections_out");
