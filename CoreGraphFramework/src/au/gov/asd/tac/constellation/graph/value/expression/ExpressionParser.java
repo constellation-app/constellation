@@ -321,12 +321,12 @@ public class ExpressionParser {
 
     public static SequenceExpression parse(String expression) {
 
-        var state = ParseState.READING_WHITESPACE;
-        var content = new char[expression.length()];
-        var contentLength = 0;
+        ParseState state = ParseState.READING_WHITESPACE;
+        char[] content = new char[expression.length()];
+        int contentLength = 0;
 
-        var rootExpression = new SequenceExpression(null);
-        var currentExpression = rootExpression;
+        SequenceExpression rootExpression = new SequenceExpression(null);
+        SequenceExpression currentExpression = rootExpression;
 
         for (int i = 0; i <= expression.length(); i++) {
             final char c = i < expression.length() ? expression.charAt(i) : 0;
