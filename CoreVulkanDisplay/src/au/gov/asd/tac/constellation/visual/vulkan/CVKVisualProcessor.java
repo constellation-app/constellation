@@ -43,6 +43,7 @@ import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKNewLineRenderab
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKPerspectiveLinksRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKPointsRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable;
+import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKSelectionBoxRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.utils.CVKGraphLogger;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_DEBUGGING;
 import java.awt.Component;
@@ -80,6 +81,7 @@ public class CVKVisualProcessor extends VisualProcessor {
     protected final CVKHitTester cvkHitTester;
     private List<CVKRenderable> hitTesters = new ArrayList<>();
     protected final CVKNewLineRenderable cvkNewLine;
+    protected final CVKSelectionBoxRenderable cvkSelectionBox;
     private final CVKAxesRenderable cvkAxes;
     private final CVKFPSRenderable cvkFPS;
     private final CVKIconsRenderable cvkIcons;
@@ -153,6 +155,8 @@ public class CVKVisualProcessor extends VisualProcessor {
             cvkCanvas.AddRenderable(cvkLinkLabels);            
             cvkNewLine = new CVKNewLineRenderable(this);
             cvkCanvas.AddRenderable(cvkNewLine); 
+            cvkSelectionBox = new CVKSelectionBoxRenderable(this);
+            cvkCanvas.AddRenderable(cvkSelectionBox);
             cvkAxes = new CVKAxesRenderable(this);
             cvkCanvas.AddRenderable(cvkAxes);            
             cvkPoints = new CVKPointsRenderable(this);   

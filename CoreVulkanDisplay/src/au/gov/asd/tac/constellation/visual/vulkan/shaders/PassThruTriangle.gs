@@ -1,10 +1,15 @@
-#version 330 core
+#version 450
 
+
+// === PER PRIMITIVE DATA IN ===
 layout(triangles) in;
-layout(triangle_strip, max_vertices=3) out;
+layout(location = 0) in vec4 gColor[];
 
-in vec4 gColor[];
-out vec4 fColor;
+
+// === PER PRIMITIVE DATA OUT ===
+layout(triangle_strip, max_vertices=3) out;
+layout(location = 0) out vec4 fColor;
+
 
 void main() {
     fColor = gColor[0];

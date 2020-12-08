@@ -37,6 +37,7 @@ import java.nio.file.Paths;
 import java.security.CodeSource;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -51,6 +52,7 @@ import org.lwjgl.vulkan.VkShaderModuleCreateInfo;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 import org.lwjgl.vulkan.VkDevice;
+import org.openide.modules.Places;
 
 
 public class CVKShaderUtils {
@@ -212,8 +214,29 @@ public class CVKShaderUtils {
         return null;
     }
     
+    static private Path shaderPath = null;
     private static Path GetUserDirShaderResourcePath(final String resourceName) {
-        return Paths.get(System.getProperty("user.dir"), "shaders", resourceName);
+        if (shaderPath == null) {
+            Path constellationRoot = Paths.get(Places.getUserDirectory().getPath(), "../..").toAbsolutePath().normalize();
+        
+            // split takes a regex expression, not a delimiter so we need to specify the dot literal
+            String[] packagePathParts = CVKShaderPlaceHolder.class.getCanonicalName().split("\\.");
+            
+            // Build the shader path
+            if (packagePathParts.length > 1) {            
+                String[] shaderPathParts = new String[packagePathParts.length + 1];
+                shaderPathParts[0] = "CoreVulkanDisplay\\src";
+                
+                // ignore the placeholder class name
+                for (int i = 1; i < packagePathParts.length; ++i) {
+                    shaderPathParts[i] = packagePathParts[i-1];
+                }
+                shaderPathParts[packagePathParts.length] = resourceName;
+
+                shaderPath = Paths.get(constellationRoot.toString(), shaderPathParts);
+            }
+        }
+        return shaderPath;
     }  
     
     public static enum CVKShaderResourceLocation {

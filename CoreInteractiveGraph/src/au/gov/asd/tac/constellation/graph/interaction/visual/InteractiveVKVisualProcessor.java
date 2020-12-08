@@ -23,8 +23,7 @@ import au.gov.asd.tac.constellation.graph.interaction.framework.VisualAnnotator;
 import au.gov.asd.tac.constellation.graph.interaction.framework.VisualInteraction;
 import au.gov.asd.tac.constellation.graph.hittest.HitTestRequest;
 import au.gov.asd.tac.constellation.utilities.visual.NewLineModel;
-import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionBoxModel;
-import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionBoxRenderable;
+import au.gov.asd.tac.constellation.utilities.visual.SelectionBoxModel;
 import au.gov.asd.tac.constellation.graph.visual.utilities.VisualGraphUtilities;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
@@ -67,9 +66,6 @@ public class InteractiveVKVisualProcessor extends CVKVisualProcessor implements 
     private final long greyscaleUpdateId = VisualChangeBuilder.generateNewId();
     private final long hitTestId = VisualChangeBuilder.generateNewId();
     private final long hitTestPointId = VisualChangeBuilder.generateNewId();      
-    private final SelectionBoxRenderable selectionBoxRenderable = new SelectionBoxRenderable();
-//    private final NewLineRenderable newLineRenderable = new NewLineRenderable(this);
-//    private final PlanesRenderable planesRenderable = new PlanesRenderable();
     private final TransformableGraphDisplayer graphDisplayer = new TransformableGraphDisplayer();
 
     private InteractionEventHandler handler;
@@ -182,7 +178,7 @@ public class InteractiveVKVisualProcessor extends CVKVisualProcessor implements 
 
     @Override
     public VisualOperation setSelectionBoxModel(SelectionBoxModel model) {
-        selectionBoxRenderable.queueModel(model);
+        cvkSelectionBox.queueModel(model);
         return () -> Arrays.asList(new VisualChangeBuilder(VisualProperty.EXTERNAL_CHANGE)
                 .withId(selectionBoxUpdateId).build());
     }
