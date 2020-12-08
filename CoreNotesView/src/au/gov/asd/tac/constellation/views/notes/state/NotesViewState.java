@@ -19,32 +19,45 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Stores all notes currently created for this graph's state for the Notes View.
+ * Stores all notes and filters for the selected graph's current state for the Notes View.
  *
  * @author sol695510
  */
 public class NotesViewState {
-
+    
     private final List<NotesViewEntry> notesViewEntries;
-
+    private final List<String> selectedFilters;
+    
     public NotesViewState() {
-        this.notesViewEntries = new ArrayList();
+        notesViewEntries = new ArrayList();
+        selectedFilters = new ArrayList();
     }
-
+    
     public NotesViewState(NotesViewState currentState) {
-        this.notesViewEntries = currentState.getNotes();
+        notesViewEntries = currentState.getNotes();
+        selectedFilters = currentState.getFilters();
     }
-
-    public NotesViewState(final List<NotesViewEntry> notesViewEntries) {
+    
+    public NotesViewState(final List<NotesViewEntry> notesViewEntries, final List<String> selectedFilters) {
         this.notesViewEntries = notesViewEntries;
+        this.selectedFilters = selectedFilters;
     }
-
+    
     public List<NotesViewEntry> getNotes() {
         return notesViewEntries;
     }
-
-    public void setNotes(final List<NotesViewEntry> notes) {
-        notesViewEntries.clear();
-        notesViewEntries.addAll(notes);
+    
+    public List<String> getFilters() {
+        return selectedFilters;
+    }
+    
+    public void setNotes(final List<NotesViewEntry> notesViewEntries) {
+        this.notesViewEntries.clear();
+        this.notesViewEntries.addAll(notesViewEntries);
+    }
+    
+    public void setFilters(final List<String> selectedFilters) {
+        this.selectedFilters.clear();
+        this.selectedFilters.addAll(selectedFilters);
     }
 }
