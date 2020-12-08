@@ -27,8 +27,6 @@ import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewState;
 import au.gov.asd.tac.constellation.views.layers.utilities.LayersUtilities;
 import au.gov.asd.tac.constellation.views.layers.utilities.UpdateLayerSelectionPlugin;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * A plugin that deselects all layers in the layers view
@@ -37,25 +35,19 @@ import java.util.logging.Logger;
  */
 public class DeselectAllLayersPlugin extends SimpleEditPlugin {
 
-    private static final Logger LOGGER = Logger.getLogger(DeselectAllLayersPlugin.class.getName());
-
     @Override
     protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-        LOGGER.log(Level.WARNING, "Deselect?AllPlugin");
         final int layersViewStateAttributeId = LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.ensure(graph);
         if (layersViewStateAttributeId == Graph.NOT_FOUND) {
-            //LOGGER.log(Level.WARNING, "Error deselect");
             return;
         }
 
         LayersViewState currentState = graph.getObjectValue(layersViewStateAttributeId, 0);
         if (currentState == null) {
-            //LOGGER.log(Level.WARNING, "deselect making new state");
             currentState = new LayersViewState();
         }
         if (currentState.getVxQueriesCollection().getHighestQueryIndex() == 0
                 && currentState.getTxQueriesCollection().getHighestQueryIndex() == 0) {
-            //LOGGER.log(Level.WARNING, "deselect setting dfefaults");
             currentState.getVxQueriesCollection().setDefaultQueries();
             currentState.getTxQueriesCollection().setDefaultQueries();
         }
@@ -69,11 +61,8 @@ public class DeselectAllLayersPlugin extends SimpleEditPlugin {
         final int newBitmask = LayersUtilities.calculateCurrentLayerSelectionBitMask(
                 newState.getVxQueriesCollection(), newState.getTxQueriesCollection());
 
-        //LOGGER.log(Level.WARNING, "deselect: " + newBitmask);
         PluginExecution.withPlugin(new UpdateLayerSelectionPlugin(newBitmask))
                 .executeLater(GraphManager.getDefault().getActiveGraph());
-
-        //LayersViewController.getDefault().updateQueries(GraphManager.getDefault().getAllGraphs().get(graph.getId()));
     }
 
     @Override

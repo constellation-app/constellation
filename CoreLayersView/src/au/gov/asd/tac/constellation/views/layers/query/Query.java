@@ -27,8 +27,6 @@ import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -36,7 +34,6 @@ import java.util.logging.Logger;
  */
 public class Query {
 
-    private static final Logger LOGGER = Logger.getLogger(Query.class.getName());
     private final GraphElementType elementType;
     private final String queryString;
 
@@ -64,31 +61,23 @@ public class Query {
 
     public boolean requiresUpdate(final GraphReadMethods graph) {
         if (graphId == null || !graphId.equals(graph.getId())) {
-            LOGGER.log(Level.WARNING, "true graph id");
             return true;
         }
-        LOGGER.log(Level.WARNING, "globalmod: " + graph.getGlobalModificationCounter() + "prev: " + globalModificationCounter);
-        LOGGER.log(Level.WARNING, "strucurelmod: " + graph.getStructureModificationCounter() + "prev: " + structureModificationCounter);
-        LOGGER.log(Level.WARNING, "attributemods: " + (attributeIds == null ? "null atr" : attributeIds.length));
 
         if (globalModificationCounter != graph.getGlobalModificationCounter()) {
             if (attributeModificationCounter != graph.getAttributeModificationCounter()) {
-                LOGGER.log(Level.WARNING, "true attributeModificationCounter id");
                 return true;
             }
             if (structureModificationCounter != graph.getStructureModificationCounter()) {
-                LOGGER.log(Level.WARNING, "true structureModificationCounter id");
                 return true;
             }
 
             for (int i = 0; i < attributeIds.length; i++) {
                 if (valueModificationCounters[i] != graph.getValueModificationCounter(attributeIds[i])) {
-                    LOGGER.log(Level.WARNING, "true valueModificationCounters id");
                     return true;
                 }
             }
         }
-        LOGGER.log(Level.WARNING, "false here");
         return false;
     }
 
