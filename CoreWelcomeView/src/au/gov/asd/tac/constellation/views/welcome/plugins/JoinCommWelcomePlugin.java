@@ -74,7 +74,7 @@ public class JoinCommWelcomePlugin extends WelcomePageProvider {
      */
     @Override
     public void run() {
-        String url = "https://gitter.im/constellation-app/community";
+        final String url = "https://gitter.im/constellation-app/community";
 
         PluginExecution.withPlugin(CorePluginRegistry.OPEN_IN_BROWSER)
             .withParameter(OpenInBrowserPlugin.APPLICATION_PARAMETER_ID, "Open " + getName())

@@ -71,7 +71,7 @@ public class AddModeWelcomePlugin extends WelcomePageProvider {
         final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
         final StoreGraph sg = new StoreGraph(schema);
         schema.newGraph(sg);
-        int drawModeAttribute = VisualConcept.GraphAttribute.DRAWING_MODE.ensure(sg);
+        final int drawModeAttribute = VisualConcept.GraphAttribute.DRAWING_MODE.ensure(sg);
         sg.setBooleanValue(drawModeAttribute, 0, true);
         final Graph dualGraph = new DualGraph(sg, false);
 

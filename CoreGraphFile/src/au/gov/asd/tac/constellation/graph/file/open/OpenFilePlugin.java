@@ -53,12 +53,12 @@ public class OpenFilePlugin extends SimpleEditPlugin {
             }
             try {
                 running = true;
-                JFileChooser chooser = prepareFileChooser();
+                final JFileChooser chooser = prepareFileChooser();
                 final File[] files;
                 try {
                     files = chooseFilesToOpen(chooser);
                     currentDirectory = chooser.getCurrentDirectory();
-                } catch (UserCancelException ex) {
+                } catch (final UserCancelException ex) {
                     return;
                 }
                 for (int i = 0; i < files.length; i++) {
@@ -76,7 +76,7 @@ public class OpenFilePlugin extends SimpleEditPlugin {
      * @return the initialized file chooser
      */
     protected JFileChooser prepareFileChooser() {
-        JFileChooser chooser = new FileChooser();
+        final JFileChooser chooser = new FileChooser();
         chooser.setCurrentDirectory(getCurrentDirectory());
         HelpCtx.setHelpIDString(chooser, getHelpCtx().getHelpID());
 
@@ -100,7 +100,7 @@ public class OpenFilePlugin extends SimpleEditPlugin {
             throws UserCancelException {
         File[] files;
         do {
-            int selectedOption = chooser.showOpenDialog(
+            final int selectedOption = chooser.showOpenDialog(
                     WindowManager.getDefault().getMainWindow());
 
             if (selectedOption != JFileChooser.APPROVE_OPTION) {
@@ -114,7 +114,7 @@ public class OpenFilePlugin extends SimpleEditPlugin {
     private static File getCurrentDirectory() {
         if (Boolean.getBoolean("netbeans.openfile.197063")) {
             // Prefer to open from parent of active editor, if any.
-            TopComponent activated = TopComponent.getRegistry().getActivated();
+            final TopComponent activated = TopComponent.getRegistry().getActivated();
             if (activated != null && WindowManager.getDefault().isOpenedEditorTopComponent(activated)) {
                 final DataObject d = activated.getLookup().lookup(DataObject.class);
                 if (d != null) {
@@ -125,12 +125,10 @@ public class OpenFilePlugin extends SimpleEditPlugin {
                 }
             }
         }
-        // Otherwise, use last-selected directory, if any.
-        if (currentDirectory != null && currentDirectory.exists()) {
-            return currentDirectory;
-        }
         // Fall back to default location ($HOME or similar).
-        currentDirectory = new File(System.getProperty("user.home"));  // algol
+        if (currentDirectory == null || !currentDirectory.exists()) {
+            currentDirectory = new File(System.getProperty("user.home"));
+        }
         return currentDirectory;
     }
 }

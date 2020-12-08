@@ -45,8 +45,7 @@ public class RecentFilesWelcomePage {
      */
     public static List<String> getFileNames(){
         RecentFiles.init(); 
-        int num = files.size();
-        for (int i = 0; i < num; i++){
+        for (int i = 0; i < files.size(); i++){
             final FileObject fo = RecentFiles.convertPath2File(files.get(i).getPath());
             if (fo != null && !fileNames.contains(files.get(i).getFileName())){
                 fileNames.add(files.get(i).getFileName());  
@@ -60,7 +59,7 @@ public class RecentFilesWelcomePage {
      * 
      * @param fileName 
      */
-    public static void openGraph(String fileName){
+    public static void openGraph(final String fileName){
         int index = -1;
         for (int i = 0; i < files.size(); i++){
             if(fileName.equals(files.get(i).getFileName())){

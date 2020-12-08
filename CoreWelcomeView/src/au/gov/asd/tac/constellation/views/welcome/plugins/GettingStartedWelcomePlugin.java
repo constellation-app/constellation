@@ -103,7 +103,7 @@ public class GettingStartedWelcomePlugin extends WelcomePageProvider {
         final Text title = new Text("Getting Started");
         title.setFont(new Font("Arial", 18));
         title.setFill(Color.WHITE);
-        Text subtitle = new Text("Guides & Resources");
+        final Text subtitle = new Text("Guides & Resources");
         subtitle.setFont(new Font("Arial", 10));
         subtitle.setFill(Color.WHITE);
         final VBox layoutVBox = new VBox(title, subtitle);

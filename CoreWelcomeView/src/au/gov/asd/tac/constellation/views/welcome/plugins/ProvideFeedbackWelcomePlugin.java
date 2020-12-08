@@ -74,7 +74,7 @@ public class ProvideFeedbackWelcomePlugin extends WelcomePageProvider {
      */
     @Override
     public void run() {
-        String url = "https://github.com/constellation-app/constellation/issues/new";
+        final String url = "https://github.com/constellation-app/constellation/issues/new";
 
         PluginExecution.withPlugin(CorePluginRegistry.OPEN_IN_BROWSER)
             .withParameter(OpenInBrowserPlugin.APPLICATION_PARAMETER_ID, "Open " + getName())
