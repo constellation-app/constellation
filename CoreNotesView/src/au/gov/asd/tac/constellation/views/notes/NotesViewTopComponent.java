@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
 
@@ -59,7 +60,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
     private final NotesViewPane notesViewPane;
 
     /**
-     * Creates a new NotesViewTopComponent.
+     * NotesViewTopComponent constructor.
      */
     public NotesViewTopComponent() {
         
@@ -98,9 +99,9 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
     protected void handleGraphClosed(final Graph graph) {
 
         if (needsUpdate() && graph != null) {
+            notesViewPane.closeEdit();
             notesViewPane.clearNotes();
             notesViewPane.prepareNotesViewPane(notesViewController);
-            notesViewPane.closeEdit();
         }
     }
 
@@ -108,13 +109,20 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
     protected void handleComponentOpened() {
         
         GraphReportManager.addGraphReportListener(this);
-        Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
         
         if (activeGraph != null) {
-            notesViewPane.clearNotes();
-            notesViewPane.prepareNotesViewPane(notesViewController);
-            // Ensures plugin reports created while the Notes View is not "open" will appear when it is opened later.
-            notesViewPane.setGraphReport(notesViewController);
+            // Thread.sleep(100) used to ensure the following methods run in this order.
+            try {
+                Thread.sleep(100);
+                notesViewPane.clearNotes();
+                Thread.sleep(100);
+                notesViewPane.prepareNotesViewPane(notesViewController);
+                Thread.sleep(100);
+                notesViewPane.setGraphReport(notesViewController); // Plugin reports created while the Notes View is not "open" will appear when it is opened later.
+            } catch (final InterruptedException ex) {
+                Exceptions.printStackTrace(ex);
+            }
         }
     }
 
@@ -122,22 +130,26 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
     protected void handleComponentClosed() {
         
         GraphReportManager.removeGraphReportListener(this);
+        notesViewPane.closeEdit();
         notesViewPane.clearNotes();
         notesViewPane.prepareNotesViewPane(notesViewController);
-        notesViewPane.closeEdit();
     }
-
-    @Override
-    protected String createStyle() {
-        return "resources/notes-view.css";
-    }
-
+    
     @Override
     protected NotesViewPane createContent() {
         return notesViewPane;
     }
-
-    // Triggers when plugin reports are added or removed.
+    
+    @Override
+    protected String createStyle() {
+        return "resources/notes-view.css";
+    }
+    
+    /**
+     * Triggers when plugin reports are added or removed.
+     * 
+     * @param pluginReport
+     */
     @Override
     public void newPluginReport(final PluginReport pluginReport) {
         // Omit plugin reports from the Notes View and Quality Control View.
@@ -148,7 +160,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
             }
         }
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

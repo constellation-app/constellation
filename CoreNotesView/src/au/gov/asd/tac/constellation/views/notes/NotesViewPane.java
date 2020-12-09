@@ -51,7 +51,6 @@ import javafx.stage.Stage;
 import javax.swing.JOptionPane;
 import org.apache.commons.collections.CollectionUtils;
 import org.controlsfx.control.CheckComboBox;
-import org.openide.windows.WindowManager;
 
 /**
  * Handles generating UI elements for the Notes View pane and its notes.
@@ -195,9 +194,8 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
      * @param pane 
      */
     protected synchronized void prepareNotesViewPane(final NotesViewController controller) {
-        controller.addAttributes();
         controller.readState();
-//        controller.addAttributes();
+        controller.addAttributes();
     }
     
     /**
@@ -205,7 +203,7 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
      */
     protected synchronized void setGraphReport(final NotesViewController controller) {
         final GraphReport currentGraphReport = GraphReportManager.getGraphReport(GraphManager.getDefault().getActiveGraph().getId());
-        
+
         if (currentGraphReport != null) {
             // Iterates the list of currently executed plugins.
             currentGraphReport.getPluginReports().forEach(pluginReport -> {
@@ -381,7 +379,7 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
     }
     
     /**
-     * Adds all available filters to the selectedFilters list.
+     * Adds all available filters to selectedFilters.
      */
     protected void selectAllFilters() {
         setFilters(availableFilters);
@@ -454,8 +452,6 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
             editStage = new Stage();
             editStage.getIcons().add(new Image("au/gov/asd/tac/constellation/views/notes/resources/notes-view.png"));
             editStage.setTitle("Edit Note");
-//            editStage.setX(WindowManager.getDefault().getMainWindow().getBounds().getCenterX());
-//            editStage.setY(WindowManager.getDefault().getMainWindow().getBounds().getCenterY());
             
             final TextField newTitle = new TextField(title);
             newTitle.setPromptText("Edit title...");
@@ -522,7 +518,6 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
     @Override
     public void pluginReportChanged(final PluginReport pluginReport) {
         setPluginReport(pluginReport);
-        
         // Clears duplicates from the list.
         final List<NotesViewEntry> uniqueNotes = clearDuplicates(notesViewEntries);
         notesViewEntries.clear();
