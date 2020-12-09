@@ -33,7 +33,7 @@ public class NotesViewState {
         selectedFilters = new ArrayList();
     }
     
-    public NotesViewState(NotesViewState currentState) {
+    public NotesViewState(final NotesViewState currentState) {
         notesViewEntries = currentState.getNotes();
         selectedFilters = currentState.getFilters();
     }

@@ -44,7 +44,7 @@ import org.openide.windows.TopComponent;
         id = "au.gov.asd.tac.constellation.views.notes.NotesViewTopComponent")
 @ActionReferences({
     @ActionReference(path = "Menu/Experimental/Views", position = 500),
-    @ActionReference(path = "Shortcuts", name = "CS-N")})
+    @ActionReference(path = "Shortcuts", name = "CA-N")})
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_NotesViewAction",
         preferredID = "NotesViewTopComponent")
@@ -139,7 +139,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
 
     // Triggers when plugin reports are added or removed.
     @Override
-    public void newPluginReport(PluginReport pluginReport) {
+    public void newPluginReport(final PluginReport pluginReport) {
         // Omit plugin reports from the Notes View and Quality Control View.
         if (!pluginReport.getPluginName().contains("Notes View")) {
             if (!pluginReport.getPluginName().contains("Quality Control View")) {

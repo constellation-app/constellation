@@ -97,7 +97,7 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                 
                 jsonGenerator.writeArrayFieldStart("notes"); // Start writing notes to state.
 
-                for (NotesViewEntry note : state.getNotes()) {
+                for (final NotesViewEntry note : state.getNotes()) {
                     if (note == null) {
                         jsonGenerator.writeNull();
                     } else {
@@ -114,7 +114,7 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                 
                 jsonGenerator.writeArrayFieldStart("filters"); // Start writing filters to state.
 
-                for (String filter : state.getFilters()) {
+                for (final String filter : state.getFilters()) {
                     if (filter == null) {
                         jsonGenerator.writeNull();
                     } else {

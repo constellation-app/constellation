@@ -99,7 +99,7 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
         filterCheckComboBox.setTitle("Select a filter...");
         filterCheckComboBox.getCheckModel().getCheckedItems().addListener(new ListChangeListener() {
             @Override
-            public void onChanged(ListChangeListener.Change event) {
+            public void onChanged(final ListChangeListener.Change event) {
                 if (!isSelectedFiltersUpdating) {
                     
                     setFilters(filterCheckComboBox.getCheckModel().getCheckedItems());
@@ -520,7 +520,7 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
      * @param pluginReport 
      */
     @Override
-    public void pluginReportChanged(PluginReport pluginReport) {
+    public void pluginReportChanged(final PluginReport pluginReport) {
         setPluginReport(pluginReport);
         
         // Clears duplicates from the list.
@@ -533,7 +533,7 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
     }
     
     @Override
-    public void addedChildReport(PluginReport parentReport, PluginReport childReport) {
+    public void addedChildReport(final PluginReport parentReport, final PluginReport childReport) {
         // Intentionally left blank.
     }
 }
