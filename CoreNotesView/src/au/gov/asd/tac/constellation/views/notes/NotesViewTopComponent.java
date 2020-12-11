@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.notes;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReportListener;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReportManager;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
@@ -24,7 +23,6 @@ import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
 
@@ -45,7 +43,7 @@ import org.openide.windows.TopComponent;
         id = "au.gov.asd.tac.constellation.views.notes.NotesViewTopComponent")
 @ActionReferences({
     @ActionReference(path = "Menu/Experimental/Views", position = 500),
-    @ActionReference(path = "Shortcuts", name = "CA-N")})
+    @ActionReference(path = "Shortcuts", name = "CS-A")})
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_NotesViewAction",
         preferredID = "NotesViewTopComponent")
@@ -84,17 +82,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
             notesViewPane.prepareNotesViewPane(notesViewController);
         }
     }
-
-    @Override
-    protected void handleGraphOpened(final Graph graph) {
-
-        if (needsUpdate() && graph != null) {
-            notesViewPane.selectAllFilters();
-            notesViewPane.clearNotes();
-            notesViewPane.prepareNotesViewPane(notesViewController);
-        }
-    }
-
+    
     @Override
     protected void handleGraphClosed(final Graph graph) {
 
@@ -107,32 +95,16 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
 
     @Override
     protected void handleComponentOpened() {
-        
+        // Listener is not removed so that plugin reports created when the Notes View is not open will render when it is opened later.
         GraphReportManager.addGraphReportListener(this);
-        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-        
-        if (activeGraph != null) {
-            // Thread.sleep(100) used to ensure the following methods run in this order.
-            try {
-                Thread.sleep(100);
-                notesViewPane.clearNotes();
-                Thread.sleep(100);
-                notesViewPane.prepareNotesViewPane(notesViewController);
-                Thread.sleep(100);
-                notesViewPane.setGraphReport(notesViewController); // Plugin reports created while the Notes View is not "open" will appear when it is opened later.
-            } catch (final InterruptedException ex) {
-                Exceptions.printStackTrace(ex);
-            }
-        }
     }
 
     @Override
     protected void handleComponentClosed() {
         
-        GraphReportManager.removeGraphReportListener(this);
         notesViewPane.closeEdit();
+        notesViewPane.selectAllFilters();
         notesViewPane.clearNotes();
-        notesViewPane.prepareNotesViewPane(notesViewController);
     }
     
     @Override
