@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.layers.shortcut;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.views.layers.LayersViewController;
+import au.gov.asd.tac.constellation.views.layers.query.BitMaskQueryCollection;
 import au.gov.asd.tac.constellation.views.layers.utilities.LayersUtilities;
 import au.gov.asd.tac.constellation.views.layers.utilities.UpdateLayerSelectionPlugin;
 import java.awt.event.ActionEvent;
@@ -55,8 +56,8 @@ import org.openide.util.NbBundle;
 public class LayersViewShortcuts extends AbstractAction {
 
     private void triggerLayerSelection(final int layerId) {
-        var vxCollection = LayersViewController.getDefault().getVxQueryCollection();
-        var txCollection = LayersViewController.getDefault().getTxQueryCollection();
+        BitMaskQueryCollection vxCollection = LayersViewController.getDefault().getVxQueryCollection();
+        BitMaskQueryCollection txCollection = LayersViewController.getDefault().getTxQueryCollection();
 
         if (vxCollection.getQuery(layerId) != null) {
             vxCollection.getQuery(layerId).setVisibility(!vxCollection.getQuery(layerId).getVisibility());
@@ -70,14 +71,14 @@ public class LayersViewShortcuts extends AbstractAction {
         PluginExecution.withPlugin(new UpdateLayerSelectionPlugin(newBitmask))
                 .executeLater(GraphManager.getDefault().getActiveGraph());
 
-        Future<?> future = LayersViewController.getDefault().writeState();
+        final Future<?> future = LayersViewController.getDefault().writeState();
 
         try {
             future.get();
-        } catch (InterruptedException ex) {
+        } catch (final InterruptedException ex) {
             Exceptions.printStackTrace(ex);
             Thread.currentThread().interrupt();
-        } catch (ExecutionException ex) {
+        } catch (final ExecutionException ex) {
             Exceptions.printStackTrace(ex);
         }
 
@@ -95,13 +96,13 @@ public class LayersViewShortcuts extends AbstractAction {
                 PluginExecution.withPlugin(new NewLayerPlugin()).executeLater(GraphManager.getDefault().getActiveGraph());
                 break;
             case "CA-D":
-                Future<?> deselectFuture = PluginExecution.withPlugin(new DeselectAllLayersPlugin()).executeLater(GraphManager.getDefault().getActiveGraph());
+                final Future<?> deselectFuture = PluginExecution.withPlugin(new DeselectAllLayersPlugin()).executeLater(GraphManager.getDefault().getActiveGraph());
                 try {
                     deselectFuture.get();
-                } catch (InterruptedException ex) {
+                } catch (final InterruptedException ex) {
                     Exceptions.printStackTrace(ex);
                     Thread.currentThread().interrupt();
-                } catch (ExecutionException ex) {
+                } catch (final ExecutionException ex) {
                     Exceptions.printStackTrace(ex);
                 }
                 LayersViewController.getDefault().updateQueriesFuture(GraphManager.getDefault().getActiveGraph());

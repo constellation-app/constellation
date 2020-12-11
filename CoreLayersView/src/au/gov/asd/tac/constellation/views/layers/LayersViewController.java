@@ -154,15 +154,15 @@ public class LayersViewController {
     public void executeFuture() {
         final int newBitmask = LayersUtilities.calculateCurrentLayerSelectionBitMask(vxBitMaskCollection, txBitMaskCollection);
 
-        Future<?> f = PluginExecution.withPlugin(new UpdateLayerSelectionPlugin(newBitmask))
+        final Future<?> f = PluginExecution.withPlugin(new UpdateLayerSelectionPlugin(newBitmask))
                 .executeLater(GraphManager.getDefault().getActiveGraph());
 
         try {
             f.get();
-        } catch (InterruptedException ex) {
+        } catch (final InterruptedException ex) {
             Exceptions.printStackTrace(ex);
             Thread.currentThread().interrupt();
-        } catch (ExecutionException ex) {
+        } catch (final ExecutionException ex) {
             Exceptions.printStackTrace(ex);
         }
     }
@@ -191,14 +191,14 @@ public class LayersViewController {
         if (pane == null || graph == null) {
             return;
         }
-        Future<?> f = PluginExecution.withPlugin(new LayersViewStateReader(pane))
+        final Future<?> f = PluginExecution.withPlugin(new LayersViewStateReader(pane))
                 .executeLater(graph);
         try {
             f.get();
-        } catch (InterruptedException ex) {
+        } catch (final InterruptedException ex) {
             Exceptions.printStackTrace(ex);
             Thread.currentThread().interrupt();
-        } catch (ExecutionException ex) {
+        } catch (final ExecutionException ex) {
             Exceptions.printStackTrace(ex);
         }
     }
@@ -235,13 +235,13 @@ public class LayersViewController {
             return;
         }
         final UpdateQueryPlugin updatePlugin = new UpdateQueryPlugin(vxBitMaskCollection, txBitMaskCollection);
-        Future<?> f = PluginExecution.withPlugin(updatePlugin).executeLater(graph);
+        final Future<?> f = PluginExecution.withPlugin(updatePlugin).executeLater(graph);
         try {
             f.get();
-        } catch (InterruptedException ex) {
+        } catch (final InterruptedException ex) {
             Exceptions.printStackTrace(ex);
             Thread.currentThread().interrupt();
-        } catch (ExecutionException ex) {
+        } catch (final ExecutionException ex) {
             Exceptions.printStackTrace(ex);
         }
     }

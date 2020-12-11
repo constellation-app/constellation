@@ -322,7 +322,7 @@ public class ExpressionParser {
     public static SequenceExpression parse(String expression) {
 
         ParseState state = ParseState.READING_WHITESPACE;
-        char[] content = new char[expression.length()];
+        final char[] content = new char[expression.length()];
         int contentLength = 0;
 
         SequenceExpression rootExpression = new SequenceExpression(null);
