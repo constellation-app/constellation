@@ -27,6 +27,8 @@ import java.util.Objects;
  */
 public class NotEquals {
 
+    // Explicitly calling the constructor on a String appears to be necessary to
+    // allow the registry to find the operator.
     public static final String NAME = new String("NOT_EQUALS");
 
     private NotEquals() {

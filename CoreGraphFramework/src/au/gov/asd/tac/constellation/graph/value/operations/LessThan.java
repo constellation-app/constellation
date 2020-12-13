@@ -25,6 +25,8 @@ import au.gov.asd.tac.constellation.graph.value.Operators;
  */
 public class LessThan {
 
+    // Explicitly calling the constructor on a String appears to be necessary to
+    // allow the registry to find the operator.
     public static final String NAME = new String("LESS_THAN");
 
     private LessThan() {

@@ -25,6 +25,8 @@ import au.gov.asd.tac.constellation.graph.value.Operators;
  */
 public class Product {
 
+    // Explicitly calling the constructor on a String appears to be necessary to
+    // allow the registry to find the operator.
     public static final String NAME = new String("PRODUCT");
 
     private Product() {

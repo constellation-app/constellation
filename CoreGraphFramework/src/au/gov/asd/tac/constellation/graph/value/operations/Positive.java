@@ -28,6 +28,8 @@ import au.gov.asd.tac.constellation.graph.value.readables.LongReadable;
  */
 public class Positive {
 
+    // Explicitly calling the constructor on a String appears to be necessary to
+    // allow the registry to find the operator.
     public static final String NAME = new String("POSITIVE");
 
     private Positive() {

@@ -25,6 +25,8 @@ import au.gov.asd.tac.constellation.graph.value.StringOperation;
  */
 public class EndsWith {
 
+    // Explicitly calling the constructor on a String appears to be necessary to
+    // allow the registry to find the operator.
     public static final String NAME = new String("ENDS_WITH");
 
     private EndsWith() {
