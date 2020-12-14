@@ -344,11 +344,15 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
     
     /**
      * Clears UI elements in the Notes View and clears the list of NoteEntry objects.
+     * 
+     * @param clearOnlyUI True if only the UI elements are intended to be cleared.
      */
-    protected void clearNotes() {
+    protected void clearNotes(final Boolean clearOnlyUI) {
         Platform.runLater(() -> {
             notesListVBox.getChildren().removeAll(notesListVBox.getChildren());
-            notesViewEntries.clear();
+            if (!clearOnlyUI) {
+                notesViewEntries.clear();
+            }
         });
     }
     
