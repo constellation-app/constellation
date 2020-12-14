@@ -227,18 +227,17 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
      */
     protected synchronized void setPluginReport(final PluginReport pluginReport) {
         // Omit plugin reports from the Notes View and Quality Control View.
-        if (!pluginReport.getPluginName().contains("Notes View")) {
-            if (!pluginReport.getPluginName().contains("Quality Control View")) {
-                // Listener monitors changes to the plugin report as it executes and finishes. Affects the output of getMessage().
-                pluginReport.addPluginReportListener(this);
-                
-                notesViewEntries.add(new NotesViewEntry(
-                        Long.toString(pluginReport.getStartTime()),
-                        pluginReport.getPluginName(),
-                        pluginReport.getMessage(),
-                        false
-                ));
-            }
+        if ((!pluginReport.getPluginName().contains("Notes View"))
+                && (!pluginReport.getPluginName().contains("Quality Control View"))) {
+            // Listener monitors changes to the plugin report as it executes and finishes. Affects the output of getMessage().
+            pluginReport.addPluginReportListener(this);
+
+            notesViewEntries.add(new NotesViewEntry(
+                    Long.toString(pluginReport.getStartTime()),
+                    pluginReport.getPluginName(),
+                    pluginReport.getMessage(),
+                    false
+            ));
         }
     }
     
@@ -320,6 +319,9 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
                     createNote(note);
                 });
             }
+            
+            // Keeps the scroll bar at the bottom?
+            notesListScrollPane.setVvalue(notesListScrollPane.getVmax());
         });
     }
     
@@ -427,16 +429,11 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
         
         deleteButton.setOnAction(event -> {
             if (notesViewEntries.removeIf(note -> note.getDateTime().equals(newNote.getDateTime()))) {
-                notesListVBox.getChildren().remove(noteBody);
+                updateNotes();
                 notesViewController.writeState();
             }
             
             event.consume();
-        });
-        
-        // Keeps the scroll bar at the bottom?
-        Platform.runLater(() -> {
-            notesListScrollPane.setVvalue(notesListScrollPane.getVmax());
         });
     }
     

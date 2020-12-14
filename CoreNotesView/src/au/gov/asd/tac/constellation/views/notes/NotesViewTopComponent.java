@@ -125,11 +125,10 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
     @Override
     public void newPluginReport(final PluginReport pluginReport) {
         // Omit plugin reports from the Notes View and Quality Control View.
-        if (!pluginReport.getPluginName().contains("Notes View")) {
-            if (!pluginReport.getPluginName().contains("Quality Control View")) {
-                notesViewPane.prepareNotesViewPane(notesViewController);
-                notesViewPane.setGraphReport(notesViewController);
-            }
+        if ((!pluginReport.getPluginName().contains("Notes View"))
+                && (!pluginReport.getPluginName().contains("Quality Control View"))) {
+            notesViewPane.prepareNotesViewPane(notesViewController);
+            notesViewPane.setGraphReport(notesViewController);
         }
     }
     
