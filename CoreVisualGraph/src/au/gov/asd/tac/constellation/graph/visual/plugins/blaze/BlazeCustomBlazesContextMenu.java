@@ -67,7 +67,7 @@ public class BlazeCustomBlazesContextMenu implements ContextMenuProvider {
             rg.release();
         }
         
-        for (ConstellationColor color: BlazeActions.customColors) {
+        for (ConstellationColor color: BlazeActions.getCustomColors()) {
             final Color javaColor = color.getJavaColor();
             String colorName = color.getName();
             if (colorName == null) {
@@ -102,14 +102,14 @@ public class BlazeCustomBlazesContextMenu implements ContextMenuProvider {
             
             // Generate a list of menu items based on the set of stored custom colors
             ArrayList<String> colorList = new ArrayList<String>();
-            for (ConstellationColor color: BlazeActions.customColors) {
+            for (ConstellationColor color: BlazeActions.getCustomColors()) {
                 final Color javaColor = color.getJavaColor();
                 String colorName = color.getName();
                 if (colorName == null) {
                     colorName = Integer.toHexString(javaColor.getRed()) + Integer.toHexString(javaColor.getGreen()) + Integer.toHexString(javaColor.getBlue());
                     colorName = "#" + colorName;
                 }
-                colorList.add(colorName);
+                colorList.add(0, colorName);
             }
             return colorList;
         } else {

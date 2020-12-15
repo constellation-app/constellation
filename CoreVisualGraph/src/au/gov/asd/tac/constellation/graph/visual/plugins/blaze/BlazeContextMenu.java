@@ -126,6 +126,8 @@ public class BlazeContextMenu implements ContextMenuProvider {
                     plugin = PluginRegistry.get(VisualGraphPluginRegistry.ADD_CUSTOM_BLAZE);
                     parameters = DefaultPluginParameters.getDefaultParameters(plugin);
                     parameters.setObjectValue(BlazeUtilities.COLOR_PARAMETER_ID, colorResult.getValue());
+                    
+                    BlazeActions.addCustomColor(colorResult.getValue());
                 }
                 break;
             case UNSET_BLAZE:
