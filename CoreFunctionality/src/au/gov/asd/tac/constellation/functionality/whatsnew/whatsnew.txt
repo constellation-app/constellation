@@ -1,8 +1,38 @@
 == 3030-12-31 Getting Started
 <p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
+== 2020-11-25 Data Access View
+<p>Data Access View has been updated to remember plugin parameter selections between sessions.</p>
+
+== 2020-11-13 Performance Improvement
+<p>Zooming and dragging nodes on large graphs has improved significantly.</p>
+
+== 2020-11-10 Analytic View
+<p>The Levenshtein Distance Analytic has been updated so that the drop-down list parameters don't reset every time a new graph selection is made.</p>
+
+== 2020-11-09 Performance Improvement
+<p>The time taken to open graphs has been reduced significantly and graph responsiveness after opening or docking views.</p>
+
+== 2020-11-08 Table View
+<p>A bug where exporting to CSV or Excel would only export the current page (instead of all pages) has been fixed.</p>
+
+== 2020-11-03 Layers View
+<p>The Layers View has been updated so that you can now do separate queries for nodes and transactions on each layer.</p>
+
+== 2020-10-28 Table View
+<p>A bug where Constellation wouldn't release the write lock on an exported excel file has now been fixed.</p>
+
 == 2020-10-28 Tutorial Page Showing on Startup
 <p>A checkbox has been added to the top right corner of this page to set preference for the Tutorial Page showing on startup.</p>
+
+== 2020-10-21 Copy to New Graph
+<p>The naming convention when copying to a new graph (Ctrl-U) has been updated. When copying to a new graph, '- Copy' will be added to the old graph name (or a number if that is already there).</p>
+
+== 2020-09-22 Draw/Selection Mode Shortcut
+<p>Ctrl-D can now be used to toggle between Draw Mode and Selection Mode on the graph.</p>
+
+== 2020-09-08 Spectral 3D Arrangement
+<p>The Spectral 3D Arrangement shortcut has been updated to Ctrl-Alt-A to avoid a clash with the Layers View Add Layer shortcut.</p>
 
 == 2020-09-02 Table View
 <p>Table View has been updated to include a paging system. This helps improve the Table view performance on larger graphs.</p>
@@ -24,6 +54,9 @@
 <li>Ctrl+C - Will copy the property values of the selection to the clipboard.</li>
 <li>Right-Click Context Menu - Options to either copy the property values or both the property values and counts of the selection to the clipboard.</li>
 </ul>
+
+== 2020-08-10 Uncollide Plugin
+<p>A new improved version of the uncollide plugin has been added. Go to Experimental > Arrangements > Uncollide to use it.</p>
 
 == 2020-08-06 Quality Control Categories
 <p>The Quality Control View now ranks and lists the quality of an element as a category instead of a score. This is also implemented in the Data Access View.</p>
@@ -72,7 +105,7 @@
 <p>The Node and Transaction type tabs in the Schema View are now searchable.</p>
 
 == 2020-05-21 Hierarchical Clustering Improvements
-<p>A bug preventing the running of the hierachical clustering plugin sometimes has been fixed.</p>
+<p>A bug preventing the running of the hierarchical clustering plugin sometimes has been fixed.</p>
 
 == 2020-05-21 Merge Nodes by Geospatial Distance
 <p>A bug preventing running the <strong>Merge Nodes</strong> &gt; <strong>Geospatial Distance</strong> plugin from the Data Access View has been fixed.</p>
