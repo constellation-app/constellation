@@ -21,10 +21,17 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.awt.Color;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.WritableRaster;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
+import javax.swing.ImageIcon;
+import org.netbeans.api.annotations.common.StaticResource;
+import org.openide.util.ImageUtilities;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -34,12 +41,28 @@ import org.openide.util.lookup.ServiceProvider;
  * <p>
  * @author serpens24
  */
-@ServiceProvider(service = ContextMenuProvider.class, position = 1)
+@ServiceProvider(service = ContextMenuProvider.class, position = 205)
 public class BlazeCustomBlazesContextMenu implements ContextMenuProvider {
  
     private static final String BLAZE_MENU = "Blazes";
     private static final String CUSTOM_BLAZE_MENU = "Custom Blazes";
     
+    private static final int BLACK_COLOR = (new Color(0, 0, 0)).getRGB();
+
+    @StaticResource
+    private static final String ADD_RECENT_BLAZE_ICON = "au/gov/asd/tac/constellation/graph/visual/plugins/blaze/resources/addblaze_recent.png";
+
+    /**
+     * Select given menu item. In this case, loop through the known custom color
+     * names and look for one matching the name of the menu item. If found hook
+     * in a plugin to apply the given color as a blaze.
+     * @param item the item that has been selected.
+     * @param graph the graph that has been right-clicked on.
+     * @param elementType the type of element that has been right-clicked on.
+     * @param elementId the id of the element that has been right-clicked on.
+     * @param unprojected the unprojected location of the mouse where the click
+     * occurred.
+     */
     @Override
     public void selectItem(final String item, final Graph graph, final GraphElementType elementType, final int elementId, final Vector3f unprojected) {
       
@@ -79,7 +102,6 @@ public class BlazeCustomBlazesContextMenu implements ContextMenuProvider {
                 plugin = PluginRegistry.get(VisualGraphPluginRegistry.ADD_CUSTOM_BLAZE);
                 parameters = DefaultPluginParameters.getDefaultParameters(plugin);
                 parameters.setObjectValue(BlazeUtilities.COLOR_PARAMETER_ID, color);
-
             }
         }
 
@@ -95,7 +117,15 @@ public class BlazeCustomBlazesContextMenu implements ContextMenuProvider {
         return Arrays.asList(BLAZE_MENU, CUSTOM_BLAZE_MENU);
     }
     
- 
+    /**
+     * Generate list of custom blaze color menu items based on the known list
+     * of blaze colors.
+     * @param graph the graph that has been right-clicked on.
+     * @param elementType the type of element that has been right-clicked on.
+     * @param elementId the id of the element that has been right-clicked on.
+     * @return  a list of icons to be placed into the context menu aligned to
+     * items provided by getItems.
+     */
     @Override
     public List<String> getItems(final GraphReadMethods graph, final GraphElementType elementType, final int entity) {
         if (elementType == GraphElementType.VERTEX) {
@@ -115,5 +145,36 @@ public class BlazeCustomBlazesContextMenu implements ContextMenuProvider {
         } else {
             return Arrays.asList();
         }
-    }  
+    }
+
+    /**
+     * Produce list of custom blaze color icons based on supplied color.
+     * 
+     * @param graph the graph that has been right-clicked on.
+     * @param elementType the type of element that has been right-clicked on.
+     * @param elementId the id of the element that has been right-clicked on.
+     * @return list of custom colored blaze color icons.
+     */
+    @Override
+    public List<ImageIcon> getIcons(final GraphReadMethods graph, final GraphElementType elementType, final int elementId) {
+        if (elementType == GraphElementType.VERTEX) {
+
+        ArrayList<ImageIcon> icons = new ArrayList<ImageIcon>();
+        for (ConstellationColor color: BlazeActions.getCustomColors()) {
+            final Color javaColor = color.getJavaColor();
+            
+            BufferedImage customImage = BlazeActions.copyImageBuffer((BufferedImage)ImageUtilities.loadImage(ADD_RECENT_BLAZE_ICON, false));
+            for (int x = 0; x < customImage.getWidth(); x++) {
+                for (int y = 0; y < customImage.getHeight(); y++) {
+                    if (customImage.getRGB(x, y) == BLACK_COLOR) { customImage.setRGB(x, y, javaColor.getRGB()); }
+                }
+            }
+            ImageIcon icon = new ImageIcon(customImage);
+            icons.add(0, icon);
+        }
+        return icons;
+        } else {
+            return Arrays.asList();
+        }
+    }
 }

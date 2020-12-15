@@ -36,6 +36,9 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
 import javafx.util.Pair;
+import javax.swing.ImageIcon;
+import org.netbeans.api.annotations.common.StaticResource;
+import org.openide.util.ImageUtilities;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -61,6 +64,17 @@ public class BlazeContextMenu implements ContextMenuProvider {
     private static final String ADD_CUSTOM_BLAZE = "Add Custom Blazes";
     private static final String UNSET_BLAZE = "Remove Blazes";
 
+    @StaticResource
+    private static final String ADD_BLUE_BLAZE_ICON = "au/gov/asd/tac/constellation/graph/visual/plugins/blaze/resources/addblaze_blue.png";
+    @StaticResource
+    private static final String ADD_RED_BLAZE_ICON = "au/gov/asd/tac/constellation/graph/visual/plugins/blaze/resources/addblaze_red.png";
+    @StaticResource
+    private static final String ADD_YELLOW_BLAZE_ICON = "au/gov/asd/tac/constellation/graph/visual/plugins/blaze/resources/addblaze_yellow.png";
+    @StaticResource
+    private static final String ADD_CUSTOM_BLAZE_ICON = "au/gov/asd/tac/constellation/graph/visual/plugins/blaze/resources/addblaze_custom.png";
+    @StaticResource
+    private static final String REMOVE_BLAZE_ICON = "au/gov/asd/tac/constellation/graph/visual/plugins/blaze/resources/removeblaze.png";
+    
     @Override
     public void selectItem(final String item, final Graph graph, final GraphElementType elementType, final int elementId, final Vector3f unprojected) {
 
@@ -154,6 +168,28 @@ public class BlazeContextMenu implements ContextMenuProvider {
     public List<String> getItems(final GraphReadMethods graph, final GraphElementType elementType, final int entity) {
         if (elementType == GraphElementType.VERTEX) {
             return Arrays.asList(ADD_BLUE_BLAZE, ADD_RED_BLAZE, ADD_YELLOW_BLAZE, ADD_CUSTOM_BLAZE, UNSET_BLAZE);
+        } else {
+            return Arrays.asList();
+        }
+    }
+    
+    /**
+     * Produce list of custom blaze color icons based on supplied color.
+     * 
+     * @param graph the graph that has been right-clicked on.
+     * @param elementType the type of element that has been right-clicked on.
+     * @param elementId the id of the element that has been right-clicked on.
+     * @return list of custom colored blaze color icons.
+     */
+    @Override
+    public List<ImageIcon> getIcons(final GraphReadMethods graph, final GraphElementType elementType, final int elementId) {
+        if (elementType == GraphElementType.VERTEX) {
+            return Arrays.asList(
+                ImageUtilities.loadImageIcon(ADD_BLUE_BLAZE_ICON, false),
+                ImageUtilities.loadImageIcon(ADD_RED_BLAZE_ICON, false),
+                ImageUtilities.loadImageIcon(ADD_YELLOW_BLAZE_ICON, false),
+                ImageUtilities.loadImageIcon(ADD_CUSTOM_BLAZE_ICON, false),
+                ImageUtilities.loadImageIcon(REMOVE_BLAZE_ICON, false));
         } else {
             return Arrays.asList();
         }

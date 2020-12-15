@@ -74,6 +74,8 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JPopupMenu;
@@ -1099,23 +1101,46 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
         final Vector3f graphLocation = visualInteraction.windowToGraphCoordinates(camera, screenLocation);
 
         for (final ContextMenuProvider pmp : popups) {
+            // Retrive list of item names to populate and optional list of icons to assign
+            // Icons will be added corresponding to an image if the icons list is not ull
+            // and a non null icon is provided with corresponding index.
             final List<String> items = pmp.getItems(rg, elementType, clickedId);
+            final List<ImageIcon> icons = pmp.getIcons(rg, elementType, clickedId);
             if (!items.isEmpty()) {
                 final List<String> menuPath = pmp.getMenuPath(elementType);
                 if (CollectionUtils.isEmpty(menuPath)) {
-                    items.forEach(item -> {
-                        popup.add(new AbstractAction(item) {
-                            @Override
-                            public void actionPerformed(final ActionEvent event) {
-                                PluginExecution.withPlugin(new SimplePlugin("Context Menu: " + item) {
-                                    @Override
-                                    protected void execute(final PluginGraphs _graphs, final PluginInteraction _interaction, final PluginParameters _parameters) throws InterruptedException, PluginException {
-                                        pmp.selectItem(item, graph, elementType, clickedId, graphLocation);
-                                    }
-                                }).executeLater(null);
-                            }
-                        });
-                    });
+                    for (int idx = 0; idx < items.size(); idx++) {
+                        Icon icon = null;
+                        if (icons != null && icons.size() > idx + 1) {  icon = (Icon)icons.get(idx); }
+                        String item = items.get(idx);
+                        if (icon == null) {
+                            // No icon was found, add menu item without an icon
+                            popup.add(new AbstractAction(item) {
+                                @Override
+                                public void actionPerformed(final ActionEvent event) {
+                                    PluginExecution.withPlugin(new SimplePlugin("Context Menu: " + item) {
+                                        @Override
+                                        protected void execute(final PluginGraphs _graphs, final PluginInteraction _interaction, final PluginParameters _parameters) throws InterruptedException, PluginException {
+                                            pmp.selectItem(item, graph, elementType, clickedId, graphLocation);
+                                        }
+                                    }).executeLater(null);
+                                }
+                            });
+                        } else {
+                            // An icon was found, add menu item containing the icon
+                            popup.add(new AbstractAction(item, icon) {
+                                @Override
+                                public void actionPerformed(final ActionEvent event) {
+                                    PluginExecution.withPlugin(new SimplePlugin("Context Menu: " + item) {
+                                        @Override
+                                        protected void execute(final PluginGraphs _graphs, final PluginInteraction _interaction, final PluginParameters _parameters) throws InterruptedException, PluginException {
+                                            pmp.selectItem(item, graph, elementType, clickedId, graphLocation);
+                                        }
+                                    }).executeLater(null);
+                                }
+                            });
+                        }
+                    }
                 } else {
                     JComponent currentMenu = popup;
                     levelLoop:
@@ -1136,18 +1161,37 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                         currentMenu = childMenu;
                     }
 
-                    for (final String item : items) {
-                        ((JMenu) currentMenu).add(new AbstractAction(item) {
-                            @Override
-                            public void actionPerformed(final ActionEvent event) {
-                                PluginExecution.withPlugin(new SimplePlugin("Context Menu: " + item) {
-                                    @Override
-                                    protected void execute(final PluginGraphs _graphs, final PluginInteraction _interaction, final PluginParameters _parameters) throws InterruptedException, PluginException {
-                                        pmp.selectItem(item, graph, elementType, clickedId, graphLocation);
-                                    }
-                                }).executeLater(null);
-                            }
-                        });
+                    for (int idx = 0; idx < items.size(); idx++) {
+                        Icon icon = null;
+                        if (icons != null && icons.size() > idx) { icon = (Icon)icons.get(idx); }
+                        String item = items.get(idx);
+                        if (icon == null) {
+                            // No icon was found, add menu item without an icon
+                            ((JMenu) currentMenu).add(new AbstractAction(item) {
+                                @Override
+                                public void actionPerformed(final ActionEvent event) {
+                                    PluginExecution.withPlugin(new SimplePlugin("Context Menu: " + item) {
+                                        @Override
+                                        protected void execute(final PluginGraphs _graphs, final PluginInteraction _interaction, final PluginParameters _parameters) throws InterruptedException, PluginException {
+                                            pmp.selectItem(item, graph, elementType, clickedId, graphLocation);
+                                        }
+                                    }).executeLater(null);
+                                }
+                            });
+                        } else {
+                            // An icon was found, add menu item containing the icon
+                            ((JMenu) currentMenu).add(new AbstractAction(item, icon) {
+                                @Override
+                                public void actionPerformed(final ActionEvent event) {
+                                    PluginExecution.withPlugin(new SimplePlugin("Context Menu: " + item) {
+                                        @Override
+                                        protected void execute(final PluginGraphs _graphs, final PluginInteraction _interaction, final PluginParameters _parameters) throws InterruptedException, PluginException {
+                                            pmp.selectItem(item, graph, elementType, clickedId, graphLocation);
+                                        }
+                                    }).executeLater(null);
+                                }
+                            });
+                        }
                     }
                 }
             }
