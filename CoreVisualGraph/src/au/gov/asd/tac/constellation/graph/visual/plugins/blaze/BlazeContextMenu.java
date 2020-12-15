@@ -31,6 +31,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.DefaultPluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
@@ -57,7 +58,7 @@ public class BlazeContextMenu implements ContextMenuProvider {
     private static final String ADD_BLUE_BLAZE = "Add Blue Blazes";
     private static final String ADD_RED_BLAZE = "Add Red Blazes";
     private static final String ADD_YELLOW_BLAZE = "Add Yellow Blazes";
-    private static final String ADD_CUSTOM_BLAZE = "Color Blazes...";
+    private static final String ADD_CUSTOM_BLAZE = "Add Custom Blazes";
     private static final String UNSET_BLAZE = "Remove Blazes";
 
     @Override

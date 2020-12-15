@@ -115,7 +115,8 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
     private final SliderMenuItem opacitySlider;
     private final ChangeListener sliderChangeListener;
     
-    private final JMenuItem customBlazeItems[] = new JMenuItem[MAXIMUM_CUSTOM_COLORS];    private final ArrayList<ConstellationColor> customColors = new ArrayList<ConstellationColor>();
+    private final JMenuItem customBlazeItems[] = new JMenuItem[MAXIMUM_CUSTOM_COLORS];
+    public static final ArrayList<ConstellationColor> customColors = new ArrayList<ConstellationColor>();
 
     public BlazeActions() {
         panel = new JPanel();
@@ -173,8 +174,8 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
         // Custom color menu is only enabled when a custom color has been added
         customColorMenu = new JMenu();
         customColorMenu.setIcon(ImageUtilities.loadImageIcon(ADD_RECENTMENU_BLAZE_ICON, false));
-        customColorMenu.setText("Custom Colours");
-        customColorMenu.setToolTipText("Custom Colours");
+        customColorMenu.setText("Custom Blazes");
+        customColorMenu.setToolTipText("Custom Blazes");
         customColorMenu.setEnabled(false);
         menu.add(customColorMenu);
         
@@ -299,31 +300,31 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
 
                     customColorMenu.setEnabled(true);
  
-                    if (this.customColors.size() == BlazeActions.MAXIMUM_CUSTOM_COLORS) {
+                    if (BlazeActions.customColors.size() == BlazeActions.MAXIMUM_CUSTOM_COLORS) {
                         
                         // either remove the oldest color, or the existing entry with matching color (so that new color
                         // can be added as most recent.
                         int startIndex = 0;
-                        if (this.customColors.indexOf(color) >= 0) { startIndex = this.customColors.indexOf(color); }
+                        if (BlazeActions.customColors.indexOf(color) >= 0) { startIndex = BlazeActions.customColors.indexOf(color); }
                         for (int i = startIndex; i < BlazeActions.MAXIMUM_CUSTOM_COLORS - 1; i++) {
                             this.customBlazeItems[i].setText(this.customBlazeItems[i + 1].getText());
                             this.customBlazeItems[i].setIcon(this.customBlazeItems[i + 1].getIcon());
                         }
-                        this.customColors.remove(startIndex);
+                        BlazeActions.customColors.remove(startIndex);
                     }
                     
-                    if (this.customColors.size() < BlazeActions.MAXIMUM_CUSTOM_COLORS && this.customColors.indexOf(color) < 0) {
+                    if (BlazeActions.customColors.size() < BlazeActions.MAXIMUM_CUSTOM_COLORS && BlazeActions.customColors.indexOf(color) < 0) {
 
                         final Color javaColor = color.getJavaColor();
                         String colorName = color.getName();
                         if (colorName == null) {
                             colorName = Integer.toHexString(javaColor.getRed()) + Integer.toHexString(javaColor.getGreen()) + Integer.toHexString(javaColor.getBlue());
-                            colorName = "0x" + colorName;
+                            colorName = "#" + colorName;
                         }
-                        this.customBlazeItems[this.customColors.size()].setText(colorName);
-                        this.customBlazeItems[this.customColors.size()].setVisible(true);
+                        this.customBlazeItems[BlazeActions.customColors.size()].setText(colorName);
+                        this.customBlazeItems[BlazeActions.customColors.size()].setVisible(true);
 
-                        // Generate a customed coloured blaze icon matching the selected color
+                        // Generate a customed colored blaze icon matching the selected color
                         BufferedImage customImage = this.copyImageBuffer((BufferedImage)ImageUtilities.loadImage(ADD_RECENT_BLAZE_ICON, false));
                         for (int x = 0; x < customImage.getWidth(); x++) {
                             for (int y = 0; y < customImage.getHeight(); y++) {                           
@@ -333,8 +334,8 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
                             }
                         }
                         ImageIcon newImageIcon = new ImageIcon(customImage);
-                        this.customBlazeItems[this.customColors.size()].setIcon(newImageIcon);
-                        this.customColors.add(color);
+                        this.customBlazeItems[BlazeActions.customColors.size()].setIcon(newImageIcon);
+                        BlazeActions.customColors.add(color);
                     }
                 }
                 
@@ -357,7 +358,7 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
                 // to it.
                 if (command.startsWith(ADD_RECENT_BLAZE_ACTION)) {
                     String idxStr = command.replaceFirst(ADD_RECENT_BLAZE_ACTION, "");
-                    final ConstellationColor color = this.customColors.get(Integer.parseInt(idxStr));
+                    final ConstellationColor color = BlazeActions.customColors.get(Integer.parseInt(idxStr));
                     
                     plugin = PluginRegistry.get(VisualGraphPluginRegistry.ADD_CUSTOM_BLAZE);
                     parameters = DefaultPluginParameters.getDefaultParameters(plugin);
