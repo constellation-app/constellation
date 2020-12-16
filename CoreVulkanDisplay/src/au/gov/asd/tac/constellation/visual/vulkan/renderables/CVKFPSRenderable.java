@@ -31,6 +31,9 @@ import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VkVertexInputAttributeDescription;
 import org.lwjgl.vulkan.VkVertexInputBindingDescription;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
+import static au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableResourceState.CVK_RESOURCE_CLEAN;
+import static au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableResourceState.CVK_RESOURCE_NEEDS_REBUILD;
+import static au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableResourceState.CVK_RESOURCE_NEEDS_UPDATE;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKCommandBuffer;
 import java.nio.LongBuffer;
@@ -61,7 +64,7 @@ public class CVKFPSRenderable extends CVKRenderable {
     private float pyScale = 0;
     private float pxScale = 0;         
     private final Vertex[] vertices = new Vertex[MAX_DIGITS];
-    private final VertexUniformBufferObject vertexUBO = new VertexUniformBufferObject();
+    private final VertexPushConstantObject vertexUBO = new VertexPushConstantObject();
     private final GeometryUniformBufferObject geometryUBO = new GeometryUniformBufferObject();
     private LongBuffer pDescriptorSets = null;
     private List<Integer> currentFPS = null;  
@@ -83,6 +86,7 @@ public class CVKFPSRenderable extends CVKRenderable {
     private int numSamples = 0;
     private int currentSample = 0;
     private int numDigits = 0;
+    private int lastFPS = 0;
     private long lastNanoTime = 0;
     private long frameNanoTimes[] = new long[MAX_SAMPLES];
     private int digitIconIndices[] = new int[10];
@@ -188,7 +192,7 @@ public class CVKFPSRenderable extends CVKRenderable {
         return Vertex.GetAttributeDescriptions();
     }     
         
-    private static class VertexUniformBufferObject {
+    private static class VertexPushConstantObject {
         private static final int BYTES = Matrix44f.BYTES + 2 * Float.BYTES;
 
         public Matrix44f mvMatrix;
@@ -196,16 +200,12 @@ public class CVKFPSRenderable extends CVKRenderable {
         public float visibilityHigh = 0;
         
 
-        public VertexUniformBufferObject() {
+        public VertexPushConstantObject() {
             mvMatrix = new Matrix44f();
         }
         
         private void CopyTo(ByteBuffer buffer) {
-            for (int iRow = 0; iRow < 4; ++iRow) {
-                for (int iCol = 0; iCol < 4; ++iCol) {
-                    buffer.putFloat(mvMatrix.get(iRow, iCol));
-                }
-            }
+            PutMatrix44f(buffer, mvMatrix);  
             buffer.putFloat(visibilityLow);
             buffer.putFloat(visibilityHigh);
         }         
@@ -249,12 +249,7 @@ public class CVKFPSRenderable extends CVKRenderable {
         }            
         
         private void CopyTo(ByteBuffer buffer) {
-            // TODO: convert to a blat
-            for (int iRow = 0; iRow < 4; ++iRow) {
-                for (int iCol = 0; iCol < 4; ++iCol) {
-                    buffer.putFloat(pMatrix.get(iRow, iCol));
-                }
-            }
+            PutMatrix44f(buffer, pMatrix);  
             buffer.putFloat(pixelDensity);
             buffer.putFloat(pScale);
             buffer.putInt(iconsPerRowColumn);
@@ -296,7 +291,10 @@ public class CVKFPSRenderable extends CVKRenderable {
     @Override
     public int Initialise() {
         int ret = super.Initialise();  
-        if (VkFailed(ret)) { return ret; }       
+        if (VkFailed(ret)) { return ret; }    
+        
+        ret = CreateStagingBuffer();
+        if (VkFailed(ret)) { return ret; }        
          
         ret = CreateDescriptorLayout();
         if (VkFailed(ret)) { return ret; }
@@ -306,7 +304,7 @@ public class CVKFPSRenderable extends CVKRenderable {
          
         for (int digit = 0; digit < 10; ++digit) {
             // Returns the index of the icon, not a success code
-            digitIconIndices[digit] = CVKIconTextureAtlas.GetInstance().AddIcon(Integer.toString(digit));
+            digitIconIndices[digit] = CVKIconTextureAtlas.GetInstance().AddIcon(String.format("Character.%d", digit));
         }
         
         ret = CreatePushConstants();
@@ -318,13 +316,12 @@ public class CVKFPSRenderable extends CVKRenderable {
     @Override
     public void Destroy() {                   
         DestroyVertexBuffers();
-        DestroyUniformBuffers();
+        DestroyGeometryUniformBuffers();
         DestroyDescriptorSets();
         DestroyDescriptorLayout();
         DestroyCommandBuffers();
         DestroyPipelines();
         DestroyPipelineLayout();
-        DestroyCommandBuffers(); 
         DestroyPushConstants(); 
         DestroyStagingBuffer();
                
@@ -340,57 +337,7 @@ public class CVKFPSRenderable extends CVKRenderable {
     
     
     // ========================> Swap chain <======================== \\
-    
-    protected int CreateSwapChainResources() { 
-        CVKAssertNotNull(cvkDescriptorPool);
-        CVKAssertNotNull(cvkSwapChain);
-        
-        int ret;
-        
-        try (MemoryStack stack = stackPush()) {  
-            
-            // We only need to recreate these resources if the number of images in 
-            // the swapchain changes or if this is the first call after the initial
-            // swapchain is created.
-            if (swapChainImageCountChanged) {
-                ret = CreateStagingBuffer();
-                if (VkFailed(ret)) { return ret; }
-                
-                ret = CreateUniformBuffers(stack);
-                if (VkFailed(ret)) { return ret; }
-
-                ret = CreateDescriptorSets(stack);
-                if (VkFailed(ret)) { return ret; } 
-
-                ret = CreateVertexBuffers();
-                if (VkFailed(ret)) { return ret; }   
-
-                ret = CreateCommandBuffers();
-                if (VkFailed(ret)) { return ret; }            
-
-                displayPipelines = new ArrayList<>(cvkSwapChain.GetImageCount());
-                ret = CreatePipelines(cvkSwapChain.GetRenderPassHandle(), displayPipelines);
-                if (VkFailed(ret)) { return ret; }        
-                
-            } else {
-                
-                // We need to update the uniform buffer as a new image size will mean a
-                // different position for our FPS.  After updating the uniform buffers we
-                // need to update the descriptor sets that bind the uniform buffers as well.
-                ret = UpdateUniformBuffers(stack);
-                if (VkFailed(ret)) { return ret; }
-
-                ret = UpdateDescriptorSets(stack);
-                if (VkFailed(ret)) { return ret; }            
-            }
-        }
-        
-        swapChainResourcesDirty = false;
-        swapChainImageCountChanged = false;
-        
-        return ret; 
-    }
-   
+       
     @Override
     protected int DestroySwapChainResources(){
         CVKAssertNotNull(cvkSwapChain);
@@ -404,7 +351,7 @@ public class CVKFPSRenderable extends CVKRenderable {
         // swapchain is created.
         if (displayPipelines != null && swapChainImageCountChanged) {        
             DestroyVertexBuffers();
-            DestroyUniformBuffers();
+            DestroyGeometryUniformBuffers();
             DestroyDescriptorSets();
             DestroyCommandBuffers();
             DestroyPipelines();
@@ -415,7 +362,6 @@ public class CVKFPSRenderable extends CVKRenderable {
             CVKAssertNull(geometryUniformBuffers);
             CVKAssertNull(vertexBuffers);
             CVKAssertNull(displayCommandBuffers);
-            swapChainImageCountChanged = true;
          } 
         
         cvkSwapChain = null;
@@ -460,7 +406,7 @@ public class CVKFPSRenderable extends CVKRenderable {
     
     // ========================> Vertex buffers <======================== \\
     
-    private int CreateVertexBuffers() {
+    private int CreateVertexBuffers(MemoryStack stack) {
         CVKAssertNotNull(cvkSwapChain);
         
         int ret = VK_SUCCESS;
@@ -484,57 +430,57 @@ public class CVKFPSRenderable extends CVKRenderable {
         }
         
         // Populate them with some values
-        UpdateVertexBuffers();
+        UpdateVertexBuffers(stack);
         
         return ret;  
     }
         
-    private int UpdateVertexBuffers() {
+    private int UpdateVertexBuffers(MemoryStack stack) {
         int ret = VK_SUCCESS;
-        
-        try(MemoryStack stack = stackPush()) {                          
-            // Size to upper limit, we don't have to draw each one.
-            for (int i = 0; i < vertices.length; ++i) {
-                int data[] = new int[2];
 
-                int digit = currentFPS.get(i);
-                
-                final int foregroundIconIndex;
-                if (digit >= 0 && digit < 10) {
-                    foregroundIconIndex = CVKIconTextureAtlas.GetInstance().AddIcon(Integer.toString(digit));
-                } else {
-                    foregroundIconIndex = digit;
-                }
-               
-                final int backgroundIconIndex = CVKIconTextureAtlas.TRANSPARENT_ICON_INDEX;
+        // Size to upper limit, we don't have to draw each one.
+        for (int i = 0; i < vertices.length; ++i) {
+            int data[] = new int[2];
 
-                // packed icon indices
-                data[0] = (backgroundIconIndex << ICON_BITS) | (foregroundIconIndex & ICON_MASK);
+            int digit = currentFPS.get(i);
 
-                // offset which is used for this digit's position in SimpleIcon.vs
-                data[1] = i * DIGIT_ICON_OFFSET;
-
-                // colour which is inexplicably converted to a 4x4 matrix in the vert shader
-                Vector4f colour = new Vector4f(1.0f,1.0f,1.0f,1.0f);
-
-                vertices[i] = new Vertex(data, colour);
+            final int foregroundIconIndex;
+            if (digit >= 0 && digit < 10) {
+                foregroundIconIndex = CVKIconTextureAtlas.GetInstance().AddIcon(Integer.toString(digit));
+            } else {
+                foregroundIconIndex = digit;
             }
-            
-            // Copy to our staging buffer (host read/write)
-            int size = vertices.length * Vertex.BYTES;         
-            PointerBuffer data = stack.mallocPointer(1);
-            vkMapMemory(CVKDevice.GetVkDevice(), cvkStagingBuffer.GetMemoryBufferHandle(), 0, size, 0, data);
-            {
-                Vertex.CopyTo(data.getByteBuffer(0, size), vertices);
-            }
-            vkUnmapMemory(CVKDevice.GetVkDevice(), cvkStagingBuffer.GetMemoryBufferHandle());
 
-            // Populate
-            for (int i = 0; i < vertexBuffers.size(); ++i) {   
-                CVKBuffer cvkVertexBuffer = vertexBuffers.get(i);
-                cvkVertexBuffer.CopyFrom(cvkStagingBuffer);
-            }
+            final int backgroundIconIndex = CVKIconTextureAtlas.TRANSPARENT_ICON_INDEX;
+
+            // packed icon indices
+            data[0] = (backgroundIconIndex << ICON_BITS) | (foregroundIconIndex & ICON_MASK);
+
+            // offset which is used for this digit's position in SimpleIcon.vs
+            data[1] = i * DIGIT_ICON_OFFSET;
+
+            // colour which is inexplicably converted to a 4x4 matrix in the vert shader
+            Vector4f colour = new Vector4f(1.0f,1.0f,1.0f,1.0f);
+
+            vertices[i] = new Vertex(data, colour);
         }
+
+        // Copy to our staging buffer (host read/write)
+        int size = vertices.length * Vertex.BYTES;         
+        PointerBuffer data = stack.mallocPointer(1);
+        vkMapMemory(CVKDevice.GetVkDevice(), cvkStagingBuffer.GetMemoryBufferHandle(), 0, size, 0, data);
+        {
+            Vertex.CopyTo(data.getByteBuffer(0, size), vertices);
+        }
+        vkUnmapMemory(CVKDevice.GetVkDevice(), cvkStagingBuffer.GetMemoryBufferHandle());
+
+        // Populate
+        for (int i = 0; i < vertexBuffers.size(); ++i) {   
+            CVKBuffer cvkVertexBuffer = vertexBuffers.get(i);
+            cvkVertexBuffer.CopyFrom(cvkStagingBuffer);
+        }
+        
+        SetVertexBuffersState(CVK_RESOURCE_CLEAN);
         
         return ret;         
     }
@@ -547,13 +493,14 @@ public class CVKFPSRenderable extends CVKRenderable {
             vertexBuffers.forEach(el -> {el.Destroy();});
             vertexBuffers.clear();
             vertexBuffers = null;
+            SetVertexBuffersState(CVK_RESOURCE_NEEDS_REBUILD);
         }           
     }
     
     
     // ========================> Uniform buffers <======================== \\
         
-    private int CreateUniformBuffers(MemoryStack stack) {
+    private int CreateGeometryUniformBuffers(MemoryStack stack) {
         CVKAssertNotNull(cvkSwapChain);
         
         int imageCount = cvkSwapChain.GetImageCount();        
@@ -568,10 +515,10 @@ public class CVKFPSRenderable extends CVKRenderable {
             geometryUniformBuffers.add(geomUniformBuffer);            
         }
 
-        return UpdateUniformBuffers(stack);
+        return UpdateGeometryUniformBuffers(stack);
     }
     
-    private int UpdateUniformBuffers(MemoryStack stack) {
+    private int UpdateGeometryUniformBuffers(MemoryStack stack) {
         CVKAssertNotNull(cvkSwapChain);
         
         int ret = VK_SUCCESS;
@@ -641,15 +588,19 @@ public class CVKFPSRenderable extends CVKRenderable {
         
         // Update the push constants data
         vertexUBO.CopyTo(vertexPushConstants);
-        vertexPushConstants.flip();        
+        vertexPushConstants.flip();      
+        
+        SetGeometryUniformBufferState(CVK_RESOURCE_CLEAN);
 
         return ret;
     }    
     
-    private void DestroyUniformBuffers() {        
+    private void DestroyGeometryUniformBuffers() {        
         if (geometryUniformBuffers != null) {
             geometryUniformBuffers.forEach(el -> {el.Destroy();});
             geometryUniformBuffers = null;
+            
+            SetGeometryUniformBufferState(CVK_RESOURCE_NEEDS_REBUILD);
         }        
     }
     
@@ -658,12 +609,8 @@ public class CVKFPSRenderable extends CVKRenderable {
  
     private int CreatePushConstants() {
         // Initialise push constants to identity mtx
-        vertexPushConstants = memAlloc(VertexUniformBufferObject.BYTES);
-        for (int iRow = 0; iRow < 4; ++iRow) {
-            for (int iCol = 0; iCol < 4; ++iCol) {
-                vertexPushConstants.putFloat(IDENTITY_44F.get(iRow, iCol));
-            }
-        }
+        vertexPushConstants = memAlloc(VertexPushConstantObject.BYTES);
+        PutMatrix44f(vertexPushConstants, IDENTITY_44F); 
         vertexPushConstants.putFloat(0.0f);
         vertexPushConstants.putFloat(1.0f);
         vertexPushConstants.flip();
@@ -823,8 +770,6 @@ public class CVKFPSRenderable extends CVKRenderable {
             GetLogger().info("CVKFPSRenderable allocated hDescriptorSet %d: 0x%016X", i, pDescriptorSets.get(i));
         }        
         
-        descriptorPoolResourcesDirty = false;
-        
         return UpdateDescriptorSets(stack);
     }
     
@@ -883,7 +828,9 @@ public class CVKFPSRenderable extends CVKRenderable {
         
         // Cache atlas handles so we know when to recreate descriptors
         hAtlasSampler = CVKIconTextureAtlas.GetInstance().GetAtlasSamplerHandle();
-        hAtlasImageView = CVKIconTextureAtlas.GetInstance().GetAtlasImageViewHandle();            
+        hAtlasImageView = CVKIconTextureAtlas.GetInstance().GetAtlasImageViewHandle();   
+        
+        SetDescriptorSetsState(CVK_RESOURCE_CLEAN);
         
         return ret;
     }
@@ -917,6 +864,8 @@ public class CVKFPSRenderable extends CVKRenderable {
             checkVKret(ret);
         }
         
+        SetDescriptorSetsState(CVK_RESOURCE_NEEDS_REBUILD);
+        
         return ret;
     }
     
@@ -929,16 +878,7 @@ public class CVKFPSRenderable extends CVKRenderable {
         }
         
         return ret; 
-    }     
-
-    private int CreateDescriptorPoolResources() {
-        CVKAssertNotNull(cvkDescriptorPool);
-        CVKAssertNotNull(cvkSwapChain);
-
-        try (MemoryStack stack = stackPush()) {
-            return CreateDescriptorSets(stack);
-        }
-    }         
+    }           
     
     
     // ========================> Pipelines <======================== \\
@@ -952,7 +892,7 @@ public class CVKFPSRenderable extends CVKRenderable {
             VkPushConstantRange.Buffer pushConstantRange;
             pushConstantRange = VkPushConstantRange.callocStack(1, stack);
             pushConstantRange.stageFlags(VK_SHADER_STAGE_VERTEX_BIT);
-            pushConstantRange.size(VertexUniformBufferObject.BYTES);
+            pushConstantRange.size(VertexPushConstantObject.BYTES);
             pushConstantRange.offset(0);
 
             VkPipelineLayoutCreateInfo pipelineLayoutInfo = VkPipelineLayoutCreateInfo.callocStack(stack);
@@ -992,36 +932,54 @@ public class CVKFPSRenderable extends CVKRenderable {
         
         UpdateFPS();
         
-        boolean atlasChanged =  hAtlasSampler != CVKIconTextureAtlas.GetInstance().GetAtlasSamplerHandle() ||
-                                hAtlasImageView != CVKIconTextureAtlas.GetInstance().GetAtlasImageViewHandle();   
-        
-        if (swapChainResourcesDirty) {
-            ret = CreateSwapChainResources();
-            if (VkFailed(ret)) { return ret; }
+        if (hAtlasSampler != CVKIconTextureAtlas.GetInstance().GetAtlasSamplerHandle() ||
+            hAtlasImageView != CVKIconTextureAtlas.GetInstance().GetAtlasImageViewHandle()) {
+            if (geometryUniformBufferState != CVK_RESOURCE_NEEDS_REBUILD) {
+                SetGeometryUniformBufferState(CVK_RESOURCE_NEEDS_UPDATE);
+            }     
+            if (descriptorSetsState != CVK_RESOURCE_NEEDS_REBUILD) {
+                SetDescriptorSetsState(CVK_RESOURCE_NEEDS_UPDATE);
+            }                 
         }
         
-        if (descriptorPoolResourcesDirty) {
-            ret = CreateDescriptorPoolResources();
-            if (VkFailed(ret)) { return ret; }
-        }        
-                        
-        // We only need to update descriptors if the atlas has generated a new texture
-        if (atlasChanged) {
-            try (MemoryStack stack = stackPush()) {
-                ret = UpdateUniformBuffers(stack);
+        try (MemoryStack stack = stackPush()) {  
+            if (geometryUniformBufferState == CVK_RESOURCE_NEEDS_REBUILD) {
+                ret = CreateGeometryUniformBuffers(stack);
                 if (VkFailed(ret)) { return ret; }
-                
+            } else if (geometryUniformBufferState == CVK_RESOURCE_NEEDS_UPDATE) {
+                ret = UpdateGeometryUniformBuffers(stack);
+                if (VkFailed(ret)) { return ret; }            
+            }
+
+            if (descriptorSetsState == CVK_RESOURCE_NEEDS_REBUILD) {
+                ret = CreateDescriptorSets(stack);
+                if (VkFailed(ret)) { return ret; } 
+            } else if (descriptorSetsState == CVK_RESOURCE_NEEDS_UPDATE) {
                 ret = UpdateDescriptorSets(stack);
-                if (VkFailed(ret)) { return ret; }
-            }           
-        }
-        
-        // We update this constantly as the FPS changes constantly
-        ret = UpdateVertexBuffers();
-        if (VkFailed(ret)) {
-            return ret;
-        }        
-        
+                if (VkFailed(ret)) { return ret; }                 
+            }
+            
+            // Update VBs as the FPS changes constantly as we render,
+            if (vertexBuffersState == CVK_RESOURCE_NEEDS_REBUILD) {
+                ret = CreateVertexBuffers(stack);
+                if (VkFailed(ret)) { return ret; } 
+            } else if (vertexBuffersState == CVK_RESOURCE_NEEDS_UPDATE) {
+                ret = UpdateVertexBuffers(stack);
+                if (VkFailed(ret)) { return ret; }                 
+            }            
+
+            if (commandBuffersState == CVK_RESOURCE_NEEDS_REBUILD) {
+                ret = CreateCommandBuffers();
+                if (VkFailed(ret)) { return ret; } 
+            }    
+            
+            if (pipelinesState == CVK_RESOURCE_NEEDS_REBUILD) {
+                displayPipelines = new ArrayList<>(cvkSwapChain.GetImageCount());
+                ret = CreatePipelines(cvkSwapChain.GetRenderPassHandle(), displayPipelines);
+                if (VkFailed(ret)) { return ret; }     
+            }
+        }                    
+                        
         return ret;
     }    
     
@@ -1092,6 +1050,10 @@ public class CVKFPSRenderable extends CVKRenderable {
         // FPS/frame times are great for spotting spikes but an average is
         // better for guaging overall performance.
         int fps = (int)(1000000000.0 / averageNanoTime);
+        if (fps != lastFPS && vertexBuffersState != CVK_RESOURCE_NEEDS_REBUILD) {
+            SetVertexBuffersState(CVK_RESOURCE_NEEDS_UPDATE);
+        }
+        lastFPS = fps;
         
         // Update the characters to display
         int[] fpsDigits = Long.toString(fps).chars().map(c -> c -= '0').toArray();

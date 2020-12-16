@@ -47,7 +47,6 @@ import org.lwjgl.vulkan.VkVertexInputBindingDescription;
 
 public class CVKPointsRenderable extends CVKRenderable {    
     // The UBO staging buffers are a known size so created outside user events
-    private final VertexUniformBufferObject vertexUBO = new VertexUniformBufferObject();
     private CVKBuffer cvkVertexUBStagingBuffer = null;    
     
     // Resources recreated only through user events
@@ -110,24 +109,7 @@ public class CVKPointsRenderable extends CVKRenderable {
     @Override
     protected VkVertexInputAttributeDescription.Buffer GetVertexAttributeDescriptions() {
         return Vertex.GetAttributeDescriptions();
-    }       
-    
-    private static class VertexUniformBufferObject {
-        private static final int BYTES = Matrix44f.BYTES;
-        public Matrix44f mvpMatrix;
-      
-        public VertexUniformBufferObject() {
-            mvpMatrix = new Matrix44f();
-        }
-        
-        private void CopyTo(ByteBuffer buffer) {
-            for (int iRow = 0; iRow < 4; ++iRow) {
-                for (int iCol = 0; iCol < 4; ++iCol) {
-                    buffer.putFloat(mvpMatrix.get(iRow, iCol));
-                }
-            }
-        }         
-    }
+    }         
     
     
     // ========================> Shaders <======================== \\
@@ -146,7 +128,7 @@ public class CVKPointsRenderable extends CVKRenderable {
     }          
     
     private void CreateUBOStagingBuffers() {
-        cvkVertexUBStagingBuffer = CVKBuffer.Create(VertexUniformBufferObject.BYTES,
+        cvkVertexUBStagingBuffer = CVKBuffer.Create(Matrix44f.BYTES,
                                                     VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                                                     VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
                                                     GetLogger(),
@@ -227,19 +209,11 @@ public class CVKPointsRenderable extends CVKRenderable {
         
         if (swapChainImageCountChanged) {
             // The number of images has changed, we need to rebuild all image
-            // buffered resources
-            SetVertexUBOState(CVK_RESOURCE_NEEDS_REBUILD);       
+            // buffered resources   
             SetVertexBuffersState(CVK_RESOURCE_NEEDS_REBUILD);
             SetCommandBuffersState(CVK_RESOURCE_NEEDS_REBUILD);
             SetDescriptorSetsState(CVK_RESOURCE_NEEDS_REBUILD);
             SetPipelinesState(CVK_RESOURCE_NEEDS_REBUILD);
-        } else {
-            // View frustum and projection matrix likely have changed.  We don't
-            // need to rebuild our pipelines as the frustum is set by dynamic
-            // state in RecordDisplayCommandBuffer
-            if (vertexUBOState != CVK_RESOURCE_NEEDS_REBUILD) {
-                SetVertexUBOState(CVK_RESOURCE_NEEDS_UPDATE); 
-            }
         }
         
         return ret;
@@ -311,19 +285,13 @@ public class CVKPointsRenderable extends CVKRenderable {
     
     private void CreatePushConstants() {
         // Initialise push constants to identity mtx
-        pushConstants = memAlloc(VertexUniformBufferObject.BYTES);
+        pushConstants = memAlloc(Matrix44f.BYTES);
         UpdatePushConstants();
     }
     
-    private void UpdatePushConstants(){
-                   
-        vertexUBO.mvpMatrix = cvkVisualProcessor.getDisplayModelViewProjectionMatrix();
-        
-        // Update the push constants data
-        vertexUBO.CopyTo(pushConstants);
+    private void UpdatePushConstants(){   
+        PutMatrix44f(pushConstants, cvkVisualProcessor.getDisplayModelViewProjectionMatrix());
         pushConstants.flip();  
-        
-        vertexUBOState = CVK_RESOURCE_CLEAN;
     }
     
     private void DestroyPushConstants() {
@@ -420,7 +388,7 @@ public class CVKPointsRenderable extends CVKRenderable {
             VkPushConstantRange.Buffer pushConstantRange;
             pushConstantRange = VkPushConstantRange.callocStack(1, stack);
             pushConstantRange.stageFlags(VK_SHADER_STAGE_VERTEX_BIT);
-            pushConstantRange.size(VertexUniformBufferObject.BYTES);
+            pushConstantRange.size(Matrix44f.BYTES);
             pushConstantRange.offset(0);                     
             
             VkPipelineLayoutCreateInfo pipelineLayoutInfo = VkPipelineLayoutCreateInfo.callocStack(stack);
@@ -448,8 +416,7 @@ public class CVKPointsRenderable extends CVKRenderable {
     @Override
     public boolean NeedsDisplayUpdate() {         
         return vertexCount > 0 &&
-               (vertexUBOState != CVK_RESOURCE_CLEAN ||           
-                vertexBuffersState != CVK_RESOURCE_CLEAN ||
+               (vertexBuffersState != CVK_RESOURCE_CLEAN ||
                 commandBuffersState != CVK_RESOURCE_CLEAN ||
                 descriptorSetsState != CVK_RESOURCE_CLEAN ||
                 pipelinesState != CVK_RESOURCE_CLEAN); 
@@ -470,13 +437,7 @@ public class CVKPointsRenderable extends CVKRenderable {
             if (VkFailed(ret)) { return ret; }           
         }
 
-        // Vertex uniform buffer (camera guff)
-        if (vertexUBOState == CVK_RESOURCE_NEEDS_REBUILD) {
-            DestroyPushConstants();
-            CreatePushConstants();
-        } else if (vertexUBOState == CVK_RESOURCE_NEEDS_UPDATE) {
-            UpdatePushConstants();          
-        }
+        UpdatePushConstants();
         
         // Command buffers (rendering commands enqueued on the GPU)
         if (commandBuffersState == CVK_RESOURCE_NEEDS_REBUILD) {
@@ -606,9 +567,7 @@ public class CVKPointsRenderable extends CVKRenderable {
                                                 
         //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.ProcessRenderTasks) ===//
         return () -> {     
-            if (vertexUBOState != CVK_RESOURCE_NEEDS_REBUILD) {
-                SetVertexUBOState(CVK_RESOURCE_NEEDS_UPDATE);
-            }
+            UpdatePushConstants();
         };           
     }    
 }

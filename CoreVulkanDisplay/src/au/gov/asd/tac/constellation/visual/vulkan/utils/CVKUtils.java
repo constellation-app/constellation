@@ -75,8 +75,10 @@ public class CVKUtils {
     public static final int CVK_ERROR_SHADER_SPIRV_WRITE_FAILED                 = 0xFFFF0012;
     public static final int CVK_ERROR_SHADER_MD5_WRITE_FAILED                   = 0xFFFF0013;
     public static final int CVK_ERROR_SHADER_SOURCE_FILE_NOT_FOUND              = 0xFFFF0014;
-    public static final int CVK_RENDERABLE_INITIALISATION_FAILED                = 0xFFFF0015;
-    
+    public static final int CVK_ERROR_RENDERABLE_INITIALISATION_FAILED          = 0xFFFF0015;
+    public static final int CVK_ERROR_ICON_ATLAS_COPY_TIMEDOUT                  = 0xFFFF0016;
+    public static final int CVK_ERROR_ICON_ATLAS_SAMPLER_CREATION_FAILED        = 0xFFFF0017;
+    public static final int CVK_ERROR_ICON_ATLAS_UNSUPPORTED_ICON_FORMAT        = 0xFFFF0018;
     
     // Enable this for additional logging, thread verification and other checks
     public static final boolean CVK_DEBUGGING = Boolean.parseBoolean(System.getProperty("debug_renderer"));
@@ -478,4 +480,12 @@ public class CVKUtils {
         
         return clearValues;
     }  
+    
+    public static void PutMatrix44f(final ByteBuffer buffer, final Matrix44f mtx) {
+        for (int iRow = 0; iRow < 4; ++iRow) {
+            for (int iCol = 0; iCol < 4; ++iCol) {
+                buffer.putFloat(mtx.get(iRow, iCol));
+            }
+        }        
+    }
 }

@@ -146,7 +146,6 @@ public class CVKBuffer {
     public ByteBuffer StartMemoryMap(int offset, int size) {
         CVKAssert((properties & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) != 0);
         CVKAssert(pWriteMemory == null);
-        CVKAssert(size > offset);
         pWriteMemory = MemoryUtil.memAllocPointer(1);
         vkMapMemory(CVKDevice.GetVkDevice(), GetMemoryBufferHandle(), offset, size, 0, pWriteMemory);
         return pWriteMemory.getByteBuffer(size);

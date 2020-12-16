@@ -1,7 +1,9 @@
 #version 450
 
-// === PER TEXEL DATA OUT
+
+// === PER TEXEL DATA OUT ===
 layout(location = 0) out vec4 fragColor;
+
 
 void main(void) {
     fragColor.x = clamp(gl_FragCoord.x / 1000.0, 0.2, 1.0);

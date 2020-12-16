@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.visual.renderables;
 
+import au.gov.asd.tac.constellation.utilities.visual.SelectionBoxModel;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;

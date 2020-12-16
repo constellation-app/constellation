@@ -198,8 +198,7 @@ public class CVKPerspectiveLinksRenderable extends CVKRenderable {
         if (displayPipelines != null && swapChainImageCountChanged) {  
             DestroyDescriptorSets();
             DestroyCommandBuffers();     
-            DestroyPipelines();
-            DestroyCommandBuffers();                                  
+            DestroyPipelines();                              
         }
         
         return VK_SUCCESS; 

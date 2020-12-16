@@ -33,7 +33,7 @@ import au.gov.asd.tac.constellation.graph.interaction.plugins.select.PointSelect
 import au.gov.asd.tac.constellation.graph.interaction.visual.EventState.CreationMode;
 import au.gov.asd.tac.constellation.graph.interaction.visual.EventState.SceneAction;
 import au.gov.asd.tac.constellation.utilities.visual.NewLineModel;
-import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionBoxModel;
+import au.gov.asd.tac.constellation.utilities.visual.SelectionBoxModel;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.visual.contextmenu.ContextMenuProvider;
 import au.gov.asd.tac.constellation.graph.visual.utilities.VisualGraphUtilities;

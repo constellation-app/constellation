@@ -2839,6 +2839,14 @@
                 <binary-origin>release/modules/ext/lwjgl-shaderc-3.2.3-jar-javadoc.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-shaderc-3.2.3-jar-natives-linux.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-shaderc-3.2.3-jar-natives-linux.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-shaderc-3.2.3-jar-natives-macos.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-shaderc-3.2.3-jar-natives-macos.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/lwjgl-shaderc-3.2.3-jar-natives-windows.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/lwjgl-shaderc-3.2.3-jar-natives-windows.jar</binary-origin>
             </class-path-extension>

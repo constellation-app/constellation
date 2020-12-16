@@ -117,6 +117,7 @@ public class CVKGlyphTextureAtlas {
                                             VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
                                             VK_IMAGE_ASPECT_COLOR_BIT,
                                             null,
+                                            null,
                                             "CVKGlyphTextureAtlas cvkAtlasImage");
             CVKAssertNotNull(cvkAtlasImage);
             

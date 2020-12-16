@@ -26,7 +26,7 @@ import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.HitTest
 import au.gov.asd.tac.constellation.utilities.visual.NewLineModel;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.NewLineRenderable;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.PlanesRenderable;
-import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionBoxModel;
+import au.gov.asd.tac.constellation.utilities.visual.SelectionBoxModel;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionBoxRenderable;
 import au.gov.asd.tac.constellation.graph.visual.utilities.VisualGraphUtilities;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;

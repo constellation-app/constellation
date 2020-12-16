@@ -135,6 +135,7 @@ import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
 import org.openide.loaders.SaveAsCapable;
+import org.openide.modules.Places;
 import org.openide.nodes.Node;
 import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
@@ -417,8 +418,8 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         // Load render config in order to get visual manager factory class
         Class<GraphVisualManagerFactory> visualMangerFactoryClass = GraphVisualManagerFactory.class;
         try {
-            String userDirPath = System.getProperty("user.dir");
-            Path renderConfPath = Paths.get(userDirPath, "renderer.conf");
+            Path constellationRoot = Paths.get(Places.getUserDirectory().getPath(), "../..").toAbsolutePath().normalize();             
+            Path renderConfPath = Paths.get(constellationRoot.toString(), "renderer.conf");
             InputStream renderConfStream = new FileInputStream(renderConfPath.toString());
             System.getProperties().load(renderConfStream);
             String factoryName = System.getProperty("factory");

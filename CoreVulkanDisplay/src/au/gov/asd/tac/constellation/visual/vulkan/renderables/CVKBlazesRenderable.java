@@ -36,6 +36,7 @@ import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAsser
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssertNotNull;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVKAssertNull;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.IDENTITY_44F;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.PutMatrix44f;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkFailed;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkSucceeded;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.checkVKret;
@@ -303,11 +304,8 @@ public class CVKBlazesRenderable extends CVKRenderable {
         }
         
         private void CopyTo(ByteBuffer buffer) {  
-            for (int iRow = 0; iRow < 4; ++iRow) {
-                for (int iCol = 0; iCol < 4; ++iCol) {
-                    buffer.putFloat(pMatrix.get(iRow, iCol));
-                }
-            } 
+            PutMatrix44f(buffer, pMatrix);
+            
             buffer.putFloat(scale);
             buffer.putFloat(visibilityLow);
             buffer.putFloat(visibilityHigh);         
@@ -486,9 +484,9 @@ public class CVKBlazesRenderable extends CVKRenderable {
         if (swapChainImageCountChanged) {
             // The number of images has changed, we need to rebuild all image
             // buffered resources
-            SetVertexUBOState(CVK_RESOURCE_NEEDS_REBUILD);
-            SetGeometryUBOState(CVK_RESOURCE_NEEDS_REBUILD);       
-            SetFragmentUBOState(CVK_RESOURCE_NEEDS_REBUILD);  
+            SetVertexUniformBufferState(CVK_RESOURCE_NEEDS_REBUILD);
+            SetGeometryUniformBufferState(CVK_RESOURCE_NEEDS_REBUILD);       
+            SetFragmentUniformBufferState(CVK_RESOURCE_NEEDS_REBUILD);  
             SetVertexBuffersState(CVK_RESOURCE_NEEDS_REBUILD);
             SetCommandBuffersState(CVK_RESOURCE_NEEDS_REBUILD);
             SetDescriptorSetsState(CVK_RESOURCE_NEEDS_REBUILD);
@@ -497,8 +495,8 @@ public class CVKBlazesRenderable extends CVKRenderable {
             // View frustum and projection matrix likely have changed.  We don't
             // need to rebuild our displayPipelines as the frustum is set by dynamic
             // state in RecordDisplayCommandBuffer
-            if (geometryUBOState != CVK_RESOURCE_NEEDS_REBUILD) {
-                SetGeometryUBOState(CVK_RESOURCE_NEEDS_UPDATE); 
+            if (geometryUniformBufferState != CVK_RESOURCE_NEEDS_REBUILD) {
+                SetGeometryUniformBufferState(CVK_RESOURCE_NEEDS_UPDATE); 
             }
         }
         
@@ -597,7 +595,7 @@ public class CVKBlazesRenderable extends CVKRenderable {
         UpdateVertexPushConstants();
         
         // We are done, reset the resource state
-        SetVertexUBOState(CVK_RESOURCE_CLEAN);
+        SetVertexUniformBufferState(CVK_RESOURCE_CLEAN);
 
         return ret;
     }  
@@ -647,7 +645,7 @@ public class CVKBlazesRenderable extends CVKRenderable {
         if (VkFailed(ret)) { return ret; }     
                     
         // We are done, reset the resource state
-        SetGeometryUBOState(CVK_RESOURCE_CLEAN);
+        SetGeometryUniformBufferState(CVK_RESOURCE_CLEAN);
 
         return ret;
     }  
@@ -691,7 +689,7 @@ public class CVKBlazesRenderable extends CVKRenderable {
         if (VkFailed(ret)) { return ret; }
         
         // We are done, reset the resource state
-        SetFragmentUBOState(CVK_RESOURCE_CLEAN);
+        SetFragmentUniformBufferState(CVK_RESOURCE_CLEAN);
 
         return ret;
     }  
@@ -708,11 +706,7 @@ public class CVKBlazesRenderable extends CVKRenderable {
     private int CreatePushConstants() {
         // Initialise push constants to identity mtx
         modelViewPushConstants = MemoryUtil.memAlloc(MODEL_VIEW_PUSH_CONSTANT_SIZE);
-        for (int iRow = 0; iRow < 4; ++iRow) {
-            for (int iCol = 0; iCol < 4; ++iCol) {
-                modelViewPushConstants.putFloat(IDENTITY_44F.get(iRow, iCol));
-            }
-        }
+        PutMatrix44f(modelViewPushConstants, IDENTITY_44F);
         
         // Set DrawHitTest to false
         hitTestPushConstants = MemoryUtil.memAlloc(HIT_TEST_PUSH_CONSTANT_SIZE);
@@ -728,13 +722,7 @@ public class CVKBlazesRenderable extends CVKRenderable {
         CVKAssertNotNull(cvkSwapChain);
         
         modelViewPushConstants.clear();
-        Matrix44f mvMatrix = cvkVisualProcessor.getDisplayModelViewMatrix();
-        for (int iRow = 0; iRow < 4; ++iRow) {
-            for (int iCol = 0; iCol < 4; ++iCol) {
-                modelViewPushConstants.putFloat(mvMatrix.get(iRow, iCol));
-            }
-        }
-        
+        PutMatrix44f(modelViewPushConstants, cvkVisualProcessor.getDisplayModelViewMatrix());       
         modelViewPushConstants.flip();        
     }
     
@@ -1144,9 +1132,9 @@ public class CVKBlazesRenderable extends CVKRenderable {
         }        
         
         return vertexCount > 0 &&
-               (vertexUBOState != CVK_RESOURCE_CLEAN ||
-                geometryUBOState != CVK_RESOURCE_CLEAN ||            
-                fragmentUBOState != CVK_RESOURCE_CLEAN || 
+               (vertexUniformBufferState != CVK_RESOURCE_CLEAN ||
+                geometryUniformBufferState != CVK_RESOURCE_CLEAN ||            
+                fragmentUniformBufferState != CVK_RESOURCE_CLEAN || 
                 vertexBuffersState != CVK_RESOURCE_CLEAN ||
                 commandBuffersState != CVK_RESOURCE_CLEAN ||
                 descriptorSetsState != CVK_RESOURCE_CLEAN ||
@@ -1170,28 +1158,28 @@ public class CVKBlazesRenderable extends CVKRenderable {
             }                
         
             // Vertex uniform buffer
-            if (vertexUBOState == CVK_RESOURCE_NEEDS_REBUILD) {
+            if (vertexUniformBufferState == CVK_RESOURCE_NEEDS_REBUILD) {
                 ret = CreateVertexUniformBuffers();
                 if (VkFailed(ret)) { return ret; }
-            } else if (vertexUBOState == CVK_RESOURCE_NEEDS_UPDATE) {
+            } else if (vertexUniformBufferState == CVK_RESOURCE_NEEDS_UPDATE) {
                 ret = UpdateVertexUniformBuffer();
                 if (VkFailed(ret)) { return ret; }               
             }
 
             // Geometry uniform buffer
-            if (geometryUBOState == CVK_RESOURCE_NEEDS_REBUILD) {
+            if (geometryUniformBufferState == CVK_RESOURCE_NEEDS_REBUILD) {
                 ret = CreateGeometryUniformBuffer();
                 if (VkFailed(ret)) { return ret; }
-            } else if (geometryUBOState == CVK_RESOURCE_NEEDS_UPDATE) {
+            } else if (geometryUniformBufferState == CVK_RESOURCE_NEEDS_UPDATE) {
                 ret = UpdateGeometryUniformBuffer();
                 if (VkFailed(ret)) { return ret; }               
             }    
             
             // Fragment uniform buffer
-            if (fragmentUBOState == CVK_RESOURCE_NEEDS_REBUILD) {
+            if (fragmentUniformBufferState == CVK_RESOURCE_NEEDS_REBUILD) {
                 ret = CreateFragmentUniformBuffer();
                 if (VkFailed(ret)) { return ret; }
-            } else if (fragmentUBOState == CVK_RESOURCE_NEEDS_UPDATE) {
+            } else if (fragmentUniformBufferState == CVK_RESOURCE_NEEDS_UPDATE) {
                 ret = UpdateFragmentUniformBuffer();
                 if (VkFailed(ret)) { return ret; }               
             }               
@@ -1292,7 +1280,7 @@ public class CVKBlazesRenderable extends CVKRenderable {
     private void UpdateVertexStagingBuffer(Vertex[] vertices, int first, int last) {
         CVKAssertNotNull(cvkVertexStagingBuffer);
         CVKAssertNotNull(vertices != null);
-        CVKAssert(vertices.length > 0 && vertices.length > last);
+        CVKAssert(vertices.length > 0 && vertices.length > (last - first));
         CVKAssert(last >= 0 && last >= first && first >= 0);
 
         int offset = first * Vertex.BYTES;
@@ -1349,12 +1337,12 @@ public class CVKBlazesRenderable extends CVKRenderable {
             geometryUBO.scale = updatedBlazeSize;
             fragmentUBO.opacity = updatedBlazeOpacity;
             
-            if (geometryUBOState != CVK_RESOURCE_NEEDS_REBUILD) {
-                SetGeometryUBOState(CVK_RESOURCE_NEEDS_UPDATE);
+            if (geometryUniformBufferState != CVK_RESOURCE_NEEDS_REBUILD) {
+                SetGeometryUniformBufferState(CVK_RESOURCE_NEEDS_UPDATE);
             }  
 
-            if (fragmentUBOState != CVK_RESOURCE_NEEDS_REBUILD) {
-                SetFragmentUBOState(CVK_RESOURCE_NEEDS_UPDATE);
+            if (fragmentUniformBufferState != CVK_RESOURCE_NEEDS_REBUILD) {
+                SetFragmentUniformBufferState(CVK_RESOURCE_NEEDS_UPDATE);
             }              
         }; 
     }    

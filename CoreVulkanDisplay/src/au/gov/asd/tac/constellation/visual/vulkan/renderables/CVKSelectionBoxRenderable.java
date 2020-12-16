@@ -15,11 +15,9 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan.renderables;
 
-import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.*;
 import static org.lwjgl.system.MemoryUtil.*;
 import static org.lwjgl.vulkan.VK10.*;
-import static org.lwjgl.system.MemoryStack.stackPush;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
 import java.nio.ByteBuffer;
@@ -32,45 +30,43 @@ import org.lwjgl.vulkan.VkVertexInputAttributeDescription;
 import org.lwjgl.vulkan.VkVertexInputBindingDescription;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
-import au.gov.asd.tac.constellation.utilities.visual.NewLineModel;
+import au.gov.asd.tac.constellation.utilities.visual.SelectionBoxModel;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDescriptorPool.CVKDescriptorPoolRequirements;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
 import static au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableResourceState.CVK_RESOURCE_CLEAN;
 import static au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableResourceState.CVK_RESOURCE_NEEDS_REBUILD;
-import static au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableResourceState.CVK_RESOURCE_NEEDS_UPDATE;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKCommandBuffer;
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
+import org.apache.commons.collections.CollectionUtils;
 import org.lwjgl.PointerBuffer;
+import static org.lwjgl.system.MemoryStack.stackPush;
 import org.lwjgl.vulkan.VkPushConstantRange;
 
 
 /*******************************************************************************
- * CVKNewLineRenderable
+ * CVKSelectionBoxRenderable
  * 
- * This class renders the indicator line when the user has selected a node in 
- * the add connection mode.  It is not the line for the connection (which uses
- * different shaders).  There is only ever one indicator line.  This renderable
- * is very similar to CVKAxesRenderable in that is draws its line in screen
- * space and uses the same shaders.
+ * This class renders a translucent box to show the nodes and transactions that
+ * will be select when the mouse button is released.
  * 
  * This is the equivalent of au.gov.asd.tac.constellation.graph.interaction.
- * visual.renderables.NewLineRenderable in the JOGL display version.
+ * visual.renderables.SelectionBoxRenderable in the JOGL display version.
  *******************************************************************************/
 
-public class CVKNewLineRenderable extends CVKRenderable {
-    // From CoreInteractiveGraph\src\au\gov\asd\tac\constellation\graph\interaction\visual\renderables\NewLineRenderable.java    
-    public static final int NEW_LINE_WIDTH = 2;
-    public static final Vector4f NEW_LINE_COLOR = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
-    private static final int NUMBER_OF_VERTICES = 2;
+public class CVKSelectionBoxRenderable extends CVKRenderable {
+    // From \CoreInteractiveGraph\src\au\gov\asd\tac\constellation\graph\interaction\visual\renderables\SelectionBoxRenderable.java   
+    private static final int NUMBER_OF_VERTICES = 4;
+    private static final Vector4f SELECTION_COLOUR = new Vector4f(0, 0.5f, 1, 0.375f);
 
-    // Copied from NewLineRenderable this is the mechanism for synchronising input
+    // Copied from SelectionBoxRenderable this is the mechanism for synchronising input
     // and rendering threads.  Only the last 'model' is used.
-    private NewLineModel model = null;
-    private final BlockingDeque<NewLineModel> modelQueue = new LinkedBlockingDeque<>();    
+    private SelectionBoxModel selectionBoxModel = null;
+    private final BlockingDeque<SelectionBoxModel> modelQueue = new LinkedBlockingDeque<>();
     
     private final Vertex[] vertices = new Vertex[NUMBER_OF_VERTICES];
     private CVKBuffer cvkStagingBuffer = null;
@@ -89,9 +85,14 @@ public class CVKNewLineRenderable extends CVKRenderable {
 
         private final Vector3f vertex;
         private final Vector4f color;
-
+        
         public Vertex(final Vector3f vertex, final Vector4f color) {
             this.vertex = vertex;
+            this.color = color;
+        }        
+
+        public Vertex(final float x, final float y, final float z, final Vector4f color) {
+            this.vertex = new Vector3f(x, y, z);
             this.color = color;
         }
         
@@ -160,7 +161,7 @@ public class CVKNewLineRenderable extends CVKRenderable {
     protected String GetVertexShaderName() { return "PassThru.vs"; }
     
     @Override
-    protected String GetGeometryShaderName() { return "PassThruLine.gs"; }
+    protected String GetGeometryShaderName() { return "PassThruTriangle.gs"; }
     
     @Override
     protected String GetFragmentShaderName() { return "PassThru.fs"; }   
@@ -168,25 +169,16 @@ public class CVKNewLineRenderable extends CVKRenderable {
     
     // ========================> Lifetime <======================== \\
     
-    public CVKNewLineRenderable(CVKVisualProcessor visualProcessor) {
+    public CVKSelectionBoxRenderable(CVKVisualProcessor visualProcessor) {
         super(visualProcessor);
         colourBlend = true;
-        depthTest = true;
-        depthWrite = true;     
-        depthCompareOperation = VK_COMPARE_OP_ALWAYS;
-        assemblyTopology = VK_PRIMITIVE_TOPOLOGY_LINE_LIST;       
-        colourWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT;      
+        depthTest = false;
+        depthWrite = false;     
+        assemblyTopology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN;     
     }
         
     @Override
-    public int Initialise() {
-        // Do this here rather than ctor as the CVKDevice won't be initialised
-        // during the ctor call.
-        if (CVKDevice.AreVkLogicOpsSupported()) {
-            logicOpEnable = true;
-            logicOp = VK_LOGIC_OP_INVERT;
-        }
-        
+    public int Initialise() {        
         int ret = super.Initialise();
         if (VkFailed(ret)) { return ret; }       
 
@@ -215,8 +207,8 @@ public class CVKNewLineRenderable extends CVKRenderable {
     }
     
     
-    // ========================> Swap chain <======================== \\
-      
+    // ========================> Swap chain <======================== \\     
+    
     @Override
     protected int DestroySwapChainResources(){
         cvkVisualProcessor.VerifyInRenderThread();
@@ -245,8 +237,10 @@ public class CVKNewLineRenderable extends CVKRenderable {
         CVKAssertNotNull(cvkSwapChain);
         
         // Allocate the vertex objects
-        vertices[0] = new Vertex(ZERO_3F, NEW_LINE_COLOR);
-        vertices[1] = new Vertex(ZERO_3F, NEW_LINE_COLOR);        
+        vertices[0] = new Vertex(ZERO_3F, SELECTION_COLOUR);
+        vertices[1] = new Vertex(ZERO_3F, SELECTION_COLOUR);        
+        vertices[2] = new Vertex(ZERO_3F, SELECTION_COLOUR);   
+        vertices[3] = new Vertex(ZERO_3F, SELECTION_COLOUR);   
          
         // Staging buffer so our VB can be device local (most performant memory)
         final int size = vertices.length * Vertex.BYTES;
@@ -254,15 +248,15 @@ public class CVKNewLineRenderable extends CVKRenderable {
                                             VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                                             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
                                             GetLogger(),
-                                            "CVKNewLineRenderable.CreateVertexBuffer cvkStagingBuffer");
+                                            "CVKSelectionBoxRenderable.CreateVertexBuffer cvkStagingBuffer");
         
         // Create the actual VB which will be device local
         cvkVertexBuffer = CVKBuffer.Create(size,
                                            VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
                                            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
                                            GetLogger(),
-                                           "CVKNewLineRenderable.CreateVertexBuffers cvkStagingBuffer");
-        cvkVertexBuffer.CopyFrom(cvkStagingBuffer);  
+                                           "CVKSelectionBoxRenderable.CreateVertexBuffers cvkStagingBuffer");
+        cvkVertexBuffer.CopyFrom(cvkStagingBuffer);
        
         return UpdateVertexBuffer(stack);  
     }
@@ -273,43 +267,30 @@ public class CVKNewLineRenderable extends CVKRenderable {
         CVKAssertNotNull(cvkStagingBuffer.GetMemoryBufferHandle());
         
         int ret = VK_SUCCESS;
+
+        // Logic copied from SelectionBoxRenderable. 
+        selectionBoxModel = null;
+        if (CollectionUtils.isNotEmpty(modelQueue)) {
+            selectionBoxModel = modelQueue.getLast();
+            modelQueue.clear();
+        }  
         
-        final Camera camera = cvkVisualProcessor.getDisplayCamera();
-        NewLineModel updatedModel = modelQueue.peek();
-        
-        // Logic copied from NewLineRenderable.  Looks like it is purging the 
-        // queue of any models with a different camera to the current one.
-        while (updatedModel != null && updatedModel.getCamera() != camera) {
-            modelQueue.remove();
-            updatedModel = modelQueue.peek();
-        }     
-        
-        // This looks like it is finding the last (most recent) model that matches
-        // the current camera, adding it back to the queue after removing all other
-        // model.
-        if (updatedModel != null) {
-            updatedModel = modelQueue.remove();
-            NewLineModel nextModel = modelQueue.peek();
-            while (nextModel != null && nextModel.getCamera() == camera) {
-                updatedModel = modelQueue.remove();
-                nextModel = modelQueue.peek();
-            }
-            modelQueue.addFirst(updatedModel);
-        }
-        model = updatedModel;
-        
-        if (model != null && !model.isClear()) {        
-            // Update our vertex objects.  Note there was a weird bug when instead
-            // of setting a vertex to a new object vertices[n].vertex.set() was
-            // used.  The result would move the axes renderable.  I didn't have
-            // time to investigate but there could be something hokey going with
-            // memory on the Java heap?
-            vertices[0] = new Vertex(model.getStartLocation(), NEW_LINE_COLOR);
-            vertices[1] = new Vertex(model.getEndLocation(), NEW_LINE_COLOR);
-            // BROKEN.  Hopefully someone more knowledgable about Java might be
-            // able to spot the problem.
-//            vertices[0].vertex.set(model.getStartLocation());
-//            vertices[1].vertex.set(model.getEndLocation());
+        if (selectionBoxModel != null && selectionBoxModel.getEndPoint() != null) {     
+            final Point begin = selectionBoxModel.getStartPoint();
+            final Point end = selectionBoxModel.getEndPoint();
+
+            // Find the location of the box in projected coordinates
+            final float width = cvkSwapChain.GetWidth();
+            final float height = cvkSwapChain.GetHeight();
+            float left = (begin.x / width) * 2f - 1f;
+            float right = (end.x / width) * 2f - 1f;
+            float top = ((height - begin.y) / height) * 2f - 1f;
+            float bottom = ((height - end.y) / height) * 2f - 1f;
+                            
+            vertices[0] = new Vertex(right, bottom, 0f, SELECTION_COLOUR);
+            vertices[1] = new Vertex(left, bottom, 0, SELECTION_COLOUR);
+            vertices[2] = new Vertex(left, top, 0f, SELECTION_COLOUR);
+            vertices[3] = new Vertex(right, top, 0f, SELECTION_COLOUR);
 
             // Update the staging buffer
             final int size = vertices.length * Vertex.BYTES;
@@ -332,7 +313,7 @@ public class CVKNewLineRenderable extends CVKRenderable {
             
     @Override
     public int GetVertexCount() { 
-        if (model != null && !model.isClear()) {
+        if (selectionBoxModel != null && selectionBoxModel.isClear()) {
             return NUMBER_OF_VERTICES;
         } else {
             return 0;
@@ -343,6 +324,7 @@ public class CVKNewLineRenderable extends CVKRenderable {
         if (null != cvkVertexBuffer) {
             cvkVertexBuffer.Destroy();
             cvkVertexBuffer = null;
+            
             SetVertexBuffersState(CVK_RESOURCE_NEEDS_REBUILD);
         }
     }    
@@ -353,17 +335,14 @@ public class CVKNewLineRenderable extends CVKRenderable {
     private int CreatePushConstants() {
         // Initialise push constants to identity mtx
         pushConstants = memAlloc(Matrix44f.BYTES);
-        PutMatrix44f(pushConstants, IDENTITY_44F);
+        for (int iRow = 0; iRow < 4; ++iRow) {
+            for (int iCol = 0; iCol < 4; ++iCol) {
+                pushConstants.putFloat(IDENTITY_44F.get(iRow, iCol));
+            }
+        }
         pushConstants.flip();
          
         return VK_SUCCESS;
-    }
-    
-    private void UpdatePushConstants(){
-        CVKAssertNotNull(cvkSwapChain);
-        
-        PutMatrix44f(pushConstants, cvkVisualProcessor.getDisplayModelViewProjectionMatrix());
-        pushConstants.flip();        
     }
     
     private void DestroyPushConstants() {
@@ -387,13 +366,11 @@ public class CVKNewLineRenderable extends CVKRenderable {
         for (int i = 0; i < imageCount; ++i) {
             CVKCommandBuffer buffer = CVKCommandBuffer.Create(VK_COMMAND_BUFFER_LEVEL_SECONDARY,
                                                               GetLogger(),
-                                                              String.format("CVKNewLineRenderable %d", i));
+                                                              String.format("CVKSelectionBoxRenderable %d", i));
             displayCommandBuffers.add(buffer);
         }
         
         SetCommandBuffersState(CVK_RESOURCE_CLEAN);
-        
-        GetLogger().info("Init Command Buffer - CVKNewLineRenderable");
         
         return ret;
     }
@@ -436,6 +413,7 @@ public class CVKNewLineRenderable extends CVKRenderable {
             displayCommandBuffers.forEach(el -> {el.Destroy();});
             displayCommandBuffers.clear();
             displayCommandBuffers = null;
+            
             SetCommandBuffersState(CVK_RESOURCE_NEEDS_REBUILD);
         }       
     }
@@ -498,7 +476,7 @@ public class CVKNewLineRenderable extends CVKRenderable {
     public int DisplayUpdate() { 
         cvkVisualProcessor.VerifyInRenderThread();
         
-        int ret = VK_SUCCESS;   
+        int ret = VK_SUCCESS;    
         
         try (MemoryStack stack = stackPush()) {
 
@@ -523,17 +501,15 @@ public class CVKNewLineRenderable extends CVKRenderable {
                 ret = CreatePipelines(cvkSwapChain.GetRenderPassHandle(), displayPipelines);
                 if (VkFailed(ret)) { return ret; }                
             }                                                   
-        }                  
+        }    
 
-        UpdatePushConstants(); 
-        
         return ret;
     }
     
     
     // ========================> Tasks <======================== \\
     
-    public void queueModel(final NewLineModel model) {
+    public void queueModel(final SelectionBoxModel model) {
         modelQueue.add(model);
         cvkVisualProcessor.RequestRedraw();
     }

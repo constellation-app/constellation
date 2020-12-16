@@ -1,13 +1,13 @@
 #version 450
 
 
-// === UNIFORMS
+// === PUSH CONSTANT ===
 layout(std140, push_constant) uniform UniformBlock {
     mat4 mvpMatrix;
 }ub;
 
 
-// === PER VERTEX DATA IN
+// === PER VERTEX DATA IN ===
 layout(location = 0) in vec3 vertex;
 
 
