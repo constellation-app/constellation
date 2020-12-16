@@ -49,11 +49,11 @@ import java.nio.LongBuffer;
 import java.util.concurrent.CountDownLatch;
 import static org.lwjgl.vulkan.KHRSwapchain.VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_DEBUGGING;
-import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_RENDERABLE_INITIALISATION_FAILED;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.io.File;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_ERROR_RENDERABLE_INITIALISATION_FAILED;
 
 
 /*
@@ -211,7 +211,7 @@ public class CVKRenderer implements ComponentListener {
                     renderables.add(r);
                 } catch (Exception e) {
                     GetLogger().LogException(e, "Exception initialising %s", r.getClass().getName());
-                    return CVK_RENDERABLE_INITIALISATION_FAILED;
+                    return CVK_ERROR_RENDERABLE_INITIALISATION_FAILED;
                 }
             }
             newRenderables.clear();
@@ -676,9 +676,8 @@ public class CVKRenderer implements ComponentListener {
                     
                     // Offscreen Render Pass
                     List<CVKRenderable> hitTestRenderables = cvkVisualProcessor.GetHitTesterList();
-                    for (CVKRenderable r : renderables) {
-                        r.OffscreenRender(hitTestRenderables); 
-                    }                    
+                    ret = cvkVisualProcessor.GetHitTester().OffscreenRender(hitTestRenderables);
+                    checkVKret(ret);                  
         
                     if (requestScreenshot) {
                         CVKDevice.WaitIdle();

@@ -35,7 +35,7 @@ public class CVKSwapChainImage extends CVKImage {
         cvkImage.layout     = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
         cvkImage.pImage.put(0, imageHandle);
         
-        cvkImage.CreateImageView();
+        cvkImage.CreateImageView(null);
         
         return cvkImage;
     }

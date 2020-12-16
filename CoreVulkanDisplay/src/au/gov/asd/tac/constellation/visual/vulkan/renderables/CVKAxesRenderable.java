@@ -36,10 +36,11 @@ import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDescriptorPool.CVKDescriptorPoolRequirements;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKRenderUpdateTask;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
+import static au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableResourceState.CVK_RESOURCE_CLEAN;
+import static au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableResourceState.CVK_RESOURCE_NEEDS_REBUILD;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKCommandBuffer;
 import java.util.ArrayList;
-import java.util.List;
 import org.lwjgl.vulkan.VkPushConstantRange;
 
 
@@ -63,10 +64,8 @@ public class CVKAxesRenderable extends CVKRenderable {
     private float pScale = 0;
     
     private final Vertex[] vertices = new Vertex[NUMBER_OF_VERTICES];
-    private final VertexUniformBufferObject vertexUBO = new VertexUniformBufferObject();
     private CVKBuffer cvkVertexBuffer = null;
     private CVKCommandBuffer cvkDisplayCommandBuffer;
-    private boolean needsDisplayUpdate = false;
     private ByteBuffer pushConstants = null;
  
     
@@ -142,24 +141,7 @@ public class CVKAxesRenderable extends CVKRenderable {
     @Override
     protected VkVertexInputAttributeDescription.Buffer GetVertexAttributeDescriptions() {
         return Vertex.GetAttributeDescriptions();
-    }     
-    
-    private static class VertexUniformBufferObject {
-        private static final int BYTES = Matrix44f.BYTES;
-        public Matrix44f mvpMatrix;
-      
-        public VertexUniformBufferObject() {
-            mvpMatrix = new Matrix44f();
-        }
-        
-        private void CopyTo(ByteBuffer buffer) {
-            for (int iRow = 0; iRow < 4; ++iRow) {
-                for (int iCol = 0; iCol < 4; ++iCol) {
-                    buffer.putFloat(mvpMatrix.get(iRow, iCol));
-                }
-            }
-        }         
-    }     
+    }          
     
     
     // ========================> Shaders <======================== \\
@@ -214,40 +196,7 @@ public class CVKAxesRenderable extends CVKRenderable {
     }
     
     
-    // ========================> Swap chain <======================== \\
-    
-    private int CreateSwapChainResources() {
-        cvkVisualProcessor.VerifyInRenderThread();
-        CVKAssertNotNull(cvkSwapChain);
-        int ret = VK_SUCCESS;
-
-                
-        // We only need to recreate these resources if the number of images in 
-        // the swapchain changes or if this is the first call after the initial
-        // swapchain is created.
-        if (swapChainImageCountChanged) {
-            try (MemoryStack stack = stackPush()) {
-
-                ret = CreateVertexBuffer(stack);
-                if (VkFailed(ret)) { return ret; }   
-
-                ret = CreateCommandBuffer();
-                if (VkFailed(ret)) { return ret; }            
-
-                displayPipelines = new ArrayList<>(cvkSwapChain.GetImageCount());
-                ret = CreatePipelines(cvkSwapChain.GetRenderPassHandle(), displayPipelines);
-                if (VkFailed(ret)) { return ret; }                                                       
-            }      
-        } else {
-            // This is the resize path, image count is unchanged.       
-            UpdatePushConstants();
-        }
-        
-        swapChainResourcesDirty = false;
-        swapChainImageCountChanged = false;
-        
-        return ret;
-    }  
+    // ========================> Swap chain <======================== \\   
     
     @Override
     protected int DestroySwapChainResources(){
@@ -426,6 +375,8 @@ public class CVKAxesRenderable extends CVKRenderable {
         // Cleanup
         cvkStagingBuffer.Destroy();
         
+        SetVertexBuffersState(CVK_RESOURCE_CLEAN);
+        
         return ret;  
     }
     
@@ -436,6 +387,8 @@ public class CVKAxesRenderable extends CVKRenderable {
         if (null != cvkVertexBuffer) {
             cvkVertexBuffer.Destroy();
             cvkVertexBuffer = null;
+            
+            SetVertexBuffersState(CVK_RESOURCE_NEEDS_REBUILD);
         }
     }    
    
@@ -444,12 +397,8 @@ public class CVKAxesRenderable extends CVKRenderable {
     
     private int CreatePushConstants() {
         // Initialise push constants to identity mtx
-        pushConstants = memAlloc(VertexUniformBufferObject.BYTES);
-        for (int iRow = 0; iRow < 4; ++iRow) {
-            for (int iCol = 0; iCol < 4; ++iCol) {
-                pushConstants.putFloat(IDENTITY_44F.get(iRow, iCol));
-            }
-        }
+        pushConstants = memAlloc(Matrix44f.BYTES);
+        PutMatrix44f(pushConstants, IDENTITY_44F);
         pushConstants.flip();
          
         return VK_SUCCESS;
@@ -481,11 +430,12 @@ public class CVKAxesRenderable extends CVKRenderable {
                                                 topRightCorner.getY(), 
                                                 topRightCorner.getZ());       
         
-        // Calculate the model-view-projection matrix
-        vertexUBO.mvpMatrix.multiply(translationMatrix, srMatrix);
+        // Calculate the model-view-projection matrix   
+        final Matrix44f mvpMatrix = new Matrix44f();
+        mvpMatrix.multiply(translationMatrix, srMatrix);
         
         // Update the push constants data
-        vertexUBO.CopyTo(pushConstants);
+        PutMatrix44f(pushConstants, mvpMatrix);
         pushConstants.flip();        
     }
     
@@ -504,7 +454,10 @@ public class CVKAxesRenderable extends CVKRenderable {
         
         cvkDisplayCommandBuffer = CVKCommandBuffer.Create(VK_COMMAND_BUFFER_LEVEL_SECONDARY,
                                                           GetLogger(),
-                                                          "CVKAxesRenderable cvkDisplayCommandBuffer");        
+                                                          "CVKAxesRenderable cvkDisplayCommandBuffer");  
+        
+        SetCommandBuffersState(CVK_RESOURCE_CLEAN);
+        
         return VK_SUCCESS;
     }
     
@@ -544,6 +497,8 @@ public class CVKAxesRenderable extends CVKRenderable {
         if (null != cvkDisplayCommandBuffer) {
             cvkDisplayCommandBuffer.Destroy();
             cvkDisplayCommandBuffer = null;
+            
+            SetCommandBuffersState(CVK_RESOURCE_NEEDS_REBUILD);
         }       
     }
     
@@ -571,7 +526,7 @@ public class CVKAxesRenderable extends CVKRenderable {
             VkPushConstantRange.Buffer pushConstantRange;
             pushConstantRange = VkPushConstantRange.callocStack(1, stack);
             pushConstantRange.stageFlags(VK_SHADER_STAGE_VERTEX_BIT);
-            pushConstantRange.size(VertexUniformBufferObject.BYTES);
+            pushConstantRange.size(Matrix44f.BYTES);
             pushConstantRange.offset(0);                     
             
             VkPipelineLayoutCreateInfo pipelineLayoutInfo = VkPipelineLayoutCreateInfo.callocStack(stack);
@@ -598,7 +553,9 @@ public class CVKAxesRenderable extends CVKRenderable {
     
     @Override
     public boolean NeedsDisplayUpdate() {
-        return needsDisplayUpdate | descriptorPoolResourcesDirty | swapChainResourcesDirty;
+        return vertexBuffersState != CVK_RESOURCE_CLEAN ||
+               commandBuffersState != CVK_RESOURCE_CLEAN ||
+               pipelinesState != CVK_RESOURCE_CLEAN;
     }
 
     @Override
@@ -607,14 +564,26 @@ public class CVKAxesRenderable extends CVKRenderable {
         
         int ret = VK_SUCCESS;    
         
-        if (swapChainResourcesDirty) {
-            ret = CreateSwapChainResources();
-            if (VkFailed(ret)) { return ret; }
-        }           
+        try (MemoryStack stack = stackPush()) {
+            if (vertexBuffersState == CVK_RESOURCE_NEEDS_REBUILD) {
+                ret = CreateVertexBuffer(stack);
+                if (VkFailed(ret)) { return ret; }  
+            } 
+        }
+              
+        if (commandBuffersState == CVK_RESOURCE_NEEDS_REBUILD) {
+            ret = CreateCommandBuffer();
+            if (VkFailed(ret)) { return ret; }  
+        }            
 
+        if (pipelinesState == CVK_RESOURCE_NEEDS_REBUILD) {
+            displayPipelines = new ArrayList<>(cvkSwapChain.GetImageCount());
+            ret = CreatePipelines(cvkSwapChain.GetRenderPassHandle(), displayPipelines);
+            if (VkFailed(ret)) { return ret; }                                                                                 
+        }      
+        
         UpdatePushConstants();
- 
-        needsDisplayUpdate = false;
+
         return ret;
     }
     
@@ -627,8 +596,7 @@ public class CVKAxesRenderable extends CVKRenderable {
         
         //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.ProcessRenderTasks) ===//
         return () -> {
-            cvkVisualProcessor.VerifyInRenderThread();                      
-            needsDisplayUpdate = true;
+            UpdatePushConstants();
         };
     }  
 

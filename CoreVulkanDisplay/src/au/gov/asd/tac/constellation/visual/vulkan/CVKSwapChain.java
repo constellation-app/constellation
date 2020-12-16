@@ -205,6 +205,11 @@ public class CVKSwapChain {
      * They can be configured for direct rendering, double or triple buffered
      * rendering or even stereoscopic rendering.
      * <p>
+     * This method also selects the number of images in the swapchain.  Currently 
+     * there is a copy of many rendering resources (eg vertex buffers, uniform 
+     * buffers) that can probably be removed as Constellation isn’t continuously 
+     * rendering.
+     * <p>
      * When created vkImages contain a logical allocation but this has not been
      * backed by physical memory yet. The 3 steps to actually getting memory
      * are:
@@ -351,6 +356,7 @@ public class CVKSwapChain {
                                         VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, 
                                         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
                                         VK_IMAGE_ASPECT_DEPTH_BIT,
+                                        null,
                                         GetLogger(),
                                         "CVKSwapChain cvkDepthImage");
         cvkDepthImage.Transition(VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);   
@@ -487,6 +493,17 @@ public class CVKSwapChain {
         return ret;
     }
     
+    /**
+     * This renderpass controls the rendering of the pick buffer.  The use of a 
+     * pick buffer is reason why Core Display Vulkan doesn’t need to render when
+     * the mouse moves.  It just uses the mouse position to sample the pick 
+     * buffer to determine what object if any we are over.  Core Display OpenGL
+     * renders for every mouse move event (there are many even in a small 
+     * movement) and resolves the mouse position on the fly.
+     * 
+     * @param stack
+     * @return
+     */
     private int CreateOffscreenRenderPass(MemoryStack stack) {
         CVKAssert(CVKDevice.GetVkDevice() != null);
         CVKAssert(cvkCanvas.GetSurfaceFormat() != VK_FORMAT_NONE);
@@ -564,7 +581,16 @@ public class CVKSwapChain {
         return ret;
     } 
     
-    
+    /**
+     * Creates the primary command buffer for each image in the swapchain. 
+     * A command buffer is a recorded list of commands to execute on the GPU.
+     * In OpenGL rendering commands are called immediately, this locks the CPU
+     * and GPU together during the execution of rendering commands.  In Vulkan
+     * commands are recorded once then replayed each frame until changed.
+     * 
+     * @param stack
+     * @return
+     */
     private int InitVKCommandBuffers(MemoryStack stack) {
         CVKAssert(CVKDevice.GetVkDevice() != null);
         CVKAssert(CVKDevice.GetCommandPoolHandle() != VK_NULL_HANDLE);   

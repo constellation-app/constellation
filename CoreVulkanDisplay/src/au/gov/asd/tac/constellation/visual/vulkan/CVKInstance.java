@@ -202,11 +202,11 @@ public class CVKInstance {
         
         
         // DELETE AFTER DEBUGGING
-//        boolean isCmdBuffer = false;
-//        if (callbackMsg.contains("type = VK_OBJECT_TYPE_COMMAND_BUFFER")) {
-//            isCmdBuffer = true;
+//        boolean logicOp = false;
+//        if (callbackMsg.contains("If logic operations feature not enabled, logicOpEnable must be VK_FALSE")) {
+//            logicOp = true;
 //        } else {
-//            isCmdBuffer = false;
+//            logicOp = false;
 //        }
 
 /*

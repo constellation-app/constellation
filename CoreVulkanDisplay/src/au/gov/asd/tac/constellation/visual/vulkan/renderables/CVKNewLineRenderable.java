@@ -35,6 +35,9 @@ import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.utilities.visual.NewLineModel;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDescriptorPool.CVKDescriptorPoolRequirements;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
+import static au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableResourceState.CVK_RESOURCE_CLEAN;
+import static au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableResourceState.CVK_RESOURCE_NEEDS_REBUILD;
+import static au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableResourceState.CVK_RESOURCE_NEEDS_UPDATE;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKCommandBuffer;
 import java.util.ArrayList;
@@ -70,7 +73,6 @@ public class CVKNewLineRenderable extends CVKRenderable {
     private final BlockingDeque<NewLineModel> modelQueue = new LinkedBlockingDeque<>();    
     
     private final Vertex[] vertices = new Vertex[NUMBER_OF_VERTICES];
-    private final VertexUniformBufferObject vertexUBO = new VertexUniformBufferObject();
     private CVKBuffer cvkStagingBuffer = null;
     private CVKBuffer cvkVertexBuffer = null;
     private List<CVKCommandBuffer> displayCommandBuffers = null;
@@ -149,24 +151,7 @@ public class CVKNewLineRenderable extends CVKRenderable {
     @Override
     protected VkVertexInputAttributeDescription.Buffer GetVertexAttributeDescriptions() {
         return Vertex.GetAttributeDescriptions();
-    }     
-    
-    private static class VertexUniformBufferObject {
-        private static final int BYTES = Matrix44f.BYTES;
-        public Matrix44f mvpMatrix;
-      
-        public VertexUniformBufferObject() {
-            mvpMatrix = new Matrix44f();
-        }
-        
-        private void CopyTo(ByteBuffer buffer) {
-            for (int iRow = 0; iRow < 4; ++iRow) {
-                for (int iCol = 0; iCol < 4; ++iCol) {
-                    buffer.putFloat(mvpMatrix.get(iRow, iCol));
-                }
-            }
-        }         
-    }     
+    }       
     
     
     // ========================> Shaders <======================== \\
@@ -231,36 +216,7 @@ public class CVKNewLineRenderable extends CVKRenderable {
     
     
     // ========================> Swap chain <======================== \\
-    
-    private int CreateSwapChainResources() {
-        cvkVisualProcessor.VerifyInRenderThread();
-        CVKAssertNotNull(cvkSwapChain);
-        int ret = VK_SUCCESS;
-                
-        // We only need to recreate these resources if the number of images in 
-        // the swapchain changes or if this is the first call after the initial
-        // swapchain is created.
-        if (swapChainImageCountChanged) {
-            try (MemoryStack stack = stackPush()) {
-
-                ret = CreateVertexBuffer(stack);
-                if (VkFailed(ret)) { return ret; }   
-
-                ret = CreateCommandBuffers();
-                if (VkFailed(ret)) { return ret; }            
-
-                displayPipelines = new ArrayList<>(cvkSwapChain.GetImageCount());
-                ret = CreatePipelines(cvkSwapChain.GetRenderPassHandle(), displayPipelines);
-                if (VkFailed(ret)) { return ret; }                                                       
-            }      
-        }
-        
-        swapChainResourcesDirty = false;
-        swapChainImageCountChanged = false;
-        
-        return ret;
-    }  
-    
+      
     @Override
     protected int DestroySwapChainResources(){
         cvkVisualProcessor.VerifyInRenderThread();
@@ -273,7 +229,6 @@ public class CVKNewLineRenderable extends CVKRenderable {
             DestroyVertexBuffer();
             DestroyCommandBuffers();
             DestroyPipelines();
-            DestroyCommandBuffers(); 
 
             CVKAssertNull(displayPipelines);
             CVKAssertNull(cvkVertexBuffer);
@@ -307,7 +262,7 @@ public class CVKNewLineRenderable extends CVKRenderable {
                                            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
                                            GetLogger(),
                                            "CVKNewLineRenderable.CreateVertexBuffers cvkStagingBuffer");
-        cvkVertexBuffer.CopyFrom(cvkStagingBuffer);
+        cvkVertexBuffer.CopyFrom(cvkStagingBuffer);  
        
         return UpdateVertexBuffer(stack);  
     }
@@ -370,6 +325,8 @@ public class CVKNewLineRenderable extends CVKRenderable {
             cvkVertexBuffer.CopyFrom(cvkStagingBuffer);
         }
         
+        SetVertexBuffersState(CVK_RESOURCE_CLEAN);
+        
         return ret;
     }
             
@@ -386,6 +343,7 @@ public class CVKNewLineRenderable extends CVKRenderable {
         if (null != cvkVertexBuffer) {
             cvkVertexBuffer.Destroy();
             cvkVertexBuffer = null;
+            SetVertexBuffersState(CVK_RESOURCE_NEEDS_REBUILD);
         }
     }    
    
@@ -394,12 +352,8 @@ public class CVKNewLineRenderable extends CVKRenderable {
     
     private int CreatePushConstants() {
         // Initialise push constants to identity mtx
-        pushConstants = memAlloc(VertexUniformBufferObject.BYTES);
-        for (int iRow = 0; iRow < 4; ++iRow) {
-            for (int iCol = 0; iCol < 4; ++iCol) {
-                pushConstants.putFloat(IDENTITY_44F.get(iRow, iCol));
-            }
-        }
+        pushConstants = memAlloc(Matrix44f.BYTES);
+        PutMatrix44f(pushConstants, IDENTITY_44F);
         pushConstants.flip();
          
         return VK_SUCCESS;
@@ -408,8 +362,7 @@ public class CVKNewLineRenderable extends CVKRenderable {
     private void UpdatePushConstants(){
         CVKAssertNotNull(cvkSwapChain);
         
-        vertexUBO.mvpMatrix.set(cvkVisualProcessor.getDisplayModelViewProjectionMatrix());        
-        vertexUBO.CopyTo(pushConstants);
+        PutMatrix44f(pushConstants, cvkVisualProcessor.getDisplayModelViewProjectionMatrix());
         pushConstants.flip();        
     }
     
@@ -437,6 +390,8 @@ public class CVKNewLineRenderable extends CVKRenderable {
                                                               String.format("CVKNewLineRenderable %d", i));
             displayCommandBuffers.add(buffer);
         }
+        
+        SetCommandBuffersState(CVK_RESOURCE_CLEAN);
         
         GetLogger().info("Init Command Buffer - CVKNewLineRenderable");
         
@@ -481,6 +436,7 @@ public class CVKNewLineRenderable extends CVKRenderable {
             displayCommandBuffers.forEach(el -> {el.Destroy();});
             displayCommandBuffers.clear();
             displayCommandBuffers = null;
+            SetCommandBuffersState(CVK_RESOURCE_NEEDS_REBUILD);
         }       
     }
     
@@ -508,7 +464,7 @@ public class CVKNewLineRenderable extends CVKRenderable {
             VkPushConstantRange.Buffer pushConstantRange;
             pushConstantRange = VkPushConstantRange.callocStack(1, stack);
             pushConstantRange.stageFlags(VK_SHADER_STAGE_VERTEX_BIT);
-            pushConstantRange.size(VertexUniformBufferObject.BYTES);
+            pushConstantRange.size(Matrix44f.BYTES);
             pushConstantRange.offset(0);                     
             
             VkPipelineLayoutCreateInfo pipelineLayoutInfo = VkPipelineLayoutCreateInfo.callocStack(stack);
@@ -542,18 +498,35 @@ public class CVKNewLineRenderable extends CVKRenderable {
     public int DisplayUpdate() { 
         cvkVisualProcessor.VerifyInRenderThread();
         
-        int ret = VK_SUCCESS;    
+        int ret = VK_SUCCESS;   
         
-        if (swapChainResourcesDirty) {
-            ret = CreateSwapChainResources();
-            if (VkFailed(ret)) { return ret; }
-        }    
         try (MemoryStack stack = stackPush()) {
-            ret = UpdateVertexBuffer(stack);
-            if (VkFailed(ret)) { return ret; }
-        }    
+
+            // We always update vertex buffers while we have a model in the queue
+            // as that updates the start and end points.  CreateVertexBuffer
+            // calls UpdateVertexBuffer
+            if (vertexBuffersState == CVK_RESOURCE_NEEDS_REBUILD) {
+                ret = CreateVertexBuffer(stack);
+                if (VkFailed(ret)) { return ret; }  
+            } else {
+                ret = UpdateVertexBuffer(stack);
+                if (VkFailed(ret)) { return ret; }               
+            }  
+              
+            if (commandBuffersState == CVK_RESOURCE_NEEDS_REBUILD) {
+                ret = CreateCommandBuffers();
+                if (VkFailed(ret)) { return ret; }  
+            }            
+
+            if (pipelinesState == CVK_RESOURCE_NEEDS_REBUILD) {
+                displayPipelines = new ArrayList<>(cvkSwapChain.GetImageCount());
+                ret = CreatePipelines(cvkSwapChain.GetRenderPassHandle(), displayPipelines);
+                if (VkFailed(ret)) { return ret; }                
+            }                                                   
+        }                  
 
         UpdatePushConstants(); 
+        
         return ret;
     }
     

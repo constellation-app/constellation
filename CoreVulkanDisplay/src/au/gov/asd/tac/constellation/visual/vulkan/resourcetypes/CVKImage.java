@@ -122,6 +122,7 @@ import static org.lwjgl.vulkan.VK10.vkCmdCopyImage;
 import static org.lwjgl.vulkan.VK10.vkGetImageSubresourceLayout;
 import static org.lwjgl.vulkan.VK10.vkMapMemory;
 import static org.lwjgl.vulkan.VK10.vkUnmapMemory;
+import org.lwjgl.vulkan.VkComponentMapping;
 import org.lwjgl.vulkan.VkImageBlit;
 import org.lwjgl.vulkan.VkImageCopy;
 import org.lwjgl.vulkan.VkImageSubresource;
@@ -152,9 +153,10 @@ public class CVKImage {
 
     protected CVKImage() {}
     
-    public long GetImageHandle() { return pImage.get(0); }
-    public long GetImageViewHandle() { return pImageView.get(0); }
-    public long GetMemoryImageHandle() { return pImageMemory.get(0); }
+    public boolean IsValid() { return pImage != null && pImageView != null && pImageMemory != null; }
+    public long GetImageHandle() { return pImage != null ? pImage.get(0) : VK_NULL_HANDLE; }
+    public long GetImageViewHandle() { return pImageView != null ? pImageView.get(0) : VK_NULL_HANDLE; }
+    public long GetMemoryImageHandle() { return pImageMemory != null ? pImageMemory.get(0) : VK_NULL_HANDLE; }
     public int GetFormat() { return format; }
     public int GetAspectMask() { return aspectMask; }
     private CVKGraphLogger GetLogger() { return cvkGraphLogger != null ? cvkGraphLogger : CVKGraphLogger.GetStaticLogger(); }
@@ -486,6 +488,8 @@ public class CVKImage {
      * @param usage
      * @param properties
      * @param aspectMask
+     * @param componentMapping
+     * @param graphLogger
      * @param debugName
      * @return The image or null if errors occur
      */
@@ -498,6 +502,7 @@ public class CVKImage {
                                     int usage, 
                                     int properties,
                                     int aspectMask,
+                                    VkComponentMapping componentMapping,
                                     CVKGraphLogger graphLogger,
                                     String debugName) {
         CVKImage cvkImage = CreateImage(width,
@@ -512,7 +517,7 @@ public class CVKImage {
                                         graphLogger,
                                         debugName);
         
-        cvkImage.CreateImageView();
+        cvkImage.CreateImageView(componentMapping);
         
         return cvkImage;
         
@@ -531,6 +536,7 @@ public class CVKImage {
      * @param usage
      * @param properties
      * @param aspectMask
+     * @param graphLogger
      * @param debugName
      * @return The image or null if errors occur
      */
@@ -615,9 +621,10 @@ public class CVKImage {
 
     /**
      * Creates an ImageView associate with the image handle
+     * @param componentMapping
      * @return error code
      */
-    public int CreateImageView() {
+    public int CreateImageView(VkComponentMapping componentMapping) {
         int ret = VK_SUCCESS;
         
         try(MemoryStack stack = stackPush()) {
@@ -632,6 +639,10 @@ public class CVKImage {
                 vkViewInfo.subresourceRange().levelCount(1);
                 vkViewInfo.subresourceRange().baseArrayLayer(0);
                 vkViewInfo.subresourceRange().layerCount(layers);
+                
+                if (componentMapping != null) {
+                    vkViewInfo.components().set(componentMapping);
+                }
 
                 ret = vkCreateImageView(CVKDevice.GetVkDevice(), vkViewInfo, null, pImageView);
                 if (VkFailed(ret)) { return ret; }
@@ -681,6 +692,7 @@ public class CVKImage {
                                     VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, 
                                     VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
                                     aspectMask,
+                                    null,
                                     cvkGraphLogger,
                                     "CVKImage destImage");
         if (destImage == null) { return CVK_ERROR_DEST_IMAGE_CREATE_FAILED; }
@@ -956,16 +968,18 @@ public class CVKImage {
     public int ReadPixel(int x, int y) {
         int pixel = 0;
         
-        try (MemoryStack stack = stackPush()) {
-            int ret = StartMemoryMap(stack);
-            checkVKret(ret);
-            
-            // It's possible the mapping will fail as both the event and render
-            // thread access the pick buffer for hit testing.  Missing a frame
-            // of hit testing won't cause any issues so let it slide.
-            if (pWriteMemory != null) {
-                pixel = ReadPixel(stack, x, y);
-                EndMemoryMap();
+        if (IsValid()) {
+            try (MemoryStack stack = stackPush()) {
+                int ret = StartMemoryMap(stack);
+                checkVKret(ret);
+
+                // It's possible the mapping will fail as both the event and render
+                // thread access the pick buffer for hit testing.  Missing a frame
+                // of hit testing won't cause any issues so let it slide.
+                if (pWriteMemory != null) {
+                    pixel = ReadPixel(stack, x, y);
+                    EndMemoryMap();
+                }
             }
         }
         

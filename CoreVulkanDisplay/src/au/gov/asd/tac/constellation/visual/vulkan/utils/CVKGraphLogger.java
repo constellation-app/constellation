@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan.utils;
 
-import java.io.File;
+import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_DEBUGGING;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -26,8 +26,11 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.StreamHandler;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.CVK_DEFAULT_LOG_LEVEL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import org.openide.modules.Places;
 
 public class CVKGraphLogger {
     // Static logger used by static code like shader loading or by code that doesn't know
@@ -191,16 +194,17 @@ public class CVKGraphLogger {
 
         // Delete old log
         final String logName = String.format("%s.log", name);
+        Path logPath = Paths.get(Places.getUserDirectory().getPath(), "../..", logName).toAbsolutePath().normalize();        
+        
         try {         
-            File oldLog = new File(logName);
-            oldLog.delete();                
+            logPath.toFile().delete();                
         }  
         catch(Exception e) {   
             // old log doesn't exist or is locked, oh well keep going
         }  
 
         try {
-            FileHandler fileHandler = new FileHandler(logName);
+            FileHandler fileHandler = new FileHandler(logPath.toString());
             fileHandler.setFormatter(new CVKGraphLogFormatter());
             logger.addHandler(fileHandler);              
         } catch (IOException e) {
@@ -213,7 +217,12 @@ public class CVKGraphLogger {
         
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
         LocalDateTime now = LocalDateTime.now();
-        CVKGraphLogRecord record = new CVKGraphLogRecord(level, dateTimeFormatter.format(now), 0, 0, false, false);     
+        
+        String logHeader = String.format("Log created %s\r\nCVK_DEBUGGING: %s\r\nLogger level: %s\r\n\r\n",                
+                dateTimeFormatter.format(now),
+                CVK_DEBUGGING ? "true" : "false",
+                CVK_DEFAULT_LOG_LEVEL.toString());
+        CVKGraphLogRecord record = new CVKGraphLogRecord(level, logHeader, 0, 0, false, false);     
         logger.log(record);
         
         return logger;

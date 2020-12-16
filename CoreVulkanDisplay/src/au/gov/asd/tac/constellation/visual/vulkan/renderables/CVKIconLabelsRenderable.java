@@ -288,16 +288,9 @@ public class CVKIconLabelsRenderable extends CVKRenderable implements GlyphManag
         }        
         
         private void CopyTo(ByteBuffer buffer) {
-            for (int iRow = 0; iRow < 4; ++iRow) {
-                for (int iCol = 0; iCol < 4; ++iCol) {
-                    buffer.putFloat(labelBottomInfo.get(iRow, iCol));
-                }
-            }    
-            for (int iRow = 0; iRow < 4; ++iRow) {
-                for (int iCol = 0; iCol < 4; ++iCol) {
-                    buffer.putFloat(labelTopInfo.get(iRow, iCol));
-                }
-            }              
+            PutMatrix44f(buffer, labelBottomInfo);  
+            PutMatrix44f(buffer, labelTopInfo); 
+          
             buffer.putFloat(morphMix);
             buffer.putFloat(visibilityLow);
             buffer.putFloat(visibilityHigh);
@@ -363,11 +356,7 @@ public class CVKIconLabelsRenderable extends CVKRenderable implements GlyphManag
         }        
         
         private void CopyTo(ByteBuffer buffer) {
-            for (int iRow = 0; iRow < 4; ++iRow) {
-                for (int iCol = 0; iCol < 4; ++iCol) {
-                    buffer.putFloat(pMatrix.get(iRow, iCol));
-                }
-            }                 
+            PutMatrix44f(buffer, pMatrix);                 
             buffer.putFloat(widthScalingFactor);
             buffer.putFloat(heightScalingFactor);
             
@@ -499,8 +488,7 @@ public class CVKIconLabelsRenderable extends CVKRenderable implements GlyphManag
             DestroyGeometryUniformBuffers();
             DestroyDescriptorSets();
             DestroyCommandBuffers();     
-            DestroyPipelines();
-            DestroyCommandBuffers();                                  
+            DestroyPipelines();                              
         }
         
         return VK_SUCCESS; 
@@ -514,8 +502,8 @@ public class CVKIconLabelsRenderable extends CVKRenderable implements GlyphManag
         if (swapChainImageCountChanged) {
             // The number of images has changed, we need to rebuild all image
             // buffered resources
-            SetVertexUBOState(CVK_RESOURCE_NEEDS_REBUILD);
-            SetGeometryUBOState(CVK_RESOURCE_NEEDS_REBUILD);       
+            SetVertexUniformBufferState(CVK_RESOURCE_NEEDS_REBUILD);
+            SetGeometryUniformBufferState(CVK_RESOURCE_NEEDS_REBUILD);       
             SetVertexBuffersState(CVK_RESOURCE_NEEDS_REBUILD);
             SetCommandBuffersState(CVK_RESOURCE_NEEDS_REBUILD);
             SetDescriptorSetsState(CVK_RESOURCE_NEEDS_REBUILD);
@@ -524,8 +512,8 @@ public class CVKIconLabelsRenderable extends CVKRenderable implements GlyphManag
             // View frustum and projection matrix likely have changed.  We don't
             // need to rebuild our displayPipelines as the frustum is set by dynamic
             // state in RecordDisplayCommandBuffer
-            if (geometryUBOState != CVK_RESOURCE_NEEDS_REBUILD) {
-                SetGeometryUBOState(CVK_RESOURCE_NEEDS_UPDATE); 
+            if (geometryUniformBufferState != CVK_RESOURCE_NEEDS_REBUILD) {
+                SetGeometryUniformBufferState(CVK_RESOURCE_NEEDS_UPDATE); 
             }
         }
         
@@ -652,7 +640,7 @@ public class CVKIconLabelsRenderable extends CVKRenderable implements GlyphManag
         }
         
         // We are done, reset the resource state
-        SetVertexUBOState(CVK_RESOURCE_CLEAN);
+        SetVertexUniformBufferState(CVK_RESOURCE_CLEAN);
 
         return ret;
     }  
@@ -708,7 +696,7 @@ public class CVKIconLabelsRenderable extends CVKRenderable implements GlyphManag
         }       
                     
         // We are done, reset the resource state
-        SetGeometryUBOState(CVK_RESOURCE_CLEAN);
+        SetGeometryUniformBufferState(CVK_RESOURCE_CLEAN);
 
         return ret;
     }  
@@ -725,12 +713,8 @@ public class CVKIconLabelsRenderable extends CVKRenderable implements GlyphManag
     
     private int CreatePushConstants() {
         // Initialise push constants to identity mtx
-        vertexPushConstants = memAlloc(64);
-        for (int iRow = 0; iRow < 4; ++iRow) {
-            for (int iCol = 0; iCol < 4; ++iCol) {
-                vertexPushConstants.putFloat(IDENTITY_44F.get(iRow, iCol));
-            }
-        }       
+        vertexPushConstants = memAlloc(Matrix44f.BYTES);
+        PutMatrix44f(vertexPushConstants, IDENTITY_44F);     
         vertexPushConstants.flip();
         
         return VK_SUCCESS;
@@ -742,13 +726,7 @@ public class CVKIconLabelsRenderable extends CVKRenderable implements GlyphManag
         vertexPushConstants.clear();
         
         // Update MV Matrix
-        Matrix44f mvMatrix = cvkVisualProcessor.getDisplayModelViewMatrix();
-        for (int iRow = 0; iRow < 4; ++iRow) {
-            for (int iCol = 0; iCol < 4; ++iCol) {
-                vertexPushConstants.putFloat(mvMatrix.get(iRow, iCol));
-            }
-        }
-        
+        PutMatrix44f(vertexPushConstants, cvkVisualProcessor.getDisplayModelViewMatrix());      
         vertexPushConstants.flip();        
     }
     
@@ -824,6 +802,7 @@ public class CVKIconLabelsRenderable extends CVKRenderable implements GlyphManag
             displayCommandBuffers.forEach(el -> {el.Destroy();});
             displayCommandBuffers.clear();
             displayCommandBuffers = null;
+            SetCommandBuffersState(CVK_RESOURCE_NEEDS_REBUILD);
         }      
     }        
     
@@ -1181,8 +1160,8 @@ public class CVKIconLabelsRenderable extends CVKRenderable implements GlyphManag
             }
         }        
         return vertexCount > 0 &&
-               (vertexUBOState != CVK_RESOURCE_CLEAN ||
-                geometryUBOState != CVK_RESOURCE_CLEAN ||            
+               (vertexUniformBufferState != CVK_RESOURCE_CLEAN ||
+                geometryUniformBufferState != CVK_RESOURCE_CLEAN ||            
                 vertexBuffersState != CVK_RESOURCE_CLEAN ||
                 commandBuffersState != CVK_RESOURCE_CLEAN ||
                 descriptorSetsState != CVK_RESOURCE_CLEAN ||
@@ -1206,19 +1185,19 @@ public class CVKIconLabelsRenderable extends CVKRenderable implements GlyphManag
             }                
         
             // Vertex uniform buffer (camera guff)
-            if (vertexUBOState == CVK_RESOURCE_NEEDS_REBUILD) {
+            if (vertexUniformBufferState == CVK_RESOURCE_NEEDS_REBUILD) {
                 ret = CreateVertexUniformBuffers(stack);
                 if (VkFailed(ret)) { return ret; }
-            } else if (vertexUBOState == CVK_RESOURCE_NEEDS_UPDATE) {
+            } else if (vertexUniformBufferState == CVK_RESOURCE_NEEDS_UPDATE) {
                 ret = UpdateVertexUniformBuffers(stack);
                 if (VkFailed(ret)) { return ret; }               
             }
 
             // Geometry uniform buffer (projection, highlight colour)
-            if (geometryUBOState == CVK_RESOURCE_NEEDS_REBUILD) {
+            if (geometryUniformBufferState == CVK_RESOURCE_NEEDS_REBUILD) {
                 ret = CreateGeometryUniformBuffers(stack);
                 if (VkFailed(ret)) { return ret; }
-            } else if (geometryUBOState == CVK_RESOURCE_NEEDS_UPDATE) {
+            } else if (geometryUniformBufferState == CVK_RESOURCE_NEEDS_UPDATE) {
                 ret = UpdateGeometryUniformBuffers(stack);
                 if (VkFailed(ret)) { return ret; }               
             }                   
@@ -1408,7 +1387,7 @@ public class CVKIconLabelsRenderable extends CVKRenderable implements GlyphManag
     private void UpdateVertexStagingBuffer(Vertex[] vertices, int first, int last) {
         CVKAssertNotNull(cvkVertexStagingBuffer);
         CVKAssertNotNull(vertices != null);
-        CVKAssert(vertices.length > 0 && vertices.length > last);
+        CVKAssert(vertices.length > 0 && vertices.length > (last - first));
         CVKAssert(last >= 0 && last >= first && first >= 0);
 
         int offset = first * Vertex.BYTES;
@@ -1478,8 +1457,8 @@ public class CVKIconLabelsRenderable extends CVKRenderable implements GlyphManag
             for (int i = 0; i < numBottomLabels; i++) {
                 vertexUBO.labelBottomInfo.setRow(bottomLabelColours[i], i);
             }            
-            if (vertexUBOState != CVK_RESOURCE_NEEDS_REBUILD) {
-                SetVertexUBOState(CVK_RESOURCE_NEEDS_UPDATE);
+            if (vertexUniformBufferState != CVK_RESOURCE_NEEDS_REBUILD) {
+                SetVertexUniformBufferState(CVK_RESOURCE_NEEDS_UPDATE);
             }
         };        
     }
@@ -1506,8 +1485,8 @@ public class CVKIconLabelsRenderable extends CVKRenderable implements GlyphManag
             for (int i = 0; i < numBottomLabels; i++) {
                 vertexUBO.labelBottomInfo.set(i, 3, bottomLabelRowSizes.a[i]);
             }            
-            if (vertexUBOState != CVK_RESOURCE_NEEDS_REBUILD) {
-                SetVertexUBOState(CVK_RESOURCE_NEEDS_UPDATE);
+            if (vertexUniformBufferState != CVK_RESOURCE_NEEDS_REBUILD) {
+                SetVertexUniformBufferState(CVK_RESOURCE_NEEDS_UPDATE);
             }
         };         
     }    
@@ -1520,8 +1499,8 @@ public class CVKIconLabelsRenderable extends CVKRenderable implements GlyphManag
         //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.ProcessRenderTasks) ===//
         return () -> {
             vertexUBO.backgroundColor.set(colour.getRed(), colour.getGreen(), colour.getBlue(), 1.0f);            
-            if (vertexUBOState != CVK_RESOURCE_NEEDS_REBUILD) {
-                SetVertexUBOState(CVK_RESOURCE_NEEDS_UPDATE);
+            if (vertexUniformBufferState != CVK_RESOURCE_NEEDS_REBUILD) {
+                SetVertexUniformBufferState(CVK_RESOURCE_NEEDS_UPDATE);
             }            
         };        
     }   
@@ -1534,8 +1513,8 @@ public class CVKIconLabelsRenderable extends CVKRenderable implements GlyphManag
         //=== EXECUTED BY RENDER THREAD (during CVKVisualProcessor.ProcessRenderTasks) ===//
         return () -> {
             geometryUBO.highlightColor.set(colour.getRed(), colour.getGreen(), colour.getBlue(), 1.0f);            
-            if (geometryUBOState != CVK_RESOURCE_NEEDS_REBUILD) {
-                SetGeometryUBOState(CVK_RESOURCE_NEEDS_UPDATE);
+            if (geometryUniformBufferState != CVK_RESOURCE_NEEDS_REBUILD) {
+                SetGeometryUniformBufferState(CVK_RESOURCE_NEEDS_UPDATE);
             }            
         };         
     }  

@@ -121,6 +121,7 @@ public class CVKVisualProcessor extends VisualProcessor {
     public long GetPositionBufferSize() { return cvkIcons.GetPositionBufferSize(); }
     public long GetVertexFlagsBufferViewHandle() { return cvkIcons.GetVertexFlagsBufferViewHandle(); }
     public float GetMotion() { return motion; }
+    public CVKHitTester GetHitTester() { return cvkHitTester; }
     public List<CVKRenderable> GetHitTesterList() { return hitTesters; }
     public DrawFlags GetDrawFlags() { return drawFlags; }
     

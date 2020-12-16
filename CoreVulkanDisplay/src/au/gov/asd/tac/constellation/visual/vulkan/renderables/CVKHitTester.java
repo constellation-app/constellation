@@ -200,6 +200,7 @@ public class CVKHitTester extends CVKRenderable {
                                     VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT,
                                     VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT , // Host Visible so we can read the memory without transitioning
                                     VK_IMAGE_ASPECT_COLOR_BIT,
+                                    null,
                                     GetLogger(),
                                     "CVKHitTester cvkImage");
         if (cvkImage == null) {
@@ -216,6 +217,7 @@ public class CVKHitTester extends CVKRenderable {
                                         VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
                                         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
                                         VK_IMAGE_ASPECT_DEPTH_BIT,
+                                        null,
                                         GetLogger(),
                                         "CVKHitTester cvkDepthImage");  // TODO - aspect mask
         if (cvkDepthImage == null) {
@@ -415,7 +417,7 @@ public class CVKHitTester extends CVKRenderable {
         }
     }
 
-    @Override
+
     public int OffscreenRender(List<CVKRenderable> hitTestRenderables) {
         cvkVisualProcessor.VerifyInRenderThread();
         

@@ -352,18 +352,9 @@ public class CVKIconsRenderable extends CVKRenderable {
             for (int i = 0; i < padding; ++i) {
                 buffer.put((byte)0);
             }
-                        
-            for (int iRow = 0; iRow < 4; ++iRow) {
-                for (int iCol = 0; iCol < 4; ++iCol) {
-                    buffer.putFloat(highlightColor.get(iRow, iCol));
-                }
-            }   
-            
-            for (int iRow = 0; iRow < 4; ++iRow) {
-                for (int iCol = 0; iCol < 4; ++iCol) {
-                    buffer.putFloat(pMatrix.get(iRow, iCol));
-                }
-            }            
+                
+            PutMatrix44f(buffer, highlightColor);
+            PutMatrix44f(buffer, pMatrix);              
         }         
     }   
                       
@@ -491,8 +482,7 @@ public class CVKIconsRenderable extends CVKRenderable {
             DestroyGeometryUniformBuffers();
             DestroyDescriptorSets();
             DestroyCommandBuffers();     
-            DestroyPipelines();
-            DestroyCommandBuffers();                                  
+            DestroyPipelines();                               
         }
         
         return VK_SUCCESS; 
@@ -506,8 +496,8 @@ public class CVKIconsRenderable extends CVKRenderable {
         if (swapChainImageCountChanged) {
             // The number of images has changed, we need to rebuild all image
             // buffered resources
-            SetVertexUBOState(CVK_RESOURCE_NEEDS_REBUILD);
-            SetGeometryUBOState(CVK_RESOURCE_NEEDS_REBUILD);       
+            SetVertexUniformBufferState(CVK_RESOURCE_NEEDS_REBUILD);
+            SetGeometryUniformBufferState(CVK_RESOURCE_NEEDS_REBUILD);       
             SetVertexBuffersState(CVK_RESOURCE_NEEDS_REBUILD);
             SetCommandBuffersState(CVK_RESOURCE_NEEDS_REBUILD);
             SetDescriptorSetsState(CVK_RESOURCE_NEEDS_REBUILD);
@@ -516,8 +506,8 @@ public class CVKIconsRenderable extends CVKRenderable {
             // View frustum and projection matrix likely have changed.  We don't
             // need to rebuild our displayPipelines as the frustum is set by dynamic
             // state in RecordDisplayCommandBuffer
-            if (geometryUBOState != CVK_RESOURCE_NEEDS_REBUILD) {
-                SetGeometryUBOState(CVK_RESOURCE_NEEDS_UPDATE); 
+            if (geometryUniformBufferState != CVK_RESOURCE_NEEDS_REBUILD) {
+                SetGeometryUniformBufferState(CVK_RESOURCE_NEEDS_UPDATE); 
             }
         }
         
@@ -782,7 +772,7 @@ public class CVKIconsRenderable extends CVKRenderable {
         UpdateVertexPushConstants();
         
         // We are done, reset the resource state
-        SetVertexUBOState(CVK_RESOURCE_CLEAN);
+        SetVertexUniformBufferState(CVK_RESOURCE_CLEAN);
 
         return ret;
     }  
@@ -843,7 +833,7 @@ public class CVKIconsRenderable extends CVKRenderable {
         }       
                     
         // We are done, reset the resource state
-        SetGeometryUBOState(CVK_RESOURCE_CLEAN);
+        SetGeometryUniformBufferState(CVK_RESOURCE_CLEAN);
 
         return ret;
     }  
@@ -859,12 +849,8 @@ public class CVKIconsRenderable extends CVKRenderable {
     
     private int CreatePushConstants() {
         // Initialise push constants to identity mtx
-        vertexPushConstants = memAlloc(64);
-        for (int iRow = 0; iRow < 4; ++iRow) {
-            for (int iCol = 0; iCol < 4; ++iCol) {
-                vertexPushConstants.putFloat(IDENTITY_44F.get(iRow, iCol));
-            }
-        }
+        vertexPushConstants = memAlloc(Matrix44f.BYTES);
+        PutMatrix44f(vertexPushConstants, IDENTITY_44F); 
         
         // Set DrawHitTest to false
         hitTestPushConstants = memAlloc(4);
@@ -882,13 +868,7 @@ public class CVKIconsRenderable extends CVKRenderable {
         vertexPushConstants.clear();
         
         // Update MV Matrix
-        Matrix44f mvMatrix = cvkVisualProcessor.getDisplayModelViewMatrix();
-        for (int iRow = 0; iRow < 4; ++iRow) {
-            for (int iCol = 0; iCol < 4; ++iCol) {
-                vertexPushConstants.putFloat(mvMatrix.get(iRow, iCol));
-            }
-        }
-        
+        PutMatrix44f(vertexPushConstants, cvkVisualProcessor.getDisplayModelViewMatrix());         
         vertexPushConstants.flip();        
     }
     
@@ -1390,8 +1370,8 @@ public class CVKIconsRenderable extends CVKRenderable {
         return vertexCount > 0 &&
                (positionBufferState != CVK_RESOURCE_CLEAN ||
                 vertexFlagsBufferState != CVK_RESOURCE_CLEAN ||
-                vertexUBOState != CVK_RESOURCE_CLEAN ||
-                geometryUBOState != CVK_RESOURCE_CLEAN ||              
+                vertexUniformBufferState != CVK_RESOURCE_CLEAN ||
+                geometryUniformBufferState != CVK_RESOURCE_CLEAN ||              
                 vertexBuffersState != CVK_RESOURCE_CLEAN ||
                 commandBuffersState != CVK_RESOURCE_CLEAN ||
                 descriptorSetsState != CVK_RESOURCE_CLEAN ||
@@ -1444,19 +1424,19 @@ public class CVKIconsRenderable extends CVKRenderable {
             }                  
         
             // Vertex uniform buffer (camera guff)
-            if (vertexUBOState == CVK_RESOURCE_NEEDS_REBUILD) {
+            if (vertexUniformBufferState == CVK_RESOURCE_NEEDS_REBUILD) {
                 ret = CreateVertexUniformBuffers();
                 if (VkFailed(ret)) { return ret; }
-            } else if (vertexUBOState == CVK_RESOURCE_NEEDS_UPDATE) {
+            } else if (vertexUniformBufferState == CVK_RESOURCE_NEEDS_UPDATE) {
                 ret = UpdateVertexUniformBuffers();
                 if (VkFailed(ret)) { return ret; }               
             }
 
             // Geometry uniform buffer (projection, highlight colour and hit test)
-            if (geometryUBOState == CVK_RESOURCE_NEEDS_REBUILD) {
+            if (geometryUniformBufferState == CVK_RESOURCE_NEEDS_REBUILD) {
                 ret = CreateGeometryUniformBuffers();
                 if (VkFailed(ret)) { return ret; }
-            } else if (geometryUBOState == CVK_RESOURCE_NEEDS_UPDATE) {
+            } else if (geometryUniformBufferState == CVK_RESOURCE_NEEDS_UPDATE) {
                 ret = UpdateGeometryUniformBuffers();
                 if (VkFailed(ret)) { return ret; }               
             }                   
@@ -1517,9 +1497,10 @@ public class CVKIconsRenderable extends CVKRenderable {
         final int newVertexCount = (last - first) + 1;
         if (newVertexCount > 0) {
             Vertex vertices[] = new Vertex[newVertexCount];            
-            for (int pos = first; pos <= last; ++pos) {
-                vertices[pos] = new Vertex();
-                Vertex vertex = vertices[pos];
+            for (int i = first; i <= last; ++i) {
+                final int pos = i + first;
+                vertices[i] = new Vertex();
+                Vertex vertex = vertices[i];
                 SetColorInfo(pos, vertex, access);
                 SetIconIndexes(pos, vertex, access);
             }            
@@ -1534,15 +1515,16 @@ public class CVKIconsRenderable extends CVKRenderable {
         final int newVertexCount = (last - first) + 1;
         if (newVertexCount > 0) {
             Position positions[] = new Position[newVertexCount];            
-            for (int pos = first; pos <= last; ++pos) {
-                positions[pos] = new Position(access.getX(pos),
-                                              access.getY(pos),
-                                              access.getZ(pos),
-                                              access.getRadius(pos),
-                                              access.getX2(pos),
-                                              access.getY2(pos),
-                                              access.getZ2(pos),
-                                              access.getRadius(pos));     
+            for (int i = 0; i < newVertexCount; ++i) {
+                final int pos = i + first;
+                positions[i] = new Position(access.getX(pos),
+                                            access.getY(pos),
+                                            access.getZ(pos),
+                                            access.getRadius(pos),
+                                            access.getX2(pos),
+                                            access.getY2(pos),
+                                            access.getZ2(pos),
+                                            access.getRadius(pos));     
             }            
             
             return positions;
@@ -1555,10 +1537,11 @@ public class CVKIconsRenderable extends CVKRenderable {
         final int newVertexCount = (last - first) + 1;
         if (newVertexCount > 0) {
             byte vertexFlags[] = new byte[newVertexCount];            
-            for (int pos = first; pos <= last; ++pos) {
+            for (int i = first; i <= last; ++i) {
+                final int pos = i + first;
                 final boolean isSelected = access.getVertexSelected(pos);
                 final boolean isDimmed = access.getVertexDimmed(pos);                
-                vertexFlags[pos] = (byte)((isDimmed ? DIMMED_BIT : 0) | (isSelected ? SELECTED_BIT : 0));  
+                vertexFlags[i] = (byte)((isDimmed ? DIMMED_BIT : 0) | (isSelected ? SELECTED_BIT : 0));  
             }            
             
             return vertexFlags;
@@ -1594,7 +1577,7 @@ public class CVKIconsRenderable extends CVKRenderable {
     private void UpdateVertexStagingBuffer(Vertex[] vertices, int first, int last) {
         CVKAssertNotNull(cvkVertexStagingBuffer);
         CVKAssertNotNull(vertices != null);
-        CVKAssert(vertices.length > 0 && vertices.length > last);
+        CVKAssert(vertices.length > 0 && vertices.length > (last - first));
         CVKAssert(last >= 0 && last >= first && first >= 0);
 
         int offset = first * Vertex.BYTES;
@@ -1635,7 +1618,7 @@ public class CVKIconsRenderable extends CVKRenderable {
     private void UpdatePositionStagingBuffer(Position[] positions, int first, int last) {
         CVKAssertNotNull(cvkPositionStagingBuffer);
         CVKAssertNotNull(positions != null);
-        CVKAssert(positions.length > 0 && positions.length > last);
+        CVKAssert(positions.length > 0 && positions.length > (last - first));
         CVKAssert(last >= 0 && last >= first && first >= 0);
 
         int offset = first * Position.BYTES;
@@ -1805,8 +1788,8 @@ public class CVKIconsRenderable extends CVKRenderable {
             mtxHighlightColour.set(1, 1, highlightColour.getGreen());
             mtxHighlightColour.set(2, 2, highlightColour.getBlue());
           
-            if (geometryUBOState != CVK_RESOURCE_NEEDS_REBUILD) {
-                SetGeometryUBOState(CVK_RESOURCE_NEEDS_UPDATE);
+            if (geometryUniformBufferState != CVK_RESOURCE_NEEDS_REBUILD) {
+                SetGeometryUniformBufferState(CVK_RESOURCE_NEEDS_UPDATE);
             }            
         };             
     }

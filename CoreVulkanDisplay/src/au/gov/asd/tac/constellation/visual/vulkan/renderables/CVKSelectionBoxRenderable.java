@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.visual.vulkan.renderables;
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.*;
 import static org.lwjgl.system.MemoryUtil.*;
 import static org.lwjgl.vulkan.VK10.*;
-import static org.lwjgl.system.MemoryStack.stackPush;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
 import java.nio.ByteBuffer;
@@ -34,6 +33,8 @@ import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.utilities.visual.SelectionBoxModel;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDescriptorPool.CVKDescriptorPoolRequirements;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
+import static au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableResourceState.CVK_RESOURCE_CLEAN;
+import static au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableResourceState.CVK_RESOURCE_NEEDS_REBUILD;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.resourcetypes.CVKCommandBuffer;
 import java.awt.Point;
@@ -43,6 +44,7 @@ import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 import org.apache.commons.collections.CollectionUtils;
 import org.lwjgl.PointerBuffer;
+import static org.lwjgl.system.MemoryStack.stackPush;
 import org.lwjgl.vulkan.VkPushConstantRange;
 
 
@@ -205,36 +207,7 @@ public class CVKSelectionBoxRenderable extends CVKRenderable {
     }
     
     
-    // ========================> Swap chain <======================== \\
-    
-    private int CreateSwapChainResources() {
-        cvkVisualProcessor.VerifyInRenderThread();
-        CVKAssertNotNull(cvkSwapChain);
-        int ret = VK_SUCCESS;
-                
-        // We only need to recreate these resources if the number of images in 
-        // the swapchain changes or if this is the first call after the initial
-        // swapchain is created.
-        if (swapChainImageCountChanged) {
-            try (MemoryStack stack = stackPush()) {
-
-                ret = CreateVertexBuffer(stack);
-                if (VkFailed(ret)) { return ret; }   
-
-                ret = CreateCommandBuffers();
-                if (VkFailed(ret)) { return ret; }            
-
-                displayPipelines = new ArrayList<>(cvkSwapChain.GetImageCount());
-                ret = CreatePipelines(cvkSwapChain.GetRenderPassHandle(), displayPipelines);
-                if (VkFailed(ret)) { return ret; }                                                       
-            }      
-        }
-        
-        swapChainResourcesDirty = false;
-        swapChainImageCountChanged = false;
-        
-        return ret;
-    }  
+    // ========================> Swap chain <======================== \\     
     
     @Override
     protected int DestroySwapChainResources(){
@@ -248,7 +221,6 @@ public class CVKSelectionBoxRenderable extends CVKRenderable {
             DestroyVertexBuffer();
             DestroyCommandBuffers();
             DestroyPipelines();
-            DestroyCommandBuffers(); 
 
             CVKAssertNull(displayPipelines);
             CVKAssertNull(cvkVertexBuffer);
@@ -310,10 +282,10 @@ public class CVKSelectionBoxRenderable extends CVKRenderable {
             // Find the location of the box in projected coordinates
             final float width = cvkSwapChain.GetWidth();
             final float height = cvkSwapChain.GetHeight();
-            float left = ((float) begin.x / width) * 2 - 1f;
-            float right = ((float) end.x / width) * 2 - 1f;
-            float top = ((float) (height - begin.y) / height) * 2 - 1f;
-            float bottom = ((float) (height - end.y) / height) * 2 - 1f;
+            float left = (begin.x / width) * 2f - 1f;
+            float right = (end.x / width) * 2f - 1f;
+            float top = ((height - begin.y) / height) * 2f - 1f;
+            float bottom = ((height - end.y) / height) * 2f - 1f;
                             
             vertices[0] = new Vertex(right, bottom, 0f, SELECTION_COLOUR);
             vertices[1] = new Vertex(left, bottom, 0, SELECTION_COLOUR);
@@ -334,6 +306,8 @@ public class CVKSelectionBoxRenderable extends CVKRenderable {
             cvkVertexBuffer.CopyFrom(cvkStagingBuffer);
         }
         
+        SetVertexBuffersState(CVK_RESOURCE_CLEAN);
+        
         return ret;
     }
             
@@ -350,6 +324,8 @@ public class CVKSelectionBoxRenderable extends CVKRenderable {
         if (null != cvkVertexBuffer) {
             cvkVertexBuffer.Destroy();
             cvkVertexBuffer = null;
+            
+            SetVertexBuffersState(CVK_RESOURCE_NEEDS_REBUILD);
         }
     }    
    
@@ -394,7 +370,7 @@ public class CVKSelectionBoxRenderable extends CVKRenderable {
             displayCommandBuffers.add(buffer);
         }
         
-        GetLogger().info("Init Command Buffer - CVKSelectionBoxRenderable");
+        SetCommandBuffersState(CVK_RESOURCE_CLEAN);
         
         return ret;
     }
@@ -437,6 +413,8 @@ public class CVKSelectionBoxRenderable extends CVKRenderable {
             displayCommandBuffers.forEach(el -> {el.Destroy();});
             displayCommandBuffers.clear();
             displayCommandBuffers = null;
+            
+            SetCommandBuffersState(CVK_RESOURCE_NEEDS_REBUILD);
         }       
     }
     
@@ -500,13 +478,29 @@ public class CVKSelectionBoxRenderable extends CVKRenderable {
         
         int ret = VK_SUCCESS;    
         
-        if (swapChainResourcesDirty) {
-            ret = CreateSwapChainResources();
-            if (VkFailed(ret)) { return ret; }
-        }    
         try (MemoryStack stack = stackPush()) {
-            ret = UpdateVertexBuffer(stack);
-            if (VkFailed(ret)) { return ret; }
+
+            // We always update vertex buffers while we have a model in the queue
+            // as that updates the start and end points.  CreateVertexBuffer
+            // calls UpdateVertexBuffer
+            if (vertexBuffersState == CVK_RESOURCE_NEEDS_REBUILD) {
+                ret = CreateVertexBuffer(stack);
+                if (VkFailed(ret)) { return ret; }  
+            } else {
+                ret = UpdateVertexBuffer(stack);
+                if (VkFailed(ret)) { return ret; }               
+            }  
+              
+            if (commandBuffersState == CVK_RESOURCE_NEEDS_REBUILD) {
+                ret = CreateCommandBuffers();
+                if (VkFailed(ret)) { return ret; }  
+            }            
+
+            if (pipelinesState == CVK_RESOURCE_NEEDS_REBUILD) {
+                displayPipelines = new ArrayList<>(cvkSwapChain.GetImageCount());
+                ret = CreatePipelines(cvkSwapChain.GetRenderPassHandle(), displayPipelines);
+                if (VkFailed(ret)) { return ret; }                
+            }                                                   
         }    
 
         return ret;

@@ -103,9 +103,7 @@ public abstract class CVKRenderable {
     protected final CVKVisualProcessor cvkVisualProcessor;
     protected CVKDescriptorPool cvkDescriptorPool = null;
     protected CVKSwapChain cvkSwapChain = null;
-    protected boolean descriptorPoolResourcesDirty = false;
     protected boolean swapChainImageCountChanged = true;
-    protected boolean swapChainResourcesDirty = false;
     protected boolean isInitialised = false;
     protected long hDescriptorLayout = VK_NULL_HANDLE; 
     protected long hPipelineLayout = VK_NULL_HANDLE;  
@@ -132,13 +130,13 @@ public abstract class CVKRenderable {
     protected int colourWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     
     // Resource states, not every type will be used by each renderable
-    protected CVKRenderableResourceState vertexUBOState = CVK_RESOURCE_CLEAN;
-    protected CVKRenderableResourceState geometryUBOState = CVK_RESOURCE_CLEAN;
-    protected CVKRenderableResourceState fragmentUBOState = CVK_RESOURCE_CLEAN;
-    protected CVKRenderableResourceState vertexBuffersState = CVK_RESOURCE_CLEAN;
-    protected CVKRenderableResourceState commandBuffersState = CVK_RESOURCE_CLEAN;
-    protected CVKRenderableResourceState descriptorSetsState = CVK_RESOURCE_CLEAN;
-    protected CVKRenderableResourceState pipelinesState = CVK_RESOURCE_CLEAN;        
+    protected CVKRenderableResourceState vertexUniformBufferState = CVK_RESOURCE_NEEDS_REBUILD;
+    protected CVKRenderableResourceState geometryUniformBufferState = CVK_RESOURCE_NEEDS_REBUILD;
+    protected CVKRenderableResourceState fragmentUniformBufferState = CVK_RESOURCE_NEEDS_REBUILD;
+    protected CVKRenderableResourceState vertexBuffersState = CVK_RESOURCE_NEEDS_REBUILD;
+    protected CVKRenderableResourceState commandBuffersState = CVK_RESOURCE_NEEDS_REBUILD;
+    protected CVKRenderableResourceState descriptorSetsState = CVK_RESOURCE_NEEDS_REBUILD;
+    protected CVKRenderableResourceState pipelinesState = CVK_RESOURCE_NEEDS_REBUILD;        
     
     
     // ========================> Debuggering <======================== \\
@@ -147,29 +145,29 @@ public abstract class CVKRenderable {
     public boolean DebugSkipRender() { return DEBUG_skipRender; }
     
     protected static boolean LOGSTATECHANGE = false;
-    protected void SetVertexUBOState(final CVKRenderableResourceState state) {
-        CVKAssert(!(vertexUBOState == CVK_RESOURCE_NEEDS_REBUILD && state == CVK_RESOURCE_NEEDS_UPDATE));
+    protected void SetVertexUniformBufferState(final CVKRenderableResourceState state) {
+        CVKAssert(!(vertexUniformBufferState == CVK_RESOURCE_NEEDS_REBUILD && state == CVK_RESOURCE_NEEDS_UPDATE));
         if (LOGSTATECHANGE) {
-            GetLogger().info("%d\t vertexUBOState %s -> %s\tSource: %s", 
-                    cvkVisualProcessor.GetFrameNumber(), vertexUBOState.name(), state.name(), GetParentMethodName());        
+            GetLogger().info("%d\t vertexUniformBufferState %s -> %s\tSource: %s", 
+                    cvkVisualProcessor.GetFrameNumber(), vertexUniformBufferState.name(), state.name(), GetParentMethodName());        
         }
-        vertexUBOState = state;
+        vertexUniformBufferState = state;
     }
-    protected void SetGeometryUBOState(final CVKRenderableResourceState state) {
-        CVKAssert(!(geometryUBOState == CVK_RESOURCE_NEEDS_REBUILD && state == CVK_RESOURCE_NEEDS_UPDATE));
+    protected void SetGeometryUniformBufferState(final CVKRenderableResourceState state) {
+        CVKAssert(!(geometryUniformBufferState == CVK_RESOURCE_NEEDS_REBUILD && state == CVK_RESOURCE_NEEDS_UPDATE));
         if (LOGSTATECHANGE) {
-            GetLogger().info("%d\t geometryUBOState %s -> %s\tSource: %s", 
-                    cvkVisualProcessor.GetFrameNumber(), geometryUBOState.name(), state.name(), GetParentMethodName());        
+            GetLogger().info("%d\t geometryUniformBufferState %s -> %s\tSource: %s", 
+                    cvkVisualProcessor.GetFrameNumber(), geometryUniformBufferState.name(), state.name(), GetParentMethodName());        
         }
-        geometryUBOState = state;
+        geometryUniformBufferState = state;
     }
-    protected void SetFragmentUBOState(final CVKRenderableResourceState state) {
-        CVKAssert(!(fragmentUBOState == CVK_RESOURCE_NEEDS_REBUILD && state == CVK_RESOURCE_NEEDS_UPDATE));
+    protected void SetFragmentUniformBufferState(final CVKRenderableResourceState state) {
+        CVKAssert(!(fragmentUniformBufferState == CVK_RESOURCE_NEEDS_REBUILD && state == CVK_RESOURCE_NEEDS_UPDATE));
         if (LOGSTATECHANGE) {
-            GetLogger().info("%d\t fragmentUBOState %s -> %s\tSource: %s", 
-                    cvkVisualProcessor.GetFrameNumber(), fragmentUBOState.name(), state.name(), GetParentMethodName());        
+            GetLogger().info("%d\t fragmentUniformBufferState %s -> %s\tSource: %s", 
+                    cvkVisualProcessor.GetFrameNumber(), fragmentUniformBufferState.name(), state.name(), GetParentMethodName());        
         }
-        fragmentUBOState = state;
+        fragmentUniformBufferState = state;
     }    
     protected void SetVertexBuffersState(final CVKRenderableResourceState state) {
         CVKAssert(!(vertexBuffersState == CVK_RESOURCE_NEEDS_REBUILD && state == CVK_RESOURCE_NEEDS_UPDATE));
@@ -278,16 +276,7 @@ public abstract class CVKRenderable {
      * 
      * @return error code
      */
-    protected abstract int DestroySwapChainResources();
-    
-    /**
-     * 
-     * Called just after the swapchain has been recreated
-     * 
-     * @param cvkSwapChain
-     * @return error code
-    */
-    //public abstract int CreateSwapChainResources(CVKSwapChain cvkSwapChain);
+    protected abstract int DestroySwapChainResources();   
     
     /**
      * Called just before the descriptor pool is about to be destroyed allowing the
@@ -318,7 +307,6 @@ public abstract class CVKRenderable {
         }        
               
         cvkDescriptorPool = newDescriptorPool;
-        descriptorPoolResourcesDirty = true;
         
         return ret;
     }
@@ -348,7 +336,6 @@ public abstract class CVKRenderable {
         }
                      
         cvkSwapChain = newSwapChain;
-        swapChainResourcesDirty = true;
         
         return ret;
     }    
@@ -356,7 +343,6 @@ public abstract class CVKRenderable {
     public abstract void IncrementDescriptorTypeRequirements(CVKDescriptorPoolRequirements reqs, CVKDescriptorPoolRequirements perImageReqs);
     public abstract int RecordDisplayCommandBuffer(VkCommandBufferInheritanceInfo inheritanceInfo, int index);
     public int RecordHitTestCommandBuffer(VkCommandBufferInheritanceInfo inheritanceInfo, int index) { return VK_SUCCESS; }
-    public int OffscreenRender(List<CVKRenderable> hitTestRenderables){ return VK_SUCCESS; }
 
     /**
      * @return Returns the number of vertices used in the vertex buffer
@@ -563,6 +549,7 @@ public abstract class CVKRenderable {
             }
             displayPipelines.clear();
             displayPipelines = null;
+            SetPipelinesState(CVK_RESOURCE_NEEDS_REBUILD);
         }        
     }    
 }
