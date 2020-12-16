@@ -24,6 +24,7 @@ import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.VkSuccee
 import static au.gov.asd.tac.constellation.visual.vulkan.utils.CVKUtils.checkVKret;
 import java.nio.LongBuffer;
 import java.util.logging.Level;
+import javax.swing.JOptionPane;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryStack.stackPush;
@@ -75,6 +76,13 @@ public class CVKInstance {
                 }
                 cvkInstance = new CVKInstance();
                 int ret = cvkInstance.Initialise(stack, pbExtensions, pbValidationLayers, CVK_DEBUGGING);
+                if (ret == -7) {
+                    //custom title, error icon
+                    JOptionPane.showMessageDialog(null,
+                        "Constellation requires a graphics card/driver combination that supports Vulkan. Please update your graphics card driver and try again.\n\nAlternatively: Delete the factory line at the top of the file renderer.conf to revert constellation back to openGL.",
+                        "Vulkan Support Error",
+                        JOptionPane.ERROR_MESSAGE);
+                }
                 if (VkFailed(ret)) {
                     throw new RuntimeException(String.format("CVKInstance.Initialise returned error %d", ret));
                 }   
