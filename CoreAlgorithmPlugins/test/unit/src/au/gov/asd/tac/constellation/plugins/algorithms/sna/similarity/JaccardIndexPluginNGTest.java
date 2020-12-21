@@ -37,7 +37,7 @@ import org.testng.annotations.Test;
  */
 public class JaccardIndexPluginNGTest {
 
-    private int transactionJaccardAttribute, vertexSelectedAttribute;
+    private int transactionJaccardAttribute, vertexSelectedAttribute, transactionIdentifier;
     private int vxId0, vxId1, vxId2, vxId3, vxId4;
     private int txId0, txId1, txId2, txId3, txId4;
     private StoreGraph graph;
@@ -59,7 +59,8 @@ public class JaccardIndexPluginNGTest {
         // add attributes
         transactionJaccardAttribute = SnaConcept.TransactionAttribute.JACCARD_INDEX.ensure(graph);
         vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
-
+        transactionIdentifier = VisualConcept.TransactionAttribute.IDENTIFIER.ensure(graph);
+        
         // add vertices
         vxId0 = graph.addVertex();
         vxId1 = graph.addVertex();
@@ -91,9 +92,33 @@ public class JaccardIndexPluginNGTest {
         parameters.setBooleanValue(JaccardIndexPlugin.SELECTED_ONLY_PARAMETER_ID, false);
         PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
 
-        assertEquals(graph.getFloatValue(transactionJaccardAttribute, 5), 1f);
-        assertEquals(graph.getFloatValue(transactionJaccardAttribute, 6), 0f);
-        assertEquals(graph.getFloatValue(transactionJaccardAttribute, 7), 0f);
+        int transactionCount = graph.getTransactionCount();
+        
+        for (int transactionId = 0; transactionId < transactionCount; transactionId++) {
+            int transaction = graph.getTransaction(transactionId);
+            String identifier = graph.getStringValue(transactionIdentifier, transactionId);
+            if ("2 == similarity == 3".equals(identifier)) {
+                assertEquals(graph.getFloatValue(transactionJaccardAttribute, transactionId), 1f);
+            }
+            if ("0 == similarity == 2".equals(identifier)) {
+                assertEquals(graph.getFloatValue(transactionJaccardAttribute, transactionId), 0.5f);
+            }
+            if ("2 == similarity == 4".equals(identifier)) {
+                assertEquals(graph.getFloatValue(transactionJaccardAttribute, transactionId), 0.5f);
+            }
+            if ("1 == similarity == 2".equals(identifier)) {
+                assertEquals(graph.getFloatValue(transactionJaccardAttribute, transactionId), 0.5f);
+            }
+            if ("0 == similarity == 3".equals(identifier)) {
+                assertEquals(graph.getFloatValue(transactionJaccardAttribute, transactionId), 0.33333334f);
+            }
+            if ("1 == similarity == 4".equals(identifier)) {
+                assertEquals(graph.getFloatValue(transactionJaccardAttribute, transactionId), 0.33333334f);
+            }
+            if ("1 == similarity == 3".equals(identifier)) {
+                assertEquals(graph.getFloatValue(transactionJaccardAttribute, transactionId), 0.33333334f);
+            }
+        }
     }
 
     @Test
@@ -106,9 +131,34 @@ public class JaccardIndexPluginNGTest {
         parameters.setIntegerValue(JaccardIndexPlugin.MINIMUM_COMMON_FEATURES_PARAMETER_ID, 1);
         parameters.setBooleanValue(JaccardIndexPlugin.SELECTED_ONLY_PARAMETER_ID, false);
         PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
-
-        assertEquals(graph.getFloatValue(transactionJaccardAttribute, 5), 0.5f);
-        assertEquals(graph.getFloatValue(transactionJaccardAttribute, 6), 0.5f);
-        assertEquals(graph.getFloatValue(transactionJaccardAttribute, 7), 0.33333334f);
+        
+        
+        int transactionCount = graph.getTransactionCount();
+        
+        for (int transactionId = 0; transactionId < transactionCount; transactionId++) {
+            int transaction = graph.getTransaction(transactionId);
+            String identifier = graph.getStringValue(transactionIdentifier, transactionId);
+            if ("0 == similarity == 2".equals(identifier)) {
+                assertEquals(graph.getFloatValue(transactionJaccardAttribute, transactionId), 0.5f);
+            }
+            if ("2 == similarity == 4".equals(identifier)) {
+                assertEquals(graph.getFloatValue(transactionJaccardAttribute, transactionId), 0.5f);
+            }
+            if ("1 == similarity == 2".equals(identifier)) {
+                assertEquals(graph.getFloatValue(transactionJaccardAttribute, transactionId), 0.5f);
+            }
+            if ("2 == similarity == 3".equals(identifier)) {
+                assertEquals(graph.getFloatValue(transactionJaccardAttribute, transactionId), 0.5f);
+            }
+            if ("0 == similarity == 3".equals(identifier)) {
+                assertEquals(graph.getFloatValue(transactionJaccardAttribute, transactionId), 0.33333334f);
+            }
+            if ("1 == similarity == 4".equals(identifier)) {
+                assertEquals(graph.getFloatValue(transactionJaccardAttribute, transactionId), 0.33333334f);
+            }
+            if ("1 == similarity == 3".equals(identifier)) {
+                assertEquals(graph.getFloatValue(transactionJaccardAttribute, transactionId), 0.33333334f);
+            }
+        }
     }
 }
