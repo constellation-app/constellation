@@ -117,7 +117,8 @@ public class CosineSimilarityPlugin extends SimpleEditPlugin {
             final int vertexId = graph.getVertex(vertexPosition);
             
             int vertexNeighbourCount = 0;
-            if (graph.getVertexNeighbourCount(vertexId) > minCommonFeatures){ //Quick defeat, if there arnt enough potential neighbours to achieve the minimal common features then dont process the vertex.
+            int bleh = graph.getVertexNeighbourCount(vertexId);
+            if (graph.getVertexNeighbourCount(vertexId) >= minCommonFeatures){ //Quick defeat, if there arnt enough potential neighbours to achieve the minimal common features then dont process the vertex.
                 for (int vertexNeighbourPosition = 0; vertexNeighbourPosition < graph.getVertexNeighbourCount(vertexId); vertexNeighbourPosition++) { //For each neighbour
                     final int neighbourId = graph.getVertexNeighbour(vertexId, vertexNeighbourPosition);
                     final int neighbourPosition = graph.getVertexPosition(neighbourId);
@@ -132,8 +133,8 @@ public class CosineSimilarityPlugin extends SimpleEditPlugin {
                         final int edgeId = graph.getLinkEdge(linkId, linkEdgePosition);
                         final int edgeDirection = graph.getEdgeDirection(edgeId);
                         final boolean isRequestedDirection = (treatUndirectedBidirectional && edgeDirection == GraphConstants.UNDIRECTED
-                                || includeConnectionsIn && graph.getEdgeDestinationVertex(edgeId) == neighbourId
-                                || includeConnectionsOut && graph.getEdgeSourceVertex(edgeId) == neighbourId);
+                                || includeConnectionsIn && graph.getEdgeDestinationVertex(edgeId) == vertexId
+                                || includeConnectionsOut && graph.getEdgeSourceVertex(edgeId) == vertexId);
                         if (isRequestedDirection) { // If it is a neighbour we are interested in, based on whetehr we are interest in incoing or outoing neighbours.
                             // neighbour weight vertex-neighbour = Number of transaction of correct direction between them - number of transacions of type similarity.
                             if (currentVertexWithNeighbour == null) {
