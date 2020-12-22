@@ -34,6 +34,8 @@ import java.util.List;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Region;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -97,22 +99,49 @@ public class TextConversationContributionProvider extends ConversationContributi
             menuItems.add(selectOnGraphMenuItem);
             final TextField searchText = ConversationBox.searchBubbleTextField;
             textFound = false;
-            SelectableLabel selectableLabel = new SelectableLabel(text, true, null, tips, menuItems);
+//            SelectableLabel selectableLabel = new SelectableLabel(text, true, null, tips, menuItems);
             if (!searchText.getText().isEmpty()) {
-                List<Tuple<Integer, Integer>> textResults = new ArrayList<>();
-                textResults = StringUtilities.searchRange(text, searchText.getText());
+                List<Tuple<Integer, Integer>> textResults = StringUtilities.searchRange(text, searchText.getText());
                 if (!textResults.isEmpty()) {
                     textFound = true;
+                    int textStart = 0;
+                    int counter = 0;
+                    List<Text> textList = new ArrayList();
+                    TextFlow textFlow = new TextFlow();
+                    
                     for (Tuple<Integer, Integer> textResult : textResults) {
-                        selectableLabel.setStyle("-fx-highlight-fill: lightgray; -fx-highlight-text-fill: firebrick;");
-                        selectableLabel.selectRange(textResult.getFirst(), textResult.getSecond());
-                        return selectableLabel;
+//                        selectableLabel.setStyle("-fx-highlight-fill: lightgray; -fx-highlight-text-fill: firebrick;");
+//                        selectableLabel.selectRange(textResult.getFirst(), textResult.getSecond());
+//                        return selectableLabel;
+                        
+                        Text beforeSearched = new Text(text.substring(textStart, textResult.getFirst()));
+                        Text textSearched = new Text(text.substring(textResult.getFirst(), textResult.getSecond()));
+                        textSearched.setStyle("-fx-fill: yellow; -fx-effect: dropshadow(gaussian, black, 10.0, 0.0, 0.0, 0.0)");
+                        
+                        // In the case of double instance of the text searched appearing, like 'o' twice in 'look'.
+                        if (textStart != textResult.getFirst()) {
+                            textList.add(beforeSearched);
+                        }
+                        
+                        textList.add(textSearched);
+                        
+                        textStart = textResult.getSecond();
+                        counter++;
+                        
+                        if (counter == textResults.size()) {
+                            Text afterSearched = new Text(text.substring(textStart,text.length()));
+                            textList.add(afterSearched);
+                        }
                     }
+                    
+                    textFlow.getChildren().addAll(textList);
+                    return textFlow;
                 }
             }
-            return new SelectableLabel(text, true, null, tips, menuItems);
+//            return new SelectableLabel(text, true, null, tips, menuItems);
+            return new TextFlow(new Text(text));
         }
-
+        
         @Override
         public String toString() {
             return "Text Contribution";
