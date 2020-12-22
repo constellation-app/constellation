@@ -26,13 +26,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.geometry.Side;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -41,7 +38,6 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 
 public class ConfigurationPane extends AnchorPane {
@@ -102,38 +98,26 @@ public class ConfigurationPane extends AnchorPane {
         final Tab tab = new Tab();
         tab.setGraphic(label);
 
-        tab.setOnClosed(new EventHandler<Event>() {
-            @Override
-            public void handle(Event event) {
-                importController.updateDisplayedAttributes();
-            }
+        tab.setOnClosed(event -> {
+            importController.updateDisplayedAttributes();
         });
 
-        label.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                if (event.getClickCount() == 2) {
-                    final TextField field = new TextField(label.getText());
-                    field.setOnAction(new EventHandler<ActionEvent>() {
-                        @Override
-                        public void handle(ActionEvent event) {
-                            label.setText(field.getText());
-                            tab.setGraphic(label);
-                        }
-                    });
-                    field.focusedProperty().addListener(new ChangeListener<Boolean>() {
-                        @Override
-                        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                            if (!newValue) {
-                                label.setText(field.getText());
-                                tab.setGraphic(label);
-                            }
-                        }
-                    });
-                    tab.setGraphic(field);
-                    field.selectAll();
-                    field.requestFocus();
-                }
+        label.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                final TextField field = new TextField(label.getText());
+                field.setOnAction(e -> {
+                    label.setText(field.getText());
+                    tab.setGraphic(label);
+                });
+                field.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                    if (!newValue) {
+                        label.setText(field.getText());
+                        tab.setGraphic(label);
+                    }
+                });
+                tab.setGraphic(field);
+                field.selectAll();
+                field.requestFocus();
             }
         });
 
@@ -171,10 +155,9 @@ public class ConfigurationPane extends AnchorPane {
      * @param currentData Rows of sample data.
      */
     public void setSampleData(final String[] columnLabels, final List<String[]> currentData) {
-        for (final Tab tab : tabPane.getTabs()) {
-            final RunPane runPane = (RunPane) tab.getContent();
+        tabPane.getTabs().stream().map(tab -> (RunPane) tab.getContent()).forEachOrdered(runPane -> {
             runPane.setSampleData(columnLabels, createTableRows(currentData));
-        }
+        });
     }
 
     private static ObservableList<TableRow> createTableRows(final List<String[]> data) {
@@ -196,26 +179,23 @@ public class ConfigurationPane extends AnchorPane {
     public List<ImportDefinition> createDefinitions() {
         final List<ImportDefinition> definitions = new ArrayList<>(tabPane.getTabs().size());
 
-        for (final Tab tab : tabPane.getTabs()) {
-            final RunPane runPane = (RunPane) tab.getContent();
+        tabPane.getTabs().stream().map(tab -> (RunPane) tab.getContent()).forEachOrdered(runPane -> {
             definitions.add(runPane.createDefinition());
-        }
+        });
 
         return Collections.unmodifiableList(definitions);
     }
 
     public void deleteAttribute(final Attribute attribute) {
-        for (final Tab tab : tabPane.getTabs()) {
-            final RunPane runPane = (RunPane) tab.getContent();
+        tabPane.getTabs().stream().map(tab -> (RunPane) tab.getContent()).forEachOrdered(runPane -> {
             runPane.deleteAttribute(attribute);
-        }
+        });
     }
 
     public void setDisplayedAttributes(final Map<String, Attribute> vertexAttributes, final Map<String, Attribute> transactionAttributes, final Set<Integer> keys) {
-        for (final Tab tab : tabPane.getTabs()) {
-            final RunPane runPane = (RunPane) tab.getContent();
+        tabPane.getTabs().stream().map(tab -> (RunPane) tab.getContent()).forEachOrdered(runPane -> {
             runPane.setDisplayedAttributes(vertexAttributes, transactionAttributes, keys);
-        }
+        });
     }
 
     /**
@@ -227,10 +207,9 @@ public class ConfigurationPane extends AnchorPane {
      */
     public Collection<Attribute> getAllocatedAttributes() {
         final List<Attribute> allocatedAttributes = new ArrayList<>();
-        for (final Tab tab : tabPane.getTabs()) {
-            final RunPane runPane = (RunPane) tab.getContent();
+        tabPane.getTabs().stream().map(tab -> (RunPane) tab.getContent()).forEachOrdered(runPane -> {
             allocatedAttributes.addAll(runPane.getAllocatedAttributes());
-        }
+        });
 
         return allocatedAttributes;
     }
@@ -240,9 +219,9 @@ public class ConfigurationPane extends AnchorPane {
         // (This tends to involve Platform.runLater() so let them be queued.)
         tabPane.getTabs().clear();
 
-        for (final ImportDefinition impdef : definitions) {
+        definitions.forEach(_item -> {
             importController.createNewRun();
-        }
+        });
 
         // ...then configure each RunPane.
         // (This will queue waiting for the RunPane creations.)

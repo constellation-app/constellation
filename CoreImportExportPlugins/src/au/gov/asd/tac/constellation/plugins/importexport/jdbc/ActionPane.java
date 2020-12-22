@@ -19,8 +19,6 @@ import au.gov.asd.tac.constellation.plugins.PluginException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
@@ -37,25 +35,19 @@ public class ActionPane extends BorderPane {
         setRight(runBox);
 
         final Button cancelButton = new Button("Cancel");
-        cancelButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent t) {
-                importController.cancelImport();
-            }
+        cancelButton.setOnAction(t -> {
+            importController.cancelImport();
         });
 
         final Button importButton = new Button("Import");
-        importButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent t) {
-                try {
-                    importController.processImport();
-                } catch (final IOException ex) {
-                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-                } catch (final InterruptedException ex) {
-                    Thread.currentThread().interrupt();
-                } catch (final PluginException ex) {
-                }
+        importButton.setOnAction(t -> {
+            try {
+                importController.processImport();
+            } catch (final IOException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            } catch (final InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            } catch (final PluginException ex) {
             }
         });
 

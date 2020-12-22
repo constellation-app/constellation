@@ -70,8 +70,8 @@ public class SourcePane extends GridPane {
 
     public SourcePane(final ImportController importController, final Stage parentStage) {
 
-        final JDBCDriverManager driverManager = JDBCDriverManager.getInstance();
-        final JDBCConnectionManager connectionManager = JDBCConnectionManager.getInstance();
+        final JDBCDriverManager driverManager = JDBCDriverManager.getDriverManager();
+        final JDBCConnectionManager connectionManager = JDBCConnectionManager.getConnectionManager();
 
         this.importController = importController;
 

@@ -96,16 +96,22 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
             String format = parameters.getParameters().get(FORMAT_PARAMETER_ID).getStringValue();
 
             final TemporalAccessor dateTime;
-            if (format.equals("EPOCH")) {
-                dateTime = TemporalFormatting.zonedDateTimeFromLong(Long.parseLong(value));
-            } else if (format.equals(CUSTOM)) {
-                format = parameters.getParameters().get(CUSTOM_PARAMETER_ID).getStringValue();
-                final DateTimeFormatter df = DateTimeFormatter.ofPattern(format);
-                dateTime = df.parse(value);
-            } else {
-                format = DATETIME_FORMATS.get(format);
-                final DateTimeFormatter df = DateTimeFormatter.ofPattern(format);
-                dateTime = df.parse(value);
+            switch (format) {
+                case "EPOCH":
+                    dateTime = TemporalFormatting.zonedDateTimeFromLong(Long.parseLong(value));
+                    break;
+                case CUSTOM: {
+                    format = parameters.getParameters().get(CUSTOM_PARAMETER_ID).getStringValue();
+                    final DateTimeFormatter df = DateTimeFormatter.ofPattern(format);
+                    dateTime = df.parse(value);
+                    break;
+                }
+                default: {
+                    format = DATETIME_FORMATS.get(format);
+                    final DateTimeFormatter df = DateTimeFormatter.ofPattern(format);
+                    dateTime = df.parse(value);
+                    break;
+                }
             }
 
             return TemporalFormatting.formatAsZonedDateTime(dateTime);

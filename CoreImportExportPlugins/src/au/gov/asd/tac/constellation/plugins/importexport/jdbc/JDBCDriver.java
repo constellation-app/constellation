@@ -27,6 +27,7 @@ import java.nio.charset.StandardCharsets;
 import java.sql.Driver;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
@@ -45,8 +46,8 @@ public class JDBCDriver {
         return driverName;
     }
 
-    public static ArrayList<String> getDrivers(final File jarFile) {
-        final ArrayList<String> driverList = new ArrayList<>();
+    public static List<String> getDrivers(final File jarFile) {
+        final List<String> driverList = new ArrayList<>();
         try {
 
             if (jarFile != null && jarFile.exists() && jarFile.isFile()) {

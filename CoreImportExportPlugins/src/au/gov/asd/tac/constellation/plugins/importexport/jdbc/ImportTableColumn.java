@@ -102,18 +102,14 @@ public class ImportTableColumn extends TableColumn<TableRow, CellValue> {
                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         } else {
-            for (final TableRow row : data) {
-                final CellValueProperty property = row.getProperty(columnIndex);
+            data.stream().map(row -> row.getProperty(columnIndex)).map(property -> {
                 property.setText(property.get().getOriginalText());
+                return property;
+            }).forEachOrdered(property -> {
                 property.setMessage(null, false);
-            }
+            });
         }
-
-        if (columnFailed) {
-            getGraphic().setStyle("-fx-background-color: rgba(255, 0, 0, 0.3);");
-        } else {
-            getGraphic().setStyle("-fx-background-color: transparent;");
-        }
+        getGraphic().setStyle(columnFailed ? "-fx-background-color: rgba(255, 0, 0, 0.3);" : "-fx-background-color: transparent;");
     }
 
     public AttributeNode getAttributeNode() {

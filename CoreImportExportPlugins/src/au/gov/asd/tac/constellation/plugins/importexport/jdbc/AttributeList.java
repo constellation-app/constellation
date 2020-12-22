@@ -168,7 +168,7 @@ public class AttributeList extends VBox {
             }
         }
 
-        for (final Attribute attribute : attributes.values()) {
+        attributes.values().forEach(attribute -> {
             final AttributeNode attributeNode = attributeNodes.get(attribute.getName());
             if (attributeNode == null) {
                 createAttribute(attribute);
@@ -178,7 +178,7 @@ public class AttributeList extends VBox {
                 // Show the default value
                 attributeNode.updateDefaultValue();
             }
-        }
+        });
     }
 
     /**
@@ -189,15 +189,13 @@ public class AttributeList extends VBox {
      * new {@link ImportAttributeDefinition}s.
      */
     public void createDefinition(final ImportDefinition importDefinition) {
-        for (final AttributeNode attributeNode : attributeNodes.values()) {
-            if (attributeNode.getColumn() == null) {
-                final String defaultValue = attributeNode.getDefaultValue();
-                final AttributeTranslator translator = attributeNode.getTranslator();
-                if (defaultValue != null || (translator != null && !(translator instanceof DefaultAttributeTranslator))) {
-                    final ImportAttributeDefinition attributeDefinition = new ImportAttributeDefinition(defaultValue, attributeNode.getAttribute(), attributeNode.getTranslator(), attributeNode.getTranslatorParameters());
-                    importDefinition.addDefinition(attributeType, attributeDefinition);
-                }
+        attributeNodes.values().stream().filter(attributeNode -> (attributeNode.getColumn() == null)).forEachOrdered(attributeNode -> {
+            final String defaultValue = attributeNode.getDefaultValue();
+            final AttributeTranslator translator = attributeNode.getTranslator();
+            if (defaultValue != null || (translator != null && !(translator instanceof DefaultAttributeTranslator))) {
+                final ImportAttributeDefinition attributeDefinition = new ImportAttributeDefinition(defaultValue, attributeNode.getAttribute(), attributeNode.getTranslator(), attributeNode.getTranslatorParameters());
+                importDefinition.addDefinition(attributeType, attributeDefinition);
             }
-        }
+        });
     }
 }

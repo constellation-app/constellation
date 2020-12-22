@@ -85,7 +85,7 @@ public final class AttributeNode extends Label implements Comparable<AttributeNo
             }
         }
 
-        for (final AttributeTranslator at : attributeTranslators) {
+        attributeTranslators.stream().map(at -> {
             final RadioMenuItem item = new RadioMenuItem(at.getLabel());
             item.setSelected(at.getClass().equals(translator.getClass()));
             item.setToggleGroup(menuGroup);
@@ -121,8 +121,10 @@ public final class AttributeNode extends Label implements Comparable<AttributeNo
                     }
                 }
             });
+            return item;
+        }).forEachOrdered(item -> {
             parseMenu.getItems().add(item);
-        }
+        });
 
         setDefaultMenuItem.setOnAction((ActionEvent event) -> {
             defaultValue = attributeList.importController.showSetDefaultValueDialog(attribute.getName(), defaultValue);

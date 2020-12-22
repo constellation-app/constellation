@@ -26,7 +26,6 @@ import au.gov.asd.tac.constellation.graph.file.opener.GraphOpener;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.manager.GraphManagerListener;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
-import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
 import java.io.IOException;
@@ -257,12 +256,9 @@ public class ImportController {
         // Add attributes from the schema
         if (showSchemaAttributes && rg.getSchema() != null) {
             final SchemaFactory factory = rg.getSchema().getFactory();
-            for (final SchemaAttribute sattr : factory.getRegisteredAttributes(elementType).values()) {
-                final Attribute attribute = new GraphAttribute(elementType, sattr.getAttributeType(), sattr.getName(), sattr.getDescription());
-                if (!attributes.containsKey(attribute.getName())) {
-                    attributes.put(attribute.getName(), attribute);
-                }
-            }
+            factory.getRegisteredAttributes(elementType).values().stream().map(sattr -> new GraphAttribute(elementType, sattr.getAttributeType(), sattr.getName(), sattr.getDescription())).filter(attribute -> (!attributes.containsKey(attribute.getName()))).forEachOrdered(attribute -> {
+                attributes.put(attribute.getName(), attribute);
+            });
         }
 
         // Add pseudo-attributes
@@ -295,19 +291,17 @@ public class ImportController {
             displayedVertexAttributes = createDisplayedAttributes(autoAddedVertexAttributes, manuallyAddedVertexAttributes);
             displayedTransactionAttributes = createDisplayedAttributes(autoAddedTransactionAttributes, manuallyAddedTransactionAttributes);
 
-            for (final Attribute attribute : configurationPane.getAllocatedAttributes()) {
+            configurationPane.getAllocatedAttributes().forEach(attribute -> {
                 if (attribute.getElementType() == GraphElementType.VERTEX) {
                     if (!displayedVertexAttributes.containsKey(attribute.getName())) {
                         final Attribute newAttribute = new NewAttribute(attribute);
                         displayedVertexAttributes.put(newAttribute.getName(), newAttribute);
                     }
-                } else {
-                    if (!displayedTransactionAttributes.containsKey(attribute.getName())) {
-                        final Attribute newAttribute = new NewAttribute(attribute);
-                        displayedTransactionAttributes.put(newAttribute.getName(), newAttribute);
-                    }
+                } else if (!displayedTransactionAttributes.containsKey(attribute.getName())) {
+                    final Attribute newAttribute = new NewAttribute(attribute);
+                    displayedTransactionAttributes.put(newAttribute.getName(), newAttribute);
                 }
-            }
+            });
 
             configurationPane.setDisplayedAttributes(displayedVertexAttributes, displayedTransactionAttributes, keys);
         }
@@ -316,16 +310,12 @@ public class ImportController {
     private Map<String, Attribute> createDisplayedAttributes(final Map<String, Attribute> autoAddedAttributes, final Map<String, Attribute> manuallyAddedAttributes) {
         final Map<String, Attribute> displayedAttributes = new HashMap<>();
         if (attributeFilter != null && attributeFilter.length() > 0) {
-            for (final String attributeName : autoAddedAttributes.keySet()) {
-                if (attributeName.toLowerCase().contains(attributeFilter.toLowerCase())) {
-                    displayedAttributes.put(attributeName, autoAddedAttributes.get(attributeName));
-                }
-            }
-            for (final String attributeName : manuallyAddedAttributes.keySet()) {
-                if (attributeName.toLowerCase().contains(attributeFilter.toLowerCase())) {
-                    displayedAttributes.put(attributeName, manuallyAddedAttributes.get(attributeName));
-                }
-            }
+            autoAddedAttributes.keySet().stream().filter(attributeName -> (attributeName.toLowerCase().contains(attributeFilter.toLowerCase()))).forEachOrdered(attributeName -> {
+                displayedAttributes.put(attributeName, autoAddedAttributes.get(attributeName));
+            });
+            manuallyAddedAttributes.keySet().stream().filter(attributeName -> (attributeName.toLowerCase().contains(attributeFilter.toLowerCase()))).forEachOrdered(attributeName -> {
+                displayedAttributes.put(attributeName, manuallyAddedAttributes.get(attributeName));
+            });
         } else {
             displayedAttributes.putAll(manuallyAddedAttributes);
             displayedAttributes.putAll(autoAddedAttributes);
@@ -450,7 +440,7 @@ public class ImportController {
                         }
                     }
                 }
-            } catch (MalformedURLException | ClassNotFoundException | SQLException | NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            } catch (final MalformedURLException | ClassNotFoundException | SQLException | NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                 final Alert alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Query error");
                 alert.setResizable(true);

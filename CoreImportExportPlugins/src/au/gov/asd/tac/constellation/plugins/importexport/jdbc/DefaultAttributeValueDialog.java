@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.jdbc;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -78,31 +76,22 @@ public class DefaultAttributeValueDialog extends Stage {
         root.setBottom(buttonPane);
 
         final Button okButton = new Button("Ok");
-        okButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                defaultValue = labelText.getText();
-                DefaultAttributeValueDialog.this.hide();
-            }
+        okButton.setOnAction(event -> {
+            defaultValue = labelText.getText();
+            DefaultAttributeValueDialog.this.hide();
         });
         buttonPane.getChildren().add(okButton);
 
         final Button cancelButton = new Button("Cancel");
-        cancelButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                DefaultAttributeValueDialog.this.hide();
-            }
+        cancelButton.setOnAction(event -> {
+            DefaultAttributeValueDialog.this.hide();
         });
         buttonPane.getChildren().add(cancelButton);
 
         final Button clearButton = new Button("Clear");
-        clearButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                defaultValue = null;
-                DefaultAttributeValueDialog.this.hide();
-            }
+        clearButton.setOnAction(event -> {
+            defaultValue = null;
+            DefaultAttributeValueDialog.this.hide();
         });
         buttonPane.getChildren().add(clearButton);
     }

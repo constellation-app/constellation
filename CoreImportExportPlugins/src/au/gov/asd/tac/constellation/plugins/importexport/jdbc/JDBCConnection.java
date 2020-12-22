@@ -26,23 +26,23 @@ import javafx.scene.control.TextArea;
 
 public class JDBCConnection {
 
-    private String _connectionName;
-    private JDBCDriver _driver;
-    private String _connectionString;
+    private String connectionName;
+    private JDBCDriver driver;
+    private String connectionString;
 
     public JDBCConnection(final String connectionName, final JDBCDriver driver, final String connectionString) {
-        this._connectionName = connectionName;
-        this._driver = driver;
-        this._connectionString = connectionString;
+        this.connectionName = connectionName;
+        this.driver = driver;
+        this.connectionString = connectionString;
     }
 
     public Connection getConnection(final String user, final String password) throws MalformedURLException, ClassNotFoundException, SQLException, NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-        final Driver driver = _driver.getDriver();
+        final Driver currentDriver = driver.getDriver();
 
         final Properties props = new Properties();
         props.put("user", user);
         props.put("password", password);
-        final Connection a = driver.connect(_connectionString, props);
+        final Connection a = currentDriver.connect(connectionString, props);
         return a;
     }
 
@@ -59,7 +59,7 @@ public class JDBCConnection {
                 a.showAndWait();
                 return false;
             }
-        } catch (MalformedURLException | ClassNotFoundException | SQLException | NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+        } catch (final MalformedURLException | ClassNotFoundException | SQLException | NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
             if (showError) {
                 final Alert a = new Alert(Alert.AlertType.ERROR);
                 a.setTitle("Connection Failed");
@@ -77,31 +77,31 @@ public class JDBCConnection {
     }
 
     public JDBCDriver getDriver() {
-        return _driver;
+        return driver;
     }
 
     public void setDriver(final JDBCDriver _driver) {
-        this._driver = _driver;
+        this.driver = _driver;
     }
 
     public String getConnectionString() {
-        return _connectionString;
+        return connectionString;
     }
 
     public void setConnectionString(final String _connectionString) {
-        this._connectionString = _connectionString;
+        this.connectionString = _connectionString;
     }
 
     public String getConnectionName() {
-        return _connectionName;
+        return connectionName;
     }
 
     public void setConnectionName(final String _connectionName) {
-        this._connectionName = _connectionName;
+        this.connectionName = _connectionName;
     }
 
     @Override
     public String toString() {
-        return _connectionName;
+        return connectionName;
     }
 }

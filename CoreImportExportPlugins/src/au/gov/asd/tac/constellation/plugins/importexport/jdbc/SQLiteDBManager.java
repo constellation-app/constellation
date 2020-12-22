@@ -56,9 +56,7 @@ public class SQLiteDBManager {
                         }
                     }
                 }
-            } catch (final IOException ex) {
-                Exceptions.printStackTrace(ex);
-            } catch (final SQLException ex) {
+            } catch (final IOException | SQLException ex) {
                 Exceptions.printStackTrace(ex);
             }
 

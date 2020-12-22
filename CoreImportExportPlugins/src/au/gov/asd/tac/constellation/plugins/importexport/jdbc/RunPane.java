@@ -29,7 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -45,7 +44,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
@@ -60,7 +58,6 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import javafx.util.Callback;
 
 public class RunPane extends BorderPane implements KeyListener {
 
@@ -256,7 +253,7 @@ public class RunPane extends BorderPane implements KeyListener {
         return draggingOffset;
     }
 
-    public void setDraggingOffset(Point2D draggingOffset) {
+    public void setDraggingOffset(final Point2D draggingOffset) {
         this.draggingOffset = draggingOffset;
     }
 
@@ -264,7 +261,7 @@ public class RunPane extends BorderPane implements KeyListener {
         return draggingAttributeNode;
     }
 
-    public void setDraggingAttributeNode(AttributeNode draggingAttributeNode) {
+    public void setDraggingAttributeNode(final AttributeNode draggingAttributeNode) {
         this.draggingAttributeNode = draggingAttributeNode;
     }
 
@@ -354,23 +351,12 @@ public class RunPane extends BorderPane implements KeyListener {
 
         sampleDataView.getItems().clear();
         sampleDataView.getColumns().clear();
-//        sampleDataView.getColumns().clear();
 
         int columnIndex = 0;
         for (final String columnLabel : columnLabels) {
             final ImportTableColumn column = new ImportTableColumn(columnLabel, columnIndex);
-            column.setCellValueFactory(new Callback<CellDataFeatures<TableRow, CellValue>, ObservableValue<CellValue>>() {
-                @Override
-                public ObservableValue<CellValue> call(CellDataFeatures<TableRow, CellValue> p) {
-                    return p.getValue().getProperty(column.getColumnIndex());
-                }
-            });
-            column.setCellFactory(new Callback<TableColumn<TableRow, CellValue>, TableCell<TableRow, CellValue>>() {
-                @Override
-                public TableCell<TableRow, CellValue> call(TableColumn<TableRow, CellValue> p) {
-                    return new ImportTableCell();
-                }
-            });
+            column.setCellValueFactory((CellDataFeatures<TableRow, CellValue> p) -> p.getValue().getProperty(column.getColumnIndex()));
+            column.setCellFactory((TableColumn<TableRow, CellValue> p) -> new ImportTableCell());
 
             if (columnIndex < savedAttributeNodes.length) {
                 column.setAttributeNode(savedAttributeNodes[columnIndex]);
@@ -479,13 +465,9 @@ public class RunPane extends BorderPane implements KeyListener {
     public Collection<Attribute> getAllocatedAttributes() {
         final ObservableList<TableColumn<TableRow, ?>> columns = sampleDataView.getColumns();
         final List<Attribute> allocatedAttributes = new ArrayList<>(columns.size());
-        for (final TableColumn<TableRow, ?> column : columns) {
-            final ImportTableColumn importTableColumn = (ImportTableColumn) column;
-            final AttributeNode attributeNode = importTableColumn.getAttributeNode();
-            if (attributeNode != null) {
-                allocatedAttributes.add(attributeNode.getAttribute());
-            }
-        }
+        columns.stream().map(column -> (ImportTableColumn) column).map(importTableColumn -> importTableColumn.getAttributeNode()).filter(attributeNode -> (attributeNode != null)).forEachOrdered(attributeNode -> {
+            allocatedAttributes.add(attributeNode.getAttribute());
+        });
 
         return allocatedAttributes;
     }

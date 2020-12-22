@@ -18,8 +18,6 @@ package au.gov.asd.tac.constellation.plugins.importexport.jdbc;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeRegistry;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -43,7 +41,7 @@ public class NewAttributeDialog extends Stage {
 
     private Attribute attribute = null;
 
-    public NewAttributeDialog(Stage owner, final GraphElementType elementType) {
+    public NewAttributeDialog(final Stage owner, final GraphElementType elementType) {
 
         initStyle(StageStyle.UTILITY);
         initModality(Modality.WINDOW_MODAL);
@@ -100,21 +98,15 @@ public class NewAttributeDialog extends Stage {
         root.setBottom(buttonPane);
 
         final Button okButton = new Button("Ok");
-        okButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                attribute = new NewAttribute(elementType, typeBox.getSelectionModel().getSelectedItem(), labelText.getText(), descriptionText.getText());
-                NewAttributeDialog.this.hide();
-            }
+        okButton.setOnAction(event -> {
+            attribute = new NewAttribute(elementType, typeBox.getSelectionModel().getSelectedItem(), labelText.getText(), descriptionText.getText());
+            NewAttributeDialog.this.hide();
         });
         buttonPane.getChildren().add(okButton);
 
         final Button cancelButton = new Button("Cancel");
-        cancelButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                NewAttributeDialog.this.hide();
-            }
+        cancelButton.setOnAction(event -> {
+            NewAttributeDialog.this.hide();
         });
         buttonPane.getChildren().add(cancelButton);
     }

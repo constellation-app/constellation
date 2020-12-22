@@ -136,7 +136,7 @@ public class ImportJDBCPlugin extends SimpleEditPlugin {
                         }
                     }
                 }
-            } catch (MalformedURLException | ClassNotFoundException | SQLException | NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            } catch (final MalformedURLException | ClassNotFoundException | SQLException | NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                 return;
             }
 
@@ -282,9 +282,8 @@ public class ImportJDBCPlugin extends SimpleEditPlugin {
      * @param attributeDefinitions
      */
     private static void addAttributes(final GraphWriteMethods graph, final GraphElementType elementType, final List<ImportAttributeDefinition> attributeDefinitions) {
-        for (final ImportAttributeDefinition attributeDefinition : attributeDefinitions) {
+        attributeDefinitions.forEach(attributeDefinition -> {
             final Attribute attribute = attributeDefinition.getAttribute();
-
             // If the attribute is not assigned to a column but has a default
             // value defined or, the attribute is assigned to a column; add
             // the attribute to the graph and store the attribute id
@@ -299,7 +298,6 @@ public class ImportJDBCPlugin extends SimpleEditPlugin {
                 }
                 attributeDefinition.setOverriddenAttributeId(attributeId);
             }
-
-        }
+        });
     }
 }

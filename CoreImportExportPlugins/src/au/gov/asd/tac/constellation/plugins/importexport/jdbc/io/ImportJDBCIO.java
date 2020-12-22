@@ -33,6 +33,7 @@ import au.gov.asd.tac.constellation.plugins.importexport.jdbc.translator.Attribu
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -83,8 +84,7 @@ public class ImportJDBCIO {
 
         if (!delimIoDir.isDirectory()) {
             final String msg = String.format("Can't create directory '%s'.", delimIoDir);
-            final NotifyDescriptor nd = new NotifyDescriptor.Message(msg, NotifyDescriptor.ERROR_MESSAGE);
-            DialogDisplayer.getDefault().notify(nd);
+            NotifyDisplayer.display(msg, NotifyDescriptor.ERROR_MESSAGE);
             return;
         }
 
@@ -221,7 +221,7 @@ public class ImportJDBCIO {
                                 final JsonNode filterNode = definitionNode.get(FILTER);
                                 final String script = filterNode.get(SCRIPT).textValue();
                                 final JsonNode columnsArray = filterNode.withArray(COLUMNS);
-                                final ArrayList<String> columns = new ArrayList<>();
+                                final List<String> columns = new ArrayList<>();
                                 for (final JsonNode column : columnsArray) {
                                     columns.add(column.textValue());
                                 }

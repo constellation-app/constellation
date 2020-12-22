@@ -23,6 +23,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TextArea;
@@ -30,9 +32,9 @@ import org.openide.util.Exceptions;
 
 public class JDBCConnectionManager {
 
-    static JDBCConnectionManager __instance__ = null;
+    static JDBCConnectionManager connectionManager = null;
 
-    private HashMap<String, JDBCConnection> __connections = new HashMap<>();
+    private Map<String, JDBCConnection> connectionMap = new HashMap<>();
     private SQLiteDBManager sql;
     private File driversDir;
 
@@ -49,7 +51,7 @@ public class JDBCConnectionManager {
 
         sql = SQLiteDBManager.getInstance();
 
-        final JDBCDriverManager dm = JDBCDriverManager.getInstance();
+        final JDBCDriverManager dm = JDBCDriverManager.getDriverManager();
         try (final Connection connection = sql.getConnection()) {
 
             try (final PreparedStatement statement = connection.prepareStatement("SELECT * from connection")) {
@@ -58,20 +60,18 @@ public class JDBCConnectionManager {
                         final JDBCDriver driver = dm.getDriver(connections.getString("driver_name"));
                         if (driver != null) {
                             final JDBCConnection d = new JDBCConnection(connections.getString("name"), driver, connections.getString("connection_string"));
-                            __connections.put(d.getConnectionName(), d);
+                            connectionMap.put(d.getConnectionName(), d);
                         }
                     }
                 }
             }
-        } catch (final SQLException ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (final IOException ex) {
+        } catch (final SQLException | IOException ex) {
             Exceptions.printStackTrace(ex);
         }
     }
 
-    public ArrayList<JDBCConnection> getConnections() {
-        return new ArrayList(__connections.values());
+    public List<JDBCConnection> getConnections() {
+        return new ArrayList(connectionMap.values());
     }
 
     public boolean testConnection(final String connectionName, final JDBCDriver driver, final String username, final String password, final String connectionString) {
@@ -89,9 +89,9 @@ public class JDBCConnectionManager {
                     statement.setString(3, connectionString);
                     statement.executeUpdate();
                 }
-                __connections.put(connectionName, new JDBCConnection(connectionName, driver, connectionString));
+                connectionMap.put(connectionName, new JDBCConnection(connectionName, driver, connectionString));
 
-            } catch (IOException | SQLException ex) {
+            } catch (final IOException | SQLException ex) {
                 final Alert a = new Alert(AlertType.ERROR);
                 a.setTitle("Connection add failed");
                 a.setContentText("Failed to add the connection to the database.");
@@ -110,16 +110,16 @@ public class JDBCConnectionManager {
     }
 
     public void deleteConnection(final String name) {
-        final JDBCConnection d = __connections.get(name);
+        final JDBCConnection d = connectionMap.get(name);
         if (d != null) {
-            __connections.remove(name);
+            connectionMap.remove(name);
         }
         try (final Connection connection = sql.getConnection()) {
             try (final PreparedStatement statement = connection.prepareStatement("delete from connection where name=?")) {
                 statement.setString(1, name);
                 statement.executeUpdate();
             }
-        } catch (SQLException | IOException ex) {
+        } catch (final SQLException | IOException ex) {
             final Alert a = new Alert(AlertType.ERROR);
             a.setTitle("Connection delete failed");
             a.setContentText("Failed to delete the connection from the database.");
@@ -132,11 +132,11 @@ public class JDBCConnectionManager {
         }
     }
 
-    public static JDBCConnectionManager getInstance() {
-        if (__instance__ == null) {
-            __instance__ = new JDBCConnectionManager();
+    public static JDBCConnectionManager getConnectionManager() {
+        if (connectionManager == null) {
+            connectionManager = new JDBCConnectionManager();
         }
-        return __instance__;
+        return connectionManager;
     }
 
 }
