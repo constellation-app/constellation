@@ -81,14 +81,51 @@ public class CVKUtils {
     public static final int CVK_ERROR_ICON_ATLAS_UNSUPPORTED_ICON_FORMAT        = 0xFFFF0018;
     
     // Enable this for additional logging, thread verification and other checks
-    public static final boolean CVK_DEBUGGING = Boolean.parseBoolean(System.getProperty("debug_renderer"));
-    public static final Level CVK_ALLOCATION_LOG_LEVEL = System.getProperty("renderer_allocation_log_level") != null ? 
-            Level.parse(System.getProperty("renderer_allocation_log_level")) :
-            Level.OFF;  
-    public static final Level CVK_DEFAULT_LOG_LEVEL = System.getProperty("renderer_log_level") != null ? 
-            Level.parse(System.getProperty("renderer_log_level")) :
-            Level.OFF;  
+    public static final boolean CVK_DEBUGGING;
+    public static final Level CVK_ALLOCATION_LOG_LEVEL;
+    public static final Level CVK_DEFAULT_LOG_LEVEL;
     public static int CVK_VKALLOCATIONS = 0;
+    public static final boolean CVK_ICON_ATLAS_CACHING;
+    
+    
+    // Initialise static vars from config
+    static {
+        boolean debugging;
+        try {
+            debugging = Boolean.parseBoolean(System.getProperty("debug_renderer"));
+        } catch (Throwable t) {
+            debugging = false;
+        }
+        CVK_DEBUGGING = debugging; 
+        
+        Level allocationLogLevel;
+        try {
+            allocationLogLevel = System.getProperty("renderer_allocation_log_level") != null ? 
+                Level.parse(System.getProperty("renderer_allocation_log_level").toUpperCase()) :
+                Level.OFF;  
+        } catch (Throwable t) {
+            allocationLogLevel = Level.OFF;
+        }
+        CVK_ALLOCATION_LOG_LEVEL = allocationLogLevel;    
+        
+        Level defaultLogLevel;
+        try {
+            defaultLogLevel = System.getProperty("renderer_log_level") != null ? 
+                Level.parse(System.getProperty("renderer_log_level").toUpperCase()) :
+                Level.OFF;  
+        } catch (Throwable t) {
+            defaultLogLevel = Level.OFF;
+        }
+        CVK_DEFAULT_LOG_LEVEL = defaultLogLevel;      
+        
+        boolean iconCaching;
+        try {
+            iconCaching = Boolean.parseBoolean(System.getProperty("cache_icon_atlas"));
+        } catch (Throwable t) {
+            iconCaching = false;
+        }
+        CVK_ICON_ATLAS_CACHING = iconCaching;         
+    }
    
 
     public static void LogStackTrace(Level level) {

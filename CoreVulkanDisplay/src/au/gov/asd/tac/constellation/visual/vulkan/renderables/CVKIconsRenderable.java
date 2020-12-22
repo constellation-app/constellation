@@ -813,9 +813,9 @@ public class CVKIconsRenderable extends CVKRenderable {
         geometryUBO.pMatrix.set(cvkVisualProcessor.GetProjectionMatrix());
         geometryUBO.pixelDensity = cvkVisualProcessor.GetPixelDensity();
         geometryUBO.highlightColor.set(mtxHighlightColour);
-        geometryUBO.iconsPerRowColumn = CVKIconTextureAtlas.GetInstance().iconsPerRowColumn;
-        geometryUBO.iconsPerLayer     = CVKIconTextureAtlas.GetInstance().iconsPerLayer;
-        geometryUBO.atlas2DDimension  = CVKIconTextureAtlas.GetInstance().texture2DDimension;        
+        geometryUBO.iconsPerRowColumn = CVKIconTextureAtlas.GetInstance().serializableData.iconsPerRowColumn;
+        geometryUBO.iconsPerLayer     = CVKIconTextureAtlas.GetInstance().serializableData.iconsPerLayer;
+        geometryUBO.atlas2DDimension  = CVKIconTextureAtlas.GetInstance().serializableData.texture2DDimension;        
         
         // Staging buffer so our VBO can be device local (most performant memory)
         ByteBuffer pMemory = cvkGeometryUBStagingBuffer.StartMemoryMap(0, GeometryUniformBufferObject.SizeOf());
