@@ -17,6 +17,7 @@ makefile
 build
 dist
 endorsed
+cache
 /nbproject/private
 /*/nbproject/private
 */.jacocoverage/

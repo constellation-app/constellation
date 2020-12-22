@@ -547,9 +547,9 @@ public class CVKFPSRenderable extends CVKRenderable {
         // set the number of pixels per world unit at distance 1
         geometryUBO.pixelDensity      = cvkVisualProcessor.GetPixelDensity();
         geometryUBO.pScale            = pyScale;
-        geometryUBO.iconsPerRowColumn = CVKIconTextureAtlas.GetInstance().iconsPerRowColumn;
-        geometryUBO.iconsPerLayer     = CVKIconTextureAtlas.GetInstance().iconsPerLayer;
-        geometryUBO.atlas2DDimension  = CVKIconTextureAtlas.GetInstance().texture2DDimension;                      
+        geometryUBO.iconsPerRowColumn = CVKIconTextureAtlas.GetInstance().serializableData.iconsPerRowColumn;
+        geometryUBO.iconsPerLayer     = CVKIconTextureAtlas.GetInstance().serializableData.iconsPerLayer;
+        geometryUBO.atlas2DDimension  = CVKIconTextureAtlas.GetInstance().serializableData.texture2DDimension;                      
         geometryUBO.pMatrix.set(cvkVisualProcessor.GetProjectionMatrix());        
 
         // Fill of the geometry uniform buffer
