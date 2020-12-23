@@ -428,6 +428,10 @@
                 <package>it.geosolutions.jaiext.warp</package>
                 <package>it.geosolutions.jaiext.zonal</package>
                 <package>it.geosolutions.rendered.viewer</package>
+                <package>jakarta.servlet</package>
+                <package>jakarta.servlet.annotation</package>
+                <package>jakarta.servlet.descriptor</package>
+                <package>jakarta.servlet.http</package>
                 <package>japplemenubar</package>
                 <package>javatests</package>
                 <package>javax.activation</package>
@@ -2215,6 +2219,10 @@
                 <package>org.python.tests.multihidden</package>
                 <package>org.python.tests.props</package>
                 <package>org.python.util</package>
+                <package>org.slf4j</package>
+                <package>org.slf4j.event</package>
+                <package>org.slf4j.helpers</package>
+                <package>org.slf4j.spi</package>
                 <package>org.sqlite</package>
                 <package>org.sqlite.core</package>
                 <package>org.sqlite.date</package>
@@ -2503,8 +2511,8 @@
                 <binary-origin>release/modules/ext/gt-xsd-ows-24.1-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/guava-30.0-jre-bundle.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/guava-30.0-jre-bundle.jar</binary-origin>
+                <runtime-relative-path>ext/guava-30.1-jre-bundle.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/guava-30.1-jre-bundle.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/hamcrest-core-1.3-jar.jar</runtime-relative-path>
@@ -2587,10 +2595,6 @@
                 <binary-origin>release/modules/ext/javax.inject-1-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/javax.servlet-api-3.1.0-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/javax.servlet-api-3.1.0-jar.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/jaxb-api-2.4.0-b180830.0359-jar.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/jaxb-api-2.4.0-b180830.0359-jar.jar</binary-origin>
             </class-path-extension>
@@ -2599,32 +2603,32 @@
                 <binary-origin>release/modules/ext/jaxb-runtime-2.4.0-b180830.0438-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jetty-http-9.4.35.v20201120-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jetty-http-9.4.35.v20201120-jar.jar</binary-origin>
+                <runtime-relative-path>ext/jetty-http-11.0.0-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jetty-http-11.0.0-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jetty-io-9.4.35.v20201120-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jetty-io-9.4.35.v20201120-jar.jar</binary-origin>
+                <runtime-relative-path>ext/jetty-io-11.0.0-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jetty-io-11.0.0-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jetty-security-9.4.35.v20201120-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jetty-security-9.4.35.v20201120-jar.jar</binary-origin>
+                <runtime-relative-path>ext/jetty-jakarta-servlet-api-5.0.1-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jetty-jakarta-servlet-api-5.0.1-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jetty-server-9.4.35.v20201120-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jetty-server-9.4.35.v20201120-jar.jar</binary-origin>
+                <runtime-relative-path>ext/jetty-security-11.0.0-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jetty-security-11.0.0-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jetty-servlet-9.4.35.v20201120-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jetty-servlet-9.4.35.v20201120-jar.jar</binary-origin>
+                <runtime-relative-path>ext/jetty-server-11.0.0-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jetty-server-11.0.0-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jetty-util-9.4.35.v20201120-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jetty-util-9.4.35.v20201120-jar.jar</binary-origin>
+                <runtime-relative-path>ext/jetty-servlet-11.0.0-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jetty-servlet-11.0.0-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jetty-util-ajax-9.4.35.v20201120-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jetty-util-ajax-9.4.35.v20201120-jar.jar</binary-origin>
+                <runtime-relative-path>ext/jetty-util-11.0.0-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jetty-util-11.0.0-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jgridshift-core-1.3-jar.jar</runtime-relative-path>
@@ -2917,6 +2921,10 @@
             <class-path-extension>
                 <runtime-relative-path>ext/si-units-2.0.1-jar.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/si-units-2.0.1-jar.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/slf4j-api-2.0.0-alpha1-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/slf4j-api-2.0.0-alpha1-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/SparseBitSet-1.2-jar.jar</runtime-relative-path>

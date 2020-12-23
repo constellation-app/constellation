@@ -68,14 +68,14 @@
         <dependency org="com.fasterxml.jackson.core" name="jackson-core" rev="2.12.0"/>
         <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.12.0"/>
         <dependency org="com.fifesoft" name="rsyntaxtextarea" rev="3.1.1"/>
-        <dependency org="com.google.guava" name="guava" rev="30.0-jre" />
+        <dependency org="com.google.guava" name="guava" rev="30.1-jre" />
         <dependency org="gov.nasa" name="worldwind" rev="2.0.0"/>
         <dependency org="javax.help" name="javahelp" rev="2.0.05"/>
         <dependency org="log4j" name="log4j" rev="1.2.17"/>
         <dependency org="org.assertj" name="assertj-core" rev="3.18.1" />
         <dependency org="org.controlsfx" name="controlsfx" rev="11.0.3"/>
-        <dependency org="org.eclipse.jetty" name="jetty-server" rev="9.4.35.v20201120"/>
-        <dependency org="org.eclipse.jetty" name="jetty-servlet" rev="9.4.35.v20201120"/>
+        <dependency org="org.eclipse.jetty" name="jetty-server" rev="11.0.0"/>
+        <dependency org="org.eclipse.jetty" name="jetty-servlet" rev="11.0.0"/>
         <dependency org="org.ejml" name="ejml-all" rev="0.40"/>
         <dependency org="org.json" name="json" rev="20201115"/>
         <!--<dependency org="org.processing" name="core" rev="3.3.7"/>-->
