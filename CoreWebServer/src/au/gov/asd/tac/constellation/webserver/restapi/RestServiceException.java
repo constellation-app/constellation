@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.webserver.restapi;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * A generic exception for problems in REST services.
