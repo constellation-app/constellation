@@ -1,14 +1,23 @@
 == 3030-12-31 Getting Started
 <p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
+== 2020-12-21 Version 2.1.1
+<p>Constellation v2.1.1 is officially released!</p>
+
 == 2020-12-04 Table View
 <p>A couple of bugs related to exporting in Selected Only mode and table selection have been fixed.</p>
 
 == 2020-11-25 Data Access View
 <p>Data Access View has been updated to remember plugin parameter selections between sessions.</p>
 
+== 2020-11-13 Performance Improvement
+<p>Zooming and dragging nodes on large graphs has improved significantly.</p>
+
 == 2020-11-10 Analytic View
-<p>The Levenshtein Distance Analytic has been updated so that the drop-down list parameters don't reset everytime a new graph selection is made.</p>
+<p>The Levenshtein Distance Analytic has been updated so that the drop-down list parameters don't reset every time a new graph selection is made.</p>
+
+== 2020-11-09 Performance Improvement
+<p>The time taken to open graphs has been reduced significantly and graph responsiveness after opening or docking views.</p>
 
 == 2020-11-08 Table View
 <p>A bug where exporting to CSV or Excel would only export the current page (instead of all pages) has been fixed.</p>
@@ -102,7 +111,7 @@
 <p>The Node and Transaction type tabs in the Schema View are now searchable.</p>
 
 == 2020-05-21 Hierarchical Clustering Improvements
-<p>A bug preventing the running of the hierachical clustering plugin sometimes has been fixed.</p>
+<p>A bug preventing the running of the hierarchical clustering plugin sometimes has been fixed.</p>
 
 == 2020-05-21 Merge Nodes by Geospatial Distance
 <p>A bug preventing running the <strong>Merge Nodes</strong> &gt; <strong>Geospatial Distance</strong> plugin from the Data Access View has been fixed.</p>
