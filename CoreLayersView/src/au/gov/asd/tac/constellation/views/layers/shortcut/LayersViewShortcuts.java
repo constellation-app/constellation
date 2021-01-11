@@ -18,6 +18,9 @@ package au.gov.asd.tac.constellation.views.layers.shortcut;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.views.layers.LayersViewController;
+import au.gov.asd.tac.constellation.views.layers.query.BitMaskQueryCollection;
+import au.gov.asd.tac.constellation.views.layers.utilities.LayersUtilities;
+import au.gov.asd.tac.constellation.views.layers.utilities.UpdateLayerSelectionPlugin;
 import java.awt.event.ActionEvent;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -52,74 +55,87 @@ import org.openide.util.NbBundle;
 @NbBundle.Messages("CTL_LayersViewShortcuts=Layers View: Shortcuts")
 public class LayersViewShortcuts extends AbstractAction {
 
+    private void triggerLayerSelection(final int layerId) {
+        BitMaskQueryCollection vxCollection = LayersViewController.getDefault().getVxQueryCollection();
+        BitMaskQueryCollection txCollection = LayersViewController.getDefault().getTxQueryCollection();
+
+        if (vxCollection.getQuery(layerId) != null) {
+            vxCollection.getQuery(layerId).setVisibility(!vxCollection.getQuery(layerId).getVisibility());
+        }
+        if (txCollection.getQuery(layerId) != null) {
+            txCollection.getQuery(layerId).setVisibility(!txCollection.getQuery(layerId).getVisibility());
+        }
+
+        final int newBitmask = LayersUtilities.calculateCurrentLayerSelectionBitMask(vxCollection, txCollection);
+
+        PluginExecution.withPlugin(new UpdateLayerSelectionPlugin(newBitmask))
+                .executeLater(GraphManager.getDefault().getActiveGraph());
+
+        final Future<?> future = LayersViewController.getDefault().writeState();
+
+        try {
+            future.get();
+        } catch (final InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+            Thread.currentThread().interrupt();
+        } catch (final ExecutionException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+
+        if (!LayersViewController.getDefault().getParentVisibility()) {
+            LayersViewController.getDefault().readStateFuture();
+            LayersViewController.getDefault().updateQueries(GraphManager.getDefault().getActiveGraph());
+        }
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
-        Future<?> enableLayerFuture = null;
-
         final String hotkey = e.getActionCommand();
         switch (hotkey) {
             case "CA-L":
                 PluginExecution.withPlugin(new NewLayerPlugin()).executeLater(GraphManager.getDefault().getActiveGraph());
                 break;
             case "CA-D":
-                PluginExecution.withPlugin(new DeselectAllLayersPlugin()).executeLater(GraphManager.getDefault().getActiveGraph());
+                final Future<?> deselectFuture = PluginExecution.withPlugin(new DeselectAllLayersPlugin()).executeLater(GraphManager.getDefault().getActiveGraph());
+                try {
+                    deselectFuture.get();
+                } catch (final InterruptedException ex) {
+                    Exceptions.printStackTrace(ex);
+                    Thread.currentThread().interrupt();
+                } catch (final ExecutionException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
+                LayersViewController.getDefault().updateQueriesFuture(GraphManager.getDefault().getActiveGraph());
                 break;
             case "CA-1":
-                enableLayerFuture = PluginExecution.withPlugin(new EnableLayerPlugin(1)).executeLater(GraphManager.getDefault().getActiveGraph());
+                triggerLayerSelection(1);
                 break;
             case "CA-2":
-                enableLayerFuture = PluginExecution.withPlugin(new EnableLayerPlugin(2)).executeLater(GraphManager.getDefault().getActiveGraph());
+                triggerLayerSelection(2);
                 break;
             case "CA-3":
-                enableLayerFuture = PluginExecution.withPlugin(new EnableLayerPlugin(3)).executeLater(GraphManager.getDefault().getActiveGraph());
+                triggerLayerSelection(3);
                 break;
             case "CA-4":
-                enableLayerFuture = PluginExecution.withPlugin(new EnableLayerPlugin(4)).executeLater(GraphManager.getDefault().getActiveGraph());
+                triggerLayerSelection(4);
                 break;
             case "CA-5":
-                enableLayerFuture = PluginExecution.withPlugin(new EnableLayerPlugin(5)).executeLater(GraphManager.getDefault().getActiveGraph());
+                triggerLayerSelection(5);
                 break;
             case "CA-6":
-                enableLayerFuture = PluginExecution.withPlugin(new EnableLayerPlugin(6)).executeLater(GraphManager.getDefault().getActiveGraph());
+                triggerLayerSelection(6);
                 break;
             case "CA-7":
-                enableLayerFuture = PluginExecution.withPlugin(new EnableLayerPlugin(7)).executeLater(GraphManager.getDefault().getActiveGraph());
+                triggerLayerSelection(7);
                 break;
             case "CA-8":
-                enableLayerFuture = PluginExecution.withPlugin(new EnableLayerPlugin(8)).executeLater(GraphManager.getDefault().getActiveGraph());
+                triggerLayerSelection(8);
                 break;
             case "CA-9":
-                enableLayerFuture = PluginExecution.withPlugin(new EnableLayerPlugin(9)).executeLater(GraphManager.getDefault().getActiveGraph());
+                triggerLayerSelection(9);
                 break;
             default:
                 break;
-        }
-
-        // wait for future, execute and update the state.
-        if (enableLayerFuture != null) {
-            try {
-                enableLayerFuture.get();
-            } catch (InterruptedException ex) {
-                // Restore interrupted state...
-                Thread.currentThread().interrupt();
-                Exceptions.printStackTrace(ex);
-            } catch (ExecutionException ex) {
-                Exceptions.printStackTrace(ex);
-            }
-
-            LayersViewController.getDefault().execute();
-            final Future<?> writeStateFuture = LayersViewController.getDefault().writeState();
-            if (writeStateFuture != null) {
-                try {
-                    writeStateFuture.get();
-                } catch (InterruptedException ex) {
-                    // Restore interrupted state...
-                    Thread.currentThread().interrupt();
-                    Exceptions.printStackTrace(ex);
-                } catch (ExecutionException ex) {
-                    Exceptions.printStackTrace(ex);
-                }
-            }
         }
     }
 }
