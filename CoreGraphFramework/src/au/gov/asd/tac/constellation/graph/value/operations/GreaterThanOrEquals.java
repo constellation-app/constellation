@@ -25,7 +25,9 @@ import au.gov.asd.tac.constellation.graph.value.Operators;
  */
 public class GreaterThanOrEquals {
 
-    public static final String NAME = "GREATER_THAN_OR_EQUALS";
+    // Explicitly calling the constructor on a String appears to be necessary to
+    // allow the registry to find the operator.
+    public static final String NAME = new String("GREATER_THAN_OR_EQUALS");
 
     private GreaterThanOrEquals() {
         // added private constructor to hide implicit public constructor - S1118.

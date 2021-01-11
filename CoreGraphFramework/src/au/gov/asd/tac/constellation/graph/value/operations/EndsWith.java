@@ -25,7 +25,9 @@ import au.gov.asd.tac.constellation.graph.value.StringOperation;
  */
 public class EndsWith {
 
-    public static final String NAME = "ENDS_WITH";
+    // Explicitly calling the constructor on a String appears to be necessary to
+    // allow the registry to find the operator.
+    public static final String NAME = new String("ENDS_WITH");
 
     private EndsWith() {
         // added private constructor to hide implicit public constructor - S1118.

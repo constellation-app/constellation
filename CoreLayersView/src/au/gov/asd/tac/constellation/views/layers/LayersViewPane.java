@@ -85,7 +85,9 @@ public class LayersViewPane extends BorderPane {
         descriptionHeadingText.setMinWidth(80);
 
         // set default layers
-        this.setDefaultLayers();
+        controller.getVxQueryCollection().setDefaultQueries();
+        controller.getTxQueryCollection().setDefaultQueries();
+        setLayers(BitMaskQueryCollection.DEFAULT_VX_QUERIES, BitMaskQueryCollection.DEFAULT_TX_QUERIES);
 
         // create options
         final Button addButton = new Button("Add New Layer");
@@ -126,7 +128,6 @@ public class LayersViewPane extends BorderPane {
         options.prefWidthProperty().bind(layersViewPane.widthProperty());
 
         this.setCenter(layersViewPane);
-        controller.writeState();
     }
 
     private void createLayer(final int currentIndex, final boolean checkBoxSelected, final String vxQuery, final String txQuery, final String description, final boolean showVertices, final boolean showTransactions) {

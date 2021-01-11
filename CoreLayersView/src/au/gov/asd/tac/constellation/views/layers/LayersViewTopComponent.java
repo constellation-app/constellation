@@ -75,7 +75,7 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
                 return;
             }
 
-            layersViewController.readState();
+            layersViewController.readStateFuture();
             layersViewController.updateQueries(graph);
         });
     }
