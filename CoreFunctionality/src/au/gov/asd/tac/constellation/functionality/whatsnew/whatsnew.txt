@@ -1,7 +1,7 @@
 == 3030-12-31 Getting Started
 <p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
-== 2020-12-11 Notes View
+== 2021-01-12 Notes View
 <p>The Notes View can be used to record notes about a graph.</p>
 <p>It can found in "Experimental > Views > Notes View", or alternatively via the shortcut "Ctrl+Shift+A".</p>
 <p>There are two types of notes that are recorded in the Notes View:</p>
@@ -10,6 +10,15 @@
 <li><p>Auto Notes: These are BLUE and are generated and added to the graph automatically by plugin execution, similar to Plugin Reporter.</p></li>
 </ul>
 <p>Visibilty of either User Notes or Auto Notes can be toggled on or off via the "Select a filter..." drop-down menu at the top of the view.</p>
+
+== 2021-01-11 JDBC Database Import Connector
+<p>A JDBC Connector has been added to easily allow importing via a JDBC Connection to a database.</p>
+
+== 2020-12-21 Version 2.1.1
+<p>Constellation v2.1.1 is officially released!</p>
+
+== 2020-12-04 Table View
+<p>A couple of bugs related to exporting in Selected Only mode and table selection have been fixed.</p>
 
 == 2020-11-25 Data Access View
 <p>Data Access View has been updated to remember plugin parameter selections between sessions.</p>
