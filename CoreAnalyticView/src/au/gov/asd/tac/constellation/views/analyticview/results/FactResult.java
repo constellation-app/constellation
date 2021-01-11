@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 public class FactResult extends AnalyticResult<ElementFact> {
 
     public Set<String> getUniqueFactNames() {
-        return result.stream()
+        return result.values().stream()
                 .map(elementFact -> elementFact.getFactName())
                 .collect(Collectors.toSet());
     }
@@ -67,7 +67,7 @@ public class FactResult extends AnalyticResult<ElementFact> {
 
         @Override
         public String toString() {
-            return String.format("{%s;%s;%s=%s}", getClass().getSimpleName(), identifier, factName, factValue);
+            return String.format("{%s;%s;%s=%s}", getClass().getSimpleName(), id.identifier, factName, factValue);
         }
 
         @Override
