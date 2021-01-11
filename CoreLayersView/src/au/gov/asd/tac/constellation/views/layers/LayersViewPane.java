@@ -16,7 +16,9 @@
 package au.gov.asd.tac.constellation.views.layers;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQuery;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQueryCollection;
 import au.gov.asd.tac.constellation.views.layers.query.Query;
@@ -28,6 +30,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.Tooltip;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -36,6 +40,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.NotifyDescriptor;
+import org.openide.util.HelpCtx;
 
 /**
  * Layers View Pane.
@@ -53,6 +58,17 @@ public class LayersViewPane extends BorderPane {
 
         // create controller
         this.controller = controller;
+
+        // create help button
+        final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
+        helpButton.paddingProperty().set(new Insets(2, 0, 0, 0));
+        helpButton.setTooltip(new Tooltip("Display help for Layers View"));
+        helpButton.setOnAction(event -> {
+            new HelpCtx(LayersViewTopComponent.class.getName()).display();
+        });
+
+        // Get rid of the ugly button look so the icon stands alone.
+        helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
 
         // create layer headings
         final Label layerIdHeadingText = new Label("Layer\nID");
@@ -116,7 +132,7 @@ public class LayersViewPane extends BorderPane {
         });
         HBox.setHgrow(deselectAllButton, Priority.ALWAYS);
 
-        this.options = new HBox(5, addButton, deselectAllButton);
+        this.options = new HBox(5, addButton, deselectAllButton, helpButton);
         options.setAlignment(Pos.TOP_LEFT);
         options.setPadding(new Insets(0, 0, 0, 10));
 
