@@ -114,11 +114,11 @@ public class TextConversationContributionProvider extends ConversationContributi
                     for (Tuple<Integer, Integer> textResult : textResults) {
                         final Text beforeSearched = new Text(text.substring(textStart, textResult.getFirst()));
                         final Text textSearched = new Text(text.substring(textResult.getFirst(), textResult.getSecond()));
-                        // Shadow effect added to provide better contrast for yellow text on conversation bubbles.
+                        // Yellow fill and shadow effect added to search result to provide better contrast on conversation bubbles.
                         textSearched.setStyle("-fx-fill: yellow; -fx-effect: dropshadow(gaussian, black, 10.0, 0.0, 0.0, 0.0)");
                         
                         // If textStart is equal to the starting index of the next search instance when there is a double instance,
-                        // the second 'o' in 'look', then don't add beforeSearched to textList.
+                        // for example the second 'o' in 'look', then don't add beforeSearched to textList.
                         if (textStart != textResult.getFirst()) {
                             textList.add(beforeSearched);
                         }
