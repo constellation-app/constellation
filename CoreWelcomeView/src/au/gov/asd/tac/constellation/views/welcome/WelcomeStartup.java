@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.functionality.tutorial;
+package au.gov.asd.tac.constellation.views.welcome;
 
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import java.util.prefs.Preferences;
@@ -24,28 +24,26 @@ import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
 /**
- * Opens the TutorialTopComponent on application launch if the preference has
+ * Opens the WelcomeTopComponent on application launch if the preference has
  * been set.
  *
- * @author algol
+ * @author canis_majoris
  */
 @OnShowing
-public class TutorialStartup implements Runnable {
+public class WelcomeStartup implements Runnable {
 
     @Override
     public void run() {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-        if (prefs.getBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP_DEFAULT)) {
+        if (prefs.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, ApplicationPreferenceKeys.WELCOME_ON_STARTUP_DEFAULT)) {
             SwingUtilities.invokeLater(() -> {
-                final TopComponent tutorial = WindowManager.getDefault().findTopComponent(TutorialTopComponent.class.getSimpleName());
-                if (tutorial != null) {
-                    if (!tutorial.isOpened()) {
-                        tutorial.open();
+                final TopComponent welcome = WindowManager.getDefault().findTopComponent(WelcomeTopComponent.class.getSimpleName());
+                if (welcome != null) {
+                    if (!welcome.isOpened()) {
+                        welcome.open();
                     }
-                    tutorial.setEnabled(true);
-                    if (!prefs.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, ApplicationPreferenceKeys.WELCOME_ON_STARTUP_DEFAULT)) {
-                        tutorial.requestActive();
-                    }
+                    welcome.setEnabled(true);
+                    welcome.requestActive();
                 }
             });
         }
