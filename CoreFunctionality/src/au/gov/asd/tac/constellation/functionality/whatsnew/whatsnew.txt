@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
+== 2021-01-11 JDBC Database Import Connector
+<p>A JDBC Connector has been added to easily allow importing via a JDBC Connection to a database.</p>
+
 == 2020-12-21 Version 2.1.1
 <p>Constellation v2.1.1 is officially released!</p>
 
