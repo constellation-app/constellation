@@ -25,7 +25,9 @@ import au.gov.asd.tac.constellation.graph.value.readables.BooleanReadable;
  */
 public class Or {
 
-    public static final String NAME = "OR";
+    // Explicitly calling the constructor on a String appears to be necessary to
+    // allow the registry to find the operator.
+    public static final String NAME = new String("OR");
 
     private Or() {
         // added private constructor to hide implicit public constructor - S1118.
