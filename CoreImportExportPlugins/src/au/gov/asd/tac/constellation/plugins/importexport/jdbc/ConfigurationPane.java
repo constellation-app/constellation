@@ -219,7 +219,7 @@ public class ConfigurationPane extends AnchorPane {
         // (This tends to involve Platform.runLater() so let them be queued.)
         tabPane.getTabs().clear();
 
-        definitions.forEach(_item -> {
+        definitions.forEach(item -> {
             importController.createNewRun();
         });
 
