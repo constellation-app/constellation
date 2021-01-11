@@ -30,8 +30,8 @@ import org.openide.util.NbBundle.Messages;
 @ActionRegistration(
         displayName = "#CTL_ImportJDBCFileAction", iconBase = "au/gov/asd/tac/constellation/plugins/importexport/jdbc/resources/jdbc_import.png")
 @ActionReferences({
-    @ActionReference(path = "Menu/File/Import", position = 0),
-    @ActionReference(path = "Toolbars/File", position = 0)
+    @ActionReference(path = "Menu/File/Import", position = 5),
+    @ActionReference(path = "Toolbars/File", position = 10)
 })
 @Messages("CTL_ImportJDBCFileAction=From JDBC Source...")
 public final class ImportJDBCFileAction implements ActionListener {
