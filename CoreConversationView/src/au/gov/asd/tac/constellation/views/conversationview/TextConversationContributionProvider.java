@@ -31,6 +31,7 @@ import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
+import javafx.geometry.Insets;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Region;
@@ -43,15 +44,15 @@ import org.openide.util.lookup.ServiceProvider;
  * attribute to a message.
  *
  * @author sirius
+ * @author sol695510
  */
 @ServiceProvider(service = ConversationContributionProvider.class, position = 1)
 public class TextConversationContributionProvider extends ConversationContributionProvider {
 
     private static final String DISPLAY_NAME = "Text";
-
     private int contentAttribute = Graph.NOT_FOUND;
-
     public static boolean textFound;
+    private final Insets DEFAULT_INSETS = new Insets (5, 5, 5, 5);
 
     public TextConversationContributionProvider() {
         super(DISPLAY_NAME, 0);
@@ -84,7 +85,6 @@ public class TextConversationContributionProvider extends ConversationContributi
 
         @Override
         protected Region createContent(final TooltipPane tips) {
-            final List<MenuItem> menuItems = new ArrayList<>();
             final MenuItem selectOnGraphMenuItem = new MenuItem("Select on Graph");
             selectOnGraphMenuItem.setOnAction(event -> {
                 final BitSet elementIds = new BitSet();
@@ -96,40 +96,42 @@ public class TextConversationContributionProvider extends ConversationContributi
                         .withParameter(ChangeSelectionPlugin.SELECTION_MODE_PARAMETER_ID, SelectionMode.REPLACE)
                         .executeLater(GraphManager.getDefault().getActiveGraph());
             });
-            menuItems.add(selectOnGraphMenuItem);
+            
             final TextField searchText = ConversationBox.searchBubbleTextField;
             textFound = false;
-//            SelectableLabel selectableLabel = new SelectableLabel(text, true, null, tips, menuItems);
+            final TextFlow textFlow = new TextFlow();
+            textFlow.setPadding(DEFAULT_INSETS);
+            
             if (!searchText.getText().isEmpty()) {
                 List<Tuple<Integer, Integer>> textResults = StringUtilities.searchRange(text, searchText.getText());
+                
                 if (!textResults.isEmpty()) {
                     textFound = true;
                     int textStart = 0;
                     int counter = 0;
-                    List<Text> textList = new ArrayList();
-                    TextFlow textFlow = new TextFlow();
+                    final List<Text> textList = new ArrayList();
                     
                     for (Tuple<Integer, Integer> textResult : textResults) {
-//                        selectableLabel.setStyle("-fx-highlight-fill: lightgray; -fx-highlight-text-fill: firebrick;");
-//                        selectableLabel.selectRange(textResult.getFirst(), textResult.getSecond());
-//                        return selectableLabel;
-                        
-                        Text beforeSearched = new Text(text.substring(textStart, textResult.getFirst()));
-                        Text textSearched = new Text(text.substring(textResult.getFirst(), textResult.getSecond()));
+                        final Text beforeSearched = new Text(text.substring(textStart, textResult.getFirst()));
+                        final Text textSearched = new Text(text.substring(textResult.getFirst(), textResult.getSecond()));
+                        // Shadow effect added to provide better contrast for yellow text on conversation bubbles.
                         textSearched.setStyle("-fx-fill: yellow; -fx-effect: dropshadow(gaussian, black, 10.0, 0.0, 0.0, 0.0)");
                         
-                        // In the case of double instance of the text searched appearing, like 'o' twice in 'look'.
+                        // If textStart is equal to the starting index of the next search instance when there is a double instance,
+                        // the second 'o' in 'look', then don't add beforeSearched to textList.
                         if (textStart != textResult.getFirst()) {
                             textList.add(beforeSearched);
                         }
                         
                         textList.add(textSearched);
                         
+                        // Set the next textStart to the exclusive end index of textResult,
+                        // so the next iteration will begin at the index after the previous search instance.
                         textStart = textResult.getSecond();
                         counter++;
                         
                         if (counter == textResults.size()) {
-                            Text afterSearched = new Text(text.substring(textStart,text.length()));
+                            final Text afterSearched = new Text(text.substring(textStart,text.length()));
                             textList.add(afterSearched);
                         }
                     }
@@ -138,8 +140,9 @@ public class TextConversationContributionProvider extends ConversationContributi
                     return textFlow;
                 }
             }
-//            return new SelectableLabel(text, true, null, tips, menuItems);
-            return new TextFlow(new Text(text));
+            
+            textFlow.getChildren().add(new Text(text));
+            return textFlow;
         }
         
         @Override
