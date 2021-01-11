@@ -508,7 +508,7 @@ public class AnalyticConfigurationPane extends VBox {
     }
 
     public final void updateSelectablePluginsParameters() {
-        if (categoryListPane.isExpanded()) {
+         if (categoryListPane.isExpanded()) {
             LOGGER.log(Level.INFO, "Update selectable plugins parameters in analytic config pane.");
             pluginList.getItems().forEach(selectablePlugin -> {
                 selectablePlugin.parameters.updateParameterValues(selectablePlugin.updatedParameters);
@@ -520,6 +520,7 @@ public class AnalyticConfigurationPane extends VBox {
                 currentQuestion.initialiseParameters(selectablePlugin.plugin, selectablePlugin.parameters);
             });
         }
+         updateGlobalParameters();
     }
 
     public final List<SelectableAnalyticPlugin> getAllSelectablePlugins() {
