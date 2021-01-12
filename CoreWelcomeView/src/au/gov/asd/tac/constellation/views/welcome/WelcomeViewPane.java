@@ -32,6 +32,7 @@ import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -45,6 +46,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.stage.Screen;
 import org.openide.util.Lookup;
 
 /**
@@ -71,12 +73,19 @@ public class WelcomeViewPane extends BorderPane {
        welcomeViewPane = new BorderPane();
         ConstellationSecurityManager.startSecurityLaterFX(() -> {
             Platform.setImplicitExit(false);
-
+            
             final SplitPane splitPane = new SplitPane();
             splitPane.setOrientation(Orientation.HORIZONTAL);
             splitPane.setStyle("-fx-background-color: transparent;");
-            welcomeViewPane.setCenter(splitPane);
-
+            final ScrollPane scrollPane = new ScrollPane(splitPane);
+            
+            Rectangle2D visualBounds = Screen.getPrimary().getVisualBounds();
+            
+            splitPane.setPrefHeight(visualBounds.getHeight());
+            splitPane.setPrefWidth(visualBounds.getWidth());
+            welcomeViewPane.setCenter(scrollPane);
+            welcomeViewPane.autosize();
+            
             //Create VBox to handle Browser and controls,
             //or error messages
             final VBox leftVBox = new VBox();
