@@ -15,17 +15,13 @@
  */
 package au.gov.asd.tac.constellation.views.analyticview.aggregators;
 
-import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
+import au.gov.asd.tac.constellation.views.analyticview.results.IdentificationData;
 import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult.ElementScore;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.apache.commons.collections4.CollectionUtils;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -40,6 +36,7 @@ public class SumScoreAggregator implements AnalyticAggregator<ScoreResult> {
 
     @Override
     public ScoreResult aggregate(final List<ScoreResult> results) {
+        final ScoreResult combinedResults = new ScoreResult();
         final ScoreResult aggregateResult = new ScoreResult();
 
         if (CollectionUtils.isEmpty(results)) {
@@ -49,40 +46,13 @@ public class SumScoreAggregator implements AnalyticAggregator<ScoreResult> {
         aggregateResult.setIgnoreNullResults(results.stream()
                 .anyMatch(result -> result.getIgnoreNullResults()));
 
-        final Set<ThreeTuple<GraphElementType, Integer, String>> elements = new HashSet<>();
-        for (final ScoreResult result : results) {
-            for (final ElementScore score : result.get()) {
-                elements.add(ThreeTuple.create(score.getElementType(), score.getElementId(), score.getIdentifier()));
-            }
-        }
-
-        boolean isNull;
-        List<Float> scores = new ArrayList<>();
-        for (final ThreeTuple<GraphElementType, Integer, String> element : elements) {
-            final GraphElementType type = element.getFirst();
-            final int id = element.getSecond();
-            final String identifier = element.getThird();
-            isNull = false;
-            scores.clear();
-
-            for (final ScoreResult result : results) {
-                result.setIgnoreNullResults(false);
-                for (final ElementScore score : result.get()) {
-                    if (type == score.getElementType() && id == score.getElementId()) {
-                        for (final String scoreName : score.getNamedScores().keySet()) {
-                            isNull |= score.isNull();
-                            scores.add(score.getNamedScore(scoreName));
-                        }
-                    }
-                }
-            }
-
+        results.forEach(scoreResult -> combinedResults.combine(scoreResult, ElementScore::combineReplace));
+        combinedResults.getResult().forEach((IdentificationData key, ElementScore value) -> {
             final Map<String, Float> aggregateScores = new HashMap<>();
-            aggregateScores.put(SCORE_NAME, scores.stream().reduce((x, y) -> x + y).orElse((float) 0.0));
-
-            aggregateResult.add(new ElementScore(type, id, identifier, isNull, aggregateScores));
-        }
-
+            aggregateScores.put(SCORE_NAME, value.getNamedScores().values().stream().reduce((x,y) -> x+y).orElse((float) 0.0));
+            aggregateResult.add(new ElementScore(key.getElementType(), key.getElementId(), key.getIdentifier(), false, aggregateScores));
+        });
+        
         return aggregateResult;
     }
 
