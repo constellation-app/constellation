@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult.Eleme
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 /**
@@ -50,9 +49,9 @@ public class ScoreResult extends AnalyticResult<ElementScore> {
         return sb.toString();
     }
     
-    public ScoreResult combine(ScoreResult otherResult,  BiFunction<ElementScore, ElementScore, ElementScore> remappingFunction) {
+    public ScoreResult combine(ScoreResult otherResult) {
         otherResult.result.forEach((key, value) -> 
-        result.merge(key, value, remappingFunction)
+        result.merge(key, value, ElementScore::combineReplace)
         );
         return this;
     }
@@ -71,7 +70,7 @@ public class ScoreResult extends AnalyticResult<ElementScore> {
             Map<String, Float> combinedNamedScores = new HashMap<>(es1.getNamedScores());
             combinedNamedScores.putAll(es2.getNamedScores());
             
-            return new ElementScore(es1.getElementType(), es1.getElementId(), es1.getIdentifier(), es1.isNull(), combinedNamedScores);
+            return new ElementScore(es1.getElementType(), es1.getElementId(), es1.getIdentifier(), es1.isNull() && es2.isNull(), combinedNamedScores);
         }
 
         /**

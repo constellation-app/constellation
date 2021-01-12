@@ -46,7 +46,7 @@ public class MaxScoreAggregator implements AnalyticAggregator<ScoreResult> {
         aggregateResult.setIgnoreNullResults(results.stream()
                 .anyMatch(result -> result.getIgnoreNullResults()));
 
-        results.forEach(scoreResult -> combinedResults.combine(scoreResult, ElementScore::combineReplace));
+        results.forEach(scoreResult -> combinedResults.combine(scoreResult));
         combinedResults.getResult().forEach((IdentificationData key, ElementScore value) -> {
             final Map<String, Float> aggregateScores = new HashMap<>();
             aggregateScores.put(SCORE_NAME, value.getNamedScores().values().stream().reduce(Math::max).orElse((float) 0.0));
