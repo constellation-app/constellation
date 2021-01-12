@@ -78,8 +78,7 @@ public class WelcomeViewPane extends BorderPane {
             splitPane.setOrientation(Orientation.HORIZONTAL);
             splitPane.setStyle("-fx-background-color: transparent;");
             final ScrollPane scrollPane = new ScrollPane(splitPane);
-            
-            Rectangle2D visualBounds = Screen.getPrimary().getVisualBounds();
+            final Rectangle2D visualBounds = Screen.getPrimary().getVisualBounds();
             
             splitPane.setPrefHeight(visualBounds.getHeight());
             splitPane.setPrefWidth(visualBounds.getWidth());
