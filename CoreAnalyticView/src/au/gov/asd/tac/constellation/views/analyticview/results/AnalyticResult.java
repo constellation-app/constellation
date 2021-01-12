@@ -80,6 +80,10 @@ public abstract class AnalyticResult<D extends AnalyticData> {
         return Collections.unmodifiableList(result.values().stream().collect(Collectors.toList()));
     }
     
+    public final Map<IdentificationData, D> getResult() {
+        return result;
+    }
+    
     public void add(final D resultData) {
         this.result.put(resultData.getIdentificationData(), resultData);
     }
