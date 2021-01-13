@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.analyticview.aggregators;
 
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
-import au.gov.asd.tac.constellation.views.analyticview.results.IdentificationData;
 import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult.ElementScore;
 import java.util.HashMap;
@@ -47,9 +46,9 @@ public class MeanScoreAggregator implements AnalyticAggregator<ScoreResult> {
                 .anyMatch(result -> result.getIgnoreNullResults()));
 
         results.forEach(scoreResult -> combinedResults.combine(scoreResult));
-        combinedResults.getResult().forEach((IdentificationData key, ElementScore value) -> {
+        combinedResults.getResult().forEach((key, value) -> {
             final Map<String, Float> aggregateScores = new HashMap<>();
-            aggregateScores.put(SCORE_NAME, value.getNamedScores().values().stream().reduce((x,y) -> x+y).orElse((float) 0.0) / value.getNamedScores().size());
+            aggregateScores.put(SCORE_NAME, value.getNamedScores().values().stream().reduce((x,y) -> x+y).orElse(0.0f) / value.getNamedScores().size());
             aggregateResult.add(new ElementScore(key.getElementType(), key.getElementId(), key.getIdentifier(), false, aggregateScores));
         });
         

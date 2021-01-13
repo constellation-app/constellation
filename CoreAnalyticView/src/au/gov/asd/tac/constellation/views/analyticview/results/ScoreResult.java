@@ -66,8 +66,8 @@ public class ScoreResult extends AnalyticResult<ElementScore> {
             this.namedScores = namedScores;
         }
         
-        static public ElementScore combineReplace(ElementScore es1, ElementScore es2) {
-            Map<String, Float> combinedNamedScores = new HashMap<>(es1.getNamedScores());
+        public static ElementScore combineReplace(final ElementScore es1, final ElementScore es2) {
+            final Map<String, Float> combinedNamedScores = new HashMap<>(es1.getNamedScores());
             combinedNamedScores.putAll(es2.getNamedScores());
             
             return new ElementScore(es1.getElementType(), es1.getElementId(), es1.getIdentifier(), es1.isNull() && es2.isNull(), combinedNamedScores);
