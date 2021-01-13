@@ -18,10 +18,10 @@ package au.gov.asd.tac.constellation.plugins.importexport.jdbc;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeRegistry;
 import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
-import au.gov.asd.tac.constellation.plugins.importexport.jdbc.model.CellValue;
-import au.gov.asd.tac.constellation.plugins.importexport.jdbc.model.CellValueProperty;
-import au.gov.asd.tac.constellation.plugins.importexport.jdbc.model.TableRow;
-import au.gov.asd.tac.constellation.plugins.importexport.jdbc.translator.AttributeTranslator;
+import au.gov.asd.tac.constellation.plugins.importexport.model.CellValue;
+import au.gov.asd.tac.constellation.plugins.importexport.model.CellValueProperty;
+import au.gov.asd.tac.constellation.plugins.importexport.model.TableRow;
+import au.gov.asd.tac.constellation.plugins.importexport.translator.AttributeTranslator;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -34,6 +34,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.layout.BorderPane;
 
+/**
+ * ImportTableColumn extends a standard JavaFX table column to add field
+ * validation.
+ *
+ * @author sirius
+ */
 public class ImportTableColumn extends TableColumn<TableRow, CellValue> {
 
     private static final Logger LOGGER = Logger.getLogger(ImportTableColumn.class.getName());
