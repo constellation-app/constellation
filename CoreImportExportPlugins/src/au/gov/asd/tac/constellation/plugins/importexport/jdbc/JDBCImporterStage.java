@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.jdbc;
 
+import au.gov.asd.tac.constellation.plugins.importexport.EasyGridPane;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportDefinition;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.util.List;

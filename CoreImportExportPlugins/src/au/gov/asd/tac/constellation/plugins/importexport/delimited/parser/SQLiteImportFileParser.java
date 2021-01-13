@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.delimited.parser;
 
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.RefreshRequest;
+import au.gov.asd.tac.constellation.plugins.importexport.RefreshRequest;
 import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;

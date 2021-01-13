@@ -18,18 +18,18 @@ package au.gov.asd.tac.constellation.plugins.importexport.jdbc.io;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
-import au.gov.asd.tac.constellation.plugins.importexport.jdbc.AttributeType;
-import au.gov.asd.tac.constellation.plugins.importexport.jdbc.GraphDestination;
-import au.gov.asd.tac.constellation.plugins.importexport.jdbc.ImportAttributeDefinition;
+import au.gov.asd.tac.constellation.plugins.importexport.AttributeType;
+import au.gov.asd.tac.constellation.plugins.importexport.GraphDestination;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportAttributeDefinition;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportConstants;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportDefinition;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportDestination;
+import au.gov.asd.tac.constellation.plugins.importexport.NewAttribute;
+import au.gov.asd.tac.constellation.plugins.importexport.RowFilter;
+import au.gov.asd.tac.constellation.plugins.importexport.SchemaDestination;
 import au.gov.asd.tac.constellation.plugins.importexport.jdbc.ImportController;
-import au.gov.asd.tac.constellation.plugins.importexport.jdbc.ImportDefinition;
-import au.gov.asd.tac.constellation.plugins.importexport.jdbc.ImportDestination;
-import au.gov.asd.tac.constellation.plugins.importexport.jdbc.ImportJDBCPlugin;
 import au.gov.asd.tac.constellation.plugins.importexport.jdbc.JDBCImporterStage;
-import au.gov.asd.tac.constellation.plugins.importexport.jdbc.NewAttribute;
-import au.gov.asd.tac.constellation.plugins.importexport.jdbc.RowFilter;
-import au.gov.asd.tac.constellation.plugins.importexport.jdbc.SchemaDestination;
-import au.gov.asd.tac.constellation.plugins.importexport.jdbc.translator.AttributeTranslator;
+import au.gov.asd.tac.constellation.plugins.importexport.translator.AttributeTranslator;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
@@ -148,7 +148,7 @@ public class ImportJDBCIO {
                             //                    type.put(COLUMN_INDEX, iadef.getColumnIndex());
                             // If the column index is not defined, then set the column label to null so
                             // that the settings still get applied in the attribute list on load
-                            if (iadef.getColumnIndex() == ImportJDBCPlugin.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN) {
+                            if (iadef.getColumnIndex() == ImportConstants.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN) {
                                 type.putNull(COLUMN_LABEL);
                             } else {
                                 type.put(COLUMN_LABEL, columns[iadef.getColumnIndex() + 1]);
@@ -295,8 +295,8 @@ public class ImportJDBCIO {
      * @return True if the attribute should be saved, False otherwise
      */
     public static boolean hasSavableAttribute(final ImportAttributeDefinition iadef) {
-        return (iadef.getColumnIndex() != ImportJDBCPlugin.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN)
-                || ((iadef.getColumnIndex() == ImportJDBCPlugin.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN)
+        return (iadef.getColumnIndex() != ImportConstants.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN)
+                || ((iadef.getColumnIndex() == ImportConstants.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN)
                 && (iadef.getParameters() != null || iadef.getDefaultValue() != null));
     }
 }
