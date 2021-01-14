@@ -70,6 +70,8 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
     public static final String DUPLICATE_TRANSACTIONS_PARAMETER_ID = PluginParameter.buildId(SplitNodesPlugin.class, "split_level");
     public static final String TRANSACTION_TYPE_PARAMETER_ID = PluginParameter.buildId(SplitNodesPlugin.class, "transaction_type");
     public static final String ALL_OCCURRENCES_PARAMETER_ID = PluginParameter.buildId(SplitNodesPlugin.class, "all_occurances");
+    
+    public static final String COMPLETE_WITH_SCHEMA_OPTION_ID = PluginParameter.buildId(SplitNodesPlugin.class, "complete_schema");
 
     @Override
     public String getType() {
@@ -112,6 +114,12 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
         allOccurrences.setDescription("Choose to split on all instances of the character(s) rather than just the first instance");
         allOccurrences.setBooleanValue(false);
         params.addParameter(allOccurrences);
+        
+        final PluginParameter<BooleanParameterValue> completeSchema = BooleanParameterType.build(COMPLETE_WITH_SCHEMA_OPTION_ID);
+        completeSchema.setName("Complete with Schema");
+        completeSchema.setDescription("Choose to apply the type schema to the graph");
+        completeSchema.setBooleanValue(true);
+        params.addParameter(completeSchema);
 
         params.addController(DUPLICATE_TRANSACTIONS_PARAMETER_ID, (master, parameters, change) -> {
             if (change == ParameterChange.VALUE) {
@@ -276,7 +284,9 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
                 vlGraph.retrieveCoords();
             }
 
-            PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
+            if (splitParameters.get(COMPLETE_WITH_SCHEMA_OPTION_ID).getBooleanValue()){
+                PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
+            }
             PluginExecutor.startWith(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
         }
     }
