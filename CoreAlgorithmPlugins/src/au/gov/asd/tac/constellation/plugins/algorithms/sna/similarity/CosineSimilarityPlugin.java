@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -184,10 +185,11 @@ public class CosineSimilarityPlugin extends SimpleEditPlugin {
     
     private class VertexWithNeighbours {
         private final int vertexId;
-        private final HashMap<Integer, Integer> neighbourWeightsMap;
+        private final Map<Integer, Integer> neighbourWeightsMap;
         private BitSet neighbours;
         private final boolean selected;
         private Float magnitude = null;
+        private Boolean recalculateMagnitude = true;
 
         public VertexWithNeighbours(final int vertexId, final int vertexCount, final boolean selected) {
             this.neighbourWeightsMap = new HashMap<>();
@@ -197,13 +199,14 @@ public class CosineSimilarityPlugin extends SimpleEditPlugin {
         }
            
         private void addNeighbour(final int neighbourPosition, final int additionalWeight) {
-            int currentWeight = neighbourWeightsMap.getOrDefault(neighbourPosition, 0);
+            final int currentWeight = neighbourWeightsMap.getOrDefault(neighbourPosition, 0);
             neighbourWeightsMap.put(neighbourPosition,currentWeight + additionalWeight);
             neighbours.set(neighbourPosition, true);
+            recalculateMagnitude = true;
         }
         
         private float getMagnitude() {
-            if (magnitude == null) {
+            if (recalculateMagnitude == true) {
                 magnitude = calculateMagnitude();
             }
             return magnitude;
@@ -211,9 +214,10 @@ public class CosineSimilarityPlugin extends SimpleEditPlugin {
         
         private float calculateMagnitude() {
             float mag = 0;
-            for(int neighbourWeight : neighbourWeightsMap.values()) {
+            for(final int neighbourWeight : neighbourWeightsMap.values()) {
                 mag += Math.pow(neighbourWeight, 2);
             }
+            recalculateMagnitude = false;
             return (float) Math.sqrt(mag);
         }
         
@@ -225,8 +229,8 @@ public class CosineSimilarityPlugin extends SimpleEditPlugin {
         return intersection;
     }
     
-    float getNeighbourDotProduct(final VertexWithNeighbours vertex1, final VertexWithNeighbours vertex2, BitSet intersection) {
-        float dot=0;
+    float getNeighbourDotProduct(final VertexWithNeighbours vertex1, final VertexWithNeighbours vertex2, final BitSet intersection) {
+        float dot = 0;
         for (int index = intersection.nextSetBit(0); index >= 0; index = intersection.nextSetBit(index + 1)) {
             dot += vertex1.neighbourWeightsMap.get(index) * vertex2.neighbourWeightsMap.get(index);
         }
