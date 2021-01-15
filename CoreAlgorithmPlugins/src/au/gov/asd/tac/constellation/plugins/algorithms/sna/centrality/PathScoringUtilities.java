@@ -424,30 +424,27 @@ public class PathScoringUtilities {
 
         // initialise variables
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
-            traversal[vertexPosition] = new BitSet(vertexCount); // traversal a vertexCount X vertexCount Bitset
-            scores[vertexPosition] = 0; // Set score in every vertexPosition to 0.
+            traversal[vertexPosition] = new BitSet(vertexCount);
+            scores[vertexPosition] = 0;
 
             // only update nodes with neighbours
             final int vxId = graph.getVertex(vertexPosition);
             if (graph.getVertexNeighbourCount(vxId) > 0) {
-                update.set(vertexPosition); // So update records whether the graph has a neighbour or not.
+                update.set(vertexPosition);
             }
 
-            sendFails[vertexPosition] = new BitSet(vertexCount); // A vertexCount X VertexCount Bitset
-            sendBuffer[vertexPosition] = new BitSet(vertexCount); // A vertexCount X VertexCount Bitset
-            exclusions[vertexPosition] = new BitSet(vertexCount); // A vertexCount X VertexCount Bitset
+            sendFails[vertexPosition] = new BitSet(vertexCount);
+            sendBuffer[vertexPosition] = new BitSet(vertexCount);
+            exclusions[vertexPosition] = new BitSet(vertexCount);
         }
 
-        while (!update.isEmpty()) { 
-            // update the information of each node with neighbours
+        while (!update.isEmpty()) {
+            // update the information of each node with messages
             for (int vertexPosition = update.nextSetBit(0); vertexPosition >= 0; vertexPosition = update.nextSetBit(vertexPosition + 1)) {
-                // Move active bits from sendbuffer into traversal and ensure bit at this position is set
                 traversal[vertexPosition].or(sendBuffer[vertexPosition]);
                 traversal[vertexPosition].set(vertexPosition);
-                // sendfails = sendBuffer
                 sendFails[vertexPosition].clear();
                 sendFails[vertexPosition].or(sendBuffer[vertexPosition]);
-                // clear sendbuffer
                 sendBuffer[vertexPosition].clear();
             }
 
@@ -459,17 +456,17 @@ public class PathScoringUtilities {
                     int neighbourId = graph.getVertexNeighbour(vertexId, vertexNeighbourPosition);
                     int neighbourPosition = graph.getVertexPosition(neighbourId);
                     if (!traversal[vertexPosition].equals(traversal[neighbourPosition])) {
-                        turn.set(neighbourPosition, true); 
+                        turn.set(neighbourPosition, true);
 
                         final BitSet diff = (BitSet) traversal[vertexPosition].clone();
-                        diff.andNot(traversal[neighbourPosition]); // Whats set for the neighbour but not this vertex
-                        sendBuffer[neighbourPosition].or(diff); // Ensure those bits are set in sendBuffer
-                        sendFails[vertexPosition].andNot(diff); // But are not set in sendFails
-                        newUpdate.set(neighbourPosition); // newUpdate become a list of neighbours just visited
+                        diff.andNot(traversal[neighbourPosition]);
+                        sendBuffer[neighbourPosition].or(diff);
+                        sendFails[vertexPosition].andNot(diff);
+                        newUpdate.set(neighbourPosition);
                     }
                 }
                 for (int neighbourPosition = sendFails[vertexPosition].nextSetBit(0); neighbourPosition >= 0; neighbourPosition = sendFails[vertexPosition].nextSetBit(neighbourPosition + 1)) {
-                    exclusions[neighbourPosition].set(vertexPosition, true); // set vertex position to true in each neighbour inj sendFails 
+                    exclusions[neighbourPosition].set(vertexPosition, true);
                 }
             }
 
@@ -737,7 +734,6 @@ public class PathScoringUtilities {
             throw new ArrayIndexOutOfBoundsException(OUT_OF_BOUNDS_EXCEPTION_STRING);
         }
         for (int vertexPosition = turn.nextSetBit(0); vertexPosition >= 0; vertexPosition = turn.nextSetBit(vertexPosition + 1)) {
-            // For each 
             final BitSet diff = (BitSet) sendBuffer[vertexPosition].clone();
             diff.andNot(traversal[vertexPosition]);
             for (int newVertexPosition = diff.nextSetBit(0); newVertexPosition >= 0; newVertexPosition = diff.nextSetBit(newVertexPosition + 1)) {
