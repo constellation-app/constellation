@@ -129,14 +129,24 @@ public class MultiChoiceInputPane extends HBox {
         getChildren().add(field);
         final String parameterId = parameter.getId();
         final List<String> multiChoiceRecentValues = RecentParameterValues.getRecentValues(parameterId);
-        final List<ParameterValue> pvs = MultiChoiceParameterType.getOptionsData(parameter);
-        final List<ParameterValue> choices = new ArrayList<>();
-        for (final ParameterValue pv : pvs) {
-            if (multiChoiceRecentValues != null && multiChoiceRecentValues.get(multiChoiceRecentValues.size() > 1 ? 1 : 0).equals(pv.toString())) {
-                choices.add(pv);
+        if (multiChoiceRecentValues != null) {
+            final String multiChoiceRecentValue = multiChoiceRecentValues.get(multiChoiceRecentValues.size() > 1 ? 1 : 0);
+            final List<String> recentChoices = new ArrayList<>();
+            for (final String recentValue : multiChoiceRecentValue.split("\\n")) {
+                if (recentValue.startsWith("\u2713 ")) {
+                    recentChoices.add(recentValue.split("\u2713 ")[1]);
+                }
             }
+            
+            final List<ParameterValue> pvs = MultiChoiceParameterType.getOptionsData(parameter);
+            final List<ParameterValue> choices = new ArrayList<>();
+            for (final ParameterValue pv : pvs) {
+                if (recentChoices.contains(pv.toString())) {
+                    choices.add(pv);
+                }
+            }
+            MultiChoiceParameterType.setChoicesData(parameter, choices);
         }
-        MultiChoiceParameterType.setChoicesData(parameter, choices);
     }
 
     public class MultiChoiceComboBox<T extends Object> extends CheckComboBox<T> {
