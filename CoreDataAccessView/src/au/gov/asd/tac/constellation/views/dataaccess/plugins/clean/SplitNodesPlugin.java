@@ -163,7 +163,7 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
         }
     }
 
-    private int createNewNode(final GraphWriteMethods graph, final int selectedNode, final String newNodeIdentifier, final String linkType, final boolean splitIntoSameLevel) {
+    private int createNewNode(final GraphWriteMethods graph, final int selectedNode, final String newNodeIdentifier, final String linkType, final boolean splitIntoSameLevel) {        
         final int vertexIdentifierAttributeId = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
         final int transactionTypeAttributeId = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
         final int transactionDirectedAttribute = VisualConcept.TransactionAttribute.DIRECTED.ensure(graph);
@@ -222,9 +222,8 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
     }
 
     @Override
-    public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-       final StoreGraph subgraph = SubgraphUtilities.copyGraph(graph);
-        
+    public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {        
+        final StoreGraph subgraph = SubgraphUtilities.copyGraph(graph);
         
         final Map<String, PluginParameter<?>> splitParameters = parameters.getParameters();
         final String character = splitParameters.get(SPLIT_PARAMETER_ID) != null && splitParameters.get(SPLIT_PARAMETER_ID).getStringValue() != null ? splitParameters.get(SPLIT_PARAMETER_ID).getStringValue() : "";
@@ -291,14 +290,13 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
                 vlGraph.retrieveCoords();
             }
 
-           // if (splitParameters.get(COMPLETE_WITH_SCHEMA_OPTION_ID).getBooleanValue()){
-           //     PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
-           // }  
+            if (splitParameters.get(COMPLETE_WITH_SCHEMA_OPTION_ID).getBooleanValue()){
+                PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
+            }  
             
-           // PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(subgraph);
             PluginExecutor.startWith(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(subgraph);
             PluginExecutor.startWith(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
-            final RecordStore subgraphScore = GraphRecordStoreUtilities.getAll(subgraph, allOccurrences, allOccurrences);
+            final RecordStore subgraphScore = GraphRecordStoreUtilities.getAll(subgraph, false, false);
             GraphRecordStoreUtilities.addRecordStoreToGraph(graph, subgraphScore, false, false, null);
         }
     }
