@@ -18,12 +18,16 @@ package au.gov.asd.tac.constellation.views.dataaccess.plugins.clean;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
+import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
+import au.gov.asd.tac.constellation.graph.processing.RecordStore;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionTypeUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaPluginRegistry;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.utilities.SubgraphUtilities;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -219,6 +223,9 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+       final StoreGraph subgraph = SubgraphUtilities.copyGraph(graph);
+        
+        
         final Map<String, PluginParameter<?>> splitParameters = parameters.getParameters();
         final String character = splitParameters.get(SPLIT_PARAMETER_ID) != null && splitParameters.get(SPLIT_PARAMETER_ID).getStringValue() != null ? splitParameters.get(SPLIT_PARAMETER_ID).getStringValue() : "";
         final ParameterValue transactionTypeChoice = splitParameters.get(TRANSACTION_TYPE_PARAMETER_ID).getSingleChoice();
@@ -251,21 +258,21 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
                         leftNodeIdentifier = substrings[0];
 
                         for (int i = 1; i < substrings.length; i++) {
-                            newVertices.add(createNewNode(graph, position, substrings[i], linkType, splitIntoSameLevel));
+                            newVertices.add(createNewNode(subgraph, position, substrings[i], linkType, splitIntoSameLevel));
                         }
 
                     } else {
                         final int i = identifier.indexOf(character);
                         leftNodeIdentifier = identifier.substring(0, i);
                         if (StringUtils.isNotBlank(leftNodeIdentifier)) {
-                            newVertices.add(createNewNode(graph, position, identifier.substring(i + 1), linkType, splitIntoSameLevel));
+                            newVertices.add(createNewNode(subgraph, position, identifier.substring(i + 1), linkType, splitIntoSameLevel));
                         } else {
                             leftNodeIdentifier = identifier.substring(i + 1);
                         }
                     }
                     // Rename the selected node
                     if (StringUtils.isNotBlank(leftNodeIdentifier)) {
-                        graph.setStringValue(vertexIdentifierAttributeId, currentVertexId, leftNodeIdentifier);
+                        subgraph.setStringValue(vertexIdentifierAttributeId, currentVertexId, leftNodeIdentifier);
                         newVertices.add(currentVertexId);
                     }
                 }
@@ -273,21 +280,26 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
         }
         if (!newVertices.isEmpty()) {
             // Reset the view
-            graph.validateKey(GraphElementType.VERTEX, true);
-            graph.validateKey(GraphElementType.TRANSACTION, true);
+            subgraph.validateKey(GraphElementType.VERTEX, true);
+            subgraph.validateKey(GraphElementType.TRANSACTION, true);
 
             final PluginExecutor arrangement = completionArrangement();
             if (arrangement != null) {
                 // run the arrangement
-                final VertexListInclusionGraph vlGraph = new VertexListInclusionGraph(graph, AbstractInclusionGraph.Connections.NONE, newVertices);
+                final VertexListInclusionGraph vlGraph = new VertexListInclusionGraph(subgraph, AbstractInclusionGraph.Connections.NONE, newVertices);
                 arrangement.executeNow(vlGraph.getInclusionGraph());
                 vlGraph.retrieveCoords();
             }
 
-            if (splitParameters.get(COMPLETE_WITH_SCHEMA_OPTION_ID).getBooleanValue()){
-                PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
-            }
+           // if (splitParameters.get(COMPLETE_WITH_SCHEMA_OPTION_ID).getBooleanValue()){
+           //     PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
+           // }  
+            
+           // PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(subgraph);
+            PluginExecutor.startWith(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(subgraph);
             PluginExecutor.startWith(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
+            final RecordStore subgraphScore = GraphRecordStoreUtilities.getAll(subgraph, allOccurrences, allOccurrences);
+            GraphRecordStoreUtilities.addRecordStoreToGraph(graph, subgraphScore, false, false, null);
         }
     }
 
