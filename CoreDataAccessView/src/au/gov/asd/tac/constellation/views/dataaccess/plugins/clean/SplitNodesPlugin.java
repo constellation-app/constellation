@@ -121,7 +121,7 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
         
         final PluginParameter<BooleanParameterValue> completeSchema = BooleanParameterType.build(COMPLETE_WITH_SCHEMA_OPTION_ID);
         completeSchema.setName("Complete with Schema");
-        completeSchema.setDescription("Choose to apply the type schema to the graph");
+        completeSchema.setDescription("Choose to apply the type schema to the selection");
         completeSchema.setBooleanValue(true);
         params.addParameter(completeSchema);
 
