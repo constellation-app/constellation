@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParamete
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -128,9 +129,14 @@ public class MultiChoiceInputPane extends HBox {
         getChildren().add(field);
         final String parameterId = parameter.getId();
         final List<String> multiChoiceRecentValues = RecentParameterValues.getRecentValues(parameterId);
-        if (multiChoiceRecentValues != null) {
-            parameter.setStringValue(multiChoiceRecentValues.get(multiChoiceRecentValues.size() > 1 ? 1 : 0));
+        final List<ParameterValue> pvs = MultiChoiceParameterType.getOptionsData(parameter);
+        final List<ParameterValue> choices = new ArrayList<>();
+        for (final ParameterValue pv : pvs) {
+            if (multiChoiceRecentValues != null && multiChoiceRecentValues.get(multiChoiceRecentValues.size() > 1 ? 1 : 0).equals(pv.toString())) {
+                choices.add(pv);
+            }
         }
+        MultiChoiceParameterType.setChoicesData(parameter, choices);
     }
 
     public class MultiChoiceComboBox<T extends Object> extends CheckComboBox<T> {
