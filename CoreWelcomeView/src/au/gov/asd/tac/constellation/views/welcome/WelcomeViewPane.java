@@ -199,6 +199,7 @@ public class WelcomeViewPane extends BorderPane {
             splitPane.getDividers().get(0).setPosition(SPLIT_POS);
             VBox.setVgrow(rightVBox, Priority.ALWAYS);
             this.setCenter(welcomeViewPane);
+            scrollPane.setVvalue(-1);
         });
     }
 
