@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.importexport;
+package au.gov.asd.tac.constellation.views.welcome.plugins;
 
 import au.gov.asd.tac.constellation.views.welcome.WelcomePageProvider;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.DelimitedImportTopComponent;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -29,19 +28,17 @@ import javafx.scene.text.Font;
 import javax.swing.SwingUtilities;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
-import org.openide.windows.TopComponent;
-import org.openide.windows.WindowManager;
 
 
 /**
- * The Open Delimited File plugin for the Welcome Page.
+ * The Open JDBC plugin for the Welcome Page.
  *
- * @author canis_majoris
+ * @author Delphinus8821
  */
 @ServiceProvider(service = WelcomePageProvider.class, position = 5)
 @PluginInfo(tags = {"WELCOME"})
-@NbBundle.Messages("DelimitedFileWelcomePlugin=Delimited File Welcome Plugin")
-public class DelimitedFileWelcomePlugin extends WelcomePageProvider {
+@NbBundle.Messages("JDBCImportWelcomePlugin=JDBCImport Welcome Plugin")
+public class JDBCImportWelcomePlugin extends WelcomePageProvider {
     
     public static final String IMPORT = "resources/welcome_import.png";
     final ImageView importImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(IMPORT)));
@@ -54,7 +51,7 @@ public class DelimitedFileWelcomePlugin extends WelcomePageProvider {
      */
     @Override
     public String getName() {
-        return "Import Delimited File Welcome";
+        return "Import JDBC Welcome";
     }
     
     /**
@@ -65,14 +62,14 @@ public class DelimitedFileWelcomePlugin extends WelcomePageProvider {
     @Override
     public void run() {
         SwingUtilities.invokeLater(() -> {
-            final TopComponent stage = WindowManager.getDefault().findTopComponent(DelimitedImportTopComponent.class.getSimpleName());
-            if (stage != null) {
-                if (!stage.isOpened()) {
-                    stage.open();
-                }
-                stage.setEnabled(true);
-                stage.requestActive();
-            }
+           // final TopComponent stage = WindowManager.getDefault().findTopComponent(DelimitedImportTopComponent.class.getSimpleName());
+           // if (stage != null) {
+           //     if (!stage.isOpened()) {
+           //         stage.open();
+           //     }
+           //     stage.setEnabled(true);
+           //     stage.requestActive();
+           // }
         });   
     }
 
@@ -97,7 +94,7 @@ public class DelimitedFileWelcomePlugin extends WelcomePageProvider {
         importImage.setFitWidth(75);
         final Label imTitle = new Label("Import");
         imTitle.setFont(new Font("Arial", 16));
-        final Label imSubtitle = new Label("Delimited File Importer");
+        final Label imSubtitle = new Label("JDBC Importer");
         imSubtitle.setFont(new Font("Arial", 10));
         final VBox layoutVBox = new VBox(importImage, imTitle, imSubtitle);
         layoutVBox.setAlignment(Pos.CENTER);

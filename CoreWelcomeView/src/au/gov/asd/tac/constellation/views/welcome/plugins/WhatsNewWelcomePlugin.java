@@ -41,7 +41,7 @@ import org.openide.windows.WindowManager;
  * @author Delphinus8821
  */
 
-@ServiceProvider(service = WelcomePageProvider.class, position = 6)
+@ServiceProvider(service = WelcomePageProvider.class, position = 8)
 @PluginInfo(tags = {"WELCOME"})
 @NbBundle.Messages("WhatsNewWelcomePlugin=Whats New Welcome Plugin")
 public class WhatsNewWelcomePlugin extends WelcomePageProvider {

@@ -46,7 +46,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Delphinus8821
  */
 
-@ServiceProvider(service = WelcomePageProvider.class, position = 7)
+@ServiceProvider(service = WelcomePageProvider.class, position = 9)
 @PluginInfo(tags = {"WELCOME"})
 @NbBundle.Messages("ProvideFeedbackWelcomePlugin=Provide Feedback Welcome Plugin")
 public class ProvideFeedbackWelcomePlugin extends WelcomePageProvider {

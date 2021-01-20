@@ -46,7 +46,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Delphinus8821
  */
 
-@ServiceProvider(service = WelcomePageProvider.class, position = 8)
+@ServiceProvider(service = WelcomePageProvider.class, position = 10)
 @PluginInfo(tags = {"WELCOME"})
 @NbBundle.Messages("JoinCommWelcomePlugin=Join Comm Welcome Plugin")
 public class JoinCommWelcomePlugin extends WelcomePageProvider {

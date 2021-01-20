@@ -42,7 +42,7 @@ import org.openide.util.lookup.ServiceProvider;
  * The New Graph with a Sphere plugin for the Welcome Page.  
  * @author canis_majoris
  */
-@ServiceProvider(service = WelcomePageProvider.class, position = 2)
+@ServiceProvider(service = WelcomePageProvider.class, position = 3)
 @PluginInfo(tags = {"WELCOME"})
 @NbBundle.Messages("SphereGraphWelcomePlugin=Sphere Graph Welcome Plugin")
 public class SphereGraphWelcomePlugin extends WelcomePageProvider {

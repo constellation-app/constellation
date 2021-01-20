@@ -61,7 +61,7 @@ public class WelcomeViewPane extends BorderPane {
     public static final String ERROR_BUTTON_MESSAGE = String.format("%s Information", BrandingUtilities.APPLICATION_NAME);
     public static final String WELCOME_TEXT = "Welcome to Constellation";
     public static final double SPLIT_POS = 0.2;
-    public static final int NUMBER_OF_TOP_PLUGINS = 4;
+    public static final int NUMBER_OF_TOP_PLUGINS = 6;
 
     //Place holder images
     public static final String LOGO = "resources/constellation-logo.png";
