@@ -121,7 +121,7 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
         
         final PluginParameter<BooleanParameterValue> completeSchema = BooleanParameterType.build(COMPLETE_WITH_SCHEMA_OPTION_ID);
         completeSchema.setName("Complete with Schema");
-        completeSchema.setDescription("Choose to apply the type schema to the selection");
+        completeSchema.setDescription("Choose to apply the type schema to the graph");
         completeSchema.setBooleanValue(true);
         params.addParameter(completeSchema);
 
@@ -222,9 +222,7 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
     }
 
     @Override
-    public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {        
-        final StoreGraph subgraph = SubgraphUtilities.copyGraph(graph);
-        
+    public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {              
         final Map<String, PluginParameter<?>> splitParameters = parameters.getParameters();
         final String character = splitParameters.get(SPLIT_PARAMETER_ID) != null && splitParameters.get(SPLIT_PARAMETER_ID).getStringValue() != null ? splitParameters.get(SPLIT_PARAMETER_ID).getStringValue() : "";
         final ParameterValue transactionTypeChoice = splitParameters.get(TRANSACTION_TYPE_PARAMETER_ID).getSingleChoice();
@@ -257,21 +255,21 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
                         leftNodeIdentifier = substrings[0];
 
                         for (int i = 1; i < substrings.length; i++) {
-                            newVertices.add(createNewNode(subgraph, position, substrings[i], linkType, splitIntoSameLevel));
+                            newVertices.add(createNewNode(graph, position, substrings[i], linkType, splitIntoSameLevel));
                         }
 
                     } else {
                         final int i = identifier.indexOf(character);
                         leftNodeIdentifier = identifier.substring(0, i);
                         if (StringUtils.isNotBlank(leftNodeIdentifier)) {
-                            newVertices.add(createNewNode(subgraph, position, identifier.substring(i + 1), linkType, splitIntoSameLevel));
+                            newVertices.add(createNewNode(graph, position, identifier.substring(i + 1), linkType, splitIntoSameLevel));
                         } else {
                             leftNodeIdentifier = identifier.substring(i + 1);
                         }
                     }
                     // Rename the selected node
                     if (StringUtils.isNotBlank(leftNodeIdentifier)) {
-                        subgraph.setStringValue(vertexIdentifierAttributeId, currentVertexId, leftNodeIdentifier);
+                        graph.setStringValue(vertexIdentifierAttributeId, currentVertexId, leftNodeIdentifier);
                         newVertices.add(currentVertexId);
                     }
                 }
@@ -279,13 +277,13 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
         }
         if (!newVertices.isEmpty()) {
             // Reset the view
-            subgraph.validateKey(GraphElementType.VERTEX, true);
-            subgraph.validateKey(GraphElementType.TRANSACTION, true);
+            graph.validateKey(GraphElementType.VERTEX, true);
+            graph.validateKey(GraphElementType.TRANSACTION, true);
 
             final PluginExecutor arrangement = completionArrangement();
             if (arrangement != null) {
                 // run the arrangement
-                final VertexListInclusionGraph vlGraph = new VertexListInclusionGraph(subgraph, AbstractInclusionGraph.Connections.NONE, newVertices);
+                final VertexListInclusionGraph vlGraph = new VertexListInclusionGraph(graph, AbstractInclusionGraph.Connections.NONE, newVertices);
                 arrangement.executeNow(vlGraph.getInclusionGraph());
                 vlGraph.retrieveCoords();
             }
@@ -294,10 +292,7 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
                 PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
             }  
             
-            PluginExecutor.startWith(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(subgraph);
             PluginExecutor.startWith(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
-            final RecordStore subgraphScore = GraphRecordStoreUtilities.getAll(subgraph, false, false);
-            GraphRecordStoreUtilities.addRecordStoreToGraph(graph, subgraphScore, false, false, null);
         }
     }
 
