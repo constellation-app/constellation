@@ -74,11 +74,11 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
         autosaveSpinner.getModel().setValue(autosaveFrequency);
     }
 
-    public boolean getTutorialOnStartup() {
+    public boolean getWelcomeOnStartup() {
         return startupTutorialCheckbox.isSelected();
     }
 
-    public void setTutorialOnStartup(final boolean tutorialOnStartup) {
+    public void setWelcomeOnStartup(final boolean tutorialOnStartup) {
         startupTutorialCheckbox.setSelected(tutorialOnStartup);
     }
 

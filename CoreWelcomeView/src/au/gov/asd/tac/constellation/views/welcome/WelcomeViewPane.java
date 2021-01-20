@@ -17,11 +17,17 @@ package au.gov.asd.tac.constellation.views.welcome;
 
 import au.gov.asd.tac.constellation.graph.file.open.RecentFilesWelcomePage;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.io.screenshot.RecentGraphScreenshotUtilities;
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import java.io.File;
 import java.util.List;
+import java.util.prefs.PreferenceChangeEvent;
+import java.util.prefs.PreferenceChangeListener;
+import java.util.prefs.Preferences;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -30,6 +36,7 @@ import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -48,6 +55,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import org.openide.util.Lookup;
+import org.openide.util.NbPreferences;
 
 /**
  * WelcomeViewPane contains the content for WelcomeTopComponent
@@ -150,7 +158,36 @@ public class WelcomeViewPane extends BorderPane {
                 }
             }
             leftVBox.setAlignment(Pos.TOP_CENTER);
-
+            
+            final HBox lowerLeftHBox = new HBox();
+            lowerLeftHBox.setPadding(new Insets(10, 10, 10, 10));
+            
+            // Create a checkbox to change users preference regarding showing the Tutorial Page on startup 
+            final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+            final CheckBox showOnStartUpCheckBox = new CheckBox("Show on Startup");
+            showOnStartUpCheckBox.setFont(new Font("Arial", 16));
+            lowerLeftHBox.getChildren().add(showOnStartUpCheckBox);
+           
+            showOnStartUpCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+                @Override
+                public void changed(ObservableValue<? extends Boolean> ov,
+                        Boolean oldVal, Boolean newVal) {
+                    prefs.putBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, newVal);                     
+                }
+            });        
+            showOnStartUpCheckBox.setSelected(prefs.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, ApplicationPreferenceKeys.WELCOME_ON_STARTUP_DEFAULT));
+            
+            // Create a preferenceListener in order to identify when user preference is changed
+            // Keeps tutorial page and options tutorial selections in-sync when both are open
+            prefs.addPreferenceChangeListener(new PreferenceChangeListener() {
+                @Override
+                public void preferenceChange(PreferenceChangeEvent evt) {
+                    showOnStartUpCheckBox.setSelected(prefs.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, showOnStartUpCheckBox.isSelected()));
+                }
+            });
+            
+            leftVBox.getChildren().add(lowerLeftHBox);
+            
             //formatting for bottom hbox
             final Label recent = new Label("Recent");
             recent.setFont(new Font("Arial Unicode MS", 24));

@@ -126,31 +126,8 @@ public class TutorialViewPane extends BorderPane {
             splitPane.getItems().add(rightVBox);
             
             splitPane.getDividers().get(0).setPosition(SPLIT_POS);
-            
-            // Create a checkbox to change users preference regarding showing the Tutorial Page on startup 
-            final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-            final CheckBox showOnStartUpCheckBox = new CheckBox("Show on Startup");
-            rightVBox.getChildren().add(showOnStartUpCheckBox);
-            rightVBox.setAlignment(Pos.TOP_RIGHT);
             rightVBox.setBackground(new Background(new BackgroundFill(Color.valueOf("#333333"), CornerRadii.EMPTY, Insets.EMPTY)));
             rightVBox.paddingProperty().set(new Insets(5, 5, 5, 5));
-            showOnStartUpCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
-                @Override
-                public void changed(ObservableValue<? extends Boolean> ov,
-                        Boolean oldVal, Boolean newVal) {
-                    prefs.putBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, newVal);                     
-                }
-            });        
-            showOnStartUpCheckBox.setSelected(prefs.getBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP_DEFAULT));
-            
-            // Create a preferenceListener in order to identify when user preference is changed
-            // Keeps tutorial page and options tutorial selections in-sync when both are open
-            prefs.addPreferenceChangeListener(new PreferenceChangeListener() {
-                @Override
-                public void preferenceChange(PreferenceChangeEvent evt) {
-                    showOnStartUpCheckBox.setSelected(prefs.getBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, showOnStartUpCheckBox.isSelected()));
-                }
-            });
             
             final WebView whatsNewView = new WebView();
             VBox.setVgrow(whatsNewView, Priority.ALWAYS);
