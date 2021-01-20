@@ -58,7 +58,7 @@ public class SelectionModeWelcomePlugin extends WelcomePageProvider {
      */
     @Override
     public String getName() {
-        return "Add Graph Welcome";
+        return "Selection Mode Graph Welcome";
     }
     
     /**

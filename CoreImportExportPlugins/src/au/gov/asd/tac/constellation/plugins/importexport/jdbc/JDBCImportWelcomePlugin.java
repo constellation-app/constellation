@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.views.welcome.plugins;
+package au.gov.asd.tac.constellation.plugins.importexport.jdbc;
 
 import au.gov.asd.tac.constellation.views.welcome.WelcomePageProvider;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -25,17 +26,15 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import javax.swing.SwingUtilities;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
-
 
 /**
  * The Open JDBC plugin for the Welcome Page.
  *
  * @author Delphinus8821
  */
-@ServiceProvider(service = WelcomePageProvider.class, position = 5)
+@ServiceProvider(service = WelcomePageProvider.class, position = 6)
 @PluginInfo(tags = {"WELCOME"})
 @NbBundle.Messages("JDBCImportWelcomePlugin=JDBCImport Welcome Plugin")
 public class JDBCImportWelcomePlugin extends WelcomePageProvider {
@@ -61,16 +60,10 @@ public class JDBCImportWelcomePlugin extends WelcomePageProvider {
      */
     @Override
     public void run() {
-        SwingUtilities.invokeLater(() -> {
-           // final TopComponent stage = WindowManager.getDefault().findTopComponent(DelimitedImportTopComponent.class.getSimpleName());
-           // if (stage != null) {
-           //     if (!stage.isOpened()) {
-           //         stage.open();
-           //     }
-           //     stage.setEnabled(true);
-           //     stage.requestActive();
-           // }
-        });   
+        Platform.runLater(() -> {
+            final JDBCImporterStage stage = new JDBCImporterStage();
+            stage.show();
+        }); 
     }
 
     /**
