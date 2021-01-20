@@ -16,7 +16,8 @@
 package au.gov.asd.tac.constellation.plugins.importexport.jdbc;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
-import au.gov.asd.tac.constellation.plugins.importexport.jdbc.model.TableRow;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportDefinition;
+import au.gov.asd.tac.constellation.plugins.importexport.model.TableRow;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -40,6 +41,12 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 
+/**
+ * The ConfigurationPane is a UI element that displays a sample of the imported
+ * data and allows the user to assign graph attributes to columns in the data.
+ *
+ * @author sirius
+ */
 public class ConfigurationPane extends AnchorPane {
 
     private final ImportController importController;
@@ -163,8 +170,8 @@ public class ConfigurationPane extends AnchorPane {
     private static ObservableList<TableRow> createTableRows(final List<String[]> data) {
         final ObservableList<TableRow> rows = FXCollections.observableArrayList();
         final int rowCount = Math.min(101, data.size());
-        for (int row = 1; row < rowCount + 1; row++) {
-            rows.add(new TableRow(row - 1, data.get(row - 1)));
+        for (int row = 1; row < rowCount; row++) {
+            rows.add(new TableRow(row - 1, data.get(row)));
         }
         return rows;
     }
