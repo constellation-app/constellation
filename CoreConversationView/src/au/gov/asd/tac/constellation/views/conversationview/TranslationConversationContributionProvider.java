@@ -246,7 +246,7 @@ public class TranslationConversationContributionProvider extends ConversationCon
                     hitCount++;
                     if (hitCount == 1) {
                         translationLabel.setStyle("-fx-highlight-fill: lightgray; -fx-highlight-text-fill: firebrick;");
-                        translationLabel.selectRange(transResult.getFirst(), transResult.getSecond());
+//                        translationLabel.selectRange(transResult.getFirst(), transResult.getSecond());
                     }
                 }
             }

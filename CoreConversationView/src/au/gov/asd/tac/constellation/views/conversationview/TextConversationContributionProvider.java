@@ -25,13 +25,19 @@ import au.gov.asd.tac.constellation.graph.visual.plugins.select.ChangeSelectionP
 import au.gov.asd.tac.constellation.graph.visual.plugins.select.SelectionMode;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ElementTypeParameterValue;
+import au.gov.asd.tac.constellation.utilities.clipboard.ConstellationClipboardOwner;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Region;
@@ -85,6 +91,27 @@ public class TextConversationContributionProvider extends ConversationContributi
 
         @Override
         protected Region createContent(final TooltipPane tips) {
+            
+            final TextFlow textFlow = new TextFlow();
+            textFlow.setPadding(DEFAULT_INSETS);
+            
+            final List<MenuItem> menuItems = new ArrayList<>();
+            
+            final MenuItem copyTextMenuItem = new MenuItem("Copy");
+            copyTextMenuItem.setOnAction(event -> {
+                StringBuilder sb = new StringBuilder();
+                
+                for (Node node : textFlow.getChildren()) {
+                    if (node instanceof Text) {
+                        sb.append(((Text) node).getText());
+                    }
+                }
+                
+                final StringSelection ss = new StringSelection(sb.toString());
+                final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                clipboard.setContents(ss, ConstellationClipboardOwner.getOwner());
+            });
+            
             final MenuItem selectOnGraphMenuItem = new MenuItem("Select on Graph");
             selectOnGraphMenuItem.setOnAction(event -> {
                 final BitSet elementIds = new BitSet();
@@ -97,14 +124,24 @@ public class TextConversationContributionProvider extends ConversationContributi
                         .executeLater(GraphManager.getDefault().getActiveGraph());
             });
             
+            menuItems.add(copyTextMenuItem);
+            menuItems.add(selectOnGraphMenuItem);
+            
+            final ContextMenu contextMenu = new ContextMenu();
+            contextMenu.getItems().addAll(menuItems);
+            
+            textFlow.setOnContextMenuRequested(event -> {
+                contextMenu.show(textFlow, event.getScreenX(), event.getScreenY());
+            });
+            
             final TextField searchText = ConversationBox.searchBubbleTextField;
             textFound = false;
-            final TextFlow textFlow = new TextFlow();
-            textFlow.setPadding(DEFAULT_INSETS);
             
+            // If the search bar is not empty and has text in it.
             if (!searchText.getText().isEmpty()) {
                 List<Tuple<Integer, Integer>> textResults = StringUtilities.searchRange(text, searchText.getText());
                 
+                // If the text in the search bar appears in the given conversation text.
                 if (!textResults.isEmpty()) {
                     textFound = true;
                     int textStart = 0;
