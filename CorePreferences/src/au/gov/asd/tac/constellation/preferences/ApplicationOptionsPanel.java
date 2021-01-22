@@ -78,8 +78,8 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
         return startupTutorialCheckbox.isSelected();
     }
 
-    public void setWelcomeOnStartup(final boolean tutorialOnStartup) {
-        startupTutorialCheckbox.setSelected(tutorialOnStartup);
+    public void setWelcomeOnStartup(final boolean welcomeOnStartup) {
+        startupTutorialCheckbox.setSelected(welcomeOnStartup);
     }
 
     public boolean getFreezeGraph() {

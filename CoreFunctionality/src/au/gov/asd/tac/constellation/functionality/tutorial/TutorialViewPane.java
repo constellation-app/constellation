@@ -102,7 +102,7 @@ public class TutorialViewPane extends BorderPane {
             VBox leftVBox = new VBox();
             splitPane.getItems().add(leftVBox);
 
-            leftVBox.setBackground(new Background(new BackgroundFill(Color.valueOf("#333333"), CornerRadii.EMPTY, Insets.EMPTY)));
+            splitPane.setBackground(new Background(new BackgroundFill(Color.valueOf("#333333"), CornerRadii.EMPTY, Insets.EMPTY)));
             leftVBox.paddingProperty().set(new Insets(5, 5, 5, 5));
             
             final WebView whatsNewView = new WebView();
