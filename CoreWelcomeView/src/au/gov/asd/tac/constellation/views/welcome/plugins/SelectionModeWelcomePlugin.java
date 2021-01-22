@@ -47,7 +47,7 @@ import org.openide.util.lookup.ServiceProvider;
 @NbBundle.Messages("SelectionModeWelcomePlugin=Selection Mode Welcome Plugin")
 public class SelectionModeWelcomePlugin extends WelcomePageProvider {
     
-    public static final String NEW_GRAPH = "resources/welcome_add_graph.png";
+    public static final String NEW_GRAPH = "resources/welcome_add_selection.png";
     final ImageView addView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(NEW_GRAPH)));
     final Button newButton = new Button();
         

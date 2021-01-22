@@ -160,7 +160,7 @@ public class WelcomeViewPane extends BorderPane {
             leftVBox.setAlignment(Pos.TOP_CENTER);
             
             final HBox lowerLeftHBox = new HBox();
-            lowerLeftHBox.setPadding(new Insets(10, 10, 10, 10));
+            lowerLeftHBox.setPadding(new Insets(30, 10, 10, 20));
             
             // Create a checkbox to change users preference regarding showing the Tutorial Page on startup 
             final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);

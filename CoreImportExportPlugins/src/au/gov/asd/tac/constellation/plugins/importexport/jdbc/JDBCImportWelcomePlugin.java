@@ -39,7 +39,7 @@ import org.openide.util.lookup.ServiceProvider;
 @NbBundle.Messages("JDBCImportWelcomePlugin=JDBCImport Welcome Plugin")
 public class JDBCImportWelcomePlugin extends WelcomePageProvider {
     
-    public static final String IMPORT = "resources/welcome_import.png";
+    public static final String IMPORT = "resources/welcome_import_JDBC.png";
     final ImageView importImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(IMPORT)));
     final Button importButton = new Button();
 

@@ -64,7 +64,7 @@ import org.openide.windows.TopComponent;
 @Messages({
     "CTL_TutorialTopComponentAction=Tutorial Page",
     "CTL_TutorialTopComponentIconBase=au/gov/asd/tac/constellation/functionality/tutorial/resources/tutorialPage.png",
-    "CTL_TutorialTopComponentTopComponent=Tutorial Page",
+    "CTL_TutorialTopComponentTopComponent=What's New",
     "HINT_TutorialTopComponentTopComponent=Tutorial Page"
 })
 public final class TutorialTopComponent extends JavaFxTopComponent<TutorialViewPane> implements java.awt.event.ActionListener {

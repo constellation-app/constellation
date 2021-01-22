@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
 import au.gov.asd.tac.constellation.functionality.browser.OpenInBrowserPlugin;
 import au.gov.asd.tac.constellation.functionality.whatsnew.WhatsNewProvider;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
@@ -30,17 +29,12 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.prefs.PreferenceChangeEvent;
-import java.util.prefs.PreferenceChangeListener;
-import java.util.prefs.Preferences;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -56,7 +50,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
-import org.openide.util.NbPreferences;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -103,31 +96,14 @@ public class TutorialViewPane extends BorderPane {
             final SplitPane splitPane = new SplitPane();
             splitPane.setOrientation(Orientation.HORIZONTAL);
             tutorialViewPane.setCenter(splitPane);
-
-            //Create left VBox to handle "help" images of menu and mouse
-            VBox leftVBox = new VBox(10);
-            splitPane.getItems().add(leftVBox);
-            leftVBox.setPadding(new Insets(10, 10, 10, 10));
-            leftVBox.setAlignment(Pos.TOP_CENTER);
-
-            //Create images for Left VBox
-            ImageView menuImage = new ImageView(new Image(TutorialTopComponent.class.getResourceAsStream(MENU_IMAGE)));
-            menuImage.setFitWidth(300);
-            menuImage.setPreserveRatio(true);
-            leftVBox.getChildren().add(menuImage);
-            ImageView mouseImage = new ImageView(new Image(TutorialTopComponent.class.getResourceAsStream(MOUSE_IMAGE)));
-            mouseImage.setFitWidth(300);
-            mouseImage.setPreserveRatio(true);
-            leftVBox.getChildren().add(mouseImage);
-
-            //Create Right VBox to handle Browser and controls,
-            //or error messages
-            VBox rightVBox = new VBox();
-            splitPane.getItems().add(rightVBox);
             
-            splitPane.getDividers().get(0).setPosition(SPLIT_POS);
-            rightVBox.setBackground(new Background(new BackgroundFill(Color.valueOf("#333333"), CornerRadii.EMPTY, Insets.EMPTY)));
-            rightVBox.paddingProperty().set(new Insets(5, 5, 5, 5));
+            //Create left VBox to handle Browser and controls,
+            //or error messages
+            VBox leftVBox = new VBox();
+            splitPane.getItems().add(leftVBox);
+
+            leftVBox.setBackground(new Background(new BackgroundFill(Color.valueOf("#333333"), CornerRadii.EMPTY, Insets.EMPTY)));
+            leftVBox.paddingProperty().set(new Insets(5, 5, 5, 5));
             
             final WebView whatsNewView = new WebView();
             VBox.setVgrow(whatsNewView, Priority.ALWAYS);
@@ -171,8 +147,28 @@ public class TutorialViewPane extends BorderPane {
             } catch (ParseException ex) {
                 Exceptions.printStackTrace(ex);
             }
-            rightVBox.getChildren().add(whatsNewView);
+            leftVBox.getChildren().add(whatsNewView);
 
+            
+            //Create left VBox to handle "help" images of menu and mouse
+            VBox rightVBox = new VBox(10);
+            splitPane.getItems().add(rightVBox);
+            rightVBox.setPadding(new Insets(10, 10, 10, 10));
+            rightVBox.setAlignment(Pos.TOP_CENTER);
+            rightVBox.setMaxWidth(600);
+            rightVBox.setMinWidth(400);
+
+            //Create images for Left VBox
+            ImageView menuImage = new ImageView(new Image(TutorialTopComponent.class.getResourceAsStream(MENU_IMAGE)));
+            menuImage.setFitWidth(300);
+            menuImage.setPreserveRatio(true);
+            rightVBox.getChildren().add(menuImage);
+            ImageView mouseImage = new ImageView(new Image(TutorialTopComponent.class.getResourceAsStream(MOUSE_IMAGE)));
+            mouseImage.setFitWidth(300);
+            mouseImage.setPreserveRatio(true);
+            rightVBox.getChildren().add(mouseImage);
+            
+            splitPane.getDividers().get(0).setPosition(SPLIT_POS);
             //Finally, insert the tutorialViewPane object into the BorderPane
             this.setCenter(tutorialViewPane);
         });
