@@ -21,6 +21,11 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Utilities for calculating scores on a graph based on shortest paths. This
@@ -30,7 +35,7 @@ import java.util.BitSet;
  * @author canis_majoris
  * @author cygnus_x-1
  */
-public class PathScoringUtilities {
+public class PathScoringUtilitiesNew {
 
     private static final String SCORETYPE_ERROR_FORMAT = "The requested ScoreType, %s, is not supported.";
     private static final String OUT_OF_BOUNDS_EXCEPTION_STRING = "The 'selected' attribute does not exist on the given graph.";
@@ -412,80 +417,61 @@ public class PathScoringUtilities {
 
     private static Tuple<BitSet[], float[]> computeShortestPathsUndirected(final GraphReadMethods graph, final ScoreType scoreType, final boolean selectedOnly) {
         final int vertexCount = graph.getVertexCount();
-        final BitSet[] traversal = new BitSet[vertexCount];
         final float[] scores = new float[vertexCount];
 
-        final BitSet update = new BitSet(vertexCount);
-        final BitSet[] sendFails = new BitSet[vertexCount];
-        final BitSet[] sendBuffer = new BitSet[vertexCount];
-        final BitSet[] exclusions = new BitSet[vertexCount];
-        final BitSet newUpdate = new BitSet(vertexCount);
-        final BitSet turn = new BitSet(vertexCount);
+        final Set<VertexPathDetails> update = new HashSet<>();
+        final Set<VertexPathDetails> newUpdate = new HashSet<>();
+        final Set<VertexPathDetails> turn = new HashSet<>();
 
         // initialise variables
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
-            traversal[vertexPosition] = new BitSet(vertexCount); // vertexCount x vertexCount
+            
             scores[vertexPosition] = 0;
 
             // only update nodes with neighbours
             final int vxId = graph.getVertex(vertexPosition);
             if (graph.getVertexNeighbourCount(vxId) > 0) {
-                update.set(vertexPosition);
+                VertexPathDetails vpd = VertexPathDetails.createVPD(graph, vertexPosition, vxId);
+                update.add(vpd);
             }
-
-            sendFails[vertexPosition] = new BitSet(vertexCount); // vertexCount x vertexCount
-            sendBuffer[vertexPosition] = new BitSet(vertexCount); // vertexCount x vertexCount
-            exclusions[vertexPosition] = new BitSet(vertexCount); // vertexCount x vertexCount
         }
 
         // update = neighbours from last update ; traversal = 
         while (!update.isEmpty()) { // Each iteration is on the neighbours from the last update
+            
             // update the information of each node with messages
-            for (int vertexPosition = update.nextSetBit(0); vertexPosition >= 0; vertexPosition = update.nextSetBit(vertexPosition + 1)) {
-                traversal[vertexPosition].or(sendBuffer[vertexPosition]); // Update traversal with the positive bits in the sendBuffer. Iter2 : Traversal becomes list of sources
-                traversal[vertexPosition].set(vertexPosition); // Ensure bit on diaganol is positive
-                sendFails[vertexPosition].clear();
-                sendFails[vertexPosition].or(sendBuffer[vertexPosition]); //sendFails is equal too previous sendBuffer
-                sendBuffer[vertexPosition].clear();
+            for (VertexPathDetails vertexPathDetails : update) {
+                vertexPathDetails.updatePath();
             }
 
             // for each neighbour, check if there is any new information it needs to receive
-            for (int vertexPosition = update.nextSetBit(0); vertexPosition >= 0; vertexPosition = update.nextSetBit(vertexPosition + 1)) { // For each vertex with a neighbour
-                int vertexId = graph.getVertex(vertexPosition);
+            for (VertexPathDetails originalPathDetails : update) { // For each vertex with a neighbour
+                for (VertexPathDetails neighbourPathDetails : originalPathDetails.neighbours) { //For each neighbour of each vertex
+                    boolean sameTraversal = originalPathDetails.traversal.equals(neighbourPathDetails.traversal);
+                    if (!sameTraversal) { // If they done have the same traversal (1st iteration just has 1 on diaganol.). 2nd Iter: Different sources
+                        turn.add(neighbourPathDetails); // Add neighbour to turn
 
-                for (int vertexNeighbourPosition = 0; vertexNeighbourPosition < graph.getVertexNeighbourCount(vertexId); vertexNeighbourPosition++) { //For each neighbour of each vertex
-                    int neighbourId = graph.getVertexNeighbour(vertexId, vertexNeighbourPosition);
-                    int neighbourPosition = graph.getVertexPosition(neighbourId);
-                    if (!traversal[vertexPosition].equals(traversal[neighbourPosition])) { // If they done have the same traversal (1st iteration just has 1 on diaganol.). 2nd Iter: Different sources
-                        turn.set(neighbourPosition, true); // Add neighbour to turn
-
-                        final BitSet diff = (BitSet) traversal[vertexPosition].clone();
-                        diff.andNot(traversal[neighbourPosition]); // Diff = traversal in first iteration. Second iter: Sources for vertex but not neighbour
-                        sendBuffer[neighbourPosition].or(diff); // Add those in traversal[vertexPosition] but not traversal[neighbour] if not set in sendBuffer. 1st iter: The verticies which have this as a neighbour. Second iter: Sources for vertex but not neighbour
-                        sendFails[vertexPosition].andNot(diff); // Remove those in traversal[vertexPosition] but not traversal[neighbour]. 1st iter: Empty. 2nd Iter: 1 on diag if not a source for neighbour
-                        newUpdate.set(neighbourPosition); // newUpdate(neighbourPosition) = 1
+                        VertexPathDetails.update(originalPathDetails, neighbourPathDetails);
+                        newUpdate.add(neighbourPathDetails); // newUpdate(neighbourPosition) = 1
                     } 
                 }
-                for (int neighbourPosition = sendFails[vertexPosition].nextSetBit(0); neighbourPosition >= 0; neighbourPosition = sendFails[vertexPosition].nextSetBit(neighbourPosition + 1)) { //Empty on first iteration
-                    exclusions[neighbourPosition].set(vertexPosition, true); // Set all positive sendFail bits (isn't this just an or in loop form?)
-                }
+                VertexPathDetails.updateExclusions(originalPathDetails);
             }
 
             // update scores based on the current traversal state
-            //traversal = 
             switch (scoreType) {
                 case BETWEENNESS:
                     // Iteration 1: Traversal is a diaganol matrix with 1s for verticies that have neighbours, Turn is list of destinations, SendBuffer is a list of sources, Exclusions is empty
                     // For a vertex: traversal[vertex] = Every node on path to vertex after x hops , turn(vertex) = was a destination, sendBuffer[vertex] = traversal of every source to vertex without own traversal, sendFails[vertex] = Previous sendBuffer - current sendBuffer, 
-                    updateBetweennessScoresUndirected(graph, traversal, scores, sendBuffer, exclusions, turn, selectedOnly);
+                    updateBetweennessScoresUndirected(graph, scores, turn, selectedOnly);
                     break;
                 case CLOSENESS:
                 case FARNESS:
-                    updateFarnessScoresUndirected(graph, traversal, scores, sendBuffer, exclusions, turn, selectedOnly);
+                    updateFarnessScoresUndirected(graph, scores, turn, selectedOnly);
                     break;
                 case HARMONIC_CLOSENESS:
                 case HARMONIC_FARNESS:
-                    updateHarmonicFarnessScoresUndirected(graph, traversal, scores, sendBuffer, exclusions, turn, selectedOnly);
+                    updateHarmonicFarnessScoresUndirected(graph, scores, turn, selectedOnly);
                     break;
                 default:
                     throw new IllegalArgumentException(String.format(SCORETYPE_ERROR_FORMAT, scoreType));
@@ -493,7 +479,7 @@ public class PathScoringUtilities {
 
             turn.clear();
             update.clear();
-            update.or(newUpdate); // Update = neighbours that dont have same traversal. New update == turn.
+            update.addAll(newUpdate); // Update = neighbours that dont have same traversal. New update == turn.
             newUpdate.clear();
         }
 
@@ -511,7 +497,12 @@ public class PathScoringUtilities {
                 scores[index] = scores[index] == 0 ? 0 : scores[index] / scores.length;
             }
         }
-
+        
+        final BitSet[] traversal = new BitSet[vertexCount];
+        for (Entry<Integer, VertexPathDetails> entry : VertexPathDetails.verticies.entrySet()) {
+            traversal[entry.getValue().position] = VertexPathDetails.convertToBitSet(entry.getValue().traversal, vertexCount);
+        }
+        VertexPathDetails.resetVerticies();
         return Tuple.create(traversal, scores);
     }
 
@@ -731,33 +722,29 @@ public class PathScoringUtilities {
         }
     }
 
-    private static void updateBetweennessScoresUndirected(final GraphReadMethods graph, final BitSet[] traversal, final float[] scores,
-            final BitSet[] sendBuffer, final BitSet[] exclusions, final BitSet turn, final boolean selectedOnly) {
+    private static void updateBetweennessScoresUndirected(final GraphReadMethods graph, final float[] scores, final Set<VertexPathDetails> turn, final boolean selectedOnly) {
         // Iteration 1: Traversal is a diaganol matrix with 1s for verticies that have neighbours, Turn is list of destination, SendBuffer is a list of sources, Exclusions is empty
         // For a vertex: traversal[vertex] = Every node on path to vertex after x hops , turn(vertex) = was a destination, sendBuffer[vertex] = traversal of every source to vertex without own traversal, sendFails[vertex] = Previous sendBuffer - current sendBuffer 
         final int selectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
         if (selectedOnly && selectedAttribute == GraphConstants.NOT_FOUND) {
             throw new ArrayIndexOutOfBoundsException(OUT_OF_BOUNDS_EXCEPTION_STRING);
         }
-        for (int vertexPosition = turn.nextSetBit(0); vertexPosition >= 0; vertexPosition = turn.nextSetBit(vertexPosition + 1)) { // Iter1: For each destination
-//            final BitSet diff = (BitSet) sendBuffer[vertexPosition].clone();
-//            diff.andNot(traversal[vertexPosition]); // Iter1: Each destination that isn't itself
-            for (int newVertexPosition = sendBuffer[vertexPosition].nextSetBit(0); newVertexPosition >= 0; newVertexPosition = sendBuffer[vertexPosition].nextSetBit(newVertexPosition + 1)) {
+        for (VertexPathDetails original : turn) { // Iter1: For each destination
+            for (VertexPathDetails sendBufferVertex : original.sendBuffer) {
                 // for every destination pair
 //                if (sendBuffer[vertexPosition].get(newVertexPosition)) { //If they are neighboure to eachother
-                    final boolean vertexSelected = graph.getBooleanValue(selectedAttribute, graph.getVertex(vertexPosition));
-                    final boolean newVertexSelected = graph.getBooleanValue(selectedAttribute, graph.getVertex(newVertexPosition));
-                    if (!selectedOnly || (vertexSelected && newVertexSelected)) {
-                        final BitSet intersection = (BitSet) traversal[newVertexPosition].clone();
-                        intersection.and(traversal[vertexPosition]);
-                        intersection.andNot(sendBuffer[vertexPosition]);  
-                        intersection.andNot(sendBuffer[newVertexPosition]);
+                    if (!selectedOnly || (original.selected && sendBufferVertex.selected)) {
+                        final Set<VertexPathDetails> intersection = new HashSet(sendBufferVertex.traversal);
+                        intersection.removeIf(vpd -> !original.traversal.contains(vpd));
+                        intersection.removeAll(original.sendBuffer);
+                        intersection.removeAll(sendBufferVertex.sendBuffer);
+                        
                         //; Iter1: itersection is positive for the two veritices if they are not direct neighbours
-                        for (int index = intersection.nextSetBit(0); index >= 0; index = intersection.nextSetBit(index + 1)) {
-                            if (exclusions[vertexPosition].get(index) && exclusions[newVertexPosition].get(index)) {
+                        for (VertexPathDetails intersectionVertex : intersection) {
+                            if (original.exclusions.contains(intersectionVertex) && sendBufferVertex.exclusions.contains(intersectionVertex)) {
                                 continue;
                             }
-                            scores[index]++;
+                            scores[intersectionVertex.position]++;
                         }
                     }
 //                }
@@ -795,29 +782,29 @@ public class PathScoringUtilities {
         }
     }
 
-    private static void updateFarnessScoresUndirected(final GraphReadMethods graph, final BitSet[] traversal, final float[] scores,
-            final BitSet[] sendBuffer, final BitSet[] exclusions, final BitSet turn, final boolean selectedOnly) {
+    private static void updateFarnessScoresUndirected(final GraphReadMethods graph, final float[] scores, final Set<VertexPathDetails> turn, final boolean selectedOnly) {
         final int selectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
         if (selectedOnly && selectedAttribute == GraphConstants.NOT_FOUND) {
             throw new ArrayIndexOutOfBoundsException(OUT_OF_BOUNDS_EXCEPTION_STRING);
         }
-        for (int vertexPosition = turn.nextSetBit(0); vertexPosition >= 0; vertexPosition = turn.nextSetBit(vertexPosition + 1)) {
-            final BitSet diff = (BitSet) sendBuffer[vertexPosition].clone();
-            diff.andNot(traversal[vertexPosition]);
-            for (int newVertexPosition = diff.nextSetBit(0); newVertexPosition >= 0; newVertexPosition = diff.nextSetBit(newVertexPosition + 1)) {
-                if (sendBuffer[vertexPosition].get(newVertexPosition)) {
-                    final boolean newVertexSelected = graph.getBooleanValue(selectedAttribute, graph.getVertex(newVertexPosition));
-                    if (!selectedOnly || newVertexSelected) {
-                        final BitSet intersection = (BitSet) traversal[newVertexPosition].clone();
-                        intersection.and(traversal[vertexPosition]);
-                        intersection.andNot(sendBuffer[vertexPosition]);
-                        intersection.andNot(sendBuffer[newVertexPosition]);
-                        for (int index = intersection.nextSetBit(0); index >= 0; index = intersection.nextSetBit(index + 1)) {
-                            if (exclusions[vertexPosition].get(index) && exclusions[newVertexPosition].get(index)) {
-                                intersection.set(index, false);
+        for (VertexPathDetails originalPathDetails : turn) {
+            Set<VertexPathDetails> diff = new HashSet(originalPathDetails.sendBuffer);
+            diff.removeAll(originalPathDetails.traversal);
+            for (VertexPathDetails newPathDetails : diff) {
+                if (originalPathDetails.sendBuffer.contains(newPathDetails)) {
+                    if (!selectedOnly || newPathDetails.selected) {
+                        Set<VertexPathDetails> intersection = new HashSet(newPathDetails.traversal);
+                        intersection.addAll(originalPathDetails.traversal);
+                        intersection.removeAll(originalPathDetails.sendBuffer);
+                        intersection.removeAll(newPathDetails.sendBuffer);
+                        
+                        int invalidIntersections = 0;
+                        for (VertexPathDetails intersectingPathDetails : intersection) {
+                            if (originalPathDetails.exclusions.contains(intersectingPathDetails) && newPathDetails.exclusions.contains(intersectingPathDetails)) {
+                                invalidIntersections +=1;
                             }
                         }
-                        scores[vertexPosition] += (intersection.cardinality() + 1);
+                        scores[originalPathDetails.position] += (intersection.size() + 1 - invalidIntersections);
                     }
                 }
             }
@@ -853,36 +840,32 @@ public class PathScoringUtilities {
         }
     }
 
-    private static void updateHarmonicFarnessScoresUndirected(final GraphReadMethods graph, final BitSet[] traversal, final float[] scores,
-            final BitSet[] sendBuffer, final BitSet[] exclusions, final BitSet turn, final boolean selectedOnly) {
-        final int selectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
-        if (selectedOnly && selectedAttribute == GraphConstants.NOT_FOUND) {
-            throw new ArrayIndexOutOfBoundsException(OUT_OF_BOUNDS_EXCEPTION_STRING);
-        }
-        for (int vertexPosition = turn.nextSetBit(0); vertexPosition >= 0; vertexPosition = turn.nextSetBit(vertexPosition + 1)) {
-            final BitSet diff = (BitSet) sendBuffer[vertexPosition].clone();
-            diff.andNot(traversal[vertexPosition]);
-            for (int newVertexPosition = diff.nextSetBit(0); newVertexPosition >= 0; newVertexPosition = diff.nextSetBit(newVertexPosition + 1)) {
-                if (sendBuffer[vertexPosition].get(newVertexPosition)) {
-                    final boolean newVertexSelected = graph.getBooleanValue(selectedAttribute, graph.getVertex(newVertexPosition));
-                    if (!selectedOnly || newVertexSelected) {
-                        final BitSet intersection = (BitSet) traversal[newVertexPosition].clone();
-                        intersection.and(traversal[vertexPosition]);
-                        intersection.andNot(sendBuffer[vertexPosition]);
-                        intersection.andNot(sendBuffer[newVertexPosition]);
-                        for (int index = intersection.nextSetBit(0); index >= 0; index = intersection.nextSetBit(index + 1)) {
-                            if (exclusions[vertexPosition].get(index) && exclusions[newVertexPosition].get(index)) {
-                                intersection.set(index, false);
+      private static void updateHarmonicFarnessScoresUndirected(final GraphReadMethods graph, final float[] scores, final Set<VertexPathDetails> turn, final boolean selectedOnly) {
+        for (VertexPathDetails vertexPathDetails : turn) {
+            final Set<VertexPathDetails> diff = new HashSet(vertexPathDetails.sendBuffer);
+            diff.removeAll(vertexPathDetails.traversal);
+            for (VertexPathDetails diffPathDetails : diff) {
+                if (vertexPathDetails.sendBuffer.contains(diffPathDetails)) {
+                    if (!selectedOnly || diffPathDetails.selected) {
+                        final Set<VertexPathDetails> intersection = new HashSet(diffPathDetails.traversal);
+                        intersection.removeIf(vpd -> !vertexPathDetails.traversal.contains(vpd));
+                        intersection.removeAll(vertexPathDetails.sendBuffer);
+                        intersection.removeAll(diffPathDetails.sendBuffer);
+                        
+                        int invalidIntersections = 0;
+                        for (VertexPathDetails intersectingPathDetails : intersection) {
+                            if (vertexPathDetails.exclusions.contains(intersectingPathDetails) && diffPathDetails.exclusions.contains(intersectingPathDetails)) {
+                                invalidIntersections += 1;
                             }
                         }
-                        scores[vertexPosition] += (1.0 / (intersection.cardinality() + 1));
-                        scores[newVertexPosition] += (1.0 / (intersection.cardinality() + 1));
+                        scores[vertexPathDetails.position] += (1.0 / (intersection.size() + 1 - invalidIntersections));
+                        scores[diffPathDetails.position] += (1.0 / (intersection.size() + 1 - invalidIntersections));
                     }
                 }
             }
         }
     }
-
+    
     private static void updateHarmonicFarnessScoresDirected(final GraphReadMethods graph, final BitSet[] traversalF, final BitSet[] traversalB, final float[] scores,
             final BitSet[] sendBufferF, final BitSet[] sendBufferB, final BitSet[] exclusionsF, final BitSet[] exclusionsB, final BitSet turn, final boolean selectedOnly) {
         final int selectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
@@ -910,5 +893,77 @@ public class PathScoringUtilities {
                 }
             }
         }
+    }
+    
+    private static class VertexPathDetails {
+        static Map<Integer, VertexPathDetails> verticies = new HashMap<>();
+        static int selectedAttribute = -100;
+        
+        int position;
+        int id;
+        boolean selected;
+        Set<VertexPathDetails> traversal = new HashSet<>();
+        Set<VertexPathDetails> sendBuffer = new HashSet<>();;
+        Set<VertexPathDetails> sendFails = new HashSet<>();;
+        Set<VertexPathDetails> exclusions = new HashSet<>();;
+        Set<VertexPathDetails> neighbours = new HashSet<>();;
+
+        private VertexPathDetails(GraphReadMethods graph, int position, int id) {
+            this.position = position;
+            this.id = id;
+            if (selectedAttribute == -100) {
+                selectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
+            }
+            selected = graph.getBooleanValue(selectedAttribute, graph.getVertex(position));
+        }
+        
+        public static VertexPathDetails createVPD(GraphReadMethods graph, int position, int id) {
+            VertexPathDetails original  = verticies.get(id);
+            if (original == null) {
+                original  = new VertexPathDetails(graph, position, id);
+                verticies.put(id, original);
+                for (int vertexNeighbourPosition = 0; vertexNeighbourPosition < graph.getVertexNeighbourCount(id); vertexNeighbourPosition++) {
+                    int neighbourId = graph.getVertexNeighbour(id, vertexNeighbourPosition);
+                    int neighbourPosition = graph.getVertexPosition(neighbourId);
+                    VertexPathDetails neighbour = createVPD(graph, neighbourPosition, neighbourId);
+                    original.neighbours.add(neighbour);
+                }
+            }
+            return original;
+        }
+
+        void updatePath() {
+            traversal.addAll(sendBuffer);
+            traversal.add(this);
+            sendFails.clear();
+            sendFails.addAll(sendBuffer);
+            sendBuffer.clear();
+        } 
+        
+        static private void updateExclusions(VertexPathDetails original) {
+            for (VertexPathDetails sendFail: original.sendFails){
+                sendFail.exclusions.add(original);
+            }
+        }
+        
+        static private void update(VertexPathDetails original, VertexPathDetails neighbour) {
+            final Set diff = new HashSet(original.traversal);
+            diff.removeAll(neighbour.traversal); // Diff = traversal in first iteration. Second iter: Sources for vertex but not neighbour
+            neighbour.sendBuffer.addAll(diff); // Add those in traversal[vertexPosition] but not traversal[neighbour] if not set in sendBuffer. 1st iter: The verticies which have this as a neighbour. Second iter: Sources for vertex but not neighbour
+            original.sendFails.removeAll(diff); // Remove those in traversal[vertexPosition] but not traversal[neighbour]. 1st iter: Empty. 2nd Iter: 1 on diag if not a source for neighbour
+        }
+        
+        static private BitSet convertToBitSet(Set<VertexPathDetails> vpdSet, int vertexCount) {
+            BitSet result = new BitSet(vertexCount);
+            for (VertexPathDetails vpd : vpdSet) {
+                result.set(vpd.position);
+            }
+            return result;
+        }
+        
+        static private void resetVerticies() {
+            verticies.clear();
+        }
+        
     }
 }

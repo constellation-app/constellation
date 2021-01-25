@@ -21,7 +21,6 @@ import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.algorithms.sna.SnaConcept;
-import au.gov.asd.tac.constellation.plugins.algorithms.sna.centrality.PathScoringUtilities.ScoreType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
@@ -119,7 +118,7 @@ public class BetweennessCentralityPlugin extends SimpleEditPlugin {
         assert !normaliseByPossible || !normaliseByAvailable : "You should only select one method of normalisation";
 
         // calculate betweenness scores
-        final Tuple<BitSet[], float[]> scoreResult = PathScoringUtilities.calculateScores(graph, ScoreType.BETWEENNESS, includeConnectionsIn, includeConnectionsOut, treatUndirectedBidirectional, selectedOnly);
+        final Tuple<BitSet[], float[]> scoreResult = PathScoringUtilitiesNew.calculateScores(graph, PathScoringUtilitiesNew.ScoreType.BETWEENNESS, includeConnectionsIn, includeConnectionsOut, treatUndirectedBidirectional, selectedOnly);
         final BitSet[] subgraphs = scoreResult.getFirst();
         final float[] betweennesses = scoreResult.getSecond();
 

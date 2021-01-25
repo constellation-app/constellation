@@ -135,11 +135,11 @@ public class ClosenessCentralityPlugin extends SimpleEditPlugin {
         final BitSet[] subgraphs;
         final float[] closenesses;
         if (harmonic) {
-            final Tuple<BitSet[], float[]> scoreResult = PathScoringUtilities.calculateScores(graph, PathScoringUtilities.ScoreType.HARMONIC_CLOSENESS, includeConnectionsIn, includeConnectionsOut, treatUndirectedBidirectional, selectedOnly);
+            final Tuple<BitSet[], float[]> scoreResult = PathScoringUtilitiesNew.calculateScores(graph, PathScoringUtilitiesNew.ScoreType.HARMONIC_CLOSENESS, includeConnectionsIn, includeConnectionsOut, treatUndirectedBidirectional, selectedOnly);
             subgraphs = scoreResult.getFirst();
             closenesses = scoreResult.getSecond();
         } else {
-            final Tuple<BitSet[], float[]> scoreResult = PathScoringUtilities.calculateScores(graph, PathScoringUtilities.ScoreType.CLOSENESS, includeConnectionsIn, includeConnectionsOut, treatUndirectedBidirectional, selectedOnly);
+            final Tuple<BitSet[], float[]> scoreResult = PathScoringUtilitiesNew.calculateScores(graph, PathScoringUtilitiesNew.ScoreType.CLOSENESS, includeConnectionsIn, includeConnectionsOut, treatUndirectedBidirectional, selectedOnly);
             subgraphs = scoreResult.getFirst();
             closenesses = scoreResult.getSecond();
         }
