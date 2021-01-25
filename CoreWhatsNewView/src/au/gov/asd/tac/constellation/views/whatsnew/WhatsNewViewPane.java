@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.functionality.tutorial;
+package au.gov.asd.tac.constellation.views.whatsnew;
 
 import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
 import au.gov.asd.tac.constellation.functionality.browser.OpenInBrowserPlugin;
-import au.gov.asd.tac.constellation.functionality.whatsnew.WhatsNewProvider;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
@@ -58,14 +57,14 @@ import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
 
 /**
- * Tutorial View Pane.
+ * Whats New View Pane.
  *
  * @author aquila Refactor by:
  * @author aldebaran30701
  */
-public class TutorialViewPane extends BorderPane {
+public class WhatsNewViewPane extends BorderPane {
 
-    private final BorderPane tutorialViewPane;
+    private final BorderPane whatsNewViewPane;
     
     public static final String MOUSE_IMAGE = "resources/mouse3.png";
     public static final String MENU_IMAGE = "resources/sidebar.png";
@@ -88,14 +87,14 @@ public class TutorialViewPane extends BorderPane {
      */
     private final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
-    public TutorialViewPane() {
-        tutorialViewPane = new BorderPane(); 
+    public WhatsNewViewPane() {
+        whatsNewViewPane = new BorderPane(); 
         ConstellationSecurityManager.startSecurityLaterFX(() -> {
             Platform.setImplicitExit(false);
 
             final SplitPane splitPane = new SplitPane();
             splitPane.setOrientation(Orientation.HORIZONTAL);
-            tutorialViewPane.setCenter(splitPane);
+            whatsNewViewPane.setCenter(splitPane);
             
             //Create left VBox to handle Browser and controls,
             //or error messages
@@ -140,7 +139,7 @@ public class TutorialViewPane extends BorderPane {
                     }
                 }
             });
-            whatsNewView.getEngine().setUserStyleSheetLocation(TutorialTopComponent.class.getResource("resources/whatsnew.css").toExternalForm());
+            whatsNewView.getEngine().setUserStyleSheetLocation(WhatsNewTopComponent.class.getResource("resources/whatsnew.css").toExternalForm());
             whatsNewView.getStyleClass().add("web-view");
             try {
                 whatsNewView.getEngine().loadContent(getWhatsNew());
@@ -159,18 +158,18 @@ public class TutorialViewPane extends BorderPane {
             rightVBox.setMinWidth(400);
 
             //Create images for Left VBox
-            ImageView menuImage = new ImageView(new Image(TutorialTopComponent.class.getResourceAsStream(MENU_IMAGE)));
+            ImageView menuImage = new ImageView(new Image(WhatsNewTopComponent.class.getResourceAsStream(MENU_IMAGE)));
             menuImage.setFitWidth(300);
             menuImage.setPreserveRatio(true);
             rightVBox.getChildren().add(menuImage);
-            ImageView mouseImage = new ImageView(new Image(TutorialTopComponent.class.getResourceAsStream(MOUSE_IMAGE)));
+            ImageView mouseImage = new ImageView(new Image(WhatsNewTopComponent.class.getResourceAsStream(MOUSE_IMAGE)));
             mouseImage.setFitWidth(300);
             mouseImage.setPreserveRatio(true);
             rightVBox.getChildren().add(mouseImage);
             
             splitPane.getDividers().get(0).setPosition(SPLIT_POS);
             //Finally, insert the tutorialViewPane object into the BorderPane
-            this.setCenter(tutorialViewPane);
+            this.setCenter(whatsNewViewPane);
         });
     }
 

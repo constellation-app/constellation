@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.functionality.tutorial;
+package au.gov.asd.tac.constellation.views.whatsnew;
 
 import au.gov.asd.tac.constellation.security.proxy.ProxyUtilities;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
@@ -29,7 +29,7 @@ import org.openide.windows.TopComponent;
 
 /**
  *
- * TutorialTopComponent is designed to inform users of news about Constellation.
+ * WhatsNewTopComponent is designed to inform users of news about Constellation.
  *
  * @author aquila
  */
@@ -38,7 +38,7 @@ import org.openide.windows.TopComponent;
         autostore = false
 )
 @TopComponent.Description(
-        preferredID = "TutorialTopComponent",
+        preferredID = "WhatsNewTopComponent",
         iconBase = "org/netbeans/modules/autoupdate/ui/info_icon.png",
         persistenceType = TopComponent.PERSISTENCE_NEVER
 )
@@ -48,30 +48,30 @@ import org.openide.windows.TopComponent;
 )
 @ActionID(
         category = "Window",
-        id = "au.gov.asd.tac.constellation.functionality.tutorial.TutorialTopComponent"
+        id = "au.gov.asd.tac.constellation.views.whatsnew.WhatsNewTopComponent"
 )
 @ActionReferences({
     @ActionReference(path = "Menu/Help", position = 1)
 })
 @ActionRegistration(
         displayName = "#CTL_TutorialTopComponentAction",
-        iconBase = "au/gov/asd/tac/constellation/functionality/tutorial/resources/tutorialPage.png"
+        iconBase = "au/gov/asd/tac/constellation/views/whatsnew/resources/tutorialPage.png"
 )
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_TutorialTopComponentAction",
         preferredID = "TutorialTopComponent"
 )
 @Messages({
-    "CTL_TutorialTopComponentAction=Tutorial Page",
-    "CTL_TutorialTopComponentIconBase=au/gov/asd/tac/constellation/functionality/tutorial/resources/tutorialPage.png",
+    "CTL_TutorialTopComponentAction=Whats New Page",
+    "CTL_TutorialTopComponentIconBase=au/gov/asd/tac/constellation/views/whatsnew/resources/tutorialPage.png",
     "CTL_TutorialTopComponentTopComponent=What's New",
-    "HINT_TutorialTopComponentTopComponent=Tutorial Page"
+    "HINT_TutorialTopComponentTopComponent=Whats New Page"
 })
-public final class TutorialTopComponent extends JavaFxTopComponent<TutorialViewPane> implements java.awt.event.ActionListener {
+public final class WhatsNewTopComponent extends JavaFxTopComponent<WhatsNewViewPane> implements java.awt.event.ActionListener {
 
-    private final TutorialViewPane pane;
+    private final WhatsNewViewPane pane;
 
-    public TutorialTopComponent() {
+    public WhatsNewTopComponent() {
         initComponents();
 
         setName(Bundle.CTL_TutorialTopComponentTopComponent());
@@ -79,7 +79,7 @@ public final class TutorialTopComponent extends JavaFxTopComponent<TutorialViewP
         setLayout(new BorderLayout());
 
         ProxyUtilities.setProxySelector(null);
-        pane = new TutorialViewPane();
+        pane = new WhatsNewViewPane();
         initContent();
     }
 
@@ -123,7 +123,7 @@ public final class TutorialTopComponent extends JavaFxTopComponent<TutorialViewP
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(66, 66, 66));
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(TutorialTopComponent.class, "TutorialTopComponent.jLabel1.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(WhatsNewTopComponent.class, "WhatsNewTopComponent.jLabel1.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -157,7 +157,7 @@ public final class TutorialTopComponent extends JavaFxTopComponent<TutorialViewP
     }
 
     @Override
-    protected TutorialViewPane createContent() {
+    protected WhatsNewViewPane createContent() {
         return pane;
     }
 

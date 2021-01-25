@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.welcome.plugins;
 
-import au.gov.asd.tac.constellation.functionality.tutorial.TutorialTopComponent;
+import au.gov.asd.tac.constellation.views.whatsnew.WhatsNewTopComponent;
 import au.gov.asd.tac.constellation.views.welcome.WelcomePageProvider;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
@@ -68,7 +68,7 @@ public class WhatsNewWelcomePlugin extends WelcomePageProvider {
     @Override
     public void run() {
         SwingUtilities.invokeLater(() -> {
-            final TopComponent tutorial = WindowManager.getDefault().findTopComponent(TutorialTopComponent.class.getSimpleName());
+            final TopComponent tutorial = WindowManager.getDefault().findTopComponent(WhatsNewTopComponent.class.getSimpleName());
             if (tutorial != null) {
                 if (!tutorial.isOpened()) {
                     tutorial.open();

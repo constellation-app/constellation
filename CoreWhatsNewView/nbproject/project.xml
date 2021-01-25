@@ -3,7 +3,7 @@
     <type>org.netbeans.modules.apisupport.project</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
-            <code-name-base>au.gov.asd.tac.constellation.views.welcome</code-name-base>
+            <code-name-base>au.gov.asd.tac.constellation.views.whatsnew</code-name-base>
             <suite-component/>
             <module-dependencies>
                 <dependency>
@@ -120,14 +120,6 @@
                 </dependency>
                 <dependency>
                     <code-name-base>au.gov.asd.tac.constellation.views</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>1.0</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
-                    <code-name-base>au.gov.asd.tac.constellation.views.whatsnew</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
@@ -264,7 +256,7 @@
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>9.15</specification-version>
+                        <specification-version>9.15.1</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -272,7 +264,7 @@
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>8.41</specification-version>
+                        <specification-version>8.41.1</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -280,7 +272,7 @@
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>9.16</specification-version>
+                        <specification-version>9.16.1</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -293,8 +285,7 @@
                 </dependency>
             </module-dependencies>
             <public-packages>
-                <package>au.gov.asd.tac.constellation.views.welcome</package>
-                <package>au.gov.asd.tac.constellation.views.welcome.plugins</package>
+                <package>au.gov.asd.tac.constellation.views.whatsnew</package>
             </public-packages>
         </data>
     </configuration>

@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.functionality.whatsnew;
+package au.gov.asd.tac.constellation.views.whatsnew;
 
-import au.gov.asd.tac.constellation.functionality.tutorial.TutorialTopComponent;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,7 +29,7 @@ import org.openide.util.Exceptions;
 
 /**
  * A WhatsNewProvider handles parsing text files into the "What's New" section
- * on the {@link TutorialTopComponent} which acts as CONSTELLATION's welcome
+ * on the {@link WhatsNewTopComponent} which acts as CONSTELLATION's welcome
  * screen. This gives you the opportunity to provide messages to any users of
  * CONSTELLATION for viewing immediately after launching the application.
  *
