@@ -20,9 +20,11 @@ import static au.gov.asd.tac.constellation.plugins.parameters.ParameterChange.EN
 import static au.gov.asd.tac.constellation.plugins.parameters.ParameterChange.VALUE;
 import static au.gov.asd.tac.constellation.plugins.parameters.ParameterChange.VISIBLE;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FloatParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.NumberParameterValue;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -65,6 +67,22 @@ public class NumberInputPane<T> extends Pane {
     private static final String INVALID_ID = "invalid";
 
     public NumberInputPane(final PluginParameter<?> parameter) {
+
+        final String parameterId = parameter.getId();
+        final List<String> numberRecentValues = RecentParameterValues.getRecentValues(parameterId);
+        if (numberRecentValues != null) {
+            switch (parameter.getType().getId()) {
+                case FloatParameterType.ID:
+                    parameter.setFloatValue(Float.valueOf(numberRecentValues.get(numberRecentValues.size() > 1 ? 1 : 0)));
+                    break;
+                case IntegerParameterType.ID:
+                    parameter.setIntegerValue(Integer.valueOf(numberRecentValues.get(numberRecentValues.size() > 1 ? 1 : 0)));
+                    break;
+                default:
+                    break;
+            }
+        }
+
         final NumberParameterValue pv = (NumberParameterValue) parameter.getParameterValue();
         final Number min = pv.getMinimumValue();
         final Number max = pv.getMaximumValue();

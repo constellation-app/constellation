@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.plugins.gui;
 
 import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
@@ -49,7 +50,7 @@ public class SingleChoiceInputPane extends HBox {
     public static final int DEFAULT_WIDTH = 300;
 
     private final ComboBox<ParameterValue> field;
-
+    
     // Keep track of entered characters so the user can enter the prefixes of choices to get there quicker.
     private String prefix;
     private static final Logger LOGGER = Logger.getLogger(SingleChoiceInputPane.class.getName());
@@ -159,7 +160,17 @@ public class SingleChoiceInputPane extends HBox {
                 }
             });
         });
-
+         
         getChildren().add(field);
+        final String parameterId = parameter.getId();
+        final List<String> singleChoiceRecentValues = RecentParameterValues.getRecentValues(parameterId);
+        final List<ParameterValue> pvs = SingleChoiceParameterType.getOptionsData(parameter);
+        for (final ParameterValue pv : pvs) {
+            if ((singleChoiceRecentValues != null) && (singleChoiceRecentValues.get(0).equals(pv.toString()))) {
+                parameter.getParameterValue().setChoiceData(pv);
+                break;
+            }
+        }
+
     }
-}
+    }

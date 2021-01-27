@@ -27,7 +27,9 @@ import java.util.Objects;
  */
 public class Equals {
 
-    public static final String NAME = "EQUALS";
+    // Explicitly calling the constructor on a String appears to be necessary to
+    // allow the registry to find the operator.
+    public static final String NAME = new String("EQUALS");
 
     private Equals() {
         // added private constructor to hide implicit public constructor - S1118.

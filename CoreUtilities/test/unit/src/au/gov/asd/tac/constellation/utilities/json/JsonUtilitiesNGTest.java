@@ -17,9 +17,10 @@ package au.gov.asd.tac.constellation.utilities.json;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.MappingJsonFactory;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.commons.collections.MapUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
@@ -96,11 +97,11 @@ public class JsonUtilitiesNGTest {
     @Test
     public void testGetStringAsMap() {
         // Test null
-        assertEquals(JsonUtilities.getStringAsMap(FACTORY, null), MapUtils.EMPTY_MAP);
+        assertEquals(JsonUtilities.getStringAsMap(FACTORY, null), Collections.emptyMap());
 
         // Test empty String
         final String emptyString = StringUtils.EMPTY;
-        assertEquals(JsonUtilities.getStringAsMap(FACTORY, emptyString), MapUtils.EMPTY_MAP);
+        assertEquals(JsonUtilities.getStringAsMap(FACTORY, emptyString), Collections.emptyMap());
 
         // Test full String
         assertEquals(JsonUtilities.getStringAsMap(FACTORY, expectedResult), map);

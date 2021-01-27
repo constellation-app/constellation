@@ -1,5 +1,32 @@
 # Constellation Changes
 
+## 2021-01-01 Changes in January 2021
+* Moved a number of classes out of `au.gov.asd.tac.constellation.plugins.importexport.delimited` and `au.gov.asd.tac.constellation.plugins.importexport.jdbc` into the base package to help remove duplicate classes.
+
+## 2020-11-01 Changes in November 2020
+* Added `RecentGraphScreenshotUtilities` to manage taking screenshots of graphs to be used by the Welcome tab.
+* Added `createReadAttributeObject()` to `GraphReadMethods`.
+* Added `createWriteAttributeObject()` to `GraphWriteMethods`.
+* Added `createReadObject()` and `createWriteObject()` in `AttributeDescription`.
+* Added a number of classes to `CoreGraphFramework` to support the layers view. 
+* Added `ConnectionGlyphStream`, `ConnectionGlyphSteamContext`, `NodeGlyphStream`, `NodeGlyphStreamContext` and `GlyphStreamContext` classes.
+* Moved Layers View Shortcuts from `au.gov.asd.tac.constellation.views.layers.utilities` to `au.gov.asd.tac.constellation.views.layers.shortcut`
+* Removed `setCurrentContext()`, `addGlyph()` and `newLine()` from `ConnectionLabelBatcher` and `NodeLabelBatcher`.
+* Removed `LayersViewShortcuts` and added associated functionality to `LayersViewPane`.
+* Updated `renderTextAsLigatures()`, `newLine()`, and `addGlyph()` from `GraphManager` and `GraphManager.GlyphStream` to take additional parameter of type GlyphStreamContext
+* Updated `ConnectionLabelBatcher` and `NodeLabelBatcher` to no longer implement `GraphManager.GlyphStream`.
+* Updated `setCurrentConnection()` and `nextParallelConnection()` in `ConnectionLabelBatcher` to take an extra parameter of type `ConnectionGlyphStreamContext`.
+* Updated `ConnectionLabelBatcher.bufferLabel()` to take extra parameters.
+* Updated `NodeLabelBatcher.fillTopLabels()` to take different parameters.
+* Updated `bufferTopLabel()` and `bufferBottomLabel()` in `NodeLabelBatcher` to take an extra parameter of type `NodeGlyphStream`.
+* Updated `getTableData()` and `exportToCsv()` in `TableViewUtilities` to take an extra parameter of type `Pagination`.
+* Updated `TableViewUtilities.exportToExcel()` to take additional parameters.
+* Updated `TableViewUtilities.ExportToExcelFile.writeRecords()` to take additional parameter of type `int`.
+* Updated `LAYER_MASK_SELECTED` and `LAYER_MASK` attributes to be of type `Long` instead of `Integer`.
+* Updated constructor for `LayersViewStateWriter`.
+* Updated parameters for `setLayers()` and `updateLayers()` in `LayersViewPane`.
+
+
 ## 2020-08-01 Changes in August 2020
 * Updated `DefaultPluginInteraction` and `PluginParameters` to unfocus the Ok button from the plugin swing dialog if there is a multi-line string parameter so that enter can be used in the parameter.
 * Added a feature to the Histogram View to copy values from selected histogram bars using ctrl+c or a right-click context menu.
