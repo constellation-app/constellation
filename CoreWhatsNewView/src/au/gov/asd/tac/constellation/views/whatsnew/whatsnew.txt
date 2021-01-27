@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
+== 2021-01-27 What's New Page
+<p>The tutorial page has been converted into a What's New page to display updates to Constellation.</p>
+
 == 2021-01-12 Welcome Page
 <p>A Welcome Page with helpful links for getting started with Constellation now opens on startup.</p>
 

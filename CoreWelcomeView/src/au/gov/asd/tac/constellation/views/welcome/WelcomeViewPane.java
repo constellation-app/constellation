@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -168,22 +168,15 @@ public class WelcomeViewPane extends BorderPane {
             showOnStartUpCheckBox.setFont(new Font("Arial", 16));
             lowerLeftHBox.getChildren().add(showOnStartUpCheckBox);
            
-            showOnStartUpCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
-                @Override
-                public void changed(ObservableValue<? extends Boolean> ov,
-                        Boolean oldVal, Boolean newVal) {
-                    prefs.putBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, newVal);                     
-                }
+            showOnStartUpCheckBox.selectedProperty().addListener((ov, oldVal, newVal) -> {
+                prefs.putBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, newVal);
             });        
             showOnStartUpCheckBox.setSelected(prefs.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, ApplicationPreferenceKeys.WELCOME_ON_STARTUP_DEFAULT));
             
             // Create a preferenceListener in order to identify when user preference is changed
             // Keeps tutorial page and options tutorial selections in-sync when both are open
-            prefs.addPreferenceChangeListener(new PreferenceChangeListener() {
-                @Override
-                public void preferenceChange(PreferenceChangeEvent evt) {
-                    showOnStartUpCheckBox.setSelected(prefs.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, showOnStartUpCheckBox.isSelected()));
-                }
+            prefs.addPreferenceChangeListener(evt -> {
+                showOnStartUpCheckBox.setSelected(prefs.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, showOnStartUpCheckBox.isSelected()));
             });
             
             leftVBox.getChildren().add(lowerLeftHBox);

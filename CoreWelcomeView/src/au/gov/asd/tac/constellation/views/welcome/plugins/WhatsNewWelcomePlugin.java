@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,13 +68,13 @@ public class WhatsNewWelcomePlugin extends WelcomePageProvider {
     @Override
     public void run() {
         SwingUtilities.invokeLater(() -> {
-            final TopComponent tutorial = WindowManager.getDefault().findTopComponent(WhatsNewTopComponent.class.getSimpleName());
-            if (tutorial != null) {
-                if (!tutorial.isOpened()) {
-                    tutorial.open();
+            final TopComponent whatsNew = WindowManager.getDefault().findTopComponent(WhatsNewTopComponent.class.getSimpleName());
+            if (whatsNew != null) {
+                if (!whatsNew.isOpened()) {
+                    whatsNew.open();
                 }
-                tutorial.setEnabled(true);
-                tutorial.requestActive();
+                whatsNew.setEnabled(true);
+                whatsNew.requestActive();
             }
         });
     }
