@@ -998,7 +998,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
 
     private void performDrag(GraphWriteMethods wg, final Camera camera, final Point from, final Point to) {
         // Get the ids of the selected nodes (and those of the associated transaction as well)
-        final List<Integer> draggedNodeIds = gatherSelectedNodes(wg);
+        final List<Integer> draggedNodes = gatherSelectedNodes(wg);
         int nodeBeingDraggedId = eventState.getCurrentHitType().equals(HitType.TRANSACTION) ? wg.getTransactionSourceVertex(eventState.getCurrentHitId()) : eventState.getCurrentHitId();
 
         // Get the position of the node being dragged.
@@ -1014,13 +1014,14 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
         final int z2Attribute = VisualConcept.VertexAttribute.Z2.get(wg);
         final int cameraAttribute = VisualConcept.GraphAttribute.CAMERA.get(wg);
         
-        draggedNodeIds.forEach(vertexId -> {
+        draggedNodes.forEach(vertexId -> {
             final Vector3f currentPos = VisualGraphUtilities.getMixedVertexCoordinates(wg, vertexId, xAttribute, x2Attribute, yAttribute, y2Attribute, zAttribute, z2Attribute, cameraAttribute);
             currentPos.add(delta);
             VisualGraphUtilities.setVertexCoordinates(wg, currentPos, vertexId, xAttribute, yAttribute, zAttribute);
         });
-
-        scheduleXYZChangeOperation(Ints.toArray(draggedNodeIds));
+        
+        draggedNodes.replaceAll(id -> wg.getVertexPosition(id)); // Replade the Id's with positions.
+        scheduleXYZChangeOperation(Ints.toArray(draggedNodes));
     }
 
     private void performPointSelection(final boolean toggleSelection, final boolean clearSelection, final GraphElementType elementType, final int elementId) {
