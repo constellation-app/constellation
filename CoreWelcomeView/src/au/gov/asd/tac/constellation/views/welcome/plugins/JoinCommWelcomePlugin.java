@@ -18,15 +18,9 @@ package au.gov.asd.tac.constellation.views.welcome.plugins;
 import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
 import au.gov.asd.tac.constellation.functionality.browser.OpenInBrowserPlugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.views.welcome.WelcomePageProvider;
+import au.gov.asd.tac.constellation.views.welcome.WelcomePageSideProvider;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
-import java.awt.Desktop;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -46,16 +40,14 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Delphinus8821
  */
 
-@ServiceProvider(service = WelcomePageProvider.class, position = 10)
+@ServiceProvider(service = WelcomePageSideProvider.class, position = 8)
 @PluginInfo(tags = {"WELCOME"})
 @NbBundle.Messages("JoinCommWelcomePlugin=Join Comm Welcome Plugin")
-public class JoinCommWelcomePlugin extends WelcomePageProvider {
+public class JoinCommWelcomePlugin extends WelcomePageSideProvider {
     
     public static final String JOIN = "resources/welcome_join.png";
     final ImageView joinView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(JOIN)));
     final Button joinBtn = new Button();
-    
-    private static final Logger LOGGER = Logger.getLogger(JoinCommWelcomePlugin.class.getName());
         
     /**
      * Get a unique reference that is used to identify the plugin 

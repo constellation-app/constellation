@@ -22,12 +22,8 @@ import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import java.io.File;
 import java.util.List;
-import java.util.prefs.PreferenceChangeEvent;
-import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -70,12 +66,14 @@ public class WelcomeViewPane extends BorderPane {
     public static final String WELCOME_TEXT = "Welcome to Constellation";
     public static final double SPLIT_POS = 0.2;
     public static final int NUMBER_OF_TOP_PLUGINS = 6;
+    public static final int NUMBER_OF_SIDE_PLUGINS = 4;
 
     //Place holder images
     public static final String LOGO = "resources/constellation-logo.png";
 
-    protected static final Button[] pluginButtons = new Button[10];
+    protected static final Button[] pluginButtons = new Button[12];
     protected static final Button[] recentGraphButtons = new Button[10];
+    protected static final Button[] sidePluginButtons = new Button[10];
 
     public WelcomeViewPane() {
        welcomeViewPane = new BorderPane();
@@ -135,28 +133,42 @@ public class WelcomeViewPane extends BorderPane {
 
             getWelcomeContent();
 
-            for (int i = 0; i < 10; i++) {
+            //creating the button events along the top of the page
+            for (int i = 0; i < pluginButtons.length; i++) {
                 if (pluginButtons[i] != null) {
                     final Button currentButton = pluginButtons[i];
-                    currentButton.setOnAction(new EventHandler<ActionEvent>() {
-                        @Override
-                        public void handle(ActionEvent e) {
-                            Lookup.getDefault().lookupAll(WelcomePageProvider.class).forEach(plugin -> {
-                                if (currentButton == plugin.getButton()) {
-                                    plugin.run();
-                                }
-                            });
-                        }
+                    currentButton.setOnAction((ActionEvent e) -> {
+                        Lookup.getDefault().lookupAll(WelcomePageProvider.class).forEach(plugin -> {
+                            if (currentButton == plugin.getButton()) {
+                                plugin.run();
+                            }
+                        });
                     });
                     if (i < NUMBER_OF_TOP_PLUGINS) {
                         setButtonProps(currentButton);
                         topHBox.getChildren().add(currentButton);
-                    } else {
+                    }    
+                }
+            }
+            
+            //creating the button events on the side of the page
+            for (int i = 0; i < sidePluginButtons.length; i++){
+                if (sidePluginButtons[i] != null){
+                    final Button currentButton = sidePluginButtons[i];
+                    currentButton.setOnAction((ActionEvent e) -> {
+                        Lookup.getDefault().lookupAll(WelcomePageSideProvider.class).forEach(plugin -> {
+                            if (currentButton == plugin.getButton()) {
+                                plugin.run();
+                            }
+                        });
+                    });
+                    if (i < NUMBER_OF_SIDE_PLUGINS) {
                         setInfoButtons(currentButton);
                         leftVBox.getChildren().add(currentButton);
                     }
                 }
             }
+                
             leftVBox.setAlignment(Pos.TOP_CENTER);
             
             final HBox lowerLeftHBox = new HBox();
@@ -217,11 +229,8 @@ public class WelcomeViewPane extends BorderPane {
 
                 //Calls the method for the recent graphs to open
                 // on the button action
-                recentGraphButtons[i].setOnAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent e) {
-                        RecentFilesWelcomePage.openGraph(text);
-                    }
+                recentGraphButtons[i].setOnAction((ActionEvent e) -> {
+                    RecentFilesWelcomePage.openGraph(text);
                 });
                 flow.getChildren().add(recentGraphButtons[i]);
             }
@@ -258,11 +267,24 @@ public class WelcomeViewPane extends BorderPane {
     }
 
     private void getWelcomeContent() {
+        //top plugin buttons
         Lookup.getDefault().lookupAll(WelcomePageProvider.class).forEach(plugin -> {
             if (plugin.isVisible()) {
                 for (int i = 0; i < 10; i++) {
                     if (pluginButtons[i] == null) {
                         pluginButtons[i] = plugin.getButton();
+                        break;
+                    }
+                }
+            }
+        });
+        
+        //side plugin buttons
+        Lookup.getDefault().lookupAll(WelcomePageSideProvider.class).forEach(plugin -> {
+            if (plugin.isVisible()) {
+                for (int i = 0; i < 10; i++){
+                    if (sidePluginButtons[i] == null){
+                        sidePluginButtons[i] = plugin.getButton();
                         break;
                     }
                 }

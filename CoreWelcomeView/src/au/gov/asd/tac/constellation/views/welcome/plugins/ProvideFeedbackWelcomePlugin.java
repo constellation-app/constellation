@@ -18,15 +18,9 @@ package au.gov.asd.tac.constellation.views.welcome.plugins;
 import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
 import au.gov.asd.tac.constellation.functionality.browser.OpenInBrowserPlugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.views.welcome.WelcomePageProvider;
+import au.gov.asd.tac.constellation.views.welcome.WelcomePageSideProvider;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
-import java.awt.Desktop;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -46,16 +40,14 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Delphinus8821
  */
 
-@ServiceProvider(service = WelcomePageProvider.class, position = 9)
+@ServiceProvider(service = WelcomePageSideProvider.class, position = 7)
 @PluginInfo(tags = {"WELCOME"})
 @NbBundle.Messages("ProvideFeedbackWelcomePlugin=Provide Feedback Welcome Plugin")
-public class ProvideFeedbackWelcomePlugin extends WelcomePageProvider {
+public class ProvideFeedbackWelcomePlugin extends WelcomePageSideProvider {
     
     public static final String FEEDBACK = "resources/welcome_feedback.png";
     final ImageView feedView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(FEEDBACK)));
     final Button feedbackButton = new Button();
-    
-    private static final Logger LOGGER = Logger.getLogger(ProvideFeedbackWelcomePlugin.class.getName());
         
     /**
      * Get a unique reference that is used to identify the plugin 

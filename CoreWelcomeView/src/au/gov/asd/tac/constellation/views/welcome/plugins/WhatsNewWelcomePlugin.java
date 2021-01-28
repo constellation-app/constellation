@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.views.welcome.plugins;
 
 import au.gov.asd.tac.constellation.views.whatsnew.WhatsNewTopComponent;
-import au.gov.asd.tac.constellation.views.welcome.WelcomePageProvider;
+import au.gov.asd.tac.constellation.views.welcome.WelcomePageSideProvider;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import javafx.geometry.Pos;
@@ -41,10 +41,10 @@ import org.openide.windows.WindowManager;
  * @author Delphinus8821
  */
 
-@ServiceProvider(service = WelcomePageProvider.class, position = 8)
+@ServiceProvider(service = WelcomePageSideProvider.class, position = 6)
 @PluginInfo(tags = {"WELCOME"})
 @NbBundle.Messages("WhatsNewWelcomePlugin=Whats New Welcome Plugin")
-public class WhatsNewWelcomePlugin extends WelcomePageProvider {
+public class WhatsNewWelcomePlugin extends WelcomePageSideProvider {
     
     public static final String WHATS_NEW = "resources/welcome_new.png";
     final ImageView newView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(WHATS_NEW)));

@@ -18,15 +18,9 @@ package au.gov.asd.tac.constellation.views.welcome.plugins;
 import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
 import au.gov.asd.tac.constellation.functionality.browser.OpenInBrowserPlugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.views.welcome.WelcomePageProvider;
+import au.gov.asd.tac.constellation.views.welcome.WelcomePageSideProvider;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
-import java.awt.Desktop;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.logging.Logger;
-import java.util.logging.Level;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -45,16 +39,15 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Delphinus8821
  */
 
-@ServiceProvider(service = WelcomePageProvider.class, position = 7)
+@ServiceProvider(service = WelcomePageSideProvider.class, position = 5)
 @PluginInfo(tags = {"WELCOME"})
 @NbBundle.Messages("GettingStartedWelcomePlugin=Getting Started Welcome Plugin")
-public class GettingStartedWelcomePlugin extends WelcomePageProvider {
+public class GettingStartedWelcomePlugin extends WelcomePageSideProvider {
     
     public static final String GETTING_STARTED = "resources/welcome_getting_started.png";
     final ImageView started = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(GETTING_STARTED)));
     final Button startedBtn = new Button();
     
-    private static final Logger LOGGER = Logger.getLogger(GettingStartedWelcomePlugin.class.getName());
         
     /**
      * Get a unique reference that is used to identify the plugin 
