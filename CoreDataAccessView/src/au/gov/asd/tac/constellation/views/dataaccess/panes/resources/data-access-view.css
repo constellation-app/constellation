@@ -7,6 +7,7 @@
 
 .menu-button {
     -fx-background-color: #181818;
+    -fx-border-color: #C4C4C4;
 }
 
 .menu:hover{
