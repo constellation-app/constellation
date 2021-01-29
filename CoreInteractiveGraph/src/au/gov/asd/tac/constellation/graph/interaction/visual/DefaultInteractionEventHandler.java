@@ -320,6 +320,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
     }
 
     private void scheduleXYZChangeOperation(final int[] verticiesMoved) {
+        // VerticiesMoved should be a list of vertexPositions for the verticies moved.
         operationQueue.add(manager.constructMultiChangeOperation(Arrays.asList(
                 new VisualChangeBuilder(VisualProperty.VERTEX_X).forItems(verticiesMoved).withId(currentXYZChangeIds[0]).build(),
                 new VisualChangeBuilder(VisualProperty.VERTEX_Y).forItems(verticiesMoved).withId(currentXYZChangeIds[1]).build(),
@@ -1020,7 +1021,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
             VisualGraphUtilities.setVertexCoordinates(wg, currentPos, vertexId, xAttribute, yAttribute, zAttribute);
         });
         
-        draggedNodes.replaceAll(id -> wg.getVertexPosition(id)); // Replade the Id's with positions.
+        draggedNodes.replaceAll(id -> wg.getVertexPosition(id)); // Replade the Id's with positions, as required by scheduleXYZCHangeOperation.
         scheduleXYZChangeOperation(Ints.toArray(draggedNodes));
     }
 
