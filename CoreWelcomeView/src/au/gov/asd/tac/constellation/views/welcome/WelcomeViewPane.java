@@ -36,6 +36,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -259,8 +260,8 @@ public class WelcomeViewPane extends BorderPane {
     }
 
     public void setInfoButtons(final Button button) {
-        button.setPrefSize(325, 45);
-        button.setMaxSize(350, 50);
+        button.setPrefSize(310, 45);
+        button.setMaxSize(310, 50);
         button.setStyle("-fx-background-color: transparent;");
         button.setCursor(Cursor.HAND);
         button.setAlignment(Pos.CENTER_LEFT);
