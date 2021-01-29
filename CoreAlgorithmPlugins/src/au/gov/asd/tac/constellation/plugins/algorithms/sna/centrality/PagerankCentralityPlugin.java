@@ -177,7 +177,6 @@ public class PagerankCentralityPlugin extends SimpleEditPlugin {
                             } else if ((treatUndirectedBidirectional && edgeDirection == GraphConstants.FLAT)
                                     || graph.getEdgeDestinationVertex(edgeId) == pgVertex.vertexId) {
                                 // If edge is facing towards vertex add the source as a neighbour.
-                                PagerankVertex neighbourPGVertex = pagerankVertices.get(neighbourId);
                                 pgVertex.neighbours.add(pagerankVertices.get(neighbourId));
                             }
                         }
@@ -265,9 +264,8 @@ public class PagerankCentralityPlugin extends SimpleEditPlugin {
             if (isSink) {
                 neighbourContribution -= pagerankContribution;
             }
-            if (neighbours.size() > 0) {
-                neighbourContribution += neighbours.parallelStream().mapToDouble(pgVertex -> pgVertex.pagerankContribution).sum();
-            }
+            
+            neighbourContribution += neighbours.parallelStream().mapToDouble(pgVertex -> pgVertex.pagerankContribution).sum();
             
             stagedPagerank = baseContribution + (dampingFactor * neighbourContribution);
         }
