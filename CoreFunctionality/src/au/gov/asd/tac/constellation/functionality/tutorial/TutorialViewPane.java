@@ -65,7 +65,7 @@ import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
 
 /**
- * Layers View Pane.
+ * Tutorial View Pane.
  *
  * @author aquila Refactor by:
  * @author aldebaran30701

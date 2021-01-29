@@ -72,7 +72,7 @@ public final class OpenFile {
      * @return null on success, otherwise the error message
      * @usecase CallbackImpl, OpenFileAction
      */
-    static String openFile(final File file, final int line) {
+    public static String openFile(final File file, final int line) {
         String msg = checkFileExists(file);
         if (msg != null) {
             return msg;

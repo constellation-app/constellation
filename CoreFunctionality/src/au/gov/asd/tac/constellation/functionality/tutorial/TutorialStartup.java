@@ -43,7 +43,9 @@ public class TutorialStartup implements Runnable {
                         tutorial.open();
                     }
                     tutorial.setEnabled(true);
-                    tutorial.requestActive();
+                    if (!prefs.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, ApplicationPreferenceKeys.WELCOME_ON_STARTUP_DEFAULT)) {
+                        tutorial.requestActive();
+                    }
                 }
             });
         }

@@ -578,11 +578,15 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
     }
 
     @Override
-    public void mouseReleased(MouseEvent e) {
+    public void mouseReleased(MouseEvent e) {   
         if (binCollection != null
             && e.getButton() == MouseEvent.BUTTON1) {
-            binSelectionMode.mouseReleased(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd, topComponent);
-            activeBin = dragStart == dragEnd ? dragStart : -1;
+            final Point pointOnHistogram = e.getPoint();
+            final int bar = getBarAtPoint(pointOnHistogram, false);
+
+            final int newDragEnd = bar;
+            binSelectionMode.mouseDragged(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd, newDragEnd);
+            dragEnd = newDragEnd;
             repaint();
         }
     }

@@ -167,7 +167,7 @@ public class SingleChoiceInputPane extends HBox {
         final List<ParameterValue> pvs = SingleChoiceParameterType.getOptionsData(parameter);
         for (final ParameterValue pv : pvs) {
             if ((singleChoiceRecentValues != null) && (singleChoiceRecentValues.get(0).equals(pv.toString()))) {
-                SingleChoiceParameterType.setChoiceData(parameter, pv);
+                parameter.getParameterValue().setChoiceData(pv);
                 break;
             }
         }

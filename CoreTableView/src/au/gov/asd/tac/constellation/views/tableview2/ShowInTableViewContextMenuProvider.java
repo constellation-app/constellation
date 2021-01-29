@@ -51,7 +51,8 @@ public class ShowInTableViewContextMenuProvider implements ContextMenuProvider {
     }
 
     @Override
-    public void selectItem(String item, Graph graph, GraphElementType elementType, int elementId, Vector3f unprojected) {
+    public void selectItem(final String item, final Graph graph, final GraphElementType elementType, final int elementId, 
+            final Vector3f unprojected) {
         SwingUtilities.invokeLater(() -> {
             final TopComponent tc = WindowManager.getDefault().findTopComponent("TableView2TopComponent");
             if (tc != null) {
@@ -59,7 +60,7 @@ public class ShowInTableViewContextMenuProvider implements ContextMenuProvider {
                     tc.open();
                 }
                 tc.requestActive();
-                ((au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent) tc).showSelected(elementType, elementId);
+                ((TableViewTopComponent) tc).showSelected(elementType, elementId);
             }
         });
     }

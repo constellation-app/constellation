@@ -96,7 +96,7 @@ public class TableViewState {
 
     @Override
     public String toString() {
-        StringBuilder repr = new StringBuilder();
+        final StringBuilder repr = new StringBuilder();
         repr.append("TableViewState[selectedOnly=");
         repr.append(selectedOnly);
         repr.append(", elementType=");
