@@ -118,7 +118,6 @@ public class CosineSimilarityPlugin extends SimpleEditPlugin {
             final int vertexId = graph.getVertex(vertexPosition);
             
             int vertexNeighbourCount = 0;
-            int bleh = graph.getVertexNeighbourCount(vertexId);
             if (graph.getVertexNeighbourCount(vertexId) >= minCommonFeatures){ //Quick defeat, if there arnt enough potential neighbours to achieve the minimal common features then dont process the vertex.
                 for (int vertexNeighbourPosition = 0; vertexNeighbourPosition < graph.getVertexNeighbourCount(vertexId); vertexNeighbourPosition++) { //For each neighbour
                     final int neighbourId = graph.getVertexNeighbour(vertexId, vertexNeighbourPosition);
@@ -188,8 +187,8 @@ public class CosineSimilarityPlugin extends SimpleEditPlugin {
         private final Map<Integer, Integer> neighbourWeightsMap;
         private BitSet neighbours;
         private final boolean selected;
-        private Float magnitude = null;
-        private Boolean recalculateMagnitude = true;
+        private float magnitude;
+        private boolean recalculateMagnitude = true;
 
         public VertexWithNeighbours(final int vertexId, final int vertexCount, final boolean selected) {
             this.neighbourWeightsMap = new HashMap<>();
@@ -206,7 +205,7 @@ public class CosineSimilarityPlugin extends SimpleEditPlugin {
         }
         
         private float getMagnitude() {
-            if (recalculateMagnitude == true) {
+            if (recalculateMagnitude) {
                 magnitude = calculateMagnitude();
             }
             return magnitude;
