@@ -25,8 +25,7 @@ import java.util.List;
 import java.util.prefs.Preferences;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
+import javafx.geometry.Insets; 
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
@@ -36,7 +35,6 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -244,7 +242,7 @@ public class WelcomeViewPane extends BorderPane {
     }
 
     public void setButtonProps(final Button button) {
-        button.setPrefSize(125, 125);
+        button.setPrefSize(135, 135);
         button.setMaxSize(150, 150);
         button.setStyle("-fx-background-color: #2e4973;");
         button.setCursor(Cursor.HAND);
