@@ -33,6 +33,7 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.Collections;
 import java.util.List;
 import javafx.util.Pair;
 import javax.swing.ImageIcon;
@@ -168,7 +169,7 @@ public class BlazeContextMenu implements ContextMenuProvider {
         if (elementType == GraphElementType.VERTEX) {
             return Arrays.asList(ADD_BLUE_BLAZE, ADD_RED_BLAZE, ADD_YELLOW_BLAZE, ADD_CUSTOM_BLAZE, UNSET_BLAZE);
         } else {
-            return Arrays.asList();
+            return Collections.EMPTY_LIST;
         }
     }
 
@@ -190,7 +191,7 @@ public class BlazeContextMenu implements ContextMenuProvider {
                     ImageUtilities.loadImageIcon(ADD_CUSTOM_BLAZE_ICON, false),
                     ImageUtilities.loadImageIcon(REMOVE_BLAZE_ICON, false));
         } else {
-            return Arrays.asList();
+            return Collections.EMPTY_LIST;
         }
     }
 }

@@ -29,6 +29,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.DefaultPluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.preferences.GraphPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -56,6 +57,7 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeListener;
+import org.apache.commons.lang3.StringUtils;
 import org.netbeans.api.annotations.common.StaticResource;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -122,8 +124,8 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
 
     private final JMenuItem[] recentCustomBlazeItems = new JMenuItem[MAXIMUM_CUSTOM_BLAZE_COLORS];
     private final JMenuItem[] presetCustomBlazeItems = new JMenuItem[MAXIMUM_CUSTOM_BLAZE_COLORS];
-    private static final ArrayList<ConstellationColor> recentCustomColors = new ArrayList<ConstellationColor>();
-    private static final ArrayList<ConstellationColor> presetCustomColors = new ArrayList<ConstellationColor>();
+    private static final List<ConstellationColor> recentCustomColors = new ArrayList<>();
+    private static final List<ConstellationColor> presetCustomColors = new ArrayList<>();
 
     private static final Preferences prefs = NbPreferences.forModule(GraphPreferenceKeys.class);
 
@@ -148,7 +150,7 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
         final StringBuffer recentColorsBuffer = new StringBuffer();
         recentCustomColors.forEach(currentColor -> {
             recentColorsBuffer.append(currentColor.getHtmlColor());
-            recentColorsBuffer.append(";");
+            recentColorsBuffer.append(SeparatorConstants.SEMICOLON);
         });
 
         // set all current colors into preferences.
@@ -166,8 +168,8 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
         final String recentCustomColorsString = prefs.get(GraphPreferenceKeys.BLAZE_RECENT_COLORS,
                 GraphPreferenceKeys.BLAZE_RECENT_COLORS_DEFAULT);
 
-        for (final String currentColor : recentCustomColorsString.split(";")) {
-            if (!currentColor.equals("") && !currentColor.equals(" ")) {
+        for (final String currentColor : recentCustomColorsString.split(SeparatorConstants.SEMICOLON)) {
+            if (StringUtils.isNotBlank(currentColor)) {
                 // here the color should be populated correctly. Add to list.
                 recentCustomColors.add(ConstellationColor.fromHtmlColor(currentColor) == null
                         ? ConstellationColor.getColorValue(currentColor)
@@ -188,8 +190,8 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
         final String presetCustomColorsString = prefs.get(GraphPreferenceKeys.BLAZE_PRESET_COLORS,
                 GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
 
-        for (final String currentColor : presetCustomColorsString.split(";")) {
-            if (!currentColor.equals("") && !currentColor.equals(" ")) {
+        for (final String currentColor : presetCustomColorsString.split(SeparatorConstants.SEMICOLON)) {
+            if (StringUtils.isNotBlank(currentColor)) {
                 // here the color should be populated correctly. Add to list.
                 presetCustomColors.add(ConstellationColor.fromHtmlColor(currentColor) == null
                         ? ConstellationColor.getColorValue(currentColor)
@@ -208,9 +210,8 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
      */
     protected static BufferedImage copyImageBuffer(final BufferedImage bi) {
         final ColorModel cm = bi.getColorModel();
-        final boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
         final WritableRaster raster = bi.copyData(null);
-        return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
+        return new BufferedImage(cm, raster, cm.isAlphaPremultiplied(), null);
     }
 
     public BlazeActions() {
@@ -351,9 +352,11 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
             this.presetCustomBlazeItems[BlazeActions.getPresetCustomColors().size()].setVisible(false);
         }
 
-        customColorMenu.setEnabled(BlazeActions.getRecentCustomColors().size() > 0 || BlazeActions.getPresetCustomColors().size() > 0);
-        recentColorMenu.setEnabled(BlazeActions.getRecentCustomColors().size() > 0);
-        presetColorMenu.setEnabled(BlazeActions.getPresetCustomColors().size() > 0);
+        final boolean isRecentsEmpty = BlazeActions.getRecentCustomColors().isEmpty();
+        final boolean isPresetsEmpty = BlazeActions.getPresetCustomColors().isEmpty();
+        customColorMenu.setEnabled(!isRecentsEmpty || !isPresetsEmpty);
+        recentColorMenu.setEnabled(!isRecentsEmpty);
+        presetColorMenu.setEnabled(!isPresetsEmpty);
 
         setBlazeItems(BlazeActions.getRecentCustomColors(), this.recentCustomBlazeItems);
         setBlazeItems(BlazeActions.getPresetCustomColors(), this.presetCustomBlazeItems);
@@ -488,7 +491,7 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
                 // ADD_RECENT_BLAZE_ACTION has the index of the custom color of interest appended
                 // to it.
                 if (command.startsWith(ADD_RECENT_BLAZE_ACTION)) {
-                    String idxStr = command.replaceFirst(ADD_RECENT_BLAZE_ACTION, "");
+                    final String idxStr = command.replaceFirst(ADD_RECENT_BLAZE_ACTION, "");
                     final ConstellationColor color = BlazeActions.recentCustomColors.get(MAXIMUM_CUSTOM_BLAZE_COLORS - Integer.parseInt(idxStr) - 1);
 
                     plugin = PluginRegistry.get(VisualGraphPluginRegistry.ADD_CUSTOM_BLAZE);
@@ -498,7 +501,7 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
                     PluginExecution.withPlugin(plugin).withParameters(parameters).executeLater(graph);
                 } // Preset blaze
                 else if (command.startsWith(ADD_PRESET_BLAZE_ACTION)) {
-                    String idxStr = command.replaceFirst(ADD_PRESET_BLAZE_ACTION, "");
+                    final String idxStr = command.replaceFirst(ADD_PRESET_BLAZE_ACTION, "");
                     final ConstellationColor color = BlazeActions.presetCustomColors.get(MAXIMUM_CUSTOM_BLAZE_COLORS - Integer.parseInt(idxStr) - 1);
 
                     plugin = PluginRegistry.get(VisualGraphPluginRegistry.ADD_CUSTOM_BLAZE);

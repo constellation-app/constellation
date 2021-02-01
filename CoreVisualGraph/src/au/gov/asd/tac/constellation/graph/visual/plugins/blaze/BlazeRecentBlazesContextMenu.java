@@ -25,6 +25,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.Collections;
 import java.util.List;
 import javax.swing.ImageIcon;
 import org.netbeans.api.annotations.common.StaticResource;
@@ -143,7 +144,7 @@ public class BlazeRecentBlazesContextMenu implements ContextMenuProvider {
             }
             return colorList;
         } else {
-            return Arrays.asList();
+            return Collections.EMPTY_LIST;
         }
     }
 
@@ -176,7 +177,7 @@ public class BlazeRecentBlazesContextMenu implements ContextMenuProvider {
             }
             return icons;
         } else {
-            return Arrays.asList();
+            return Collections.EMPTY_LIST;
         }
     }
 }

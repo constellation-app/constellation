@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
 import javax.swing.JComponent;
+import org.apache.commons.lang3.StringUtils;
 import org.netbeans.spi.options.OptionsPanelController;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
@@ -63,10 +64,10 @@ public final class GraphOptionsPanelController extends OptionsPanelController {
         // set the colours here - below generates a list of coloured icons.
         final List<Color> colors = new ArrayList<>();
         for (final String currentColor : presetColorsString.split(";")) {
-            if (!currentColor.equals("") && !currentColor.equals(" ")) {
-                int r = Integer.valueOf(currentColor.substring(1, 3), 16);
-                int g = Integer.valueOf(currentColor.substring(3, 5), 16);
-                int b = Integer.valueOf(currentColor.substring(5, 7), 16);
+            if (StringUtils.isNotBlank(currentColor)) {
+                final int r = Integer.valueOf(currentColor.substring(1, 3), 16);
+                final int g = Integer.valueOf(currentColor.substring(3, 5), 16);
+                final int b = Integer.valueOf(currentColor.substring(5, 7), 16);
                 colors.add(new Color(r, g, b));
             }
         }

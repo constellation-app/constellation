@@ -328,7 +328,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                 new VisualChangeBuilder(VisualProperty.VERTEX_Z).forItems(verticiesMoved).withId(currentXYZChangeIds[2]).build()
         )));
     }
-    
+
     /**
      * Respond to a key press event on the graph. This will respond to keys that
      * interact directly with the graph's visuals, such as W,A,S,D to pan. Most
@@ -981,7 +981,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                 }
             });
         }
-        
+
         final int hitId = eventState.getCurrentHitId();
         if (eventState.getCurrentHitType().equals(HitType.VERTEX) && !selectedIds.contains(hitId)) {
             selectedIds.add(hitId);
@@ -1015,7 +1015,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
         final int y2Attribute = VisualConcept.VertexAttribute.Y2.get(wg);
         final int z2Attribute = VisualConcept.VertexAttribute.Z2.get(wg);
         final int cameraAttribute = VisualConcept.GraphAttribute.CAMERA.get(wg);
-        
+
         draggedNodeIds.forEach(vertexId -> {
             final Vector3f currentPos = VisualGraphUtilities.getMixedVertexCoordinates(wg, vertexId, xAttribute, x2Attribute, yAttribute, y2Attribute, zAttribute, z2Attribute, cameraAttribute);
             currentPos.add(delta);
@@ -1110,9 +1110,8 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                 final List<String> menuPath = pmp.getMenuPath(elementType);
                 if (CollectionUtils.isEmpty(menuPath)) {
                     for (int idx = 0; idx < items.size(); idx++) {
-                        Icon icon = null;
-                        if (icons != null && icons.size() > idx + 1) {  icon = (Icon)icons.get(idx); }
-                        String item = items.get(idx);
+                        final Icon icon = (icons != null && icons.size() > idx + 1) ? (Icon) icons.get(idx) : null;
+                        final String item = items.get(idx);
                         if (icon == null) {
                             // No icon was found, add menu item without an icon
                             popup.add(new AbstractAction(item) {
@@ -1120,7 +1119,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                                 public void actionPerformed(final ActionEvent event) {
                                     PluginExecution.withPlugin(new SimplePlugin("Context Menu: " + item) {
                                         @Override
-                                        protected void execute(final PluginGraphs _graphs, final PluginInteraction _interaction, final PluginParameters _parameters) throws InterruptedException, PluginException {
+                                        protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
                                             pmp.selectItem(item, graph, elementType, clickedId, graphLocation);
                                         }
                                     }).executeLater(null);
@@ -1133,7 +1132,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                                 public void actionPerformed(final ActionEvent event) {
                                     PluginExecution.withPlugin(new SimplePlugin("Context Menu: " + item) {
                                         @Override
-                                        protected void execute(final PluginGraphs _graphs, final PluginInteraction _interaction, final PluginParameters _parameters) throws InterruptedException, PluginException {
+                                        protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
                                             pmp.selectItem(item, graph, elementType, clickedId, graphLocation);
                                         }
                                     }).executeLater(null);
@@ -1162,9 +1161,8 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                     }
 
                     for (int idx = 0; idx < items.size(); idx++) {
-                        Icon icon = null;
-                        if (icons != null && icons.size() > idx) { icon = (Icon)icons.get(idx); }
-                        String item = items.get(idx);
+                        final Icon icon = (icons != null && icons.size() > idx) ? (Icon) icons.get(idx) : null;
+                        final String item = items.get(idx);
                         if (icon == null) {
                             // No icon was found, add menu item without an icon
                             ((JMenu) currentMenu).add(new AbstractAction(item) {
@@ -1172,7 +1170,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                                 public void actionPerformed(final ActionEvent event) {
                                     PluginExecution.withPlugin(new SimplePlugin("Context Menu: " + item) {
                                         @Override
-                                        protected void execute(final PluginGraphs _graphs, final PluginInteraction _interaction, final PluginParameters _parameters) throws InterruptedException, PluginException {
+                                        protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
                                             pmp.selectItem(item, graph, elementType, clickedId, graphLocation);
                                         }
                                     }).executeLater(null);
@@ -1185,7 +1183,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                                 public void actionPerformed(final ActionEvent event) {
                                     PluginExecution.withPlugin(new SimplePlugin("Context Menu: " + item) {
                                         @Override
-                                        protected void execute(final PluginGraphs _graphs, final PluginInteraction _interaction, final PluginParameters _parameters) throws InterruptedException, PluginException {
+                                        protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
                                             pmp.selectItem(item, graph, elementType, clickedId, graphLocation);
                                         }
                                     }).executeLater(null);
