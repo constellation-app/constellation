@@ -144,7 +144,7 @@ public class BlazeCustomBlazesContextMenu implements ContextMenuProvider {
             }
             return colorList;
         } else {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
     }
 
@@ -177,7 +177,7 @@ public class BlazeCustomBlazesContextMenu implements ContextMenuProvider {
             }
             return icons;
         } else {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
     }
 }

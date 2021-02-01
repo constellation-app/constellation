@@ -169,7 +169,7 @@ public class BlazeContextMenu implements ContextMenuProvider {
         if (elementType == GraphElementType.VERTEX) {
             return Arrays.asList(ADD_BLUE_BLAZE, ADD_RED_BLAZE, ADD_YELLOW_BLAZE, ADD_CUSTOM_BLAZE, UNSET_BLAZE);
         } else {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
     }
 
@@ -191,7 +191,7 @@ public class BlazeContextMenu implements ContextMenuProvider {
                     ImageUtilities.loadImageIcon(ADD_CUSTOM_BLAZE_ICON, false),
                     ImageUtilities.loadImageIcon(REMOVE_BLAZE_ICON, false));
         } else {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
     }
 }
