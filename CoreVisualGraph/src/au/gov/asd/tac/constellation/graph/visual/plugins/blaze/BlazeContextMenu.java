@@ -31,7 +31,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.DefaultPluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
@@ -74,7 +73,7 @@ public class BlazeContextMenu implements ContextMenuProvider {
     private static final String ADD_CUSTOM_BLAZE_ICON = "au/gov/asd/tac/constellation/graph/visual/plugins/blaze/resources/addblaze_custom.png";
     @StaticResource
     private static final String REMOVE_BLAZE_ICON = "au/gov/asd/tac/constellation/graph/visual/plugins/blaze/resources/removeblaze.png";
-    
+
     @Override
     public void selectItem(final String item, final Graph graph, final GraphElementType elementType, final int elementId, final Vector3f unprojected) {
 
@@ -140,8 +139,8 @@ public class BlazeContextMenu implements ContextMenuProvider {
                     plugin = PluginRegistry.get(VisualGraphPluginRegistry.ADD_CUSTOM_BLAZE);
                     parameters = DefaultPluginParameters.getDefaultParameters(plugin);
                     parameters.setObjectValue(BlazeUtilities.COLOR_PARAMETER_ID, colorResult.getValue());
-                    
-                    BlazeActions.addCustomColor(colorResult.getValue());
+
+                    BlazeActions.addRecentCustomColor(colorResult.getValue());
                 }
                 break;
             case UNSET_BLAZE:
@@ -172,10 +171,10 @@ public class BlazeContextMenu implements ContextMenuProvider {
             return Arrays.asList();
         }
     }
-    
+
     /**
      * Produce list of custom blaze color icons based on supplied color.
-     * 
+     *
      * @param graph the graph that has been right-clicked on.
      * @param elementType the type of element that has been right-clicked on.
      * @param elementId the id of the element that has been right-clicked on.
@@ -185,11 +184,11 @@ public class BlazeContextMenu implements ContextMenuProvider {
     public List<ImageIcon> getIcons(final GraphReadMethods graph, final GraphElementType elementType, final int elementId) {
         if (elementType == GraphElementType.VERTEX) {
             return Arrays.asList(
-                ImageUtilities.loadImageIcon(ADD_BLUE_BLAZE_ICON, false),
-                ImageUtilities.loadImageIcon(ADD_RED_BLAZE_ICON, false),
-                ImageUtilities.loadImageIcon(ADD_YELLOW_BLAZE_ICON, false),
-                ImageUtilities.loadImageIcon(ADD_CUSTOM_BLAZE_ICON, false),
-                ImageUtilities.loadImageIcon(REMOVE_BLAZE_ICON, false));
+                    ImageUtilities.loadImageIcon(ADD_BLUE_BLAZE_ICON, false),
+                    ImageUtilities.loadImageIcon(ADD_RED_BLAZE_ICON, false),
+                    ImageUtilities.loadImageIcon(ADD_YELLOW_BLAZE_ICON, false),
+                    ImageUtilities.loadImageIcon(ADD_CUSTOM_BLAZE_ICON, false),
+                    ImageUtilities.loadImageIcon(REMOVE_BLAZE_ICON, false));
         } else {
             return Arrays.asList();
         }

@@ -40,10 +40,10 @@ import org.openide.util.lookup.ServiceProvider;
  * @author serpens24
  */
 @ServiceProvider(service = ContextMenuProvider.class, position = 205)
-public class BlazeCustomBlazesContextMenu implements ContextMenuProvider {
+public class BlazeRecentBlazesContextMenu implements ContextMenuProvider {
 
     private static final String BLAZE_MENU = "Blazes";
-    private static final String CUSTOM_BLAZE_MENU = "Preset Custom Blazes";
+    private static final String CUSTOM_BLAZE_MENU = "Recent Custom Blazes";
 
     private static final int BLACK_COLOR = (new Color(0, 0, 0)).getRGB();
 
@@ -89,11 +89,13 @@ public class BlazeCustomBlazesContextMenu implements ContextMenuProvider {
             rg.release();
         }
 
-        for (final ConstellationColor color : BlazeActions.getPresetCustomColors()) {
+        for (final ConstellationColor color : BlazeActions.getRecentCustomColors()) {
             final Color javaColor = color.getJavaColor();
             String colorName = color.getName();
             if (colorName == null) {
-                colorName = "#" + Integer.toHexString(javaColor.getRed()) + Integer.toHexString(javaColor.getGreen()) + Integer.toHexString(javaColor.getBlue());
+                colorName = "#" + Integer.toHexString(javaColor.getRed())
+                        + Integer.toHexString(javaColor.getGreen())
+                        + Integer.toHexString(javaColor.getBlue());
             }
 
             if (colorName.equals(item)) {
@@ -131,13 +133,11 @@ public class BlazeCustomBlazesContextMenu implements ContextMenuProvider {
 
             // Generate a list of menu items based on the set of stored custom colors
             final List<String> colorList = new ArrayList<>();
-            for (final ConstellationColor color : BlazeActions.getPresetCustomColors()) {
+            for (final ConstellationColor color : BlazeActions.getRecentCustomColors()) {
                 final Color javaColor = color.getJavaColor();
                 String colorName = color.getName();
                 if (colorName == null) {
-                    colorName = "#" + Integer.toHexString(javaColor.getRed())
-                            + Integer.toHexString(javaColor.getGreen())
-                            + Integer.toHexString(javaColor.getBlue());
+                    colorName = "#" + Integer.toHexString(javaColor.getRed()) + Integer.toHexString(javaColor.getGreen()) + Integer.toHexString(javaColor.getBlue());
                 }
                 colorList.add(0, colorName);
             }
@@ -160,7 +160,7 @@ public class BlazeCustomBlazesContextMenu implements ContextMenuProvider {
         if (elementType == GraphElementType.VERTEX) {
 
             final List<ImageIcon> icons = new ArrayList<>();
-            for (final ConstellationColor color : BlazeActions.getPresetCustomColors()) {
+            for (final ConstellationColor color : BlazeActions.getRecentCustomColors()) {
                 final Color javaColor = color.getJavaColor();
 
                 final BufferedImage customImage = BlazeActions.copyImageBuffer((BufferedImage) ImageUtilities.loadImage(ADD_RECENT_BLAZE_ICON, false));

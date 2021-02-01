@@ -15,8 +15,11 @@
  */
 package au.gov.asd.tac.constellation.preferences;
 
+import java.awt.Color;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.prefs.Preferences;
 import javax.swing.JComponent;
 import org.netbeans.spi.options.OptionsPanelController;
@@ -54,9 +57,22 @@ public final class GraphOptionsPanelController extends OptionsPanelController {
         graphOptionsPanel.setBlazeSize(prefs.getInt(GraphPreferenceKeys.BLAZE_SIZE, GraphPreferenceKeys.BLAZE_SIZE_DEFAULT));
         graphOptionsPanel.setBlazeOpacity(prefs.getInt(GraphPreferenceKeys.BLAZE_OPACITY, GraphPreferenceKeys.BLAZE_OPACITY_DEFAULT));
 
+        final String presetColorsString = NbPreferences.forModule(GraphPreferenceKeys.class)
+                .get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
+
+        // set the colours here - below generates a list of coloured icons.
+        final List<Color> colors = new ArrayList<>();
+        for (final String currentColor : presetColorsString.split(";")) {
+            if (!currentColor.equals("") && !currentColor.equals(" ")) {
+                int r = Integer.valueOf(currentColor.substring(1, 3), 16);
+                int g = Integer.valueOf(currentColor.substring(3, 5), 16);
+                int b = Integer.valueOf(currentColor.substring(5, 7), 16);
+                colors.add(new Color(r, g, b));
+            }
+        }
+        graphOptionsPanel.setPresetColors(colors);
     }
 
-    // Once valid, and once changed, grabs the current value and saves it into the preferences file
     @Override
     public void applyChanges() {
         if (isValid()) {
