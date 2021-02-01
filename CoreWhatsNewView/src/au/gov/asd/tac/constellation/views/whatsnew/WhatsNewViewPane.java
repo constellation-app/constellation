@@ -98,7 +98,7 @@ public class WhatsNewViewPane extends BorderPane {
             
             //Create left VBox to handle Browser and controls,
             //or error messages
-            VBox leftVBox = new VBox();
+            final VBox leftVBox = new VBox();
             splitPane.getItems().add(leftVBox);
 
             splitPane.setBackground(new Background(new BackgroundFill(Color.valueOf("#333333"), CornerRadii.EMPTY, Insets.EMPTY)));
@@ -150,7 +150,7 @@ public class WhatsNewViewPane extends BorderPane {
 
             
             //Create left VBox to handle "help" images of menu and mouse
-            VBox rightVBox = new VBox(10);
+            final VBox rightVBox = new VBox(10);
             splitPane.getItems().add(rightVBox);
             rightVBox.setPadding(new Insets(10, 10, 10, 10));
             rightVBox.setAlignment(Pos.TOP_CENTER);
@@ -158,11 +158,11 @@ public class WhatsNewViewPane extends BorderPane {
             rightVBox.setMinWidth(400);
 
             //Create images for Left VBox
-            ImageView menuImage = new ImageView(new Image(WhatsNewTopComponent.class.getResourceAsStream(MENU_IMAGE)));
+            final ImageView menuImage = new ImageView(new Image(WhatsNewTopComponent.class.getResourceAsStream(MENU_IMAGE)));
             menuImage.setFitWidth(300);
             menuImage.setPreserveRatio(true);
             rightVBox.getChildren().add(menuImage);
-            ImageView mouseImage = new ImageView(new Image(WhatsNewTopComponent.class.getResourceAsStream(MOUSE_IMAGE)));
+            final ImageView mouseImage = new ImageView(new Image(WhatsNewTopComponent.class.getResourceAsStream(MOUSE_IMAGE)));
             mouseImage.setFitWidth(300);
             mouseImage.setPreserveRatio(true);
             rightVBox.getChildren().add(mouseImage);

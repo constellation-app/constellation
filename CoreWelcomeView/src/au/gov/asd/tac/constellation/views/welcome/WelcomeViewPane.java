@@ -136,7 +136,7 @@ public class WelcomeViewPane extends BorderPane {
             for (int i = 0; i < pluginButtons.length; i++) {
                 if (pluginButtons[i] != null) {
                     final Button currentButton = pluginButtons[i];
-                    currentButton.setOnAction((ActionEvent e) -> {
+                    currentButton.setOnAction(e -> {
                         Lookup.getDefault().lookupAll(WelcomePageProvider.class).forEach(plugin -> {
                             if (currentButton == plugin.getButton()) {
                                 plugin.run();
@@ -154,7 +154,7 @@ public class WelcomeViewPane extends BorderPane {
             for (int i = 0; i < sidePluginButtons.length; i++){
                 if (sidePluginButtons[i] != null){
                     final Button currentButton = sidePluginButtons[i];
-                    currentButton.setOnAction((ActionEvent e) -> {
+                    currentButton.setOnAction(e -> {
                         Lookup.getDefault().lookupAll(WelcomePageSideProvider.class).forEach(plugin -> {
                             if (currentButton == plugin.getButton()) {
                                 plugin.run();
@@ -228,7 +228,7 @@ public class WelcomeViewPane extends BorderPane {
 
                 //Calls the method for the recent graphs to open
                 // on the button action
-                recentGraphButtons[i].setOnAction((ActionEvent e) -> {
+                recentGraphButtons[i].setOnAction(e -> {
                     RecentFilesWelcomePage.openGraph(text);
                 });
                 flow.getChildren().add(recentGraphButtons[i]);
