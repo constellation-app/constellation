@@ -1,6 +1,10 @@
 == 3030-12-31 Getting Started
 <p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
+== 2021-02-02 Blaze Colors - Presets and Recents
+<p>The blaze menus have been updated to show menus for recent and preset blaze colors.</p>
+<p>The preferences of Constellation now keep track of what colors you recently used as well as the chance to preset blaze colors via color picker.</p>
+
 == 2021-01-12 Welcome Page
 <p>A Welcome Page with helpful links for getting started with Constellation now opens on startup.</p>
 
