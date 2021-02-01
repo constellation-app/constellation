@@ -20,3 +20,7 @@
 .element-destination {
     -fx-background-color: rgba(179, 230, 179, 0.25);
 }
+
+.pagination {
+    -fx-page-information-visible: false;
+}

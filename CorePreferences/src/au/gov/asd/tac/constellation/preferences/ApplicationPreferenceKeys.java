@@ -87,6 +87,11 @@ public final class ApplicationPreferenceKeys {
     public static final String TUTORIAL_ON_STARTUP = "tutorialMode";
     public static final boolean TUTORIAL_ON_STARTUP_DEFAULT = true;
     /**
+     * Welcome window.
+     */
+    public static final String WELCOME_ON_STARTUP = "welcomeMode";
+    public static final boolean WELCOME_ON_STARTUP_DEFAULT = true;
+    /**
      * Freeze graph view.
      */
     public static final String FREEZE_GRAPH_VIEW = "freezeGraphView";

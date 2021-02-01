@@ -1,6 +1,10 @@
 # Constellation Changes
 
+## 2021-01-01 Changes in January 2021
+* Moved a number of classes out of `au.gov.asd.tac.constellation.plugins.importexport.delimited` and `au.gov.asd.tac.constellation.plugins.importexport.jdbc` into the base package to help remove duplicate classes.
+
 ## 2020-11-01 Changes in November 2020
+* Added `RecentGraphScreenshotUtilities` to manage taking screenshots of graphs to be used by the Welcome tab.
 * Added `createReadAttributeObject()` to `GraphReadMethods`.
 * Added `createWriteAttributeObject()` to `GraphWriteMethods`.
 * Added `createReadObject()` and `createWriteObject()` in `AttributeDescription`.
@@ -21,6 +25,7 @@
 * Updated `LAYER_MASK_SELECTED` and `LAYER_MASK` attributes to be of type `Long` instead of `Integer`.
 * Updated constructor for `LayersViewStateWriter`.
 * Updated parameters for `setLayers()` and `updateLayers()` in `LayersViewPane`.
+
 
 ## 2020-08-01 Changes in August 2020
 * Updated `DefaultPluginInteraction` and `PluginParameters` to unfocus the Ok button from the plugin swing dialog if there is a multi-line string parameter so that enter can be used in the parameter.

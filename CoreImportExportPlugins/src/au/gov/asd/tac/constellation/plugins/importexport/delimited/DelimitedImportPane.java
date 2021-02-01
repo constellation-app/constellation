@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.delimited;
 
+import au.gov.asd.tac.constellation.plugins.importexport.EasyGridPane;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportDefinition;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPreferenceKeys;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.io.ImportDelimitedIO;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
