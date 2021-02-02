@@ -21,7 +21,6 @@ import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
 import javafx.application.Platform;
@@ -67,7 +66,7 @@ public class WelcomeViewPane extends BorderPane {
 
     //Place holder images
     public static final String LOGO = "resources/constellation-logo.png";
-
+    
     private static final Button[] recentGraphButtons = new Button[10];
 
     public WelcomeViewPane() {
@@ -129,7 +128,7 @@ public class WelcomeViewPane extends BorderPane {
             final WelcomePageLayoutProvider layout = Lookup.getDefault().lookup(WelcomePageLayoutProvider.class);
             
             //creating the button events along the top of the page
-            final ArrayList<WelcomePluginInterface> topPlugins = layout.getTopPlugins();
+            final List<WelcomePluginInterface> topPlugins = layout.getTopPlugins();
             for (int i = 0; i < topPlugins.size(); i++){
                 final Button currentButton = topPlugins.get(i).getButton();
                 final WelcomePluginInterface plugin = topPlugins.get(i);
@@ -141,7 +140,7 @@ public class WelcomeViewPane extends BorderPane {
             }
 
             //creating the button events on the side of the page
-            final ArrayList<WelcomePluginInterface> sidePlugins = layout.getSidePlugins();
+            final List<WelcomePluginInterface> sidePlugins = layout.getSidePlugins();
             for (int i = 0; i < sidePlugins.size(); i++){
                 final Button currentButton = sidePlugins.get(i).getButton();
                 final WelcomePluginInterface plugin = sidePlugins.get(i);

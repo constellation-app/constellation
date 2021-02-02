@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.views.welcome.plugins.SelectionModeWelcomePl
 import au.gov.asd.tac.constellation.views.welcome.plugins.SphereGraphWelcomePlugin;
 import au.gov.asd.tac.constellation.views.welcome.plugins.WhatsNewWelcomePlugin;
 import java.util.ArrayList;
+import java.util.List;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -37,7 +38,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Delphinus8821
  */
 
-@ServiceProvider(service = WelcomePageLayoutProvider.class, position = 2)
+@ServiceProvider(service = WelcomePageLayoutProvider.class, position = 1000)
 @PluginInfo(tags = {"WELCOME"})
 @NbBundle.Messages("WelcomePluginList=Welcome Plugin List")
 
@@ -49,8 +50,8 @@ public class WelcomePluginList extends WelcomePageLayoutProvider {
      * @return a list of plugins
      */
     @Override
-    public ArrayList<WelcomePluginInterface> getTopPlugins(){
-        final ArrayList<WelcomePluginInterface> topPlugins = new ArrayList<>();
+    public List<WelcomePluginInterface> getTopPlugins(){
+        final List<WelcomePluginInterface> topPlugins = new ArrayList<>();
         topPlugins.add(new AddModeWelcomePlugin());
         topPlugins.add(new SelectionModeWelcomePlugin());
         topPlugins.add(new SphereGraphWelcomePlugin());
@@ -68,8 +69,8 @@ public class WelcomePluginList extends WelcomePageLayoutProvider {
      * @return a list of plugins
      */
     @Override
-    public ArrayList<WelcomePluginInterface> getSidePlugins(){
-        final ArrayList<WelcomePluginInterface> sidePlugins = new ArrayList<>();
+    public List<WelcomePluginInterface> getSidePlugins(){
+        final List<WelcomePluginInterface> sidePlugins = new ArrayList<>();
         sidePlugins.add(new GettingStartedWelcomePlugin());
         sidePlugins.add(new WhatsNewWelcomePlugin());
         sidePlugins.add(new ProvideFeedbackWelcomePlugin());
