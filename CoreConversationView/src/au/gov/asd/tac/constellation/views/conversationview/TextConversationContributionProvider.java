@@ -54,49 +54,48 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = ConversationContributionProvider.class, position = 1)
 public class TextConversationContributionProvider extends ConversationContributionProvider {
-
+    
     private static final String DISPLAY_NAME = "Text";
     private int contentAttribute = Graph.NOT_FOUND;
     public static boolean textFound;
     private final Insets DEFAULT_INSETS = new Insets (5, 5, 5, 5);
-
+    
     public TextConversationContributionProvider() {
         super(DISPLAY_NAME, 0);
     }
-
+    
     @Override
     public boolean isCompatibleWithGraph(final GraphReadMethods graph) {
         contentAttribute = ContentConcept.TransactionAttribute.CONTENT.get(graph);
         return contentAttribute != Graph.NOT_FOUND;
     }
-
+    
     @Override
     public ConversationContribution createContribution(final GraphReadMethods graph, final ConversationMessage message) {
         final String text = graph.getStringValue(contentAttribute, message.getTransaction());
+        
         if (text != null) {
             return new TextContribution(message, text);
         }
-
+        
         return null;
     }
-
+    
     protected class TextContribution extends ConversationContribution {
-
         private final String text;
-
+        
         public TextContribution(final ConversationMessage message, final String text) {
             super(TextConversationContributionProvider.this, message);
             this.text = text;
         }
-
+        
         @Override
         protected Region createContent(final TooltipPane tips) {
             
             final TextFlow textFlow = new TextFlow();
             textFlow.setPadding(DEFAULT_INSETS);
             
-            final List<MenuItem> menuItems = new ArrayList<>();
-            
+            // Implementation for the 'Copy' context menu option.
             final MenuItem copyTextMenuItem = new MenuItem("Copy");
             copyTextMenuItem.setOnAction(event -> {
                 StringBuilder sb = new StringBuilder();
@@ -112,11 +111,12 @@ public class TextConversationContributionProvider extends ConversationContributi
                 clipboard.setContents(ss, ConstellationClipboardOwner.getOwner());
             });
             
+            // Implementation for the 'Select on Graph' context menu option.
             final MenuItem selectOnGraphMenuItem = new MenuItem("Select on Graph");
             selectOnGraphMenuItem.setOnAction(event -> {
                 final BitSet elementIds = new BitSet();
                 elementIds.set(getMessage().getTransaction());
-
+                
                 PluginExecution.withPlugin(VisualGraphPluginRegistry.CHANGE_SELECTION)
                         .withParameter(ChangeSelectionPlugin.ELEMENT_BIT_SET_PARAMETER_ID, elementIds)
                         .withParameter(ChangeSelectionPlugin.ELEMENT_TYPE_PARAMETER_ID, new ElementTypeParameterValue(GraphElementType.TRANSACTION))
@@ -124,11 +124,9 @@ public class TextConversationContributionProvider extends ConversationContributi
                         .executeLater(GraphManager.getDefault().getActiveGraph());
             });
             
-            menuItems.add(copyTextMenuItem);
-            menuItems.add(selectOnGraphMenuItem);
-            
             final ContextMenu contextMenu = new ContextMenu();
-            contextMenu.getItems().addAll(menuItems);
+            contextMenu.getItems().add(copyTextMenuItem);
+            contextMenu.getItems().add(selectOnGraphMenuItem);
             
             textFlow.setOnContextMenuRequested(event -> {
                 contextMenu.show(textFlow, event.getScreenX(), event.getScreenY());
@@ -151,22 +149,30 @@ public class TextConversationContributionProvider extends ConversationContributi
                     for (Tuple<Integer, Integer> textResult : textResults) {
                         final Text beforeSearched = new Text(text.substring(textStart, textResult.getFirst()));
                         final Text textSearched = new Text(text.substring(textResult.getFirst(), textResult.getSecond()));
-                        // Yellow fill and shadow effect added to search result to provide better contrast on conversation bubbles.
-                        textSearched.setStyle("-fx-fill: yellow; -fx-effect: dropshadow(gaussian, black, 10.0, 0.0, 0.0, 0.0)");
                         
-                        // If textStart is equal to the starting index of the next search instance when there is a double instance,
-                        // for example the second 'o' in 'look', then don't add beforeSearched to textList.
+                        // Yellow fill and shadow effect added to search result to provide better contrast.
+                        textSearched.setStyle("-fx-fill: yellow; -fx-effect: dropshadow(gaussian, black, 5.0, 0.0, 0.0, 0.0)");
+                        
+                        // If 'textStart' is not equal to the inclusive start index of the new search result,
+                        // add any text that is present before the search result to 'textList'.
+                        // 
+                        // When 'textStart' is equal to the inclusive start index of the new search result,
+                        // the search result could be "o" which would appear one after another in the word "look",
+                        // thus any text before the search would be not be added to 'textList',
+                        // since there is not any other text other than the next search result.
                         if (textStart != textResult.getFirst()) {
                             textList.add(beforeSearched);
                         }
                         
+                        // Add 'textSearched', the styled search result, to textList.
                         textList.add(textSearched);
                         
-                        // Set the next textStart to the exclusive end index of textResult,
-                        // so the next iteration will begin at the index after the previous search instance.
+                        // Set the next 'textStart' to the exclusive end index of 'textResult',
+                        // so the next iteration will begin at the index after the previous search result.
                         textStart = textResult.getSecond();
                         counter++;
                         
+                        // At the last search result instance, add any remaining text after the search result to 'textList'.
                         if (counter == textResults.size()) {
                             final Text afterSearched = new Text(text.substring(textStart,text.length()));
                             textList.add(afterSearched);

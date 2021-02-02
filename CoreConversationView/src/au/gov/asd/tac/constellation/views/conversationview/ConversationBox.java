@@ -227,6 +227,9 @@ public final class ConversationBox extends StackPane {
         bubbles.setStyle(JavafxStyleManager.CSS_BACKGROUND_COLOR_TRANSPARENT);
         bubbles.setCellFactory(callback -> new BubbleCell());
         VBox.setVgrow(bubbles, Priority.ALWAYS);
+        
+//        bubbles.scrollTo(ConversationMessage object);
+//        bubbles.scrollTo(int index);
 
         // Hook up the bubbles pane to the conversation
         final ObservableList<ConversationMessage> messages = FXCollections.observableArrayList();
