@@ -15,46 +15,32 @@
  */
 package au.gov.asd.tac.constellation.views.welcome;
 
-import javafx.scene.control.Button;
+import java.util.ArrayList;
+
 
 /**
  * A plugin designed to be supported by the Welcome Page.
  *
  * @author Delphinus8821
  */
-public class WelcomePageSideProvider {
+public abstract class WelcomePageLayoutProvider {
     
-    /* Get a unique reference that is used to identify the plugin 
-     *
-     * @return a unique reference
+    /**
+     * Gets the plugins for the top part of the welcome page
+     * 
+     * @return ArrayList of plugins
      */
-    public String getName() {
+    public ArrayList<WelcomePluginInterface> getTopPlugins(){
         return null;
     }
+  
     
     /**
-     * This method describes what action should be taken when the 
-     * link is clicked on the Welcome Page
-     *
-     */
-    public void run() {
-    }
-
-    /**
-     * Determines whether this analytic appear on the Welcome Page 
-     *
-     * @return true is this analytic should be visible, false otherwise.
-     */
-    public boolean isVisible() {
-        return true;
-    }
-    
-    /**
-     * Creates the button object to represent this plugin
+     * Gets the plugins for the side of the welcome page
      * 
-     * @return the button object
+     * @return ArrayList of plugins
      */
-    public Button getButton() {
+    public ArrayList<WelcomePluginInterface> getSidePlugins(){
         return null;
     }
 }

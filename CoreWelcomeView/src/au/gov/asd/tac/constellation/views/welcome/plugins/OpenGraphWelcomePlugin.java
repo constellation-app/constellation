@@ -15,13 +15,13 @@
  */
 package au.gov.asd.tac.constellation.views.welcome.plugins;
 
-import au.gov.asd.tac.constellation.views.welcome.WelcomePageProvider;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.file.GraphFilePluginRegistry;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
+import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -31,7 +31,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
  * The Open Graph plugin for the Welcome Page.
@@ -39,10 +38,9 @@ import org.openide.util.lookup.ServiceProvider;
  * @author canis_majoris
  */
 
-@ServiceProvider(service = WelcomePageProvider.class, position = 4)
 @PluginInfo(tags = {"WELCOME"})
 @NbBundle.Messages("OpenGraphWelcomePlugin=Open Graph Welcome Plugin")
-public class OpenGraphWelcomePlugin extends WelcomePageProvider {
+public class OpenGraphWelcomePlugin implements WelcomePluginInterface{
     
     public static final String OPEN = "resources/welcome_open_folder.png";
     final ImageView openImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(OPEN)));

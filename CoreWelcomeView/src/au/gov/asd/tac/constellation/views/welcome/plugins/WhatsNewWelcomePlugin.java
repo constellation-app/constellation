@@ -16,9 +16,9 @@
 package au.gov.asd.tac.constellation.views.welcome.plugins;
 
 import au.gov.asd.tac.constellation.views.whatsnew.WhatsNewTopComponent;
-import au.gov.asd.tac.constellation.views.welcome.WelcomePageSideProvider;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
+import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -30,7 +30,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javax.swing.SwingUtilities;
 import org.openide.util.NbBundle;
-import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
@@ -41,10 +40,9 @@ import org.openide.windows.WindowManager;
  * @author Delphinus8821
  */
 
-@ServiceProvider(service = WelcomePageSideProvider.class, position = 6)
 @PluginInfo(tags = {"WELCOME"})
 @NbBundle.Messages("WhatsNewWelcomePlugin=Whats New Welcome Plugin")
-public class WhatsNewWelcomePlugin extends WelcomePageSideProvider {
+public class WhatsNewWelcomePlugin implements WelcomePluginInterface {
     
     public static final String WHATS_NEW = "resources/welcome_new.png";
     final ImageView newView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(WHATS_NEW)));

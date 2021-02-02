@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.welcome.plugins;
 
-import au.gov.asd.tac.constellation.views.welcome.WelcomePageProvider;
+import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
@@ -34,7 +34,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import org.openide.util.NbBundle;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
  * The New Graph in Add Mode plugin for the Welcome Page.
@@ -42,10 +41,9 @@ import org.openide.util.lookup.ServiceProvider;
  * @author canis_majoris
  */
 
-@ServiceProvider(service = WelcomePageProvider.class, position = 1)
 @PluginInfo(tags = {"WELCOME"})
 @NbBundle.Messages("AddModeWelcomePlugin=Add Mode Welcome Plugin")
-public class AddModeWelcomePlugin extends WelcomePageProvider {
+public class AddModeWelcomePlugin implements WelcomePluginInterface {
     
     public static final String NEW_GRAPH = "resources/welcome_add_graph.png";
     final ImageView addView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(NEW_GRAPH)));

@@ -21,10 +21,10 @@ import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.geometry.Insets; 
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -64,8 +64,8 @@ public class WelcomeViewPane extends BorderPane {
     public static final String ERROR_BUTTON_MESSAGE = String.format("%s Information", BrandingUtilities.APPLICATION_NAME);
     public static final String WELCOME_TEXT = "Welcome to Constellation";
     public static final double SPLIT_POS = 0.2;
-    public static final int NUMBER_OF_TOP_PLUGINS = 6;
-    public static final int NUMBER_OF_SIDE_PLUGINS = 4;
+    public static final int NUMBER_OF_TOP_PLUGINS = 6; //Must change if you want to display more or less than 6 plugins
+    public static final int NUMBER_OF_SIDE_PLUGINS = 4; //Must change if you want to display more or less than 4 plugins
 
     //Place holder images
     public static final String LOGO = "resources/constellation-logo.png";
@@ -73,6 +73,9 @@ public class WelcomeViewPane extends BorderPane {
     protected static final Button[] pluginButtons = new Button[12];
     protected static final Button[] recentGraphButtons = new Button[10];
     protected static final Button[] sidePluginButtons = new Button[10];
+    
+    ArrayList<? extends WelcomePluginInterface> topPlugins = new ArrayList();
+    ArrayList<? extends WelcomePluginInterface> sidePlugins = new ArrayList();
 
     public WelcomeViewPane() {
        welcomeViewPane = new BorderPane();
@@ -133,38 +136,28 @@ public class WelcomeViewPane extends BorderPane {
             getWelcomeContent();
 
             //creating the button events along the top of the page
-            for (int i = 0; i < pluginButtons.length; i++) {
-                if (pluginButtons[i] != null) {
+            for (int i = 0; i < NUMBER_OF_TOP_PLUGINS; i++) {
+                if (pluginButtons[i] != null && pluginButtons[i] == topPlugins.get(i).getButton()) {
                     final Button currentButton = pluginButtons[i];
+                    final WelcomePluginInterface plugin = topPlugins.get(i);
                     currentButton.setOnAction(e -> {
-                        Lookup.getDefault().lookupAll(WelcomePageProvider.class).forEach(plugin -> {
-                            if (currentButton == plugin.getButton()) {
-                                plugin.run();
-                            }
-                        });
+                        plugin.run();
                     });
-                    if (i < NUMBER_OF_TOP_PLUGINS) {
-                        setButtonProps(currentButton);
-                        topHBox.getChildren().add(currentButton);
-                    }    
+                    setButtonProps(currentButton);
+                    topHBox.getChildren().add(currentButton);   
                 }
             }
             
             //creating the button events on the side of the page
-            for (int i = 0; i < sidePluginButtons.length; i++){
-                if (sidePluginButtons[i] != null){
+            for (int i = 0; i < NUMBER_OF_SIDE_PLUGINS; i++){
+                if (sidePluginButtons[i] != null && sidePluginButtons[i] == sidePlugins.get(i).getButton()){
                     final Button currentButton = sidePluginButtons[i];
+                    final WelcomePluginInterface plugin = sidePlugins.get(i);
                     currentButton.setOnAction(e -> {
-                        Lookup.getDefault().lookupAll(WelcomePageSideProvider.class).forEach(plugin -> {
-                            if (currentButton == plugin.getButton()) {
-                                plugin.run();
-                            }
-                        });
+                        plugin.run();
                     });
-                    if (i < NUMBER_OF_SIDE_PLUGINS) {
-                        setInfoButtons(currentButton);
-                        leftVBox.getChildren().add(currentButton);
-                    }
+                    setInfoButtons(currentButton);
+                    leftVBox.getChildren().add(currentButton);
                 }
             }
                 
@@ -267,28 +260,20 @@ public class WelcomeViewPane extends BorderPane {
 
     private void getWelcomeContent() {
         //top plugin buttons
-        Lookup.getDefault().lookupAll(WelcomePageProvider.class).forEach(plugin -> {
-            if (plugin.isVisible()) {
-                for (int i = 0; i < 10; i++) {
-                    if (pluginButtons[i] == null) {
-                        pluginButtons[i] = plugin.getButton();
-                        break;
-                    }
+        Lookup.getDefault().lookupAll(WelcomePageLayoutProvider.class).forEach(plugin -> {
+           topPlugins = plugin.getTopPlugins();
+           for (int i = 0; i < 10; i++){
+                if (pluginButtons[i] == null && i < topPlugins.size()) {
+                    pluginButtons[i] = topPlugins.get(i).getButton();   
+                }
+           }
+           
+           sidePlugins = plugin.getSidePlugins();
+           for (int i = 0; i < 10; i++){
+                if (sidePluginButtons[i] == null && i < sidePlugins.size()) {
+                    sidePluginButtons[i] = sidePlugins.get(i).getButton();   
                 }
             }
-        });
-        
-        //side plugin buttons
-        Lookup.getDefault().lookupAll(WelcomePageSideProvider.class).forEach(plugin -> {
-            if (plugin.isVisible()) {
-                for (int i = 0; i < 10; i++){
-                    if (sidePluginButtons[i] == null){
-                        sidePluginButtons[i] = plugin.getButton();
-                        break;
-                    }
-                }
-            }
-        });
+        });  
     }
-    
 }

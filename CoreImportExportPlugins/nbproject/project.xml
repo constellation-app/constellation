@@ -103,14 +103,6 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>au.gov.asd.tac.constellation.views.welcome</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>1.0</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
                     <code-name-base>org.netbeans.api.annotations.common</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -224,6 +216,7 @@
                 <package>au.gov.asd.tac.constellation.plugins.importexport.delimited</package>
                 <package>au.gov.asd.tac.constellation.plugins.importexport.delimited.parser</package>
                 <package>au.gov.asd.tac.constellation.plugins.importexport.geospatial</package>
+                <package>au.gov.asd.tac.constellation.plugins.importexport.jdbc</package>
                 <package>au.gov.asd.tac.constellation.plugins.importexport.text</package>
             </public-packages>
         </data>
