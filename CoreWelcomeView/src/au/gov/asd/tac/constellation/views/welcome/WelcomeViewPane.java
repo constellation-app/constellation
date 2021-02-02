@@ -141,7 +141,7 @@ public class WelcomeViewPane extends BorderPane {
 
             //creating the button events on the side of the page
             final List<WelcomePluginInterface> sidePlugins = layout.getSidePlugins();
-            for (int i = 0; i < sidePlugins.size(); i++){
+            for (int i = 0; i < sidePlugins.size(); i++) {
                 final Button currentButton = sidePlugins.get(i).getButton();
                 final WelcomePluginInterface plugin = sidePlugins.get(i);
                 currentButton.setOnAction(e -> {
@@ -149,7 +149,7 @@ public class WelcomeViewPane extends BorderPane {
                 });
                 setInfoButtons(currentButton);
                 leftVBox.getChildren().add(currentButton);
-             }
+            }
                 
             leftVBox.setAlignment(Pos.TOP_CENTER);
             
