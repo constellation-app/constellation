@@ -54,7 +54,7 @@ public class SphereGraphWelcomePlugin implements WelcomePluginInterface {
      * Get a unique reference that is used to identify the plugin
      * @return a unique reference
      */
-   // @Override
+    @Override
     public String getName() {
         return "Add Sphere Graph Welcome";
     }
@@ -63,7 +63,7 @@ public class SphereGraphWelcomePlugin implements WelcomePluginInterface {
      * This method describes what action should be taken when the
      * link is clicked on the Welcome Page
      */
-  //  @Override
+    @Override
     public void run() {
 
         final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
@@ -92,7 +92,7 @@ public class SphereGraphWelcomePlugin implements WelcomePluginInterface {
      * Determines whether this analytic appear on the Welcome Page 
      * @return true is this analytic should be visible, false otherwise.
      */
-   // @Override
+    @Override
     public boolean isVisible() {
         return true;
     }
@@ -102,7 +102,7 @@ public class SphereGraphWelcomePlugin implements WelcomePluginInterface {
      * 
      * @return the button object
      */
-   // @Override
+    @Override
     public Button getButton(){
         newSphere.setFitHeight(75);
         newSphere.setFitWidth(75);

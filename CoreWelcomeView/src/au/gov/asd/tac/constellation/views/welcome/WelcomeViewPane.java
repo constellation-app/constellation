@@ -74,8 +74,8 @@ public class WelcomeViewPane extends BorderPane {
     protected static final Button[] recentGraphButtons = new Button[10];
     protected static final Button[] sidePluginButtons = new Button[10];
     
-    ArrayList<WelcomePluginInterface> topPlugins = new ArrayList();
-    ArrayList<WelcomePluginInterface> sidePlugins = new ArrayList();
+    private List<WelcomePluginInterface> topPlugins = new ArrayList<>();
+    private List<WelcomePluginInterface> sidePlugins = new ArrayList<>();
 
     public WelcomeViewPane() {
        welcomeViewPane = new BorderPane();
