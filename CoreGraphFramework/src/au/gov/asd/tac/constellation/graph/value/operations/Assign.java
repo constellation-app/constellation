@@ -38,7 +38,9 @@ import au.gov.asd.tac.constellation.graph.value.writables.StringWritable;
  */
 public class Assign {
 
-    public static final String NAME = "ASSIGN";
+    // Explicitly calling the constructor on a String appears to be necessary to
+    // allow the registry to find the operator.
+    public static final String NAME = new String("ASSIGN");
 
     private Assign() {
         // added private constructor to hide implicit public constructor - S1118.

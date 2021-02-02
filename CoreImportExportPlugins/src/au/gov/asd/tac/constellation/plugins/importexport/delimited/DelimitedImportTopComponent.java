@@ -42,7 +42,7 @@ import org.openide.windows.TopComponent;
         id = "au.gov.asd.tac.constellation.plugins.importexport.delimited.DelimitedImportTopComponent")
 @ActionReferences({
     @ActionReference(path = "Menu/File/Import", position = 0),
-    @ActionReference(path = "Toolbars/File", position = 0)})
+    @ActionReference(path = "Toolbars/File", position = 5)})
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_ImportDelimitedFileAction",
         preferredID = "DelimitedImportTopComponent")
@@ -64,7 +64,8 @@ public final class DelimitedImportTopComponent extends JavaFxTopComponent<Delimi
 
     @Override
     protected String createStyle() {
-        return null;
+        return "resources/delimited-import.css";
+//        return null;
     }
 
     @Override

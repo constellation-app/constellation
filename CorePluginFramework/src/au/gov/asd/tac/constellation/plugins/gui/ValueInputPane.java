@@ -140,7 +140,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                 }
 
                 if (recentValues != null) {
-                    parameter.setStringValue(recentValues.get(recentValues.size() > 1 ? 1 : 0));
+                    parameter.setStringValue(recentValues.get(0));
                 }
 
                 ListCell<String> button = new ListCell<String>() {

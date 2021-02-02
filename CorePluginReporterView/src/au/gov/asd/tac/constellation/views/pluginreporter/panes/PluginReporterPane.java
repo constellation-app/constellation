@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.plugins.reporting.GraphReport;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReportManager;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReportFilter;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.pluginreporter.PluginReporterTopComponent;
@@ -122,7 +123,7 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
             setPluginReportFilter(defaultReportFilter);
         });
 
-        final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16));
+        final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor()));
         Button helpButton = new Button("", helpImage);
         helpButton.setOnAction((ActionEvent event) -> {
             final Help help = Lookup.getDefault().lookup(Help.class);
