@@ -145,7 +145,7 @@ public class MultiChoiceInputPane extends HBox {
                     choices.add(pv);
                 }
             }
-            MultiChoiceParameterType.setChoicesData(parameter, choices);
+            parameter.getParameterValue().setChoicesData(choices);
         }
     }
 

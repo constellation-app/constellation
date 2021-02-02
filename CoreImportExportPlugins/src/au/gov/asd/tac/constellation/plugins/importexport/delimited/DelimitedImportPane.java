@@ -63,7 +63,7 @@ public class DelimitedImportPane extends BorderPane {
     private final BorderPane root;
 
     private static final String HELP_CTX = DelimitedImportPane.class.getName();
-    private static final Image HELP_IMAGE = UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.AZURE.getJavaColor());
+    private static final Image HELP_IMAGE = UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor());
     private final Preferences importExportPrefs = NbPreferences.forModule(ImportExportPreferenceKeys.class);
 
     public DelimitedImportPane(final DelimitedImportTopComponent delimitedImportTopComponent) {
