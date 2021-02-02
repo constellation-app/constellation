@@ -130,8 +130,8 @@ public class WelcomeViewPane extends BorderPane {
             //creating the button events along the top of the page
             final List<WelcomePluginInterface> topPlugins = layout.getTopPlugins();
             for (int i = 0; i < topPlugins.size(); i++){
-                final Button currentButton = topPlugins.get(i).getButton();
                 final WelcomePluginInterface plugin = topPlugins.get(i);
+                final Button currentButton = plugin.getButton();
                 currentButton.setOnAction(e -> {
                     plugin.run();
                 });
@@ -142,8 +142,8 @@ public class WelcomeViewPane extends BorderPane {
             //creating the button events on the side of the page
             final List<WelcomePluginInterface> sidePlugins = layout.getSidePlugins();
             for (int i = 0; i < sidePlugins.size(); i++) {
-                final Button currentButton = sidePlugins.get(i).getButton();
                 final WelcomePluginInterface plugin = sidePlugins.get(i);
+                final Button currentButton = plugin.getButton();
                 currentButton.setOnAction(e -> {
                     plugin.run();
                 });
