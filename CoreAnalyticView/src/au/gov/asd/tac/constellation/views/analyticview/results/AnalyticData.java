@@ -23,16 +23,16 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
  */
 public abstract class AnalyticData {
 
-    protected final GraphElementType elementType;
-    protected final int elementId;
-    protected final String identifier;
+    protected final IdentificationData id;
     protected final boolean isNull;
 
     public AnalyticData(final GraphElementType elementType, final int elementId, final String identifier, final boolean isNull) {
-        this.elementType = elementType;
-        this.elementId = elementId;
-        this.identifier = identifier;
+        this.id = new IdentificationData(elementType, elementId, identifier);
         this.isNull = isNull;
+    }
+    
+    public IdentificationData getIdentificationData() {
+        return id;
     }
 
     /**
@@ -42,7 +42,7 @@ public abstract class AnalyticData {
      * @return
      */
     public GraphElementType getElementType() {
-        return elementType;
+        return id.getElementType();
     }
 
     /**
@@ -51,7 +51,7 @@ public abstract class AnalyticData {
      * @return
      */
     public int getElementId() {
-        return elementId;
+        return id.getElementId();
     }
 
     /**
@@ -61,7 +61,7 @@ public abstract class AnalyticData {
      * @return
      */
     public String getIdentifier() {
-        return identifier;
+        return id.getIdentifier();
     }
 
     /**
@@ -72,4 +72,5 @@ public abstract class AnalyticData {
     public boolean isNull() {
         return isNull;
     }
+    
 }
