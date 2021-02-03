@@ -193,7 +193,7 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
      * @param controller 
      * @param pane 
      */
-    protected synchronized void prepareNotesViewPane(final NotesViewController controller) {
+    protected void prepareNotesViewPane(final NotesViewController controller) {
         controller.readState();
         controller.addAttributes();
     }
@@ -201,7 +201,7 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
     /**
      * Set the plugin reports that have executed on the current graph report.
      */
-    protected synchronized void setGraphReport(final NotesViewController controller) {
+    protected void setGraphReport(final NotesViewController controller) {
         final GraphReport currentGraphReport = GraphReportManager.getGraphReport(GraphManager.getDefault().getActiveGraph().getId());
 
         if (currentGraphReport != null) {
@@ -225,7 +225,7 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
      * 
      * @param pluginReport Plugin report to be added.
      */
-    protected synchronized void setPluginReport(final PluginReport pluginReport) {
+    protected void setPluginReport(final PluginReport pluginReport) {
         // Omit plugin reports from the Notes View and Quality Control View.
         if ((!pluginReport.getPluginName().contains("Notes View"))
                 && (!pluginReport.getPluginName().contains("Quality Control View"))) {
@@ -264,7 +264,7 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
      * 
      * @param notesViewEntries A list of NotesViewEntry objects to add to notesViewEntries.
      */
-    protected synchronized void setNotes(final List<NotesViewEntry> notesViewEntries) {
+    protected void setNotes(final List<NotesViewEntry> notesViewEntries) {
         Platform.runLater(() -> {
             this.notesViewEntries.clear();
             
@@ -281,7 +281,7 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
      * 
      * @param selectFilters A list of String objects to add to selectedFilters.
      */
-    protected synchronized void setFilters(final List<String> selectedFilters) {
+    protected void setFilters(final List<String> selectedFilters) {
         Platform.runLater(() -> {
             this.selectedFilters.clear();
             
@@ -363,7 +363,7 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
      * @param duplicatedNotes A list with duplicates.
      * @return The given list with duplicates removed.
      */
-    private synchronized List<NotesViewEntry> clearDuplicates(final List<NotesViewEntry> duplicatedNotes) {
+    private List<NotesViewEntry> clearDuplicates(final List<NotesViewEntry> duplicatedNotes) {
         final List<NotesViewEntry> uniqueNotes = new ArrayList();
         Collections.reverse(duplicatedNotes);
         
