@@ -21,7 +21,6 @@ import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
 import javafx.application.Platform;
@@ -64,18 +63,11 @@ public class WelcomeViewPane extends BorderPane {
     public static final String ERROR_BUTTON_MESSAGE = String.format("%s Information", BrandingUtilities.APPLICATION_NAME);
     public static final String WELCOME_TEXT = "Welcome to Constellation";
     public static final double SPLIT_POS = 0.2;
-    public static final int NUMBER_OF_TOP_PLUGINS = 6; //Must change if you want to display more or less than 6 plugins
-    public static final int NUMBER_OF_SIDE_PLUGINS = 4; //Must change if you want to display more or less than 4 plugins
 
     //Place holder images
     public static final String LOGO = "resources/constellation-logo.png";
-
-    protected static final Button[] pluginButtons = new Button[12];
-    protected static final Button[] recentGraphButtons = new Button[10];
-    protected static final Button[] sidePluginButtons = new Button[10];
     
-    private List<WelcomePluginInterface> topPlugins = new ArrayList<>();
-    private List<WelcomePluginInterface> sidePlugins = new ArrayList<>();
+    private static final Button[] recentGraphButtons = new Button[10];
 
     public WelcomeViewPane() {
        welcomeViewPane = new BorderPane();
@@ -133,32 +125,28 @@ public class WelcomeViewPane extends BorderPane {
             bottomHBox.setPadding(new Insets(50, 0, 50, 0));
             bottomHBox.setSpacing(10);
 
-            getWelcomeContent();
-
-            //creating the button events along the top of the page
-            for (int i = 0; i < NUMBER_OF_TOP_PLUGINS; i++) {
-                if (pluginButtons[i] != null && pluginButtons[i] == topPlugins.get(i).getButton()) {
-                    final Button currentButton = pluginButtons[i];
-                    final WelcomePluginInterface plugin = topPlugins.get(i);
-                    currentButton.setOnAction(e -> {
-                        plugin.run();
-                    });
-                    setButtonProps(currentButton);
-                    topHBox.getChildren().add(currentButton);   
-                }
-            }
+            final WelcomePageLayoutProvider layout = Lookup.getDefault().lookup(WelcomePageLayoutProvider.class);
             
+            //creating the button events along the top of the page
+            final List<WelcomePluginInterface> topPlugins = layout.getTopPlugins();
+            for (final WelcomePluginInterface plugin : topPlugins){
+                final Button currentButton = plugin.getButton();
+                currentButton.setOnAction(e -> {
+                    plugin.run();
+                });
+                setButtonProps(currentButton);
+                topHBox.getChildren().add(currentButton);
+            }
+
             //creating the button events on the side of the page
-            for (int i = 0; i < NUMBER_OF_SIDE_PLUGINS; i++){
-                if (sidePluginButtons[i] != null && sidePluginButtons[i] == sidePlugins.get(i).getButton()){
-                    final Button currentButton = sidePluginButtons[i];
-                    final WelcomePluginInterface plugin = sidePlugins.get(i);
-                    currentButton.setOnAction(e -> {
-                        plugin.run();
-                    });
-                    setInfoButtons(currentButton);
-                    leftVBox.getChildren().add(currentButton);
-                }
+            final List<WelcomePluginInterface> sidePlugins = layout.getSidePlugins();
+            for (final WelcomePluginInterface plugin : sidePlugins) {
+                final Button currentButton = plugin.getButton();
+                currentButton.setOnAction(e -> {
+                    plugin.run();
+                });
+                setInfoButtons(currentButton);
+                leftVBox.getChildren().add(currentButton);
             }
                 
             leftVBox.setAlignment(Pos.TOP_CENTER);
@@ -199,7 +187,7 @@ public class WelcomeViewPane extends BorderPane {
 
             //Create the buttons for the recent page
             final List<String> fileNames = RecentFilesWelcomePage.getFileNames();
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < recentGraphButtons.length; i++) {
                 recentGraphButtons[i] = new Button();
                 //if the user has recent files get the names
                 //and make them the text of the buttons
@@ -256,24 +244,5 @@ public class WelcomeViewPane extends BorderPane {
         button.setStyle("-fx-background-color: transparent;");
         button.setCursor(Cursor.HAND);
         button.setAlignment(Pos.CENTER_LEFT);
-    }
-
-    private void getWelcomeContent() {
-        //top plugin buttons
-        Lookup.getDefault().lookupAll(WelcomePageLayoutProvider.class).forEach(plugin -> {
-           topPlugins = plugin.getTopPlugins();
-           for (int i = 0; i < 10; i++){
-                if (pluginButtons[i] == null && i < topPlugins.size()) {
-                    pluginButtons[i] = topPlugins.get(i).getButton();   
-                }
-           }
-           
-           sidePlugins = plugin.getSidePlugins();
-           for (int i = 0; i < 10; i++){
-                if (sidePluginButtons[i] == null && i < sidePlugins.size()) {
-                    sidePluginButtons[i] = sidePlugins.get(i).getButton();   
-                }
-            }
-        });  
     }
 }
