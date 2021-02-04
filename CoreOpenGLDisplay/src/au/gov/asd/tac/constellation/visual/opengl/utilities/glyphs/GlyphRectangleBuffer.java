@@ -256,11 +256,12 @@ final class GlyphRectangleBuffer {
         //
         final int hashCode = Arrays.hashCode(img.getRGB(0, 0, w, h, null, 0, w));
 
-        Integer rectIndex = memory.putIfAbsent(hashCode, memory.size());
+        
+        Integer rectIndex = memory.get(hashCode);
         if (rectIndex == null) {
-            rectIndex = memory.get(hashCode);
-            addImageToBuffer(img, rectIndex, extra, w, h);
+            rectIndex = synchronizedAddHashcode(hashCode, img, extra, w, h);
         }
+        
         return rectIndex;
     }
     
@@ -355,5 +356,15 @@ final class GlyphRectangleBuffer {
             return false;
         }
         return true;
+    }
+
+    private synchronized Integer synchronizedAddHashcode(int hashCode, BufferedImage img, int extra, int w, int h) {
+        int value = memory.size();
+        Integer rectIndex = memory.putIfAbsent(hashCode, value);
+        if (rectIndex == null) {
+            rectIndex = value;
+            addImageToBuffer(img, rectIndex, extra, w, h);
+        }
+        return rectIndex;
     }
 }
