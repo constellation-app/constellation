@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and 
  * limitations under the License. 
  */
-package au.gov.asd.tac.constellation.testing;
+package au.gov.asd.tac.constellation.views.welcome.plugins;
 
-import au.gov.asd.tac.constellation.views.welcome.WelcomePageProvider;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
@@ -27,7 +26,9 @@ import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
+import au.gov.asd.tac.constellation.testing.CoreTestingPluginRegistry;
 import au.gov.asd.tac.constellation.testing.construction.SphereGraphBuilderPlugin;
+import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -36,16 +37,14 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import org.openide.util.NbBundle;
-import org.openide.util.lookup.ServiceProvider;
 
 /**  
  * The New Graph with a Sphere plugin for the Welcome Page.  
  * @author canis_majoris
  */
-@ServiceProvider(service = WelcomePageProvider.class, position = 2)
 @PluginInfo(tags = {"WELCOME"})
 @NbBundle.Messages("SphereGraphWelcomePlugin=Sphere Graph Welcome Plugin")
-public class SphereGraphWelcomePlugin extends WelcomePageProvider {
+public class SphereGraphWelcomePlugin implements WelcomePluginInterface {
     
     public static final String NEW_SPHERE = "resources/welcome_add_sphere.png";
     final ImageView newSphere = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(NEW_SPHERE)));   

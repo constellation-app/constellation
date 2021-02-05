@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,10 @@
  */
 package au.gov.asd.tac.constellation.views.welcome.plugins;
 
-import au.gov.asd.tac.constellation.functionality.tutorial.TutorialTopComponent;
-import au.gov.asd.tac.constellation.views.welcome.WelcomePageProvider;
+import au.gov.asd.tac.constellation.views.whatsnew.WhatsNewTopComponent;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
+import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -30,7 +30,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javax.swing.SwingUtilities;
 import org.openide.util.NbBundle;
-import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
@@ -41,10 +40,9 @@ import org.openide.windows.WindowManager;
  * @author Delphinus8821
  */
 
-@ServiceProvider(service = WelcomePageProvider.class, position = 6)
 @PluginInfo(tags = {"WELCOME"})
 @NbBundle.Messages("WhatsNewWelcomePlugin=Whats New Welcome Plugin")
-public class WhatsNewWelcomePlugin extends WelcomePageProvider {
+public class WhatsNewWelcomePlugin implements WelcomePluginInterface {
     
     public static final String WHATS_NEW = "resources/welcome_new.png";
     final ImageView newView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(WHATS_NEW)));
@@ -68,13 +66,13 @@ public class WhatsNewWelcomePlugin extends WelcomePageProvider {
     @Override
     public void run() {
         SwingUtilities.invokeLater(() -> {
-            final TopComponent tutorial = WindowManager.getDefault().findTopComponent(TutorialTopComponent.class.getSimpleName());
-            if (tutorial != null) {
-                if (!tutorial.isOpened()) {
-                    tutorial.open();
+            final TopComponent whatsNew = WindowManager.getDefault().findTopComponent(WhatsNewTopComponent.class.getSimpleName());
+            if (whatsNew != null) {
+                if (!whatsNew.isOpened()) {
+                    whatsNew.open();
                 }
-                tutorial.setEnabled(true);
-                tutorial.requestActive();
+                whatsNew.setEnabled(true);
+                whatsNew.requestActive();
             }
         });
     }

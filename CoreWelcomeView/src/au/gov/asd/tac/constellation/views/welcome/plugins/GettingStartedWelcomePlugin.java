@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,15 +18,9 @@ package au.gov.asd.tac.constellation.views.welcome.plugins;
 import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
 import au.gov.asd.tac.constellation.functionality.browser.OpenInBrowserPlugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.views.welcome.WelcomePageProvider;
+import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
-import java.awt.Desktop;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.logging.Logger;
-import java.util.logging.Level;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -37,7 +31,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import org.openide.util.NbBundle;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
  * The plugin for the Welcome Page that leads to the Getting Started guides and resources
@@ -45,16 +38,14 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Delphinus8821
  */
 
-@ServiceProvider(service = WelcomePageProvider.class, position = 5)
 @PluginInfo(tags = {"WELCOME"})
 @NbBundle.Messages("GettingStartedWelcomePlugin=Getting Started Welcome Plugin")
-public class GettingStartedWelcomePlugin extends WelcomePageProvider {
+public class GettingStartedWelcomePlugin implements WelcomePluginInterface {
     
     public static final String GETTING_STARTED = "resources/welcome_getting_started.png";
     final ImageView started = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(GETTING_STARTED)));
     final Button startedBtn = new Button();
     
-    private static final Logger LOGGER = Logger.getLogger(GettingStartedWelcomePlugin.class.getName());
         
     /**
      * Get a unique reference that is used to identify the plugin 
