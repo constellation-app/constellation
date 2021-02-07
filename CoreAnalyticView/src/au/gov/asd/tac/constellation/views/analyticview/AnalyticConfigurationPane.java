@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPane;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
@@ -615,6 +616,7 @@ public class AnalyticConfigurationPane extends VBox {
     /**
      * Write the given AnalyticViewState to the active graph.
      */
+    @PluginInfo(tags = {"LOW LEVEL"})
     private static final class AnalyticViewStateWriter extends SimpleEditPlugin {
 
         private final AnalyticQuestionDescription<?> question;
@@ -649,6 +651,7 @@ public class AnalyticConfigurationPane extends VBox {
     /**
      * Update the display by reading and writing to/from the state attribute.
      */
+    @PluginInfo(tags = {"LOW LEVEL"})
     private static final class AnalyticViewStateUpdater extends SimpleEditPlugin {
 
         private final AnalyticConfigurationPane analyticConfigurationPane;

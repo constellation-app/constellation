@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 /**
  * A PluginReport is created each time a plugin is executed. It stores
@@ -58,6 +59,11 @@ public class PluginReport {
     private final String[] tags;
 
     private final int position;
+    
+    
+    private static final Logger LOGGER = Logger.getLogger(PluginReport.class.getName());
+    
+    
 
     public PluginReport(GraphReport graphReport, Plugin plugin) {
         this.graphReport = graphReport;
@@ -82,6 +88,7 @@ public class PluginReport {
         if (listener != null && !listeners.contains(listener)) {
             listeners.add(listener);
         }
+        LOGGER.info("listeners count is " + listeners.size());
     }
 
     /**
