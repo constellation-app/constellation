@@ -358,7 +358,7 @@ final class GlyphRectangleBuffer {
         return true;
     }
 
-    private synchronized Integer synchronizedAddHashcode(int hashCode, BufferedImage img, int extra, int w, int h) {
+    private synchronized int synchronizedAddHashcode(final int hashCode, final BufferedImage img, final int extra, final int w, final int h) {
         int value = memory.size();
         Integer rectIndex = memory.putIfAbsent(hashCode, value);
         if (rectIndex == null) {
