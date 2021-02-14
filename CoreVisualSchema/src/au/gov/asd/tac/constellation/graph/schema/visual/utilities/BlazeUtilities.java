@@ -23,10 +23,15 @@ import au.gov.asd.tac.constellation.plugins.gui.PluginParametersDialog;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersSwingDialog;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType;
+import au.gov.asd.tac.constellation.preferences.GraphPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import java.awt.Color;
 import java.util.BitSet;
+import java.util.prefs.Preferences;
 import javafx.util.Pair;
+import org.openide.util.NbPreferences;
 
 /**
  * A utilities class to hold constants and utility methods dealing with blazes.
@@ -41,6 +46,9 @@ public class BlazeUtilities {
     public static final String VERTEX_IDS_PARAMETER_ID = PluginParameter.buildId(BlazeUtilities.class, "vertex_ids");
     public static final String COLOR_PARAMETER_ID = PluginParameter.buildId(BlazeUtilities.class, "color");
     public static final String BLAZE_COLOR_PARAMETER_ID = PluginParameter.buildId(BlazeUtilities.class, "blaze_color");
+    public static final String PRESET_PARAMETER_ID = PluginParameter.buildId(BlazeUtilities.class, "save_color_as_preset");
+
+    private static final Preferences prefs = NbPreferences.forModule(GraphPreferenceKeys.class);
 
     /**
      * Selected vertices, and the color of the blaze of the first selected
@@ -84,7 +92,8 @@ public class BlazeUtilities {
     }
 
     /**
-     * Display a dialog box to select a color.
+     * Display a dialog box to select a color. Option to save color as a preset
+     * is represented by a checkbox
      *
      * @param blazeColor The initial value of the color.
      *
@@ -96,18 +105,55 @@ public class BlazeUtilities {
         final PluginParameter<ColorParameterType.ColorParameterValue> colorParam = ColorParameterType.build(COLOR_PARAMETER_ID);
         colorParam.setName("Color");
         colorParam.setDescription(BLAZE_COLOR_PARAMETER_ID);
-        if (blazeColor != null) {
-            colorParam.setColorValue(blazeColor);
-        }
         dlgParams.addParameter(colorParam);
+
+        final PluginParameter<BooleanParameterType.BooleanParameterValue> presetParam = BooleanParameterType.build(PRESET_PARAMETER_ID);
+        presetParam.setName("Preset");
+        presetParam.setDescription("Save as Preset");
+        presetParam.setBooleanValue(false);
+        dlgParams.addParameter(presetParam);
 
         final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(BLAZE_COLOR_PARAMETER_ID, dlgParams);
         dialog.showAndWait();
         final boolean isOk = PluginParametersDialog.OK.equals(dialog.getResult());
         if (isOk) {
             blazeColor = dlgParams.getColorValue(COLOR_PARAMETER_ID);
+            savePreset(blazeColor.getJavaColor());
+        }
+        return new Pair<>(isOk, blazeColor);
+    }
+
+    /**
+     * Saves a blaze color as a preset
+     *
+     * @param newColor the new selected color to add as a preset
+     */
+    public static void savePreset(final Color newColor) {
+        final String colorString = prefs.get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
+        final String newColorString;
+        if (colorString == null || colorString.isBlank()) {
+            newColorString = getHTMLColor(newColor) + ";";
+        } else {
+            newColorString = colorString + getHTMLColor(newColor) + ";";
+        }
+        prefs.put(GraphPreferenceKeys.BLAZE_PRESET_COLORS, newColorString);
+    }
+
+    /**
+     * Get the HTML color from a java color
+     *
+     * @param color
+     * @return
+     */
+    public static String getHTMLColor(final Color color) {
+        if (color == null) {
+            return null;
         }
 
-        return new Pair<>(isOk, blazeColor);
+        final int r = (int) (color.getRed());
+        final int g = (int) (color.getGreen());
+        final int b = (int) (color.getBlue());
+        final String s = String.format("#%02x%02x%02x", r, g, b);
+        return s;
     }
 }

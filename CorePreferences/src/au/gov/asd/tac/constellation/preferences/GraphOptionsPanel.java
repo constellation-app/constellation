@@ -64,7 +64,7 @@ final class GraphOptionsPanel extends javax.swing.JPanel {
         colorPanels.add(colorPanel10);
 
         for (final JPanel colorPanel : colorPanels) {
-            colorPanel.setBackground(new Color(255, 255, 254));
+            colorPanel.setBackground(DEFAULT_COLOR);
 
         }
     }
