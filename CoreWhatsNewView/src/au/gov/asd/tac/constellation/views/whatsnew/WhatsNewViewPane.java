@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.functionality.tutorial;
+package au.gov.asd.tac.constellation.views.whatsnew;
 
 import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
 import au.gov.asd.tac.constellation.functionality.browser.OpenInBrowserPlugin;
-import au.gov.asd.tac.constellation.functionality.whatsnew.WhatsNewProvider;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
@@ -30,17 +28,12 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.prefs.PreferenceChangeEvent;
-import java.util.prefs.PreferenceChangeListener;
-import java.util.prefs.Preferences;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -56,7 +49,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
-import org.openide.util.NbPreferences;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -65,14 +57,14 @@ import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
 
 /**
- * Tutorial View Pane.
+ * Whats New View Pane.
  *
  * @author aquila Refactor by:
  * @author aldebaran30701
  */
-public class TutorialViewPane extends BorderPane {
+public class WhatsNewViewPane extends BorderPane {
 
-    private final BorderPane tutorialViewPane;
+    private final BorderPane whatsNewViewPane;
     
     public static final String MOUSE_IMAGE = "resources/mouse3.png";
     public static final String MENU_IMAGE = "resources/sidebar.png";
@@ -95,62 +87,22 @@ public class TutorialViewPane extends BorderPane {
      */
     private final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
-    public TutorialViewPane() {
-        tutorialViewPane = new BorderPane(); 
+    public WhatsNewViewPane() {
+        whatsNewViewPane = new BorderPane(); 
         ConstellationSecurityManager.startSecurityLaterFX(() -> {
             Platform.setImplicitExit(false);
 
             final SplitPane splitPane = new SplitPane();
             splitPane.setOrientation(Orientation.HORIZONTAL);
-            tutorialViewPane.setCenter(splitPane);
-
-            //Create left VBox to handle "help" images of menu and mouse
-            VBox leftVBox = new VBox(10);
-            splitPane.getItems().add(leftVBox);
-            leftVBox.setPadding(new Insets(10, 10, 10, 10));
-            leftVBox.setAlignment(Pos.TOP_CENTER);
-
-            //Create images for Left VBox
-            ImageView menuImage = new ImageView(new Image(TutorialTopComponent.class.getResourceAsStream(MENU_IMAGE)));
-            menuImage.setFitWidth(300);
-            menuImage.setPreserveRatio(true);
-            leftVBox.getChildren().add(menuImage);
-            ImageView mouseImage = new ImageView(new Image(TutorialTopComponent.class.getResourceAsStream(MOUSE_IMAGE)));
-            mouseImage.setFitWidth(300);
-            mouseImage.setPreserveRatio(true);
-            leftVBox.getChildren().add(mouseImage);
-
-            //Create Right VBox to handle Browser and controls,
+            whatsNewViewPane.setCenter(splitPane);
+            
+            //Create left VBox to handle Browser and controls,
             //or error messages
-            VBox rightVBox = new VBox();
-            splitPane.getItems().add(rightVBox);
-            
-            splitPane.getDividers().get(0).setPosition(SPLIT_POS);
-            
-            // Create a checkbox to change users preference regarding showing the Tutorial Page on startup 
-            final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-            final CheckBox showOnStartUpCheckBox = new CheckBox("Show on Startup");
-            rightVBox.getChildren().add(showOnStartUpCheckBox);
-            rightVBox.setAlignment(Pos.TOP_RIGHT);
-            rightVBox.setBackground(new Background(new BackgroundFill(Color.valueOf("#333333"), CornerRadii.EMPTY, Insets.EMPTY)));
-            rightVBox.paddingProperty().set(new Insets(5, 5, 5, 5));
-            showOnStartUpCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
-                @Override
-                public void changed(ObservableValue<? extends Boolean> ov,
-                        Boolean oldVal, Boolean newVal) {
-                    prefs.putBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, newVal);                     
-                }
-            });        
-            showOnStartUpCheckBox.setSelected(prefs.getBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP_DEFAULT));
-            
-            // Create a preferenceListener in order to identify when user preference is changed
-            // Keeps tutorial page and options tutorial selections in-sync when both are open
-            prefs.addPreferenceChangeListener(new PreferenceChangeListener() {
-                @Override
-                public void preferenceChange(PreferenceChangeEvent evt) {
-                    showOnStartUpCheckBox.setSelected(prefs.getBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, showOnStartUpCheckBox.isSelected()));
-                }
-            });
+            final VBox leftVBox = new VBox();
+            splitPane.getItems().add(leftVBox);
+
+            splitPane.setBackground(new Background(new BackgroundFill(Color.valueOf("#333333"), CornerRadii.EMPTY, Insets.EMPTY)));
+            leftVBox.paddingProperty().set(new Insets(5, 5, 5, 5));
             
             final WebView whatsNewView = new WebView();
             VBox.setVgrow(whatsNewView, Priority.ALWAYS);
@@ -187,17 +139,37 @@ public class TutorialViewPane extends BorderPane {
                     }
                 }
             });
-            whatsNewView.getEngine().setUserStyleSheetLocation(TutorialTopComponent.class.getResource("resources/whatsnew.css").toExternalForm());
+            whatsNewView.getEngine().setUserStyleSheetLocation(WhatsNewTopComponent.class.getResource("resources/whatsnew.css").toExternalForm());
             whatsNewView.getStyleClass().add("web-view");
             try {
                 whatsNewView.getEngine().loadContent(getWhatsNew());
             } catch (ParseException ex) {
                 Exceptions.printStackTrace(ex);
             }
-            rightVBox.getChildren().add(whatsNewView);
+            leftVBox.getChildren().add(whatsNewView);
 
+            
+            //Create left VBox to handle "help" images of menu and mouse
+            final VBox rightVBox = new VBox(10);
+            splitPane.getItems().add(rightVBox);
+            rightVBox.setPadding(new Insets(10, 10, 10, 10));
+            rightVBox.setAlignment(Pos.TOP_CENTER);
+            rightVBox.setMaxWidth(600);
+            rightVBox.setMinWidth(400);
+
+            //Create images for Left VBox
+            final ImageView menuImage = new ImageView(new Image(WhatsNewTopComponent.class.getResourceAsStream(MENU_IMAGE)));
+            menuImage.setFitWidth(300);
+            menuImage.setPreserveRatio(true);
+            rightVBox.getChildren().add(menuImage);
+            final ImageView mouseImage = new ImageView(new Image(WhatsNewTopComponent.class.getResourceAsStream(MOUSE_IMAGE)));
+            mouseImage.setFitWidth(300);
+            mouseImage.setPreserveRatio(true);
+            rightVBox.getChildren().add(mouseImage);
+            
+            splitPane.getDividers().get(0).setPosition(SPLIT_POS);
             //Finally, insert the tutorialViewPane object into the BorderPane
-            this.setCenter(tutorialViewPane);
+            this.setCenter(whatsNewViewPane);
         });
     }
 
