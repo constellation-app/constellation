@@ -98,7 +98,7 @@ import org.openide.windows.TopComponent;
 })
 public final class TimelineTopComponent extends TopComponent implements LookupListener, GraphChangeListener, UndoRedo.Provider {
 
-    private static final double DEFAULT_DIVIDER_LOCATION = 0.6;
+    private static final double DEFAULT_DIVIDER_LOCATION = 0.8;
     private static final String LIGHT_THEME = "resources/Style-Container-Light.css";
     private static final String DARK_THEME = "resources/Style-Container-Dark.css";
     private static final String UPDATE_TIMELINE_THREAD_NAME = "Update Timeline from Graph";
