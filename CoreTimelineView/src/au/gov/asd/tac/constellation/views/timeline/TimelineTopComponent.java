@@ -98,7 +98,7 @@ import org.openide.windows.TopComponent;
 })
 public final class TimelineTopComponent extends TopComponent implements LookupListener, GraphChangeListener, UndoRedo.Provider {
 
-    private static final double DEFAULT_DIVIDER_LOCATION = 0.9;
+    private static final double DEFAULT_DIVIDER_LOCATION = 0.8;
     private static final String LIGHT_THEME = "resources/Style-Container-Light.css";
     private static final String DARK_THEME = "resources/Style-Container-Dark.css";
     private static final String UPDATE_TIMELINE_THREAD_NAME = "Update Timeline from Graph";
@@ -159,7 +159,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
             timelinePanel = new TimelinePanel(thisComponent);
             overviewPanel = new OverviewPanel(thisComponent);
 
-            SplitPane.setResizableWithParent(overviewPanel, false);
+            SplitPane.setResizableWithParent(overviewPanel, true);
             SplitPane.setResizableWithParent(timelinePanel, true);
             splitPane = new SplitPane();
             splitPane.setId("hiddenSplitter");
@@ -183,9 +183,6 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
 
             // Set the split pane as the javafx scene:
             container.setScene(scene);
-
-            // Now that the heights are known, set the position of the splitPane divider:
-            splitPane.getDividers().get(0).setPosition(splitPanePosition);
         });
     }
 
@@ -463,12 +460,13 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                         Platform.runLater(() -> {
                             final ReadableGraph rg1 = graph.getReadableGraph();
                             try {
+                                // Now that the heights are known, set the position of the splitPane divider:
+                                splitPane.setDividerPositions(splitPanePosition);
                                 // Clear anything already on the charts:
                                 timelinePanel.clearTimeline();
                                 overviewPanel.clearHistogram(!isFullRefresh);
                                 // Ensure that everything is visible:
                                 timelinePanel.setDisable(false);
-                                //splitPane.setVisible(true);
                                 //if visibility is set to false at the constructor, the javafx thread gets stuck in an endless loop under
                                 //certain conditions (with timeline open, create graph, close graph) so we set opacity to 0 in the constructor so that it is 'invisible'
 //                                    splitPane.setOpacity(1);
