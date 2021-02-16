@@ -98,7 +98,7 @@ import org.openide.windows.TopComponent;
 })
 public final class TimelineTopComponent extends TopComponent implements LookupListener, GraphChangeListener, UndoRedo.Provider {
 
-    private static final double DEFAULT_DIVIDER_LOCATION = 0.8;
+    private static final double DEFAULT_DIVIDER_LOCATION = 0.6;
     private static final String LIGHT_THEME = "resources/Style-Container-Light.css";
     private static final String DARK_THEME = "resources/Style-Container-Dark.css";
     private static final String UPDATE_TIMELINE_THREAD_NAME = "Update Timeline from Graph";
@@ -181,6 +181,9 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
             splitPane.prefHeightProperty().bind(scene.heightProperty());
             splitPane.prefWidthProperty().bind(scene.widthProperty());
 
+            // Now that the heights are known, set the position of the splitPane divider:
+            splitPane.setDividerPositions(splitPanePosition);
+            
             // Set the split pane as the javafx scene:
             container.setScene(scene);
         });
@@ -460,8 +463,6 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                         Platform.runLater(() -> {
                             final ReadableGraph rg1 = graph.getReadableGraph();
                             try {
-                                // Now that the heights are known, set the position of the splitPane divider:
-                                splitPane.setDividerPositions(splitPanePosition);
                                 // Clear anything already on the charts:
                                 timelinePanel.clearTimeline();
                                 overviewPanel.clearHistogram(!isFullRefresh);
