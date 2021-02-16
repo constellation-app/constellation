@@ -16,10 +16,13 @@
 package au.gov.asd.tac.constellation.views.welcome.plugins;
 
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
-import au.gov.asd.tac.constellation.graph.file.GraphFilePluginRegistry;
-import au.gov.asd.tac.constellation.plugins.PluginException;
-import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.graph.file.opener.GraphOpener;
+import au.gov.asd.tac.constellation.graph.locking.DualGraph;
+import au.gov.asd.tac.constellation.graph.schema.Schema;
+import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
+import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
 import javafx.geometry.Pos;
@@ -29,23 +32,22 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
 /**
- * The Open Graph plugin for the Welcome Page.
+ * The New Graph in Selection Mode plugin for the Welcome Page.
  *
- * @author canis_majoris
+ * @author Delphinus8821
  */
 
 @PluginInfo(tags = {"WELCOME"})
-@NbBundle.Messages("OpenGraphWelcomePlugin=Open Graph Welcome Plugin")
-public class OpenGraphWelcomePlugin implements WelcomePluginInterface{
+@NbBundle.Messages("SelectionModeWelcomePlugin=Selection Mode Welcome Plugin")
+public class SelectionModeWelcomePlugin implements WelcomePluginInterface {
     
-    public static final String OPEN = "resources/welcome_open_folder.png";
-    final ImageView openImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(OPEN)));
-    final Button openFile = new Button();
-    
+    public static final String NEW_GRAPH = "resources/welcome_add_selection.png";
+    final ImageView addView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(NEW_GRAPH)));
+    final Button newButton = new Button();
+        
     /**
      * Get a unique reference that is used to identify the plugin 
      *
@@ -53,7 +55,7 @@ public class OpenGraphWelcomePlugin implements WelcomePluginInterface{
      */
     @Override
     public String getName() {
-        return "Open Graph Welcome";
+        return "Selection Mode Graph Welcome";
     }
     
     /**
@@ -63,15 +65,13 @@ public class OpenGraphWelcomePlugin implements WelcomePluginInterface{
      */
     @Override
     public void run() {
-        final StoreGraph sg = new StoreGraph();
-        try {
-            PluginExecution.withPlugin(GraphFilePluginRegistry.OPEN_FILE).executeNow(sg);
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
-            Thread.currentThread().interrupt();
-        } catch (PluginException ex) {
-            Exceptions.printStackTrace(ex);
-        }
+        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
+        final StoreGraph sg = new StoreGraph(schema);
+        schema.newGraph(sg);
+        final Graph dualGraph = new DualGraph(sg, false);
+
+        final String graphName = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).getLabel().replace(" ", "").toLowerCase();
+        GraphOpener.getDefault().openGraph(dualGraph, graphName);
 
     }
 
@@ -85,7 +85,6 @@ public class OpenGraphWelcomePlugin implements WelcomePluginInterface{
         return true;
     }
     
-    
      /**
      * Creates the button object to represent this plugin
      * 
@@ -93,15 +92,15 @@ public class OpenGraphWelcomePlugin implements WelcomePluginInterface{
      */
     @Override
     public Button getButton(){
-        openImage.setFitHeight(75);
-        openImage.setFitWidth(75);
-        final Label title = new Label("Open");
+        addView.setFitHeight(75);
+        addView.setFitWidth(75);
+        final Label title = new Label("New Graph");
         title.setFont(new Font("Arial", 16));
-        final Label subtitle = new Label("File Explorer");
+        final Label subtitle = new Label("Selection mode");
         subtitle.setFont(new Font("Arial", 10));
-        final VBox layoutVBox = new VBox(openImage, title, subtitle);
+        final VBox layoutVBox = new VBox(addView, title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER);
-        openFile.setGraphic(layoutVBox);
-        return openFile;
+        newButton.setGraphic(layoutVBox);
+        return newButton;
     }
 }

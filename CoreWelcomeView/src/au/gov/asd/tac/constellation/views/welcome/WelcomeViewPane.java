@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,19 +17,20 @@ package au.gov.asd.tac.constellation.views.welcome;
 
 import au.gov.asd.tac.constellation.graph.file.open.RecentFilesWelcomePage;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.io.screenshot.RecentGraphScreenshotUtilities;
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import java.io.File;
 import java.util.List;
+import java.util.prefs.Preferences;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
+import javafx.geometry.Insets; 
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -48,6 +49,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import org.openide.util.Lookup;
+import org.openide.util.NbPreferences;
 
 /**
  * WelcomeViewPane contains the content for WelcomeTopComponent
@@ -61,13 +63,11 @@ public class WelcomeViewPane extends BorderPane {
     public static final String ERROR_BUTTON_MESSAGE = String.format("%s Information", BrandingUtilities.APPLICATION_NAME);
     public static final String WELCOME_TEXT = "Welcome to Constellation";
     public static final double SPLIT_POS = 0.2;
-    public static final int NUMBER_OF_TOP_PLUGINS = 4;
 
     //Place holder images
     public static final String LOGO = "resources/constellation-logo.png";
-
-    protected static final Button[] pluginButtons = new Button[10];
-    protected static final Button[] recentGraphButtons = new Button[10];
+    
+    private static final Button[] recentGraphButtons = new Button[10];
 
     public WelcomeViewPane() {
        welcomeViewPane = new BorderPane();
@@ -125,32 +125,54 @@ public class WelcomeViewPane extends BorderPane {
             bottomHBox.setPadding(new Insets(50, 0, 50, 0));
             bottomHBox.setSpacing(10);
 
-            getWelcomeContent();
-
-            for (int i = 0; i < 10; i++) {
-                if (pluginButtons[i] != null) {
-                    final Button currentButton = pluginButtons[i];
-                    currentButton.setOnAction(new EventHandler<ActionEvent>() {
-                        @Override
-                        public void handle(ActionEvent e) {
-                            Lookup.getDefault().lookupAll(WelcomePageProvider.class).forEach(plugin -> {
-                                if (currentButton == plugin.getButton()) {
-                                    plugin.run();
-                                }
-                            });
-                        }
-                    });
-                    if (i < NUMBER_OF_TOP_PLUGINS) {
-                        setButtonProps(currentButton);
-                        topHBox.getChildren().add(currentButton);
-                    } else {
-                        setInfoButtons(currentButton);
-                        leftVBox.getChildren().add(currentButton);
-                    }
-                }
+            final WelcomePageLayoutProvider layout = Lookup.getDefault().lookup(WelcomePageLayoutProvider.class);
+            
+            //creating the button events along the top of the page
+            final List<WelcomePluginInterface> topPlugins = layout.getTopPlugins();
+            for (final WelcomePluginInterface plugin : topPlugins){
+                final Button currentButton = plugin.getButton();
+                currentButton.setOnAction(e -> {
+                    plugin.run();
+                });
+                setButtonProps(currentButton);
+                topHBox.getChildren().add(currentButton);
             }
-            leftVBox.setAlignment(Pos.TOP_CENTER);
 
+            //creating the button events on the side of the page
+            final List<WelcomePluginInterface> sidePlugins = layout.getSidePlugins();
+            for (final WelcomePluginInterface plugin : sidePlugins) {
+                final Button currentButton = plugin.getButton();
+                currentButton.setOnAction(e -> {
+                    plugin.run();
+                });
+                setInfoButtons(currentButton);
+                leftVBox.getChildren().add(currentButton);
+            }
+                
+            leftVBox.setAlignment(Pos.TOP_CENTER);
+            
+            final HBox lowerLeftHBox = new HBox();
+            lowerLeftHBox.setPadding(new Insets(30, 10, 10, 20));
+            
+            // Create a checkbox to change users preference regarding showing the Tutorial Page on startup 
+            final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+            final CheckBox showOnStartUpCheckBox = new CheckBox("Show on Startup");
+            showOnStartUpCheckBox.setFont(new Font("Arial", 16));
+            lowerLeftHBox.getChildren().add(showOnStartUpCheckBox);
+           
+            showOnStartUpCheckBox.selectedProperty().addListener((ov, oldVal, newVal) -> {
+                prefs.putBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, newVal);
+            });        
+            showOnStartUpCheckBox.setSelected(prefs.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, ApplicationPreferenceKeys.WELCOME_ON_STARTUP_DEFAULT));
+            
+            // Create a preferenceListener in order to identify when user preference is changed
+            // Keeps tutorial page and options tutorial selections in-sync when both are open
+            prefs.addPreferenceChangeListener(evt -> {
+                showOnStartUpCheckBox.setSelected(prefs.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, showOnStartUpCheckBox.isSelected()));
+            });
+            
+            leftVBox.getChildren().add(lowerLeftHBox);
+            
             //formatting for bottom hbox
             final Label recent = new Label("Recent");
             recent.setFont(new Font("Arial Unicode MS", 24));
@@ -165,7 +187,7 @@ public class WelcomeViewPane extends BorderPane {
 
             //Create the buttons for the recent page
             final List<String> fileNames = RecentFilesWelcomePage.getFileNames();
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < recentGraphButtons.length; i++) {
                 recentGraphButtons[i] = new Button();
                 //if the user has recent files get the names
                 //and make them the text of the buttons
@@ -187,11 +209,8 @@ public class WelcomeViewPane extends BorderPane {
 
                 //Calls the method for the recent graphs to open
                 // on the button action
-                recentGraphButtons[i].setOnAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent e) {
-                        RecentFilesWelcomePage.openGraph(text);
-                    }
+                recentGraphButtons[i].setOnAction(e -> {
+                    RecentFilesWelcomePage.openGraph(text);
                 });
                 flow.getChildren().add(recentGraphButtons[i]);
             }
@@ -199,11 +218,12 @@ public class WelcomeViewPane extends BorderPane {
             splitPane.getDividers().get(0).setPosition(SPLIT_POS);
             VBox.setVgrow(rightVBox, Priority.ALWAYS);
             this.setCenter(welcomeViewPane);
+            scrollPane.setVvalue(-1);
         });
     }
 
     public void setButtonProps(final Button button) {
-        button.setPrefSize(125, 125);
+        button.setPrefSize(135, 135);
         button.setMaxSize(150, 150);
         button.setStyle("-fx-background-color: #2e4973;");
         button.setCursor(Cursor.HAND);
@@ -219,24 +239,10 @@ public class WelcomeViewPane extends BorderPane {
     }
 
     public void setInfoButtons(final Button button) {
-        button.setPrefSize(325, 45);
-        button.setMaxSize(350, 50);
+        button.setPrefSize(310, 45);
+        button.setMaxSize(310, 50);
         button.setStyle("-fx-background-color: transparent;");
         button.setCursor(Cursor.HAND);
         button.setAlignment(Pos.CENTER_LEFT);
     }
-
-    private void getWelcomeContent() {
-        Lookup.getDefault().lookupAll(WelcomePageProvider.class).forEach(plugin -> {
-            if (plugin.isVisible()) {
-                for (int i = 0; i < 10; i++) {
-                    if (pluginButtons[i] == null) {
-                        pluginButtons[i] = plugin.getButton();
-                        break;
-                    }
-                }
-            }
-        });
-    }
-    
 }
