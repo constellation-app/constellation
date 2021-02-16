@@ -145,6 +145,7 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
             final ObservableList<String> ignoredTags = ignoredTagsComboBox.getCheckModel().getCheckedItems();
             GraphReportManager.setIgnoredTags(ignoredTags);
         });
+        ignoredTagsComboBox.getCheckModel().clearChecks();
         // Group these together so the Toolbar treats them as a unit.
         final HBox ignoredBox = new HBox(ignoredLabel, ignoredTagsComboBox);
         ignoredBox.setAlignment(Pos.BASELINE_LEFT);
