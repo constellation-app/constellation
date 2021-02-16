@@ -152,14 +152,17 @@ public class BlazeContextMenu implements ContextMenuProvider {
         if (elementType == GraphElementType.VERTEX) {
             final List<String> colorList = new ArrayList<>();
             for (final ConstellationColor color : BlazeActions.getPresetCustomColors()) {
-                final Color javaColor = color.getJavaColor();
-                String colorName = "#" + String.format("%02x", javaColor.getRed())
-                        + String.format("%02x", javaColor.getGreen())
-                        + String.format("%02x", javaColor.getBlue());
-                if (color.getName() != null) {
-                    colorName = color.getName();
+                if (color != null) {
+                    final Color javaColor = color.getJavaColor();
+                    String colorName = "#" + String.format("%02x", javaColor.getRed())
+                            + String.format("%02x", javaColor.getGreen())
+                            + String.format("%02x", javaColor.getBlue());
+                    if (color.getName() != null) {
+                        colorName = color.getName();
+                    }
+                    colorList.add(colorName);
                 }
-                colorList.add(colorName);
+
             }
 
             colorList.add(ADD_CUSTOM_BLAZE);
@@ -183,19 +186,22 @@ public class BlazeContextMenu implements ContextMenuProvider {
         if (elementType == GraphElementType.VERTEX) {
             final List<ImageIcon> icons = new ArrayList<>();
             for (final ConstellationColor color : BlazeActions.getPresetCustomColors()) {
-                final Color javaColor = color.getJavaColor();
-                final BufferedImage customImage = BlazeActions.copyImageBuffer(
-                        (BufferedImage) ImageUtilities.loadImage(ADD_RECENT_BLAZE_ICON, false));
+                if (color != null) {
+                    final Color javaColor = color.getJavaColor();
+                    final BufferedImage customImage = BlazeActions.copyImageBuffer(
+                            (BufferedImage) ImageUtilities.loadImage(ADD_RECENT_BLAZE_ICON, false));
 
-                for (int x = 0; x < customImage.getWidth(); x++) {
-                    for (int y = 0; y < customImage.getHeight(); y++) {
-                        if (customImage.getRGB(x, y) == BLACK_COLOR) {
-                            customImage.setRGB(x, y, javaColor.getRGB());
+                    for (int x = 0; x < customImage.getWidth(); x++) {
+                        for (int y = 0; y < customImage.getHeight(); y++) {
+                            if (customImage.getRGB(x, y) == BLACK_COLOR) {
+                                customImage.setRGB(x, y, javaColor.getRGB());
+                            }
                         }
                     }
+                    final ImageIcon icon = new ImageIcon(customImage);
+                    icons.add(icon);
                 }
-                final ImageIcon icon = new ImageIcon(customImage);
-                icons.add(icon);
+
             }
             icons.add(ImageUtilities.loadImageIcon(ADD_CUSTOM_BLAZE_ICON, false));
             icons.add(ImageUtilities.loadImageIcon(REMOVE_BLAZE_ICON, false));
