@@ -100,7 +100,6 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
 
     @Override
     public void graphOpened(final Graph graph) {
-        newActiveGraph(graph);
     }
 
     @Override
