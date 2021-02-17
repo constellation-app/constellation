@@ -181,6 +181,9 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
             splitPane.prefHeightProperty().bind(scene.heightProperty());
             splitPane.prefWidthProperty().bind(scene.widthProperty());
 
+            // Now that the heights are known, set the position of the splitPane divider:
+            splitPane.setDividerPositions(splitPanePosition);
+            
             // Set the split pane as the javafx scene:
             container.setScene(scene);
         });
