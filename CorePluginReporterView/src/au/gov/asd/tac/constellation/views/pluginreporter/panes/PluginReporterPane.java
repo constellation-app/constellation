@@ -281,7 +281,7 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
                 ignoredTagsComboBox.getItems().add(tag);
             }
         });       
-        for (String checked: checkedIndices){
+        for (final String checked: checkedIndices){
             ignoredTagsComboBox.getCheckModel().check(checked);
         }
     }
