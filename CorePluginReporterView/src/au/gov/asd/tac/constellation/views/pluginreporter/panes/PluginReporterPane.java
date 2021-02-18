@@ -72,6 +72,8 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
     private final CheckComboBox<String> tagComboBox = new CheckComboBox<>(availableTags);
     private final Set<String> filteredTags = new HashSet<>();
     private PluginReportFilter pluginReportFilter = null;
+    
+    private ObservableList<String> checkedIndices;
 
     private final CheckComboBox<String> ignoredTagsComboBox = new CheckComboBox<>();
 
@@ -145,7 +147,8 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
             final ObservableList<String> ignoredTags = ignoredTagsComboBox.getCheckModel().getCheckedItems();
             GraphReportManager.setIgnoredTags(ignoredTags);
         });
-        ignoredTagsComboBox.getCheckModel().clearChecks();
+        
+        checkedIndices = ignoredTagsComboBox.getCheckModel().getCheckedItems();
         // Group these together so the Toolbar treats them as a unit.
         final HBox ignoredBox = new HBox(ignoredLabel, ignoredTagsComboBox);
         ignoredBox.setAlignment(Pos.BASELINE_LEFT);
@@ -245,6 +248,7 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
                 }
             }
 
+            checkedIndices = ignoredTagsComboBox.getCheckModel().getCheckedItems();
             updateTags();
         });
     }
@@ -276,7 +280,10 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
             if (!ignoredTagsComboBox.getItems().contains(tag)) {
                 ignoredTagsComboBox.getItems().add(tag);
             }
-        });
+        });       
+        for (String checked: checkedIndices){
+            ignoredTagsComboBox.getCheckModel().check(checked);
+        }
     }
 
     public synchronized void setGraphReport(GraphReport graphReport) {
