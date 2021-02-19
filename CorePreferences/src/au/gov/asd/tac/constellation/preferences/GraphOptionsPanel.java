@@ -74,7 +74,8 @@ final class GraphOptionsPanel extends javax.swing.JPanel {
         int panelCounter = 0;
         for (final JPanel panel : colorPanels) {
             if (panelCounter < colors.size()) {
-                panel.setBackground(colors.get(panelCounter++));
+                panel.setBackground(colors.get(panelCounter) == null ? DEFAULT_COLOR : colors.get(panelCounter));
+                panelCounter++;
             }
         }
     }
@@ -132,12 +133,16 @@ final class GraphOptionsPanel extends javax.swing.JPanel {
                 // build up a string based on entries of the colorpanels
                 final StringBuilder colorStringBuilder = new StringBuilder();
 
-                for (JPanel panel : colorPanels) {
+                for (final JPanel panel : colorPanels) {
                     final String panelColor = getHTMLColor(panel.getBackground());
                     if (!panelColor.equals(getHTMLColor(DEFAULT_COLOR))) {
                         colorStringBuilder.append(getHTMLColor(panel.getBackground()));
                         colorStringBuilder.append(";");
+                    } else {
+                        colorStringBuilder.append("null");
+                        colorStringBuilder.append(";");
                     }
+
                 }
                 newColorString = colorStringBuilder.toString();
             }
