@@ -31,6 +31,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.LayoutStyle;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.awt.Mnemonics;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
@@ -127,7 +128,7 @@ final class GraphOptionsPanel extends javax.swing.JPanel {
             colorPanels.get(panelID - 1).setBackground(newColor);
             final String colorString = prefs.get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
             final String newColorString;
-            if (colorString == null || colorString.isBlank()) {
+            if (colorString == null || StringUtils.isBlank(colorString)) {
                 newColorString = getHTMLColor(newColor) + ";";
             } else {
                 // build up a string based on entries of the colorpanels

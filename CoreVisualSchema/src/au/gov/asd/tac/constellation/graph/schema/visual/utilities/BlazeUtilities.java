@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType;
 import au.gov.asd.tac.constellation.preferences.GraphPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -137,7 +138,7 @@ public class BlazeUtilities {
      */
     public static void savePreset(final Color newColor) {
         final String colorString = prefs.get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
-        final List<String> colorsList = Arrays.asList(colorString.split(";"));
+        final List<String> colorsList = Arrays.asList(colorString.split(SeparatorConstants.SEMICOLON));
         final int freePosition = colorsList.indexOf("null") == -1 ? MAXIMUM_CUSTOM_BLAZE_COLORS - 1 : colorsList.indexOf("null");
         savePreset(newColor, freePosition);
     }
@@ -146,6 +147,7 @@ public class BlazeUtilities {
      * Saves a blaze color as a preset
      *
      * @param newColor the new selected color to add as a preset
+     * @param position
      */
     public static void savePreset(final Color newColor, final int position) {
         if (position >= 10 || position < 0) {
@@ -155,7 +157,7 @@ public class BlazeUtilities {
         final String colorString = prefs.get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
         final List<String> colorsList = new ArrayList<>();
 
-        colorsList.addAll(Arrays.asList(colorString.split(";")));
+        colorsList.addAll(Arrays.asList(colorString.split(SeparatorConstants.SEMICOLON)));
         for (int i = colorsList.size(); i < 10; i++) {
             colorsList.add(null);
         }
@@ -164,7 +166,7 @@ public class BlazeUtilities {
         final StringBuilder preferencesBuilder = new StringBuilder();
         for (int i = 0; i < 10; i++) {
             preferencesBuilder.append(colorsList.get(i));
-            preferencesBuilder.append(";");
+            preferencesBuilder.append(SeparatorConstants.SEMICOLON);
         }
         prefs.put(GraphPreferenceKeys.BLAZE_PRESET_COLORS, preferencesBuilder.toString());
     }

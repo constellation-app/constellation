@@ -242,168 +242,12 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
         verticalPanel.setLayout(gridLayout);
         verticalPanel.setBorder(BorderFactory.createTitledBorder("Preset Colors"));
 
+        int panelId = 1;
         for (final JPanel colorPanel : colorPanels) {
             colorPanel.setBackground(DEFAULT_COLOR);
             verticalPanel.add(colorPanel);
+            prepareColorPanel(colorPanel, panelId++);
         }
-
-        colorPanel1.setMaximumSize(new Dimension(5, 5));
-        colorPanel1.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent evt) {
-                colorPanel1MouseClicked(evt);
-            }
-        });
-
-        GroupLayout colorPanel1Layout = new GroupLayout(colorPanel1);
-        colorPanel1.setLayout(colorPanel1Layout);
-        colorPanel1Layout.setHorizontalGroup(colorPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGap(0, 25, Short.MAX_VALUE)
-        );
-        colorPanel1Layout.setVerticalGroup(colorPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGap(0, 25, Short.MAX_VALUE)
-        );
-
-        colorPanel2.setMaximumSize(new Dimension(5, 5));
-        colorPanel2.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent evt) {
-                colorPanel2MouseClicked(evt);
-            }
-        });
-
-        GroupLayout colorPanel2Layout = new GroupLayout(colorPanel2);
-        colorPanel2.setLayout(colorPanel2Layout);
-        colorPanel2Layout.setHorizontalGroup(colorPanel2Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGap(0, 23, Short.MAX_VALUE)
-        );
-        colorPanel2Layout.setVerticalGroup(colorPanel2Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        colorPanel3.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent evt) {
-                colorPanel3MouseClicked(evt);
-            }
-        });
-
-        GroupLayout colorPanel3Layout = new GroupLayout(colorPanel3);
-        colorPanel3.setLayout(colorPanel3Layout);
-        colorPanel3Layout.setHorizontalGroup(colorPanel3Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGap(0, 25, Short.MAX_VALUE)
-        );
-        colorPanel3Layout.setVerticalGroup(colorPanel3Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        colorPanel4.setMaximumSize(new Dimension(5, 5));
-        colorPanel4.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent evt) {
-                colorPanel4MouseClicked(evt);
-            }
-        });
-
-        GroupLayout colorPanel4Layout = new GroupLayout(colorPanel4);
-        colorPanel4.setLayout(colorPanel4Layout);
-        colorPanel4Layout.setHorizontalGroup(colorPanel4Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGap(0, 25, Short.MAX_VALUE)
-        );
-        colorPanel4Layout.setVerticalGroup(colorPanel4Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGap(0, 25, Short.MAX_VALUE)
-        );
-
-        colorPanel5.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent evt) {
-                colorPanel5MouseClicked(evt);
-            }
-        });
-
-        GroupLayout colorPanel5Layout = new GroupLayout(colorPanel5);
-        colorPanel5.setLayout(colorPanel5Layout);
-        colorPanel5Layout.setHorizontalGroup(colorPanel5Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGap(0, 25, Short.MAX_VALUE)
-        );
-        colorPanel5Layout.setVerticalGroup(colorPanel5Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        colorPanel6.setMaximumSize(new Dimension(5, 5));
-        colorPanel6.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent evt) {
-                colorPanel6MouseClicked(evt);
-            }
-        });
-
-        GroupLayout colorPanel6Layout = new GroupLayout(colorPanel6);
-        colorPanel6.setLayout(colorPanel6Layout);
-        colorPanel6Layout.setHorizontalGroup(colorPanel6Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGap(0, 25, Short.MAX_VALUE)
-        );
-        colorPanel6Layout.setVerticalGroup(colorPanel6Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        colorPanel7.setMaximumSize(new Dimension(5, 5));
-        colorPanel7.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent evt) {
-                colorPanel7MouseClicked(evt);
-            }
-        });
-
-        GroupLayout colorPanel7Layout = new GroupLayout(colorPanel7);
-        colorPanel7.setLayout(colorPanel7Layout);
-        colorPanel7Layout.setHorizontalGroup(colorPanel7Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGap(0, 25, Short.MAX_VALUE)
-        );
-        colorPanel7Layout.setVerticalGroup(colorPanel7Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        colorPanel8.setMaximumSize(new Dimension(5, 5));
-        colorPanel8.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent evt) {
-                colorPanel8MouseClicked(evt);
-            }
-        });
-
-        GroupLayout colorPanel8Layout = new GroupLayout(colorPanel8);
-        colorPanel8.setLayout(colorPanel8Layout);
-        colorPanel8Layout.setHorizontalGroup(colorPanel8Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGap(0, 25, Short.MAX_VALUE)
-        );
-        colorPanel8Layout.setVerticalGroup(colorPanel8Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        colorPanel9.setMaximumSize(new Dimension(5, 5));
-        colorPanel9.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent evt) {
-                colorPanel9MouseClicked(evt);
-            }
-        });
-
-        GroupLayout colorPanel9Layout = new GroupLayout(colorPanel9);
-        colorPanel9.setLayout(colorPanel9Layout);
-        colorPanel9Layout.setHorizontalGroup(colorPanel9Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGap(0, 25, Short.MAX_VALUE)
-        );
-        colorPanel9Layout.setVerticalGroup(colorPanel9Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        colorPanel10.setMaximumSize(new Dimension(5, 5));
-        colorPanel10.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent evt) {
-                colorPanel10MouseClicked(evt);
-            }
-        });
-
-        GroupLayout colorPanel10Layout = new GroupLayout(colorPanel10);
-        colorPanel10.setLayout(colorPanel10Layout);
-        colorPanel10Layout.setHorizontalGroup(colorPanel10Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGap(0, 25, Short.MAX_VALUE)
-        );
-        colorPanel10Layout.setVerticalGroup(colorPanel10Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGap(0, 0, Short.MAX_VALUE)
-        );
 
         final JMenuItem selectBlazesItem = new JMenuItem("Select Blazes");
         selectBlazesItem.setIcon(ImageUtilities.loadImageIcon(SELECT_BLAZES_ICON, false));
@@ -541,46 +385,6 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
         return new ImageIcon(customImage);
     }
 
-    private void colorPanel1MouseClicked(MouseEvent evt) {
-        loadColorPicker(1);
-    }
-
-    private void colorPanel2MouseClicked(MouseEvent evt) {
-        loadColorPicker(2);
-    }
-
-    private void colorPanel3MouseClicked(MouseEvent evt) {
-        loadColorPicker(3);
-    }
-
-    private void colorPanel4MouseClicked(MouseEvent evt) {
-        loadColorPicker(4);
-    }
-
-    private void colorPanel5MouseClicked(MouseEvent evt) {
-        loadColorPicker(5);
-    }
-
-    private void colorPanel6MouseClicked(MouseEvent evt) {
-        loadColorPicker(6);
-    }
-
-    private void colorPanel7MouseClicked(MouseEvent evt) {
-        loadColorPicker(7);
-    }
-
-    private void colorPanel8MouseClicked(MouseEvent evt) {
-        loadColorPicker(8);
-    }
-
-    private void colorPanel9MouseClicked(MouseEvent evt) {
-        loadColorPicker(9);
-    }
-
-    private void colorPanel10MouseClicked(MouseEvent evt) {
-        loadColorPicker(10);
-    }
-
     private void updateSliders(final Graph graph) {
         final ReadableGraph rg = graph.getReadableGraph();
         try {
@@ -642,7 +446,7 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
                 // ADD_PRESET_BLAZE_ACTION has the string representation of the color
                 if (command.startsWith(ADD_PRESET_BLAZE_ACTION)) {
                     final String colorValStr = command.replaceFirst(ADD_PRESET_BLAZE_ACTION, "");
-                    ConstellationColor color = ConstellationColor.fromHtmlColor(colorValStr) == null
+                    final ConstellationColor color = ConstellationColor.fromHtmlColor(colorValStr) == null
                             ? ConstellationColor.getColorValue(colorValStr)
                             : ConstellationColor.fromHtmlColor(colorValStr);
                     plugin = PluginRegistry.get(VisualGraphPluginRegistry.ADD_CUSTOM_BLAZE);
@@ -682,6 +486,25 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
                 menu.setEnabled(true);
             }
         }
+    }
+
+    private void prepareColorPanel(final JPanel colorPanel, final int panelID) {
+        colorPanel.setMaximumSize(new Dimension(5, 5));
+        colorPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent evt) {
+                loadColorPicker(panelID);
+            }
+        });
+
+        final GroupLayout colorPanelLayout = new GroupLayout(colorPanel);
+        colorPanel.setLayout(colorPanelLayout);
+        colorPanelLayout.setHorizontalGroup(colorPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                .addGap(0, 25, Short.MAX_VALUE)
+        );
+        colorPanelLayout.setVerticalGroup(colorPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                .addGap(0, 25, Short.MAX_VALUE)
+        );
     }
 
     private class SliderMenuItem extends JSlider implements MenuElement {
