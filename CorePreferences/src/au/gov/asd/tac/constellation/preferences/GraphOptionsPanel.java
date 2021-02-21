@@ -128,7 +128,7 @@ final class GraphOptionsPanel extends javax.swing.JPanel {
             colorPanels.get(panelID - 1).setBackground(newColor);
             final String colorString = prefs.get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
             final String newColorString;
-            if (colorString == null || StringUtils.isBlank(colorString)) {
+            if (StringUtils.isBlank(colorString)) {
                 newColorString = getHTMLColor(newColor) + ";";
             } else {
                 // build up a string based on entries of the colorpanels
