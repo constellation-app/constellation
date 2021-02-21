@@ -492,7 +492,7 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
         colorPanel.setMaximumSize(new Dimension(5, 5));
         colorPanel.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent evt) {
+            public void mouseClicked(final MouseEvent evt) {
                 loadColorPicker(panelID);
             }
         });
