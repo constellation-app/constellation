@@ -100,15 +100,20 @@ public final class GraphJsonReader {
     public Graph readGraphZip(final File graphFile, final IoProgress progress) throws IOException, GraphParseException {
         try (final InputStream in = new BufferedInputStream(new FileInputStream(graphFile))) {
             return readGraphZip(graphFile.getPath(), in, progress);
+            
         }
     }
 
     public Graph readGraphZip(final String name, InputStream bin, final IoProgress progress) throws IOException, GraphParseException {
         try (bin) {
             progress.start(100);
-            progress.progress("Reading file: " + name);
-            
             byteReader = new GraphByteReader(bin);
+        } 
+        catch (IOException ex) {
+            // An exception occured attempting to read a zip (star) file, mark progress as complete to allow status 
+            // to be updated with either loading of backup file if it exists
+            progress.finish();
+            throw ex;
         }
 
         try {

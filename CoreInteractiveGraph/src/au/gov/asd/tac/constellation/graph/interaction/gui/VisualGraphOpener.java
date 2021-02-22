@@ -178,10 +178,38 @@ public final class VisualGraphOpener extends GraphOpener {
                     final long t0 = System.currentTimeMillis();
                     graph = new GraphJsonReader().readGraphZip(graphFile, new HandleIoProgress(String.format("Reading %s...", graphFile.getName())));
                     time = System.currentTimeMillis() - t0;
-                } catch (GraphParseException | IOException | RuntimeException ex) {
+                } catch (GraphParseException | IOException | RuntimeException ex) {  
                     gex = ex;
                 }
 
+                try {
+                    if (gex != null) {
+                        // An exception was thrown trying to read specified star file. The most likely reason for this is
+                        // a corrupt star file. Check to see if there was a 'backup' star file generated before the star file
+                        // was writtien - this is done in 
+                        
+                        // TODO check if a bakup file exists, if it does attempt to load it
+                        // TODO Need to look for file with cexpected name, for now <name>.star_bak, if it exists, try to restore it.
+                        
+                        String backupFilename = graphFile.toString().concat("_bak");
+                        File backupFile = new File(backupFilename);
+                        
+                        if (backupFile.exists()) {
+                            
+                            // Try to load backup file that was located, if it loads then clear previous exception, if not the 
+                            // original exception is kept to be handled in the done method
+                            final long t0 = System.currentTimeMillis();
+                            graph = new GraphJsonReader().readGraphZip(backupFile, new HandleIoProgress(String.format("%s could not be opened, attempting to open backup file", 
+                                    graphFile.getName(), backupFile.getName())));
+                            time = System.currentTimeMillis() - t0;
+                            gex = null;
+                        }
+                    }
+                }
+                catch (GraphParseException | IOException | RuntimeException ex) {  
+                    gex = ex;
+                }
+ 
                 PluginExecution.withPlugin(new SimplePlugin("Open Graph File") {
                     @Override
                     protected void execute(PluginGraphs graphs, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
