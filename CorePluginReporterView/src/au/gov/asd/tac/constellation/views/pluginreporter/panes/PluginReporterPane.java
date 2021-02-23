@@ -71,6 +71,8 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
     private final CheckComboBox<String> tagComboBox = new CheckComboBox<>(availableTags);
     private final Set<String> filteredTags = new HashSet<>();
     private PluginReportFilter pluginReportFilter = null;
+    
+    private ObservableList<String> checkedIndices;
 
     // The height of the report box last time we looked
     // This allows us to see if a change in the vertical scroll
@@ -131,6 +133,7 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
                 }
             }
         });
+
         controlToolbar.getItems().addAll(
                 filterBox,
                 clearButton, showAllButton, helpButton);
@@ -225,6 +228,7 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
                 }
             }
 
+            checkedIndices = ignoredTagsComboBox.getCheckModel().getCheckedItems();
             updateTags();
         });
     }
