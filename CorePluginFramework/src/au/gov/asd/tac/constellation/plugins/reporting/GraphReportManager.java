@@ -21,14 +21,12 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManagerListener;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.prefs.Preferences;
 import org.openide.util.NbPreferences;
 
@@ -47,15 +45,15 @@ public class GraphReportManager {
     /**
      * Tags that will be ignored (not recorded) by GraphReport instances.
      */
-    private static final Set<String> IGNORED_TAGS;
+    private static final Set<String> TAGS;
 
     static {
         // Determine the ignored tags *before* we set up the graph reports.
         final Preferences prefs = NbPreferences.forModule(GraphReportManager.class);
         final String filteredTagString = prefs.get(IGNORED_TAGS_KEY, "LOW LEVEL").trim();
-        IGNORED_TAGS = new HashSet<>();
+        TAGS = new HashSet<>();
         if (!filteredTagString.isEmpty()) {
-            IGNORED_TAGS.addAll(Arrays.asList(filteredTagString.split(SeparatorConstants.TAB, 0)));
+            TAGS.addAll(Arrays.asList(filteredTagString.split(SeparatorConstants.TAB, 0)));
         }
 
         GraphManager.getDefault().addGraphManagerListener(new GraphManagerListener() {
@@ -97,77 +95,5 @@ public class GraphReportManager {
 
     public static GraphReport getGraphReport(String graphId) {
         return GRAPH_REPORTS.get(graphId);
-    }
-
-    /**
-     * Set the tags that will be ignored (not recorded) by GraphReport. A
-     * {@link PluginReport} will be ignored if all of its tags are present in
-     * the this collection of ignored tags. If any of a {@link PluginReport}s
-     * tags are not in this list, it will not be ignored. When a
-     * {@link PluginReport} is ignored, it is completely discarded as if it
-     * never occurred.
-     * <p>
-     * The tags will be remembered in user preferences so they persist between
-     * sessions.
-     *
-     * @param tags Tags to be ignored.
-     * @see GraphReportManager#getIgnoredTags()
-     */
-    public static synchronized void setIgnoredTags(final Collection<String> tags) {
-        IGNORED_TAGS.clear();
-        IGNORED_TAGS.addAll(tags);
-
-        // Save the new tags.
-        final StringBuilder b = new StringBuilder();
-        IGNORED_TAGS.stream().forEach(tag -> {
-            if (b.length() > 0) {
-                b.append(SeparatorConstants.TAB);
-            }
-            b.append(tag);
-        });
-
-        final Preferences prefs = NbPreferences.forModule(GraphReportManager.class);
-        prefs.put(IGNORED_TAGS_KEY, b.toString());
-
-    }
-
-    /**
-     * Get the tags that are being ignored (not recorded) by GraphReport. A
-     * {@link PluginReport} will be ignored if all of its tags are present in
-     * the this collection of ignored tags. If any of a {@link PluginReport}s
-     * tags are not in this list, it will not be ignored. When a
-     * {@link PluginReport} is ignored, it is completely discarded as if it
-     * never occurred. This is different
-     * <p>
-     * The tags will be remembered in user preferences so they persist between
-     * sessions.
-     *
-     * @return The tags that are being ignored (not recorded) by GraphReport.
-     * @see GraphReportManager#setIgnoredTags(java.util.Collection)
-     */
-    public static synchronized Set<String> getIgnoredTags() {
-        final TreeSet<String> tags = new TreeSet<>();
-        tags.addAll(IGNORED_TAGS);
-
-        return tags;
-    }
-
-    /**
-     * Returns true if a plugin with the specified tags should be ignored,
-     * meaning that it will not be recorded and will never be visible in the UI.
-     * This is different to simply being hidden
-     *
-     * @param tags An array of tags, typically from Plugin.getTags().
-     *
-     * @return True if all tags are to be ignored.
-     */
-    public static synchronized boolean isIgnored(final String[] tags) {
-        for (final String tag : tags) {
-            if (!IGNORED_TAGS.contains(tag)) {
-                return false;
-            }
-        }
-
-        return true;
     }
 }
