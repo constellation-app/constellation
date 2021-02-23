@@ -227,8 +227,6 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
                     reportBox.getChildren().remove(size - MAXIMUM_REPORT_PANES);
                 }
             }
-
-            checkedIndices = ignoredTagsComboBox.getCheckModel().getCheckedItems();
             updateTags();
         });
     }
