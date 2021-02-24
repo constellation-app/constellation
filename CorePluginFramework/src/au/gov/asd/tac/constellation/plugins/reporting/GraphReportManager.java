@@ -18,15 +18,11 @@ package au.gov.asd.tac.constellation.plugins.reporting;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.manager.GraphManagerListener;
-import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.prefs.Preferences;
 import org.openide.util.NbPreferences;
 
@@ -42,20 +38,11 @@ public class GraphReportManager {
 
     private static final Map<String, GraphReport> GRAPH_REPORTS = Collections.synchronizedMap(new HashMap<>());
 
-    /**
-     * Tags that will be ignored (not recorded) by GraphReport instances.
-     */
-    private static final Set<String> TAGS;
 
     static {
         // Determine the ignored tags *before* we set up the graph reports.
         final Preferences prefs = NbPreferences.forModule(GraphReportManager.class);
         final String filteredTagString = prefs.get(IGNORED_TAGS_KEY, "LOW LEVEL").trim();
-        TAGS = new HashSet<>();
-        if (!filteredTagString.isEmpty()) {
-            TAGS.addAll(Arrays.asList(filteredTagString.split(SeparatorConstants.TAB, 0)));
-        }
-
         GraphManager.getDefault().addGraphManagerListener(new GraphManagerListener() {
 
             @Override
