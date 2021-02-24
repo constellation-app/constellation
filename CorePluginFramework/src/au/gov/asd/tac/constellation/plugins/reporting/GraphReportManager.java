@@ -23,8 +23,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.prefs.Preferences;
-import org.openide.util.NbPreferences;
 
 /**
  *
@@ -32,17 +30,12 @@ import org.openide.util.NbPreferences;
  */
 public class GraphReportManager {
 
-    private static final String IGNORED_TAGS_KEY = "reportManagerIgnoredTags";
-
     private static final List<GraphReportListener> LISTENERS = new ArrayList<>();
 
     private static final Map<String, GraphReport> GRAPH_REPORTS = Collections.synchronizedMap(new HashMap<>());
 
 
     static {
-        // Determine the ignored tags *before* we set up the graph reports.
-        final Preferences prefs = NbPreferences.forModule(GraphReportManager.class);
-        final String filteredTagString = prefs.get(IGNORED_TAGS_KEY, "LOW LEVEL").trim();
         GraphManager.getDefault().addGraphManagerListener(new GraphManagerListener() {
 
             @Override
