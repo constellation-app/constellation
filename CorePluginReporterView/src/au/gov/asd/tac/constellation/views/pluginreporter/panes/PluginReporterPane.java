@@ -244,11 +244,11 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
                     availableTags.add(tag);
                 }   
                 if (!filteredTags.contains(tag)) {
+                    tagIndex = availableTags.indexOf(tag);
                     selectedIndices[selectedIndexCount++] = tagIndex; //AIOOBE = DED.
                 }
                 tagIndex++;
             }
-
             tagComboBox.getCheckModel().checkIndices(Arrays.copyOfRange(selectedIndices, 0, selectedIndexCount));
         }
         tagComboBox.getCheckModel().getCheckedItems().addListener(this);
