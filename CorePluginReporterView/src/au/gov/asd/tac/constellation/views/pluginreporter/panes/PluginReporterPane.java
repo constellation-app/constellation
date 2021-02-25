@@ -157,7 +157,6 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
                 reportBoxScroll.setVvalue(reportBoxScroll.getVmax());
             }
         });
-
         setCenter(reportBoxScroll);
     }
 
@@ -199,7 +198,6 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
      */
     private void updateReports(boolean refresh) {
         Platform.runLater(() -> {
-
             if (refresh) {
                 nextReport = nextReport > MAXIMUM_REPORT_PANES ? nextReport - MAXIMUM_REPORT_PANES : 0;
 
@@ -247,7 +245,6 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
                     tagIndex = availableTags.indexOf(tag);
                     selectedIndices[selectedIndexCount++] = tagIndex; //AIOOBE = DED.
                 }
-                tagIndex++;
             }
             tagComboBox.getCheckModel().checkIndices(Arrays.copyOfRange(selectedIndices, 0, selectedIndexCount));
         }
