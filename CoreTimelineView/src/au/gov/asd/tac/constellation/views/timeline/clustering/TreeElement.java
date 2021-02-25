@@ -31,9 +31,9 @@ public abstract class TreeElement {
 
     public abstract long getUpperTimeExtent();
 
-    public abstract long getLowerDisplayPos();
+    public abstract int getLowerDisplayPos();
 
-    public abstract long getUpperDisplayPos();
+    public abstract int getUpperDisplayPos();
 
     public abstract int getCount();
 
