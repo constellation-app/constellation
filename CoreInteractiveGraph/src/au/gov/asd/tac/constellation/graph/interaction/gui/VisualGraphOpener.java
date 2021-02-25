@@ -42,6 +42,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingWorker;
+import org.apache.commons.io.FileUtils;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.NotificationDisplayer;
@@ -71,6 +72,7 @@ import org.openide.windows.TopComponent;
 public final class VisualGraphOpener extends GraphOpener {
 
     private static final Logger LOGGER = Logger.getLogger(VisualGraphOpener.class.getName());
+    private static final String BACKUP_EXTENSION = ".bak";
 
     /**
      * Open a graph file into a VisualTopComponent.
@@ -111,7 +113,7 @@ public final class VisualGraphOpener extends GraphOpener {
                     final NotifyDescriptor nd = new NotifyDescriptor(msg, "Open autosaved file?", NotifyDescriptor.YES_NO_OPTION, NotifyDescriptor.QUESTION_MESSAGE, null, null);
                     if (DialogDisplayer.getDefault().notify(nd) == NotifyDescriptor.YES_OPTION) {
                         // The user wants the more recent autosaved version.
-                        // Rename the actual file (to .bak), copy the autosaved version to the actual name, and delete the bak file.
+                        // Backup the current actual file and replace it with the autosave file.
                         final File autosaved = new File(AutosaveUtilities.getAutosaveDir(), props.getProperty(AutosaveUtilities.ID) + GraphDataObject.FILE_EXTENSION);
                         try {
                             AutosaveUtilities.copyFile(autosaved, f);
@@ -176,6 +178,7 @@ public final class VisualGraphOpener extends GraphOpener {
             if (graph == null) {
                 try {
                     final long t0 = System.currentTimeMillis();
+                    LOGGER.log(Level.INFO, String.format("MMDEBUG Attempting to open %s", graphFile.toString()));
                     graph = new GraphJsonReader().readGraphZip(graphFile, new HandleIoProgress(String.format("Reading %s...", graphFile.getName())));
                     time = System.currentTimeMillis() - t0;
                 } catch (GraphParseException | IOException | RuntimeException ex) {  
@@ -186,12 +189,8 @@ public final class VisualGraphOpener extends GraphOpener {
                     if (gex != null) {
                         // An exception was thrown trying to read specified star file. The most likely reason for this is
                         // a corrupt star file. Check to see if there was a 'backup' star file generated before the star file
-                        // was writtien - this is done in 
-                        
-                        // TODO check if a bakup file exists, if it does attempt to load it
-                        // TODO Need to look for file with cexpected name, for now <name>.star_bak, if it exists, try to restore it.
-                        
-                        String backupFilename = graphFile.toString().concat("_bak");
+                        // was writtien - if so, attmept to load this.
+                        String backupFilename = graphFile.toString().concat(BACKUP_EXTENSION);
                         File backupFile = new File(backupFilename);
                         
                         if (backupFile.exists()) {
@@ -199,14 +198,22 @@ public final class VisualGraphOpener extends GraphOpener {
                             // Try to load backup file that was located, if it loads then clear previous exception, if not the 
                             // original exception is kept to be handled in the done method
                             final long t0 = System.currentTimeMillis();
+                            LOGGER.log(Level.WARNING, String.format("MMDEBUG Unable to open requested file, attempting to open backup %s", backupFile.toString()));
                             graph = new GraphJsonReader().readGraphZip(backupFile, new HandleIoProgress(String.format("%s could not be opened, attempting to open backup file", 
                                     graphFile.getName(), backupFile.getName())));
                             time = System.currentTimeMillis() - t0;
                             gex = null;
+                            
+                            // Backup file successfully loaded, copy it over top of corrupt actual file - theres no reason to keep the corrupted file.
+                            // Don't do a move, rather perform the move in two stages, a copy, then a delete to ensure there
+                            // is always going to be a valid file somewhere as only the copy or the delete can fail in a given run.
+                            FileUtils.copyFile(new File(backupFile.toString()), new File(graphFile.toString()));
+                            FileUtils.deleteQuietly(backupFile);
                         }
                     }
                 }
                 catch (GraphParseException | IOException | RuntimeException ex) {  
+                    LOGGER.log(Level.WARNING, String.format("MMDEBUG Unable to open requested file or any associated backup", graphFile.toString()));
                     gex = ex;
                 }
  

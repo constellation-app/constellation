@@ -1061,6 +1061,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
      */
     private class BackgroundWriter extends SwingWorker<Void, Object> {
 
+        private static final String BACKUP_EXTENSION = ".bak";
         private final String name;
         private final GraphDataObject freshGdo;
         private final boolean deleteOldGdo;
@@ -1112,10 +1113,10 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 File srcFile = new File(fileobj.getPath());
                 String srcfilePath = srcFile.getParent().concat("\\").concat(this.name).concat(".").concat(fileobj.getExt());
                 
-                // TODO: at the moment to prove concept just appending _bak to source file name, but should these be saved
-                // elsewhere, ie .CONSTELLATION/backups or something (note if it was done that way would need logic to handle
-                // duplicate filenames etc) ?
-                FileUtils.copyFile(new File(srcfilePath), new File(srcfilePath.concat("_bak")));
+                // Create a backup copy of the file before overwriting it. If the backup copy fails, then code will never
+                // get to execute the save, so the actual file should remain intact. If the save fails, the backup file will
+                // already have been written.
+                FileUtils.copyFile(new File(srcfilePath), new File(srcfilePath.concat(BACKUP_EXTENSION)));
                 
                 try (OutputStream out = new BufferedOutputStream(freshGdo.getPrimaryFile().getOutputStream())) {
                     // Write the graph.
