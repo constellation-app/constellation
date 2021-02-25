@@ -26,17 +26,12 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
-import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
-import java.util.ArrayList;
-import java.util.List;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.IndexRange;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.ColumnConstraints;
@@ -44,6 +39,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.text.TextFlow;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -81,8 +77,8 @@ public class TranslationConversationContributionProvider extends ConversationCon
         private final int transactionId;
         private String text;
 
-        private SelectableLabel translationLabel;
-        private final TextArea editTranslationArea = new TextArea();
+        private final TextFlow translationTextFlow = new TextFlow();
+        private final TextArea editTranslationTextArea = new TextArea();
         private final Button editButton = new Button("Edit");
         private final Button createTranslationButton = new Button("Create Translation");
         private final Button saveButton = new Button("Save");
@@ -93,43 +89,54 @@ public class TranslationConversationContributionProvider extends ConversationCon
             this.graphId = graphId;
             this.transactionId = message.getTransaction();
             this.text = text;
-            editTranslationArea.setStyle("-fx-text-fill: #000000");
-            editTranslationArea.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
+            editTranslationTextArea.setStyle("-fx-text-fill: #000000");
+            editTranslationTextArea.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
                 if (e.getCode() == KeyCode.DELETE) {
-                    IndexRange selection = editTranslationArea.getSelection();
+                    IndexRange selection = editTranslationTextArea.getSelection();
                     if (selection.getLength() == 0) {
-                        editTranslationArea.deleteNextChar();
+                        editTranslationTextArea.deleteNextChar();
                     } else {
-                        editTranslationArea.deleteText(selection);
+                        editTranslationTextArea.deleteText(selection);
                     }
                     e.consume();
                 } else if (e.isShortcutDown() && e.isShiftDown() && (e.getCode() == KeyCode.RIGHT)) {
-                    editTranslationArea.selectNextWord();
+                    editTranslationTextArea.selectNextWord();
                     e.consume();
                 } else if (e.isShortcutDown() && e.isShiftDown() && (e.getCode() == KeyCode.LEFT)) {
-                    editTranslationArea.selectPreviousWord();
+                    editTranslationTextArea.selectPreviousWord();
                     e.consume();
                 } else if (e.isShortcutDown() && (e.getCode() == KeyCode.RIGHT)) {
-                    editTranslationArea.nextWord();
+                    editTranslationTextArea.nextWord();
                     e.consume();
                 } else if (e.isShortcutDown() && (e.getCode() == KeyCode.LEFT)) {
-                    editTranslationArea.previousWord();
+                    editTranslationTextArea.previousWord();
                     e.consume();
                 } else if (e.isShiftDown() && (e.getCode() == KeyCode.RIGHT)) {
-                    editTranslationArea.selectForward();
+                    editTranslationTextArea.selectForward();
                     e.consume();
                 } else if (e.isShiftDown() && (e.getCode() == KeyCode.LEFT)) {
-                    editTranslationArea.selectBackward();
+                    editTranslationTextArea.selectBackward();
                     e.consume();
                 } else if (e.isShortcutDown() && (e.getCode() == KeyCode.A)) {
-                    editTranslationArea.selectAll();
+                    /**
+                     * If Ctrl + A is pressed, Constellation does a 'Select All'
+                     * on the graph and takes you out of editing the translation.
+                     * This consumes that event first and then manually does a 'Select All'
+                     * on the translation Text Area.
+                     */
                     e.consume();
+                    editTranslationTextArea.selectAll();
                 } else if (e.getCode() == KeyCode.ESCAPE) {
                     e.consume();
                 }
             });
         }
 
+        @Override
+        protected String getText() {
+            return text;
+        }
+        
         @Override
         protected Region createContent(final TooltipPane tips) {
 
@@ -161,21 +168,20 @@ public class TranslationConversationContributionProvider extends ConversationCon
             saveButton.setOnAction((ActionEvent event) -> {
                 Graph graph = GraphNode.getGraph(graphId);
                 if (graph != null) {
-                    text = editTranslationArea.getText();
+                    text = editTranslationTextArea.getText();
                     if (text.isEmpty()) {
                         text = null;
                     }
                     final Plugin plugin = new SetTranslationPlugin(transactionId, text);
                     PluginExecution.withPlugin(plugin).executeLater(graph);
 
-                    content.getChildren().removeAll(editTranslationArea, saveButton, cancelButton);
+                    content.getChildren().removeAll(editTranslationTextArea, saveButton, cancelButton);
 
                     if (text == null) {
                         content.getChildren().addAll(createTranslationButton);
                     } else {
-                        translationLabel.setSelectableText(text);
-                        content.getChildren().addAll(translationLabel, editButton);
-                        searchMessagesByText(text);
+                        translationTextFlow.getChildren().clear();
+                        content.getChildren().addAll(SearchText.createRegionWithSearchHits(translationTextFlow, text), editButton);
                     }
                 }
             });
@@ -185,45 +191,37 @@ public class TranslationConversationContributionProvider extends ConversationCon
             cancelButton.setMinWidth(Region.USE_PREF_SIZE);
             GridPane.setFillWidth(cancelButton, true);
             cancelButton.setOnAction((ActionEvent event) -> {
-                content.getChildren().removeAll(editTranslationArea, saveButton, cancelButton);
-                if (text == null) {
-                    content.getChildren().addAll(createTranslationButton);
-                } else {
-                    translationLabel.setSelectableText(text);
-                    content.getChildren().addAll(translationLabel, editButton);
-                    searchMessagesByText(text);
-                }
+                content.getChildren().removeAll(editTranslationTextArea, saveButton, cancelButton);
+                translationTextFlow.getChildren().clear();
+                content.getChildren().addAll(SearchText.createRegionWithSearchHits(translationTextFlow, text), editButton);
             });
 
-            GridPane.setConstraints(editTranslationArea, 0, 0, 1, 3);
-            editTranslationArea.setWrapText(true);
-
-            translationLabel = new SelectableLabel("", true, "-fx-font-style: italic;", tips, null);
-            GridPane.setConstraints(translationLabel, 0, 0, 1, 3);
+            GridPane.setConstraints(translationTextFlow, 0, 0, 1, 3);
+            GridPane.setConstraints(editTranslationTextArea, 0, 0, 1, 3);
+            editTranslationTextArea.setWrapText(true);            
 
             GridPane.setConstraints(editButton, 1, 0);
             editButton.setMinWidth(Region.USE_PREF_SIZE);
             editButton.setOnAction((ActionEvent event) -> {
-                editTranslationArea.setText(text == null ? "" : text);
-                content.getChildren().removeAll(editButton, translationLabel);
-                editTranslationArea.setText(text);
-                content.getChildren().addAll(editTranslationArea, saveButton, cancelButton);
-                editTranslationArea.selectAll();
-                editTranslationArea.requestFocus();
+                editTranslationTextArea.setText(text == null ? "" : text);
+                content.getChildren().removeAll(editButton, translationTextFlow);
+                editTranslationTextArea.setText(text);
+                content.getChildren().addAll(editTranslationTextArea, saveButton, cancelButton);
+                editTranslationTextArea.selectAll();
+                editTranslationTextArea.requestFocus();
             });
 
             GridPane.setConstraints(createTranslationButton, 1, 0);
             createTranslationButton.setOnAction((ActionEvent event) -> {
-                editTranslationArea.setText("");
+                editTranslationTextArea.setText("");
                 content.getChildren().remove(createTranslationButton);
-                content.getChildren().addAll(editTranslationArea, saveButton, cancelButton);
-                editTranslationArea.requestFocus();
+                content.getChildren().addAll(editTranslationTextArea, saveButton, cancelButton);
+                editTranslationTextArea.requestFocus();
             });
 
             if (text != null) {
-                translationLabel.setSelectableText(text);
-                content.getChildren().addAll(translationLabel, editButton);
-                searchMessagesByText(text);
+                translationTextFlow.getChildren().clear();
+                content.getChildren().addAll(SearchText.createRegionWithSearchHits(translationTextFlow, text), editButton);
             } else {
                 content.getChildren().add(createTranslationButton);
             }
@@ -234,22 +232,6 @@ public class TranslationConversationContributionProvider extends ConversationCon
         @Override
         public String toString() {
             return "Translation Contribution";
-        }
-
-        public void searchMessagesByText(final String text) {
-            TextField searchText = ConversationBox.searchBubbleTextField;
-            if (!searchText.getText().isEmpty()) {
-                Integer hitCount = 0;
-                List<Tuple<Integer, Integer>> transResults = new ArrayList<>();
-                transResults = StringUtilities.searchRange(text, searchText.getText());
-                for (Tuple<Integer, Integer> transResult : transResults) {
-                    hitCount++;
-                    if (hitCount == 1) {
-                        translationLabel.setStyle("-fx-highlight-fill: lightgray; -fx-highlight-text-fill: firebrick;");
-//                        translationLabel.selectRange(transResult.getFirst(), transResult.getSecond());
-                    }
-                }
-            }
         }
     }
 

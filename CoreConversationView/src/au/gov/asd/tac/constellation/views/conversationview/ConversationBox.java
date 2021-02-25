@@ -35,8 +35,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TreeSet;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -52,6 +50,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -89,11 +88,11 @@ import org.openide.util.Lookup;
  *
  * @author sirius
  * @author antares
+ * @author sol695510
  */
 public final class ConversationBox extends StackPane {
 
     public static final double PADDING = 5;
-    private static final double CLEARANCE = 200;
 
     private final Conversation conversation;
 
@@ -105,7 +104,7 @@ public final class ConversationBox extends StackPane {
     protected Font font = Font.getDefault();
     protected ToolBar optionsPane = new ToolBar();
 
-    // A cache to hold bubble for the listview
+    // A cache to hold bubble for the listview.
     private final Map<ConversationMessage, BubbleBox> bubbleCache = new HashMap<>();
 
     // Allow the user to choose the displayed actor name.
@@ -120,11 +119,14 @@ public final class ConversationBox extends StackPane {
     private volatile boolean isAdjustingContributionProviders = false;
     private volatile boolean isAdjustingSenderLabels;
 
-    // A string for search within the bubble
-    public static TextField searchBubbleTextField;
-
+    // A field to enter a string to for search within the bubble.
+    protected static final TextField searchBubbleTextField = new TextField();
+    private final Label searchBubbleLabel = new Label();
+    private final VBox searchBubbleVBox = new VBox();
+    private int searchHits = 0;
+    
     /**
-     * Create a ConversationBox with the given Conversation,
+     * Create a ConversationBox with the given Conversation.
      *
      * @param conversation The Conversation that this ConversationBox will
      * display.
@@ -192,7 +194,7 @@ public final class ConversationBox extends StackPane {
         togglesPane.setAlignment(Pos.CENTER);
         contributionsPane.setCenter(togglesPane);
 
-        // Create toggle buttons that allow the user to turn on and off the content contributors
+        // Create toggle buttons that allow the user to turn on and off the content contributors.
         conversation.setContributorListener((Map<String, Boolean> contributors) -> {
             isAdjustingContributionProviders = true;
             try {
@@ -223,48 +225,56 @@ public final class ConversationBox extends StackPane {
             }
         });
 
-        // Create the bubbles pane
+        // Create the bubbles pane.
         bubbles = new ListView<>();
         bubbles.setStyle(JavafxStyleManager.CSS_BACKGROUND_COLOR_TRANSPARENT);
         bubbles.setCellFactory(callback -> new BubbleCell());
         VBox.setVgrow(bubbles, Priority.ALWAYS);
-        
-//        bubbles.scrollTo(ConversationMessage object);
-//        bubbles.scrollTo(int index);
 
-        // Hook up the bubbles pane to the conversation
+        // Hook up the bubbles pane to the conversation.
         final ObservableList<ConversationMessage> messages = FXCollections.observableArrayList();
         bubbles.setItems(messages);
         conversation.setResultList(messages);
 
-        //Create a text field for search within bubbles
-        searchBubbleTextField = new TextField();
-        searchBubbleTextField.setPromptText("Type to search for a text");
+        // Create a text field for search within bubbles.
+        searchBubbleTextField.setPromptText("Type to search for a text...");
         searchBubbleTextField.setVisible(true);
         searchBubbleTextField.setStyle("-fx-prompt-text-fill: #868686;");
-//        searchBubbleTextField.setStyle(JavafxStyleManager.CSS_BACKGROUND_COLOR_TRANSPARENT);
+        searchBubbleLabel.setText("Found: " + searchHits);
+        searchBubbleLabel.setStyle("-fx-text-fill: red; -fx-effect: dropshadow(gaussian, black, 5.0, 0.0, 0.0, 0.0);");
+        searchBubbleLabel.setPadding(new Insets(4,8,4,8));
+        searchBubbleVBox.getChildren().addAll(searchBubbleTextField, searchBubbleLabel);
 
-        ConversationSearchRefresh conversationSearchRefresh = new ConversationSearchRefresh(conversation);
-        //Use a dummy provider name to get the toggle pane state remain the same during the search
+        final ConversationSearchRefresh conversationSearchRefresh = new ConversationSearchRefresh(conversation);
+
+        // Use a dummy provider name to get the toggle pane state remain the same during the search.
         searchBubbleTextField.addEventHandler(KeyEvent.KEY_TYPED, e -> {
-//        searchBubbleTextField.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
             conversationSearchRefresh.updateContributionProviderRefresh("Refresh");
         });
-//       This code below enables the graph in sync with the search results
+        
+        searchBubbleTextField.setOnKeyTyped(e -> {
+            searchHits = 0;
+            searchHits = SearchText.getSearchHits(conversation.getVisibleMessages());
+            searchBubbleLabel.setText("Found: " + searchHits);
+            if (searchHits > 0) {
+                searchBubbleLabel.setStyle("-fx-text-fill: yellow; -fx-effect: dropshadow(gaussian, black, 5.0, 0.0, 0.0, 0.0);");
+            } else {
+                searchBubbleLabel.setStyle("-fx-text-fill: red; -fx-effect: dropshadow(gaussian, black, 5.0, 0.0, 0.0, 0.0);");
+            }
+        });
+
+        // This code below enables the graph in sync with the search results.
         searchBubbleTextField.textProperty().addListener((ov, oldValue, newValue) -> {
             final Graph graph = conversation.getGraphUpdateManager().getActiveGraph();
             ReadableGraph readableGraph = graph.getReadableGraph();
             try {
-                List<ConversationContributionProvider> compatibleContributionProviders;
-                Set<ConversationContributionProvider> contributingContributionProviders = new TreeSet();
-                List<ConversationMessage> contributingMessages = new ArrayList<>();
+                final List<ConversationContributionProvider> compatibleContributionProviders;
                 compatibleContributionProviders = ConversationContributionProvider.getCompatibleProviders(readableGraph);
                 for (final ConversationMessage message1 : messages) {
                     message1.getAllContributions().clear();
                     for (final ConversationContributionProvider contributionProvider : compatibleContributionProviders) {
                         final ConversationContribution contribution = contributionProvider.createContribution(readableGraph, message1);
                         if (contribution != null) {
-                            contributingContributionProviders.add(contributionProvider);
                             message1.getAllContributions().add(contribution);
                         }
                     }
@@ -274,13 +284,13 @@ public final class ConversationBox extends StackPane {
             }
         });
 
-        content.getChildren().addAll(optionsPane, searchBubbleTextField, contributionsPane, bubbles);
-//        content.getChildren().addAll(optionsPane, contributionsPane, bubbles);
+        
+        content.getChildren().addAll(optionsPane, searchBubbleVBox, contributionsPane, bubbles);
         getChildren().addAll(content, tipsPane);
     }
 
-    // A VBox to hold a bubble and a sender
-    private class BubbleBox extends GridPane {
+    // A VBox to hold a bubble and a sender.
+    protected class BubbleBox extends GridPane {
 
         private ConversationSender currentSender = null;
         private List<ConversationContribution> currentContributions = null;
@@ -321,16 +331,16 @@ public final class ConversationBox extends StackPane {
             update(message);
         }
 
-        public final void update(final ConversationMessage message) {
+        public final void update(final ConversationMessage message) { 
             final List<ConversationContribution> newContributions = message.getVisibleContributions();
             if (!newContributions.equals(currentContributions)) {
                 currentContributions = new ArrayList<>(newContributions);
-
+                
                 final List<Region> rendered = new ArrayList<>();
                 for (final ConversationContribution contribution : newContributions) {
                     rendered.add(contribution.getContent(tipsPane));
                 }
-
+                
                 final ConversationBubble bubble = new ConversationBubble(rendered, message, tipsPane);
                 if (currentBubble != null) {
                     getChildren().remove(currentBubble);
@@ -352,7 +362,7 @@ public final class ConversationBox extends StackPane {
         }
     }
 
-    // A ListView cell that holds a BubbleBox as its graphic
+    // A ListView cell that holds a BubbleBox as its graphic.
     private class BubbleCell extends ListCell<ConversationMessage> {
 
         public BubbleCell() {
@@ -382,19 +392,19 @@ public final class ConversationBox extends StackPane {
         protected void updateItem(final ConversationMessage message, final boolean empty) {
             super.updateItem(message, empty);
 
-            // Handle the case where the cell is empty
+            // Handle the case where the cell is empty.
             if (empty || message == null) {
                 setStyle(JavafxStyleManager.CSS_BACKGROUND_COLOR_TRANSPARENT);
                 setGraphic(null);
             } else {
-                // Look for the bubble in the cache
+                // Look for the bubble in the cache.
                 BubbleBox bubbleBox = bubbleCache.get(message);
                 if (bubbleBox != null) {
                     // If the bubble is in the cache then update it for
-                    // and changes that may have occurred in the message
+                    // and changes that may have occurred in the message.
                     bubbleBox.update(message);
                 } else {
-                    // Else make a new bubble for the message
+                    // Else make a new bubble for the message.
                     bubbleBox = new BubbleBox(message);
                     bubbleCache.put(message, bubbleBox);
                 }

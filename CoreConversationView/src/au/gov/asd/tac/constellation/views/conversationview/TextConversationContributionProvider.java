@@ -26,20 +26,15 @@ import au.gov.asd.tac.constellation.graph.visual.plugins.select.SelectionMode;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ElementTypeParameterValue;
 import au.gov.asd.tac.constellation.utilities.clipboard.ConstellationClipboardOwner;
-import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
-import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.List;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -57,7 +52,6 @@ public class TextConversationContributionProvider extends ConversationContributi
     
     private static final String DISPLAY_NAME = "Text";
     private int contentAttribute = Graph.NOT_FOUND;
-    public static boolean textFound;
     private final Insets DEFAULT_INSETS = new Insets (5, 5, 5, 5);
     
     public TextConversationContributionProvider() {
@@ -90,6 +84,11 @@ public class TextConversationContributionProvider extends ConversationContributi
         }
         
         @Override
+        protected String getText() {
+            return text;
+        }
+        
+        @Override
         protected Region createContent(final TooltipPane tips) {
             
             final TextFlow textFlow = new TextFlow();
@@ -98,9 +97,9 @@ public class TextConversationContributionProvider extends ConversationContributi
             // Implementation for the 'Copy' context menu option.
             final MenuItem copyTextMenuItem = new MenuItem("Copy");
             copyTextMenuItem.setOnAction(event -> {
-                StringBuilder sb = new StringBuilder();
+                final StringBuilder sb = new StringBuilder();
                 
-                for (Node node : textFlow.getChildren()) {
+                for (final Node node : textFlow.getChildren()) {
                     if (node instanceof Text) {
                         sb.append(((Text) node).getText());
                     }
@@ -132,60 +131,8 @@ public class TextConversationContributionProvider extends ConversationContributi
                 contextMenu.show(textFlow, event.getScreenX(), event.getScreenY());
             });
             
-            final TextField searchText = ConversationBox.searchBubbleTextField;
-            textFound = false;
-            
-            // If the search bar is not empty and has text in it.
-            if (!searchText.getText().isEmpty()) {
-                List<Tuple<Integer, Integer>> textResults = StringUtilities.searchRange(text, searchText.getText());
-                
-                // If the text in the search bar appears in the given conversation text.
-                if (!textResults.isEmpty()) {
-                    textFound = true;
-                    int textStart = 0;
-                    int counter = 0;
-                    final List<Text> textList = new ArrayList();
-                    
-                    for (Tuple<Integer, Integer> textResult : textResults) {
-                        final Text beforeSearched = new Text(text.substring(textStart, textResult.getFirst()));
-                        final Text textSearched = new Text(text.substring(textResult.getFirst(), textResult.getSecond()));
-                        
-                        // Yellow fill and shadow effect added to search result to provide better contrast.
-                        textSearched.setStyle("-fx-fill: yellow; -fx-effect: dropshadow(gaussian, black, 5.0, 0.0, 0.0, 0.0)");
-                        
-                        // If 'textStart' is not equal to the inclusive start index of the new search result,
-                        // add any text that is present before the search result to 'textList'.
-                        // 
-                        // When 'textStart' is equal to the inclusive start index of the new search result,
-                        // the search result could be "o" which would appear one after another in the word "look",
-                        // thus any text before the search would be not be added to 'textList',
-                        // since there is not any other text other than the next search result.
-                        if (textStart != textResult.getFirst()) {
-                            textList.add(beforeSearched);
-                        }
-                        
-                        // Add 'textSearched', the styled search result, to textList.
-                        textList.add(textSearched);
-                        
-                        // Set the next 'textStart' to the exclusive end index of 'textResult',
-                        // so the next iteration will begin at the index after the previous search result.
-                        textStart = textResult.getSecond();
-                        counter++;
-                        
-                        // At the last search result instance, add any remaining text after the search result to 'textList'.
-                        if (counter == textResults.size()) {
-                            final Text afterSearched = new Text(text.substring(textStart,text.length()));
-                            textList.add(afterSearched);
-                        }
-                    }
-                    
-                    textFlow.getChildren().addAll(textList);
-                    return textFlow;
-                }
-            }
-            
-            textFlow.getChildren().add(new Text(text));
-            return textFlow;
+            // Return the created region with or without any search results if given any.
+            return SearchText.createRegionWithSearchHits(textFlow, text);
         }
         
         @Override

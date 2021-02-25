@@ -110,7 +110,7 @@ public class Conversation {
     private Set<ConversationContributionProvider> contributingContributionProviders = new TreeSet<>();
     private List<String> possibleSenderAttributes = new ArrayList<>();
 
-    // thread names
+    // Thread names.
     private static final String CONVERSATION_VIEW_UPDATE_COLOUR_THREAD_NAME = "Conversation View: Update Colour Stage";
     private static final String CONVERSATION_VIEW_UPDATE_CONTRIBUTIONS_THREAD_NAME = "Conversation View: Update Contributions";
     private static final String CONVERSATION_VIEW_UPDATE_DATETIME_THREAD_NAME = "Conversation View: Update Datetime";
@@ -401,7 +401,7 @@ public class Conversation {
                                     }
                                 }
 
-                                // we only want to add messages that contain any content in them
+                                // We only want to add messages that contain any content in them.
                                 if (message.getDatetime() != null && thereIsTextContribution) {
                                     temporalMessages.add(message);
                                 }
@@ -594,7 +594,7 @@ public class Conversation {
 
     /**
      * Set the resulting list of messages (post filtering and formatting) that
-     * will be observed by the GUI
+     * will be observed by the GUI.
      *
      * @param resultMessageList An ObservableList of messages.
      */
@@ -621,5 +621,14 @@ public class Conversation {
 
         updateController.registerChange(contributorUpdater);
         updateController.update();
+    }
+    
+    /**
+     * Get a list of all messages that will be rendered.
+     * 
+     * @return A list of all messages that will be rendered.
+     */
+    protected final List<ConversationMessage> getVisibleMessages() {
+        return visibleMessages;
     }
 }

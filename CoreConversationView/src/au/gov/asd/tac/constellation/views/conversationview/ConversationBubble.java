@@ -80,7 +80,7 @@ public class ConversationBubble extends VBox {
         bubbleContent.setMaxWidth(USE_PREF_SIZE);
         bubbleContent.setMinWidth(200);
 
-        // The bubble graphic
+        // The bubble graphic.
         bubbleGraphic = new Rectangle(0, 0);
         bubbleGraphic.setArcHeight(CORNER_RADIUS);
         bubbleGraphic.setArcWidth(CORNER_RADIUS);
@@ -175,6 +175,6 @@ public class ConversationBubble extends VBox {
 
         tail.setFill(bottomColor);
         tail.setStroke(color);
-        tailTop.setStroke(bottomColor); // Erase the border of the buble where the tail joins
+        tailTop.setStroke(bottomColor); // Erase the border of the buble where the tail joins.
     }
 }
