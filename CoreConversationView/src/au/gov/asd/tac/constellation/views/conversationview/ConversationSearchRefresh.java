@@ -61,32 +61,26 @@ public final class ConversationSearchRefresh {
                     if (originalState == null) {
                         newState.setSenderAttributesToKeys(graph);
                     }
-                    if (contributionProviderName == null) {
-                        
-                    } else if (newState.getHiddenContributionProviders().add(contributionProviderName)) {
-                            graph.setObjectValue(stateAttribute, 0, newState);
-                        }
+                    if (contributionProviderName != null && newState.getHiddenContributionProviders().add(contributionProviderName)) {
+                        graph.setObjectValue(stateAttribute, 0, newState);
                     }
+                }
             }).executeWriteLater(graph);
 
             final Future<?> turningOn = PluginExecutor.startWith(new SimpleEditPlugin("Conversation View: Update Hidden Contribution Providers ON") {
                 @Override
                 protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                    Thread.sleep(10);
                     final int stateAttribute = ConversationViewConcept.MetaAttribute.CONVERSATION_VIEW_STATE.ensure(graph);
                     final ConversationState originalState = (ConversationState) graph.getObjectValue(stateAttribute, 0);
                     final ConversationState newState = new ConversationState(originalState);
                     if (originalState == null) {
                         newState.setSenderAttributesToKeys(graph);
                     }
-                    if (contributionProviderName == null) {
-
-                    } else if (newState.getHiddenContributionProviders().remove(contributionProviderName)) {
+                    if (contributionProviderName != null && newState.getHiddenContributionProviders().remove(contributionProviderName)) {
                         graph.setObjectValue(stateAttribute, 0, newState);
                     }
                 }
             }).executeWriteLater(graph, turningOff);
         }
     }
-
 }

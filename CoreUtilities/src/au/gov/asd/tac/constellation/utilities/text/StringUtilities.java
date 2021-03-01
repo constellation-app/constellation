@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.utilities.text;
 
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.StringJoiner;
@@ -383,14 +384,14 @@ public class StringUtilities {
 
     /**
      * Returns list of tuples of all found hits of a search string (Start
-     * position and End position) within the supplied text.
+     * position and End position) within the supplied text. 
      */
     public static List<Tuple<Integer, Integer>> searchRange(final String text, final String searchStr) {
         final List<Tuple<Integer, Integer>> expected = new ArrayList<>();
-        if ((text != null) & (searchStr != null)) {
+        if ((text != null) && (searchStr != null)) {
             String lwrText = text.toLowerCase();
-            String lwrSearch = searchStr.toLowerCase();
-            int txtLen = lwrText.length();
+            final String lwrSearch = searchStr.toLowerCase();
+            final int txtLen = lwrText.length();
             int currLen = txtLen;
             int currTxtStart = 0;
             int origTxtStart = 0;
@@ -401,7 +402,7 @@ public class StringUtilities {
                     origTxtStart = origTxtStart + hitEnd;
                     hitStart = lwrText.indexOf(lwrSearch);
                     hitEnd = hitStart + lwrSearch.length();
-                    Tuple<Integer, Integer> tuple = Tuple.create(origTxtStart + hitStart, origTxtStart + hitEnd);
+                    final Tuple<Integer, Integer> tuple = Tuple.create(origTxtStart + hitStart, origTxtStart + hitEnd);
                     expected.add(tuple);
                     currTxtStart = hitEnd;
                     lwrText = lwrText.substring(currTxtStart, currLen);
@@ -412,6 +413,6 @@ public class StringUtilities {
             }
             return expected;
         }
-        return new ArrayList<>();
+        return Collections.EMPTY_LIST;
     }
 }

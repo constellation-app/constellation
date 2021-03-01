@@ -266,24 +266,20 @@ public final class ConversationBox extends StackPane {
         // This code below enables the graph in sync with the search results.
         searchBubbleTextField.textProperty().addListener((ov, oldValue, newValue) -> {
             final Graph graph = conversation.getGraphUpdateManager().getActiveGraph();
-            ReadableGraph readableGraph = graph.getReadableGraph();
-            try {
-                final List<ConversationContributionProvider> compatibleContributionProviders;
-                compatibleContributionProviders = ConversationContributionProvider.getCompatibleProviders(readableGraph);
-                for (final ConversationMessage message1 : messages) {
-                    message1.getAllContributions().clear();
+            final ReadableGraph readableGraph = graph.getReadableGraph();
+            try (readableGraph) {
+                final List<ConversationContributionProvider> compatibleContributionProviders = ConversationContributionProvider.getCompatibleProviders(readableGraph);
+                for (final ConversationMessage message : messages) {
+                    message.getAllContributions().clear();
                     for (final ConversationContributionProvider contributionProvider : compatibleContributionProviders) {
-                        final ConversationContribution contribution = contributionProvider.createContribution(readableGraph, message1);
+                        final ConversationContribution contribution = contributionProvider.createContribution(readableGraph, message);
                         if (contribution != null) {
-                            message1.getAllContributions().add(contribution);
+                            message.getAllContributions().add(contribution);
                         }
                     }
                 }
-            } finally {
-                readableGraph.release();
             }
         });
-
         
         content.getChildren().addAll(optionsPane, searchBubbleVBox, contributionsPane, bubbles);
         getChildren().addAll(content, tipsPane);

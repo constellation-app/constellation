@@ -64,8 +64,8 @@ public class SearchText {
         
         // If the search bar is not empty and has text in it.
         if (!searchText.getText().isEmpty()) {
-            List<Tuple<Integer, Integer>> textResults = StringUtilities.searchRange(text, searchText.getText());
-
+            final List<Tuple<Integer, Integer>> textResults = StringUtilities.searchRange(text, searchText.getText());
+            
             // If the text in the search bar appears in the given conversation text.
             if (!textResults.isEmpty()) {
                 int textStart = 0;
