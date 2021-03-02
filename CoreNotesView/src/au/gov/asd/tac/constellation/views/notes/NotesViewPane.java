@@ -382,20 +382,18 @@ public class NotesViewPane extends BorderPane {
     /**
      * Clears UI elements in the Notes View and clears the list of NoteEntry
      * objects.
-     *
-     * @param clearOnlyUI True if only the UI elements are intended to be
-     * cleared.
      */
-    protected void clearNotes(final boolean clearOnlyUI) {
+    protected void clearNotes() {
         Platform.runLater(() -> {
             notesListVBox.getChildren().removeAll(notesListVBox.getChildren());
-            if (!clearOnlyUI) { // TODO: why wouldn't we just clear the entries every time regardless of whether its a gui change or not?
-                synchronized (LOCK) {
-                    notesViewEntries.clear();
-                    notesViewEntryDateTimes.clear();
-                }
-            }
         });
+        
+//        if (!clearOnlyUI) { // TODO: why wouldn't we just clear the entries every time regardless of whether its a gui change or not?
+            synchronized (LOCK) {
+                notesViewEntries.clear();
+                notesViewEntryDateTimes.clear();
+            }
+//        }
     }
 
     private static final Logger LOG = Logger.getLogger(NotesViewPane.class.getName());

@@ -79,7 +79,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
 
         if (needsUpdate() && graph != null) {
             notesViewPane.selectAllFilters();
-            notesViewPane.clearNotes(false);
+            notesViewPane.clearNotes();
             notesViewPane.prepareNotesViewPane(notesViewController, graph);
         }
     }
@@ -89,8 +89,8 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
 
         if (needsUpdate() && graph != null) {
             notesViewPane.closeEdit();
-            notesViewPane.clearNotes(false);
-            notesViewPane.prepareNotesViewPane(notesViewController, graph);
+            notesViewPane.clearNotes();
+//            notesViewPane.prepareNotesViewPane(notesViewController, graph);
         }
     }
 
@@ -105,7 +105,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
 
         notesViewPane.closeEdit();
         notesViewPane.selectAllFilters();
-        notesViewPane.clearNotes(true);
+        notesViewPane.clearNotes();
     }
 
     @Override
