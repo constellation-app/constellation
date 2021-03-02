@@ -89,6 +89,8 @@ public class NotesViewPane extends BorderPane {
 
     private static final String AUTO_NOTES_FILTER = "Auto Notes";
     private static final String USER_NOTES_FILTER = "User Notes";
+    
+    private static final String NOTES_VIEW_ICON = "resources/notes-view.png";
 
     private Object LOCK = new Object();
 
@@ -117,10 +119,9 @@ public class NotesViewPane extends BorderPane {
                     setFilters(filterCheckComboBox.getCheckModel().getCheckedItems());
 
                     final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-
                     if (activeGraph != null) {
                         updateNotesUI();
-                        controller.writeState();
+                        controller.writeState(activeGraph);
                     }
                 }
             }
@@ -155,7 +156,6 @@ public class NotesViewPane extends BorderPane {
         final Button addNoteButton = new Button("Add Note");
         addNoteButton.setOnAction(event -> {
             final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-
             if (activeGraph != null) {
                 if ((titleField.getText().isBlank() && titleField.getText().isEmpty())
                         || (contentField.getText().isBlank() && contentField.getText().isEmpty())) {
@@ -173,7 +173,7 @@ public class NotesViewPane extends BorderPane {
                     titleField.clear();
                     contentField.clear();
                     updateNotesUI();
-                    controller.writeState();
+                    controller.writeState(activeGraph);
                     event.consume();
                 }
             }
@@ -201,20 +201,11 @@ public class NotesViewPane extends BorderPane {
     }
 
     /**
-     * Prepares the pane used by the Notes View.
-     *
-     * @param controller
-     * @param pane
-     */
-    protected void prepareNotesViewPane(final NotesViewController controller, final Graph graph) {
-        controller.readState(graph);
-    }
-
-    /**
      * Set the plugin reports that have executed on the current graph report.
      */
     protected void setGraphReport(final NotesViewController controller) {
-        final GraphReport currentGraphReport = GraphReportManager.getGraphReport(GraphManager.getDefault().getActiveGraph().getId());
+        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+        final GraphReport currentGraphReport = GraphReportManager.getGraphReport(activeGraph.getId());
 
         if (currentGraphReport != null) {
             // Iterates the list of currently executed plugins.
@@ -223,9 +214,11 @@ public class NotesViewPane extends BorderPane {
             });
 
             // Update the Notes View UI.
-            updateNotesUI();
-            updateFilters();
-            controller.writeState();
+            if (activeGraph != null) {
+                updateNotesUI();
+                updateFilters();
+                controller.writeState(activeGraph);
+            }
         }
     }
 
@@ -451,8 +444,12 @@ public class NotesViewPane extends BorderPane {
             synchronized (LOCK) {
                 if (notesViewEntries.removeIf(note -> note.getDateTime().equals(newNote.getDateTime()))) {
                     notesDateTimeCache.remove(newNote.getDateTime());
-                    updateNotesUI();
-                    notesViewController.writeState();
+
+                    final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+                    if (activeGraph != null) {
+                        updateNotesUI();
+                        notesViewController.writeState(activeGraph);
+                    }
                 }
             }
 
@@ -470,7 +467,7 @@ public class NotesViewPane extends BorderPane {
     private void openEdit(final String title, final String content, final NotesViewEntry noteToEdit) {
         Platform.runLater(() -> {
             editStage = new Stage();
-            editStage.getIcons().add(new Image("au/gov/asd/tac/constellation/views/notes/resources/notes-view.png"));
+            editStage.getIcons().add(new Image(NotesViewPane.class.getResourceAsStream(NOTES_VIEW_ICON)));
             editStage.setTitle("Edit Note");
 
             final TextField newTitle = new TextField(title);
@@ -501,8 +498,13 @@ public class NotesViewPane extends BorderPane {
                 } else {
                     noteToEdit.setNoteTitle(newTitle.getText());
                     noteToEdit.setNoteContent(newContent.getText());
-                    updateNotesUI();
-                    notesViewController.writeState();
+
+                    final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+                    if (activeGraph != null) {
+                        updateNotesUI();
+                        notesViewController.writeState(activeGraph);
+                    }
+
                     closeEdit();
                 }
 

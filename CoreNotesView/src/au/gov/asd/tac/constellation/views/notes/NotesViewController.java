@@ -45,8 +45,6 @@ public class NotesViewController {
     private static final String NOTES_READ_STATE = "Notes View: Read State";
     private static final String NOTES_WRITE_STATE = "Notes View: Write State";
 
-    private static List<Future<?>> futures = new ArrayList();
-
     public NotesViewController(final NotesViewTopComponent parent) {
         this.parent = parent;
     }
@@ -62,6 +60,8 @@ public class NotesViewController {
     /**
      * Reads the graph's NOTES_VIEW_STATE attribute and populates the Notes View
      * pane.
+     *
+     * @param graph The Graph to read the state from
      */
     public void readState(final Graph graph) {
         final NotesViewPane pane = parent.getContent();
@@ -77,11 +77,11 @@ public class NotesViewController {
     /**
      * Executes a plugin to write the current notes to the graph's
      * NOTES_VIEW_STATE attribute.
+     *
+     * @param graph The Graph to write the state to
      */
-    public void writeState() {
+    public void writeState(final Graph graph) {
         final NotesViewPane pane = parent.getContent();
-        final Graph graph = GraphManager.getDefault().getActiveGraph();
-
         if (pane == null || graph == null) {
             return;
         }

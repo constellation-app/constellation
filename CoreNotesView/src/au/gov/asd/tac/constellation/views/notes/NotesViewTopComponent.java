@@ -82,7 +82,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
         if (needsUpdate() && graph != null) {
             notesViewPane.selectAllFilters();
             notesViewPane.clearAllNotes();
-            notesViewPane.prepareNotesViewPane(notesViewController, graph);
+            notesViewController.readState(graph);
         }
     }
 
@@ -140,7 +140,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
 
             // omit low level plugins which are note useful as notes
             if ((!pluginReport.getPluginName().contains(NOTES_VIEW_PLUGIN_NAME)) && !hasLowLevel) {
-                notesViewPane.prepareNotesViewPane(notesViewController, activeGraph);
+                notesViewController.readState(activeGraph);
                 notesViewPane.setGraphReport(notesViewController);
             }
         }

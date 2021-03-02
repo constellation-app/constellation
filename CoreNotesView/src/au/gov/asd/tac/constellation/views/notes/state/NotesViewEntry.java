@@ -68,6 +68,6 @@ public class NotesViewEntry implements PluginReportListener {
 
     @Override
     public void addedChildReport(PluginReport parentReport, PluginReport childReport) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        // ignoring child plugins
     }
 }
