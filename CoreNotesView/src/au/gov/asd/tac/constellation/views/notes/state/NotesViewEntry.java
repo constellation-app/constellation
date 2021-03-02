@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.views.notes.state;
 
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReportListener;
-import java.util.logging.Logger;
 
 /**
  * Holds the information for a note in the Notes View.
@@ -25,7 +24,7 @@ import java.util.logging.Logger;
  * @author sol695510
  */
 public class NotesViewEntry implements PluginReportListener {
-    
+
     private final String dateTime;
     private String noteTitle;
     private String noteContent;
@@ -49,11 +48,11 @@ public class NotesViewEntry implements PluginReportListener {
     public String getNoteContent() {
         return noteContent;
     }
-    
+
     public Boolean isUserCreated() {
         return userCreated;
     }
-    
+
     public void setNoteTitle(final String noteTitle) {
         this.noteTitle = noteTitle;
     }
@@ -61,13 +60,10 @@ public class NotesViewEntry implements PluginReportListener {
     public void setNoteContent(final String noteContent) {
         this.noteContent = noteContent;
     }
-    
-    private static final Logger LOG = Logger.getLogger(NotesViewEntry.class.getName());
 
     @Override
     public void pluginReportChanged(PluginReport pluginReport) {
         this.noteContent = pluginReport.getMessage();
-        LOG.info("update message="+this.noteContent);
     }
 
     @Override

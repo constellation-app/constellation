@@ -30,7 +30,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -116,7 +115,7 @@ public class NotesViewPane extends BorderPane {
 
                     if (activeGraph != null) {
                         updateNotesUI();
-                        controller.writeState("filterCheckComboBox");
+                        controller.writeState();
                     }
                 }
             }
@@ -169,7 +168,7 @@ public class NotesViewPane extends BorderPane {
                     titleField.clear();
                     contentField.clear();
                     updateNotesUI();
-                    controller.writeState("add note");
+                    controller.writeState();
                     event.consume();
                 }
             }
@@ -204,7 +203,6 @@ public class NotesViewPane extends BorderPane {
      */
     protected void prepareNotesViewPane(final NotesViewController controller, final Graph graph) {
         controller.readState(graph);
-//        controller.addAttributes(graph);
     }
 
     /**
@@ -219,16 +217,10 @@ public class NotesViewPane extends BorderPane {
                 addPluginReport(pluginReport);
             });
 
-//            // Clears duplicates from the list.
-//            synchronized (LOCK) {
-//                final List<NotesViewEntry> uniqueNotes = clearDuplicates(notesViewEntries);
-//                notesViewEntries.clear();
-//                notesViewEntries.addAll(uniqueNotes);
-//            }
             // Update the Notes View UI.
             updateNotesUI();
             updateFilters();
-            controller.writeState("setGraphReport");
+            controller.writeState();
         }
     }
 
@@ -254,15 +246,14 @@ public class NotesViewPane extends BorderPane {
 
         // Omit low level plugins which are note useful as notes
         if ((!pluginReport.getPluginName().contains("Notes View")) && !hasLowLevel) {
-            // Listener monitors changes to the plugin report as it executes and finishes. Affects the output of getMessage().
-//            pluginReport.addPluginReportListener(this);
-
             final NotesViewEntry note = new NotesViewEntry(
                     startTime,
                     pluginReport.getPluginName(),
                     pluginReport.getMessage(),
                     false
             );
+
+            // Listener monitors changes to the plugin report as it executes and finishes. Affects the output of getMessage().
             pluginReport.addPluginReportListener(note);
 
             synchronized (LOCK) {
@@ -387,45 +378,11 @@ public class NotesViewPane extends BorderPane {
         Platform.runLater(() -> {
             notesListVBox.getChildren().removeAll(notesListVBox.getChildren());
         });
-        
-//        if (!clearOnlyUI) { // TODO: why wouldn't we just clear the entries every time regardless of whether its a gui change or not?
-            synchronized (LOCK) {
-                notesViewEntries.clear();
-                notesViewEntryDateTimes.clear();
-            }
-//        }
-    }
 
-    private static final Logger LOG = Logger.getLogger(NotesViewPane.class.getName());
-
-    /**
-     * Iterates list of NoteEntry objects and removes objects that share the
-     * same dateTime.
-     *
-     * @param duplicatedNotes A list with duplicates.
-     * @return The given list with duplicates removed.
-     */
-    private List<NotesViewEntry> clearDuplicates(final List<NotesViewEntry> duplicatedNotes) {
-        final List<NotesViewEntry> uniqueNotes = new ArrayList();
-        Collections.reverse(duplicatedNotes);
-
-        // TODO: I think this could be made more efficient using streams
-        duplicatedNotes.forEach(report -> {
-            boolean isUnique = true;
-
-            for (final NotesViewEntry uniqueReport : uniqueNotes) {
-                if (report.getDateTime().equals(uniqueReport.getDateTime())) {
-                    isUnique = false;
-                    LOG.fine("duplicate entry found");
-                }
-            }
-            // Adds only unique notes to the list.
-            if (isUnique) {
-                uniqueNotes.add(report);
-            }
-        });
-
-        return uniqueNotes;
+        synchronized (LOCK) {
+            notesViewEntries.clear();
+            notesViewEntryDateTimes.clear();
+        }
     }
 
     /**
@@ -481,7 +438,7 @@ public class NotesViewPane extends BorderPane {
                 if (notesViewEntries.removeIf(note -> note.getDateTime().equals(newNote.getDateTime()))) {
                     notesViewEntryDateTimes.remove(newNote.getDateTime());
                     updateNotesUI();
-                    notesViewController.writeState("delete button");
+                    notesViewController.writeState();
                 }
             }
 
@@ -531,7 +488,7 @@ public class NotesViewPane extends BorderPane {
                     noteToEdit.setNoteTitle(newTitle.getText());
                     noteToEdit.setNoteContent(newContent.getText());
                     updateNotesUI();
-                    notesViewController.writeState("save button");
+                    notesViewController.writeState();
                     closeEdit();
                 }
 

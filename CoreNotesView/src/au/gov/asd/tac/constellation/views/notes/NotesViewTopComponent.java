@@ -90,7 +90,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
         if (needsUpdate() && graph != null) {
             notesViewPane.closeEdit();
             notesViewPane.clearNotes();
-//            notesViewPane.prepareNotesViewPane(notesViewController, graph);
+            notesViewPane.prepareNotesViewPane(notesViewController, graph);
         }
     }
 
