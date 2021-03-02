@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReport;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReportManager;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
-import au.gov.asd.tac.constellation.plugins.reporting.PluginReportListener;
 import au.gov.asd.tac.constellation.views.notes.state.NotesViewEntry;
 import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
@@ -28,7 +27,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -57,10 +59,11 @@ import org.controlsfx.control.CheckComboBox;
  *
  * @author sol695510
  */
-public class NotesViewPane extends BorderPane implements PluginReportListener {
+public class NotesViewPane extends BorderPane {
 
     private final NotesViewController notesViewController;
     private final List<NotesViewEntry> notesViewEntries;
+    private final Set<String> notesViewEntryDateTimes;
 
     private final ObservableList<String> availableFilters;
     private final List<String> selectedFilters;
@@ -78,7 +81,10 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
     private final String PROMPT_COLOUR = "#909090";
     private final String USER_COLOUR = "#C15A58";
     private final String AUTO_COLOUR = "#588BC1";
-    private final String DATETIME_PATTERN = "hh:mm:ss a 'on' dd/MM/yyyy";
+    private final String DATETIME_PATTERN = "hh:mm:ss a 'on' dd/MM/yyyy"; // TODO: make this a preference so that we can support their local timestamp format instead
+
+    private static final String AUTO_NOTES_FILTER = "Auto Notes";
+    private static final String USER_NOTES_FILTER = "User Notes";
 
     private Object LOCK = new Object();
 
@@ -91,8 +97,9 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
 
         notesViewController = controller;
         notesViewEntries = new ArrayList<>();
+        notesViewEntryDateTimes = new HashSet<>();
 
-        availableFilters = FXCollections.observableArrayList("User Notes", "Auto Notes");
+        availableFilters = FXCollections.observableArrayList(USER_NOTES_FILTER, AUTO_NOTES_FILTER);
         selectedFilters = new ArrayList<>(availableFilters); // By default all filters are selected.
 
         // CheckComboBox to select and deselect various filters for note rendering.
@@ -108,7 +115,7 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
                     final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
 
                     if (activeGraph != null) {
-                        updateNotes();
+                        updateNotesUI();
                         controller.writeState("filterCheckComboBox");
                     }
                 }
@@ -143,11 +150,9 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
         // Button to add new note.
         final Button addNoteButton = new Button("Add Note");
         addNoteButton.setOnAction(event -> {
-
             final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
 
             if (activeGraph != null) {
-
                 if ((titleField.getText().isBlank() && titleField.getText().isEmpty())
                         || (contentField.getText().isBlank() && contentField.getText().isEmpty())) {
                     JOptionPane.showMessageDialog(null, "Type in missing fields.", "Invalid Text", JOptionPane.WARNING_MESSAGE);
@@ -163,7 +168,7 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
 
                     titleField.clear();
                     contentField.clear();
-                    updateNotes();
+                    updateNotesUI();
                     controller.writeState("add note");
                     event.consume();
                 }
@@ -199,7 +204,7 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
      */
     protected void prepareNotesViewPane(final NotesViewController controller, final Graph graph) {
         controller.readState(graph);
-        controller.addAttributes(graph);
+//        controller.addAttributes(graph);
     }
 
     /**
@@ -213,16 +218,15 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
             currentGraphReport.getPluginReports().forEach(pluginReport -> {
                 addPluginReport(pluginReport);
             });
-            
-            // Clears duplicates from the list.
-            synchronized (LOCK) {
-                final List<NotesViewEntry> uniqueNotes = clearDuplicates(notesViewEntries);
-                notesViewEntries.clear();
-                notesViewEntries.addAll(uniqueNotes);
-            }
-            
+
+//            // Clears duplicates from the list.
+//            synchronized (LOCK) {
+//                final List<NotesViewEntry> uniqueNotes = clearDuplicates(notesViewEntries);
+//                notesViewEntries.clear();
+//                notesViewEntries.addAll(uniqueNotes);
+//            }
             // Update the Notes View UI.
-            updateNotes();
+            updateNotesUI();
             updateFilters();
             controller.writeState("setGraphReport");
         }
@@ -234,6 +238,12 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
      * @param pluginReport Plugin report to be added.
      */
     protected void addPluginReport(final PluginReport pluginReport) {
+        // check if the entry exists
+        final String startTime = Long.toString(pluginReport.getStartTime());
+        if (notesViewEntryDateTimes.contains(startTime)) {
+            return;
+        }
+
         boolean hasLowLevel = false;
         for (final String tag : pluginReport.getTags()) {
             if ("LOW LEVEL".equals(tag)) {
@@ -245,15 +255,19 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
         // Omit low level plugins which are note useful as notes
         if ((!pluginReport.getPluginName().contains("Notes View")) && !hasLowLevel) {
             // Listener monitors changes to the plugin report as it executes and finishes. Affects the output of getMessage().
-            pluginReport.addPluginReportListener(this);
+//            pluginReport.addPluginReportListener(this);
+
+            final NotesViewEntry note = new NotesViewEntry(
+                    startTime,
+                    pluginReport.getPluginName(),
+                    pluginReport.getMessage(),
+                    false
+            );
+            pluginReport.addPluginReportListener(note);
 
             synchronized (LOCK) {
-                notesViewEntries.add(new NotesViewEntry(
-                        Long.toString(pluginReport.getStartTime()),
-                        pluginReport.getPluginName(),
-                        pluginReport.getMessage(),
-                        false
-                ));
+                notesViewEntries.add(note);
+                notesViewEntryDateTimes.add(startTime);
             }
         }
     }
@@ -289,10 +303,11 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
 
                 notesViewEntries.forEach(entry -> {
                     this.notesViewEntries.add(entry);
+                    this.notesViewEntryDateTimes.add(entry.getDateTime());
                 });
             }
 
-            updateNotes();
+            updateNotesUI();
         });
     }
 
@@ -316,7 +331,7 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
     /**
      * Updates the UI of the notes currently being displayed in the Notes View.
      */
-    protected synchronized void updateNotes() {
+    protected synchronized void updateNotesUI() {
         Platform.runLater(() -> {
             notesListVBox.getChildren().removeAll(notesListVBox.getChildren());
 
@@ -325,11 +340,11 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
             synchronized (LOCK) {
                 notesViewEntries.forEach(entry -> {
                     // Add user note to render list if "User Note" filter is selected.
-                    if (selectedFilters.contains("User Notes") && entry.isUserCreated()) {
+                    if (selectedFilters.contains(USER_NOTES_FILTER) && entry.isUserCreated()) {
                         notesToRender.add(entry);
                     }
                     // Add auto note to render list if "Auto Note" filter is selected.
-                    if (selectedFilters.contains("Auto Notes") && !entry.isUserCreated()) {
+                    if (selectedFilters.contains(AUTO_NOTES_FILTER) && !entry.isUserCreated()) {
                         notesToRender.add(entry);
                     }
                 });
@@ -376,11 +391,14 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
             notesListVBox.getChildren().removeAll(notesListVBox.getChildren());
             if (!clearOnlyUI) { // TODO: why wouldn't we just clear the entries every time regardless of whether its a gui change or not?
                 synchronized (LOCK) {
-                    notesViewEntries.clear(); 
+                    notesViewEntries.clear();
+                    notesViewEntryDateTimes.clear();
                 }
             }
         });
     }
+
+    private static final Logger LOG = Logger.getLogger(NotesViewPane.class.getName());
 
     /**
      * Iterates list of NoteEntry objects and removes objects that share the
@@ -400,6 +418,7 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
             for (final NotesViewEntry uniqueReport : uniqueNotes) {
                 if (report.getDateTime().equals(uniqueReport.getDateTime())) {
                     isUnique = false;
+                    LOG.fine("duplicate entry found");
                 }
             }
             // Adds only unique notes to the list.
@@ -462,7 +481,8 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
         deleteButton.setOnAction(event -> {
             synchronized (LOCK) {
                 if (notesViewEntries.removeIf(note -> note.getDateTime().equals(newNote.getDateTime()))) {
-                    updateNotes();
+                    notesViewEntryDateTimes.remove(newNote.getDateTime());
+                    updateNotesUI();
                     notesViewController.writeState("delete button");
                 }
             }
@@ -512,7 +532,7 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
                 } else {
                     noteToEdit.setNoteTitle(newTitle.getText());
                     noteToEdit.setNoteContent(newContent.getText());
-                    updateNotes();
+                    updateNotesUI();
                     notesViewController.writeState("save button");
                     closeEdit();
                 }
@@ -542,28 +562,28 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
         });
     }
 
-    /**
-     * Triggers when plugin reports undergo a change, such as when they go
-     * between executing and finishing.
-     *
-     * @param pluginReport
-     */
-    @Override
-    public void pluginReportChanged(final PluginReport pluginReport) {
-        addPluginReport(pluginReport);
-        // Clears duplicates from the list.
-        synchronized (LOCK) {
-            final List<NotesViewEntry> uniqueNotes = clearDuplicates(notesViewEntries);
-            notesViewEntries.clear();
-            notesViewEntries.addAll(uniqueNotes);
-        }
-        // Update the Notes View UI.
-        updateNotes();
-//        notesViewController.writeState("plugin report changed");
-    }
-
-    @Override
-    public void addedChildReport(final PluginReport parentReport, final PluginReport childReport) {
-        // Intentionally left blank.
-    }
+//    /**
+//     * Triggers when plugin reports undergo a change, such as when they go
+//     * between executing and finishing.
+//     *
+//     * @param pluginReport
+//     */
+//    @Override
+//    public void pluginReportChanged(final PluginReport pluginReport) {
+//        addPluginReport(pluginReport);
+//        // Clears duplicates from the list.
+//        synchronized (LOCK) {
+//            final List<NotesViewEntry> uniqueNotes = clearDuplicates(notesViewEntries);
+//            notesViewEntries.clear();
+//            notesViewEntries.addAll(uniqueNotes);
+//        }
+//        // Update the Notes View UI.
+//        updateNotesUI();
+////        notesViewController.writeState("plugin report changed");
+//    }
+//
+//    @Override
+//    public void addedChildReport(final PluginReport parentReport, final PluginReport childReport) {
+//        // Intentionally left blank.
+//    }
 }

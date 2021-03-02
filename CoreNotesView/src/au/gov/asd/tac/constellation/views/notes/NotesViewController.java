@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
+import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -38,6 +39,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
+import org.openide.util.Exceptions;
 
 /**
  * Handles reading and writing to the state to save notes to the graph.
@@ -48,23 +50,23 @@ public class NotesViewController {
 
     private final NotesViewTopComponent parent;
 
-    private static final String NOTES_ADD_ATTRIBUTE = "Notes View: Add Required Attributes";
+//    private static final String NOTES_ADD_ATTRIBUTE = "Notes View: Add Required Attributes";
     private static final String NOTES_READ_STATE = "Notes View: Read State";
     private static final String NOTES_WRITE_STATE = "Notes View: Write State";
 
-    private final ScheduledExecutorService scheduledExecutorService;
-    private ScheduledFuture<?> scheduledFuture;
+//    private final ScheduledExecutorService scheduledExecutorService;
+//    private ScheduledFuture<?> scheduledFuture;
     private static List<Future<?>> futures = new ArrayList();
     private static final Logger LOGGER = Logger.getLogger(NotesViewController.class.getName());
 
     public NotesViewController(final NotesViewTopComponent parent) {
         this.parent = parent;
-        this.scheduledExecutorService = Executors.newScheduledThreadPool(1);
+//        this.scheduledExecutorService = Executors.newScheduledThreadPool(1);
     }
 
-    public String getAddAttributeText() {
-        return NOTES_ADD_ATTRIBUTE;
-    }
+//    public String getAddAttributeText() {
+//        return NOTES_ADD_ATTRIBUTE;
+//    }
 
     public String getReadStateText() {
         return NOTES_READ_STATE;
@@ -74,27 +76,38 @@ public class NotesViewController {
         return NOTES_WRITE_STATE;
     }
 
-    /**
-     * Add attributes required by the Notes View for it to function.
-     */
-    public void addAttributes(final Graph graph) {
-        final int notesViewState;
-
-        if (graph != null) {
-            try (ReadableGraph readableGraph = graph.getReadableGraph()) {
-                notesViewState = NotesViewConcept.MetaAttribute.NOTES_VIEW_STATE.get(readableGraph);
-            }
-
-            if (notesViewState == Graph.NOT_FOUND) {
-                PluginExecution.withPlugin(new SimpleEditPlugin(NOTES_ADD_ATTRIBUTE) {
-                    @Override
-                    public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-                        NotesViewConcept.MetaAttribute.NOTES_VIEW_STATE.ensure(graph);
-                    }
-                }).executeLater(graph);
-            }
-        }
-    }
+//    /**
+//     * Add attributes required by the Notes View for it to function.
+//     */
+//    public void addAttributes(final Graph graph) {
+//        final int notesViewState;
+//
+//        if (graph != null) {
+//            try ( ReadableGraph readableGraph = graph.getReadableGraph()) {
+//                notesViewState = NotesViewConcept.MetaAttribute.NOTES_VIEW_STATE.get(readableGraph);
+//            }
+//
+//            if (notesViewState == Graph.NOT_FOUND) {
+//                WritableGraph writableGraph = null;
+//                try {
+//                    writableGraph = graph.getWritableGraph("Add notes view state", true);
+//                    NotesViewConcept.MetaAttribute.NOTES_VIEW_STATE.ensure(writableGraph);
+//                } catch (InterruptedException ex) {
+//                    Exceptions.printStackTrace(ex);
+//                } finally {
+//                    if (writableGraph != null) {
+//                        writableGraph.commit();
+//                    }
+//                }
+////                PluginExecution.withPlugin(new SimpleEditPlugin(NOTES_ADD_ATTRIBUTE) {
+////                    @Override
+////                    public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+////                        NotesViewConcept.MetaAttribute.NOTES_VIEW_STATE.ensure(graph);
+////                    }
+////                }).executeLater(graph);
+//            }
+//        }
+//    }
 
     /**
      * Reads the graph's NOTES_VIEW_STATE attribute and populates the Notes View
@@ -106,7 +119,9 @@ public class NotesViewController {
             return;
         }
 
-        PluginExecution.withPlugin(new NotesViewStateReader(pane)).executeLater(graph);
+        PluginExecution.withPlugin(
+                new NotesViewStateReader(pane)
+        ).executeLater(graph);
     }
 
     /**
@@ -122,29 +137,9 @@ public class NotesViewController {
             return;
         }
 
-        Future<?> executeLater = PluginExecution.withPlugin(new NotesViewStateWriter(pane.getNotes(), pane.getFilters())).executeLater(graph);
-//        final Thread thread = new Thread("Table View: Update Table") {
-//            @Override
-//            public void run() {
-//                if (scheduledFuture != null) {
-//                    for (Future<?> future : futures) {
-//                        future.cancel(true);
-//                    }
-//                    scheduledFuture.cancel(true);
-//                }
-//
-//                scheduledFuture = scheduledExecutorService.schedule(() -> {
-//                    try{
-//                    Future<?> executeLater = PluginExecution.withPlugin(new NotesViewStateWriter(pane.getNotes(), pane.getFilters())).executeLater(graph);
-//                    futures.add(executeLater);
-//                    } catch(Exception ex){
-//                        LOGGER.info("@@@ Exception Thrown");
-//                    }
-//                }, 0, TimeUnit.MILLISECONDS);
-//            }
-//        };
-//        thread.start();
-
+        PluginExecution.withPlugin(
+                new NotesViewStateWriter(pane.getNotes(), pane.getFilters())
+        ).executeLater(graph);
     }
 
     /**

@@ -15,12 +15,16 @@
  */
 package au.gov.asd.tac.constellation.views.notes.state;
 
+import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
+import au.gov.asd.tac.constellation.plugins.reporting.PluginReportListener;
+import java.util.logging.Logger;
+
 /**
  * Holds the information for a note in the Notes View.
  *
  * @author sol695510
  */
-public class NotesViewEntry {
+public class NotesViewEntry implements PluginReportListener {
     
     private final String dateTime;
     private String noteTitle;
@@ -56,5 +60,18 @@ public class NotesViewEntry {
 
     public void setNoteContent(final String noteContent) {
         this.noteContent = noteContent;
+    }
+    
+    private static final Logger LOG = Logger.getLogger(NotesViewEntry.class.getName());
+
+    @Override
+    public void pluginReportChanged(PluginReport pluginReport) {
+        this.noteContent = pluginReport.getMessage();
+        LOG.info("update message="+this.noteContent);
+    }
+
+    @Override
+    public void addedChildReport(PluginReport parentReport, PluginReport childReport) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
