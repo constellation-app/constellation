@@ -266,8 +266,7 @@ public final class ConversationBox extends StackPane {
         // This code below enables the graph in sync with the search results.
         searchBubbleTextField.textProperty().addListener((ov, oldValue, newValue) -> {
             final Graph graph = conversation.getGraphUpdateManager().getActiveGraph();
-            final ReadableGraph readableGraph = graph.getReadableGraph();
-            try (readableGraph) {
+            try (final ReadableGraph readableGraph = graph.getReadableGraph()) {
                 final List<ConversationContributionProvider> compatibleContributionProviders = ConversationContributionProvider.getCompatibleProviders(readableGraph);
                 for (final ConversationMessage message : messages) {
                     message.getAllContributions().clear();

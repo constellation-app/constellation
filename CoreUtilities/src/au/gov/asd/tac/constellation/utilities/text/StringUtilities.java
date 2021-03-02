@@ -413,6 +413,6 @@ public class StringUtilities {
             }
             return expected;
         }
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 }
