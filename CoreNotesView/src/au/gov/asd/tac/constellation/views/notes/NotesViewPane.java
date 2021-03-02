@@ -211,7 +211,7 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
         if (currentGraphReport != null) {
             // Iterates the list of currently executed plugins.
             currentGraphReport.getPluginReports().forEach(pluginReport -> {
-                setPluginReport(pluginReport);
+                addPluginReport(pluginReport);
             });
             
             // Clears duplicates from the list.
@@ -220,6 +220,7 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
                 notesViewEntries.clear();
                 notesViewEntries.addAll(uniqueNotes);
             }
+            
             // Update the Notes View UI.
             updateNotes();
             updateFilters();
@@ -232,7 +233,7 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
      *
      * @param pluginReport Plugin report to be added.
      */
-    protected void setPluginReport(final PluginReport pluginReport) {
+    protected void addPluginReport(final PluginReport pluginReport) {
         boolean hasLowLevel = false;
         for (final String tag : pluginReport.getTags()) {
             if ("LOW LEVEL".equals(tag)) {
@@ -241,7 +242,7 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
             }
         }
 
-        // Omit plugin reports from the Notes View and Quality Control View.
+        // Omit low level plugins which are note useful as notes
         if ((!pluginReport.getPluginName().contains("Notes View")) && !hasLowLevel) {
             // Listener monitors changes to the plugin report as it executes and finishes. Affects the output of getMessage().
             pluginReport.addPluginReportListener(this);
@@ -373,9 +374,9 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
     protected void clearNotes(final boolean clearOnlyUI) {
         Platform.runLater(() -> {
             notesListVBox.getChildren().removeAll(notesListVBox.getChildren());
-            if (!clearOnlyUI) {
+            if (!clearOnlyUI) { // TODO: why wouldn't we just clear the entries every time regardless of whether its a gui change or not?
                 synchronized (LOCK) {
-                    notesViewEntries.clear();
+                    notesViewEntries.clear(); 
                 }
             }
         });
@@ -392,6 +393,7 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
         final List<NotesViewEntry> uniqueNotes = new ArrayList();
         Collections.reverse(duplicatedNotes);
 
+        // TODO: I think this could be made more efficient using streams
         duplicatedNotes.forEach(report -> {
             boolean isUnique = true;
 
@@ -548,7 +550,7 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
      */
     @Override
     public void pluginReportChanged(final PluginReport pluginReport) {
-        setPluginReport(pluginReport);
+        addPluginReport(pluginReport);
         // Clears duplicates from the list.
         synchronized (LOCK) {
             final List<NotesViewEntry> uniqueNotes = clearDuplicates(notesViewEntries);
@@ -557,7 +559,7 @@ public class NotesViewPane extends BorderPane implements PluginReportListener {
         }
         // Update the Notes View UI.
         updateNotes();
-        notesViewController.writeState("plugin report changed");
+//        notesViewController.writeState("plugin report changed");
     }
 
     @Override

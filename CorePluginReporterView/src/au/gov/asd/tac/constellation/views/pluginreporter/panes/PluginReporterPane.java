@@ -236,9 +236,10 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
                     }
                 }
 
+                // TODO: do a better job here of not adding older reports in the first place. The idea here was to reduce memory so this logic is less useful of adding and removing.
                 // remove the oldest one if we have reached the maximum
                 final int size = reportBox.getChildren().size();
-                if (size > MAXIMUM_REPORT_PANES) {
+                if (size > MAXIMUM_REPORT_PANES) { 
                     ((PluginReportPane) reportBox.getChildren().get(size - MAXIMUM_REPORT_PANES)).removeListener();
                     reportBox.getChildren().remove(size - MAXIMUM_REPORT_PANES);
                 }
