@@ -101,7 +101,6 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
             pluginReport.setCurrentStep(currentStep);
             pluginReport.setTotalSteps(totalSteps);
             pluginReport.setMessage(message);
-            LOGGER.info("firePluginReportChangedEvent in setProgress");
             pluginReport.firePluginReportChangedEvent();
         }
 

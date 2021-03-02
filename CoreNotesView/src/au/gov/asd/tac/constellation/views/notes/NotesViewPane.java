@@ -62,7 +62,12 @@ public class NotesViewPane extends BorderPane {
 
     private final NotesViewController notesViewController;
     private final List<NotesViewEntry> notesViewEntries;
-    private final Set<String> notesViewEntryDateTimes;
+
+    /**
+     * A cache of NotesViewEntry datetimes cache to quickly check if a note
+     * exists in notesViewEntries. This is a necessary optimisation.
+     */
+    private final Set<String> notesDateTimeCache;
 
     private final ObservableList<String> availableFilters;
     private final List<String> selectedFilters;
@@ -96,7 +101,7 @@ public class NotesViewPane extends BorderPane {
 
         notesViewController = controller;
         notesViewEntries = new ArrayList<>();
-        notesViewEntryDateTimes = new HashSet<>();
+        notesDateTimeCache = new HashSet<>();
 
         availableFilters = FXCollections.observableArrayList(USER_NOTES_FILTER, AUTO_NOTES_FILTER);
         selectedFilters = new ArrayList<>(availableFilters); // By default all filters are selected.
@@ -230,35 +235,22 @@ public class NotesViewPane extends BorderPane {
      * @param pluginReport Plugin report to be added.
      */
     protected void addPluginReport(final PluginReport pluginReport) {
-        // check if the entry exists
-        final String startTime = Long.toString(pluginReport.getStartTime());
-        if (notesViewEntryDateTimes.contains(startTime)) {
-            return;
-        }
-
-        boolean hasLowLevel = false;
-        for (final String tag : pluginReport.getTags()) {
-            if ("LOW LEVEL".equals(tag)) {
-                hasLowLevel = true;
-                break;
-            }
-        }
-
-        // Omit low level plugins which are note useful as notes
-        if ((!pluginReport.getPluginName().contains("Notes View")) && !hasLowLevel) {
+        if (!isExistingNote(pluginReport)) {
             final NotesViewEntry note = new NotesViewEntry(
-                    startTime,
+                    Long.toString(pluginReport.getStartTime()),
                     pluginReport.getPluginName(),
                     pluginReport.getMessage(),
                     false
             );
 
-            // Listener monitors changes to the plugin report as it executes and finishes. Affects the output of getMessage().
+            /**
+             * Listener monitors changes to the plugin report as it executes and
+             * finishes. Affects the output of getMessage().
+             */
             pluginReport.addPluginReportListener(note);
 
             synchronized (LOCK) {
-                notesViewEntries.add(note);
-                notesViewEntryDateTimes.add(startTime);
+                addNote(note);
             }
         }
     }
@@ -292,9 +284,8 @@ public class NotesViewPane extends BorderPane {
             synchronized (LOCK) {
                 this.notesViewEntries.clear();
 
-                notesViewEntries.forEach(entry -> {
-                    this.notesViewEntries.add(entry);
-                    this.notesViewEntryDateTimes.add(entry.getDateTime());
+                notesViewEntries.forEach(note -> {
+                    addNote(note);
                 });
             }
 
@@ -371,17 +362,40 @@ public class NotesViewPane extends BorderPane {
     }
 
     /**
+     * Check if the PluginReport was already added
+     *
+     * @param pluginReport The PluginReport to add
+     *
+     * @return True if plugin report was already added, False otherwise
+     */
+    private boolean isExistingNote(final PluginReport pluginReport) {
+        final String startTime = Long.toString(pluginReport.getStartTime());
+        return notesDateTimeCache.contains(startTime);
+    }
+
+    /**
+     * A convenient method to add a note to the various lists that are used to
+     * track them.
+     *
+     * @param note A new NoteViewEntry to be added
+     */
+    private void addNote(final NotesViewEntry note) {
+        notesViewEntries.add(note);
+        notesDateTimeCache.add(note.getDateTime());
+    }
+
+    /**
      * Clears UI elements in the Notes View and clears the list of NoteEntry
      * objects.
      */
-    protected void clearNotes() {
+    protected void clearAllNotes() {
         Platform.runLater(() -> {
             notesListVBox.getChildren().removeAll(notesListVBox.getChildren());
         });
 
         synchronized (LOCK) {
             notesViewEntries.clear();
-            notesViewEntryDateTimes.clear();
+            notesDateTimeCache.clear();
         }
     }
 
@@ -436,7 +450,7 @@ public class NotesViewPane extends BorderPane {
         deleteButton.setOnAction(event -> {
             synchronized (LOCK) {
                 if (notesViewEntries.removeIf(note -> note.getDateTime().equals(newNote.getDateTime()))) {
-                    notesViewEntryDateTimes.remove(newNote.getDateTime());
+                    notesDateTimeCache.remove(newNote.getDateTime());
                     updateNotesUI();
                     notesViewController.writeState();
                 }
@@ -516,29 +530,4 @@ public class NotesViewPane extends BorderPane {
             }
         });
     }
-
-//    /**
-//     * Triggers when plugin reports undergo a change, such as when they go
-//     * between executing and finishing.
-//     *
-//     * @param pluginReport
-//     */
-//    @Override
-//    public void pluginReportChanged(final PluginReport pluginReport) {
-//        addPluginReport(pluginReport);
-//        // Clears duplicates from the list.
-//        synchronized (LOCK) {
-//            final List<NotesViewEntry> uniqueNotes = clearDuplicates(notesViewEntries);
-//            notesViewEntries.clear();
-//            notesViewEntries.addAll(uniqueNotes);
-//        }
-//        // Update the Notes View UI.
-//        updateNotesUI();
-////        notesViewController.writeState("plugin report changed");
-//    }
-//
-//    @Override
-//    public void addedChildReport(final PluginReport parentReport, final PluginReport childReport) {
-//        // Intentionally left blank.
-//    }
 }

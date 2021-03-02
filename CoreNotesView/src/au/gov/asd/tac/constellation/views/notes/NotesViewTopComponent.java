@@ -55,6 +55,9 @@ import org.openide.windows.TopComponent;
 
 public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> implements GraphReportListener {
 
+    private static final String NOTES_VIEW_PLUGIN_NAME = "Notes View";
+    private static final String LOW_LEVEL_TAG = "LOW LEVEL";
+
     private final NotesViewController notesViewController;
     private final NotesViewPane notesViewPane;
 
@@ -76,36 +79,35 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
 
     @Override
     protected void handleNewGraph(final Graph graph) {
-
         if (needsUpdate() && graph != null) {
             notesViewPane.selectAllFilters();
-            notesViewPane.clearNotes();
+            notesViewPane.clearAllNotes();
             notesViewPane.prepareNotesViewPane(notesViewController, graph);
         }
     }
 
     @Override
     protected void handleGraphClosed(final Graph graph) {
-
         if (needsUpdate() && graph != null) {
             notesViewPane.closeEdit();
-            notesViewPane.clearNotes();
-            notesViewPane.prepareNotesViewPane(notesViewController, graph);
+            notesViewPane.clearAllNotes();
         }
     }
 
     @Override
     protected void handleComponentOpened() {
-        // Listener is not removed so that plugin reports created when the Notes View is not open will render when it is opened later.
+        /**
+         * listener is not removed so that plugin reports created when the Notes
+         * View is not open will render when it is opened later.
+         */
         GraphReportManager.addGraphReportListener(this);
     }
 
     @Override
     protected void handleComponentClosed() {
-
         notesViewPane.closeEdit();
         notesViewPane.selectAllFilters();
-        notesViewPane.clearNotes();
+        notesViewPane.clearAllNotes();
     }
 
     @Override
@@ -115,7 +117,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
 
     @Override
     protected String createStyle() {
-        return "resources/notes-view.css";
+        return null;
     }
 
     /**
@@ -127,13 +129,20 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
     public void newPluginReport(final PluginReport pluginReport) {
         final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
 
-        // Omit plugin reports from the Notes View and Quality Control View.
-        if (activeGraph != null
-                && pluginReport.getGraphReport().getGraphId().equals(activeGraph.getId())
-                && !pluginReport.getPluginName().contains("Quality Control View: Update State")
-                && !pluginReport.getPluginName().contains("Notes View")) {
-            notesViewPane.prepareNotesViewPane(notesViewController, activeGraph);
-            notesViewPane.setGraphReport(notesViewController);
+        if (activeGraph != null && pluginReport.getGraphReport().getGraphId().equals(activeGraph.getId())) {
+            boolean hasLowLevel = false;
+            for (final String tag : pluginReport.getTags()) {
+                if (LOW_LEVEL_TAG.equals(tag)) {
+                    hasLowLevel = true;
+                    break;
+                }
+            }
+
+            // omit low level plugins which are note useful as notes
+            if ((!pluginReport.getPluginName().contains(NOTES_VIEW_PLUGIN_NAME)) && !hasLowLevel) {
+                notesViewPane.prepareNotesViewPane(notesViewController, activeGraph);
+                notesViewPane.setGraphReport(notesViewController);
+            }
         }
     }
 
