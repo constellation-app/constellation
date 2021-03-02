@@ -60,11 +60,6 @@ public class PluginReport {
 
     private final int position;
     
-    
-    private static final Logger LOGGER = Logger.getLogger(PluginReport.class.getName());
-    
-    
-
     public PluginReport(GraphReport graphReport, Plugin plugin) {
         this.graphReport = graphReport;
         this.pluginName = plugin.getName();
@@ -88,7 +83,6 @@ public class PluginReport {
         if (listener != null && !listeners.contains(listener)) {
             listeners.add(listener);
         }
-        LOGGER.info("listeners count is " + listeners.size());
     }
 
     /**

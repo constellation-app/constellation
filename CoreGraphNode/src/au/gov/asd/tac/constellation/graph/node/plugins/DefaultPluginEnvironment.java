@@ -160,7 +160,6 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
                 if (currentReport != null) {
                     currentReport.stop();
                     callingConstraints.setCurrentReport(null);
-                    LOGGER.info("firePluginReportChangedEvent in executePluginLater");
                     currentReport.firePluginReportChangedEvent();
                 }
 
@@ -233,7 +232,6 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             if (currentReport != null) {
                 currentReport.stop();
                 callingConstraints.setCurrentReport(parentReport);
-                LOGGER.info("firePluginReportChangedEvent in executePluginNow");
                 currentReport.firePluginReportChangedEvent();
             }
 
@@ -295,7 +293,6 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             if (currentReport != null) {
                 currentReport.stop();
                 callingConstraints.setCurrentReport(parentReport);
-                LOGGER.info("firePluginReportChangedEvent in executeEditPluginNow");
                 currentReport.firePluginReportChangedEvent();
             }
 
@@ -358,7 +355,6 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             if (currentReport != null) {
                 currentReport.stop();
                 callingConstraints.setCurrentReport(parentReport);
-                LOGGER.info("firePluginReportChangedEvent in executeReadPluginNow");
                 currentReport.firePluginReportChangedEvent();
             }
 
