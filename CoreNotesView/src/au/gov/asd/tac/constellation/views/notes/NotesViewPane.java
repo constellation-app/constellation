@@ -92,7 +92,7 @@ public class NotesViewPane extends BorderPane {
     
     private static final String NOTES_VIEW_ICON = "resources/notes-view.png";
 
-    private Object LOCK = new Object();
+    private final Object LOCK = new Object();
 
     /**
      * NotesViewPane constructor.
@@ -314,12 +314,9 @@ public class NotesViewPane extends BorderPane {
 
             synchronized (LOCK) {
                 notesViewEntries.forEach(entry -> {
-                    // Add user note to render list if "User Note" filter is selected.
-                    if (selectedFilters.contains(USER_NOTES_FILTER) && entry.isUserCreated()) {
-                        notesToRender.add(entry);
-                    }
-                    // Add auto note to render list if "Auto Note" filter is selected.
-                    if (selectedFilters.contains(AUTO_NOTES_FILTER) && !entry.isUserCreated()) {
+                    // Add note to render list if its respective filter is selected.
+                    if ((selectedFilters.contains(USER_NOTES_FILTER) && entry.isUserCreated()) ||
+                            (selectedFilters.contains(AUTO_NOTES_FILTER) && !entry.isUserCreated())) {
                         notesToRender.add(entry);
                     }
                 });

@@ -62,12 +62,12 @@ public class NotesViewEntry implements PluginReportListener {
     }
 
     @Override
-    public void pluginReportChanged(PluginReport pluginReport) {
+    public void pluginReportChanged(final PluginReport pluginReport) {
         this.noteContent = pluginReport.getMessage();
     }
 
     @Override
-    public void addedChildReport(PluginReport parentReport, PluginReport childReport) {
-        // ignoring child plugins
+    public void addedChildReport(final PluginReport parentReport, final PluginReport childReport) {
+        // Intentionally left blank. Ignoring child plugin reports.
     }
 }

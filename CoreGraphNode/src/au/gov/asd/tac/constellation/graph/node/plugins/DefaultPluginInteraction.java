@@ -296,7 +296,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
                     progress.progress(getTime() + " " + currentMessage);
                     
                     if ("Finished".equalsIgnoreCase(currentMessage)) {
-                        progress=null;
+                        progress = null;
                     }
                 }
             } catch (InterruptedException ex) {
