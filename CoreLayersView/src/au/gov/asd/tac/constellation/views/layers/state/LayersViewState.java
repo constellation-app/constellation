@@ -126,14 +126,9 @@ public class LayersViewState {
 
                     vxQueries.removeQuery(layerNo);
                     txQueries.removeQuery(layerNo);
-
-                    vxQueries.add(new BitMaskQuery(new Query(GraphElementType.VERTEX, null), layerNo, description));
-                    txQueries.add(new BitMaskQuery(new Query(GraphElementType.TRANSACTION, null), layerNo, description));
-                } else {
-                    vxQueries.add(new BitMaskQuery(new Query(GraphElementType.VERTEX, null), layerNo, description));
-                    txQueries.add(new BitMaskQuery(new Query(GraphElementType.TRANSACTION, null), layerNo, description));
                 }
-
+                vxQueries.add(new BitMaskQuery(new Query(GraphElementType.VERTEX, null), layerNo, description));
+                txQueries.add(new BitMaskQuery(new Query(GraphElementType.TRANSACTION, null), layerNo, description));
             }
         } else {
             NotifyDisplayer.display("You cannot have more than " + BitMaskQueryCollection.MAX_QUERY_AMT + " layers open", NotifyDescriptor.WARNING_MESSAGE);
