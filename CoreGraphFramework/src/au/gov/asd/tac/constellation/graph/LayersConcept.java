@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.graph;
 
 import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.LongAttributeDescription;
+import au.gov.asd.tac.constellation.graph.mergers.BitwiseOrGraphAttributeMerger;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import java.util.ArrayList;
@@ -69,6 +70,7 @@ public class LayersConcept extends SchemaConcept {
         public static final SchemaAttribute LAYER_MASK = new SchemaAttribute.Builder(GraphElementType.VERTEX, LongAttributeDescription.ATTRIBUTE_NAME, "layer_mask")
                 .setDescription("Bitmask identifying the layers this vertex belongs to")
                 .setDefaultValue(1)
+                .setAttributeMergerId(BitwiseOrGraphAttributeMerger.ID)
                 .create()
                 .build();
         public static final SchemaAttribute LAYER_VISIBILITY = new SchemaAttribute.Builder(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "layer_visibility")
@@ -87,6 +89,7 @@ public class LayersConcept extends SchemaConcept {
         public static final SchemaAttribute LAYER_MASK = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, LongAttributeDescription.ATTRIBUTE_NAME, "layer_mask")
                 .setDescription("Bitmask identifying the layers this transaction belongs to")
                 .setDefaultValue(1)
+                .setAttributeMergerId(BitwiseOrGraphAttributeMerger.ID)
                 .create()
                 .build();
         public static final SchemaAttribute LAYER_VISIBILITY = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, FloatAttributeDescription.ATTRIBUTE_NAME, "layer_visibility")
