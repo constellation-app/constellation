@@ -42,5 +42,5 @@ jobs:
     - name: Update Dependencies
       run: |
         docker pull "${RUNNER_IMAGE}"
-        docker run --mount "type=bind,source=${HOME},target=/root/" --mount "type=bind,source=${HOME}/.ivy2/cache,target=/root/.ivy2/cache" --workdir "${TRAVIS_BUILD_DIR}" "${RUNNER_IMAGE}" run-tests.sh sonar.sh
+        docker run --mount "type=bind,source=${HOME},target=/root/" --mount "type=bind,source=${HOME}/.ivy2/cache,target=/root/.ivy2/cache" --workdir "${HOME}" "${RUNNER_IMAGE}" run-tests.sh sonar.sh
 
