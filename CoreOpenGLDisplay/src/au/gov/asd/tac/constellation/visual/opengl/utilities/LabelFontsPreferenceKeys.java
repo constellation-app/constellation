@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.utilities;
 
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.ConstellationLabelFonts;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.FontInfo;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManagerBI;
@@ -49,7 +50,7 @@ public class LabelFontsPreferenceKeys {
 
     public static FontInfo[] getFontInfo() {
         final String text = getFontText();
-        final FontInfo.ParsedFontInfo pfi = FontInfo.parseFontInfo(text.split("\n"), GlyphManagerBI.DEFAULT_FONT_SIZE);
+        final FontInfo.ParsedFontInfo pfi = FontInfo.parseFontInfo(text.split(SeparatorConstants.NEWLINE), GlyphManagerBI.DEFAULT_FONT_SIZE);
 
         return pfi.fontsInfo;
     }

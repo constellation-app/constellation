@@ -1,226 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- You may freely edit this file. See harness/README in the NetBeans platform -->
-<!-- for some information on what you could do (e.g. targets to override). -->
-<!-- If you delete this file and reopen the project it will be recreated. -->
-<project name="CONSTELLATION" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
-    <description>Builds the module suite CONSTELLATION.</description>
+<project name="Constellation" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:if="ant:if" xmlns:unless="ant:unless">
+    <description>Builds the Constellation module suite</description>
 
     <import file="nbproject/build-impl.xml"/>
-
-    <property name="ivy.install.version" value="2.3.0-rc1" />
-    <property name="ivy.jar.dir" value="${user.home}/.ivy2" />
-    <property name="ivy.cache.dir" value="${ivy.jar.dir}/cache" />
-    <property name="ivy.jar.file" value="${ivy.jar.dir}/${ivy.install.version}.jar" />
-    <property name="ivy.dep.file" value="${basedir}/CoreDependencies/src/ivy.xml" />
-    <property name="ivy.settings.file" value="${basedir}/CoreDependencies/src/ivysettings.xml" />
-    <property name="ivy.lib.dir" value="${basedir}/CoreDependencies/release/modules/ext" />
-    <property name="jre.filename.windows" value="zulu8.38.0.13-ca-fx-jre8.0.212-win_x64" />
-    <property name="jre.url.windows" value="https://cdn.azul.com/zulu/bin/${jre.filename.windows}.zip" />
-    <property name="jre.filename.linux" value="zulu8.38.0.13-ca-fx-jre8.0.212-linux_x64" />
-    <property name="jre.url.linux" value="https://cdn.azul.com/zulu/bin/${jre.filename.linux}.tar.gz" />
-    <property name="dist.filename.linux" value="constellation-linux" />
-    <property name="dist.filename.windows" value="constellation-win" />
-
-    <target name="update-dependencies-clean-build" description="Download dependencies and build all modules in the suite.">
-        <ant target="clean" />
-        <ant target="clean-dependencies" />
-        <ant target="download-dependencies" />
+    
+    <property name="ivy.jar.file" value="${user.home}/.ivy2/ivy-2.5.0.jar"/>
+    <property name="dependency.dir" value="CoreDependencies"/>
+    
+    <target name="update-dependencies-clean-build" 
+            description="Download dependencies and build all modules in the suite.">
+        <ant target="clean"/>
         <ant target="build">
-            <property name="update.dependencies" value="true" />
+            <property name="update.dependencies" value="true"/>
+            <property name="ivy.lib.dir" value="${basedir}/${dependency.dir}/release/modules/ext"/>
+            <property name="projectupdater.dir" value="../ProjectUpdater/"/>
+            <property name="third.party.depdendencies" value="true"/>
         </ant>
     </target>
 
-    <target name="update-dependencies-clean-build-no-debug" description="Download dependencies and build all modules in the suite and exclude debugging.">
-        <ant target="clean" />
-        <ant target="clean-dependencies" />
-        <ant target="download-dependencies" />
+    <target name="update-dependencies-clean-build-no-debug" 
+            description="Download dependencies and build all modules in the suite and exclude debugging.">
+        <ant target="clean"/>
         <ant target="build">
-            <property name="update.dependencies" value="true" />
+            <property name="update.dependencies" value="true"/>
+            <property name="ivy.lib.dir" value="${basedir}/${dependency.dir}/release/modules/ext"/>
             <property name="build.compiler.debug" value="false"/>
+            <property name="projectupdater.dir" value="../ProjectUpdater/"/>
+            <property name="third.party.depdendencies" value="true"/>
         </ant>
     </target>
-
-    <target name="-check-ivy">
-        <available file="${ivy.jar.file}" property="ivy.skip.download"/>
+    
+    <!-- Useful Dependency Utilities -->
+    <target name="check-latest-version" depends="-load-ivy-tasks" 
+            description="Check whether there is a new release of a dependency.">
+        <ivy:checkdepsupdate showTransitive="false" revisionToCheck="latest.release"/>
     </target>
-
-    <target name="-download-ivy" unless="ivy.skip.download" depends="-check-ivy">
-        <mkdir dir="${ivy.jar.dir}"/>
-        <echo message="installing ivy..."/>
-        <get src="https://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar"
-             dest="${ivy.jar.file}" usetimestamp="true"/>
+    
+    <target name="dependency-tree" depends="-load-ivy-tasks" 
+            description="Output the dependencies in a tree layout to the console.">
+        <ivy:dependencytree/>
     </target>
+    
+    <target name="dependency-report-html" depends="-load-ivy-tasks" 
+            description="Generate a detailed dependency report">
+        <delete dir="./ivy-reports"/>
+        <mkdir dir="./ivy-reports" />
 
-    <target name="-load-ivy-tasks" depends="-download-ivy">
+        <ivy:report todir="./ivy-reports" graph="false" xml="false"/>
+    </target>
+    
+    <target name="-load-ivy-tasks">
         <path id="ivy.lib.path">
             <pathelement location="${ivy.jar.file}"/>
         </path>
         <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
+        <ivy:resolve file="./${dependency.dir}/src/ivy.xml" />
     </target>
-
-    <target name="-download-unfolding-maps" >
-        <mkdir dir="${ivy.lib.dir}"/>
-        <echo message="installing unfolding-maps..."/>
-        <get src="https://github.com/constellation-app/third-party-dependencies/raw/master/unfolding-master-20171010.jar"
-             dest="${ivy.lib.dir}" usetimestamp="true"/>
-    </target>
-		
-    <target name="download-dependencies" depends="-load-ivy-tasks,-download-unfolding-maps" description="Download dependent libraries.">
-        <ivy:resolve/>
-        <ivy:retrieve/>
-
-        <pathconvert property="ivy.classpath.computed" dirsep="/" pathsep=":">
-            <path>
-                <fileset dir="${ivy.lib.dir}" includes="*.jar"/>
-            </path>
-            <map from="${basedir}${file.separator}" to=""/>
-        </pathconvert>
-
-        <propertyfile file="${basedir}/nbproject/project.properties">
-            <entry operation="=" key="ivy.classpath" value="${ivy.classpath.computed}"/>
-        </propertyfile>
-    </target>
-
-    <target name="clean-dependencies" description="Clean downloaded libraries.">
-        <delete dir="${ivy.lib.dir}"/>
-    </target>
-
-    <target name="clean-ivy" depends="clean-dependencies" description="Clean ivy.">
-        <delete dir="${ivy.jar.dir}"/>
-        <ivy:cleancache/>
-        <propertyfile file="${basedir}/nbproject/project.properties">
-            <entry operation="=" key="ivy.classpath" value=""/>
-        </propertyfile>
-    </target>
-
-    <target name="-pre-compile" depends="download-dependencies"/>
-
-    <target name="-pre-compile-single" depends="download-dependencies"/>
-
-    <!-- Override build to add branding update: algol -->
-    <!-- Commented out because propertyfile writes a timestamp to the properties file, which is a problem for source control. -->
-    <!-- <target name="build" depends="build-brand,suite.build"/> -->
-
-    <target name="build-brand" depends="-init">
-        <propertyfile file="${basedir}/branding/core/core.jar/org/netbeans/core/startup/Bundle.properties">
-            <!-- comment="Updated by build script"> -->
-            <entry key="currentVersion" value="${app.title} ${app.version}" />
-        </propertyfile>
-
-        <propertyfile file="${basedir}/branding/modules/org-netbeans-core-windows.jar/org/netbeans/core/windows/view/ui/Bundle.properties">
-            <!-- comment="Updated by build script"> -->
-            <entry key="CTL_MainWindow_Title" value="${app.title} ${app.version}" />
-            <entry key="CTL_MainWindow_Title_No_Project" value="${app.title} ${app.version}" />
-        </propertyfile>
-    </target>
-
-    <target name="-download-windows-jre" >
-        <echo message="downloading JRE..."/>
-        <get src="${jre.url.windows}"
-             dest="${basedir}" usetimestamp="true"/>
-        <unzip src="${basedir}/${jre.filename.windows}.zip" dest="${basedir}"/>
-        <delete file="${basedir}/${jre.filename.windows}.zip"/>
-    </target>
-
-    <target name="build-zip-with-windows-jre" depends="build,build-launchers,-download-windows-jre" description="Builds a ZIP distribution of the suite, launchers, and selected modules from the platform. This includes the JRE for Windows.">
-        <mkdir dir="${dist.dir}"/>
-        <!-- pathfileset does not support 'prefix' and 'filemode' parameters, we have to copy them to temp location -->
-        <tempfile property="temp.dir.nbexec" destdir="${suite.build.dir}" deleteonexit="true" prefix="nbexec"/>
-        <tempfile property="temp.dir.rest" destdir="${suite.build.dir}" deleteonexit="delete" prefix="rest"/>
-        <subant genericantfile="${harness.dir}/suite.xml" target="copy-cluster" inheritrefs="true">
-            <property name="dest.dir" value="${temp.dir.rest}"/>
-            <property name="nbexec.dir" value="${temp.dir.nbexec}"/>
-            <property name="build.dir" value="${suite.build.dir}"/>
-            <resources refid="zip.platform.clusters"/>
-        </subant>
-        <fixcrlf srcdir="${build.launcher.dir}/etc/"
-                 destdir="${build.launcher.dir}/etc/"
-                 preservelastmodified="true"
-                 eol="crlf" />
-        <zip destfile="${dist.dir}/${dist.filename.windows}.zip">
-            <!--
-            Using pre-built executable files that come with the Constellation icon
-            <zipfileset dir="${build.launcher.dir}/bin/" filemode="755" prefix="${app.name}/bin"/>
-            -->
-            <zipfileset dir="${basedir}/distribution/" filemode="755" prefix="${app.name}/"/>
-            <zipfileset dir="${build.launcher.dir}/etc/" prefix="${app.name}/etc"/>
-            <zipfileset dir="${temp.dir.nbexec}" filemode="755" prefix="${app.name}"/>
-            <zipfileset dir="${temp.dir.rest}" prefix="${app.name}"/>
-            <zipfileset dir="${basedir}/${jre.filename.windows}/" prefix="${app.name}/jre"/>
-            <!-- Yes, the doubled app.name is a bit ugly, but better than the alternative; cf. #66441: -->
-            <zipfileset dir="${cluster}" prefix="${app.name}/${app.name}">
-                <exclude name="config/Modules/*.xml_hidden"/>
-            </zipfileset>
-        </zip>
-        <delete dir="${basedir}/${jre.filename.windows}/"/>
-    </target>
-
-    <!-- This is a copy of -download-windows-jre, if there is a better way to do this then let me know -->
-    <target name="-download-linux-jre" >
-        <echo message="downloading JRE..."/>
-        <get src="${jre.url.linux}"
-             dest="${basedir}" usetimestamp="true"/>
-        <untar src="${basedir}/${jre.filename.linux}.tar.gz" dest="${basedir}" compression="gzip"/>
-        <delete file="${basedir}/${jre.filename.linux}.tar.gz"/>
-    </target>
-
-    <!-- This is a copy of build-zip-with-windows-jre", if there is a better way to do this then let me know -->
-    <target name="build-zip-with-linux-jre" depends="build,build-launchers,-download-linux-jre" description="Builds a ZIP distribution of the suite, launchers, and selected modules from the platform. This includes the JRE for Linux.">
-        <mkdir dir="${dist.dir}"/>
-        <!-- pathfileset does not support 'prefix' and 'filemode' parameters, we have to copy them to temp location -->
-        <tempfile property="temp.dir.nbexec" destdir="${suite.build.dir}" deleteonexit="true" prefix="nbexec"/>
-        <tempfile property="temp.dir.rest" destdir="${suite.build.dir}" deleteonexit="delete" prefix="rest"/>
-        <subant genericantfile="${harness.dir}/suite.xml" target="copy-cluster" inheritrefs="true">
-            <property name="dest.dir" value="${temp.dir.rest}"/>
-            <property name="nbexec.dir" value="${temp.dir.nbexec}"/>
-            <property name="build.dir" value="${suite.build.dir}"/>
-            <resources refid="zip.platform.clusters"/>
-        </subant>
-        <fixcrlf srcdir="${build.launcher.dir}/etc/"
-                 destdir="${build.launcher.dir}/etc/"
-                 preservelastmodified="true"
-                 eol="lf" />
-        <tar destfile="${dist.dir}/${dist.filename.linux}.tar">
-            <!--
-            Using pre-built executable files that come with the Constellation icon
-            <zipfileset dir="${build.launcher.dir}/bin/" filemode="755" prefix="${app.name}/bin"/>
-            -->
-            <zipfileset dir="${basedir}/distribution/" filemode="755" prefix="${app.name}/"/>
-            <tarfileset dir="${build.launcher.dir}/etc/" prefix="${app.name}/etc"/>
-            <tarfileset dir="${temp.dir.nbexec}" filemode="755" prefix="${app.name}"/>
-            <tarfileset dir="${temp.dir.rest}" prefix="${app.name}"/>
-
-            <!-- Make sure the files in jre/bin are executable -->
-            <tarfileset dir="${basedir}/${jre.filename.linux}/" prefix="${app.name}/jre">
-                <exclude name="bin/*"/>
-            </tarfileset>
-            <tarfileset dir="${basedir}/${jre.filename.linux}/bin/" filemode="755" prefix="${app.name}/jre/bin"/>
-
-            <!-- Yes, the doubled app.name is a bit ugly, but better than the alternative; cf. #66441: -->
-            <tarfileset dir="${cluster}" prefix="${app.name}/${app.name}">
-                <exclude name="config/Modules/*.xml_hidden"/>
-            </tarfileset>
-        </tar>
-        <gzip src="${dist.dir}/${dist.filename.linux}.tar" destfile="${dist.dir}/${dist.filename.linux}.tar.gz"/>
-        <delete file="${dist.dir}/${dist.filename.linux}.tar"/>
-        <delete dir="${basedir}/${jre.filename.linux}/"/>
-    </target>
-
-    <target name="dependency-report-html" depends="-load-ivy-tasks,-init-build-dir" description="Generate a detailed dependency report">
-        <delete dir="${suite.build.dir}/ivy-reports"/>
-        <mkdir dir="${suite.build.dir}/ivy-reports" />
-
-        <ivy:resolve type="${ivy.resolve.types}"/>
-        <ivy:report todir="${suite.build.dir}/ivy-reports" graph="false" xml="false"/>
-    </target>
-
-    <target name="check-latest-version" depends="-load-ivy-tasks" description="Check whether there is a new release of a dependency.">
-        <ivy:resolve/>
-        <ivy:checkdepsupdate showTransitive="false" revisionToCheck="latest.release"/>
-    </target>
-
-    <target name="dependency-tree" depends="-load-ivy-tasks" description="Output the dependencies in a tree layout to the console.">
-        <ivy:dependencytree/>
-    </target>
-
 </project>

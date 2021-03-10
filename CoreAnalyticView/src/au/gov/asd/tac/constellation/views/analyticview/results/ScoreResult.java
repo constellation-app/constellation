@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -95,8 +95,8 @@ public class ScoreResult extends AnalyticResult<ElementScore> {
 
         @Override
         public int compareTo(final ElementScore other) {
-            final float otherMeanScore = other.namedScores.values().stream().reduce((x, y) -> x + y).get() / other.namedScores.values().size();
-            final float thisMeanScore = this.namedScores.values().stream().reduce((x, y) -> x + y).get() / this.namedScores.values().size();
+            final float otherMeanScore = other.namedScores.values().stream().reduce((x, y) -> x + y).orElse((float) 0.0) / other.namedScores.values().size();
+            final float thisMeanScore = this.namedScores.values().stream().reduce((x, y) -> x + y).orElse((float) 0.0) / this.namedScores.values().size();
             return Float.compare(otherMeanScore, thisMeanScore);
         }
     }

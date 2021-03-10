@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,10 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphConstants;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.schema.analyticschema.concept.SpatialConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Blaze;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.datastructure.ObjectCache;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape;
 import au.gov.asd.tac.constellation.views.mapview.features.ConstellationAbstractFeature;
@@ -33,8 +35,6 @@ import au.gov.asd.tac.constellation.views.mapview.markers.ConstellationMarkerFac
 import au.gov.asd.tac.constellation.views.mapview.markers.ConstellationMultiMarker;
 import au.gov.asd.tac.constellation.views.mapview.markers.ConstellationPointMarker;
 import au.gov.asd.tac.constellation.views.mapview.markers.ConstellationPolygonMarker;
-import au.gov.asd.tac.constellation.visual.blaze.Blaze;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
 import de.fhpotsdam.unfolding.UnfoldingMap;
 import de.fhpotsdam.unfolding.data.GeoJSONReader;
 import de.fhpotsdam.unfolding.geo.Location;
@@ -273,7 +273,6 @@ public abstract class MarkerCache extends ObjectCache<ConstellationAbstractMarke
                                             colors.add(MarkerUtilities.value(MarkerUtilities.DEFAULT_CUSTOM_COLOR));
                                             selected |= marker.isSelected();
                                             dimmed |= marker.isDimmed();
-                                            hidden |= marker.isHidden();
                                         }
                                         continue;
                                 }
@@ -345,7 +344,6 @@ public abstract class MarkerCache extends ObjectCache<ConstellationAbstractMarke
 
                             // update dimming
                             marker.setDimmed(dimmed);
-
                             // update visibility
                             if ((markerState.isShowSelectedOnly() && !marker.isSelected())
                                     || (!markerState.isShowPointMarkers() && marker instanceof ConstellationPointMarker)

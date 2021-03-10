@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -165,10 +165,8 @@ public class ColumnsInTablePanel extends javax.swing.JPanel {
                 }
             }
 
-            if (elementType == GraphElementType.VERTEX) {
-                if (includeVxId && !alreadyHave.contains(GraphTableModel.VX_ATTR.getId())) {
-                    labels.add(new CheckListItem<>(GraphTableModel.VX_ATTR, false));
-                }
+            if (elementType == GraphElementType.VERTEX && includeVxId && !alreadyHave.contains(GraphTableModel.VX_ATTR.getId())) {
+                labels.add(new CheckListItem<>(GraphTableModel.VX_ATTR, false));
             }
 
             if (elementType == GraphElementType.TRANSACTION) {
@@ -208,6 +206,7 @@ public class ColumnsInTablePanel extends javax.swing.JPanel {
         @Override
         public Component getListCellRendererComponent(final JList<? extends Object> list, final Object value, final int index, final boolean isSelected, final boolean cellHasFocus) {
             setOpaque(true);
+            @SuppressWarnings("unchecked") //value will be an attribute checklist item
             final CheckListItem<Attribute> listItem = (CheckListItem<Attribute>) value;
             setSelected(listItem.isSelected);
             setText(listItem.item.getName());
@@ -231,7 +230,7 @@ public class ColumnsInTablePanel extends javax.swing.JPanel {
     private static class CheckListItem<T> {
 
         public final T item;
-        public boolean isSelected;
+        private boolean isSelected;
 
         public CheckListItem(final T item, final boolean isSelected) {
             this.item = item;

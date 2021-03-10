@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,20 +17,25 @@ package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.graph.node.NewDefaultSchemaGraphAction;
-import au.gov.asd.tac.constellation.pluginframework.Plugin;
-import au.gov.asd.tac.constellation.pluginframework.PluginException;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
-import au.gov.asd.tac.constellation.pluginframework.PluginGraphs;
-import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
-import au.gov.asd.tac.constellation.pluginframework.PluginRegistry;
-import au.gov.asd.tac.constellation.pluginframework.PluginSynchronizer;
-import au.gov.asd.tac.constellation.pluginframework.gui.PluginParametersPaneListener;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.parameters.RecentParameterValues;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.DateTimeRange;
-import au.gov.asd.tac.constellation.pluginframework.templates.SimplePlugin;
+import au.gov.asd.tac.constellation.graph.node.create.NewDefaultSchemaGraphAction;
+import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginGraphs;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginRegistry;
+import au.gov.asd.tac.constellation.plugins.PluginSynchronizer;
+import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPaneListener;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
+import au.gov.asd.tac.constellation.plugins.parameters.types.DateTimeRange;
+import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.utilities.icon.AnalyticIconProvider;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
@@ -39,10 +44,8 @@ import static au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginType
 import au.gov.asd.tac.constellation.views.dataaccess.io.ParameterIOUtilities;
 import au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessPreferenceKeys;
 import au.gov.asd.tac.constellation.views.dataaccess.templates.DataAccessPreQueryValidation;
+import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetterListener;
 import au.gov.asd.tac.constellation.views.qualitycontrol.widget.QualityControlAutoButton;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
-import au.gov.asd.tac.constellation.visual.icons.AnalyticIconProvider;
-import au.gov.asd.tac.constellation.visual.icons.UserInterfaceIconProvider;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -86,6 +89,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
+import org.apache.commons.collections4.CollectionUtils;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.NotificationDisplayer;
@@ -102,7 +106,7 @@ import org.openide.util.NbPreferences;
  * @author arcturus
  * @author antares
  */
-public class DataAccessPane extends AnchorPane implements PluginParametersPaneListener {
+public class DataAccessPane extends AnchorPane implements PluginParametersPaneListener, QualityControlAutoVetterListener {
 
     // Insets with 0 top and bottom so the title doesn't change size vertically.
     static final Insets HELP_INSETS = new Insets(0, 8, 0, 8);
@@ -116,9 +120,11 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
 
     private static final String EXECUTE_GO = "Go";
     private static final String EXECUTE_STOP = "Stop";
+    private static final String EXECUTE_CALCULATING = "Calculating";
     private static final String GO_STYLE = "-fx-background-color: rgb(64,180,64); -fx-padding: 2 5 2 5;";
     private static final String STOP_STYLE = "-fx-background-color: rgb(180,64,64); -fx-padding: 2 5 2 5;";
     private static final String CONTINUE_STYLE = "-fx-background-color: rgb(255,180,0); -fx-padding: 2 5 2 5;";
+    private static final String CALCULATING_STYLE = "-fx-background-color: rgb(0,100,255); -fx-padding: 2 5 2 5;";
 
     private final Preferences dataAccessPrefs = NbPreferences.forModule(DataAccessPreferenceKeys.class);
 
@@ -130,7 +136,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
     private final Button executeButton = new Button(EXECUTE_GO);
 
     // search plugins
-    private TextField searchPluginTextField;
+    private final TextField searchPluginTextField;
 
     // favourites
     private static final String ADD_FAVOURITE = "Add";
@@ -177,7 +183,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                 .addListener((oldValue, newValue) -> update());
 
         final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
-        helpButton.paddingProperty().set(HELP_INSETS);
+        helpButton.paddingProperty().set(new Insets(0, 8, 0, 64));
         helpButton.setTooltip(new Tooltip("Display help for Data Access"));
         helpButton.setOnAction(event -> {
             new HelpCtx(DataAccessViewTopComponent.class.getName()).display();
@@ -211,50 +217,46 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         executeButton.setOnAction((ActionEvent event) -> {
             boolean pluginSelected = false;
             boolean selectedPluginsValid = true;
-            
+
             // check for activated plugins and their validity.
             for (Tab tab : dataAccessTabPane.getTabs()) {
-                if (tabHasEnabledPlugins(tab)) {
+                if (tabHasEnabledPlugins(tab) && !validateTabEnabledPlugins(tab)) {
                     pluginSelected = true;
-                    if (!validateTabEnabledPlugins(tab)) {
-                        selectedPluginsValid = false;
-                    }
-                } 
+                    selectedPluginsValid = false;
+                } else if (tabHasEnabledPlugins(tab)) {
+                    pluginSelected = true;
+                }
             }
             // when no graph present, create new graph
-            if(graphId == null){
-                if (pluginSelected && selectedPluginsValid) {
-                    NewDefaultSchemaGraphAction graphAction = new NewDefaultSchemaGraphAction();
-                    graphAction.actionPerformed(null);
-                    while(GraphManager.getDefault().getActiveGraph() == null){
-                        // Wait and do nothing while graph is getting made
-                    }
-                    graphId = GraphManager.getDefault().getActiveGraph().getId();
-                    if (!graphState.containsKey(graphId)) {
-                        graphState.put(graphId, new GraphState());
-                    }
-                    currentGraphState = graphState.get(graphId);
+            if (graphId == null && pluginSelected && selectedPluginsValid) {
+                NewDefaultSchemaGraphAction graphAction = new NewDefaultSchemaGraphAction();
+                graphAction.actionPerformed(null);
+                while (GraphManager.getDefault().getActiveGraph() == null) {
+                    // Wait and do nothing while graph is getting made
                 }
+                graphId = GraphManager.getDefault().getActiveGraph().getId();
+                if (!graphState.containsKey(graphId)) {
+                    graphState.put(graphId, new GraphState());
+                }
+                currentGraphState = graphState.get(graphId);
             }
             // run the selected queries
             final ObservableList<Tab> tabs = dataAccessTabPane.getTabs();
-            if (tabs != null && currentGraphState != null && !tabs.isEmpty() && currentGraphState.goButtonIsGo) {
+            if (CollectionUtils.isNotEmpty(tabs) && currentGraphState != null && currentGraphState.goButtonIsGo) {
                 setExecuteButtonToStop();
                 graphState.get(GraphManager.getDefault().getActiveGraph().getId()).queriesRunning = true;
 
                 final File outputDir = DataAccessPreferenceKeys.getDataAccessResultsDirEx();
-                if (outputDir != null) {
-                    if (outputDir.isDirectory()) {
-                        final String msg = String.format("Data access results will be written to %s", outputDir.getAbsolutePath());
-                        StatusDisplayer.getDefault().setStatusText(msg);
-                    } else {
-                        final String msg = String.format("Results directory %s does not exist", outputDir.getAbsolutePath());
-                        NotificationDisplayer.getDefault().notify("Save raw results",
-                                UserInterfaceIconProvider.ERROR.buildIcon(16, ConstellationColor.CHERRY.getJavaColor()),
-                                msg,
-                                null
-                        );
-                    }
+                if (outputDir != null && outputDir.isDirectory()) {
+                    final String msg = String.format("Data access results will be written to %s", outputDir.getAbsolutePath());
+                    StatusDisplayer.getDefault().setStatusText(msg);
+                } else if (outputDir != null) {
+                    final String msg = String.format("Results directory %s does not exist", outputDir.getAbsolutePath());
+                    NotificationDisplayer.getDefault().notify("Save raw results",
+                            UserInterfaceIconProvider.ERROR.buildIcon(16, ConstellationColor.CHERRY.getJavaColor()),
+                            msg,
+                            null
+                    );
                 }
 
                 PluginExecution.withPlugin(new SimplePlugin("Data Access View: Save State") {
@@ -294,13 +296,10 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                             }
                         } catch (InterruptedException e) {
                         }
-                        Platform.runLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                graphState.get(storedGraphId).queriesRunning = false;
-                                if (storedGraphId.equals(graphId)) {
-                                    update();
-                                }
+                        Platform.runLater(() -> {
+                            graphState.get(storedGraphId).queriesRunning = false;
+                            if (storedGraphId.equals(graphId)) {
+                                update();
                             }
                         });
                     }
@@ -308,8 +307,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                     private String getExceptionDescription(Throwable e) {
                         if (e.getCause() != null) {
                             return getExceptionDescription(e.getCause());
-                        }
-                        if (e.getMessage() != null) {
+                        } else if (e.getMessage() != null) {
                             return e.getMessage();
                         }
                         return e.getClass().getName();
@@ -318,15 +316,13 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                 waiting.setName(DAV_PLUGIN_QUEUE_THREAD_NAME);
                 waiting.start();
                 LOGGER.info("Plugins run.");
-            } else { // Button is a stop button
-                if(currentGraphState != null){
-                    for (Future<?> running : currentGraphState.runningPlugins.keySet()) {
-                        running.cancel(true);
-                    }
-                setExecuteButtonToGo();
+            } else if (currentGraphState != null) { // Button is a stop button
+                for (Future<?> running : currentGraphState.runningPlugins.keySet()) {
+                    running.cancel(true);
                 }
+                setExecuteButtonToGo();
             }
-            if(DataAccessPreferenceKeys.isDeselectPluginsOnExecuteEnabled()) {
+            if (DataAccessPreferenceKeys.isDeselectPluginsOnExecuteEnabled()) {
                 deselectAllPlugins();
             }
         });
@@ -366,13 +362,13 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                 DataAccessPreferenceKeys.setDataAccessResultsDir(null);
             }
         });
-        
+
         final CheckMenuItem deselectPluginsOnExecution = new CheckMenuItem("Deselect Plugins On Go");
         deselectPluginsOnExecution.setSelected(DataAccessPreferenceKeys.isDeselectPluginsOnExecuteEnabled());
         deselectPluginsOnExecution.setOnAction(event -> {
             DataAccessPreferenceKeys.setDeselectPluginsOnExecute(deselectPluginsOnExecution.isSelected());
         });
-        
+
         searchPluginTextField = new TextField();
         searchPluginTextField.setPromptText("Type to search for a plugin");
         searchPluginTextField.textProperty().addListener((ov, oldValue, newValue) -> {
@@ -433,14 +429,13 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         });
 
         if (selectedPlugins.isEmpty()) {
-            final NotifyDescriptor nd = new NotifyDescriptor.Message("No plugins selected.", NotifyDescriptor.WARNING_MESSAGE);
-            DialogDisplayer.getDefault().notify(nd);
+            NotifyDisplayer.display("No plugins selected.", NotifyDescriptor.WARNING_MESSAGE);
         } else {
             final StringBuilder message = new StringBuilder(300);
             message.append("Add or remove plugins from your favourites category.\n\n");
             message.append("The following plugins were selected:\n");
             selectedPlugins.stream().forEach(plugin -> {
-                message.append(plugin).append("\n");
+                message.append(plugin).append(SeparatorConstants.NEWLINE);
             });
             message.append("\nNote that you need to restart before changes take effect.");
 
@@ -467,9 +462,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
 
                     // Use a pre-filled LinkedHashMap to keep the types in the correct order.
                     final List<String> typeList = DataAccessPluginType.getTypes();
-                    typeList.stream().forEach((type) -> {
-                        plugins.put(type, new ArrayList<>());
-                    });
+                    typeList.stream().forEach(type -> plugins.put(type, new ArrayList<>()));
 
                     // create the favourites category
                     if (plugins.get(DataAccessPluginCoreType.FAVOURITES) == null) {
@@ -488,12 +481,9 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                                 // If plugin type is valid, add the plugin to the Data Access View.
                                 plugins.get(type).add(plugin);
                                 LOGGER.log(Level.INFO, "Discovered data access plugin {0} ({1})", new Object[]{plugin.getName(), plugin.getType()});
-
                                 // If plugin overrides another, record which plugin should be removed for later processing.
-                                if (plugin.getOverriddenPlugins() != null) {
-                                    for (final String overriddenPluginName : plugin.getOverriddenPlugins()) {
-                                        pluginOverrides.put(overriddenPluginName, plugin);
-                                    }
+                                for (final String overriddenPluginName : plugin.getOverriddenPlugins()) {
+                                    pluginOverrides.put(overriddenPluginName, plugin);
                                 }
                             } else {
                                 // If a plugin type is invalid (that is, not registered as a DataAccessPluginType), ignore the plugin.
@@ -541,6 +531,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
             countDownLatch.await();
         } catch (InterruptedException ex) {
             LOGGER.severe(ex.getLocalizedMessage());
+            Thread.currentThread().interrupt();
         }
 
         return plugins;
@@ -705,6 +696,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                         }
                     }
                 } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                 }
                 Platform.runLater(() -> {
                     graphState.get(storedGraphId).queriesRunning = false;
@@ -858,7 +850,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                 if (params != null) {
                     final Map<String, PluginParameter<?>> paramsMap = params.getParameters();
                     for (Map.Entry<String, PluginParameter<?>> entry : paramsMap.entrySet()) {
-                        final PluginParameter value = entry.getValue();
+                        final PluginParameter<?> value = entry.getValue();
                         if (value.getError() != null) {
                             return false;
                         }
@@ -1025,8 +1017,13 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                         final String id = param.getKey();
                         final Object obj = param.getValue().getObjectValue();
                         if (obj != null && obj.toString() != null && !obj.toString().isEmpty()) {
-                            String value = param.getValue().getStringValue();
-                            RecentParameterValues.storeRecentValue(id, value);
+                            final String value = param.getValue().getStringValue();
+                            final String typeValue = param.getValue().getType().toString();
+                            if (!typeValue.contains("LocalDateParameterType")) {
+                                RecentParameterValues.storeRecentValue(id, value);
+                            } else {
+                                RecentParameterValues.storeRecentValue(id, obj.toString());
+                            }
                         }
                     }
                 }
@@ -1036,14 +1033,30 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
 
     @Override
     public void validityChanged(boolean enabled) {
+        // Must be overriden to implement PluginParametersPaneListener
     }
 
     private void deselectAllPlugins() {
-        dataAccessTabPane.getTabs().stream().filter((tab) -> (tabHasEnabledPlugins(tab))).forEachOrdered((tab) -> {
-            getQueryPhasePane(tab).getDataAccessPanes().forEach((dataAccessPane) -> {
-                dataAccessPane.validityChanged(false);
-            });
+        dataAccessTabPane.getTabs().stream().filter(this::tabHasEnabledPlugins).forEachOrdered(tab -> {
+            getQueryPhasePane(tab).getDataAccessPanes().forEach(dataAccessPane -> dataAccessPane.validityChanged(false));
         });
+    }
+
+    @Override
+    public void qualityControlRuleChanged(final boolean canRun) {
+        if (canRun) {
+            Platform.runLater(() -> {
+                executeButton.setDisable(!canRun);
+                executeButton.setText(EXECUTE_GO);
+                executeButton.setStyle(GO_STYLE);
+            });
+        } else {
+            Platform.runLater(() -> {
+                executeButton.setDisable(!canRun);
+                executeButton.setText(EXECUTE_CALCULATING);
+                executeButton.setStyle(CALCULATING_STYLE);
+            });
+        }
     }
 
     /**
@@ -1051,9 +1064,9 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
      */
     private static class GraphState {
 
-        public boolean queriesRunning = false;
-        public boolean goButtonIsGo = true;
-        public Map<Future<?>, String> runningPlugins = new HashMap<>();
+        private boolean queriesRunning = false;
+        private boolean goButtonIsGo = true;
+        private Map<Future<?>, String> runningPlugins = new HashMap<>();
     }
 
 }

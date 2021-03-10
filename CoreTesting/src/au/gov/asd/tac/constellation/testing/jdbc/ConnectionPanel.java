@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.TimeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
-import au.gov.asd.tac.constellation.visual.InfoTextPanel;
+import au.gov.asd.tac.constellation.utilities.gui.InfoTextPanel;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -46,6 +46,7 @@ import java.util.zip.ZipEntry;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.filesystems.FileChooserBuilder;
@@ -61,6 +62,7 @@ public class ConnectionPanel extends JPanel {
 //    private static final String DRIVER_KEY = "driver";
 
     private static final String EXT = ".jar";
+    private static final String SIXTEEN_S_FORMAT = "    %-16s %s,%n";
 
     private final Graph graph;
 
@@ -136,7 +138,7 @@ public class ConnectionPanel extends JPanel {
     private void getDrivers(final String jarfile) {
         try {
             final ArrayList<String> driverList = new ArrayList<>();
-            if (jarfile != null && !jarfile.isEmpty()) {
+            if (StringUtils.isNotBlank(jarfile)) {
                 try (final JarFile jf = new JarFile(jarfile)) {
                     final ZipEntry ze = jf.getEntry("META-INF/services/java.sql.Driver");
                     if (ze != null) {
@@ -155,21 +157,22 @@ public class ConnectionPanel extends JPanel {
                         // The JAR file hasn't told us what the possible driver classes are,
                         // so do it the hard way.
                         final URL[] searchPath = new URL[]{new URL("file:///" + jarfile)};
-                        final ClassLoader clloader = new URLClassLoader(searchPath);
-                        for (final Enumeration<JarEntry> e = jf.entries(); e.hasMoreElements();) {
-                            final JarEntry je = e.nextElement();
-                            final String classname = je.getName();
-                            if (classname.endsWith(".class")) {
-                                try {
-                                    // Remove ".class", convert '/' to '.' to create a proper class name.
-                                    final int len = classname.length();
-                                    final String name = classname.substring(0, len - 6).replace('/', '.');
-                                    final Class<?> cl = clloader.loadClass(name);
-                                    if (Driver.class.isAssignableFrom(cl)) {
-                                        driverList.add(name);
+                        try (final URLClassLoader clloader = new URLClassLoader(searchPath)) {
+                            for (final Enumeration<JarEntry> e = jf.entries(); e.hasMoreElements();) {
+                                final JarEntry je = e.nextElement();
+                                final String classname = je.getName();
+                                if (classname.endsWith(".class")) {
+                                    try {
+                                        // Remove ".class", convert '/' to '.' to create a proper class name.
+                                        final int len = classname.length();
+                                        final String name = classname.substring(0, len - 6).replace('/', '.');
+                                        final Class<?> cl = clloader.loadClass(name);
+                                        if (Driver.class.isAssignableFrom(cl)) {
+                                            driverList.add(name);
+                                        }
+                                    } catch (ClassNotFoundException ex) {
+                                        // Not a valid class; ignore it.
                                     }
-                                } catch (ClassNotFoundException ex) {
-                                    // Not a valid class; ignore it.
                                 }
                             }
                         }
@@ -434,12 +437,12 @@ public class ConnectionPanel extends JPanel {
         final StringBuilder buf = new StringBuilder();
         buf.append(String.format("CREATE TABLE %s%n(%n", tableName));
         if (etype == GraphElementType.VERTEX) {
-            buf.append(String.format("    %-16s %s,%n", "vx_id_", sqlType(IntegerAttributeDescription.ATTRIBUTE_NAME)));
+            buf.append(String.format(SIXTEEN_S_FORMAT, "vx_id_", sqlType(IntegerAttributeDescription.ATTRIBUTE_NAME)));
         } else {
-            buf.append(String.format("    %-16s %s,%n", "tx_id_", sqlType(IntegerAttributeDescription.ATTRIBUTE_NAME)));
-            buf.append(String.format("    %-16s %s,%n", "vx_src_", sqlType(IntegerAttributeDescription.ATTRIBUTE_NAME)));
-            buf.append(String.format("    %-16s %s,%n", "vx_dst_", sqlType(IntegerAttributeDescription.ATTRIBUTE_NAME)));
-            buf.append(String.format("    %-16s %s,%n", "tx_dir_", sqlType(BooleanAttributeDescription.ATTRIBUTE_NAME)));
+            buf.append(String.format(SIXTEEN_S_FORMAT, "tx_id_", sqlType(IntegerAttributeDescription.ATTRIBUTE_NAME)));
+            buf.append(String.format(SIXTEEN_S_FORMAT, "vx_src_", sqlType(IntegerAttributeDescription.ATTRIBUTE_NAME)));
+            buf.append(String.format(SIXTEEN_S_FORMAT, "vx_dst_", sqlType(IntegerAttributeDescription.ATTRIBUTE_NAME)));
+            buf.append(String.format(SIXTEEN_S_FORMAT, "tx_dir_", sqlType(BooleanAttributeDescription.ATTRIBUTE_NAME)));
         }
 
         final ArrayList<String> lines = new ArrayList<>();
@@ -447,14 +450,12 @@ public class ConnectionPanel extends JPanel {
         for (int position = 0; position < attrCount; position++) {
             final int attrId = rg.getAttribute(etype, position);
             final Attribute attr = new GraphAttribute(rg, attrId);
-            final String line = String.format("    %-16s %s,%n", JdbcUtilities.canonicalLabel(attr.getName(), false), sqlType(attr.getAttributeType()));
+            final String line = String.format(SIXTEEN_S_FORMAT, JdbcUtilities.canonicalLabel(attr.getName(), false), sqlType(attr.getAttributeType()));
             lines.add(line);
         }
 
         lines.sort(String::compareTo);
-        lines.stream().forEach((line) -> {
-            buf.append(line);
-        });
+        lines.stream().forEach(buf::append);
 
         if (etype == GraphElementType.VERTEX) {
             buf.append("    PRIMARY KEY (vx_id_)%n");

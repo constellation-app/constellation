@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.rest;
 
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -63,6 +64,8 @@ public abstract class Response {
      * Body as JSON.
      */
     public final JsonNode json;
+
+    private static final String DASH_STRING = "----\n";
 
     private static final Logger LOGGER = Logger.getLogger(Response.class.getName());
 
@@ -166,51 +169,46 @@ public abstract class Response {
 
     public String getLogMessage() {
         if (json != null && json.get("logMessage") != null) {
-            final String logMessage = json.get("logMessage").textValue();
-            return logMessage;
+            return json.get("logMessage").textValue();
         }
 
-        return String.format("Invalid response %d: %s\n%s\n", code, message, Arrays.toString(bytes));
+        return String.format("Invalid response %d: %s%n%s%n", code, message, Arrays.toString(bytes));
     }
 
     @Override
     public String toString() {
         final StringBuilder b = new StringBuilder();
-        b.append(String.format("[%s\n", this.getClass().getSimpleName()));
-        b.append("----\n");
-        b.append(String.format("code    : %d\n", code));
-        b.append(String.format("message : %s\n", message));
-        b.append("----\n");
-        headers.entrySet().stream().forEach((header) -> {
-            b.append(String.format("header  : %s\n", header.getKey()));
-            header.getValue().stream().forEach((v) -> {
-                b.append(String.format("        : %s\n", v));
-            });
+        b.append(String.format("[%s%n", this.getClass().getSimpleName()));
+        b.append(DASH_STRING);
+        b.append(String.format("code    : %d%n", code));
+        b.append(String.format("message : %s%n", message));
+        b.append(DASH_STRING);
+        headers.entrySet().stream().forEach(header -> {
+            b.append(String.format("header  : %s%n", header.getKey()));
+            header.getValue().stream().forEach(v -> b.append(String.format("        : %s%n", v)));
         });
 
-        b.append("----\n");
+        b.append(DASH_STRING);
 
         boolean jsonShown = false;
         if (json != null) {
             try {
                 b.append(jsonToString(json));
-                b.append("\n");
+                b.append(SeparatorConstants.NEWLINE);
                 jsonShown = true;
             } catch (IOException ex) {
             }
         }
 
-        if (!jsonShown) {
-            if (bytes != null) {
-                try {
-                    b.append(new String(bytes, StandardCharsets.UTF_8.name()));
-                } catch (UnsupportedEncodingException ex) {
-                    b.append(String.format("(bytes: length %d)", bytes.length));
-                }
+        if (!jsonShown && bytes != null) {
+            try {
+                b.append(new String(bytes, StandardCharsets.UTF_8.name()));
+            } catch (UnsupportedEncodingException ex) {
+                b.append(String.format("(bytes: length %d)", bytes.length));
             }
         }
 
-        b.append("----\n");
+        b.append(DASH_STRING);
         b.append("]\n");
 
         return b.toString();

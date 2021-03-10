@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,9 @@ import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
-import au.gov.asd.tac.constellation.graph.io.GraphFileConstants;
-import au.gov.asd.tac.constellation.graph.schema.SchemaAttribute;
+import au.gov.asd.tac.constellation.graph.file.io.GraphFileConstants;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,7 +35,6 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
-import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 
 /**
@@ -131,7 +131,7 @@ public class MappingPanel extends javax.swing.JPanel {
 
         final TableColumn tcol = table.getColumnModel().getColumn(columnIndex);
         tcol.setCellRenderer(new MappingCellRenderer(values));
-        tcol.setCellEditor(new DefaultCellEditor(new JComboBox(values)));
+        tcol.setCellEditor(new DefaultCellEditor(new JComboBox<>(values)));
     }
 
     /**
@@ -240,24 +240,24 @@ public class MappingPanel extends javax.swing.JPanel {
                 // There are no existing mappings, so attempt to create some reasonable defaults.
                 final HashMap<String, String> canonical = new HashMap<>();
                 if (showTableColumns) {
-                    attrLabels.stream().forEach((label) -> {
+                    attrLabels.stream().forEach(label -> {
                         final String clabel = JdbcUtilities.canonicalLabel(label);
                         canonical.put(clabel, label);
                     });
 
-                    columnLabels.stream().forEach((label) -> {
+                    columnLabels.stream().forEach(label -> {
                         final String clabel = JdbcUtilities.canonicalLabel(label);
                         if (canonical.containsKey(clabel)) {
                             mapping.put(label, canonical.get(clabel));
                         }
                     });
                 } else {
-                    columnLabels.stream().forEach((label) -> {
+                    columnLabels.stream().forEach(label -> {
                         final String clabel = JdbcUtilities.canonicalLabel(label);
                         canonical.put(clabel, label);
                     });
 
-                    attrLabels.stream().forEach((label) -> {
+                    attrLabels.stream().forEach(label -> {
                         final String clabel = JdbcUtilities.canonicalLabel(label);
                         if (canonical.containsKey(clabel)) {
                             mapping.put(label, canonical.get(clabel));
@@ -323,10 +323,12 @@ public class MappingPanel extends javax.swing.JPanel {
 
         @Override
         public void addTableModelListener(final TableModelListener l) {
+            // Required for TableModel, Intentionally left blank
         }
 
         @Override
         public void removeTableModelListener(final TableModelListener l) {
+            // Required for TableModel, Intentionally left blank
         }
     }
 
@@ -489,8 +491,7 @@ public class MappingPanel extends javax.swing.JPanel {
     {//GEN-HEADEREND:event_saveButtonActionPerformed
         final String label = labelText.getText().trim();
         if (label.isEmpty()) {
-            final NotifyDescriptor nderr = new NotifyDescriptor.Message("A label must be specified for saving", NotifyDescriptor.ERROR_MESSAGE);
-            DialogDisplayer.getDefault().notify(nderr);
+            NotifyDisplayer.display("A label must be specified for saving", NotifyDescriptor.ERROR_MESSAGE);
         } else {
             final MappingTableModel vxModel = (MappingTableModel) vxTable.getModel();
             data.vxMappings = JdbcData.copy(vxModel.values);

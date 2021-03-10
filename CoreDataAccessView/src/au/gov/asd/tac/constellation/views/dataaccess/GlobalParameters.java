@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess;
 
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -108,7 +108,7 @@ public abstract class GlobalParameters {
      * @param container The container to store the data
      *
      */
-    protected static void readDataToMap(final Class cls, final String name, final Map<String, String> container) {
+    protected static void readDataToMap(final Class<?> cls, final String name, final Map<String, String> container) {
         try {
             final InputStreamReader in = new InputStreamReader(cls.getResourceAsStream(name), StandardCharsets.UTF_8.name());
             try (final BufferedReader reader = new BufferedReader(in)) {
@@ -134,15 +134,15 @@ public abstract class GlobalParameters {
      */
     protected static class PositionalPluginParameter implements Comparable<PositionalPluginParameter> {
 
-        private final PluginParameter parameter;
+        private final PluginParameter<?> parameter;
         private final int position;
 
-        public PositionalPluginParameter(final PluginParameter parameter, final int position) {
+        public PositionalPluginParameter(final PluginParameter<?> parameter, final int position) {
             this.parameter = parameter;
             this.position = position;
         }
 
-        public PluginParameter getParameter() {
+        public PluginParameter<?> getParameter() {
             return parameter;
         }
 

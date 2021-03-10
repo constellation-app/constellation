@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,11 @@
  */
 package au.gov.asd.tac.constellation.views.analyticview.translators;
 
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.FactResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.FactResult.ElementFact;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.TableVisualisation;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.openide.util.lookup.ServiceProvider;
@@ -39,13 +39,13 @@ public class FactToTableTranslator extends AbstractTableTranslator<FactResult, E
     }
 
     @Override
-    public Class<? extends AnalyticResult> getResultType() {
+    public Class<? extends AnalyticResult<?>> getResultType() {
         return FactResult.class;
     }
 
     @Override
-    public TableVisualisation buildVisualisation() {
-        final TableVisualisation<ElementFact> tableVisualisation = new TableVisualisation(this);
+    public TableVisualisation<ElementFact> buildVisualisation() {
+        final TableVisualisation<ElementFact> tableVisualisation = new TableVisualisation<>(this);
         final Set<String> factNames = result.getUniqueFactNames();
         tableVisualisation.addColumn(IDENTIFIER_COLUMN_NAME, (100 / 3) * 2);
         factNames.forEach(factName -> {
@@ -54,7 +54,7 @@ public class FactToTableTranslator extends AbstractTableTranslator<FactResult, E
         tableVisualisation.populateTable(result.getIgnoreNullResults()
                 ? result.get().stream().filter(elementScore -> !elementScore.isNull()).collect(Collectors.toList()) : result.get());
         result.addResultListener(tableVisualisation);
-        tableVisualisation.setSelectionModelListener((change) -> {
+        tableVisualisation.setSelectionModelListener(change -> {
             result.setSelectionOnGraph(tableVisualisation.getSelectedItems());
         });
         return tableVisualisation;
@@ -64,16 +64,12 @@ public class FactToTableTranslator extends AbstractTableTranslator<FactResult, E
     public Object getCellData(final ElementFact cellValue, final String columnName) {
         if (cellValue == null) {
             return null;
-        }
-        switch (columnName) {
-            case IDENTIFIER_COLUMN_NAME:
-                return cellValue.getIdentifier();
-            default:
-                if (cellValue.getFactName().equals(columnName)) {
-                    return cellValue.getFactValue();
-                } else {
-                    throw new UnrecognisedColumnException("Column not recognised: " + columnName);
-                }
+        } else if (IDENTIFIER_COLUMN_NAME.equals(columnName)) {
+            return cellValue.getIdentifier();
+        } else if (cellValue.getFactName().equals(columnName)) {
+            return cellValue.getFactValue();
+        } else {
+            throw new UnrecognisedColumnException(columnName);
         }
     }
 
@@ -82,15 +78,12 @@ public class FactToTableTranslator extends AbstractTableTranslator<FactResult, E
         if (cellValue == null) {
             return null;
         }
-        switch (columnName) {
-            case IDENTIFIER_COLUMN_NAME:
-                return cellItem.toString();
-            default:
-                if (cellValue.getFactName().equals(columnName)) {
-                    return cellItem.toString();
-                } else {
-                    throw new UnrecognisedColumnException("Column not recognised: " + columnName);
-                }
+        if (IDENTIFIER_COLUMN_NAME.equals(columnName)) {
+            return cellItem.toString();
+        } else if (cellValue.getFactName().equals(columnName)) {
+            return cellItem.toString();
+        } else {
+            throw new UnrecognisedColumnException(columnName);
         }
     }
 
@@ -99,18 +92,12 @@ public class FactToTableTranslator extends AbstractTableTranslator<FactResult, E
         final float intensity;
         if (cellValue == null) {
             intensity = 0f;
+        } else if (IDENTIFIER_COLUMN_NAME.equals(columnName)) {
+            intensity = cellValue.getFactValue() ? 1f : 0f;
+        } else if (cellValue.getFactName().equals(columnName)) {
+            intensity = (boolean) cellItem ? 1f : 0f;
         } else {
-            switch (columnName) {
-                case IDENTIFIER_COLUMN_NAME:
-                    intensity = cellValue.getFactValue() ? 1f : 0f;
-                    break;
-                default:
-                    if (cellValue.getFactName().equals(columnName)) {
-                        intensity = (boolean) cellItem ? 1f : 0f;
-                    } else {
-                        throw new UnrecognisedColumnException("Column not recognised: " + columnName);
-                    }
-            }
+            throw new UnrecognisedColumnException(columnName);
         }
 
         return ConstellationColor.getColorValue(intensity, intensity, 0f, 0.3f);

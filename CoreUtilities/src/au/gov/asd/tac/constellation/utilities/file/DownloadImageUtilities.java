@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,14 +18,13 @@ package au.gov.asd.tac.constellation.utilities.file;
 import au.gov.asd.tac.constellation.utilities.https.HttpsConnection;
 import au.gov.asd.tac.constellation.utilities.https.HttpsUtilities;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import javafx.scene.image.Image;
 import javax.net.ssl.HttpsURLConnection;
 import org.netbeans.api.annotations.common.StaticResource;
 import org.openide.util.Exceptions;
 
 /**
- * TODO: please move me and the DOWNLOAD_FAILED_ICON asset to a common utility
- * class in core
  *
  * @author arcturus
  */
@@ -35,7 +34,7 @@ public class DownloadImageUtilities {
      * Icon to state that the download failed
      */
     @StaticResource
-    private static final String DOWNLOAD_FAILED_ICON = "au/gov/asd/tac/constellation/utilities/file/resources/downloadFailed.png";
+    private static final String DOWNLOAD_FAILED_ICON = "au/gov/asd/tac/constellation/utilities/file/resources/download_failed.png";
 
     /**
      * Download a png file and return an {@code Image} instance of the image. If
@@ -51,7 +50,7 @@ public class DownloadImageUtilities {
         HttpsURLConnection connection = null;
         try {
             connection = HttpsConnection.withUrl(q).acceptPng().withReadTimeout(10 * 1000).get();
-            if (connection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 img = new Image(HttpsUtilities.getInputStream(connection));
             }
         } catch (IOException ex) {

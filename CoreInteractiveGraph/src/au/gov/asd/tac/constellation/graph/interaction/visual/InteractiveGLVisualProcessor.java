@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,11 @@
 package au.gov.asd.tac.constellation.graph.interaction.visual;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.graph.interaction.HitState;
-import au.gov.asd.tac.constellation.graph.interaction.HitState.HitType;
-import au.gov.asd.tac.constellation.graph.interaction.InteractionEventHandler;
-import au.gov.asd.tac.constellation.graph.interaction.VisualAnnotator;
-import au.gov.asd.tac.constellation.graph.interaction.VisualInteraction;
+import au.gov.asd.tac.constellation.graph.interaction.framework.HitState;
+import au.gov.asd.tac.constellation.graph.interaction.framework.HitState.HitType;
+import au.gov.asd.tac.constellation.graph.interaction.framework.InteractionEventHandler;
+import au.gov.asd.tac.constellation.graph.interaction.framework.VisualAnnotator;
+import au.gov.asd.tac.constellation.graph.interaction.framework.VisualInteraction;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.HitTestRequest;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.HitTester;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.NewLineModel;
@@ -28,26 +28,28 @@ import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.NewLine
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.PlanesRenderable;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionBoxModel;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionBoxRenderable;
-import au.gov.asd.tac.constellation.graph.visual.camera.CameraUtilities;
 import au.gov.asd.tac.constellation.graph.visual.utilities.VisualGraphUtilities;
-import au.gov.asd.tac.constellation.visual.camera.Camera;
-import au.gov.asd.tac.constellation.visual.display.VisualChange;
-import au.gov.asd.tac.constellation.visual.display.VisualChangeBuilder;
-import au.gov.asd.tac.constellation.visual.display.VisualOperation;
-import au.gov.asd.tac.constellation.visual.display.VisualProperty;
-import au.gov.asd.tac.constellation.visual.graphics3d.Graphics3DUtilities;
-import au.gov.asd.tac.constellation.visual.graphics3d.Matrix44f;
-import au.gov.asd.tac.constellation.visual.graphics3d.Vector3f;
+import au.gov.asd.tac.constellation.utilities.camera.Camera;
+import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
+import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
+import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
+import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
+import au.gov.asd.tac.constellation.utilities.visual.VisualChangeBuilder;
+import au.gov.asd.tac.constellation.utilities.visual.VisualOperation;
+import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
-import java.awt.Component;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetListener;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 /**
  * An extension of the {@link GLVisualProcessor} that adds support for user
@@ -76,6 +78,8 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
     private InteractionEventHandler handler;
     private DropTargetListener targetListener;
     private DropTarget target;
+
+    private static final Logger LOGGER = Logger.getLogger(InteractiveGLVisualProcessor.class.getName());
 
     /**
      * Create a new InteractiveGLVisualProcessor.
@@ -139,7 +143,7 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
 
         @Override
         public int getPriority() {
-            return ELEVATED_VISUAL_PRIORITY;
+            return VisualPriority.ELEVATED_VISUAL_PRIORITY.getValue();
         }
 
         public GLSetHitTestingOperation(final boolean doHitTesting) {
@@ -206,11 +210,10 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
 
     @Override
     public Vector3f convertZoomPointToDirection(final Point zoomPoint) {
-        final Component canvas = getCanvas();
         return new Vector3f(
-                (float) (canvas.getWidth() / 2.0 - zoomPoint.x),
-                (float) (zoomPoint.y - canvas.getHeight() / 2.0),
-                (float) (canvas.getHeight() / (2 * Math.tan(Camera.FIELD_OF_VIEW * Math.PI / 180 / 2))));
+                (float) (getCanvas().getWidth() / 2.0 - zoomPoint.x),
+                (float) (zoomPoint.y - getCanvas().getHeight() / 2.0),
+                (float) (getCanvas().getHeight() / (2 * Math.tan(Camera.FIELD_OF_VIEW * Math.PI / 180 / 2))));
     }
 
     @Override
@@ -229,10 +232,8 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
 
     @Override
     public float convertTranslationToSpin(final Point from, final Point to) {
-        final int canvasWidth = getCanvas().getWidth();
-        final int canvasHeight = getCanvas().getHeight();
-        final float xDist = (canvasWidth / 2.0f - to.x) / (canvasWidth / 2.0f);
-        final float yDist = (canvasHeight / 2.0f - to.y) / (canvasHeight / 2.0f);
+        final float xDist = (getCanvas().getWidth() / 2.0f - to.x) / (getCanvas().getWidth() / 2.0f);
+        final float yDist = (getCanvas().getHeight() / 2.0f - to.y) / (getCanvas().getHeight() / 2.0f);
         final float xDelta = (from.x - to.x) / 2.0f;
         final float yDelta = (from.y - to.y) / 2.0f;
         return yDist * xDelta - xDist * yDelta;
@@ -275,39 +276,15 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
         // Calculate the height and width of the viewing frustrum as a function of distance from the camera
         final float verticalScale = (float) (Math.tan(Math.toRadians(Camera.FIELD_OF_VIEW / 2.0)));
         final float horizontalScale = verticalScale * getCanvas().getWidth() / getCanvas().getHeight();
-        float closestDistance = Float.MAX_VALUE;
-        Vector3f closestNode = null;
-        boolean foundScreenNode = false;
 
         // Iterate through the camera locations of each node in the graph
-        Iterator<Vector3f> nodeLocations = VisualGraphUtilities.streamVertexSceneLocations(graph, camera).iterator();
-        while (nodeLocations.hasNext()) {
+        final Stream<NodeCameraDistance> nodeCameraDistances = VisualGraphUtilities.streamVertexSceneLocations(graph, camera)
+                .parallel()
+                .map(vector -> new NodeCameraDistance(vector, horizontalScale, verticalScale));
 
-            final Vector3f nodeLoaction = nodeLocations.next();
-            final float zDistanceFromCamera = nodeLoaction.getZ();
-            final float distanceFromCamera = nodeLoaction.getLength();
+        final NodeCameraDistance closest = nodeCameraDistances.parallel().reduce(new NodeCameraDistance(), (ncd1, ncd2) -> NodeCameraDistance.getClosestNode(ncd1, ncd2));
 
-            // Is the vertex in front of the camera?
-            if (zDistanceFromCamera < 0) {
-                final float horizontalOffset = nodeLoaction.getX() / zDistanceFromCamera;
-                final float verticalOffset = nodeLoaction.getY() / zDistanceFromCamera;
-
-                // Is this vertex visible on the screen?
-                if (horizontalOffset > -horizontalScale && horizontalOffset < horizontalScale && verticalOffset > -verticalScale && verticalOffset < verticalScale) {
-                    // Is the first or closest node visible on the screen, record it as the closest node
-                    if (!foundScreenNode || distanceFromCamera < closestDistance) {
-                        closestNode = nodeLoaction;
-                        closestDistance = closestNode.getLength();
-                        foundScreenNode = true;
-                    }
-                } else if (!foundScreenNode && distanceFromCamera < closestDistance) {
-                    // If no vertices on the screen have been found, this vertex is in front of the camera, and is the closest (or first) such vertex, record it as the closest node.
-                    closestNode = nodeLoaction;
-                    closestDistance = closestNode.getLength();
-                }
-            }
-        }
-        return closestNode;
+        return closest.nodeLocation;
     }
 
     @Override
@@ -315,11 +292,89 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
         final float verticalScale = (float) (Math.tan(Math.toRadians(Camera.FIELD_OF_VIEW / 2.0)));
         final float horizontalScale = verticalScale * getCanvas().getWidth() / getCanvas().getHeight();
         final int[] viewport = getViewport();
-
         final float leftScale = (((float) left / (float) viewport[2]) - 0.5f) * horizontalScale * 2;
         final float rightScale = (((float) right / (float) viewport[2]) - 0.5f) * horizontalScale * 2;
         final float topScale = (((float) (viewport[3] - top) / (float) viewport[3]) - 0.5f) * verticalScale * 2;
         final float bottomScale = (((float) (viewport[3] - bottom) / (float) viewport[3]) - 0.5f) * verticalScale * 2;
         return new float[]{leftScale, rightScale, topScale, bottomScale};
+    }
+
+    @Override
+    public float getDPIScalingFactor() {
+        // HACK_DPI - Get the X Scale value from the GLCanva's transform matrix
+        // This method was derived from the JOGL post found here:
+        // http://forum.jogamp.org/canvas-not-filling-frame-td4040092.html#a4040210
+        try {
+            return (float) ((Graphics2D) getCanvas().getGraphics()).getTransform().getScaleX();
+        } catch (Exception ex) {
+            LOGGER.log(Level.WARNING, "Null exception accessing interactionGraph", ex);
+            return 1.0f;
+        }
+    }
+
+    private static class NodeCameraDistance {
+
+        final Vector3f nodeLocation;
+        final Float distanceFromCamera;
+
+        public NodeCameraDistance() {
+            this.nodeLocation = null;
+            this.distanceFromCamera = null;
+        }
+
+        public NodeCameraDistance(Vector3f nodeLocation, final float horizontalScale, final float verticalScale) {
+            this.nodeLocation = nodeLocation;
+            this.distanceFromCamera = getDistanceFromCamera(nodeLocation, horizontalScale, verticalScale);
+        }
+
+        static NodeCameraDistance getClosestNode(NodeCameraDistance ncd1, NodeCameraDistance ncd2) {
+            NodeCameraDistance closest = null;
+            if (ncd1.distanceFromCamera == null) {
+                closest = ncd2;
+            } else if (ncd2.distanceFromCamera == null) {
+                closest = ncd1;
+            } else if (ncd1.distanceFromCamera < 0) {
+                if (ncd2.distanceFromCamera > ncd1.distanceFromCamera) {
+                    closest = ncd2;
+                } else {
+                    closest = ncd1;
+                }
+            } else if (ncd2.distanceFromCamera < 0) {
+                if (ncd1.distanceFromCamera > ncd2.distanceFromCamera) {
+                    closest = ncd1;
+                } else {
+                    closest = ncd2;
+                }
+            } else {
+                if (ncd1.distanceFromCamera < ncd2.distanceFromCamera) {
+                    closest = ncd1;
+                } else {
+                    closest = ncd2;
+                }
+            }
+            return closest;
+        }
+
+        private static Float getDistanceFromCamera(Vector3f nodeLocation, final float horizontalScale, final float verticalScale) {
+            final float zDistanceFromCamera = nodeLocation.getZ();
+            final float distanceFromCamera = nodeLocation.getLength();
+
+            // Is the vertex in front of the camera?
+            if (zDistanceFromCamera < 0) {
+                final float horizontalOffset = nodeLocation.getX() / zDistanceFromCamera;
+                final float verticalOffset = nodeLocation.getY() / zDistanceFromCamera;
+
+                // Is this vertex visible on the screen?
+                if (horizontalOffset > -horizontalScale && horizontalOffset < horizontalScale && verticalOffset > -verticalScale && verticalOffset < verticalScale) {
+                    // Is the first or closest node visible on the screen, record it as the closest node
+                    return distanceFromCamera;
+                } else {
+                    // If no vertices on the screen have been found, this vertex is in front of the camera, and is the closest (or first) such vertex, record it as the closest node.
+                    return -distanceFromCamera;
+                }
+            }
+            return null;
+        }
+
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,15 +19,16 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
@@ -56,8 +57,32 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class PasswordObfuscator {
 
-    protected static final String ALG = "AES";
-    protected static final String ALG_SPEC = ALG; // + "/CBC/PKCS5Padding"; // Specifying the mode and padding causes a parameter error
+    public static final String KEYGEN_SYMBOL = "-";
+
+    /**
+     * Obfuscate a password.
+     *
+     * @param password The password as a String.
+     *
+     * @return The obfuscated password.
+     */
+    public static ObfuscatedPassword obfuscate(final String password) {
+        final IvParameterSpec iv = new IvParameterSpec(PasswordUtilities.getIV());
+        final SecretKey key = new SecretKeySpec(PasswordUtilities.getKey(), PasswordUtilities.ALG);
+        try {
+            final Cipher cipher = Cipher.getInstance(PasswordUtilities.ALG_SPEC);
+            cipher.init(Cipher.ENCRYPT_MODE, key, iv);
+            final byte[] encrypted = cipher.doFinal(password.getBytes(StandardCharsets.UTF_8));
+            final StringBuilder encryptedHex = new StringBuilder();
+            for (final byte b : encrypted) {
+                encryptedHex.append(String.format("%02x", b));
+            }
+            return new ObfuscatedPassword(encryptedHex.toString());
+        } catch (final InvalidKeyException | IllegalBlockSizeException | BadPaddingException
+                | NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 
     /**
      * Either obfuscate a password or (if "-" is entered for the password),
@@ -66,7 +91,7 @@ public class PasswordObfuscator {
      * To run the main method navigate to constellation\Security\build\classes
      * on the command prompt and run the following command:
      * <pre>
-     * java -cp . au.gov.asd.tac.constellation.security.password.PasswordObfuscator
+     * java -cp {path/to/org-openide-util-lookup.jar};. au.gov.asd.tac.constellation.security.password.PasswordObfuscator
      * </pre>
      * <p>
      * Should you decide to create a new key, note that all existing obfuscated
@@ -89,17 +114,15 @@ public class PasswordObfuscator {
         final BufferedReader input = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8.name()));
         System.out.print("Enter the string to encrypt (enter \"-\" to genernate a key): ");
         System.out.flush();
-        final String pwd = input.readLine();
-        if (pwd != null) {
-            if (pwd.equals("-")) { // Key gen mode
-                final KeyGenerator keygen = KeyGenerator.getInstance(ALG);
-                final SecretKey cv = keygen.generateKey();
-                byte[] raw = cv.getEncoded();
+        final String password = input.readLine();
+        if (password != null) {
+            if (password.equals(KEYGEN_SYMBOL)) { // Key gen mode
+                final byte[] encodedKey = PasswordUtilities.generateKey();
                 System.out.print("new byte[] {");
                 int i = 0;
-                for (byte b : raw) {
+                for (final byte b : encodedKey) {
                     System.out.printf("(byte) 0x%02x", b);
-                    if (i < raw.length - 1) {
+                    if (i < encodedKey.length - 1) {
                         System.out.print(", ");
                     }
                     i = i + 1;
@@ -108,15 +131,9 @@ public class PasswordObfuscator {
                     }
                 }
             } else { // Encrypt a password
-                final byte[] cleartext = pwd.getBytes(StandardCharsets.UTF_8.name());
-                final SecretKey cv = new SecretKeySpec(PasswordUtilities.getKey(), ALG);
-                final Cipher cipher = Cipher.getInstance(ALG_SPEC);
-                cipher.init(Cipher.ENCRYPT_MODE, cv);
-                final byte[] ciphertext = cipher.doFinal(cleartext);
+                final ObfuscatedPassword obfuscatedPassword = obfuscate(password);
                 System.out.print("The obfuscated password is: ");
-                for (final byte b : ciphertext) {
-                    System.out.printf("%02x", b);
-                }
+                System.out.println(obfuscatedPassword.toString());
                 System.out.flush();
             }
         }

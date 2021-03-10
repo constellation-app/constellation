@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,16 @@
  */
 package au.gov.asd.tac.constellation.views.schemaview.providers;
 
-import au.gov.asd.tac.constellation.pluginframework.Plugin;
-import au.gov.asd.tac.constellation.pluginframework.PluginRegistry;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.utilities.string.SeparatorConstants;
+import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginRegistry;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
-import au.gov.asd.tac.constellation.visual.icons.UserInterfaceIconProvider;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -85,7 +84,7 @@ public class PluginsNodeProvider implements SchemaViewNodeProvider {
     @Override
     public void setContent(final Tab tab) {
         final Map<String, String> pluginNames = new TreeMap<>();
-        final Map<String, ObservableList<PluginParameter>> pluginParameters = new HashMap<>();
+        final Map<String, ObservableList<PluginParameter<?>>> pluginParameters = new HashMap<>();
         final Map<String, String> dataAccessTypes = new HashMap<>();
 
         // Get plugins in order of description.
@@ -115,9 +114,9 @@ public class PluginsNodeProvider implements SchemaViewNodeProvider {
                 try {
                     final PluginParameters parameters = plugin.createParameters();
                     if (parameters != null) {
-                        final ObservableList<PluginParameter> parameterList = FXCollections.observableArrayList();
+                        final ObservableList<PluginParameter<?>> parameterList = FXCollections.observableArrayList();
                         parameters.getParameters().entrySet().stream().forEach(entry -> {
-                            final PluginParameter parameter = entry.getValue();
+                            final PluginParameter<?> parameter = entry.getValue();
                             parameterList.add(parameter);
                         });
 
@@ -159,22 +158,22 @@ public class PluginsNodeProvider implements SchemaViewNodeProvider {
             if (pluginParameters.containsKey(pluginName)) {
                 grid.add(boldLabel("Parameters"), 0, 3);
 
-                final TableColumn<PluginParameter, String> colName = new TableColumn<>("Name");
+                final TableColumn<PluginParameter<?>, String> colName = new TableColumn<>("Name");
                 colName.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getId()));
 
-                final TableColumn<PluginParameter, String> colType = new TableColumn<>("Type");
+                final TableColumn<PluginParameter<?>, String> colType = new TableColumn<>("Type");
                 colType.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getType().getId()));
 
-                final TableColumn<PluginParameter, String> colLabel = new TableColumn<>("Label");
+                final TableColumn<PluginParameter<?>, String> colLabel = new TableColumn<>("Label");
                 colLabel.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getName()));
 
-                final TableColumn<PluginParameter, String> colDescr = new TableColumn<>("Description");
+                final TableColumn<PluginParameter<?>, String> colDescr = new TableColumn<>("Description");
                 colDescr.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getDescription()));
 
-                final TableColumn<PluginParameter, String> colDefault = new TableColumn<>("Default Value");
+                final TableColumn<PluginParameter<?>, String> colDefault = new TableColumn<>("Default Value");
                 colDefault.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getStringValue()));
 
-                final TableView<PluginParameter> parameterTable = new TableView<>(pluginParameters.get(pluginName));
+                final TableView<PluginParameter<?>> parameterTable = new TableView<>(pluginParameters.get(pluginName));
                 parameterTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
                 parameterTable.getColumns().addAll(colName, colType, colLabel, colDescr, colDefault);
                 parameterTable.setFixedCellSize(25);
@@ -265,20 +264,20 @@ public class PluginsNodeProvider implements SchemaViewNodeProvider {
             PluginRegistry.getPluginClassNames().stream().forEach((final String pname) -> {
                 final Plugin plugin = PluginRegistry.get(pname);
                 final String name = plugin.getName();
-                final Map<String, List<PluginParameter>> params = new HashMap<>();
+                final Map<String, List<PluginParameter<?>>> params = new HashMap<>();
 
                 try {
                     final PluginParameters pp = plugin.createParameters();
                     if (pp != null) {
-                        final List<PluginParameter> paramList = new ArrayList();
+                        final List<PluginParameter<?>> paramList = new ArrayList<>();
                         pp.getParameters().entrySet().stream().forEach(entry -> {
-                            final PluginParameter param = entry.getValue();
+                            final PluginParameter<?> param = entry.getValue();
                             paramList.add(param);
                         });
 
                         Collections.sort(paramList, (a, b) -> a.getId().compareToIgnoreCase(b.getId()));
 
-                        paramList.stream().forEach((p) -> {
+                        paramList.stream().forEach(p -> {
                             sb.append(plugin.getClass().getName()).append(SeparatorConstants.COMMA)
                                     .append(PluginRegistry.getAlias(pname)).append(SeparatorConstants.COMMA)
                                     .append(p.getId()).append(SeparatorConstants.COMMA)
@@ -301,8 +300,6 @@ public class PluginsNodeProvider implements SchemaViewNodeProvider {
                 final File file = new File(dir, String.format("Plugin Details - %s.csv", dateFormatter.format(new Date())));
                 try (final FileOutputStream fileOutputStream = new FileOutputStream(file)) {
                     fileOutputStream.write(sb.toString().getBytes(StandardCharsets.UTF_8.name()));
-                } catch (FileNotFoundException ex) {
-                    LOGGER.log(Level.SEVERE, "Error during export of plugin details to csv", ex);
                 } catch (IOException ex) {
                     LOGGER.log(Level.SEVERE, "Error during export of plugin details to csv", ex);
                 }

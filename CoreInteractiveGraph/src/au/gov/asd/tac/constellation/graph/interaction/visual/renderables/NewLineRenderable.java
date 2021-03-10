@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,10 @@ package au.gov.asd.tac.constellation.graph.interaction.visual.renderables;
 
 import static au.gov.asd.tac.constellation.graph.interaction.visual.renderables.NewLineRenderable.NEW_LINE_COLOR;
 import static au.gov.asd.tac.constellation.graph.interaction.visual.renderables.NewLineRenderable.NEW_LINE_WIDTH;
-import au.gov.asd.tac.constellation.visual.camera.Camera;
-import au.gov.asd.tac.constellation.visual.graphics3d.Matrix44f;
-import au.gov.asd.tac.constellation.visual.graphics3d.Vector3f;
-import au.gov.asd.tac.constellation.visual.graphics3d.Vector4f;
+import au.gov.asd.tac.constellation.utilities.camera.Camera;
+import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.Batch;
@@ -81,7 +81,7 @@ public class NewLineRenderable implements GLRenderable {
 
     @Override
     public int getPriority() {
-        return GLRenderable.ANNOTATIONS_PRIORITY;
+        return RenderablePriority.ANNOTATIONS_PRIORITY.getValue();
     }
 
     /**
@@ -131,26 +131,22 @@ public class NewLineRenderable implements GLRenderable {
 
     @Override
     public void update(final GLAutoDrawable drawable) {
-        if (modelQueue != null) {
-            final Camera camera = parent.getDisplayCamera();
-            NewLineModel updatedModel = modelQueue.peek();
-            while (updatedModel != null && updatedModel.getCamera() != camera) {
-                modelQueue.remove();
-                updatedModel = modelQueue.peek();
-            }
-            if (updatedModel != null) {
-                updatedModel = modelQueue.remove();
-                NewLineModel nextModel = modelQueue.peek();
-                while (nextModel != null && nextModel.getCamera() == camera) {
-                    updatedModel = modelQueue.remove();
-                    nextModel = modelQueue.peek();
-                }
-                modelQueue.addFirst(updatedModel);
-            }
-            model = updatedModel;
-        } else {
-            model = null;
+        final Camera camera = parent.getDisplayCamera();
+        NewLineModel updatedModel = modelQueue.peek();
+        while (updatedModel != null && updatedModel.getCamera() != camera) {
+            modelQueue.remove();
+            updatedModel = modelQueue.peek();
         }
+        if (updatedModel != null) {
+            updatedModel = modelQueue.remove();
+            NewLineModel nextModel = modelQueue.peek();
+            while (nextModel != null && nextModel.getCamera() == camera) {
+                updatedModel = modelQueue.remove();
+                nextModel = modelQueue.peek();
+            }
+            modelQueue.addFirst(updatedModel);
+        }
+        model = updatedModel;
     }
 
     /**

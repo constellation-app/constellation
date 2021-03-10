@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,13 @@
 package au.gov.asd.tac.constellation.webserver;
 
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
-import au.gov.asd.tac.constellation.visual.icons.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -33,17 +38,15 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.EnumSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import org.eclipse.jetty.server.RequestLog;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -96,7 +99,7 @@ public class WebServer {
             final String header = request.getHeader(SECRET_HEADER);
             final boolean ok = header != null && SECRET.equals(header);
             if (!ok) {
-                final String msg = String.format("REST API secret %s not provided.", SECRET_HEADER);
+                final String msg = String.format("REST API secret %s is invalid.", SECRET_HEADER);
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, msg);
 
                 final String msg2 = String.format("<html>REST API secret %s not provided.<br>Please download the external scripting Python client again.</html>",
@@ -119,8 +122,13 @@ public class WebServer {
     private static boolean running = false;
     private static int port = 0;
 
-    static final String CONSTELLATION_CLIENT = "constellation_client.py";
+    protected static final String CONSTELLATION_CLIENT = "constellation_client.py";
     private static final String IPYTHON = ".ipython";
+    private static final String RESOURCES = "resources/";
+
+    public static boolean isRunning() {
+        return running;
+    }
 
     public static synchronized int start() {
         if (!running) {
@@ -129,29 +137,16 @@ public class WebServer {
 
                 final InetAddress loopback = InetAddress.getLoopbackAddress();
                 port = prefs.getInt(ApplicationPreferenceKeys.WEBSERVER_PORT, ApplicationPreferenceKeys.WEBSERVER_PORT_DEFAULT);
-                final Server server = new Server(new InetSocketAddress(loopback, port));
-                final ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-                context.setContextPath("/");
-                server.setHandler(context);
-
-                for (ConstellationHttpServlet servlet : Lookup.getDefault().lookupAll(ConstellationHttpServlet.class)) {
-                    if (servlet.getClass().isAnnotationPresent(WebServlet.class)) {
-                        for (String urlPattern : servlet.getClass().getAnnotation(WebServlet.class).value()) {
-                            context.addServlet(new ServletHolder(servlet), urlPattern);
-                        }
-                        for (String urlPattern : servlet.getClass().getAnnotation(WebServlet.class).urlPatterns()) {
-                            context.addServlet(new ServletHolder(servlet), urlPattern);
-                        }
-                    }
-                }
-                server.start();
 
                 // Put the session secret and port number in a JSON file in the .CONSTELLATION directory.
                 // Make sure the file is owner read/write.
                 final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
                 final File restFile = new File(userDir, REST_FILE);
                 if (restFile.exists()) {
-                    restFile.delete();
+                    final boolean restFileIsDeleted = restFile.delete();
+                    if (!restFileIsDeleted) {
+                        //TODO: Handle case where file not successfully deleted
+                    }
                 }
 
                 // On Posix, we can use stricter file permissions.
@@ -166,7 +161,7 @@ public class WebServer {
                 // Now write the file contents.
                 try (final PrintWriter pw = new PrintWriter(restFile)) {
                     // Couldn't be bothered starting up a JSON writer for two simple values.
-                    pw.printf("{\"%s\":\"%s\", \"port\":%d}\n", ConstellationHttpServlet.SECRET_HEADER, ConstellationHttpServlet.SECRET, port);
+                    pw.printf("{\"%s\":\"%s\", \"port\":%d}%n", ConstellationHttpServlet.SECRET_HEADER, ConstellationHttpServlet.SECRET, port);
                 }
 
                 // Download the Python REST client if enabled.
@@ -175,14 +170,53 @@ public class WebServer {
                     downloadPythonClient();
                 }
 
+                // Build the server.
+                //
+                final Server server = new Server(new InetSocketAddress(loopback, port));
+                final ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+                context.setContextPath("/");
+                server.setHandler(context);
+
+                // Gather the servlets and add them to the server.
+                //
+                Lookup.getDefault().lookupAll(ConstellationHttpServlet.class).forEach(servlet -> {
+                    if (servlet.getClass().isAnnotationPresent(WebServlet.class)) {
+//                        for (String urlPattern : servlet.getClass().getAnnotation(WebServlet.class).value()) {
+//                            Logger.getGlobal().info(String.format("value %s %s", servlet, urlPattern));
+//                            context.addServlet(new ServletHolder(servlet), urlPattern);
+//                        }
+                        for (String urlPattern : servlet.getClass().getAnnotation(WebServlet.class).urlPatterns()) {
+                            Logger.getGlobal().info(String.format("urlpattern %s %s", servlet, urlPattern));
+                            context.addServlet(new ServletHolder(servlet), urlPattern);
+                        }
+                    }
+                });
+
+                // Make our own handler so we can log requests with the CONSTELLATION logs.
+                //
+                final RequestLog requestLog = (request, response) -> {
+                    final String log = String.format("Request at %s from %s %s, status %d", LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), request.getRemoteAddr(), request.getRequestURI(), response.getStatus());
+                    LOGGER.info(log);
+                };
+                server.setRequestLog(requestLog);
+
+                LOGGER.info(String.format("Starting Jetty version %s on%s:%d...", Server.getVersion(), loopback, port));
+                server.start();
+
+                // Wait for the server to stop (if it ever does).
+                //
                 final Thread webserver = new Thread(() -> {
                     try {
                         server.join();
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
+                    } catch (final InterruptedException ex) {
+                        Thread.currentThread().interrupt();
+                        throw new RuntimeException(ex);
                     } finally {
                         // Play nice and clean up (if Netbeans lets us).
-                        restFile.delete();
+                        final boolean restFileIsDeleted = restFile.delete();
+                        if (!restFileIsDeleted) {
+                            //TODO: Handle case where file not successfully deleted
+                        }
                     }
                 });
                 webserver.setName(WEB_SERVER_THREAD_NAME);
@@ -225,7 +259,7 @@ public class WebServer {
         if (doDownload) {
             boolean complete = false;
             try (
-                    final InputStream in = WebServer.class.getResourceAsStream(CONSTELLATION_CLIENT);
+                    final InputStream in = WebServer.class.getResourceAsStream(RESOURCES + CONSTELLATION_CLIENT);
                     final FileOutputStream out = new FileOutputStream(download)) {
                 final byte[] buf = new byte[64 * 1024];
                 while (true) {
@@ -250,21 +284,17 @@ public class WebServer {
     }
 
     /**
-     * Get the MD5 digest of an InputStream.
-     * <p>
-     * MD5 isn't particularly secure, but we don't really care. This is a
-     * pseudo-equality check; if the user wants to break it, that's their
-     * problem.
+     * Get the SHA-256 digest of an InputStream.
      *
      * @param in An InputStream.
      *
-     * @return A digest.
+     * @return A SHA256 digest.
      *
      * @throws IOException
      * @throws NoSuchAlgorithmException
      */
     private static byte[] getDigest(final InputStream in) throws IOException, NoSuchAlgorithmException {
-        final MessageDigest md5 = MessageDigest.getInstance("MD5");
+        final MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
         final byte[] buf = new byte[64 * 1024];
         while (true) {
             final int len = in.read(buf);
@@ -272,10 +302,10 @@ public class WebServer {
                 break;
             }
 
-            md5.update(buf, 0, len);
+            sha256.update(buf, 0, len);
         }
 
-        return md5.digest();
+        return sha256.digest();
     }
 
     /**
@@ -287,7 +317,7 @@ public class WebServer {
      */
     static boolean equalScripts(final File scriptFile) {
         try (final FileInputStream in1 = new FileInputStream(scriptFile)) {
-            try (final InputStream in2 = WebServer.class.getResourceAsStream(CONSTELLATION_CLIENT)) {
+            try (final InputStream in2 = WebServer.class.getResourceAsStream(RESOURCES + CONSTELLATION_CLIENT)) {
                 final byte[] dig1 = getDigest(in1);
                 final byte[] dig2 = getDigest(in2);
 

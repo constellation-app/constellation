@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,9 @@
  */
 package au.gov.asd.tac.constellation.security.password;
 
+import java.security.NoSuchAlgorithmException;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
 import org.openide.util.Lookup;
 
 /**
@@ -30,17 +33,43 @@ import org.openide.util.Lookup;
  */
 public class PasswordUtilities {
 
+    public static final String ALG = "AES";
+    public static final String ALG_SPEC = "AES/CBC/PKCS5Padding";
+
+    private static byte[] iv = null;
     private static byte[] key = null;
+
+    public static byte[] getIV() {
+        if (iv == null) {
+            final PasswordSecret secret = Lookup.getDefault().lookup(PasswordSecret.class);
+            if (secret == null) {
+                throw new RuntimeException("Could not find initialisation vectore to use.");
+            }
+            iv = secret.getIV();
+        }
+
+        return iv;
+    }
 
     public static byte[] getKey() {
         if (key == null) {
-            final PasswordKey passwordKey = Lookup.getDefault().lookup(PasswordKey.class);
-            if (passwordKey == null) {
+            final PasswordSecret secret = Lookup.getDefault().lookup(PasswordSecret.class);
+            if (secret == null) {
                 throw new RuntimeException("Could not find password key to use.");
             }
-            key = passwordKey.getKey();
+            key = secret.getKey();
         }
 
         return key;
+    }
+
+    public static byte[] generateKey() {
+        try {
+            final KeyGenerator keyGenerator = KeyGenerator.getInstance(PasswordUtilities.ALG);
+            final SecretKey secretKey = keyGenerator.generateKey();
+            return secretKey.getEncoded();
+        } catch (final NoSuchAlgorithmException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 }

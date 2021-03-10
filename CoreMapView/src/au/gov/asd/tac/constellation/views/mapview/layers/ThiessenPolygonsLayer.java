@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.mapview.layers;
 
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.mapview.utilities.MarkerUtilities;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
 import de.fhpotsdam.unfolding.marker.Marker;
 import de.fhpotsdam.unfolding.utils.ScreenPosition;
 import java.util.ArrayList;
@@ -141,7 +141,7 @@ public class ThiessenPolygonsLayer extends MapLayer {
     }
 
     private double manhattanDistance(final int x1, final int y1, final int x2, final int y2) {
-        return Math.abs(x1 - x2) + Math.abs(y1 - y2);
+        return Math.abs((double) x1 - x2) + Math.abs((double) y1 - y2);
     }
 
     private double minkovskiDistance(final int x1, final int y1, final int x2, final int y2) {

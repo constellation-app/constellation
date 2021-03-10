@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,11 @@ package au.gov.asd.tac.constellation.views.dataaccess.plugins.clean;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.pluginframework.Plugin;
-import au.gov.asd.tac.constellation.pluginframework.PluginException;
-import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
 import java.util.HashSet;
@@ -43,7 +43,7 @@ public class RemoveUnusedAttributesPlugin extends SimpleEditPlugin implements Da
 
     @Override
     public String getName() {
-        return "Remove Unsued Attributes";
+        return "Remove Unused Attributes";
     }
 
     @Override
@@ -63,40 +63,42 @@ public class RemoveUnusedAttributesPlugin extends SimpleEditPlugin implements Da
 
     @Override
     protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-        final Set<GraphElementType> graphElements = new HashSet<>();
-        graphElements.add(GraphElementType.VERTEX);
-        graphElements.add(GraphElementType.TRANSACTION);
-        final Set<Integer> nullSet = new HashSet<>();
+        if (graph.getVertexCount() > 0) {
+            final Set<GraphElementType> graphElements = new HashSet<>();
+            graphElements.add(GraphElementType.VERTEX);
+            graphElements.add(GraphElementType.TRANSACTION);
+            final Set<Integer> nullSet = new HashSet<>();
 
-        for (final GraphElementType element : graphElements) {
-            final int elementCount = (element == GraphElementType.VERTEX) ? graph.getVertexCount() : graph.getTransactionCount();
-            final int elementAttributeCount = graph.getAttributeCount(element);
+            for (final GraphElementType element : graphElements) {
+                final int elementCount = (element == GraphElementType.VERTEX) ? graph.getVertexCount() : graph.getTransactionCount();
+                final int elementAttributeCount = graph.getAttributeCount(element);
 
-            for (int i = 0; i < elementAttributeCount; i++) {
-                final int attributeId = graph.getAttribute(element, i);
+                for (int i = 0; i < elementAttributeCount; i++) {
+                    final int attributeId = graph.getAttribute(element, i);
 
-                if (graph.isPrimaryKey(attributeId)) {
-                    continue;
-                }
+                    if (graph.isPrimaryKey(attributeId)) {
+                        continue;
+                    }
 
-                boolean hasValue = false;
+                    boolean hasValue = false;
 
-                for (int j = 0; j < elementCount; j++) {
-                    final int elementId = (element == GraphElementType.VERTEX) ? graph.getVertex(j) : graph.getTransaction(j);
-                    if (graph.getStringValue(attributeId, elementId) != null) {
-                        hasValue = true;
-                        break;
+                    for (int j = 0; j < elementCount; j++) {
+                        final int elementId = (element == GraphElementType.VERTEX) ? graph.getVertex(j) : graph.getTransaction(j);
+                        if (graph.getStringValue(attributeId, elementId) != null) {
+                            hasValue = true;
+                            break;
+                        }
+                    }
+
+                    if (!hasValue) {
+                        nullSet.add(attributeId);
                     }
                 }
-
-                if (!hasValue) {
-                    nullSet.add(attributeId);
-                }
             }
-        }
 
-        for (final int attribute : nullSet) {
-            graph.removeAttribute(attribute);
+            for (final int attribute : nullSet) {
+                graph.removeAttribute(attribute);
+            }
         }
     }
 }

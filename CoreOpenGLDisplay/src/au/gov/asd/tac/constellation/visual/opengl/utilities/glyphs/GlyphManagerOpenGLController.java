@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,11 +75,6 @@ public class GlyphManagerOpenGLController {
         bindGlyphs(gl, glyphsUniformLocation, glyphsTexureUnit);
     }
 
-    public void dispose(GL3 gl) {
-        disposeCoordinates(gl);
-        disposeGlyphs(gl);
-    }
-
     private void initCoordinates(GL3 gl) {
 
         gl.glGenBuffers(1, coordinatesBufferName, 0);
@@ -118,10 +113,6 @@ public class GlyphManagerOpenGLController {
         gl.glActiveTexture(GL3.GL_TEXTURE0 + textureUnit);
         gl.glBindTexture(GL3.GL_TEXTURE_BUFFER, coordinatesTextureName[0]);
         gl.glUniform1i(uniformLocation, textureUnit);
-    }
-
-    private void disposeCoordinates(GL3 gl) {
-
     }
 
     private void initGlyphs(GL3 gl) {
@@ -190,9 +181,5 @@ public class GlyphManagerOpenGLController {
         gl.glUniform1i(uniformLocation, textureUnit);
         gl.glActiveTexture(GL3.GL_TEXTURE0 + textureUnit);
         gl.glBindTexture(GL3.GL_TEXTURE_2D_ARRAY, glyphsTextureName[0]);
-    }
-
-    private void disposeGlyphs(GL3 gl) {
-
     }
 }

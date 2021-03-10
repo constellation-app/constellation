@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,23 +15,22 @@
  */
 package au.gov.asd.tac.constellation.graph.node.templates;
 
-import au.gov.asd.tac.constellation.graph.node.NewSchemaGraphAction;
-import static au.gov.asd.tac.constellation.graph.node.NewSchemaGraphAction.TEMPLATE_DIRECTORY;
-import au.gov.asd.tac.constellation.pluginframework.Plugin;
-import au.gov.asd.tac.constellation.pluginframework.PluginException;
-import au.gov.asd.tac.constellation.pluginframework.PluginGraphs;
-import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
-import au.gov.asd.tac.constellation.pluginframework.gui.PluginParametersPane;
-import au.gov.asd.tac.constellation.pluginframework.parameters.ParameterChange;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.ActionParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.ParameterValue;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.SingleChoiceParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterValue;
-import au.gov.asd.tac.constellation.pluginframework.templates.SimplePlugin;
+import au.gov.asd.tac.constellation.graph.node.create.NewSchemaGraphAction;
+import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginGraphs;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPane;
+import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.ActionParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import java.io.File;
 import java.util.ArrayList;
@@ -39,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.prefs.Preferences;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
@@ -91,7 +91,7 @@ public class ManageTemplatesPlugin extends SimplePlugin {
         params.addController(DELETE_TEMPLATE_PARAMETER_ID, (master, parameters, change) -> {
             if (change == ParameterChange.NO_CHANGE) { // button pressed
                 final String deleteTemplateName = parameters.get(TEMPLATE_NAME_PARAMETER_ID).getStringValue();
-                if (deleteTemplateName != null && !deleteTemplateName.isEmpty()) {
+                if (StringUtils.isNotBlank(deleteTemplateName)) {
                     templateNames.remove(deleteTemplateName);
                     deletedTemplates.add(deleteTemplateName);
                     SingleChoiceParameterType.setOptions(templateParam, templateNames);
@@ -111,7 +111,7 @@ public class ManageTemplatesPlugin extends SimplePlugin {
         params.addController(DEFAULT_TEMPLATE_PARAMETER_ID, (master, parameters, change) -> {
             if (change == ParameterChange.NO_CHANGE) { // button pressed
                 final String chosenTemplate = parameters.get(TEMPLATE_NAME_PARAMETER_ID).getStringValue();
-                if (chosenTemplate != null && !chosenTemplate.isEmpty()) {
+                if (StringUtils.isNotBlank(chosenTemplate)) {
                     parameters.get(CURRENT_DEFAULT_PARAMETER_ID).setStringValue(chosenTemplate);
                 }
             }
@@ -144,7 +144,10 @@ public class ManageTemplatesPlugin extends SimplePlugin {
 
         final Map<String, String> templates = NewSchemaGraphAction.getTemplateNames();
         deletedTemplates.forEach(template -> {
-            new File(TEMPLATE_DIRECTORY, templates.get(template) + "/" + template).delete();
+            final boolean newFileIsDeleted = new File(NewSchemaGraphAction.getTemplateDirectory(), templates.get(template) + "/" + template).delete();
+            if (!newFileIsDeleted) {
+                //TODO: Handle case where file not successfully deleted
+            }
         });
 
         final String defaultTemplate = parameters.getStringValue(CURRENT_DEFAULT_PARAMETER_ID);

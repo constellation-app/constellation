@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.testing.construction;
 
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.testing.CoreTestingPluginRegistry;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -50,15 +50,6 @@ public final class SphereGraphBuilderAction implements ActionListener {
     @Override
     public void actionPerformed(final ActionEvent ev) {
         PluginExecution.withPlugin(CoreTestingPluginRegistry.SPHERE_GRAPH_BUILDER)
-                .withParameter(SphereGraphBuilderPlugin.N_PARAMETER_ID, 10)
-                .withParameter(SphereGraphBuilderPlugin.T_PARAMETER_ID, 10)
-                .withParameter(SphereGraphBuilderPlugin.OPTION_PARAMETER_ID, "Random vertices")
-                .withParameter(SphereGraphBuilderPlugin.ADD_CHARS_PARAMETER_ID, true)
-                .withParameter(SphereGraphBuilderPlugin.USE_LABELS_PARAMETER_ID, true)
-                .withParameter(SphereGraphBuilderPlugin.USE_RANDOM_ICONS_PARAMETER_ID, true)
-                .withParameter(SphereGraphBuilderPlugin.USE_ALL_DISPLAYABLE_CHARS_PARAMETER_ID, false)
-                .withParameter(SphereGraphBuilderPlugin.DRAW_MANY_TX_PARAMETER_ID, false)
-                .withParameter(SphereGraphBuilderPlugin.DRAW_MANY_DECORATORS_PARAMETER_ID, false)
                 .interactively(true)
                 .executeLater(context.getGraph());
     }

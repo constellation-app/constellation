@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,9 +34,11 @@ import org.openide.util.NbBundle.Messages;
         category = "Help",
         id = "au.gov.asd.tac.constellation.utilities.support.SupportAction")
 @ActionRegistration(
-        displayName = "#CTL_SupportAction")
+        displayName = "#CTL_SupportAction",
+        iconBase = "au/gov/asd/tac/constellation/utilities/support/submitTicket.png"
+)
 @ActionReference(path = "Menu/Help", position = 900)
-@Messages("CTL_SupportAction=Submit a ticket")
+@Messages("CTL_SupportAction=Submit a Ticket")
 public final class SupportAction implements ActionListener {
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.mapview.providers;
 import de.fhpotsdam.unfolding.core.Coordinate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.lang3.StringUtils;
 import processing.core.PApplet;
 import processing.core.PImage;
 
@@ -32,7 +33,7 @@ public abstract class EsriMapProvider extends MapProvider {
 
     private static final Logger LOGGER = Logger.getLogger(EsriMapProvider.class.getName());
 
-    public static enum MapServerType {
+    public enum MapServerType {
         /**
          * The {@link MapServerType#TILE} type supports ESRI tile-based mapping
          * services, this is the default.
@@ -76,8 +77,8 @@ public abstract class EsriMapProvider extends MapProvider {
                 break;
         }
 
-        if (url == null || url.isEmpty()) {
-            LOGGER.log(Level.WARNING, "Tile URL, %s, is invalid", url);
+        if (StringUtils.isBlank(url)) {
+            LOGGER.log(Level.WARNING, "Tile URL, {0}, is invalid", url);
         }
 
         return new String[]{url};

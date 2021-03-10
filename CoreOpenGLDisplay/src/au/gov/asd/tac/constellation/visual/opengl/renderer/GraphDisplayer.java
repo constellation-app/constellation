@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
-import au.gov.asd.tac.constellation.visual.graphics3d.Matrix44f;
+import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.Batch;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.ShaderManager;
@@ -61,7 +61,8 @@ public class GraphDisplayer implements GLRenderable {
     final int[] graphDrawBuffers = new int[1];
 
     // GL canvas dimension tracking
-    private int width, height;
+    private int width;
+    private int height;
     private boolean needsResize;
 
     // Shader and shader locations
@@ -130,7 +131,7 @@ public class GraphDisplayer implements GLRenderable {
             graphVp = getVertexShader();
             graphFp = getFragmentShader();
         } catch (final IOException ex) {
-            LOGGER.log(Level.SEVERE, "Can't read graph texture shaders", ex);
+            LOGGER.log(Level.SEVERE, "Can''t read graph texture shaders", ex);
         }
         graphTextureShader = GLTools.loadShaderSourceWithAttributes(gl, "graphTex", graphVp, null, graphFp,
                 vertexTarget, "position",

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.testing.memory;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManager.ClassStats;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManagerListener;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -35,7 +36,7 @@ import org.openide.windows.TopComponent;
 )
 @TopComponent.Description(
         preferredID = "MemoryManagerTopComponent",
-        //iconBase="SET/PATH/TO/ICON/HERE",
+        iconBase = "au/gov/asd/tac/constellation/testing/memory/resources/memory-manager.png",
         persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
 @TopComponent.Registration(
@@ -139,7 +140,7 @@ public final class MemoryManagerTopComponent extends TopComponent implements Mem
             result.append(stats.getTotalCount());
             result.append(", max = ");
             result.append(stats.getMaxCount());
-            result.append("\n");
+            result.append(SeparatorConstants.NEWLINE);
         }
 
         objectCountsTextArea.setText(result.toString());

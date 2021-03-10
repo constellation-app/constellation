@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,9 @@
 package au.gov.asd.tac.constellation.views.tableview2.state;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.schema.SchemaAttribute;
-import au.gov.asd.tac.constellation.graph.schema.SchemaConcept;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
+import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
+import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept.ConstellationViewsConcept;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -48,7 +49,7 @@ public class TableViewConcept extends SchemaConcept {
 
     public static class MetaAttribute {
 
-        public static final SchemaAttribute TABLE_VIEW_STATE = new SchemaAttribute.Builder(GraphElementType.META, "table_view_state", "table_view_state")
+        public static final SchemaAttribute TABLE_VIEW_STATE = new SchemaAttribute.Builder(GraphElementType.META, TableViewStateAttributeDescription.ATTRIBUTE_NAME, "table_view_state")
                 .setDescription("The current state of the table view with relation to the active graph")
                 .build();
     }

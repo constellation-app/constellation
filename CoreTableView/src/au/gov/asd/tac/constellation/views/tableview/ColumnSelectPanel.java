@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,10 @@
  */
 package au.gov.asd.tac.constellation.views.tableview;
 
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.tableview.GraphTableModel.AttributeSegment;
 import au.gov.asd.tac.constellation.views.tableview.GraphTableModel.Segment;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
-import au.gov.asd.tac.constellation.visual.icons.UserInterfaceIconProvider;
 import java.awt.Color;
 import java.awt.Component;
 import java.io.IOException;
@@ -53,8 +53,8 @@ public class ColumnSelectPanel extends javax.swing.JPanel {
      */
     public ColumnSelectPanel(final JTable table) {
         initComponents();
-        availableColumnModel = new DefaultListModel();
-        selectedColumnModel = new DefaultListModel();
+        availableColumnModel = new DefaultListModel<>();
+        selectedColumnModel = new DefaultListModel<>();
         availableColumnList.setModel(availableColumnModel);
         selectedColumnList.setModel(selectedColumnModel);
 

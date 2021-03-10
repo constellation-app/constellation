@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.conversationview;
 
-import au.gov.asd.tac.constellation.visual.fonts.FontUtilities;
-import au.gov.asd.tac.constellation.visual.javafx.JavafxStyleManager;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
+import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import javafx.application.Platform;
-import javafx.embed.swing.JFXPanel;
-import javafx.scene.Scene;
-import javafx.scene.paint.Color;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -68,9 +62,8 @@ import org.openide.windows.TopComponent;
     "CTL_ConversationViewTopComponent=Conversation View",
     "HINT_ConversationViewTopComponent=Conversation View"
 })
-public final class ConversationViewTopComponent extends TopComponent {
+public final class ConversationViewTopComponent extends JavaFxTopComponent<ConversationBox> {
 
-    private JFXPanel container = new JFXPanel();
     private Conversation conversation = new Conversation();
     private ConversationBox conversationBox;
 
@@ -78,24 +71,13 @@ public final class ConversationViewTopComponent extends TopComponent {
         initComponents();
         setName(Bundle.CTL_ConversationViewTopComponent());
         setToolTipText(Bundle.HINT_ConversationViewTopComponent());
-
-        setPreferredSize(new Dimension(500, 500));
-        setLayout(new BorderLayout());
-        add(container, BorderLayout.CENTER);
         Platform.setImplicitExit(false);
 
         Platform.runLater(() -> {
             conversationBox = new ConversationBox(conversation);
-            final Scene scene = new Scene(conversationBox, Color.web("#444444"));
-            container.setScene(scene);
-
-            // Style sheet to hide the scroll bars in the text areas in the bubbles
-            scene.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
-            scene.rootProperty().get().setStyle(String.format("-fx-font-size:%d;", FontUtilities.getOutputFontSize()));
-            scene.getStylesheets().add("/au/gov/asd/tac/constellation/views/conversationview/resources/conversation.css");
-
             conversation.getGraphUpdateManager().setManaged(true);
         });
+        initContent();
     }
 
     /**
@@ -121,18 +103,40 @@ public final class ConversationViewTopComponent extends TopComponent {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
     @Override
-    public void componentOpened() {
+    protected void handleComponentOpened() {
         conversation.getGraphUpdateManager().setManaged(true);
     }
 
     @Override
-    public void componentClosed() {
+    protected void handleComponentClosed() {
         conversation.getGraphUpdateManager().setManaged(false);
     }
 
+    @Override
+    protected void componentActivated() {
+        conversation.getGraphUpdateManager().setManaged(needsUpdate());
+    }
+
+    @Override
+    protected void componentDeactivated() {
+        conversation.getGraphUpdateManager().setManaged(needsUpdate());
+    }
+
     void writeProperties(java.util.Properties p) {
+        // Required for @ConvertAsProperties
     }
 
     void readProperties(java.util.Properties p) {
+        // Required for @ConvertAsProperties
+    }
+
+    @Override
+    protected String createStyle() {
+        return "resources/conversation.css";
+    }
+
+    @Override
+    protected ConversationBox createContent() {
+        return conversationBox;
     }
 }

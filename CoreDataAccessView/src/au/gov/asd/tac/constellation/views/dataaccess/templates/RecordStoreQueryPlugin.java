@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,25 +15,25 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.templates;
 
-import au.gov.asd.tac.constellation.arrangements.AbstractInclusionGraph.Connections;
-import au.gov.asd.tac.constellation.arrangements.ArrangementPluginRegistry;
-import au.gov.asd.tac.constellation.arrangements.VertexListInclusionGraph;
-import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
-import au.gov.asd.tac.constellation.utilities.preferences.PreferenceUtilites;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.operations.SetFloatValuesOperation;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.pluginframework.PluginException;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecutor;
-import au.gov.asd.tac.constellation.pluginframework.PluginInfo;
-import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
-import au.gov.asd.tac.constellation.pluginframework.PluginType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.templates.SimpleQueryPlugin;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginExecutor;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
+import au.gov.asd.tac.constellation.plugins.arrangements.AbstractInclusionGraph.Connections;
+import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
+import au.gov.asd.tac.constellation.plugins.arrangements.VertexListInclusionGraph;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.SimpleQueryPlugin;
+import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -73,7 +73,7 @@ public abstract class RecordStoreQueryPlugin extends SimpleQueryPlugin {
 
     protected final String PLUGIN_NAME = getName();
 
-    protected RecordStore query;
+    protected RecordStore queryRecordStore;
     private RecordStore result = null;
     private final List<RecordStoreValidator> validators;
 
@@ -111,13 +111,15 @@ public abstract class RecordStoreQueryPlugin extends SimpleQueryPlugin {
     protected void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
         switch (getRecordStoreType()) {
             case GraphRecordStoreUtilities.SOURCE:
-                query = GraphRecordStoreUtilities.getSelectedVertices(graph);
+                queryRecordStore = GraphRecordStoreUtilities.getSelectedVertices(graph);
                 break;
             case GraphRecordStoreUtilities.TRANSACTION:
-                query = GraphRecordStoreUtilities.getSelectedTransactions(graph);
+                queryRecordStore = GraphRecordStoreUtilities.getSelectedTransactions(graph);
                 break;
             case GraphRecordStoreUtilities.ALL:
-                query = GraphRecordStoreUtilities.getAllSelected(graph);
+                queryRecordStore = GraphRecordStoreUtilities.getAllSelected(graph);
+                break;
+            default:
                 break;
         }
     }
@@ -130,11 +132,11 @@ public abstract class RecordStoreQueryPlugin extends SimpleQueryPlugin {
             Thread.currentThread().setName(THREAD_POOL_NAME);
 
             for (final RecordStoreValidator validator : getValidators()) {
-                validator.validatePreQuery(this, query, interaction, parameters);
+                validator.validatePreQuery(this, queryRecordStore, interaction, parameters);
             }
 
-            query.reset();
-            final RecordStore rs = query(query, interaction, parameters);
+            queryRecordStore.reset();
+            final RecordStore rs = query(queryRecordStore, interaction, parameters);
 
             for (final RecordStoreValidator validator : getValidators()) {
                 validator.validatePostQuery(this, rs, interaction, parameters);
@@ -184,7 +186,7 @@ public abstract class RecordStoreQueryPlugin extends SimpleQueryPlugin {
         }
 
         if (result != null) {
-            // TODO: try to see if its worth setting this to init with schema to true. It did cause issues with it sometimes generating Vertex # nodes
+            // TODO: try to see if its worth setting this to init with schema to true - it did cause issues with it sometimes generating vertex # nodes
             final List<Integer> newVertices = GraphRecordStoreUtilities.addRecordStoreToGraph(wg, result, false, true, null);
 
             wg.validateKey(GraphElementType.VERTEX, true);
@@ -216,7 +218,7 @@ public abstract class RecordStoreQueryPlugin extends SimpleQueryPlugin {
             }
 
             // Reset the view
-            PluginExecutor.startWith(CorePluginRegistry.RESET).executeNow(wg);
+            PluginExecutor.startWith(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(wg);
         }
     }
 
@@ -348,9 +350,9 @@ public abstract class RecordStoreQueryPlugin extends SimpleQueryPlugin {
      * position
      */
     private void saveOriginalPositionCoordinates(final GraphWriteMethods wg, final float[] xOriginal, final float[] yOriginal, final float[] zOriginal) {
-        final int xAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
-        final int yAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
-        final int zAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
+        final int xAttr = VisualConcept.VertexAttribute.X.ensure(wg);
+        final int yAttr = VisualConcept.VertexAttribute.Y.ensure(wg);
+        final int zAttr = VisualConcept.VertexAttribute.Z.ensure(wg);
 
         final int vertexCount = wg.getVertexCount();
         for (int position = 0; position < vertexCount; position++) {

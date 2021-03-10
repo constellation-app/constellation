@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,9 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.visual.display.VisualChange;
-import au.gov.asd.tac.constellation.visual.display.VisualManager;
+import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
+import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
+import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor;
 import java.util.List;
 
 /**
@@ -174,6 +175,7 @@ public abstract class Animation {
                         wg = graph.getWritableGraph(getName(), isSignificant());
                         break;
                     } catch (InterruptedException ex) {
+                        Thread.currentThread().interrupt();
                     }
                 }
                 try {
@@ -202,6 +204,7 @@ public abstract class Animation {
             try {
                 Thread.sleep(getIntervalInMillis());
             } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
                 if (finished) {
                     reset(wg);
                     break;

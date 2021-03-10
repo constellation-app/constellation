@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.utilities.support;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -53,7 +52,7 @@ public class SupportPackage {
      * @param files A list of files to zip within the sourceFolder
      * @param destinationZipFilename The destination zip filename
      */
-    void zipFolder(final String sourceFolder, final List<String> files, final String destinationZipFilename) throws FileNotFoundException, IOException {
+    void zipFolder(final String sourceFolder, final List<String> files, final String destinationZipFilename) throws IOException {
         byte[] buffer = new byte[1024];
 
         final FileOutputStream fileOutputStream = new FileOutputStream(destinationZipFilename);
@@ -118,12 +117,6 @@ public class SupportPackage {
      * @return True to ignore the file, False otherwise
      */
     private boolean filesToIgnore(final String filename) {
-        switch (filename) {
-            case "heapdump.hprof":
-            case "heapdump.hprof.old":
-                return true;
-            default:
-                return false;
-        }
+        return "heapdump.hprof".equals(filename) || "heapdump.hprof.old".equals(filename);
     }
 }

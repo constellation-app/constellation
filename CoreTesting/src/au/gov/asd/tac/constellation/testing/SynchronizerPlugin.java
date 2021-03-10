@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,14 @@ package au.gov.asd.tac.constellation.testing;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
-import au.gov.asd.tac.constellation.pluginframework.parameters.ParameterChange;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterType;
-import au.gov.asd.tac.constellation.pluginframework.templates.SimpleQueryPlugin;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.SimpleQueryPlugin;
+import java.security.SecureRandom;
 import java.util.Map;
 
 /**
@@ -36,13 +38,17 @@ public class SynchronizerPlugin extends SimpleQueryPlugin {
 
     public static final String COPY_PARAMETER_ID = PluginParameter.buildId(SynchronizerPlugin.class, "copy");
     public static final String NAME_PARAMETER_ID = PluginParameter.buildId(SynchronizerPlugin.class, "name");
-    private final int readTime, queryTime, writeTime;
+    private final int readTime;
+    private final int queryTime;
+    private final int writeTime;
     private final String name;
 
+    private final SecureRandom random = new SecureRandom();
+
     public SynchronizerPlugin() {
-        readTime = (int) (Math.random() * 5) + 5;
-        queryTime = (int) (Math.random() * 10 + 10);
-        writeTime = (int) (Math.random() * 5) + 5;
+        readTime = random.nextInt(5) + 5;
+        queryTime = random.nextInt(10) + 10;
+        writeTime = random.nextInt(5) + 5;
 
         name = "Synchronizer Plugin " + NEXT_ID++;
     }
@@ -54,7 +60,8 @@ public class SynchronizerPlugin extends SimpleQueryPlugin {
         parameters.addParameter(StringParameterType.build(COPY_PARAMETER_ID));
         parameters.addController(NAME_PARAMETER_ID, (final PluginParameter<?> master, final Map<String, PluginParameter<?>> params, final ParameterChange change) -> {
             if (change == ParameterChange.VALUE) {
-                final PluginParameter slave = params.get(COPY_PARAMETER_ID);
+                @SuppressWarnings("unchecked") //COPY_PARAMETER will be of type StringParameter
+                final PluginParameter<StringParameterValue> slave = (PluginParameter<StringParameterValue>) params.get(COPY_PARAMETER_ID);
                 slave.setStringValue("COPY: " + master.getStringValue());
             }
         });

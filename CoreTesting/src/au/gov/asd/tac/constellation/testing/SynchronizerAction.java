@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@ package au.gov.asd.tac.constellation.testing;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
-import au.gov.asd.tac.constellation.pluginframework.PluginSynchronizer;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginSynchronizer;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import org.openide.awt.ActionID;
@@ -49,12 +49,13 @@ public final class SynchronizerAction implements ActionListener {
         Graph graph = context.getGraph();
 
         int count = 3;
-        PluginSynchronizer s = new PluginSynchronizer(count);
+        PluginSynchronizer pluginSynchronizer = new PluginSynchronizer(count);
 
         for (int i = 0; i < count; i++) {
             PluginExecution.withPlugin(new SynchronizerPlugin())
                     .withParameter(SynchronizerPlugin.NAME_PARAMETER_ID, "I am number " + i)
                     .interactively(true)
+                    .synchronizingOn(pluginSynchronizer)
                     .executeLater(graph);
         }
     }

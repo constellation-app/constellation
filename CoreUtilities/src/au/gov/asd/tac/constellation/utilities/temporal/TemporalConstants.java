@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,4 +26,16 @@ public class TemporalConstants {
     public static final int MILLISECONDS_IN_SECOND = 1000;
     // Used for converting legacy representations, eg. java Date and Calendar objects, whose long representations are milliseconds since epoch, to longs which represent days since epoch.
     public static final long MILLISECONDS_IN_DAY = 24 * 3600 * 1000L;
+
+    //DateTime formats
+    public static final String MILLISEC_FORMAT = "SSS";
+    public static final String SEC_MILLISEC_FORMAT = "s.SSS";
+    public static final String HOUR_MIN_SEC_FORMAT = "HH:mm:ss";
+    public static final String HOUR_MIN_FORMAT = "HH:mm";
+    public static final String DAY_MONTH_HOUR_MIN_FORMAT = "d MMM HH:mm";
+    public static final String DAY_MONTH_FORMAT = "d MMM";
+    public static final String MONTH_YEAR_FORMAT = "MMM yyyy";
+    public static final String YEAR_FORMAT = "yyyy";
+
+    public static final String DATE_TIME_FULL_FORMAT = "DDMMYYYYHHMMSS";
 }

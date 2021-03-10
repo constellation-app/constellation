@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@ import au.gov.asd.tac.constellation.testing.construction.CompleteGraphBuilderPlu
 import au.gov.asd.tac.constellation.testing.construction.DnaGraphBuilderPlugin;
 import au.gov.asd.tac.constellation.testing.construction.ImageGraphBuilderPlugin;
 import au.gov.asd.tac.constellation.testing.construction.PreferentialAttachmentGraphBuilderPlugin;
+import au.gov.asd.tac.constellation.testing.construction.SleepEditPlugin;
+import au.gov.asd.tac.constellation.testing.construction.SleepReadPlugin;
 import au.gov.asd.tac.constellation.testing.construction.SmallWorldGraphBuilderPlugin;
 import au.gov.asd.tac.constellation.testing.construction.SphereGraphBuilderPlugin;
 import au.gov.asd.tac.constellation.testing.construction.StructuredGraphBuilderPlugin;
@@ -39,6 +41,8 @@ public class CoreTestingPluginRegistry {
     public static final String DNA_GRAPH_BUILDER = DnaGraphBuilderPlugin.class.getName();
     public static final String IMAGE_GRAPH_BUILDER = ImageGraphBuilderPlugin.class.getName();
     public static final String PREFERENTIAL_ATTACHMENT_GRAPH_BUILDER = PreferentialAttachmentGraphBuilderPlugin.class.getName();
+    public static final String SLEEP_EDIT_PLUGIN = SleepEditPlugin.class.getName();
+    public static final String SLEEP_READ_PLUGIN = SleepReadPlugin.class.getName();
     public static final String SMALL_WORLD_GRAPH_BUILDER = SmallWorldGraphBuilderPlugin.class.getName();
     public static final String SPHERE_GRAPH_BUILDER = SphereGraphBuilderPlugin.class.getName();
     public static final String STRUCTURED_GRAPH_BUILDER = StructuredGraphBuilderPlugin.class.getName();

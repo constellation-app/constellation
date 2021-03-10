@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,6 +41,7 @@ public class ProxyUtilities implements PreferenceChangeListener {
     private static final Logger LOGGER = Logger.getLogger(ProxyUtilities.class.getName());
     private static final ProxySelector DEFAULT_PROXY_SELECTOR = new ConstellationHttpProxySelector();
     public static final String PROXY_SEPARATOR = "\n";
+    public static final String SEMICOLON = ";";
 
     public ProxyUtilities() {
         NbPreferences.forModule(ProxyPreferenceKeys.class)
@@ -105,7 +106,7 @@ public class ProxyUtilities implements PreferenceChangeListener {
                 try {
                     general.delete();
                 } catch (IOException ex) {
-                    LOGGER.log(Level.WARNING, "Error deleting option %s", unwanted);
+                    LOGGER.log(Level.WARNING, "Error deleting option {0}", unwanted);
                 }
             }
         }

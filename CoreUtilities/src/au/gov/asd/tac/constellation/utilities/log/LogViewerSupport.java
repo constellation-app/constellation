@@ -56,6 +56,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.RequestProcessor;
 import org.openide.windows.IOProvider;
 import org.openide.windows.InputOutput;
@@ -153,12 +154,9 @@ public class LogViewerSupport implements Runnable {
         io.select();
         filestream = new FileInputStream(fileName);
         ins = new BufferedReader(new InputStreamReader(filestream, StandardCharsets.UTF_8.name()));
-        RP.post(new Runnable() {
-            @Override
-            public void run() {
-                init();
-                task.schedule(0);
-            }
+        RP.post(() -> {
+            init();
+            task.schedule(0);
         });
     }
 
@@ -189,7 +187,7 @@ public class LogViewerSupport implements Runnable {
         }
 
         public String add(String line) {
-            if (line == null || line.isEmpty()) { // NOI18N
+            if (StringUtils.isBlank(line)) { // NOI18N
                 return null;
             } // end of if (line == null || line.equals(""))
 

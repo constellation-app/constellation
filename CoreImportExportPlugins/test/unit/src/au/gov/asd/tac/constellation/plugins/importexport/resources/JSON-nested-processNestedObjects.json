@@ -1,0 +1,39 @@
+{
+    "parent":
+            {
+                "description": "this is example JSON",
+                "badlist": ["this", "list", "contains", "strings", "only"],
+                "goodlist":
+                        [
+                            {
+                                "name": "record1",
+                                "age": 45,
+                                "address":
+                                        {
+                                            "town": "Darwin",
+                                            "state": "NT",
+                                            "postcode": "0800",
+                                            "commercial": ["pub", "shop"],
+                                            "history":
+                                                    {
+                                                        "est": 2025,
+                                                        "population": 600
+                                                    }
+                                        }
+                            },
+                            {
+                                "name": "record2",
+                                "description": "this is a description",
+                                "address":
+                                        {
+                                            "town": "Hobart",
+                                            "state": "TAS",
+                                            "postcode": "7000",
+                                            "latitude": -42.8821,
+                                            "longitude": 147.3272
+                                        }
+                            }
+                        ]
+            }
+}  
+	  

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -113,7 +113,7 @@ public abstract class ConversationContributionProvider implements Comparable<Con
      *
      * @return A list of all providers.
      */
-    public static synchronized final List<ConversationContributionProvider> getProviders() {
+    public static final synchronized List<ConversationContributionProvider> getProviders() {
         if (PROVIDERS == null) {
             PROVIDERS = new ArrayList<>(Lookup.getDefault().lookupAll(ConversationContributionProvider.class));
             PROVIDERS.sort((ConversationContributionProvider o1, ConversationContributionProvider o2) -> Integer.compare(o1.priority, o2.priority));
@@ -132,10 +132,12 @@ public abstract class ConversationContributionProvider implements Comparable<Con
      * @return A list of all providers that are compatible with the given graph.
      */
     public static List<ConversationContributionProvider> getCompatibleProviders(GraphReadMethods graph) {
-        List<ConversationContributionProvider> compatibleProviders = new ArrayList<>();
-        for (ConversationContributionProvider provider : getProviders()) {
-            if (provider.isCompatibleWithGraph(graph)) {
-                compatibleProviders.add(provider);
+        final List<ConversationContributionProvider> compatibleProviders = new ArrayList<>();
+        if (graph != null) {
+            for (ConversationContributionProvider provider : getProviders()) {
+                if (provider.isCompatibleWithGraph(graph)) {
+                    compatibleProviders.add(provider);
+                }
             }
         }
         return compatibleProviders;

@@ -1,7 +1,0 @@
-{
-    "elementType": "Node",
-    "attrToSet": "nradius",
-    "attrType": "float",
-    "script": "log(2*node_neighbour_count+1)",
-    "description": "Set the size of each node to be proportionate with the number of neighbours it has."
-}

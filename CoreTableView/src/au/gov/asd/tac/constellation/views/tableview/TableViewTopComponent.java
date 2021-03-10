@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.tableview;
 
-import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
-import au.gov.asd.tac.constellation.utilities.preferences.PreferenceUtilites;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
@@ -25,21 +23,23 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
+import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
-import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
-import au.gov.asd.tac.constellation.pluginframework.PluginRegistry;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginRegistry;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.tableview.GraphTableModel.Segment;
 import au.gov.asd.tac.constellation.views.tableview.state.TableState;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
-import au.gov.asd.tac.constellation.visual.fonts.FontUtilities;
-import au.gov.asd.tac.constellation.visual.icons.UserInterfaceIconProvider;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dialog;
@@ -192,6 +192,8 @@ public final class TableViewTopComponent extends TopComponent implements Propert
     private final JToggleButton selectedOnlyButton;
     private final JToggleButton vxButton;
     private final JToggleButton txButton;
+
+    private static final String SELECTED_ATTRIBUTE_NAME = "selected";
 
     public TableViewTopComponent() {
         initComponents();
@@ -499,9 +501,11 @@ public final class TableViewTopComponent extends TopComponent implements Propert
     }
 
     void writeProperties(final java.util.Properties p) {
+        // Required for @ConvertAsProperties, intentionally left blank
     }
 
     void readProperties(final java.util.Properties p) {
+        // Required for @ConvertAsProperties, intentionally left blank
     }
 
     /**
@@ -543,7 +547,7 @@ public final class TableViewTopComponent extends TopComponent implements Propert
             int saId;
             ReadableGraph rg = graph.getReadableGraph();
             try {
-                saId = rg.getAttribute(elementType, "selected");
+                saId = rg.getAttribute(elementType, SELECTED_ATTRIBUTE_NAME);
             } finally {
                 rg.release();
             }
@@ -574,7 +578,10 @@ public final class TableViewTopComponent extends TopComponent implements Propert
 
             try {
                 future.get();
-            } catch (InterruptedException | ExecutionException ex) {
+            } catch (InterruptedException ex) {
+                Exceptions.printStackTrace(ex);
+                Thread.currentThread().interrupt();
+            } catch (ExecutionException ex) {
                 Exceptions.printStackTrace(ex);
             }
         } finally {
@@ -616,7 +623,7 @@ public final class TableViewTopComponent extends TopComponent implements Propert
                 // Something major has happened to the graph (a new graph, deleted nodes, etc) that makes us set a new model.
                 // This means we need to preserve the table state and restore it.
                 final TableState state = TableState.getMetaState(rg, elementType);
-                selectedOnlyButton.setSelected(state != null ? state.getSelectedOnly() : false);
+                selectedOnlyButton.setSelected(state != null && state.getSelectedOnly());
                 setNewModel();
                 setDefaultColumns(dataTable);
                 TableState.applyMetaState(rg, state, elementType, dataTable);
@@ -624,7 +631,7 @@ public final class TableViewTopComponent extends TopComponent implements Propert
                 attributeModificationCounter = amc;
             }
 
-            final int selectedAttr = rg.getAttribute(elementType, "selected");
+            final int selectedAttr = rg.getAttribute(elementType, SELECTED_ATTRIBUTE_NAME);
             if (selectedAttr != Graph.NOT_FOUND) {
                 final long selmc = rg.getValueModificationCounter(selectedAttr);
 
@@ -692,15 +699,13 @@ public final class TableViewTopComponent extends TopComponent implements Propert
 
     @Override
     public void propertyChange(final PropertyChangeEvent evt) {
-        if ("HEADER.HP_HEADERITEM".equals(evt.getPropertyName())) {
-            // Attempt to do updates only when necessary (not when the mouse is just moving over the column headers).
-            if (evt.getOldValue() != null && evt.getNewValue() != null) {
-                final String oldv = evt.getOldValue().toString();
-                final String newv = evt.getNewValue().toString();
-                if (!((oldv.equals("HOT") && newv.equals("NORMAL")) || (oldv.equals("NORMAL") && newv.equals("HOT")))) {
-                    final Graph graph = graphNode.getGraph();
-                    updateStateOnGraph(graph, currentElementType, false);
-                }
+        // Attempt to do updates only when necessary (not when the mouse is just moving over the column headers).
+        if ("HEADER.HP_HEADERITEM".equals(evt.getPropertyName()) && evt.getOldValue() != null && evt.getNewValue() != null) {
+            final String oldv = evt.getOldValue().toString();
+            final String newv = evt.getNewValue().toString();
+            if (!((oldv.equals("HOT") && newv.equals("NORMAL")) || (oldv.equals("NORMAL") && newv.equals("HOT")))) {
+                final Graph graph = graphNode.getGraph();
+                updateStateOnGraph(graph, currentElementType, false);
             }
         }
     }
@@ -728,10 +733,8 @@ public final class TableViewTopComponent extends TopComponent implements Propert
 
         @Override
         public void keyTyped(final KeyEvent e) {
-            if (graphNode != null) {
-                if (e.getKeyChar() == KeyEvent.VK_DELETE) {
-                    PluginExecution.withPlugin(PluginRegistry.get(CorePluginRegistry.DELETE_SELECTION)).interactively(true).executeLater(graphNode.getGraph());
-                }
+            if (graphNode != null && e.getKeyChar() == KeyEvent.VK_DELETE) {
+                PluginExecution.withPlugin(PluginRegistry.get(InteractiveGraphPluginRegistry.DELETE_SELECTION)).interactively(true).executeLater(graphNode.getGraph());
             }
         }
     }
@@ -742,7 +745,7 @@ public final class TableViewTopComponent extends TopComponent implements Propert
     private void setNewFilter() {
         final RowSorter<? extends TableModel> oldSorter = dataTable.getRowSorter();
         final GraphTableModel gtm = (GraphTableModel) dataTable.getModel();
-        final TableRowSorter sorter = new TableRowSorter<>(gtm);
+        final TableRowSorter<GraphTableModel> sorter = new TableRowSorter<>(gtm);
         sorter.setSortKeys(oldSorter.getSortKeys());
         if (selectedOnlyButton.isSelected()) {
             sorter.setRowFilter(new SelectionRowFilter(graphNode.getGraph(), currentElementType));
@@ -756,7 +759,7 @@ public final class TableViewTopComponent extends TopComponent implements Propert
     private void setNewModel() {
         final RowSorter<? extends TableModel> oldSorter = dataTable.getRowSorter();
         final GraphTableModel gtm = new GraphTableModel(graphNode.getGraph(), currentElementType);
-        final TableRowSorter sorter = new TableRowSorter<>(gtm);
+        final TableRowSorter<GraphTableModel> sorter = new TableRowSorter<>(gtm);
         sorter.setSortKeys(oldSorter.getSortKeys());
         if (selectedOnlyButton.isSelected()) {
             sorter.setRowFilter(new SelectionRowFilter(graphNode.getGraph(), currentElementType));
@@ -985,7 +988,7 @@ public final class TableViewTopComponent extends TopComponent implements Propert
             final ReadableGraph rg = graph.getReadableGraph();
             try {
                 final TableState state = TableState.getMetaState(rg, currentElementType);
-                selectedOnly = state != null ? state.getSelectedOnly() : false;
+                selectedOnly = state != null && state.getSelectedOnly();
                 TableState.applyMetaState(rg, state, currentElementType, dataTable);
             } finally {
                 rg.release();
@@ -1029,7 +1032,7 @@ public final class TableViewTopComponent extends TopComponent implements Propert
     public static boolean isImportant(final String label) {
         if (!label.isEmpty()) {
             final char c = label.charAt(0);
-            return (c >= 'A' && c <= 'Z') || label.equals("selected");
+            return (c >= 'A' && c <= 'Z') || label.equals(SELECTED_ATTRIBUTE_NAME);
         }
 
         return false;
@@ -1087,6 +1090,7 @@ public final class TableViewTopComponent extends TopComponent implements Propert
                     latch.countDown();
                 }
             } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
             }
         });
         thread.setName(TABLE_VIEW_STATE_UPDATER_THREAD_NAME);
@@ -1094,9 +1098,13 @@ public final class TableViewTopComponent extends TopComponent implements Propert
 
         try {
             if (lockTheEdt) {
-                latch.await(1, TimeUnit.SECONDS);
+                final boolean countedToZero = latch.await(1, TimeUnit.SECONDS);
+                if (!countedToZero) {
+                    //TODO: Handle case where latch did not count down to zero
+                }
             }
         } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
         }
     }
 

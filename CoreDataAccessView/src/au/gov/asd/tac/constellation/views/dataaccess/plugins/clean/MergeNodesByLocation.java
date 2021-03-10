@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,13 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.plugins.clean;
 
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.schema.analyticschema.concept.AnalyticConcept;
-import au.gov.asd.tac.constellation.schema.analyticschema.concept.SpatialConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.geospatial.Distance;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape;
@@ -75,7 +76,12 @@ public class MergeNodesByLocation implements MergeNodeType {
         final int typeAttribute = AnalyticConcept.VertexAttribute.TYPE.get(graph);
         final int latitudeAttribute = SpatialConcept.VertexAttribute.LATITUDE.get(graph);
         final int longitudeAttribute = SpatialConcept.VertexAttribute.LONGITUDE.get(graph);
-        final int shapeAttribute = SpatialConcept.VertexAttribute.SHAPE.get(graph);
+        int shapeAttribute = SpatialConcept.VertexAttribute.SHAPE.get(graph);
+
+        // check if the attributes are defined
+        if (latitudeAttribute == Graph.NOT_FOUND || longitudeAttribute == Graph.NOT_FOUND) {
+            return nodesToMerge;
+        }
 
         // map the distances between every pair of vertices with valid locations
         final Map<Integer, Map<Integer, Double>> distanceMap = calculateDistances(graph, null, selectedOnly);
@@ -93,16 +99,16 @@ public class MergeNodesByLocation implements MergeNodeType {
         final Map<Integer, Tuple<Float, Float>> mergedCentroids = calculateCentroids(graph, mergedClusters);
 
         // add vertices to the graph representing the clusters and assign their children to be merged
-        for (int clusterIndex : mergedClusters.keySet()) {
-            final String clusterId = String.format("Geospatial Cluster #%d", clusterIndex);
-            final Set<Integer> cluster = mergedClusters.get(clusterIndex);
+        for (final Map.Entry<Integer, Set<Integer>> entry : mergedClusters.entrySet()) {
+            final String clusterId = String.format("Geospatial Cluster #%d", entry.getKey());
+            final Set<Integer> cluster = entry.getValue();
 
             if (cluster.size() > 1) {
                 final int clusterNode = graph.addVertex();
                 graph.setStringValue(identifierAttribute, clusterNode, clusterId);
                 graph.setObjectValue(typeAttribute, clusterNode, AnalyticConcept.VertexType.LOCATION);
-                graph.setFloatValue(latitudeAttribute, clusterNode, mergedCentroids.get(clusterIndex).getFirst());
-                graph.setFloatValue(longitudeAttribute, clusterNode, mergedCentroids.get(clusterIndex).getSecond());
+                graph.setFloatValue(latitudeAttribute, clusterNode, mergedCentroids.get(entry.getKey()).getFirst());
+                graph.setFloatValue(longitudeAttribute, clusterNode, mergedCentroids.get(entry.getKey()).getSecond());
 
                 final List<Tuple<Double, Double>> clusterCoordinates = cluster.stream()
                         .map(vertexId -> Tuple.create(
@@ -110,6 +116,9 @@ public class MergeNodesByLocation implements MergeNodeType {
                         (double) graph.getFloatValue(latitudeAttribute, vertexId)))
                         .collect(Collectors.toList());
                 try {
+                    if (shapeAttribute == Graph.NOT_FOUND) {
+                        shapeAttribute = SpatialConcept.VertexAttribute.SHAPE.ensure(graph);
+                    }
                     graph.setStringValue(shapeAttribute, clusterNode, Shape.generateShape(clusterId, GeometryType.BOX, clusterCoordinates));
                 } catch (IOException ex) {
                     throw new MergeException("Error creating shape for location cluster.", ex);
@@ -184,36 +193,34 @@ public class MergeNodesByLocation implements MergeNodeType {
         for (Integer vertexOneId : distanceKeys) {
             // ...copy the map of distances between vertex one and all vertex two's...
             if (distanceMap.containsKey(vertexOneId)) {
-                final Map<Integer, Double> vertexOneToVertexTwoDistances = new HashMap(distanceMap.get(vertexOneId));
+                final Map<Integer, Double> vertexOneToVertexTwoDistances = new HashMap<>(distanceMap.get(vertexOneId));
                 if (vertexOneToVertexTwoDistances.size() > 0) {
                     // ...then for each vertex two...
                     final Set<Integer> cluster = new HashSet<>();
                     cluster.add(vertexOneId);
-                    for (int vertexTwoId : vertexOneToVertexTwoDistances.keySet()) {
-                        final double vertexOneToVertexTwoDistance = vertexOneToVertexTwoDistances.get(vertexTwoId);
+                    for (final Map.Entry<Integer, Double> entry : vertexOneToVertexTwoDistances.entrySet()) {
+                        final double vertexOneToVertexTwoDistance = entry.getValue();
                         // ...if vertex two's distance to vertex one meets the threshold requirement...
-                        if (vertexOneToVertexTwoDistance <= (threshold / 1000)) {
-                            // ...check that vertex two doesn't have a closer vertex than vertex one...
-                            if (distanceMap.containsKey(vertexTwoId)) {
-                                boolean vertexTwoHasCloserVertex = false;
-                                final Map<Integer, Double> vertexTwoToOtherDistances = new HashMap(distanceMap.get(vertexTwoId));
-                                if (vertexTwoToOtherDistances.size() > 0) {
-                                    for (int otherId : vertexTwoToOtherDistances.keySet()) {
-                                        final double vertexTwoToOtherDistance = vertexTwoToOtherDistances.get(otherId);
-                                        if (vertexTwoToOtherDistance < vertexOneToVertexTwoDistance) {
-                                            vertexTwoHasCloserVertex = true;
-                                            break;
-                                        }
+                        // ...check that vertex two doesn't have a closer vertex than vertex one...
+                        if (vertexOneToVertexTwoDistance <= (threshold / 1000) && distanceMap.containsKey(entry.getKey())) {
+                            boolean vertexTwoHasCloserVertex = false;
+                            final Map<Integer, Double> vertexTwoToOtherDistances = new HashMap<>(distanceMap.get(entry.getKey()));
+                            if (vertexTwoToOtherDistances.size() > 0) {
+                                for (final Map.Entry<Integer, Double> innerEntry : vertexTwoToOtherDistances.entrySet()) {
+                                    final double vertexTwoToOtherDistance = innerEntry.getValue();
+                                    if (vertexTwoToOtherDistance < vertexOneToVertexTwoDistance) {
+                                        vertexTwoHasCloserVertex = true;
+                                        break;
                                     }
-                                    if (vertexTwoHasCloserVertex) {
-                                        // ...if it does, then remove vertex one from vertex two's distance map as it should merge into another local group
-                                        distanceMap.get(vertexOneId).remove(vertexTwoId);
-                                        distanceMap.get(vertexTwoId).remove(vertexOneId);
-                                    } else {
-                                        // ...if it does not, then remove vertex two's distances map altogether and register vertex two to the current local group
-                                        distanceMap.remove(vertexTwoId);
-                                        cluster.add(vertexTwoId);
-                                    }
+                                }
+                                if (vertexTwoHasCloserVertex) {
+                                    // ...if it does, then remove vertex one from vertex two's distance map as it should merge into another local group
+                                    distanceMap.get(vertexOneId).remove(entry.getKey());
+                                    distanceMap.get(entry.getKey()).remove(vertexOneId);
+                                } else {
+                                    // ...if it does not, then remove vertex two's distances map altogether and register vertex two to the current local group
+                                    distanceMap.remove(entry.getKey());
+                                    cluster.add(entry.getKey());
                                 }
                             }
                         }
@@ -235,13 +242,13 @@ public class MergeNodesByLocation implements MergeNodeType {
         final int longitudeAttribute = SpatialConcept.VertexAttribute.LONGITUDE.get(graph);
 
         // for each cluster...
-        for (int clusterIndex : clusters.keySet()) {
-            final Set<Integer> cluster = clusters.get(clusterIndex);
+        for (final Map.Entry<Integer, Set<Integer>> entry : clusters.entrySet()) {
+            final Set<Integer> cluster = entry.getValue();
             // ... calculate the average location for that cluster...
             final float centroidLatitude = cluster.stream().map(memberId -> graph.getFloatValue(latitudeAttribute, memberId)).reduce((lat1, lat2) -> lat1 + lat2).get() / (float) cluster.size();
             final float centroidLongitude = cluster.stream().map(memberId -> graph.getFloatValue(longitudeAttribute, memberId)).reduce((lon1, lon2) -> lon1 + lon2).get() / (float) cluster.size();
             // ...and store that location in the centroids map
-            centroids.put(clusterIndex, Tuple.create(centroidLatitude, centroidLongitude));
+            centroids.put(entry.getKey(), Tuple.create(centroidLatitude, centroidLongitude));
         }
 
         return centroids;
@@ -276,16 +283,16 @@ public class MergeNodesByLocation implements MergeNodeType {
             final Map<Integer, Set<Integer>> reassignedClusters = assignClusters(centroidDistanceMap, threshold);
             if (!reassignedClusters.isEmpty()) {
                 // ...if there are assigned clusters, then merge all the vertices of each corresponding centroid cluster
-                for (int clusterIndex : reassignedClusters.keySet()) {
-                    final Set<Integer> mergedClusterIndices = reassignedClusters.get(clusterIndex);
+                for (final Map.Entry<Integer, Set<Integer>> entry : reassignedClusters.entrySet()) {
+                    final Set<Integer> mergedClusterIndices = entry.getValue();
                     if (mergedClusterIndices.size() > 1) {
                         final Set<Integer> mergedCluster = new HashSet<>();
                         for (int mergedClusterIndex : mergedClusterIndices) {
                             mergedCluster.addAll(previousClusters.get(mergedClusterIndex));
                         }
-                        mergedClusters.put(clusterIndex, mergedCluster);
+                        mergedClusters.put(entry.getKey(), mergedCluster);
                     } else {
-                        mergedClusters.put(clusterIndex, previousClusters.get(new ArrayList<>(mergedClusterIndices).get(0)));
+                        mergedClusters.put(entry.getKey(), previousClusters.get(new ArrayList<>(mergedClusterIndices).get(0)));
                     }
                 }
             } else {

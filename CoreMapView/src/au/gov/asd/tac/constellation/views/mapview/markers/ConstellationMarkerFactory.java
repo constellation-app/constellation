@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -172,10 +172,10 @@ public class ConstellationMarkerFactory {
         final Class<? extends ConstellationAbstractMarker> markerClass = featureTypeMap.get(feature.getType());
         ConstellationAbstractMarker marker;
         try {
-            final Constructor markerConstructor = markerClass.getDeclaredConstructor(Location.class, HashMap.class);
+            final Constructor<? extends ConstellationAbstractMarker> markerConstructor = markerClass.getDeclaredConstructor(Location.class, HashMap.class);
             marker = (ConstellationAbstractMarker) markerConstructor.newInstance(feature.getLocation(), feature.getProperties());
         } catch (NoSuchMethodException ex) {
-            final Constructor markerConstructor = markerClass.getDeclaredConstructor(Location.class);
+            final Constructor<? extends ConstellationAbstractMarker> markerConstructor = markerClass.getDeclaredConstructor(Location.class);
             marker = (ConstellationAbstractMarker) markerConstructor.newInstance(feature.getLocation());
             marker.setProperties(feature.getProperties());
         }
@@ -192,10 +192,10 @@ public class ConstellationMarkerFactory {
         final Class<? extends ConstellationAbstractMarker> markerClass = featureTypeMap.get(feature.getType());
         ConstellationAbstractMarker marker;
         try {
-            final Constructor markerConstructor = markerClass.getDeclaredConstructor(List.class, HashMap.class);
+            final Constructor<? extends ConstellationAbstractMarker> markerConstructor = markerClass.getDeclaredConstructor(List.class, HashMap.class);
             marker = (ConstellationAbstractMarker) markerConstructor.newInstance(feature.getLocations(), feature.getProperties());
         } catch (NoSuchMethodException ex) {
-            final Constructor markerConstructor = markerClass.getDeclaredConstructor(List.class);
+            final Constructor<? extends ConstellationAbstractMarker> markerConstructor = markerClass.getDeclaredConstructor(List.class);
             marker = (ConstellationAbstractMarker) markerConstructor.newInstance(feature.getLocations());
             marker.setProperties(feature.getProperties());
         }
@@ -212,10 +212,10 @@ public class ConstellationMarkerFactory {
         final Class<? extends ConstellationAbstractMarker> markerClass = featureTypeMap.get(feature.getType());
         ConstellationAbstractMarker marker;
         try {
-            final Constructor markerConstructor = markerClass.getDeclaredConstructor(List.class, HashMap.class);
+            final Constructor<? extends ConstellationAbstractMarker> markerConstructor = markerClass.getDeclaredConstructor(List.class, HashMap.class);
             marker = (ConstellationAbstractMarker) markerConstructor.newInstance(feature.getLocations(), feature.getProperties());
         } catch (NoSuchMethodException ex) {
-            final Constructor markerConstructor = markerClass.getDeclaredConstructor(List.class);
+            final Constructor<? extends ConstellationAbstractMarker> markerConstructor = markerClass.getDeclaredConstructor(List.class);
             marker = (ConstellationAbstractMarker) markerConstructor.newInstance(feature.getLocations());
             marker.setProperties(feature.getProperties());
         }
@@ -230,7 +230,7 @@ public class ConstellationMarkerFactory {
 
     protected ConstellationAbstractMarker createMultiMarker(final ConstellationMultiFeature feature) throws Exception {
         final Class<? extends ConstellationAbstractMarker> markerClass = featureTypeMap.get(feature.getType());
-        final Constructor markerConstructor = markerClass.getDeclaredConstructor();
+        final Constructor<? extends ConstellationAbstractMarker> markerConstructor = markerClass.getDeclaredConstructor();
         final ConstellationMultiMarker multiMarker = (ConstellationMultiMarker) markerConstructor.newInstance();
         multiMarker.addMarkers(createMarkers(feature.getFeatures()));
         return multiMarker;
@@ -238,7 +238,7 @@ public class ConstellationMarkerFactory {
 
     protected ConstellationAbstractMarker createClusterMarker(final ConstellationMultiFeature feature) throws Exception {
         final Class<? extends ConstellationAbstractMarker> markerClass = featureTypeMap.get(feature.getType());
-        final Constructor markerConstructor = markerClass.getDeclaredConstructor();
+        final Constructor<? extends ConstellationAbstractMarker> markerConstructor = markerClass.getDeclaredConstructor();
         final ConstellationClusterMarker clusterMarker = (ConstellationClusterMarker) markerConstructor.newInstance();
         clusterMarker.addMarkers(createMarkers(feature.getFeatures()));
         return clusterMarker;

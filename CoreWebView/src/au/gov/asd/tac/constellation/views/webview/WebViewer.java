@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.webview;
 
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.JFXPanel;
 import javafx.event.ActionEvent;
@@ -51,13 +50,10 @@ public class WebViewer extends JFXPanel {
 
     public void loadURL(final String url) {
         if (!root.getChildren().isEmpty()) {
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    WebView webView = (WebView) root.getCenter();
-                    final WebEngine webEngine = webView.getEngine();
-                    webEngine.load(url);
-                }
+            Platform.runLater(() -> {
+                WebView webView = (WebView) root.getCenter();
+                final WebEngine webEngine = webView.getEngine();
+                webEngine.load(url);
             });
         } else {
             init(url);
@@ -66,41 +62,25 @@ public class WebViewer extends JFXPanel {
 
     private void init(final String url) {
         Platform.setImplicitExit(false);
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                Scene scene = new Scene(root);
-                setScene(scene);
-
-                WebView webView = new WebView();
-
-                webView.setMaxWidth(Double.MAX_VALUE);
-                webView.setMaxHeight(Double.MAX_VALUE);
-
-//                System.out.println("WEB VIEWER: " + System.identityHashCode(webView.getClass()));
-                root.setCenter(webView);
-
-                webView.setContextMenuEnabled(false);
-
-                final WebEngine webEngine = webView.getEngine();
-                webEngine.load(url);
-
-                webEngine.locationProperty().addListener(new ChangeListener<String>() {
-                    @Override
-                    public void changed(final ObservableValue<? extends String> observable, final String oldValue, final String newValue) {
-                        webEngine.load(newValue);
-                    }
-                });
-                EventHandler<ActionEvent> goAction = new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(final ActionEvent event) {
-                        webEngine.load(url.startsWith("http://")
-                                ? url
-                                : "http://" + url);
-                    }
-                };
-
-            }
+        Platform.runLater(() -> {
+            Scene scene1 = new Scene(root);
+            setScene(scene1);
+            WebView webView = new WebView();
+            webView.setMaxWidth(Double.MAX_VALUE);
+            webView.setMaxHeight(Double.MAX_VALUE);
+            //                System.out.println("WEB VIEWER: " + System.identityHashCode(webView.getClass()));
+            root.setCenter(webView);
+            webView.setContextMenuEnabled(false);
+            final WebEngine webEngine = webView.getEngine();
+            webEngine.load(url);
+            webEngine.locationProperty().addListener((final ObservableValue<? extends String> observable, final String oldValue, final String newValue) -> {
+                webEngine.load(newValue);
+            });
+            EventHandler<ActionEvent> goAction = (final ActionEvent event) -> {
+                webEngine.load(url.startsWith("http://")
+                        ? url
+                        : "http://" + url);
+            };
         });
     }
 }

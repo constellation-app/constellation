@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,15 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
-import au.gov.asd.tac.constellation.visual.InfoTextPanel;
-import au.gov.asd.tac.constellation.visual.camera.Camera;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
-import au.gov.asd.tac.constellation.visual.display.VisualAccess;
-import au.gov.asd.tac.constellation.visual.display.VisualProcessor.VisualChangeProcessor;
-import au.gov.asd.tac.constellation.visual.display.VisualProperty;
-import au.gov.asd.tac.constellation.visual.drawflags.DrawFlags;
-import au.gov.asd.tac.constellation.visual.graphics3d.Graphics3DUtilities;
-import au.gov.asd.tac.constellation.visual.graphics3d.Matrix44f;
+import au.gov.asd.tac.constellation.utilities.camera.Camera;
+import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
+import au.gov.asd.tac.constellation.utilities.gui.InfoTextPanel;
+import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
+import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
+import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor.VisualChangeProcessor;
+import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.BlazeBatcher;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.ConnectionLabelBatcher;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.IconBatcher;
@@ -85,6 +85,8 @@ public final class GraphRenderable implements GLRenderable {
 
     private GraphDisplayer graphDisplayer;
     private final GLVisualProcessor parent;
+
+    private static final Logger LOGGER = Logger.getLogger(GraphRenderable.class.getName());
 
     /**
      * Create a {@link GraphRenderable} for the specified
@@ -157,7 +159,12 @@ public final class GraphRenderable implements GLRenderable {
                     addTask(iconBatcher.disposeBatch());
                     addTask(iconBatcher.createBatch(access));
                     addTask(nodeLabelBatcher.disposeBatch());
-                    addTask(nodeLabelBatcher.createBatch(access));
+                    try {
+                        addTask(nodeLabelBatcher.createBatch(access));
+                    } catch (InterruptedException ex) {
+                        Thread.currentThread().interrupt();
+                        LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+                    }
                     addTask(blazeBatcher.disposeBatch());
                     addTask(blazeBatcher.createBatch(access));
                     addTask(gl -> {
@@ -177,7 +184,12 @@ public final class GraphRenderable implements GLRenderable {
                     addTask(loopBatcher.disposeBatch());
                     addTask(loopBatcher.createBatch(access));
                     addTask(connectionLabelBatcher.disposeBatch());
-                    addTask(connectionLabelBatcher.createBatch(access));
+                    try {
+                        addTask(connectionLabelBatcher.createBatch(access));
+                    } catch (InterruptedException ex) {
+                        Thread.currentThread().interrupt();
+                        LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+                    }
                 };
             case BACKGROUND_COLOR:
                 return (change, access) -> {
@@ -218,8 +230,13 @@ public final class GraphRenderable implements GLRenderable {
                 return (change, access) -> {
                     addTask(nodeLabelBatcher.setBottomLabelColors(access));
                     addTask(nodeLabelBatcher.setBottomLabelSizes(access));
-                    // Note that updating bottom labels always rebuilds from scratch, so it is not an issue if the batch was not 'ready'.
-                    addTask(nodeLabelBatcher.updateBottomLabels(access));
+                    try {
+                        // Note that updating bottom labels always rebuilds from scratch, so it is not an issue if the batch was not 'ready'.
+                        addTask(nodeLabelBatcher.updateBottomLabels(access));
+                    } catch (InterruptedException ex) {
+                        Thread.currentThread().interrupt();
+                        LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+                    }
                 };
             case CAMERA:
                 return (change, access) -> {
@@ -238,8 +255,13 @@ public final class GraphRenderable implements GLRenderable {
                 return (change, access) -> {
                     addTask(connectionLabelBatcher.setLabelColors(access));
                     addTask(connectionLabelBatcher.setLabelSizes(access));
-                    // Note that updating connection labels always rebuilds from scratch, so it is not an issue if the batch was not 'ready'.
-                    addTask(connectionLabelBatcher.updateLabels(access));
+                    try {
+                        // Note that updating connection labels always rebuilds from scratch, so it is not an issue if the batch was not 'ready'.
+                        addTask(connectionLabelBatcher.updateLabels(access));
+                    } catch (InterruptedException ex) {
+                        Thread.currentThread().interrupt();
+                        LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+                    }
                 };
             case TOP_LABEL_COLOR:
                 return (change, access) -> {
@@ -249,8 +271,13 @@ public final class GraphRenderable implements GLRenderable {
                 return (change, access) -> {
                     addTask(nodeLabelBatcher.setTopLabelColors(access));
                     addTask(nodeLabelBatcher.setTopLabelSizes(access));
-                    // Note that updating top labels always rebuilds from scratch, so it is not an issue if the batch was not 'ready'.
-                    addTask(nodeLabelBatcher.updateTopLabels(access));
+                    try {
+                        // Note that updating top labels always rebuilds from scratch, so it is not an issue if the batch was not 'ready'.
+                        addTask(nodeLabelBatcher.updateTopLabels(access));
+                    } catch (InterruptedException ex) {
+                        Thread.currentThread().interrupt();
+                        LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+                    }
                 };
             case CONNECTION_COLOR:
                 return (change, access) -> {
@@ -313,7 +340,6 @@ public final class GraphRenderable implements GLRenderable {
      */
     @Override
     public void init(final GLAutoDrawable drawable) {
-
         final GL3 gl = drawable.getGL().getGL3();
 
         // The icon shader draws the node icons.
@@ -352,7 +378,7 @@ public final class GraphRenderable implements GLRenderable {
         graphDisplayer.init(drawable);
 
         GLTools.checkFramebufferStatus(gl, "gr-check");
-
+        parent.rebuild();
     }
 
     @Override
@@ -381,25 +407,31 @@ public final class GraphRenderable implements GLRenderable {
     /**
      * Display this batch store to OpenGL.
      *
-     * @param drawable
+     * display is called in response to various events such as the move moving
+     * or right clicking. It isn't a continuous render call one might expect in
+     * an OpenGL application.
+     *
+     * @param drawable From the reference: A higher-level abstraction than
+     * GLDrawable which supplies an event based mechanism (GLEventListener) for
+     * performing OpenGL rendering. A GLAutoDrawable automatically creates a
+     * primary rendering context which is associated with the GLAutoDrawable for
+     * the lifetime of the object.
      * @param pMatrix
      */
     @Override
     public void display(final GLAutoDrawable drawable, final Matrix44f pMatrix) {
-
         final GL3 gl = drawable.getGL().getGL3();
-
-        // Bind to the graph displayer, and if a redraw is required, render the graph to the displayer.
         graphDisplayer.bindDisplayer(gl);
+
         if (!skipRedraw) {
 
             // Direction Indicators.
             if (motion == -1) {
-                if (DirectionIndicatorsAction.showIndicators) {
+                if (DirectionIndicatorsAction.isShowIndicators()) {
                     initialMotion = System.currentTimeMillis();
                     motion = 0;
                 }
-            } else if (DirectionIndicatorsAction.showIndicators) {
+            } else if (DirectionIndicatorsAction.isShowIndicators()) {
                 motion = (System.currentTimeMillis() - initialMotion) / 100f;
             } else {
                 motion = -1;
@@ -513,6 +545,7 @@ public final class GraphRenderable implements GLRenderable {
 
         // Get the graph displayer to render its contents to the screen
         graphDisplayer.display(drawable, pMatrix);
+        
     }
 
     /**
@@ -535,6 +568,5 @@ public final class GraphRenderable implements GLRenderable {
         xyzTexturiser.dispose().run(gl);
         vertexFlagsTexturiser.dispose().run(gl);
         graphDisplayer.dispose(drawable);
-        parent.rebuild();
     }
 }

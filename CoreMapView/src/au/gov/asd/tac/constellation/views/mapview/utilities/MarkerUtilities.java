@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.mapview.utilities;
 
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.mapview.markers.ConstellationAbstractMarker;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
 import de.fhpotsdam.unfolding.geo.Location;
 import java.util.ArrayList;
 import java.util.List;
@@ -85,16 +85,20 @@ public class MarkerUtilities {
      * @return an integer representing a color
      */
     public static int color(final String html) {
-        assert (html.startsWith("#") && html.length() == 7)
-                || (html.startsWith("#") && html.length() == 9) : "The string provided is not a valid HTML color";
-        final int a = html.length() == 7 ? 127
-                : Integer.parseInt(html.substring(1, 3), 16);
-        final String rgbHtml = html.length() == 7 ? html.substring(1)
-                : html.substring(3);
-        final int r = Integer.parseInt(rgbHtml.substring(0, 2), 16);
-        final int g = Integer.parseInt(rgbHtml.substring(2, 4), 16);
-        final int b = Integer.parseInt(rgbHtml.substring(4, 6), 16);
-        return color(a, r, g, b);
+        if ((html.startsWith("#") && html.length() == 7)
+                || (html.startsWith("#") && html.length() == 9)) {
+            final int a = html.length() == 7 ? 127
+                    : Integer.parseInt(html.substring(1, 3), 16);
+            final String rgbHtml = html.length() == 7 ? html.substring(1)
+                    : html.substring(3);
+            final int r = Integer.parseInt(rgbHtml.substring(0, 2), 16);
+            final int g = Integer.parseInt(rgbHtml.substring(2, 4), 16);
+            final int b = Integer.parseInt(rgbHtml.substring(4, 6), 16);
+            return color(a, r, g, b);
+        } else {
+            throw new IllegalArgumentException("The string provided is not a valid HTML color (Expected #RRGGBB or #aaRRGGBB)");
+        }
+
     }
 
     /**

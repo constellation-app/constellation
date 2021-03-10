@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 package au.gov.asd.tac.constellation.views.analyticview.state;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.schema.SchemaAttribute;
-import au.gov.asd.tac.constellation.graph.schema.SchemaConcept;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
+import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -42,13 +42,17 @@ public class AnalyticViewConcept extends SchemaConcept {
     @Override
     public Set<Class<? extends SchemaConcept>> getParents() {
         final Set<Class<? extends SchemaConcept>> parentSet = new HashSet<>();
-        parentSet.add(ConstellationViewsConcept.class);
+        parentSet.add(SchemaConcept.ConstellationViewsConcept.class);
         return Collections.unmodifiableSet(parentSet);
     }
 
     public static class MetaAttribute {
 
-        public static final SchemaAttribute ANALYTIC_VIEW_STATE = new SchemaAttribute.Builder(GraphElementType.META, "analytic_view_state", "analytic_view_state")
+        private MetaAttribute() {
+            throw new IllegalStateException("Concept class");
+        }
+
+        public static final SchemaAttribute ANALYTIC_VIEW_STATE = new SchemaAttribute.Builder(GraphElementType.META, AnalyticViewStateAttributeDescription.ATTRIBUTE_NAME, "analytic_view_state")
                 .setDescription("The current state of the analytic view with relation to the active graph")
                 .build();
     }

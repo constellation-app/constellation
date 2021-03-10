@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,9 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.visual.renderables;
 
-import au.gov.asd.tac.constellation.graph.interaction.HitState;
-import au.gov.asd.tac.constellation.graph.interaction.HitState.HitType;
-import au.gov.asd.tac.constellation.visual.graphics3d.Matrix44f;
+import au.gov.asd.tac.constellation.graph.interaction.framework.HitState;
+import au.gov.asd.tac.constellation.graph.interaction.framework.HitState.HitType;
+import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
@@ -29,6 +29,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
+import org.apache.commons.collections4.CollectionUtils;
 
 /**
  * Maintain a hit test buffer.
@@ -83,11 +84,11 @@ public final class HitTester implements GLRenderable {
 
     @Override
     public int getPriority() {
-        return GLRenderable.HIGH_PRIORITY;
+        return RenderablePriority.HIGH_PRIORITY.getValue();
     }
 
     @Override
-    public void init(GLAutoDrawable drawable) {
+    public void init(final GLAutoDrawable drawable) {
         final GL3 gl = drawable.getGL().getGL3();
         // Hit testing.
         // Create an FBO name and bind a new FBO.
@@ -137,7 +138,7 @@ public final class HitTester implements GLRenderable {
 
     @Override
     public void update(final GLAutoDrawable drawable) {
-        if (requestQueue != null && !requestQueue.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(requestQueue)) {
             requestQueue.forEach(request -> notificationQueues.add(request.getNotificationQueue()));
             hitTestRequest = requestQueue.getLast();
             requestQueue.clear();
@@ -160,7 +161,17 @@ public final class HitTester implements GLRenderable {
         if (!notificationQueues.isEmpty()) {
             final int x = hitTestRequest.getX();
             final int y = hitTestRequest.getY();
-            final int surfaceHeight = drawable.getSurfaceHeight();
+
+            //  Windows-DPI-Scaling
+            //
+            // If JOGL is ever fixed or another solution is found, either change
+            // needsManualDPIScaling to return false (so there is effectively no
+            // DPI scaling here) or to remove dpiScaleY below.
+            float dpiScaleY = 1.0f;
+            if (GLTools.needsManualDPIScaling()) {
+                dpiScaleY = parent.getDPIScaleY();
+            }
+            final int surfaceHeight = (int) (drawable.getSurfaceHeight() * dpiScaleY);
 
             // Allocate 3 floats for RGB values.
             FloatBuffer fbuf = Buffers.newDirectFloatBuffer(3);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -78,14 +77,7 @@ public final class AutosaveUtilities {
             return new File[0];
         }
 
-        final File[] saveFiles = saveDir.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(final File dir, final String name) {
-                return name.endsWith(ext);
-            }
-        });
-
-        return saveFiles;
+        return saveDir.listFiles((dir, name) -> name.endsWith(ext));
     }
 
     /**
@@ -112,7 +104,10 @@ public final class AutosaveUtilities {
      */
     public static void deleteAutosave(final File f) {
         final String path = f.getPath();
-        f.delete();
+        final boolean fIsDeleted = f.delete();
+        if (!fIsDeleted) {
+            //TODO: Handle case where file not successfully deleted
+        }
 
         File f2 = null;
         if (path.endsWith(GraphDataObject.FILE_EXTENSION)) {
@@ -122,7 +117,10 @@ public final class AutosaveUtilities {
         }
 
         if (f2 != null) {
-            f2.delete();
+            final boolean f2IsDeleted = f2.delete();
+            if (!f2IsDeleted) {
+                //TODO: Handle case where file not successfully deleted
+            }
         }
     }
 
@@ -173,11 +171,17 @@ public final class AutosaveUtilities {
     public static void copyFile(final File from, final File to) throws IOException {
         final File toBak = new File(to.getPath() + ".bak");
         if (toBak.exists()) {
-            toBak.delete();
+            final boolean toBakIsDeleted = toBak.delete();
+            if (!toBakIsDeleted) {
+                //TODO: Handle case where file not successfully deleted
+            }
         }
 
         if (to.exists()) {
-            to.renameTo(toBak);
+            final boolean toRenamed = to.renameTo(toBak);
+            if (!toRenamed) {
+                //TODO: Handle case where file not successfully renamed
+            }
         }
 
         try (InputStream in = new FileInputStream(from)) {
@@ -196,7 +200,10 @@ public final class AutosaveUtilities {
         }
 
         if (toBak.exists()) {
-            toBak.delete();
+            final boolean toBakIsDeleted = toBak.delete();
+            if (!toBakIsDeleted) {
+                //TODO: Handle case where file not successfully deleted
+            }
         }
     }
 
@@ -212,7 +219,10 @@ public final class AutosaveUtilities {
         for (final File star : getAutosaves(GraphDataObject.FILE_EXTENSION)) {
             final File auto = new File(star.getPath() + "_auto");
             if (!auto.exists()) {
-                star.delete();
+                final boolean starIsDeleted = star.delete();
+                if (!starIsDeleted) {
+                    //TODO: Handle case where file not successfully deleted
+                }
             }
         }
 
@@ -221,7 +231,10 @@ public final class AutosaveUtilities {
             final String autos = auto.getPath();
             final File star = new File(autos.substring(0, autos.length() - 5));
             if (!star.exists()) {
-                auto.delete();
+                final boolean autoIsDeleted = auto.delete();
+                if (!autoIsDeleted) {
+                    //TODO: Handle case where file not successfully deleted
+                }
             }
         }
     }

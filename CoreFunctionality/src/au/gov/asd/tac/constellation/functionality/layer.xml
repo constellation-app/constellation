@@ -6,12 +6,6 @@
             <file name="about" url="about.txt"/>
         </folder>
     </folder>
-    <folder name="Actions">
-        <folder name="Display">
-            <file name="au-gov-asd-tac-constellation-functionality-display-Menu3DAction.instance_hidden"/>
-            <file name="au-gov-asd-tac-constellation-functionality-display-MenuToggle3DAction.instance"/>
-        </folder>
-    </folder>
     <folder name="Menu">
         <folder name="File">
             <attr name="position" intvalue="100"/>
@@ -159,17 +153,23 @@
             <folder name="Build Graph">
                 <attr name="position" intvalue="100"/>
             </folder>
-            <folder name="Arrangements">
+            <folder name="Import">
                 <attr name="position" intvalue="200"/>
             </folder>
-            <folder name="Animations">
+            <folder name="Export">
                 <attr name="position" intvalue="300"/>
             </folder>
-            <folder name="Tools">
+            <folder name="Arrangements">
                 <attr name="position" intvalue="400"/>
             </folder>
-            <folder name="Views">
+            <folder name="Animations">
                 <attr name="position" intvalue="500"/>
+            </folder>
+            <folder name="Tools">
+                <attr name="position" intvalue="600"/>
+            </folder>
+            <folder name="Views">
+                <attr name="position" intvalue="700"/>
             </folder>
             <folder name="Developer">
                 <attr name="position" intvalue="600"/>
@@ -219,29 +219,42 @@
             <attr name="originalFile" stringvalue="Actions/Edit/org-netbeans-modules-quicksearch-QuickSearchAction.instance"/>
             <attr name="position" intvalue="1200"/>
         </file>
-        <file name="GoTo_hidden"/>
-        <file name="View_hidden"/>
-        <file name="Window_hidden"/>
+        <!--hidden items-->
+        <folder name="View_hidden"/>
+        <folder name="GoTo_hidden"/>
+        <folder name="Source_hidden"/>
+        <folder name="Refactor_hidden"/>
+        <folder name="BuildProject_hidden"/>
+        <folder name="RunProject_hidden"/>
+        <folder name="Profile_hidden"/>
+        <folder name="Team_hidden"/>
+        <folder name="Window_hidden"/>
     </folder>
     <folder name="Toolbars">
         <folder name="File">
             <attr name="position" intvalue="100"/>
             <file name="org-openide-actions-SaveAllAction.shadow_hidden"/>
         </folder>
-        <folder name="ImportExport">
-            <attr name="position" intvalue="400"/>
+        <folder name="Clipboard">
+            <attr name="position" intvalue="200"/>
         </folder>
-        <folder name="Arrange">
-            <attr name="position" intvalue="500"/>
+        <folder name="UndoRedo">
+            <attr name="position" intvalue="300"/>
         </folder>
         <folder name="Selection">
-            <attr name="position" intvalue="700"/>
+            <attr name="position" intvalue="400"/>
         </folder>
-        <folder name="Visualisation">
-            <attr name="position" intvalue="900"/>
+        <folder name="Display">
+            <attr name="position" intvalue="500"/>
+        </folder>
+        <folder name="Arrange">
+            <attr name="position" intvalue="600"/>
         </folder>
         <folder name="Views">
-            <attr name="position" intvalue="1000"/>
+            <attr name="position" intvalue="700"/>
+        </folder>
+        <folder name="Memory">
+            <attr name="position" intvalue="800"/>
         </folder>
     </folder>
     <folder name="Shortcuts">
@@ -276,7 +289,7 @@
             <attr name="originalFile" stringvalue="Actions/Edit/org-openide-actions-UndoAction.instance"/>
         </file>
         <file name="C-F.shadow">
-            <attr name="originalFile" stringvalue="Actions/Selection/au-gov-asd-tac-constellation-views-find-ui-FindTopComponent.instance"/>
+            <attr name="originalFile" stringvalue="Actions/Selection/au-gov-asd-tac-constellation-views-find-gui-FindTopComponent.instance"/>
         </file>
     </folder>
 </filesystem>

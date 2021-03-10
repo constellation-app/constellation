@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 
 /**
  * Copy Graph Utilities
@@ -122,20 +122,11 @@ public class CopyGraphUtilities {
         final int[] linkTranslation = new int[original.getLinkCapacity()];
         for (int position = 0; position < original.getTransactionCount(); position++) {
             final int originalTransaction = original.getTransaction(position);
-            if (!copyAll) {
-                if (transactionSelected != Graph.NOT_FOUND) {
-                    if (!original.getBooleanValue(transactionSelected, originalTransaction)) {
-                        continue;
-                    }
-                }
-                if (vertexSelected != Graph.NOT_FOUND) {
-                    if (!original.getBooleanValue(vertexSelected, original.getTransactionSourceVertex(originalTransaction))) {
-                        continue;
-                    }
-                    if (!original.getBooleanValue(vertexSelected, original.getTransactionDestinationVertex(originalTransaction))) {
-                        continue;
-                    }
-                }
+            if (!copyAll && ((transactionSelected != Graph.NOT_FOUND && !original.getBooleanValue(transactionSelected, originalTransaction))
+                    || (vertexSelected != Graph.NOT_FOUND
+                    && (!original.getBooleanValue(vertexSelected, original.getTransactionSourceVertex(originalTransaction))
+                    || !original.getBooleanValue(vertexSelected, original.getTransactionDestinationVertex(originalTransaction)))))) {
+                continue;
             }
             final int sourceVertex = vertexTranslation[original.getTransactionSourceVertex(originalTransaction)];
             final int destinationVertex = vertexTranslation[original.getTransactionDestinationVertex(originalTransaction)];
@@ -162,20 +153,11 @@ public class CopyGraphUtilities {
         // Copy the edges
         for (int position = 0; position < original.getEdgeCount(); position++) {
             final int originalEdge = original.getEdge(position);
-            if (!copyAll) {
-                if (transactionSelected != Graph.NOT_FOUND) {
-                    if (!original.getBooleanValue(transactionSelected, originalEdge)) {
-                        continue;
-                    }
-                }
-                if (vertexSelected != Graph.NOT_FOUND) {
-                    if (!original.getBooleanValue(vertexSelected, original.getEdgeSourceVertex(originalEdge))) {
-                        continue;
-                    }
-                    if (!original.getBooleanValue(vertexSelected, original.getEdgeDestinationVertex(originalEdge))) {
-                        continue;
-                    }
-                }
+            if (!copyAll && ((transactionSelected != Graph.NOT_FOUND && !original.getBooleanValue(transactionSelected, originalEdge))
+                    || (vertexSelected != Graph.NOT_FOUND
+                    && (!original.getBooleanValue(vertexSelected, original.getEdgeSourceVertex(originalEdge))
+                    || !original.getBooleanValue(vertexSelected, original.getEdgeDestinationVertex(originalEdge)))))) {
+                continue;
             }
 
             for (int attributePosition = 0; attributePosition < original.getAttributeCount(GraphElementType.EDGE); attributePosition++) {
@@ -188,20 +170,11 @@ public class CopyGraphUtilities {
         // Copy the links
         for (int position = 0; position < original.getLinkCount(); position++) {
             final int originalLink = original.getLink(position);
-            if (!copyAll) {
-                if (transactionSelected != Graph.NOT_FOUND) {
-                    if (!original.getBooleanValue(transactionSelected, originalLink)) {
-                        continue;
-                    }
-                }
-                if (vertexSelected != Graph.NOT_FOUND) {
-                    if (!original.getBooleanValue(vertexSelected, original.getEdgeSourceVertex(originalLink))) {
-                        continue;
-                    }
-                    if (!original.getBooleanValue(vertexSelected, original.getEdgeDestinationVertex(originalLink))) {
-                        continue;
-                    }
-                }
+            if (!copyAll && ((transactionSelected != Graph.NOT_FOUND && !original.getBooleanValue(transactionSelected, originalLink))
+                    || (vertexSelected != Graph.NOT_FOUND
+                    && (!original.getBooleanValue(vertexSelected, original.getEdgeSourceVertex(originalLink))
+                    || !original.getBooleanValue(vertexSelected, original.getEdgeDestinationVertex(originalLink)))))) {
+                continue;
             }
 
             for (int attributePosition = 0; attributePosition < original.getAttributeCount(GraphElementType.LINK); attributePosition++) {

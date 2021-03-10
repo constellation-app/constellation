@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,16 +18,17 @@ package au.gov.asd.tac.constellation.views.conversationview;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.pluginframework.PluginException;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
-import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
 import au.gov.asd.tac.constellation.views.conversationview.state.ConversationState;
 import au.gov.asd.tac.constellation.views.conversationview.state.ConversationViewConcept;
-import au.gov.asd.tac.constellation.visual.icons.UserInterfaceIconProvider;
-import au.gov.asd.tac.constellation.visual.javafx.JavafxStyleManager;
-import au.gov.asd.tac.constellation.visual.tooltip.TooltipPane;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -126,27 +127,24 @@ public final class ConversationBox extends StackPane {
         setPrefSize(500, 500);
         setCache(true);
         setCacheHint(CacheHint.SPEED);
-        setStyle("-fx-background-color: transparent;");
+        setStyle(JavafxStyleManager.CSS_BACKGROUND_COLOR_TRANSPARENT);
 
         final VBox content = new VBox();
-        content.setStyle("-fx-background-color: transparent;");
+        content.setStyle(JavafxStyleManager.CSS_BACKGROUND_COLOR_TRANSPARENT);
 
         showToolTip.setSelected(true);
         showToolTip.setOnAction((ActionEvent t) -> {
             tipsPane.setEnabled(showToolTip.isSelected());
         });
 
-        conversation.setSenderAttributeListener(new ConversationSenderAttributeListener() {
-            @Override
-            public void senderAttributesChanged(List<String> possibleSenderAttributes, List<String> senderAttributes) {
-                isAdjustingSenderLabels = true;
-                senderAttributesCombo.getCheckModel().clearChecks();
-                senderAttributesChoices.setAll(possibleSenderAttributes);
-                for (String senderAttribute : senderAttributes) {
-                    senderAttributesCombo.getCheckModel().check(senderAttribute);
-                }
-                isAdjustingSenderLabels = false;
+        conversation.setSenderAttributeListener((List<String> possibleSenderAttributes, List<String> senderAttributes) -> {
+            isAdjustingSenderLabels = true;
+            senderAttributesCombo.getCheckModel().clearChecks();
+            senderAttributesChoices.setAll(possibleSenderAttributes);
+            for (String senderAttribute : senderAttributes) {
+                senderAttributesCombo.getCheckModel().check(senderAttribute);
             }
+            isAdjustingSenderLabels = false;
         });
 
         senderAttributesCombo.getCheckModel().getCheckedItems().addListener((ListChangeListener.Change<? extends String> c) -> {
@@ -155,7 +153,7 @@ public final class ConversationBox extends StackPane {
             }
         });
 
-        final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16));
+        final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor()));
         final Button helpButton = new Button("", helpImage);
         helpButton.setOnAction((ActionEvent event) -> {
             final Help help = Lookup.getDefault().lookup(Help.class);
@@ -219,7 +217,7 @@ public final class ConversationBox extends StackPane {
 
         // Create the bubbles pane
         bubbles = new ListView<>();
-        bubbles.setStyle("-fx-background-color: transparent;");
+        bubbles.setStyle(JavafxStyleManager.CSS_BACKGROUND_COLOR_TRANSPARENT);
         bubbles.setCellFactory(callback -> new BubbleCell());
         VBox.setVgrow(bubbles, Priority.ALWAYS);
 
@@ -337,7 +335,7 @@ public final class ConversationBox extends StackPane {
 
             // Handle the case where the cell is empty
             if (empty || message == null) {
-                setStyle("-fx-background-color: transparent;");
+                setStyle(JavafxStyleManager.CSS_BACKGROUND_COLOR_TRANSPARENT);
                 setGraphic(null);
             } else {
                 // Look for the bubble in the cache

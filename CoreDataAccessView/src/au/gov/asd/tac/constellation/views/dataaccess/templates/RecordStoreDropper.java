@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +16,19 @@
 package au.gov.asd.tac.constellation.views.dataaccess.templates;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.dragdrop.GraphDropper;
-import au.gov.asd.tac.constellation.graph.dragdrop.GraphDropper.DropInfo;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
 import au.gov.asd.tac.constellation.graph.processing.RecordStoreUtilities;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.pluginframework.PluginException;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
-import au.gov.asd.tac.constellation.pluginframework.PluginInfo;
-import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
-import au.gov.asd.tac.constellation.pluginframework.PluginType;
-import au.gov.asd.tac.constellation.pluginframework.logging.ConstellationLoggerHelper;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.visual.dragdrop.GraphDropper;
+import au.gov.asd.tac.constellation.graph.visual.dragdrop.GraphDropper.DropInfo;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
+import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -81,26 +81,24 @@ public class RecordStoreDropper implements GraphDropper {
                     try (final InputStream in = (InputStream) data) {
 
                         final byte[] buffer = new byte[RECORD_STORE_BYTES.length];
-                        if (in.read(buffer) == buffer.length) {
-                            if (Arrays.equals(buffer, RECORD_STORE_BYTES)) {
-                                final RecordStore recordStore = RecordStoreUtilities.fromJson(in);
+                        if (in.read(buffer) == buffer.length && Arrays.equals(buffer, RECORD_STORE_BYTES)) {
+                            final RecordStore recordStore = RecordStoreUtilities.fromJson(in);
 
-                                if (recordStore != null) {
-                                    return (graph, dropInfo) -> {
-                                        PluginExecution.withPlugin(new RecordStoreQueryPlugin("Drag and Drop: RecordStore To Graph") {
-                                            @Override
-                                            protected RecordStore query(final RecordStore query, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                                                ConstellationLoggerHelper.importPropertyBuilder(
-                                                        this,
-                                                        recordStore.getAll(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL),
-                                                        null,
-                                                        ConstellationLoggerHelper.SUCCESS
-                                                );
-                                                return recordStore;
-                                            }
-                                        }).executeLater(graph);
-                                    };
-                                }
+                            if (recordStore != null) {
+                                return (graph, dropInfo) -> {
+                                    PluginExecution.withPlugin(new RecordStoreQueryPlugin("Drag and Drop: RecordStore To Graph") {
+                                        @Override
+                                        protected RecordStore query(final RecordStore query, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+                                            ConstellationLoggerHelper.importPropertyBuilder(
+                                                    this,
+                                                    recordStore.getAll(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL),
+                                                    null,
+                                                    ConstellationLoggerHelper.SUCCESS
+                                            );
+                                            return recordStore;
+                                        }
+                                    }).executeLater(graph);
+                                };
                             }
                         }
                     }

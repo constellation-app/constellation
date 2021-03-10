@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,10 @@ package au.gov.asd.tac.constellation.views.dataaccess;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.io.providers.AbstractGraphIOProvider;
-import au.gov.asd.tac.constellation.graph.io.providers.GraphByteReader;
-import au.gov.asd.tac.constellation.graph.io.providers.GraphByteWriter;
-import au.gov.asd.tac.constellation.graph.utilities.ImmutableObjectCache;
+import au.gov.asd.tac.constellation.graph.attribute.io.AbstractGraphIOProvider;
+import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteReader;
+import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteWriter;
+import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
 import static au.gov.asd.tac.constellation.views.dataaccess.io.ParameterIOUtilities.GLOBAL_OBJECT;
 import static au.gov.asd.tac.constellation.views.dataaccess.io.ParameterIOUtilities.PLUGINS_OBJECT;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -50,21 +50,19 @@ public class DataAccessStateIoProvider extends AbstractGraphIOProvider {
     public void readObject(final int attributeId, final int elementId, final JsonNode jnode, final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, final GraphByteReader byteReader, ImmutableObjectCache cache) throws IOException {
         final DataAccessState state = new DataAccessState();
 
-        if (!jnode.isNull()) {
-            if (jnode.isArray()) {
-                for (int i = 0; i < jnode.size(); i++) {
-                    state.newTab();
+        if (!jnode.isNull() && jnode.isArray()) {
+            for (int i = 0; i < jnode.size(); i++) {
+                state.newTab();
 
-                    final JsonNode tab = jnode.get(i).get(GLOBAL_OBJECT);
-                    final Iterator<String> globalParameterNames = tab.fieldNames();
-                    while (globalParameterNames.hasNext()) {
-                        final String globalParameterName = globalParameterNames.next();
-                        state.add(globalParameterName, tab.get(globalParameterName).isNull()
-                                ? null : tab.get(globalParameterName).textValue());
-                    }
-
-                    // TODO: retrieve plugin state information
+                final JsonNode tab = jnode.get(i).get(GLOBAL_OBJECT);
+                final Iterator<String> globalParameterNames = tab.fieldNames();
+                while (globalParameterNames.hasNext()) {
+                    final String globalParameterName = globalParameterNames.next();
+                    state.add(globalParameterName, tab.get(globalParameterName).isNull()
+                            ? null : tab.get(globalParameterName).textValue());
                 }
+
+                // TODO: retrieve plugin state information
             }
         }
 

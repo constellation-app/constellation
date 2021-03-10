@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -114,7 +114,7 @@ class FontRunSequence {
             offset += cc;
         }
 
-        // TODO: Fix non-displayable codepoints when a font doesn't exist.
+        // TODO: fix non-displayable codepoints when a font doesn't exist.
         // Add the end of the final run.
         final String t = s.substring(start, length);
         frs.add(new FontRunSequence(t, fontsInfo[currFontIx].font));

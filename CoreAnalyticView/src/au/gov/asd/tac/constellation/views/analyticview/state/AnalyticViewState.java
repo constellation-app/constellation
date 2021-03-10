@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,8 +67,8 @@ public class AnalyticViewState {
     public void addAnalyticQuestion(final AnalyticQuestionDescription<?> question, final List<SelectableAnalyticPlugin> selectablePlugins) {
         if (activeAnalyticQuestions.contains(question)) {
             setCurrentAnalyticQuestionIndex(activeAnalyticQuestions.indexOf(question));
-            selectablePlugins.forEach((plugin) -> {
-                if(!activeSelectablePlugins.get(currentAnalyticQuestionIndex).contains(plugin)){
+            selectablePlugins.forEach(plugin -> {
+                if (!activeSelectablePlugins.get(currentAnalyticQuestionIndex).contains(plugin)) {
                     activeSelectablePlugins.get(currentAnalyticQuestionIndex).add(plugin);
                 }
             });
@@ -90,16 +90,17 @@ public class AnalyticViewState {
     }
 
     /**
-     * Check the currently selected Question index of plugins for other plugins 
+     * Check the currently selected Question index of plugins for other plugins
      * matching the selected category
+     *
      * @param currentCategory the currently selected plugin category to remove
      * from
      */
     public void removePluginsMatchingCategory(String currentCategory) {
         if (!activeSelectablePlugins.isEmpty()) {
-            activeSelectablePlugins.get(currentAnalyticQuestionIndex).removeIf(plugin -> (
-                plugin.getPlugin().getClass().getAnnotation(AnalyticInfo.class).analyticCategory().equals(currentCategory)
-                )
+            activeSelectablePlugins.get(currentAnalyticQuestionIndex).removeIf(plugin
+                    -> (plugin.getPlugin().getClass().getAnnotation(AnalyticInfo.class)
+                            .analyticCategory().equals(currentCategory))
             );
         }
     }

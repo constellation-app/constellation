@@ -1,12 +1,17 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate. All Rights Reserved.
+ * Copyright 2010-2020 Australian Signals Directorate
  *
- * NOTICE: All information contained herein remains the property of the
- * Australian Signals Directorate. The intellectual and technical concepts
- * contained herein are proprietary to the Australian Signals Directorate and
- * are protected by copyright law. Dissemination of this information or
- * reproduction of this material is strictly forbidden unless prior written
- * permission is obtained from the Australian Signals Directorate.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package au.gov.asd.tac.constellation.testing.jdbc;
 
@@ -15,21 +20,23 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.graph.io.GraphFileConstants;
+import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
+import au.gov.asd.tac.constellation.graph.file.io.GraphFileConstants;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
-import au.gov.asd.tac.constellation.pluginframework.PluginException;
-import au.gov.asd.tac.constellation.pluginframework.PluginInfo;
-import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
-import au.gov.asd.tac.constellation.pluginframework.PluginType;
-import au.gov.asd.tac.constellation.pluginframework.logging.ConstellationLoggerHelper;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.templates.SimpleReadPlugin;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.visual.InfoTextPanel;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
+import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
+import au.gov.asd.tac.constellation.utilities.gui.InfoTextPanel;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
@@ -91,7 +98,10 @@ public class ExportToJdbcPlugin extends SimpleReadPlugin {
                 } else {
                     interaction.setProgress(0, 0, "JDBC export interrupted, database may be inconsistent.", false);
                 }
-            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | MalformedURLException ex) {
+            } catch (final MalformedURLException | ClassNotFoundException
+                    | IllegalAccessException | IllegalArgumentException
+                    | InstantiationException | NoSuchMethodException
+                    | SecurityException | InvocationTargetException ex) {
                 notifyException(ex);
 //                throw new PluginException(PluginNotificationLevel.INFO, ex);
             }
@@ -136,7 +146,7 @@ public class ExportToJdbcPlugin extends SimpleReadPlugin {
         JdbcUtilities.checkSqlLabel(data.vxTable);
         select.append(data.vxTable);
         select.append(" WHERE 1<>1");
-        LOGGER.log(Level.INFO, "JDBC export vx SQL: {0}", select.toString());
+        LOGGER.log(Level.INFO, "JDBC export vx SQL: {0}", select);
 
         if (!labelMap.isEmpty()) {
             try (final Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
@@ -182,7 +192,7 @@ public class ExportToJdbcPlugin extends SimpleReadPlugin {
 
         // Create some dummy attribute types as markers for the transaction pseudo-attributes.
         final int pseudoId = -9;
-        final Attribute pseudo = new GraphAttribute(pseudoId, GraphElementType.TRANSACTION, "integer", "tx", "Pseudo tx", null, null);
+        final Attribute pseudo = new GraphAttribute(pseudoId, GraphElementType.TRANSACTION, IntegerAttributeDescription.ATTRIBUTE_NAME, "tx", "Pseudo tx", null, null);
 
         // Build an SQL SELECT to prime an updateable ResultSet.
         // We use a funky where clause because we don't want to fetch what's already there.
@@ -218,7 +228,7 @@ public class ExportToJdbcPlugin extends SimpleReadPlugin {
         JdbcUtilities.checkSqlLabel(data.txTable);
         select.append(data.txTable);
         select.append(" WHERE 1<>1");
-        LOGGER.log(Level.INFO,"JDBC export tx SQL: {0}", select.toString());
+        LOGGER.log(Level.INFO, "JDBC export tx SQL: {0}", select);
 
         if (!labelMap.isEmpty()) {
             try (final Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
@@ -234,14 +244,21 @@ public class ExportToJdbcPlugin extends SimpleReadPlugin {
                             final Attribute attr = entry.getValue();
 
                             if (attr.getId() == pseudoId) {
-                                if (label.equals(GraphFileConstants.TX_ID)) {
-                                    rs.updateInt(label, txId);
-                                } else if (label.equals(GraphFileConstants.SRC)) {
-                                    rs.updateInt(label, rg.getTransactionSourceVertex(txId));
-                                } else if (label.equals(GraphFileConstants.DST)) {
-                                    rs.updateInt(label, rg.getTransactionDestinationVertex(txId));
-                                } else if (label.equals(GraphFileConstants.DIR)) {
-                                    rs.updateBoolean(label, rg.getTransactionDirection(txId) != Graph.FLAT);
+                                switch (label) {
+                                    case GraphFileConstants.TX_ID:
+                                        rs.updateInt(label, txId);
+                                        break;
+                                    case GraphFileConstants.SRC:
+                                        rs.updateInt(label, rg.getTransactionSourceVertex(txId));
+                                        break;
+                                    case GraphFileConstants.DST:
+                                        rs.updateInt(label, rg.getTransactionDestinationVertex(txId));
+                                        break;
+                                    case GraphFileConstants.DIR:
+                                        rs.updateBoolean(label, rg.getTransactionDirection(txId) != Graph.FLAT);
+                                        break;
+                                    default:
+                                        break;
                                 }
                             } else {
                                 updateResultSetParam(rg, rs, label, attr, txId);
@@ -305,7 +322,7 @@ public class ExportToJdbcPlugin extends SimpleReadPlugin {
         insert.append(") VALUES(");
         insert.append(values.toString());
         insert.append(")");
-        LOGGER.log(Level.INFO,"JDBC export vx SQL: {0}", insert.toString());
+        LOGGER.log(Level.INFO, "JDBC export vx SQL: {0}", insert);
 
         if (!attrsToInsert.isEmpty()) {
             try (final PreparedStatement stmt = conn.prepareStatement(insert.toString())) {
@@ -378,7 +395,7 @@ public class ExportToJdbcPlugin extends SimpleReadPlugin {
                         || attrLabel.equals(GraphFileConstants.DST)
                         || attrLabel.equals(GraphFileConstants.DIR)) {
 //                    labelMap.put(colLabel, pseudo);
-                    attr = new GraphAttribute(pseudoId, GraphElementType.TRANSACTION, "integer", attrLabel, "Pseudo tx", null, null);
+                    attr = new GraphAttribute(pseudoId, GraphElementType.TRANSACTION, IntegerAttributeDescription.ATTRIBUTE_NAME, attrLabel, "Pseudo tx", null, null);
 //                    attrsToInsert.add(pseudo);
                 } else {
                     final int attrId = rg.getAttribute(GraphElementType.TRANSACTION, attrLabel);
@@ -400,7 +417,7 @@ public class ExportToJdbcPlugin extends SimpleReadPlugin {
         insert.append(") VALUES(");
         insert.append(values.toString());
         insert.append(")");
-        LOGGER.log(Level.INFO,"JDBC export tx SQL: {0}", insert.toString());
+        LOGGER.log(Level.INFO, "JDBC export tx SQL: {0}", insert);
 
         if (!attrsToInsert.isEmpty()) {
             try (final PreparedStatement stmt = conn.prepareStatement(insert.toString())) {
@@ -428,6 +445,7 @@ public class ExportToJdbcPlugin extends SimpleReadPlugin {
                                     break;
                                 default:
                                     // do nothing
+                                    break;
                             }
                         } else {
                             setBatchParam(rg, stmt, paramIx, attr, txId);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.webserver;
 
 import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
 import au.gov.asd.tac.constellation.functionality.browser.OpenInBrowserPlugin;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import org.openide.awt.ActionID;
@@ -26,7 +26,8 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
 @ActionID(category = "Tools", id = "au.gov.asd.tac.constellation.webserver.DisplayRestDocAction")
-@ActionRegistration(displayName = "#CTL_DisplayRestDocAction")
+@ActionRegistration(displayName = "#CTL_DisplayRestDocAction",
+        iconBase = "au/gov/asd/tac/constellation/webserver/resources/displayRESTServerDocumentation.png")
 @ActionReference(path = "Menu/Tools", position = 1600)
 @Messages("CTL_DisplayRestDocAction=Display REST Server Documentation")
 public final class DisplayRestDocAction implements ActionListener {

@@ -10,8 +10,7 @@ build() {
 }
 
 images=(
-  "Dockerfile.netbeans-8.2=8.2"
-  "Dockerfile.netbeans-11=11"
+  "Dockerfile=12"
 )
 
 for image in "${images[@]}"; do

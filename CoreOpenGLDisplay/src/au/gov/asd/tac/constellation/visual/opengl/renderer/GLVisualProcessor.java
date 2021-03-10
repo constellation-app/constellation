@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,16 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
-import au.gov.asd.tac.constellation.visual.camera.Camera;
-import au.gov.asd.tac.constellation.visual.display.VisualAccess;
-import au.gov.asd.tac.constellation.visual.display.VisualChange;
-import au.gov.asd.tac.constellation.visual.display.VisualChangeBuilder;
-import au.gov.asd.tac.constellation.visual.display.VisualOperation;
-import au.gov.asd.tac.constellation.visual.display.VisualProcessor;
-import au.gov.asd.tac.constellation.visual.display.VisualProcessor.VisualChangeProcessor;
-import au.gov.asd.tac.constellation.visual.display.VisualProperty;
-import au.gov.asd.tac.constellation.visual.graphics3d.Graphics3DUtilities;
-import au.gov.asd.tac.constellation.visual.graphics3d.Matrix44f;
+import au.gov.asd.tac.constellation.utilities.camera.Camera;
+import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
+import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
+import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
+import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
+import au.gov.asd.tac.constellation.utilities.visual.VisualChangeBuilder;
+import au.gov.asd.tac.constellation.utilities.visual.VisualOperation;
+import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor;
+import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor.VisualChangeProcessor;
+import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLException;
@@ -32,6 +32,7 @@ import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.awt.AWTGLReadBufferUtil;
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -107,7 +108,7 @@ public class GLVisualProcessor extends VisualProcessor {
     }
 
     @Override
-    public VisualOperation exportToImage(File imageFile) {
+    public VisualOperation exportToImage(final File imageFile) {
         return new GLExportToImageOperation(imageFile);
     }
 
@@ -524,4 +525,16 @@ public class GLVisualProcessor extends VisualProcessor {
         // If certain changes requried other renderables to be updated, eg. an attribute that set the size of the axes to draw, we could delgeate that here rather than this being a trivial operation.
         return graphRenderable.getChangeProcessor(property);
     }
+
+    /**
+     * Windows-DPI-Scaling
+     *
+     * This function is only needed by the fix for Windows DPI scaling to get
+     * access to the GLCanvas which is a protected member. If JOGL is ever
+     * updated to fix Windows DPI scaling this function should be removed.
+     */
+    public float getDPIScaleY() {
+        return (float) ((Graphics2D) (canvas).getGraphics()).getTransform().getScaleY();
+    }
+
 }

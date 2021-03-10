@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,14 @@
  */
 package au.gov.asd.tac.constellation.views.analyticview.questions;
 
-import au.gov.asd.tac.constellation.algorithms.sna.similarity.CosineSimilarityPlugin;
-import au.gov.asd.tac.constellation.graph.schema.SchemaTransactionType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.MultiChoiceParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.ParameterValue;
-import au.gov.asd.tac.constellation.schema.analyticschema.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
+import au.gov.asd.tac.constellation.plugins.algorithms.sna.similarity.CosineSimilarityPlugin;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.views.analyticview.aggregators.AnalyticAggregator;
 import au.gov.asd.tac.constellation.views.analyticview.aggregators.AppendScoreAggregator;
 import au.gov.asd.tac.constellation.views.analyticview.analytics.AnalyticPlugin;
@@ -63,13 +64,14 @@ public class MostLikelyCorrelatedQuestion implements AnalyticQuestionDescription
     }
 
     @Override
-    public Class<? extends AnalyticResult> getResultType() {
+    public Class<? extends AnalyticResult<?>> getResultType() {
         return ScoreResult.class;
     }
 
     @Override
     public void initialiseParameters(final AnalyticPlugin<ScoreResult> plugin, final PluginParameters parameters) {
-        final PluginParameter transactionTypeParameter = parameters.getParameters().get(ScoreAnalyticPlugin.TRANSACTION_TYPES_PARAMETER_ID);
+        @SuppressWarnings("unchecked") //TRANSACTION_TYPES_PARAMETER always of type MultiChoiceParameter
+        final PluginParameter<MultiChoiceParameterValue> transactionTypeParameter = (PluginParameter<MultiChoiceParameterValue>) parameters.getParameters().get(ScoreAnalyticPlugin.TRANSACTION_TYPES_PARAMETER_ID);
         final List<TransactionTypeParameterValue> newChecked = new ArrayList<>();
         final List<ParameterValue> checked = transactionTypeParameter.getMultiChoiceValue().getChoicesData();
         checked.forEach(parameterValue -> {

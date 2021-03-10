@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,12 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.utilities;
 
-import au.gov.asd.tac.constellation.visual.graphics3d.Vector2f;
-import au.gov.asd.tac.constellation.visual.graphics3d.Vector3f;
-import au.gov.asd.tac.constellation.visual.icons.ConstellationIcon;
-import au.gov.asd.tac.constellation.visual.icons.DefaultIconProvider;
-import au.gov.asd.tac.constellation.visual.icons.IconManager;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector2f;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
+import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
+import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
+import au.gov.asd.tac.constellation.utilities.icon.IconManager;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLContext;
@@ -40,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.openide.util.Utilities; //pulled in by Windows-DPI-Scaling
 
 /**
  * Tools for OpenGL and JOGL.
@@ -123,7 +125,7 @@ public final class GLTools {
             String line;
             while ((line = reader.readLine()) != null) {
                 buf.append(line);
-                buf.append("\n");
+                buf.append(SeparatorConstants.NEWLINE);
             }
         }
 
@@ -200,7 +202,7 @@ public final class GLTools {
             if (geometryShader != -1) {
                 gl.glDeleteShader(geometryShader);
             }
-            throw new RenderException(String.format("Invalid vertex shader '%s':\n\n%s", label, log));
+            throw new RenderException(String.format("Invalid vertex shader '%s':%n%n%s", label, log));
         }
 
         gl.glGetShaderiv(fragmentShader, GL3.GL_COMPILE_STATUS, testVal, 0);
@@ -211,7 +213,7 @@ public final class GLTools {
             if (geometryShader != -1) {
                 gl.glDeleteShader(geometryShader);
             }
-            throw new RenderException(String.format("Invalid fragment shader '%s':\n\n%s", label, log));
+            throw new RenderException(String.format("Invalid fragment shader '%s':%n%n%s", label, log));
         }
 
         if (geometryShader != -1) {
@@ -221,7 +223,7 @@ public final class GLTools {
                 gl.glDeleteShader(vertexShader);
                 gl.glDeleteShader(fragmentShader);
                 gl.glDeleteShader(geometryShader);
-                throw new RenderException(String.format("Invalid geometry shader '%s':\n\n%s", label, log));
+                throw new RenderException(String.format("Invalid geometry shader '%s':%n%n%s", label, log));
             }
         }
 
@@ -259,7 +261,7 @@ public final class GLTools {
         if (testVal[0] == GL3.GL_FALSE) {
             final String log = getProgramLog(gl, progid);
             gl.glDeleteProgram(progid);
-            throw new RenderException(String.format("Invalid program link '%s':\n\n%s", label, log));
+            throw new RenderException(String.format("Invalid program link '%s':%n%n%s", label, log));
         }
 
         LOGGER.log(Level.FINE, "PROGRAMLOG::{0}::{1}", new Object[]{label, getProgramLog(gl, progid)});
@@ -301,7 +303,7 @@ public final class GLTools {
             Vector2f[] vTexture = Vector2f.createArray(4);
 
             for (int j = 0; j < iSlices; j++) {
-                float theta = (j == iSlices) ? 0.0f : j * dtheta;
+                float theta = j * dtheta;
                 float stheta = (float) (-Math.sin(theta));
                 float ctheta = (float) (Math.cos(theta));
 
@@ -633,7 +635,7 @@ public final class GLTools {
                         data.destroy();
                     }
                 } catch (final RuntimeException ex) {
-                    System.out.printf("##\n## GLTools.loadTextures() icon %d throwable: %s\n##\n", i, ex);
+                    System.out.printf("##%n## GLTools.loadTextures() icon %d throwable: %s%n##%n", i, ex);
                     LOGGER.log(Level.SEVERE, null, ex);
                 }
             }
@@ -868,5 +870,23 @@ public final class GLTools {
             errtext = "framebuffer unsupported";
         }
         LOGGER.log(Level.SEVERE, "**** Framebuffer error %{0}: %{1} ({2})", new Object[]{msg, errtext, fboStatus});
+    }
+
+    /**
+     * Windows-DPI-Scaling
+     *
+     * JOGL version 2.3.2 on Windows doesn't correctly support DPI scaling.
+     * setSurfaceScale() is not overridden in WindowsJAWTWindow so it is not
+     * possible to scale the the canvas and mouse events at this level. It
+     * should be noted that it is overridden in MacOSXJAWTWindow. Where manual
+     * scaling is required the caller will need to scale each GL viewport and
+     * ensure hit tests take that size into account.
+     *
+     * If JOGL is ever fixed or another solution is found, either change this
+     * function to return false or look for any code that calls it and remove
+     * it.
+     */
+    public static boolean needsManualDPIScaling() {
+        return Utilities.isWindows();
     }
 }

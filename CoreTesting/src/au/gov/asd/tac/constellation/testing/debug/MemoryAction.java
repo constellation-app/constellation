@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,8 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
 @ActionID(category = "Help", id = "au.gov.asd.tac.constellation.testing.debug.MemoryAction")
-@ActionRegistration(displayName = "#CTL_MemoryAction")
+@ActionRegistration(displayName = "#CTL_MemoryAction",
+        iconBase = "au/gov/asd/tac/constellation/testing/debug/memory.png")
 @ActionReference(path = "Menu/Help", position = 1451)
 @Messages("CTL_MemoryAction=Memory")
 public final class MemoryAction implements ActionListener {
@@ -37,15 +38,15 @@ public final class MemoryAction implements ActionListener {
         final long maxmem = Runtime.getRuntime().maxMemory();
 
         final StringBuilder b = new StringBuilder();
-        b.append(String.format("Free memory: %,d\n", freemem));
-        b.append(String.format("Total memory: %,d\n", totalmem));
-        b.append(String.format("Maximum memory: %,d\n", maxmem));
+        b.append(String.format("Free memory: %,d%n", freemem));
+        b.append(String.format("Total memory: %,d%n", totalmem));
+        b.append(String.format("Maximum memory: %,d%n", maxmem));
 
 //        // test
 //        for (MemoryPoolMXBean memoryPoolMXBeans : ManagementFactory.getMemoryPoolMXBeans()) {
 //            b.append(memoryPoolMXBeans.getName());
 //            b.append(memoryPoolMXBeans.getUsage());
-//            b.append("\n");
+//            b.append(SeparatorConstants.NEWLINE);
 //        }
         final NotifyDescriptor nd = new NotifyDescriptor.Message(b.toString(), NotifyDescriptor.INFORMATION_MESSAGE);
         DialogDisplayer.getDefault().notify(nd);

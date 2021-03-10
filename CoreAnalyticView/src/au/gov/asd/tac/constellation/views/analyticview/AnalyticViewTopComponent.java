@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,19 @@
  */
 package au.gov.asd.tac.constellation.views.analyticview;
 
-import au.gov.asd.tac.constellation.functionality.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
-import au.gov.asd.tac.constellation.graph.schema.SchemaAttribute;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.pluginframework.PluginException;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
-import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.analyticview.analytics.AnalyticPlugin;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticViewConcept;
@@ -34,6 +35,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -74,6 +76,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
     private final AnalyticViewPane analyticViewPane;
     private final AnalyticController analyticController;
     private boolean suppressed = false;
+    private String currentGraphId = StringUtils.EMPTY;
 
     public AnalyticViewTopComponent() {
         super();
@@ -86,20 +89,24 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
 
         // analytic view specific listeners
         addStructureChangeHandler(graph -> {
-            if (!suppressed) {
+            if (needsUpdate() && !suppressed) {
                 analyticViewPane.getConfigurationPane().saveState();
             }
         });
         addAttributeValueChangeHandler(AnalyticViewConcept.MetaAttribute.ANALYTIC_VIEW_STATE, graph -> {
-            if (!suppressed) {
+            if (needsUpdate() && !suppressed) {
                 analyticViewPane.getConfigurationPane().saveState();
             }
         });
         addAttributeValueChangeHandler(VisualConcept.VertexAttribute.SELECTED, graph -> {
-            analyticController.selectOnInternalVisualisations(GraphElementType.VERTEX, graph);
+            if (needsUpdate()) {
+                analyticController.selectOnInternalVisualisations(GraphElementType.VERTEX, graph);
+            }
         });
         addAttributeValueChangeHandler(VisualConcept.TransactionAttribute.SELECTED, graph -> {
-            analyticController.selectOnInternalVisualisations(GraphElementType.TRANSACTION, graph);
+            if (needsUpdate()) {
+                analyticController.selectOnInternalVisualisations(GraphElementType.TRANSACTION, graph);
+            }
         });
         addIgnoredEvent(AnalyticController.SELECT_ON_GRAPH_PLUGIN_NAME);
 
@@ -116,7 +123,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
         });
         prerequisiteAttributes.forEach((attribute, plugins) -> {
             addAttributeValueChangeHandler(attribute, graph -> {
-                if (!suppressed) {
+                if (needsUpdate() && !suppressed) {
                     plugins.forEach(plugin -> {
                         final PluginParameters updatedParameters = plugin.createParameters().copy();
                         plugin.onPrerequisiteAttributeChange(graph, updatedParameters);
@@ -124,7 +131,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
                     });
                     analyticViewPane.getConfigurationPane().updateSelectablePluginsParameters();
                 }
-                
+
             });
         });
     }
@@ -163,6 +170,12 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
 
     @Override
     protected void handleNewGraph(final Graph graph) {
+        if (!needsUpdate()) {
+            return;
+        }
+        if (graph != null) {
+            currentGraphId = graph.getId();
+        }
         if (analyticViewPane != null) {
             analyticViewPane.setIsRunnable(graph != null);
             analyticViewPane.reset();
@@ -170,16 +183,39 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
         suppressed = true;
         manualUpdate();
         suppressed = false;
-        analyticViewPane.getConfigurationPane().updateState(false);
+        if (analyticViewPane != null) {
+            analyticViewPane.getConfigurationPane().updateState(false);
+        }
     }
-    
+
     @Override
     protected void handleGraphOpened(final Graph graph) {
-        analyticViewPane.getConfigurationPane().updateState(false);
+        if (needsUpdate()) {
+            if (graph != null) {
+                currentGraphId = graph.getId();
+            }
+            analyticViewPane.getConfigurationPane().updateState(false);
+        }
     }
-    
+
     @Override
     protected void handleComponentOpened() {
+        if (needsUpdate()) {
+            final Graph current = GraphManager.getDefault().getActiveGraph();
+            if (current != null) {
+                currentGraphId = current.getId();
+            }
+            analyticViewPane.getConfigurationPane().updateState(false);
+        }
+    }
+
+    @Override
+    protected void componentShowing() {
+        super.componentShowing();
+        final Graph current = GraphManager.getDefault().getActiveGraph();
+        if (current != null && !current.getId().equals(currentGraphId)) {
+            analyticViewPane.reset();
+        }
         analyticViewPane.getConfigurationPane().updateState(false);
     }
 
@@ -208,13 +244,15 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
                                 graph.setBooleanValue(transactionSelectedAttribute, transactionId, elementIds.contains(transactionId));
                             }
                             break;
+                        default:
+                            break;
                     }
                 }
             }).executeLater(getCurrentGraph());
         }
 
         public void selectOnInternalVisualisations(final GraphElementType elementType, final Graph graph) {
-            final AnalyticResult result = analyticViewPane.getResultsPane().getResult();
+            final AnalyticResult<?> result = analyticViewPane.getResultsPane().getResult();
 
             if (graph != null && result != null) {
                 final List<Integer> selected = new ArrayList<>();
@@ -242,6 +280,8 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
                                     selected.add(transactionId);
                                 }
                             }
+                            break;
+                        default:
                             break;
                     }
                 } finally {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ import org.openide.util.Utilities;
  */
 public class JDropDownMenu<E> extends JComponent implements ActionListener {
 
-    private static final Logger LOGGER = Logger.getLogger(JMultiChoiceComboBoxMenu.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(JDropDownMenu.class.getName());
 
     private final JButton button;
     private final JPopupMenu menu;

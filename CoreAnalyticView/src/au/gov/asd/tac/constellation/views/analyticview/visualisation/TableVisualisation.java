@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,14 @@
  */
 package au.gov.asd.tac.constellation.views.analyticview.visualisation;
 
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticData;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult.ResultListener;
 import au.gov.asd.tac.constellation.views.analyticview.translators.AbstractTableTranslator;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -43,6 +42,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.VBox;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -51,14 +51,14 @@ import javafx.scene.layout.VBox;
  */
 public class TableVisualisation<C extends AnalyticData> extends InternalVisualisation implements ResultListener<C> {
 
-    private final AbstractTableTranslator<? extends AnalyticResult, C> translator;
+    private final AbstractTableTranslator<? extends AnalyticResult<?>, C> translator;
     private final VBox tableVisualisation;
     private final TextField tableFilter;
     private final TableView<C> table;
-    private final Map<String, TableColumn> tableColumns = new HashMap<>();
+    private final Map<String, TableColumn<C, Object>> tableColumns = new HashMap<>();
     private ListChangeListener<C> currentListener = null;
 
-    public TableVisualisation(final AbstractTableTranslator<? extends AnalyticResult, C> translator) {
+    public TableVisualisation(final AbstractTableTranslator<? extends AnalyticResult<?>, C> translator) {
         this.translator = translator;
 
         this.tableVisualisation = new VBox();
@@ -76,12 +76,12 @@ public class TableVisualisation<C extends AnalyticData> extends InternalVisualis
     }
 
     public void addColumn(final String columnName, final int percentWidth) {
-        final TableColumn<C, Object> column = new TableColumn(columnName);
+        final TableColumn<C, Object> column = new TableColumn<>(columnName);
         tableColumns.put(columnName, column);
 
         column.prefWidthProperty().bind(table.widthProperty().multiply(percentWidth / 100.0));
 
-        column.setCellValueFactory(cellData -> new SimpleObjectProperty(translator.getCellData(cellData.getValue(), columnName)));
+        column.setCellValueFactory(cellData -> new SimpleObjectProperty<>(translator.getCellData(cellData.getValue(), columnName)));
 
         column.setCellFactory(columnData -> {
             return new TableCell<C, Object>() {
@@ -89,8 +89,8 @@ public class TableVisualisation<C extends AnalyticData> extends InternalVisualis
                 public void updateItem(final Object item, final boolean empty) {
                     super.updateItem(item, empty);
                     if (item != null) {
-                        this.setText(translator.getCellText((C) this.getTableRow().getItem(), item, columnName));
-                        final ConstellationColor color = translator.getCellColor((C) this.getTableRow().getItem(), item, columnName);
+                        this.setText(translator.getCellText(this.getTableRow().getItem(), item, columnName));
+                        final ConstellationColor color = translator.getCellColor(this.getTableRow().getItem(), item, columnName);
                         this.setBackground(new Background(new BackgroundFill(color.getJavaFXColor(), CornerRadii.EMPTY, Insets.EMPTY)));
                     }
                 }
@@ -109,15 +109,12 @@ public class TableVisualisation<C extends AnalyticData> extends InternalVisualis
         filteredData.addListener((Change<? extends C> change) -> table.refresh());
         tableFilter.textProperty().addListener((observable, oldValue, newValue) -> {
             filteredData.setPredicate(item -> {
-                if (newValue == null || newValue.isEmpty()) {
+                if (StringUtils.isBlank(newValue)) {
                     return true;
                 }
 
                 final String lowerCaseFilter = newValue.toLowerCase();
-                if (item.getIdentifier().toLowerCase().contains(lowerCaseFilter)) {
-                    return true;
-                }
-                return false;
+                return item.getIdentifier().toLowerCase().contains(lowerCaseFilter);
             });
         });
 
@@ -153,37 +150,35 @@ public class TableVisualisation<C extends AnalyticData> extends InternalVisualis
 
     @Override
     public void resultChanged(final List<C> selectedItems, final List<C> ignoredItems) {
-        Platform.runLater(() -> {
-            // remove the selection change listener
-            final ListChangeListener listener = currentListener;
-            setSelectionModelListener(null);
+        // remove the selection change listener
+        final ListChangeListener<C> listener = currentListener;
+        setSelectionModelListener(null);
 
-            // add items from the ignored list which are currently selected
-            final int[] selectionIndices = new int[selectedItems.size() + ignoredItems.size()];
-            if (!ignoredItems.isEmpty()) {
-                final List<C> currentSelection = table.getSelectionModel().getSelectedItems();
-                ignoredItems.forEach(item -> {
-                    if (currentSelection.contains(item)) {
-                        selectionIndices[selectedItems.size() + ignoredItems.indexOf(item)] = table.getItems().indexOf(item);
-                    }
-                });
-            }
+        // add items from the ignored list which are currently selected
+        final int[] selectionIndices = new int[selectedItems.size() + ignoredItems.size()];
+        if (!ignoredItems.isEmpty()) {
+            final List<C> currentSelection = table.getSelectionModel().getSelectedItems();
+            ignoredItems.forEach(item -> {
+                if (currentSelection.contains(item)) {
+                    selectionIndices[selectedItems.size() + ignoredItems.indexOf(item)] = table.getItems().indexOf(item);
+                }
+            });
+        }
 
-            // add all items from the selected list
-            if (!selectedItems.isEmpty()) {
-                selectedItems.forEach(item -> {
-                    selectionIndices[selectedItems.indexOf(item)] = table.getItems().indexOf(item);
-                });
-            }
+        // add all items from the selected list
+        if (!selectedItems.isEmpty()) {
+            selectedItems.forEach(item -> {
+                selectionIndices[selectedItems.indexOf(item)] = table.getItems().indexOf(item);
+            });
+        }
 
-            // clear the table selection and then make the new selection
-            table.getSelectionModel().clearSelection();
-            if (selectionIndices.length > 0) {
-                table.getSelectionModel().selectIndices(selectionIndices[0], selectionIndices);
-            }
+        // clear the table selection and then make the new selection
+        table.getSelectionModel().clearSelection();
+        if (selectionIndices.length > 0) {
+            table.getSelectionModel().selectIndices(selectionIndices[0], selectionIndices);
+        }
 
-            // add the selection change listener back
-            setSelectionModelListener(listener);
-        });
+        // add the selection change listener back
+        setSelectionModelListener(listener);
     }
 }

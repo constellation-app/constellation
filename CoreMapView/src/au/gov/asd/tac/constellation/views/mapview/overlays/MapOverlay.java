@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.mapview.overlays;
 
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.mapview.MapViewTileRenderer;
 import de.fhpotsdam.unfolding.UnfoldingMap;
 import de.fhpotsdam.unfolding.events.EventDispatcher;
@@ -34,6 +35,7 @@ public abstract class MapOverlay {
     protected UnfoldingMap map;
     protected EventDispatcher eventDispatcher;
     protected boolean enabled;
+    protected boolean active;
     protected boolean debug;
 
     // positions and sizes
@@ -67,7 +69,8 @@ public abstract class MapOverlay {
     protected final int valueBoxColor = 0x7F000000;
 
     public MapOverlay() {
-        this.enabled = true;
+        this.enabled = false;
+        this.active = false;
         this.debug = false;
     }
 
@@ -92,6 +95,14 @@ public abstract class MapOverlay {
 
     public void setEnabled(final boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(final boolean active) {
+        this.active = active;
     }
 
     public boolean isDebug() {
@@ -198,12 +209,12 @@ public abstract class MapOverlay {
 
             int bufferIndex = buffer.length();
             while (renderer.textWidth(buffer) > maxInfoLength) {
-                bufferIndex = buffer.lastIndexOf(" ");
+                bufferIndex = buffer.lastIndexOf(' ');
                 buffer = buffer.substring(0, bufferIndex);
             }
 
-            if (buffer.contains("\n")) {
-                bufferIndex = buffer.indexOf("\n") + 1;
+            if (buffer.contains(SeparatorConstants.NEWLINE)) {
+                bufferIndex = buffer.indexOf('\n') + 1;
                 buffer = buffer.substring(0, bufferIndex);
             }
 

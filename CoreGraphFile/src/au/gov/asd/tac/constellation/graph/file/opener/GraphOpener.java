@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,8 +74,6 @@ public abstract class GraphOpener {
     public abstract void openGraph(Graph graph, String name, boolean numbered);
 
     public static GraphOpener getDefault() {
-        final GraphOpener go = Lookup.getDefault().lookup(GraphOpener.class);
-
-        return go;
+        return Lookup.getDefault().lookup(GraphOpener.class);
     }
 }

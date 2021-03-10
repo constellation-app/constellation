@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import java.util.Arrays;
 import org.openide.awt.UndoRedo;
 
@@ -54,19 +54,15 @@ public class DualGraphFlushTester {
 
         final float[] coordSums = new float[1000];
 
-        GraphChangeListener gcl = new GraphChangeListener() {
-
-            @Override
-            public void graphChanged(GraphChangeEvent event) {
-                ReadableGraph rg = dg.getReadableGraph();
-                try {
-                    for (int i = 0; i < 1000; i++) {
-                        final int vxId = rg.getVertex(i);
-                        coordSums[i] = rg.getFloatValue(x, vxId) + rg.getFloatValue(y, vxId) + rg.getFloatValue(z, vxId);
-                    }
-                } finally {
-                    rg.release();
+        GraphChangeListener gcl = (GraphChangeEvent event) -> {
+            ReadableGraph rg = dg.getReadableGraph();
+            try {
+                for (int i = 0; i < 1000; i++) {
+                    final int vxId = rg.getVertex(i);
+                    coordSums[i] = rg.getFloatValue(x, vxId) + rg.getFloatValue(y, vxId) + rg.getFloatValue(z, vxId);
                 }
+            } finally {
+                rg.release();
             }
         };
         dg.addGraphChangeListener(gcl);

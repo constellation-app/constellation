@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.awt.Component;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -29,6 +30,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.swing.event.ChangeListener;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.WizardDescriptor;
 import org.openide.WizardValidationException;
 import org.openide.util.HelpCtx;
@@ -43,9 +45,9 @@ public class ConnectionPanelController implements WizardDescriptor.ExtendedAsync
     private ConnectionPanel panel = null;
     private JdbcData data;
     private final List<ChangeListener> listeners = new ArrayList<>();
-    
+
     private static final Logger LOGGER = Logger.getLogger(ConnectionPanelController.class.getName());
-    
+
     public ConnectionPanelController(final Graph graph) {
         this.graph = graph;
         data = null;
@@ -111,9 +113,7 @@ public class ConnectionPanelController implements WizardDescriptor.ExtendedAsync
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        listeners.stream().forEach((l) -> {
-            l.stateChanged(null);
-        });
+        listeners.stream().forEach(l -> l.stateChanged(null));
     }
 
     @Override
@@ -139,7 +139,7 @@ public class ConnectionPanelController implements WizardDescriptor.ExtendedAsync
             throw new WizardValidationException(panel.findJarButton, "JDBC JAR file cannot be read", null);
         }
 
-        if (panel.getDriverName() == null || panel.getDriverName().isEmpty()) {
+        if (StringUtils.isBlank(panel.getDriverName())) {
             throw new WizardValidationException(panel.driverCombo, "JDBC driver must be specified", null);
         }
 
@@ -162,7 +162,11 @@ public class ConnectionPanelController implements WizardDescriptor.ExtendedAsync
 
             Collections.sort(tables);
             data.tables = tables;
-        } catch (final MalformedURLException | ClassNotFoundException | SQLException | InstantiationException | IllegalAccessException ex) {
+        } catch (final MalformedURLException | ClassNotFoundException
+                | IllegalAccessException | IllegalArgumentException
+                | InstantiationException | NoSuchMethodException
+                | SecurityException | InvocationTargetException
+                | SQLException ex) {
             LOGGER.severe(ex.getLocalizedMessage());
             final String msg = String.format("%s: %s", ex.getClass().getSimpleName(), ex.getMessage());
             throw new WizardValidationException(panel, msg, msg);
@@ -171,9 +175,11 @@ public class ConnectionPanelController implements WizardDescriptor.ExtendedAsync
 
     @Override
     public void prepareValidation() {
+        // Required for ExtendedAsynchronousValidatingPanel, intentionally left blank
     }
 
     @Override
     public void finishValidation() {
+        // Required for ExtendedAsynchronousValidatingPanel, intentionally left blank
     }
 }

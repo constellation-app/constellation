@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.graph.utilities;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
+import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
@@ -66,11 +67,10 @@ public class SubgraphUtilitiesNGTest {
         final int vx0 = graph.addVertex();
         final int vx1 = graph.addVertex();
         final int tx0 = graph.addTransaction(vx0, vx1, true);
-        final int vxAttr = graph.addAttribute(GraphElementType.VERTEX, "string", VX_ATTRIBUTE, "", "", null);
-        final int txAttr = graph.addAttribute(GraphElementType.TRANSACTION, "string", TX_ATTRIBUTE, "", "", null);
+        final int vxAttr = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, VX_ATTRIBUTE, "", "", null);
+        final int txAttr = graph.addAttribute(GraphElementType.TRANSACTION, StringAttributeDescription.ATTRIBUTE_NAME, TX_ATTRIBUTE, "", "", null);
         graph.setPrimaryKey(GraphElementType.VERTEX, vxAttr);
         graph.setPrimaryKey(GraphElementType.TRANSACTION, txAttr);
-
         graph.setStringValue(vxAttr, vx0, VX_VALUE);
         graph.setStringValue(txAttr, tx0, TX_VALUE);
 
@@ -82,13 +82,15 @@ public class SubgraphUtilitiesNGTest {
         assertEquals(graph.getStringValue(txAttr, tx0), TX_VALUE);
 
         final StoreGraph copy = SubgraphUtilities.copyGraph(graph);
+        final int vxAttrCopy = copy.getAttribute(GraphElementType.VERTEX, VX_ATTRIBUTE);
+        final int txAttrCopy = copy.getAttribute(GraphElementType.TRANSACTION, TX_ATTRIBUTE);
 
         assertEquals(copy.getVertexCount(), 2);
         assertEquals(copy.getTransactionCount(), 1);
         assertTrue(copy.getAttribute(GraphElementType.VERTEX, VX_ATTRIBUTE) != Graph.NOT_FOUND);
         assertTrue(copy.getAttribute(GraphElementType.TRANSACTION, TX_ATTRIBUTE) != Graph.NOT_FOUND);
-        assertEquals(copy.getStringValue(vxAttr, vx0), VX_VALUE);
-        assertEquals(copy.getStringValue(txAttr, tx0), TX_VALUE);
+        assertEquals(copy.getStringValue(vxAttrCopy, vx0), VX_VALUE);
+        assertEquals(copy.getStringValue(txAttrCopy, tx0), TX_VALUE);
     }
 
     @Test
@@ -98,72 +100,53 @@ public class SubgraphUtilitiesNGTest {
 
         final StoreGraph graph = new StoreGraph();
         final int vx0 = graph.addVertex();
-        final int vx1 = graph.addVertex();
-        final int vxAttr = graph.addAttribute(GraphElementType.VERTEX, "string", VX_ATTRIBUTE, "", "", null);
+        final int vxAttr = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, VX_ATTRIBUTE, "", "", null);
         graph.setPrimaryKey(GraphElementType.VERTEX, vxAttr);
 
         graph.setStringValue(vxAttr, vx0, VX_VALUE);
 
-        assertEquals(graph.getVertexCount(), 2);
+        assertEquals(graph.getVertexCount(), 1);
         assertEquals(graph.getTransactionCount(), 0);
         assertTrue(graph.getAttribute(GraphElementType.VERTEX, VX_ATTRIBUTE) != Graph.NOT_FOUND);
         assertEquals(graph.getStringValue(vxAttr, vx0), VX_VALUE);
 
         final StoreGraph copy = SubgraphUtilities.copyGraph(graph);
+        final int vxAttrCopy = copy.getAttribute(GraphElementType.VERTEX, VX_ATTRIBUTE);
 
-        assertEquals(copy.getVertexCount(), 2);
+        assertEquals(copy.getVertexCount(), 1);
         assertEquals(copy.getTransactionCount(), 0);
         assertTrue(copy.getAttribute(GraphElementType.VERTEX, VX_ATTRIBUTE) != Graph.NOT_FOUND);
-        assertEquals(copy.getStringValue(vxAttr, vx0), VX_VALUE);
+        assertEquals(copy.getStringValue(vxAttrCopy, vx0), VX_VALUE);
     }
 
     @Test
-    public void testCopyGraphWithoutTransactionButHasTransactionAttribute() {
+    public void testCopyGraphWithoutTransactionButWithTransactionAttribute() {
         final String VX_ATTRIBUTE = "Name";
         final String VX_VALUE = "Foo";
         final String TX_ATTRIBUTE = "Name";
 
         final StoreGraph graph = new StoreGraph();
         final int vx0 = graph.addVertex();
-        final int vx1 = graph.addVertex();
-        final int vxAttr = graph.addAttribute(GraphElementType.VERTEX, "string", VX_ATTRIBUTE, "", "", null);
-        final int txAttr = graph.addAttribute(GraphElementType.TRANSACTION, "string", TX_ATTRIBUTE, "", "", null);
+        final int vxAttr = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, VX_ATTRIBUTE, "", "", null);
+        final int txAttr = graph.addAttribute(GraphElementType.TRANSACTION, StringAttributeDescription.ATTRIBUTE_NAME, TX_ATTRIBUTE, "", "", null);
         graph.setPrimaryKey(GraphElementType.VERTEX, vxAttr);
         graph.setPrimaryKey(GraphElementType.TRANSACTION, txAttr);
 
         graph.setStringValue(vxAttr, vx0, VX_VALUE);
 
-        assertEquals(graph.getVertexCount(), 2);
+        assertEquals(graph.getVertexCount(), 1);
         assertEquals(graph.getTransactionCount(), 0);
         assertTrue(graph.getAttribute(GraphElementType.VERTEX, VX_ATTRIBUTE) != Graph.NOT_FOUND);
         assertTrue(graph.getAttribute(GraphElementType.TRANSACTION, TX_ATTRIBUTE) != Graph.NOT_FOUND);
         assertEquals(graph.getStringValue(vxAttr, vx0), VX_VALUE);
 
         final StoreGraph copy = SubgraphUtilities.copyGraph(graph);
+        final int vxAttrCopy = copy.getAttribute(GraphElementType.VERTEX, VX_ATTRIBUTE);
 
-        assertEquals(copy.getVertexCount(), 2);
+        assertEquals(copy.getVertexCount(), 1);
         assertEquals(copy.getTransactionCount(), 0);
         assertTrue(copy.getAttribute(GraphElementType.VERTEX, VX_ATTRIBUTE) != Graph.NOT_FOUND);
         assertTrue(copy.getAttribute(GraphElementType.TRANSACTION, TX_ATTRIBUTE) != Graph.NOT_FOUND);
-        assertEquals(copy.getStringValue(vxAttr, vx0), VX_VALUE);
+        assertEquals(copy.getStringValue(vxAttrCopy, vx0), VX_VALUE);
     }
-
-    // TODO: testing loops everywhere including here
-//    /**
-//     * Test of getSubgraph method, of class SubGraphUtilities.
-//     */
-//    @Test
-//    public void testGetSubgraph() {
-//        System.out.println("getSubgraph");
-//        GraphReadMethods graph = null;
-//        Schema schema = null;
-//        Set<SchemaTransactionType> types = null;
-//        int transactionTypeAttributeId = 0;
-//        boolean isExclusive = false;
-//        StoreGraph expResult = null;
-//        StoreGraph result = SubGraphUtilities.getSubgraph(graph, schema, types, transactionTypeAttributeId, isExclusive);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
 }

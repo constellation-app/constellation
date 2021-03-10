@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs;
 
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.List;
 import org.openide.util.Lookup;
 
@@ -49,7 +50,7 @@ public interface ConstellationLabelFonts {
     public default String getFontListString() {
         final StringBuilder fontList = new StringBuilder();
         getFontList().forEach(font -> {
-            fontList.append(font).append("\n");
+            fontList.append(font).append(SeparatorConstants.NEWLINE);
         });
         return fontList.toString();
     }

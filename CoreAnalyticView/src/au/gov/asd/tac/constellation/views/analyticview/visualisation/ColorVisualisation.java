@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.analyticview.visualisation;
 
-import au.gov.asd.tac.constellation.graph.schema.SchemaAttribute;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.translators.AbstractColorTranslator;
 import java.util.Arrays;
@@ -31,10 +31,10 @@ import javafx.scene.control.ToggleButton;
  */
 public class ColorVisualisation<C> extends GraphVisualisation {
 
-    private final AbstractColorTranslator translator;
+    private final AbstractColorTranslator<? extends AnalyticResult<?>, C> translator;
     private final ToggleButton colorButton;
 
-    public ColorVisualisation(final AbstractColorTranslator<? extends AnalyticResult, C> translator) {
+    public ColorVisualisation(final AbstractColorTranslator<? extends AnalyticResult<?>, C> translator) {
         this.translator = translator;
 
         this.colorButton = new ToggleButton("Color");

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -84,13 +84,8 @@ public class ConversationState {
         }
         if (o instanceof ConversationState) {
             ConversationState cs = (ConversationState) o;
-            if (!hiddenContributionProviders.equals(cs.hiddenContributionProviders)) {
-                return false;
-            }
-            if (!senderAttributes.equals(cs.senderAttributes)) {
-                return false;
-            }
-            return true;
+            return hiddenContributionProviders.equals(cs.hiddenContributionProviders)
+                    && senderAttributes.equals(cs.senderAttributes);
         }
         return false;
     }

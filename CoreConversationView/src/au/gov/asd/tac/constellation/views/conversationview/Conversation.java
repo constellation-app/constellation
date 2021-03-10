@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,12 +21,12 @@ import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.attribute.ObjectAttributeDescription;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.pluginframework.update.GraphUpdateController;
-import au.gov.asd.tac.constellation.pluginframework.update.GraphUpdateManager;
-import au.gov.asd.tac.constellation.pluginframework.update.MultiAttributeUpdateComponent;
-import au.gov.asd.tac.constellation.pluginframework.update.UpdateComponent;
-import au.gov.asd.tac.constellation.pluginframework.update.UpdateController;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.update.GraphUpdateController;
+import au.gov.asd.tac.constellation.plugins.update.GraphUpdateManager;
+import au.gov.asd.tac.constellation.plugins.update.MultiAttributeUpdateComponent;
+import au.gov.asd.tac.constellation.plugins.update.UpdateComponent;
+import au.gov.asd.tac.constellation.plugins.update.UpdateController;
 import au.gov.asd.tac.constellation.views.conversationview.TextConversationContributionProvider.TextContribution;
 import au.gov.asd.tac.constellation.views.conversationview.state.ConversationState;
 import au.gov.asd.tac.constellation.views.conversationview.state.ConversationViewConcept;
@@ -122,18 +122,24 @@ public class Conversation {
      * Create a new Conversation.
      */
     public Conversation() {
+        conversationExistanceUpdater.dependOn(graphUpdateController.getNewGraphUpdateComponent());  
+        
+        conversationStateUpdater.dependOn(conversationExistanceUpdater);
         conversationStateUpdater.dependOn(graphUpdateController.createAttributeUpdateComponent(ConversationViewConcept.MetaAttribute.CONVERSATION_VIEW_STATE));
+        
+        possibleSenderAttributeUpdater.dependOn(conversationExistanceUpdater);
+        possibleSenderAttributeUpdater.dependOn(graphUpdateController.getAttributeUpdateComponent());
 
+        senderAttributeUpdater.dependOn(possibleSenderAttributeUpdater);
         senderAttributeUpdater.dependOn(graphUpdateController.getAttributeUpdateComponent());
 
-        possibleSenderAttributeUpdater.dependOn(graphUpdateController.getAttributeUpdateComponent());
-        senderAttributeUpdater.dependOn(possibleSenderAttributeUpdater);
-
+        contributionProviderUpdater.dependOn(conversationExistanceUpdater);
         contributionProviderUpdater.dependOn(graphUpdateController.getAttributeUpdateComponent());
-
+        
+        messageUpdater.dependOn(conversationExistanceUpdater);
         messageUpdater.dependOn(graphUpdateController.createAttributeUpdateComponent(VisualConcept.VertexAttribute.SELECTED));
         messageUpdater.dependOn(graphUpdateController.createAttributeUpdateComponent(VisualConcept.TransactionAttribute.SELECTED));
-
+        
         contributionUpdater.dependOn(messageUpdater);
 
         datetimeUpdater.dependOn(contributionUpdater);
@@ -178,22 +184,38 @@ public class Conversation {
      * Inspects the contents of the conversation state and registers any changes
      * that have occurred.
      */
+    private UpdateComponent<GraphReadMethods> conversationExistanceUpdater = new UpdateComponent<GraphReadMethods>("Existance State", LOCK_STAGE) {
+
+        @Override
+        protected boolean update(GraphReadMethods graph) {
+            return graph == null;
+        }
+    };
+    /**
+     * Inspects the contents of the conversation state and registers any changes
+     * that have occurred.
+     */
     private UpdateComponent<GraphReadMethods> conversationStateUpdater = new UpdateComponent<GraphReadMethods>("Conversation State", LOCK_STAGE) {
 
         @Override
         protected boolean update(GraphReadMethods graph) {
 
+            
             ConversationState newConversationState;
-            int conversationStateAttribute = ConversationViewConcept.MetaAttribute.CONVERSATION_VIEW_STATE.get(graph);
-            if (conversationStateAttribute == Graph.NOT_FOUND) {
-                newConversationState = new ConversationState();
-                newConversationState.setSenderAttributesToKeys(graph);
-            } else {
-                newConversationState = (ConversationState) graph.getObjectValue(conversationStateAttribute, 0);
-                if (newConversationState == null) {
+            if (graph != null) {
+                final int conversationStateAttribute = ConversationViewConcept.MetaAttribute.CONVERSATION_VIEW_STATE.get(graph);
+                if (conversationStateAttribute == Graph.NOT_FOUND) {
                     newConversationState = new ConversationState();
                     newConversationState.setSenderAttributesToKeys(graph);
+                } else {
+                    newConversationState = (ConversationState) graph.getObjectValue(conversationStateAttribute, 0);
+                    if (newConversationState == null) {
+                        newConversationState = new ConversationState();
+                        newConversationState.setSenderAttributesToKeys(graph);
+                    }
                 }
+            } else {
+                newConversationState = new ConversationState();
             }
 
             if (!conversationState.getHiddenContributionProviders().equals(newConversationState.getHiddenContributionProviders())) {
@@ -222,12 +244,14 @@ public class Conversation {
         @Override
         protected boolean update(GraphReadMethods graph) {
             possibleSenderAttributes.clear();
-            final int attributeCount = graph.getAttributeCount(GraphElementType.VERTEX);
-            for (int i = 0; i < attributeCount; i++) {
-                final int attributeId = graph.getAttribute(GraphElementType.VERTEX, i);
-                final Attribute attribute = new GraphAttribute(graph, attributeId);
-                if (!ObjectAttributeDescription.class.isAssignableFrom(attribute.getDataType())) {
-                    possibleSenderAttributes.add(attribute.getName());
+            if (graph != null) {
+                final int attributeCount = graph.getAttributeCount(GraphElementType.VERTEX);
+                for (int i = 0; i < attributeCount; i++) {
+                    final int attributeId = graph.getAttribute(GraphElementType.VERTEX, i);
+                    final Attribute attribute = new GraphAttribute(graph, attributeId);
+                    if (!ObjectAttributeDescription.class.isAssignableFrom(attribute.getDataType())) {
+                        possibleSenderAttributes.add(attribute.getName());
+                    }
                 }
             }
             return true;
@@ -286,7 +310,6 @@ public class Conversation {
                 final Thread thread = new Thread(CONVERSATION_VIEW_UPDATE_MESSAGE_THREAD_NAME) {
                     @Override
                     public void run() {
-                        allMessages.clear();
                         messageProvider.getMessages(graph, allMessages);
                         latch.countDown();
                     }
@@ -295,6 +318,7 @@ public class Conversation {
 
                 latch.await();
             } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
                 return false;
             }
 
@@ -341,6 +365,7 @@ public class Conversation {
 
                 latch.await();
             } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
                 return false;
             }
 
@@ -392,6 +417,7 @@ public class Conversation {
 
                 latch.await();
             } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
                 return false;
             }
 
@@ -407,10 +433,6 @@ public class Conversation {
     private UpdateComponent<GraphReadMethods> senderUpdater = new UpdateComponent<GraphReadMethods>("Senders", LOCK_STAGE) {
         @Override
         protected boolean update(GraphReadMethods graph) {
-            if (graph == null) {
-                return false;
-            }
-
             try {
                 final CountDownLatch latch = new CountDownLatch(1);
 
@@ -433,6 +455,7 @@ public class Conversation {
 
                 latch.await();
             } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
                 return false;
             }
 
@@ -474,6 +497,7 @@ public class Conversation {
 
                 latch.await();
             } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
                 return false;
             }
 

@@ -9,6 +9,7 @@
 *.log
 *.pyc
 makefile
+*.DS_Store
 
 .v
 
@@ -21,3 +22,4 @@ endorsed
 jacoco*
 
 CoreDependencies/release/modules/ext
+CoreDependencies/nbproject/project_old.xml

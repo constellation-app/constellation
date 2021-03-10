@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,7 +70,7 @@ public final class LabelFontsOptionsPanelController extends OptionsPanelControll
             availableFonts = otfFontFilesWindows(availableFonts);
         }
 
-        // TODO: Look for UNIX fonts.
+        // TODO: look for unix fonts.
         Arrays.sort(availableFonts);
         labelFontsOptionsPanel.setAvailableFonts(availableFonts);
 
@@ -136,7 +136,7 @@ public final class LabelFontsOptionsPanelController extends OptionsPanelControll
 
     @Override
     public boolean isValid() {
-        final LabelFontsOptionsPanel labelFontsOptionsPanel = getPanel();
+        getPanel();
         // TODO: check whether form is consistent and complete
         return true;
     }
@@ -145,12 +145,9 @@ public final class LabelFontsOptionsPanelController extends OptionsPanelControll
     public boolean isChanged() {
         final Preferences prefs = NbPreferences.forModule(LabelFontsPreferenceKeys.class);
         final LabelFontsOptionsPanel labelFontsOptionsPanel = getPanel();
-        final boolean changed
-                = !(labelFontsOptionsPanel.getUseDefaultSettings() == prefs.getBoolean(LabelFontsPreferenceKeys.USE_DEFAULTS, LabelFontsPreferenceKeys.USE_DEFAULTS_DEFAULT)
+        return !(labelFontsOptionsPanel.getUseDefaultSettings() == prefs.getBoolean(LabelFontsPreferenceKeys.USE_DEFAULTS, LabelFontsPreferenceKeys.USE_DEFAULTS_DEFAULT)
                 && labelFontsOptionsPanel.getUseMultiFonts() == prefs.getBoolean(LabelFontsPreferenceKeys.USE_MULTI_FONTS, LabelFontsPreferenceKeys.USE_MULTI_FONTS_DEFAULT)
                 && labelFontsOptionsPanel.getFontList().equals(prefs.get(LabelFontsPreferenceKeys.FONT_LIST, LabelFontsPreferenceKeys.FONT_LIST_DEFAULT)));
-
-        return changed;
     }
 
     @Override

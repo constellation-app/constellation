@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,12 +26,12 @@ import au.gov.asd.tac.constellation.views.analyticview.visualisation.AnalyticVis
  * @param <R>
  * @param <V>
  */
-public abstract class AnalyticTranslator<R extends AnalyticResult, V extends AnalyticVisualisation> {
+public abstract class AnalyticTranslator<R extends AnalyticResult<?>, V extends AnalyticVisualisation> {
 
-    protected AnalyticQuestion question;
+    protected AnalyticQuestion<?> question;
     protected R result;
 
-    public void setQuestion(final AnalyticQuestion question) {
+    public void setQuestion(final AnalyticQuestion<?> question) {
         this.question = question;
     }
 
@@ -41,5 +41,6 @@ public abstract class AnalyticTranslator<R extends AnalyticResult, V extends Ana
 
     public abstract String getName();
 
+    @SuppressWarnings("rawtypes") //raw type needed for AnyToReport implementation
     public abstract Class<? extends AnalyticResult> getResultType();
 }

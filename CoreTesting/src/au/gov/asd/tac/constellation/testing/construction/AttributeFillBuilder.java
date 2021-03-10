@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,18 +23,20 @@ import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.construction.GraphBuilder;
-import au.gov.asd.tac.constellation.graph.visual.color.ColorAttributeDescription;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttributeDescription;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 /**
  *
  * @author twilight_sparkle
  */
 public class AttributeFillBuilder extends GraphBuilder {
+
+    private static final SecureRandom R = new SecureRandom();
 
     public static AttributeFillBuilder fillAttribute(final GraphWriteMethods graph, final int attrID) {
         return fillAttribute(graph, attrID, null, null);
@@ -102,9 +104,8 @@ public class AttributeFillBuilder extends GraphBuilder {
 
     public static AttributeFillBuilder fillAttribute(final GraphWriteMethods graph, final int attrID, final int[] elementsToFill, final List<Object> options, final boolean sequential) {
 
-        Random r = new Random();
         for (int i = 0; i < elementsToFill.length; i++) {
-            graph.setObjectValue(attrID, elementsToFill[i], sequential ? options.get(i % options.size()) : options.get(r.nextInt(options.size())));
+            graph.setObjectValue(attrID, elementsToFill[i], sequential ? options.get(i % options.size()) : options.get(R.nextInt(options.size())));
         }
         return new AttributeFillBuilder(graph);
     }

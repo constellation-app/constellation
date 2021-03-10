@@ -61,22 +61,21 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import org.openide.util.NbBundle;
 
-// TODO: This entire class should be refactored using form.
 /**
  * Panel offering mounting points to user, when opening .java file.
+ *
+ * TODO: this entire class should be refactored using form.
  */
 public class PackagePanel extends JPanel {
 
     private final File f;
     private final int pkgLevel;
-    private final List dirs;
-    private final List pkgs;
+    private final List<File> dirs;
+    private final List<String> pkgs;
 
-    public PackagePanel(final File f, final int pkgLevel, final List dirs, final List pkgs) {
+    public PackagePanel(final File f, final int pkgLevel, final List<File> dirs, final List<String> pkgs) {
         this.f = f;
         this.pkgLevel = pkgLevel;
         this.dirs = dirs;
@@ -95,7 +94,7 @@ public class PackagePanel extends JPanel {
         return cancelButton;
     }
 
-    JList getList() {
+    JList<String> getList() {
         return list;
     }
 
@@ -105,7 +104,7 @@ public class PackagePanel extends JPanel {
     private void initComponents2() {
         okButton = new JButton(NbBundle.getMessage(PackagePanel.class, "LBL_okButton"));
         cancelButton = new JButton(NbBundle.getMessage(PackagePanel.class, "LBL_cancelButton"));
-        list = new JList(pkgs.toArray());
+        list = new JList<>(pkgs.toArray(new String[pkgs.size()]));
 
         setLayout(new BorderLayout(0, 5));
         setBorder(new javax.swing.border.EmptyBorder(8, 8, 8, 8));
@@ -126,14 +125,14 @@ public class PackagePanel extends JPanel {
         if (pkgLevel != -1) {
             list.setSelectedIndex(pkgLevel);
         }
-        list.setCellRenderer(new ListCellRenderer() {
+        list.setCellRenderer(new ListCellRenderer<>() {
             private final Icon folderIcon = new ImageIcon(OpenFile.class.getResource("resources/folder.gif")); // NOI18N
             private final Icon rootFolderIcon = new ImageIcon(OpenFile.class.getResource("resources/rootFolder.gif")); // NOI18N
             private final JLabel lab = new JLabel();
 
             @Override
-            public Component getListCellRendererComponent(final JList lst, final Object value, final int index, final boolean isSelected, final boolean cellHasFocus) {
-                String pkg2 = (String) value;
+            public Component getListCellRendererComponent(final JList<? extends String> lst, final String value, final int index, final boolean isSelected, final boolean cellHasFocus) {
+                String pkg2 = value;
                 if (pkg2.isEmpty()) { // NOI18N
                     lab.setText(NbBundle.getMessage(PackagePanel.class, "LBL_packageWillBeDefault"));
                     lab.setIcon(rootFolderIcon);
@@ -172,19 +171,14 @@ public class PackagePanel extends JPanel {
 
             @Override
             public void focusLost(final java.awt.event.FocusEvent e) {
+                // Required for implementation of the FocusListener
             }
         });
         add(field, BorderLayout.SOUTH);
 
         setPreferredSize(new Dimension(450, 300));
 
-        list.addListSelectionListener(new ListSelectionListener() {
-
-            @Override
-            public void valueChanged(final ListSelectionEvent ev) {
-                updateLabelEtcFromList(field, list, dirs, okButton);
-            }
-        });
+        list.addListSelectionListener(ev -> updateLabelEtcFromList(field, list, dirs, okButton));
         updateLabelEtcFromList(field, list, dirs, okButton);
     }
 
@@ -199,14 +193,14 @@ public class PackagePanel extends JPanel {
     /**
      * Updates label and enables/disables ok button.
      */
-    private static void updateLabelEtcFromList(final JTextField field, final JList list, final List dirs, final JButton okButton) {
+    private static void updateLabelEtcFromList(final JTextField field, final JList<String> list, final List<File> dirs, final JButton okButton) {
         int idx = list.getSelectedIndex();
         if (idx == -1) {
             field.setText(" "); // NOI18N
             field.getAccessibleContext().setAccessibleName(" ");
             okButton.setEnabled(false);
         } else {
-            File dir = (File) dirs.get(idx);
+            final File dir = dirs.get(idx);
             field.setText(NbBundle.getMessage(PackagePanel.class, "LBL_dirWillBe", dir.getAbsolutePath()));
             field.getAccessibleContext().setAccessibleName(NbBundle.getMessage(PackagePanel.class, "LBL_dirWillBe", dir.getAbsolutePath()));
             okButton.setEnabled(true);
@@ -225,7 +219,7 @@ public class PackagePanel extends JPanel {
     }// </editor-fold>//GEN-END:initComponents
     private JButton okButton;
     private JButton cancelButton;
-    private JList list;
+    private JList<String> list;
     private JTextArea textArea;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ public final class DataAccessPreferenceKeys {
     private static final String SAVE_DATA_DIR_PREF = "saveDataDir";
     private static final String PREVIOUS_DATA_DIR_PREF = "prevSaveDataDir";
     private static final String DESELECT_PLUGINS_ON_EXECUTE_PREF = "deselectPluginsOnExecute";
-    
+
     /**
      * Return whether the save results is enabled or not
      *
@@ -61,9 +61,7 @@ public final class DataAccessPreferenceKeys {
      * @return The directory where data access results should be written to.
      */
     public static File getDataAccessResultsDirEx() {
-        final File f = getDir(SAVE_DATA_DIR_PREF);
-
-        return f;
+        return getDir(SAVE_DATA_DIR_PREF);
     }
 
     /**
@@ -117,7 +115,7 @@ public final class DataAccessPreferenceKeys {
 
         return !s.isEmpty() ? new File(s) : null;
     }
-    
+
     /**
      * Whether the Deselect plugins on go preference is enabled
      *
@@ -127,9 +125,10 @@ public final class DataAccessPreferenceKeys {
         final Preferences prefs = NbPreferences.forModule(DataAccessPreferenceKeys.class);
         return prefs.getBoolean(DESELECT_PLUGINS_ON_EXECUTE_PREF, false);
     }
-    
+
     /**
-     * Set the new preference for whether the deselect plugins on go preference is enabled
+     * Set the new preference for whether the deselect plugins on go preference
+     * is enabled
      *
      * @param checkChanged What the preference has been changed to
      *
@@ -138,7 +137,7 @@ public final class DataAccessPreferenceKeys {
         final Preferences prefs = NbPreferences.forModule(DataAccessPreferenceKeys.class);
         prefs.putBoolean(DESELECT_PLUGINS_ON_EXECUTE_PREF, checkChanged);
     }
-    
+
     /**
      * No constructor, all static.
      */

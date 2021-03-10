@@ -1,0 +1,178 @@
+.root {
+    -fx-control-inner-background: #111111;
+    -fx-background: #222222;
+    -fx-base: #333333;
+}
+#label{
+    -fx-fill: #D3D3D3;
+}
+
+#primary{
+    -fx-background-radius: 5;
+    -fx-background-insets: 0,1,2,0;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 7, 0.0, 1, 1);
+    -fx-padding: 10 20 10 20;
+    -fx-background-color: linear-gradient(to bottom, #444444 0%, #333333 100%);
+    -fx-text-fill: #ffffff;
+}
+
+#error{
+    -fx-text-fill: #DE2446;
+}
+
+.vbox{
+    -fx-background-color: rgba(0,0,0,0);
+}
+
+#header{
+    -fx-fill: #ffffff;
+    -fx-text-fill: #ffffff;
+    -fx-font: bold 1.083333em "Arial"; /* 13pt */
+    -fx-padding: 0 0 10 0;
+}
+
+.text-area{
+    -fx-prompt-text-fill:#606060;
+}
+.text-field{
+    -fx-prompt-text-fill:#606060;
+}
+
+.scroll-bar:horizontal .thumb {
+    -fx-color: #bbbbbb;
+    -fx-background-color:
+        -fx-box-border,
+        linear-gradient(to bottom, derive(-fx-color,95%), derive(-fx-color,10%)),
+        linear-gradient(to bottom, derive(-fx-color,38%), derive(-fx-color,-16%));
+    -fx-background-insets: 0, 1, 2;
+    -fx-background-radius: 0.5em; /* makes sure this remains circular */
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-color: #bbbbbb;
+    -fx-background-color:
+        -fx-box-border,
+        linear-gradient(to right, derive(-fx-color,95%), derive(-fx-color,10%)),
+        linear-gradient(to right, derive(-fx-color,38%), derive(-fx-color,-16%));
+    -fx-background-insets: 0, 1, 2;
+    -fx-background-radius: 0.5em; /* makes sure this remains circular */
+}
+
+#invalid{
+    -fx-background-color: #c10000, -fx-text-box-border, -fx-control-inner-background;
+}
+
+#valid{
+    -fx-background-color: -fx-focus-color, -fx-text-box-border, -fx-control-inner-background;
+}
+
+.tooltip .text{
+    -fx-fill: #000000;
+}
+
+.tooltip {
+    -fx-padding: 0.333333em 1.666667em 0.333333em 1.666667em; /* 4 8 4 8 */
+}
+
+.date-cell.selected .button {
+    -fx-background-color: #1f6fba;
+}
+
+#hiddenSplitter {
+    -fx-background-color: transparent;
+}
+
+#hiddenSplitter *.split-pane-divider{
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 5px;
+}
+
+.tree-view {
+    -fx-background-color: -fx-box-border, -fx-control-inner-background;
+    -fx-background-insets: 0, 1;
+    -fx-background-radius: 10px;
+    -fx-padding: 5px;
+}
+
+.list-view{
+    -fx-background-color: -fx-box-border, -fx-control-inner-background;
+    -fx-background-insets: 0, 1;
+    -fx-background-radius: 10px;
+    -fx-padding: 5px;
+}
+
+.list-cell {
+    -fx-skin: "javafx.scene.control.skin.ListCellSkin";
+    -fx-background-color: -fx-control-inner-background;
+    -fx-padding: 0.25em; /* 3 */
+    -fx-text-fill: -fx-text-inner-color;
+    -fx-opacity: 1;
+}
+
+.list-view:focused .list-cell:focused {
+    -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, -fx-control-inner-background;
+    -fx-background-insets: 0, 1, 2;
+}
+
+.list-view:focused .list-cell:focused:odd {
+    -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, derive(-fx-control-inner-background,-5%);
+    -fx-background-insets: 0, 1, 2;
+}
+
+/* When the list-cell is selected and focused */
+.list-view:focused .list-cell:filled:focused:selected {
+    -fx-background: -fx-accent;
+    -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, -fx-selection-bar;
+    -fx-background-insets: 0, 1, 2;
+    -fx-text-fill: -fx-selection-bar-text;
+}
+
+.list-view:focused .list-cell:filled:selected, .list-view:focused .list-cell:filled:selected:hover {
+    -fx-background: -fx-accent;
+    -fx-background-color: -fx-selection-bar;
+    -fx-text-fill: -fx-selection-bar-text;
+}
+
+.list-view:focused .list-cell:filled:focused:selected:hover {
+    -fx-background: -fx-accent;
+    -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, -fx-selection-bar;
+    -fx-background-insets: 0, 1, 2;
+    -fx-text-fill: -fx-selection-bar-text;
+}
+
+/* When the ListView is _not_ focused, we show alternate selection colors */
+.list-cell:filled:selected:focused, .list-cell:filled:selected, .list-view:horizontal .list-cell:filled:selected {
+    -fx-background-color: #666666;
+    -fx-text-fill: -fx-selection-bar-text;
+}
+.tree-view:focused .tree-cell:focused {
+    -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, -fx-control-inner-background;
+    -fx-background-insets: 0, 1, 2;
+}
+
+.tree-view:focused .tree-cell:filled:focused:selected {
+    -fx-background: -fx-accent;
+    -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, -fx-selection-bar;
+    -fx-background-insets: 0, 1, 2;
+    -fx-text-fill: -fx-selection-bar-text;
+}
+
+.tree-view:focused .tree-cell:filled:selected, .tree-view:focused .tree-cell:filled:selected:hover {
+    -fx-background: -fx-accent;
+    -fx-background-color: -fx-selection-bar;
+    -fx-text-fill: -fx-selection-bar-text;
+}
+
+.tree-view:focused .tree-cell:filled:focused:selected:hover {
+    -fx-background: -fx-accent;
+    -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, -fx-selection-bar;
+    -fx-background-insets: 0, 1, 2;
+    -fx-text-fill: -fx-selection-bar-text;
+}
+
+/* When the TreeView is _not_ focused, we show alternate selection colors */
+.tree-cell:filled:selected:focused, .tree-cell:filled:selected {
+    -fx-background-color: #666666;
+    -fx-text-fill: -fx-selection-bar-text;
+}

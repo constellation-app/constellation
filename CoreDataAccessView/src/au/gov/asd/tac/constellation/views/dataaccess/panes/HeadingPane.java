@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
-import au.gov.asd.tac.constellation.pluginframework.gui.PluginParametersPaneListener;
+import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPaneListener;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,9 +62,7 @@ public class HeadingPane extends TitledPane implements PluginParametersPaneListe
     public HeadingPane(String headingText, List<DataAccessPlugin> plugins, PluginParametersPaneListener top, final Set<String> globalParamLabels) {
         this.top = top;
         boxes.setHgap(5);
-        plugins.stream().forEach((_item) -> {
-            boxes.getChildren().add(makeInactiveSquare());
-        });
+        plugins.stream().forEach(_item -> boxes.getChildren().add(makeInactiveSquare()));
         setText(headingText);
         setGraphic(boxes);
         setContentDisplay(ContentDisplay.RIGHT);
@@ -81,9 +79,8 @@ public class HeadingPane extends TitledPane implements PluginParametersPaneListe
             sources.getChildren().add(dataSourcePane);
         }
 
-        expandedProperty().addListener((ChangeListener) (final ObservableValue observable, final Object oldValue, final Object newValue) -> {
-            DataAccessPreferences.setExpanded(headingText, (boolean) newValue);
-        });
+        expandedProperty().addListener((ChangeListener) (final ObservableValue observable, final Object oldValue, final Object newValue)
+                -> DataAccessPreferences.setExpanded(headingText, (boolean) newValue));
     }
 
     public List<DataSourceTitledPane> getDataSources() {

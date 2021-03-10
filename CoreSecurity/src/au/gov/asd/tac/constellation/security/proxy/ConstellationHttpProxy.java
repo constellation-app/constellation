@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -84,7 +84,7 @@ public interface ConstellationHttpProxy {
                     .append(additionalProxy.getValue().getKey())
                     .append(":")
                     .append(additionalProxy.getValue().getValue())
-                    .append("\n");
+                    .append(ProxyUtilities.PROXY_SEPARATOR);
         });
         return additionalProxies.toString();
     }
@@ -108,7 +108,7 @@ public interface ConstellationHttpProxy {
     public default String getBypassProxyHostsString() {
         final StringBuilder noProxyHosts = new StringBuilder();
         getBypassProxyHosts().forEach(noProxyHost -> {
-            noProxyHosts.append(noProxyHost).append("\n");
+            noProxyHosts.append(noProxyHost).append(ProxyUtilities.PROXY_SEPARATOR);
         });
         return noProxyHosts.toString();
     }

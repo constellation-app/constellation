@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,12 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl;
 
-import au.gov.asd.tac.constellation.visual.display.VisualAccess;
-import au.gov.asd.tac.constellation.visual.display.VisualChange;
-import au.gov.asd.tac.constellation.visual.display.VisualChangeBuilder;
-import au.gov.asd.tac.constellation.visual.display.VisualManager;
-import au.gov.asd.tac.constellation.visual.display.VisualProcessor;
-import au.gov.asd.tac.constellation.visual.display.VisualProperty;
+import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
+import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
+import au.gov.asd.tac.constellation.utilities.visual.VisualChangeBuilder;
+import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
+import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor;
+import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
 import java.awt.Component;
 import java.awt.Frame;
@@ -74,10 +74,10 @@ public class GLVisualProcessorTester {
     }
 
     public static void main(String[] args) {
-        VisualAccess access = new DummyVisualAccess();
-        GLVisualProcessor processor = new GLVisualProcessor();
+        final GLVisualProcessorDemo demo = new GLVisualProcessorDemo();
+        final VisualAccess access = new DummyVisualAccess();
+        final GLVisualProcessor processor = new GLVisualProcessor();
         final VisualManager visualManager = new VisualManager(access, processor);
-        GLVisualProcessorDemo demo = new GLVisualProcessorDemo();
         processor.startVisualising(visualManager);
         demo.runDemo(processor, visualManager);
         final List<VisualChange> changeSet = new ArrayList<>();

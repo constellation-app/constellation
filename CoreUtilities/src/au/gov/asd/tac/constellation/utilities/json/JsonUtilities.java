@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,22 @@
  */
 package au.gov.asd.tac.constellation.utilities.json;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.openide.util.Exceptions;
 
 /**
  * JSON Utilities
@@ -92,6 +103,9 @@ public class JsonUtilities {
 
             @Override
             public String next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
                 return nodeIter.next().textValue();
             }
         };
@@ -169,6 +183,9 @@ public class JsonUtilities {
 
             @Override
             public Integer next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
                 return nodeIter.next().intValue();
             }
         };
@@ -216,6 +233,9 @@ public class JsonUtilities {
 
             @Override
             public Boolean next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
                 return nodeIter.next().booleanValue();
             }
         };
@@ -301,11 +321,74 @@ public class JsonUtilities {
 
         try {
             JsonNode node = mapper.readTree(rawString);
-            String prettyJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(node);
-            return prettyJson;
+            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(node);
         } catch (IOException ex) {
             // If there is a formatting issue, just return the raw JSON as it was passed in
             return rawString;
         }
+    }
+
+    /**
+     * Converts a map to JSON String. Will return an empty string if no entries
+     * are valid in the map.
+     *
+     * @param <K> the key type of the map
+     * @param <V> the value type of the map
+     * @param factory the jsonFactory object to use
+     * @param map the map to convert to a json string
+     * @return the JSON String representation of the map
+     */
+    public static <K, V> String getMapAsString(final JsonFactory factory, final Map<K, V> map) {
+        if (MapUtils.isNotEmpty(map)) {
+            final ByteArrayOutputStream json = new ByteArrayOutputStream();
+            try (final JsonGenerator jg = factory.createGenerator(json)) {
+                jg.writeStartObject();
+                for (final Map.Entry<K, V> entry : map.entrySet()) {
+                    final K key = entry.getKey();
+                    final V value = entry.getValue();
+                    if (key != null && value != null) {
+                        jg.writeStringField(key.toString(), value.toString());
+                    }
+                }
+                jg.writeEndObject();
+                jg.flush();
+                return json.toString(StandardCharsets.UTF_8.name());
+
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+
+        return StringUtils.EMPTY;
+    }
+
+    /**
+     * Converts a JSON String to a String, String map. Will return an empty Map
+     * if no valid items within the String
+     *
+     * @param factory the jsonFactory object to use
+     * @param mapAsString the JSON String representation of the map
+     * @return A String, String map based on the JSON String
+     */
+    public static Map<String, String> getStringAsMap(final JsonFactory factory, final String mapAsString) {
+        if (StringUtils.isNotEmpty(mapAsString)) {
+            Map<String, String> map = new HashMap<>();
+            try (final JsonParser jp = factory.createParser(mapAsString)) {
+                if (jp.nextToken() == JsonToken.START_OBJECT) {
+                    while (jp.nextToken() != JsonToken.END_OBJECT) {
+                        if (jp.getCurrentToken() == JsonToken.FIELD_NAME) {
+                            final String fieldName = jp.getText();
+                            jp.nextToken();
+                            final String fieldValue = jp.getText();
+                            map.put(fieldName, fieldValue);
+                        }
+                    }
+                }
+                return map;
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+        return MapUtils.EMPTY_SORTED_MAP;
     }
 }

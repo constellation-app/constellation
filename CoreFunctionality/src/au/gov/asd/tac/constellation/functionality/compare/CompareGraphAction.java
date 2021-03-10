@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.functionality.compare;
 
 import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import org.openide.awt.ActionID;
@@ -26,7 +26,9 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
 @ActionID(category = "Tools", id = "au.gov.asd.tac.constellation.functionality.compare.CompareGraphAction")
-@ActionRegistration(displayName = "#CTL_CompareGraphAction", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_CompareGraphAction",
+        iconBase = "au/gov/asd/tac/constellation/functionality/compare/compareGraph.png",
+        surviveFocusChange = true)
 @ActionReference(path = "Menu/Tools", position = 600)
 @Messages("CTL_CompareGraphAction=Compare Graph")
 public final class CompareGraphAction implements ActionListener {

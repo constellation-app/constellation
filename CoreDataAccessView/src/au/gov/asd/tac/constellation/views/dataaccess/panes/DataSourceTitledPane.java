@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,17 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
-import au.gov.asd.tac.constellation.pluginframework.Plugin;
-import au.gov.asd.tac.constellation.pluginframework.gui.PluginParametersPane;
-import au.gov.asd.tac.constellation.pluginframework.gui.PluginParametersPaneListener;
-import au.gov.asd.tac.constellation.pluginframework.parameters.DefaultPluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.ActionParameterType;
+import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPane;
+import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPaneListener;
+import au.gov.asd.tac.constellation.plugins.parameters.DefaultPluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.ActionParameterType;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
-import au.gov.asd.tac.constellation.visual.icons.UserInterfaceIconProvider;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -165,7 +165,7 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
                         perPluginParamMap.entrySet().stream().forEach(entry -> {
                             final String key = entry.getKey();
                             if (dataSourceParameters.hasParameter(key) && !globalParamLabels.contains(key)) {
-                                final PluginParameter pp = dataSourceParameters.getParameters().get(key);
+                                final PluginParameter<?> pp = dataSourceParameters.getParameters().get(key);
                                 // Don't set action type parameters.
                                 // Since their only reason for existence is to perform an action,
                                 // they don't have values, and setting them would kick off the action.
@@ -241,12 +241,10 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
 
                 expandedProperty().addListener((final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue) -> {
                     DataAccessPreferences.setExpanded(plugin.getName(), newValue);
-                    if (newValue) {
-                        if (!isLoaded) {
-                            isLoaded = true;
-                            final PluginParametersPane parametersPane = PluginParametersPane.buildPane(dataSourceParameters, this, globalParamLabels);
-                            setContent(parametersPane);
-                        }
+                    if (newValue && !isLoaded) {
+                        isLoaded = true;
+                        final PluginParametersPane parametersPane = PluginParametersPane.buildPane(dataSourceParameters, this, globalParamLabels);
+                        setContent(parametersPane);
                     }
                 });
             } else {

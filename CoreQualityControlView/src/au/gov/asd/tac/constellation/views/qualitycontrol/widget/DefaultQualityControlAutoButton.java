@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,15 @@
  */
 package au.gov.asd.tac.constellation.views.qualitycontrol.widget;
 
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlEvent;
+import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlEvent.QualityCategory;
 import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlViewPane;
 import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlViewTopComponent;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetter;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlListener;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlState;
-import au.gov.asd.tac.constellation.visual.fonts.FontUtilities;
-import au.gov.asd.tac.constellation.visual.javafx.JavafxStyleManager;
 import javafx.application.Platform;
 import javafx.scene.control.Tooltip;
 import javax.swing.SwingUtilities;
@@ -43,13 +44,13 @@ public final class DefaultQualityControlAutoButton extends QualityControlAutoBut
     private static final String DEFAULT_TEXT_STYLE = "-fx-text-fill: rgb(0,0,0); -fx-background-color: rgb(255,255,255);";
     private static final String BUTTON_STYLE = "-fx-padding: 2 5 2 5;";
     public static final String QUERY_RISK_DEFAULT_STYLE = "-fx-text-fill: rgb(0,0,0); -fx-padding: 2 5 2 5;";
-    public static final String QUALITY_CONTROL_WIDGET_TEXT = "Quality Score: %s";
+    public static final String QUALITY_CONTROL_WIDGET_TEXT = "Quality Category: %s";
 
     public DefaultQualityControlAutoButton() {
         getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
         setStyle(QUERY_RISK_DEFAULT_STYLE + BUTTON_STYLE + String.format("-fx-font-size:%d;", FontUtilities.getOutputFontSize()));
 
-        setOnAction((value) -> {
+        setOnAction(value -> {
             SwingUtilities.invokeLater(() -> {
                 final TopComponent qualityControlView = WindowManager.getDefault().findTopComponent(QualityControlViewTopComponent.class.getSimpleName());
                 if (qualityControlView != null) {
@@ -63,6 +64,7 @@ public final class DefaultQualityControlAutoButton extends QualityControlAutoBut
 
         QualityControlAutoVetter.getInstance().addListener(this);
         QualityControlAutoVetter.getInstance().invokeListener(this);
+        QualityControlAutoVetter.getInstance().init();
     }
 
     @Override
@@ -80,9 +82,9 @@ public final class DefaultQualityControlAutoButton extends QualityControlAutoBut
         final String riskText;
         final String styleText;
         final String tooltipText;
-        if (event != null && event.getQuality() > 0) {
-            riskText = String.format(QUALITY_CONTROL_WIDGET_TEXT, String.valueOf(event.getQuality()));
-            styleText = QualityControlViewPane.qualityStyle(event.getQuality(), 1);
+        if (event != null && event.getCategory() != QualityCategory.DEFAULT) {
+            riskText = String.format(QUALITY_CONTROL_WIDGET_TEXT, String.valueOf(event.getCategory().name()));
+            styleText = QualityControlViewPane.qualityStyle(event.getCategory(), 1);
             tooltipText = event.getReasons();
         } else {
             riskText = String.format(QUALITY_CONTROL_WIDGET_TEXT, Bundle.MSG_NoRisk());

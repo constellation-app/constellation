@@ -69,7 +69,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Jesse Glick
  * @author Marian Petras
  */
-class FileChooser extends JFileChooser {
+public class FileChooser extends JFileChooser {
 
     @StaticResource
     private static final String NEBULA_PNG = "au/gov/asd/tac/constellation/graph/file/nebula/resources/nebula.png";
@@ -78,12 +78,11 @@ class FileChooser extends JFileChooser {
     /**
      * Creates a new instance of FileChooser
      */
-    FileChooser() {
+    public FileChooser() {
         setFileSelectionMode(JFileChooser.FILES_ONLY);
         setMultiSelectionEnabled(true);
 
         /* initialize file filters */
-        FileFilter currentFilter = getFileFilter();
         addChoosableFileFilters();
 
         /**

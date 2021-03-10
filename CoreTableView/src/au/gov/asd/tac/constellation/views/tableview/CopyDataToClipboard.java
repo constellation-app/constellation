@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,13 @@ package au.gov.asd.tac.constellation.views.tableview;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
-import au.gov.asd.tac.constellation.pluginframework.PluginException;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
-import au.gov.asd.tac.constellation.pluginframework.PluginGraphs;
-import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
-import au.gov.asd.tac.constellation.pluginframework.logging.ConstellationLoggerHelper;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.templates.SimplePlugin;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginGraphs;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.csv.SmartCSVWriter;
 import au.gov.asd.tac.constellation.views.tableview.GraphTableModel.AttributeSegment;
 import java.awt.Point;
@@ -36,13 +36,13 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.io.ByteArrayInputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
@@ -121,10 +121,8 @@ public class CopyDataToClipboard implements ActionListener, Action {
                 return "CSV files";
             }
         }).showSaveDialog();
-        if (f != null) {
-            if (!f.getName().toLowerCase().endsWith(".csv")) {
-                f = new File(f.getAbsolutePath() + ".csv");
-            }
+        if (f != null && !f.getName().toLowerCase().endsWith(".csv")) {
+            f = new File(f.getAbsolutePath() + ".csv");
         }
 
         return f;
@@ -204,6 +202,8 @@ public class CopyDataToClipboard implements ActionListener, Action {
                     case VX_DST:
                         colName = GraphRecordStoreUtilities.DESTINATION + colName;
                         break;
+                    default:
+                        break;
                 }
             }
 
@@ -255,7 +255,7 @@ public class CopyDataToClipboard implements ActionListener, Action {
         @Override
         public DataFlavor[] getTransferDataFlavors() {
 
-            return (DataFlavor[]) HTML_FLAVORS.toArray(new DataFlavor[HTML_FLAVORS.size()]);
+            return HTML_FLAVORS.toArray(new DataFlavor[HTML_FLAVORS.size()]);
         }
 
         @Override
@@ -365,6 +365,8 @@ public class CopyDataToClipboard implements ActionListener, Action {
                         case VX_DST:
                             colName = GraphRecordStoreUtilities.DESTINATION + colName;
                             break;
+                        default:
+                            break;
                     }
                 }
 
@@ -423,9 +425,7 @@ public class CopyDataToClipboard implements ActionListener, Action {
         }
 
         final ArrayList<Integer> result = new ArrayList<>();
-        attrsegs.stream().forEach((attrseg) -> {
-            result.add(attrseg2index.get(attrseg.toString()));
-        });
+        attrsegs.stream().forEach(attrseg -> result.add(attrseg2index.get(attrseg.toString())));
 
         return result;
     }
@@ -480,10 +480,12 @@ public class CopyDataToClipboard implements ActionListener, Action {
 
     @Override
     public void putValue(final String key, final Object value) {
+        // Required for implementation of Action, intentionally left blank
     }
 
     @Override
     public void setEnabled(final boolean b) {
+        // Required for implementation of Action, intentionally left blank
     }
 
     @Override
@@ -493,10 +495,12 @@ public class CopyDataToClipboard implements ActionListener, Action {
 
     @Override
     public void addPropertyChangeListener(final PropertyChangeListener listener) {
+        // Required for implementation of Action, intentionally left blank
     }
 
     @Override
     public void removePropertyChangeListener(final PropertyChangeListener listener) {
+        // Required for implementation of Action, intentionally left blank
     }
 
     /**

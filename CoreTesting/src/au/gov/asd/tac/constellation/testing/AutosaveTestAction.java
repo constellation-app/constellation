@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.testing;
 
-import au.gov.asd.tac.constellation.functionality.autosave.Autosaver;
+import au.gov.asd.tac.constellation.graph.interaction.plugins.io.Autosaver;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import org.openide.awt.ActionID;
@@ -33,9 +33,6 @@ import org.openide.util.NbBundle.Messages;
 @ActionReference(path = "Menu/Experimental/Developer", position = 0)
 @Messages("CTL_AutosaveTestAction=Test Autosave")
 public final class AutosaveTestAction extends AbstractAction {
-
-    public AutosaveTestAction() {
-    }
 
     @Override
     public void actionPerformed(final ActionEvent e) {

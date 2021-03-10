@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.testing.debug;
 
 import au.gov.asd.tac.constellation.functionality.startup.MostRecentModules;
-import au.gov.asd.tac.constellation.visual.InfoTextPanel;
+import au.gov.asd.tac.constellation.utilities.gui.InfoTextPanel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -36,7 +36,8 @@ import org.openide.util.NbBundle.Messages;
  * @author algol
  */
 @ActionID(category = "Help", id = "au.gov.asd.tac.constellation.testing.debug.MostRecentModuleAction")
-@ActionRegistration(displayName = "#CTL_MostRecentModuleAction")
+@ActionRegistration(displayName = "#CTL_MostRecentModuleAction",
+        iconBase = "au/gov/asd/tac/constellation/testing/debug/versions.png")
 @ActionReference(path = "Menu/Help", position = 1375)
 @Messages("CTL_MostRecentModuleAction=Module Versions")
 public final class MostRecentModuleAction implements ActionListener {
@@ -46,9 +47,7 @@ public final class MostRecentModuleAction implements ActionListener {
         final List<ModuleInfo> moduleList = MostRecentModules.getModules();
 
         final StringBuilder sb = new StringBuilder();
-        moduleList.stream().forEach((mi) -> {
-            sb.append(String.format("%-40s %20s\n", mi.getDisplayName(), mi.getSpecificationVersion()));
-        });
+        moduleList.stream().forEach(mi -> sb.append(String.format("%-40s %20s\n", mi.getDisplayName(), mi.getSpecificationVersion())));
 
         final InfoTextPanel itp = new InfoTextPanel(sb.toString());
         final NotifyDescriptor.Message msg = new NotifyDescriptor.Message(itp);

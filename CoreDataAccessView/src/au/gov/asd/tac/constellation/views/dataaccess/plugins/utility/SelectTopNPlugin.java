@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,26 +17,26 @@ package au.gov.asd.tac.constellation.views.dataaccess.plugins.utility;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.schema.SchemaTransactionType;
-import au.gov.asd.tac.constellation.graph.schema.SchemaTransactionTypeUtilities;
-import au.gov.asd.tac.constellation.graph.schema.SchemaVertexType;
-import au.gov.asd.tac.constellation.graph.schema.SchemaVertexTypeUtilities;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.pluginframework.Plugin;
-import au.gov.asd.tac.constellation.pluginframework.PluginException;
-import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
-import au.gov.asd.tac.constellation.pluginframework.PluginNotificationLevel;
-import au.gov.asd.tac.constellation.pluginframework.parameters.ParameterChange;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.IntegerParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.IntegerParameterType.IntegerParameterValue;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.MultiChoiceParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.SingleChoiceParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
-import au.gov.asd.tac.constellation.pluginframework.templates.SimpleQueryPlugin;
-import au.gov.asd.tac.constellation.schema.analyticschema.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionTypeUtilities;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexTypeUtilities;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
+import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.SimpleQueryPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
 import java.util.ArrayList;
@@ -73,6 +73,8 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
 
     public static final String NODE = "Node";
     public static final String TRANSACTION = "Transaction";
+
+    private static final String MISSING_PROPERTY_FORMAT = "%s property is missing";
 
     @Override
     public String getType() {
@@ -143,6 +145,7 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
                             LOGGER.severe("Invalid mode provided. Mode values accepted are " + NODE + " or " + TRANSACTION);
                     }
 
+                    @SuppressWarnings("unchecked") //TYPE_CATEGORY_PARAMETER will always be of type SingleChoiceParameter
                     final PluginParameter<SingleChoiceParameterValue> typeCategoryParamter = (PluginParameter<SingleChoiceParameterValue>) parameters.get(TYPE_CATEGORY_PARAMETER_ID);
                     types.sort(String::compareTo);
                     SingleChoiceParameterType.setOptions(typeCategoryParamter, types);
@@ -174,8 +177,11 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
                                 }
                             }
                             break;
+                        default:
+                            break;
                     }
                     // update the sub level types
+                    @SuppressWarnings("unchecked") //TYPE_PARAMETER will always be of type MultiChoiceParameter
                     final PluginParameter<MultiChoiceParameterValue> typeParamter = (PluginParameter<MultiChoiceParameterValue>) parameters.get(TYPE_PARAMETER_ID);
                     types.sort(String::compareTo);
                     MultiChoiceParameterType.setOptions(typeParamter, types);
@@ -208,22 +214,22 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
 
         final int vertexLabelAttribute = VisualConcept.VertexAttribute.LABEL.get(graph);
         if (vertexLabelAttribute == Graph.NOT_FOUND) {
-            throw new PluginException(PluginNotificationLevel.ERROR, String.format("%s property is missing", VisualConcept.VertexAttribute.LABEL.getName()));
+            throw new PluginException(PluginNotificationLevel.ERROR, String.format(MISSING_PROPERTY_FORMAT, VisualConcept.VertexAttribute.LABEL.getName()));
         }
 
         final int vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
         if (vertexSelectedAttribute == Graph.NOT_FOUND) {
-            throw new PluginException(PluginNotificationLevel.ERROR, String.format("%s property is missing", VisualConcept.VertexAttribute.SELECTED.getName()));
+            throw new PluginException(PluginNotificationLevel.ERROR, String.format(MISSING_PROPERTY_FORMAT, VisualConcept.VertexAttribute.SELECTED.getName()));
         }
 
         final int vertexTypeAttribute = AnalyticConcept.VertexAttribute.TYPE.get(graph);
         if (vertexTypeAttribute == Graph.NOT_FOUND) {
-            throw new PluginException(PluginNotificationLevel.ERROR, String.format("%s property is missing", AnalyticConcept.VertexAttribute.TYPE.getName()));
+            throw new PluginException(PluginNotificationLevel.ERROR, String.format(MISSING_PROPERTY_FORMAT, AnalyticConcept.VertexAttribute.TYPE.getName()));
         }
 
         final int transactionTypeAttribute = AnalyticConcept.TransactionAttribute.TYPE.get(graph);
         if (transactionTypeAttribute == Graph.NOT_FOUND) {
-            throw new PluginException(PluginNotificationLevel.ERROR, String.format("%s property is missing", AnalyticConcept.TransactionAttribute.TYPE.getName()));
+            throw new PluginException(PluginNotificationLevel.ERROR, String.format(MISSING_PROPERTY_FORMAT, AnalyticConcept.TransactionAttribute.TYPE.getName()));
         }
 
         // make a set of the highlighted nodes
@@ -241,7 +247,10 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
         }
 
         // calculate the occurrences of destination vertices
-        int txId, sourceVxId, destinationVxId, targetVxId;
+        int txId;
+        int sourceVxId;
+        int destinationVxId;
+        int targetVxId;
         int step = 0;
         SchemaVertexType destinationVertexType;
         SchemaTransactionType transactionType;
@@ -261,7 +270,7 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
                 switch (mode) {
                     case NODE:
                         destinationVertexType = graph.getObjectValue(vertexTypeAttribute, targetVxId);
-                        if (subTypes.contains(destinationVertexType.getName())) {
+                        if (destinationVertexType != null && subTypes.contains(destinationVertexType.getName())) {
                             if (!occurrences.containsKey(targetVxId)) {
                                 occurrences.put(targetVxId, 0);
                             }
@@ -271,13 +280,15 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
                         break;
                     case TRANSACTION:
                         transactionType = graph.getObjectValue(transactionTypeAttribute, txId);
-                        if (subTypes.contains(transactionType.getName())) {
+                        if (transactionType != null && subTypes.contains(transactionType.getName())) {
                             if (!occurrences.containsKey(targetVxId)) {
                                 occurrences.put(targetVxId, 0);
                             }
 
                             occurrences.put(targetVxId, occurrences.get(targetVxId) + 1);
                         }
+                        break;
+                    default:
                         break;
                 }
             }

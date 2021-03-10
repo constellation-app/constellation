@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,8 +55,13 @@ public class InfoOverlay extends MapOverlay implements MapEventListener {
     private float zoomByBroadcasted = minimumTransparency;
     private float zoomToBroadcasted = minimumTransparency;
 
+    public InfoOverlay() {
+        this.enabled = true;
+    }
+
     @Override
-    public void initialise(MapViewTileRenderer renderer, UnfoldingMap map, EventDispatcher eventDispatcher) {
+    public void initialise(final MapViewTileRenderer renderer,
+            final UnfoldingMap map, final EventDispatcher eventDispatcher) {
         super.initialise(renderer, map, eventDispatcher);
 
         if (eventDispatcher != null) {
@@ -93,7 +98,8 @@ public class InfoOverlay extends MapOverlay implements MapEventListener {
         // draw zoom info
         final String zoom = String.valueOf(map.getZoomLevel());
         drawLabeledValue("Zoom", zoom, x + 60, yOffset, valueBoxShortWidth);
-        drawStepBar(map.getZoomLevel(), x + 95, yOffset + 5, ((MapProvider) map.mapDisplay.getMapProvider()).zoomLevels());
+        drawStepBar(map.getZoomLevel(), x + 95, yOffset + 5,
+                ((MapProvider) map.mapDisplay.getMapProvider()).zoomLevels());
 
         // draw separator
         yOffset += valueBoxHeight + padding * 2;
@@ -108,7 +114,7 @@ public class InfoOverlay extends MapOverlay implements MapEventListener {
         drawValue(mouseLatitude, x + 60, yOffset, valueBoxMediumWidth, false, false);
         drawValue(mouseLongitude, x + 60 + valueBoxMediumWidth + padding, yOffset, valueBoxMediumWidth, false, false);
 
-        // if debug is active, draw additional info
+        // if debug is on, draw additional info
         if (debug) {
             yOffset += valueBoxHeight + padding * 2;
             drawSeparator(yOffset);
@@ -209,7 +215,8 @@ public class InfoOverlay extends MapOverlay implements MapEventListener {
         return getName();
     }
 
-    protected void drawLabeledEvent(final String label, final float listeningValue, final float broadcastingValue, final float x, final float y, final float valueBoxWidth) {
+    protected void drawLabeledEvent(final String label, final float listeningValue,
+            final float broadcastingValue, final float x, final float y, final float valueBoxWidth) {
         final int alphaSend = (int) PApplet.map(broadcastingValue, 0, 1, 0, 255);
         drawEvent(x, y + 4, valueBoxWidth, renderer.color(eventBoxColorSendingOn, alphaSend));
 

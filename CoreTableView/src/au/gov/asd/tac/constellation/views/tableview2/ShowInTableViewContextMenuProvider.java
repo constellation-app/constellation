@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.visual.contextmenu.ContextMenuProvider;
-import au.gov.asd.tac.constellation.visual.graphics3d.Vector3f;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -51,7 +51,8 @@ public class ShowInTableViewContextMenuProvider implements ContextMenuProvider {
     }
 
     @Override
-    public void selectItem(String item, Graph graph, GraphElementType elementType, int elementId, Vector3f unprojected) {
+    public void selectItem(final String item, final Graph graph, final GraphElementType elementType, final int elementId, 
+            final Vector3f unprojected) {
         SwingUtilities.invokeLater(() -> {
             final TopComponent tc = WindowManager.getDefault().findTopComponent("TableView2TopComponent");
             if (tc != null) {
@@ -59,7 +60,7 @@ public class ShowInTableViewContextMenuProvider implements ContextMenuProvider {
                     tc.open();
                 }
                 tc.requestActive();
-                ((au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent) tc).showSelected(elementType, elementId);
+                ((TableViewTopComponent) tc).showSelected(elementType, elementId);
             }
         });
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeRegistry;
+import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.ObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.AbstractAttributeInteraction;
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public class GraphTableModel implements TableModel {
     /**
      * Which part of the table a given attribute is in.
      */
-    public static enum Segment {
+    public enum Segment {
 
         TX, VX_SRC, VX_DST;
     }
@@ -57,10 +58,10 @@ public class GraphTableModel implements TableModel {
     public static final int TX_ID_IX = -8;
     public static final int TX_SRC_ID_IX = -7;
     public static final int TX_DST_ID_IX = -6;
-    public static final Attribute VX_ATTR = new GraphAttribute(VX_ID_IX, GraphElementType.VERTEX, "integer", "vx id_", "Vertex id", null, null);
-    public static final Attribute TX_ATTR = new GraphAttribute(TX_ID_IX, GraphElementType.TRANSACTION, "integer", "tx id_", "Transaction id", null, null);
-    public static final Attribute TX_SRC_ATTR = new GraphAttribute(TX_SRC_ID_IX, GraphElementType.TRANSACTION, "integer", "tx src_", "Transaction source", null, null);
-    public static final Attribute TX_DST_ATTR = new GraphAttribute(TX_DST_ID_IX, GraphElementType.TRANSACTION, "integer", "tx dst_", "Transaction destination", null, null);
+    public static final Attribute VX_ATTR = new GraphAttribute(VX_ID_IX, GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, "vx id_", "Vertex id", null, null);
+    public static final Attribute TX_ATTR = new GraphAttribute(TX_ID_IX, GraphElementType.TRANSACTION, IntegerAttributeDescription.ATTRIBUTE_NAME, "tx id_", "Transaction id", null, null);
+    public static final Attribute TX_SRC_ATTR = new GraphAttribute(TX_SRC_ID_IX, GraphElementType.TRANSACTION, IntegerAttributeDescription.ATTRIBUTE_NAME, "tx src_", "Transaction source", null, null);
+    public static final Attribute TX_DST_ATTR = new GraphAttribute(TX_DST_ID_IX, GraphElementType.TRANSACTION, IntegerAttributeDescription.ATTRIBUTE_NAME, "tx dst_", "Transaction destination", null, null);
 
     private final Graph graph;
     private final GraphElementType elementType;

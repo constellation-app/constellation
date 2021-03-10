@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,27 +23,28 @@ import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
-import au.gov.asd.tac.constellation.graph.schema.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
-import au.gov.asd.tac.constellation.graph.schema.SchemaTransactionType;
-import au.gov.asd.tac.constellation.graph.schema.SchemaTransactionTypeUtilities;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionTypeUtilities;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.utilities.SubgraphUtilities;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.pluginframework.Plugin;
-import au.gov.asd.tac.constellation.pluginframework.PluginException;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
-import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
-import au.gov.asd.tac.constellation.pluginframework.PluginRegistry;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.MultiChoiceParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.ParameterValue;
-import au.gov.asd.tac.constellation.schema.analyticschema.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginRegistry;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult.ElementScore;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -101,6 +102,8 @@ public abstract class ScoreAnalyticPlugin extends AnalyticPlugin<ScoreResult> {
                     graphElementCount = graph.getTransactionCount();
                     identifierAttributeId = VisualConcept.TransactionAttribute.IDENTIFIER.get(graph);
                     break;
+                default:
+                    break;
             }
 
             for (int graphElementPosition = 0; graphElementPosition < graphElementCount; graphElementPosition++) {
@@ -155,8 +158,10 @@ public abstract class ScoreAnalyticPlugin extends AnalyticPlugin<ScoreResult> {
             }
         }
 
-        MultiChoiceParameterType.setOptionsData((PluginParameter<MultiChoiceParameterValue>) parameters.getParameters().get(TRANSACTION_TYPES_PARAMETER_ID), new ArrayList<>(transactionTypes));
-        MultiChoiceParameterType.setChoicesData((PluginParameter<MultiChoiceParameterValue>) parameters.getParameters().get(TRANSACTION_TYPES_PARAMETER_ID), new ArrayList<>(transactionTypes));
+        @SuppressWarnings("unchecked") //TRANSACTION_TYPES_PARAMETER always of type MultiChoiceParameter
+        final PluginParameter<MultiChoiceParameterValue> transactionTypesParam = (PluginParameter<MultiChoiceParameterValue>) parameters.getParameters().get(TRANSACTION_TYPES_PARAMETER_ID);
+        MultiChoiceParameterType.setOptionsData(transactionTypesParam, new ArrayList<>(transactionTypes));
+        MultiChoiceParameterType.setChoicesData(transactionTypesParam, new ArrayList<>(transactionTypes));
     }
 
     @Override
@@ -195,7 +200,7 @@ public abstract class ScoreAnalyticPlugin extends AnalyticPlugin<ScoreResult> {
             final List<? extends ParameterValue> chosenTransactionTypes = MultiChoiceParameterType.getChoicesData(transactionTypesParameter);
             if (chosenTransactionTypes.equals(allTransactionTypes)) {
                 // run analytic plugin on the entire graph and compute results
-                PluginExecution.withPlugin(getAnalyticPlugin().newInstance())
+                PluginExecution.withPlugin(getAnalyticPlugin().getDeclaredConstructor().newInstance())
                         .withParameters(parameters)
                         .executeNow(graph);
                 computeResultsFromGraph(graph, parameters);
@@ -209,14 +214,16 @@ public abstract class ScoreAnalyticPlugin extends AnalyticPlugin<ScoreResult> {
                 final StoreGraph subgraph = getSubgraph(graph, SchemaFactoryUtilities.getDefaultSchemaFactory(), transactionTypes);
 
                 // run analytic plugin and compute results
-                PluginExecution.withPlugin(getAnalyticPlugin().newInstance())
+                PluginExecution.withPlugin(getAnalyticPlugin().getDeclaredConstructor().newInstance())
                         .withParameters(parameters)
                         .executeNow(subgraph);
                 copySubgraphToGraph(graph, subgraph);
                 computeResultsFromGraph(graph, parameters);
             }
 
-        } catch (InstantiationException | IllegalAccessException ex) {
+        } catch (final IllegalAccessException | IllegalArgumentException
+                | InstantiationException | NoSuchMethodException
+                | SecurityException | InvocationTargetException ex) {
             Exceptions.printStackTrace(ex);
         }
     }
@@ -227,7 +234,7 @@ public abstract class ScoreAnalyticPlugin extends AnalyticPlugin<ScoreResult> {
     }
 
     @Override
-    public final Class<? extends AnalyticResult> getResultType() {
+    public final Class<? extends AnalyticResult<?>> getResultType() {
         return ScoreResult.class;
     }
 

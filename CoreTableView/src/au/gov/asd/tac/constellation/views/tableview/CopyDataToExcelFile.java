@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,14 +17,14 @@ package au.gov.asd.tac.constellation.views.tableview;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
-import au.gov.asd.tac.constellation.pluginframework.PluginException;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
-import au.gov.asd.tac.constellation.pluginframework.PluginGraphs;
-import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
-import au.gov.asd.tac.constellation.pluginframework.logging.ConstellationLoggerHelper;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.templates.SimplePlugin;
-import au.gov.asd.tac.constellation.utilities.branding.BrandingUtilities;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginGraphs;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
+import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -51,6 +51,8 @@ import org.openide.util.Exceptions;
  * @author altair
  */
 public class CopyDataToExcelFile implements ActionListener, Action {
+
+    private static final String EXCEL_EXTENSION = ".xlsx";
 
     private final JTable table;
     private final String pluginName;
@@ -100,7 +102,7 @@ public class CopyDataToExcelFile implements ActionListener, Action {
         File f = new FileChooserBuilder(CopyDataToExcelFile.class.getName()).setTitle("Excel file").addFileFilter(new FileFilter() {
             @Override
             public boolean accept(final File pathname) {
-                return pathname.getName().toLowerCase().endsWith(".xlsx");
+                return pathname.getName().toLowerCase().endsWith(EXCEL_EXTENSION);
             }
 
             @Override
@@ -108,10 +110,8 @@ public class CopyDataToExcelFile implements ActionListener, Action {
                 return "Excel files";
             }
         }).showSaveDialog();
-        if (f != null) {
-            if (!f.getName().toLowerCase().endsWith(".xlsx")) {
-                f = new File(f.getAbsolutePath() + ".xlsx");
-            }
+        if (f != null && !f.getName().toLowerCase().endsWith(EXCEL_EXTENSION)) {
+            f = new File(f.getAbsolutePath() + EXCEL_EXTENSION);
         }
 
         return f;
@@ -160,6 +160,8 @@ public class CopyDataToExcelFile implements ActionListener, Action {
                                 break;
                             case VX_DST:
                                 colName = GraphRecordStoreUtilities.DESTINATION + colName;
+                                break;
+                            default:
                                 break;
                         }
                     }
@@ -234,10 +236,12 @@ public class CopyDataToExcelFile implements ActionListener, Action {
 
     @Override
     public void putValue(final String key, final Object value) {
+        // Required for implementation of Action, intentionally left blank
     }
 
     @Override
     public void setEnabled(final boolean b) {
+        // Required for implementation of Action, intentionally left blank
     }
 
     @Override
@@ -247,10 +251,12 @@ public class CopyDataToExcelFile implements ActionListener, Action {
 
     @Override
     public void addPropertyChangeListener(final PropertyChangeListener listener) {
+        // Required for implementation of Action, intentionally left blank
     }
 
     @Override
     public void removePropertyChangeListener(final PropertyChangeListener listener) {
+        // Required for implementation of Action, intentionally left blank
     }
 
     /**

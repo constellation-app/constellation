@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,11 @@ package au.gov.asd.tac.constellation.graph.interaction.plugins;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.visual.graphics3d.Graphics3DUtilities;
-import au.gov.asd.tac.constellation.visual.graphics3d.Matrix44f;
-import au.gov.asd.tac.constellation.visual.graphics3d.Vector3f;
-import au.gov.asd.tac.constellation.visual.graphics3d.Vector4f;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
+import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 
 /**
  *
@@ -100,8 +100,6 @@ class LineDragger {
         final Vector3f muDelta = new Vector3f();
         Graphics3DUtilities.unproject(mpDelta, mvpMatrix, viewport, muDelta);
 
-        final Vector3f translation = new Vector3f(muDelta.getX() - mouseUnprojected.getX(), muDelta.getY() - mouseUnprojected.getY(), muDelta.getZ() - mouseUnprojected.getZ());
-
-        return translation;
+        return new Vector3f(muDelta.getX() - mouseUnprojected.getX(), muDelta.getY() - mouseUnprojected.getY(), muDelta.getZ() - mouseUnprojected.getZ());
     }
 }

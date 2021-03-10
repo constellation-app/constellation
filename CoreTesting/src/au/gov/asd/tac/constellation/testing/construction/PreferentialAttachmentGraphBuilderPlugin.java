@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,42 +15,45 @@
  */
 package au.gov.asd.tac.constellation.testing.construction;
 
-import au.gov.asd.tac.constellation.arrangements.ArrangementPluginRegistry;
-import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
-import au.gov.asd.tac.constellation.utilities.preferences.PreferenceUtilites;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
+import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
+import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.graph.schema.SchemaTransactionType;
-import au.gov.asd.tac.constellation.graph.schema.SchemaVertexType;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.pluginframework.Plugin;
-import au.gov.asd.tac.constellation.pluginframework.PluginException;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecutor;
-import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.BooleanParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.BooleanParameterType.BooleanParameterValue;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.IntegerParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.IntegerParameterType.IntegerParameterValue;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.MultiChoiceParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
-import au.gov.asd.tac.constellation.pluginframework.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.schema.analyticschema.concept.AnalyticConcept;
-import au.gov.asd.tac.constellation.schema.analyticschema.concept.SpatialConcept;
-import au.gov.asd.tac.constellation.schema.analyticschema.concept.TemporalConcept;
-import au.gov.asd.tac.constellation.visual.decorators.Decorators;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcept;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
+import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginExecutor;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
+import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
@@ -73,6 +76,8 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
     public static final String RANDOM_WEIGHTS_PARAMETER_ID = PluginParameter.buildId(PreferentialAttachmentGraphBuilderPlugin.class, "random_weights");
     public static final String NODE_TYPES_PARAMETER_ID = PluginParameter.buildId(PreferentialAttachmentGraphBuilderPlugin.class, "node_types");
     public static final String TRANSACTION_TYPES_PARAMETER_ID = PluginParameter.buildId(PreferentialAttachmentGraphBuilderPlugin.class, "transaction_types");
+
+    private final SecureRandom r = new SecureRandom();
 
     @Override
     public String getDescription() {
@@ -147,8 +152,10 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
         }
 
         if (parameters != null && parameters.getParameters() != null) {
-            final PluginParameter nAttribute = parameters.getParameters().get(NODE_TYPES_PARAMETER_ID);
-            final PluginParameter tAttribute = parameters.getParameters().get(TRANSACTION_TYPES_PARAMETER_ID);
+            @SuppressWarnings("unchecked") //NODE_TYPES_PARAMETER will always be of type MultiChoiceParameter
+            final PluginParameter<MultiChoiceParameterValue> nAttribute = (PluginParameter<MultiChoiceParameterValue>) parameters.getParameters().get(NODE_TYPES_PARAMETER_ID);
+            @SuppressWarnings("unchecked") //TRANSACTION_TYPES_PARAMETER will always be of type MultiChoiceParameter
+            final PluginParameter<MultiChoiceParameterValue> tAttribute = (PluginParameter<MultiChoiceParameterValue>) parameters.getParameters().get(TRANSACTION_TYPES_PARAMETER_ID);
             MultiChoiceParameterType.setOptions(nAttribute, nAttributes);
             MultiChoiceParameterType.setOptions(tAttribute, tAttributes);
             MultiChoiceParameterType.setChoices(nAttribute, nChoices);
@@ -159,8 +166,6 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         interaction.setProgress(0, 0, "Building...", true);
-
-        final Random r = new Random();
 
         final Map<String, PluginParameter<?>> params = parameters.getParameters();
 
@@ -188,7 +193,7 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
         final int vxIdentifierAttr = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
         final int vxTypeAttr = AnalyticConcept.VertexAttribute.TYPE.ensure(graph);
 
-        final int vxIsGoodAttr = graph.addAttribute(GraphElementType.VERTEX, "boolean", "isGood", null, false, null);
+        final int vxIsGoodAttr = graph.addAttribute(GraphElementType.VERTEX, BooleanAttributeDescription.ATTRIBUTE_NAME, "isGood", null, false, null);
         final int vxCountryAttr = SpatialConcept.VertexAttribute.COUNTRY.ensure(graph);
 
         final int txIdAttr = VisualConcept.TransactionAttribute.IDENTIFIER.ensure(graph);
@@ -197,8 +202,8 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
 
         final int[] startVxIds = new int[m];
 
-        final Decorators decorators;
-        decorators = new Decorators(null, graph.getAttributeName(vxCountryAttr), null, graph.getAttributeName(vxIsGoodAttr));
+        final VertexDecorators decorators;
+        decorators = new VertexDecorators(null, graph.getAttributeName(vxCountryAttr), null, graph.getAttributeName(vxIsGoodAttr));
         final int decoratorsAttr = VisualConcept.GraphAttribute.DECORATORS.ensure(graph);
         graph.setObjectValue(decoratorsAttr, 0, decorators);
 
@@ -227,10 +232,7 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
         final Date d = new Date();
         final int fourDays = 4 * 24 * 60 * 60 * 1000;
 
-        Set<Integer> destinations = new HashSet<>();
-        for (int i : startVxIds) {
-            destinations.add(i);
-        }
+        Set<Integer> destinations = Arrays.stream(startVxIds).boxed().collect(Collectors.toSet());
         ArrayList<Integer> repeats = new ArrayList<>();
         while (vx < n) {
             final int vxId = graph.addVertex();
@@ -254,30 +256,27 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
                     int dxId = destination;
                     if (randomWeights) {
                         switch (reciprocity) {
-                            case 0: {
-                                boolean random = r.nextBoolean();
-                                if (random) {
+                            case 0:
+                                boolean random0 = r.nextBoolean();
+                                if (random0) {
                                     sxId = destination;
                                     dxId = vxId;
                                 }
                                 break;
-                            }
-                            case 1: {
-                                int random = r.nextInt(5);
-                                if (random == 0) {
+                            case 1:
+                                int random1 = r.nextInt(5);
+                                if (random1 == 0) {
                                     sxId = destination;
                                     dxId = vxId;
                                 }
                                 break;
-                            }
-                            default: {
-                                int random = r.nextInt(5);
-                                if (random != 0) {
+                            default:
+                                int randomDefault = r.nextInt(5);
+                                if (randomDefault != 0) {
                                     sxId = destination;
                                     dxId = vxId;
                                 }
                                 break;
-                            }
                         }
                     }
                     final int e = graph.addTransaction(sxId, dxId, true);
@@ -303,23 +302,21 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
         }
 
         if (!PreferenceUtilites.isGraphViewFrozen()) {
-            if (n < 10000) {
-                // Do a trees layout.
-                try {
-                    PluginExecutor.startWith(ArrangementPluginRegistry.TREES).followedBy(CorePluginRegistry.RESET).executeNow(graph);
-                } catch (PluginException ex) {
-                    Exceptions.printStackTrace(ex);
+            try {
+                if (n < 10000) {
+                    // Do a trees layout.
+                    PluginExecutor.startWith(ArrangementPluginRegistry.TREES)
+                            .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
+                } else {
+                    // Do a grid layout.
+                    PluginExecutor.startWith(ArrangementPluginRegistry.GRID_COMPOSITE)
+                            .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
                 }
-            } else {
-                // Do a grid layout.
-                try {
-                    PluginExecutor.startWith(ArrangementPluginRegistry.GRID_COMPOSITE).followedBy(CorePluginRegistry.RESET).executeNow(graph);
-                } catch (PluginException ex) {
-                    Exceptions.printStackTrace(ex);
-                }
+            } catch (PluginException ex) {
+                Exceptions.printStackTrace(ex);
             }
         } else {
-            PluginExecution.withPlugin(CorePluginRegistry.RESET).executeNow(graph);
+            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
         }
 
         interaction.setProgress(1, 0, "Completed successfully", true);
@@ -330,11 +327,11 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
      *
      * @param repeats A list of possible destinations
      * @param nVxStart The number of destinations to return.
-     * @param r Random
+     * @param r SecureRandom
      *
      * @return A random set of destinations
      */
-    private static Set<Integer> generateDestinations(ArrayList<Integer> repeats, int nVxStart, Random r) {
+    private static Set<Integer> generateDestinations(ArrayList<Integer> repeats, int nVxStart, SecureRandom r) {
         final Set<Integer> destinations = new HashSet<>();
         while (destinations.size() < nVxStart) {
             destinations.add(repeats.get(r.nextInt(repeats.size())));

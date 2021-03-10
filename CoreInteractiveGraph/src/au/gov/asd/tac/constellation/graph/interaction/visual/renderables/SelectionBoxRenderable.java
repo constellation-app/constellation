@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,9 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.visual.renderables;
 
-import au.gov.asd.tac.constellation.visual.graphics3d.Matrix44f;
-import au.gov.asd.tac.constellation.visual.graphics3d.Vector3f;
-import au.gov.asd.tac.constellation.visual.graphics3d.Vector4f;
+import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.Batch;
@@ -33,6 +33,7 @@ import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.collections4.CollectionUtils;
 
 /**
  * Draw a selection rectangle.
@@ -66,7 +67,7 @@ public class SelectionBoxRenderable implements GLRenderable {
 
     @Override
     public int getPriority() {
-        return GLRenderable.ANNOTATIONS_PRIORITY;
+        return RenderablePriority.ANNOTATIONS_PRIORITY.getValue();
     }
 
     @Override
@@ -106,7 +107,8 @@ public class SelectionBoxRenderable implements GLRenderable {
         modelQueue.add(model);
     }
 
-    private int width, height;
+    private int width;
+    private int height;
 
     @Override
     public void reshape(final int x, final int y, final int width, final int height) {
@@ -116,7 +118,7 @@ public class SelectionBoxRenderable implements GLRenderable {
 
     @Override
     public void update(final GLAutoDrawable drawable) {
-        if (modelQueue != null && !modelQueue.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(modelQueue)) {
             selectionBoxModel = modelQueue.getLast();
             modelQueue.clear();
         }

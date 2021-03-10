@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,16 +19,17 @@ import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.io.GraphFileConstants;
-import au.gov.asd.tac.constellation.pluginframework.PluginException;
-import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.visual.InfoTextPanel;
+import au.gov.asd.tac.constellation.graph.file.io.GraphFileConstants;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.utilities.gui.InfoTextPanel;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
@@ -80,7 +81,10 @@ public class ImportFromJdbcPlugin extends SimpleEditPlugin {
                 } else {
                     interaction.setProgress(0, 0, "JDBC import interrupted, database may be inconsistent.", false);
                 }
-            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | MalformedURLException ex) {
+            } catch (final MalformedURLException | ClassNotFoundException
+                    | IllegalAccessException | IllegalArgumentException
+                    | InstantiationException | NoSuchMethodException
+                    | SecurityException | InvocationTargetException ex) {
                 notifyException(ex);
 //                throw new PluginException(PluginNotificationLevel.INFO, ex);
             }
@@ -120,7 +124,7 @@ public class ImportFromJdbcPlugin extends SimpleEditPlugin {
         select.append(" FROM ");
         JdbcUtilities.checkSqlLabel(data.vxTable);
         select.append(data.vxTable);
-        LOGGER.log(Level.INFO,"JDBC import vx SQL: {0}", select.toString());
+        LOGGER.log(Level.INFO, "JDBC import vx SQL: {0}", select);
 
         if (!labelMap.isEmpty()) {
             try (final Statement stmt = conn.createStatement()) {
@@ -186,7 +190,7 @@ public class ImportFromJdbcPlugin extends SimpleEditPlugin {
         select.append(" FROM ");
         JdbcUtilities.checkSqlLabel(data.txTable);
         select.append(data.txTable);
-        LOGGER.log(Level.INFO,"JDBC import tx SQL: {0}", select.toString());
+        LOGGER.log(Level.INFO, "JDBC import tx SQL: {0}", select);
 
         if (!labelMap.isEmpty()) {
             try (final Statement stmt = conn.createStatement()) {

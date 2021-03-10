@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities;
 
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -66,7 +67,10 @@ public class GraphicsCardUtilities {
                     final String tmp = System.getProperty("user.home") + "/dxdiag.txt";
                     final File file = new File(tmp);
                     if (file.exists()) {
-                        file.delete();
+                        final boolean fileIsDeleted = file.delete();
+                        if (!fileIsDeleted) {
+                            //TODO: Handle case where file not successfully deleted
+                        }
                     }
 
                     final long startTime = System.currentTimeMillis();
@@ -75,6 +79,7 @@ public class GraphicsCardUtilities {
                         try {
                             LOCK.wait(1000);
                         } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
                         }
                     }
                     final long endTime = System.currentTimeMillis();
@@ -85,7 +90,7 @@ public class GraphicsCardUtilities {
                         String line = in.readLine();
                         while (line != null) {
                             builder.append(line);
-                            builder.append("\n");
+                            builder.append(SeparatorConstants.NEWLINE);
 
                             if (graphicsCard == null) {
                                 int cardNameIndex = line.indexOf("Card name: ");

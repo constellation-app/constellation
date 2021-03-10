@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.utilities.nifi;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
@@ -27,7 +28,7 @@ import java.util.Map;
  */
 public class FlowFileV3Utilities {
 
-    public static final byte[] MAGIC_HEADER = {'N', 'i', 'F', 'i', 'F', 'F', '3'};
+    private static final byte[] MAGIC_HEADER = {'N', 'i', 'F', 'i', 'F', 'F', '3'};
     private static final int MAX_VALUE_2_BYTES = 65535;
 
     public static void packageFlowFile(final InputStream in, final OutputStream out, final Map<String, String> attributes, final long fileSize) throws IOException {
@@ -64,7 +65,7 @@ public class FlowFileV3Utilities {
     }
 
     private static void writeString(final byte[] writeBuffer, final String value, final OutputStream out) throws IOException {
-        final byte[] bytes = value.getBytes("UTF-8");
+        final byte[] bytes = value.getBytes(StandardCharsets.UTF_8);
         writeFieldLength(writeBuffer, out, bytes.length);
         out.write(bytes);
     }

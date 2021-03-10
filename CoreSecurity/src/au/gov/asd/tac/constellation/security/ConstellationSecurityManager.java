@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,7 +68,7 @@ public class ConstellationSecurityManager {
 
             final List<ConstellationSecurityProvider> providers = new ArrayList<>(Lookup.getDefault().lookupAll(ConstellationSecurityProvider.class));
             LOGGER.log(LEVEL, "Found {0} security provider{1}", new Object[]{providers.size(), providers.size() == 1 ? "" : "s"});
-            providers.stream().forEach((provider) -> {
+            providers.stream().forEach(provider -> {
                 LOGGER.log(LEVEL, "  {0}", provider);
             });
 
@@ -113,10 +113,9 @@ public class ConstellationSecurityManager {
 
                                 break finished;
                             }
-                        } catch (SecurityException ex) {
-                            LOGGER.severe(String.format("Exception while setting default SSLContext: %s", ex.getMessage()));
+                        } catch (final SecurityException ex) {
                             // TODO: Handle exceptions from getSSLContext()
-                            ex.printStackTrace();
+                            LOGGER.severe(String.format("Exception while setting default SSLContext: %s", ex.getMessage()));
                         }
                     }
                 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,11 @@
 package au.gov.asd.tac.constellation.views.analyticview.translators;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ClusterResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ClusterResult.ClusterData;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.TableVisualisation;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.openide.util.lookup.ServiceProvider;
@@ -41,13 +41,13 @@ public class ClusterToTableTranslator extends AbstractTableTranslator<ClusterRes
     }
 
     @Override
-    public Class<? extends AnalyticResult> getResultType() {
+    public Class<? extends AnalyticResult<?>> getResultType() {
         return ClusterResult.class;
     }
 
     @Override
-    public TableVisualisation buildVisualisation() {
-        final TableVisualisation<ClusterData> tableVisualisation = new TableVisualisation(this);
+    public TableVisualisation<ClusterData> buildVisualisation() {
+        final TableVisualisation<ClusterData> tableVisualisation = new TableVisualisation<>(this);
         tableVisualisation.addColumn(IDENTIFIER_COLUMN_NAME, (100 / 3) * 2);
         tableVisualisation.addColumn(CLUSTER_COLUMN_NAME, (100 / 3));
         List<ClusterData> displayResult = result.get();
@@ -63,7 +63,7 @@ public class ClusterToTableTranslator extends AbstractTableTranslator<ClusterRes
         }
         tableVisualisation.populateTable(displayResult);
         result.addResultListener(tableVisualisation);
-        tableVisualisation.setSelectionModelListener((change) -> {
+        tableVisualisation.setSelectionModelListener(change -> {
             result.setSelectionOnGraph(tableVisualisation.getSelectedItems());
         });
         return tableVisualisation;
@@ -80,7 +80,7 @@ public class ClusterToTableTranslator extends AbstractTableTranslator<ClusterRes
             case CLUSTER_COLUMN_NAME:
                 return cellValue.getClusterNumber();
             default:
-                throw new UnrecognisedColumnException("Column not recognised: " + columnName);
+                throw new UnrecognisedColumnException(columnName);
         }
     }
 
@@ -94,7 +94,7 @@ public class ClusterToTableTranslator extends AbstractTableTranslator<ClusterRes
             case CLUSTER_COLUMN_NAME:
                 return cellItem.toString();
             default:
-                throw new UnrecognisedColumnException("Column not recognised: " + columnName);
+                throw new UnrecognisedColumnException(columnName);
         }
     }
 

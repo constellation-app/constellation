@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,10 +88,7 @@ public class ConstellationPolygonMarker extends ConstellationAbstractMarker {
         if (!Objects.equals(this.getLocations(), other.getLocations())) {
             return false;
         }
-        if (!Objects.equals(this.getProperties(), other.getProperties())) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.getProperties(), other.getProperties());
     }
 
     @Override

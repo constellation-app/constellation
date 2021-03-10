@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,14 @@
  */
 package au.gov.asd.tac.constellation.preferences;
 
+import java.awt.Color;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.prefs.Preferences;
 import javax.swing.JComponent;
+import org.apache.commons.lang3.StringUtils;
 import org.netbeans.spi.options.OptionsPanelController;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
@@ -54,9 +58,24 @@ public final class GraphOptionsPanelController extends OptionsPanelController {
         graphOptionsPanel.setBlazeSize(prefs.getInt(GraphPreferenceKeys.BLAZE_SIZE, GraphPreferenceKeys.BLAZE_SIZE_DEFAULT));
         graphOptionsPanel.setBlazeOpacity(prefs.getInt(GraphPreferenceKeys.BLAZE_OPACITY, GraphPreferenceKeys.BLAZE_OPACITY_DEFAULT));
 
+        final String presetColorsString = NbPreferences.forModule(GraphPreferenceKeys.class)
+                .get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
+
+        // set the colours here - below generates a list of coloured icons.
+        final List<Color> colors = new ArrayList<>();
+        for (final String currentColor : presetColorsString.split(";")) {
+            if (StringUtils.isNotBlank(currentColor) && !currentColor.equals("null")) {
+                final int r = Integer.valueOf(currentColor.substring(1, 3), 16);
+                final int g = Integer.valueOf(currentColor.substring(3, 5), 16);
+                final int b = Integer.valueOf(currentColor.substring(5, 7), 16);
+                colors.add(new Color(r, g, b));
+            } else {
+                colors.add(null);
+            }
+        }
+        graphOptionsPanel.setPresetColors(colors);
     }
 
-    // Once valid, and once changed, grabs the current value and saves it into the preferences file
     @Override
     public void applyChanges() {
         if (isValid()) {
@@ -89,11 +108,8 @@ public final class GraphOptionsPanelController extends OptionsPanelController {
     public boolean isChanged() {
         final Preferences prefs = NbPreferences.forModule(GraphPreferenceKeys.class);
         final GraphOptionsPanel graphOptionsPanel = getPanel();
-        final boolean changed
-                = !(graphOptionsPanel.getBlazeSize() == prefs.getInt(GraphPreferenceKeys.BLAZE_SIZE, GraphPreferenceKeys.BLAZE_SIZE_DEFAULT)
+        return !(graphOptionsPanel.getBlazeSize() == prefs.getInt(GraphPreferenceKeys.BLAZE_SIZE, GraphPreferenceKeys.BLAZE_SIZE_DEFAULT)
                 && graphOptionsPanel.getBlazeOpacity() == prefs.getInt(GraphPreferenceKeys.BLAZE_OPACITY, GraphPreferenceKeys.BLAZE_OPACITY_DEFAULT));
-
-        return changed;
     }
 
     @Override

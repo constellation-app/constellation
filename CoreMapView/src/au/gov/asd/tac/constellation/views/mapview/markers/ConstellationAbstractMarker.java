@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -185,7 +185,7 @@ public abstract class ConstellationAbstractMarker implements Marker {
     @Override
     public String getStringProperty(final String key) {
         final Object value = properties.get(key);
-        if (value != null && value instanceof String) {
+        if (value instanceof String) {
             return (String) value;
         } else {
             return null;
@@ -195,7 +195,7 @@ public abstract class ConstellationAbstractMarker implements Marker {
     @Override
     public Integer getIntegerProperty(final String key) {
         final Object value = properties.get(key);
-        if (value != null && value instanceof Integer) {
+        if (value instanceof Integer) {
             return (Integer) value;
         } else {
             return null;

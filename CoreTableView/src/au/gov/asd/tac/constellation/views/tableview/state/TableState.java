@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,7 +81,7 @@ public final class TableState {
 
         final RowSorter<? extends TableModel> sorter = table.getRowSorter();
         for (final RowSorter.SortKey sk : sorter.getSortKeys()) {
-            // TODO Should really store the column label + segment here.
+            // TODO: should really store the column label + segment here.
             state.sortOrder.add(String.format("%d,%s", sk.getColumn(), sk.getSortOrder()));
         }
 
@@ -168,12 +168,12 @@ public final class TableState {
     @Override
     public String toString() {
         final StringBuilder b = new StringBuilder();
-        b.append(String.format("[%s\n", TableState.class.getSimpleName()));
-        b.append(String.format("  Columns: %d\n", columns.size()));
+        b.append(String.format("[%s%n", TableState.class.getSimpleName()));
+        b.append(String.format("  Columns: %d%n", columns.size()));
         for (final String so : sortOrder) {
-            b.append(String.format("  Sort: %s\n", so));
+            b.append(String.format("  Sort: %s%n", so));
         }
-        b.append(String.format("Selected only: %s\n", selectedOnly));
+        b.append(String.format("Selected only: %s%n", selectedOnly));
         b.append("]");
 
         return b.toString();
@@ -211,7 +211,7 @@ public final class TableState {
         final int tableStateAttr = rg.getAttribute(GraphElementType.META, getAttrLabel(elementType));
         if (tableStateAttr != Graph.NOT_FOUND) {
             final Object o = rg.getObjectValue(tableStateAttr, 0);
-            if (o != null && o instanceof TableState) {
+            if (o instanceof TableState) {
                 return (TableState) o;
             }
         }

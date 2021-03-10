@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,13 @@
 package au.gov.asd.tac.constellation.views.mapview.layers;
 
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
-import au.gov.asd.tac.constellation.views.mapview.markers.ConstellationAbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview.utilities.GraphElement;
 import au.gov.asd.tac.constellation.views.mapview.utilities.MarkerUtilities;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
 import de.fhpotsdam.unfolding.geo.Location;
 import de.fhpotsdam.unfolding.marker.Marker;
 import de.fhpotsdam.unfolding.utils.ScreenPosition;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -84,6 +82,7 @@ public abstract class AbstractPathsLayer extends MapLayer {
                     return true;
                 }
             } catch (final InterruptedException ex) {
+                Thread.currentThread().interrupt();
                 return false;
             }
         }
@@ -136,8 +135,6 @@ public abstract class AbstractPathsLayer extends MapLayer {
                     }).collect(Collectors.toSet());
 
             onScreenMarkerCount = onScreenMarkers.size();
-        } catch (final IOException ex) {
-            return null;
         }
 
         if (onScreenMarkers.isEmpty()) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,12 +20,12 @@ import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.mergers.PrioritySurvivingGraphElementMerger;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
+import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcept;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.utilities.io.SaveGraphUtilities;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.schema.analyticschema.AnalyticSchemaFactory;
-import au.gov.asd.tac.constellation.schema.analyticschema.concept.AnalyticConcept;
-import au.gov.asd.tac.constellation.schema.analyticschema.concept.TemporalConcept;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
 import java.io.IOException;
 import java.util.Comparator;
@@ -176,7 +176,7 @@ public class MergeTransactionsNGTest {
         MergeTransactionType instance = new MergeTransactionType() {
             @Override
             public String getName() {
-                throw new UnsupportedOperationException("Not s    @Overrideupported yet."); //To change body of generated methods, choose Tools | Templates.
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
 
             @Override
@@ -315,7 +315,7 @@ public class MergeTransactionsNGTest {
         int threshold = 30;
 
         int mergedCount = 0;
-        final Map<Integer, Set<Integer>> transactionsToMerge = mergeTypeInstance.getTransactionsToMerge(graph, instance.LATEST_TRANSACTION_CHOOSER, threshold, false);
+        final Map<Integer, Set<Integer>> transactionsToMerge = mergeTypeInstance.getTransactionsToMerge(graph, MergeTransactionsPlugin.LATEST_TRANSACTION_CHOOSER, threshold, false);
         for (final Integer leadTransaction : transactionsToMerge.keySet()) {
             mergedCount += instance.mergeTransactions(graph, transactionsToMerge.get(leadTransaction), leadTransaction, new PrioritySurvivingGraphElementMerger());
         }
@@ -341,7 +341,7 @@ public class MergeTransactionsNGTest {
         int threshold = 5;
 
         int mergedCount = 0;
-        final Map<Integer, Set<Integer>> transactionsToMerge = mergeTypeInstance.getTransactionsToMerge(graph, instance.LATEST_TRANSACTION_CHOOSER, threshold, false);
+        final Map<Integer, Set<Integer>> transactionsToMerge = mergeTypeInstance.getTransactionsToMerge(graph, MergeTransactionsPlugin.LATEST_TRANSACTION_CHOOSER, threshold, false);
         for (final Integer leadTransaction : transactionsToMerge.keySet()) {
             mergedCount += instance.mergeTransactions(graph, transactionsToMerge.get(leadTransaction), leadTransaction, new PrioritySurvivingGraphElementMerger());
         }
@@ -367,7 +367,7 @@ public class MergeTransactionsNGTest {
         int threshold = 5;
 
         int mergedCount = 0;
-        final Map<Integer, Set<Integer>> transactionsToMerge = mergeTypeInstance.getTransactionsToMerge(graph, instance.LATEST_TRANSACTION_CHOOSER, threshold, false);
+        final Map<Integer, Set<Integer>> transactionsToMerge = mergeTypeInstance.getTransactionsToMerge(graph, MergeTransactionsPlugin.LATEST_TRANSACTION_CHOOSER, threshold, false);
         for (final Integer leadTransaction : transactionsToMerge.keySet()) {
             mergedCount += instance.mergeTransactions(graph, transactionsToMerge.get(leadTransaction), leadTransaction, new PrioritySurvivingGraphElementMerger());
         }
@@ -393,7 +393,7 @@ public class MergeTransactionsNGTest {
         int threshold = 30;
 
         int mergedCount = 0;
-        final Map<Integer, Set<Integer>> transactionsToMerge = mergeTypeInstance.getTransactionsToMerge(graph, instance.LATEST_TRANSACTION_CHOOSER, threshold, false);
+        final Map<Integer, Set<Integer>> transactionsToMerge = mergeTypeInstance.getTransactionsToMerge(graph, MergeTransactionsPlugin.LATEST_TRANSACTION_CHOOSER, threshold, false);
         for (final Integer leadTransaction : transactionsToMerge.keySet()) {
             mergedCount += instance.mergeTransactions(graph, transactionsToMerge.get(leadTransaction), leadTransaction, new PrioritySurvivingGraphElementMerger());
         }
@@ -419,7 +419,7 @@ public class MergeTransactionsNGTest {
         int threshold = 30;
 
         int mergedCount = 0;
-        final Map<Integer, Set<Integer>> transactionsToMerge = mergeTypeInstance.getTransactionsToMerge(graph, instance.LATEST_TRANSACTION_CHOOSER, threshold, false);
+        final Map<Integer, Set<Integer>> transactionsToMerge = mergeTypeInstance.getTransactionsToMerge(graph, MergeTransactionsPlugin.LATEST_TRANSACTION_CHOOSER, threshold, false);
         for (final Integer leadTransaction : transactionsToMerge.keySet()) {
             mergedCount += instance.mergeTransactions(graph, transactionsToMerge.get(leadTransaction), leadTransaction, new PrioritySurvivingGraphElementMerger());
         }
@@ -440,7 +440,7 @@ public class MergeTransactionsNGTest {
         int threshold = 30;
 
         int mergedCount = 0;
-        final Map<Integer, Set<Integer>> transactionsToMerge = mergeTypeInstance.getTransactionsToMerge(graph, instance.LATEST_TRANSACTION_CHOOSER, threshold, false);
+        final Map<Integer, Set<Integer>> transactionsToMerge = mergeTypeInstance.getTransactionsToMerge(graph, MergeTransactionsPlugin.LATEST_TRANSACTION_CHOOSER, threshold, false);
         for (final Integer leadTransaction : transactionsToMerge.keySet()) {
             mergedCount += instance.mergeTransactions(graph, transactionsToMerge.get(leadTransaction), leadTransaction, new PrioritySurvivingGraphElementMerger());
         }
@@ -466,7 +466,7 @@ public class MergeTransactionsNGTest {
         int threshold = 30;
 
         int mergedCount = 0;
-        final Map<Integer, Set<Integer>> transactionsToMerge = mergeTypeInstance.getTransactionsToMerge(graph, instance.LATEST_TRANSACTION_CHOOSER, threshold, false);
+        final Map<Integer, Set<Integer>> transactionsToMerge = mergeTypeInstance.getTransactionsToMerge(graph, MergeTransactionsPlugin.LATEST_TRANSACTION_CHOOSER, threshold, false);
         for (final Integer leadTransaction : transactionsToMerge.keySet()) {
             mergedCount += instance.mergeTransactions(graph, transactionsToMerge.get(leadTransaction), leadTransaction, new PrioritySurvivingGraphElementMerger());
         }
@@ -492,7 +492,7 @@ public class MergeTransactionsNGTest {
         int threshold = 30;
 
         int mergedCount = 0;
-        final Map<Integer, Set<Integer>> transactionsToMerge = mergeTypeInstance.getTransactionsToMerge(graph, instance.LATEST_TRANSACTION_CHOOSER, threshold, false);
+        final Map<Integer, Set<Integer>> transactionsToMerge = mergeTypeInstance.getTransactionsToMerge(graph, MergeTransactionsPlugin.LATEST_TRANSACTION_CHOOSER, threshold, false);
         for (final Integer leadTransaction : transactionsToMerge.keySet()) {
             mergedCount += instance.mergeTransactions(graph, transactionsToMerge.get(leadTransaction), leadTransaction, new PrioritySurvivingGraphElementMerger());
         }
@@ -523,7 +523,7 @@ public class MergeTransactionsNGTest {
         int threshold = 30;
 
         int mergedCount = 0;
-        final Map<Integer, Set<Integer>> transactionsToMerge = mergeTypeInstance.getTransactionsToMerge(graph, instance.LATEST_TRANSACTION_CHOOSER, threshold, false);
+        final Map<Integer, Set<Integer>> transactionsToMerge = mergeTypeInstance.getTransactionsToMerge(graph, MergeTransactionsPlugin.LATEST_TRANSACTION_CHOOSER, threshold, false);
         for (final Integer leadTransaction : transactionsToMerge.keySet()) {
             mergedCount += instance.mergeTransactions(graph, transactionsToMerge.get(leadTransaction), leadTransaction, new PrioritySurvivingGraphElementMerger());
         }
@@ -549,7 +549,7 @@ public class MergeTransactionsNGTest {
         int threshold = 30;
 
         int mergedCount = 0;
-        final Map<Integer, Set<Integer>> transactionsToMerge = mergeTypeInstance.getTransactionsToMerge(graph, instance.LATEST_TRANSACTION_CHOOSER, threshold, true);
+        final Map<Integer, Set<Integer>> transactionsToMerge = mergeTypeInstance.getTransactionsToMerge(graph, MergeTransactionsPlugin.LATEST_TRANSACTION_CHOOSER, threshold, true);
         for (final Integer leadTransaction : transactionsToMerge.keySet()) {
             mergedCount += instance.mergeTransactions(graph, transactionsToMerge.get(leadTransaction), leadTransaction, new PrioritySurvivingGraphElementMerger());
         }
@@ -575,7 +575,7 @@ public class MergeTransactionsNGTest {
         int threshold = 30;
 
         int mergedCount = 0;
-        final Map<Integer, Set<Integer>> transactionsToMerge = mergeTypeInstance.getTransactionsToMerge(graph, instance.LATEST_TRANSACTION_CHOOSER, threshold, true);
+        final Map<Integer, Set<Integer>> transactionsToMerge = mergeTypeInstance.getTransactionsToMerge(graph, MergeTransactionsPlugin.LATEST_TRANSACTION_CHOOSER, threshold, true);
         for (final Integer leadTransaction : transactionsToMerge.keySet()) {
             mergedCount += instance.mergeTransactions(graph, transactionsToMerge.get(leadTransaction), leadTransaction, new PrioritySurvivingGraphElementMerger());
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,12 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.templates;
 
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.ParameterValue;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.SingleChoiceParameterType;
-import au.gov.asd.tac.constellation.pluginframework.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -37,7 +38,7 @@ public abstract class FilterPlugin extends SimpleEditPlugin {
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
 
-        final PluginParameter filterType = SingleChoiceParameterType.build(FILTER_TYPE_PARAMETER_ID, FilterTypeParameterValue.class);
+        final PluginParameter<SingleChoiceParameterValue> filterType = SingleChoiceParameterType.build(FILTER_TYPE_PARAMETER_ID, FilterTypeParameterValue.class);
         filterType.setName("Filter Type");
         filterType.setDescription("The name of the filter");
         final List<FilterTypeParameterValue> filterTypes = new ArrayList<>();
@@ -51,7 +52,7 @@ public abstract class FilterPlugin extends SimpleEditPlugin {
         return parameters;
     }
 
-    protected static enum FilterType {
+    protected enum FilterType {
 
         REMOVE_FILTER("Remove"),
         DESELECT_FILTER("Deselect"),

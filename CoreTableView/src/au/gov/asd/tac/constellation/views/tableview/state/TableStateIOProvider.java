@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,10 @@ package au.gov.asd.tac.constellation.views.tableview.state;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.io.providers.AbstractGraphIOProvider;
-import au.gov.asd.tac.constellation.graph.io.providers.GraphByteReader;
-import au.gov.asd.tac.constellation.graph.io.providers.GraphByteWriter;
-import au.gov.asd.tac.constellation.graph.utilities.ImmutableObjectCache;
+import au.gov.asd.tac.constellation.graph.attribute.io.AbstractGraphIOProvider;
+import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteReader;
+import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteWriter;
+import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
 import au.gov.asd.tac.constellation.views.tableview.GraphTableModel.Segment;
 import au.gov.asd.tac.constellation.views.tableview.state.TableState.ColumnState;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -40,6 +40,7 @@ import java.util.logging.Logger;
 public abstract class TableStateIOProvider extends AbstractGraphIOProvider {
 
     private static final String SELECTED_ONLY = "selectedOnly";
+    private static final String LABEL = "label";
     private static final Logger LOGGER = Logger.getLogger(TableStateIOProvider.class.getName());
 
     @Override
@@ -47,14 +48,14 @@ public abstract class TableStateIOProvider extends AbstractGraphIOProvider {
         if (!jnode.isNull()) {
             final int posx = jnode.get("posx").asInt(0);
             final int posy = jnode.get("posy").asInt(0);
-            final boolean selectedOnly = jnode.hasNonNull(SELECTED_ONLY) ? jnode.get(SELECTED_ONLY).asBoolean(false) : false;
+            final boolean selectedOnly = jnode.hasNonNull(SELECTED_ONLY) && jnode.get(SELECTED_ONLY).asBoolean(false);
 
             final TableState state = new TableState(new Point(posx, posy), selectedOnly);
 
             final ArrayNode columns = (ArrayNode) jnode.withArray("columns");
             for (final JsonNode column : columns) {
                 // Null labels means dummy value.
-                final String label = column.get("label").isNull() ? null : column.get("label").asText();
+                final String label = column.get(LABEL).isNull() ? null : column.get(LABEL).asText();
 
                 // If width is missing, use a marker <0
                 // to indicate deafult width.
@@ -67,8 +68,7 @@ public abstract class TableStateIOProvider extends AbstractGraphIOProvider {
                     final ColumnState cs = new ColumnState(label, segment, width);
                     state.columns.add(cs);
                 } catch (IllegalArgumentException ex) {
-                    LOGGER.log(Level.SEVERE, "Segment value {0} illegal", segmentText);
-                    ex.printStackTrace();
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
             }
 
@@ -97,7 +97,7 @@ public abstract class TableStateIOProvider extends AbstractGraphIOProvider {
                 jsonGenerator.writeArrayFieldStart("columns");
                 for (final ColumnState cs : state.columns) {
                     jsonGenerator.writeStartObject();
-                    jsonGenerator.writeStringField("label", cs.label);
+                    jsonGenerator.writeStringField(LABEL, cs.label);
                     jsonGenerator.writeStringField("segment", cs.segment.toString());
                     jsonGenerator.writeNumberField("width", cs.width);
                     jsonGenerator.writeEndObject();

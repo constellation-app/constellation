@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,49 +15,68 @@
  */
 package au.gov.asd.tac.constellation.views.qualitycontrol;
 
-import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
-import au.gov.asd.tac.constellation.functionality.zoom.ZoomToVerticesPlugin;
-import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.*;
+import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
+import au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.ZoomToVerticesPlugin;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.pluginframework.PluginException;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
-import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import au.gov.asd.tac.constellation.utilities.json.JsonUtilities;
+import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlEvent.QualityCategory;
+import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetter;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlState;
 import au.gov.asd.tac.constellation.views.qualitycontrol.rules.QualityControlRule;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.databind.MappingJsonFactory;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TitledPane;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 import javafx.util.Pair;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
+import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.NbPreferences;
 
 /**
  * The parent pane holding all the components of the Quality Control View.
@@ -67,24 +86,30 @@ import org.openide.util.NbBundle.Messages;
 @Messages({
     "MSG_NotApplicable=◇",
     "MSG_QualtyControlRules=Quality control rules for node %s",
-    "MSG_SelectSomething=Select some nodes in your graph to review their data quality."
+    "MSG_SelectSomething=Select some nodes in your graph to review their data quality.",
+    "MSG_NoEntries=There are no rules for this identifier."
 })
 public final class QualityControlViewPane extends BorderPane {
 
-    private final QualityControlViewTopComponent parent;
-    private final TableView<QualityControlEvent> qualityTable;
+    private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+    private static Map<QualityControlRule, QualityCategory> rulePriorities = null;
+    private static final List<ToggleGroup> toggleGroups = new ArrayList<>();
+    private static final JsonFactory FACTORY = new MappingJsonFactory();
+    public static Lookup lookup = null;
+
     private final TableColumn<QualityControlEvent, QualityControlEvent> identifierColumn;
     private final TableColumn<QualityControlEvent, QualityControlEvent> typeColumn;
     private final TableColumn<QualityControlEvent, QualityControlEvent> qualityColumn;
     private final TableColumn<QualityControlEvent, QualityControlEvent> reasonColumn;
+    private final TableView<QualityControlEvent> qualityTable;
     private final FlowPane optionsPane;
 
-    public QualityControlViewPane(QualityControlViewTopComponent topComponent) {
-        this.parent = topComponent;
+    public QualityControlViewPane() {
+        readSerializedRulePriorities();
 
         qualityTable = new TableView<>();
         identifierColumn = new TableColumn<>("Identifier");
-        identifierColumn.prefWidthProperty().bind(qualityTable.widthProperty().multiply(0.35));
+        identifierColumn.prefWidthProperty().bind(qualityTable.widthProperty().multiply(0.25));
         identifierColumn.setComparator((qce1, qce2) -> {
             final String ns1 = qce1.getIdentifier() != null ? qce1.getIdentifier() : "";
             final String ns2 = qce2.getIdentifier() != null ? qce2.getIdentifier() : "";
@@ -92,17 +117,17 @@ public final class QualityControlViewPane extends BorderPane {
         });
 
         typeColumn = new TableColumn<>("Type");
-        typeColumn.prefWidthProperty().bind(qualityTable.widthProperty().multiply(0.15));
+        typeColumn.prefWidthProperty().bind(qualityTable.widthProperty().multiply(0.2));
         typeColumn.setComparator((qce1, qce2) -> {
             final String nr1 = qce1.getType() != null ? qce1.getType() : "";
             final String nr2 = qce2.getType() != null ? qce2.getType() : "";
             return nr1.compareTo(nr2);
         });
 
-        qualityColumn = new TableColumn<>("Score");
-        qualityColumn.prefWidthProperty().bind(qualityTable.widthProperty().multiply(0.10));
+        qualityColumn = new TableColumn<>("Category");
+        qualityColumn.prefWidthProperty().bind(qualityTable.widthProperty().multiply(0.15));
         qualityColumn.setComparator((qce1, qce2) -> {
-            return Integer.compare(qce1.getQuality(), qce2.getQuality());
+            return QualityControlRule.testPriority(qce1.getCategory(), qce2.getCategory());
         });
         qualityColumn.setSortType(TableColumn.SortType.DESCENDING);
 
@@ -155,6 +180,13 @@ public final class QualityControlViewPane extends BorderPane {
             PluginExecution.withPlugin(new ZoomToQualityControlEvents(qualitycontrolEvents)).executeLater(GraphManager.getDefault().getActiveGraph());
         });
         optionsPane.getChildren().add(zoomButton);
+
+        final Button priorityButton = new Button("Category Priority");
+        priorityButton.setOnAction(event -> {
+            showPriorityDialog();
+        });
+        optionsPane.getChildren().add(priorityButton);
+
         setBottom(optionsPane);
 
         this.setId("qualitycontrolview-border-pane");
@@ -194,108 +226,106 @@ public final class QualityControlViewPane extends BorderPane {
                 });
             }
 
-            identifierColumn.setCellFactory(new Callback<TableColumn<QualityControlEvent, QualityControlEvent>, TableCell<QualityControlEvent, QualityControlEvent>>() {
-                @Override
-                public TableCell<QualityControlEvent, QualityControlEvent> call(TableColumn<QualityControlEvent, QualityControlEvent> p) {
-                    final TableCell<QualityControlEvent, QualityControlEvent> cell = new TableCell<QualityControlEvent, QualityControlEvent>() {
-                        @Override
-                        public void updateItem(final QualityControlEvent item, final boolean empty) {
-                            super.updateItem(item, empty);
-                            if (item != null) {
-                                setText(item.getIdentifier());
-                                setStyle(qualityStyle(item.getQuality()));
-                            }
+            identifierColumn.setCellFactory((TableColumn<QualityControlEvent, QualityControlEvent> p) -> {
+                final TableCell<QualityControlEvent, QualityControlEvent> cell = new TableCell<QualityControlEvent, QualityControlEvent>() {
+                    @Override
+                    public void updateItem(final QualityControlEvent item, final boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item != null) {
+                            setText(item.getIdentifier());
+                            setStyle(qualityStyle(item.getCategory()));
                         }
-                    };
+                    }
+                };
 
-                    cell.setOnMouseClicked((value) -> {
-                        if (value.getClickCount() == 2) {
-                            showRuleDialog(qualityTable, (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource());
-                        }
-                    });
+                cell.setOnMouseClicked(value -> {
+                    if (value.getClickCount() == 2) {
+                        @SuppressWarnings("unchecked") //sourceCell will be a Table cell of quality control events which extends from object type
+                        final TableCell<QualityControlEvent, QualityControlEvent> sourceCell = (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource();
+                        showRuleDialog(sourceCell);
+                    }
+                });
 
-                    return cell;
-                }
+                return cell;
             });
 
-            typeColumn.setCellFactory(new Callback<TableColumn<QualityControlEvent, QualityControlEvent>, TableCell<QualityControlEvent, QualityControlEvent>>() {
-                @Override
-                public TableCell<QualityControlEvent, QualityControlEvent> call(TableColumn<QualityControlEvent, QualityControlEvent> p) {
-                    final TableCell<QualityControlEvent, QualityControlEvent> cell = new TableCell<QualityControlEvent, QualityControlEvent>() {
-                        @Override
-                        public void updateItem(final QualityControlEvent item, final boolean empty) {
-                            super.updateItem(item, empty);
-                            if (item != null) {
-                                setText(item.getType());
-                                setStyle(qualityStyle(item.getQuality()));
-                            }
+            typeColumn.setCellFactory((TableColumn<QualityControlEvent, QualityControlEvent> p) -> {
+                final TableCell<QualityControlEvent, QualityControlEvent> cell = new TableCell<QualityControlEvent, QualityControlEvent>() {
+                    @Override
+                    public void updateItem(final QualityControlEvent item, final boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item != null) {
+                            setText(item.getType());
+                            setStyle(qualityStyle(item.getCategory()));
                         }
-                    };
+                    }
+                };
 
-                    cell.setOnMouseClicked((value) -> {
-                        if (value.getClickCount() == 2) {
-                            showRuleDialog(qualityTable, (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource());
-                        }
-                    });
+                cell.setOnMouseClicked(value -> {
+                    if (value.getClickCount() == 2) {
+                        @SuppressWarnings("unchecked") //sourceCell will be a Table cell of quality control events which extends from object type
+                        final TableCell<QualityControlEvent, QualityControlEvent> sourceCell = (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource();
+                        showRuleDialog(sourceCell);
+                    }
+                });
 
-                    return cell;
-                }
+                return cell;
             });
 
-            qualityColumn.setCellFactory(new Callback<TableColumn<QualityControlEvent, QualityControlEvent>, TableCell<QualityControlEvent, QualityControlEvent>>() {
-                @Override
-                public TableCell<QualityControlEvent, QualityControlEvent> call(TableColumn<QualityControlEvent, QualityControlEvent> p) {
-                    final TableCell<QualityControlEvent, QualityControlEvent> cell = new TableCell<QualityControlEvent, QualityControlEvent>() {
-                        @Override
-                        public void updateItem(final QualityControlEvent item, final boolean empty) {
-                            super.updateItem(item, empty);
-                            if (item != null) {
-                                setText(item.getQuality() == 0 ? Bundle.MSG_NotApplicable() : String.valueOf(item.getQuality()));
-                                setAlignment(item.getQuality() == 0 ? Pos.CENTER : Pos.CENTER_RIGHT);
-                                setStyle(qualityStyle(item.getQuality()));
-                            }
+            qualityColumn.setCellFactory((TableColumn<QualityControlEvent, QualityControlEvent> p) -> {
+                final TableCell<QualityControlEvent, QualityControlEvent> cell = new TableCell<QualityControlEvent, QualityControlEvent>() {
+                    @Override
+                    public void updateItem(final QualityControlEvent item, final boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item != null) {
+                            setText(item.getCategory() == QualityCategory.DEFAULT ? Bundle.MSG_NotApplicable() : String.valueOf(item.getCategory().name()));
+                            setAlignment(Pos.CENTER);
+                            setStyle(qualityStyle(item.getCategory()));
                         }
-                    };
+                    }
+                };
 
-                    cell.setOnMouseClicked((value) -> {
-                        if (value.getClickCount() == 2) {
-                            showRuleDialog(qualityTable, (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource());
-                        }
-                    });
+                cell.setOnMouseClicked(value -> {
+                    if (value.getClickCount() == 2) {
+                        @SuppressWarnings("unchecked") //sourceCell will be a Table cell of quality control events which extends from object type
+                        final TableCell<QualityControlEvent, QualityControlEvent> sourceCell = (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource();
+                        showRuleDialog(sourceCell);
+                    }
+                });
 
-                    return cell;
-                }
+                return cell;
             });
 
-            reasonColumn.setCellFactory(new Callback<TableColumn<QualityControlEvent, QualityControlEvent>, TableCell<QualityControlEvent, QualityControlEvent>>() {
-                @Override
-                public TableCell<QualityControlEvent, QualityControlEvent> call(TableColumn<QualityControlEvent, QualityControlEvent> p) {
-                    final TableCell<QualityControlEvent, QualityControlEvent> cell = new TableCell<QualityControlEvent, QualityControlEvent>() {
-                        @Override
-                        public void updateItem(final QualityControlEvent item, final boolean empty) {
-                            super.updateItem(item, empty);
-                            if (item != null) {
-                                setText(item.getReasons());
-                                setStyle(qualityStyle(item.getQuality()));
-                            }
+            reasonColumn.setCellFactory((TableColumn<QualityControlEvent, QualityControlEvent> p) -> {
+                final TableCell<QualityControlEvent, QualityControlEvent> cell = new TableCell<QualityControlEvent, QualityControlEvent>() {
+                    @Override
+                    public void updateItem(final QualityControlEvent item, final boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item != null) {
+                            setText(item.getReasons());
+                            setStyle(qualityStyle(item.getCategory()));
                         }
-                    };
+                    }
+                };
 
-                    cell.setOnMouseClicked((value) -> {
-                        if (value.getClickCount() == 2) {
-                            showRuleDialog(qualityTable, (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource());
-                        }
-                    });
+                cell.setOnMouseClicked(value -> {
+                    if (value.getClickCount() == 2) {
+                        @SuppressWarnings("unchecked") //sourceCell will be a Table cell of quality control events which extends from object type
+                        final TableCell<QualityControlEvent, QualityControlEvent> sourceCell = (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource();
+                        showRuleDialog(sourceCell);
+                    }
+                });
 
-                    return cell;
-                }
+                return cell;
             });
 
-            if (state != null) {
-                qualityTable.setItems(FXCollections.observableArrayList(state.getQualityControlEvents()));
-            }
+            qualityTable.setItems(state != null
+                    ? FXCollections.observableArrayList(state.getQualityControlEvents())
+                    : FXCollections.emptyObservableList());
 
-            final String displayName = graphId != null ? GraphNode.getGraphNode(graphId).getDisplayName() : "a graph";
+            final String displayName = graphId != null && GraphNode.getGraphNode(graphId) != null
+                    ? GraphNode.getGraphNode(graphId).getDisplayName()
+                    : "a graph";
             qualityTable.setPlaceholder(wrappedLabel(String.format(Bundle.MSG_SelectSomething(), displayName)));
 
             setCenter(qualityTable);
@@ -308,8 +338,8 @@ public final class QualityControlViewPane extends BorderPane {
      * @param quality the quality.
      * @return a javafx style based on the given quality value.
      */
-    public static String qualityStyle(final int quality) {
-        return qualityStyle(quality, 0.75f);
+    public static String qualityStyle(final QualityCategory category) {
+        return qualityStyle(category, 0.75f);
     }
 
     /**
@@ -319,21 +349,193 @@ public final class QualityControlViewPane extends BorderPane {
      * @param alpha the alpha value.
      * @return a javafx style based on the given quality and alpha values.
      */
-    public static String qualityStyle(final int quality, final float alpha) {
-        final int intensity = 255 - (255 * quality) / 100;
+    public static String qualityStyle(final QualityCategory category, final float alpha) {
+        final String whiteText = "-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(%d,%d,255,%f);";
+        final int intensity;
         final String style;
-
-        if (quality >= 60 && quality < 90) {
-            style = String.format("-fx-text-fill: rgb(255,255,255);-fx-background-color: rgba(%d,%d,255,%f);", intensity, intensity, alpha);
-        } else if (quality >= 95) {
-            style = String.format("-fx-text-fill: rgb(255,255,255);-fx-background-color: rgba(0,%d,%d,%f);", intensity, intensity, alpha);
-        } else if (quality >= 90) {
-            style = String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(255,%d,%d,%f);", intensity, intensity, alpha);
-        } else {
-            style = String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(%d,%d,255,%f);", intensity, intensity, alpha);
+        switch (category) {
+            case INFO:
+                intensity = 255 - (255 * QualityControlEvent.INFO_VALUE) / 100;
+                style = String.format(whiteText, intensity, intensity, alpha);
+                break;
+            case WARNING:
+                intensity = 255 - (255 * QualityControlEvent.WARNING_VALUE) / 100;
+                style = String.format("-fx-text-fill: rgb(255,255,255);-fx-background-color: rgba(%d,%d,255,%f);", intensity, intensity, alpha);
+                break;
+            case SEVERE:
+                intensity = 255 - (255 * QualityControlEvent.SEVERE_VALUE) / 100;
+                style = String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(255,%d,%d,%f);", intensity, intensity, alpha);
+                break;
+            case FATAL:
+                intensity = 255 - (255 * QualityControlEvent.FATAL_VALUE) / 100;
+                style = String.format("-fx-text-fill: rgb(255,255,255);-fx-background-color: rgba(0,%d,%d,%f);", intensity, intensity, alpha);
+                break;
+            default:
+                // DEFAULT case
+                intensity = 255 - (255 * QualityControlEvent.DEFAULT_VALUE) / 100;
+                style = String.format(whiteText, intensity, intensity, alpha);
+                break;
         }
 
         return style;
+    }
+
+    /**
+     * Shows a dialog to allow the user to select priorities of each rule.
+     */
+    private static void showPriorityDialog() {
+        final ScrollPane rulesScrollPane = new ScrollPane();
+        rulesScrollPane.setPrefHeight(240);
+        rulesScrollPane.setPrefWidth(700);
+        rulesScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        rulesScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+
+        final GridPane buttonGrid = new GridPane();
+        buttonGrid.prefWidthProperty().bind(rulesScrollPane.widthProperty());
+        buttonGrid.setPadding(new Insets(5, 0, 5, 0));
+
+        // Setting headings
+        int rowCount = 0;
+        final Label ruleLabel = new Label("Rule");
+        ruleLabel.setPadding(new Insets(0, 100, 10, 5));
+        buttonGrid.add(ruleLabel, 0, rowCount);
+
+        final Label defaultLabel = new Label("DEFAULT");
+        defaultLabel.setPadding(new Insets(0, 10, 10, 10));
+        buttonGrid.add(defaultLabel, 1, rowCount);
+
+        final Label infoLabel = new Label("INFO");
+        infoLabel.setPadding(new Insets(0, 10, 10, 10));
+        buttonGrid.add(infoLabel, 2, rowCount);
+
+        final Label warningLabel = new Label("WARNING");
+        warningLabel.setPadding(new Insets(0, 10, 10, 10));
+        buttonGrid.add(warningLabel, 3, rowCount);
+
+        final Label severeLabel = new Label("SEVERE");
+        severeLabel.setPadding(new Insets(0, 10, 10, 10));
+        buttonGrid.add(severeLabel, 4, rowCount);
+
+        final Label fatalLabel = new Label("FATAL");
+        fatalLabel.setPadding(new Insets(0, 10, 10, 10));
+        buttonGrid.add(fatalLabel, 5, rowCount);
+        rowCount++;
+
+        // Setting rule names and buttons
+        for (final QualityControlRule rule : getLookup().lookupAll(QualityControlRule.class)) {
+            final ToggleGroup ruleGroup = new ToggleGroup();
+            final Label ruleName = new Label(rule.getName());
+            final RadioButton defaultButton = new RadioButton();
+            final RadioButton infoButton = new RadioButton();
+            final RadioButton warningButton = new RadioButton();
+            final RadioButton severeButton = new RadioButton();
+            final RadioButton fatalButton = new RadioButton();
+            final Button resetButton = new Button("Reset");
+            resetButton.setOnAction(event -> {
+                switch (rule.getCategory(0)) {
+                    case DEFAULT:
+                        defaultButton.setSelected(true);
+                        break;
+                    case INFO:
+                        infoButton.setSelected(true);
+                        break;
+                    case WARNING:
+                        warningButton.setSelected(true);
+                        break;
+                    case SEVERE:
+                        severeButton.setSelected(true);
+                        break;
+                    case FATAL:
+                        fatalButton.setSelected(true);
+                        break;
+                    default:
+                        break;
+                }
+            });
+
+            getPriorities().putIfAbsent(rule, rule.getCategory(0));
+            // setting the selection based on the current priority
+            switch (getPriorities().get(rule)) {
+                case DEFAULT:
+                    defaultButton.setSelected(true);
+                    break;
+                case INFO:
+                    infoButton.setSelected(true);
+                    break;
+                case WARNING:
+                    warningButton.setSelected(true);
+                    break;
+                case SEVERE:
+                    severeButton.setSelected(true);
+                    break;
+                case FATAL:
+                    fatalButton.setSelected(true);
+                    break;
+                default:
+                    break;
+            }
+
+            toggleGroups.add(ruleGroup);
+
+            GridPane.setHalignment(ruleName, HPos.LEFT);
+            GridPane.setHalignment(defaultButton, HPos.CENTER);
+            GridPane.setHalignment(infoButton, HPos.CENTER);
+            GridPane.setHalignment(warningButton, HPos.CENTER);
+            GridPane.setHalignment(severeButton, HPos.CENTER);
+            GridPane.setHalignment(fatalButton, HPos.CENTER);
+            GridPane.setHalignment(resetButton, HPos.CENTER);
+
+            ruleName.setPadding(new Insets(0, 0, 5, 5));
+            defaultButton.setPadding(new Insets(0, 10, 5, 10));
+            infoButton.setPadding(new Insets(0, 10, 5, 10));
+            warningButton.setPadding(new Insets(0, 10, 5, 10));
+            severeButton.setPadding(new Insets(0, 10, 5, 10));
+            fatalButton.setPadding(new Insets(0, 10, 5, 10));
+            resetButton.setPadding(new Insets(5, 10, 5, 10));
+
+            defaultButton.setUserData(QualityCategory.DEFAULT);
+            infoButton.setUserData(QualityCategory.INFO);
+            warningButton.setUserData(QualityCategory.WARNING);
+            severeButton.setUserData(QualityCategory.SEVERE);
+            fatalButton.setUserData(QualityCategory.FATAL);
+
+            defaultButton.setToggleGroup(ruleGroup);
+            infoButton.setToggleGroup(ruleGroup);
+            warningButton.setToggleGroup(ruleGroup);
+            severeButton.setToggleGroup(ruleGroup);
+            fatalButton.setToggleGroup(ruleGroup);
+
+            ruleGroup.setUserData(rule);
+
+            buttonGrid.add(ruleName, 0, rowCount);
+            buttonGrid.add(defaultButton, 1, rowCount);
+            buttonGrid.add(infoButton, 2, rowCount);
+            buttonGrid.add(warningButton, 3, rowCount);
+            buttonGrid.add(severeButton, 4, rowCount);
+            buttonGrid.add(fatalButton, 5, rowCount);
+            buttonGrid.add(resetButton, 6, rowCount);
+
+            rowCount++;
+        }
+
+        rulesScrollPane.setContent(buttonGrid);
+
+        final Alert alert = new Alert(Alert.AlertType.INFORMATION,
+                "Select Rule Priorities",
+                ButtonType.OK, ButtonType.CANCEL);
+        alert.setTitle("Select Rule Priorities");
+        alert.setHeaderText("Customise the priority of rules");
+        alert.getDialogPane().setContent(rulesScrollPane);
+        alert.setResizable(true);
+
+        if (alert.showAndWait().get() == ButtonType.OK) {
+            for (final ToggleGroup tg : toggleGroups) {
+                getPriorities().put((QualityControlRule) tg.getUserData(),
+                        (QualityCategory) tg.getSelectedToggle().getUserData());
+            }
+            QualityControlAutoVetter.getInstance().updateQualityEvents();
+            writeSerializedRulePriorities();
+        }
     }
 
     /**
@@ -343,20 +545,22 @@ public final class QualityControlViewPane extends BorderPane {
      * @param owner
      * @param qcevent
      */
-    private static void showRuleDialog(final Node owner, final TableCell<QualityControlEvent, QualityControlEvent> qcevent) {
+    private static void showRuleDialog(final TableCell<QualityControlEvent, QualityControlEvent> qcevent) {
         if (qcevent.getItem() != null) {
             final int vxId = qcevent.getItem().getVertex();
             final String identifier = qcevent.getItem().getIdentifier();
-            final ArrayList<Pair<Integer, String>> rules = new ArrayList<>();
+            final ArrayList<Pair<QualityCategory, String>> rules = new ArrayList<>();
             for (final QualityControlRule rule : qcevent.getItem().getRules()) {
                 // Hack the name and explanation together to obviate the need for another data structure.
                 final String ruleName = rule.getName() + "§" + rule.getDescription();
-                final int quality = rule.getResults().contains(vxId) ? rule.getQuality(vxId) : 0;
-                rules.add(new Pair<>(quality, ruleName));
+                final QualityCategory quality = rule.getResults().contains(vxId) ? getPriorities().get(rule) : null;
+                if (quality != null) {
+                    rules.add(new Pair<>(quality, ruleName));
+                }
             }
 
-            Collections.sort(rules, (final Pair<Integer, String> p1, final Pair<Integer, String> p2) -> {
-                int compare = Integer.compare(p2.getKey(), p1.getKey());
+            Collections.sort(rules, (final Pair<QualityCategory, String> p1, final Pair<QualityCategory, String> p2) -> {
+                int compare = QualityControlRule.testPriority(p1.getKey(), p2.getKey());
                 if (compare == 0) {
                     compare = p1.getValue().compareTo(p2.getValue());
                 }
@@ -364,7 +568,7 @@ public final class QualityControlViewPane extends BorderPane {
                 return compare;
             });
 
-            showRuleDialog(owner, identifier, rules);
+            showRuleDialog(identifier, rules);
         }
     }
 
@@ -376,7 +580,7 @@ public final class QualityControlViewPane extends BorderPane {
      * @param identifier The identifier of the graph node being displayed.
      * @param rules The list of rules measured against this graph node.
      */
-    private static void showRuleDialog(final Node owner, final String identifier, final List<Pair<Integer, String>> rules) {
+    private static void showRuleDialog(final String identifier, final List<Pair<QualityCategory, String>> rules) {
         final ScrollPane sp = new ScrollPane();
         sp.setPrefHeight(512);
         sp.setPrefWidth(512);
@@ -387,10 +591,10 @@ public final class QualityControlViewPane extends BorderPane {
         final VBox vbox = new VBox();
         vbox.prefWidthProperty().bind(sp.widthProperty());
         vbox.setPadding(Insets.EMPTY);
-        for (final Pair<Integer, String> rule : rules) {
+        for (final Pair<QualityCategory, String> rule : rules) {
             final String[] t = rule.getValue().split("§");
 
-            final String quality = rule.getKey() == 0 ? Bundle.MSG_NotApplicable() : "" + rule.getKey();
+            final String quality = rule.getKey() == QualityCategory.DEFAULT ? Bundle.MSG_NotApplicable() : "" + rule.getKey().name();
             final String title = String.format("%s - %s", quality, t[0]);
 
             final Text content = new Text(t[1]);
@@ -402,6 +606,10 @@ public final class QualityControlViewPane extends BorderPane {
             tp.setWrapText(true);
 
             vbox.getChildren().add(tp);
+        }
+        if (CollectionUtils.isEmpty(rules)) {
+            final Label noEntriesLabel = new Label(Bundle.MSG_NoEntries());
+            vbox.getChildren().add(noEntriesLabel);
         }
         sp.setContent(vbox);
 
@@ -423,6 +631,60 @@ public final class QualityControlViewPane extends BorderPane {
         label.setWrapText(true);
 
         return label;
+    }
+
+    /**
+     * Writes the rulePriorities to the preferences object.
+     */
+    private static void writeSerializedRulePriorities() {
+        final String mapAsString = JsonUtilities.getMapAsString(FACTORY, getPriorities());
+        if (!mapAsString.isEmpty()) {
+            PREFERENCES.put(ApplicationPreferenceKeys.RULE_PRIORITIES, mapAsString);
+            try {
+                PREFERENCES.flush();
+            } catch (BackingStoreException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+    }
+
+    /**
+     * Reads the preferences object to load the rulePriorities.
+     */
+    private static void readSerializedRulePriorities() {
+        getPriorities().clear();
+        final Map<String, String> priorityStringMap = JsonUtilities.getStringAsMap(FACTORY, PREFERENCES.get(ApplicationPreferenceKeys.RULE_PRIORITIES, ""));
+        for (Entry<String, String> entry : priorityStringMap.entrySet()) {
+            getPriorities().put(QualityControlEvent.getRuleByString(entry.getKey()), QualityControlEvent.getCategoryFromString(entry.getValue()));
+        }
+    }
+
+    /**
+     * Lazily instantiates the rulePriorities Map and loads it via the lookup
+     *
+     * @return a Map<QualityControlRule, QualityCategory> of rules mapped to
+     * categories
+     */
+    public static Map<QualityControlRule, QualityCategory> getPriorities() {
+        if (MapUtils.isEmpty(rulePriorities)) {
+            rulePriorities = new HashMap<>();
+            for (final QualityControlRule rule : getLookup().lookupAll(QualityControlRule.class)) {
+                rulePriorities.put(rule, rule.getCategory(0));
+            }
+        }
+        return rulePriorities;
+    }
+
+    /**
+     * Lazily instantiates the lookup object
+     *
+     * @return the cached lookup object
+     */
+    public static Lookup getLookup() {
+        if (lookup == null) {
+            lookup = Lookup.getDefault();
+        }
+        return lookup;
     }
 
     /**
@@ -482,11 +744,7 @@ public final class QualityControlViewPane extends BorderPane {
                 final int vertexCount = graph.getVertexCount();
                 for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
                     final int vertexId = graph.getVertex(vertexPosition);
-                    if (vertexIds.contains(vertexId)) {
-                        graph.setBooleanValue(vertexSelectedAttr, vertexId, true);
-                    } else {
-                        graph.setBooleanValue(vertexSelectedAttr, vertexId, false);
-                    }
+                    graph.setBooleanValue(vertexSelectedAttr, vertexId, vertexIds.contains(vertexId));
                 }
             }
 
@@ -564,7 +822,9 @@ public final class QualityControlViewPane extends BorderPane {
                 vertexIds[index] = qualitycontrolEvents.get(index).getVertex();
             }
 
-            PluginExecution.withPlugin(CorePluginRegistry.ZOOM_TO_VERTICES).withParameter(ZoomToVerticesPlugin.VERTICES_PARAMETER_ID, vertexIds).executeNow(graph);
+            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_TO_VERTICES)
+                    .withParameter(ZoomToVerticesPlugin.VERTICES_PARAMETER_ID, vertexIds)
+                    .executeNow(graph);
         }
 
         @Override

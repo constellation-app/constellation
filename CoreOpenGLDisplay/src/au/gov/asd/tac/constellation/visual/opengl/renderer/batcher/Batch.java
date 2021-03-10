@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.renderer.batcher;
 
-import au.gov.asd.tac.constellation.visual.graphics3d.Vector3f;
-import au.gov.asd.tac.constellation.visual.graphics3d.Vector4f;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.RenderException;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.ShaderManager;
 import com.jogamp.common.nio.Buffers;
@@ -96,6 +96,8 @@ import java.util.logging.Logger;
 public final class Batch {
 
     private static final Logger LOGGER = Logger.getLogger(Batch.class.getName());
+
+    private static final String NOT_FLOATBUFFER = "Specified target is not a FloatBuffer";
 
     // What am I drawing?
     private final int primitiveType;
@@ -288,7 +290,7 @@ public final class Batch {
      */
     public void buffer(final GL3 gl, final int target, final FloatBuffer buffer) {
         if (!bufferIsFloat[target]) {
-            throw new RenderException("Specified target is not a FloatBuffer");
+            throw new RenderException(NOT_FLOATBUFFER);
         }
         final int size = bufferSizePerVertex[target] * numVertices;
         bufferData(gl, target, size, GLBuffers.SIZEOF_FLOAT, buffer);
@@ -308,7 +310,7 @@ public final class Batch {
      */
     public void buffer(final GL3 gl, final int target, final FloatBuffer buffer, final int offset) {
         if (!bufferIsFloat[target]) {
-            throw new RenderException("Specified target is not a FloatBuffer");
+            throw new RenderException(NOT_FLOATBUFFER);
         }
         final int sizeLimit = bufferSizePerVertex[target] * numVertices;
 
@@ -450,7 +452,7 @@ public final class Batch {
     public FloatBuffer connectFloatBuffer(final GL3 gl, final int target) {
         final int bufferName = getBufferName(target);
         if (!bufferIsFloat[target]) {
-            throw new RenderException("Specified target is not a FloatBuffer");
+            throw new RenderException(NOT_FLOATBUFFER);
         }
         gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, bufferName);
         final ByteBuffer connectionBbuf = gl.glMapBuffer(GL3.GL_ARRAY_BUFFER, GL3.GL_READ_WRITE);

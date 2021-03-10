@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
+import java.util.Locale;
 import java.util.logging.Logger;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotEquals;
@@ -36,6 +37,9 @@ import org.testng.annotations.Test;
 public class TemporalFormattingNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(TemporalFormattingNGTest.class.getName());
+    private static final DateTimeFormatter MY_DATETIME_FORMATTER1 = DateTimeFormatter.ofPattern("E MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
+    private static final DateTimeFormatter MY_DATETIME_FORMATTER2 = DateTimeFormatter.ofPattern("E MMM dd HH:mm:ss x yyyy", Locale.ENGLISH);
+    private static final DateTimeFormatter MY_DATETIME_FORMATTER3 = DateTimeFormatter.ofPattern("yyyyMMdd", Locale.ENGLISH);
 
     public TemporalFormattingNGTest() {
     }
@@ -90,48 +94,6 @@ public class TemporalFormattingNGTest {
         final String result = TemporalFormatting.completeZonedDateTimeString(dateTimeString);
         assertEquals(result, expResult);
     }
-//
-//    /**
-//     * Test of completeLocalDateTimeString method, of class TemporalFormatting.
-//     */
-//    @Test
-//    public void testCompleteLocalDateTimeString() {
-//        System.out.println("completeLocalDateTimeString");
-//        String localDateTimeString = "";
-//        String expResult = "";
-//        String result = TemporalFormatting.completeLocalDateTimeString(localDateTimeString);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of completeDateString method, of class TemporalFormatting.
-//     */
-//    @Test
-//    public void testCompleteDateString() {
-//        System.out.println("completeDateString");
-//        String dateString = "";
-//        String expResult = "";
-//        String result = TemporalFormatting.completeDateString(dateString);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of completeTimeString method, of class TemporalFormatting.
-//     */
-//    @Test
-//    public void testCompleteTimeString() {
-//        System.out.println("completeTimeString");
-//        String timeString = "";
-//        String expResult = "";
-//        String result = TemporalFormatting.completeTimeString(timeString);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
 
     /**
      * Test of formatAsZonedDateTime method, of class TemporalFormatting.
@@ -154,75 +116,6 @@ public class TemporalFormattingNGTest {
         assertEquals(result, expResult);
     }
 
-//    /**
-//     * Test of formatAsLocalDateTime method, of class TemporalFormatting.
-//     */
-//    @Test
-//    public void testFormatAsLocalDateTime() {
-//        System.out.println("formatAsLocalDateTime");
-//        TemporalAccessor accessor = null;
-//        String expResult = "";
-//        String result = TemporalFormatting.formatAsLocalDateTime(accessor);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of formatAsDate method, of class TemporalFormatting.
-//     */
-//    @Test
-//    public void testFormatAsDate() {
-//        System.out.println("formatAsDate");
-//        TemporalAccessor accessor = null;
-//        String expResult = "";
-//        String result = TemporalFormatting.formatAsDate(accessor);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of formatAsTime method, of class TemporalFormatting.
-//     */
-//    @Test
-//    public void testFormatAsTime() {
-//        System.out.println("formatAsTime");
-//        TemporalAccessor accessor = null;
-//        String expResult = "";
-//        String result = TemporalFormatting.formatAsTime(accessor);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of zonedDateTimeFromLong method, of class TemporalFormatting.
-//     */
-//    @Test
-//    public void testZonedDateTimeFromLong() {
-//        System.out.println("zonedDateTimeFromLong");
-//        long value = 0L;
-//        ZonedDateTime expResult = null;
-//        ZonedDateTime result = TemporalFormatting.zonedDateTimeFromLong(value);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of zonedDateTimeStringFromLong method, of class TemporalFormatting.
-//     */
-//    @Test
-//    public void testZonedDateTimeStringFromLong() {
-//        System.out.println("zonedDateTimeStringFromLong");
-//        long value = 0L;
-//        String expResult = "";
-//        String result = TemporalFormatting.zonedDateTimeStringFromLong(value);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
     @Test
     public void testZonedDateTimeConvertToUtc() {
         final ZonedDateTime zonedDateTime = ZonedDateTime.parse("2018-02-22T18:38:30+01:00");
@@ -243,11 +136,8 @@ public class TemporalFormattingNGTest {
     @Test
     public void testParseDateTimeForRecordWithValidDate() {
         final TemporalAccessor accessor = TemporalFormatting.UTC_DATE_TIME_FORMATTER.parse("2016-06-11T22:48:48Z");
-        final String time = TemporalFormatting.formatAsZonedDateTime(accessor);
-
-        final DateTimeFormatter formatter = TemporalFormatting.UTC_DATE_TIME_FORMATTER;
+        final String result = TemporalFormatting.formatAsZonedDateTime(accessor);
         final String expResult = "2016-06-11 22:48:48.000 +00:00";
-        final String result = TemporalFormatting.parseAsZonedDateTime(time, formatter, LOGGER);
         assertEquals(result, expResult);
     }
 
@@ -280,4 +170,38 @@ public class TemporalFormattingNGTest {
         final String result = TemporalFormatting.parseAsZonedDateTime(null, formatter, LOGGER);
         assertEquals(result, expResult);
     }
+
+    /**
+     * Test of parseAsZonedDateTime method, of class TemporalFormatting.
+     */
+    @Test
+    public void testParseDateTimeWithZone() {
+        String testDateTime = "Tue Apr 23 01:16:42 AEST 2019";
+        final String result = TemporalFormatting.parseAsZonedDateTime(testDateTime, MY_DATETIME_FORMATTER1, LOGGER);
+        final String expResult = "2019-04-23 01:16:42.000 +10:00 [Australia/Sydney]";
+        assertEquals(result, expResult);
+    }
+
+    /**
+     * Test of parseAsZonedDateTime method, of class TemporalFormatting.
+     */
+    @Test
+    public void testParseDateTimeWithOffset() {
+        String testDateTime = "Tue Apr 23 01:16:42 +1000 2019";
+        final String result = TemporalFormatting.parseAsZonedDateTime(testDateTime, MY_DATETIME_FORMATTER2, LOGGER);
+        final String expResult = "2019-04-23 01:16:42.000 +10:00";
+        assertEquals(result, expResult);
+    }
+
+    /**
+     * Test of parseAsZonedDateTime method, of class TemporalFormatting.
+     */
+    @Test
+    public void testParseDateTimeWithNoZone() {
+        String testDateTime = "20191225";
+        final String result = TemporalFormatting.parseAsZonedDateTime(testDateTime, MY_DATETIME_FORMATTER3, LOGGER);
+        final String expResult = "2019-12-25 00:00:00.000 +00:00";
+        assertEquals(result, expResult);
+    }
+
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,16 @@ package au.gov.asd.tac.constellation.views.dataaccess.plugins.utility;
 
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.pluginframework.PluginException;
-import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.MultiChoiceParameterType;
-import au.gov.asd.tac.constellation.pluginframework.text.TextPluginInteraction;
-import au.gov.asd.tac.constellation.schema.analyticschema.AnalyticSchemaFactory;
-import au.gov.asd.tac.constellation.schema.analyticschema.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.text.TextPluginInteraction;
 import java.util.ArrayList;
 import java.util.List;
 import static org.testng.Assert.assertEquals;
@@ -63,61 +64,6 @@ public class SelectTopNNGTest {
     public void tearDownMethod() throws Exception {
     }
 
-//    /**
-//     * Test of getType method, of class SelectTopNPlugin.
-//     */
-//    @Test
-//    public void testGetType() {
-//        System.out.println("getType");
-//        SelectTopNPlugin instance = new SelectTopNPlugin();
-//        String expResult = "";
-//        String result = instance.getType();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getPosition method, of class SelectTopNPlugin.
-//     */
-//    @Test
-//    public void testGetPosition() {
-//        System.out.println("getPosition");
-//        SelectTopNPlugin instance = new SelectTopNPlugin();
-//        int expResult = 0;
-//        int result = instance.getPosition();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getDescription method, of class SelectTopNPlugin.
-//     */
-//    @Test
-//    public void testGetDescription() {
-//        System.out.println("getDescription");
-//        SelectTopNPlugin instance = new SelectTopNPlugin();
-//        String expResult = "";
-//        String result = instance.getDescription();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of createParameters method, of class SelectTopNPlugin.
-//     */
-//    @Test
-//    public void testCreateParameters() {
-//        System.out.println("createParameters");
-//        SelectTopNPlugin instance = new SelectTopNPlugin();
-//        PluginParameters expResult = null;
-//        PluginParameters result = instance.createParameters();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
     /**
      * Test of edit method, of class SelectTopNPlugin.
      *
@@ -158,7 +104,8 @@ public class SelectTopNNGTest {
         final PluginParameters parameters = instance.createParameters();
         parameters.getParameters().get(SelectTopNPlugin.MODE_PARAMETER_ID).setStringValue(SelectTopNPlugin.NODE);
         parameters.getParameters().get(SelectTopNPlugin.TYPE_CATEGORY_PARAMETER_ID).setStringValue(AnalyticConcept.VertexType.LOCATION.getName());
-        final PluginParameter subTypeParameter = parameters.getParameters().get(SelectTopNPlugin.TYPE_PARAMETER_ID);
+        @SuppressWarnings("unchecked") //TYPE_PARAMETER will always be of type MultiChoiceParameter
+        final PluginParameter<MultiChoiceParameterValue> subTypeParameter = (PluginParameter<MultiChoiceParameterValue>) parameters.getParameters().get(SelectTopNPlugin.TYPE_PARAMETER_ID);
         final List<String> arrayList = new ArrayList<>();
         arrayList.add(AnalyticConcept.VertexType.COUNTRY.getName());
         MultiChoiceParameterType.setChoices(subTypeParameter, arrayList);
@@ -197,7 +144,8 @@ public class SelectTopNNGTest {
         final PluginParameters parameters = instance.createParameters();
         parameters.getParameters().get(SelectTopNPlugin.MODE_PARAMETER_ID).setStringValue(SelectTopNPlugin.NODE);
         parameters.getParameters().get(SelectTopNPlugin.TYPE_CATEGORY_PARAMETER_ID).setStringValue(AnalyticConcept.VertexType.LOCATION.getName());
-        final PluginParameter subTypeParameter = parameters.getParameters().get(SelectTopNPlugin.TYPE_PARAMETER_ID);
+        @SuppressWarnings("unchecked") //TYPE_PARAMETER will always be of type MultiChoiceParameter
+        final PluginParameter<MultiChoiceParameterValue> subTypeParameter = (PluginParameter<MultiChoiceParameterValue>) parameters.getParameters().get(SelectTopNPlugin.TYPE_PARAMETER_ID);
         final List<String> arrayList = new ArrayList<>();
         arrayList.add(AnalyticConcept.VertexType.COUNTRY.getName());
         MultiChoiceParameterType.setChoices(subTypeParameter, arrayList);
@@ -237,7 +185,8 @@ public class SelectTopNNGTest {
         final PluginParameters parameters = instance.createParameters();
         parameters.getParameters().get(SelectTopNPlugin.MODE_PARAMETER_ID).setStringValue(SelectTopNPlugin.NODE);
         parameters.getParameters().get(SelectTopNPlugin.TYPE_CATEGORY_PARAMETER_ID).setStringValue(AnalyticConcept.VertexType.LOCATION.getName());
-        final PluginParameter subTypeParameter = parameters.getParameters().get(SelectTopNPlugin.TYPE_PARAMETER_ID);
+        @SuppressWarnings("unchecked") //TYPE_PARAMETER will always be of type MultiChoiceParameter
+        final PluginParameter<MultiChoiceParameterValue> subTypeParameter = (PluginParameter<MultiChoiceParameterValue>) parameters.getParameters().get(SelectTopNPlugin.TYPE_PARAMETER_ID);
         final List<String> arrayList = new ArrayList<>();
         arrayList.add(AnalyticConcept.VertexType.COUNTRY.getName());
         MultiChoiceParameterType.setChoices(subTypeParameter, arrayList);
@@ -290,7 +239,8 @@ public class SelectTopNNGTest {
         final PluginParameters parameters = instance.createParameters();
         parameters.getParameters().get(SelectTopNPlugin.MODE_PARAMETER_ID).setStringValue(SelectTopNPlugin.NODE);
         parameters.getParameters().get(SelectTopNPlugin.TYPE_CATEGORY_PARAMETER_ID).setStringValue(AnalyticConcept.VertexType.LOCATION.getName());
-        final PluginParameter subTypeParameter = parameters.getParameters().get(SelectTopNPlugin.TYPE_PARAMETER_ID);
+        @SuppressWarnings("unchecked") //TYPE_PARAMETER will always be of type MultiChoiceParameter
+        final PluginParameter<MultiChoiceParameterValue> subTypeParameter = (PluginParameter<MultiChoiceParameterValue>) parameters.getParameters().get(SelectTopNPlugin.TYPE_PARAMETER_ID);
         final List<String> arrayList = new ArrayList<>();
         arrayList.add(AnalyticConcept.VertexType.COUNTRY.getName());
         MultiChoiceParameterType.setChoices(subTypeParameter, arrayList);
@@ -333,7 +283,8 @@ public class SelectTopNNGTest {
         final PluginParameters parameters = instance.createParameters();
         parameters.getParameters().get(SelectTopNPlugin.MODE_PARAMETER_ID).setStringValue(SelectTopNPlugin.TRANSACTION);
         parameters.getParameters().get(SelectTopNPlugin.TYPE_CATEGORY_PARAMETER_ID).setStringValue(AnalyticConcept.TransactionType.COMMUNICATION.getName());
-        final PluginParameter subTypeParameter = parameters.getParameters().get(SelectTopNPlugin.TYPE_PARAMETER_ID);
+        @SuppressWarnings("unchecked") //TYPE_PARAMETER will always be of type MultiChoiceParameter
+        final PluginParameter<MultiChoiceParameterValue> subTypeParameter = (PluginParameter<MultiChoiceParameterValue>) parameters.getParameters().get(SelectTopNPlugin.TYPE_PARAMETER_ID);
         final List<String> arrayList = new ArrayList<>();
         arrayList.add(AnalyticConcept.TransactionType.COMMUNICATION.getName());
         MultiChoiceParameterType.setChoices(subTypeParameter, arrayList);
@@ -385,7 +336,8 @@ public class SelectTopNNGTest {
         final PluginParameters parameters = instance.createParameters();
         parameters.getParameters().get(SelectTopNPlugin.MODE_PARAMETER_ID).setStringValue(SelectTopNPlugin.TRANSACTION);
         parameters.getParameters().get(SelectTopNPlugin.TYPE_CATEGORY_PARAMETER_ID).setStringValue(AnalyticConcept.TransactionType.COMMUNICATION.getName());
-        final PluginParameter subTypeParameter = parameters.getParameters().get(SelectTopNPlugin.TYPE_PARAMETER_ID);
+        @SuppressWarnings("unchecked") //TYPE_PARAMETER will always be of type MultiChoiceParameter
+        final PluginParameter<MultiChoiceParameterValue> subTypeParameter = (PluginParameter<MultiChoiceParameterValue>) parameters.getParameters().get(SelectTopNPlugin.TYPE_PARAMETER_ID);
         final List<String> arrayList = new ArrayList<>();
         arrayList.add(AnalyticConcept.TransactionType.COMMUNICATION.getName());
         MultiChoiceParameterType.setChoices(subTypeParameter, arrayList);

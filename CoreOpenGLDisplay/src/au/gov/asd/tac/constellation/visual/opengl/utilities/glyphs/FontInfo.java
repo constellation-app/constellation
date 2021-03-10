@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs;
 
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.io.File;
@@ -79,13 +80,13 @@ public class FontInfo {
             font = new Font(fontName, fontStyle, fontSize);
         }
 
-        if (font.getFamily(Locale.US).equals(Font.DIALOG)) {
+        if (font.getFamily(Locale.ENGLISH).equals(Font.DIALOG)) {
             // From the Javadoc:
-            // If the name parameter represents something other than a logical 
-            // font, i.e. is interpreted as a physical font face or family, and 
-            // this cannot be mapped by the implementation to a physical font or 
-            // a compatible alternative, then the font system will map the Font 
-            // instance to "Dialog", such that for example, the family as 
+            // If the name parameter represents something other than a logical
+            // font, i.e. is interpreted as a physical font face or family, and
+            // this cannot be mapped by the implementation to a physical font or
+            // a compatible alternative, then the font system will map the Font
+            // instance to "Dialog", such that for example, the family as
             // reported by getFamily will be "Dialog".
             throw new IllegalArgumentException(String.format("Font '%s' is not available", fontName));
         }
@@ -181,7 +182,7 @@ public class FontInfo {
         }
 
         public String getMessages() {
-            return messages.stream().collect(Collectors.joining("\n"));
+            return messages.stream().collect(Collectors.joining(SeparatorConstants.NEWLINE));
         }
     }
 

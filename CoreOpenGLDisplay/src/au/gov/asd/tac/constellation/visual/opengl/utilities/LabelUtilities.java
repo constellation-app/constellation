@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.utilities;
 
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.util.ArrayList;
 
 /**
@@ -63,8 +63,7 @@ public final class LabelUtilities {
         if (text != null) {
 
             String remaining = text.trim();
-            int prevSpace = Integer.MAX_VALUE;
-
+            int prevSpace = Integer.MIN_VALUE;
             while (!remaining.isEmpty() && lines.size() < MAX_LINES_PER_ATTRIBUTE) {
 
                 final int space = remaining.indexOf(' ', prevSpace);
@@ -73,14 +72,21 @@ public final class LabelUtilities {
                 final boolean isNewLine = pos == newLine;
 
                 if (pos > MAX_LINE_LENGTH_PER_ATTRIBUTE || pos == -1) {
-                    final int trimPoint = remaining.length() < MAX_LINE_LENGTH_PER_ATTRIBUTE ? remaining.length() : Math.min(prevSpace, MAX_LINE_LENGTH_PER_ATTRIBUTE);
+                    int trimPoint;
+                    if (remaining.length() <= MAX_LINE_LENGTH_PER_ATTRIBUTE) {
+                        trimPoint = remaining.length();
+                    } else if (prevSpace == Integer.MIN_VALUE) {
+                        trimPoint = MAX_LINE_LENGTH_PER_ATTRIBUTE;
+                    } else {
+                        trimPoint = Math.min(prevSpace, MAX_LINE_LENGTH_PER_ATTRIBUTE);
+                    }
                     lines.add(remaining.substring(0, trimPoint).trim());
                     remaining = remaining.substring(trimPoint).trim();
-                    prevSpace = Integer.MAX_VALUE;
+                    prevSpace = Integer.MIN_VALUE;
                 } else if (isNewLine) {
                     lines.add(remaining.substring(0, pos).trim());
                     remaining = remaining.substring(pos).trim();
-                    prevSpace = Integer.MAX_VALUE;
+                    prevSpace = Integer.MIN_VALUE;
                 } else {
                     prevSpace = pos + 1;
                 }

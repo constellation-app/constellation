@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
 import au.gov.asd.tac.constellation.graph.manager.GraphManagerListener;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
-import au.gov.asd.tac.constellation.visual.display.VisualManager;
+import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -100,6 +100,7 @@ public class GraphNode extends AbstractNode {
         GraphNode graphNode = GRAPHS.get(id);
         return graphNode == null ? null : graphNode.getGraph();
     }
+
     private final Graph graph;
     private final VisualManager visualManager;
     private GraphDataObject gdo;
@@ -132,8 +133,6 @@ public class GraphNode extends AbstractNode {
      */
     public GraphNode(final Graph graph, final GraphDataObject gdo, final TopComponent tc, final VisualManager visualManager) {
         this(new InstanceContent(), graph, gdo, tc, visualManager);
-
-        graph.setUndoManager(undoRedoManager);
     }
 
     /**
@@ -157,7 +156,7 @@ public class GraphNode extends AbstractNode {
 
         graph.setUndoManager(undoRedoManager);
 
-        GRAPHS.put(graph.getId(), this);
+        GRAPHS.put(graph.getId(), GraphNode.this);
 
         for (GraphManagerListener listener : LISTENERS) {
             listener.graphOpened(graph);
@@ -228,7 +227,7 @@ public class GraphNode extends AbstractNode {
         return tc;
     }
 
-    public void makeBusy(final boolean busy) {
+    public synchronized void makeBusy(final boolean busy) {
         if (busy) {
             if (busyCount++ == 0) {
                 tc.makeBusy(true);

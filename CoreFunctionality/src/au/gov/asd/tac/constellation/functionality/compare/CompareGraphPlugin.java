@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,37 +15,37 @@
  */
 package au.gov.asd.tac.constellation.functionality.compare;
 
-import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
-import au.gov.asd.tac.constellation.functionality.copypaste.CopyToNewGraphPlugin;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
+import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
+import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.CopyToNewGraphPlugin;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStore;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.utilities.AttributeUtilities;
 import au.gov.asd.tac.constellation.graph.utilities.PrimaryKeyUtilities;
-import au.gov.asd.tac.constellation.graph.utilities.attribute.AttributeUtilities;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.pluginframework.Plugin;
-import au.gov.asd.tac.constellation.pluginframework.PluginException;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
-import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
-import au.gov.asd.tac.constellation.pluginframework.PluginNotificationLevel;
-import au.gov.asd.tac.constellation.pluginframework.PluginRegistry;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.ColorParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.ColorParameterType.ColorParameterValue;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.MultiChoiceParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.SingleChoiceParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
-import au.gov.asd.tac.constellation.pluginframework.templates.SimpleReadPlugin;
-import au.gov.asd.tac.constellation.utilities.string.SeparatorConstants;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
+import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
+import au.gov.asd.tac.constellation.plugins.PluginRegistry;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType.ColorParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -188,17 +188,21 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
             }
         }
 
+        @SuppressWarnings("unchecked") //ORIGINAL_GRAPH_PARAMETER will always be of type SingleChoiceParameter
         final PluginParameter<SingleChoiceParameterValue> originalGraph = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(ORIGINAL_GRAPH_PARAMETER_ID);
         SingleChoiceParameterType.setOptions(originalGraph, graphNames);
         SingleChoiceParameterType.setChoice(originalGraph, GraphNode.getGraphNode(activeGraph.getId()).getDisplayName());
 
+        @SuppressWarnings("unchecked") //COMPARE_GRAPH_PARAMETER will always be of type SingleChoiceParameter
         final PluginParameter<SingleChoiceParameterValue> compareGraph = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(COMPARE_GRAPH_PARAMETER_ID);
         SingleChoiceParameterType.setOptions(compareGraph, graphNames);
 
+        @SuppressWarnings("unchecked") //IGNORE_VERTEX_ATTRIBUTES_PARAMETER will always be of type MultiChoiceParameter
         final PluginParameter<MultiChoiceParameterValue> ignoreVertexAttributes = (PluginParameter<MultiChoiceParameterValue>) parameters.getParameters().get(IGNORE_VERTEX_ATTRIBUTES_PARAMETER_ID);
         MultiChoiceParameterType.setOptions(ignoreVertexAttributes, new ArrayList<>(registeredVertexAttributes));
         MultiChoiceParameterType.setChoices(ignoreVertexAttributes, ignoredVertexAttributes);
 
+        @SuppressWarnings("unchecked") //IGNORE_TRANSACTION_ATTRIBUTES_PARAMETER will always be of type MultiChoiceParameter
         final PluginParameter<MultiChoiceParameterValue> ignoreTransactionAttributes = (PluginParameter<MultiChoiceParameterValue>) parameters.getParameters().get(IGNORE_TRANSACTION_ATTRIBUTES_PARAMETER_ID);
         MultiChoiceParameterType.setOptions(ignoreTransactionAttributes, new ArrayList<>(registeredTransactionAttributes));
         MultiChoiceParameterType.setChoices(ignoreTransactionAttributes, ignoredTransactionAttributes);
@@ -243,7 +247,8 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
         }
 
         ReadableGraph rg;
-        final GraphRecordStore originalAll, compareAll;
+        final GraphRecordStore originalAll;
+        final GraphRecordStore compareAll;
 //        final Map<String, Integer> originalStatistics, compareStatistics;
 
         Set<String> vertexPrimaryKeys = new HashSet<>();
@@ -312,7 +317,8 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
         final Map<List<String>, Integer> compareTransactionKeysToIndex = getTransactionKeysToRecordstoreIndex(compare, vertexPrimaryKeys, transactionPrimaryKeys);
 
         final Set<Set<String>> seenVertices = new HashSet<>();
-        final Set<List<String>> seenTransactions = new HashSet<>(); // TODO: this could be a list of Sets
+        // TODO: this could be a list of sets
+        final Set<List<String>> seenTransactions = new HashSet<>();
         final List<String> attributes = result.keys();
 
         final Map<String, String> vertexSourceRecordPrimaryValues = new HashMap<>();
@@ -339,18 +345,15 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
         while (result.next()) {
             // make a cache of the primary key values
             vertexSourceRecordPrimaryValues.clear();
-            for (final String key : vertexPrimaryKeys) {
-                final String value = result.get(GraphRecordStoreUtilities.SOURCE + key);
-                if (value != null) {
-                    vertexSourceRecordPrimaryValues.put(key, value);
-                }
-            }
-
             vertexDestinationRecordPrimaryValues.clear();
             for (final String key : vertexPrimaryKeys) {
-                final String value = result.get(GraphRecordStoreUtilities.DESTINATION + key);
-                if (value != null) {
-                    vertexDestinationRecordPrimaryValues.put(key, value);
+                final String sourceValue = result.get(GraphRecordStoreUtilities.SOURCE + key);
+                if (sourceValue != null) {
+                    vertexSourceRecordPrimaryValues.put(key, sourceValue);
+                }
+                final String destinationValue = result.get(GraphRecordStoreUtilities.DESTINATION + key);
+                if (destinationValue != null) {
+                    vertexDestinationRecordPrimaryValues.put(key, destinationValue);
                 }
             }
 
@@ -413,6 +416,8 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
                                 break;
                             case "destination":
                             case "transaction":
+                                break;
+                            default:
                                 break;
                         }
                     }
@@ -485,6 +490,8 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
                                     output.println(String.format("Changed transaction connecting %s to %s, attribute %s value was '%s' and now '%s'", originalSource, originalDestination, keyAttribute, originalTransactionValue, compareTransactionValue));
                                 }
                                 break;
+                            default:
+                                break;
                         }
                     }
                 }
@@ -533,7 +540,7 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
         final ReadableGraph rg = originalGraph.getReadableGraph();
         try {
             try {
-                final Plugin copyGraphPlugin = PluginRegistry.get(CorePluginRegistry.COPY_TO_NEW_GRAPH);
+                final Plugin copyGraphPlugin = PluginRegistry.get(InteractiveGraphPluginRegistry.COPY_TO_NEW_GRAPH);
                 final PluginParameters copyParams = copyGraphPlugin.createParameters();
                 copyParams.getParameters().get(CopyToNewGraphPlugin.COPY_ALL_PARAMETER_ID).setBooleanValue(true);
                 PluginExecution.withPlugin(copyGraphPlugin).withParameters(copyParams).executeNow(rg);
@@ -594,8 +601,8 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
      */
     protected Map<String, Integer> calculateStatisticalDifferences(final Map<String, Integer> originalStatistics, final Map<String, Integer> compareStatistics) {
         final Map<String, Integer> statisticalDifferences = new HashMap<>();
-        for (final String key : originalStatistics.keySet()) {
-            statisticalDifferences.put(key, compareStatistics.get(key) - originalStatistics.get(key));
+        for (final Map.Entry<String, Integer> entry : originalStatistics.entrySet()) {
+            statisticalDifferences.put(entry.getKey(), compareStatistics.get(entry.getKey()) - entry.getValue());
         }
         return statisticalDifferences;
     }
@@ -619,7 +626,7 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
         final Map<Set<String>, Integer> keyToRecordIndex = new HashMap<>();
         recordstore.reset();
         while (recordstore.next()) {
-            final Set<String> vertex = new TreeSet();
+            final Set<String> vertex = new TreeSet<>();
 
             for (final String key : vertexKeys) {
                 if (!recordstore.hasValue(GraphRecordStoreUtilities.SOURCE + key)) {
@@ -716,8 +723,8 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
      * @param recordPrimaryValues
      */
     private void addPrimaryKeyValuesToRecord(final GraphRecordStore changes, final String type, final Map<String, String> recordPrimaryValues) {
-        for (final String key : recordPrimaryValues.keySet()) {
-            changes.set(type + key, recordPrimaryValues.get(key));
+        for (final Map.Entry<String, String> entry : recordPrimaryValues.entrySet()) {
+            changes.set(type + entry.getKey(), entry.getValue());
         }
     }
 

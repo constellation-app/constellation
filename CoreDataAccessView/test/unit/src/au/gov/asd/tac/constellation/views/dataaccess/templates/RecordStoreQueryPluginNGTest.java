@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.templates;
 
-import au.gov.asd.tac.constellation.utilities.preferences.PreferenceUtilites;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
@@ -27,11 +26,12 @@ import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.pluginframework.PluginException;
-import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.schema.analyticschema.AnalyticSchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
 import java.util.ArrayList;
 import java.util.List;
 import org.testng.Assert;
@@ -81,9 +81,7 @@ public class RecordStoreQueryPluginNGTest {
         try {
             instance.read(graph, interaction, parameters);
             instance.query(interaction, parameters);
-        } catch (InterruptedException ex) {
-            fail(ex.getLocalizedMessage());
-        } catch (PluginException ex) {
+        } catch (InterruptedException | PluginException ex) {
             fail(ex.getLocalizedMessage());
         }
         final RecordStore result = instance.getResult();
@@ -155,9 +153,7 @@ public class RecordStoreQueryPluginNGTest {
             assertEquals(query.get(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.X), "40.0");
             assertEquals(query.get(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.Y), "40.0");
             assertEquals(query.get(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.Z), "40.0");
-        } catch (InterruptedException ex) {
-            fail(ex.getLocalizedMessage());
-        } catch (PluginException ex) {
+        } catch (InterruptedException | PluginException ex) {
             fail(ex.getLocalizedMessage());
         }
     }
@@ -217,8 +213,8 @@ public class RecordStoreQueryPluginNGTest {
     @Test
     public void testGetValidators() {
         final RecordStoreQueryPlugin instance = new RecordStoreQueryPluginMockImpl();
-        final List expResult = new ArrayList<>();
-        final List result = instance.getValidators();
+        final List<RecordStoreValidator> expResult = new ArrayList<>();
+        final List<RecordStoreValidator> result = instance.getValidators();
         assertEquals(result, expResult);
     }
 

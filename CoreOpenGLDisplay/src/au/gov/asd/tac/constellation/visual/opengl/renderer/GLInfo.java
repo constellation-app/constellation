@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
-import au.gov.asd.tac.constellation.utilities.branding.BrandingUtilities;
-import au.gov.asd.tac.constellation.visual.InfoTextPanel;
+import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
+import au.gov.asd.tac.constellation.utilities.gui.InfoTextPanel;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2ES2;
 import com.jogamp.opengl.GL3;
@@ -33,7 +33,7 @@ import org.openide.NotifyDescriptor;
  */
 public class GLInfo {
 
-    public static String MINIMUM_OPEN_GL_VERSION = "3.3";
+    public static final String MINIMUM_OPEN_GL_VERSION = "3.3";
     private final String basicInfo;
     private final String extensions;
 
@@ -74,16 +74,16 @@ public class GLInfo {
         gl.glGetIntegerv(GL3.GL_MAX_DRAW_BUFFERS, v, 8);
         gl.glGetIntegerv(GL3.GL_MAX_COLOR_ATTACHMENTS, v, 9);
         final StringBuilder b = new StringBuilder();
-        b.append(String.format("GL: MAX_RENDERBUFFER_SIZE %d\n", v[0]));
-        b.append(String.format("GL: MAX_VERTEX_ATTRIBS %d\n", v[1]));
-        b.append(String.format("GL: MAX_TEXTURE_SIZE %d\n", v[2]));
-        b.append(String.format("GL: MAX_RECTANGLE_TEXTURE_SIZE %d\n", v[3]));
-        b.append(String.format("GL: MAX_TEXTURE_BUFFER_SIZE %d\n", v[4]));
-        b.append(String.format("GL: MAX_COMBINED_TEXTURE_IMAGE_UNITS %d\n", v[5]));
-        b.append(String.format("GL: MAX_3D_TEXTURE_SIZE %d\n", v[6]));
-        b.append(String.format("GL: MAX_ARRAY_TEXTURE_LAYERS %d\n", v[7]));
-        b.append(String.format("GL: MAX_DRAW_BUFFERS %d\n", v[8]));
-        b.append(String.format("GL: MAX_COLOR_ATTACHMENTS %d\n", v[9]));
+        b.append(String.format("GL: MAX_RENDERBUFFER_SIZE %d%n", v[0]));
+        b.append(String.format("GL: MAX_VERTEX_ATTRIBS %d%n", v[1]));
+        b.append(String.format("GL: MAX_TEXTURE_SIZE %d%n", v[2]));
+        b.append(String.format("GL: MAX_RECTANGLE_TEXTURE_SIZE %d%n", v[3]));
+        b.append(String.format("GL: MAX_TEXTURE_BUFFER_SIZE %d%n", v[4]));
+        b.append(String.format("GL: MAX_COMBINED_TEXTURE_IMAGE_UNITS %d%n", v[5]));
+        b.append(String.format("GL: MAX_3D_TEXTURE_SIZE %d%n", v[6]));
+        b.append(String.format("GL: MAX_ARRAY_TEXTURE_LAYERS %d%n", v[7]));
+        b.append(String.format("GL: MAX_DRAW_BUFFERS %d%n", v[8]));
+        b.append(String.format("GL: MAX_COLOR_ATTACHMENTS %d%n", v[9]));
         System.out.printf(b.toString());
     }
 
@@ -108,7 +108,7 @@ public class GLInfo {
      * @return True if the extension is supported, false if not.
      */
     public boolean isExtensionSupported(final String ext) {
-        return extensions == null ? false : extensions.contains(ext);
+        return extensions != null && extensions.contains(ext);
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl;
 
-import au.gov.asd.tac.constellation.visual.InfoTextPanel;
+import au.gov.asd.tac.constellation.utilities.gui.InfoTextPanel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -30,7 +30,8 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
 @ActionID(category = "Help", id = "au.gov.asd.tac.constellation.visual.opengl.JoclVersionAction")
-@ActionRegistration(displayName = "#CTL_JoclVersionAction")
+@ActionRegistration(displayName = "#CTL_JoclVersionAction",
+        iconBase = "au/gov/asd/tac/constellation/visual/opengl/versionsJOCL.png")
 @ActionReference(path = "Menu/Help", position = 1401)
 @Messages("CTL_JoclVersionAction=JOCL Version")
 public final class JoclVersionAction implements ActionListener {

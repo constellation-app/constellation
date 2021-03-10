@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.sql;
 
-import au.gov.asd.tac.constellation.utilities.string.SeparatorConstants;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -46,7 +46,7 @@ public class SqlQuery {
 
     // Constants representing different type of value comparisons that can be done
     // in an SqlQuery using = or LIKE.
-    public static enum MatchType {
+    public enum MatchType {
 
         MATCH_EXACT,
         MATCH_BEGINS_WITH,
@@ -56,7 +56,7 @@ public class SqlQuery {
 
     // Constants representing different type of text matching that can be done
     // in an SqlQuery using MATCH AGAINST on a fulltext index.
-    public static enum TextMatchType {
+    public enum TextMatchType {
 
         MATCH_EXACT,
         MATCH_PHRASE,
@@ -114,8 +114,7 @@ public class SqlQuery {
 
             // execute the query and return the results.
             if (isQuery) {
-                ResultSet results = statement.executeQuery();
-                return results;
+                return statement.executeQuery();
             } else {
                 statement.execute();
                 return null;
@@ -304,6 +303,8 @@ public class SqlQuery {
                         matchCondition.append("+").append(word).append(" ");
                     }
                     break;
+                default:
+                    break;
             }
             matchCondition.append(")");
         }
@@ -337,6 +338,8 @@ public class SqlQuery {
                     break;
                 case MATCH_CONTAINS:
                     value = "%" + value + "%";
+                    break;
+                default:
                     break;
             }
             if (value instanceof String) {
@@ -374,6 +377,8 @@ public class SqlQuery {
                     break;
                 case MATCH_CONTAINS:
                     value = "%" + value + "%";
+                    break;
+                default:
                     break;
             }
             if (value instanceof String) {

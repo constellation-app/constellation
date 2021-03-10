@@ -1,0 +1,33 @@
+{
+    "exampleData": {
+        "invalid1": {
+            "reason": "Empty lists cannot be used",
+            "listdata1": [],
+            "listdata2": [[]],
+            "listdata3": [[], []],
+            "listdata2": [{}],
+            "listdata3": [{}, {}]
+        },
+        "invalid2": {
+            "reason": "Lists within lists must be equal length",
+            "listdata": [["a", "b", "c"], ["d", "e"]]
+        },
+        "invalid3": {
+            "reason": "Lists within lists must not contain complex objects",
+            "listdata": [["a", "b", "c"], ["d", "e", {
+                        "f": 1,
+                        "g": 2
+                    }]]
+        },
+        "valid": {
+            "nested": {
+                "description": "if any of the earlier lists are deemed valid then this list wont get used",
+                "listdata": [{
+                        "word": "Hello"
+                    }, {
+                        "word": "World"
+                    }]
+            }
+        }
+    }
+}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@ import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
+import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import java.util.HashMap;
 import static org.testng.Assert.fail;
@@ -63,25 +65,25 @@ public class TableNGTest {
 
         WritableGraph wg = graph.getWritableGraph("", true);
         try {
-            xAttr = wg.addAttribute(GraphElementType.VERTEX, "float", "x", "x", 0.0, null);
+            xAttr = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", 0.0, null);
             if (xAttr == Graph.NOT_FOUND) {
                 fail();
             }
             fields.put("x", "float");
 
-            yAttr = wg.addAttribute(GraphElementType.VERTEX, "float", "y", "y", 0.0, null);
+            yAttr = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y", "y", 0.0, null);
             if (yAttr == Graph.NOT_FOUND) {
                 fail();
             }
             fields.put("y", "float");
 
-            zAttr = wg.addAttribute(GraphElementType.VERTEX, "float", "z", "z", 0.0, null);
+            zAttr = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z", "z", 0.0, null);
             if (zAttr == Graph.NOT_FOUND) {
                 fail();
             }
             fields.put("z", "float");
 
-            selectedAttr = wg.addAttribute(GraphElementType.VERTEX, "boolean", "selected", "selected", false, null);
+            selectedAttr = wg.addAttribute(GraphElementType.VERTEX, BooleanAttributeDescription.ATTRIBUTE_NAME, "selected", "selected", false, null);
             if (selectedAttr == Graph.NOT_FOUND) {
                 fail();
             }

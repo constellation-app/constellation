@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import java.util.HashMap;
  */
 public class ConstellationAbstractFeature {
 
-    public static enum ConstellationFeatureType {
+    public enum ConstellationFeatureType {
         POINT, LINE, POLYGON, MULTI, CLUSTER
     }
 
@@ -69,7 +69,7 @@ public class ConstellationAbstractFeature {
 
     public String getStringProperty(final String key) {
         final Object value = properties.get(key);
-        if (value != null && value instanceof String) {
+        if (value instanceof String) {
             return (String) value;
         } else {
             return null;

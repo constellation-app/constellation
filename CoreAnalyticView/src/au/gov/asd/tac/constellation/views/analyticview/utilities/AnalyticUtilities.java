@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ import org.openide.util.Lookup;
 public class AnalyticUtilities {
 
     private static final Map<String, AnalyticQuestionDescription> ANALYTIC_QUESTION_DESCRIPTIONS = new HashMap<>();
-    private static final Map<String, AnalyticAggregator> ANALYTIC_AGGREGATORS = new HashMap<>();
+    private static final Map<String, AnalyticAggregator<?>> ANALYTIC_AGGREGATORS = new HashMap<>();
     private static final Map<String, InternalVisualisationTranslator> INTERNAL_VISUALISATION_TRANSLATORS = new HashMap<>();
     private static final Map<String, GraphVisualisationTranslator> GRAPH_VISUALISATION_TRANSLATORS = new HashMap<>();
 
@@ -57,39 +57,39 @@ public class AnalyticUtilities {
         return Collections.unmodifiableCollection(ANALYTIC_QUESTION_DESCRIPTIONS.values());
     }
 
-    public static Collection<AnalyticQuestionDescription> lookupAnalyticQuestionDescriptions(final Class<? extends AnalyticResult> analyticResultType) {
+    public static Collection<AnalyticQuestionDescription> lookupAnalyticQuestionDescriptions(final Class<? extends AnalyticResult<?>> analyticResultType) {
         return Collections.unmodifiableCollection(ANALYTIC_QUESTION_DESCRIPTIONS.values().stream()
                 .filter(aggregator -> aggregator.getResultType().isAssignableFrom(analyticResultType))
                 .collect(Collectors.toList()));
     }
 
-    public static AnalyticQuestionDescription lookupAnalyticQuestionDescription(final Class<? extends AnalyticQuestionDescription> questionDescriptionType) {
+    public static AnalyticQuestionDescription<?> lookupAnalyticQuestionDescription(final Class<? extends AnalyticQuestionDescription<?>> questionDescriptionType) {
         return ANALYTIC_QUESTION_DESCRIPTIONS.values().stream()
                 .filter(questionDescription -> questionDescriptionType.isInstance(questionDescription))
                 .collect(Collectors.toList()).get(0);
     }
 
-    public static AnalyticQuestionDescription lookupAnalyticQuestionDescription(final String analyticQuestionDescriptionName) {
+    public static AnalyticQuestionDescription<?> lookupAnalyticQuestionDescription(final String analyticQuestionDescriptionName) {
         return ANALYTIC_QUESTION_DESCRIPTIONS.get(analyticQuestionDescriptionName);
     }
 
-    public static Collection<AnalyticAggregator> getAnalyticAggregators() {
+    public static Collection<AnalyticAggregator<?>> getAnalyticAggregators() {
         return Collections.unmodifiableCollection(ANALYTIC_AGGREGATORS.values());
     }
 
-    public static Collection<AnalyticAggregator> lookupAnalyticAggregators(final Class<? extends AnalyticResult> analyticResultType) {
+    public static Collection<AnalyticAggregator<?>> lookupAnalyticAggregators(final Class<? extends AnalyticResult<?>> analyticResultType) {
         return Collections.unmodifiableCollection(ANALYTIC_AGGREGATORS.values().stream()
                 .filter(aggregator -> aggregator.getResultType().isAssignableFrom(analyticResultType))
                 .collect(Collectors.toList()));
     }
 
-    public static AnalyticAggregator lookupAnalyticAggregator(final Class<? extends AnalyticAggregator> analyticAggregatorType) {
+    public static AnalyticAggregator<?> lookupAnalyticAggregator(final Class<? extends AnalyticAggregator<?>> analyticAggregatorType) {
         return ANALYTIC_AGGREGATORS.values().stream()
                 .filter(aggregator -> analyticAggregatorType.isInstance(aggregator))
                 .collect(Collectors.toList()).get(0);
     }
 
-    public static AnalyticAggregator lookupAnalyticAggregator(final String analyticAggregatorName) {
+    public static AnalyticAggregator<?> lookupAnalyticAggregator(final String analyticAggregatorName) {
         return ANALYTIC_AGGREGATORS.get(analyticAggregatorName);
     }
 
@@ -97,19 +97,19 @@ public class AnalyticUtilities {
         return Collections.unmodifiableCollection(INTERNAL_VISUALISATION_TRANSLATORS.values());
     }
 
-    public static Collection<InternalVisualisationTranslator> lookupInternalVisualisationTranslators(final Class<? extends AnalyticResult> analyticResultType) {
+    public static Collection<InternalVisualisationTranslator> lookupInternalVisualisationTranslators(final Class<? extends AnalyticResult<?>> analyticResultType) {
         return Collections.unmodifiableCollection(INTERNAL_VISUALISATION_TRANSLATORS.values().stream()
                 .filter(internalVisualisationTranslator -> internalVisualisationTranslator.getResultType().isAssignableFrom(analyticResultType))
                 .collect(Collectors.toList()));
     }
 
-    public static InternalVisualisationTranslator lookupInternalVisualisationTranslator(final Class<? extends InternalVisualisationTranslator> internalVisualisationTranslatorType) {
+    public static InternalVisualisationTranslator<?, ?> lookupInternalVisualisationTranslator(final Class<? extends InternalVisualisationTranslator<?, ?>> internalVisualisationTranslatorType) {
         return INTERNAL_VISUALISATION_TRANSLATORS.values().stream()
                 .filter(internalVisualisationTranslator -> internalVisualisationTranslatorType.isInstance(internalVisualisationTranslator))
                 .collect(Collectors.toList()).get(0);
     }
 
-    public static InternalVisualisationTranslator lookupInternalVisualisationTranslator(final String internalVisualisationTranslatorName) {
+    public static InternalVisualisationTranslator<?, ?> lookupInternalVisualisationTranslator(final String internalVisualisationTranslatorName) {
         return INTERNAL_VISUALISATION_TRANSLATORS.get(internalVisualisationTranslatorName);
     }
 
@@ -117,19 +117,19 @@ public class AnalyticUtilities {
         return Collections.unmodifiableCollection(GRAPH_VISUALISATION_TRANSLATORS.values());
     }
 
-    public static Collection<GraphVisualisationTranslator> lookupGraphVisualisationTranslators(final Class<? extends AnalyticResult> analyticResultType) {
+    public static Collection<GraphVisualisationTranslator> lookupGraphVisualisationTranslators(final Class<? extends AnalyticResult<?>> analyticResultType) {
         return Collections.unmodifiableCollection(GRAPH_VISUALISATION_TRANSLATORS.values().stream()
                 .filter(graphVisualisationTranslator -> graphVisualisationTranslator.getResultType().isAssignableFrom(analyticResultType))
                 .collect(Collectors.toList()));
     }
 
-    public static GraphVisualisationTranslator lookupGraphVisualisationTranslator(final Class<? extends GraphVisualisationTranslator> graphVisualisationTranslatorType) {
+    public static GraphVisualisationTranslator<?, ?> lookupGraphVisualisationTranslator(final Class<? extends GraphVisualisationTranslator<?, ?>> graphVisualisationTranslatorType) {
         return GRAPH_VISUALISATION_TRANSLATORS.values().stream()
                 .filter(graphVisualisationTranslator -> graphVisualisationTranslatorType.isInstance(graphVisualisationTranslator))
                 .collect(Collectors.toList()).get(0);
     }
 
-    public static GraphVisualisationTranslator lookupGraphVisualisationTranslator(final String graphVisualisationTranslatorName) {
+    public static GraphVisualisationTranslator<?, ?> lookupGraphVisualisationTranslator(final String graphVisualisationTranslatorName) {
         return GRAPH_VISUALISATION_TRANSLATORS.get(graphVisualisationTranslatorName);
     }
 }
