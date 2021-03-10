@@ -14,7 +14,7 @@ jobs:
     name: Unit Tests
     runs-on: ubuntu-latest
     env:
-        RUNNER_IMAGE="constellationapplication/netbeans-runner:12"
+      RUNNER_IMAGE: "constellationapplication/netbeans-runner:12"
 
     steps:
       # Checkout this commit
