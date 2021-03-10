@@ -36,7 +36,7 @@ jobs:
         
         
     - name: after cache
-      run: mkdir ${HOME}/.ivy2/cache
+      run: mkdir -p ${HOME}/.ivy2/cache
       
       # Update the project dependencies
     - name: Update Dependencies
