@@ -21,7 +21,7 @@ jobs:
       - docker
     script:
       - docker pull "${RUNNER_IMAGE}"
-      - docker run --mount "type=bind,source=${BUILD_DIR},target=${BUILD_DIR}" --mount "type=bind,source=${HOME}/.ivy2/cache,target=/root/.ivy2/cache" --workdir "${BUILD_DIR}" "${RUNNER_IMAGE}" .travis/run-tests.sh
+      - docker run --mount "type=bind,source=${HOME}/,target=./" --mount "type=bind,source=${HOME}/.ivy2/cache,target=/root/.ivy2/cache" --workdir "${BUILD_DIR}" "${RUNNER_IMAGE}" .travis/run-tests.sh
       - .travis/sonar.sh
     addons:
       sonarcloud:
