@@ -27,8 +27,12 @@ public final class GraphPreferenceKeys {
      */
     public static final int BLAZE_SIZE_DEFAULT = 30;
     public static final int BLAZE_OPACITY_DEFAULT = 100;
+    public static final String BLAZE_PRESET_COLORS_DEFAULT = "#FF0000;#0000FF;#FFFF00;";
+    public static final String BLAZE_RECENT_COLORS_DEFAULT = "";
     public static final String BLAZE_SIZE = "blazeSize";
     public static final String BLAZE_OPACITY = "blazeOpacity";
+    public static final String BLAZE_PRESET_COLORS = "blazePresetColors";
+    public static final String BLAZE_RECENT_COLORS = "blazeRecentColors";
 
     private GraphPreferenceKeys() {
     }
