@@ -34,6 +34,10 @@ jobs:
         path: ${HOME}/.ivy2/cache
         key: ${{ runner.os }}-dependencies
         
+        
+    - name: after cache
+      run: mkdir ${HOME}/.ivy2/cache
+      
       # Update the project dependencies
     - name: Update Dependencies
       run: |
