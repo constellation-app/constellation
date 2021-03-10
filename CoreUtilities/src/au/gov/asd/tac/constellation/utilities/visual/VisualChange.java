@@ -89,6 +89,13 @@ public final class VisualChange implements Comparable<VisualChange> {
     public int getSize() {
         return changeListSize;
     }
+    
+    public boolean hasSameChangeList(VisualChange other) {
+        if (changeList == null) {
+            return other.changeList == null;
+        }
+        return changeList.equals(other.changeList);
+    }
 
     /**
      * Get the index of the element that has been changed at the specified
