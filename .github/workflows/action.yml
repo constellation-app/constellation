@@ -1,0 +1,43 @@
+# action.yml 
+name: CI
+
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+    branches:
+    - master
+
+jobs:
+  unit_tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    env:
+        - RUNNER_IMAGE="constellationapplication/netbeans-runner:12"
+
+    steps:
+      # Checkout this commit
+    - name: Checkout
+      uses: actions/checkout@v1
+        
+      # Before caching, print and delete all cached ivy dependencies
+    - name: before cache
+      if: steps.cache-dependencies.outputs.cache-hit == 'true'
+      run: find "${HOME}"/.ivy2/cache -name "ivydata-*.properties" -print -delete
+      
+      # Cache the ivy dependencies to the home directory.
+    - name: cache
+      id: cache-dependencies
+      uses: actions/cache@v2
+      with:
+        path: ${HOME}/.ivy2/cache
+        key: ${{ runner.os }}-dependencies
+        
+      # Update the project dependencies
+    - name: Update Dependencies
+      run: |
+        docker pull "${RUNNER_IMAGE}"
+        docker run --mount "type=bind,source=${TRAVIS_BUILD_DIR},target=${TRAVIS_BUILD_DIR}" --mount "type=bind,source=${HOME}/.ivy2/cache,target=/root/.ivy2/cache" --workdir "${TRAVIS_BUILD_DIR}" "${RUNNER_IMAGE}" .travis/run-tests.sh
+        .travis/sonar.sh
+
