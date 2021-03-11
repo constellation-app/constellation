@@ -159,6 +159,7 @@ public class AnalyticConfigurationPane extends VBox {
 
         // build the pane holding the list of analytic categories
         this.categoryListPane = new TitledPane("Categories", categoryList);
+        categoryListPane.setExpanded(false);
 
         // set up the list of analytic questions
         this.questionToPluginsMap = new HashMap<>();
