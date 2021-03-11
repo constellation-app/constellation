@@ -4,9 +4,9 @@ source buildutilities/functions.sh
 
 title "Run Sonar Scanning"
 
-if [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then
+if [ "${{ github.event.number }}" != "false" ]; then
   if [ "${TRAVIS_PULL_REQUEST_SLUG}" != "aldebaran30701/constellation" ]; then
-    echo "${TRAVIS_PULL_REQUEST_SLUG}"
+    echo "${{github.event.pull_request.head.repo.full_name}}"
     echo "skipping running sonar-scanner"
   else
     SONAR_PULLREQUEST_BRANCH="$(echo "${TRAVIS_PULL_REQUEST_SLUG}" | awk '{split($0,a,"/"); print a[1]}')/${TRAVIS_PULL_REQUEST_BRANCH}"
