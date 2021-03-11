@@ -36,7 +36,9 @@ jobs:
         
         
     - name: after cache
-      run: mkdir -p ${HOME}/.ivy2/cache
+      run: |
+        mkdir -p ${HOME}/.ivy2/cache
+        chmod +x /home/runner/work/constellation/constellation/.github/workflows/.travis/run-tests.sh
       
       # Update the project dependencies
     - name: Update Dependencies
