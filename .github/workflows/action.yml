@@ -18,34 +18,35 @@ jobs:
 
     steps:
       # Checkout this commit
-    - name: Checkout
+    - name: Checkout Branch
       uses: actions/checkout@v1
         
-      # Before caching, print and delete all cached ivy dependencies
-    - name: before cache
+      # Before caching, print and delete all cached ivy properties
+    - name: Remove Ivy Properties
       if: steps.cache-dependencies.outputs.cache-hit == 'true'
       run: find "${HOME}"/.ivy2/cache -name "ivydata-*.properties" -print -delete
       
       # Cache the ivy dependencies to the home directory.
-    - name: cache
+    - name: Initialise Cache
       id: cache-dependencies
       uses: actions/cache@v2
+      env:
+        cache-name: cache-dependencies
       with:
         path: ${HOME}/.ivy2/cache
-        key: ${{ runner.os }}-dependencies
-        
-        
-    - name: after cache
-      run: |
-        mkdir -p ${HOME}/.ivy2/cache
-        chmod +x /home/runner/work/constellation/constellation/.travis/run-tests.sh
-        chmod +x /home/runner/work/constellation/constellation/.travis/sonar.sh
-        chmod +x /home/runner/work/constellation/constellation/.travis/functions.sh
-      
+        key: ${{ runner.os }}-dependencies-${{ env.cache-name }}-${{ hashFiles('CoreDependencies/src/ivy.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-dependencies-${{ env.cache-name }}-
+          ${{ runner.os }}-dependencies-
+          ${{ runner.os }}-
+
       # Update the project dependencies and run tests
     - name: Run Tests
       run: |
-        pwd
+        mkdir -p ${HOME}/.ivy2/cache
+        chmod +x /home/runner/work/constellation/constellation/buildutilities/run-tests.sh
+        chmod +x /home/runner/work/constellation/constellation/buildutilities/sonar.sh
+        chmod +x /home/runner/work/constellation/constellation/buildutilities/functions.sh
         docker pull "${RUNNER_IMAGE}"
-        docker run --mount "type=bind,source=/home/runner/work/constellation/constellation/,target=/home/runner/work/constellation/constellation/" --mount "type=bind,source=${HOME}/.ivy2/cache,target=/root/.ivy2/cache" --workdir /home/runner/work/constellation/constellation/ "${RUNNER_IMAGE}" .travis/run-tests.sh .travis/sonar.sh
+        docker run --mount "type=bind,source=/home/runner/work/constellation/constellation/,target=/home/runner/work/constellation/constellation/" --mount "type=bind,source=${HOME}/.ivy2/cache,target=/root/.ivy2/cache" --workdir /home/runner/work/constellation/constellation/ "${RUNNER_IMAGE}" buildutilities/run-tests.sh buildutilities/sonar.sh
 
