@@ -42,8 +42,8 @@ jobs:
         chmod +x /home/runner/work/constellation/constellation/.travis/sonar.sh
         chmod +x /home/runner/work/constellation/constellation/.travis/functions.sh
       
-      # Update the project dependencies
-    - name: Update Dependencies
+      # Update the project dependencies and run tests
+    - name: Run Tests
       run: |
         pwd
         docker pull "${RUNNER_IMAGE}"
