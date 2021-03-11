@@ -38,12 +38,14 @@ jobs:
     - name: after cache
       run: |
         mkdir -p ${HOME}/.ivy2/cache
-        chmod +x /home/runner/work/constellation/constellation/.github/workflows/.travis/run-tests.sh
+        chmod +x /home/runner/work/constellation/constellation/.travis/run-tests.sh
+        chmod +x /home/runner/work/constellation/constellation/.travis/sonar.sh
+        chmod +x /home/runner/work/constellation/constellation/.travis/functions.sh
       
       # Update the project dependencies
     - name: Update Dependencies
       run: |
         pwd
         docker pull "${RUNNER_IMAGE}"
-        docker run --mount "type=bind,source=/home/runner/work/constellation/constellation/.github/workflows,target=/home/runner/work/constellation/constellation/.github/workflows" --mount "type=bind,source=${HOME}/.ivy2/cache,target=/root/.ivy2/cache" --workdir /home/runner/work/constellation/constellation/.github/workflows "${RUNNER_IMAGE}" .travis/run-tests.sh sonar.sh
+        docker run --mount "type=bind,source=/home/runner/work/constellation/constellation/,target=/home/runner/work/constellation/constellation/" --mount "type=bind,source=${HOME}/.ivy2/cache,target=/root/.ivy2/cache" --workdir /home/runner/work/constellation/constellation/ "${RUNNER_IMAGE}" .travis/run-tests.sh .travis/sonar.sh
 
