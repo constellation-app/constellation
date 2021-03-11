@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-source .travis/functions.sh
+source buildutilities/functions.sh
 
 title "Run Sonar Scanning"
 

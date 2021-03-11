@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-source .travis/functions.sh
+source buildutilities/functions.sh
 
 title "Run Core Build"
 
