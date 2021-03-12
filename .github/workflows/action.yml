@@ -22,7 +22,7 @@ jobs:
       uses: actions/github-script@v3
       id: set-result
       with:
-        script: return context.issue.number
+        script: return context
         result-encoding: string
         
     - name: get result
