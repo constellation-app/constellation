@@ -7,6 +7,7 @@ title "Run Sonar Scanning"
 if [ github.event.number != "false" ]; then
   if [ "${TRAVIS_PULL_REQUEST_SLUG}" != "aldebaran30701/constellation" ]; then
     echo $1
+    echo $2
     echo "skipping running sonar-scanner"
   else
     SONAR_PULLREQUEST_BRANCH="$(echo "${TRAVIS_PULL_REQUEST_SLUG}" | awk '{split($0,a,"/"); print a[1]}')/${TRAVIS_PULL_REQUEST_BRANCH}"
