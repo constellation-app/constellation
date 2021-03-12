@@ -9,7 +9,7 @@ if [ ! -z $2 ]; then
     echo $1
     echo "skipping running sonar-scanner"
   else
-    echo "in else"
+    echo "This is a Pull Request"
     echo $1
     echo $2
     echo $3
@@ -22,6 +22,7 @@ if [ ! -z $2 ]; then
       -Dsonar.pullrequest.base=$3
   fi
 else
+echo "Not a Pull Request"
   sonar-scanner \
     -Dsonar.login="${SONAR_TOKEN}" \
     -Dsonar.branch.name=$3
