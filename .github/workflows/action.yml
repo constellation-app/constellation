@@ -21,7 +21,7 @@ jobs:
     - name: Save Variables
       shell: bash
       id: extract_variables
-      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#repository})"
       # Checkout this commit
     - name: Checkout Branch
       uses: actions/checkout@v1
