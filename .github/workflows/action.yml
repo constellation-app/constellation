@@ -15,6 +15,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       RUNNER_IMAGE: "constellationapplication/netbeans-runner:12"
+      TRAVIS_REPO_SLUG: ${{ github.repository }} 
+      TRAVIS_BRANCH: ${{ github.head_ref }} 
+      TRAVIS_PULL_REQUEST: ${{ github.event.number }}
 
     steps:
         
@@ -64,6 +67,6 @@ jobs:
         chmod +x /home/runner/work/constellation/constellation/buildutilities/sonar.sh
         chmod +x /home/runner/work/constellation/constellation/buildutilities/functions.sh
         docker pull "${RUNNER_IMAGE}"
-        docker run --mount "type=bind,source=/home/runner/work/constellation/constellation/,target=/home/runner/work/constellation/constellation/" --mount "type=bind,source=${HOME}/.ivy2/cache,target=/root/.ivy2/cache" --workdir /home/runner/work/constellation/constellation/ "${RUNNER_IMAGE}" buildutilities/sonar.sh "${{steps.extract_variables.outputs.branch}}"
+        docker run --mount "type=bind,source=/home/runner/work/constellation/constellation/,target=/home/runner/work/constellation/constellation/" --mount "type=bind,source=${HOME}/.ivy2/cache,target=/root/.ivy2/cache" --workdir /home/runner/work/constellation/constellation/ "${RUNNER_IMAGE}" buildutilities/sonar.sh "${{steps.extract_variables.outputs.branch}}" "${{TRAVIS_PULL_REQUEST}}" "${{TRAVIS_BRANCH}}"
         # buildutilities/run-tests.sh
 

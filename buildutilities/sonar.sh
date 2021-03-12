@@ -10,15 +10,18 @@ if [ github.event.number != "false" ]; then
     echo "skipping running sonar-scanner"
   else
     echo "in else"
-    SONAR_PULLREQUEST_BRANCH="$(echo "${TRAVIS_PULL_REQUEST_SLUG}" | awk '{split($0,a,"/"); print a[1]}')/${TRAVIS_PULL_REQUEST_BRANCH}"
+    echo $1
+    echo $2
+    echo $3
+    SONAR_PULLREQUEST_BRANCH="$(echo $1 | awk '{split($0,a,"/"); print a[1]}')/${TRAVIS_PULL_REQUEST_BRANCH}"
     sonar-scanner \
       -Dsonar.login="${SONAR_TOKEN}" \
-      -Dsonar.pullrequest.key="${TRAVIS_PULL_REQUEST}" \
+      -Dsonar.pullrequest.key=$2 \
       -Dsonar.pullrequest.branch="${SONAR_PULLREQUEST_BRANCH}" \
-      -Dsonar.pullrequest.base="${TRAVIS_BRANCH}"
+      -Dsonar.pullrequest.base=$3
   fi
 else
   sonar-scanner \
     -Dsonar.login="${SONAR_TOKEN}" \
-    -Dsonar.branch.name="${TRAVIS_BRANCH}"
+    -Dsonar.branch.name=$3
 fi
