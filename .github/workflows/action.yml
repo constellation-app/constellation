@@ -32,7 +32,7 @@ jobs:
       id: extract_variables
       run: |
         echo "##[set-output name=prnumber;]$(echo ${github.event.number})"
-        echo "##[set-output name=branch;]$(echo ${GITHUB_REF#repository})"
+        echo "##[set-output name=branch;]$(echo ${GITHUB_REPOSITORY})"
       
       # Checkout this commit
     - name: Checkout Branch
