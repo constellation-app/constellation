@@ -18,12 +18,14 @@ jobs:
 
     steps:
         
-    - name: Get result
+    - name: Set result
       uses: actions/github-script@v3
       id: set-result
       with:
         script: return context.issue.number
         result-encoding: string
+        
+    - name: get result
       run: echo "${{steps.set-result.outputs.result}}"
         
     - name: Save Variables
