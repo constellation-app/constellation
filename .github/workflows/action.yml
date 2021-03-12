@@ -21,21 +21,9 @@ jobs:
       SOURCE_BRANCH: "${{ github.head_ref }}"
 
     steps:
-
-    - name: Set result
-      uses: actions/github-script@v3
-      id: set-result
-      with:
-        script: return context
-        result-encoding: string
-
-    - name: get result
-      run: echo "${{steps.set-result.outputs.result}}"
-
     - name: Save Variables
       id: extract_variables
       run: |
-        #echo "##[set-output name=prnumber;]$(echo ${github.event.number})"s
         echo "##[set-output name=prsourcelocation;]$(echo ${GITHUB_REPOSITORY})"
         echo "##[set-output name=destinationbranch;]$(echo ${DESTINATION_BRANCH})"
         echo "##[set-output name=prnumber;]$(echo ${PULL_REQUEST_NUMBER})"
@@ -63,6 +51,7 @@ jobs:
           ${{ runner.os }}-dependencies-${{ env.cache-name }}-
           ${{ runner.os }}-dependencies-
           ${{ runner.os }}-
+          
       # Update the project dependencies and run tests
     - name: Run Tests
       run: |
@@ -71,5 +60,14 @@ jobs:
         chmod +x /home/runner/work/constellation/constellation/buildutilities/sonar.sh
         chmod +x /home/runner/work/constellation/constellation/buildutilities/functions.sh
         docker pull "${RUNNER_IMAGE}"
+        docker run --mount "type=bind,source=/home/runner/work/constellation/constellation/,target=/home/runner/work/constellation/constellation/" --mount "type=bind,source=${HOME}/.ivy2/cache,target=/root/.ivy2/cache" --workdir /home/runner/work/constellation/constellation/ "${RUNNER_IMAGE}" buildutilities/run-tests.sh
+
+        # Run Sonar Checks
+    - name: Run Sonar
+      run: |
+        mkdir -p ${HOME}/.ivy2/cache
+        chmod +x /home/runner/work/constellation/constellation/buildutilities/run-tests.sh
+        chmod +x /home/runner/work/constellation/constellation/buildutilities/sonar.sh
+        chmod +x /home/runner/work/constellation/constellation/buildutilities/functions.sh
+        docker pull "${RUNNER_IMAGE}"
         docker run --mount "type=bind,source=/home/runner/work/constellation/constellation/,target=/home/runner/work/constellation/constellation/" --mount "type=bind,source=${HOME}/.ivy2/cache,target=/root/.ivy2/cache" --workdir /home/runner/work/constellation/constellation/ "${RUNNER_IMAGE}" buildutilities/sonar.sh "${{steps.extract_variables.outputs.prsourcelocation}}" "${{steps.extract_variables.outputs.prnumber}}" "${{steps.extract_variables.outputs.destinationbranch}}" "${{steps.extract_variables.outputs.sourcebranch}}"
-        # buildutilities/run-tests.sh

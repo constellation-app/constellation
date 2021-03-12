@@ -9,10 +9,6 @@ if [ ! -z $2 ]; then
     echo "skipping running sonar-scanner"
   else
     echo "This is a Pull Request"
-    echo $1
-    echo $2
-    echo $3
-    echo $4
     SONAR_PULLREQUEST_BRANCH="$(echo $1 | awk '{split($0,a,"/"); print a[1]}')/$4"
     sonar-scanner \
       -Dsonar.login="${SONAR_TOKEN}" \
