@@ -16,8 +16,8 @@ jobs:
     env:
       RUNNER_IMAGE: "constellationapplication/netbeans-runner:12"
       TRAVIS_REPO_SLUG: "${{ github.repository }}" 
-      TRAVIS_BRANCH: "${{ github.head_ref }}"
-      TRAVIS_PULL_REQUEST: "${{ github.event.number }}"
+      TRAVIS_BRANCH: ${github.head_ref}
+      TRAVIS_PULL_REQUEST: "${github.event.number}"
 
     steps:
         
