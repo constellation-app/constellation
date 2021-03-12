@@ -17,6 +17,11 @@ jobs:
       RUNNER_IMAGE: "constellationapplication/netbeans-runner:12"
 
     steps:
+        
+    - name: Save Variables
+      shell: bash
+      id: extract_variables
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
       # Checkout this commit
     - name: Checkout Branch
       uses: actions/checkout@v1
@@ -39,7 +44,6 @@ jobs:
           ${{ runner.os }}-dependencies-${{ env.cache-name }}-
           ${{ runner.os }}-dependencies-
           ${{ runner.os }}-
-
       # Update the project dependencies and run tests
     - name: Run Tests
       run: |
@@ -48,6 +52,6 @@ jobs:
         chmod +x /home/runner/work/constellation/constellation/buildutilities/sonar.sh
         chmod +x /home/runner/work/constellation/constellation/buildutilities/functions.sh
         docker pull "${RUNNER_IMAGE}"
-        docker run --mount "type=bind,source=/home/runner/work/constellation/constellation/,target=/home/runner/work/constellation/constellation/" --mount "type=bind,source=${HOME}/.ivy2/cache,target=/root/.ivy2/cache" --workdir /home/runner/work/constellation/constellation/ "${RUNNER_IMAGE}" buildutilities/sonar.sh
+        docker run --mount "type=bind,source=/home/runner/work/constellation/constellation/,target=/home/runner/work/constellation/constellation/" --mount "type=bind,source=${HOME}/.ivy2/cache,target=/root/.ivy2/cache" --workdir /home/runner/work/constellation/constellation/ "${RUNNER_IMAGE}" buildutilities/sonar.sh "${steps.extract_variables.outputs.branch}"
         # buildutilities/run-tests.sh
 
