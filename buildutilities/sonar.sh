@@ -13,7 +13,8 @@ if [ github.event.number != "false" ]; then
     echo $1
     echo $2
     echo $3
-    SONAR_PULLREQUEST_BRANCH="$(echo $1 | awk '{split($0,a,"/"); print a[1]}')/${TRAVIS_PULL_REQUEST_BRANCH}"
+    echo $4
+    SONAR_PULLREQUEST_BRANCH="$(echo $1 | awk '{split($0,a,"/"); print a[1]}')/$4"
     sonar-scanner \
       -Dsonar.login="${SONAR_TOKEN}" \
       -Dsonar.pullrequest.key=$2 \
