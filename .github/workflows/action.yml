@@ -29,10 +29,6 @@ jobs:
       run: echo "${{steps.set-result.outputs.result}}"
         
     - name: Save Variables
-      uses: actions/github-script@v3
-      with: 
-          script: return " hello"
-          result-encoding: string
       id: extract_variables
       run: |
         echo "##[set-output name=prnumber;]$(echo ${github.event.number})"
