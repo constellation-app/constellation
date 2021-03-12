@@ -22,7 +22,7 @@ jobs:
       shell: bash
       id: extract_variables
       run: |
-        echo "##[set-output name=prnumber;]$(echo ${{ github.event.number }})"
+        echo "##[set-output name=prnumber;]$(echo ${github.event.number})"
         echo "##[set-output name=branch;]$(echo ${GITHUB_REF#repository})"
       
       # Checkout this commit
