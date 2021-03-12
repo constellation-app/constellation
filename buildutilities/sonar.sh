@@ -6,7 +6,6 @@ title "Run Sonar Scanning"
 
 if [ ! -z $2 ]; then
   if [ $1 != "aldebaran30701/constellation" ]; then
-    echo $1
     echo "skipping running sonar-scanner"
   else
     echo "This is a Pull Request"
