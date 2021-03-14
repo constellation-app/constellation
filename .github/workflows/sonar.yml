@@ -2,8 +2,6 @@ on:
   push:
     branches:
       - master
-  pull_request_target:
-    types: [opened, synchronize, reopened]
 name: Sonar Workflow
 jobs:
   sonarcloud:
@@ -11,7 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          # Disabling shallow clone is recommended for improving relevancy of reportingd
+          # Disabling shallow clone is recommended for improving relevancy of reporting
           fetch-depth: 0
       - name: SonarCloud Scan
         env:
