@@ -63,14 +63,14 @@ jobs:
         docker run --mount "type=bind,source=/home/runner/work/constellation/constellation/,target=/home/runner/work/constellation/constellation/" --mount "type=bind,source=${HOME}/.ivy2/cache,target=/root/.ivy2/cache" --workdir /home/runner/work/constellation/constellation/ "${RUNNER_IMAGE}" buildutilities/run-tests.sh
 
         # Run Sonar Checks
-    - name: Run Sonar
-      run: |
-        mkdir -p ${HOME}/.ivy2/cache
-        chmod +x /home/runner/work/constellation/constellation/buildutilities/run-tests.sh
-        chmod +x /home/runner/work/constellation/constellation/buildutilities/sonar.sh
-        chmod +x /home/runner/work/constellation/constellation/buildutilities/functions.sh
-        docker pull "${RUNNER_IMAGE}"
-        docker run --mount "type=bind,source=/home/runner/work/constellation/constellation/,target=/home/runner/work/constellation/constellation/" --mount "type=bind,source=${HOME}/.ivy2/cache,target=/root/.ivy2/cache" --workdir /home/runner/work/constellation/constellation/ "${RUNNER_IMAGE}" buildutilities/sonar.sh "${{steps.extract_variables.outputs.prsourcelocation}}" "${{steps.extract_variables.outputs.prnumber}}" "${{steps.extract_variables.outputs.destinationbranch}}" "${{steps.extract_variables.outputs.sourcebranch}}"
+    #- name: Run Sonar
+    #  run: |
+    #    mkdir -p ${HOME}/.ivy2/cache
+    #    chmod +x /home/runner/work/constellation/constellation/buildutilities/run-tests.sh
+    #    chmod +x /home/runner/work/constellation/constellation/buildutilities/sonar.sh
+    #    chmod +x /home/runner/work/constellation/constellation/buildutilities/functions.sh
+    #    docker pull "${RUNNER_IMAGE}"
+    #    docker run --mount "type=bind,source=/home/runner/work/constellation/constellation/,target=/home/runner/work/constellation/constellation/" --mount "type=bind,source=${HOME}/.ivy2/cache,target=/root/.ivy2/cache" --workdir /home/runner/work/constellation/constellation/ "${RUNNER_IMAGE}" buildutilities/sonar.sh "${{steps.extract_variables.outputs.prsourcelocation}}" "${{steps.extract_variables.outputs.prnumber}}" "${{steps.extract_variables.outputs.destinationbranch}}" "${{steps.extract_variables.outputs.sourcebranch}}"
         
     - name: SonarCloud Scan
       uses: SonarSource/sonarcloud-github-action@master
