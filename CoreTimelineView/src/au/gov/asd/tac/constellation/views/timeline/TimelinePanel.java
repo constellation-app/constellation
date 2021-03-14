@@ -123,7 +123,6 @@ public class TimelinePanel extends Region {
         this.coordinator = coordinator;
 
         // Set the layout constraints:
-        this.setMinHeight(220d);
         this.setMaxHeight(Double.MAX_VALUE);
         this.setMinWidth(440d);
         this.setMaxWidth(Double.MAX_VALUE);

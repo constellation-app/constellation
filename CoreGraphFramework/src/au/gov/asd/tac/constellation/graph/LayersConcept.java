@@ -16,8 +16,8 @@
 package au.gov.asd.tac.constellation.graph;
 
 import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
-import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
-import au.gov.asd.tac.constellation.graph.attribute.ObjectAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.LongAttributeDescription;
+import au.gov.asd.tac.constellation.graph.mergers.BitwiseOrGraphAttributeMerger;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import java.util.ArrayList;
@@ -54,21 +54,9 @@ public class LayersConcept extends SchemaConcept {
             throw new IllegalStateException("Concept class");
         }
 
-        public static final SchemaAttribute LAYER_MASK_SELECTED = new SchemaAttribute.Builder(GraphElementType.GRAPH, IntegerAttributeDescription.ATTRIBUTE_NAME, "layer_bitmask_selected")
+        public static final SchemaAttribute LAYER_MASK_SELECTED = new SchemaAttribute.Builder(GraphElementType.GRAPH, LongAttributeDescription.ATTRIBUTE_NAME, "layer_bitmask_selected")
                 .setDescription("The layers currently enabled for display")
                 .setDefaultValue(1)
-                .create()
-                .build();
-
-        public static final SchemaAttribute LAYER_QUERIES = new SchemaAttribute.Builder(GraphElementType.GRAPH, ObjectAttributeDescription.ATTRIBUTE_NAME, "layer_queries")
-                .setDescription("The dynamic layer queries currently stored")
-                .setDefaultValue(null)
-                .create()
-                .build();
-
-        public static final SchemaAttribute LAYER_PREFERENCES = new SchemaAttribute.Builder(GraphElementType.GRAPH, ObjectAttributeDescription.ATTRIBUTE_NAME, "layer_preferences")
-                .setDescription("The type of layer stored in the layers queries")
-                .setDefaultValue(null)
                 .create()
                 .build();
     }
@@ -79,9 +67,10 @@ public class LayersConcept extends SchemaConcept {
             throw new IllegalStateException("Concept class");
         }
 
-        public static final SchemaAttribute LAYER_MASK = new SchemaAttribute.Builder(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, "layer_mask")
+        public static final SchemaAttribute LAYER_MASK = new SchemaAttribute.Builder(GraphElementType.VERTEX, LongAttributeDescription.ATTRIBUTE_NAME, "layer_mask")
                 .setDescription("Bitmask identifying the layers this vertex belongs to")
                 .setDefaultValue(1)
+                .setAttributeMergerId(BitwiseOrGraphAttributeMerger.ID)
                 .create()
                 .build();
         public static final SchemaAttribute LAYER_VISIBILITY = new SchemaAttribute.Builder(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "layer_visibility")
@@ -97,9 +86,10 @@ public class LayersConcept extends SchemaConcept {
             throw new IllegalStateException("Concept class");
         }
 
-        public static final SchemaAttribute LAYER_MASK = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, IntegerAttributeDescription.ATTRIBUTE_NAME, "layer_mask")
+        public static final SchemaAttribute LAYER_MASK = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, LongAttributeDescription.ATTRIBUTE_NAME, "layer_mask")
                 .setDescription("Bitmask identifying the layers this transaction belongs to")
                 .setDefaultValue(1)
+                .setAttributeMergerId(BitwiseOrGraphAttributeMerger.ID)
                 .create()
                 .build();
         public static final SchemaAttribute LAYER_VISIBILITY = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, FloatAttributeDescription.ATTRIBUTE_NAME, "layer_visibility")

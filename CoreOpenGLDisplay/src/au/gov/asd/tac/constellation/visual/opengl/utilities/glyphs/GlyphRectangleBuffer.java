@@ -256,14 +256,16 @@ final class GlyphRectangleBuffer {
         //
         final int hashCode = Arrays.hashCode(img.getRGB(0, 0, w, h, null, 0, w));
 
-        final int rectIndex;
-        if (memory.containsKey(hashCode)) {
-            // We've seen this image before: return the index of the existing image.
-            //
-            rectIndex = memory.get(hashCode);
-        } else {
-            // This is a new image. Add it to the buffer, creating a new buffer if necessary.
-            //
+        
+        Integer rectIndex = memory.get(hashCode);
+        if (rectIndex == null) {
+            rectIndex = synchronizedAddHashcode(hashCode, img, extra, w, h);
+        }
+        
+        return rectIndex;
+    }
+    
+    private synchronized int addImageToBuffer(final BufferedImage img, final int rectIndex, final int extra, final int w, final int h) {
             if ((x + w + PADDING) >= width) {
                 newRectLine();
             }
@@ -277,21 +279,17 @@ final class GlyphRectangleBuffer {
             g2d.drawImage(img, x, y, null);
 //            g2d.drawImage(img, IDENTITY_OP, x, y);
 
-            rectIndex = putImageInMemory(hashCode, extra, w, h);
+            putImageInRectTextureCoordinates(rectIndex, extra, w, h);
 
             x += w + PADDING;
             maxHeight = Math.max(h, maxHeight);
 
             rectangleCount++;
-        }
-
-        return rectIndex;
+            
+            return rectIndex;
     }
-
-    private synchronized int putImageInMemory(final int hashCode, final int extra, final int w, final int h) {
-        // Add the image to memory
-        int rectIndex = memory.size();
-        memory.put(hashCode, rectIndex);
+            
+    private int putImageInRectTextureCoordinates(int rectIndex, final int extra, final int w, final int h) {
 
         final int ptr = rectIndex * FLOATS_PER_RECT;
 
@@ -358,5 +356,15 @@ final class GlyphRectangleBuffer {
             return false;
         }
         return true;
+    }
+
+    private synchronized int synchronizedAddHashcode(final int hashCode, final BufferedImage img, final int extra, final int w, final int h) {
+        int value = memory.size();
+        Integer rectIndex = memory.putIfAbsent(hashCode, value);
+        if (rectIndex == null) {
+            rectIndex = value;
+            addImageToBuffer(img, rectIndex, extra, w, h);
+        }
+        return rectIndex;
     }
 }

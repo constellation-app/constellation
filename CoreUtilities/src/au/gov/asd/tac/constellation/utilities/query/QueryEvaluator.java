@@ -40,6 +40,15 @@ public class QueryEvaluator {
     private QueryEvaluator() {
     }
 
+    public static List<String> retrieveAttributeNames(final String input) {
+        List<String> attributes = new ArrayList<>();
+        for (String querySegment : tokeniser(input)) {
+            // get portions of the string.
+            attributes.add(querySegment);
+        }
+        return attributes;
+    }
+
     /**
      * Tokeniser takes input from the user and breaks it into terms such as
      * <ul>
@@ -151,7 +160,7 @@ public class QueryEvaluator {
         final Deque<String> operatorStack = new ArrayDeque<>();
 
         for (final String token : queryAsList) {
-            // If the scanned character is an operand, add it to output. 
+            // If the scanned character is an operand, add it to output.
             if (!token.contains("||") && !token.contains("&&")
                     && !token.matches(PARENTHESES_REGEX)) {
                 boolean moreToEscape = true;
@@ -170,12 +179,12 @@ public class QueryEvaluator {
                     orderedInPostfix.add(trimmedToken);
                 }
             } else if (token.contains("(")) {
-                // If the scanned character is an '(', push it to the operatorStack. 
+                // If the scanned character is an '(', push it to the operatorStack.
                 operatorStack.push(token);
             } else if (token.contains(")")) {
-                // If the scanned character is an ')', pop and output from the operatorStack  
+                // If the scanned character is an ')', pop and output from the operatorStack
                 while (!operatorStack.isEmpty() && !operatorStack.peek().equals("(")) {
-                    // until an '(' is encountered. 
+                    // until an '(' is encountered.
                     orderedInPostfix.add(operatorStack.pop());
                 }
                 if (!operatorStack.isEmpty() && !operatorStack.peek().equals("(")) {
@@ -196,7 +205,7 @@ public class QueryEvaluator {
             }
         }
 
-        // pop all the operators from operatorStack 
+        // pop all the operators from operatorStack
         while (!operatorStack.isEmpty()) {
             if (operatorStack.peek().equals("(")) {
                 return Collections.emptyList();
@@ -234,7 +243,7 @@ public class QueryEvaluator {
                 // if the scanned character is T or F, push it to the operatorStack.
                 stack.push(expressionComponent);
             } else {
-                // if the scanned character is an operator, pop two elements 
+                // if the scanned character is an operator, pop two elements
                 // from operatorStack apply the operator
                 if (stack.size() < 2) {
                     return false;

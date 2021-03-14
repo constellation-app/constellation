@@ -54,20 +54,14 @@ public class ActionPane extends BorderPane {
         dialog.showAndWait();
     }
 
-    public ActionPane(final ImportController importController) {
-        this.importController = importController;
+    public ActionPane(final ImportController controller) {
+        this.importController = controller;
 
-        HBox runBox = new HBox();
-        runBox.setSpacing(5);
-        runBox.setPadding(new Insets(5));
+        final HBox runBox = new HBox();
+        runBox.setPadding(new Insets(5, 5, 35, 5));
         setRight(runBox);
 
-        Button cancelButton = new Button("Cancel");
-        cancelButton.setOnAction((ActionEvent t) -> {
-            importController.cancelImport();
-        });
-
-        Button importButton = new Button("Import");
+        final Button importButton = new Button("Import");
         importButton.setOnAction((ActionEvent t) -> {
             try {
                 importController.processImport();
@@ -81,6 +75,6 @@ public class ActionPane extends BorderPane {
             }
         });
 
-        runBox.getChildren().addAll(cancelButton, importButton);
+        runBox.getChildren().add(importButton);
     }
 }

@@ -112,6 +112,7 @@ public class FindCriteriaPanel extends JPanel implements DateTimeListenerInterfa
         createCriteriaPanels();
 
         this.localState = localState;
+        this.localState = this.getState();
 
         panelCriteriaHolder.removeAll();
 

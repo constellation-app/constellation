@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import org.apache.commons.collections.MapUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.util.Exceptions;
 
@@ -389,6 +389,6 @@ public class JsonUtilities {
                 Exceptions.printStackTrace(ex);
             }
         }
-        return MapUtils.EMPTY_MAP;
+        return MapUtils.EMPTY_SORTED_MAP;
     }
 }

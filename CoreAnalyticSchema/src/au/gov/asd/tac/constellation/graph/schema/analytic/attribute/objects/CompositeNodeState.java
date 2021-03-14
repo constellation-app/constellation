@@ -263,7 +263,6 @@ public class CompositeNodeState {
 
             return new CompositeNodeState(nodeId, expandedState, contractedState);
         } catch (IOException ex) {
-            System.out.println(ex.getLocalizedMessage());
             throw new IllegalArgumentException("Error converting this string to a composite node state");
         }
 

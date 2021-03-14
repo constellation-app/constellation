@@ -56,6 +56,8 @@ public class HistogramFilterOnSelectionPlugin extends SimpleEditPlugin {
         final List<ElementTypeParameterValue> elementTypes = new ArrayList<>();
         elementTypes.add(new ElementTypeParameterValue(GraphElementType.TRANSACTION));
         elementTypes.add(new ElementTypeParameterValue(GraphElementType.VERTEX));
+        elementTypes.add(new ElementTypeParameterValue(GraphElementType.EDGE));
+        elementTypes.add(new ElementTypeParameterValue(GraphElementType.LINK));
         SingleChoiceParameterType.setOptionsData(elementTypeParameter, elementTypes);
         parameters.addParameter(elementTypeParameter);
 

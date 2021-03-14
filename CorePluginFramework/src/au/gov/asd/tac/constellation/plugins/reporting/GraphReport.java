@@ -86,11 +86,8 @@ public class GraphReport {
      */
     public PluginReport addPluginReport(Plugin plugin) {
         final PluginReport pluginReport = new PluginReport(this, plugin);
-        final boolean isIgnored = GraphReportManager.isIgnored(plugin.getTags());
-        if (!isIgnored) {
-            pluginReports.add(pluginReport);
-            GraphReportManager.fireNewPluginReport(pluginReport);
-        }
+        pluginReports.add(pluginReport);
+        GraphReportManager.fireNewPluginReport(pluginReport);
 
         return pluginReport;
     }
