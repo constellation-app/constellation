@@ -956,9 +956,9 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
          * @throws IOException When I/O errors happen.
          */
         @Override
-        protected void handleSave() throws IOException {          
+        protected void handleSave() throws IOException {
             final GraphDataObject gdo = graphNode.getDataObject();
-       
+
             if (gdo.isInMemory()) {
                 // We don't want to do a save if this is an in-memory DataObject.
                 // Instead, we'll do the "Save As..." action and let it naturally do the right thing.
@@ -1109,9 +1109,9 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 //     - if the star file fails to load, check to see if a 'backup' exists
                 //        - if backup was found attempt to load it
                 //        - if backup was not found throw load error
-                FileObject fileobj = freshGdo.getPrimaryFile();
-                File srcFile = new File(fileobj.getPath());
-                String srcfilePath = srcFile.getParent().concat("\\").concat(this.name).concat(".").concat(fileobj.getExt());
+                final FileObject fileobj = freshGdo.getPrimaryFile();
+                final File srcFile = new File(fileobj.getPath());
+                final String srcfilePath = srcFile.getParent().concat(File.pathSeparator).concat(this.name).concat(".").concat(fileobj.getExt());
                 
                 // Create a backup copy of the file before overwriting it. If the backup copy fails, then code will never
                 // get to execute the save, so the actual file should remain intact. If the save fails, the backup file will
@@ -1123,7 +1123,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                     cancelled = new GraphJsonWriter().writeGraphToZip(copy, out, new HandleIoProgress("Writing..."));
                 }
                 SaveNotification.saved(freshGdo.getPrimaryFile().getPath());
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 Exceptions.printStackTrace(ex);
             }
 

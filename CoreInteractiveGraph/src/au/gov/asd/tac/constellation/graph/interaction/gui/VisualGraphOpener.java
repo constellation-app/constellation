@@ -117,7 +117,7 @@ public final class VisualGraphOpener extends GraphOpener {
                         final File autosaved = new File(AutosaveUtilities.getAutosaveDir(), props.getProperty(AutosaveUtilities.ID) + GraphDataObject.FILE_EXTENSION);
                         try {
                             AutosaveUtilities.copyFile(autosaved, f);
-                        } catch (IOException ex) {
+                        } catch (final IOException ex) {
                             LOGGER.log(Level.WARNING, "Copying autosaved file", ex);
                         }
                     }
@@ -178,10 +178,10 @@ public final class VisualGraphOpener extends GraphOpener {
             if (graph == null) {
                 try {
                     final long t0 = System.currentTimeMillis();
-                    LOGGER.log(Level.INFO, String.format("MMDEBUG Attempting to open %s", graphFile.toString()));
+                    LOGGER.log(Level.INFO, String.format("Attempting to open %s", graphFile.toString()));
                     graph = new GraphJsonReader().readGraphZip(graphFile, new HandleIoProgress(String.format("Reading %s...", graphFile.getName())));
                     time = System.currentTimeMillis() - t0;
-                } catch (GraphParseException | IOException | RuntimeException ex) {  
+                } catch (final GraphParseException | IOException | RuntimeException ex) {  
                     gex = ex;
                 }
 
@@ -190,15 +190,14 @@ public final class VisualGraphOpener extends GraphOpener {
                         // An exception was thrown trying to read specified star file. The most likely reason for this is
                         // a corrupt star file. Check to see if there was a 'backup' star file generated before the star file
                         // was writtien - if so, attmept to load this.
-                        String backupFilename = graphFile.toString().concat(BACKUP_EXTENSION);
-                        File backupFile = new File(backupFilename);
+                        final File backupFile = new File(graphFile.toString().concat(BACKUP_EXTENSION));
                         
                         if (backupFile.exists()) {
                             
                             // Try to load backup file that was located, if it loads then clear previous exception, if not the 
                             // original exception is kept to be handled in the done method
                             final long t0 = System.currentTimeMillis();
-                            LOGGER.log(Level.WARNING, String.format("MMDEBUG Unable to open requested file, attempting to open backup %s", backupFile.toString()));
+                            LOGGER.log(Level.WARNING, String.format("Unable to open requested file, attempting to open backup %s", backupFile.toString()));
                             graph = new GraphJsonReader().readGraphZip(backupFile, new HandleIoProgress(String.format("%s could not be opened, attempting to open backup file", 
                                     graphFile.getName(), backupFile.getName())));
                             time = System.currentTimeMillis() - t0;
@@ -212,8 +211,8 @@ public final class VisualGraphOpener extends GraphOpener {
                         }
                     }
                 }
-                catch (GraphParseException | IOException | RuntimeException ex) {  
-                    LOGGER.log(Level.WARNING, String.format("MMDEBUG Unable to open requested file or any associated backup", graphFile.toString()));
+                catch (final GraphParseException | IOException | RuntimeException ex) {  
+                    LOGGER.log(Level.WARNING, String.format("Unable to open requested file or any associated backup", graphFile.toString()));
                     gex = ex;
                 }
  

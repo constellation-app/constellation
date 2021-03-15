@@ -100,7 +100,6 @@ public final class GraphJsonReader {
     public Graph readGraphZip(final File graphFile, final IoProgress progress) throws IOException, GraphParseException {
         try (final InputStream in = new BufferedInputStream(new FileInputStream(graphFile))) {
             return readGraphZip(graphFile.getPath(), in, progress);
-            
         }
     }
 
@@ -109,7 +108,7 @@ public final class GraphJsonReader {
             progress.start(100);
             byteReader = new GraphByteReader(bin);
         } 
-        catch (IOException ex) {
+        catch (final IOException ex) {
             // An exception occured attempting to read a zip (star) file, mark progress as complete to allow status 
             // to be updated with either loading of backup file if it exists
             progress.finish();
@@ -127,9 +126,9 @@ public final class GraphJsonReader {
 
             try {
                 graph = readGraph(name, in.getInputStream(), in.getAvailableSize(), progress);
-            } catch (IllegalStateException ex) {
+            } catch (final IllegalStateException ex) {
                 throw new GraphParseException(ex.getMessage(), ex);
-            } catch (InterruptedException ex) {
+            } catch (final InterruptedException ex) {
                 Thread.currentThread().interrupt();
                 throw new GraphParseException(ex.getMessage(), ex);
             } finally {
@@ -428,7 +427,7 @@ public final class GraphJsonReader {
                 throw new GraphParseException(String.format("Expected END_ARRAY, found '%s'.", current));
             }
 
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             Exceptions.printStackTrace(ex);
         } finally {
             jp.close();
@@ -454,7 +453,7 @@ public final class GraphJsonReader {
                     }
                 }
             });
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             final String msg = "There was an error loading some parts of the graph. The error was " + ex.getLocalizedMessage();
             // TODO: throw a plugin exception
 //            throw new PluginException(PluginNotificationLevel.ERROR, msg); 
@@ -556,7 +555,7 @@ public final class GraphJsonReader {
                     final Long modCount = node.get("mod_count").longValue();
                     attrValCount.put(attrId, modCount);
                 }
-            } catch (IllegalArgumentException ex) {
+            } catch (final IllegalArgumentException ex) {
                 // It's possible that we're reading a graph that contains an attribute type that we don't know about.
                 // This can happen when a module adds a new META type to a saved graph, and someone attempts to open
                 // that graph without that module (or an older version of that module).
