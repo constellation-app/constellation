@@ -55,9 +55,6 @@ import org.openide.windows.TopComponent;
 
 public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> implements GraphReportListener {
 
-    private static final String NOTES_VIEW_PLUGIN_NAME = "Notes View";
-    private static final String LOW_LEVEL_TAG = "LOW LEVEL";
-
     private final NotesViewController notesViewController;
     private final NotesViewPane notesViewPane;
 
@@ -129,20 +126,11 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
     public void newPluginReport(final PluginReport pluginReport) {
         final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
 
-        if (activeGraph != null && pluginReport.getGraphReport().getGraphId().equals(activeGraph.getId())) {
-            boolean hasLowLevel = false;
-            for (final String tag : pluginReport.getTags()) {
-                if (LOW_LEVEL_TAG.equals(tag)) {
-                    hasLowLevel = true;
-                    break;
-                }
-            }
-
-            // omit low level plugins which are note useful as notes
-            if ((!pluginReport.getPluginName().contains(NOTES_VIEW_PLUGIN_NAME)) && !hasLowLevel) {
-                notesViewController.readState(activeGraph);
-                notesViewPane.setGraphReport(notesViewController);
-            }
+        if (activeGraph != null
+                && pluginReport.getGraphReport().getGraphId().equals(activeGraph.getId())
+                && !pluginReport.hasLowLevelTag()) { // omit low level plugins which are note useful as notes
+            notesViewController.readState(activeGraph);
+            notesViewPane.setGraphReport(notesViewController);
         }
     }
 

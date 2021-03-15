@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.views.notes;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
@@ -29,9 +28,7 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.views.notes.state.NotesViewConcept;
 import au.gov.asd.tac.constellation.views.notes.state.NotesViewEntry;
 import au.gov.asd.tac.constellation.views.notes.state.NotesViewState;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Future;
 
 /**
  * Handles reading and writing to the state to save notes to the graph.

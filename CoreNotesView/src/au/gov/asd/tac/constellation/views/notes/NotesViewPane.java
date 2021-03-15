@@ -89,7 +89,7 @@ public class NotesViewPane extends BorderPane {
 
     private static final String AUTO_NOTES_FILTER = "Auto Notes";
     private static final String USER_NOTES_FILTER = "User Notes";
-    
+
     private static final String NOTES_VIEW_ICON = "resources/notes-view.png";
 
     private final Object LOCK = new Object();
@@ -210,7 +210,9 @@ public class NotesViewPane extends BorderPane {
         if (currentGraphReport != null) {
             // Iterates the list of currently executed plugins.
             currentGraphReport.getPluginReports().forEach(pluginReport -> {
-                addPluginReport(pluginReport);
+                if (!pluginReport.hasLowLevelTag()) {
+                    addPluginReport(pluginReport);
+                }
             });
 
             // Update the Notes View UI.
@@ -315,8 +317,8 @@ public class NotesViewPane extends BorderPane {
             synchronized (LOCK) {
                 notesViewEntries.forEach(entry -> {
                     // Add note to render list if its respective filter is selected.
-                    if ((selectedFilters.contains(USER_NOTES_FILTER) && entry.isUserCreated()) ||
-                            (selectedFilters.contains(AUTO_NOTES_FILTER) && !entry.isUserCreated())) {
+                    if ((selectedFilters.contains(USER_NOTES_FILTER) && entry.isUserCreated())
+                            || (selectedFilters.contains(AUTO_NOTES_FILTER) && !entry.isUserCreated())) {
                         notesToRender.add(entry);
                     }
                 });
