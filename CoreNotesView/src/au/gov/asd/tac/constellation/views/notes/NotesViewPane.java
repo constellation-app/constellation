@@ -210,6 +210,7 @@ public class NotesViewPane extends BorderPane {
         if (currentGraphReport != null) {
             // Iterates the list of currently executed plugins.
             currentGraphReport.getPluginReports().forEach(pluginReport -> {
+                // omit low level plugins which are not useful as notes
                 if (!pluginReport.hasLowLevelTag()) {
                     addPluginReport(pluginReport);
                 }
