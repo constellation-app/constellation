@@ -128,7 +128,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
 
         if (activeGraph != null
                 && pluginReport.getGraphReport().getGraphId().equals(activeGraph.getId())
-                && !pluginReport.hasLowLevelTag()) { // omit low level plugins which are note useful as notes
+                && !pluginReport.hasLowLevelTag()) { // omit low level plugins which are not useful as notes
             notesViewController.readState(activeGraph);
             notesViewPane.setGraphReport(notesViewController);
         }
