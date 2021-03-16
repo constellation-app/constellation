@@ -545,15 +545,14 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
         StatusDisplayer.getDefault().setStatusText("Closed " + graphNode.getDataObject().getName());
 
+        if (GraphManager.getDefault().getAllGraphs().isEmpty()) {
+            ConstellationIcon.clearCache();
+        }
+
         // Try to free up any unused memory
         final boolean forceGarbageCollectOnClose = NbPreferences.forModule(ApplicationPreferenceKeys.class).getBoolean(DeveloperPreferenceKeys.FORCE_GC_ON_CLOSE, DeveloperPreferenceKeys.FORCE_GC_ON_CLOSE_DEFAULT);
         if (forceGarbageCollectOnClose) {
             System.gc();
-        }
-
-
-        if (GraphManager.getDefault().getAllGraphs().isEmpty()) {
-            ConstellationIcon.clearCache();
         }
 
         graphUpdateManager.setManaged(false);
