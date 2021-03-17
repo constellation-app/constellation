@@ -33,10 +33,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.util.BitSet;
-import java.util.HashMap;
-import java.util.Map;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -151,7 +148,7 @@ public class CommonNeighboursPlugin extends SimpleEditPlugin {
         }
 
         // calculate common neighbours for every pair of vertices on the graph
-        final Map<Tuple<Integer, Integer>, Float> commonNeighbourScores = new HashMap<>();
+        SimilarityUtilities.setGraphAndEnsureAttributes(graph, COMMON_NEIGHBOURS_ATTRIBUTE);
         for (int vertexOnePosition = update.nextSetBit(0); vertexOnePosition >= 0; vertexOnePosition = update.nextSetBit(vertexOnePosition + 1)) {
             for (int vertexTwoPosition = update.nextSetBit(0); vertexTwoPosition >= 0; vertexTwoPosition = update.nextSetBit(vertexTwoPosition + 1)) {
                 if (!selectedOnly || (selected.get(vertexOnePosition) || selected.get(vertexTwoPosition))) {
@@ -175,14 +172,10 @@ public class CommonNeighboursPlugin extends SimpleEditPlugin {
                     if (community && (selected.get(vertexOnePosition) && selected.get(vertexTwoPosition))) {
                         commonNeighbours += 1;
                     }
-                    commonNeighbourScores.put(Tuple.create(vertexOneId, vertexTwoId), commonNeighbours);
+                    SimilarityUtilities.addScoreToGraph(vertexOneId, vertexTwoId, commonNeighbours);
                 }
             }
         }
-
-        // update the graph with common neighbours values
-        SimilarityUtilities.addScoresToGraph(graph, commonNeighbourScores, COMMON_NEIGHBOURS_ATTRIBUTE);
-
         // complete with schema
         PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
     }

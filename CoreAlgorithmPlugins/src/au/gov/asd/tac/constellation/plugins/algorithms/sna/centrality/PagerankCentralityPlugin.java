@@ -33,7 +33,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterTyp
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -102,7 +101,6 @@ public class PagerankCentralityPlugin extends SimpleEditPlugin {
         final float epsilon = parameters.getFloatValue(EPSILON_PARAMETER_ID);
         final boolean normaliseByAvailable = parameters.getBooleanValue(NORMALISE_AVAILABLE_PARAMETER_ID);
 
-
         PagerankController.initialiseAllPagerankVertices(graph, parameters.getBooleanValue(TREAT_UNDIRECTED_BIDIRECTIONAL_PARAMETER_ID), dampingFactor, normaliseByAvailable);
         
         // calculate pageranks
@@ -148,7 +146,7 @@ public class PagerankCentralityPlugin extends SimpleEditPlugin {
                 final PagerankVertex prVertex = new PagerankVertex(id, vertexCount);
                 pagerankVertices.put(id, prVertex);
             });
-
+          
             calculateAllOutgoingAndNeighboursAndPagerankContribution();
             updateSinkPagerankContribution();
         }
@@ -206,7 +204,6 @@ public class PagerankCentralityPlugin extends SimpleEditPlugin {
                     maxPagerank = pgVertex.stagedPagerank;
                 }
             }
-
             for (final PagerankVertex pgVertex: pagerankVertices.values()) {
                 if (normaliseByAvailable && maxPagerank > 0) {
                     pgVertex.pagerank = pgVertex.stagedPagerank / maxPagerank;
@@ -269,5 +266,29 @@ public class PagerankCentralityPlugin extends SimpleEditPlugin {
             
             stagedPagerank = baseContribution + (dampingFactor * neighbourContribution);
         }
+        
+        private static void reset() {
+        graph = null;
+        sinks.clear();
+        dampingFactor = 0;
+        vertexCount = 0;
+        sinkPagerankContribution = 0;
+        delta = 0;
+        }
+        
+        private void stageNewPagerank() {
+            double neighbourContribution = sinkPagerankContribution;
+            if (isSink) {
+                neighbourContribution -= pagerankContribution;
+            }
+                
+            neighbourContribution += neighbours.parallelStream().mapToDouble(pgVertex -> pgVertex.pagerankContribution).sum();
+            
+            stagedPagerank = baseContribution + (dampingFactor * neighbourContribution);
+        }
+        
+        
+        
     }
+
 }
