@@ -84,16 +84,16 @@ public class PagerankCentralityPluginNGTest {
         final PluginParameters parameters = instance.createParameters();
         parameters.setBooleanValue(PagerankCentralityPlugin.TREAT_UNDIRECTED_BIDIRECTIONAL_PARAMETER_ID, true);
         parameters.setFloatValue(PagerankCentralityPlugin.DAMPING_FACTOR_PARAMETER_ID, 0.85f);
-        parameters.setIntegerValue(PagerankCentralityPlugin.ITERATIONS_PARAMETER_ID, 100);
+        parameters.setIntegerValue(PagerankCentralityPlugin.ITERATIONS_PARAMETER_ID, 2);
         parameters.setFloatValue(PagerankCentralityPlugin.EPSILON_PARAMETER_ID, 1E-8f);
         parameters.setBooleanValue(PagerankCentralityPlugin.NORMALISE_AVAILABLE_PARAMETER_ID, false);
         PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
 
-        assertEquals(graph.getFloatValue(vertexPagerankAttribute, vxId0), 0.08510862f);
-        assertEquals(graph.getFloatValue(vertexPagerankAttribute, vxId1), 0.15745096f);
-        assertEquals(graph.getFloatValue(vertexPagerankAttribute, vxId2), 0.15202528f);
-        assertEquals(graph.getFloatValue(vertexPagerankAttribute, vxId3), 0.28124678f);
-        assertEquals(graph.getFloatValue(vertexPagerankAttribute, vxId4), 0.32416838f);
+        assertEquals(graph.getFloatValue(vertexPagerankAttribute, vxId0), 0.0725f);
+        assertEquals(graph.getFloatValue(vertexPagerankAttribute, vxId1), 0.134125f);
+        assertEquals(graph.getFloatValue(vertexPagerankAttribute, vxId2), 0.1755625f);
+        assertEquals(graph.getFloatValue(vertexPagerankAttribute, vxId3), 0.3094375f);
+        assertEquals(graph.getFloatValue(vertexPagerankAttribute, vxId4), 0.308375f);
     }
 
     @Test
@@ -102,15 +102,15 @@ public class PagerankCentralityPluginNGTest {
         final PluginParameters parameters = instance.createParameters();
         parameters.setBooleanValue(PagerankCentralityPlugin.TREAT_UNDIRECTED_BIDIRECTIONAL_PARAMETER_ID, true);
         parameters.setFloatValue(PagerankCentralityPlugin.DAMPING_FACTOR_PARAMETER_ID, 0.85f);
-        parameters.setIntegerValue(PagerankCentralityPlugin.ITERATIONS_PARAMETER_ID, 100);
+        parameters.setIntegerValue(PagerankCentralityPlugin.ITERATIONS_PARAMETER_ID, 2);
         parameters.setFloatValue(PagerankCentralityPlugin.EPSILON_PARAMETER_ID, 1E-8f);
         parameters.setBooleanValue(PagerankCentralityPlugin.NORMALISE_AVAILABLE_PARAMETER_ID, true);
         PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
 
-        assertEquals(graph.getFloatValue(vertexPagerankAttribute, vxId0), 0.22181106f);
-        assertEquals(graph.getFloatValue(vertexPagerankAttribute, vxId1), 0.4309117f);
-        assertEquals(graph.getFloatValue(vertexPagerankAttribute, vxId2), 0.42492065f);
-        assertEquals(graph.getFloatValue(vertexPagerankAttribute, vxId3), 0.8254921f);
-        assertEquals(graph.getFloatValue(vertexPagerankAttribute, vxId4), 1f);
+        assertEquals(graph.getFloatValue(vertexPagerankAttribute, vxId0), 0.18089105f);
+        assertEquals(graph.getFloatValue(vertexPagerankAttribute, vxId1), 0.39393282f);
+        assertEquals(graph.getFloatValue(vertexPagerankAttribute, vxId2), 0.5371851f);
+        assertEquals(graph.getFloatValue(vertexPagerankAttribute, vxId3), 1f);
+        assertEquals(graph.getFloatValue(vertexPagerankAttribute, vxId4), 0.99632686f);
     }
 }
