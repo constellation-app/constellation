@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.logging.Logger;
 
 /**
  *
@@ -162,6 +163,9 @@ public final class IntArray implements Iterable<Integer> {
             elementData = Arrays.copyOf(elementData, size);
         }
     }
+    private static final Logger LOG = Logger.getLogger(IntArray.class.getName());
+    
+    
 
     /**
      * Increases the capacity of this <tt>ArrayList</tt> instance, if necessary,
@@ -171,6 +175,7 @@ public final class IntArray implements Iterable<Integer> {
      * @param minCapacity the desired minimum capacity
      */
     public void ensureCapacity(final int minCapacity) {
+//        LOG.info("setting size to " + minCapacity);
         modCount++;
         int oldCapacity = elementData.length;
         if (minCapacity > oldCapacity) {

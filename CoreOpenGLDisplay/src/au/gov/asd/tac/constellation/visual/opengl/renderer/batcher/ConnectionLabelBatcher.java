@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.visual.opengl.utilities.LabelUtilities;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.ConnectionGlyphStream;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.ConnectionGlyphStreamContext;
+import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManagerBI;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import java.io.IOException;
@@ -35,6 +36,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 /**
  *
@@ -169,7 +171,10 @@ public class ConnectionLabelBatcher implements SceneBatcher {
             labelBatch.finalise(gl);
         };
     }
-
+    
+    
+    private static final Logger LOGGER = Logger.getLogger(ConnectionLabelBatcher.class.getName());
+    
     private void fillLabels(final VisualAccess access, ConnectionGlyphStream glyphStream) throws InterruptedException {
         final ConnectionGlyphStreamContext context = new ConnectionGlyphStreamContext();
 //        final ExecutorService pool = Executors.newFixedThreadPool(NUM_CORES);
@@ -190,6 +195,8 @@ public class ConnectionLabelBatcher implements SceneBatcher {
 //        pool.awaitTermination(10, TimeUnit.MINUTES);
 
         glyphStream.trimToSize();
+        
+        LOGGER.info("fillLabels "+ ((GlyphManagerBI) SharedDrawable.getGlyphManager()).getCache().stats().toString());
     }
 
     private void bufferLabel(final int pos, final VisualAccess access, final ConnectionGlyphStream glyphStream, Matrix44f currentLabelInfo, final ConnectionGlyphStreamContext context) {

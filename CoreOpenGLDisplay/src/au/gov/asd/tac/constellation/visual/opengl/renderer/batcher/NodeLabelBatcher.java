@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable.GLRender
 import au.gov.asd.tac.constellation.visual.opengl.renderer.TextureUnits;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.LabelUtilities;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
+import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManagerBI;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.NodeGlyphStream;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.NodeGlyphStreamContext;
 import com.jogamp.opengl.GL3;
@@ -31,10 +32,6 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -201,7 +198,11 @@ public class NodeLabelBatcher implements SceneBatcher {
 //        pool.awaitTermination(10, TimeUnit.MINUTES);
 
         glyphStream.trimToSize();
+        
+        LOGGER.info("fillTopLabels "+ ((GlyphManagerBI) SharedDrawable.getGlyphManager()).getCache().stats().toString());
     }
+    
+    
 
     private void fillBottomLabels(final VisualAccess access, NodeGlyphStream glyphStream) throws InterruptedException {
 //        final ExecutorService pool = Executors.newFixedThreadPool(NUM_CORES);
@@ -216,6 +217,8 @@ public class NodeLabelBatcher implements SceneBatcher {
 //        pool.awaitTermination(10, TimeUnit.MINUTES);
 
         glyphStream.trimToSize();
+        
+        LOGGER.info("fillBottomLabels: " + ((GlyphManagerBI) SharedDrawable.getGlyphManager()).getCache().stats().toString());
     }
 
     private void bufferBottomLabel(final int pos, final VisualAccess access, NodeGlyphStream glyphStream) {
