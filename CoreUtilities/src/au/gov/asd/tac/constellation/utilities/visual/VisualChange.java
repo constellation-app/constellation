@@ -90,7 +90,7 @@ public final class VisualChange implements Comparable<VisualChange> {
         return changeListSize;
     }
     
-    public boolean hasSameChangeList(VisualChange other) {
+    public boolean hasSameChangeList(final VisualChange other) {
         if (changeList == null) {
             return other.changeList == null;
         }

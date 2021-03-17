@@ -304,9 +304,9 @@ public abstract class VisualProcessor {
             if (!masterChangeMap.containsKey(getMasterProperty(change.property))) {
                 masterChangeMap.put(getMasterProperty(change.property), new ArrayList<>());
             }
-            List<VisualChange> currentChanges = masterChangeMap.get(getMasterProperty(change.property));
+            final List<VisualChange> currentChanges = masterChangeMap.get(getMasterProperty(change.property));
             boolean equivilantChangePresent = false;
-            for (VisualChange currentChange : currentChanges) {
+            for (final VisualChange currentChange : currentChanges) {
                 if (currentChange.hasSameChangeList(change)){
                     equivilantChangePresent = true;
                     break;

@@ -971,18 +971,18 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
      *
      * @return array of node IDs
      */
-    public List<Integer> gatherSelectedNodes(GraphWriteMethods wg) {
-        List<Integer> selectedIds = VisualGraphUtilities.getSelectedElements(wg);
+    public List<Integer> gatherSelectedNodes(final GraphReadMethods rg) {
+        List<Integer> selectedIds = VisualGraphUtilities.getSelectedElements(rg);
         
         final int hitId = eventState.getCurrentHitId();
         if (eventState.getCurrentHitType().equals(HitType.VERTEX) && !selectedIds.contains(hitId)) {
             selectedIds.add(hitId);
         } else if (eventState.getCurrentHitType().equals(HitType.TRANSACTION)) {
-            final int srcId = wg.getTransactionSourceVertex(hitId);
+            final int srcId = rg.getTransactionSourceVertex(hitId);
             if (!selectedIds.contains(srcId)) {
                 selectedIds.add(srcId);
             }
-            final int dstId = wg.getTransactionDestinationVertex(hitId);
+            final int dstId = rg.getTransactionDestinationVertex(hitId);
             if (!selectedIds.contains(dstId)) {
                 selectedIds.add(dstId);
             }

@@ -280,7 +280,7 @@ public class VisualGraphUtilities {
     }
     
         public static List<Integer> getSelectedElements(final GraphReadMethods graph) {
-        List<Integer> selectedIds = new ArrayList<>();
+        final List<Integer> selectedIds = new ArrayList<>();
         final int vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
         if (vertexSelectedAttribute != Graph.NOT_FOUND) {
             graph.vertexStream().forEach(vertexId -> {
@@ -289,7 +289,7 @@ public class VisualGraphUtilities {
                 }
             });
         
-            
+//            This code is left in as a suggested improvement pending the outcomes of an investigation into the use of indexing with Constellation
 //            final GraphIndexResult result = grm.getElementsWithAttributeValue(vertexSelectedAttribute, Boolean.TRUE);
 //            final int resultCount = result.getCount();
 //            for (int i = 0; i < resultCount; i++) {
