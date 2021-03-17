@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParamet
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -31,6 +32,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.HBox;
+import javafx.util.StringConverter;
+import org.controlsfx.control.textfield.TextFields;
 
 /**
  * A drop-down combo box which is the GUI element corresponding to a
@@ -50,7 +53,7 @@ public class SingleChoiceInputPane extends HBox {
     public static final int DEFAULT_WIDTH = 300;
 
     private final ComboBox<ParameterValue> field;
-    
+
     // Keep track of entered characters so the user can enter the prefixes of choices to get there quicker.
     private String prefix;
     private static final Logger LOGGER = Logger.getLogger(SingleChoiceInputPane.class.getName());
@@ -63,7 +66,40 @@ public class SingleChoiceInputPane extends HBox {
         if (initialValue.getObjectValue() != null) {
             field.getSelectionModel().select(initialValue);
         }
-        field.setEditable(false);
+        //TODO Set optional?
+//--------------
+//        field.setEditable(true);
+//        TextFields.bindAutoCompletion(field.getEdi tor(), field.getItems());
+        //--------------
+        field.setEditable(true);
+        TextFields.bindAutoCompletion(field.getEditor(),
+                field.getItems().stream().map(parameterValue ->
+                        parameterValue.getObjectValue().toString()).collect(Collectors.toList()));
+//--------------
+//            AutoCompleteUtilities.autoCompleteComboBox(field, (typedText, itemToCompare) ->
+//                    itemToCompare.getObjectValue().toString().toLowerCase().contains(typedText.toLowerCase())
+//                            || itemToCompare.getObjectValue().toString().equals(typedText));
+
+//--------------
+//        ComboBoxCustomizer.create(field)
+//                  .autocompleted(items)
+//                  .customize();
+//--------------
+
+        field.setConverter(new StringConverter<ParameterValue>() {
+            @Override
+            public String toString(ParameterValue object) {
+                return object != null ? object.getObjectValue().toString() : "";
+            }
+
+            @Override
+            public ParameterValue fromString(String string) {
+                return field.getItems().stream().filter(object ->
+                        object.getObjectValue().equals(string)).findFirst().orElse(null);
+            }
+
+        });
+
         field.setPrefWidth(DEFAULT_WIDTH);
         field.setDisable(!parameter.isEnabled());
         field.setManaged(parameter.isVisible());
@@ -160,7 +196,7 @@ public class SingleChoiceInputPane extends HBox {
                 }
             });
         });
-         
+
         getChildren().add(field);
         final String parameterId = parameter.getId();
         final List<String> singleChoiceRecentValues = RecentParameterValues.getRecentValues(parameterId);
