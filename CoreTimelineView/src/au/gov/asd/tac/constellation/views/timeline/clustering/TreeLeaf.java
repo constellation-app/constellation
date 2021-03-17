@@ -24,8 +24,8 @@ public class TreeLeaf extends TreeElement implements Comparable<TreeLeaf> {
     private final int id;
     private final long datetime;
 
-    private final long lowerDisplayPos;
-    private final long upperDisplayPos;
+    private final int lowerDisplayPos;
+    private final int upperDisplayPos;
 
     int vertexIdA;
     int vertexIdB;
@@ -33,8 +33,8 @@ public class TreeLeaf extends TreeElement implements Comparable<TreeLeaf> {
     private int selectionCount = 0;
     private final boolean nodesSelected;
 
-    TreeLeaf(final int transactionID, final long transactionValue, final boolean isSelected, final boolean nodesSelected, final long lowerDisplayPos,
-            final long upperDisplayPos, final int vertexIdA, final int vertexIdB) {
+    TreeLeaf(final int transactionID, final long transactionValue, final boolean isSelected, final boolean nodesSelected, final int lowerDisplayPos,
+            final int upperDisplayPos, final int vertexIdA, final int vertexIdB) {
         this.id = transactionID;
         this.datetime = transactionValue;
         this.lowerDisplayPos = lowerDisplayPos;
@@ -67,12 +67,12 @@ public class TreeLeaf extends TreeElement implements Comparable<TreeLeaf> {
     }
 
     @Override
-    public long getLowerDisplayPos() {
+    public int getLowerDisplayPos() {
         return lowerDisplayPos;
     }
 
     @Override
-    public long getUpperDisplayPos() {
+    public int getUpperDisplayPos() {
         return upperDisplayPos;
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,43 +18,37 @@ package au.gov.asd.tac.constellation.views.welcome;
 import javafx.scene.control.Button;
 
 /**
- * A plugin designed to be supported by the Welcome Page.
- *
- * @author canis_majoris
+ * 
+ * Sets how the welcome page plugins are laid out 
+ * @author Delphinus8821
  */
-public abstract class WelcomePageProvider {
-    /**
+public interface WelcomePluginInterface {
+     /**
      * Get a unique reference that is used to identify the plugin 
      *
      * @return a unique reference
      */
-    public String getName() {
-        return null;
-    }
+    public String getName();
     
     /**
      * This method describes what action should be taken when the 
      * link is clicked on the Welcome Page
      *
      */
-    public void run() {
-    }
+    public void run();
 
     /**
      * Determines whether this analytic appear on the Welcome Page 
      *
      * @return true is this analytic should be visible, false otherwise.
      */
-    public boolean isVisible() {
-        return true;
-    }
+    public boolean isVisible();
     
     /**
      * Creates the button object to represent this plugin
      * 
      * @return the button object
      */
-    public Button getButton() {
-        return null;
-    }
+    public Button getButton();
+    
 }
