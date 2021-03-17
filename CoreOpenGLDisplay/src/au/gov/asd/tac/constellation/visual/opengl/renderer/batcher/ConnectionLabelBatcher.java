@@ -80,7 +80,9 @@ public class ConnectionLabelBatcher implements SceneBatcher {
     private static final int FLOAT_BUFFER_WIDTH = 4;
     private static final int INT_BUFFER_WIDTH = 4;
 
-    private static final int NUM_CORES = Runtime.getRuntime().availableProcessors();
+//    private static final int NUM_CORES = Runtime.getRuntime().availableProcessors();
+//    private static final int NUM_CORES = 1;
+//    final ExecutorService pool = Executors.newFixedThreadPool(NUM_CORES);
 
     public ConnectionLabelBatcher() {
         // Create the batch
@@ -170,7 +172,7 @@ public class ConnectionLabelBatcher implements SceneBatcher {
 
     private void fillLabels(final VisualAccess access, ConnectionGlyphStream glyphStream) throws InterruptedException {
         final ConnectionGlyphStreamContext context = new ConnectionGlyphStreamContext();
-        final ExecutorService pool = Executors.newFixedThreadPool(NUM_CORES);
+//        final ExecutorService pool = Executors.newFixedThreadPool(NUM_CORES);
         for (int link = 0; link < access.getLinkCount(); link++) {
             final int connectionCount = access.getLinkConnectionCount(link);
             setCurrentConnection(access.getLinkLowVertex(link), access.getLinkHighVertex(link), connectionCount, context);
@@ -178,13 +180,14 @@ public class ConnectionLabelBatcher implements SceneBatcher {
                 final int connection = access.getLinkConnection(link, pos);
                 nextParallelConnection((int) (LabelUtilities.NRADIUS_TO_LINE_WIDTH_UNITS * Math.min(LabelUtilities.MAX_TRANSACTION_WIDTH, access.getConnectionWidth(connection))), context);
                 final Matrix44f currentLabelInfo = access.getIsLabelSummary(connection) ? summaryLabelInfo : attributeLabelInfoReference;
-                final Runnable bufferThread = new BufferLabel(connection, access, glyphStream, currentLabelInfo, context);
-                pool.execute(bufferThread);
+//                final Runnable bufferThread = new BufferLabel(connection, access, glyphStream, currentLabelInfo, context);
+                bufferLabel(connection, access, glyphStream, currentLabelInfo, context);
+//                pool.submit(bufferThread);
             }
 
         }
-        pool.shutdown();
-        pool.awaitTermination(10, TimeUnit.MINUTES);
+//        pool.shutdown();
+//        pool.awaitTermination(10, TimeUnit.MINUTES);
 
         glyphStream.trimToSize();
     }
@@ -282,25 +285,25 @@ public class ConnectionLabelBatcher implements SceneBatcher {
         }
     }
 
-    private class BufferLabel extends Thread {
-
-        private final int pos;
-        private final VisualAccess access;
-        private final ConnectionGlyphStream glyphStream;
-        private final Matrix44f currentLabelInfo;
-        private final ConnectionGlyphStreamContext context;
-
-        BufferLabel(final int pos, final VisualAccess access, final ConnectionGlyphStream glyphStream, final Matrix44f currentLabelInfo, ConnectionGlyphStreamContext context) {
-            this.pos = pos;
-            this.access = access;
-            this.glyphStream = glyphStream;
-            this.currentLabelInfo = currentLabelInfo;
-            this.context = new ConnectionGlyphStreamContext(context);
-        }
-
-        @Override
-        public void run() {
-            bufferLabel(pos, access, glyphStream, currentLabelInfo, context);
-        }
-    }
+//    private class BufferLabel extends Thread {
+//
+//        private final int pos;
+//        private final VisualAccess access;
+//        private final ConnectionGlyphStream glyphStream;
+//        private final Matrix44f currentLabelInfo;
+//        private final ConnectionGlyphStreamContext context;
+//
+//        BufferLabel(final int pos, final VisualAccess access, final ConnectionGlyphStream glyphStream, final Matrix44f currentLabelInfo, ConnectionGlyphStreamContext context) {
+//            this.pos = pos;
+//            this.access = access;
+//            this.glyphStream = glyphStream;
+//            this.currentLabelInfo = currentLabelInfo;
+//            this.context = new ConnectionGlyphStreamContext(context);
+//        }
+//
+//        @Override
+//        public void run() {
+//            bufferLabel(pos, access, glyphStream, currentLabelInfo, context);
+//        }
+//    }
 }
