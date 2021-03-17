@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.analyticview.results;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult.ElementScore;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -30,7 +31,7 @@ import java.util.stream.Collectors;
 public class ScoreResult extends AnalyticResult<ElementScore> {
 
     public Set<String> getUniqueScoreNames() {
-        return result.stream()
+        return result.values().stream()
                 .map(elementScores -> elementScores.getNames())
                 .flatMap(Set::stream).collect(Collectors.toSet());
     }
@@ -38,8 +39,8 @@ public class ScoreResult extends AnalyticResult<ElementScore> {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
-        result.forEach(score -> {
-            sb.append(score.elementId).append(": {\n");
+        result.values().forEach(score -> {
+            sb.append(score.getElementId()).append(": {\n");
             score.namedScores.forEach((name, value) -> {
                 sb.append("\tname: ").append(name).append(", value: ").append(value);
             });
@@ -47,7 +48,14 @@ public class ScoreResult extends AnalyticResult<ElementScore> {
         });
         return sb.toString();
     }
-
+    
+    public ScoreResult combine(ScoreResult otherResult) {
+        otherResult.result.forEach((key, value) -> 
+        result.merge(key, value, ElementScore::combineReplace)
+        );
+        return this;
+    }
+    
     public static class ElementScore extends AnalyticData implements Comparable<ElementScore> {
 
         private final Map<String, Float> namedScores;
@@ -56,6 +64,13 @@ public class ScoreResult extends AnalyticResult<ElementScore> {
                 final String identifier, final boolean isNull, final Map<String, Float> namedScores) {
             super(elementType, elementId, identifier, isNull);
             this.namedScores = namedScores;
+        }
+        
+        public static ElementScore combineReplace(final ElementScore es1, final ElementScore es2) {
+            final Map<String, Float> combinedNamedScores = new HashMap<>(es1.getNamedScores());
+            combinedNamedScores.putAll(es2.getNamedScores());
+            
+            return new ElementScore(es1.getElementType(), es1.getElementId(), es1.getIdentifier(), es1.isNull() && es2.isNull(), combinedNamedScores);
         }
 
         /**
@@ -90,7 +105,7 @@ public class ScoreResult extends AnalyticResult<ElementScore> {
 
         @Override
         public String toString() {
-            return String.format("{%s;%s;%s}", getClass().getSimpleName(), identifier, namedScores);
+            return String.format("{%s;%s;%s}", getClass().getSimpleName(), this.getIdentifier(), namedScores);
         }
 
         @Override
