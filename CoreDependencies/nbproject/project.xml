@@ -2287,18 +2287,6 @@
                 <package>tech.uom.lib.common.util</package>
             </public-packages>
             <class-path-extension>
-                <runtime-relative-path>ext/FastInfoset-1.2.15-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/FastInfoset-1.2.15-jar.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/GeographicLib-Java-1.49-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/GeographicLib-Java-1.49-jar.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/SparseBitSet-1.2-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/SparseBitSet-1.2-jar.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/assertj-core-3.18.1-jar.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/assertj-core-3.18.1-jar.jar</binary-origin>
             </class-path-extension>
@@ -2411,8 +2399,16 @@
                 <binary-origin>release/modules/ext/failureaccess-1.0.1-bundle.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/FastInfoset-1.2.15-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/FastInfoset-1.2.15-jar.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/filters-2.0.235-jar.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/filters-2.0.235-jar.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/GeographicLib-Java-1.49-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/GeographicLib-Java-1.49-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/gluegen-rt-natives-linux-amd64.jar</runtime-relative-path>
@@ -2929,6 +2925,10 @@
             <class-path-extension>
                 <runtime-relative-path>ext/slf4j-api-2.0.0-alpha1-jar.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/slf4j-api-2.0.0-alpha1-jar.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/SparseBitSet-1.2-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/SparseBitSet-1.2-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/sqlite-jdbc-3.31.1-jar.jar</runtime-relative-path>
