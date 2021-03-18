@@ -90,6 +90,14 @@ public final class VisualChange implements Comparable<VisualChange> {
         return changeListSize;
     }
     
+    /**
+     * Compares the changeList of two VisualChanges to see if they are the same.
+     * If both changeLists are null then returns true.
+     * Otherwise both changeLists must have the same elements in the same order to be considered equal.
+     * 
+     * @param other
+     * @return boolean indicating whether changeLists of VisualChanges are equal.
+     */
     public boolean hasSameChangeList(final VisualChange other) {
         if (changeList == null) {
             return other.changeList == null;
