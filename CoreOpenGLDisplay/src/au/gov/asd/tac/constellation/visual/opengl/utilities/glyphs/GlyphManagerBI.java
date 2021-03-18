@@ -102,8 +102,6 @@ public final class GlyphManagerBI implements GlyphManager {
 
     private final GlyphRectangleBuffer textureBuffer;
 
-//    private static final Map<String, LigatureContext> cache = new HashMap();
-    // TODO: cache expiry
     private static class LigatureContext {
 
         private List<GlyphRectangle> glyphRectangles;
@@ -119,10 +117,9 @@ public final class GlyphManagerBI implements GlyphManager {
             this.top = top;
             this.bottom = bottom;
         }
-
     }
-    
-    public LoadingCache<String, LigatureContext> getCache(){
+
+    public LoadingCache<String, LigatureContext> getCache() {
         return cache;
     }
 
@@ -131,145 +128,7 @@ public final class GlyphManagerBI implements GlyphManager {
     private final CacheLoader<String, LigatureContext> loader = new CacheLoader<String, LigatureContext>() {
         @Override
         public LigatureContext load(String text) {
-            final BufferedImage drawing = new BufferedImage(50 * maxFontHeight, 2 * maxFontHeight, bufferType);
-            final Graphics2D g2d = drawing.createGraphics();
-            g2d.setBackground(new Color(0, 0, 0, 0));
-            g2d.setColor(Color.WHITE);
-
-//        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-//        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-//        g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
-//        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-//        g2d.setColor(Color.ORANGE);
-//        g2d.drawLine(BASEX, BASEY, BASEX+1000, BASEY);
-            int x = BASEX;
-            final int y0 = basey;
-
-            final FontRenderContext frc = g2d.getFontRenderContext();
-
-            int left = Integer.MAX_VALUE;
-            int right = Integer.MIN_VALUE;
-            int top = Integer.MAX_VALUE;
-            int bottom = Integer.MIN_VALUE;
-            final List<GlyphRectangle> glyphRectangles = new ArrayList<>();
-
-            for (final FontDirectionalRun drun : FontDirectionalRun.getDirectionRuns(text)) {
-                for (final FontRunSequence frun : FontRunSequence.getFontRuns(drun.run, fontsInfo)) {
-//                // Draw an indicator line to show where the font run starts.
-//                //
-//                g2d.setColor(Color.LIGHT_GRAY);
-//                g2d.drawLine(x, y0-128, x, y0+64);
-
-                    final String spart = frun.string;
-                    final int flags = drun.getFontLayoutDirection() | Font.LAYOUT_NO_START_CONTEXT | Font.LAYOUT_NO_LIMIT_CONTEXT;
-                    final GlyphVector gv = frun.font.layoutGlyphVector(frc, spart.toCharArray(), 0, spart.length(), flags); // slowest part
-
-                    // Some fonts are shaped such that the left edge of the pixel bounds is
-                    // to the left of the starting point, and the right edge of the pixel
-                    // bounds is to to the right of the pixel bounds (for example,
-                    // the word "Test" in font "Montez" from fonts.google.com).
-                    // Figure that out here.
-                    //
-                    final Rectangle pixelBounds = gv.getPixelBounds(null, x, y0);
-                    if (pixelBounds.x < x) {
-                        x += x - pixelBounds.x;
-                    }
-
-                    g2d.setColor(Color.WHITE);
-                    g2d.setFont(frun.font);
-
-                    final Map<AttributedCharacterIterator.Attribute, Object> attrs = new HashMap<>();
-                    attrs.put(TextAttribute.RUN_DIRECTION, drun.direction);
-                    attrs.put(TextAttribute.FONT, frun.font);
-                    final TextLayout layout = new TextLayout(spart, attrs, frc);
-
-                    layout.draw(g2d, x, y0);
-
-                    // Iterate through the glyphs to get the bounding boxes.
-                    // Don't include bounding boxes that exceed the width of the
-                    // drawing buffer; there's no point processing a glyph that we
-                    // didn't draw. (Also, drawing.getSubImage() will throw
-                    // an exception below.)
-                    //
-                    final List<Rectangle> boxes = new ArrayList<>();
-                    for (int glyphIx = 0; glyphIx < gv.getNumGlyphs(); glyphIx++) {
-                        final int gc = gv.getGlyphCode(glyphIx);
-                        if (gc != 0) {
-                            final Rectangle r = gv.getGlyphPixelBounds(glyphIx, frc, x, y0);
-                            if (r.width > 0 && (r.x + r.width < drawing.getWidth())) {
-                                boxes.add(r);
-
-                                left = Math.min(left, r.x);
-                                right = Math.max(right, r.x + r.width);
-                                top = Math.min(top, r.y);
-                                bottom = Math.max(bottom, r.y + r.height);
-                            }
-                        }
-                    }
-
-                    // Sort them by x position.
-                    //
-                    Collections.sort(boxes, (Rectangle r0, Rectangle r1) -> r0.x - r1.x);
-
-                    final List<Rectangle> merged = mergeBoxes(boxes);
-
-                    // Add each merged glyph rectangle to the texture buffer.
-                    // Remember the texture position and rectangle (see below).
-                    //
-                    final FontMetrics fm = g2d.getFontMetrics(frun.font);
-                    merged.forEach(r -> { // slowest lamda
-                        // Check that the glyph doesn't extend outside the drawing texture.
-                        //
-                        final int y = Math.max(r.y, 0);
-                        final int height = Math.min(r.height, drawing.getHeight() - y);
-                        if (height > 0) {
-                            final int position = textureBuffer.addRectImage(drawing.getSubimage(r.x, y, r.width, height), 0);
-                            glyphRectangles.add(new GlyphRectangle(position, r, fm.getAscent()));
-                        }
-                    });
-
-                    if (drawRuns) {
-                        g2d.setColor(Color.RED);
-                        g2d.drawRect(pixelBounds.x, pixelBounds.y, pixelBounds.width, pixelBounds.height);
-                    }
-
-                    if (drawIndividual) {
-                        for (int glyphIx = 0; glyphIx < gv.getNumGlyphs(); glyphIx++) {
-                            final int gc = gv.getGlyphCode(glyphIx);
-                            if (gc != 0) {
-                                final Rectangle gr = gv.getGlyphPixelBounds(glyphIx, frc, x, y0);
-                                if (gr.width != 0 && gr.height != 0) {
-                                    g2d.setColor(Color.GREEN);
-                                    g2d.drawRect(gr.x, gr.y, gr.width, gr.height);
-                                }
-                            }
-                        }
-                    }
-
-                    if (drawCombined) {
-                        g2d.setColor(Color.MAGENTA);
-                        merged.forEach(r -> {
-                            g2d.drawRect(r.x, r.y, r.width, r.height);
-                        });
-                    }
-
-                    if (drawRuns || drawIndividual || drawCombined) {
-                        g2d.setColor(Color.LIGHT_GRAY);
-                        g2d.drawRect(0, 0, drawing.getWidth() - 1, drawing.getHeight() - 1);
-                    }
-
-                    // Just like some fonts draw to the left of their start points (see above),
-                    // some fonts draw after their advance.
-                    // Figure that out here.
-                    //
-                    final int maxAdvance = (int) Math.max(layout.getAdvance(), pixelBounds.width);
-                    x += maxAdvance;
-                }
-            }
-
-            g2d.dispose();
-
-            return new LigatureContext(glyphRectangles, left, right, top, bottom);
+            return buildLigature(text);
         }
     };
 
@@ -330,6 +189,7 @@ public final class GlyphManagerBI implements GlyphManager {
 
         cache = CacheBuilder.newBuilder()
                 .expireAfterAccess(5, TimeUnit.MINUTES)
+                .recordStats()
                 .weakKeys()
                 .weakValues()
                 .build(loader);
@@ -494,7 +354,6 @@ public final class GlyphManagerBI implements GlyphManager {
      */
     @Override
     public void renderTextAsLigatures(final String text, GlyphStream glyphStream, GlyphStreamContext context) {
-//        LOGGER.info(text);
         if (StringUtils.isBlank(text)) {
             return;
         }
@@ -503,16 +362,8 @@ public final class GlyphManagerBI implements GlyphManager {
             glyphStream = DEFAULT_GLYPH_STREAM;
         }
 
-//        if (!cache.containsKey(text)) {
-//
-////            cache.put(text, new LigatureContext(glyphRectangles, left, right, top, bottom));
-//        }
+        final LigatureContext ligature = cache.getUnchecked(text); // calls buildLigature()
 
-        final LigatureContext ligature = cache.getUnchecked(text);
-
-        //----------------------------------------------------
-        // FONT RUNS FINISHED
-        //----------------------------------------------------
         // Add the background for this text.
         //
         glyphStream.newLine((ligature.right - ligature.left) / (float) maxFontHeight, context);
@@ -537,6 +388,149 @@ public final class GlyphManagerBI implements GlyphManager {
             final float cy = (gr.rect.y - (ligature.top + ligature.bottom) / 2f) / (float) (maxFontHeight) + 0.5f;
             glyphStream.addGlyph(gr.position, cx, cy, context);
         }
+    }
+
+    private LigatureContext buildLigature(final String text) {
+        final BufferedImage drawing = new BufferedImage(50 * maxFontHeight, 2 * maxFontHeight, bufferType);
+        final Graphics2D g2d = drawing.createGraphics();
+        g2d.setBackground(new Color(0, 0, 0, 0));
+        g2d.setColor(Color.WHITE);
+
+//        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+//        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+//        g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+//        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+//        g2d.setColor(Color.ORANGE);
+//        g2d.drawLine(BASEX, BASEY, BASEX+1000, BASEY);
+
+        int x = BASEX;
+        final int y0 = basey;
+
+        final FontRenderContext frc = g2d.getFontRenderContext();
+
+        int left = Integer.MAX_VALUE;
+        int right = Integer.MIN_VALUE;
+        int top = Integer.MAX_VALUE;
+        int bottom = Integer.MIN_VALUE;
+        final List<GlyphRectangle> glyphRectangles = new ArrayList<>();
+
+        for (final FontDirectionalRun drun : FontDirectionalRun.getDirectionRuns(text)) {
+            for (final FontRunSequence frun : FontRunSequence.getFontRuns(drun.run, fontsInfo)) {
+//                // Draw an indicator line to show where the font run starts.
+//                //
+//                g2d.setColor(Color.LIGHT_GRAY);
+//                g2d.drawLine(x, y0-128, x, y0+64);
+
+                final String spart = frun.string;
+                final int flags = drun.getFontLayoutDirection() | Font.LAYOUT_NO_START_CONTEXT | Font.LAYOUT_NO_LIMIT_CONTEXT;
+                final GlyphVector gv = frun.font.layoutGlyphVector(frc, spart.toCharArray(), 0, spart.length(), flags); // slowest part
+
+                // Some fonts are shaped such that the left edge of the pixel bounds is
+                // to the left of the starting point, and the right edge of the pixel
+                // bounds is to to the right of the pixel bounds (for example,
+                // the word "Test" in font "Montez" from fonts.google.com).
+                // Figure that out here.
+                //
+                final Rectangle pixelBounds = gv.getPixelBounds(null, x, y0);
+                if (pixelBounds.x < x) {
+                    x += x - pixelBounds.x;
+                }
+
+                g2d.setColor(Color.WHITE);
+                g2d.setFont(frun.font);
+
+                final Map<AttributedCharacterIterator.Attribute, Object> attrs = new HashMap<>();
+                attrs.put(TextAttribute.RUN_DIRECTION, drun.direction);
+                attrs.put(TextAttribute.FONT, frun.font);
+                final TextLayout layout = new TextLayout(spart, attrs, frc);
+
+                layout.draw(g2d, x, y0);
+
+                // Iterate through the glyphs to get the bounding boxes.
+                // Don't include bounding boxes that exceed the width of the
+                // drawing buffer; there's no point processing a glyph that we
+                // didn't draw. (Also, drawing.getSubImage() will throw
+                // an exception below.)
+                //
+                final List<Rectangle> boxes = new ArrayList<>();
+                for (int glyphIx = 0; glyphIx < gv.getNumGlyphs(); glyphIx++) {
+                    final int gc = gv.getGlyphCode(glyphIx);
+                    if (gc != 0) {
+                        final Rectangle r = gv.getGlyphPixelBounds(glyphIx, frc, x, y0);
+                        if (r.width > 0 && (r.x + r.width < drawing.getWidth())) {
+                            boxes.add(r);
+
+                            left = Math.min(left, r.x);
+                            right = Math.max(right, r.x + r.width);
+                            top = Math.min(top, r.y);
+                            bottom = Math.max(bottom, r.y + r.height);
+                        }
+                    }
+                }
+
+                // Sort them by x position.
+                //
+                Collections.sort(boxes, (Rectangle r0, Rectangle r1) -> r0.x - r1.x);
+
+                final List<Rectangle> merged = mergeBoxes(boxes);
+
+                // Add each merged glyph rectangle to the texture buffer.
+                // Remember the texture position and rectangle (see below).
+                //
+                final FontMetrics fm = g2d.getFontMetrics(frun.font);
+                merged.forEach(r -> { // slowest lamda
+                    // Check that the glyph doesn't extend outside the drawing texture.
+                    //
+                    final int y = Math.max(r.y, 0);
+                    final int height = Math.min(r.height, drawing.getHeight() - y);
+                    if (height > 0) {
+                        final int position = textureBuffer.addRectImage(drawing.getSubimage(r.x, y, r.width, height), 0);
+                        glyphRectangles.add(new GlyphRectangle(position, r, fm.getAscent()));
+                    }
+                });
+
+                if (drawRuns) {
+                    g2d.setColor(Color.RED);
+                    g2d.drawRect(pixelBounds.x, pixelBounds.y, pixelBounds.width, pixelBounds.height);
+                }
+
+                if (drawIndividual) {
+                    for (int glyphIx = 0; glyphIx < gv.getNumGlyphs(); glyphIx++) {
+                        final int gc = gv.getGlyphCode(glyphIx);
+                        if (gc != 0) {
+                            final Rectangle gr = gv.getGlyphPixelBounds(glyphIx, frc, x, y0);
+                            if (gr.width != 0 && gr.height != 0) {
+                                g2d.setColor(Color.GREEN);
+                                g2d.drawRect(gr.x, gr.y, gr.width, gr.height);
+                            }
+                        }
+                    }
+                }
+
+                if (drawCombined) {
+                    g2d.setColor(Color.MAGENTA);
+                    merged.forEach(r -> {
+                        g2d.drawRect(r.x, r.y, r.width, r.height);
+                    });
+                }
+
+                if (drawRuns || drawIndividual || drawCombined) {
+                    g2d.setColor(Color.LIGHT_GRAY);
+                    g2d.drawRect(0, 0, drawing.getWidth() - 1, drawing.getHeight() - 1);
+                }
+
+                // Just like some fonts draw to the left of their start points (see above),
+                // some fonts draw after their advance.
+                // Figure that out here.
+                //
+                final int maxAdvance = (int) Math.max(layout.getAdvance(), pixelBounds.width);
+                x += maxAdvance;
+            }
+        }
+
+        g2d.dispose();
+
+        return new LigatureContext(glyphRectangles, left, right, top, bottom);
     }
 
     @Override
