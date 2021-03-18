@@ -34,7 +34,7 @@ public class EmptyResult extends AnalyticResult<EmptyData> {
 
         @Override
         public String toString() {
-            return String.format("{%s;%s}", getClass().getSimpleName(), identifier);
+            return String.format("{%s;%s}", getClass().getSimpleName(), id.identifier);
         }
     }
 }

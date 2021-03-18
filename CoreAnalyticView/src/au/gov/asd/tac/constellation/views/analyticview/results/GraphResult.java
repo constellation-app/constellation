@@ -29,7 +29,7 @@ public class GraphResult extends AnalyticResult<GraphScore> {
 
     @Override
     public void add(final GraphScore result) {
-        this.result.add(result);
+        this.result.put(result.id, result);
         this.metadata.put(result.getType(), String.valueOf(result.getScore()));
     }
 
@@ -69,7 +69,7 @@ public class GraphResult extends AnalyticResult<GraphScore> {
 
         @Override
         public String toString() {
-            return String.format("{%s;%s;%s}", getClass().getSimpleName(), identifier, score);
+            return String.format("{%s;%s;%s}", getClass().getSimpleName(), id.identifier, score);
         }
 
         @Override

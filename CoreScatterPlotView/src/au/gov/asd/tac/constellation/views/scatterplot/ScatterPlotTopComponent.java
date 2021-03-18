@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.monitor.AttributeValueMonitor;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
@@ -259,6 +260,7 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
     /**
      * Write the given ScatterPlotState to the active graph.
      */
+    @PluginInfo(tags = {"LOW LEVEL"})
     private static class ScatterPlotStateWriter extends SimpleEditPlugin {
 
         private final ScatterPlotState scatterPlotState;
