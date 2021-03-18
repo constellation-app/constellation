@@ -33,6 +33,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterTyp
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -256,7 +257,8 @@ public class PagerankCentralityPlugin extends SimpleEditPlugin {
             pagerankContribution = pagerank/outCount;
         }
         
-        private void stageNewPagerank(double sinkPagerankContribution, double baseContribution, double dampingFactor) {
+        private void stageNewPagerank(final double sinkPagerankContribution, final double baseContribution, 
+                final double dampingFactor) {
             double neighbourContribution = sinkPagerankContribution;
             if (isSink) {
                 neighbourContribution -= pagerankContribution;
@@ -265,30 +267,7 @@ public class PagerankCentralityPlugin extends SimpleEditPlugin {
             neighbourContribution += neighbours.parallelStream().mapToDouble(pgVertex -> pgVertex.pagerankContribution).sum();
             
             stagedPagerank = baseContribution + (dampingFactor * neighbourContribution);
-        }
-        
-        private static void reset() {
-        graph = null;
-        sinks.clear();
-        dampingFactor = 0;
-        vertexCount = 0;
-        sinkPagerankContribution = 0;
-        delta = 0;
-        }
-        
-        private void stageNewPagerank() {
-            double neighbourContribution = sinkPagerankContribution;
-            if (isSink) {
-                neighbourContribution -= pagerankContribution;
-            }
-                
-            neighbourContribution += neighbours.parallelStream().mapToDouble(pgVertex -> pgVertex.pagerankContribution).sum();
-            
-            stagedPagerank = baseContribution + (dampingFactor * neighbourContribution);
-        }
-        
-        
-        
+        }      
     }
 
 }
