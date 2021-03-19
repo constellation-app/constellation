@@ -41,78 +41,63 @@
             </tr>
         </table>
         
+        <h2>Introduction</h2>
         <p>
-            The table view presents attribute data from the graph  in a tabular format. Highlighted rows in
+            The Table View presents attribute data from the graph in a tabular format. Highlighted rows in
             the table represent selected elements in the graph. Selection of the table rows (including the
             use of the shift and control buttons) will result in the selection of the table rows and the
             associated elements in the graph itself. Conversely, changes to the graph selection are reflected
             in the table.
         </p>
+        
         <div style="text-align: center">
-            <img src="resources/table-view.png" alt="" width="800" height="173">
-            <br/>
-            <em>The Table View.</em>
+            <img src="resources/TableView.png" alt="Table View">
         </div>
-        <h2>View</h2>
-        <h3>Element Type <img src="resources/table-view-element-type-transactions.png" alt="" width="25" height="15">
-            &lt;&gt; <img src="resources/table-view-element-type-nodes.png" alt="" width="25" height="15"></h3>
-        <p>
-            Clicking the element type toolbar button will switch between tabular views of transaction data
-            (which includes the nodes at either end), or node data.
-        </p>
-        <h2>Sort</h2>
-        <h3>Column Sorting</h3>
+        
+        <h2>Column Sorting</h2>
         <p>
             Left-clicking any column header will sort the table by the values in that column. A second click
             will reverse the sort order and a third click will remove the sort. If you hold shift while you
             click on column headers you can sort by multiple columns. This sorting will occur in the order
             that you click the columns (as indicated by the dots and numbers).
         </p>
-        <div style="text-align: center">
-            <img src="resources/table-view-column-sorting.png" alt="" width="600" height="186">
-        </div>
-        <h2>Filter</h2>
-        <h3>Column Visibility</h3>
-        <p>
-            Clicking the column visibility toolbar button will open a menu allowing you to customise which
-            attributes are displayed in the table.
-        </p>
-        <div style="text-align: center">
-            <img src="resources/table-view-column-visibility.png" alt="" width="400" height="415">
-        </div>
-        <h3>Selected Only <img src="resources/table-view-visibility-all.png" alt="" width="25" height="15">
-            &lt;&gt; <img src="resources/table-view-visibility-selected-only.png" alt="" width="25" height="15"></h3>
-        <p>
-            Clicking the selected only toolbar button will hide any elements which are not selected on the
-            graph. Note that while this option is enabled, selection in the table will not update selection
-            on the graph.
-        </p>
-        <h3>Column Filtering</h3>
+        
+        <h2>Column Filtering</h2>
         <p>
             Right-clicking any column header will open a filter dialog allowing you to select / deselect
             values manually, or type something to apply a filter to the data.
         </p>
-        <div style="text-align: center">
-            <img src="resources/table-view-column-filtering.png" alt="" width="350" height="402">
-        </div>
-        <h2>Export</h2>
-        <h3>Context Menu</h3>
+        
+        <h2>Context Menu</h2>
         <p>
             Right-clicking anywhere on the table will open a context menu providing options to copy data
             from the clicked cell, row or column.
         </p>
-        <div style="text-align: center">
-            <img src="resources/table-view-context-menu.png" alt="" width="300" height="305">
-        </div>
-        <h3>Copy Table <img src="resources/table-view-copy.png" alt="" width="25" height="14"></h3>
-        <p>
+        
+        <h2>Menu Items</h2>
+        <ul>
+            <li><em>Column Visibility</em> <img src="resources/TableColumnVisibility.png" alt="Column Visibility Button"> - 
+            Clicking the column visibility toolbar button will open a menu allowing you to customise which
+            attributes are displayed in the table.</li>
+            <li><em>Selected Only</em> <img src="resources/TableVisibilityAll.png" alt="Selected Only Button Unselected">
+            &lt;&gt; <img src="resources/TableVisibilitySelectedOnly.png" alt="Selected Only Button Selected"> - 
+            Clicking the selected only toolbar button will hide any elements which are not selected on the
+            graph. Note that while this option is enabled, selection in the table will not update selection
+            on the graph.</li>
+            <li><em>Element Type</em> <img src="resources/TableElementTypeTransactions.png" alt="Transaction Element Type Button">
+            &lt;&gt; <img src="resources/TableElementTypeNodes.png" alt="Node Element Type Button"> - 
+            Clicking the element type toolbar button will switch between tabular views of transaction data
+            (which includes the nodes at either end), or node data.</li>
+            <li><em>Copy Table</em> <img src="resources/TableCopy.png" alt="Copy Table Button"> - 
             Clicking on the copy toolbar button will provide you with options to copy the table to the
-            system clipboard. The table will be copied exactly as it appears in the Table View.
-        </p>
-        <h3>Export Table <img src="resources/table-view-export.png" alt="" width="25" height="14"></h3>
-        <p>
+            system clipboard. The table will be copied exactly as it appears in the Table View.</li>
+            <li><em>Export Table</em> <img src="resources/TableExport.png" alt="Export Table Button"> - 
             Clicking on the export toolbar button will provide you with options to export the table in
-            various file formats. The table will be copied exactly as it appears in the Table View.
-        </p>
+            various file formats. The table will be copied exactly as it appears in the Table View.</li>
+            <li><em>Other Settings</em> <img src="resources/TableOtherSettings.png" alt="Other Settings Button"> - 
+            Clicking on the other settings toolbar button will provide you with options to load and save 
+            your table preferences (e.g. column ordering, column sorting) as well as change the size of 
+            each page in the table.</li>
+        </ul>
     </body>
 </html>

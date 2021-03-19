@@ -2,5 +2,5 @@
 <!DOCTYPE map PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Map Version 2.0//EN" "http://java.sun.com/products/javahelp/map_2_0.dtd">
 <map version="2.0">
     <mapID target="au.gov.asd.tac.constellation.views.tableview.about" url="tableview-about.html"/>
-    <mapID target="au.gov.asd.tac.constellation.views.tableview2" url="table-view.html"/>
+    <mapID target="au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent" url="table-view.html"/>
 </map>
