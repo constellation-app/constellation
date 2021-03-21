@@ -46,83 +46,62 @@
         </p>
 
         <div style="text-align: center">
-            <img src="resources/PluginReporter.png" alt="" width="404" height="438">
+            <img src="resources/PluginReporter.png" alt="Plugin Reporter">
         </div>
 
         <p>
-            A plugin report will be created whenever a plugin is run, and added to the Plugin Reporter. These reports will change their color and message based on the current status of the plugin they represent.
+            A plugin report will be created whenever a plugin is run, and added to the Plugin Reporter. These reports will change 
+            their color and message based on the current status of the plugin they represent.
         </p>
-
         <ul>
-            <li>
-                <strong style="color: green">Green indicates the plugin is currently running.</strong>
+            <li>Green indicates the plugin is currently running.
                 <div style="text-align: center">
-                    <img src="resources/PluginReportGreen.png" alt="" width="400" height="50">
+                    <img src="resources/PluginReportGreen.png" alt=" Running Plugin Report">
                 </div>
             </li>
-            <li>
-                <strong style="color: blue">Blue indicates that the plugin was canceled.</strong>
+            <li>Blue indicates that the plugin was cancelled.
                 <div style="text-align: center">
-                    <img src="resources/PluginReportBlue.png" alt="" width="400" height="50">
+                    <img src="resources/PluginReportBlue.png" alt="Cancelled Plugin Report">
                 </div>
             </li>
-            <li>
-                <strong style="color: orange">Orange indicates that an anticipated error occurred.</strong>
+            <li>Orange indicates that an anticipated error occurred.
                 <div style="text-align: center">
-                    <img src="resources/PluginReportOrange.png" alt="" width="400" height="50">
+                    <img src="resources/PluginReportOrange.png" alt="Anticipated Error Plugin Report">
                 </div>
             </li>
-            <li>
-                <strong style="color: red">Red indicates that an unexpected error occurred.</strong>
+            <li>Red indicates that an unexpected error occurred.
                 <div style="text-align: center">
-                    <img src="resources/PluginReportRed.png" alt="" width="400" height="50">
+                    <img src="resources/PluginReportRed.png" alt="Unexpected Error Plugin Report">
                 </div>
             </li>
-            <li>
-                <strong style="color: grey">Grey indicates that the plugin finished successfully.</strong>
+            <li>Grey indicates that the plugin finished successfully.
                 <div style="text-align: center">
-                    <img src="resources/PluginReportGrey.png" alt="" width="400" height="50">
+                    <img src="resources/PluginReportGrey.png" alt="Successful Plugin Report">
                 </div>
             </li>
         </ul>
 
         <p>
-            The Plugin Reporter allows filtering of the plugin history using a tag-based system. You can filter on plugin reports using by their tags using the 'Filter' drop down menu.
+            The Plugin Reporter allows filtering of the plugin history using a tag-based system. You can filter on plugin reports 
+            by their tags using the "Filter" drop down menu. NOTE: You will only be able to filter tags which are present in plugins 
+            that have already been executed. The list of tags you can filter on may include:
         </p>
-
         <ul>
-            <li>
-                <strong>Analytic</strong>
-                Plugins which perform some analytic calculation based on information on the graph.
-            </li>
-            <li>
-                <strong>Import</strong>
-                Plugins which add information to the graph, generally these will be found in the Data Access View.
-            </li>
-            <li>
-                <strong>General</strong>
-                Plugins which don't fit into any specific category.
-            </li>
-            <li>
-                <strong>Low Level</strong>
-                Plugins which are generally hidden from the user.
-            </li>
-            <li>
-                <strong>Selection</strong>
-                Plugins which change what is selected on the graph.
-            </li>
+            <li><em>Analytic</em> - Plugins which perform some analytic calculation based on information on the graph.</li>
+            <li><em>Import</em> - Plugins which add information to the graph, generally these will be found in the Data Access 
+                View.</li>
+            <li><em>General</em> - Plugins which don't fit into any specific category.</li>
+            <li><em>Low Level</em> - Plugins which are generally hidden from the user.</li>
+            <li><em>Selection</em> - Plugins which change what is selected on the graph.</li>
         </ul>
 
         <p>
-            The 'Clear' button will clear all currently displayed plugin reports, and only display new plugin reports for the active graph.
+            The "Clear" button will clear all currently displayed plugin reports, and only display new plugin reports for the 
+            active graph.
         </p>
 
         <p>
-            The 'Show All' button will make the Plugin Reporter display all plugin reports for the active graph.
-        </p>
-
-        <p>
-            The 'Help' button will open this help documentation.
+            The "Show All" button will make the Plugin Reporter display all plugin reports for the active graph.
         </p>
     </body>
 </html>

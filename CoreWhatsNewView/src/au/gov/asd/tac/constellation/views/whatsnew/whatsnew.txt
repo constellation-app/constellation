@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
+== 2021-03-22 Scatter Plot
+<p>Ctrl-Shift-O has been added as a keyboard shortcut to open up the Scatter Plot View.</p>
+
 == 2021-02-25 Blaze Colors - Presets
 <p>The blaze menus have been updated to show preset blaze colors. An option to save a custom color as a preset is represented by a checkbox in the color dialog.</p>
 <p>The blaze toolbar menu now displays up to 10 preset colors. Now with the ability to change the color stored by clicking the tile to load a color picker.</p>
