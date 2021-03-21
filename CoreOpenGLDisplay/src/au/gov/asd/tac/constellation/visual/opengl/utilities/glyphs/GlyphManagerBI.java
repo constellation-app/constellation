@@ -15,14 +15,12 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.font.TextAttribute;
@@ -40,7 +38,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -110,7 +107,7 @@ public final class GlyphManagerBI implements GlyphManager {
         private int top;
         private int bottom;
 
-        public LigatureContext(List<GlyphRectangle> glyphRectangles, int left, int right, int top, int bottom) {
+        public LigatureContext(final List<GlyphRectangle> glyphRectangles, final int left, final int right, final int top, final int bottom) {
             this.glyphRectangles = glyphRectangles;
             this.left = left;
             this.right = right;
@@ -119,18 +116,7 @@ public final class GlyphManagerBI implements GlyphManager {
         }
     }
 
-    public LoadingCache<String, LigatureContext> getCache() {
-        return cache;
-    }
-
-    private static LoadingCache<String, LigatureContext> cache;
-
-    private final CacheLoader<String, LigatureContext> loader = new CacheLoader<String, LigatureContext>() {
-        @Override
-        public LigatureContext load(String text) {
-            return buildLigature(text);
-        }
-    };
+    private static Map<String, LigatureContext> cache;
 
     /**
      * A default no-op GlyphStream to use when the user specifies null.
@@ -187,12 +173,7 @@ public final class GlyphManagerBI implements GlyphManager {
         drawIndividual = false;
         drawCombined = false;
 
-        cache = CacheBuilder.newBuilder()
-                .expireAfterAccess(5, TimeUnit.MINUTES)
-                .recordStats()
-                .weakKeys()
-                .weakValues()
-                .build(loader);
+        cache = new HashMap<>();
     }
 
     public BufferedImage getImage() {
@@ -362,7 +343,17 @@ public final class GlyphManagerBI implements GlyphManager {
             glyphStream = DEFAULT_GLYPH_STREAM;
         }
 
-        final LigatureContext ligature = cache.getUnchecked(text); // calls buildLigature()
+        // Retrieve the LigatureContext from the cache to greatly speed up 
+        // building these ligatures which are built every time the graph is 
+        // loaded or when the graph structure changes. Note that items are not 
+        // purged from this cache so there is a small build up of memory over 
+        // time. Guava caching was attempted though it was slower and negating 
+        // the performance improvements of caching.
+        //
+        if (!cache.containsKey(text)) {
+            cache.put(text, buildLigature(text));
+        }
+        final LigatureContext ligature = cache.get(text);
 
         // Add the background for this text.
         //
@@ -396,10 +387,10 @@ public final class GlyphManagerBI implements GlyphManager {
         g2d.setBackground(new Color(0, 0, 0, 0));
         g2d.setColor(Color.WHITE);
 
-//        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-//        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-//        g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
-//        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 //        g2d.setColor(Color.ORANGE);
 //        g2d.drawLine(BASEX, BASEY, BASEX+1000, BASEY);
 
