@@ -21,7 +21,6 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import org.openide.util.Exceptions;
@@ -170,31 +169,6 @@ public abstract class IconData {
 
             return scaledImage;
         }
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 79 * hash + Arrays.hashCode(this.data);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final IconData other = (IconData) obj;
-        if (!Arrays.equals(this.data, other.data)) {
-            return false;
-        }
-        return true;
     }
 
     @Override
