@@ -99,6 +99,10 @@ public final class GlyphManagerBI implements GlyphManager {
 
     private final GlyphRectangleBuffer textureBuffer;
 
+    /**
+     * A LigatureContext contains all the data required to be cached to improve
+     * the performance of renderTextAsLigatures.
+     */
     private static class LigatureContext {
 
         private List<GlyphRectangle> glyphRectangles;
@@ -116,6 +120,10 @@ public final class GlyphManagerBI implements GlyphManager {
         }
     }
 
+    /**
+     * Cache the bulk of the work renderTextAsLigature does to greatly improve
+     * performance.
+     */
     private static Map<String, LigatureContext> cache;
 
     /**
