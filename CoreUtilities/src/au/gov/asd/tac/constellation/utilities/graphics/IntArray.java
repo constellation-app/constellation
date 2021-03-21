@@ -130,11 +130,11 @@ public final class IntArray implements Iterable<Integer> {
      */
     public IntArray(final int initialCapacity) {
         super();
-        
+
         if (initialCapacity < 0) {
             throw new IllegalArgumentException("Illegal Capacity: " + initialCapacity);
         }
-        
+
         this.elementData = new int[initialCapacity];
         size = 0;
     }
@@ -163,9 +163,6 @@ public final class IntArray implements Iterable<Integer> {
             elementData = Arrays.copyOf(elementData, size);
         }
     }
-    private static final Logger LOG = Logger.getLogger(IntArray.class.getName());
-    
-    
 
     /**
      * Increases the capacity of this <tt>ArrayList</tt> instance, if necessary,
@@ -175,7 +172,6 @@ public final class IntArray implements Iterable<Integer> {
      * @param minCapacity the desired minimum capacity
      */
     public void ensureCapacity(final int minCapacity) {
-//        LOG.info("setting size to " + minCapacity);
         modCount++;
         int oldCapacity = elementData.length;
         if (minCapacity > oldCapacity) {

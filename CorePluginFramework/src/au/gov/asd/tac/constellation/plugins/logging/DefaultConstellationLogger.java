@@ -36,9 +36,6 @@ import org.openide.windows.TopComponent;
 public class DefaultConstellationLogger implements ConstellationLogger {
 
     private static final Logger LOGGER = Logger.getLogger(DefaultConstellationLogger.class.getName());
-    
-    private long start=0;
-    private long stop=0;
 
     @Override
     public void applicationStarted() {
@@ -68,14 +65,11 @@ public class DefaultConstellationLogger implements ConstellationLogger {
     @Override
     public void pluginStarted(final Plugin plugin, final PluginParameters parameters, final Graph graph) {
         LOGGER.log(Level.FINE, "Plugin Started: {0}", plugin.getName());
-        start = System.currentTimeMillis();
     }
 
     @Override
     public void pluginStopped(final Plugin plugin, final PluginParameters parameters) {
         LOGGER.log(Level.FINE, "Plugin Stopped: {0}", plugin.getName());
-        stop = System.currentTimeMillis();
-        LOGGER.log(Level.FINE, "Total Time: {0}", stop-start);
     }
 
     @Override
