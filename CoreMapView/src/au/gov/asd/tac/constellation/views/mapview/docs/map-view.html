@@ -41,64 +41,63 @@
             </tr>
         </table>
         
+        <h2>Introduction</h2>
         <p>
-            The Map View provides a visualisation of geospatial data in a Constellation graph as well as
-            features for basic geospatial analysis.
+            The Map View provides a visualisation of geospatial data in a Constellation graph as well as features for basic 
+            geospatial analysis.
         </p>
+        
         <div style="text-align: center">
-            <img src="resources/mapview-main.png" alt="">
-            <br/>
-            <em>The default layout of the Map View.</em>
+            <img src="resources/MapView.png" alt="Map View">
         </div>
+        
+        <h2>Base Maps</h2>
         <p>
-            The configuration toolbar at the top of the Map View offers a range of tools for customising
-            and interacting with the map.
+            Base maps are provided by local or network tile servers, with the default map being a simple built-in map consisting 
+            only of country borders. The Map View can be extended to source its base map data from a custom location (refer to the 
+            Developer Guide for more information on how to do this). You can switch between available base maps using the 
+            <img src="resources/MapBaseMapsMenu.png" alt="Base Maps Menu"> menu.
         </p>
-        <ul>
-            <li>
-                Base maps are provided by local or network tile servers, with the default map being a simple
-                built-in map consisting only of country borders. The Map View can be extended to source its
-                base map data from a custom location (refer to the Developer Guide for more information on how
-                to do this). You can switch between available base maps using the <em>Base Maps</em> menu.
-            </li>
-            <li>
-                Layers can be rendered on top of the map in order to provide additional visualisations for
-                analytic purposes. Layers can be switched on and off using the <em>Layers</em> menu.
-            </li>
-            <li>
-                Overlays can be rendered on top of the map in order to provide additional information or
-                features to the Map View. Overlays can be switched on and off using the <em>Overviews</em> menu.
-            </li>
-            <li>
-                You can zoom to markers or custom locations on the map using the <em>Zoom</em> menu.
-            </li>
-            <li>
-                The Map View is capable of rendering points, lines, polygons and multi-polygons to represent
-                geospatial data on a graph. By default, it will read from the <em>Geo.Latitude</em> and
-                <em>Geo.Longitude</em> attributes for point data, and the <em>Geo.Shape</em> attribute for line,
-                polygon and multi-polygon data, where it will expect to find a GeoJSON object representing
-                the shape as a Feature Collection. The Map View can also render clusters (calculated using
-                marker centroids). All of these marker types can be switched on and off using the
-                <em>Marker Visibility</em> menu.
-                <div style="text-align: center">
-                    <img src="resources/mapview-markers.png" alt="" width="1000" height="603">
-                    <br/>
-                    <em>Graph nodes are represented on the map as various types of markers depending on the information available.</em>
-                    <img src="resources/mapview-clusters.png" alt="">
-                    <br/>
-                    <em>Markers can also be clustered together based on their proximity to one another.</em>
-                </div>
-            </li>
-            <li>
-                You customise markers with colours and labels using data on the graph. This can be achieved by
-                selecting options in the <em>Marker Colours</em> and <em>Marker Labels</em> menus.
-            </li>
-            <li>
-                Geospatial data can be exported to a range of open data formats using the <em>Export</em> menu.
-            </li>
-            <li>
-                You can open this help document using the <em>Help</em> button.
-            </li>
-        </ul>
+        
+        <h2>Layers</h2>
+        <p>
+            Layers can be rendered on top of the map in order to provide additional visualisations for analytic purposes. 
+            Layers can be switched on and off using the <img src="resources/MapLayersMenu.png" alt="Layers Menu"> menu.
+        </p>
+        
+        <h2>Overlays</h2>
+        <p>
+            Overlays can be rendered on top of the map in order to provide additional information or features to the Map View. 
+            Overlays can be switched on and off using the <img src="resources/MapOverlayMenu.png" alt="Overlay Menu"> menu.
+        </p>
+        
+        <h2>Zooming</h2>
+        <p>
+            You can zoom to markers or custom locations on the map using the 
+            <img src="resources/MapZoomMenu.png" alt="Zoom Menu"> menu.
+        </p>
+        
+        <h2>Marker Types</h2>
+        <p>
+            The Map View is capable of rendering points, lines, polygons and multi-polygons to represent geospatial data on a graph. 
+            By default, it will read from the "Geo.Latitude" and "Geo.Longitude" attributes for point data, and the "Geo.Shape" 
+            attribute for line, polygon and multi-polygon data, where it will expect to find a GeoJSON object representing the shape 
+            as a Feature Collection. The Map View can also render clusters (calculated using marker centroids). All of these marker 
+            types can be switched on and off using the <img src="resources/MapMarkerVisibilityMenu.png" alt="Marker Visibility Menu"> 
+            menu.
+        </p>
+        
+        <h2>Marker Customisation</h2>
+        <p>
+            You customise markers with colours and labels using data on the graph. This can be achieved by selecting options in the 
+            <img src="resources/MapMarkerColoursMenu.png" alt="Marker Colours Menu"> and 
+            <img src="resources/MapMarkerLabelsMenu.png" alt="Marker Labels Menu"> menus.
+        </p>
+        
+        <h2>Exporting Data</h2>
+        <p>
+            Geospatial data can be exported to a range of open data formats using the 
+            <img src="resources/MapExportMenu.png" alt="Export Menu"> menu.
+        </p>
     </body>
 </html>
