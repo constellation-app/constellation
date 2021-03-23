@@ -21,10 +21,10 @@ import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import impl.org.controlsfx.skin.SearchableComboBoxSkin;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -32,8 +32,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.HBox;
-import javafx.util.StringConverter;
-import org.controlsfx.control.textfield.TextFields;
 
 /**
  * A drop-down combo box which is the GUI element corresponding to a
@@ -60,45 +58,14 @@ public class SingleChoiceInputPane extends HBox {
 
     public SingleChoiceInputPane(final PluginParameter<SingleChoiceParameterValue> parameter) {
         field = new ComboBox<>();
+        SearchableComboBoxSkin cbSkin = new SearchableComboBoxSkin(field);
+        field.setSkin(cbSkin);
         field.setPromptText(parameter.getDescription());
         field.setItems(FXCollections.observableList(SingleChoiceParameterType.getOptionsData(parameter)));
         final ParameterValue initialValue = parameter.getParameterValue();
         if (initialValue.getObjectValue() != null) {
             field.getSelectionModel().select(initialValue);
         }
-        //TODO Set optional?
-//--------------
-//        field.setEditable(true);
-//        TextFields.bindAutoCompletion(field.getEdi tor(), field.getItems());
-        //--------------
-        field.setEditable(true);
-        TextFields.bindAutoCompletion(field.getEditor(),
-                field.getItems().stream().map(parameterValue ->
-                        parameterValue.getObjectValue().toString()).collect(Collectors.toList()));
-//--------------
-//            AutoCompleteUtilities.autoCompleteComboBox(field, (typedText, itemToCompare) ->
-//                    itemToCompare.getObjectValue().toString().toLowerCase().contains(typedText.toLowerCase())
-//                            || itemToCompare.getObjectValue().toString().equals(typedText));
-
-//--------------
-//        ComboBoxCustomizer.create(field)
-//                  .autocompleted(items)
-//                  .customize();
-//--------------
-
-        field.setConverter(new StringConverter<ParameterValue>() {
-            @Override
-            public String toString(ParameterValue object) {
-                return object != null ? object.getObjectValue().toString() : "";
-            }
-
-            @Override
-            public ParameterValue fromString(String string) {
-                return field.getItems().stream().filter(object ->
-                        object.getObjectValue().equals(string)).findFirst().orElse(null);
-            }
-
-        });
 
         field.setPrefWidth(DEFAULT_WIDTH);
         field.setDisable(!parameter.isEnabled());
@@ -169,7 +136,10 @@ public class SingleChoiceInputPane extends HBox {
                     case PROPERTY:
                         final List<ParameterValue> options = scParameterValue.getOptionsData();
                         EventHandler<ActionEvent> handler = field.getOnAction();
+
                         field.setOnAction(null);
+                        Platform.runLater(() -> {
+                            field.getSelectionModel().select(0);
                         field.setItems(FXCollections.observableList(options));
                         field.setOnAction(handler);
 
@@ -179,8 +149,9 @@ public class SingleChoiceInputPane extends HBox {
                         } else {
                             field.getSelectionModel().clearSelection();
                         }
-
+                        });
                         break;
+
                     case ENABLED:
                         field.setDisable(!scParameter.isEnabled());
                         break;

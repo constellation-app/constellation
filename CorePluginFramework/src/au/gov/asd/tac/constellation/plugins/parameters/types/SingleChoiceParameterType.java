@@ -128,9 +128,22 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
      * parameter.
      */
     public static void setOptions(final PluginParameter<SingleChoiceParameterValue> parameter, final List<String> options) {
+        //Change only if the options are changed.
+        if (optionsChanged(parameter, options)) {
         final SingleChoiceParameterValue parameterValue = parameter.getParameterValue();
+
+            //Clear the existing selection
+            parameter.setObjectValue(null);
+
         parameterValue.setOptions(options);
         parameter.setProperty(CHOICES, new Object());
+        }
+    }
+
+    private static boolean optionsChanged(PluginParameter<SingleChoiceParameterValue> parameter, List<String> options) {
+        final SingleChoiceParameterValue parameterValue = parameter.getParameterValue();
+        boolean bol = !options.equals(parameterValue.getOptions());
+        return bol;
     }
 
     /**
@@ -143,6 +156,10 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
      */
     public static void setOptionsData(final PluginParameter<SingleChoiceParameterValue> parameter, final List<? extends ParameterValue> options) {
         final SingleChoiceParameterValue parameterValue = parameter.getParameterValue();
+
+        //Clear the existing selection
+        parameter.setObjectValue(null);
+
         parameterValue.setOptionsData(options);
         parameter.setProperty(CHOICES, new Object());
     }
@@ -319,6 +336,7 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
                 final StringParameterValue doOption = new StringParameterValue(option);
                 this.options.add(doOption);
             }
+            choice = null;
         }
 
         /**
@@ -365,8 +383,11 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
             if (options.contains(doCheck)) {
                 this.choice = doCheck;
                 return true;
-            }
+            } else {
+                //clear the choice
+                this.choice = null;
             return false;
+        }
         }
 
         /**
@@ -392,8 +413,11 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
             if (options.contains(choice)) {
                 this.choice = choice;
                 return true;
-            }
+            } else {
+                //clear the choice
+                this.choice = null;
             return false;
+        }
         }
 
         @Override
@@ -451,7 +475,10 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
         @Override
         public boolean setObjectValue(final Object o) {
             boolean valueChanged = false;
-            if (o instanceof SingleChoiceParameterValue) {
+            if (o == null) {
+                options.clear();
+                valueChanged = true;
+            } else if (o instanceof SingleChoiceParameterValue) {
                 final SingleChoiceParameterValue sc = (SingleChoiceParameterValue) o;
                 if (!Objects.equals(options, sc.options)) {
                     options.clear();
