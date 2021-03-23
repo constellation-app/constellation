@@ -100,7 +100,6 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
         final Matrix33f rotationMatrix = new Matrix33f();
         rotationMatrixti.getRotationMatrix(rotationMatrix);
 
-
         // Do the vertex positions need mixing?
         boolean requiresMix = x2Attr != Graph.NOT_FOUND && y2Attr != Graph.NOT_FOUND && z2Attr != Graph.NOT_FOUND;
         boolean requiresVertexVisibility = vxVisibilityAttr != Graph.NOT_FOUND;
@@ -144,23 +143,23 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
             }
 
             // Convert world coordinates to camera coordinates.
-            Vector3f sceneLocation = convertWorldToScene(x, y, z, centre, rotationMatrix, cameraDistance);
-            int rAttr = VisualConcept.VertexAttribute.NODE_RADIUS.get(graph);
-            float r = graph.getFloatValue(rAttr, vxId);
+            final Vector3f sceneLocation = convertWorldToScene(x, y, z, centre, rotationMatrix, cameraDistance);
+            final int rAttr = VisualConcept.VertexAttribute.NODE_RADIUS.get(graph);
+            final float r = graph.getFloatValue(rAttr, vxId);
 
             if (sceneLocation.getZ() < 0) {
 
-                final float leftMostPoint = (sceneLocation.getX()-r) / -sceneLocation.getZ();
-                final float rightMostPoint = (sceneLocation.getX()+r) / -sceneLocation.getZ();
-                final float bottomMostPoint = (sceneLocation.getY()-r) / -sceneLocation.getZ();
-                final float topMostPoint = (sceneLocation.getY()+r) / -sceneLocation.getZ();
-                
-                boolean vertexLeftOfBox = rightMostPoint < left;
-                boolean vertexRightOfBox = right < leftMostPoint;
-                boolean vertexBelowBox = topMostPoint < bottom;
-                boolean vertexAboveBox = top < bottomMostPoint;
-                
-                if (!(vertexLeftOfBox || vertexRightOfBox || vertexBelowBox || vertexAboveBox)) {
+                final float leftMostPoint = (sceneLocation.getX() - r) / -sceneLocation.getZ();
+                final float rightMostPoint = (sceneLocation.getX() + r) / -sceneLocation.getZ();
+                final float bottomMostPoint = (sceneLocation.getY() - r) / -sceneLocation.getZ();
+                final float topMostPoint = (sceneLocation.getY() + r) / -sceneLocation.getZ();
+
+                final boolean vertexLeftOfBox = rightMostPoint < left;
+                final boolean vertexRightOfBox = right < leftMostPoint;
+                final boolean vertexBelowBox = topMostPoint < bottom;
+                final boolean vertexAboveBox = top < bottomMostPoint;
+
+                if (!vertexLeftOfBox && !vertexRightOfBox && !vertexBelowBox && !vertexAboveBox) {
                     vxIncluded.set(vxId);
                 }
             }
@@ -455,19 +454,19 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
 
         return x > minX && x < maxX;
     }
-    
+
     /*
      * Takes the x,y,z coordinate of a point in the world and translates it into
      * the equivilant coordinate in the current scene.
      */
-    private Vector3f convertWorldToScene(final float x, final float y, final float z, final Vector3f centre, final Matrix33f rotationMatrix, final float cameraDistance){
-                // Convert world coordinates to camera coordinates.
-            final Vector3f worldLocation = new Vector3f();
-            final Vector3f sceneLocation = new Vector3f();
-            worldLocation.set(x, y, z);
-            worldLocation.subtract(centre);
-            sceneLocation.rotate(worldLocation, rotationMatrix);
-            sceneLocation.setZ(sceneLocation.getZ() - cameraDistance);
-            return sceneLocation;
-    } 
+    private Vector3f convertWorldToScene(final float x, final float y, final float z, final Vector3f centre, final Matrix33f rotationMatrix, final float cameraDistance) {
+        // Convert world coordinates to camera coordinates.
+        final Vector3f worldLocation = new Vector3f();
+        final Vector3f sceneLocation = new Vector3f();
+        worldLocation.set(x, y, z);
+        worldLocation.subtract(centre);
+        sceneLocation.rotate(worldLocation, rotationMatrix);
+        sceneLocation.setZ(sceneLocation.getZ() - cameraDistance);
+        return sceneLocation;
+    }
 }
