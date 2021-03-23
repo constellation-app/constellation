@@ -198,13 +198,6 @@ public final class AutosaveUtilities {
                 }
             }
         }
-
-        if (toBak.exists()) {
-            final boolean toBakIsDeleted = toBak.delete();
-            if (!toBakIsDeleted) {
-                //TODO: Handle case where file not successfully deleted
-            }
-        }
     }
 
     /**
