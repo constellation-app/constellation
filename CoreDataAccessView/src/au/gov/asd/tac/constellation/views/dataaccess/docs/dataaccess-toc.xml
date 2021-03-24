@@ -20,7 +20,7 @@
                 <tocitem text="Test Parameters" target="au.gov.asd.tac.constellation.views.dataaccess.plugins.experimental.TestParametersPlugin"/>
             </tocitem>
             <tocitem text="Parameters" mergetype="javax.help.SortMerge">
-                <tocitem text="Global Parameters" target="au.gov.asd.tac.constellation.views.dataaccess.GlobalCoreParameters"/>
+                <tocitem text="Global Parameters" target="au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters"/>
             </tocitem>
             <tocitem text="Utility" mergetype="javax.help.SortMerge">
                 <tocitem text="Select All" target="au.gov.asd.tac.constellation.views.dataaccess.plugins.utility.SelectAllPlugin"/>
