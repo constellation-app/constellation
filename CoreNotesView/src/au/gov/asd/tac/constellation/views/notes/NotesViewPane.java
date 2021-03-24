@@ -20,6 +20,8 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReport;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReportManager;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.notes.state.NotesViewEntry;
 import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
@@ -34,6 +36,7 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -41,7 +44,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
@@ -52,6 +57,7 @@ import javafx.stage.Stage;
 import javax.swing.JOptionPane;
 import org.apache.commons.collections4.CollectionUtils;
 import org.controlsfx.control.CheckComboBox;
+import org.openide.util.HelpCtx;
 
 /**
  * Handles generating UI elements for the Notes View pane and its notes.
@@ -126,9 +132,19 @@ public class NotesViewPane extends BorderPane {
                 }
             }
         });
+        
+        // create help button
+        final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
+        helpButton.paddingProperty().set(new Insets(2, 0, 0, 0));
+        helpButton.setTooltip(new Tooltip("Display help for Notes View"));
+        helpButton.setOnAction(event -> {
+            new HelpCtx(NotesViewTopComponent.class.getName()).display();
+        });
+        // Get rid of the ugly button look so the icon stands alone.
+        helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
 
         // VBox to store control items used to filter notes.
-        filterNotesHBox = new HBox(DEFAULT_SPACING, filterCheckComboBox);
+        filterNotesHBox = new HBox(DEFAULT_SPACING, filterCheckComboBox, helpButton);
         filterNotesHBox.setAlignment(Pos.CENTER_LEFT);
         filterNotesHBox.setStyle("-fx-padding: 5px;");
 

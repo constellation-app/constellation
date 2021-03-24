@@ -52,7 +52,6 @@ import org.openide.windows.TopComponent;
     "CTL_NotesViewAction=Notes View",
     "CTL_NotesViewTopComponent=Notes View",
     "HINT_NotesViewTopComponent=Notes View"})
-
 public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> implements GraphReportListener {
 
     private final NotesViewController notesViewController;

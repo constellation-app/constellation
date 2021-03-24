@@ -54,7 +54,8 @@ import org.openide.windows.TopComponent;
         id = "au.gov.asd.tac.constellation.views.scatterplot.ScatterPlotTopComponent"
 )
 @ActionReferences({
-    @ActionReference(path = "Menu/Views", position = 1100)
+    @ActionReference(path = "Menu/Views", position = 1100),
+    @ActionReference(path = "Shortcuts", name = "CS-O")
 })
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_ScatterPlotAction",

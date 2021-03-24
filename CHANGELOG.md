@@ -2,6 +2,7 @@
 
 ## 2021-03-01 Changes in March 2021
 * Added `hasLowLevelTag()` to `PluginReport` classes to check whether a plugin has a "LOW LEVEL" tag specified.
+* Added Keyboard Shortcut to Scatter Plot View. Shortcut is Ctrl-Shift-O
 * Updated all state reading and writing plugins to have a "LOW LEVEL" tag.
 
 ## 2021-01-01 Changes in January 2021
