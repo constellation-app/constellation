@@ -18,11 +18,16 @@ package au.gov.asd.tac.constellation.views.scatterplot;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.views.scatterplot.axis.AxisBuilder;
+import au.gov.asd.tac.constellation.views.scatterplot.axis.LogarithmicAxisBuilder;
+import au.gov.asd.tac.constellation.views.scatterplot.axis.NumberAxisBuilder;
 import au.gov.asd.tac.constellation.views.scatterplot.state.ScatterPlotState;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.util.Set;
+import java.util.function.Predicate;
 import javafx.scene.chart.Axis;
 import javafx.scene.chart.ScatterChart;
 import javafx.scene.chart.XYChart;
+import org.openide.NotifyDescriptor;
 
 /**
  *
@@ -30,8 +35,12 @@ import javafx.scene.chart.XYChart;
  */
 public class ChartBuilder<X, Y> {
 
-    private final AxisBuilder<X> xAxisBuilder;
-    private final AxisBuilder<Y> yAxisBuilder;
+    private AxisBuilder<X> xAxisBuilder;
+    private AxisBuilder<Y> yAxisBuilder;
+    private final Predicate<XYChart.Data<X,Y>> xNotGreaterThanZero = data -> ((float) data.getXValue() <= 0);
+    private final Predicate<XYChart.Data<X,Y>> yNotGreaterThanZero = data -> ((float) data.getYValue() <= 0);
+    private static final String INVALIDLOGWARNING = "Warning: Unable to apply log function to values <= 0";
+
 
     public ChartBuilder(AxisBuilder<X> xAxis, AxisBuilder<Y> yAxis) {
         this.xAxisBuilder = xAxis;
@@ -64,10 +73,19 @@ public class ChartBuilder<X, Y> {
                 series.getData().add(data);
             }
         }
-
+        
+        if (xAxisBuilder instanceof LogarithmicAxisBuilder 
+                && series.getData().stream().anyMatch(xNotGreaterThanZero)){ // If it is a logarithmic axis with values <=0 then switch to a NumericAxis instead
+            xAxisBuilder = (AxisBuilder<X>) new NumberAxisBuilder();
+            NotifyDisplayer.display(INVALIDLOGWARNING, NotifyDescriptor.WARNING_MESSAGE);
+        }
         final Axis<X> xAxis = xAxisBuilder.build();
         xAxis.setLabel(state.getXAttribute().getName());
-
+        
+        if (yAxisBuilder instanceof LogarithmicAxisBuilder 
+                && series.getData().stream().anyMatch(yNotGreaterThanZero)){ // If it is a logarithmic axis with values <=0 then switch to a NumericAxis instead
+            yAxisBuilder = (AxisBuilder<Y>) new NumberAxisBuilder();
+        }
         final Axis<Y> yAxis = yAxisBuilder.build();
         yAxis.setLabel(state.getYAttribute().getName());
 
@@ -81,5 +99,5 @@ public class ChartBuilder<X, Y> {
 
         return scatterChart;
     }
-
+    
 }

@@ -88,7 +88,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
     public static final String WHOLE_WORDS_ONLY_PARAMETER_ID = PluginParameter.buildId(ExtractWordsFromTextPlugin.class, "whole_words_only");
     public static final String LOWER_CASE_PARAMETER_ID = PluginParameter.buildId(ExtractWordsFromTextPlugin.class, "lower_case");
     public static final String SCHEMA_TYPES_PARAMETER_ID = PluginParameter.buildId(ExtractWordsFromTextPlugin.class, "schema_types");
-    public static final String IN_OUT_OUT_PARAMETER_ID = PluginParameter.buildId(ExtractWordsFromTextPlugin.class, "in_or_out");
+    public static final String IN_OR_OUT_PARAMETER_ID = PluginParameter.buildId(ExtractWordsFromTextPlugin.class, "in_or_out");
     public static final String SELECTED_ONLY_PARAMETER_ID = PluginParameter.buildId(ExtractWordsFromTextPlugin.class, "selected_only");
     public static final String REGEX_ONLY_PARAMETER_ID = PluginParameter.buildId(ExtractWordsFromTextPlugin.class, "regex_only");
 
@@ -165,7 +165,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
         types.setBooleanValue(true);
         params.addParameter(types);
 
-        final PluginParameter<SingleChoiceParameterValue> inOrOutParam = SingleChoiceParameterType.build(IN_OUT_OUT_PARAMETER_ID);
+        final PluginParameter<SingleChoiceParameterValue> inOrOutParam = SingleChoiceParameterType.build(IN_OR_OUT_PARAMETER_ID);
         inOrOutParam.setName("Transactions");
         inOrOutParam.setDescription("Link nodes to outgoing or incoming words: 'outgoing' or 'incoming'");
         SingleChoiceParameterType.setOptions(inOrOutParam, List.of(OUTGOING, INCOMING));
@@ -255,12 +255,14 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
 
             @SuppressWarnings("unchecked") //ATTRIBUTE_PARAMETER will always be of type SingleChoiceParameter
             final PluginParameter<SingleChoiceParameterValue> contentAttribute = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(ATTRIBUTE_PARAMETER_ID);
-            contentAttribute.suppressEvent(true, new ArrayList<>());
+
             SingleChoiceParameterType.setOptions(contentAttribute, attributes);
-            if (attributes.contains(ContentConcept.TransactionAttribute.CONTENT.getName())) {
+            contentAttribute.suppressEvent(true, new ArrayList<>());
+            if (contentAttribute.getSingleChoice() == null && attributes.contains(ContentConcept.TransactionAttribute.CONTENT.getName())) {
                 SingleChoiceParameterType.setChoice(contentAttribute, ContentConcept.TransactionAttribute.CONTENT.getName());
             }
             contentAttribute.suppressEvent(false, new ArrayList<>());
+            contentAttribute.setObjectValue(parameters.getObjectValue(ATTRIBUTE_PARAMETER_ID));
         }
     }
 
@@ -281,7 +283,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
         final boolean removeSpecialChars = extractEntityParameters.get(REMOVE_SPECIAL_CHARS_PARAMETER_ID).getBooleanValue();
         final boolean toLowerCase = extractEntityParameters.get(LOWER_CASE_PARAMETER_ID).getBooleanValue();
         final boolean types = extractEntityParameters.get(SCHEMA_TYPES_PARAMETER_ID).getBooleanValue();
-        final String inOrOut = extractEntityParameters.get(IN_OUT_OUT_PARAMETER_ID).getStringValue();
+        final String inOrOut = extractEntityParameters.get(IN_OR_OUT_PARAMETER_ID).getStringValue();
         final boolean selectedOnly = extractEntityParameters.get(SELECTED_ONLY_PARAMETER_ID).getBooleanValue();
 
         final boolean regexOnly = extractEntityParameters.get(REGEX_ONLY_PARAMETER_ID).getBooleanValue();

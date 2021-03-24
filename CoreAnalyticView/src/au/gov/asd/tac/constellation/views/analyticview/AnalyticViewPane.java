@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.analyticview;
 
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewTopComponent.AnalyticController;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestion;
@@ -93,7 +94,7 @@ public class AnalyticViewPane extends BorderPane {
 
         // the pane holding the analytic option buttons
         this.analyticOptionButtons = new HBox();
-        final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16)));
+        final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
         helpButton.setOnAction(event -> {
             new HelpCtx(this.getClass().getName()).display();
         });
@@ -111,10 +112,8 @@ public class AnalyticViewPane extends BorderPane {
                     questionThread.interrupt();
                 }
                 running = false;
-                Platform.runLater(() -> {
-                    runButton.setText(RUN_START_TEXT);
-                    runButton.setStyle(RUN_START_STYLE);
-                });
+                runButton.setText(RUN_START_TEXT);
+                runButton.setStyle(RUN_START_STYLE);
             } else {
                 // display results pane
                 if (!analyticViewPane.getChildren().contains(analyticResultsPane)) {

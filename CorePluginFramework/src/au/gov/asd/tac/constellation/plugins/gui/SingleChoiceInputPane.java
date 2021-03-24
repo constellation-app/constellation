@@ -17,11 +17,11 @@ package au.gov.asd.tac.constellation.plugins.gui;
 
 import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import java.util.List;
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -50,7 +50,7 @@ public class SingleChoiceInputPane extends HBox {
     public static final int DEFAULT_WIDTH = 300;
 
     private final ComboBox<ParameterValue> field;
-
+    
     // Keep track of entered characters so the user can enter the prefixes of choices to get there quicker.
     private String prefix;
     private static final Logger LOGGER = Logger.getLogger(SingleChoiceInputPane.class.getName());
@@ -115,42 +115,44 @@ public class SingleChoiceInputPane extends HBox {
             SingleChoiceParameterType.setChoiceData(parameter, field.getSelectionModel().getSelectedItem());
         });
 
-        parameter.addListener((final PluginParameter<?> parameter1, final ParameterChange change) -> {
+        parameter.addListener((final PluginParameter<?> scParameter, final ParameterChange change) -> {
             Platform.runLater(() -> {
-                @SuppressWarnings("unchecked") //scParameter1 is SingleChoiceParameter
-                PluginParameter<SingleChoiceParameterValue> scParameter1 = (PluginParameter<SingleChoiceParameterValue>) parameter1;
+                assert(scParameter.getParameterValue() instanceof SingleChoiceParameterValue);
+                final SingleChoiceParameterValue scParameterValue = (SingleChoiceParameterValue) scParameter.getParameterValue();
                 switch (change) {
                     case VALUE:
                         // Don't change the value if it isn't necessary.
-                        final ParameterValue param = scParameter1.getParameterValue().getChoiceData();
+                        final List<ParameterValue> param = scParameterValue.getOptionsData();
                         final ParameterValue value = field.getSelectionModel().getSelectedItem();
-                        if (!Objects.equals(value, param)) {
-                            field.getSelectionModel().select(param);
+
+                        //Checks that the currently selected value is in the new parameters list
+                        if (!param.contains(value)) {
+                            field.getSelectionModel().select(scParameterValue.getChoiceData());
                         }
                         break;
                     case PROPERTY:
-                        final List<ParameterValue> choices = SingleChoiceParameterType.getOptionsData(scParameter1);
+                        final List<ParameterValue> options = scParameterValue.getOptionsData();
                         EventHandler<ActionEvent> handler = field.getOnAction();
                         field.setOnAction(null);
-                        field.setItems(FXCollections.observableList(choices));
+                        field.setItems(FXCollections.observableList(options));
                         field.setOnAction(handler);
 
                         // Only keep the value if it's in the new choices.
-                        if (choices.contains((ParameterValue) parameter1.getObjectValue())) {
-                            field.getSelectionModel().select((ParameterValue) parameter1.getObjectValue());
+                        if (options.contains(scParameterValue.getChoiceData())) {
+                            field.getSelectionModel().select(scParameter.getSingleChoice());
                         } else {
                             field.getSelectionModel().clearSelection();
                         }
 
                         break;
                     case ENABLED:
-                        field.setDisable(!parameter1.isEnabled());
+                        field.setDisable(!scParameter.isEnabled());
                         break;
                     case VISIBLE:
-                        field.setManaged(parameter.isVisible());
-                        field.setVisible(parameter.isVisible());
-                        this.setVisible(parameter.isVisible());
-                        this.setManaged(parameter.isVisible());
+                        field.setManaged(scParameter.isVisible());
+                        field.setVisible(scParameter.isVisible());
+                        this.setVisible(scParameter.isVisible());
+                        this.setManaged(scParameter.isVisible());
                         break;
                     default:
                         LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
@@ -158,7 +160,17 @@ public class SingleChoiceInputPane extends HBox {
                 }
             });
         });
-
+         
         getChildren().add(field);
+        final String parameterId = parameter.getId();
+        final List<String> singleChoiceRecentValues = RecentParameterValues.getRecentValues(parameterId);
+        final List<ParameterValue> pvs = SingleChoiceParameterType.getOptionsData(parameter);
+        for (final ParameterValue pv : pvs) {
+            if ((singleChoiceRecentValues != null) && (singleChoiceRecentValues.get(0).equals(pv.toString()))) {
+                parameter.getParameterValue().setChoiceData(pv);
+                break;
+            }
+        }
+
     }
-}
+    }

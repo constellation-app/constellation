@@ -60,6 +60,7 @@ package au.gov.asd.tac.constellation.graph.interaction.plugins.io;
  */
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
+import au.gov.asd.tac.constellation.graph.interaction.plugins.io.screenshot.RecentGraphScreenshotUtilities;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
@@ -199,6 +200,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
             if (newFile != null) {
                 try {
                     saveAs.saveAs(FileUtil.toFileObject(newFile.getParentFile()), newFile.getName());
+                    RecentGraphScreenshotUtilities.takeScreenshot(newFile.getName());
                 } catch (IOException ioE) {
                     Exceptions.attachLocalizedMessage(ioE,
                             Bundle.MSG_SaveAsFailed(
@@ -273,7 +275,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
             if (newFile == null) {
                 break;
             }
-            while (!newFile.getName().matches("^[\\w-_.]*$") || !newFile.getParentFile().exists()) {
+            while (!newFile.getName().matches("^[\\w-_. ]*$") || !newFile.getParentFile().exists()) {
                 NotifyDisplayer.display("File names can only include alphanumeric characters, - or .", NotifyDescriptor.WARNING_MESSAGE);
                 if (JFileChooser.APPROVE_OPTION != chooser.showSaveDialog(WindowManager.getDefault().getMainWindow())) {
                     return null;

@@ -31,7 +31,7 @@ import org.openide.util.NbBundle.Messages;
 @ActionRegistration(displayName = "#CTL_CopyToNewGraphAction", iconBase = "au/gov/asd/tac/constellation/graph/interaction/plugins/clipboard/resources/copyGraph.png", surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Edit", position = 600),
-    @ActionReference(path = "Toolbars/File", position = 1),
+    @ActionReference(path = "Toolbars/File", position = 15),
     @ActionReference(path = "Shortcuts", name = "C-U")
 })
 @Messages("CTL_CopyToNewGraphAction=Copy to New Graph")

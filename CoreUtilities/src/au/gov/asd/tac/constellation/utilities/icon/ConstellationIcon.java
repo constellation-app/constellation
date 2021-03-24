@@ -31,7 +31,7 @@ import javafx.scene.image.Image;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -378,6 +378,18 @@ public class ConstellationIcon {
         }
 
         return image;
+    }
+    
+    /**
+     * Used to clear cache images in the ConstellationIcon cache. This should be
+     * called when closing the last open graph to release consumed resources.
+     * 
+     * Note: The cache's purpose is to prevent duplicates when multiple graphs are open.
+     */
+    public static void clearCache() {
+        BUFFERED_IMAGE_CACHE.clear();
+        ICON_CACHE.clear();
+        IMAGE_CACHE.clear();
     }
 
     /**

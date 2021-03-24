@@ -16,7 +16,8 @@
 package au.gov.asd.tac.constellation.plugins.importexport.delimited;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.model.TableRow;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportDefinition;
+import au.gov.asd.tac.constellation.plugins.importexport.model.TableRow;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -166,6 +167,7 @@ public class ConfigurationPane extends AnchorPane {
         for (final Tab tab : tabPane.getTabs()) {
             final RunPane runPane = (RunPane) tab.getContent();
             runPane.setSampleData(columnLabels, createTableRows(currentData));
+            runPane.refreshDataView();
         }
     }
 
@@ -207,6 +209,7 @@ public class ConfigurationPane extends AnchorPane {
         for (Tab tab : tabPane.getTabs()) {
             RunPane runPane = (RunPane) tab.getContent();
             runPane.setDisplayedAttributes(vertexAttributes, transactionAttributes, keys);
+            runPane.setAttributePaneHeight();
         }
     }
 

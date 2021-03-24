@@ -16,8 +16,11 @@
 package au.gov.asd.tac.constellation.plugins.importexport.delimited;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.translator.AttributeTranslator;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.translator.DefaultAttributeTranslator;
+import au.gov.asd.tac.constellation.plugins.importexport.AttributeType;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportAttributeDefinition;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportDefinition;
+import au.gov.asd.tac.constellation.plugins.importexport.translator.AttributeTranslator;
+import au.gov.asd.tac.constellation.plugins.importexport.translator.DefaultAttributeTranslator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -98,8 +101,10 @@ public class AttributeList extends VBox {
                     runPane.validate(currentColumn);
                 }
                 attributeNode.setColumn(null);
-
-                runPane.getChildren().add(attributeNode);
+                // Replicates user clicking the attribute
+                if (!runPane.getChildren().contains(attributeNode)) {
+                    runPane.getChildren().add(attributeNode);
+                }
 
                 attributeNode.setManaged(false);
                 attributeNode.setLayoutX(location.getX() - runPane.getDraggingOffset().getX());

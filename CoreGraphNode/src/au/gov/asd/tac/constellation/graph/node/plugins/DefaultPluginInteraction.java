@@ -244,7 +244,11 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
         boolean result = false;
 
         final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(promptName, parameters);
-        dialog.showAndWait();
+        if (!parameters.hasMultiLineStringParameter()) {
+            dialog.showAndWait();
+        } else {
+            dialog.showAndWaitNoFocus();
+        }
         if (PluginParametersDialog.OK.equals(dialog.getResult())) {
             result = true;
         }
@@ -288,8 +292,12 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
                     if (progress == null) {
                         return;
                     }
-
+                    
                     progress.progress(getTime() + " " + currentMessage);
+                    
+                    if ("Finished".equalsIgnoreCase(currentMessage)) {
+                        progress = null;
+                    }
                 }
             } catch (InterruptedException ex) {
                 Thread.currentThread().interrupt();

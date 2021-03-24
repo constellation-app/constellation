@@ -77,4 +77,5 @@ public class ArrangementPluginRegistry {
     public static final String TIME = LayerByTimePlugin.class.getName();
     public static final String TREES = ArrangeInTreesPlugin.class.getName();
     public static final String UNCOLLIDE = UncollidePlugin.class.getName();
+    public static final String UNCOLLIDE_EXPERIMENTAL = au.gov.asd.tac.constellation.plugins.arrangements.uncollide.experimental.UncollidePlugin.class.getName();
 }

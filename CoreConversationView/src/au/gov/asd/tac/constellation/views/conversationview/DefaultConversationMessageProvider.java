@@ -38,7 +38,10 @@ public class DefaultConversationMessageProvider implements ConversationMessagePr
     @Override
     public void getMessages(GraphReadMethods graph, List<ConversationMessage> messages) {
         assert !SwingUtilities.isEventDispatchThread();
-
+        messages.clear();
+        if (graph == null) {
+            return; // Null graph means no messages.
+        }
         final int vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
         if (vertexSelectedAttribute != Graph.NOT_FOUND) {
             final GraphIndexResult selectedVertices = GraphIndexUtilities.filterElements(graph, vertexSelectedAttribute, true);

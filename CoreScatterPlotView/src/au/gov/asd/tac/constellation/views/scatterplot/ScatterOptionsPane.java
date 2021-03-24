@@ -22,9 +22,11 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.scatterplot.axis.AxisBuilder;
 import au.gov.asd.tac.constellation.views.scatterplot.axis.CategoryAxisBuilder;
@@ -37,7 +39,6 @@ import java.util.Map;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -237,19 +238,17 @@ public class ScatterOptionsPane extends BorderPane {
             }
         });
 
-        final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16));
+        final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor()));
         helpButton = new Button("", helpImage);
-        helpButton.setOnAction(
-                (ActionEvent event) -> {
-                    final Help help = Lookup.getDefault().lookup(Help.class);
-                    if (help != null) {
-                        final String helpId = this.getClass().getPackage().getName();
-                        if (help.isValidID(helpId, true)) {
-                            new HelpCtx(helpId).display();
-                        }
-                    }
+        helpButton.setOnAction(event -> {
+            final Help help = Lookup.getDefault().lookup(Help.class);
+            if (help != null) {
+                final String helpId = this.getClass().getPackage().getName();
+                if (help.isValidID(helpId, true)) {
+                    new HelpCtx(helpId).display();
                 }
-        );
+            }
+        });
 
         this.optionsToolBar = new ToolBar();
         optionsToolBar.getItems().addAll(elementTypeComboBox, xAttributeComboBox, yAttributeComboBox, selectedOnlyButton, logarithmicAxisX, logarithmicAxisY, helpButton);
@@ -344,6 +343,7 @@ public class ScatterOptionsPane extends BorderPane {
     /**
      * Write the given ScatterPlotState to the active graph.
      */
+    @PluginInfo(tags = {"LOW LEVEL"})
     private static class ScatterPlotStateWriter extends SimpleEditPlugin {
 
         private final ScatterPlotState scatterPlotState;

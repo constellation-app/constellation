@@ -89,7 +89,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.NotificationDisplayer;
@@ -481,7 +481,6 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                                 // If plugin type is valid, add the plugin to the Data Access View.
                                 plugins.get(type).add(plugin);
                                 LOGGER.log(Level.INFO, "Discovered data access plugin {0} ({1})", new Object[]{plugin.getName(), plugin.getType()});
-
                                 // If plugin overrides another, record which plugin should be removed for later processing.
                                 for (final String overriddenPluginName : plugin.getOverriddenPlugins()) {
                                     pluginOverrides.put(overriddenPluginName, plugin);
@@ -1019,7 +1018,12 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                         final Object obj = param.getValue().getObjectValue();
                         if (obj != null && obj.toString() != null && !obj.toString().isEmpty()) {
                             final String value = param.getValue().getStringValue();
-                            RecentParameterValues.storeRecentValue(id, value);
+                            final String typeValue = param.getValue().getType().toString();
+                            if (!typeValue.contains("LocalDateParameterType")) {
+                                RecentParameterValues.storeRecentValue(id, value);
+                            } else {
+                                RecentParameterValues.storeRecentValue(id, obj.toString());
+                            }
                         }
                     }
                 }

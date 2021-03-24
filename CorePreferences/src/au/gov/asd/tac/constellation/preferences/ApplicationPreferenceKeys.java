@@ -85,7 +85,12 @@ public final class ApplicationPreferenceKeys {
      * Tutorial window.
      */
     public static final String TUTORIAL_ON_STARTUP = "tutorialMode";
-    public static final boolean TUTORIAL_ON_STARTUP_DEFAULT = true;
+    public static final boolean TUTORIAL_ON_STARTUP_DEFAULT = false;
+    /**
+     * Welcome window.
+     */
+    public static final String WELCOME_ON_STARTUP = "welcomeMode";
+    public static final boolean WELCOME_ON_STARTUP_DEFAULT = true;
     /**
      * Freeze graph view.
      */
@@ -174,6 +179,11 @@ public final class ApplicationPreferenceKeys {
      */
     public static final String DEFAULT_TEMPLATE = "defaultTemplate";
     public static final String DEFAULT_TEMPLATE_DEFAULT = null;
+
+    /**
+     * Quality Control View Priorities
+     */
+    public static final String RULE_PRIORITIES = "customRules";
 
     private ApplicationPreferenceKeys() {
     }

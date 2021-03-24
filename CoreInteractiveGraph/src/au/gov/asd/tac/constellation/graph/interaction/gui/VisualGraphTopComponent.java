@@ -46,6 +46,7 @@ import au.gov.asd.tac.constellation.graph.interaction.plugins.draw.ToggleSelecti
 import au.gov.asd.tac.constellation.graph.interaction.plugins.io.CloseAction;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.io.SaveAsAction;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
@@ -77,6 +78,7 @@ import au.gov.asd.tac.constellation.plugins.update.UpdateController;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.preferences.DeveloperPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
+import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
 import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
@@ -120,6 +122,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+import org.apache.commons.io.FileUtils;
 import org.netbeans.api.actions.Savable;
 import org.netbeans.spi.actions.AbstractSavable;
 import org.openide.DialogDisplayer;
@@ -185,6 +188,21 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     private static final Icon SELECT_MODE_ICON = UserInterfaceIconProvider.SELECT_MODE.buildIcon(16);
     private static final Icon DIRECTED_ICON = UserInterfaceIconProvider.DIRECTED.buildIcon(16);
     private static final Icon UNDIRECTED_ICON = UserInterfaceIconProvider.UNDIRECTED.buildIcon(16);
+
+    private static final String MODE_2D_SHORT_DESCRIPTION = "Toggle 2D";
+    private static final String MODE_3D_SHORT_DESCRIPTION = "Toggle 3D";
+    private static final String DRAWING_MODE_SHORT_DESCRIPTION = "Toggle Draw Mode";
+    private static final String SELECTION_MODE_SHORT_DESCRIPTION = "Toggle Selection Mode";
+    private static final String DIRECTED_SHORT_DESCRIPTION = "Toggle Draw Directed Transactions";
+    private static final String UNDIRECTED_SHORT_DESCRIPTION = "Toggle Draw Undirected Transactions";
+    private static final String SHOW_BLAZES_SHORT_DESCRIPTION = "Show Blazes";
+    private static final String HIDE_BLAZES_SHORT_DESCRIPTION = "Hide Blazes";
+    private static final String SHOW_NODE_LABELS_SHORT_DESCRIPTION = "Show Node Labels";
+    private static final String HIDE_NODE_LABELS_SHORT_DESCRIPTION = "Hide Node Labels";
+    private static final String SHOW_CONNECTION_LABELS_SHORT_DESCRIPTION = "Show Connection Labels";
+    private static final String HIDE_CONNECTION_LABELS_SHORT_DESCRIPTION = "Hide Connection Labels";
+    private static final String ENABLE_GRAPH_VISIBILITY_THRESHOLD_LABELS_SHORT_DESCRIPTION = "Enable Graph Visibility Threshold";
+    private static final String DISABLE_GRAPH_VISIBILITY_THRESHOLD_LABELS_SHORT_DESCRIPTION = "Disable Graph Visibility Threshold";
 
     private final GraphVisualManagerFactory graphVisualManagerFactory;
     private final VisualManager visualManager;
@@ -408,7 +426,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         visualManager.startProcessing();
         graphNode = new GraphNode(graph, gdo, this, visualManager);
         content = new InstanceContent();
-
         init();
         MemoryManager.newObject(VisualGraphTopComponent.class);
     }
@@ -437,7 +454,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         }
 
         content = new InstanceContent();
-
         init();
         MemoryManager.newObject(VisualGraphTopComponent.class);
     }
@@ -530,6 +546,10 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
         StatusDisplayer.getDefault().setStatusText("Closed " + graphNode.getDataObject().getName());
 
+        if (GraphManager.getDefault().getAllGraphs().isEmpty()) {
+            ConstellationIcon.clearCache();
+        }
+
         // Try to free up any unused memory
         final boolean forceGarbageCollectOnClose = NbPreferences.forModule(ApplicationPreferenceKeys.class).getBoolean(DeveloperPreferenceKeys.FORCE_GC_ON_CLOSE, DeveloperPreferenceKeys.FORCE_GC_ON_CLOSE_DEFAULT);
         if (forceGarbageCollectOnClose) {
@@ -597,16 +617,23 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             drawNodesAction.putValue(Action.SELECTED_KEY, drawFlags.drawNodes());
             drawConnectionsAction.putValue(Action.SELECTED_KEY, drawFlags.drawConnections());
             drawNodeLabelsAction.putValue(Action.SELECTED_KEY, drawFlags.drawNodeLabels());
+            drawNodeLabelsAction.putValue(Action.SHORT_DESCRIPTION, drawFlags.drawNodeLabels() ? HIDE_NODE_LABELS_SHORT_DESCRIPTION : SHOW_NODE_LABELS_SHORT_DESCRIPTION);
             drawConnectionLabelsAction.putValue(Action.SELECTED_KEY, drawFlags.drawConnectionLabels());
+            drawConnectionLabelsAction.putValue(Action.SHORT_DESCRIPTION, drawFlags.drawConnectionLabels() ? HIDE_CONNECTION_LABELS_SHORT_DESCRIPTION : SHOW_CONNECTION_LABELS_SHORT_DESCRIPTION);
             drawBlazesAction.putValue(Action.SELECTED_KEY, drawFlags.drawBlazes());
+            drawBlazesAction.putValue(Action.SHORT_DESCRIPTION, drawFlags.drawBlazes() ? HIDE_BLAZES_SHORT_DESCRIPTION : SHOW_BLAZES_SHORT_DESCRIPTION);
             display3dAction.putValue(Action.SELECTED_KEY, isDisplay3D);
             display3dAction.putValue(Action.SMALL_ICON, isDisplay3D ? MODE_3D_ICON : MODE_2D_ICON);
+            display3dAction.putValue(Action.SHORT_DESCRIPTION, isDisplay3D ? MODE_3D_SHORT_DESCRIPTION : MODE_2D_SHORT_DESCRIPTION);
             toggleGraphVisibilityAction.putValue(Action.SELECTED_KEY, visibleAboveThreshold);
             toggleGraphVisibilityAction.putValue(Action.SMALL_ICON, visibleAboveThreshold ? VISIBLE_ICON : HIDDEN_ICON);
+            toggleGraphVisibilityAction.putValue(Action.SHORT_DESCRIPTION, visibleAboveThreshold ? DISABLE_GRAPH_VISIBILITY_THRESHOLD_LABELS_SHORT_DESCRIPTION : ENABLE_GRAPH_VISIBILITY_THRESHOLD_LABELS_SHORT_DESCRIPTION);
             toggleSelectModeAction.putValue(Action.SELECTED_KEY, isDrawingMode);
             toggleSelectModeAction.putValue(Action.SMALL_ICON, isDrawingMode ? DRAWING_MODE_ICON : SELECT_MODE_ICON);
+            toggleSelectModeAction.putValue(Action.SHORT_DESCRIPTION, isDrawingMode ? DRAWING_MODE_SHORT_DESCRIPTION : SELECTION_MODE_SHORT_DESCRIPTION);
             toggleDrawDirectedAction.putValue(Action.SELECTED_KEY, isDrawingDirectedTransactions);
             toggleDrawDirectedAction.putValue(Action.SMALL_ICON, isDrawingDirectedTransactions ? DIRECTED_ICON : UNDIRECTED_ICON);
+            toggleDrawDirectedAction.putValue(Action.SHORT_DESCRIPTION, isDrawingDirectedTransactions ? DIRECTED_SHORT_DESCRIPTION : UNDIRECTED_SHORT_DESCRIPTION);
             toggleDrawDirectedAction.setEnabled(isDrawingMode);
 
             switch (connectionMode) {
@@ -1040,6 +1067,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
      */
     private class BackgroundWriter extends SwingWorker<Void, Object> {
 
+        private static final String BACKUP_EXTENSION = ".bak";
         private final String name;
         private final GraphDataObject freshGdo;
         private final boolean deleteOldGdo;
@@ -1061,7 +1089,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             this.deleteOldGdo = deleteOldGdo;
             cancelled = false;
 
-            makeBusy(true);
+            GraphNode.getGraphNode(graph).makeBusy(true);
         }
 
         @Override
@@ -1073,12 +1101,35 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 rg.release();
             }
             try {
+                
+                // Create a 'backup' copy of the file being saved before its saved. This is done to ensure that there are
+                // two distinct saves/write operations that occur meaning that if the application was to terminate on one
+                // of them, then 'one' of the files should be valid still.
+                // i.e.:
+                //  *  if the 'copy' operation fails, then the original file will still be there intact
+                //  *  if the 'write' operation falls over, then we know the backup copy must have already occured so we
+                //     have something to fall back on
+                // This allows load logic to be of the form:
+                //   - try to load star file
+                //     - if star file loads successfully use it
+                //     - if the star file fails to load, check to see if a 'backup' exists
+                //        - if backup was found attempt to load it
+                //        - if backup was not found throw load error
+                final FileObject fileobj = freshGdo.getPrimaryFile();
+                final File srcFile = new File(fileobj.getPath());
+                final String srcfilePath = srcFile.getParent().concat(File.pathSeparator).concat(this.name).concat(".").concat(fileobj.getExt());
+                
+                // Create a backup copy of the file before overwriting it. If the backup copy fails, then code will never
+                // get to execute the save, so the actual file should remain intact. If the save fails, the backup file will
+                // already have been written.
+                FileUtils.copyFile(new File(srcfilePath), new File(srcfilePath.concat(BACKUP_EXTENSION)));
+                
                 try (OutputStream out = new BufferedOutputStream(freshGdo.getPrimaryFile().getOutputStream())) {
                     // Write the graph.
                     cancelled = new GraphJsonWriter().writeGraphToZip(copy, out, new HandleIoProgress("Writing..."));
                 }
                 SaveNotification.saved(freshGdo.getPrimaryFile().getPath());
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 Exceptions.printStackTrace(ex);
             }
 
@@ -1136,7 +1187,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 }
             }).executeLater(null);
 
-            makeBusy(false);
+            GraphNode.getGraphNode(graph).makeBusy(false);
         }
     }
 }

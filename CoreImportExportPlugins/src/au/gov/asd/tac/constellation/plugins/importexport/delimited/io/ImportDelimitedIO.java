@@ -18,19 +18,18 @@ package au.gov.asd.tac.constellation.plugins.importexport.delimited.io;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.AttributeType;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.DelimitedFileImporterStage;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.GraphDestination;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.ImportAttributeDefinition;
+import au.gov.asd.tac.constellation.plugins.importexport.AttributeType;
+import au.gov.asd.tac.constellation.plugins.importexport.GraphDestination;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportAttributeDefinition;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportConstants;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportDefinition;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportDestination;
+import au.gov.asd.tac.constellation.plugins.importexport.NewAttribute;
+import au.gov.asd.tac.constellation.plugins.importexport.RowFilter;
+import au.gov.asd.tac.constellation.plugins.importexport.SchemaDestination;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.ImportController;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.ImportDefinition;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.ImportDelimitedPlugin;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.ImportDestination;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.NewAttribute;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.RowFilter;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.SchemaDestination;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.ImportFileParser;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.translator.AttributeTranslator;
+import au.gov.asd.tac.constellation.plugins.importexport.translator.AttributeTranslator;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
@@ -44,6 +43,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
+import javafx.stage.Window;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.StatusDisplayer;
@@ -82,7 +82,7 @@ public class ImportDelimitedIO {
     private static final String PARAMETERS = "parameters";
     private static final String JSON_EXTENSION = ".json";
 
-    public static void saveParameters(final DelimitedFileImporterStage stage, final ImportController importController) {
+    public static void saveParameters(final Window parentWindow, final ImportController importController) {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
         final File delimIoDir = new File(userDir, IMPORT_DELIMITED_DIR);
@@ -97,7 +97,7 @@ public class ImportDelimitedIO {
             return;
         }
 
-        final String templName = new TemplateListDialog(stage, false, null).getName(stage, delimIoDir);
+        final String templName = new TemplateListDialog(parentWindow, false, null).getName(parentWindow, delimIoDir);
         if (templName != null) {
             // A JSON document to store everything in.
             // Two objects; the source data + the configuration data.
@@ -159,7 +159,7 @@ public class ImportDelimitedIO {
                             //                    type.put(COLUMN_INDEX, iadef.getColumnIndex());
                             // If the column index is not defined, then set the column label to null so
                             // that the settings still get applied in the attribute list on load
-                            if (iadef.getColumnIndex() == ImportDelimitedPlugin.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN) {
+                            if (iadef.getColumnIndex() == ImportConstants.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN) {
                                 type.putNull(COLUMN_LABEL);
                             } else {
                                 type.put(COLUMN_LABEL, columns[iadef.getColumnIndex() + 1]);
@@ -207,7 +207,7 @@ public class ImportDelimitedIO {
         }
     }
 
-    public static void loadParameters(final DelimitedFileImporterStage stage, final ImportController importController) {
+    public static void loadParameters(final Window parentWindow, final ImportController importController) {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
         final File delimIoDir = new File(userDir, IMPORT_DELIMITED_DIR);
@@ -229,7 +229,7 @@ public class ImportDelimitedIO {
 //            names[i] = decode(names[i].substring(0, names[i].length()-5));
 //        }
 
-        final String templName = new TemplateListDialog(stage, true, null).getName(stage, delimIoDir);
+        final String templName = new TemplateListDialog(parentWindow, true, null).getName(parentWindow, delimIoDir);
         if (templName != null) {
             final File template = new File(delimIoDir, FilenameEncoder.encode(templName) + JSON_EXTENSION);
             if (!template.canRead()) {
@@ -308,7 +308,7 @@ public class ImportDelimitedIO {
 
                         importController.setClearManuallyAdded(false);
                         try {
-                            stage.update(importController, definitions);
+                            importController.getStage().update(importController, definitions);
                         } finally {
                             importController.setClearManuallyAdded(true);
                         }
@@ -339,8 +339,8 @@ public class ImportDelimitedIO {
      * @return True if the attribute should be saved, False otherwise
      */
     public static boolean hasSavableAttribute(ImportAttributeDefinition iadef) {
-        return (iadef.getColumnIndex() != ImportDelimitedPlugin.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN)
-                || ((iadef.getColumnIndex() == ImportDelimitedPlugin.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN)
+        return (iadef.getColumnIndex() != ImportConstants.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN)
+                || ((iadef.getColumnIndex() == ImportConstants.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN)
                 && (iadef.getParameters() != null || iadef.getDefaultValue() != null));
     }
 }

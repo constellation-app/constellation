@@ -8,10 +8,13 @@
     <body>
         <h1>Data Access View</h1>
         <table border="1">
-            <caption>How to open Data Access View</caption>
+            <caption>Data Access View Actions</caption>
             <tr>
                 <th scope="col">
                     <strong>CONSTELLATION Action</strong>
+                </th>
+                <th scope="col">
+                    <strong>Keyboard Shortcut</strong>
                 </th>
                 <th scope="col">
                     <strong>User Action</strong>
@@ -25,8 +28,10 @@
                     Open Data Access View
                 </td>
                 <td>
-                    Views -> Data Access View<br>
-                    Keyboard Shortcut: Ctrl + Shift + D
+                    Ctrl + Shift + D
+                </td>
+                <td>
+                    Views -> Data Access View
                 </td>
                 <td style="text-align: center">
                     <img src="../panes/resources/data-access-view.png" alt="Data Access View Icon">
@@ -47,9 +52,9 @@
         <h2>Running Queries</h2>
         <p>
             At the very top, there is a list of tabs.
-            Pressing the <img src="resources/DataAccessAdd.png" alt="Add Icon"> button allows tables to be added, and the X in the tab name will remove it.
+            Pressing the <img src="resources/DataAccessAdd.png" alt="Add Icon"> button allows steps to be added (as tabs), and the X in the tab name will remove it.
             Tabs can be customised to perform different queries, and when ready, pressing the <img src="resources/DataAccessGo.png" alt="Go Icon"> button will cause each tab to run their queries sequentially.
-            The <img src="resources/DataAccessGo.png" alt="Go Icon"> button will only highlight once a check box has been selected and a graph has been opened.
+            The Go button will only highlight once a check box has been selected and a graph has been opened.
         </p>
         <p>
             In the tab, users can enter values for the global parameters that will apply to every query they run in that tab.
@@ -60,23 +65,23 @@
         <p>
             From the tabs below, users can select which queries they wish to run.
             The arrows allow options to be visible or hidden.
-            Selecting the checkbox next to the name of the query will cause that query to run when <img src="resources/DataAccessGo.png" alt="Go Icon"> is pressed.
+            Selecting the checkbox next to the name of the query will cause that query to run when Go is pressed.
         </p>
         <p>
-            <strong>Note</strong> that the queries in the Data Access View only run using graph elements that have been selected.
+            <strong>NOTE:</strong> Queries in the Data Access View typically only run on selected nodes and transactions.
         </p>
         <p>
-            <strong>Note</strong> that when <img src="resources/DataAccessGo.png" alt="Go Icon"> is pressed, the fields in the Global Parameters section like <strong>Query Name</strong>
+            <strong>NOTE:</strong> When Go is pressed, the values of the parameters in Global Parameters and any other plugins 
             are saved as part of the graph's state so that when you save and load the graph, the last used values are restored.
         </p>
 
         <h2>Global Parameters</h2>
-        <p>Refer to the <a href="data-access-global-parameters.html">global parameters</a> page for more details on the global parameters section.</p>
+        <p>Refer to the <a href="data-access-global-parameters.html">Global Parameters</a> page for more details on the global parameters section.</p>
 
         <h2>Filtering</h2>
         <p>
-            You can filter plugins by clicking on <img src="resources/DataAccessSearch.png" alt="Search Icon"> and typing into the text field beneath.
-            Alternatively, you can right click anywhere on the Data Access View and chose the <strong>Search plugins</strong> option.
+            You can filter plugins by typing in the search bar at the top of the view.
+            Alternatively, you can right click anywhere on the Data Access View and choose the "Find plugin..." option.
         </p>
 
         <h2>Favourites</h2>
@@ -86,6 +91,6 @@
         </p>
 
         <h2>Options Menu</h2>
-        <p>Refer to the <a href="data-access-options.html">options</a> page for more details on the options menu.</p>
+        <p>Refer to the <a href="data-access-options.html">Options</a> page for more details on the options menu.</p>
     </body>
 </html>

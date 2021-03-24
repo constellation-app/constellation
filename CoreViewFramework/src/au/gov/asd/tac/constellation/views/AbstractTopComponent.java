@@ -71,6 +71,15 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
         return content;
     }
 
+    /**
+     * Returns the visibility status of the concrete Top Component
+     *
+     * @return Boolean value true if the component is visible, false otherwise
+     */
+    public boolean getVisibility() {
+        return isVisible;
+    }
+
     @Override
     protected void componentOpened() {
         super.componentOpened();

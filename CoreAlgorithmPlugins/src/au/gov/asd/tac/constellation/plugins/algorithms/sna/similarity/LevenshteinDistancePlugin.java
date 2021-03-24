@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.NbBundle;
@@ -156,7 +157,9 @@ public class LevenshteinDistancePlugin extends SimpleEditPlugin {
                 String stringOne = graph.getStringValue(vertexCompareAttributeId, vxOneId);
                 String stringTwo = graph.getStringValue(vertexCompareAttributeId, vxTwoId);
 
-                if (Math.abs(stringOne.length() - stringTwo.length()) > maxDistance) {
+                if (StringUtils.isBlank(stringOne)
+                        || StringUtils.isBlank(stringTwo)
+                        || Math.abs(stringOne.length() - stringTwo.length()) > maxDistance) {
                     continue;
                 }
 
@@ -176,7 +179,8 @@ public class LevenshteinDistancePlugin extends SimpleEditPlugin {
                     continue;
                 }
 
-                SimilarityUtilities.addScoreToGraph(graph, vxOneId, vxTwoId, (float) distance, LEVENSHTEIN_DISTANCE_ATTRIBUTE);
+                SimilarityUtilities.setGraphAndEnsureAttributes(graph, LEVENSHTEIN_DISTANCE_ATTRIBUTE);
+                SimilarityUtilities.addScoreToGraph(vxOneId, vxTwoId, (float) distance);
 
             }
         }

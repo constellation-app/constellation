@@ -35,6 +35,7 @@ import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -54,20 +55,26 @@ import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Side;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Pagination;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Separator;
 import javafx.scene.control.SeparatorMenuItem;
@@ -75,7 +82,9 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
@@ -84,6 +93,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javax.swing.SwingUtilities;
 import org.controlsfx.control.table.TableFilter;
+import org.openide.util.HelpCtx;
 
 /**
  * Table View Pane.
@@ -92,6 +102,7 @@ import org.controlsfx.control.table.TableFilter;
  *
  * @author elnath
  * @author cygnus_x-1
+ * @author antares
  */
 public final class TableViewPane extends BorderPane {
 
@@ -134,25 +145,41 @@ public final class TableViewPane extends BorderPane {
     private static final ImageView MENU_ICON_TRANSACTION = new ImageView(UserInterfaceIconProvider.MENU.buildImage(16));
 
     private static final int WIDTH = 120;
+    private static final int DEFAULT_MAX_ROWS_PER_PAGE = 500;
+    private int maxRowsPerPage = DEFAULT_MAX_ROWS_PER_PAGE;
+    
+    private final ToggleGroup pageSizeToggle = new ToggleGroup();
 
     private final TableViewTopComponent parent;
     private final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> columnIndex;
     private final Map<Integer, ObservableList<String>> elementIdToRowIndex;
     private final Map<ObservableList<String>, Integer> rowToElementIdIndex;
     private Change<? extends TableColumn<ObservableList<String>, ?>> lastChange;
+    private List<ObservableList<String>> previousPageRows = null;
+    private final Set<ObservableList<String>> selectedOnlySelectedRows = new HashSet<>();
 
     private final TableView<ObservableList<String>> table;
     private TableFilter<ObservableList<String>> filter;
     private final BorderPane progress;
+    private SortedList<ObservableList<String>> sortedRowList;
+    private List<ObservableList<String>> filteredRowList;
+    private Pagination pagination;
+    private ToolBar toolbar;
 
     private Button columnVisibilityButton;
     private ToggleButton selectedOnlyButton;
     private Button elementTypeButton;
     private MenuButton copyButton;
     private MenuButton exportButton;
+    private MenuButton preferencesButton;
 
     private final ReadOnlyObjectProperty<ObservableList<String>> selectedProperty;
     private final ChangeListener<ObservableList<String>> tableSelectionListener;
+    private final ListChangeListener selectedOnlySelectionListener;
+    
+    private boolean sortingListenerActive = false;
+    private final ChangeListener<? super Comparator<? super ObservableList<String>>> tableComparatorListener;
+    private final ChangeListener<? super TableColumn.SortType> tableSortTypeListener;
 
     // Store details of sort order changes made upon column order change or table
     // preference loading - these are used to reinstate the sorting after data update
@@ -175,14 +202,19 @@ public final class TableViewPane extends BorderPane {
         this.rowToElementIdIndex = new HashMap<>();
         this.lastChange = null;
 
-        final ToolBar toolbar = initToolbar();
+        this.toolbar = initToolbar();
         setLeft(toolbar);
-
+        
         this.table = new TableView<>();
         table.itemsProperty().addListener((v, o, n) -> table.refresh());
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         table.setPadding(new Insets(5));
-        setCenter(table);
+
+        this.pagination = new Pagination();
+        
+        this.sortedRowList = new SortedList<>(FXCollections.observableArrayList());
+        sortedRowList.comparatorProperty().bind(table.comparatorProperty());
+        paginate(sortedRowList);
 
         // TODO: experiment with caching
         table.setCache(false);
@@ -200,10 +232,28 @@ public final class TableViewPane extends BorderPane {
         };
         this.selectedProperty = table.getSelectionModel().selectedItemProperty();
         selectedProperty.addListener(tableSelectionListener);
+        
+        this.selectedOnlySelectionListener = c -> {
+            if (parent.getCurrentState() != null && parent.getCurrentState().isSelectedOnly()) {
+                final ObservableList<ObservableList<String>> rows = table.getItems();
+                for (final ObservableList<String> row : rows) {
+                    if (table.getSelectionModel().getSelectedItems().contains(row)) {
+                        selectedOnlySelectedRows.add(row);
+                    } else if (selectedOnlySelectedRows.contains(row)) {
+                        // remove the row from selected items as it's no longer selected in the table
+                        selectedOnlySelectedRows.remove(row);
+                    }
+                }
+            }
+        };
+        table.getSelectionModel().getSelectedItems().addListener(selectedOnlySelectionListener);
+        
+        this.tableComparatorListener = (v, o, n) -> paginateForSortListener();
+        this.tableSortTypeListener = (v, o, n) -> paginateForSortListener();
 
         this.scheduledExecutorService = Executors.newScheduledThreadPool(1);
     }
-
+    
     private ToolBar initToolbar() {
         this.columnVisibilityButton = new Button();
         columnVisibilityButton.setGraphic(COLUMNS_ICON);
@@ -224,6 +274,7 @@ public final class TableViewPane extends BorderPane {
         selectedOnlyButton.setOnAction(e -> {
             selectedOnlyButton.setGraphic(selectedOnlyButton.getGraphic().equals(SELECTED_VISIBLE_ICON) ? ALL_VISIBLE_ICON : SELECTED_VISIBLE_ICON);
             if (parent.getCurrentState() != null) {
+                selectedOnlySelectedRows.clear();
                 final TableViewState newState = new TableViewState(parent.getCurrentState());
                 newState.setSelectedOnly(!parent.getCurrentState().isSelectedOnly());
                 PluginExecution.withPlugin(new TableViewUtilities.UpdateStatePlugin(newState)).executeLater(parent.getCurrentGraph());
@@ -253,13 +304,13 @@ public final class TableViewPane extends BorderPane {
         copyButton.setPopupSide(Side.RIGHT);
         final MenuItem copyTableMenu = new MenuItem(COPY_TABLE);
         copyTableMenu.setOnAction(e -> {
-            final String data = TableViewUtilities.getTableData(table, false, false);
+            final String data = TableViewUtilities.getTableData(table, pagination, false, false);
             TableViewUtilities.copyToClipboard(data);
             e.consume();
         });
         final MenuItem copyTableSelectionMenu = new MenuItem(COPY_TABLE_SELECTION);
         copyTableSelectionMenu.setOnAction(e -> {
-            final String selectedData = TableViewUtilities.getTableData(table, false, true);
+            final String selectedData = TableViewUtilities.getTableData(table, pagination, false, true);
             TableViewUtilities.copyToClipboard(selectedData);
             e.consume();
         });
@@ -272,57 +323,73 @@ public final class TableViewPane extends BorderPane {
         final MenuItem exportCsvItem = new MenuItem(EXPORT_CSV);
         exportCsvItem.setOnAction(e -> {
             if (parent.getCurrentGraph() != null) {
-                TableViewUtilities.exportToCsv(table, false);
+                TableViewUtilities.exportToCsv(table, pagination, false);
             }
             e.consume();
         });
         final MenuItem exportCsvSelectionItem = new MenuItem(EXPORT_CSV_SELECTION);
         exportCsvSelectionItem.setOnAction(e -> {
             if (parent.getCurrentGraph() != null) {
-                TableViewUtilities.exportToCsv(table, true);
+                TableViewUtilities.exportToCsv(table, pagination, true);
             }
             e.consume();
         });
         final MenuItem exportExcelItem = new MenuItem(EXPORT_XLSX);
         exportExcelItem.setOnAction(e -> {
             if (parent.getCurrentGraph() != null) {
-                TableViewUtilities.exportToExcel(table, false, parent.getCurrentGraph().getId());
+                TableViewUtilities.exportToExcel(table, pagination, maxRowsPerPage, false, parent.getCurrentGraph().getId());
             }
             e.consume();
         });
         final MenuItem exportExcelSelectionItem = new MenuItem(EXPORT_XLSX_SELECTION);
         exportExcelSelectionItem.setOnAction(e -> {
             if (parent.getCurrentGraph() != null) {
-                TableViewUtilities.exportToExcel(table, true, parent.getCurrentGraph().getId());
+                TableViewUtilities.exportToExcel(table, pagination, maxRowsPerPage, true, parent.getCurrentGraph().getId());
             }
             e.consume();
         });
         exportButton.getItems().addAll(exportCsvItem, exportCsvSelectionItem,
                 exportExcelItem, exportExcelSelectionItem);
 
-        MenuButton layoutPreferencesButton = new MenuButton();
-        layoutPreferencesButton.setGraphic(SETTINGS_ICON);
-        layoutPreferencesButton.setMaxWidth(WIDTH);
-        layoutPreferencesButton.setPopupSide(Side.RIGHT);
+        this.preferencesButton = new MenuButton();
+        preferencesButton.setGraphic(SETTINGS_ICON);
+        preferencesButton.setMaxWidth(WIDTH);
+        preferencesButton.setPopupSide(Side.RIGHT);
+        final Menu setPageSize = createPageSizeMenu();
         final MenuItem savePrefsOption = new MenuItem("Save Table Preferences");
         savePrefsOption.setOnAction(e -> {
 
             if ((!table.getColumns().isEmpty()) && (GraphManager.getDefault().getActiveGraph() != null)) {
-                TableViewPreferencesIOUtilities.savePreferences(parent.getCurrentState().getElementType(), table);
+                TableViewPreferencesIOUtilities.savePreferences(parent.getCurrentState().getElementType(), table, maxRowsPerPage);
             }
             e.consume();
         });
         final MenuItem loadPrefsOption = new MenuItem("Load Table Preferences...");
-        loadPrefsOption.setOnAction((ActionEvent e) -> {
+        loadPrefsOption.setOnAction(e -> {
             if (GraphManager.getDefault().getActiveGraph() != null) {
                 loadPreferences();
+                //TODO: Replace need to sleep before paginating
+                try {
+                    Thread.sleep(1000);
+                } catch (final InterruptedException ex) {
+                    Thread.currentThread().interrupt();
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+                }
+                paginate(sortedRowList);
             }
             e.consume();
+        }); 
+        preferencesButton.getItems().addAll(setPageSize, savePrefsOption, loadPrefsOption);
+        
+        final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
+        helpButton.setTooltip(new Tooltip("Display help for Table View"));
+        helpButton.setMaxWidth(WIDTH);
+        helpButton.setOnAction(event -> {
+            new HelpCtx(TableViewTopComponent.class.getName()).display();
         });
-        layoutPreferencesButton.getItems().addAll(savePrefsOption, loadPrefsOption);
 
         final ToolBar toolbar = new ToolBar(columnVisibilityButton, selectedOnlyButton,
-                elementTypeButton, new Separator(), copyButton, exportButton, layoutPreferencesButton);
+                elementTypeButton, new Separator(), copyButton, exportButton, preferencesButton, helpButton);
         toolbar.setOrientation(Orientation.VERTICAL);
         toolbar.setPadding(new Insets(5));
 
@@ -335,17 +402,17 @@ public final class TableViewPane extends BorderPane {
         final List<CustomMenuItem> columnCheckboxesDestination = new ArrayList<>();
         final List<CustomMenuItem> columnCheckboxesTransaction = new ArrayList<>();
 
-        MenuButton splitSourceButton = new MenuButton("Source");
+        final MenuButton splitSourceButton = new MenuButton("Source");
         splitSourceButton.setGraphic(MENU_ICON_SOURCE);
         splitSourceButton.setMaxWidth(WIDTH);
         splitSourceButton.setPopupSide(Side.RIGHT);
 
-        MenuButton splitDestinationButton = new MenuButton("Destination");
+        final MenuButton splitDestinationButton = new MenuButton("Destination");
         splitDestinationButton.setGraphic(MENU_ICON_DESTINATION);
         splitDestinationButton.setMaxWidth(WIDTH);
         splitDestinationButton.setPopupSide(Side.RIGHT);
 
-        MenuButton splitTransactionButton = new MenuButton("Transaction");
+        final MenuButton splitTransactionButton = new MenuButton("Transaction");
         splitTransactionButton.setGraphic(MENU_ICON_TRANSACTION);
         splitTransactionButton.setMaxWidth(WIDTH);
         splitTransactionButton.setPopupSide(Side.RIGHT);
@@ -376,11 +443,11 @@ public final class TableViewPane extends BorderPane {
                 final ReadableGraph readableGraph = parent.getCurrentGraph().getReadableGraph();
                 try {
                     final int[] vertexKeys = readableGraph.getPrimaryKey(GraphElementType.VERTEX);
-                    for (int vertexKey : vertexKeys) {
+                    for (final int vertexKey : vertexKeys) {
                         keyAttributes.add(new GraphAttribute(readableGraph, vertexKey));
                     }
                     final int[] transactionKeys = readableGraph.getPrimaryKey(GraphElementType.TRANSACTION);
-                    for (int transactionKey : transactionKeys) {
+                    for (final int transactionKey : transactionKeys) {
                         keyAttributes.add(new GraphAttribute(readableGraph, transactionKey));
                     }
                 } finally {
@@ -463,13 +530,13 @@ public final class TableViewPane extends BorderPane {
             final String columnHeading = columnTuple.getFirst();
             if (null != columnHeading) {
                 switch (columnHeading) {
-                    case "source.":
+                    case GraphRecordStoreUtilities.SOURCE:
                         columnCheckboxesSource.add(getColumnVisibility(columnTuple));
                         break;
-                    case "destination.":
+                    case GraphRecordStoreUtilities.DESTINATION:
                         columnCheckboxesDestination.add(getColumnVisibility(columnTuple));
                         break;
-                    case "transaction.":
+                    case GraphRecordStoreUtilities.TRANSACTION:
                         columnCheckboxesTransaction.add(getColumnVisibility(columnTuple));
                         break;
                     default:
@@ -500,7 +567,7 @@ public final class TableViewPane extends BorderPane {
         return cm;
     }
 
-    private CustomMenuItem getColumnVisibility(ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>> columnTuple) {
+    private CustomMenuItem getColumnVisibility(final ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>> columnTuple) {
         final CheckBox columnCheckbox = new CheckBox(columnTuple.getThird().getText());
         columnCheckbox.selectedProperty().bindBidirectional(columnTuple.getThird().visibleProperty());
         columnCheckbox.setOnAction(e -> {
@@ -548,6 +615,26 @@ public final class TableViewPane extends BorderPane {
             newState.setColumnAttributes(columnAttributes);
             PluginExecution.withPlugin(new TableViewUtilities.UpdateStatePlugin(newState)).executeLater(graph);
         }
+    }
+    
+    private Menu createPageSizeMenu() {
+        final Menu pageSizeMenu = new Menu("Set Page Size");
+        final List<Integer> pageSizes = Arrays.asList(100, 250, 500, 1000);
+        for (final Integer pageSize : pageSizes) {
+            final RadioMenuItem pageSizeOption = new RadioMenuItem(pageSize.toString());
+            pageSizeOption.setToggleGroup(pageSizeToggle);
+            pageSizeOption.setOnAction(e -> {
+                if (maxRowsPerPage != pageSize) {
+                    maxRowsPerPage = pageSize;
+                    paginate(sortedRowList);
+                }
+            });
+            if (pageSize == DEFAULT_MAX_ROWS_PER_PAGE) {
+                pageSizeOption.setSelected(true); // initially set the default as selected
+            }
+            pageSizeMenu.getItems().add(pageSizeOption);
+        }
+        return pageSizeMenu;
     }
 
     private ContextMenu initRightClickContextMenu(final TableCell<ObservableList<String>, String> cell) {
@@ -602,7 +689,7 @@ public final class TableViewPane extends BorderPane {
      * @param columnName The name of the column sorting is being done on
      * @param sortType Direction of sorting
      */
-    private void saveSortDetails(String columnName, TableColumn.SortType sortType) {
+    private void saveSortDetails(final String columnName, final TableColumn.SortType sortType) {
         sortByColumnName = columnName;
         sortByType = sortType;
     }
@@ -860,6 +947,7 @@ public final class TableViewPane extends BorderPane {
 
                 Platform.runLater(() -> {
                     selectedProperty.removeListener(tableSelectionListener);
+                    table.getSelectionModel().getSelectedItems().removeListener(selectedOnlySelectionListener);
 
                     columnReferenceMap.forEach((columnName, column) -> column.setGraphic(null));
 
@@ -896,6 +984,7 @@ public final class TableViewPane extends BorderPane {
                         }
                     });
 
+                    table.getSelectionModel().getSelectedItems().addListener(selectedOnlySelectionListener);
                     selectedProperty.addListener(tableSelectionListener);
                 });
             }
@@ -912,19 +1001,19 @@ public final class TableViewPane extends BorderPane {
             if (parent.getCurrentState() != null) {
 
                 final List<TableColumn<ObservableList<String>, ?>> newColumnOrder = new ArrayList<>();
-                final Tuple<ArrayList<String>, Tuple<String, TableColumn.SortType>> tablePrefs
-                        = TableViewPreferencesIOUtilities.getPreferences(parent.getCurrentState().getElementType());
+                final ThreeTuple<List<String>, Tuple<String, TableColumn.SortType>, Integer> tablePrefs
+                        = TableViewPreferencesIOUtilities.getPreferences(parent.getCurrentState().getElementType(), maxRowsPerPage);
 
                 // If no columns were found then the user abandoned load as saves cannot occur with 0 columns
                 if (tablePrefs.getFirst().isEmpty()) {
                     return;
                 }
 
-                for (String columnName : tablePrefs.getFirst()) {
+                for (final String columnName : tablePrefs.getFirst()) {
                     // Loop through column names found in prefs and add associated columns to newColumnOrder list all set to visible.
                     for (final TableColumn<ObservableList<String>, ?> column : table.getColumns()) {
                         if (column.getText().equals(columnName)) {
-                            TableColumn<ObservableList<String>, ?> copy = column;
+                            final TableColumn<ObservableList<String>, ?> copy = column;
                             copy.setVisible(true);
                             newColumnOrder.add(copy);
                         }
@@ -935,7 +1024,7 @@ public final class TableViewPane extends BorderPane {
                 // to update table.
                 final List<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> orderedColumns
                         = newColumnOrder.stream().map(c -> {
-                            for (ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>> col : columnIndex) {
+                            for (final ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>> col : columnIndex) {
                                 if (c.getText().equals(col.getThird().getText())) {
                                     return col;
                                 }
@@ -945,7 +1034,85 @@ public final class TableViewPane extends BorderPane {
                         }).collect(Collectors.toList());
                 saveSortDetails(tablePrefs.getSecond().getFirst(), tablePrefs.getSecond().getSecond());
                 updateVisibleColumns(parent.getCurrentGraph(), parent.getCurrentState(), orderedColumns, UpdateMethod.REPLACE);
+                for (final Toggle t : pageSizeToggle.getToggles()) {
+                    final RadioMenuItem pageSizeOption = (RadioMenuItem) t;
+                    if (Integer.parseInt(pageSizeOption.getText()) == tablePrefs.getThird()) {
+                        pageSizeOption.setSelected(true);
+                        maxRowsPerPage = tablePrefs.getThird();
+                        break;
+                    }
+                }
             }
+        }
+    }
+    
+    private Node createPage(final int pageIndex, final List<ObservableList<String>> rows) {
+        if (rows != null) {
+            // if the list of rows making up pages changes, we need to clear the list of selected rows
+            if (previousPageRows == null || previousPageRows != rows) {
+                selectedOnlySelectedRows.clear();
+                previousPageRows = rows;
+            }
+            
+            final int fromIndex = pageIndex * maxRowsPerPage;
+            final int toIndex = Math.min(fromIndex + maxRowsPerPage, rows.size());
+            
+            selectedProperty.removeListener(tableSelectionListener);
+            table.getSelectionModel().getSelectedItems().removeListener(selectedOnlySelectionListener);
+            sortedRowList.comparatorProperty().removeListener(tableComparatorListener);
+                        
+            //get the previous sort details so that we don't lose it upon switching pages
+            TableColumn<ObservableList<String>, ?> sortCol = null;
+            TableColumn.SortType sortType = null;
+            if (!table.getSortOrder().isEmpty()) {
+                sortCol = table.getSortOrder().get(0);
+                sortType = sortCol.getSortType();
+                sortCol.sortTypeProperty().removeListener(tableSortTypeListener);
+            }
+            
+            sortedRowList.comparatorProperty().unbind();
+            
+            table.setItems(FXCollections.observableArrayList(rows.subList(fromIndex, toIndex)));
+            
+            //restore the sort details
+            if (sortCol != null) {
+                table.getSortOrder().add(sortCol);
+                sortCol.setSortType(sortType);
+                sortCol.sortTypeProperty().addListener(tableSortTypeListener);
+            }
+            
+            sortedRowList.comparatorProperty().bind(table.comparatorProperty());
+            updateSelectionFromFXThread(parent.getCurrentGraph(), parent.getCurrentState());
+            
+            if (parent.getCurrentState() != null && parent.getCurrentState().isSelectedOnly()) {
+                final int[] selectedIndices = selectedOnlySelectedRows.stream()
+                        .map(row -> table.getItems().indexOf(row)).mapToInt(i -> i).toArray();
+                if (!selectedOnlySelectedRows.isEmpty()) {
+                    table.getSelectionModel().selectIndices(selectedIndices[0], selectedIndices);
+                }
+            }
+            
+            sortedRowList.comparatorProperty().addListener(tableComparatorListener);
+            table.getSelectionModel().getSelectedItems().addListener(selectedOnlySelectionListener);
+            selectedProperty.addListener(tableSelectionListener);
+        }
+        
+        return table;
+    }
+    
+    protected void paginate(final List<ObservableList<String>> rows) {
+        pagination = new Pagination(rows == null || rows.isEmpty() ? 1 : (int) Math.ceil(rows.size() / (double) maxRowsPerPage));
+        pagination.setPageFactory(index -> createPage(index, rows));
+        Platform.runLater(() -> {
+            setCenter(pagination);
+        });
+    }
+    
+    private void paginateForSortListener() {
+        if (!sortingListenerActive) {
+            sortingListenerActive = true;
+            paginate(sortedRowList);
+            sortingListenerActive = false;
         }
     }
 
@@ -1053,29 +1220,41 @@ public final class TableViewPane extends BorderPane {
 
                 Platform.runLater(() -> {
                     selectedProperty.removeListener(tableSelectionListener);
+                    table.getSelectionModel().getSelectedItems().removeListener(selectedOnlySelectionListener);
+                    sortedRowList.comparatorProperty().unbind();
 
                     // add table data to table
-                    table.setItems(FXCollections.observableArrayList(rows));
-                    setCenter(table);
+                    sortedRowList = new SortedList<>(FXCollections.observableArrayList(rows));
+                    
+                    //need to set the table items to the whole list here so that the filter 
+                    //picks up the full list of options to filter before we paginate
+                    table.setItems(FXCollections.observableArrayList(sortedRowList));
 
                     // add user defined filter to the table
                     filter = TableFilter.forTableView(table).lazy(true).apply();
                     filter.setSearchStrategy((t, u) -> {
                         try {
                             return u.toLowerCase().startsWith(t.toLowerCase());
-                        } catch (Exception ex) {
+                        } catch (final Exception ex) {
                             return false;
                         }
                     });
-                    filter.getFilteredList().predicateProperty().addListener((v, o, n) -> table.refresh());
+                    filter.getFilteredList().predicateProperty().addListener((v, o, n) -> {
+                        sortedRowList.comparatorProperty().unbind();
+                        filteredRowList = new FilteredList<>(FXCollections.observableArrayList(rows), filter.getFilteredList().getPredicate());
+                        sortedRowList = new SortedList<>(FXCollections.observableArrayList(filteredRowList));
+                        paginate(sortedRowList);
+                    });
+                    paginate(sortedRowList);
                     updateDataLatch.countDown();
-
+                    
+                    table.getSelectionModel().getSelectedItems().addListener(selectedOnlySelectionListener);
                     selectedProperty.addListener(tableSelectionListener);
                 });
 
                 try {
                     updateDataLatch.await();
-                } catch (InterruptedException ex) {
+                } catch (final InterruptedException ex) {
                     LOGGER.log(Level.WARNING, "InterruptedException encountered while updating table data");
                     Thread.currentThread().interrupt();
                 }
@@ -1108,44 +1287,100 @@ public final class TableViewPane extends BorderPane {
                 if (!state.isSelectedOnly()) {
                     final List<Integer> selectedIds = new ArrayList<>();
                     final ReadableGraph readableGraph = graph.getReadableGraph();
-                    try {
-                        final boolean isVertex = state.getElementType() == GraphElementType.VERTEX;
-                        final int selectedAttributeId = isVertex
-                                ? VisualConcept.VertexAttribute.SELECTED.get(readableGraph)
-                                : VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
-                        final int elementCount = isVertex
-                                ? readableGraph.getVertexCount()
-                                : readableGraph.getTransactionCount();
-                        for (int elementPosition = 0; elementPosition < elementCount; elementPosition++) {
-                            final int elementId = isVertex
-                                    ? readableGraph.getVertex(elementPosition)
-                                    : readableGraph.getTransaction(elementPosition);
-                            boolean isSelected = false;
-                            if (selectedAttributeId != Graph.NOT_FOUND) {
-                                isSelected = readableGraph.getBooleanValue(selectedAttributeId, elementId);
-                            }
-                            if (isSelected) {
-                                selectedIds.add(elementId);
-                            }
-                        }
-                    } finally {
-                        readableGraph.release();
-                    }
+                    addToSelectedIds(selectedIds, readableGraph, state);
 
                     // update table selection
                     final int[] selectedIndices = selectedIds.stream().map(id -> elementIdToRowIndex.get(id))
                             .map(row -> table.getItems().indexOf(row)).mapToInt(i -> i).toArray();
-
-                    Platform.runLater(() -> {
+                    
+                    Platform.runLater(() -> {                        
                         selectedProperty.removeListener(tableSelectionListener);
+                        table.getSelectionModel().getSelectedItems().removeListener(selectedOnlySelectionListener);
                         table.getSelectionModel().clearSelection();
                         if (!selectedIds.isEmpty()) {
                             table.getSelectionModel().selectIndices(selectedIndices[0], selectedIndices);
                         }
-                        selectedProperty.addListener(tableSelectionListener);
+                        table.getSelectionModel().getSelectedItems().addListener(selectedOnlySelectionListener);
+                        selectedProperty.addListener(tableSelectionListener);                            
                     });
                 }
             }
+        }
+    }
+       
+    /**
+     * A version of the updateSelection(Graph, TableViewState) function which is
+     * to be run on the JavaFX Application Thread
+     * 
+     * @param graph the graph to read selection from.
+     * @param state the current table view state.
+     */
+    private void updateSelectionFromFXThread(final Graph graph, final TableViewState state) {
+        if (graph != null && state != null) {
+
+            if (!Platform.isFxApplicationThread()) {
+                throw new IllegalStateException("Not processing on the JavaFX Application Thread");
+            }
+
+            // get graph selection
+            if (!state.isSelectedOnly()) {
+                final List<Integer> selectedIds = new ArrayList<>();
+                final int[][] selectedIndices = new int[1][1];
+                final Thread selectedIdsThread = new Thread("Update Selection from FX Thread: Get Selected Ids") {
+                    @Override
+                    public void run() {
+                        final ReadableGraph readableGraph = graph.getReadableGraph();
+                        addToSelectedIds(selectedIds, readableGraph, state);
+
+                        // update table selection
+                        selectedIndices[0] = selectedIds.stream().map(id -> elementIdToRowIndex.get(id))
+                                .map(row -> table.getItems().indexOf(row)).mapToInt(i -> i).toArray();
+                    }
+                };
+                selectedIdsThread.start();
+                try {
+                    selectedIdsThread.join();
+                } catch (final InterruptedException ex) {
+                    LOGGER.log(Level.WARNING, "InterruptedException encountered while updating table selection");
+                    Thread.currentThread().interrupt();
+                }
+
+                table.getSelectionModel().clearSelection();
+                if (!selectedIds.isEmpty()) {
+                    table.getSelectionModel().selectIndices(selectedIndices[0][0], selectedIndices[0]);
+                }                           
+            }
+        }
+    }
+    
+    /**
+     * Adds vertex/transaction ids from a graph to a list of ids if the 
+     * vertex/transaction is selected
+     * 
+     * @param selectedIds the list that is being added to
+     * @param readableGraph the graph to read from
+     * @param state the current table view state
+     */
+    private void addToSelectedIds(final List<Integer> selectedIds, final ReadableGraph readableGraph, final TableViewState state) {
+        try {
+            final boolean isVertex = state.getElementType() == GraphElementType.VERTEX;
+            final int selectedAttributeId = isVertex
+                    ? VisualConcept.VertexAttribute.SELECTED.get(readableGraph)
+                    : VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
+            final int elementCount = isVertex
+                    ? readableGraph.getVertexCount()
+                    : readableGraph.getTransactionCount();
+            for (int elementPosition = 0; elementPosition < elementCount; elementPosition++) {
+                final int elementId = isVertex
+                        ? readableGraph.getVertex(elementPosition)
+                        : readableGraph.getTransaction(elementPosition);
+                if (selectedAttributeId != Graph.NOT_FOUND 
+                        && readableGraph.getBooleanValue(selectedAttributeId, elementId)) {
+                    selectedIds.add(elementId);
+                }
+            }
+        } finally {
+            readableGraph.release();
         }
     }
 }
