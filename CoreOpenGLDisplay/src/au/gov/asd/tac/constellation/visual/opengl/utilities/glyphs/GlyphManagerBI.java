@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs;
 
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -38,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -124,7 +127,8 @@ public final class GlyphManagerBI implements GlyphManager {
      * Cache the bulk of the work renderTextAsLigature does to greatly improve
      * performance.
      */
-    private static Map<String, LigatureContext> cache;
+//    private static Map<String, LigatureContext> cache;
+    private static LoadingCache<String, LigatureContext> cache;
 
     /**
      * A default no-op GlyphStream to use when the user specifies null.
@@ -181,7 +185,11 @@ public final class GlyphManagerBI implements GlyphManager {
         drawIndividual = false;
         drawCombined = false;
 
-        cache = new HashMap<>();
+//        cache = new HashMap<>();
+        cache = Caffeine.newBuilder()
+                .expireAfterWrite(1, TimeUnit.HOURS)
+                .build(key -> buildLigature(key));
+
     }
 
     public BufferedImage getImage() {
@@ -358,7 +366,7 @@ public final class GlyphManagerBI implements GlyphManager {
         // time. Guava caching was attempted though it was slower and negating 
         // the performance improvements of caching.
         //
-        if (!cache.containsKey(text)) {
+        if (cache.get(text)!=null) {
             cache.put(text, buildLigature(text));
         }
         final LigatureContext ligature = cache.get(text);

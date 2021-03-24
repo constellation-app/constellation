@@ -73,6 +73,8 @@
                 <package>com.fasterxml.jackson.databind.ser.std</package>
                 <package>com.fasterxml.jackson.databind.type</package>
                 <package>com.fasterxml.jackson.databind.util</package>
+                <package>com.github.benmanes.caffeine.cache</package>
+                <package>com.github.benmanes.caffeine.cache.stats</package>
                 <package>com.google.common.annotations</package>
                 <package>com.google.common.base</package>
                 <package>com.google.common.base.internal</package>
@@ -1192,6 +1194,8 @@
                 <package>org.assertj.core.util.diff.myers</package>
                 <package>org.assertj.core.util.introspection</package>
                 <package>org.assertj.core.util.xml</package>
+                <package>org.checkerframework.checker.builder.qual</package>
+                <package>org.checkerframework.checker.calledmethods.qual</package>
                 <package>org.checkerframework.checker.compilermsgs.qual</package>
                 <package>org.checkerframework.checker.fenum.qual</package>
                 <package>org.checkerframework.checker.formatter</package>
@@ -1217,6 +1221,7 @@
                 <package>org.checkerframework.checker.units</package>
                 <package>org.checkerframework.checker.units.qual</package>
                 <package>org.checkerframework.common.aliasing.qual</package>
+                <package>org.checkerframework.common.initializedfields.qual</package>
                 <package>org.checkerframework.common.reflection.qual</package>
                 <package>org.checkerframework.common.returnsreceiver.qual</package>
                 <package>org.checkerframework.common.subtyping.qual</package>
@@ -2307,8 +2312,12 @@
                 <binary-origin>release/modules/ext/bigint-0.7.1-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/checker-qual-3.5.0-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/checker-qual-3.5.0-jar.jar</binary-origin>
+                <runtime-relative-path>ext/caffeine-3.0.1-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/caffeine-3.0.1-jar.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/checker-qual-3.11.0-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/checker-qual-3.11.0-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/commons-codec-1.13-jar.jar</runtime-relative-path>
@@ -2403,8 +2412,8 @@
                 <binary-origin>release/modules/ext/ejml-zdense-0.40-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/error_prone_annotations-2.3.4-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/error_prone_annotations-2.3.4-jar.jar</binary-origin>
+                <runtime-relative-path>ext/error_prone_annotations-2.5.1-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/error_prone_annotations-2.5.1-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/failureaccess-1.0.1-bundle.jar</runtime-relative-path>
