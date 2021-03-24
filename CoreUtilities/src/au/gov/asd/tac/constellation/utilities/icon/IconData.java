@@ -174,27 +174,20 @@ public abstract class IconData {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 79 * hash + Arrays.hashCode(this.data);
-        return hash;
+        return 79 * 7 + Arrays.hashCode(this.data);
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
-        }
-        if (obj == null) {
+        } else if (obj == null) {
             return false;
-        }
-        if (getClass() != obj.getClass()) {
+        } else if (getClass() != obj.getClass()) {
             return false;
         }
         final IconData other = (IconData) obj;
-        if (!Arrays.equals(this.data, other.data)) {
-            return false;
-        }
-        return true;
+        return Arrays.equals(this.data, other.data);
     }
 
     @Override
