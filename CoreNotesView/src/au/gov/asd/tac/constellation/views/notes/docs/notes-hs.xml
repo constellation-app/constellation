@@ -3,7 +3,7 @@
 <helpset version="2.0">
     <title>Constellation</title>
     <maps>
-        <homeID>au.gov.asd.tac.constellation.views.layers.about</homeID>
+        <homeID>au.gov.asd.tac.constellation.views.notes.about</homeID>
         <mapref location="notes-map.xml"/>
     </maps>
     <view mergetype="javax.help.AppendMerge">
