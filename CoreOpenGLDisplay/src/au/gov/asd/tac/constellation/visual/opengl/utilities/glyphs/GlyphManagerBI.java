@@ -127,7 +127,6 @@ public final class GlyphManagerBI implements GlyphManager {
      * Cache the bulk of the work renderTextAsLigature does to greatly improve
      * performance.
      */
-//    private static Map<String, LigatureContext> cache;
     private static LoadingCache<String, LigatureContext> cache;
 
     /**
@@ -185,9 +184,8 @@ public final class GlyphManagerBI implements GlyphManager {
         drawIndividual = false;
         drawCombined = false;
 
-//        cache = new HashMap<>();
         cache = Caffeine.newBuilder()
-                .expireAfterWrite(1, TimeUnit.HOURS)
+                .expireAfterWrite(1, TimeUnit.HOURS) // TODO: make this configurable
                 .build(key -> buildLigature(key));
 
     }
@@ -361,14 +359,8 @@ public final class GlyphManagerBI implements GlyphManager {
 
         // Retrieve the LigatureContext from the cache to greatly speed up 
         // building these ligatures which are built every time the graph is 
-        // loaded or when the graph structure changes. Note that items are not 
-        // purged from this cache so there is a small build up of memory over 
-        // time. Guava caching was attempted though it was slower and negating 
-        // the performance improvements of caching.
+        // loaded or when the graph structure changes.
         //
-        if (cache.get(text)!=null) {
-            cache.put(text, buildLigature(text));
-        }
         final LigatureContext ligature = cache.get(text);
 
         // Add the background for this text.
