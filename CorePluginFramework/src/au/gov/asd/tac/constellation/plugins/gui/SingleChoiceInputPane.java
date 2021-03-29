@@ -21,7 +21,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
-import impl.org.controlsfx.skin.SearchableComboBoxSkin;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,8 +29,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.control.ComboBox;
 import javafx.scene.layout.HBox;
+import org.controlsfx.control.SearchableComboBox;
 
 /**
  * A drop-down combo box which is the GUI element corresponding to a
@@ -50,16 +49,14 @@ public class SingleChoiceInputPane extends HBox {
 
     public static final int DEFAULT_WIDTH = 300;
 
-    private final ComboBox<ParameterValue> field;
+    private final SearchableComboBox<ParameterValue> field;
 
     // Keep track of entered characters so the user can enter the prefixes of choices to get there quicker.
     private String prefix;
     private static final Logger LOGGER = Logger.getLogger(SingleChoiceInputPane.class.getName());
 
     public SingleChoiceInputPane(final PluginParameter<SingleChoiceParameterValue> parameter) {
-        field = new ComboBox<>();
-        SearchableComboBoxSkin cbSkin = new SearchableComboBoxSkin(field);
-        field.setSkin(cbSkin);
+        field = new SearchableComboBox<>();
         field.setPromptText(parameter.getDescription());
         field.setItems(FXCollections.observableList(SingleChoiceParameterType.getOptionsData(parameter)));
         final ParameterValue initialValue = parameter.getParameterValue();
@@ -138,9 +135,9 @@ public class SingleChoiceInputPane extends HBox {
                         EventHandler<ActionEvent> handler = field.getOnAction();
 
                         field.setOnAction(null);
-                        Platform.runLater(() -> {
-                            field.getSelectionModel().select(0);
-                        field.setItems(FXCollections.observableList(options));
+                        final ObservableList<ParameterValue> searchableList = FXCollections.observableArrayList();
+                        searchableList.setAll(options);
+                        field.setItems(FXCollections.observableList(searchableList));
                         field.setOnAction(handler);
 
                         // Only keep the value if it's in the new choices.
@@ -149,7 +146,7 @@ public class SingleChoiceInputPane extends HBox {
                         } else {
                             field.getSelectionModel().clearSelection();
                         }
-                        });
+
                         break;
 
                     case ENABLED:
