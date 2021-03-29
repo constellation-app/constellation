@@ -117,6 +117,9 @@ public class SearchText {
                     }
                 }
                 
+                // Update the search results count in case it has changed since the last time the conversation was rendered.
+                ConversationBox.searchBubbleLabel.setText("Found: " + getSearchHits(ConversationBox.conversation.getVisibleMessages()));
+                
                 textFlow.getChildren().addAll(textList);
                 return textFlow;
             }

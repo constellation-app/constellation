@@ -94,7 +94,7 @@ public final class ConversationBox extends StackPane {
 
     public static final double PADDING = 5;
 
-    private final Conversation conversation;
+    protected static Conversation conversation;
 
     private final ListView<ConversationMessage> bubbles;
     private final BorderPane contributionsPane;
@@ -121,7 +121,7 @@ public final class ConversationBox extends StackPane {
 
     // A field to enter a string to for search within the bubble.
     protected static final TextField searchBubbleTextField = new TextField();
-    private final Label searchBubbleLabel = new Label();
+    protected static Label searchBubbleLabel = new Label();
     private final VBox searchBubbleVBox = new VBox();
     private int searchHits = 0;
     
@@ -132,7 +132,7 @@ public final class ConversationBox extends StackPane {
      * display.
      */
     public ConversationBox(final Conversation conversation) {
-        this.conversation = conversation;
+        ConversationBox.conversation = conversation;
 
         setPrefSize(500, 500);
         setCache(true);
@@ -255,7 +255,6 @@ public final class ConversationBox extends StackPane {
         searchBubbleTextField.setOnKeyTyped(e -> {
             searchHits = 0;
             searchHits = SearchText.getSearchHits(conversation.getVisibleMessages());
-            searchBubbleLabel.setText("Found: " + searchHits);
             if (searchHits > 0) {
                 searchBubbleLabel.setStyle("-fx-text-fill: yellow; -fx-effect: dropshadow(gaussian, black, 5.0, 0.0, 0.0, 0.0);");
             } else {
