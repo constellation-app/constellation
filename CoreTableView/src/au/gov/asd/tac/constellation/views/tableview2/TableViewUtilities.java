@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -445,6 +446,7 @@ public class TableViewUtilities {
     /**
      * Write the given TableViewState to the graph.
      */
+    @PluginInfo(tags = {"LOW LEVEL"})
     public static class UpdateStatePlugin extends SimpleEditPlugin {
 
         private final TableViewState tableViewState;

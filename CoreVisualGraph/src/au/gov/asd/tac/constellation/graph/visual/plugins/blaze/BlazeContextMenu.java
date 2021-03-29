@@ -31,10 +31,17 @@ import au.gov.asd.tac.constellation.plugins.parameters.DefaultPluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
+import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.Collections;
 import java.util.List;
 import javafx.util.Pair;
+import javax.swing.ImageIcon;
+import org.netbeans.api.annotations.common.StaticResource;
+import org.openide.util.ImageUtilities;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -44,8 +51,10 @@ import org.openide.util.lookup.ServiceProvider;
  * the right-clicked vertex. If some vertices are selected, modify them as well
  * as the right-clicked vertex.
  * <p>
- * The blaze popup menu provides four default colour options, as well as options
- * to add a custom colour or remove the blaze(s) entirely.
+ * The blaze popup menu provides default colour options (Blue, Red and Yellow),
+ * as well as options to add a custom colour or remove the blaze(s) entirely.
+ * The remaining list will be populated with colors saved from the users
+ * presets.
  *
  * @author algol
  * @author elnath
@@ -54,11 +63,16 @@ import org.openide.util.lookup.ServiceProvider;
 public class BlazeContextMenu implements ContextMenuProvider {
 
     private static final String BLAZE_MENU = "Blazes";
-    private static final String ADD_BLUE_BLAZE = "Add Blue Blazes";
-    private static final String ADD_RED_BLAZE = "Add Red Blazes";
-    private static final String ADD_YELLOW_BLAZE = "Add Yellow Blazes";
-    private static final String ADD_CUSTOM_BLAZE = "Color Blazes...";
+    private static final String ADD_CUSTOM_BLAZE = "Add Custom Blazes";
     private static final String UNSET_BLAZE = "Remove Blazes";
+    private static final int BLACK_COLOR = (new Color(0, 0, 0)).getRGB();
+
+    @StaticResource
+    private static final String ADD_RECENT_BLAZE_ICON = "au/gov/asd/tac/constellation/graph/visual/plugins/blaze/resources/addblaze_recent.png";
+    @StaticResource
+    private static final String ADD_CUSTOM_BLAZE_ICON = "au/gov/asd/tac/constellation/graph/visual/plugins/blaze/resources/addblaze_custom.png";
+    @StaticResource
+    private static final String REMOVE_BLAZE_ICON = "au/gov/asd/tac/constellation/graph/visual/plugins/blaze/resources/removeblaze.png";
 
     @Override
     public void selectItem(final String item, final Graph graph, final GraphElementType elementType, final int elementId, final Vector3f unprojected) {
@@ -98,24 +112,6 @@ public class BlazeContextMenu implements ContextMenuProvider {
         }
 
         switch (item) {
-            case ADD_BLUE_BLAZE:
-                final ConstellationColor colorB = ConstellationColor.LIGHT_BLUE;
-                plugin = PluginRegistry.get(VisualGraphPluginRegistry.ADD_CUSTOM_BLAZE);
-                parameters = DefaultPluginParameters.getDefaultParameters(plugin);
-                parameters.setObjectValue(BlazeUtilities.COLOR_PARAMETER_ID, colorB);
-                break;
-            case ADD_RED_BLAZE:
-                final ConstellationColor colorR = ConstellationColor.RED;
-                plugin = PluginRegistry.get(VisualGraphPluginRegistry.ADD_CUSTOM_BLAZE);
-                parameters = DefaultPluginParameters.getDefaultParameters(plugin);
-                parameters.setObjectValue(BlazeUtilities.COLOR_PARAMETER_ID, colorR);
-                break;
-            case ADD_YELLOW_BLAZE:
-                final ConstellationColor colorY = ConstellationColor.YELLOW;
-                plugin = PluginRegistry.get(VisualGraphPluginRegistry.ADD_CUSTOM_BLAZE);
-                parameters = DefaultPluginParameters.getDefaultParameters(plugin);
-                parameters.setObjectValue(BlazeUtilities.COLOR_PARAMETER_ID, colorY);
-                break;
             case ADD_CUSTOM_BLAZE:
                 final ConstellationColor defaultColor = clickedBlaze == null
                         ? BlazeUtilities.DEFAULT_BLAZE.getColor()
@@ -132,6 +128,10 @@ public class BlazeContextMenu implements ContextMenuProvider {
                 parameters = DefaultPluginParameters.getDefaultParameters(plugin);
                 break;
             default:
+                final ConstellationColor color = ConstellationColor.getColorValue(item);
+                plugin = PluginRegistry.get(VisualGraphPluginRegistry.ADD_CUSTOM_BLAZE);
+                parameters = DefaultPluginParameters.getDefaultParameters(plugin);
+                parameters.setObjectValue(BlazeUtilities.COLOR_PARAMETER_ID, color);
                 break;
         }
 
@@ -150,9 +150,64 @@ public class BlazeContextMenu implements ContextMenuProvider {
     @Override
     public List<String> getItems(final GraphReadMethods graph, final GraphElementType elementType, final int entity) {
         if (elementType == GraphElementType.VERTEX) {
-            return Arrays.asList(ADD_BLUE_BLAZE, ADD_RED_BLAZE, ADD_YELLOW_BLAZE, ADD_CUSTOM_BLAZE, UNSET_BLAZE);
+            final List<String> colorList = new ArrayList<>();
+            for (final ConstellationColor color : BlazeActions.getPresetCustomColors()) {
+                if (color != null) {
+                    final Color javaColor = color.getJavaColor();
+                    String colorName = "#" + String.format("%02x", javaColor.getRed())
+                            + String.format("%02x", javaColor.getGreen())
+                            + String.format("%02x", javaColor.getBlue());
+                    if (color.getName() != null) {
+                        colorName = color.getName();
+                    }
+                    colorList.add(colorName);
+                }
+
+            }
+
+            colorList.add(ADD_CUSTOM_BLAZE);
+            colorList.add(UNSET_BLAZE);
+            return colorList;
         } else {
-            return Arrays.asList();
+            return Collections.emptyList();
+        }
+    }
+
+    /**
+     * Produce list of custom blaze color icons based on supplied color.
+     *
+     * @param graph the graph that has been right-clicked on.
+     * @param elementType the type of element that has been right-clicked on.
+     * @param elementId the id of the element that has been right-clicked on.
+     * @return list of custom colored blaze color icons.
+     */
+    @Override
+    public List<ImageIcon> getIcons(final GraphReadMethods graph, final GraphElementType elementType, final int elementId) {
+        if (elementType == GraphElementType.VERTEX) {
+            final List<ImageIcon> icons = new ArrayList<>();
+            for (final ConstellationColor color : BlazeActions.getPresetCustomColors()) {
+                if (color != null) {
+                    final Color javaColor = color.getJavaColor();
+                    final BufferedImage customImage = BlazeActions.copyImageBuffer(
+                            (BufferedImage) ImageUtilities.loadImage(ADD_RECENT_BLAZE_ICON, false));
+
+                    for (int x = 0; x < customImage.getWidth(); x++) {
+                        for (int y = 0; y < customImage.getHeight(); y++) {
+                            if (customImage.getRGB(x, y) == BLACK_COLOR) {
+                                customImage.setRGB(x, y, javaColor.getRGB());
+                            }
+                        }
+                    }
+                    final ImageIcon icon = new ImageIcon(customImage);
+                    icons.add(icon);
+                }
+
+            }
+            icons.add(ImageUtilities.loadImageIcon(ADD_CUSTOM_BLAZE_ICON, false));
+            icons.add(ImageUtilities.loadImageIcon(REMOVE_BLAZE_ICON, false));
+            return icons;
+        } else {
+            return Collections.emptyList();
         }
     }
 }

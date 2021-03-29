@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
 import au.gov.asd.tac.constellation.views.timeline.clustering.ClusteringManager;
 import au.gov.asd.tac.constellation.views.timeline.clustering.TreeElement;
@@ -52,6 +53,8 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToolBar;
+import javafx.scene.control.Tooltip;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -61,6 +64,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.util.Callback;
+import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle.Messages;
 
 /**
@@ -530,11 +534,18 @@ public class TimelinePanel extends Region {
         selectedOnlyButton.selectedProperty().addListener((observable, oldValue, newValue) -> {
             coordinator.setIsShowingSelectedOnly(newValue);
         });
+        
+        final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
+        helpButton.setTooltip(new Tooltip("Display help for Timeline"));
+        helpButton.setOnAction(event -> {
+            new HelpCtx(TimelineTopComponent.class.getName()).display();
+        });
 
         final Label spacer1 = new Label("   ");
         final Label spacer2 = new Label("   ");
         final Label spacer3 = new Label("   ");
         final Label spacer4 = new Label("   ");
+        final Label spacer5 = new Label("   ");
 
         // Add all of the components to the menu bar:
         tb.getItems().addAll(
@@ -547,7 +558,9 @@ public class TimelinePanel extends Region {
                 spacer3,
                 btnZoomToSelection,
                 spacer4,
-                btnShowLabels, cmbAttributeNames);
+                btnShowLabels, 
+                spacer5, 
+                helpButton, cmbAttributeNames);
 
         tb.setCursor(Cursor.DEFAULT);
 

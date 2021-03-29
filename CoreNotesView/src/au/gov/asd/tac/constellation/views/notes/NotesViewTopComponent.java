@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.notes;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReportListener;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReportManager;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
@@ -28,7 +29,7 @@ import org.openide.windows.TopComponent;
 
 /**
  * UI component associated with the Notes View.
- * 
+ *
  * @author sol695510
  */
 @TopComponent.Description(
@@ -51,9 +52,8 @@ import org.openide.windows.TopComponent;
     "CTL_NotesViewAction=Notes View",
     "CTL_NotesViewTopComponent=Notes View",
     "HINT_NotesViewTopComponent=Notes View"})
-
 public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> implements GraphReportListener {
-    
+
     private final NotesViewController notesViewController;
     private final NotesViewPane notesViewPane;
 
@@ -61,77 +61,78 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
      * NotesViewTopComponent constructor.
      */
     public NotesViewTopComponent() {
-        
+
         setName(Bundle.CTL_NotesViewTopComponent());
         setToolTipText(Bundle.HINT_NotesViewTopComponent());
-        
+
         initComponents();
-        
+
         notesViewController = new NotesViewController(this);
         notesViewPane = new NotesViewPane(notesViewController);
-        
+
         initContent();
     }
-    
+
     @Override
     protected void handleNewGraph(final Graph graph) {
-
         if (needsUpdate() && graph != null) {
             notesViewPane.selectAllFilters();
-            notesViewPane.clearNotes(false);
-            notesViewPane.prepareNotesViewPane(notesViewController);
+            notesViewPane.clearAllNotes();
+            notesViewController.readState(graph);
         }
     }
-    
+
     @Override
     protected void handleGraphClosed(final Graph graph) {
-
         if (needsUpdate() && graph != null) {
             notesViewPane.closeEdit();
-            notesViewPane.clearNotes(false);
-            notesViewPane.prepareNotesViewPane(notesViewController);
+            notesViewPane.clearAllNotes();
         }
     }
 
     @Override
     protected void handleComponentOpened() {
-        // Listener is not removed so that plugin reports created when the Notes View is not open will render when it is opened later.
+        /**
+         * listener is not removed so that plugin reports created when the Notes
+         * View is not open will render when it is opened later.
+         */
         GraphReportManager.addGraphReportListener(this);
     }
 
     @Override
     protected void handleComponentClosed() {
-        
         notesViewPane.closeEdit();
         notesViewPane.selectAllFilters();
-        notesViewPane.clearNotes(true);
+        notesViewPane.clearAllNotes();
     }
-    
+
     @Override
     protected NotesViewPane createContent() {
         return notesViewPane;
     }
-    
+
     @Override
     protected String createStyle() {
-        return "resources/notes-view.css";
+        return null;
     }
-    
+
     /**
      * Triggers when plugin reports are added or removed.
-     * 
+     *
      * @param pluginReport
      */
     @Override
     public void newPluginReport(final PluginReport pluginReport) {
-        // Omit plugin reports from the Notes View and Quality Control View.
-        if ((!pluginReport.getPluginName().contains("Notes View"))
-                && (!pluginReport.getPluginName().contains("Quality Control View"))) {
-            notesViewPane.prepareNotesViewPane(notesViewController);
+        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+
+        if (activeGraph != null
+                && pluginReport.getGraphReport().getGraphId().equals(activeGraph.getId())
+                && !pluginReport.hasLowLevelTag()) { // omit low level plugins which are not useful as notes
+            notesViewController.readState(activeGraph);
             notesViewPane.setGraphReport(notesViewController);
         }
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

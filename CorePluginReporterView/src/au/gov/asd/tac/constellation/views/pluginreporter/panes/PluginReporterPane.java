@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.pluginreporter.panes;
 
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReport;
-import au.gov.asd.tac.constellation.plugins.reporting.GraphReportManager;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReportFilter;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
@@ -72,8 +71,8 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
     private final CheckComboBox<String> tagComboBox = new CheckComboBox<>(availableTags);
     private final Set<String> filteredTags = new HashSet<>();
     private PluginReportFilter pluginReportFilter = null;
-
-    private final CheckComboBox<String> ignoredTagsComboBox = new CheckComboBox<>();
+    
+    private ObservableList<String> checkedIndices;
 
     // The height of the report box last time we looked
     // This allows us to see if a change in the vertical scroll
@@ -135,24 +134,9 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
             }
         });
 
-        // Tags to be ignored.
-        final Label ignoredLabel = new Label("Ignored: ");
-        ignoredTagsComboBox.getItems().addAll(GraphReportManager.getIgnoredTags());
-        ignoredTagsComboBox.getCheckModel().checkAll();
-        ignoredTagsComboBox.setMaxWidth(Double.MAX_VALUE);
-        ignoredTagsComboBox.setMinWidth(50);
-        ignoredTagsComboBox.getCheckModel().getCheckedItems().addListener((ListChangeListener<String>) event -> {
-            final ObservableList<String> ignoredTags = ignoredTagsComboBox.getCheckModel().getCheckedItems();
-            GraphReportManager.setIgnoredTags(ignoredTags);
-        });
-        // Group these together so the Toolbar treats them as a unit.
-        final HBox ignoredBox = new HBox(ignoredLabel, ignoredTagsComboBox);
-        ignoredBox.setAlignment(Pos.BASELINE_LEFT);
-
         controlToolbar.getItems().addAll(
                 filterBox,
-                clearButton, showAllButton, helpButton,
-                ignoredBox);
+                clearButton, showAllButton, helpButton);
         setTop(controlToolbar);
 
         reportBox.setFillWidth(true);
@@ -173,7 +157,6 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
                 reportBoxScroll.setVvalue(reportBoxScroll.getVmax());
             }
         });
-
         setCenter(reportBoxScroll);
     }
 
@@ -215,7 +198,6 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
      */
     private void updateReports(boolean refresh) {
         Platform.runLater(() -> {
-
             if (refresh) {
                 nextReport = nextReport > MAXIMUM_REPORT_PANES ? nextReport - MAXIMUM_REPORT_PANES : 0;
 
@@ -236,21 +218,20 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
                     }
                 }
 
+                // TODO: do a better job here of not adding older reports in the first place. The idea here was to reduce memory so this logic is less useful of adding and removing.
                 // remove the oldest one if we have reached the maximum
                 final int size = reportBox.getChildren().size();
-                if (size > MAXIMUM_REPORT_PANES) {
+                if (size > MAXIMUM_REPORT_PANES) { 
                     ((PluginReportPane) reportBox.getChildren().get(size - MAXIMUM_REPORT_PANES)).removeListener();
                     reportBox.getChildren().remove(size - MAXIMUM_REPORT_PANES);
                 }
             }
-
             updateTags();
         });
     }
 
     void updateTags() {
         tagComboBox.getCheckModel().getCheckedItems().removeListener(this);
-        availableTags.clear();
         tagComboBox.getCheckModel().clearChecks();
         if (graphReport != null) {
             final List<String> tags = new ArrayList<>(graphReport.getUTags());
@@ -258,24 +239,17 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
             int selectedIndexCount = 0;
             int tagIndex = 0;
             for (String tag : tags) {
-                availableTags.add(tag);
+                if (!availableTags.contains(tag)) {
+                    availableTags.add(tag);
+                }   
                 if (!filteredTags.contains(tag)) {
+                    tagIndex = availableTags.indexOf(tag);
                     selectedIndices[selectedIndexCount++] = tagIndex; //AIOOBE = DED.
                 }
-                tagIndex++;
             }
-
             tagComboBox.getCheckModel().checkIndices(Arrays.copyOfRange(selectedIndices, 0, selectedIndexCount));
         }
         tagComboBox.getCheckModel().getCheckedItems().addListener(this);
-
-        // Whatever tags the filter combo box has, the ignored combo box should have as well.
-        // Otherwise, how can we ignore them?
-        tagComboBox.getItems().stream().forEach(tag -> {
-            if (!ignoredTagsComboBox.getItems().contains(tag)) {
-                ignoredTagsComboBox.getItems().add(tag);
-            }
-        });
     }
 
     public synchronized void setGraphReport(GraphReport graphReport) {
