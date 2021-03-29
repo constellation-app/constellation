@@ -1,5 +1,10 @@
 # Constellation Changes
 
+## 2021-03-01 Changes in March 2021
+* Added `hasLowLevelTag()` to `PluginReport` classes to check whether a plugin has a "LOW LEVEL" tag specified.
+* Added Keyboard Shortcut to Scatter Plot View. Shortcut is Ctrl-Shift-O
+* Updated all state reading and writing plugins to have a "LOW LEVEL" tag.
+
 ## 2021-01-01 Changes in January 2021
 * Moved a number of classes out of `au.gov.asd.tac.constellation.plugins.importexport.delimited` and `au.gov.asd.tac.constellation.plugins.importexport.jdbc` into the base package to help remove duplicate classes.
 * Converted the Tutorial Page into a What's New page for displaying changes in Constellation. 

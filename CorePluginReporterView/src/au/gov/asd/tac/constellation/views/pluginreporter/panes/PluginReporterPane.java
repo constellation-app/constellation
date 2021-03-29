@@ -157,7 +157,6 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
                 reportBoxScroll.setVvalue(reportBoxScroll.getVmax());
             }
         });
-
         setCenter(reportBoxScroll);
     }
 
@@ -199,7 +198,6 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
      */
     private void updateReports(boolean refresh) {
         Platform.runLater(() -> {
-
             if (refresh) {
                 nextReport = nextReport > MAXIMUM_REPORT_PANES ? nextReport - MAXIMUM_REPORT_PANES : 0;
 
@@ -220,9 +218,10 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
                     }
                 }
 
+                // TODO: do a better job here of not adding older reports in the first place. The idea here was to reduce memory so this logic is less useful of adding and removing.
                 // remove the oldest one if we have reached the maximum
                 final int size = reportBox.getChildren().size();
-                if (size > MAXIMUM_REPORT_PANES) {
+                if (size > MAXIMUM_REPORT_PANES) { 
                     ((PluginReportPane) reportBox.getChildren().get(size - MAXIMUM_REPORT_PANES)).removeListener();
                     reportBox.getChildren().remove(size - MAXIMUM_REPORT_PANES);
                 }
@@ -233,7 +232,6 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
 
     void updateTags() {
         tagComboBox.getCheckModel().getCheckedItems().removeListener(this);
-        availableTags.clear();
         tagComboBox.getCheckModel().clearChecks();
         if (graphReport != null) {
             final List<String> tags = new ArrayList<>(graphReport.getUTags());
@@ -241,13 +239,14 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
             int selectedIndexCount = 0;
             int tagIndex = 0;
             for (String tag : tags) {
-                availableTags.add(tag);
+                if (!availableTags.contains(tag)) {
+                    availableTags.add(tag);
+                }   
                 if (!filteredTags.contains(tag)) {
+                    tagIndex = availableTags.indexOf(tag);
                     selectedIndices[selectedIndexCount++] = tagIndex; //AIOOBE = DED.
                 }
-                tagIndex++;
             }
-
             tagComboBox.getCheckModel().checkIndices(Arrays.copyOfRange(selectedIndices, 0, selectedIndexCount));
         }
         tagComboBox.getCheckModel().getCheckedItems().addListener(this);

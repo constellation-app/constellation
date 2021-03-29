@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
+== 2021-03-22 Scatter Plot
+<p>Ctrl-Shift-O has been added as a keyboard shortcut to open up the Scatter Plot View.</p>
+
 == 2021-02-25 Conversation View
 <p>The Conversation View now has a search bar where a passage of text can be be searched for within a currently visible conversation.</p>
 
