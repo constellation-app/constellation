@@ -105,12 +105,15 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     private int selectedAttribute = Graph.NOT_FOUND;
     private long latestGraphChangeID = 0;
     private ElementSet currentFilter;
+    
+    private static final int MIN_WIDTH = 425;
+    private static final int MIN_HEIGHT = 400;
 
     public HistogramTopComponent() {
         initComponents();
         setName(Bundle.CTL_HistogramTopComponent());
         setToolTipText(Bundle.HINT_HistogramTopComponent()); 
-        this.setMinimumSize(new java.awt.Dimension(425, 400));
+        this.setMinimumSize(new java.awt.Dimension(MIN_WIDTH, MIN_HEIGHT));
 
         controls = new HistogramControls(this);
         add(controls, BorderLayout.SOUTH);
