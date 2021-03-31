@@ -87,6 +87,8 @@ import org.openide.windows.TopComponent;
 })
 public final class HistogramTopComponent extends TopComponent implements GraphManagerListener, GraphChangeListener, UndoRedo.Provider {
 
+    private static final int MIN_WIDTH = 425;
+    private static final int MIN_HEIGHT = 400;
     Graph currentGraph = null;
     private final HistogramControls controls;
     private final HistogramDisplay display;
@@ -105,9 +107,6 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     private int selectedAttribute = Graph.NOT_FOUND;
     private long latestGraphChangeID = 0;
     private ElementSet currentFilter;
-    
-    private static final int MIN_WIDTH = 425;
-    private static final int MIN_HEIGHT = 400;
 
     public HistogramTopComponent() {
         initComponents();

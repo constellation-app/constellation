@@ -66,7 +66,8 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
     static final String NO_VALUE = "<No Value>";
     private static final String PROPERTY_VALUE = "Property Value";
     private static final String COUNT = "Count";
-    private static final String totalBinsCount = "Total Bin Count: ";
+    private static final String TOTAL_BINS_COUNT = "Total Bin Count: ";
+    private static final int HALF = 2;
 
     // The color that shows where a bar would be if it was bigger.
     // This provides a guide to the user so they can click anywhere level with a bar,
@@ -108,7 +109,6 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
     private boolean controlDown;
     private boolean binCollectionOutOfDate = true;
     private final JPopupMenu copyMenu = new JPopupMenu();
-    private static final int HALF = 2;
 
     public HistogramDisplay(HistogramTopComponent topComponent) {
         this.topComponent = topComponent;
@@ -341,11 +341,12 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
 
                 final String headerStringValue = getStringToFit(PROPERTY_VALUE, textWidth, g2);
                 final String headerStringCount = getStringToFit(COUNT, barsWidth, g2);
-                final String headerStringTotalBins = getStringToFit(totalBinsCount + bins.length, barsWidth, g2);
+                final String headerStringTotalBins = getStringToFit(TOTAL_BINS_COUNT + bins.length, barsWidth, g2);
                 
                 int countTextWidth = g2.getFontMetrics().stringWidth(headerStringTotalBins);
                 
-                g2.drawString(headerStringValue, LEFT_MARGIN + iconPadding, TOP_MARGIN + (barHeight / HALF) + correction);
+                g2.drawString(headerStringValue, LEFT_MARGIN + iconPadding, 
+                        TOP_MARGIN + (barHeight / HALF) + correction);
                 g2.drawString(headerStringCount, barLeft, TOP_MARGIN + (barHeight / HALF) + correction);
                 g2.drawString(headerStringTotalBins, getParent().getWidth() - countTextWidth, 
                         TOP_MARGIN + (barHeight /HALF) + correction);
