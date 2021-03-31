@@ -109,7 +109,8 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     public HistogramTopComponent() {
         initComponents();
         setName(Bundle.CTL_HistogramTopComponent());
-        setToolTipText(Bundle.HINT_HistogramTopComponent());
+        setToolTipText(Bundle.HINT_HistogramTopComponent()); 
+        this.setMinimumSize(new java.awt.Dimension(425, 400));
 
         controls = new HistogramControls(this);
         add(controls, BorderLayout.SOUTH);
