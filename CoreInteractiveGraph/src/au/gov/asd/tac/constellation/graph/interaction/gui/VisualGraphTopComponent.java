@@ -1119,10 +1119,12 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 final File srcFile = new File(fileobj.getPath());
                 final String srcfilePath = srcFile.getParent().concat(File.separator).concat(this.name).concat(".").concat(fileobj.getExt());
                 
-                // Create a backup copy of the file before overwriting it. If the backup copy fails, then code will never
-                // get to execute the save, so the actual file should remain intact. If the save fails, the backup file will
-                // already have been written.
-                FileUtils.copyFile(new File(srcfilePath), new File(srcfilePath.concat(BACKUP_EXTENSION)));
+                if(srcFile.exists() && !srcFile.isDirectory() && FileUtils.sizeOf(srcFile) > 0) { 
+                    // Create a backup copy of the file before overwriting it. If the backup copy fails, then code will never
+                    // get to execute the save, so the actual file should remain intact. If the save fails, the backup file will
+                    // already have been written.
+                    FileUtils.copyFile(new File(srcfilePath), new File(srcfilePath.concat(BACKUP_EXTENSION)));
+                }
                 
                 try (OutputStream out = new BufferedOutputStream(freshGdo.getPrimaryFile().getOutputStream())) {
                     // Write the graph.
