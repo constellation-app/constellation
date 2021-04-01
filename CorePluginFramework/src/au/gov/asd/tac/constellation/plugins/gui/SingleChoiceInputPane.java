@@ -131,13 +131,13 @@ public class SingleChoiceInputPane extends HBox {
                         }
                         break;
                     case PROPERTY:
-                        final List<ParameterValue> options = scParameterValue.getOptionsData();
+                        final ObservableList<ParameterValue> options = FXCollections.observableArrayList();
                         EventHandler<ActionEvent> handler = field.getOnAction();
 
                         field.setOnAction(null);
-                        final ObservableList<ParameterValue> searchableList = FXCollections.observableArrayList();
-                        searchableList.setAll(options);
-                        field.setItems(FXCollections.observableList(searchableList));
+
+                        options.setAll(scParameterValue.getOptionsData());
+                        field.setItems(options);
                         field.setOnAction(handler);
 
                         // Only keep the value if it's in the new choices.
@@ -148,6 +148,7 @@ public class SingleChoiceInputPane extends HBox {
                         }
 
                         break;
+
 
                     case ENABLED:
                         field.setDisable(!scParameter.isEnabled());
