@@ -40,6 +40,9 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = AbstractGraphIOProvider.class)
 public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
 
+    private static final String FILTERS_FIELD = "filters";
+    private static final String NOTES_FIELD = "notes";
+
     @Override
     public String getName() {
         return NotesViewConcept.MetaAttribute.NOTES_VIEW_STATE.getName();
@@ -49,12 +52,12 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
     public void readObject(final int attributeId, final int elementId, final JsonNode jnode,
             final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap,
             final GraphByteReader byteReader, final ImmutableObjectCache cache) throws IOException {
-        
+
         if (!jnode.isNull()) {
             // Reading notes from state.
             final List<NotesViewEntry> noteViewEntries = new ArrayList<>();
-            final ArrayNode notesArray = (ArrayNode) jnode.withArray("notes");
-            
+            final ArrayNode notesArray = (ArrayNode) jnode.withArray(NOTES_FIELD);
+
             for (int i = 0; i < notesArray.size(); i++) {
                 if (!notesArray.get(i).isNull()) {
                     noteViewEntries.add(new NotesViewEntry(
@@ -67,14 +70,14 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
             }
             // Reading filters from state.
             final List<String> selectedFilters = new ArrayList<>();
-            final ArrayNode filtersArray = (ArrayNode) jnode.withArray("filters");
-            
-            for (int i = 0; i < filtersArray.size(); i++) { 
+            final ArrayNode filtersArray = (ArrayNode) jnode.withArray(FILTERS_FIELD);
+
+            for (int i = 0; i < filtersArray.size(); i++) {
                 if (!filtersArray.get(i).isNull()) {
                     selectedFilters.add(filtersArray.get(i).asText());
                 }
             }
-            
+
             final NotesViewState state = new NotesViewState(noteViewEntries, selectedFilters);
             graph.setObjectValue(attributeId, elementId, state);
         }
@@ -92,10 +95,10 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
             } else {
                 // Make a copy in case the state on the graph is currently being modified.
                 final NotesViewState state = new NotesViewState(originalState);
-                
+
                 jsonGenerator.writeObjectFieldStart(attribute.getName());
-                
-                jsonGenerator.writeArrayFieldStart("notes"); // Start writing notes to state.
+
+                jsonGenerator.writeArrayFieldStart(NOTES_FIELD); // Start writing notes to state.
 
                 for (final NotesViewEntry note : state.getNotes()) {
                     if (note == null) {
@@ -109,10 +112,10 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                         jsonGenerator.writeEndArray();
                     }
                 }
-                
+
                 jsonGenerator.writeEndArray(); // End writing notes to state.
-                
-                jsonGenerator.writeArrayFieldStart("filters"); // Start writing filters to state.
+
+                jsonGenerator.writeArrayFieldStart(FILTERS_FIELD); // Start writing filters to state.
 
                 for (final String filter : state.getFilters()) {
                     if (filter == null) {
@@ -121,9 +124,9 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                         jsonGenerator.writeString(filter);
                     }
                 }
-                
+
                 jsonGenerator.writeEndArray(); // End writing filters to state.
-                
+
                 jsonGenerator.writeEndObject();
             }
         }

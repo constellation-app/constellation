@@ -27,6 +27,8 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.json.JsonUtilities;
 import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlEvent.QualityCategory;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetter;
@@ -64,6 +66,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.Tooltip;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
@@ -74,6 +78,7 @@ import javafx.util.Pair;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.openide.util.Exceptions;
+import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.NbPreferences;
@@ -150,42 +155,49 @@ public final class QualityControlViewPane extends BorderPane {
         optionsPane = new FlowPane();
         optionsPane.setId("qualitycontrolview-flow-pane");
         optionsPane.setAlignment(Pos.CENTER);
-        final Button deleteButton = new Button("Delete from Graph");
+        final Button deleteButton = new Button("Delete From Graph");
         deleteButton.setOnAction(event -> {
             final List<QualityControlEvent> qualitycontrolEvents = qualityTable.getSelectionModel().getSelectedItems();
             PluginExecution.withPlugin(new DeleteQualityControlEvents(qualitycontrolEvents)).executeLater(GraphManager.getDefault().getActiveGraph());
             qualityTable.getSelectionModel().clearSelection();
         });
-        optionsPane.getChildren().add(deleteButton);
 
-        final Button selectButton = new Button("Select on graph");
+        final Button selectButton = new Button("Select On Graph");
         selectButton.setOnAction(event -> {
             final List<QualityControlEvent> qualitycontrolEvents = qualityTable.getSelectionModel().getSelectedItems();
             PluginExecution.withPlugin(new SelectQualityControlEvents(qualitycontrolEvents)).executeLater(GraphManager.getDefault().getActiveGraph());
             qualityTable.getSelectionModel().clearSelection();
         });
-        optionsPane.getChildren().add(selectButton);
 
-        final Button removeButton = new Button("Deselect on graph");
+        final Button removeButton = new Button("Deselect On Graph");
         removeButton.setOnAction(event -> {
             final List<QualityControlEvent> qualitycontrolEvents = qualityTable.getSelectionModel().getSelectedItems();
             PluginExecution.withPlugin(new DeselectQualityControlEvents(qualitycontrolEvents)).executeLater(GraphManager.getDefault().getActiveGraph());
             qualityTable.getSelectionModel().clearSelection();
         });
-        optionsPane.getChildren().add(removeButton);
 
-        final Button zoomButton = new Button("Zoom on graph");
+        final Button zoomButton = new Button("Zoom On Graph");
         zoomButton.setOnAction(event -> {
             final List<QualityControlEvent> qualitycontrolEvents = qualityTable.getSelectionModel().getSelectedItems();
             PluginExecution.withPlugin(new ZoomToQualityControlEvents(qualitycontrolEvents)).executeLater(GraphManager.getDefault().getActiveGraph());
         });
-        optionsPane.getChildren().add(zoomButton);
 
         final Button priorityButton = new Button("Category Priority");
         priorityButton.setOnAction(event -> {
             showPriorityDialog();
         });
-        optionsPane.getChildren().add(priorityButton);
+        
+        // create help button
+        final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
+        helpButton.paddingProperty().set(new Insets(2, 0, 0, 0));
+        helpButton.setTooltip(new Tooltip("Display help for Notes View"));
+        helpButton.setOnAction(event -> {
+            new HelpCtx(QualityControlViewTopComponent.class.getName()).display();
+        });
+        // Get rid of the ugly button look so the icon stands alone.
+        helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
+        
+        optionsPane.getChildren().addAll(deleteButton, selectButton, removeButton, zoomButton, priorityButton, helpButton);
 
         setBottom(optionsPane);
 

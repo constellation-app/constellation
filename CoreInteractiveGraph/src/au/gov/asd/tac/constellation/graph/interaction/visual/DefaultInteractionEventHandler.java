@@ -61,7 +61,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -972,17 +971,9 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
      *
      * @return array of node IDs
      */
-    private List<Integer> gatherSelectedNodes(GraphReadMethods rg) {
-        List<Integer> selectedIds = new ArrayList<>();
-        final int vertexSelctedAttribute = VisualConcept.VertexAttribute.SELECTED.get(rg);
-        if (vertexSelctedAttribute != Graph.NOT_FOUND) {
-            rg.vertexStream().forEach(vertexId -> {
-                if (rg.getBooleanValue(vertexSelctedAttribute, vertexId)) {
-                    selectedIds.add(vertexId);
-                }
-            });
-        }
-
+    public List<Integer> gatherSelectedNodes(final GraphReadMethods rg) {
+        List<Integer> selectedIds = VisualGraphUtilities.getSelectedElements(rg);
+        
         final int hitId = eventState.getCurrentHitId();
         if (eventState.getCurrentHitType().equals(HitType.VERTEX) && !selectedIds.contains(hitId)) {
             selectedIds.add(hitId);
