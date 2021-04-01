@@ -147,7 +147,7 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
      * @param options A list of Strings to set as the options for the given
      * parameter.
      */
-    private static boolean OptionsChanged(PluginParameter<SingleChoiceParameterValue> parameter, List<String> options) {
+    private static boolean OptionsChanged(final PluginParameter<SingleChoiceParameterValue> parameter, final List<String> options) {
         final SingleChoiceParameterValue parameterValue = parameter.getParameterValue();
         return !options.equals(parameterValue.getOptions());
     }
