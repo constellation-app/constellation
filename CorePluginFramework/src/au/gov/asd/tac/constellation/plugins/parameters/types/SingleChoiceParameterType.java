@@ -129,7 +129,7 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
      */
     public static void setOptions(final PluginParameter<SingleChoiceParameterValue> parameter, final List<String> options) {
         //Change only if the options are changed.
-        if (OptionsChanged(parameter, options)) {
+        if (optionsChanged(parameter, options)) {
             final SingleChoiceParameterValue parameterValue = parameter.getParameterValue();
 
             //Clear the existing selection
@@ -147,7 +147,7 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
      * @param options A list of Strings to set as the options for the given
      * parameter.
      */
-    private static boolean OptionsChanged(final PluginParameter<SingleChoiceParameterValue> parameter, final List<String> options) {
+    private static boolean optionsChanged(final PluginParameter<SingleChoiceParameterValue> parameter, final List<String> options) {
         final SingleChoiceParameterValue parameterValue = parameter.getParameterValue();
         return !options.equals(parameterValue.getOptions());
     }
