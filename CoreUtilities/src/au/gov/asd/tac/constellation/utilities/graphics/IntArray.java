@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.logging.Logger;
 
 /**
  *
@@ -129,11 +130,11 @@ public final class IntArray implements Iterable<Integer> {
      */
     public IntArray(final int initialCapacity) {
         super();
-        
+
         if (initialCapacity < 0) {
             throw new IllegalArgumentException("Illegal Capacity: " + initialCapacity);
         }
-        
+
         this.elementData = new int[initialCapacity];
         size = 0;
     }

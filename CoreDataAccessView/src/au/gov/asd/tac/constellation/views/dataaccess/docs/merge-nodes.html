@@ -13,37 +13,25 @@
         <p>Merge nodes in your graph together based on the defined criteria.</p>
 
         <h2>Parameters</h2>
-        <p>An explanation of the options are:</p>
-        <p>
-            <strong>Merge By</strong>: Nodes will be merged based on the following option:
-        </p>
         <ul>
-            <li>Identifier Prefix Length - Will merge nodes matching the start of the Identifier attribute. The length to compare is defined by the threshold below</li>
-            <li>Identifier Suffix Length - Will merge nodes matching the end of the Identifier attribute. The length to compare is defined by the threshold below</li>
-            <li>Supported Type - Will merge nodes based on the type by merging supported types overriding those not supported.</li>
+            <li><em>Merge By</em> - The rule to determine when nodes should be merged together. Options include:
+                <ul>
+                    <li>Geospatial Distance - Will merge nodes within a particular geospatial distance of each other. The distance to compare is defined by the threshold</li>
+                    <li>Identifier Prefix Length - Will merge nodes matching the start of the Identifier attribute. The length to compare is defined by the threshold</li>
+                    <li>Identifier Suffix Length - Will merge nodes matching the end of the Identifier attribute. The length to compare is defined by the threshold</li>
+                    <li>Supported Type - Will merge nodes based on the type by merging supported types overriding those not supported.</li>
+                </ul>
+            </li>
+            <li><em>Threshold</em> - The limit to apply to the selected rule (not applicable for Supported Type rule)</li>
+            <li><em>Merging Rule</em> - The rule deciding how attributes are merged</li>
+            <li><em>Lead Node</em> - The rule deciding how to choose the lead node (not applicable for Geospatial Distance or Supported Type rules). Options include:
+                <ul>
+                    <li>Longest Value - Use the node with the longer Identifier value length</li>
+                    <li>Shortest Value - Use the node with the shorter Identifier value length</li>
+                    <li>Ask Me - A dialog is displayed asking you to select the lead node by selecting its Identifier</li>
+                </ul>
+            </li>
+            <li><em>Selected Only</em> - Only apply to selected nodes</li>
         </ul>
-        <p>
-            <strong>Threshold</strong>: Threshold (length)
-        </p>
-        <p>
-            <strong>Merging Rule</strong>: The rule deciding how attributes are merged is based on the following option:
-        </p>
-        <ul>
-            <li>Retain lead node attributes if present</li>
-            <li>Retain lead node attributes always</li>
-            <li>Copy merged node attributes if present</li>
-            <li>Copy merged node attributes always</li>
-        </ul>
-        <p>
-            <strong>Lead Node</strong>: The rule deciding how to choose the lead node based on the following option:
-        </p>
-        <ul>
-            <li>Longest Value - Based on the node's Identifier value length, use the node with the longer value</li>
-            <li>Shortest Value - Based on the node's Identifier value length, use the node with the shorter value</li>
-            <li>Ask Me - A dialog is displayed asking you to select the lead node by selecting its Identifier</li>
-        </ul>
-        <p>
-            <strong>Selected Only</strong>: Merge Only Selected Nodes
-        </p>
     </body>
 </html>

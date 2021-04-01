@@ -28,8 +28,10 @@ import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix33f;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -275,5 +277,25 @@ public class VisualGraphUtilities {
             final float[] screenLocation = modelViewMatrix.multiply(worldLocation.getX(), worldLocation.getY(), worldLocation.getZ(), 1);
             return new Vector3f(screenLocation[0], screenLocation[1], screenLocation[2]);
         });
+    }
+    
+        public static List<Integer> getSelectedElements(final GraphReadMethods graph) {
+        final List<Integer> selectedIds = new ArrayList<>();
+        final int vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
+        if (vertexSelectedAttribute != Graph.NOT_FOUND) {
+            graph.vertexStream().forEach(vertexId -> {
+                if (graph.getBooleanValue(vertexSelectedAttribute, vertexId)) {
+                    selectedIds.add(vertexId);
+                }
+            });
+        
+//            This code is left in as a suggested improvement pending the outcomes of an investigation into the use of indexing with Constellation
+//            final GraphIndexResult result = grm.getElementsWithAttributeValue(vertexSelectedAttribute, Boolean.TRUE);
+//            final int resultCount = result.getCount();
+//            for (int i = 0; i < resultCount; i++) {
+//                selectedIds.add(result.getNextElement());
+//            }
+        }
+        return selectedIds;
     }
 }

@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.monitor.AttributeValueMonitor;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
@@ -53,7 +54,8 @@ import org.openide.windows.TopComponent;
         id = "au.gov.asd.tac.constellation.views.scatterplot.ScatterPlotTopComponent"
 )
 @ActionReferences({
-    @ActionReference(path = "Menu/Views", position = 1100)
+    @ActionReference(path = "Menu/Views", position = 1100),
+    @ActionReference(path = "Shortcuts", name = "CS-O")
 })
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_ScatterPlotAction",
@@ -259,6 +261,7 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
     /**
      * Write the given ScatterPlotState to the active graph.
      */
+    @PluginInfo(tags = {"LOW LEVEL"})
     private static class ScatterPlotStateWriter extends SimpleEditPlugin {
 
         private final ScatterPlotState scatterPlotState;
