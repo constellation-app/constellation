@@ -208,9 +208,7 @@ public class SourcePane extends GridPane {
                 add.setOnAction((final ActionEvent t2) -> {
                     if (!cn.getText().isBlank()
                             && driver.getValue() != null
-                            && !connectionStringF.getText().isBlank()
-                            && !username.getText().isBlank()
-                            && !password.getText().isBlank()) {
+                            && !connectionStringF.getText().isBlank()) {
                         if (connectionManager.addConnection(cn.getText(), driver.getValue(), username.getText(), password.getText(), connectionStringF.getText())) {
                             connectionsTable.getItems().clear();
                             connectionsTable.getItems().addAll(connectionManager.getConnections());
