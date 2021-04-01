@@ -28,7 +28,6 @@ import au.gov.asd.tac.constellation.plugins.importexport.NewAttribute;
 import au.gov.asd.tac.constellation.plugins.importexport.RowFilter;
 import au.gov.asd.tac.constellation.plugins.importexport.SchemaDestination;
 import au.gov.asd.tac.constellation.plugins.importexport.jdbc.ImportController;
-import au.gov.asd.tac.constellation.plugins.importexport.jdbc.JDBCImporterStage;
 import au.gov.asd.tac.constellation.plugins.importexport.translator.AttributeTranslator;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
@@ -44,6 +43,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
+import javafx.stage.Window;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.StatusDisplayer;
@@ -74,7 +74,7 @@ public class ImportJDBCIO {
     private static final String PARAMETERS = "parameters";
     private static final String JSON_EXTENSION = ".json";
 
-    public static void saveParameters(final JDBCImporterStage stage, final ImportController importController) {
+    public static void saveParameters(final Window parentWindow, final ImportController importController) {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
         final File delimIoDir = new File(userDir, IMPORT_DELIMITED_DIR);
@@ -88,7 +88,7 @@ public class ImportJDBCIO {
             return;
         }
 
-        final String templName = new TemplateListDialog(stage, false, null).getName(stage, delimIoDir);
+        final String templName = new TemplateListDialog(parentWindow, false, null).getName(parentWindow, delimIoDir);
         if (templName != null) {
             // A JSON document to store everything in.
             // Two objects; the source data + the configuration data.
@@ -187,12 +187,12 @@ public class ImportJDBCIO {
         }
     }
 
-    public static void loadParameters(final JDBCImporterStage stage, final ImportController importController) {
+    public static void loadParameters(final Window parentWindow, final ImportController importController) {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
         final File delimIoDir = new File(userDir, IMPORT_DELIMITED_DIR);
 
-        final String templName = new TemplateListDialog(stage, true, null).getName(stage, delimIoDir);
+        final String templName = new TemplateListDialog(parentWindow, true, null).getName(parentWindow, delimIoDir);
         if (templName != null) {
             final File template = new File(delimIoDir, FilenameEncoder.encode(templName) + JSON_EXTENSION);
             if (!template.canRead()) {
@@ -264,7 +264,7 @@ public class ImportJDBCIO {
 
                         importController.setClearManuallyAdded(false);
                         try {
-                            stage.update(importController, definitions);
+                            importController.getStage().update(importController, definitions);
                         } finally {
                             importController.setClearManuallyAdded(true);
                         }
@@ -283,12 +283,10 @@ public class ImportJDBCIO {
     /**
      * Determine if the attribute should be saved to the configuration file.
      * <p>
-     * There are two cases when an attribute should be saved to the
-     * configuration file.
+     * There are two cases when an attribute should be saved to the configuration file.
      * <ul>
      * <li>If the attribute is assigned to a column</li>
-     * <li>If the attribute is not assigned to a column but has a default value
-     * or translations defined</li>
+     * <li>If the attribute is not assigned to a column but has a default value or translations defined</li>
      * </ul>
      *
      * @param iadef Attribute definition

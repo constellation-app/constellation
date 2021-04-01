@@ -72,7 +72,7 @@ public class SourcePane extends GridPane {
     private final Pane parametersPane = new Pane();
     private final ImportController importController;
 
-    public SourcePane(final ImportController importController, final Stage parentStage) {
+    public SourcePane(final ImportController importController) {
 
         final JDBCDriverManager driverManager = JDBCDriverManager.getDriverManager();
         final JDBCConnectionManager connectionManager = JDBCConnectionManager.getConnectionManager();
@@ -423,7 +423,7 @@ public class SourcePane extends GridPane {
             dialog.setScene(scene);
             dialog.setTitle("Manage Connections");
             dialog.centerOnScreen();
-            dialog.initOwner(parentStage);
+            //dialog.initOwner(parentStage);
             dialog.sizeToScene();
             dialog.initModality(Modality.APPLICATION_MODAL);
 
@@ -453,40 +453,12 @@ public class SourcePane extends GridPane {
 
         final Label destinationLabel = new Label("Destination:");
         GridPane.setConstraints(destinationLabel, 0, 4, 1, 1, HPos.LEFT, VPos.TOP);
-
-        final ObservableList<ImportDestination<?>> destinations = FXCollections.observableArrayList();
-
-        final Map<String, Graph> graphs = GraphManager.getDefault().getAllGraphs();
-        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-        ImportDestination<?> defaultDestination = null;
-        for (final Graph graph : graphs.values()) {
-            final GraphDestination destination = new GraphDestination(graph);
-            destinations.add(destination);
-            if (graph == activeGraph) {
-                defaultDestination = destination;
-            }
-        }
-
-        final Map<String, SchemaFactory> schemaFactories = SchemaFactoryUtilities.getSchemaFactories();
-        for (final SchemaFactory schemaFactory : schemaFactories.values()) {
-            final SchemaDestination destination = new SchemaDestination(schemaFactory);
-            destinations.add(destination);
-            if (defaultDestination == null) {
-                defaultDestination = destination;
-            }
-        }
-
         graphComboBox = new ComboBox<>();
-        graphComboBox.setItems(destinations);
-        graphComboBox.setOnAction((final ActionEvent t) -> {
-            importController.setDestination(graphComboBox.getSelectionModel().getSelectedItem());
-        });
-        graphComboBox.getSelectionModel().select(defaultDestination);
-        importController.setDestination(defaultDestination);
+        updateDestinationGraphCombo();
         GridPane.setConstraints(graphComboBox, 1, 4, 2, 1, HPos.LEFT, VPos.TOP);
 
-        final Button sampleButton = new Button("Query");
-        sampleButton.setOnAction((final ActionEvent t) -> {
+        final Button queryButton = new Button("Query");
+        queryButton.setOnAction((final ActionEvent t) -> {
             if (!query.getText().isBlank() && dbConnectionComboBox.getValue() != null) {
                 importController.setDBConnection(dbConnectionComboBox.getValue());
                 importController.setQuery(query.getText());
@@ -495,9 +467,9 @@ public class SourcePane extends GridPane {
                 importController.updateSampleData();
             }
         });
-        GridPane.setConstraints(sampleButton, 2, 4, 2, 1, HPos.LEFT, VPos.TOP);
+        GridPane.setConstraints(queryButton, 2, 4, 2, 1, HPos.RIGHT, VPos.TOP);
 
-        getChildren().addAll(fileLabel, dbConnectionComboBox, manageConnectionsBtn, usernameLabel, username, passwordLabel, password, queryLabel, query, destinationLabel, graphComboBox, sampleButton);
+        getChildren().addAll(fileLabel, dbConnectionComboBox, manageConnectionsBtn, usernameLabel, username, passwordLabel, password, queryLabel, query, destinationLabel, graphComboBox, queryButton);
 
     }
 
@@ -526,5 +498,46 @@ public class SourcePane extends GridPane {
      */
     public final ImportDestination<?> getDestination() {
         return graphComboBox.getSelectionModel().getSelectedItem();
+    }
+
+    /**
+     * Helper method to update the destination graph combo box. Also used for value loading when this pane is being
+     * initialized.
+     */
+    public void updateDestinationGraphCombo() {
+        // previousDestinationObject is the previously selected item in the combobox
+        final ImportDestination<?> previousDestinationObject = graphComboBox.getSelectionModel().getSelectedItem();
+        final ObservableList<ImportDestination<?>> destinations = FXCollections.observableArrayList();
+
+        final Map<String, Graph> graphs = GraphManager.getDefault().getAllGraphs();
+        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+        ImportDestination<?> defaultDestination = null;
+        for (final Graph graph : graphs.values()) {
+            final GraphDestination destination = new GraphDestination(graph);
+            destinations.add(destination);
+            if (graph == activeGraph) {
+                defaultDestination = destination;
+            }
+        }
+
+        final Map<String, SchemaFactory> schemaFactories = SchemaFactoryUtilities.getSchemaFactories();
+        for (final SchemaFactory schemaFactory : schemaFactories.values()) {
+            final SchemaDestination destination = new SchemaDestination(schemaFactory);
+            destinations.add(destination);
+            if (defaultDestination == null) {
+                defaultDestination = destination;
+            }
+        }
+        // resets the combo box when set correctly.
+        graphComboBox.setItems(destinations);
+        graphComboBox.setOnAction((final ActionEvent t) -> {
+            importController.setDestination(graphComboBox.getSelectionModel().getSelectedItem());
+        });
+        // Select null triggers the combobox to update to the correct value for
+        // some unknown reason. Removal will mean that the combobox will
+        // not keep it's state when a graph event occurs
+        // ClearSelection() did not work to fix this.
+        graphComboBox.getSelectionModel().select(null);
+        importController.setDestination(previousDestinationObject != null ? previousDestinationObject : defaultDestination);
     }
 }

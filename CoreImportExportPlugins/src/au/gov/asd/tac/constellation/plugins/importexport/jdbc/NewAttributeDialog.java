@@ -33,6 +33,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.Window;
 
 public class NewAttributeDialog extends Stage {
 
@@ -42,7 +43,7 @@ public class NewAttributeDialog extends Stage {
 
     private Attribute attribute = null;
 
-    public NewAttributeDialog(final Stage owner, final GraphElementType elementType) {
+    public NewAttributeDialog(final Window owner, final GraphElementType elementType) {
 
         initStyle(StageStyle.UTILITY);
         initModality(Modality.WINDOW_MODAL);

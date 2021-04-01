@@ -47,9 +47,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TextArea;
+import javax.swing.SwingUtilities;
 
 public class ImportController {
 
@@ -63,7 +65,7 @@ public class ImportController {
      */
     private static final int PREVIEW_ROW_LIMIT = 100;
 
-    private final JDBCImporterStage stage;
+    private final JDBCImportPane importPane;
     private JDBCConnection connection;
     private String query;
     private String username;
@@ -88,8 +90,8 @@ public class ImportController {
     private Map<String, Attribute> displayedTransactionAttributes;
     private final Set<Integer> keys;
 
-    public ImportController(final JDBCImporterStage stage) {
-        this.stage = stage;
+    public ImportController(final JDBCImportPane importPane) {
+        this.importPane = importPane;
         schemaInitialised = true;
 
         autoAddedVertexAttributes = new HashMap<>();
@@ -105,8 +107,8 @@ public class ImportController {
         keys = new HashSet<>();
     }
 
-    public JDBCImporterStage getStage() {
-        return stage;
+    public JDBCImportPane getStage() {
+        return importPane;
     }
 
     public ConfigurationPane getConfigurationPane() {
@@ -141,14 +143,11 @@ public class ImportController {
     }
 
     /**
-     * Whether the ImportController should clear the manually added attributes
-     * in setDestination().
+     * Whether the ImportController should clear the manually added attributes in setDestination().
      * <p>
-     * Defaults to true, but when attributes have been added manually by a
-     * loaded template, should be false.
+     * Defaults to true, but when attributes have been added manually by a loaded template, should be false.
      *
-     * @param b True to cause the manually added attributes to be cleared, false
-     * otherwise.
+     * @param b True to cause the manually added attributes to be cleared, false otherwise.
      */
     public void setClearManuallyAdded(final boolean b) {
         clearManuallyAdded = b;
@@ -172,18 +171,18 @@ public class ImportController {
         }
         keys.clear();
 
-        final boolean showSchemaAttributes = true;
-        loadAllSchemaAttributes(currentDestination, showSchemaAttributes);
-
-        updateDisplayedAttributes();
+        Platform.runLater(() -> {
+            final boolean showSchemaAttributes = true;
+            loadAllSchemaAttributes(currentDestination, showSchemaAttributes);
+            updateDisplayedAttributes();
+        });
     }
 
     /**
      * Load all the schema attributes of the graph
      *
      * @param destination the destination for the imported data.
-     * @param showSchemaAttributes specifies whether schema attributes should be
-     * included.
+     * @param showSchemaAttributes specifies whether schema attributes should be included.
      */
     public void loadAllSchemaAttributes(final ImportDestination<?> destination, final boolean showSchemaAttributes) {
         final Graph graph = destination.getGraph();
@@ -239,8 +238,7 @@ public class ImportController {
     }
 
     /**
-     * Get the attributes that will automatically be added to the attribute
-     * list.
+     * Get the attributes that will automatically be added to the attribute list.
      *
      * @param elementType
      * @param attributes
@@ -340,7 +338,7 @@ public class ImportController {
     }
 
     public String showSetDefaultValueDialog(final String attributeName, final String currentDefaultValue) {
-        final DefaultAttributeValueDialog dialog = new DefaultAttributeValueDialog(stage, attributeName, currentDefaultValue);
+        final DefaultAttributeValueDialog dialog = new DefaultAttributeValueDialog(importPane.getParentWindow(), attributeName, currentDefaultValue);
         dialog.showAndWait();
         return dialog.getDefaultValue();
     }
@@ -350,11 +348,9 @@ public class ImportController {
     }
 
     /**
-     * A List&lt;ImportDefinition&gt; where each list element corresponds to a
-     * RunPane tab.
+     * A List&lt;ImportDefinition&gt; where each list element corresponds to a RunPane tab.
      *
-     * @return A List&lt;ImportDefinition&gt; where each list element
-     * corresponds to a RunPane tab.
+     * @return A List&lt;ImportDefinition&gt; where each list element corresponds to a RunPane tab.
      */
     public List<ImportDefinition> getDefinitions() {
         return configurationPane.createDefinitions();
@@ -410,7 +406,9 @@ public class ImportController {
     }
 
     public void cancelImport() {
-        stage.close();
+        SwingUtilities.invokeLater(() -> {
+            importPane.close();
+        });
     }
 
     public void updateSampleData() {
@@ -489,7 +487,7 @@ public class ImportController {
     }
 
     public Attribute showNewAttributeDialog(final GraphElementType elementType) {
-        final NewAttributeDialog dialog = new NewAttributeDialog(stage, elementType);
+        final NewAttributeDialog dialog = new NewAttributeDialog(importPane.getParentWindow(), elementType);
         dialog.showAndWait();
         return dialog.getAttribute();
     }

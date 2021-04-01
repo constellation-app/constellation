@@ -28,29 +28,25 @@ public class ActionPane extends BorderPane {
 
     private static final Logger LOGGER = Logger.getLogger(ActionPane.class.getName());
 
-    public ActionPane(final ImportController importController) {
+    public ActionPane(final ImportController controller) {
         final HBox runBox = new HBox();
         runBox.setSpacing(5);
         runBox.setPadding(new Insets(5));
         setRight(runBox);
 
-        final Button cancelButton = new Button("Cancel");
-        cancelButton.setOnAction(t -> {
-            importController.cancelImport();
-        });
-
         final Button importButton = new Button("Import");
         importButton.setOnAction(t -> {
             try {
-                importController.processImport();
+                controller.processImport();
             } catch (final IOException ex) {
                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             } catch (final InterruptedException ex) {
                 Thread.currentThread().interrupt();
             } catch (final PluginException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         });
 
-        runBox.getChildren().addAll(cancelButton, importButton);
+        runBox.getChildren().add(importButton);
     }
 }

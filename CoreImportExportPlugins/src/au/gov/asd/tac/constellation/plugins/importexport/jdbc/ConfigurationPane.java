@@ -202,6 +202,7 @@ public class ConfigurationPane extends AnchorPane {
     public void setDisplayedAttributes(final Map<String, Attribute> vertexAttributes, final Map<String, Attribute> transactionAttributes, final Set<Integer> keys) {
         tabPane.getTabs().stream().map(tab -> (RunPane) tab.getContent()).forEachOrdered(runPane -> {
             runPane.setDisplayedAttributes(vertexAttributes, transactionAttributes, keys);
+            runPane.setAttributePaneHeight();
         });
     }
 

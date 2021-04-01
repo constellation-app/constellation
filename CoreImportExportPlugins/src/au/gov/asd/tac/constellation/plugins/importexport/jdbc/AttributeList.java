@@ -91,8 +91,10 @@ public class AttributeList extends VBox {
                     runPane.validate(currentColumn);
                 }
                 attributeNode.setColumn(null);
-
-                runPane.getChildren().add(attributeNode);
+                // Replicates user clicking the attribute
+                if (!runPane.getChildren().contains(attributeNode)) {
+                    runPane.getChildren().add(attributeNode);
+                }
 
                 attributeNode.setManaged(false);
                 attributeNode.setLayoutX(location.getX() - runPane.getDraggingOffset().getX());

@@ -27,13 +27,14 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.Window;
 
 public class DefaultAttributeValueDialog extends Stage {
 
     private final TextField labelText;
     private String defaultValue = null;
 
-    public DefaultAttributeValueDialog(final Stage owner, final String attributeName, final String initialValue) {
+    public DefaultAttributeValueDialog(final Window owner, final String attributeName, final String initialValue) {
 
         defaultValue = initialValue;
 
