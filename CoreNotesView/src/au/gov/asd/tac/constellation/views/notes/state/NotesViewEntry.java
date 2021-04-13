@@ -15,13 +15,16 @@
  */
 package au.gov.asd.tac.constellation.views.notes.state;
 
+import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
+import au.gov.asd.tac.constellation.plugins.reporting.PluginReportListener;
+
 /**
  * Holds the information for a note in the Notes View.
  *
  * @author sol695510
  */
-public class NotesViewEntry {
-    
+public class NotesViewEntry implements PluginReportListener {
+
     private final String dateTime;
     private String noteTitle;
     private String noteContent;
@@ -45,16 +48,26 @@ public class NotesViewEntry {
     public String getNoteContent() {
         return noteContent;
     }
-    
+
     public Boolean isUserCreated() {
         return userCreated;
     }
-    
+
     public void setNoteTitle(final String noteTitle) {
         this.noteTitle = noteTitle;
     }
 
     public void setNoteContent(final String noteContent) {
         this.noteContent = noteContent;
+    }
+
+    @Override
+    public void pluginReportChanged(final PluginReport pluginReport) {
+        this.noteContent = pluginReport.getMessage();
+    }
+
+    @Override
+    public void addedChildReport(final PluginReport parentReport, final PluginReport childReport) {
+        // Intentionally left blank. Ignoring child plugin reports.
     }
 }

@@ -21,7 +21,6 @@ import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcep
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -30,7 +29,18 @@ import java.util.Map;
  * @author canis_majoris
  */
 public class SimilarityUtilities {
+    private static GraphWriteMethods graph;
+    private static int uniqueIdAttribute;
+    private static int typeAttribute;
+    private static int similarityAttribute;
 
+    public static void setGraphAndEnsureAttributes(final GraphWriteMethods graph, final SchemaAttribute schemaSimilarityAttribute) {
+        SimilarityUtilities.graph = graph;
+        uniqueIdAttribute = VisualConcept.TransactionAttribute.IDENTIFIER.ensure(graph);
+        typeAttribute = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
+        similarityAttribute = schemaSimilarityAttribute.ensure(graph);
+    }
+    
     /**
      * Adds similarity scores to the graph while ensuring there is only ever a
      * single similarity transactions between any pair of nodes.
@@ -39,17 +49,26 @@ public class SimilarityUtilities {
      * @param scores - the scores of each vertex pair
      * @param schemaSimilarityAttribute - similarity schema attribute to change
      */
-    public static void addScoresToGraph(final GraphWriteMethods graph, final Map<Tuple<Integer, Integer>, Float> scores, final SchemaAttribute schemaSimilarityAttribute) {
-        final int uniqueIdAttribute = VisualConcept.TransactionAttribute.IDENTIFIER.ensure(graph);
-        final int typeAttribute = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
-        final int similarityAttribute = schemaSimilarityAttribute.ensure(graph);
-        for (final Tuple<Integer, Integer> vertexPair : scores.keySet()) {
-            final int linkId = graph.getLink(vertexPair.getFirst(), vertexPair.getSecond());
+    public static void addScoresToGraph(final Map<Tuple<Integer, Integer>, Float> scores) {
+        scores.forEach((pair,score) -> addScoreToGraph(pair.getFirst(), pair.getSecond(), score));
+    }
+    /**
+     * Adds a similarity score to the graph while ensuring there is only ever a
+     * single similarity transactions between any pair of nodes.
+     *
+     * @param graph - graph to add scores to
+     * @param vertexOne - id of the first vertex
+     * @param vertexTwo - id of the second vertex
+     * @param score - score to add
+     * @param schemaSimilarityAttribute - similarity schema attribute to change
+     */
+    public static void addScoreToGraph(final int vertexOne, final int vertexTwo, final float score) {
+            final int linkId = graph.getLink(vertexOne, vertexTwo);
             if (linkId == GraphConstants.NOT_FOUND) {
-                final int transactionId = graph.addTransaction(vertexPair.getFirst(), vertexPair.getSecond(), false);
-                graph.setStringValue(uniqueIdAttribute, transactionId, String.format("%s == similarity == %s", vertexPair.getFirst(), vertexPair.getSecond()));
+                final int transactionId = graph.addTransaction(vertexOne, vertexTwo, false);
+                graph.setStringValue(uniqueIdAttribute, transactionId, vertexOne + " == similarity == " + vertexTwo);
                 graph.setObjectValue(typeAttribute, transactionId, AnalyticConcept.TransactionType.SIMILARITY);
-                graph.setFloatValue(similarityAttribute, transactionId, scores.get(vertexPair));
+                graph.setFloatValue(similarityAttribute, transactionId, score);
             } else {
                 int similarityTransactionId = GraphConstants.NOT_FOUND;
                 for (int transactionPosition = 0; transactionPosition < graph.getLinkTransactionCount(linkId); transactionPosition++) {
@@ -61,30 +80,13 @@ public class SimilarityUtilities {
                 }
 
                 if (similarityTransactionId == GraphConstants.NOT_FOUND) {
-                    similarityTransactionId = graph.addTransaction(vertexPair.getFirst(), vertexPair.getSecond(), false);
-                    graph.setStringValue(uniqueIdAttribute, similarityTransactionId, String.format("%s == similarity == %s", vertexPair.getFirst(), vertexPair.getSecond()));
+                    similarityTransactionId = graph.addTransaction(vertexOne, vertexTwo, false);
+                    graph.setStringValue(uniqueIdAttribute, similarityTransactionId, vertexOne + " == similarity == " + vertexTwo);
                     graph.setObjectValue(typeAttribute, similarityTransactionId, AnalyticConcept.TransactionType.SIMILARITY);
                 }
 
-                graph.setFloatValue(similarityAttribute, similarityTransactionId, scores.get(vertexPair));
+                graph.setFloatValue(similarityAttribute, similarityTransactionId, score);
             }
-        }
-    }
-
-    /**
-     * Adds a similarity score to the graph while ensuring there is only ever a
-     * single similarity transactions between any pair of nodes.
-     *
-     * @param graph - graph to add scores to
-     * @param vertexOne - id of the first vertex
-     * @param vertexTwo - id of the second vertex
-     * @param score - score to add
-     * @param schemaSimilarityAttribute - similarity schema attribute to change
-     */
-    public static void addScoreToGraph(final GraphWriteMethods graph, final int vertexOne, final int vertexTwo, final float score, final SchemaAttribute schemaSimilarityAttribute) {
-        final Map<Tuple<Integer, Integer>, Float> scores = new HashMap<>();
-        scores.put(new Tuple<>(vertexOne, vertexTwo), score);
-        addScoresToGraph(graph, scores, schemaSimilarityAttribute);
     }
 
     /**

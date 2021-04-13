@@ -48,7 +48,7 @@ public class ClusterResult extends AnalyticResult<ClusterData> {
 
         @Override
         public String toString() {
-            return String.format("{%s;%s;%s}", getClass().getSimpleName(), identifier, clusterNumber);
+            return String.format("{%s;%s;%s}", getClass().getSimpleName(), id.identifier, clusterNumber);
         }
 
         @Override

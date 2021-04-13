@@ -46,6 +46,7 @@ import au.gov.asd.tac.constellation.graph.interaction.plugins.draw.ToggleSelecti
 import au.gov.asd.tac.constellation.graph.interaction.plugins.io.CloseAction;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.io.SaveAsAction;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
@@ -77,6 +78,7 @@ import au.gov.asd.tac.constellation.plugins.update.UpdateController;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.preferences.DeveloperPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
+import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
 import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
@@ -543,6 +545,10 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         visualManager.destroy();
 
         StatusDisplayer.getDefault().setStatusText("Closed " + graphNode.getDataObject().getName());
+
+        if (GraphManager.getDefault().getAllGraphs().isEmpty()) {
+            ConstellationIcon.clearCache();
+        }
 
         // Try to free up any unused memory
         final boolean forceGarbageCollectOnClose = NbPreferences.forModule(ApplicationPreferenceKeys.class).getBoolean(DeveloperPreferenceKeys.FORCE_GC_ON_CLOSE, DeveloperPreferenceKeys.FORCE_GC_ON_CLOSE_DEFAULT);

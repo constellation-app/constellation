@@ -93,6 +93,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javax.swing.SwingUtilities;
 import org.controlsfx.control.table.TableFilter;
+import org.openide.util.HelpCtx;
 
 /**
  * Table View Pane.
@@ -379,9 +380,16 @@ public final class TableViewPane extends BorderPane {
             e.consume();
         }); 
         preferencesButton.getItems().addAll(setPageSize, savePrefsOption, loadPrefsOption);
+        
+        final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
+        helpButton.setTooltip(new Tooltip("Display help for Table View"));
+        helpButton.setMaxWidth(WIDTH);
+        helpButton.setOnAction(event -> {
+            new HelpCtx(TableViewTopComponent.class.getName()).display();
+        });
 
         final ToolBar toolbar = new ToolBar(columnVisibilityButton, selectedOnlyButton,
-                elementTypeButton, new Separator(), copyButton, exportButton, preferencesButton);
+                elementTypeButton, new Separator(), copyButton, exportButton, preferencesButton, helpButton);
         toolbar.setOrientation(Orientation.VERTICAL);
         toolbar.setPadding(new Insets(5));
 
