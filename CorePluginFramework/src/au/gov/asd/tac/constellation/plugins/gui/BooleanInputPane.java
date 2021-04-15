@@ -17,9 +17,7 @@ package au.gov.asd.tac.constellation.plugins.gui;
 
 import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -89,10 +87,10 @@ public class BooleanInputPane extends Pane {
             });
         });
         getChildren().add(field);
-        final String parameterId = parameter.getId();
-        final List<String> booleanInputRecentValues = RecentParameterValues.getRecentValues(parameterId);
-        if (booleanInputRecentValues != null) {
-            parameter.setStringValue(booleanInputRecentValues.get(0));
-        }
+//        final String parameterId = parameter.getId();
+//        final List<String> booleanInputRecentValues = RecentParameterValues.getRecentValues(parameterId);
+//        if (booleanInputRecentValues != null) {
+//            parameter.setStringValue(booleanInputRecentValues.get(0));
+//        }
     }
 }

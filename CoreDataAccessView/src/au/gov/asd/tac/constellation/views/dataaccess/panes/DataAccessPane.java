@@ -1018,12 +1018,12 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                         final Object obj = param.getValue().getObjectValue();
                         if (obj != null && obj.toString() != null && !obj.toString().isEmpty()) {
                             final String value = param.getValue().getStringValue();
-                            final String typeValue = param.getValue().getType().toString();
-                            if (!typeValue.contains("LocalDateParameterType")) {
+//                            final String typeValue = param.getValue().getType().toString();
+//                            if (!typeValue.contains("LocalDateParameterType")) {
                                 RecentParameterValues.storeRecentValue(id, value);
-                            } else {
-                                RecentParameterValues.storeRecentValue(id, obj.toString());
-                            }
+//                            } else {
+//                                RecentParameterValues.storeRecentValue(id, obj.toString());
+//                            }
                         }
                     }
                 }

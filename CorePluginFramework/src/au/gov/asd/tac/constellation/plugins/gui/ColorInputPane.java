@@ -17,10 +17,8 @@ package au.gov.asd.tac.constellation.plugins.gui;
 
 import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType.ColorParameterValue;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -54,7 +52,6 @@ public class ColorInputPane extends Pane {
     private static final Logger LOGGER = Logger.getLogger(ColorInputPane.class.getName());
 
     public ColorInputPane(final PluginParameter<ColorParameterValue> parameter) {
-        final List<String> recentValues = RecentParameterValues.getRecentValues(parameter.getId());
         field = new ColorPicker();
         namedCombo = makeNamedCombo();
         final HBox hbox = new HBox(field, namedCombo);
@@ -132,9 +129,10 @@ public class ColorInputPane extends Pane {
         });
 
         getChildren().add(hbox);
-        if (recentValues != null) {
-            parameter.setStringValue(recentValues.get(recentValues.size() > 1 ? 1 : 0));
-        }
+//        final List<String> recentValues = RecentParameterValues.getRecentValues(parameter.getId());
+//        if (recentValues != null) {
+//            parameter.setStringValue(recentValues.get(recentValues.size() > 1 ? 1 : 0));
+//        }
     }
 
     private ComboBox<ConstellationColor> makeNamedCombo() {
