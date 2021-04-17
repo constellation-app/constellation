@@ -246,8 +246,9 @@ public class TableViewUtilities {
      * @param graph the graph to copy to.
      */
     public static void copySelectionToGraph(final TableView<ObservableList<String>> table,
-            final Map<ObservableList<String>, Integer> index, final GraphElementType elementType, final Graph graph) {
-        PluginExecution.withPlugin(new SelectionToGraphPlugin(table, index, elementType)).executeLater(graph);
+            final Map<Integer, Integer> index, final GraphElementType elementType, 
+            final Graph graph, final List<ObservableList<String>> rowDataCache) {
+        PluginExecution.withPlugin(new SelectionToGraphPlugin(table, index, elementType, rowDataCache)).executeLater(graph);
     }
 
     private static class ExportToCsvFilePlugin extends SimplePlugin {
@@ -414,22 +415,25 @@ public class TableViewUtilities {
     private static class SelectionToGraphPlugin extends SimpleEditPlugin {
 
         private final TableView<ObservableList<String>> table;
-        private final Map<ObservableList<String>, Integer> index;
+        private final Map<Integer, Integer> index;
         private final GraphElementType elementType;
+        private final List<ObservableList<String>> rowDataCache;
 
         public SelectionToGraphPlugin(final TableView<ObservableList<String>> table,
-                final Map<ObservableList<String>, Integer> index, final GraphElementType elementType) {
+                final Map<Integer, Integer> index, final GraphElementType elementType,
+                final List<ObservableList<String>> rowDataCache) {
             this.table = table;
             this.index = index;
             this.elementType = elementType;
+            this.rowDataCache = rowDataCache;
         }
 
         @Override
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
             final Set<Integer> elements = table.getItems().stream()
-                    .map(item -> index.get(item)).collect(Collectors.toSet());
+                    .map(item -> index.get(rowDataCache.indexOf(item))).collect(Collectors.toSet());
             final Set<Integer> selectedElements = table.getSelectionModel().getSelectedItems().stream()
-                    .map(selectedItem -> index.get(selectedItem)).collect(Collectors.toSet());
+                    .map(selectedItem -> index.get(rowDataCache.indexOf(selectedItem))).collect(Collectors.toSet());
             final boolean isVertex = elementType == GraphElementType.VERTEX;
             final int selectedAttributeId = isVertex ? VisualConcept.VertexAttribute.SELECTED.ensure(graph) : VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
             for (final Integer element : elements) {

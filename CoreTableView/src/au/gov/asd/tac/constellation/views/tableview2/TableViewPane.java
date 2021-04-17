@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
 import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
@@ -152,8 +153,9 @@ public final class TableViewPane extends BorderPane {
 
     private final TableViewTopComponent parent;
     private final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> columnIndex;
-    private final Map<Integer, ObservableList<String>> elementIdToRowIndex;
-    private final Map<ObservableList<String>, Integer> rowToElementIdIndex;
+    private final Map<Integer, Integer> elementIdToRowIndex;
+    private final Map<Integer, Integer> rowToElementIdIndex;
+    private final List<ObservableList<String>> rowDataCache;
     private Change<? extends TableColumn<ObservableList<String>, ?>> lastChange;
     private List<ObservableList<String>> previousPageRows = null;
     private final Set<ObservableList<String>> selectedOnlySelectedRows = new HashSet<>();
@@ -164,7 +166,7 @@ public final class TableViewPane extends BorderPane {
     private SortedList<ObservableList<String>> sortedRowList;
     private List<ObservableList<String>> filteredRowList;
     private Pagination pagination;
-    private ToolBar toolbar;
+    private final ToolBar toolbar;
 
     private Button columnVisibilityButton;
     private ToggleButton selectedOnlyButton;
@@ -188,6 +190,12 @@ public final class TableViewPane extends BorderPane {
 
     private final ScheduledExecutorService scheduledExecutorService;
     private ScheduledFuture<?> scheduledFuture;
+    
+    /**
+     * Cache strings used in table cells to significantly reduce memory used by 
+     * the same string repeated in columns and rows.
+     */
+    private ImmutableObjectCache displayTextCache;
 
     private enum UpdateMethod {
         ADD,
@@ -200,8 +208,9 @@ public final class TableViewPane extends BorderPane {
         this.columnIndex = new CopyOnWriteArrayList<>();
         this.elementIdToRowIndex = new HashMap<>();
         this.rowToElementIdIndex = new HashMap<>();
+        this.rowDataCache =  new ArrayList<>();
         this.lastChange = null;
-
+        
         this.toolbar = initToolbar();
         setLeft(toolbar);
         
@@ -227,7 +236,7 @@ public final class TableViewPane extends BorderPane {
         this.tableSelectionListener = (v, o, n) -> {
             if (parent.getCurrentState() != null && !parent.getCurrentState().isSelectedOnly()) {
                 TableViewUtilities.copySelectionToGraph(table, rowToElementIdIndex,
-                        parent.getCurrentState().getElementType(), parent.getCurrentGraph());
+                        parent.getCurrentState().getElementType(), parent.getCurrentGraph(), rowDataCache);
             }
         };
         this.selectedProperty = table.getSelectionModel().selectedItemProperty();
@@ -252,6 +261,8 @@ public final class TableViewPane extends BorderPane {
         this.tableSortTypeListener = (v, o, n) -> paginateForSortListener();
 
         this.scheduledExecutorService = Executors.newScheduledThreadPool(1);
+        
+        displayTextCache = new ImmutableObjectCache();
     }
     
     private ToolBar initToolbar() {
@@ -1180,11 +1191,13 @@ public final class TableViewPane extends BorderPane {
                                         default:
                                             attributeValue = null;
                                     }
-                                    final String displayableValue = interaction.getDisplayText(attributeValue);
+                                    // avoid duplicate strings objects and make a massivse saving on memory use
+                                    final String displayableValue = displayTextCache.deduplicate(interaction.getDisplayText(attributeValue));
                                     rowData.add(displayableValue);
                                 });
-                                elementIdToRowIndex.put(transactionId, rowData);
-                                rowToElementIdIndex.put(rowData, transactionId);
+                                rowDataCache.add(rowData);
+                                elementIdToRowIndex.put(transactionId, rowDataCache.size());
+                                rowToElementIdIndex.put(rowDataCache.size(), transactionId);
                                 rows.add(rowData);
                             }
                         }
@@ -1206,8 +1219,9 @@ public final class TableViewPane extends BorderPane {
                                     final String displayableValue = interaction.getDisplayText(attributeValue);
                                     rowData.add(displayableValue);
                                 });
-                                elementIdToRowIndex.put(vertexId, rowData);
-                                rowToElementIdIndex.put(rowData, vertexId);
+                                rowDataCache.add(rowData);
+                                elementIdToRowIndex.put(vertexId, rowDataCache.size());
+                                rowToElementIdIndex.put(rowDataCache.size(), vertexId);
                                 rows.add(rowData);
                             }
                         }
