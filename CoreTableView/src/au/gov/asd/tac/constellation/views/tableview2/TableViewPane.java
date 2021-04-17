@@ -1156,6 +1156,7 @@ public final class TableViewPane extends BorderPane {
                 // update data on a new thread so as to not interrupt the progress indicator
                 elementIdToRowIndex.clear();
                 rowToElementIdIndex.clear();
+                rowDataCache.clear();
 
                 // build table data based on attribute values on the graph
                 final List<ObservableList<String>> rows = new ArrayList<>();
