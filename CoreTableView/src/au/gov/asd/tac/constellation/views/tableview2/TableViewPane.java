@@ -153,9 +153,8 @@ public final class TableViewPane extends BorderPane {
 
     private final TableViewTopComponent parent;
     private final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> columnIndex;
-    private final Map<Integer, Integer> elementIdToRowIndex;
-    private final Map<Integer, Integer> rowToElementIdIndex;
-    private final List<ObservableList<String>> rowDataCache;
+    private final Map<Integer, ObservableList<String>> elementIdToRowIndex;
+    private final Map<ObservableList<String>, Integer> rowToElementIdIndex;
     private Change<? extends TableColumn<ObservableList<String>, ?>> lastChange;
     private List<ObservableList<String>> previousPageRows = null;
     private final Set<ObservableList<String>> selectedOnlySelectedRows = new HashSet<>();
@@ -208,7 +207,6 @@ public final class TableViewPane extends BorderPane {
         this.columnIndex = new CopyOnWriteArrayList<>();
         this.elementIdToRowIndex = new HashMap<>();
         this.rowToElementIdIndex = new HashMap<>();
-        this.rowDataCache =  new ArrayList<>();
         this.lastChange = null;
         
         this.toolbar = initToolbar();
@@ -236,7 +234,7 @@ public final class TableViewPane extends BorderPane {
         this.tableSelectionListener = (v, o, n) -> {
             if (parent.getCurrentState() != null && !parent.getCurrentState().isSelectedOnly()) {
                 TableViewUtilities.copySelectionToGraph(table, rowToElementIdIndex,
-                        parent.getCurrentState().getElementType(), parent.getCurrentGraph(), rowDataCache);
+                        parent.getCurrentState().getElementType(), parent.getCurrentGraph());
             }
         };
         this.selectedProperty = table.getSelectionModel().selectedItemProperty();
@@ -1156,7 +1154,6 @@ public final class TableViewPane extends BorderPane {
                 // update data on a new thread so as to not interrupt the progress indicator
                 elementIdToRowIndex.clear();
                 rowToElementIdIndex.clear();
-                rowDataCache.clear();
 
                 // build table data based on attribute values on the graph
                 final List<ObservableList<String>> rows = new ArrayList<>();
@@ -1196,9 +1193,8 @@ public final class TableViewPane extends BorderPane {
                                     final String displayableValue = displayTextCache.deduplicate(interaction.getDisplayText(attributeValue));
                                     rowData.add(displayableValue);
                                 });
-                                rowDataCache.add(rowData);
-                                elementIdToRowIndex.put(transactionId, rowDataCache.size());
-                                rowToElementIdIndex.put(rowDataCache.size(), transactionId);
+                                elementIdToRowIndex.put(transactionId, rowData);
+                                rowToElementIdIndex.put(rowData, transactionId);
                                 rows.add(rowData);
                             }
                         }
@@ -1220,9 +1216,8 @@ public final class TableViewPane extends BorderPane {
                                     final String displayableValue = interaction.getDisplayText(attributeValue);
                                     rowData.add(displayableValue);
                                 });
-                                rowDataCache.add(rowData);
-                                elementIdToRowIndex.put(vertexId, rowDataCache.size());
-                                rowToElementIdIndex.put(rowDataCache.size(), vertexId);
+                                elementIdToRowIndex.put(vertexId, rowData);
+                                rowToElementIdIndex.put(rowData, vertexId);
                                 rows.add(rowData);
                             }
                         }
