@@ -20,7 +20,6 @@ import com.fasterxml.jackson.databind.MappingJsonFactory;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;

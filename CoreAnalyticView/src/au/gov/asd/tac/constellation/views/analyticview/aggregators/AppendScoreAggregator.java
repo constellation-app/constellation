@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.views.analyticview.aggregators;
 
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult;
-import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult.ElementScore;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticException;
 import java.util.List;
 import org.apache.commons.collections4.CollectionUtils;
