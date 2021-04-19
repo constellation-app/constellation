@@ -16,12 +16,13 @@
 package au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs;
 
 /**
- * Contains basic information required in every GlyphStream implementation.
- * Will usually be extended rather than used directly.
- * 
+ * Contains basic information required in every GlyphStream implementation. Will
+ * usually be extended rather than used directly.
+ *
  * @author Nova
  */
 public class GlyphStreamContext {
+
     public int totalScale;
     public float visibility;
     public int labelNumber;
