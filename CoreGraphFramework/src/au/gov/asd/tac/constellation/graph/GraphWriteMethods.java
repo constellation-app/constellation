@@ -306,7 +306,7 @@ public interface GraphWriteMethods extends GraphReadMethods {
     void updateAttributeDefaultValue(final int attribute, final Object newObject);
 
     Object createWriteAttributeObject(final int attribute, IntReadable indexReadable);
-    
+
     /**
      * Sets the value of the specified attribute for the specified element to
      * the default value for that attribute.
