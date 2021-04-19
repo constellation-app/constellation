@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.graph.value.types.booleans;
 
-import java.util.Arrays;
 import au.gov.asd.tac.constellation.graph.value.ValueStore;
+import java.util.Arrays;
 
 /**
  *

@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.graph.value.variables;
 
-import au.gov.asd.tac.constellation.graph.value.writables.DoubleWritable;
 import au.gov.asd.tac.constellation.graph.value.readables.DoubleReadable;
+import au.gov.asd.tac.constellation.graph.value.writables.DoubleWritable;
 
 /**
  *
