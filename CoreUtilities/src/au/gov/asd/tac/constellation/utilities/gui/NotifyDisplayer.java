@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui;
 
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 
@@ -25,10 +27,9 @@ import org.openide.NotifyDescriptor;
 public class NotifyDisplayer {
 
     /**
-     * Utility display method to show a dialog to the user.
-     * NotifyDescriptor.ERROR_MESSAGE will be used for errors
-     * NotifyDescriptor.INFORMATION_MESSAGE will be used for information
-     * NotifyDescriptor.WARNING_MESSAGE will be used for warnings
+     * Utility display method to show a dialog to the user. NotifyDescriptor.ERROR_MESSAGE will be used for errors
+     * NotifyDescriptor.INFORMATION_MESSAGE will be used for information NotifyDescriptor.WARNING_MESSAGE will be used
+     * for warnings
      *
      * @param message the String message to display on the prompt
      * @param descriptorType the int value representative of the message type
@@ -36,5 +37,24 @@ public class NotifyDisplayer {
     public static void display(final String message, final int descriptorType) {
         final NotifyDescriptor descriptor = new NotifyDescriptor.Message(message, descriptorType);
         DialogDisplayer.getDefault().notify(descriptor);
+    }
+
+    /**
+     * Utility display method to show an Alert to the user. Alert.AlertType.ERROR will be used for errors
+     * Alert.AlertType.INFORMATION will be used for information Alert.AlertType.WARNING will be used for warnings
+     *
+     * @param title the title of the alert
+     * @param header the header message for the alert
+     * @param message the message to display within the alert
+     * @param alertType the alert icon to add to the alert
+     */
+    public static void displayAlert(final String title, final String header, final String message, final Alert.AlertType alertType) {
+        final Alert dialog;
+        dialog = new Alert(alertType, "", ButtonType.OK);
+        dialog.setTitle(title);
+        dialog.setHeaderText(header);
+        dialog.setContentText(message);
+        dialog.setResizable(true);
+        dialog.showAndWait();
     }
 }
