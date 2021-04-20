@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.importexport.jdbc;
+package au.gov.asd.tac.constellation.plugins.importexport;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersDialog;
-import au.gov.asd.tac.constellation.plugins.importexport.NewAttribute;
 import au.gov.asd.tac.constellation.plugins.importexport.translator.AttributeTranslator;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
@@ -41,6 +40,18 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Window;
 
+/**
+ * A representation of an Attribute on the GUI.
+ * <p>
+ * A graph Attribute (more specifically, it's label) is displayed in a Label with a particular background color and a
+ * context menu. The context menu allows properties of the AttributeNode (translator, default value) to be edited.
+ * <p>
+ * AttributeNodes are originally displayed in their {@link AttributeList} but can be dragged around the GUI,
+ * specifically onto column headers to indicate that the user wants to import the values in that column into that
+ * specified attribute.
+ *
+ * @author sirius
+ */
 public final class AttributeNode extends Label implements Comparable<AttributeNode> {
 
     private final AttributeList attributeList;
@@ -62,8 +73,7 @@ public final class AttributeNode extends Label implements Comparable<AttributeNo
 
     /**
      *
-     * @param attributeList The AttributeList to which this AttributeNode
-     * belongs.
+     * @param attributeList The AttributeList to which this AttributeNode belongs.
      * @param attribute The Attribute that this AttributeNode represents.
      * @param isKey True if this Attribute is a key.
      */
@@ -244,8 +254,7 @@ public final class AttributeNode extends Label implements Comparable<AttributeNo
     }
 
     /**
-     * Order attributes alphabetically, except keys come first and weird labels
-     * (starting with "__") come last.
+     * Order attributes alphabetically, except keys come first and weird labels (starting with "__") come last.
      *
      * @param other The other AttributeNode.
      *

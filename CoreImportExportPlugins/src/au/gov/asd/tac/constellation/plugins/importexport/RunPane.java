@@ -13,16 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.importexport.delimited;
+package au.gov.asd.tac.constellation.plugins.importexport;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.plugins.importexport.AttributeType;
-import au.gov.asd.tac.constellation.plugins.importexport.EasyGridPane;
-import au.gov.asd.tac.constellation.plugins.importexport.ImportAttributeDefinition;
-import au.gov.asd.tac.constellation.plugins.importexport.ImportDefinition;
-import au.gov.asd.tac.constellation.plugins.importexport.ImportTableCell;
-import au.gov.asd.tac.constellation.plugins.importexport.RowFilter;
 import au.gov.asd.tac.constellation.plugins.importexport.model.CellValue;
 import au.gov.asd.tac.constellation.plugins.importexport.model.TableRow;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
@@ -35,7 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -71,17 +64,14 @@ import javafx.util.Callback;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * A RunPane displays the UI necessary to allow the user to drag and drop
- * attributes onto columns in the table in order to specify which attribute
- * values should be extracted from which columns.
+ * A RunPane displays the UI necessary to allow the user to drag and drop attributes onto columns in the table in order
+ * to specify which attribute values should be extracted from which columns.
  *
  * @author sirius
  */
 public class RunPane extends BorderPane implements KeyListener {
 
-    private static final Logger LOGGER = Logger.getLogger(RunPane.class.getName());
-
-    private final ImportController importController;
+    protected final ImportController importController;
     private final TableView<TableRow> sampleDataView = new TableView<>();
     private final AttributeList sourceVertexAttributeList;
     private final AttributeList destinationVertexAttributeList;
@@ -93,7 +83,7 @@ public class RunPane extends BorderPane implements KeyListener {
     private int attributeCount = 0;
 
     private final TextField filterField;
-    private RowFilter rowFilter = null;
+    protected RowFilter rowFilter = null;
     private String filter = "";
 
     private final SplitPane attributeFilterPane = new SplitPane();
@@ -105,9 +95,8 @@ public class RunPane extends BorderPane implements KeyListener {
     private ObservableList<TableRow> currentRows = FXCollections.observableArrayList();
     private String[] currentColumnLabels = new String[0];
 
-    private static final Image ADD_IMAGE = UserInterfaceIconProvider.ADD.buildImage(16, Color.BLACK);
-
-    private static final String ROW_FILTER_INITIALISER = "Import from Delimited: Row Filter Initialiser";
+    protected static final Image ADD_IMAGE = UserInterfaceIconProvider.ADD.buildImage(16, Color.BLACK);
+    private static final String ROW_FILTER_INITIALISER = "Importer: Row Filter Initialiser";
 
     private class AttributeBox extends BorderPane {
 
@@ -141,15 +130,14 @@ public class RunPane extends BorderPane implements KeyListener {
         }
     }
 
-    public RunPane(final ImportController importController) {
-        // improvement the performance loading the pane by moving the ScriptEngine loading off the EDT
+    public RunPane(final ImportController importController, final String displayText) {
+        this.importController = importController;
+
         if (rowFilter == null) {
             new Thread(() -> {
                 rowFilter = new RowFilter();
             }, ROW_FILTER_INITIALISER).start();
         }
-
-        this.importController = importController;
 
         setMaxHeight(Double.MAX_VALUE);
         setMaxWidth(Double.MAX_VALUE);
@@ -189,14 +177,7 @@ public class RunPane extends BorderPane implements KeyListener {
 
         // add a help place holder
         final Text startupHelpText = new Text();
-        startupHelpText.setText("1. Click on the green plus icon to add files.\n"
-                + "2. Select your destination graph.\n"
-                + "3. Drag and drop attributes onto columns.\n"
-                + "4. Right click an attribute for more options.\n"
-                + "5. Click the 'Import' button to add data to your graph.\n"
-                + "6. Save your configuration using 'Options > Save'.\n\n"
-                + "HINTS:\n* See all supported attributes with 'Options > Show all schema attributes'.\n"
-                + "* Start typing to filter attributes (press delete to clear).");
+        startupHelpText.setText(displayText);
         startupHelpText.setStyle("-fx-font-size: 10pt;-fx-fill: grey;");
         sampleDataView.setPlaceholder(startupHelpText);
 
@@ -381,8 +362,7 @@ public class RunPane extends BorderPane implements KeyListener {
     }
 
     /**
-     * Set this RunPane to display the specified column headers and sample data
-     * rows.
+     * Set this RunPane to display the specified column headers and sample data rows.
      *
      * @param columnLabels Column header labels.
      * @param newRows Rows of sample data.
@@ -440,7 +420,9 @@ public class RunPane extends BorderPane implements KeyListener {
             columnIndex++;
         }
         currentColumnLabels = columnLabels;
-        rowFilter.setColumns(currentColumnLabels);
+        if (rowFilter != null) {
+            rowFilter.setColumns(currentColumnLabels);
+        }
         currentRows = newRows;
         sampleDataView.setItems(currentRows);
         setFilter(filter);

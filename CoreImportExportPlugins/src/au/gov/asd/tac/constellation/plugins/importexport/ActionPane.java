@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.importexport.delimited;
+package au.gov.asd.tac.constellation.plugins.importexport;
 
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import java.io.IOException;
@@ -58,6 +58,7 @@ public class ActionPane extends BorderPane {
         this.importController = controller;
 
         final HBox runBox = new HBox();
+        runBox.setSpacing(5);
         runBox.setPadding(new Insets(5, 5, 35, 5));
         setRight(runBox);
 

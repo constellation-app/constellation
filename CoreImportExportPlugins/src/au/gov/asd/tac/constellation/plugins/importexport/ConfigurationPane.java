@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.importexport.jdbc;
+package au.gov.asd.tac.constellation.plugins.importexport;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
-import au.gov.asd.tac.constellation.plugins.importexport.ImportDefinition;
 import au.gov.asd.tac.constellation.plugins.importexport.model.TableRow;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.awt.Color;
@@ -42,20 +41,22 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 
 /**
- * The ConfigurationPane is a UI element that displays a sample of the imported
- * data and allows the user to assign graph attributes to columns in the data.
+ * The ConfigurationPane is a UI element that displays a sample of the imported data and allows the user to assign graph
+ * attributes to columns in the data.
  *
  * @author sirius
  */
 public class ConfigurationPane extends AnchorPane {
 
-    private final ImportController importController;
-    private final TabPane tabPane;
+    protected final ImportController importController;
+    protected final TabPane tabPane;
+    private final String helpText;
 
     private static final Image ADD_IMAGE = UserInterfaceIconProvider.ADD.buildImage(16, Color.BLACK);
 
-    public ConfigurationPane(final ImportController importController) {
+    public ConfigurationPane(final ImportController importController, final String helpText) {
         this.importController = importController;
+        this.helpText = helpText;
 
         setMaxHeight(Double.MAX_VALUE);
         setMaxWidth(Double.MAX_VALUE);
@@ -72,7 +73,7 @@ public class ConfigurationPane extends AnchorPane {
         getChildren().add(tabPane);
 
         // Create a button to allow the user to add a new tab (RunPane).
-        final Button newRunButton = new Button("", new ImageView(ADD_IMAGE));
+        Button newRunButton = new Button("", new ImageView(ADD_IMAGE));
         newRunButton.setOnAction((ActionEvent event) -> {
             importController.createNewRun();
         });
@@ -84,7 +85,7 @@ public class ConfigurationPane extends AnchorPane {
         createTab();
     }
 
-    private Tab createTab() {
+    protected Tab createTab() {
 
         // Create a unique label for the new tab
         int runNumber = 0;
@@ -135,7 +136,7 @@ public class ConfigurationPane extends AnchorPane {
         tabPane.getSelectionModel().select(tab);
 
         // Create the run pane
-        final RunPane runPane = new RunPane(importController);
+        final RunPane runPane = new RunPane(importController, helpText);
 
         tab.setContent(runPane);
 
@@ -144,19 +145,18 @@ public class ConfigurationPane extends AnchorPane {
 
     public void createNewRun(final Map<String, Attribute> vertexAttributes, final Map<String, Attribute> transactionAttributes, final Set<Integer> keys, final String[] columns, final List<String[]> data) {
         final Tab tab = createTab();
-        final RunPane runPane = (RunPane) tab.getContent();
+        RunPane runPane = (RunPane) tab.getContent();
         runPane.requestLayout();
 
         Platform.runLater(() -> {
-            final RunPane runPane1 = (RunPane) tab.getContent();
+            RunPane runPane1 = (RunPane) tab.getContent();
             runPane1.setDisplayedAttributes(vertexAttributes, transactionAttributes, keys);
             runPane1.setSampleData(columns, createTableRows(data));
         });
     }
 
     /**
-     * Set the configuration pane to display the specified column headers and
-     * sample data rows.
+     * Set the configuration pane to display the specified column headers and sample data rows.
      *
      * @param columnLabels Column header labels.
      * @param currentData Rows of sample data.
@@ -167,8 +167,8 @@ public class ConfigurationPane extends AnchorPane {
         });
     }
 
-    private static ObservableList<TableRow> createTableRows(final List<String[]> data) {
-        final ObservableList<TableRow> rows = FXCollections.observableArrayList();
+    private static ObservableList<TableRow> createTableRows(List<String[]> data) {
+        ObservableList<TableRow> rows = FXCollections.observableArrayList();
         final int rowCount = Math.min(101, data.size());
         for (int row = 1; row < rowCount; row++) {
             rows.add(new TableRow(row - 1, data.get(row)));
@@ -177,47 +177,47 @@ public class ConfigurationPane extends AnchorPane {
     }
 
     /**
-     * A List&lt;ImportDefinition&gt; where each list element corresponds to a
-     * RunPane tab.
+     * A List&lt;ImportDefinition&gt; where each list element corresponds to a RunPane tab.
      *
-     * @return A List&lt;ImportDefinition&gt; where each list element
-     * corresponds to a RunPane tab.
+     * @return A List&lt;ImportDefinition&gt; where each list element corresponds to a RunPane tab.
      */
     public List<ImportDefinition> createDefinitions() {
-        final List<ImportDefinition> definitions = new ArrayList<>(tabPane.getTabs().size());
+        List<ImportDefinition> definitions = new ArrayList<>(tabPane.getTabs().size());
 
-        tabPane.getTabs().stream().map(tab -> (RunPane) tab.getContent()).forEachOrdered(runPane -> {
+        for (Tab tab : tabPane.getTabs()) {
+            RunPane runPane = (RunPane) tab.getContent();
             definitions.add(runPane.createDefinition());
-        });
+        }
 
         return Collections.unmodifiableList(definitions);
     }
 
-    public void deleteAttribute(final Attribute attribute) {
-        tabPane.getTabs().stream().map(tab -> (RunPane) tab.getContent()).forEachOrdered(runPane -> {
+    public void deleteAttribute(Attribute attribute) {
+        for (Tab tab : tabPane.getTabs()) {
+            RunPane runPane = (RunPane) tab.getContent();
             runPane.deleteAttribute(attribute);
-        });
+        }
     }
 
-    public void setDisplayedAttributes(final Map<String, Attribute> vertexAttributes, final Map<String, Attribute> transactionAttributes, final Set<Integer> keys) {
-        tabPane.getTabs().stream().map(tab -> (RunPane) tab.getContent()).forEachOrdered(runPane -> {
+    public void setDisplayedAttributes(Map<String, Attribute> vertexAttributes, Map<String, Attribute> transactionAttributes, Set<Integer> keys) {
+        for (Tab tab : tabPane.getTabs()) {
+            RunPane runPane = (RunPane) tab.getContent();
             runPane.setDisplayedAttributes(vertexAttributes, transactionAttributes, keys);
             runPane.setAttributePaneHeight();
-        });
+        }
     }
 
     /**
-     * Returns a combined collection of all attributes that have been allocated
-     * to a column in any run.
+     * Returns a combined collection of all attributes that have been allocated to a column in any run.
      *
-     * @return a combined collection of all attributes that have been allocated
-     * to a column in any run.
+     * @return a combined collection of all attributes that have been allocated to a column in any run.
      */
     public Collection<Attribute> getAllocatedAttributes() {
-        final List<Attribute> allocatedAttributes = new ArrayList<>();
-        tabPane.getTabs().stream().map(tab -> (RunPane) tab.getContent()).forEachOrdered(runPane -> {
+        List<Attribute> allocatedAttributes = new ArrayList<>();
+        for (Tab tab : tabPane.getTabs()) {
+            RunPane runPane = (RunPane) tab.getContent();
             allocatedAttributes.addAll(runPane.getAllocatedAttributes());
-        });
+        }
 
         return allocatedAttributes;
     }
@@ -227,9 +227,9 @@ public class ConfigurationPane extends AnchorPane {
         // (This tends to involve Platform.runLater() so let them be queued.)
         tabPane.getTabs().clear();
 
-        definitions.forEach(item -> {
+        for (final ImportDefinition impdef : definitions) {
             importController.createNewRun();
-        });
+        }
 
         // ...then configure each RunPane.
         // (This will queue waiting for the RunPane creations.)

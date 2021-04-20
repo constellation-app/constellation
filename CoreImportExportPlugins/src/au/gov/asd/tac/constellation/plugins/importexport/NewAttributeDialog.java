@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.importexport.jdbc;
+package au.gov.asd.tac.constellation.plugins.importexport;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeRegistry;
-import au.gov.asd.tac.constellation.plugins.importexport.NewAttribute;
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -35,8 +35,16 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
 
+/**
+ * The NewAttributeDialog provides a dialog box allowing the user to create a new attribute that does not currently
+ * exist in the {@link GraphDestination}. This is typically an attribute that does not exist in a currently existing
+ * graph or an attribute that does not exist in a destination schema.
+ *
+ * @author sirius
+ */
 public class NewAttributeDialog extends Stage {
 
+    private final GraphElementType elementType;
     private final ComboBox<String> typeBox;
     private final TextField labelText;
     private final TextArea descriptionText;
@@ -45,8 +53,10 @@ public class NewAttributeDialog extends Stage {
 
     public NewAttributeDialog(final Window owner, final GraphElementType elementType) {
 
+        this.elementType = elementType;
+
         initStyle(StageStyle.UTILITY);
-        initModality(Modality.WINDOW_MODAL);
+        initModality(Modality.APPLICATION_MODAL);
         initOwner(owner);
 
         setTitle("New Attribute");
@@ -100,14 +110,14 @@ public class NewAttributeDialog extends Stage {
         root.setBottom(buttonPane);
 
         final Button okButton = new Button("Ok");
-        okButton.setOnAction(event -> {
+        okButton.setOnAction((ActionEvent event) -> {
             attribute = new NewAttribute(elementType, typeBox.getSelectionModel().getSelectedItem(), labelText.getText(), descriptionText.getText());
             NewAttributeDialog.this.hide();
         });
         buttonPane.getChildren().add(okButton);
 
         final Button cancelButton = new Button("Cancel");
-        cancelButton.setOnAction(event -> {
+        cancelButton.setOnAction((ActionEvent event) -> {
             NewAttributeDialog.this.hide();
         });
         buttonPane.getChildren().add(cancelButton);

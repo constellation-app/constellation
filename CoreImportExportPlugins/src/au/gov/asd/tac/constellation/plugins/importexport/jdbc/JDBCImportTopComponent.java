@@ -15,8 +15,9 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.jdbc;
 
-import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
+import au.gov.asd.tac.constellation.plugins.importexport.ConfigurationPane;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportPane;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportTopComponent;
 import javafx.application.Platform;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -34,9 +35,6 @@ import org.openide.windows.TopComponent;
         preferredID = "JDBCImportTopComponent",
         iconBase = "au/gov/asd/tac/constellation/plugins/importexport/jdbc/resources/importJDBC.png",
         persistenceType = TopComponent.PERSISTENCE_ALWAYS)
-@TopComponent.Registration(
-        mode = "explorer",
-        openAtStartup = false)
 @ActionID(
         category = "Window",
         id = "au.gov.asd.tac.constellation.plugins.importexport.jdbc.JDBCImportTopComponent")
@@ -49,16 +47,25 @@ import org.openide.windows.TopComponent;
 @Messages({
     "CTL_ImportJDBCFileAction=From JDBC...",
     "HINT_ImportJDBCFile=Import from JDBC"})
-public final class JDBCImportTopComponent extends JavaFxTopComponent<JDBCImportPane> {
+public final class JDBCImportTopComponent extends ImportTopComponent {
 
     private final JDBCImportPane jdbcImportPane;
+    private final String helpText = "1. Select the connection to use\n"
+            + "2. Select your destination graph.\n"
+            + "3. Drag and drop attributes onto columns.\n"
+            + "4. Right click an attribute for more options.\n"
+            + "5. Click the 'Import' button to add data to your graph.\n";
+    protected final JDBCImportController controller = new JDBCImportController();
+    protected final ConfigurationPane configurationPane = new ConfigurationPane(controller, helpText);
+    protected final JDBCSourcePane sourcePane = new JDBCSourcePane(controller);
 
     public JDBCImportTopComponent() {
+        super();
         setName(Bundle.CTL_ImportJDBCFileAction());
         setToolTipText(Bundle.HINT_ImportJDBCFile());
         initComponents();
-
-        jdbcImportPane = new JDBCImportPane(this);
+        jdbcImportPane = new JDBCImportPane(this, controller, configurationPane, sourcePane);
+        controller.setImportPane(jdbcImportPane);
         initContent();
     }
 
@@ -68,26 +75,12 @@ public final class JDBCImportTopComponent extends JavaFxTopComponent<JDBCImportP
     }
 
     @Override
-    protected JDBCImportPane createContent() {
+    protected ImportPane createContent() {
         return jdbcImportPane;
     }
 
     @Override
-    protected void handleNewGraph(final Graph graph) {
-        preparePane();
-    }
-
-    @Override
-    protected void handleGraphOpened(final Graph graph) {
-        preparePane();
-    }
-
-    @Override
-    protected void handleGraphClosed(final Graph graph) {
-        preparePane();
-    }
-
-    private void preparePane() {
+    protected void preparePane() {
         Platform.runLater(() -> {
             jdbcImportPane.getSourcePane().updateDestinationGraphCombo();
             jdbcImportPane.updateSourcePane();

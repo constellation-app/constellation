@@ -298,7 +298,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
 
         int directedIx = ImportConstants.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN;
         for (int i = 0; i < transactionDefinitions.size(); i++) {
-            if (transactionDefinitions.get(i).getAttribute().getName().equals(ImportController.DIRECTED)) {
+            if (transactionDefinitions.get(i).getAttribute().getName().equals(DelimitedImportController.DIRECTED)) {
                 directedIx = transactionDefinitions.get(i).getColumnIndex();
                 break;
             }

@@ -13,20 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.importexport.delimited;
+package au.gov.asd.tac.constellation.plugins.importexport;
 
-import au.gov.asd.tac.constellation.graph.Attribute;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.attribute.AttributeRegistry;
-import au.gov.asd.tac.constellation.plugins.importexport.NewAttribute;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
@@ -37,31 +31,27 @@ import javafx.stage.StageStyle;
 import javafx.stage.Window;
 
 /**
- * The NewAttributeDialog provides a dialog box allowing the user to create a
- * new attribute that does not currently exist in the {@link GraphDestination}.
- * This is typically an attribute that does not exist in a currently existing
- * graph or an attribute that does not exist in a destination schema.
+ * The DefaultAttributeValueDialog is a dialog that allows the user to specify a default (constant) value for a given
+ * graph attribute. This attribute will be given a constant value for all graph elements rather than getting its
+ * attribute values from the imported data. This is useful when it is known that all graph elements will have a constant
+ * value for a given attribute but that information is not present in the data.
  *
  * @author sirius
  */
-public class NewAttributeDialog extends Stage {
+public class DefaultAttributeValueDialog extends Stage {
 
-    private final GraphElementType elementType;
-    private final ComboBox<String> typeBox;
     private final TextField labelText;
-    private final TextArea descriptionText;
+    private String defaultValue = null;
 
-    private Attribute attribute = null;
+    public DefaultAttributeValueDialog(final Window owner, final String attributeName, final String initialValue) {
 
-    public NewAttributeDialog(final Window owner, final GraphElementType elementType) {
-
-        this.elementType = elementType;
+        defaultValue = initialValue;
 
         initStyle(StageStyle.UTILITY);
         initModality(Modality.WINDOW_MODAL);
         initOwner(owner);
 
-        setTitle("New Attribute");
+        setTitle("Set Default Value: " + attributeName);
 
         final BorderPane root = new BorderPane();
         root.setStyle("-fx-background-color: #DDDDDD;");
@@ -74,36 +64,20 @@ public class NewAttributeDialog extends Stage {
         fieldPane.setPadding(new Insets(10));
         root.setCenter(fieldPane);
 
-        final Label typeLabel = new Label("Type:");
-        GridPane.setConstraints(typeLabel, 0, 0);
-        fieldPane.getChildren().add(typeLabel);
-
-        typeBox = new ComboBox<>();
-        typeBox.getItems().addAll(AttributeRegistry.getDefault().getAttributes().keySet());
-        typeBox.getSelectionModel().select("string");
-        GridPane.setConstraints(typeBox, 1, 0);
-        fieldPane.getChildren().add(typeBox);
-
         final Label labelLabel = new Label("Label:");
         GridPane.setConstraints(labelLabel, 0, 1);
         fieldPane.getChildren().add(labelLabel);
 
         labelText = new TextField();
-        labelText.setPromptText("Attribute Label");
+        if (defaultValue == null) {
+            labelText.setPromptText("Enter attribute default value");
+        } else {
+            labelText.setText(defaultValue);
+        }
         labelText.setPrefSize(200, 30);
         GridPane.setConstraints(labelText, 1, 1);
         fieldPane.getChildren().add(labelText);
         labelText.requestFocus();
-
-        final Label descriptionLabel = new Label("Description:");
-        GridPane.setConstraints(descriptionLabel, 0, 2);
-        fieldPane.getChildren().add(descriptionLabel);
-
-        descriptionText = new TextArea();
-        descriptionText.setPromptText("Attribute Description");
-        descriptionText.setPrefSize(300, 100);
-        GridPane.setConstraints(descriptionText, 1, 2);
-        fieldPane.getChildren().add(descriptionText);
 
         final FlowPane buttonPane = new FlowPane();
         buttonPane.setAlignment(Pos.BOTTOM_RIGHT);
@@ -113,19 +87,26 @@ public class NewAttributeDialog extends Stage {
 
         final Button okButton = new Button("Ok");
         okButton.setOnAction((ActionEvent event) -> {
-            attribute = new NewAttribute(elementType, typeBox.getSelectionModel().getSelectedItem(), labelText.getText(), descriptionText.getText());
-            NewAttributeDialog.this.hide();
+            defaultValue = labelText.getText();
+            DefaultAttributeValueDialog.this.hide();
         });
         buttonPane.getChildren().add(okButton);
 
         final Button cancelButton = new Button("Cancel");
         cancelButton.setOnAction((ActionEvent event) -> {
-            NewAttributeDialog.this.hide();
+            DefaultAttributeValueDialog.this.hide();
         });
         buttonPane.getChildren().add(cancelButton);
+
+        final Button clearButton = new Button("Clear");
+        clearButton.setOnAction((ActionEvent event) -> {
+            defaultValue = null;
+            DefaultAttributeValueDialog.this.hide();
+        });
+        buttonPane.getChildren().add(clearButton);
     }
 
-    public Attribute getAttribute() {
-        return attribute;
+    public String getDefaultValue() {
+        return defaultValue;
     }
 }

@@ -27,7 +27,8 @@ import au.gov.asd.tac.constellation.plugins.importexport.ImportDestination;
 import au.gov.asd.tac.constellation.plugins.importexport.NewAttribute;
 import au.gov.asd.tac.constellation.plugins.importexport.RowFilter;
 import au.gov.asd.tac.constellation.plugins.importexport.SchemaDestination;
-import au.gov.asd.tac.constellation.plugins.importexport.jdbc.ImportController;
+import au.gov.asd.tac.constellation.plugins.importexport.jdbc.JDBCImportController;
+import au.gov.asd.tac.constellation.plugins.importexport.jdbc.JDBCImportPane;
 import au.gov.asd.tac.constellation.plugins.importexport.translator.AttributeTranslator;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
@@ -74,7 +75,7 @@ public class ImportJDBCIO {
     private static final String PARAMETERS = "parameters";
     private static final String JSON_EXTENSION = ".json";
 
-    public static void saveParameters(final Window parentWindow, final ImportController importController) {
+    public static void saveParameters(final Window parentWindow, final JDBCImportController importController) {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
         final File delimIoDir = new File(userDir, IMPORT_DELIMITED_DIR);
@@ -187,7 +188,7 @@ public class ImportJDBCIO {
         }
     }
 
-    public static void loadParameters(final Window parentWindow, final ImportController importController) {
+    public static void loadParameters(final Window parentWindow, final JDBCImportController importController) {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
         final File delimIoDir = new File(userDir, IMPORT_DELIMITED_DIR);
@@ -264,7 +265,7 @@ public class ImportJDBCIO {
 
                         importController.setClearManuallyAdded(false);
                         try {
-                            importController.getStage().update(importController, definitions);
+                            ((JDBCImportPane) importController.getStage()).update(importController, definitions);
                         } finally {
                             importController.setClearManuallyAdded(true);
                         }

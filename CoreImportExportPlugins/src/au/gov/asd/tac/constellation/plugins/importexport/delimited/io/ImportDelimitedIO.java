@@ -27,7 +27,8 @@ import au.gov.asd.tac.constellation.plugins.importexport.ImportDestination;
 import au.gov.asd.tac.constellation.plugins.importexport.NewAttribute;
 import au.gov.asd.tac.constellation.plugins.importexport.RowFilter;
 import au.gov.asd.tac.constellation.plugins.importexport.SchemaDestination;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.ImportController;
+import au.gov.asd.tac.constellation.plugins.importexport.delimited.DelimitedImportController;
+import au.gov.asd.tac.constellation.plugins.importexport.delimited.DelimitedImportPane;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.ImportFileParser;
 import au.gov.asd.tac.constellation.plugins.importexport.translator.AttributeTranslator;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -82,7 +83,7 @@ public class ImportDelimitedIO {
     private static final String PARAMETERS = "parameters";
     private static final String JSON_EXTENSION = ".json";
 
-    public static void saveParameters(final Window parentWindow, final ImportController importController) {
+    public static void saveParameters(final Window parentWindow, final DelimitedImportController importController) {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
         final File delimIoDir = new File(userDir, IMPORT_DELIMITED_DIR);
@@ -207,7 +208,7 @@ public class ImportDelimitedIO {
         }
     }
 
-    public static void loadParameters(final Window parentWindow, final ImportController importController) {
+    public static void loadParameters(final Window parentWindow, final DelimitedImportController importController) {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
         final File delimIoDir = new File(userDir, IMPORT_DELIMITED_DIR);
@@ -308,7 +309,7 @@ public class ImportDelimitedIO {
 
                         importController.setClearManuallyAdded(false);
                         try {
-                            importController.getStage().update(importController, definitions);
+                            ((DelimitedImportPane) importController.getStage()).update(importController, definitions);
                         } finally {
                             importController.setClearManuallyAdded(true);
                         }
@@ -327,12 +328,10 @@ public class ImportDelimitedIO {
     /**
      * Determine if the attribute should be saved to the configuration file.
      * <p>
-     * There are two cases when an attribute should be saved to the
-     * configuration file.
+     * There are two cases when an attribute should be saved to the configuration file.
      * <ul>
      * <li>If the attribute is assigned to a column</li>
-     * <li>If the attribute is not assigned to a column but has a default value
-     * or translations defined</li>
+     * <li>If the attribute is not assigned to a column but has a default value or translations defined</li>
      * </ul>
      *
      * @param iadef Attribute definition

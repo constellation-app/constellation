@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.importexport.delimited;
+package au.gov.asd.tac.constellation.plugins.importexport;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
@@ -22,25 +22,10 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
-import au.gov.asd.tac.constellation.graph.file.opener.GraphOpener;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.graph.manager.GraphManagerListener;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.plugins.PluginException;
-import au.gov.asd.tac.constellation.plugins.PluginExecutor;
-import au.gov.asd.tac.constellation.plugins.importexport.ImportDefinition;
-import au.gov.asd.tac.constellation.plugins.importexport.ImportDestination;
-import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
-import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPreferenceKeys;
-import au.gov.asd.tac.constellation.plugins.importexport.NewAttribute;
-import au.gov.asd.tac.constellation.plugins.importexport.RefreshRequest;
-import au.gov.asd.tac.constellation.plugins.importexport.SchemaDestination;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.ImportFileParser;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.InputSource;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,46 +34,36 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javafx.application.Platform;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javax.swing.SwingUtilities;
-import org.apache.commons.collections4.CollectionUtils;
 import org.openide.util.NbPreferences;
 
 /**
  *
  * @author sirius
  */
-public class ImportController {
+public abstract class ImportController {
 
     /**
      * Pseudo-attribute to indicate directed transactions.
      */
     public static final String DIRECTED = "__directed__";
-    private static final Logger LOGGER = Logger.getLogger(ImportController.class.getName());
 
     /**
      * Limit the number of rows shown in the preview.
      */
-    private static final int PREVIEW_ROW_LIMIT = 100;
+    protected static final int PREVIEW_ROW_LIMIT = 100;
 
-    private final DelimitedImportPane importPane;
-    private final List<File> files;
-    private File sampleFile = null;
-    private List<String[]> currentData = new ArrayList<>();
-//    private ObservableList<TableRow> currentRows = FXCollections.emptyObservableList();
-    private String[] currentColumns = new String[0];
-    private ConfigurationPane configurationPane;
-    private ImportDestination<?> currentDestination;
-    private ImportFileParser importFileParser;
-    private boolean schemaInitialised;
-    private boolean showAllSchemaAttributes;
-    private PluginParameters currentParameters = null;
-    private String attributeFilter = "";
+    protected ImportPane importPane;
+    protected List<String[]> currentData = new ArrayList<>();
+    protected String[] currentColumns = new String[0];
+    protected ConfigurationPane configurationPane;
+    protected ImportDestination<?> currentDestination;
+    protected boolean schemaInitialised;
+    protected boolean showAllSchemaAttributes;
+    protected PluginParameters currentParameters = null;
+    protected String attributeFilter = "";
 
     // Attributes that exist in the graph or schema.
     private final Map<String, Attribute> autoAddedVertexAttributes;
@@ -106,13 +81,7 @@ public class ImportController {
     // preference to show or hide all graph schema attributes
     private final Preferences importExportPrefs = NbPreferences.forModule(ImportExportPreferenceKeys.class);
 
-    private final RefreshRequest refreshRequest = this::updateSampleData;
-
-    public ImportController(final DelimitedImportPane importPane) {
-        this.importPane = importPane;
-        files = new ArrayList<>();
-        importFileParser = ImportFileParser.DEFAULT_PARSER;
-        schemaInitialised = true;
+    public ImportController() {
         showAllSchemaAttributes = false;
 
         autoAddedVertexAttributes = new HashMap<>();
@@ -128,24 +97,7 @@ public class ImportController {
         keys = new HashSet<>();
     }
 
-    /**
-     * Common handling of user alerts/dialogs for the Delimited File Importer.
-     *
-     * @param header Text to place in header bar (immediately below title bar).
-     * @param message Main message to display.
-     * @param alertType Type of alert being displayed, range from undefined,
-     * info through to warnings and errors.
-     */
-    public void displayAlert(String header, String message, Alert.AlertType alertType) {
-        final Alert dialog;
-        dialog = new Alert(alertType, "", ButtonType.OK);
-        dialog.setTitle("Delimited Importer");
-        dialog.setHeaderText(header);
-        dialog.setContentText(message);
-        dialog.showAndWait();
-    }
-
-    public DelimitedImportPane getStage() {
+    public ImportPane getStage() {
         return importPane;
     }
 
@@ -160,40 +112,12 @@ public class ImportController {
         }
     }
 
-    public boolean hasFiles() {
-        return !files.isEmpty();
-    }
-
-    public void setFiles(final List<File> files, final File sampleFile) {
-        this.files.clear();
-        this.files.addAll(files);
-
-        if (currentParameters != null) {
-            final List<InputSource> inputSources = new ArrayList<>();
-            for (final File file : files) {
-                inputSources.add(new InputSource(file));
-            }
-            importFileParser.updateParameters(currentParameters, inputSources);
-        }
-
-        if (sampleFile == null && CollectionUtils.isNotEmpty(files)) {
-            this.sampleFile = files.get(0);
-        } else {
-            this.sampleFile = sampleFile;
-        }
-
-        updateSampleData();
-    }
-
     /**
-     * Whether the ImportController should clear the manually added attributes
-     * in setDestination().
+     * Whether the ImportController should clear the manually added attributes in setDestination().
      * <p>
-     * Defaults to true, but when attributes have been added manually by a
-     * loaded template, should be false.
+     * Defaults to true, but when attributes have been added manually by a loaded template, should be false.
      *
-     * @param b True to cause the manually added attributes to be cleared, false
-     * otherwise.
+     * @param b True to cause the manually added attributes to be cleared, false otherwise.
      */
     public void setClearManuallyAdded(final boolean b) {
         clearManuallyAdded = b;
@@ -218,7 +142,9 @@ public class ImportController {
         keys.clear();
 
         Platform.runLater(() -> {
-            final boolean showSchemaAttributes = importExportPrefs.getBoolean(ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES, ImportExportPreferenceKeys.DEFAULT_SHOW_SCHEMA_ATTRIBUTES);
+            final boolean showSchemaAttributes = importExportPrefs.getBoolean(
+                    ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES,
+                    ImportExportPreferenceKeys.DEFAULT_SHOW_SCHEMA_ATTRIBUTES);
             loadAllSchemaAttributes(currentDestination, showSchemaAttributes);
             updateDisplayedAttributes();
         });
@@ -228,15 +154,15 @@ public class ImportController {
      * Load all the schema attributes of the graph
      *
      * @param destination the destination for the imported data.
-     * @param showSchemaAttributes specifies whether schema attributes should be
-     * included.
+     * @param showSchemaAttributes specifies whether schema attributes should be included.
      */
     public void loadAllSchemaAttributes(final ImportDestination<?> destination, final boolean showSchemaAttributes) {
         final Graph graph = destination.getGraph();
         final ReadableGraph rg = graph.getReadableGraph();
         try {
             updateAutoAddedAttributes(GraphElementType.VERTEX, autoAddedVertexAttributes, rg, showSchemaAttributes);
-            updateAutoAddedAttributes(GraphElementType.TRANSACTION, autoAddedTransactionAttributes, rg, showSchemaAttributes);
+            updateAutoAddedAttributes(GraphElementType.TRANSACTION, autoAddedTransactionAttributes, rg,
+                    showSchemaAttributes);
         } finally {
             rg.release();
         }
@@ -276,23 +202,25 @@ public class ImportController {
     public Attribute getAttribute(final GraphElementType elementType, final String label) {
         switch (elementType) {
             case VERTEX:
-                return autoAddedVertexAttributes.containsKey(label) ? autoAddedVertexAttributes.get(label) : manuallyAddedVertexAttributes.get(label);
+                return autoAddedVertexAttributes.containsKey(label) ? autoAddedVertexAttributes.get(label)
+                        : manuallyAddedVertexAttributes.get(label);
             case TRANSACTION:
-                return autoAddedTransactionAttributes.containsKey(label) ? autoAddedTransactionAttributes.get(label) : manuallyAddedTransactionAttributes.get(label);
+                return autoAddedTransactionAttributes.containsKey(label) ? autoAddedTransactionAttributes.get(label)
+                        : manuallyAddedTransactionAttributes.get(label);
             default:
                 throw new IllegalArgumentException("Element type must be VERTEX or TRANSACTION");
         }
     }
 
     /**
-     * Get the attributes that will automatically be added to the attribute
-     * list.
+     * Get the attributes that will automatically be added to the attribute list.
      *
      * @param elementType
      * @param attributes
      * @param rg
      */
-    private void updateAutoAddedAttributes(final GraphElementType elementType, final Map<String, Attribute> attributes, final GraphReadMethods rg, final boolean showSchemaAttributes) {
+    private void updateAutoAddedAttributes(final GraphElementType elementType, final Map<String, Attribute> attributes,
+            final GraphReadMethods rg, final boolean showSchemaAttributes) {
         attributes.clear();
 
         // Add attributes from the graph
@@ -307,7 +235,8 @@ public class ImportController {
         if (showSchemaAttributes && rg.getSchema() != null) {
             final SchemaFactory factory = rg.getSchema().getFactory();
             for (final SchemaAttribute sattr : factory.getRegisteredAttributes(elementType).values()) {
-                final Attribute attribute = new GraphAttribute(elementType, sattr.getAttributeType(), sattr.getName(), sattr.getDescription());
+                final Attribute attribute = new GraphAttribute(elementType, sattr.getAttributeType(), sattr.getName(),
+                        sattr.getDescription());
                 if (!attributes.containsKey(attribute.getName())) {
                     attributes.put(attribute.getName(), attribute);
                 }
@@ -316,7 +245,8 @@ public class ImportController {
 
         // Add pseudo-attributes
         if (elementType == GraphElementType.TRANSACTION) {
-            final Attribute attribute = new GraphAttribute(elementType, BooleanAttributeDescription.ATTRIBUTE_NAME, DIRECTED, "Is this transaction directed?");
+            final Attribute attribute = new GraphAttribute(elementType, BooleanAttributeDescription.ATTRIBUTE_NAME,
+                    DIRECTED, "Is this transaction directed?");
             attributes.put(attribute.getName(), attribute);
         }
 
@@ -341,8 +271,10 @@ public class ImportController {
     public void updateDisplayedAttributes() {
         if (configurationPane != null) {
 
-            displayedVertexAttributes = createDisplayedAttributes(autoAddedVertexAttributes, manuallyAddedVertexAttributes);
-            displayedTransactionAttributes = createDisplayedAttributes(autoAddedTransactionAttributes, manuallyAddedTransactionAttributes);
+            displayedVertexAttributes = createDisplayedAttributes(autoAddedVertexAttributes,
+                    manuallyAddedVertexAttributes);
+            displayedTransactionAttributes = createDisplayedAttributes(autoAddedTransactionAttributes,
+                    manuallyAddedTransactionAttributes);
 
             for (Attribute attribute : configurationPane.getAllocatedAttributes()) {
                 if (attribute.getElementType() == GraphElementType.VERTEX) {
@@ -362,7 +294,8 @@ public class ImportController {
         }
     }
 
-    private Map<String, Attribute> createDisplayedAttributes(final Map<String, Attribute> autoAddedAttributes, final Map<String, Attribute> manuallyAddedAttributes) {
+    private Map<String, Attribute> createDisplayedAttributes(final Map<String, Attribute> autoAddedAttributes,
+            final Map<String, Attribute> manuallyAddedAttributes) {
         final Map<String, Attribute> displayedAttributes = new HashMap<>();
         if (attributeFilter != null && attributeFilter.length() > 0) {
             for (final String attributeName : autoAddedAttributes.keySet()) {
@@ -383,7 +316,8 @@ public class ImportController {
     }
 
     public void createManualAttribute(final Attribute attribute) {
-        Map<String, Attribute> attributes = attribute.getElementType() == GraphElementType.VERTEX ? manuallyAddedVertexAttributes : manuallyAddedTransactionAttributes;
+        Map<String, Attribute> attributes = attribute.getElementType() == GraphElementType.VERTEX
+                ? manuallyAddedVertexAttributes : manuallyAddedTransactionAttributes;
 
         if (!attributes.containsKey(attribute.getName())) {
             attributes.put(attribute.getName(), attribute);
@@ -395,7 +329,8 @@ public class ImportController {
     }
 
     public String showSetDefaultValueDialog(final String attributeName, final String currentDefaultValue) {
-        final DefaultAttributeValueDialog dialog = new DefaultAttributeValueDialog(importPane.getParentWindow(), attributeName, currentDefaultValue);
+        final DefaultAttributeValueDialog dialog = new DefaultAttributeValueDialog(importPane.getParentWindow(),
+                attributeName, currentDefaultValue);
         dialog.showAndWait();
         return dialog.getDefaultValue();
     }
@@ -405,64 +340,15 @@ public class ImportController {
     }
 
     /**
-     * A List&lt;ImportDefinition&gt; where each list element corresponds to a
-     * RunPane tab.
+     * A List&lt;ImportDefinition&gt; where each list element corresponds to a RunPane tab.
      *
-     * @return A List&lt;ImportDefinition&gt; where each list element
-     * corresponds to a RunPane tab.
+     * @return A List&lt;ImportDefinition&gt; where each list element corresponds to a RunPane tab.
      */
     public List<ImportDefinition> getDefinitions() {
         return configurationPane.createDefinitions();
     }
 
-    public List<File> processImport() throws IOException, InterruptedException, PluginException {
-
-        final List<ImportDefinition> definitions = configurationPane.createDefinitions();
-
-        final Graph importGraph = currentDestination.getGraph();
-        final boolean schema = schemaInitialised;
-        final List<File> importFiles = new ArrayList<>(files);
-        final ImportFileParser parser = importFileParser;
-
-        if (currentDestination instanceof SchemaDestination) {
-            GraphManager.getDefault().addGraphManagerListener(new GraphManagerListener() {
-                boolean opened = false;
-
-                @Override
-                public void graphOpened(Graph graph) {
-                }
-
-                @Override
-                public void graphClosed(Graph graph) {
-                }
-
-                @Override
-                public synchronized void newActiveGraph(Graph graph) {
-                    if (graph == importGraph && !opened) {
-                        opened = true;
-                        GraphManager.getDefault().removeGraphManagerListener(this);
-                        PluginExecutor.startWith(ImportExportPluginRegistry.IMPORT_DELIMITED, false)
-                                .set(ImportDelimitedPlugin.DEFINITIONS_PARAMETER_ID, definitions)
-                                .set(ImportDelimitedPlugin.PARSER_PARAMETER_ID, parser)
-                                .set(ImportDelimitedPlugin.FILES_PARAMETER_ID, importFiles)
-                                .set(ImportDelimitedPlugin.SCHEMA_PARAMETER_ID, schema)
-                                .set(ImportDelimitedPlugin.PARSER_PARAMETER_IDS_PARAMETER_ID, currentParameters)
-                                .executeWriteLater(importGraph);
-                    }
-                }
-
-            });
-            GraphOpener.getDefault().openGraph(importGraph, "graph");
-        } else {
-            PluginExecutor.startWith(ImportExportPluginRegistry.IMPORT_DELIMITED, false)
-                    .set(ImportDelimitedPlugin.DEFINITIONS_PARAMETER_ID, definitions)
-                    .set(ImportDelimitedPlugin.PARSER_PARAMETER_ID, parser)
-                    .set(ImportDelimitedPlugin.FILES_PARAMETER_ID, importFiles)
-                    .set(ImportDelimitedPlugin.SCHEMA_PARAMETER_ID, schema)
-                    .executeWriteLater(importGraph);
-        }
-        return files;
-    }
+    public abstract List processImport() throws IOException, InterruptedException, PluginException;
 
     public void cancelImport() {
         SwingUtilities.invokeLater(() -> {
@@ -470,65 +356,13 @@ public class ImportController {
         });
     }
 
-    private void updateSampleData() {
-        if (sampleFile == null) {
-            currentColumns = new String[0];
-            currentData = new ArrayList<>();
-        } else {
-            try {
-                currentData = importFileParser.preview(new InputSource(sampleFile), currentParameters, PREVIEW_ROW_LIMIT);
-                String[] columns = currentData.isEmpty() ? new String[0] : currentData.get(0);
-                currentColumns = new String[columns.length + 1];
-                System.arraycopy(columns, 0, currentColumns, 1, columns.length);
-                currentColumns[0] = "Row";
-            } catch (FileNotFoundException ex) {
-                final String warningMsg = "The following file could not be found and has been excluded from the import set:\n  " + sampleFile.getPath();
-                LOGGER.log(Level.INFO, warningMsg);
-                displayAlert("Invalid file selected", warningMsg, Alert.AlertType.WARNING);
-                files.remove(sampleFile);
-                importPane.getSourcePane().removeFile(sampleFile);
-            } catch (IOException ex) {
-                final String warningMsg = "The following file could not be parsed and has been excluded from the import set:\n  " + sampleFile.getPath();
-                LOGGER.log(Level.INFO, warningMsg);
-                displayAlert("Invalid file selected", warningMsg, Alert.AlertType.WARNING);
-                files.remove(sampleFile);
-                importPane.getSourcePane().removeFile(sampleFile);
-            }
-        }
-
-        if (configurationPane != null) {
-            configurationPane.setSampleData(currentColumns, currentData);
-        }
-    }
+    protected abstract void updateSampleData();
 
     public void createNewRun() {
         if (configurationPane != null) {
-            configurationPane.createNewRun(displayedVertexAttributes, displayedTransactionAttributes, keys, currentColumns, currentData);
+            configurationPane.createNewRun(displayedVertexAttributes, displayedTransactionAttributes, keys,
+                    currentColumns, currentData);
         }
-    }
-
-    public void setImportFileParser(final ImportFileParser importFileParser) {
-        if (this.importFileParser != importFileParser) {
-            this.importFileParser = importFileParser;
-
-            if (importFileParser == null) {
-                currentParameters = null;
-            } else {
-                currentParameters = importFileParser.getParameters(refreshRequest);
-                List<InputSource> inputSources = new ArrayList<>();
-                for (File file : files) {
-                    inputSources.add(new InputSource(file));
-                }
-                importFileParser.updateParameters(currentParameters, inputSources);
-            }
-            importPane.getSourcePane().setParameters(currentParameters);
-
-            updateSampleData();
-        }
-    }
-
-    public ImportFileParser getImportFileParser() {
-        return importFileParser;
     }
 
     public boolean isSchemaInitialised() {
@@ -567,5 +401,9 @@ public class ImportController {
 
     public Set<Integer> getKeys() {
         return Collections.unmodifiableSet(keys);
+    }
+
+    public void setImportPane(ImportPane importPane) {
+        this.importPane = importPane;
     }
 }

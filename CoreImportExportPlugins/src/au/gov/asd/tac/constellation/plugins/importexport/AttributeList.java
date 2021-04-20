@@ -13,12 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.importexport.jdbc;
+package au.gov.asd.tac.constellation.plugins.importexport;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
-import au.gov.asd.tac.constellation.plugins.importexport.AttributeType;
-import au.gov.asd.tac.constellation.plugins.importexport.ImportAttributeDefinition;
-import au.gov.asd.tac.constellation.plugins.importexport.ImportDefinition;
 import au.gov.asd.tac.constellation.plugins.importexport.translator.AttributeTranslator;
 import au.gov.asd.tac.constellation.plugins.importexport.translator.DefaultAttributeTranslator;
 import java.util.HashMap;
@@ -35,6 +32,14 @@ import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 
+/**
+ * An AttributeList is a UI element that can hold all the available attributes for a given graph element. At present,
+ * three of these are used to hold the source node, destination node and transaction attributes in the UI and provide a
+ * place from which the user can drag these attributes onto columns. Attributes are represented with in the
+ * AttributeList by {@link AttributeNode}s.
+ *
+ * @author sirius
+ */
 public class AttributeList extends VBox {
 
     private final RunPane runPane;
@@ -73,7 +78,7 @@ public class AttributeList extends VBox {
         return attributeNodes.get(label);
     }
 
-    private void createAttribute(final Attribute attribute) {
+    private void createAttribute(Attribute attribute) {
 
         final AttributeNode attributeNode = new AttributeNode(this, attribute, keys.contains(attribute.getId()));
 
@@ -108,7 +113,7 @@ public class AttributeList extends VBox {
 
         // Add the new attributeNode to the list in the correct place
         // to maintain the sorted order.
-        final ObservableList<Node> children = getChildren();
+        ObservableList<Node> children = getChildren();
         for (int i = 0; i < children.size(); i++) {
             if (attributeNode.compareTo((AttributeNode) children.get(i)) <= 0) {
                 children.add(i, attributeNode);
@@ -118,7 +123,7 @@ public class AttributeList extends VBox {
         children.add(attributeNode);
     }
 
-    public void deleteAttributeNode(final AttributeNode attributeNode) {
+    public void deleteAttributeNode(AttributeNode attributeNode) {
         final ImportTableColumn currentColumn = attributeNode.getColumn();
         if (currentColumn != null) {
             currentColumn.setAttributeNode(null);
@@ -128,10 +133,10 @@ public class AttributeList extends VBox {
         importController.deleteAttribute(attributeNode.getAttribute());
     }
 
-    public void deleteAttribute(final Attribute attribute) {
-        final AttributeNode attributeNode = attributeNodes.remove(attribute.getName());
+    public void deleteAttribute(Attribute attribute) {
+        AttributeNode attributeNode = attributeNodes.remove(attribute.getName());
         if (attributeNode != null) {
-            final ImportTableColumn column = attributeNode.getColumn();
+            ImportTableColumn column = attributeNode.getColumn();
             if (column == null) {
                 getChildren().remove(attributeNode);
             } else {
@@ -140,7 +145,7 @@ public class AttributeList extends VBox {
         }
     }
 
-    public void addAttributeNode(final AttributeNode attributeNode) {
+    public void addAttributeNode(AttributeNode attributeNode) {
         final ObservableList<Node> children = getChildren();
         for (int i = 0; i < children.size(); i++) {
             if (attributeNode.compareTo((AttributeNode) children.get(i)) <= 0) {
@@ -153,17 +158,17 @@ public class AttributeList extends VBox {
         attributeNode.setColumn(null);
     }
 
-    public void setDisplayedAttributes(final Map<String, Attribute> attributes, final Set<Integer> keys) {
+    public void setDisplayedAttributes(Map<String, Attribute> attributes, Set<Integer> keys) {
 
         this.keys = keys;
 
         // Remove all attributes that no longer exist.
-        final Iterator<Entry<String, AttributeNode>> i = attributeNodes.entrySet().iterator();
+        Iterator<Entry<String, AttributeNode>> i = attributeNodes.entrySet().iterator();
         while (i.hasNext()) {
-            final Entry<String, AttributeNode> entry = i.next();
+            Entry<String, AttributeNode> entry = i.next();
             if (!attributes.containsKey(entry.getKey())) {
-                final AttributeNode attributeNode = entry.getValue();
-                final ImportTableColumn column = attributeNode.getColumn();
+                AttributeNode attributeNode = entry.getValue();
+                ImportTableColumn column = attributeNode.getColumn();
                 if (column == null) {
                     getChildren().remove(attributeNode);
                 } else {
@@ -173,8 +178,8 @@ public class AttributeList extends VBox {
             }
         }
 
-        attributes.values().forEach(attribute -> {
-            final AttributeNode attributeNode = attributeNodes.get(attribute.getName());
+        for (Attribute attribute : attributes.values()) {
+            AttributeNode attributeNode = attributeNodes.get(attribute.getName());
             if (attributeNode == null) {
                 createAttribute(attribute);
             } else {
@@ -183,24 +188,24 @@ public class AttributeList extends VBox {
                 // Show the default value
                 attributeNode.updateDefaultValue();
             }
-        });
+        }
     }
 
     /**
-     * Create an {@code ImportDefinition} from attributes modified on the
-     * attribute list
+     * Create an {@code ImportDefinition} from attributes modified on the attribute list
      *
-     * @param importDefinition the {@link ImportDefinition} that will hold the
-     * new {@link ImportAttributeDefinition}s.
+     * @param importDefinition the {@link ImportDefinition} that will hold the new {@link ImportAttributeDefinition}s.
      */
-    public void createDefinition(final ImportDefinition importDefinition) {
-        attributeNodes.values().stream().filter(attributeNode -> (attributeNode.getColumn() == null)).forEachOrdered(attributeNode -> {
-            final String defaultValue = attributeNode.getDefaultValue();
-            final AttributeTranslator translator = attributeNode.getTranslator();
-            if (defaultValue != null || (translator != null && !(translator instanceof DefaultAttributeTranslator))) {
-                final ImportAttributeDefinition attributeDefinition = new ImportAttributeDefinition(defaultValue, attributeNode.getAttribute(), attributeNode.getTranslator(), attributeNode.getTranslatorParameters());
-                importDefinition.addDefinition(attributeType, attributeDefinition);
+    public void createDefinition(ImportDefinition importDefinition) {
+        for (AttributeNode attributeNode : attributeNodes.values()) {
+            if (attributeNode.getColumn() == null) {
+                String defaultValue = attributeNode.getDefaultValue();
+                AttributeTranslator translator = attributeNode.getTranslator();
+                if (defaultValue != null || (translator != null && !(translator instanceof DefaultAttributeTranslator))) {
+                    ImportAttributeDefinition attributeDefinition = new ImportAttributeDefinition(defaultValue, attributeNode.getAttribute(), attributeNode.getTranslator(), attributeNode.getTranslatorParameters());
+                    importDefinition.addDefinition(attributeType, attributeDefinition);
+                }
             }
-        });
+        }
     }
 }

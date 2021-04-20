@@ -13,15 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.importexport.delimited;
+package au.gov.asd.tac.constellation.plugins.importexport;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
-import au.gov.asd.tac.constellation.plugins.importexport.GraphDestination;
-import au.gov.asd.tac.constellation.plugins.importexport.ImportDestination;
-import au.gov.asd.tac.constellation.plugins.importexport.SchemaDestination;
 import java.util.Map;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -31,9 +28,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.layout.GridPane;
 
 /**
- * The DestinationPane displays the UI that allows the user to specify where the
- * imported graph elements should be placed. At present, there are 2 options:
- * into a currently existing graph, or into a new graph based on a specified
+ * The DestinationPane displays the UI that allows the user to specify where the imported graph elements should be
+ * placed. At present, there are 2 options: into a currently existing graph, or into a new graph based on a specified
  * schema.
  *
  * @author sirius
@@ -42,7 +38,7 @@ public class DestinationPane extends GridPane {
 
     private final ImportController importController;
 
-    public DestinationPane(ImportController importController) {
+    public DestinationPane(final ImportController importController) {
         this.importController = importController;
 
         setMaxWidth(Double.MAX_VALUE);
@@ -51,22 +47,22 @@ public class DestinationPane extends GridPane {
         setHgap(10);
         setVgap(10);
 
-        ObservableList<ImportDestination<?>> destinations = FXCollections.observableArrayList();
+        final ObservableList<ImportDestination<?>> destinations = FXCollections.observableArrayList();
 
-        Map<String, Graph> graphs = GraphManager.getDefault().getAllGraphs();
-        Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+        final Map<String, Graph> graphs = GraphManager.getDefault().getAllGraphs();
+        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
         ImportDestination<?> defaultDestination = null;
-        for (Graph graph : graphs.values()) {
-            GraphDestination destination = new GraphDestination(graph);
+        for (final Graph graph : graphs.values()) {
+            final GraphDestination destination = new GraphDestination(graph);
             destinations.add(destination);
             if (graph == activeGraph) {
                 defaultDestination = destination;
             }
         }
 
-        Map<String, SchemaFactory> schemaFactories = SchemaFactoryUtilities.getSchemaFactories();
-        for (SchemaFactory schemaFactory : schemaFactories.values()) {
-            SchemaDestination destination = new SchemaDestination(schemaFactory);
+        final Map<String, SchemaFactory> schemaFactories = SchemaFactoryUtilities.getSchemaFactories();
+        for (final SchemaFactory schemaFactory : schemaFactories.values()) {
+            final SchemaDestination destination = new SchemaDestination(schemaFactory);
             destinations.add(destination);
             if (defaultDestination == null) {
                 defaultDestination = destination;

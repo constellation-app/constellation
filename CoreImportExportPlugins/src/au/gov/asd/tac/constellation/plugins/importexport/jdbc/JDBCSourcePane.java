@@ -15,21 +15,13 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.jdbc;
 
-import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
-import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
-import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPane;
 import au.gov.asd.tac.constellation.plugins.importexport.EasyGridPane;
-import au.gov.asd.tac.constellation.plugins.importexport.GraphDestination;
-import au.gov.asd.tac.constellation.plugins.importexport.ImportDestination;
-import au.gov.asd.tac.constellation.plugins.importexport.SchemaDestination;
-import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportController;
+import au.gov.asd.tac.constellation.plugins.importexport.SourcePane;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 import java.util.Optional;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -55,9 +47,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
@@ -65,37 +55,15 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class SourcePane extends GridPane {
+public class JDBCSourcePane extends SourcePane {
 
-    private final ComboBox<ImportDestination<?>> graphComboBox;
     private final ComboBox<JDBCConnection> dbConnectionComboBox;
-    private final Pane parametersPane = new Pane();
-    private final ImportController importController;
 
-    public SourcePane(final ImportController importController) {
+    public JDBCSourcePane(final JDBCImportController importController) {
+        super(importController);
 
         final JDBCDriverManager driverManager = JDBCDriverManager.getDriverManager();
         final JDBCConnectionManager connectionManager = JDBCConnectionManager.getConnectionManager();
-
-        this.importController = importController;
-
-        setMinHeight(USE_PREF_SIZE);
-        setMinWidth(0);
-        setPadding(new Insets(5));
-        setHgap(10);
-        setVgap(10);
-
-        final ColumnConstraints column0Constraints = new ColumnConstraints();
-        column0Constraints.setHgrow(Priority.NEVER);
-
-        final ColumnConstraints column1Constraints = new ColumnConstraints();
-        column1Constraints.setHgrow(Priority.ALWAYS);
-        column1Constraints.setMinWidth(0);
-
-        final ColumnConstraints column2Constraints = new ColumnConstraints();
-        column2Constraints.setHgrow(Priority.NEVER);
-
-        getColumnConstraints().addAll(column0Constraints, column1Constraints, column2Constraints);
 
         final Label fileLabel = new Label("Connection:");
         GridPane.setConstraints(fileLabel, 0, 0, 1, 1, HPos.LEFT, VPos.TOP);
@@ -118,10 +86,16 @@ public class SourcePane extends GridPane {
 
             final BorderPane root = new BorderPane();
             final EasyGridPane gridPane = new EasyGridPane();
-            gridPane.addColumnConstraint(true, HPos.LEFT, Priority.ALWAYS, Double.MAX_VALUE, 200, GridPane.USE_COMPUTED_SIZE, -1);
-            gridPane.addRowConstraint(true, VPos.TOP, Priority.ALWAYS, Double.MAX_VALUE, 0, GridPane.USE_COMPUTED_SIZE, -1);
-            gridPane.addRowConstraint(true, VPos.TOP, Priority.ALWAYS, Double.MAX_VALUE, 0, GridPane.USE_COMPUTED_SIZE, -1);
-            gridPane.addRowConstraint(true, VPos.BOTTOM, Priority.ALWAYS, Double.MAX_VALUE, 0, GridPane.USE_COMPUTED_SIZE, -1);
+
+            gridPane.addColumnConstraint(true, HPos.LEFT, Priority.ALWAYS, Double.MAX_VALUE, 200,
+                    GridPane.USE_COMPUTED_SIZE, -1);
+            gridPane.addRowConstraint(true, VPos.TOP, Priority.ALWAYS, Double.MAX_VALUE, 0,
+                    GridPane.USE_COMPUTED_SIZE, -1);
+            gridPane.addRowConstraint(true, VPos.TOP, Priority.ALWAYS, Double.MAX_VALUE, 0,
+                    GridPane.USE_COMPUTED_SIZE, -1);
+            gridPane.addRowConstraint(true, VPos.BOTTOM, Priority.ALWAYS, Double.MAX_VALUE, 0,
+                    GridPane.USE_COMPUTED_SIZE, -1);
+
             gridPane.setPadding(new Insets(5));
             gridPane.setHgap(10);
             gridPane.setVgap(10);
@@ -232,7 +206,8 @@ public class SourcePane extends GridPane {
                             && !username.getText().isBlank()
                             && !password.getText().isBlank()) {
 
-                        if (connectionManager.testConnection(cn.getText(), driver.getValue(), username.getText(), password.getText(), connectionStringF.getText())) {
+                        if (connectionManager.testConnection(cn.getText(), driver.getValue(), username.getText(),
+                                password.getText(), connectionStringF.getText())) {
                             final Alert a = new Alert(AlertType.INFORMATION, "Connection success", ButtonType.OK);
                             a.showAndWait();
                         }
@@ -252,7 +227,8 @@ public class SourcePane extends GridPane {
                 final Scene scene = new Scene(r);
                 scene.setFill(Color.WHITESMOKE);
                 scene.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
-                scene.rootProperty().get().setStyle(String.format("-fx-font-size:%d;", FontUtilities.getOutputFontSize()));
+                scene.rootProperty().get().setStyle(String.format("-fx-font-size:%d;",
+                        FontUtilities.getOutputFontSize()));
 
                 d.setScene(scene);
                 d.setTitle("Add Connection");
@@ -298,7 +274,8 @@ public class SourcePane extends GridPane {
                         final TextArea a = new TextArea();
                         a.setWrapText(true);
                         a.setEditable(false);
-                        a.setText("Connections exist using this Driver.\nThe connections that use this driver will be deleted, do you want to proceed?");
+                        a.setText("Connections exist using this Driver.\nThe connections that use this "
+                                + "driver will be deleted, do you want to proceed?");
                         final Alert b = new Alert(AlertType.CONFIRMATION, "", ButtonType.NO, ButtonType.YES);
                         b.getDialogPane().setContent(a);
                         final Optional<ButtonType> res = b.showAndWait();
@@ -324,7 +301,6 @@ public class SourcePane extends GridPane {
             final Button addBtn1 = new Button("Add");
             addBtn1.setOnAction((final ActionEvent t1) -> {
                 final Stage d = new Stage();
-                // add stuff here.
                 final BorderPane r = new BorderPane();
                 final EasyGridPane gp = new EasyGridPane();
 
@@ -353,11 +329,9 @@ public class SourcePane extends GridPane {
 
                             driverName.getItems().clear();
                             driverName.getItems().addAll(JDBCDriver.getDrivers(f));
-
                         } catch (final IOException ex) {
                         }
                     }
-
                 });
                 gp.add(chooser, 2, 1, 1, 1);
 
@@ -394,7 +368,6 @@ public class SourcePane extends GridPane {
                 d.initOwner(dialog);
                 d.initModality(Modality.APPLICATION_MODAL);
                 d.showAndWait();
-
             });
             dtRoot.add(addBtn1, 1, 1, 1, 1);
 
@@ -421,12 +394,11 @@ public class SourcePane extends GridPane {
             dialog.setScene(scene);
             dialog.setTitle("Manage Connections");
             dialog.centerOnScreen();
-            //dialog.initOwner(parentStage);
+
             dialog.sizeToScene();
             dialog.initModality(Modality.APPLICATION_MODAL);
 
             dialog.showAndWait();
-
         });
         GridPane.setConstraints(manageConnectionsBtn, 2, 0, 1, 1, HPos.LEFT, VPos.TOP);
 
@@ -451,9 +423,6 @@ public class SourcePane extends GridPane {
 
         final Label destinationLabel = new Label("Destination:");
         GridPane.setConstraints(destinationLabel, 0, 4, 1, 1, HPos.LEFT, VPos.TOP);
-        graphComboBox = new ComboBox<>();
-        updateDestinationGraphCombo();
-        GridPane.setConstraints(graphComboBox, 1, 4, 2, 1, HPos.LEFT, VPos.TOP);
 
         final Button queryButton = new Button("Query");
         queryButton.setOnAction((final ActionEvent t) -> {
@@ -467,16 +436,8 @@ public class SourcePane extends GridPane {
         });
         GridPane.setConstraints(queryButton, 2, 4, 2, 1, HPos.RIGHT, VPos.TOP);
 
-        getChildren().addAll(fileLabel, dbConnectionComboBox, manageConnectionsBtn, usernameLabel, username, passwordLabel, password, queryLabel, query, destinationLabel, graphComboBox, queryButton);
-
-    }
-
-    public void setParameters(final PluginParameters parameters) {
-        parametersPane.getChildren().clear();
-        if (parameters != null) {
-            final PluginParametersPane pluginParametersPane = PluginParametersPane.buildPane(parameters, null);
-            parametersPane.getChildren().add(pluginParametersPane);
-        }
+        getChildren().addAll(fileLabel, dbConnectionComboBox, manageConnectionsBtn, usernameLabel, username,
+                passwordLabel, password, queryLabel, query, destinationLabel, graphComboBox, queryButton);
     }
 
     /**
@@ -484,58 +445,10 @@ public class SourcePane extends GridPane {
      *
      * @param importController The ImportController.
      */
-    void update(final ImportController importController) {
-        graphComboBox.getSelectionModel().select(importController.getDestination());
+    @Override
+    public void update(final ImportController importController) {
+        graphComboBox.getSelectionModel().select(((JDBCImportController) importController).getDestination());
 
     }
 
-    /**
-     * Return the selected destination
-     *
-     * @return ImportDestination destination
-     */
-    public final ImportDestination<?> getDestination() {
-        return graphComboBox.getSelectionModel().getSelectedItem();
-    }
-
-    /**
-     * Helper method to update the destination graph combo box. Also used for value loading when this pane is being
-     * initialized.
-     */
-    public void updateDestinationGraphCombo() {
-        // previousDestinationObject is the previously selected item in the combobox
-        final ImportDestination<?> previousDestinationObject = graphComboBox.getSelectionModel().getSelectedItem();
-        final ObservableList<ImportDestination<?>> destinations = FXCollections.observableArrayList();
-
-        final Map<String, Graph> graphs = GraphManager.getDefault().getAllGraphs();
-        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-        ImportDestination<?> defaultDestination = null;
-        for (final Graph graph : graphs.values()) {
-            final GraphDestination destination = new GraphDestination(graph);
-            destinations.add(destination);
-            if (graph == activeGraph) {
-                defaultDestination = destination;
-            }
-        }
-
-        final Map<String, SchemaFactory> schemaFactories = SchemaFactoryUtilities.getSchemaFactories();
-        for (final SchemaFactory schemaFactory : schemaFactories.values()) {
-            final SchemaDestination destination = new SchemaDestination(schemaFactory);
-            destinations.add(destination);
-            if (defaultDestination == null) {
-                defaultDestination = destination;
-            }
-        }
-        // resets the combo box when set correctly.
-        graphComboBox.setItems(destinations);
-        graphComboBox.setOnAction((final ActionEvent t) -> {
-            importController.setDestination(graphComboBox.getSelectionModel().getSelectedItem());
-        });
-        // Select null triggers the combobox to update to the correct value for
-        // some unknown reason. Removal will mean that the combobox will
-        // not keep it's state when a graph event occurs
-        // ClearSelection() did not work to fix this.
-        graphComboBox.getSelectionModel().select(null);
-        importController.setDestination(previousDestinationObject != null ? previousDestinationObject : defaultDestination);
-    }
 }
