@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs;
 
+import au.gov.asd.tac.constellation.utilities.datastructure.FourTuple;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -105,13 +106,13 @@ public final class GlyphManagerBI implements GlyphManager {
      */
     private static class LigatureContext {
 
-        private List<GlyphRectangle> glyphRectangles;
+        private GlyphRectangle[] glyphRectangles;
         private int left;
         private int right;
         private int top;
         private int bottom;
 
-        public LigatureContext(final List<GlyphRectangle> glyphRectangles, final int left, final int right, final int top, final int bottom) {
+        public LigatureContext(final GlyphRectangle[] glyphRectangles, final int left, final int right, final int top, final int bottom) {
             this.glyphRectangles = glyphRectangles;
             this.left = left;
             this.right = right;
@@ -411,7 +412,7 @@ public final class GlyphManagerBI implements GlyphManager {
         int right = Integer.MIN_VALUE;
         int top = Integer.MAX_VALUE;
         int bottom = Integer.MIN_VALUE;
-        final List<GlyphRectangle> glyphRectangles = new ArrayList<>();
+        final GlyphRectangle[][] glyphRectangles = new GlyphRectangle[1][0];
 
         for (final FontDirectionalRun drun : FontDirectionalRun.getDirectionRuns(text)) {
             for (final FontRunSequence frun : FontRunSequence.getFontRuns(drun.run, fontsInfo)) {
@@ -484,7 +485,8 @@ public final class GlyphManagerBI implements GlyphManager {
                     final int height = Math.min(r.height, drawing.getHeight() - y);
                     if (height > 0) {
                         final int position = textureBuffer.addRectImage(drawing.getSubimage(r.x, y, r.width, height), 0);
-                        glyphRectangles.add(new GlyphRectangle(position, r, fm.getAscent()));
+                        glyphRectangles[0] = Arrays.copyOf(glyphRectangles[0], glyphRectangles[0].length + 1);
+                        glyphRectangles[0][glyphRectangles[0].length - 1] = new GlyphRectangle(position, r, fm.getAscent());
                     }
                 });
 
@@ -529,7 +531,7 @@ public final class GlyphManagerBI implements GlyphManager {
 
         g2d.dispose();
 
-        return new LigatureContext(glyphRectangles, left, right, top, bottom);
+        return new LigatureContext(glyphRectangles[0], left, right, top, bottom);
     }
 
     @Override
@@ -612,13 +614,21 @@ public final class GlyphManagerBI implements GlyphManager {
 
     private static class GlyphRectangle {
 
+        /**
+         * Cache the Rectangles to prevent duplicate objects
+         */
+        final static Map<FourTuple<Integer, Integer, Integer, Integer>, Rectangle> cache = new HashMap<>();
+
         final int position;
         final Rectangle rect;
         final int ascent;
 
         GlyphRectangle(final int position, final Rectangle rect, final int ascent) {
+            final FourTuple key = FourTuple.create(rect.x, rect.y, rect.width, rect.height);
+            cache.putIfAbsent(key, rect);
+
             this.position = position;
-            this.rect = rect;
+            this.rect = cache.get(key);
             this.ascent = ascent;
         }
 
