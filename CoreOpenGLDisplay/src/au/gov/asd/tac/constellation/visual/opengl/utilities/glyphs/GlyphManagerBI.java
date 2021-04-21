@@ -38,7 +38,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -640,12 +639,12 @@ public final class GlyphManagerBI implements GlyphManager {
         /**
          * Cache the Rectangles to prevent duplicate objects
          */
-        final static Map<Integer, Rectangle> rectangleCache = new HashMap<>();
+        private static final Map<Integer, Rectangle> rectangleCache = new HashMap<>();
 
         /**
          * Cache the GlyphRectangle to prevent duplicate objects
          */
-        final static Map<ThreeTuple<Integer, Integer, Integer>, GlyphRectangle> glyphRectangleCache = new HashMap<>();
+        private static final Map<ThreeTuple<Integer, Integer, Integer>, GlyphRectangle> glyphRectangleCache = new HashMap<>();
 
         public static GlyphRectangle create(final int position, final Rectangle rect, final int ascent) {
             final int hashCode = rect.hashCode();

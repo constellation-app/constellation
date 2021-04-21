@@ -23,7 +23,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
- * Three Tuple Test
+ * Four Tuple Test
  *
  * @author arcturus
  */
@@ -148,7 +148,7 @@ public class FourTupleNGTest {
     }
 
     /**
-     * Test of getThird method, of class FourTuple.
+     * Test of getFourth method, of class FourTuple.
      */
     @Test
     public void testGetFourth() {
@@ -162,7 +162,7 @@ public class FourTupleNGTest {
     }
 
     /**
-     * Test of setThird method, of class FourTuple.
+     * Test of setFourth method, of class FourTuple.
      */
     @Test
     public void testSetFourth() {
