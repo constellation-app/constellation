@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs;
 
-import au.gov.asd.tac.constellation.utilities.datastructure.FourTuple;
+import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -486,7 +487,7 @@ public final class GlyphManagerBI implements GlyphManager {
                     if (height > 0) {
                         final int position = textureBuffer.addRectImage(drawing.getSubimage(r.x, y, r.width, height), 0);
                         glyphRectangles[0] = Arrays.copyOf(glyphRectangles[0], glyphRectangles[0].length + 1);
-                        glyphRectangles[0][glyphRectangles[0].length - 1] = new GlyphRectangle(position, r, fm.getAscent());
+                        glyphRectangles[0][glyphRectangles[0].length - 1] = GlyphRectangleFactory.create(position, r, fm.getAscent());
                     }
                 });
 
@@ -614,21 +615,14 @@ public final class GlyphManagerBI implements GlyphManager {
 
     private static class GlyphRectangle {
 
-        /**
-         * Cache the Rectangles to prevent duplicate objects
-         */
-        final static Map<FourTuple<Integer, Integer, Integer, Integer>, Rectangle> cache = new HashMap<>();
-
         final int position;
         final Rectangle rect;
         final int ascent;
 
         GlyphRectangle(final int position, final Rectangle rect, final int ascent) {
-            final FourTuple key = FourTuple.create(rect.x, rect.y, rect.width, rect.height);
-            cache.putIfAbsent(key, rect);
 
             this.position = position;
-            this.rect = cache.get(key);
+            this.rect = rect;
             this.ascent = ascent;
         }
 
@@ -636,5 +630,35 @@ public final class GlyphManagerBI implements GlyphManager {
         public String toString() {
             return String.format("[GlyphRectangle p=%d r=%s a=%d]", position, rect, ascent);
         }
+    }
+
+    /**
+     * Build distinct GlyphRectangle objects
+     */
+    private static class GlyphRectangleFactory {
+
+        /**
+         * Cache the Rectangles to prevent duplicate objects
+         */
+        final static Map<Integer, Rectangle> rectangleCache = new HashMap<>();
+
+        /**
+         * Cache the GlyphRectangle to prevent duplicate objects
+         */
+        final static Map<ThreeTuple<Integer, Integer, Integer>, GlyphRectangle> glyphRectangleCache = new HashMap<>();
+
+        public static GlyphRectangle create(final int position, final Rectangle rect, final int ascent) {
+            final int hashCode = rect.hashCode();
+
+            final ThreeTuple key = ThreeTuple.create(position, hashCode, ascent);
+            final GlyphRectangle rectangle = glyphRectangleCache.get(key);
+            if (rectangle == null) {
+                rectangleCache.putIfAbsent(hashCode, rect);
+                glyphRectangleCache.put(key, new GlyphRectangle(position, rectangleCache.get(hashCode), ascent));
+            }
+
+            return glyphRectangleCache.get(key);
+        }
+
     }
 }
