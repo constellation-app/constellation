@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 /**
  * A data-structure for storing a triplet of related values.
  *
- * @author cygnus_x-1
+ * @author arcturus
  *
  * @param <A> the type of the first object in the 3-tuple
  * @param <B> the type of the second object in the 3-tuple
