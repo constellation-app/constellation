@@ -1,0 +1,9 @@
+# Day / Night Layer
+
+The day / night layer in the Map View will shade the map where it is
+currently night time (as well as the various stages of twilight).
+
+::: {style="text-align: center"}
+![](resources/mapview-layers-day-night.png)\
+*The day / night layer.*
+:::
