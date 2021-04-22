@@ -22,6 +22,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,9 +66,9 @@ public class ConstellationIcon {
     /**
      * A cache to store icons
      */
-    private static final Map<ThreeTuple<IconData, Integer, Color>, Object> ICON_CACHE = new HashMap<>();
-    private static final Map<ThreeTuple<IconData, Integer, Color>, Object> IMAGE_CACHE = new HashMap<>();
-    private static final Map<ThreeTuple<IconData, Integer, Color>, Object> BUFFERED_IMAGE_CACHE = new HashMap<>();
+    private static final Map<ThreeTuple<Integer, Integer, Color>, Object> ICON_CACHE = new HashMap<>();
+    private static final Map<ThreeTuple<Integer, Integer, Color>, Object> IMAGE_CACHE = new HashMap<>();
+    private static final Map<ThreeTuple<Integer, Integer, Color>, Object> BUFFERED_IMAGE_CACHE = new HashMap<>();
 
     private final String name;
     private final IconData iconData;
@@ -233,7 +234,7 @@ public class ConstellationIcon {
      */
     public BufferedImage buildBufferedImage(final int size, final Color color) {
         // build the cache key
-        final ThreeTuple<IconData, Integer, Color> key = buildCacheKey(iconData, size, color);
+        final ThreeTuple<Integer, Integer, Color> key = buildCacheKey(size, color);
 
         BufferedImage icon;
         if (BUFFERED_IMAGE_CACHE.containsKey(key)) {
@@ -300,7 +301,7 @@ public class ConstellationIcon {
      */
     public Icon buildIcon(final int size, final Color color) {
         // build the cache key
-        final ThreeTuple<IconData, Integer, Color> key = buildCacheKey(iconData, size, color);
+        final ThreeTuple<Integer, Integer, Color> key = buildCacheKey(size, color);
 
         final ImageIcon icon;
         if (ICON_CACHE.containsKey(key)) {
@@ -362,7 +363,7 @@ public class ConstellationIcon {
      */
     public Image buildImage(final int size, final Color color) {
         // build the cache key
-        final ThreeTuple<IconData, Integer, Color> key = buildCacheKey(iconData, size, color);
+        final ThreeTuple<Integer, Integer, Color> key = buildCacheKey(size, color);
 
         final Image image;
         if (IMAGE_CACHE.containsKey(key)) {
@@ -379,7 +380,7 @@ public class ConstellationIcon {
 
         return image;
     }
-    
+
     /**
      * Used to clear cache images in the ConstellationIcon cache. This should be
      * called when closing the last open graph to release consumed resources.
@@ -396,13 +397,13 @@ public class ConstellationIcon {
      * Build a key that can be used to index the icon byte array in the icon
      * cache.
      *
-     * @param iconData The icon data object
      * @param size The size of the icon
      * @param color The colour of the icon
-     * @return The byte array of the icon ready for conversion
+     *
+     * @return A unique key represented as a ThreeTuple
      */
-    private ThreeTuple<IconData, Integer, Color> buildCacheKey(final IconData iconData, final int size, final Color color) {
-        return ThreeTuple.create(iconData, size, color);
+    private ThreeTuple<Integer, Integer, Color> buildCacheKey(final int size, final Color color) {
+        return ThreeTuple.create(name.hashCode() + iconData.hashCode(), size, color);
     }
 
     /**

@@ -134,10 +134,13 @@ public class MultiChoiceInputPane extends HBox {
             final List<String> recentChoices = new ArrayList<>();
             for (final String recentValue : multiChoiceRecentValue.split("\\n")) {
                 if (recentValue.startsWith("\u2713 ")) {
-                    recentChoices.add(recentValue.split("\u2713 ")[1]);
+                    final String[] values = recentValue.split("\u2713 ");
+                    if (values.length > 0) {
+                        recentChoices.add(values[1]);
+                    }
                 }
             }
-            
+
             final List<ParameterValue> pvs = MultiChoiceParameterType.getOptionsData(parameter);
             final List<ParameterValue> choices = new ArrayList<>();
             for (final ParameterValue pv : pvs) {
