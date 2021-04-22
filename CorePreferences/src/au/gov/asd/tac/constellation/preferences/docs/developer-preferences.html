@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Developer Preferences</title>
+        <link rel="stylesheet" href="nbdocs://au.gov.asd.tac.constellation.preferences/au/gov/asd/tac/constellation/preferences/constellation.css" type="text/css">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+    <body>
+        <h1>Developer Preferences</h1>       
+        <p>
+            Developer preferences can be accessed via Setup -> Options -> CONSTELLATION -> Developer.
+        </p>
+
+        <h2>Memory Usage</h2>
+        <p>
+            Constellation is a java application which means that the memory management is handled by the Garbage Collector (GC) 
+            process inside the Java Virtual Machine (JVM). It is best left to the GC to decide when to release unused memory but we 
+            can give a hint to the GC to clear unused memory when a graph is open or closed.
+        </p>
+        <p>
+            The following options have been enabled by default and does not guarantee that any garbage collection will be performed
+            because it is ultimately up to the GC process to decide. A side effect of having this enabled means that opening and 
+            closing graphs could take longer to complete if the GC decides to clean up unused memory on a open or close.
+        </p>
+        <ul>
+            <li>Garbage Collect GC on graph open</li>
+            <li>Garbage Collect GC on graph close</li>
+        </ul>
+
+        <h2>Open GL</h2>
+        <p>
+            
+        </p>
+        
+        <h2>Master Reset Constellation</h2>
+        <p>
+            
+        </p>
+    </body>
+</html>
