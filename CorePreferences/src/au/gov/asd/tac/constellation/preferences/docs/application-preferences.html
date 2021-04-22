@@ -8,7 +8,7 @@
     <body>
         <h1>Application Preferences</h1>       
         <p>
-            Application preferences can be accessed via Setup -> Options -> CONSTELLATION -> Application.
+            Application preferences can be accessed via Setup -&gt; Options -&gt; CONSTELLATION -&gt; Application.
         </p>
 
         <h2>User Directory</h2>
@@ -19,7 +19,7 @@
             preferences.
         </p>
         <p>
-            You can open your user directory in your default file browser via Help -> User Directory.
+            You can open your user directory in your default file browser via Help -&gt; User Directory.
         </p>
 
         <h2>Autosave</h2>
@@ -36,17 +36,36 @@
         
         <h2>Display</h2>
         <p>
-            
+            With "Freeze Graph View" enabled by default it should mean that after plugins run, it does not re-arrange your graph 
+            automatically for you. This will be useful when you have manually positioned nodes and want to maintain that layout.
+            After running a Data Access plugin for example, if new nodes are added to the graph then they will appear at the centre 
+            of the graph and be layed out in a grid. If you turn off this feature then Data Access plugins will be allowed to 
+            re-arrange the entire graph and place new nodes in a more appropriate location.
         </p>
         
         <h2>Internal Webserver</h2>
         <p>
-            
+            Constellation has a build in Restful web service allowing you to programatically run plugins via web calls. The web 
+            service needs to be started manually from Tools -&gt; Start REST Service and it will by default listen to port 1517 on
+            localhost. To reduce the risk of potential security vulnerabilities the web service is limited to localhost only.
+        </p>
+        
+        <p>
+            You also have the ability make Restful calls via a file system. This can be handy if you have a shared folder that multiple
+            VMs can access and want the ability to run commands over the network. To do this you can specify a "REST directory"
+            and Constellation will poll that directory for plugins to run.
         </p>
         
         <h2>Jupyter Notebooks</h2>
         <p>
-            
+            The "Notebook directory" specifies the location where your Jupyter Notebooks are located and will launch the Jupyter
+            Notebooks server from this directory. You can start the Jupyter Notebooks server from Constellation via Tools -&gt;
+            Start Jupyter Notebook.
+        </p>
+        <p>
+            Selecting to "Download Python REST client" means that when you start the Jupyter Notebook server, Constellation will
+            download the constellation_client.py file to your .ipython folder. The constellation_client.py provides easy access
+            to make Restful calls to Constellation.
         </p>
         
         <h2>Save Location</h2>

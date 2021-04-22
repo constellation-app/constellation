@@ -8,7 +8,7 @@
     <body>
         <h1>Developer Preferences</h1>       
         <p>
-            Developer preferences can be accessed via Setup -> Options -> CONSTELLATION -> Developer.
+            Developer preferences can be accessed via Setup -&gt; Options -&gt; CONSTELLATION -&gt; Developer.
         </p>
 
         <h2>Memory Usage</h2>
@@ -29,12 +29,31 @@
 
         <h2>Open GL</h2>
         <p>
-            
+            The Constellation graph is rendered via OpenGL so having extra debug information can be useful for troubleshooting or 
+            to see what is happening internally. We've provided a few options from this preferences section to include debugging
+            options:
+        </p>
+        <p>
+            <b>Debug GL</b>: Prints out various debug parameters and settings detected by Constellation to the log file at start up.
+        </p>
+        <p>
+            <b>Print GL Capabilities</b>: Outputs the available GL capabilities detected by the graphics card to the log file.
+        </p>
+        <p>
+            <b>Display FPS Counter</b>: Have a frames per second counter visible on the bottom right corner showing you the frame 
+            rate for the Constellation graph. If you run the Experimental -&gt; Animations -&gt; Fly through then you can get a
+            sense of the maximum frame rate possible with your graphics card.
         </p>
         
         <h2>Master Reset Constellation</h2>
         <p>
-            
+            Constellation is built on top of Apache Netbeans with a number of module suites and modules within those module suites.
+            Running this option is a distruptive change that will uninstall all Constellation modules, stripping the application
+            down to just the NetBeans runtime libraries.
+        </p>
+        <p>
+            Note that this option does not work for the standalone version of Constellation and it rather applicable to the version
+            of Constellation that is continously updating via the update site mechanism. This version is called the "Constellation Shell".
         </p>
     </body>
 </html>
