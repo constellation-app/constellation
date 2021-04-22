@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.importexport.jdbc.io;
+package au.gov.asd.tac.constellation.plugins.importexport;
 
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
 import java.io.File;
@@ -31,7 +31,12 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Window;
 
-class TemplateListDialog {
+/**
+ * Display a list of query names and allow the user to select one.
+ *
+ * @author algol
+ */
+public class TemplateListDialog {
 
     private final Window owner;
     private final boolean isLoading;
@@ -61,7 +66,7 @@ class TemplateListDialog {
         return names;
     }
 
-    String getName(final Window owner, final File delimIoDir) {
+    public String getName(final Window owner, final File delimIoDir) {
         final String[] templateLabels = getFileLabels(delimIoDir);
 
         final Alert dialog = new Alert(Alert.AlertType.CONFIRMATION);

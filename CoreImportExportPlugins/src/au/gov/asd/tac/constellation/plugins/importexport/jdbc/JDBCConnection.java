@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.jdbc;
 
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.sql.Connection;
@@ -22,7 +23,6 @@ import java.sql.Driver;
 import java.sql.SQLException;
 import java.util.Properties;
 import javafx.scene.control.Alert;
-import javafx.scene.control.TextArea;
 
 public class JDBCConnection {
 
@@ -49,27 +49,17 @@ public class JDBCConnection {
     public boolean testConnection(final String user, final String password, final boolean showError) {
         try (final Connection conn = getConnection(user, password)) {
             if (conn == null) {
-                final Alert a = new Alert(Alert.AlertType.ERROR);
-                a.setTitle("Connection Failed");
-                final TextArea b = new TextArea();
-                b.setEditable(false);
-                b.setWrapText(true);
-                b.setText("Testing of the connection failed, please recheck your connection string settings.");
-                a.getDialogPane().setContent(b);
-                a.showAndWait();
+                NotifyDisplayer.displayLargeAlert("JDBC Import", "Connection Failed",
+                        "Testing of the connection failed, please recheck your connection string settings.",
+                        Alert.AlertType.ERROR);
                 return false;
             }
-        } catch (final MalformedURLException | ClassNotFoundException | SQLException | NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+        } catch (final MalformedURLException | ClassNotFoundException | SQLException
+                | NoSuchMethodException | InstantiationException | IllegalAccessException
+                | IllegalArgumentException | InvocationTargetException ex) {
             if (showError) {
-                final Alert a = new Alert(Alert.AlertType.ERROR);
-                a.setTitle("Connection Failed");
-                a.setContentText("Testing of the connection failed, please recheck your settings.");
-                final TextArea b = new TextArea();
-                b.setEditable(false);
-                b.setWrapText(true);
-                b.setText(ex.getMessage());
-                a.getDialogPane().setContent(b);
-                a.showAndWait();
+                NotifyDisplayer.displayLargeAlert("JDBC Import", "Testing of the connection failed, "
+                        + "please recheck your settings.", ex.getMessage(), Alert.AlertType.ERROR);
             }
             return false;
         }

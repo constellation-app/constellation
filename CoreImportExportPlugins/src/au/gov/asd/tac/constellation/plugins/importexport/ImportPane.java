@@ -59,7 +59,13 @@ public class ImportPane extends BorderPane {
     protected final MenuItem showSchemaAttributesItem;
     protected final Button helpButton;
 
-    private static final Image HELP_IMAGE = UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor());
+    private static final Insets GRIDPANE_PADDING = new Insets(0, 0, 10, 0);
+    private static final Insets ACTIONPANE_PADDING = new Insets(0, 0, 20, 0);
+    private static final int GRIDPANE_CONSTRAINT = 200;
+    private static final int ACTIONPANE_MIN_HEIGHT = 40;
+
+    private static final Image HELP_IMAGE = UserInterfaceIconProvider.HELP.buildImage(16,
+            ConstellationColor.BLUEBERRY.getJavaColor());
     protected final Preferences importExportPrefs = NbPreferences.forModule(ImportExportPreferenceKeys.class);
 
     public ImportPane(final ImportTopComponent importTopComponent, final ImportController controller,
@@ -146,7 +152,6 @@ public class ImportPane extends BorderPane {
         menuToolbar.getChildren().add(helpButton);
 
         // titled configuration pane
-        //configurationPane = new ConfigurationPane(importController);
         final TitledPane titledConfigurationPane = new TitledPane("Configuration", configurationPane);
         titledConfigurationPane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         titledConfigurationPane.setMinSize(0, 0);
@@ -155,17 +160,17 @@ public class ImportPane extends BorderPane {
         // gridpane for configuration pane
         gridPane = new EasyGridPane();
         gridPane.addColumn(0, titledConfigurationPane);
-        gridPane.setPadding(new Insets(0, 0, 10, 0));
-        gridPane.addColumnConstraint(true, HPos.LEFT, Priority.ALWAYS, Double.MAX_VALUE, 200, GridPane.USE_COMPUTED_SIZE, -1);
+        gridPane.setPadding(GRIDPANE_PADDING);
+        gridPane.addColumnConstraint(true, HPos.LEFT, Priority.ALWAYS, Double.MAX_VALUE, GRIDPANE_CONSTRAINT, GridPane.USE_COMPUTED_SIZE, -1);
         gridPane.addRowConstraint(true, VPos.TOP, Priority.ALWAYS, Double.MAX_VALUE, 0, GridPane.USE_COMPUTED_SIZE, -1);
         gridPane.addRowConstraint(true, VPos.TOP, Priority.ALWAYS, Double.MAX_VALUE, 0, GridPane.USE_COMPUTED_SIZE, -1);
         gridPane.addRowConstraint(true, VPos.BOTTOM, Priority.ALWAYS, Double.MAX_VALUE, 0, GridPane.USE_COMPUTED_SIZE, -1);
 
         // actionpane for holding import and cancel buttons
         final ActionPane actionPane = new ActionPane(importController);
-        actionPane.setMinSize(0, 40);
+        actionPane.setMinSize(0, ACTIONPANE_MIN_HEIGHT);
         actionPane.prefWidthProperty().bind(this.widthProperty());
-        actionPane.setPadding(new Insets(0, 0, 20, 0));
+        actionPane.setPadding(ACTIONPANE_PADDING);
 
         importController.setConfigurationPane(configurationPane);
 

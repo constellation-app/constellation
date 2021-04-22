@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.plugins.importexport;
 
 import au.gov.asd.tac.constellation.plugins.PluginException;
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
@@ -29,6 +28,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 
 /**
+ * Action Pane is responsible for allowing the action of importing to be performed
  *
  * @author sirius
  */
@@ -36,15 +36,38 @@ public class ActionPane extends BorderPane {
 
     private static final Logger LOGGER = Logger.getLogger(ActionPane.class.getName());
     private static final String SUCCESS_ICON_PATH = "au/gov/asd/tac/constellation/plugins/importexport/delimited/resources/success.jpg";
+    private static final Insets PADDING = new Insets(5, 5, 35, 5);
+    private static final int HBOX_SPACING = 5;
 
     private final ImportController importController;
+
+    public ActionPane(final ImportController controller) {
+        this.importController = controller;
+
+        final HBox runBox = new HBox();
+        runBox.setSpacing(HBOX_SPACING);
+        runBox.setPadding(PADDING);
+        setRight(runBox);
+
+        final Button importButton = new Button("Import");
+        importButton.setOnAction((ActionEvent t) -> {
+            try {
+                importController.processImport();
+            } catch (PluginException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+                displayAlert("Import Failed", ex.getLocalizedMessage(), false);
+            }
+        });
+
+        runBox.getChildren().add(importButton);
+    }
 
     private void displayAlert(String title, String header, boolean successful) {
         final Alert dialog;
         if (successful) {
             dialog = new Alert(Alert.AlertType.CONFIRMATION, "", ButtonType.OK);
-            final ImageView SUCCESS_ICON = new ImageView(SUCCESS_ICON_PATH);
-            dialog.setGraphic(SUCCESS_ICON);
+            final ImageView successIcon = new ImageView(SUCCESS_ICON_PATH);
+            dialog.setGraphic(successIcon);
 
         } else {
             dialog = new Alert(Alert.AlertType.ERROR, "", ButtonType.OK);
@@ -52,30 +75,5 @@ public class ActionPane extends BorderPane {
         dialog.setTitle(title);
         dialog.setHeaderText(header);
         dialog.showAndWait();
-    }
-
-    public ActionPane(final ImportController controller) {
-        this.importController = controller;
-
-        final HBox runBox = new HBox();
-        runBox.setSpacing(5);
-        runBox.setPadding(new Insets(5, 5, 35, 5));
-        setRight(runBox);
-
-        final Button importButton = new Button("Import");
-        importButton.setOnAction((ActionEvent t) -> {
-            try {
-                importController.processImport();
-            } catch (final IOException | PluginException ex) {
-                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-                displayAlert("Import Failed", ex.getLocalizedMessage(), false);
-            } catch (final InterruptedException ex) {
-                Thread.currentThread().interrupt();
-                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-                displayAlert("import Failed", ex.getLocalizedMessage(), false);
-            }
-        });
-
-        runBox.getChildren().add(importButton);
     }
 }

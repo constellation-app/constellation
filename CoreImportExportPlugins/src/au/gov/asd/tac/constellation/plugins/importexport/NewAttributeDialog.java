@@ -49,6 +49,14 @@ public class NewAttributeDialog extends Stage {
     private final TextField labelText;
     private final TextArea descriptionText;
 
+    private final static int GRIDPANE_GAP = 5;
+    private final static Insets GRIDPANE_PADDING = new Insets(10);
+    private final static int LABEL_PREFWIDTH = 200;
+    private final static int LABEL_PREFHEIGHT = 30;
+    private final static int DESC_PREFWIDTH = 300;
+    private final static int DESC_PREFHEIGHT = 100;
+    private final static Insets BUTTONPANE_PADDING = new Insets(5);
+
     private Attribute attribute = null;
 
     public NewAttributeDialog(final Window owner, final GraphElementType elementType) {
@@ -67,9 +75,9 @@ public class NewAttributeDialog extends Stage {
         setScene(scene);
 
         final GridPane fieldPane = new GridPane();
-        fieldPane.setHgap(5);
-        fieldPane.setVgap(5);
-        fieldPane.setPadding(new Insets(10));
+        fieldPane.setHgap(GRIDPANE_GAP);
+        fieldPane.setVgap(GRIDPANE_GAP);
+        fieldPane.setPadding(GRIDPANE_PADDING);
         root.setCenter(fieldPane);
 
         final Label typeLabel = new Label("Type:");
@@ -88,7 +96,7 @@ public class NewAttributeDialog extends Stage {
 
         labelText = new TextField();
         labelText.setPromptText("Attribute Label");
-        labelText.setPrefSize(200, 30);
+        labelText.setPrefSize(LABEL_PREFWIDTH, LABEL_PREFHEIGHT);
         GridPane.setConstraints(labelText, 1, 1);
         fieldPane.getChildren().add(labelText);
         labelText.requestFocus();
@@ -99,19 +107,20 @@ public class NewAttributeDialog extends Stage {
 
         descriptionText = new TextArea();
         descriptionText.setPromptText("Attribute Description");
-        descriptionText.setPrefSize(300, 100);
+        descriptionText.setPrefSize(DESC_PREFWIDTH, DESC_PREFHEIGHT);
         GridPane.setConstraints(descriptionText, 1, 2);
         fieldPane.getChildren().add(descriptionText);
 
         final FlowPane buttonPane = new FlowPane();
         buttonPane.setAlignment(Pos.BOTTOM_RIGHT);
-        buttonPane.setPadding(new Insets(5));
-        buttonPane.setHgap(5);
+        buttonPane.setPadding(BUTTONPANE_PADDING);
+        buttonPane.setHgap(GRIDPANE_GAP);
         root.setBottom(buttonPane);
 
         final Button okButton = new Button("Ok");
         okButton.setOnAction((ActionEvent event) -> {
-            attribute = new NewAttribute(elementType, typeBox.getSelectionModel().getSelectedItem(), labelText.getText(), descriptionText.getText());
+            attribute = new NewAttribute(elementType, typeBox.getSelectionModel().getSelectedItem(),
+                    labelText.getText(), descriptionText.getText());
             NewAttributeDialog.this.hide();
         });
         buttonPane.getChildren().add(okButton);

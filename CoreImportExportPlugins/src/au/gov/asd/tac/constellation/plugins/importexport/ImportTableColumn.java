@@ -45,6 +45,7 @@ public class ImportTableColumn extends TableColumn<TableRow, CellValue> {
 
     private final String label;
     private final int columnIndex;
+    private final static Insets BORDERPANE_PADDING = new Insets(2);
 
     public ImportTableColumn(final String label, final int columnIndex) {
         this.label = label;
@@ -71,7 +72,8 @@ public class ImportTableColumn extends TableColumn<TableRow, CellValue> {
             final PluginParameters parserParameters = attributeNode.getTranslatorParameters();
             final String defaultValue = attributeNode.getDefaultValue();
 
-            Class<? extends AttributeDescription> attributeDescriptionClass = AttributeRegistry.getDefault().getAttributes().get(attributeNode.getAttribute().getAttributeType());
+            Class<? extends AttributeDescription> attributeDescriptionClass = AttributeRegistry.getDefault()
+                    .getAttributes().get(attributeNode.getAttribute().getAttributeType());
             // Handle pseudo-attributes
             if (attributeDescriptionClass == null && attributeNode.getAttribute().getName().equals(ImportController.DIRECTED)) {
                 attributeDescriptionClass = BooleanAttributeDescription.class;
@@ -87,7 +89,7 @@ public class ImportTableColumn extends TableColumn<TableRow, CellValue> {
                     final String parsedValue = parser.translate(value, parserParameters);
                     final String errorMessage = attributeDescription.acceptsString(parsedValue);
                     columnFailed |= errorMessage != null;
-                    if (parsedValue == null ? value == null : parsedValue.equals(value)) {
+                    if (parsedValue == null ? (value == null) : (parsedValue.equals(value))) {
                         property.setText(value);
                         if (errorMessage != null && defaultValue == null) {
                             property.setMessage(errorMessage, true);
@@ -142,7 +144,7 @@ public class ImportTableColumn extends TableColumn<TableRow, CellValue> {
         private final Label label;
 
         public ColumnHeader(final String label) {
-            setPadding(new Insets(2));
+            setPadding(BORDERPANE_PADDING);
             this.label = new Label(label);
             BorderPane.setAlignment(this.label, Pos.CENTER);
             setTop(this.label);

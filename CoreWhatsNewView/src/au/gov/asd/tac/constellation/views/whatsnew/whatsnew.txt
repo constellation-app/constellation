@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
+== 2021-04-22 JDBC Database Import Connector View
+<p>The JDBC Connector window has been converted to use the standard view framework and now matches closely with the style of the delimited file importer.</p>
+
 == 2021-04-01 Histogram Bin Counter
 <p>A count for the total number of bins currently shown in the Histogram has been added to the top right of the view.</p>
 

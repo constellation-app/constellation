@@ -49,19 +49,28 @@ public abstract class SourcePane extends GridPane {
     protected final ColumnConstraints column1Constraints = new ColumnConstraints();
     protected final ColumnConstraints column2Constraints = new ColumnConstraints();
 
+    private static final int GRAPHCOMBO_COLUMN_INDEX = 1;
+    private static final int GRAPHCOMBO_ROW_INDEX = 4;
+    private static final int GRAPHCOMBO_COLUMN_SPAN = 2;
+    private static final int GRAPHCOMBO_ROW_SPAN = 1;
+
+    private final static int GAP = 10;
+    private final static Insets GRIDPANE_PADDING = new Insets(5);
+
     protected final ImportController importController;
 
-    public SourcePane(final ImportController importController) {
+    protected SourcePane(final ImportController importController) {
         this.importController = importController;
         graphComboBox = new ComboBox<>();
         updateDestinationGraphCombo();
-        GridPane.setConstraints(graphComboBox, 1, 4, 2, 1, HPos.LEFT, VPos.TOP);
+        GridPane.setConstraints(graphComboBox, GRAPHCOMBO_COLUMN_INDEX, GRAPHCOMBO_ROW_INDEX, GRAPHCOMBO_COLUMN_SPAN,
+                GRAPHCOMBO_ROW_SPAN, HPos.LEFT, VPos.TOP);
 
         setMinHeight(USE_PREF_SIZE);
         setMinWidth(0);
-        setPadding(new Insets(5));
-        setHgap(10);
-        setVgap(10);
+        setPadding(GRIDPANE_PADDING);
+        setHgap(GAP);
+        setVgap(GAP);
 
         column0Constraints.setHgrow(Priority.NEVER);
         column1Constraints.setHgrow(Priority.ALWAYS);

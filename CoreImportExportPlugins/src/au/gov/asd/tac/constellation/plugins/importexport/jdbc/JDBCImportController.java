@@ -25,7 +25,7 @@ import au.gov.asd.tac.constellation.plugins.importexport.ImportController;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportDefinition;
 import au.gov.asd.tac.constellation.plugins.importexport.SchemaDestination;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
-import java.io.IOException;
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.sql.Connection;
@@ -34,15 +34,21 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.control.Alert.AlertType;
 
 public class JDBCImportController extends ImportController {
 
+    private static final Logger LOGGER = Logger.getLogger(JDBCImportController.class.getName());
     private JDBCConnection connection;
     private String query;
     private String username;
     private String password;
+    private static final String QUERY_LIMIT_TEXT = " limit ";
+    private static final String SELECT_TEXT = "select ";
 
     public JDBCImportController() {
         super();
@@ -75,10 +81,8 @@ public class JDBCImportController extends ImportController {
     }
 
     @Override
-    public List processImport() throws IOException, InterruptedException, PluginException {
+    public List<File> processImport() throws PluginException {
         final List<ImportDefinition> definitions = configurationPane.createDefinitions();
-        final List<String> importList = new ArrayList<>();
-        importList.add(query);
         final Graph importGraph = currentDestination.getGraph();
         final boolean schema = schemaInitialised;
 
@@ -88,10 +92,12 @@ public class JDBCImportController extends ImportController {
 
                 @Override
                 public void graphOpened(Graph graph) {
+                    // Do nothing
                 }
 
                 @Override
                 public void graphClosed(Graph graph) {
+                    // Do nothing
                 }
 
                 @Override
@@ -121,7 +127,7 @@ public class JDBCImportController extends ImportController {
                     .set(ImportJDBCPlugin.SCHEMA_PARAMETER_ID, schema)
                     .executeWriteLater(importGraph);
         }
-        return importList;
+        return Collections.EMPTY_LIST;
     }
 
     @Override
@@ -130,36 +136,34 @@ public class JDBCImportController extends ImportController {
             currentColumns = new String[0];
             currentData = new ArrayList<>();
         } else {
-            try {
-                try (final Connection dbConnection = connection.getConnection(username, password)) {
-                    if (!query.toLowerCase().contains(" limit ") && query.toLowerCase().startsWith("select ")) {
-                        query += " limit " + PREVIEW_ROW_LIMIT;
+            try (final Connection dbConnection = connection.getConnection(username, password);
+                    final PreparedStatement ps = dbConnection.prepareStatement(query);
+                    final ResultSet rs = ps.executeQuery()) {
+
+                if (!query.toLowerCase().contains(QUERY_LIMIT_TEXT) && query.toLowerCase().startsWith(SELECT_TEXT)) {
+                    query += QUERY_LIMIT_TEXT + PREVIEW_ROW_LIMIT;
+                }
+                int count = 0;
+                currentData.clear();
+                while (rs.next() && count < PREVIEW_ROW_LIMIT) {
+                    count++;
+                    final String[] d = new String[ps.getMetaData().getColumnCount()];
+                    for (int i = 0; i < ps.getMetaData().getColumnCount(); i++) {
+                        d[i] = rs.getString(i + 1);
                     }
-                    try (final PreparedStatement ps = dbConnection.prepareStatement(query)) {
-                        try (final ResultSet rs = ps.executeQuery()) {
-                            int count = 0;
-                            currentData.clear();
-                            while (rs.next() && count < PREVIEW_ROW_LIMIT) {
-                                count++;
-                                final String[] d = new String[ps.getMetaData().getColumnCount()];
-                                for (int i = 0; i < ps.getMetaData().getColumnCount(); i++) {
-                                    d[i] = rs.getString(i + 1);
-                                }
-                                currentData.add(d);
-                            }
-                            currentColumns = new String[ps.getMetaData().getColumnCount() + 1];
-                            currentColumns[0] = "Row";
-                            final ResultSetMetaData rsmd = ps.getMetaData();
-                            for (int i = 0; i < rsmd.getColumnCount(); i++) {
-                                currentColumns[i + 1] = rsmd.getColumnName(i + 1);
-                            }
-                        }
-                    }
+                    currentData.add(d);
+                }
+                currentColumns = new String[ps.getMetaData().getColumnCount() + 1];
+                currentColumns[0] = "Row";
+                final ResultSetMetaData rsmd = ps.getMetaData();
+                for (int i = 0; i < rsmd.getColumnCount(); i++) {
+                    currentColumns[i + 1] = rsmd.getColumnName(i + 1);
                 }
             } catch (final MalformedURLException | ClassNotFoundException | SQLException | NoSuchMethodException
                     | InstantiationException | IllegalAccessException | IllegalArgumentException
                     | InvocationTargetException ex) {
                 NotifyDisplayer.displayAlert("JDBC Import", "Query Error", ex.getMessage(), AlertType.ERROR);
+                LOGGER.log(Level.WARNING, ex.toString());
             }
         }
 

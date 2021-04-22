@@ -44,7 +44,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
@@ -60,7 +59,6 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import javafx.util.Callback;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -91,6 +89,25 @@ public class RunPane extends BorderPane implements KeyListener {
     private String attributeFilter = "";
     private final EasyGridPane attributePane;
     private static final double ATTRIBUTE_PADDING_HEIGHT = 19.75;
+
+    private final static int SCROLLPANE_HEIGHT = 450;
+    private final static int SCROLLPANE_VIEW_WIDTH = 400;
+    private final static int SCROLLPANE_VIEW_HEIGHT = 900;
+    private final static int SAMPLEVIEW_HEIGHT = 450;
+    private final static int SAMPLEVIEW_MIN_HEIGHT = 130;
+    private final static int ATTRIBUTEPANE_PREF_WIDTH = 300;
+    private final static int ATTRIBUTEPANE_MIN_WIDTH = 100;
+    private final static Insets ATTIRUBTEPANE_PADDING = new Insets(5);
+    private final static int ATTRIBUTE_GAP = 5;
+    private final static int ATTRIBUTEFILTER_PREFHEIGHT = 50;
+    private final static int TABLECOLUMN_PREFWIDTH = 50;
+
+    // find a better way to determine the multiplier which
+    // seems to be dependant on the number of columns and its width. So this
+    // mechanism of blindly multiplying by 12.1 is not the ideal case because
+    // it means longer headings get extra padding than they need and smaller
+    // headings get just enough.
+    private final static double COLUMN_WIDTH_MULTIPLIER = 12.1;
 
     private ObservableList<TableRow> currentRows = FXCollections.observableArrayList();
     private String[] currentColumnLabels = new String[0];
@@ -147,7 +164,7 @@ public class RunPane extends BorderPane implements KeyListener {
 
         final ScrollPane configScroll = new ScrollPane();
         configScroll.setMaxWidth(Double.MAX_VALUE);
-        configScroll.setPrefHeight(450);
+        configScroll.setPrefHeight(SCROLLPANE_HEIGHT);
         configScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         configScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         setCenter(configBox);
@@ -165,8 +182,8 @@ public class RunPane extends BorderPane implements KeyListener {
             }
         });
 
-        sampleDataView.setMinHeight(130);
-        sampleDataView.setPrefHeight(450);
+        sampleDataView.setMinHeight(SAMPLEVIEW_MIN_HEIGHT);
+        sampleDataView.setPrefHeight(SAMPLEVIEW_HEIGHT);
         sampleDataView.setMaxHeight(Double.MAX_VALUE);
 
         final VBox tableBox = new VBox();
@@ -191,16 +208,20 @@ public class RunPane extends BorderPane implements KeyListener {
 
         attributePane = new EasyGridPane();
         attributePane.setMaxWidth(Double.MAX_VALUE);
-        attributePane.setPrefSize(300, attributeCount * ATTRIBUTE_PADDING_HEIGHT);
+        attributePane.setPrefSize(ATTRIBUTEPANE_PREF_WIDTH, attributeCount * ATTRIBUTE_PADDING_HEIGHT);
         attributePane.setAlignment(Pos.TOP_CENTER);
-        attributePane.setPadding(new Insets(5));
-        attributePane.setVgap(5);
-        attributePane.setHgap(5);
+        attributePane.setPadding(ATTIRUBTEPANE_PADDING);
+        attributePane.setVgap(ATTRIBUTE_GAP);
+        attributePane.setHgap(ATTRIBUTE_GAP);
 
-        attributePane.addColumnConstraint(true, HPos.CENTER, Priority.ALWAYS, Double.MAX_VALUE, 100, USE_COMPUTED_SIZE, -1);
-        attributePane.addColumnConstraint(true, HPos.CENTER, Priority.ALWAYS, Double.MAX_VALUE, 100, USE_COMPUTED_SIZE, -1);
-        attributePane.addColumnConstraint(true, HPos.CENTER, Priority.ALWAYS, Double.MAX_VALUE, 100, USE_COMPUTED_SIZE, -1);
-        attributePane.addRowConstraint(true, VPos.TOP, Priority.ALWAYS, Double.MAX_VALUE, 100, USE_COMPUTED_SIZE, -1);
+        attributePane.addColumnConstraint(true, HPos.CENTER, Priority.ALWAYS, Double.MAX_VALUE, ATTRIBUTEPANE_MIN_WIDTH,
+                USE_COMPUTED_SIZE, -1);
+        attributePane.addColumnConstraint(true, HPos.CENTER, Priority.ALWAYS, Double.MAX_VALUE, ATTRIBUTEPANE_MIN_WIDTH,
+                USE_COMPUTED_SIZE, -1);
+        attributePane.addColumnConstraint(true, HPos.CENTER, Priority.ALWAYS, Double.MAX_VALUE, ATTRIBUTEPANE_MIN_WIDTH,
+                USE_COMPUTED_SIZE, -1);
+        attributePane.addRowConstraint(true, VPos.TOP, Priority.ALWAYS, Double.MAX_VALUE, ATTRIBUTEPANE_MIN_WIDTH,
+                USE_COMPUTED_SIZE, -1);
         attributePane.addRow(0, sourceVertexScrollPane, destinationVertexScrollPane, transactionScrollPane);
 
         attributePane.setOnKeyPressed(event -> {
@@ -212,6 +233,8 @@ public class RunPane extends BorderPane implements KeyListener {
                 attributeFilter += c.getChar();
                 attributeFilterTextField.setText(attributeFilter);
                 attributeFilterPane.setVisible(true);
+            } else {
+                return; // Default case added per Sonar - java:S126
             }
             importController.setAttributeFilter(attributeFilter);
             importController.setDestination(null);
@@ -223,10 +246,10 @@ public class RunPane extends BorderPane implements KeyListener {
         attributeScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         attributeScrollPane.setMaxWidth(Double.MAX_VALUE);
         attributeScrollPane.setContent(attributePane);
-        attributeScrollPane.setPrefViewportWidth(400);
-        attributeScrollPane.setPrefViewportHeight(900);
+        attributeScrollPane.setPrefViewportWidth(SCROLLPANE_VIEW_WIDTH);
+        attributeScrollPane.setPrefViewportHeight(SCROLLPANE_VIEW_HEIGHT);
         attributeScrollPane.setFitToWidth(true);
-        attributeScrollPane.setPrefHeight(450);
+        attributeScrollPane.setPrefHeight(SCROLLPANE_HEIGHT);
 
         final TitledPane titledAttributePane = new TitledPane("Attributes", attributeScrollPane);
         titledAttributePane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
@@ -238,7 +261,7 @@ public class RunPane extends BorderPane implements KeyListener {
         VBox.setVgrow(attributeFilterPane, Priority.ALWAYS);
         attributeFilterTextField.setEditable(false);
         attributeFilterPane.setVisible(false);
-        attributeFilterPane.setPrefHeight(50);
+        attributeFilterPane.setPrefHeight(ATTRIBUTEFILTER_PREFHEIGHT);
 
         configBox.getChildren().addAll(attributeFilterPane, titledAttributePane);
         configBox.onKeyPressedProperty().bind(attributePane.onKeyPressedProperty());
@@ -335,9 +358,10 @@ public class RunPane extends BorderPane implements KeyListener {
             mouseOverColumn = null;
 
             final double cellPadding = 0.5; // ?
-            if (tableLocation.getX() >= 0 && tableLocation.getX() <= sampleDataView.getWidth() && tableLocation.getY() >= 0 && tableLocation.getY() <= sampleDataView.getHeight()) {
+            if (tableLocation.getX() >= 0 && tableLocation.getX() <= sampleDataView.getWidth()
+                    && tableLocation.getY() >= 0 && tableLocation.getY() <= sampleDataView.getHeight()) {
                 final double columnLocation = tableLocation.getX() + offset;
-                for (TableColumn<TableRow, ?> column : sampleDataView.getColumns()) {
+                for (final TableColumn<TableRow, ?> column : sampleDataView.getColumns()) {
                     totalWidth += column.getWidth() + cellPadding;
                     if (columnLocation < totalWidth) {
                         mouseOverColumn = (ImportTableColumn) column;
@@ -379,18 +403,12 @@ public class RunPane extends BorderPane implements KeyListener {
 
         sampleDataView.getItems().clear();
         sampleDataView.getColumns().clear();
-//        sampleDataView.getColumns().clear();
 
         int columnIndex = 0;
         for (final String columnLabel : columnLabels) {
             final ImportTableColumn column = new ImportTableColumn(columnLabel, columnIndex);
             column.setCellValueFactory((CellDataFeatures<TableRow, CellValue> p) -> p.getValue().getProperty(column.getColumnIndex()));
-            column.setCellFactory(new Callback<TableColumn<TableRow, CellValue>, TableCell<TableRow, CellValue>>() {
-                @Override
-                public TableCell<TableRow, CellValue> call(TableColumn<TableRow, CellValue> p) {
-                    return new ImportTableCell();
-                }
-            });
+            column.setCellFactory((TableColumn<TableRow, CellValue> p) -> new ImportTableCell());
 
             if (columnIndex < savedAttributeNodes.length) {
                 column.setAttributeNode(savedAttributeNodes[columnIndex]);
@@ -399,16 +417,10 @@ public class RunPane extends BorderPane implements KeyListener {
 
             // Show the column heading
             if (StringUtils.isBlank(columnLabel)) {
-                column.setPrefWidth(50);
+                column.setPrefWidth(TABLECOLUMN_PREFWIDTH);
             } else {
-                column.setPrefWidth(columnLabel.length() * 12.1); // the magic number
-                // TODO: need to find a better way to determine the multiplier which
-                // seems to be dependant on the number of columns and its width. So this
-                // mechanism of blindly multiplying by 12.1 is not the ideal case because
-                // it means longer headings get extra padding than they need and smaller
-                // headings get just enough.
+                column.setPrefWidth(columnLabel.length() * COLUMN_WIDTH_MULTIPLIER);
             }
-
             sampleDataView.getColumns().add(column);
             columnIndex++;
         }
@@ -481,7 +493,10 @@ public class RunPane extends BorderPane implements KeyListener {
             if (attributeNode != null) {
                 // We added an artificial column at the beginning of the table ("Row"),
                 // so we need to subtract 1 to allow for that offset.
-                final ImportAttributeDefinition attributeDefinition = new ImportAttributeDefinition(importTableColumn.getColumnIndex() - 1, attributeNode.getAttribute(), attributeNode.getTranslator(), attributeNode.getDefaultValue(), attributeNode.getTranslatorParameters());
+                final ImportAttributeDefinition attributeDefinition
+                        = new ImportAttributeDefinition(importTableColumn.getColumnIndex() - 1,
+                                attributeNode.getAttribute(), attributeNode.getTranslator(),
+                                attributeNode.getDefaultValue(), attributeNode.getTranslatorParameters());
                 definition.addDefinition(attributeNode.getAttributeList().getAttributeType(), attributeDefinition);
             }
         }
@@ -520,7 +535,7 @@ public class RunPane extends BorderPane implements KeyListener {
         transactionAttributeList.setDisplayedAttributes(transactionAttributes, keys);
     }
 
-    void update(final ImportDefinition impdef, final Set<Integer> keys) {
+    void update(final ImportDefinition impdef) {
         String script = impdef.getRowFilter().getScript();
         if (script == null) {
             script = "";
@@ -528,12 +543,12 @@ public class RunPane extends BorderPane implements KeyListener {
         filterField.setText(script);
         setFilter(script);
 
-        updateColumns(impdef, sourceVertexAttributeList, AttributeType.SOURCE_VERTEX, keys);
-        updateColumns(impdef, destinationVertexAttributeList, AttributeType.DESTINATION_VERTEX, keys);
-        updateColumns(impdef, transactionAttributeList, AttributeType.TRANSACTION, keys);
+        updateColumns(impdef, sourceVertexAttributeList, AttributeType.SOURCE_VERTEX);
+        updateColumns(impdef, destinationVertexAttributeList, AttributeType.DESTINATION_VERTEX);
+        updateColumns(impdef, transactionAttributeList, AttributeType.TRANSACTION);
     }
 
-    private void updateColumns(final ImportDefinition impdef, final AttributeList attrList, final AttributeType atype, final Set<Integer> keys) {
+    private void updateColumns(final ImportDefinition impdef, final AttributeList attrList, final AttributeType atype) {
         final ObservableList<TableColumn<TableRow, ?>> columns = sampleDataView.getColumns();
         final Map<String, ImportTableColumn> labelToColumn = new HashMap<>();
         columns.stream().forEach(column -> {
@@ -566,20 +581,17 @@ public class RunPane extends BorderPane implements KeyListener {
 
     @Override
     public void keyTyped(final KeyEvent event) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        // Intentionally blank
     }
 
     @Override
     public void keyReleased(final KeyEvent event) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        // Intentionally blank
     }
 
     @Override
     public void keyPressed(final KeyEvent event) {
-        final int keyCode = event.getKeyCode();
-        // Avoid the control key so we don't interfere with ^S for save, for example.
-        final boolean isCtrl = event.isControlDown();
-        final boolean isShift = event.isShiftDown();
+        // Intentionally blank
     }
 
     public void refreshDataView() {
@@ -587,6 +599,6 @@ public class RunPane extends BorderPane implements KeyListener {
     }
 
     public void setAttributePaneHeight() {
-        attributePane.setPrefSize(300, attributeCount * ATTRIBUTE_PADDING_HEIGHT);
+        attributePane.setPrefSize(ATTRIBUTEPANE_PREF_WIDTH, attributeCount * ATTRIBUTE_PADDING_HEIGHT);
     }
 }

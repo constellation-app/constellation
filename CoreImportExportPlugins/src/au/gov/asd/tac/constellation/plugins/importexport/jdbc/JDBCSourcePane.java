@@ -19,10 +19,13 @@ import au.gov.asd.tac.constellation.plugins.importexport.EasyGridPane;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportController;
 import au.gov.asd.tac.constellation.plugins.importexport.SourcePane;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -57,7 +60,18 @@ import javafx.stage.Stage;
 
 public class JDBCSourcePane extends SourcePane {
 
+    private static final Logger LOGGER = Logger.getLogger(JDBCSourcePane.class.getName());
     private final ComboBox<JDBCConnection> dbConnectionComboBox;
+    private static final String FONT_SIZE_FORMAT = "-fx-font-size:%d;";
+
+    private final static int GRIDPANE_MIN_WIDTH = 200;
+    private final static int CONNPANE_PREF_HEIGHT = 200;
+    private final static int SCROLLPANE_PREF_HEIGHT = 200;
+    private final static int SCROLLPANE_PREF_WIDTH = 400;
+    private final static int LARGE_SCROLLPANE_PREF_HEIGHT = 400;
+    private final static int LARGE_SCROLLPANE_PREF_WIDTH = 800;
+    private final static Insets GRIDPANE_PADDING = new Insets(5);
+    private final static int GAP = 10;
 
     public JDBCSourcePane(final JDBCImportController importController) {
         super(importController);
@@ -87,7 +101,7 @@ public class JDBCSourcePane extends SourcePane {
             final BorderPane root = new BorderPane();
             final EasyGridPane gridPane = new EasyGridPane();
 
-            gridPane.addColumnConstraint(true, HPos.LEFT, Priority.ALWAYS, Double.MAX_VALUE, 200,
+            gridPane.addColumnConstraint(true, HPos.LEFT, Priority.ALWAYS, Double.MAX_VALUE, GRIDPANE_MIN_WIDTH,
                     GridPane.USE_COMPUTED_SIZE, -1);
             gridPane.addRowConstraint(true, VPos.TOP, Priority.ALWAYS, Double.MAX_VALUE, 0,
                     GridPane.USE_COMPUTED_SIZE, -1);
@@ -96,9 +110,9 @@ public class JDBCSourcePane extends SourcePane {
             gridPane.addRowConstraint(true, VPos.BOTTOM, Priority.ALWAYS, Double.MAX_VALUE, 0,
                     GridPane.USE_COMPUTED_SIZE, -1);
 
-            gridPane.setPadding(new Insets(5));
-            gridPane.setHgap(10);
-            gridPane.setVgap(10);
+            gridPane.setPadding(GRIDPANE_PADDING);
+            gridPane.setHgap(GAP);
+            gridPane.setVgap(GAP);
 
             final TabPane tp = new TabPane();
             final Tab connectionsTab = new Tab("Connections");
@@ -106,13 +120,13 @@ public class JDBCSourcePane extends SourcePane {
 
             final EasyGridPane connectionsPane = new EasyGridPane();
             connectionsPane.getColumnConstraints().addAll(column0Constraints, column1Constraints, column2Constraints);
-            connectionsPane.setPadding(new Insets(5));
-            connectionsPane.setHgap(10);
-            connectionsPane.setVgap(10);
+            connectionsPane.setPadding(GRIDPANE_PADDING);
+            connectionsPane.setHgap(GAP);
+            connectionsPane.setVgap(GAP);
             final TableView connectionsTable = new TableView();
             connectionsTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
             connectionsTable.getSelectionModel().setCellSelectionEnabled(false);
-            connectionsTable.prefHeightProperty().set(200);
+            connectionsTable.prefHeightProperty().set(CONNPANE_PREF_HEIGHT);
             connectionsTable.prefWidthProperty().bind(dialog.widthProperty());
 
             final TableColumn<String, JDBCConnection> connectionName = new TableColumn<>("Name");
@@ -148,9 +162,9 @@ public class JDBCSourcePane extends SourcePane {
                 final EasyGridPane gp = new EasyGridPane();
 
                 gp.getColumnConstraints().addAll(column0Constraints, column1Constraints, column2Constraints);
-                gp.setPadding(new Insets(5));
-                gp.setHgap(10);
-                gp.setVgap(10);
+                gp.setPadding(GRIDPANE_PADDING);
+                gp.setHgap(GAP);
+                gp.setVgap(GAP);
                 final Label nameLabel = new Label("Connection Name");
                 gp.add(nameLabel, 0, 0, 1, 1);
                 final TextField cn = new TextField();
@@ -180,19 +194,15 @@ public class JDBCSourcePane extends SourcePane {
 
                 final Button add = new Button("Add");
                 add.setOnAction((final ActionEvent t2) -> {
-                    if (!cn.getText().isBlank()
-                            && driver.getValue() != null
-                            && !connectionStringF.getText().isBlank()) {
-                        if (connectionManager.addConnection(cn.getText(), driver.getValue(), username.getText(), password.getText(), connectionStringF.getText())) {
-                            connectionsTable.getItems().clear();
-                            connectionsTable.getItems().addAll(connectionManager.getConnections());
-                            connections.clear();
-                            connections.addAll(connectionManager.getConnections());
-                            d.close();
-                        } else {
-                            // check connection is valid.
-
-                        }
+                    if (!cn.getText().isBlank() && driver.getValue() != null
+                            && !connectionStringF.getText().isBlank()
+                            && connectionManager.addConnection(cn.getText(), driver.getValue(), username.getText(),
+                                    password.getText(), connectionStringF.getText())) {
+                        connectionsTable.getItems().clear();
+                        connectionsTable.getItems().addAll(connectionManager.getConnections());
+                        connections.clear();
+                        connections.addAll(connectionManager.getConnections());
+                        d.close();
                     }
                 });
 
@@ -208,8 +218,7 @@ public class JDBCSourcePane extends SourcePane {
 
                         if (connectionManager.testConnection(cn.getText(), driver.getValue(), username.getText(),
                                 password.getText(), connectionStringF.getText())) {
-                            final Alert a = new Alert(AlertType.INFORMATION, "Connection success", ButtonType.OK);
-                            a.showAndWait();
+                            NotifyDisplayer.displayAlert("JDBC Import", "Connection Success", "", AlertType.INFORMATION);
                         }
                     }
                 });
@@ -219,15 +228,15 @@ public class JDBCSourcePane extends SourcePane {
                 final ScrollPane sp = new ScrollPane(gp);
                 sp.setFitToWidth(true);
 
-                sp.setPrefHeight(200);
-                sp.setPrefWidth(400);
+                sp.setPrefHeight(SCROLLPANE_PREF_HEIGHT);
+                sp.setPrefWidth(SCROLLPANE_PREF_WIDTH);
                 sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
                 sp.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
                 r.setCenter(sp);
                 final Scene scene = new Scene(r);
                 scene.setFill(Color.WHITESMOKE);
                 scene.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
-                scene.rootProperty().get().setStyle(String.format("-fx-font-size:%d;",
+                scene.rootProperty().get().setStyle(String.format(FONT_SIZE_FORMAT,
                         FontUtilities.getOutputFontSize()));
 
                 d.setScene(scene);
@@ -245,9 +254,9 @@ public class JDBCSourcePane extends SourcePane {
 
             final EasyGridPane dtRoot = new EasyGridPane();
             dtRoot.getColumnConstraints().addAll(column0Constraints, column1Constraints, column2Constraints);
-            dtRoot.setPadding(new Insets(5));
-            dtRoot.setHgap(10);
-            dtRoot.setVgap(10);
+            dtRoot.setPadding(GRIDPANE_PADDING);
+            dtRoot.setHgap(GAP);
+            dtRoot.setVgap(GAP);
             final TableView driverTable = new TableView();
             driverTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
             driverTable.getSelectionModel().setCellSelectionEnabled(false);
@@ -305,9 +314,9 @@ public class JDBCSourcePane extends SourcePane {
                 final EasyGridPane gp = new EasyGridPane();
 
                 gp.getColumnConstraints().addAll(column0Constraints, column1Constraints, column2Constraints);
-                gp.setPadding(new Insets(5));
-                gp.setHgap(10);
-                gp.setVgap(10);
+                gp.setPadding(GRIDPANE_PADDING);
+                gp.setHgap(GAP);
+                gp.setVgap(GAP);
                 final Label nameLabel = new Label("Name");
                 gp.add(nameLabel, 0, 0, 1, 1);
                 final ComboBox driverName = new ComboBox();
@@ -326,10 +335,10 @@ public class JDBCSourcePane extends SourcePane {
                     if (f != null) {
                         try {
                             j.setText(f.getCanonicalPath());
-
                             driverName.getItems().clear();
                             driverName.getItems().addAll(JDBCDriver.getDrivers(f));
                         } catch (final IOException ex) {
+                            LOGGER.log(Level.WARNING, ex.toString());
                         }
                     }
                 });
@@ -352,15 +361,15 @@ public class JDBCSourcePane extends SourcePane {
                 final ScrollPane sp = new ScrollPane(gp);
                 sp.setFitToWidth(true);
 
-                sp.setPrefHeight(200);
-                sp.setPrefWidth(400);
+                sp.setPrefHeight(SCROLLPANE_PREF_HEIGHT);
+                sp.setPrefWidth(SCROLLPANE_PREF_WIDTH);
                 sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
                 sp.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
                 r.setCenter(sp);
                 final Scene scene = new Scene(r);
                 scene.setFill(Color.WHITESMOKE);
                 scene.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
-                scene.rootProperty().get().setStyle(String.format("-fx-font-size:%d;", FontUtilities.getOutputFontSize()));
+                scene.rootProperty().get().setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getOutputFontSize()));
 
                 d.setScene(scene);
                 d.setTitle("Add Driver");
@@ -381,15 +390,15 @@ public class JDBCSourcePane extends SourcePane {
             final ScrollPane sp = new ScrollPane(gridPane);
             sp.setFitToWidth(true);
 
-            sp.setPrefHeight(400);
-            sp.setPrefWidth(800);
+            sp.setPrefHeight(LARGE_SCROLLPANE_PREF_HEIGHT);
+            sp.setPrefWidth(LARGE_SCROLLPANE_PREF_WIDTH);
             sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
             sp.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
             root.setCenter(sp);
             final Scene scene = new Scene(root);
             scene.setFill(Color.WHITESMOKE);
             scene.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
-            scene.rootProperty().get().setStyle(String.format("-fx-font-size:%d;", FontUtilities.getOutputFontSize()));
+            scene.rootProperty().get().setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getOutputFontSize()));
 
             dialog.setScene(scene);
             dialog.setTitle("Manage Connections");

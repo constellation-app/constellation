@@ -26,7 +26,7 @@ import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
  */
 public abstract class ImportTopComponent extends JavaFxTopComponent<ImportPane> {
 
-    public ImportTopComponent() {
+    protected ImportTopComponent() {
     }
 
     @Override

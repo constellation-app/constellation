@@ -90,7 +90,7 @@ public class DelimitedImportController extends ImportController {
     }
 
     @Override
-    public List processImport() throws IOException, InterruptedException, PluginException {
+    public List<File> processImport() throws PluginException {
         final List<ImportDefinition> definitions = configurationPane.createDefinitions();
         final Graph importGraph = currentDestination.getGraph();
         final boolean schema = schemaInitialised;
@@ -103,10 +103,12 @@ public class DelimitedImportController extends ImportController {
 
                 @Override
                 public void graphOpened(Graph graph) {
+                    // Do nothing
                 }
 
                 @Override
                 public void graphClosed(Graph graph) {
+                    // Do nothing
                 }
 
                 @Override
@@ -146,7 +148,7 @@ public class DelimitedImportController extends ImportController {
             try {
                 currentData = importFileParser.preview(new InputSource(sampleFile), currentParameters,
                         PREVIEW_ROW_LIMIT);
-                final String[] columns = currentData.isEmpty() ? new String[0] : currentData.get(0);
+                final String[] columns = currentData.isEmpty() ? new String[0] : (String[]) currentData.get(0);
                 currentColumns = new String[columns.length + 1];
                 System.arraycopy(columns, 0, currentColumns, 1, columns.length);
                 currentColumns[0] = "Row";

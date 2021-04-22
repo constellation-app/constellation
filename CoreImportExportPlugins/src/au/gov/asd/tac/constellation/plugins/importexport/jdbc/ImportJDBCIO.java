@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.importexport.delimited.io;
+package au.gov.asd.tac.constellation.plugins.importexport.jdbc;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
@@ -27,13 +27,12 @@ import au.gov.asd.tac.constellation.plugins.importexport.ImportDestination;
 import au.gov.asd.tac.constellation.plugins.importexport.NewAttribute;
 import au.gov.asd.tac.constellation.plugins.importexport.RowFilter;
 import au.gov.asd.tac.constellation.plugins.importexport.SchemaDestination;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.DelimitedImportController;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.DelimitedImportPane;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.ImportFileParser;
+import au.gov.asd.tac.constellation.plugins.importexport.TemplateListDialog;
 import au.gov.asd.tac.constellation.plugins.importexport.translator.AttributeTranslator;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -51,19 +50,12 @@ import org.openide.awt.StatusDisplayer;
 import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
 
-/**
- * Save and load delimited import definitions.
- *
- * @author algol
- */
-public class ImportDelimitedIO {
+public class ImportJDBCIO {
 
     private static final String IMPORT_DELIMITED_DIR = "ImportDelimited";
 
     private static final String SOURCE = "source";
-    private static final String PARSER = "parser";
     private static final String SCHEMA_INIT = "schema_init";
-    private static final String SHOW_ALL_SCHEMA_ATTRIBUTES = "show_all_schema_attributes";
     private static final String DESTINATION = "destination";
     private static final String DEFINITIONS = "definitions";
     private static final String FILTER = "filter";
@@ -71,19 +63,16 @@ public class ImportDelimitedIO {
     private static final String COLUMNS = "columns";
     private static final String FIRST_ROW = "first_row";
     private static final String ATTRIBUTES = "attributes";
-//    private static final String COLUMN_INDEX = "column_index";
     private static final String COLUMN_LABEL = "column_label";
-//    private static final String ATTRIBUTE = "attribute";
     private static final String ATTRIBUTE_LABEL = "attribute_label";
     private static final String ATTRIBUTE_TYPE = "attribute_type";
     private static final String ATTRIBUTE_DESCRIPTION = "attribute_description";
     private static final String TRANSLATOR = "translator";
     private static final String TRANSLATOR_ARGS = "translator_args";
     private static final String DEFAULT_VALUE = "default_value";
-    private static final String PARAMETERS = "parameters";
     private static final String JSON_EXTENSION = ".json";
 
-    public static void saveParameters(final Window parentWindow, final DelimitedImportController importController) {
+    public static void saveParameters(final Window parentWindow, final JDBCImportController importController) {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
         final File delimIoDir = new File(userDir, IMPORT_DELIMITED_DIR);
@@ -93,8 +82,7 @@ public class ImportDelimitedIO {
 
         if (!delimIoDir.isDirectory()) {
             final String msg = String.format("Can't create directory '%s'.", delimIoDir);
-            final NotifyDescriptor nd = new NotifyDescriptor.Message(msg, NotifyDescriptor.ERROR_MESSAGE);
-            DialogDisplayer.getDefault().notify(nd);
+            NotifyDisplayer.display(msg, NotifyDescriptor.ERROR_MESSAGE);
             return;
         }
 
@@ -106,9 +94,7 @@ public class ImportDelimitedIO {
             final ObjectNode rootNode = mapper.createObjectNode();
 
             final ObjectNode source = rootNode.putObject(SOURCE);
-            source.put(PARSER, importController.getImportFileParser().getLabel());
             source.put(SCHEMA_INIT, importController.isSchemaInitialised());
-            source.put(SHOW_ALL_SCHEMA_ATTRIBUTES, importController.isShowAllSchemaAttributesEnabled());
 
             // We don't want to rely on a particular kind of graph being current when we load this definition.
             // Therefore, we only save a schema factory as the destination.
@@ -180,15 +166,6 @@ public class ImportDelimitedIO {
                             } else {
                                 type.putNull(DEFAULT_VALUE);
                             }
-
-                            //                    if(iadef.getParameters()!=null)
-                            //                    {
-                            //                        final ArrayNode paramsArray = type.putArray(PARAMETERS);
-                            //                        for(final String key : iadef.getParameters().getParameters().keySet())
-                            //                        {
-                            //                            paramsArray.add(key);
-                            //                        }
-                            //                    }
                         }
                     });
                 }
@@ -200,7 +177,7 @@ public class ImportDelimitedIO {
             try {
                 mapper.writeValue(f, rootNode);
                 StatusDisplayer.getDefault().setStatusText(String.format("Import definition saved to %s.", f.getPath()));
-            } catch (IOException ex) {
+            } catch (final IOException ex) {
                 final String msg = String.format("Can't save import definition: %s", ex.getMessage());
                 final NotifyDescriptor nd = new NotifyDescriptor.Message(msg, NotifyDescriptor.ERROR_MESSAGE);
                 DialogDisplayer.getDefault().notify(nd);
@@ -208,27 +185,10 @@ public class ImportDelimitedIO {
         }
     }
 
-    public static void loadParameters(final Window parentWindow, final DelimitedImportController importController) {
+    public static void loadParameters(final Window parentWindow, final JDBCImportController importController) {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
         final File delimIoDir = new File(userDir, IMPORT_DELIMITED_DIR);
-//        final String[] names;
-//        if(delimIoDir.isDirectory())
-//        {
-//            names = delimIoDir.list((final File dir, final String name) ->
-//            {
-//                return name.toLowerCase().endsWith(".json");
-//            });
-//        }
-//        else
-//        {
-//            names = new String[0];
-//        }
-//        // Chop off ".json".
-//        //        for(int i = 0; i<names.length; i++)
-//        {
-//            names[i] = decode(names[i].substring(0, names[i].length()-5));
-//        }
 
         final String templName = new TemplateListDialog(parentWindow, true, null).getName(parentWindow, delimIoDir);
         if (templName != null) {
@@ -241,15 +201,9 @@ public class ImportDelimitedIO {
                     final ObjectMapper mapper = new ObjectMapper();
                     final JsonNode root = mapper.readTree(new File(delimIoDir, FilenameEncoder.encode(templName) + JSON_EXTENSION));
                     final JsonNode source = root.get(SOURCE);
-                    final String parser = source.get(PARSER).textValue();
-                    final ImportFileParser ifp = ImportFileParser.getParser(parser);
-                    importController.setImportFileParser(ifp);
 
                     final boolean schemaInit = source.get(SCHEMA_INIT).booleanValue();
                     importController.setSchemaInitialised(schemaInit);
-
-                    final boolean showAllSchemaAttributes = source.get(SHOW_ALL_SCHEMA_ATTRIBUTES) != null && source.get(SHOW_ALL_SCHEMA_ATTRIBUTES).booleanValue();
-                    importController.setShowAllSchemaAttributes(showAllSchemaAttributes);
 
                     final String destination = source.get(DESTINATION).textValue();
                     final SchemaFactory schemaFactory = SchemaFactoryUtilities.getSchemaFactory(destination);
@@ -265,7 +219,7 @@ public class ImportDelimitedIO {
                                 final JsonNode filterNode = definitionNode.get(FILTER);
                                 final String script = filterNode.get(SCRIPT).textValue();
                                 final JsonNode columnsArray = filterNode.withArray(COLUMNS);
-                                final ArrayList<String> columns = new ArrayList<>();
+                                final List<String> columns = new ArrayList<>();
                                 for (final JsonNode column : columnsArray) {
                                     columns.add(column.textValue());
                                 }
@@ -288,7 +242,6 @@ public class ImportDelimitedIO {
                                         final String descr = column.get(ATTRIBUTE_DESCRIPTION).textValue();
                                         final NewAttribute a = new NewAttribute(attrType.getElementType(), type, label, descr);
                                         importController.createManualAttribute(a);
-//                                        importController.updateDisplayedAttributes();
                                     }
 
                                     final Attribute attribute = importController.getAttribute(attrType.getElementType(), label);
@@ -309,7 +262,7 @@ public class ImportDelimitedIO {
 
                         importController.setClearManuallyAdded(false);
                         try {
-                            ((DelimitedImportPane) importController.getStage()).update(importController, definitions);
+                            ((JDBCImportPane) importController.getStage()).update(importController, definitions);
                         } finally {
                             importController.setClearManuallyAdded(true);
                         }
@@ -337,7 +290,7 @@ public class ImportDelimitedIO {
      * @param iadef Attribute definition
      * @return True if the attribute should be saved, False otherwise
      */
-    public static boolean hasSavableAttribute(ImportAttributeDefinition iadef) {
+    public static boolean hasSavableAttribute(final ImportAttributeDefinition iadef) {
         return (iadef.getColumnIndex() != ImportConstants.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN)
                 || ((iadef.getColumnIndex() == ImportConstants.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN)
                 && (iadef.getParameters() != null || iadef.getDefaultValue() != null));

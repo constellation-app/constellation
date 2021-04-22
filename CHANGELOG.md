@@ -1,5 +1,9 @@
 # Constellation Changes
 
+## 2021-04-01 Changes in April 2021
+* Added `displayAlert()` and `displayLargeAlert()` to NotifyDisplayer within `CoreUtilities`. They can be used to display alerts without and with `TextArea` elements respectively.
+* Updated `CoreImportExportPlugins` more specifically `Delimited` and `JDBC` packages. Common code was put into a common class to remove duplication. Many classes now extend the parent class for concrete implementations.
+
 ## 2021-03-01 Changes in March 2021
 * Added `hasLowLevelTag()` to `PluginReport` classes to check whether a plugin has a "LOW LEVEL" tag specified.
 * Added Keyboard Shortcut to Scatter Plot View. Shortcut is Ctrl-Shift-O

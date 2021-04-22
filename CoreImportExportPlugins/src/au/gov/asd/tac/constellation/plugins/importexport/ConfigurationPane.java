@@ -38,6 +38,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 
 /**
@@ -51,6 +52,9 @@ public class ConfigurationPane extends AnchorPane {
     protected final ImportController importController;
     protected final TabPane tabPane;
     private final String helpText;
+    private static final double TAB_ANCHOR_POS = 5.0;
+    private static final double RUN_BUTTON_ANCHOR_POS = 10.0;
+    private static final int DOUBLE_CLICK_AMT = 2;
 
     private static final Image ADD_IMAGE = UserInterfaceIconProvider.ADD.buildImage(16, Color.BLACK);
 
@@ -66,10 +70,10 @@ public class ConfigurationPane extends AnchorPane {
         tabPane = new TabPane();
         tabPane.setMaxHeight(Double.MAX_VALUE);
         tabPane.setSide(Side.TOP);
-        AnchorPane.setTopAnchor(tabPane, 5.0);
-        AnchorPane.setLeftAnchor(tabPane, 5.0);
-        AnchorPane.setRightAnchor(tabPane, 5.0);
-        AnchorPane.setBottomAnchor(tabPane, 5.0);
+        AnchorPane.setTopAnchor(tabPane, TAB_ANCHOR_POS);
+        AnchorPane.setLeftAnchor(tabPane, TAB_ANCHOR_POS);
+        AnchorPane.setRightAnchor(tabPane, TAB_ANCHOR_POS);
+        AnchorPane.setBottomAnchor(tabPane, TAB_ANCHOR_POS);
         getChildren().add(tabPane);
 
         // Create a button to allow the user to add a new tab (RunPane).
@@ -77,21 +81,22 @@ public class ConfigurationPane extends AnchorPane {
         newRunButton.setOnAction((ActionEvent event) -> {
             importController.createNewRun();
         });
-        AnchorPane.setTopAnchor(newRunButton, 10.0);
-        AnchorPane.setRightAnchor(newRunButton, 10.0);
+        AnchorPane.setTopAnchor(newRunButton, RUN_BUTTON_ANCHOR_POS);
+        AnchorPane.setRightAnchor(newRunButton, RUN_BUTTON_ANCHOR_POS);
         getChildren().add(newRunButton);
 
         // Add a single run to start with
         createTab();
     }
 
-    protected Tab createTab() {
+    protected final Tab createTab() {
 
         // Create a unique label for the new tab
         int runNumber = 0;
         boolean unique;
         do {
-            final String label = "Run " + ++runNumber;
+            runNumber++;
+            final String label = "Run " + runNumber;
             unique = true;
             for (final Tab tab : tabPane.getTabs()) {
                 final Label tabLabel = (Label) tab.getGraphic();
@@ -111,22 +116,7 @@ public class ConfigurationPane extends AnchorPane {
         });
 
         label.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2) {
-                final TextField field = new TextField(label.getText());
-                field.setOnAction(e -> {
-                    label.setText(field.getText());
-                    tab.setGraphic(label);
-                });
-                field.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                    if (!newValue) {
-                        label.setText(field.getText());
-                        tab.setGraphic(label);
-                    }
-                });
-                tab.setGraphic(field);
-                field.selectAll();
-                field.requestFocus();
-            }
+            labelClickEvent(tab, label, event);
         });
 
         // Add the tab
@@ -143,7 +133,29 @@ public class ConfigurationPane extends AnchorPane {
         return tab;
     }
 
-    public void createNewRun(final Map<String, Attribute> vertexAttributes, final Map<String, Attribute> transactionAttributes, final Set<Integer> keys, final String[] columns, final List<String[]> data) {
+    private void labelClickEvent(final Tab tab, final Label label, final MouseEvent event) {
+        if (event.getClickCount() == DOUBLE_CLICK_AMT) {
+            final TextField field = new TextField(label.getText());
+            field.setOnAction(e -> {
+                label.setText(field.getText());
+                tab.setGraphic(label);
+            });
+            field.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue,
+                    Boolean newValue) -> {
+                if (!newValue) {
+                    label.setText(field.getText());
+                    tab.setGraphic(label);
+                }
+            });
+            tab.setGraphic(field);
+            field.selectAll();
+            field.requestFocus();
+        }
+    }
+
+    public void createNewRun(final Map<String, Attribute> vertexAttributes,
+            final Map<String, Attribute> transactionAttributes, final Set<Integer> keys,
+            final String[] columns, final List<String[]> data) {
         final Tab tab = createTab();
         RunPane runPane = (RunPane) tab.getContent();
         runPane.requestLayout();
@@ -199,7 +211,8 @@ public class ConfigurationPane extends AnchorPane {
         }
     }
 
-    public void setDisplayedAttributes(Map<String, Attribute> vertexAttributes, Map<String, Attribute> transactionAttributes, Set<Integer> keys) {
+    public void setDisplayedAttributes(Map<String, Attribute> vertexAttributes,
+            Map<String, Attribute> transactionAttributes, Set<Integer> keys) {
         for (Tab tab : tabPane.getTabs()) {
             RunPane runPane = (RunPane) tab.getContent();
             runPane.setDisplayedAttributes(vertexAttributes, transactionAttributes, keys);
@@ -239,7 +252,7 @@ public class ConfigurationPane extends AnchorPane {
                 final ImportDefinition id = definitions.get(ix);
                 final RunPane runPane = (RunPane) tabs.get(ix).getContent();
 
-                runPane.update(id, importController.getKeys());
+                runPane.update(id);
             }
         });
     }

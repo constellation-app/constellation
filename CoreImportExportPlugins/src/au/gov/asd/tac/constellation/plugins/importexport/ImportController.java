@@ -26,7 +26,7 @@ import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import java.io.IOException;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -43,7 +43,7 @@ import org.openide.util.NbPreferences;
  *
  * @author sirius
  */
-public abstract class ImportController {
+public abstract class ImportController<D> {
 
     /**
      * Pseudo-attribute to indicate directed transactions.
@@ -59,7 +59,7 @@ public abstract class ImportController {
     protected List<String[]> currentData = new ArrayList<>();
     protected String[] currentColumns = new String[0];
     protected ConfigurationPane configurationPane;
-    protected ImportDestination<?> currentDestination;
+    protected ImportDestination<D> currentDestination;
     protected boolean schemaInitialised;
     protected boolean showAllSchemaAttributes;
     protected PluginParameters currentParameters = null;
@@ -81,7 +81,7 @@ public abstract class ImportController {
     // preference to show or hide all graph schema attributes
     private final Preferences importExportPrefs = NbPreferences.forModule(ImportExportPreferenceKeys.class);
 
-    public ImportController() {
+    protected ImportController() {
         showAllSchemaAttributes = false;
 
         autoAddedVertexAttributes = new HashMap<>();
@@ -123,7 +123,7 @@ public abstract class ImportController {
         clearManuallyAdded = b;
     }
 
-    public void setDestination(final ImportDestination<?> destination) {
+    public void setDestination(final ImportDestination<D> destination) {
         if (destination != null) {
             currentDestination = destination;
         }
@@ -335,7 +335,7 @@ public abstract class ImportController {
         return dialog.getDefaultValue();
     }
 
-    public ImportDestination<?> getDestination() {
+    public ImportDestination<D> getDestination() {
         return currentDestination;
     }
 
@@ -348,7 +348,7 @@ public abstract class ImportController {
         return configurationPane.createDefinitions();
     }
 
-    public abstract List processImport() throws IOException, InterruptedException, PluginException;
+    public abstract List<File> processImport() throws PluginException;
 
     public void cancelImport() {
         SwingUtilities.invokeLater(() -> {

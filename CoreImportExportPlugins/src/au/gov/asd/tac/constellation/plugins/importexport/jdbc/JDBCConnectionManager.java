@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.jdbc;
 
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
@@ -25,9 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.TextArea;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.util.Exceptions;
 
@@ -115,15 +114,8 @@ public class JDBCConnectionManager {
                 connectionMap.put(connectionName, conn);
 
             } catch (final IOException | SQLException ex) {
-                final Alert a = new Alert(AlertType.ERROR);
-                a.setTitle("Connection add failed");
-                a.setContentText("Failed to add the connection to the database.");
-                final TextArea ta = new TextArea(ex.getMessage());
-                ta.setEditable(false);
-                ta.setWrapText(true);
-                a.getDialogPane().setExpandableContent(ta);
-
-                a.showAndWait();
+                NotifyDisplayer.displayLargeAlert("JDBC Import", "Failed to add the connection to the database.",
+                        ex.getMessage(), AlertType.ERROR);
                 return false;
             }
             return true;
@@ -144,15 +136,8 @@ public class JDBCConnectionManager {
                 }
             }
         } catch (final SQLException | IOException ex) {
-            final Alert a = new Alert(AlertType.ERROR);
-            a.setTitle("Connection delete failed");
-            a.setContentText("Failed to delete the connection from the database.");
-            final TextArea ta = new TextArea(ex.getMessage());
-            ta.setEditable(false);
-            ta.setWrapText(true);
-            a.getDialogPane().setExpandableContent(ta);
-
-            a.showAndWait();
+            NotifyDisplayer.displayLargeAlert("JDBC Import", "Failed to delete the connection from the database.",
+                    ex.getMessage(), AlertType.ERROR);
         }
     }
 

@@ -47,6 +47,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.F
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType.ObjectParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -56,13 +57,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * An ImportDelimitedPlugin is a plugin that actually does the work of importing
- * data from a table into a graph.
+ * An ImportDelimitedPlugin is a plugin that actually does the work of importing data from a table into a graph.
  *
  * @author sirius
  */
@@ -116,56 +115,51 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
     }
 
     /**
-     * Build up an import summary dialog detailing successful and unsuccessful
-     * file imports.
+     * Build up an import summary dialog detailing successful and unsuccessful file imports.
      *
      * @param title Title to add to status dialog
-     * @param importedRows Number of rows successfully imported (from valid
-     * files)
+     * @param importedRows Number of rows successfully imported (from valid files)
      * @param validFilenames List of filenames that were imported from
-     * @param invalidFilenames List of files that couldn't be opened/parsed. We
-     * try to limit this possibility by pre-screening files during the initial
-     * file selection.
+     * @param invalidFilenames List of files that couldn't be opened/parsed. We try to limit this possibility by
+     * pre-screening files during the initial file selection.
      */
     private void displaySummaryAlert(final int importedRows, final List<String> validFilenames, final List<String> invalidFilenames) {
         Platform.runLater(() -> {
-            final Alert dialog;
-            dialog = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
-            String header = "";
-            String message = "";
+            boolean success = true;
+            StringBuilder sbHeader = new StringBuilder();
+            StringBuilder sbMessage = new StringBuilder();
 
             if (importedRows > 0) {
                 // At least 1 row was successfully imported. List all successful file imports, as well as any files that there were
                 // issues for. If there were any files with issues use a warning dialog.
-
-                header = "Imported " + importedRows + " rows of data from " + validFilenames.size() + " files";
-                message = "The following file(s) contained data:";
-                for (final String filename : validFilenames) {
-                    message = message + "\n  " + filename;
-                }
+                sbHeader.append(String.format("Imported %i rows of data from %i files", new Object[]{importedRows, validFilenames.size()}));
+                sbMessage.append("The following file(s) contained data:");
+                validFilenames.forEach(filename -> {
+                    sbMessage.append("\n  ");
+                    sbMessage.append(filename);
+                });
                 if (invalidFilenames.size() > 0) {
                     // some invalid files were found - warning condition.
-                    dialog.setAlertType(Alert.AlertType.WARNING);
-                    message = message + "\n\nThe following file(s) could not be parsed. No data was extracted:";
-                    for (final String filename : invalidFilenames) {
-                        message = message + "\n  " + filename;
-                    }
+                    success = false;
+                    sbMessage.append("\n\nThe following file(s) could not be parsed. No data was extracted:");
+                    invalidFilenames.forEach(filename -> {
+                        sbMessage.append("\n  ");
+                        sbMessage.append(filename);
+                    });
                 }
             } else {
                 // No rows were imported list all files that resulted in failures.
-                dialog.setAlertType(Alert.AlertType.WARNING);
-                header = "No data found to import";
-                message = message + "The following file(s) could not be parsed. no data was extracted:";
-                if (invalidFilenames.size() > 0) {
-                    for (final String filename : invalidFilenames) {
-                        message = message + "\n  " + filename;
-                    }
-                }
+                success = false;
+                sbHeader.append("No data found to import");
+                sbMessage.append("The following file(s) could not be parsed. no data was extracted:");
+                invalidFilenames.forEach(filename -> {
+                    sbMessage.append("\n  ");
+                    sbMessage.append(filename);
+                });
             }
-            dialog.setTitle("Delimited Importer");
-            dialog.setHeaderText(header);
-            dialog.setContentText(message);
-            dialog.showAndWait();
+            NotifyDisplayer.displayAlert("Delimited Importer", sbHeader.toString(), sbMessage.toString(),
+                    success ? Alert.AlertType.INFORMATION : Alert.AlertType.WARNING);
+
         });
     }
 

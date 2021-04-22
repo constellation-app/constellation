@@ -42,6 +42,12 @@ public class DefaultAttributeValueDialog extends Stage {
 
     private final TextField labelText;
     private String defaultValue = null;
+    private final static int GAP = 5;
+    private final static int TEXT_WIDTH = 200;
+    private final static int TEXT_HEIGHT = 30;
+
+    private final static Insets GRIDPANE_PADDING = new Insets(10);
+    private final static Insets BUTTONPANE_PADDING = new Insets(5);
 
     public DefaultAttributeValueDialog(final Window owner, final String attributeName, final String initialValue) {
 
@@ -59,9 +65,9 @@ public class DefaultAttributeValueDialog extends Stage {
         setScene(scene);
 
         final GridPane fieldPane = new GridPane();
-        fieldPane.setHgap(5);
-        fieldPane.setVgap(5);
-        fieldPane.setPadding(new Insets(10));
+        fieldPane.setHgap(GAP);
+        fieldPane.setVgap(GAP);
+        fieldPane.setPadding(GRIDPANE_PADDING);
         root.setCenter(fieldPane);
 
         final Label labelLabel = new Label("Label:");
@@ -74,15 +80,15 @@ public class DefaultAttributeValueDialog extends Stage {
         } else {
             labelText.setText(defaultValue);
         }
-        labelText.setPrefSize(200, 30);
+        labelText.setPrefSize(TEXT_WIDTH, TEXT_HEIGHT);
         GridPane.setConstraints(labelText, 1, 1);
         fieldPane.getChildren().add(labelText);
         labelText.requestFocus();
 
         final FlowPane buttonPane = new FlowPane();
         buttonPane.setAlignment(Pos.BOTTOM_RIGHT);
-        buttonPane.setPadding(new Insets(5));
-        buttonPane.setHgap(5);
+        buttonPane.setPadding(BUTTONPANE_PADDING);
+        buttonPane.setHgap(GAP);
         root.setBottom(buttonPane);
 
         final Button okButton = new Button("Ok");

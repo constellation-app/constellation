@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.plugins.importexport.delimited;
 
 import au.gov.asd.tac.constellation.plugins.importexport.ConfigurationPane;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportPane;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.io.ImportDelimitedIO;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import javafx.scene.input.KeyCode;
 import org.openide.NotifyDescriptor;

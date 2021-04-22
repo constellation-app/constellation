@@ -48,6 +48,10 @@ public class AttributeList extends VBox {
     private final AttributeType attributeType;
     private final Map<String, AttributeNode> attributeNodes;
     private Set<Integer> keys;
+    private static final int MIN_WIDTH = 50;
+    private static final int MIN_HEIGHT = 100;
+    private static final int VBOX_SPACING = 1;
+    private static final Insets VBOX_PADDING = new Insets(2);
 
     public AttributeList(final ImportController importController, final RunPane runPane, final AttributeType attributeType) {
         this.runPane = runPane;
@@ -58,9 +62,9 @@ public class AttributeList extends VBox {
         keys = new HashSet<>();
 
         setAlignment(Pos.CENTER);
-        setMinSize(50, 100);
-        setSpacing(1);
-        setPadding(new Insets(2));
+        setMinSize(MIN_WIDTH, MIN_HEIGHT);
+        setSpacing(VBOX_SPACING);
+        setPadding(VBOX_PADDING);
         setFillWidth(true);
 
         setAlignment(Pos.TOP_CENTER);
@@ -88,7 +92,6 @@ public class AttributeList extends VBox {
             if (t.isPrimaryButtonDown()) {
                 runPane.setDraggingOffset(new Point2D(t.getX(), t.getY()));
                 final Point2D location = runPane.sceneToLocal(t.getSceneX(), t.getSceneY());
-
                 // If the attribute node is currently assigned to a column then remove it.
                 final ImportTableColumn currentColumn = attributeNode.getColumn();
                 if (currentColumn != null) {
@@ -100,13 +103,10 @@ public class AttributeList extends VBox {
                 if (!runPane.getChildren().contains(attributeNode)) {
                     runPane.getChildren().add(attributeNode);
                 }
-
                 attributeNode.setManaged(false);
                 attributeNode.setLayoutX(location.getX() - runPane.getDraggingOffset().getX());
                 attributeNode.setLayoutY(location.getY() - runPane.getDraggingOffset().getY());
-
                 runPane.setDraggingAttributeNode(attributeNode);
-
                 runPane.handleAttributeMoved(t.getSceneX(), t.getSceneY());
             }
         });
@@ -202,7 +202,9 @@ public class AttributeList extends VBox {
                 String defaultValue = attributeNode.getDefaultValue();
                 AttributeTranslator translator = attributeNode.getTranslator();
                 if (defaultValue != null || (translator != null && !(translator instanceof DefaultAttributeTranslator))) {
-                    ImportAttributeDefinition attributeDefinition = new ImportAttributeDefinition(defaultValue, attributeNode.getAttribute(), attributeNode.getTranslator(), attributeNode.getTranslatorParameters());
+                    ImportAttributeDefinition attributeDefinition = new ImportAttributeDefinition(defaultValue,
+                            attributeNode.getAttribute(), attributeNode.getTranslator(),
+                            attributeNode.getTranslatorParameters());
                     importDefinition.addDefinition(attributeType, attributeDefinition);
                 }
             }

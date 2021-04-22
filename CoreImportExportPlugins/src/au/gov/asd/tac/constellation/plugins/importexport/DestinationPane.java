@@ -37,15 +37,17 @@ import javafx.scene.layout.GridPane;
 public class DestinationPane extends GridPane {
 
     private final ImportController importController;
+    private final static Insets GRIDPANE_PADDING = new Insets(5);
+    private final static int GAP = 10;
 
     public DestinationPane(final ImportController importController) {
         this.importController = importController;
 
         setMaxWidth(Double.MAX_VALUE);
 
-        setPadding(new Insets(5));
-        setHgap(10);
-        setVgap(10);
+        setPadding(GRIDPANE_PADDING);
+        setHgap(GAP);
+        setVgap(GAP);
 
         final ObservableList<ImportDestination<?>> destinations = FXCollections.observableArrayList();
 

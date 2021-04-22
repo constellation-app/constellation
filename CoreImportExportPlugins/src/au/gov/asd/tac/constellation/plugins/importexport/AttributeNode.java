@@ -71,6 +71,8 @@ public final class AttributeNode extends Label implements Comparable<AttributeNo
     private static final Image ADD_IMAGE = UserInterfaceIconProvider.ADD.buildImage(16, Color.BLACK);
     private Map<String, PluginParameters> recentTranslatorParameters = new HashMap<>();
 
+    private static final String DOUBLE_UNDERSCORE = "__";
+
     /**
      *
      * @param attributeList The AttributeList to which this AttributeNode belongs.
@@ -165,6 +167,10 @@ public final class AttributeNode extends Label implements Comparable<AttributeNo
         setContextMenu(menu);
     }
 
+    private void attributeItemAction(final AttributeTranslator at) {
+
+    }
+
     private void updateTranslatorGroupToggle() {
         for (final MenuItem item1 : parseMenu.getItems()) {
             if (item1.getText().equals(translator.getLabel())) {
@@ -254,7 +260,8 @@ public final class AttributeNode extends Label implements Comparable<AttributeNo
     }
 
     /**
-     * Order attributes alphabetically, except keys come first and weird labels (starting with "__") come last.
+     * Order attributes alphabetically, except keys come first and weird labels (starting with "__" - DOUBLE_UNDERSCORE)
+     * come last.
      *
      * @param other The other AttributeNode.
      *
@@ -266,13 +273,14 @@ public final class AttributeNode extends Label implements Comparable<AttributeNo
         if (comp == 0) {
             final String label = attribute.getName();
             final String otherLabel = other.attribute.getName();
-            comp = !label.startsWith("__") && otherLabel.startsWith("__")
-                    ? -1
-                    : label.startsWith("__") && !otherLabel.startsWith("__")
-                    ? 1
-                    : label.compareTo(otherLabel);
+            if (!label.startsWith(DOUBLE_UNDERSCORE) && otherLabel.startsWith(DOUBLE_UNDERSCORE)) {
+                comp = -1;
+            } else if (label.startsWith(DOUBLE_UNDERSCORE) && !otherLabel.startsWith(DOUBLE_UNDERSCORE)) {
+                comp = 1;
+            } else {
+                comp = label.compareTo(otherLabel);
+            }
         }
-
         return comp;
     }
 }
