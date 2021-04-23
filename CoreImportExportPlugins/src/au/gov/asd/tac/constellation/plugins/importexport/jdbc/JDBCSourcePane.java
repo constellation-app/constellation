@@ -298,7 +298,7 @@ public class JDBCSourcePane extends SourcePane {
                                 final Alert b = new Alert(AlertType.CONFIRMATION, "", ButtonType.NO, ButtonType.YES);
                                 b.getDialogPane().setContent(a);
                                 final Optional<ButtonType> res = b.showAndWait();
-                                if (res == null || !res.isPresent() || res.get() == ButtonType.NO) {
+                                if (!res.isPresent() || res.get() == ButtonType.NO) {
                                     return;
                                 }
                             }
