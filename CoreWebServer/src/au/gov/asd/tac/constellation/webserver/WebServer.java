@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -258,9 +258,7 @@ public class WebServer {
 
         if (doDownload) {
             boolean complete = false;
-            try (
-                    final InputStream in = WebServer.class.getResourceAsStream(RESOURCES + CONSTELLATION_CLIENT);
-                    final FileOutputStream out = new FileOutputStream(download)) {
+            try (final InputStream in = WebServer.class.getResourceAsStream(RESOURCES + CONSTELLATION_CLIENT); final FileOutputStream out = new FileOutputStream(download)) {
                 final byte[] buf = new byte[64 * 1024];
                 while (true) {
                     final int len = in.read(buf);
