@@ -2,7 +2,7 @@
 <p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
 == 2021-04-01 Ability to Search in Single Choice Drop-Down Lists
-<p>Single Choice Drop-Downs are now editable, which would filter the options in the drop down list based on what is typed.</p>
+<p>Single Choice Drop-Downs are now searchable, which allows you to filter the options in the drop down list based on what is typed.</p>
 
 == 2021-04-01 Histogram Bin Counter
 <p>A count for the total number of bins currently shown in the Histogram has been added to the top right of the view.</p>
