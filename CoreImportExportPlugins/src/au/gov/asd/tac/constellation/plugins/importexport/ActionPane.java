@@ -53,8 +53,8 @@ public class ActionPane extends BorderPane {
         importButton.setOnAction((ActionEvent t) -> {
             try {
                 importController.processImport();
-            } catch (PluginException ex) {
-                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            } catch (final PluginException ex) {
+                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
                 displayAlert("Import Failed", ex.getLocalizedMessage(), false);
             }
         });

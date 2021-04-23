@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.control.Alert.AlertType;
+import org.apache.commons.lang3.StringUtils;
 
 public class JDBCImportController extends ImportController {
 
@@ -87,7 +88,7 @@ public class JDBCImportController extends ImportController {
         final boolean schema = schemaInitialised;
 
         if (currentDestination instanceof SchemaDestination) {
-            GraphManager.getDefault().addGraphManagerListener(new GraphManagerListener() {
+            final GraphManagerListener graphListener = new GraphManagerListener() {
                 boolean opened = false;
 
                 @Override
@@ -115,7 +116,9 @@ public class JDBCImportController extends ImportController {
                                 .executeWriteLater(importGraph);
                     }
                 }
-            });
+            };
+
+            GraphManager.getDefault().addGraphManagerListener(graphListener);
             GraphOpener.getDefault().openGraph(importGraph, "graph");
         } else {
             PluginExecutor.startWith(ImportJDBCPlugin.class.getName(), false)
@@ -132,12 +135,13 @@ public class JDBCImportController extends ImportController {
 
     @Override
     protected void updateSampleData() {
-        if (connection == null || query == null || query.isBlank()) {
+        final String queryCopy = this.query;
+        if (connection == null || StringUtils.isBlank(queryCopy)) {
             currentColumns = new String[0];
             currentData = new ArrayList<>();
         } else {
             try (final Connection dbConnection = connection.getConnection(username, password);
-                    final PreparedStatement ps = dbConnection.prepareStatement(query);
+                    final PreparedStatement ps = dbConnection.prepareStatement(queryCopy);
                     final ResultSet rs = ps.executeQuery()) {
 
                 if (!query.toLowerCase().contains(QUERY_LIMIT_TEXT) && query.toLowerCase().startsWith(SELECT_TEXT)) {
@@ -163,7 +167,7 @@ public class JDBCImportController extends ImportController {
                     | InstantiationException | IllegalAccessException | IllegalArgumentException
                     | InvocationTargetException ex) {
                 NotifyDisplayer.displayAlert("JDBC Import", "Query Error", ex.getMessage(), AlertType.ERROR);
-                LOGGER.log(Level.WARNING, ex.toString());
+                LOGGER.log(Level.WARNING, ex.getMessage(), ex);
             }
         }
 

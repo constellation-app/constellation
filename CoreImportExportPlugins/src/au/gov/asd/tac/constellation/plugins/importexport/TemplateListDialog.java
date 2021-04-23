@@ -40,12 +40,12 @@ public class TemplateListDialog {
 
     private final Window owner;
     private final boolean isLoading;
-    private final String initial;
+    private static final Insets PADDING = new Insets(10, 0, 0, 0);
+    private static final int NAMES_OFFSET = 5;
 
-    public TemplateListDialog(final Window owner, final boolean isLoading, final String initial) {
+    public TemplateListDialog(final Window owner, final boolean isLoading) {
         this.owner = owner;
         this.isLoading = isLoading;
-        this.initial = initial;
     }
 
     private static String[] getFileLabels(final File delimIoDir) {
@@ -60,13 +60,13 @@ public class TemplateListDialog {
 
         // Chop off ".json".
         for (int i = 0; i < names.length; i++) {
-            names[i] = FilenameEncoder.decode(names[i].substring(0, names[i].length() - 5));
+            names[i] = FilenameEncoder.decode(names[i].substring(0, names[i].length() - NAMES_OFFSET));
         }
 
         return names;
     }
 
-    public String getName(final Window owner, final File delimIoDir) {
+    public String getName(final File delimIoDir) {
         final String[] templateLabels = getFileLabels(delimIoDir);
 
         final Alert dialog = new Alert(Alert.AlertType.CONFIRMATION);
@@ -86,7 +86,7 @@ public class TemplateListDialog {
         });
 
         final HBox prompt = new HBox(new Label("Name: "), label);
-        prompt.setPadding(new Insets(10, 0, 0, 0));
+        prompt.setPadding(PADDING);
 
         final VBox vbox = new VBox(nameList, prompt);
 

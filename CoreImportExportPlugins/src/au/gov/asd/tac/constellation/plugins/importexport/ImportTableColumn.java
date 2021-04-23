@@ -84,27 +84,7 @@ public class ImportTableColumn extends TableColumn<TableRow, CellValue> {
                         : BooleanAttributeDescription.class.getDeclaredConstructor().newInstance();
 
                 for (final TableRow row : data) {
-                    final CellValueProperty property = row.getProperty(columnIndex);
-                    final String value = property.get().getOriginalText();
-                    final String parsedValue = parser.translate(value, parserParameters);
-                    final String errorMessage = attributeDescription.acceptsString(parsedValue);
-                    columnFailed |= errorMessage != null;
-                    if (parsedValue == null ? (value == null) : (parsedValue.equals(value))) {
-                        property.setText(value);
-                        if (errorMessage != null && defaultValue == null) {
-                            property.setMessage(errorMessage, true);
-                        } else {
-                            property.setMessage(null, false);
-                            columnFailed = false;
-                        }
-                    } else {
-                        property.setText(parsedValue);
-                        if (errorMessage != null) {
-                            property.setMessage(errorMessage, true);
-                        } else {
-                            property.setMessage("Original: " + value, false);
-                        }
-                    }
+                    columnFailed = processRow(row, attributeDescription, parser, parserParameters, defaultValue);
                 }
             } catch (final IllegalAccessException | IllegalArgumentException
                     | InstantiationException | NoSuchMethodException
@@ -121,6 +101,33 @@ public class ImportTableColumn extends TableColumn<TableRow, CellValue> {
         }
         getGraphic().setStyle(columnFailed ? "-fx-background-color: rgba(255, 0, 0, 0.3);"
                 : "-fx-background-color: transparent;");
+    }
+
+    private boolean processRow(final TableRow row, final AttributeDescription attributeDescription,
+            final AttributeTranslator parser, final PluginParameters parserParameters, final String defaultValue) {
+        boolean columnFailed = false;
+        final CellValueProperty property = row.getProperty(columnIndex);
+        final String value = property.get().getOriginalText();
+        final String parsedValue = parser.translate(value, parserParameters);
+        final String errorMessage = attributeDescription.acceptsString(parsedValue);
+        columnFailed |= errorMessage != null;
+        if (parsedValue == null ? (value == null) : (parsedValue.equals(value))) {
+            property.setText(value);
+            if (errorMessage != null && defaultValue == null) {
+                property.setMessage(errorMessage, true);
+            } else {
+                property.setMessage(null, false);
+                columnFailed = false;
+            }
+        } else {
+            property.setText(parsedValue);
+            if (errorMessage != null) {
+                property.setMessage(errorMessage, true);
+            } else {
+                property.setMessage("Original: " + value, false);
+            }
+        }
+        return columnFailed;
     }
 
     public AttributeNode getAttributeNode() {

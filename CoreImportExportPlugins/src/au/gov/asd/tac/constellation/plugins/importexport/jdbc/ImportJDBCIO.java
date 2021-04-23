@@ -42,6 +42,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javafx.stage.Window;
 import org.openide.DialogDisplayer;
@@ -53,6 +56,7 @@ import org.openide.util.NbPreferences;
 public class ImportJDBCIO {
 
     private static final String IMPORT_DELIMITED_DIR = "ImportDelimited";
+    private static final Logger LOGGER = Logger.getLogger(ImportJDBCIO.class.getName());
 
     private static final String SOURCE = "source";
     private static final String SCHEMA_INIT = "schema_init";
@@ -72,6 +76,10 @@ public class ImportJDBCIO {
     private static final String DEFAULT_VALUE = "default_value";
     private static final String JSON_EXTENSION = ".json";
 
+    private ImportJDBCIO() {
+        // add a private constructor to hide the implicit public one - java:S1118
+    }
+
     public static void saveParameters(final Window parentWindow, final JDBCImportController importController) {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
@@ -86,7 +94,7 @@ public class ImportJDBCIO {
             return;
         }
 
-        final String templName = new TemplateListDialog(parentWindow, false, null).getName(parentWindow, delimIoDir);
+        final String templName = new TemplateListDialog(parentWindow, false).getName(delimIoDir);
         if (templName != null) {
             // A JSON document to store everything in.
             // Two objects; the source data + the configuration data.
@@ -114,61 +122,7 @@ public class ImportJDBCIO {
             final List<ImportDefinition> definitions = importController.getDefinitions();
             final String[] columns = importController.getCurrentColumns();
             definitions.stream().forEach(impdef -> {
-                final ObjectNode def = definitionArray.addObject();
-
-                def.put(FIRST_ROW, impdef.getFirstRow());
-
-                if (impdef.getRowFilter() != null) {
-                    final ObjectNode filter = def.putObject(FILTER);
-                    final ArrayNode columnsArray = filter.putArray(COLUMNS);
-                    for (final String column : impdef.getRowFilter().getColumns()) {
-                        columnsArray.add(column);
-                    }
-
-                    final String script = impdef.getRowFilter().getScript();
-                    if (script != null) {
-                        filter.put(SCRIPT, script);
-                    } else {
-                        filter.putNull(SCRIPT);
-                    }
-                }
-
-                final ObjectNode attrDefs = def.putObject(ATTRIBUTES);
-                for (final AttributeType attrType : AttributeType.values()) {
-                    final ArrayNode typeArray = attrDefs.putArray(attrType.name());
-                    final List<ImportAttributeDefinition> iadefs = impdef.getDefinitions(attrType);
-                    iadefs.stream().forEach(iadef -> {
-                        if (hasSavableAttribute(iadef)) {
-                            final ObjectNode type = typeArray.addObject();
-
-                            // Remember the column label as a check for a similar column when we load.
-                            // There's no point remembering the column index:  the user might have moved the columns around.
-                            //                    type.put(COLUMN_INDEX, iadef.getColumnIndex());
-                            // If the column index is not defined, then set the column label to null so
-                            // that the settings still get applied in the attribute list on load
-                            if (iadef.getColumnIndex() == ImportConstants.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN) {
-                                type.putNull(COLUMN_LABEL);
-                            } else {
-                                type.put(COLUMN_LABEL, columns[iadef.getColumnIndex() + 1]);
-                            }
-
-                            type.put(ATTRIBUTE_LABEL, iadef.getAttribute().getName());
-                            if (iadef.getAttribute() instanceof NewAttribute) {
-                                type.put(ATTRIBUTE_TYPE, iadef.getAttribute().getAttributeType());
-                                type.put(ATTRIBUTE_DESCRIPTION, iadef.getAttribute().getDescription());
-                            }
-
-                            type.put(TRANSLATOR, iadef.getTranslator().getClass().getName());
-                            type.put(TRANSLATOR_ARGS, iadef.getTranslator().getParameterValues(iadef.getParameters()));
-
-                            if (iadef.getDefaultValue() != null) {
-                                type.put(DEFAULT_VALUE, iadef.getDefaultValue());
-                            } else {
-                                type.putNull(DEFAULT_VALUE);
-                            }
-                        }
-                    });
-                }
+                definitionCompute(definitionArray, columns, impdef);
             });
 
             mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
@@ -178,10 +132,71 @@ public class ImportJDBCIO {
                 mapper.writeValue(f, rootNode);
                 StatusDisplayer.getDefault().setStatusText(String.format("Import definition saved to %s.", f.getPath()));
             } catch (final IOException ex) {
+                LOGGER.log(Level.WARNING, ex.getMessage(), ex);
                 final String msg = String.format("Can't save import definition: %s", ex.getMessage());
                 final NotifyDescriptor nd = new NotifyDescriptor.Message(msg, NotifyDescriptor.ERROR_MESSAGE);
                 DialogDisplayer.getDefault().notify(nd);
             }
+        }
+    }
+
+    private static void definitionCompute(final ArrayNode definitionArray, final String[] columns, final ImportDefinition impdef) {
+        final ObjectNode def = definitionArray.addObject();
+        def.put(FIRST_ROW, impdef.getFirstRow());
+
+        if (impdef.getRowFilter() != null) {
+            final ObjectNode filter = def.putObject(FILTER);
+            final ArrayNode columnsArray = filter.putArray(COLUMNS);
+            for (final String column : impdef.getRowFilter().getColumns()) {
+                columnsArray.add(column);
+            }
+
+            final String script = impdef.getRowFilter().getScript();
+            if (script != null) {
+                filter.put(SCRIPT, script);
+            } else {
+                filter.putNull(SCRIPT);
+            }
+        }
+
+        final ObjectNode attrDefs = def.putObject(ATTRIBUTES);
+        for (final AttributeType attrType : AttributeType.values()) {
+            final ArrayNode typeArray = attrDefs.putArray(attrType.name());
+            final List<ImportAttributeDefinition> iadefs = impdef.getDefinitions(attrType);
+            final Consumer<ImportAttributeDefinition> importConsumer = new Consumer<ImportAttributeDefinition>() {
+                @Override
+                public void accept(ImportAttributeDefinition iadef) {
+                    if (hasSavableAttribute(iadef)) {
+                        final ObjectNode type = typeArray.addObject();
+
+                        // Remember the column label as a check for a similar column when we load.
+                        // There's no point remembering the column index:  the user might have moved the columns around.
+                        // If the column index is not defined, then set the column label to null so
+                        // that the settings still get applied in the attribute list on load
+                        if (iadef.getColumnIndex() == ImportConstants.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN) {
+                            type.putNull(COLUMN_LABEL);
+                        } else {
+                            type.put(COLUMN_LABEL, columns[iadef.getColumnIndex() + 1]);
+                        }
+
+                        type.put(ATTRIBUTE_LABEL, iadef.getAttribute().getName());
+                        if (iadef.getAttribute() instanceof NewAttribute) {
+                            type.put(ATTRIBUTE_TYPE, iadef.getAttribute().getAttributeType());
+                            type.put(ATTRIBUTE_DESCRIPTION, iadef.getAttribute().getDescription());
+                        }
+
+                        type.put(TRANSLATOR, iadef.getTranslator().getClass().getName());
+                        type.put(TRANSLATOR_ARGS, iadef.getTranslator().getParameterValues(iadef.getParameters()));
+
+                        if (iadef.getDefaultValue() != null) {
+                            type.put(DEFAULT_VALUE, iadef.getDefaultValue());
+                        } else {
+                            type.putNull(DEFAULT_VALUE);
+                        }
+                    }
+                }
+            };
+            iadefs.stream().forEach(importConsumer);
         }
     }
 
@@ -190,91 +205,95 @@ public class ImportJDBCIO {
         final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
         final File delimIoDir = new File(userDir, IMPORT_DELIMITED_DIR);
 
-        final String templName = new TemplateListDialog(parentWindow, true, null).getName(parentWindow, delimIoDir);
+        final String templName = new TemplateListDialog(parentWindow, true).getName(delimIoDir);
         if (templName != null) {
             final File template = new File(delimIoDir, FilenameEncoder.encode(templName) + JSON_EXTENSION);
             if (!template.canRead()) {
-                final NotifyDescriptor nd = new NotifyDescriptor.Message(String.format("Template %s does not exist", templName), NotifyDescriptor.ERROR_MESSAGE);
-                DialogDisplayer.getDefault().notify(nd);
+                NotifyDisplayer.display(String.format("Template %s does not exist", templName), NotifyDescriptor.ERROR_MESSAGE);
             } else {
-                try {
-                    final ObjectMapper mapper = new ObjectMapper();
-                    final JsonNode root = mapper.readTree(new File(delimIoDir, FilenameEncoder.encode(templName) + JSON_EXTENSION));
-                    final JsonNode source = root.get(SOURCE);
-
-                    final boolean schemaInit = source.get(SCHEMA_INIT).booleanValue();
-                    importController.setSchemaInitialised(schemaInit);
-
-                    final String destination = source.get(DESTINATION).textValue();
-                    final SchemaFactory schemaFactory = SchemaFactoryUtilities.getSchemaFactory(destination);
-                    if (schemaFactory != null) {
-                        importController.setDestination(new SchemaDestination(schemaFactory));
-
-                        final List<ImportDefinition> definitions = new ArrayList<>();
-                        final ArrayNode definitionsArray = (ArrayNode) root.withArray(DEFINITIONS);
-                        for (final JsonNode definitionNode : definitionsArray) {
-                            final int firstRow = definitionNode.get(FIRST_ROW).intValue();
-                            final RowFilter filter = new RowFilter();
-                            if (definitionNode.has(FILTER)) {
-                                final JsonNode filterNode = definitionNode.get(FILTER);
-                                final String script = filterNode.get(SCRIPT).textValue();
-                                final JsonNode columnsArray = filterNode.withArray(COLUMNS);
-                                final List<String> columns = new ArrayList<>();
-                                for (final JsonNode column : columnsArray) {
-                                    columns.add(column.textValue());
-                                }
-
-                                filter.setScript(script);
-                                filter.setColumns(columns.toArray(new String[columns.size()]));
-                            }
-
-                            final ImportDefinition impdef = new ImportDefinition(firstRow, filter);
-
-                            final JsonNode attributesNode = definitionNode.get(ATTRIBUTES);
-                            for (final AttributeType attrType : AttributeType.values()) {
-                                final ArrayNode columnArray = (ArrayNode) attributesNode.withArray(attrType.toString());
-                                for (final JsonNode column : columnArray) {
-                                    final String columnLabel = column.get(COLUMN_LABEL).textValue();
-                                    final String label = column.get(ATTRIBUTE_LABEL).textValue();
-                                    if (!importController.hasAttribute(attrType.getElementType(), label)) {
-                                        // Manually created attribute.
-                                        final String type = column.get(ATTRIBUTE_TYPE).textValue();
-                                        final String descr = column.get(ATTRIBUTE_DESCRIPTION).textValue();
-                                        final NewAttribute a = new NewAttribute(attrType.getElementType(), type, label, descr);
-                                        importController.createManualAttribute(a);
-                                    }
-
-                                    final Attribute attribute = importController.getAttribute(attrType.getElementType(), label);
-
-                                    final AttributeTranslator translator = AttributeTranslator.getTranslator(column.get(TRANSLATOR).textValue());
-                                    final String args = column.get(TRANSLATOR_ARGS).textValue();
-                                    final String defaultValue = column.get(DEFAULT_VALUE).textValue();
-                                    final PluginParameters params = translator.createParameters();
-                                    translator.setParameterValues(params, args);
-
-                                    final ImportAttributeDefinition iad = new ImportAttributeDefinition(columnLabel, defaultValue, attribute, translator, params);
-                                    impdef.addDefinition(attrType, iad);
-                                }
-                            }
-
-                            definitions.add(impdef);
-                        }
-
-                        importController.setClearManuallyAdded(false);
-                        try {
-                            ((JDBCImportPane) importController.getStage()).update(importController, definitions);
-                        } finally {
-                            importController.setClearManuallyAdded(true);
-                        }
-                    } else {
-                        final String msg = String.format("Can't find schema factory '%s'", destination);
-                        final NotifyDescriptor nd = new NotifyDescriptor.Message(msg, NotifyDescriptor.ERROR_MESSAGE);
-                        DialogDisplayer.getDefault().notify(nd);
-                    }
-                } catch (final IOException ex) {
-                    Exceptions.printStackTrace(ex);
-                }
+                loadParameterFile(importController, delimIoDir, templName);
             }
+        }
+    }
+
+    private static void loadParameterFile(final JDBCImportController importController, final File delimIoDir, final String templName) {
+        try {
+            final ObjectMapper mapper = new ObjectMapper();
+            final JsonNode root = mapper.readTree(new File(delimIoDir, FilenameEncoder.encode(templName) + JSON_EXTENSION));
+            final JsonNode source = root.get(SOURCE);
+
+            final boolean schemaInit = source.get(SCHEMA_INIT).booleanValue();
+            importController.setSchemaInitialised(schemaInit);
+
+            final String destination = source.get(DESTINATION).textValue();
+            final SchemaFactory schemaFactory = SchemaFactoryUtilities.getSchemaFactory(destination);
+            if (schemaFactory != null) {
+                importController.setDestination(new SchemaDestination(schemaFactory));
+
+                final List<ImportDefinition> definitions = new ArrayList<>();
+                final ArrayNode definitionsArray = (ArrayNode) root.withArray(DEFINITIONS);
+                for (final JsonNode definitionNode : definitionsArray) {
+                    final int firstRow = definitionNode.get(FIRST_ROW).intValue();
+                    final RowFilter filter = new RowFilter();
+                    if (definitionNode.has(FILTER)) {
+                        final JsonNode filterNode = definitionNode.get(FILTER);
+                        final String script = filterNode.get(SCRIPT).textValue();
+                        final JsonNode columnsArray = filterNode.withArray(COLUMNS);
+                        final List<String> columns = new ArrayList<>();
+                        for (final JsonNode column : columnsArray) {
+                            columns.add(column.textValue());
+                        }
+
+                        filter.setScript(script);
+                        filter.setColumns(columns.toArray(new String[columns.size()]));
+                    }
+
+                    final ImportDefinition impdef = new ImportDefinition(firstRow, filter);
+
+                    final JsonNode attributesNode = definitionNode.get(ATTRIBUTES);
+                    for (final AttributeType attrType : AttributeType.values()) {
+                        final ArrayNode columnArray = (ArrayNode) attributesNode.withArray(attrType.toString());
+                        for (final JsonNode column : columnArray) {
+                            final String columnLabel = column.get(COLUMN_LABEL).textValue();
+                            final String label = column.get(ATTRIBUTE_LABEL).textValue();
+                            if (!importController.hasAttribute(attrType.getElementType(), label)) {
+                                // Manually created attribute.
+                                final String type = column.get(ATTRIBUTE_TYPE).textValue();
+                                final String descr = column.get(ATTRIBUTE_DESCRIPTION).textValue();
+                                final NewAttribute a = new NewAttribute(attrType.getElementType(), type, label, descr);
+                                importController.createManualAttribute(a);
+                            }
+
+                            final Attribute attribute = importController.getAttribute(attrType.getElementType(), label);
+
+                            final AttributeTranslator translator = AttributeTranslator.getTranslator(column.get(TRANSLATOR).textValue());
+                            final String args = column.get(TRANSLATOR_ARGS).textValue();
+                            final String defaultValue = column.get(DEFAULT_VALUE).textValue();
+                            final PluginParameters params = translator.createParameters();
+                            translator.setParameterValues(params, args);
+
+                            final ImportAttributeDefinition iad = new ImportAttributeDefinition(columnLabel, defaultValue,
+                                    attribute, translator, params);
+                            impdef.addDefinition(attrType, iad);
+                        }
+                    }
+
+                    definitions.add(impdef);
+                }
+
+                importController.setClearManuallyAdded(false);
+                try {
+                    ((JDBCImportPane) importController.getStage()).update(importController, definitions);
+                } finally {
+                    importController.setClearManuallyAdded(true);
+                }
+            } else {
+                final String msg = String.format("Can't find schema factory '%s'", destination);
+                final NotifyDescriptor nd = new NotifyDescriptor.Message(msg, NotifyDescriptor.ERROR_MESSAGE);
+                DialogDisplayer.getDefault().notify(nd);
+            }
+        } catch (final IOException ex) {
+            Exceptions.printStackTrace(ex);
         }
     }
 

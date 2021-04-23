@@ -63,7 +63,7 @@ public class DelimitedSourcePane extends SourcePane {
     private final ComboBox<ImportFileParser> importFileParserComboBox;
     private final CheckBox schemaCheckBox;
     private final ListView<File> fileListView = new ListView<>();
-    protected static File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
+    protected File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
 
     private static final int FILESCROLLPANE_MAX_HEIGHT = 100;
     private static final int FILESCROLLPANE_PREF_HEIGHT = 100;
@@ -188,7 +188,6 @@ public class DelimitedSourcePane extends SourcePane {
             final ObservableList<File> files = FXCollections.observableArrayList(fileListView.getItems());
             final StringBuilder sb = new StringBuilder();
             sb.append("The following files could not be parsed and have been excluded from import set:");
-            boolean foundInvalidFile = false;
             for (final File file : newFiles) {
                 // Iterate over files and attempt to parse/preview, if a failure is detected don't add the file to the
                 // set of files to import.
@@ -198,18 +197,14 @@ public class DelimitedSourcePane extends SourcePane {
                         files.add(file);
                     }
                 } catch (final IOException ex) {
-                    foundInvalidFile = true;
+                    NotifyDisplayer.displayAlert("Delimited File Import", "Invalid file(s) found",
+                            sb.toString(), Alert.AlertType.WARNING);
                     LOGGER.log(Level.INFO, "Unable to parse the file {0}, "
                             + "excluding from import set.", new Object[]{file.toString()});
-                    LOGGER.log(Level.WARNING, ex.toString());
+                    LOGGER.log(Level.WARNING, ex.toString(), ex);
                     sb.append("\n    ");
                     sb.append(file.toString());
                 }
-            }
-            // If at least one file was found to be invalid then raise a dialog to indicate to user of import failures.
-            if (foundInvalidFile) {
-                NotifyDisplayer.displayAlert("Delimited File Import", "Invalid file(s) found",
-                        sb.toString(), Alert.AlertType.WARNING);
             }
             fileListView.setItems(files);
             if (!newFiles.isEmpty()) {

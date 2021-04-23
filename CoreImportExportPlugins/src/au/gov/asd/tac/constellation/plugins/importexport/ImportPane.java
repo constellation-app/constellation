@@ -19,6 +19,8 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.util.List;
 import java.util.prefs.Preferences;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
@@ -115,20 +117,23 @@ public class ImportPane extends BorderPane {
 
         // show schema attributes menu item
         showSchemaAttributesItem = new MenuItem("Show all schema attributes", showSchemaAttributesCheckBox);
-        showSchemaAttributesItem.setOnAction(event -> {
-            // ignore if the checkbox was clicked
-            if (!userClickedTheCheckboxFirst[0]) {
-                final boolean newPreference = !importExportPrefs.getBoolean(
-                        ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES,
-                        ImportExportPreferenceKeys.DEFAULT_SHOW_SCHEMA_ATTRIBUTES);
-                importExportPrefs.putBoolean(ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES, newPreference);
-                importController.setShowAllSchemaAttributes(newPreference);
-                importController.setClearManuallyAdded(false);
-                importController.setDestination(sourcePane.getDestination());
-                final int saveResultsItemIndex = optionsMenu.getItems().indexOf(showSchemaAttributesItem);
-                ((CheckBox) optionsMenu.getItems().get(saveResultsItemIndex).getGraphic()).setSelected(newPreference);
+        showSchemaAttributesItem.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                // ignore if the checkbox was clicked
+                if (!userClickedTheCheckboxFirst[0]) {
+                    final boolean newPreference = !importExportPrefs.getBoolean(
+                            ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES,
+                            ImportExportPreferenceKeys.DEFAULT_SHOW_SCHEMA_ATTRIBUTES);
+                    importExportPrefs.putBoolean(ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES, newPreference);
+                    importController.setShowAllSchemaAttributes(newPreference);
+                    importController.setClearManuallyAdded(false);
+                    importController.setDestination(sourcePane.getDestination());
+                    final int saveResultsItemIndex = optionsMenu.getItems().indexOf(showSchemaAttributesItem);
+                    ((CheckBox) optionsMenu.getItems().get(saveResultsItemIndex).getGraphic()).setSelected(newPreference);
+                }
+                userClickedTheCheckboxFirst[0] = false;
             }
-            userClickedTheCheckboxFirst[0] = false;
         });
 
         // setting up menu bar

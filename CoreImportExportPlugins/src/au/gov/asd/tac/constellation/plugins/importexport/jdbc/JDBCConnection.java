@@ -22,10 +22,13 @@ import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.control.Alert;
 
 public class JDBCConnection {
 
+    private static final Logger LOGGER = Logger.getLogger(JDBCConnection.class.getName());
     private String connectionName;
     private JDBCDriver driver;
     private String connectionString;
@@ -58,6 +61,7 @@ public class JDBCConnection {
                 | NoSuchMethodException | InstantiationException | IllegalAccessException
                 | IllegalArgumentException | InvocationTargetException ex) {
             if (showError) {
+                LOGGER.log(Level.WARNING, ex.getMessage(), ex);
                 NotifyDisplayer.displayLargeAlert("JDBC Import", "Testing of the connection failed, "
                         + "please recheck your settings.", ex.getMessage(), Alert.AlertType.ERROR);
             }

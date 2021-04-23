@@ -98,7 +98,8 @@ public class DelimitedImportController extends ImportController {
         final ImportFileParser parser = importFileParser;
 
         if (currentDestination instanceof SchemaDestination) {
-            GraphManager.getDefault().addGraphManagerListener(new GraphManagerListener() {
+
+            final GraphManagerListener graphManagerListener = new GraphManagerListener() {
                 boolean opened = false;
 
                 @Override
@@ -125,8 +126,9 @@ public class DelimitedImportController extends ImportController {
                                 .executeWriteLater(importGraph);
                     }
                 }
+            };
 
-            });
+            GraphManager.getDefault().addGraphManagerListener(graphManagerListener);
             GraphOpener.getDefault().openGraph(importGraph, "graph");
         } else {
             PluginExecutor.startWith(ImportExportPluginRegistry.IMPORT_DELIMITED, false)
@@ -155,7 +157,7 @@ public class DelimitedImportController extends ImportController {
             } catch (final FileNotFoundException ex) {
                 final String warningMsg = "The following file could not be found "
                         + "and has been excluded from the import set:\n  " + sampleFile.getPath();
-                LOGGER.log(Level.INFO, warningMsg);
+                LOGGER.log(Level.INFO, warningMsg, ex);
                 NotifyDisplayer.displayAlert("Delimited File Import", "Invalid file selected",
                         warningMsg, Alert.AlertType.WARNING);
                 files.remove(sampleFile);
@@ -163,7 +165,7 @@ public class DelimitedImportController extends ImportController {
             } catch (final IOException ex) {
                 final String warningMsg = "The following file could not be parsed and has "
                         + "been excluded from the import set:\n  " + sampleFile.getPath();
-                LOGGER.log(Level.INFO, warningMsg);
+                LOGGER.log(Level.INFO, warningMsg, ex);
                 NotifyDisplayer.displayAlert("Delimited File Import", "Invalid file selected", warningMsg,
                         Alert.AlertType.WARNING);
                 files.remove(sampleFile);

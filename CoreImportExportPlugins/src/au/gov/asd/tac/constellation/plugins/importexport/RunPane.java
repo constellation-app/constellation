@@ -29,9 +29,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -67,7 +69,7 @@ import org.apache.commons.lang3.StringUtils;
  *
  * @author sirius
  */
-public class RunPane extends BorderPane implements KeyListener {
+public final class RunPane extends BorderPane implements KeyListener {
 
     protected final ImportController importController;
     private final TableView<TableRow> sampleDataView = new TableView<>();
@@ -224,20 +226,23 @@ public class RunPane extends BorderPane implements KeyListener {
                 USE_COMPUTED_SIZE, -1);
         attributePane.addRow(0, sourceVertexScrollPane, destinationVertexScrollPane, transactionScrollPane);
 
-        attributePane.setOnKeyPressed(event -> {
-            final KeyCode c = event.getCode();
-            if (c == KeyCode.DELETE || c == KeyCode.BACK_SPACE) {
-                attributeFilter = "";
-                attributeFilterPane.setVisible(false);
-            } else if (c.isLetterKey()) {
-                attributeFilter += c.getChar();
-                attributeFilterTextField.setText(attributeFilter);
-                attributeFilterPane.setVisible(true);
-            } else {
-                return; // Default case added per Sonar - java:S126
+        attributePane.setOnKeyPressed(new EventHandler<javafx.scene.input.KeyEvent>() {
+            @Override
+            public void handle(javafx.scene.input.KeyEvent event) {
+                final KeyCode c = event.getCode();
+                if (c == KeyCode.DELETE || c == KeyCode.BACK_SPACE) {
+                    attributeFilter = "";
+                    attributeFilterPane.setVisible(false);
+                } else if (c.isLetterKey()) {
+                    attributeFilter += c.getChar();
+                    attributeFilterTextField.setText(attributeFilter);
+                    attributeFilterPane.setVisible(true);
+                } else {
+                    return; // Default case added per Sonar - java:S126
+                }
+                importController.setAttributeFilter(attributeFilter);
+                importController.setDestination(null);
             }
-            importController.setAttributeFilter(attributeFilter);
-            importController.setDestination(null);
         });
 
         // A scroll pane to hold the attribute boxes
@@ -275,28 +280,31 @@ public class RunPane extends BorderPane implements KeyListener {
             handleAttributeMoved(t.getSceneX(), t.getSceneY());
         });
 
-        setOnMouseReleased((final MouseEvent t) -> {
-            if (draggingAttributeNode != null) {
-                if (mouseOverColumn == null) {
-                    draggingAttributeNode.getAttributeList().addAttributeNode(draggingAttributeNode);
-                } else {
-                    // If the active column currently has an attribute node then return
-                    // the attribute node to its list
-                    final AttributeNode currentAttributeNode = mouseOverColumn.getAttributeNode();
-                    if (currentAttributeNode != null) {
-                        currentAttributeNode.getAttributeList().addAttributeNode(currentAttributeNode);
+        setOnMouseReleased(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(final MouseEvent t) {
+                if (draggingAttributeNode != null) {
+                    if (mouseOverColumn == null) {
+                        draggingAttributeNode.getAttributeList().addAttributeNode(draggingAttributeNode);
+                    } else {
+                        // If the active column currently has an attribute node then return
+                        // the attribute node to its list
+                        final AttributeNode currentAttributeNode = mouseOverColumn.getAttributeNode();
+                        if (currentAttributeNode != null) {
+                            currentAttributeNode.getAttributeList().addAttributeNode(currentAttributeNode);
+                        }
+                        // Drop the AttributeNode onto the column.
+                        mouseOverColumn.setAttributeNode(draggingAttributeNode);
+                        draggingAttributeNode.setColumn(mouseOverColumn);
+                        validate(mouseOverColumn);
                     }
-                    // Drop the AttributeNode onto the column.
-                    mouseOverColumn.setAttributeNode(draggingAttributeNode);
-                    draggingAttributeNode.setColumn(mouseOverColumn);
-                    validate(mouseOverColumn);
-                }
 
-                columnRectangle.setVisible(false);
-                draggingAttributeNode.setManaged(true);
-                draggingAttributeNode = null;
-                draggingOffset = null;
-                mouseOverColumn = null;
+                    columnRectangle.setVisible(false);
+                    draggingAttributeNode.setManaged(true);
+                    draggingAttributeNode = null;
+                    draggingOffset = null;
+                    mouseOverColumn = null;
+                }
             }
         });
     }
@@ -341,39 +349,13 @@ public class RunPane extends BorderPane implements KeyListener {
             draggingAttributeNode.setLayoutY(y);
 
             final Point2D tableLocation = sampleDataView.sceneToLocal(sceneX, sceneY);
-
-            double offset = 0;
-            final Set<Node> nodes = sampleDataView.lookupAll(".scroll-bar");
-            for (final Node node : nodes) {
-                if (node instanceof ScrollBar) {
-                    final ScrollBar scrollBar = (ScrollBar) node;
-                    if (scrollBar.getOrientation() == Orientation.HORIZONTAL) {
-                        offset = scrollBar.getValue();
-                        break;
-                    }
-                }
-            }
-
-            double totalWidth = 0;
             mouseOverColumn = null;
-
-            final double cellPadding = 0.5; // ?
-            if (tableLocation.getX() >= 0 && tableLocation.getX() <= sampleDataView.getWidth()
-                    && tableLocation.getY() >= 0 && tableLocation.getY() <= sampleDataView.getHeight()) {
-                final double columnLocation = tableLocation.getX() + offset;
-                for (final TableColumn<TableRow, ?> column : sampleDataView.getColumns()) {
-                    totalWidth += column.getWidth() + cellPadding;
-                    if (columnLocation < totalWidth) {
-                        mouseOverColumn = (ImportTableColumn) column;
-                        break;
-                    }
-                }
-            }
+            final double offset = getScrollbarOffset();
+            double totalWidth = getTotalWidth(tableLocation, offset);
 
             if (mouseOverColumn != null) {
                 // Allow for the SplitPane left side inset+padding (1+1 hard-coded).
                 final double edge = 2;
-
                 columnRectangle.setLayoutX(edge + sampleDataView.getLayoutX() + totalWidth - mouseOverColumn.getWidth() - offset);
                 columnRectangle.setLayoutY(sampleDataView.getLayoutY());
                 columnRectangle.setWidth(mouseOverColumn.getWidth());
@@ -383,6 +365,38 @@ public class RunPane extends BorderPane implements KeyListener {
                 columnRectangle.setVisible(false);
             }
         }
+    }
+
+    private double getTotalWidth(final Point2D tableLocation, final double offset) {
+        double totalWidth = 0;
+        final double cellPadding = 0.5;
+        if (tableLocation.getX() >= 0 && tableLocation.getX() <= sampleDataView.getWidth()
+                && tableLocation.getY() >= 0 && tableLocation.getY() <= sampleDataView.getHeight()) {
+            final double columnLocation = tableLocation.getX() + offset;
+            for (final TableColumn<TableRow, ?> column : sampleDataView.getColumns()) {
+                totalWidth += column.getWidth() + cellPadding;
+                if (columnLocation < totalWidth) {
+                    mouseOverColumn = (ImportTableColumn) column;
+                    break;
+                }
+            }
+        }
+        return totalWidth;
+    }
+
+    private double getScrollbarOffset() {
+        double offset = 0;
+        final Set<Node> nodes = sampleDataView.lookupAll(".scroll-bar");
+        for (final Node node : nodes) {
+            if (node instanceof ScrollBar) {
+                final ScrollBar scrollBar = (ScrollBar) node;
+                if (scrollBar.getOrientation() == Orientation.HORIZONTAL) {
+                    offset = scrollBar.getValue();
+                    break;
+                }
+            }
+        }
+        return offset;
     }
 
     /**
@@ -557,23 +571,26 @@ public class RunPane extends BorderPane implements KeyListener {
         });
 
         final List<ImportAttributeDefinition> elementList = impdef.getDefinitions(atype);
-        elementList.stream().forEach(iad -> {
-            final String importLabel = iad.getColumnLabel();
-            final ImportTableColumn column = labelToColumn.get(importLabel);
+        elementList.stream().forEach(new Consumer<ImportAttributeDefinition>() {
+            @Override
+            public void accept(ImportAttributeDefinition iad) {
+                final String importLabel = iad.getColumnLabel();
+                final ImportTableColumn column = labelToColumn.get(importLabel);
 
-            final AttributeNode attrNode = attrList.getAttributeNode(iad.getAttribute().getName());
-            if (attrNode != null) {
-                // If the column is null then update the settings which will be
-                // reflected on the attribute lists
-                attrNode.setTranslator(iad.getTranslator(), iad.getParameters());
-                attrNode.setDefaultValue(iad.getDefaultValue());
+                final AttributeNode attrNode = attrList.getAttributeNode(iad.getAttribute().getName());
+                if (attrNode != null) {
+                    // If the column is null then update the settings which will be
+                    // reflected on the attribute lists
+                    attrNode.setTranslator(iad.getTranslator(), iad.getParameters());
+                    attrNode.setDefaultValue(iad.getDefaultValue());
 
-                if (column != null) {
-                    // If the column is not null then assign the attribute to a
-                    // column and validate the column
-                    column.setAttributeNode(attrNode);
-                    attrNode.setColumn(column);
-                    attrList.getRunPane().validate(column);
+                    if (column != null) {
+                        // If the column is not null then assign the attribute to a
+                        // column and validate the column
+                        column.setAttributeNode(attrNode);
+                        attrNode.setColumn(column);
+                        attrList.getRunPane().validate(column);
+                    }
                 }
             }
         });

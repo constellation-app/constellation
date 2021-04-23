@@ -94,8 +94,8 @@ public abstract class SourcePane extends GridPane {
      *
      * @return ImportDestination destination
      */
-    public final ImportDestination<?> getDestination() {
-        return graphComboBox.getSelectionModel().getSelectedItem();
+    public final <D> ImportDestination<D> getDestination() {
+        return (ImportDestination<D>) graphComboBox.getSelectionModel().getSelectedItem();
     }
 
     /**

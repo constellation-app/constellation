@@ -110,40 +110,7 @@ public final class AttributeNode extends Label implements Comparable<AttributeNo
             item.setSelected(at.getClass().equals(translator.getClass()));
             item.setToggleGroup(menuGroup);
             item.setOnAction((ActionEvent t) -> {
-                PluginParameters parameters;
-                if (recentTranslatorParameters.containsKey(at.getLabel())) {
-                    parameters = recentTranslatorParameters.get(at.getLabel());
-                    if (parameters != null) {
-                        parameters = parameters.copy();
-                    }
-                } else {
-                    parameters = at.createParameters();
-                }
-                if (parameters == null) {
-                    translator = at;
-                    translatorParameters = null;
-                    recentTranslatorParameters.put(at.getLabel(), null);
-                    if (AttributeNode.this.getColumn() != null) {
-                        attributeList.getRunPane().validate(AttributeNode.this.column);
-                    }
-                } else {
-                    final Window parent = attributeList.importController.getStage().getParentWindow();
-                    final PluginParametersDialog dialog = new PluginParametersDialog(
-                            parent, at.getLabel() + " Parameters",
-                            parameters, "Ok", "Cancel");
-
-                    dialog.showAndWait();
-                    if (PluginParametersDialog.OK.equalsIgnoreCase(dialog.getResult())) {
-                        translator = at;
-                        translatorParameters = parameters;
-                        recentTranslatorParameters.put(at.getLabel(), parameters);
-                        if (AttributeNode.this.getColumn() != null) {
-                            attributeList.getRunPane().validate(AttributeNode.this.column);
-                        }
-                    } else {
-                        updateTranslatorGroupToggle();
-                    }
-                }
+                attributeItemAction(at);
             });
             return item;
         }).forEachOrdered(item -> {
@@ -168,7 +135,40 @@ public final class AttributeNode extends Label implements Comparable<AttributeNo
     }
 
     private void attributeItemAction(final AttributeTranslator at) {
+        PluginParameters parameters;
+        if (recentTranslatorParameters.containsKey(at.getLabel())) {
+            parameters = recentTranslatorParameters.get(at.getLabel());
+            if (parameters != null) {
+                parameters = parameters.copy();
+            }
+        } else {
+            parameters = at.createParameters();
+        }
+        if (parameters == null) {
+            translator = at;
+            translatorParameters = null;
+            recentTranslatorParameters.put(at.getLabel(), null);
+            if (AttributeNode.this.getColumn() != null) {
+                attributeList.getRunPane().validate(AttributeNode.this.column);
+            }
+        } else {
+            final Window parent = attributeList.importController.getStage().getParentWindow();
+            final PluginParametersDialog dialog = new PluginParametersDialog(
+                    parent, at.getLabel() + " Parameters",
+                    parameters, "Ok", "Cancel");
 
+            dialog.showAndWait();
+            if (PluginParametersDialog.OK.equalsIgnoreCase(dialog.getResult())) {
+                translator = at;
+                translatorParameters = parameters;
+                recentTranslatorParameters.put(at.getLabel(), parameters);
+                if (AttributeNode.this.getColumn() != null) {
+                    attributeList.getRunPane().validate(AttributeNode.this.column);
+                }
+            } else {
+                updateTranslatorGroupToggle();
+            }
+        }
     }
 
     private void updateTranslatorGroupToggle() {
@@ -184,7 +184,7 @@ public final class AttributeNode extends Label implements Comparable<AttributeNo
      * Update the label text to show the default value
      */
     public void updateDefaultValue() {
-        setText(attribute.getName() + (defaultValue == null ? "" : " = " + defaultValue));
+        setText(attribute.getName() + (defaultValue == null ? "" : (" = " + defaultValue)));
     }
 
     /**

@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
@@ -88,26 +89,29 @@ public class AttributeList extends VBox {
 
         attributeNodes.put(attribute.getName(), attributeNode);
 
-        attributeNode.setOnMousePressed((final MouseEvent t) -> {
-            if (t.isPrimaryButtonDown()) {
-                runPane.setDraggingOffset(new Point2D(t.getX(), t.getY()));
-                final Point2D location = runPane.sceneToLocal(t.getSceneX(), t.getSceneY());
-                // If the attribute node is currently assigned to a column then remove it.
-                final ImportTableColumn currentColumn = attributeNode.getColumn();
-                if (currentColumn != null) {
-                    currentColumn.setAttributeNode(null);
-                    runPane.validate(currentColumn);
+        attributeNode.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(final MouseEvent t) {
+                if (t.isPrimaryButtonDown()) {
+                    runPane.setDraggingOffset(new Point2D(t.getX(), t.getY()));
+                    final Point2D location = runPane.sceneToLocal(t.getSceneX(), t.getSceneY());
+                    // If the attribute node is currently assigned to a column then remove it.
+                    final ImportTableColumn currentColumn = attributeNode.getColumn();
+                    if (currentColumn != null) {
+                        currentColumn.setAttributeNode(null);
+                        runPane.validate(currentColumn);
+                    }
+                    attributeNode.setColumn(null);
+                    // Replicates user clicking the attribute
+                    if (!runPane.getChildren().contains(attributeNode)) {
+                        runPane.getChildren().add(attributeNode);
+                    }
+                    attributeNode.setManaged(false);
+                    attributeNode.setLayoutX(location.getX() - runPane.getDraggingOffset().getX());
+                    attributeNode.setLayoutY(location.getY() - runPane.getDraggingOffset().getY());
+                    runPane.setDraggingAttributeNode(attributeNode);
+                    runPane.handleAttributeMoved(t.getSceneX(), t.getSceneY());
                 }
-                attributeNode.setColumn(null);
-                // Replicates user clicking the attribute
-                if (!runPane.getChildren().contains(attributeNode)) {
-                    runPane.getChildren().add(attributeNode);
-                }
-                attributeNode.setManaged(false);
-                attributeNode.setLayoutX(location.getX() - runPane.getDraggingOffset().getX());
-                attributeNode.setLayoutY(location.getY() - runPane.getDraggingOffset().getY());
-                runPane.setDraggingAttributeNode(attributeNode);
-                runPane.handleAttributeMoved(t.getSceneX(), t.getSceneY());
             }
         });
 
