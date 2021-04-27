@@ -426,6 +426,8 @@ public class JDBCSourcePane extends SourcePane {
 
                 dialog.sizeToScene();
                 dialog.initModality(Modality.APPLICATION_MODAL);
+                dialog.setAlwaysOnTop(true);
+                dialog.toFront();
 
                 dialog.showAndWait();
             }
