@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -87,6 +87,8 @@ import org.openide.windows.TopComponent;
 })
 public final class HistogramTopComponent extends TopComponent implements GraphManagerListener, GraphChangeListener, UndoRedo.Provider {
 
+    private static final int MIN_WIDTH = 425;
+    private static final int MIN_HEIGHT = 400;
     Graph currentGraph = null;
     private final HistogramControls controls;
     private final HistogramDisplay display;
@@ -109,7 +111,8 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     public HistogramTopComponent() {
         initComponents();
         setName(Bundle.CTL_HistogramTopComponent());
-        setToolTipText(Bundle.HINT_HistogramTopComponent());
+        setToolTipText(Bundle.HINT_HistogramTopComponent()); 
+        this.setMinimumSize(new java.awt.Dimension(MIN_WIDTH, MIN_HEIGHT));
 
         controls = new HistogramControls(this);
         add(controls, BorderLayout.SOUTH);

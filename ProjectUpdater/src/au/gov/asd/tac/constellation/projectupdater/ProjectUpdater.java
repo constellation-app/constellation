@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -240,7 +240,7 @@ public class ProjectUpdater extends Task {
         final Document document = builder.newDocument();
 
         // Read in the existing project.xml into the document
-        try (FileInputStream in = new FileInputStream(xmlFile)) {
+        try ( FileInputStream in = new FileInputStream(xmlFile)) {
             final Source loadSource = new StreamSource(in);
             final Result loadResult = new DOMResult(document);
             transformer.transform(loadSource, loadResult);
@@ -256,7 +256,7 @@ public class ProjectUpdater extends Task {
 //        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, ""); 
         final Transformer transformer = transformerFactory.newTransformer();
 
-        try (FileOutputStream out = new FileOutputStream(xmlFile)) {
+        try ( FileOutputStream out = new FileOutputStream(xmlFile)) {
             final Source saveSource = new DOMSource(document);
             final Result saveResult = new StreamResult(out);
             transformer.transform(saveSource, saveResult);
