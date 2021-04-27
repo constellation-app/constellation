@@ -33,7 +33,7 @@ import org.openide.windows.TopComponent;
  */
 @TopComponent.Description(
         preferredID = "JDBCImportTopComponent",
-        iconBase = "au/gov/asd/tac/constellation/plugins/importexport/jdbc/resources/importJDBC.png",
+        iconBase = "au/gov/asd/tac/constellation/plugins/importexport/jdbc/resources/jdbc_import.png",
         persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @ActionID(
         category = "Window",
