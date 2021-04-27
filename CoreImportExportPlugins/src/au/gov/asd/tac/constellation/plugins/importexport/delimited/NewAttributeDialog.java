@@ -37,14 +37,13 @@ import javafx.stage.StageStyle;
 import javafx.stage.Window;
 
 /**
- * The NewAttributeDialog provides a dialog box allowing the user to create a
- * new attribute that does not currently exist in the {@link GraphDestination}.
- * This is typically an attribute that does not exist in a currently existing
+ * The NewAttributeDialog provides a dialog box allowing the user to create a new attribute that does not currently
+ * exist in the {@link GraphDestination}. This is typically an attribute that does not exist in a currently existing
  * graph or an attribute that does not exist in a destination schema.
  *
  * @author sirius
  */
-public class NewAttributeDialog extends Stage {
+public final class NewAttributeDialog extends Stage {
 
     private final GraphElementType elementType;
     private final ComboBox<String> typeBox;
@@ -123,6 +122,10 @@ public class NewAttributeDialog extends Stage {
             NewAttributeDialog.this.hide();
         });
         buttonPane.getChildren().add(cancelButton);
+
+        // Attempt to ensure the window is the front-most of all application windows.
+        setAlwaysOnTop(true);
+        toFront();
     }
 
     public Attribute getAttribute() {
