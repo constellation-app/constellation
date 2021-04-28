@@ -176,6 +176,7 @@ public class ConfigurationPane extends AnchorPane {
     public void setSampleData(final String[] columnLabels, final List<String[]> currentData) {
         tabPane.getTabs().stream().map(tab -> (RunPane) tab.getContent()).forEachOrdered(runPane -> {
             runPane.setSampleData(columnLabels, createTableRows(currentData));
+            runPane.refreshDataView();
         });
     }
 
