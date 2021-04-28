@@ -31,7 +31,7 @@ while IFS= read -r -d '' file; do
 done < <(find . -iname "*jacoco.exec" -print0)
 
 title "finished Jacoco Processing"
-
+apt update
 apt-get install tree
 tree ./
 echo ----------------------
