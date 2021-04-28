@@ -29,3 +29,7 @@ while IFS= read -r -d '' file; do
   xml_output="${file%.exec}.xml"
   java -jar "${JACOCO_HOME}/lib/jacococli.jar" report "${file}" --classfiles "${classfile}" --xml "${xml_output}"
 done < <(find . -iname "*jacoco.exec" -print0)
+
+title "finished Jacoco Processing"
+
+echo ls
