@@ -32,6 +32,7 @@ done < <(find . -iname "*jacoco.exec" -print0)
 
 title "finished Jacoco Processing"
 
-cd build/test/unit/results
+sudo apt-get install tree
+tree ./
 echo ----------------------
 eval "ls"
