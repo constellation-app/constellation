@@ -32,4 +32,10 @@ done < <(find . -iname "*jacoco.exec" -print0)
 
 title "finished Jacoco Processing"
 
-echo ls
+eval "ls"
+cd ..
+eval "ls"
+cd ..
+eval "ls"
+cd ..
+eval "ls"
