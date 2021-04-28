@@ -34,6 +34,4 @@ title "finished Jacoco Processing"
 
 cd CoreAnalyticSchema/build/test/unit
 echo ----------------------
-eval "$pwd"
-eval "pwd"
 eval "ls"
