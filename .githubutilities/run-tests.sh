@@ -32,6 +32,6 @@ done < <(find . -iname "*jacoco.exec" -print0)
 
 title "finished Jacoco Processing"
 
-cd CoreAnalyticSchema/build/test/unit/results
+cd build/test/unit/results
 echo ----------------------
 eval "ls"
