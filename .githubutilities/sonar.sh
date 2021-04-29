@@ -4,6 +4,10 @@ source .githubutilities/functions.sh
 
 title "Updating dependencies and building"
 
+apt update
+apt-get install tree
+tree ./
+
 ant \
   -Dnbplatform.active.dir="${NETBEANS_HOME}" \
   -Dnbplatform.default.netbeans.dest.dir="${NETBEANS_HOME}" \
@@ -13,9 +17,6 @@ ant \
 
 title "Run Sonar Scanning"
 
-apt update
-apt-get install tree
-tree ./
 
 title "Finish Tree - Sonar Scanning"
 if [ ! -z $2 ]; then
