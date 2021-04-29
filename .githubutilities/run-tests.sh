@@ -30,9 +30,3 @@ while IFS= read -r -d '' file; do
   java -jar "${JACOCO_HOME}/lib/jacococli.jar" report "${file}" --classfiles "${classfile}" --xml "${xml_output}"
 done < <(find . -iname "*jacoco.exec" -print0)
 
-title "finished Jacoco Processing"
-apt update
-apt-get install tree
-tree ./
-echo ----------------------
-eval "ls"
