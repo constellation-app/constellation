@@ -13,6 +13,11 @@ ant \
 
 title "Run Sonar Scanning"
 
+apt update
+apt-get install tree
+tree ./
+
+title "Finish Tree - Sonar Scanning"
 if [ ! -z $2 ]; then
   if [ $1 != "constellation-app/constellation" ]; then
     echo "skipping running sonar-scanner"
