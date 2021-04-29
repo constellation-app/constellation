@@ -30,7 +30,6 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 public class SelectedInclusionGraph extends AbstractInclusionGraph {
 
     private final int selectedAttr;
-    private final int posLockedAttr;
 
     /**
      * Create a new inclusion graph.
@@ -41,13 +40,12 @@ public class SelectedInclusionGraph extends AbstractInclusionGraph {
     public SelectedInclusionGraph(final GraphWriteMethods wg, final Connections connections) {
         super(wg, connections);
         selectedAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
-        posLockedAttr = VisualConcept.VertexAttribute.POSITIONLOCKED.ensure(wg); 
     }
 
     @Override
     public boolean isVertexIncluded(final int vxId) {
 
         // Don't forget to allow for selected not being present.
-        return (selectedAttr == Graph.NOT_FOUND || wg.getBooleanValue(selectedAttr, vxId)) && (!wg.getBooleanValue(posLockedAttr, vxId));
+        return (selectedAttr == Graph.NOT_FOUND || wg.getBooleanValue(selectedAttr, vxId));
     }
 }

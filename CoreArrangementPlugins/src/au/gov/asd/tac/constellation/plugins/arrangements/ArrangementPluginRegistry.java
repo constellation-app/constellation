@@ -50,6 +50,8 @@ import au.gov.asd.tac.constellation.plugins.arrangements.utilities.FlattenZField
  */
 public class ArrangementPluginRegistry {
 
+    public static final String LOCKPOSITIONS = LockVertexPositionsPlugin.class.getName();
+    public static final String UNLOCKPOSITIONS = UnlockVertexPositionsPlugin.class.getName();
     public static final String ATTRIBUTE = ArrangeByNodeAttributePlugin.class.getName();
     public static final String BROCCOLI = ArrangeLikeBroccoliPlugin.class.getName();
     public static final String BUBBLE_TREE = ArrangeInBubbleTreePlugin.class.getName();

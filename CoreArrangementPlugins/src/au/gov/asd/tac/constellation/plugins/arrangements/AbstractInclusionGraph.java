@@ -107,7 +107,10 @@ public abstract class AbstractInclusionGraph {
     private final ArrayList<Attribute> attributesToCopy;
 
     private boolean updatePositionIfExisting;
-
+    
+    // Attribute used to store whether a vertexes position should be locked and not auto arranged
+    private final int posLockedAttr;
+    
     /**
      * Create a new inclusion graph.
      *
@@ -121,6 +124,7 @@ public abstract class AbstractInclusionGraph {
 
         inclusionGraph = null;
         updatePositionIfExisting = true;
+        posLockedAttr = VisualConcept.VertexAttribute.POSITIONLOCKED.ensure(wg);
     }
 
     /**
@@ -151,7 +155,7 @@ public abstract class AbstractInclusionGraph {
             final int vxId = wg.getVertex(position);
 
             final boolean isIncluded = isVertexIncluded(vxId);
-            if (isIncluded) {
+            if (isIncluded && !wg.getBooleanValue(posLockedAttr, vxId)) {
                 includedCount++;
             }
         }
@@ -178,6 +182,7 @@ public abstract class AbstractInclusionGraph {
         final int z2Attr = VisualConcept.VertexAttribute.Z2.get(wg);
         final int nradiusAttr = VisualConcept.VertexAttribute.NODE_RADIUS.get(wg);
         final int lradiusAttr = VisualConcept.VertexAttribute.LABEL_RADIUS.get(wg);
+        final int selectedAttr = VisualConcept.VertexAttribute.SELECTED.get(wg);
 
         final boolean xyz2 = x2Attr != Graph.NOT_FOUND && y2Attr != Graph.NOT_FOUND && z2Attr != Graph.NOT_FOUND;
 
@@ -198,6 +203,7 @@ public abstract class AbstractInclusionGraph {
         if (lradiusAttr != Graph.NOT_FOUND) {
             VisualConcept.VertexAttribute.LABEL_RADIUS.ensure(storeGraph);
         }
+        VisualConcept.VertexAttribute.SELECTED.ensure(storeGraph);
 
         final int[] selectionAttributes = new int[attributesToCopy.size()];
         for (int i = 0; i < attributesToCopy.size(); i++) {
@@ -213,6 +219,7 @@ public abstract class AbstractInclusionGraph {
         final int incZ2Attr = VisualConcept.VertexAttribute.Z2.get(storeGraph);
         final int incNradiusAttr = VisualConcept.VertexAttribute.NODE_RADIUS.get(storeGraph);
         final int incLradiusAttr = VisualConcept.VertexAttribute.LABEL_RADIUS.get(storeGraph);
+        final int incSelectedAttr = VisualConcept.VertexAttribute.SELECTED.get(storeGraph);
 
         // Build the inclusion graph by copying vertices, connections, and values from the original graph.
         // We remember which vertices have been included for easy future reference.
@@ -223,7 +230,7 @@ public abstract class AbstractInclusionGraph {
             // A vertex goes into the inclusion graph if (all vertices are included or isVertexIncluded() is true),
             // and (the vertex is a composite parent or not part of a composite).
             final boolean isIncluded = allIncluded || isVertexIncluded(vxId);
-            if (isIncluded) {
+            if (isIncluded && !wg.getBooleanValue(posLockedAttr, vxId)) {
                 vertices.set(vxId);
 
                 // Create the vertex in the inclusion graph with the same vertex id as the original graph.
@@ -243,6 +250,9 @@ public abstract class AbstractInclusionGraph {
                 }
                 if (incLradiusAttr != Graph.NOT_FOUND) {
                     storeGraph.setFloatValue(incLradiusAttr, incVxId, wg.getFloatValue(lradiusAttr, vxId));
+                }
+                if (incSelectedAttr != Graph.NOT_FOUND) {
+                    storeGraph.setBooleanValue(incSelectedAttr, incVxId, wg.getBooleanValue(selectedAttr, vxId));
                 }
 
                 // Copy the extra attribute values.
