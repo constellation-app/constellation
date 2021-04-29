@@ -7,14 +7,6 @@ title "Updating dependencies and building"
 apt update
 apt-get install tree
 tree ./
-
-ant \
-  -Dnbplatform.active.dir="${NETBEANS_HOME}" \
-  -Dnbplatform.default.netbeans.dest.dir="${NETBEANS_HOME}" \
-  -Dnbplatform.default.harness.dir="${NETBEANS_HOME}"/harness \
-  -Dupdate.dependencies=true \
-  -Dbuild.compiler.debug=true update-dependencies-clean-build
-
 title "Run Sonar Scanning"
 
 
