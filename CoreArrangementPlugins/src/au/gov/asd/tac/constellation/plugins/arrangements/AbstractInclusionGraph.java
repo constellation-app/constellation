@@ -149,50 +149,52 @@ public abstract class AbstractInclusionGraph {
     private void createInclusionGraph() {
         final int vxCount = wg.getVertexCount();
 
-        int includedCount = 0;
-        int compositeCount = 0;
+        // Loop through all vertexes and count the number that have been
+        // explictly selected by user and those that have been marked as locked.
+        // Vertexes marked as locked will not be 'arranged'.
+        // selected - which infers all vertexes are being considered.
+        int incCount = 0;
+        int lockedCount = 0;
         for (int position = 0; position < vxCount; position++) {
             final int vxId = wg.getVertex(position);
-
-            final boolean isIncluded = isVertexIncluded(vxId);
-            if (isIncluded && !wg.getBooleanValue(posLockedAttr, vxId)) {
-                includedCount++;
-            }
+            if (isVertexIncluded(vxId)) { incCount++; }
+            if (!wg.getBooleanValue(posLockedAttr, vxId)) { lockedCount++; }
         }
 
-        // All vertices are included if (explicitly) isVertexIncluded() is true for all vertices,
-        // or (implicitly) if isVertexIncluded is true for no vertices.
-        final boolean allIncluded = includedCount == vxCount || includedCount == 0;
-
-        inclusionGraphIsOriginalGraph = compositeCount == 0 && allIncluded;
+        // If every vertex is a candidate to be moved we can just return the
+        // current graph.
+        inclusionGraphIsOriginalGraph =
+                (incCount == vxCount || incCount == 0) && (lockedCount == 0);
         if (inclusionGraphIsOriginalGraph) {
-            // There are no composite vertices.
             // All vertices are (implicitly or explicitly) selected.
             // Pass the graph straight through.
             inclusionGraph = wg;
-
             return;
         }
 
+        // Store the IDs of attributes that will be read from wg.
         final int xAttr = VisualConcept.VertexAttribute.X.get(wg);
         final int yAttr = VisualConcept.VertexAttribute.Y.get(wg);
         final int zAttr = VisualConcept.VertexAttribute.Z.get(wg);
         final int x2Attr = VisualConcept.VertexAttribute.X2.get(wg);
         final int y2Attr = VisualConcept.VertexAttribute.Y2.get(wg);
         final int z2Attr = VisualConcept.VertexAttribute.Z2.get(wg);
+        final int selectedAttr = VisualConcept.VertexAttribute.SELECTED.get(wg);
         final int nradiusAttr = VisualConcept.VertexAttribute.NODE_RADIUS.get(wg);
         final int lradiusAttr = VisualConcept.VertexAttribute.LABEL_RADIUS.get(wg);
-        final int selectedAttr = VisualConcept.VertexAttribute.SELECTED.get(wg);
 
-        final boolean xyz2 = x2Attr != Graph.NOT_FOUND && y2Attr != Graph.NOT_FOUND && z2Attr != Graph.NOT_FOUND;
+        // Are the x2, y2, z2 attributes set
+        final boolean xyz2AreSet =  x2Attr != Graph.NOT_FOUND && y2Attr != Graph.NOT_FOUND && z2Attr != Graph.NOT_FOUND;
 
         // Create the inclusion graph.
-        // We need to create some basic attributes, plus whatever other attributes we've been told to create.
+        // We need to create some essential attributes, plus whatever other
+        // attributes we've been told to create via calls to addAttributeToCopy().
         final StoreGraph storeGraph = new StoreGraph(wg.getSchema());
         VisualConcept.VertexAttribute.X.ensure(storeGraph);
         VisualConcept.VertexAttribute.Y.ensure(storeGraph);
         VisualConcept.VertexAttribute.Z.ensure(storeGraph);
-        if (xyz2) {
+        VisualConcept.VertexAttribute.SELECTED.ensure(storeGraph);
+        if (xyz2AreSet) {
             VisualConcept.VertexAttribute.X2.ensure(storeGraph);
             VisualConcept.VertexAttribute.Y2.ensure(storeGraph);
             VisualConcept.VertexAttribute.Z2.ensure(storeGraph);
@@ -203,44 +205,49 @@ public abstract class AbstractInclusionGraph {
         if (lradiusAttr != Graph.NOT_FOUND) {
             VisualConcept.VertexAttribute.LABEL_RADIUS.ensure(storeGraph);
         }
-        VisualConcept.VertexAttribute.SELECTED.ensure(storeGraph);
 
+        // Process any attributes specified by  calls to addAttributeToCopy().
         final int[] selectionAttributes = new int[attributesToCopy.size()];
         for (int i = 0; i < attributesToCopy.size(); i++) {
             final Attribute attr = attributesToCopy.get(i);
             selectionAttributes[i] = storeGraph.addAttribute(attr.getElementType(), attr.getAttributeType(), attr.getName(), attr.getDescription(), attr.getDefaultValue(), null);
         }
 
+        // Store the IDs of attributes that will be written to storeGraph.
         final int incXAttr = VisualConcept.VertexAttribute.X.get(storeGraph);
         final int incYAttr = VisualConcept.VertexAttribute.Y.get(storeGraph);
         final int incZAttr = VisualConcept.VertexAttribute.Z.get(storeGraph);
         final int incX2Attr = VisualConcept.VertexAttribute.X2.get(storeGraph);
         final int incY2Attr = VisualConcept.VertexAttribute.Y2.get(storeGraph);
         final int incZ2Attr = VisualConcept.VertexAttribute.Z2.get(storeGraph);
+        final int incSelectedAttr = VisualConcept.VertexAttribute.SELECTED.get(storeGraph);
         final int incNradiusAttr = VisualConcept.VertexAttribute.NODE_RADIUS.get(storeGraph);
         final int incLradiusAttr = VisualConcept.VertexAttribute.LABEL_RADIUS.get(storeGraph);
-        final int incSelectedAttr = VisualConcept.VertexAttribute.SELECTED.get(storeGraph);
 
-        // Build the inclusion graph by copying vertices, connections, and values from the original graph.
-        // We remember which vertices have been included for easy future reference.
+        // Build the inclusion graph by copying vertices, connections, and values
+        // from the original graph.  We remember which vertices have been included
+        // for easy future reference.
         final BitSet vertices = new BitSet();
         for (int position = 0; position < vxCount; position++) {
             final int vxId = wg.getVertex(position);
 
-            // A vertex goes into the inclusion graph if (all vertices are included or isVertexIncluded() is true),
-            // and (the vertex is a composite parent or not part of a composite).
-            final boolean isIncluded = allIncluded || isVertexIncluded(vxId);
-            if (isIncluded && !wg.getBooleanValue(posLockedAttr, vxId)) {
+            // A vertex goes into the inclusion graph if all vertexes are selected
+            // or the explicit vertex is selected and the vertex is not marked as
+            // locked.
+            final boolean allVertexesSelected = incCount == vxCount || incCount == 0;
+            if ((allVertexesSelected || isVertexIncluded(vxId)) && !wg.getBooleanValue(posLockedAttr, vxId)) {
                 vertices.set(vxId);
 
-                // Create the vertex in the inclusion graph with the same vertex id as the original graph.
-                // This means we don't have to track original id <-> inclusion graph id.
+                // Create the vertex in the inclusion graph with the same vertex
+                // ID as the original graph. This means we don't have to track
+                // original id <-> inclusion graph id.
                 final int incVxId = storeGraph.addVertex(vxId);
 
                 storeGraph.setFloatValue(incXAttr, incVxId, wg.getFloatValue(xAttr, vxId));
                 storeGraph.setFloatValue(incYAttr, incVxId, wg.getFloatValue(yAttr, vxId));
                 storeGraph.setFloatValue(incZAttr, incVxId, wg.getFloatValue(zAttr, vxId));
-                if (xyz2) {
+                storeGraph.setBooleanValue(incSelectedAttr, incVxId, wg.getBooleanValue(selectedAttr, vxId));
+                if (xyz2AreSet) {
                     storeGraph.setFloatValue(incX2Attr, incVxId, wg.getFloatValue(x2Attr, vxId));
                     storeGraph.setFloatValue(incY2Attr, incVxId, wg.getFloatValue(y2Attr, vxId));
                     storeGraph.setFloatValue(incZ2Attr, incVxId, wg.getFloatValue(z2Attr, vxId));
@@ -250,9 +257,6 @@ public abstract class AbstractInclusionGraph {
                 }
                 if (incLradiusAttr != Graph.NOT_FOUND) {
                     storeGraph.setFloatValue(incLradiusAttr, incVxId, wg.getFloatValue(lradiusAttr, vxId));
-                }
-                if (incSelectedAttr != Graph.NOT_FOUND) {
-                    storeGraph.setBooleanValue(incSelectedAttr, incVxId, wg.getBooleanValue(selectedAttr, vxId));
                 }
 
                 // Copy the extra attribute values.

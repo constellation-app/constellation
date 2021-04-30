@@ -40,7 +40,7 @@ import org.openide.util.NbBundle;
 @ActionReferences({
     @ActionReference(path = "Menu/Arrange", position = 9999),
     @ActionReference(path = "Toolbars/Arrange", position = 9999),
-    @ActionReference(path = "Shortcuts", name = "C-A-L")
+    @ActionReference(path = "Shortcuts", name = "C-A-U")
 })
 
 
