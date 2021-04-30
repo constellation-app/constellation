@@ -59,16 +59,15 @@ import javafx.stage.FileChooser.ExtensionFilter;
 public class DelimitedSourcePane extends SourcePane {
 
     private static final Logger LOGGER = Logger.getLogger(DelimitedSourcePane.class.getName());
-
-    private final ComboBox<ImportFileParser> importFileParserComboBox;
-    private final CheckBox schemaCheckBox;
-    private final ListView<File> fileListView = new ListView<>();
-    protected File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
-
     private static final int FILESCROLLPANE_MAX_HEIGHT = 100;
     private static final int FILESCROLLPANE_PREF_HEIGHT = 100;
     private static final int FILEVBOX_SPACING = 10;
     private static final int PREVIEW_LIMIT = 100;
+
+    private final ComboBox<ImportFileParser> importFileParserComboBox;
+    private final CheckBox schemaCheckBox;
+    private final ListView<File> fileListView = new ListView<>();
+    protected File defaultDirectory = new File(System.getProperty("user.home"));
 
     public DelimitedSourcePane(final DelimitedImportController importController) {
         super(importController);
@@ -107,9 +106,7 @@ public class DelimitedSourcePane extends SourcePane {
 
         getChildren().addAll(fileLabel, fileScrollPane, fileButtonBox);
 
-        fileListView.setOnMouseClicked((MouseEvent t) -> {
-            fileRemBtn.setDisable(fileListView.getSelectionModel().getSelectedItems().isEmpty());
-        });
+        fileListView.setOnMouseClicked((MouseEvent t) -> fileRemBtn.setDisable(fileListView.getSelectionModel().getSelectedItems().isEmpty()));
 
         fileListView.getSelectionModel().getSelectedItems().addListener((ListChangeListener.Change<? extends File> c) -> {
             ObservableList<File> allFiles = fileListView.getItems();
@@ -117,9 +114,7 @@ public class DelimitedSourcePane extends SourcePane {
             importController.setFiles(allFiles, selectedFiles.isEmpty() ? null : selectedFiles.get(0));
         });
 
-        fileAddBtn.setOnAction((ActionEvent t) -> {
-            addFile(importController);
-        });
+        fileAddBtn.setOnAction((ActionEvent t) -> addFile(importController));
 
         fileRemBtn.setOnAction((ActionEvent t) -> {
             final ObservableList<File> selectedFiles = fileListView.getSelectionModel().getSelectedItems();
@@ -142,18 +137,15 @@ public class DelimitedSourcePane extends SourcePane {
         importFileParserComboBox = new ComboBox<>();
         importFileParserComboBox.setItems(parsers);
         importFileParserComboBox.getSelectionModel().selectFirst();
-        importFileParserComboBox.setOnAction((final ActionEvent t) -> {
-            importController.setImportFileParser(importFileParserComboBox.getSelectionModel().getSelectedItem());
-        });
+        importFileParserComboBox.setOnAction((final ActionEvent t)
+                -> importController.setImportFileParser(importFileParserComboBox.getSelectionModel().getSelectedItem()));
 
         //SCHEMA
         final Label schemaLabel = new Label("Initialise With Schema:");
 
         schemaCheckBox = new CheckBox();
         schemaCheckBox.setSelected(importController.isSchemaInitialised());
-        schemaCheckBox.setOnAction((final ActionEvent event) -> {
-            importController.setSchemaInitialised(schemaCheckBox.isSelected());
-        });
+        schemaCheckBox.setOnAction((final ActionEvent event) -> importController.setSchemaInitialised(schemaCheckBox.isSelected()));
 
         final ToolBar optionsBox = new ToolBar();
         optionsBox.setMinWidth(0);
@@ -165,7 +157,7 @@ public class DelimitedSourcePane extends SourcePane {
 
     private void addFile(final DelimitedImportController importController) {
         final FileChooser fileChooser = new FileChooser();
-        fileChooser.setInitialDirectory(DEFAULT_DIRECTORY);
+        fileChooser.setInitialDirectory(defaultDirectory);
 
         final ImportFileParser parser = DelimitedSourcePane.this.importFileParserComboBox.getSelectionModel()
                 .getSelectedItem();
@@ -182,7 +174,7 @@ public class DelimitedSourcePane extends SourcePane {
 
         if (newFiles != null) {
             if (!newFiles.isEmpty()) {
-                DEFAULT_DIRECTORY = newFiles.get(0).getParentFile();
+                defaultDirectory = newFiles.get(0).getParentFile();
                 DelimitedSourcePane.this.importFileParserComboBox.setDisable(true);
             }
             final ObservableList<File> files = FXCollections.observableArrayList(fileListView.getItems());

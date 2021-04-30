@@ -62,17 +62,17 @@ import javafx.stage.Stage;
 public class JDBCSourcePane extends SourcePane {
 
     private static final Logger LOGGER = Logger.getLogger(JDBCSourcePane.class.getName());
-    private final ComboBox<JDBCConnection> dbConnectionComboBox;
     private static final String FONT_SIZE_FORMAT = "-fx-font-size:%d;";
+    private static final int GRIDPANE_MIN_WIDTH = 200;
+    private static final int CONNPANE_PREF_HEIGHT = 200;
+    private static final int SCROLLPANE_PREF_HEIGHT = 200;
+    private static final int SCROLLPANE_PREF_WIDTH = 400;
+    private static final int LARGE_SCROLLPANE_PREF_HEIGHT = 400;
+    private static final int LARGE_SCROLLPANE_PREF_WIDTH = 800;
+    private static final Insets GRIDPANE_PADDING = new Insets(5);
+    private static final int GAP = 10;
 
-    private final static int GRIDPANE_MIN_WIDTH = 200;
-    private final static int CONNPANE_PREF_HEIGHT = 200;
-    private final static int SCROLLPANE_PREF_HEIGHT = 200;
-    private final static int SCROLLPANE_PREF_WIDTH = 400;
-    private final static int LARGE_SCROLLPANE_PREF_HEIGHT = 400;
-    private final static int LARGE_SCROLLPANE_PREF_WIDTH = 800;
-    private final static Insets GRIDPANE_PADDING = new Insets(5);
-    private final static int GAP = 10;
+    private final ComboBox<JDBCConnection> dbConnectionComboBox;
 
     public JDBCSourcePane(final JDBCImportController importController) {
         super(importController);
@@ -89,9 +89,8 @@ public class JDBCSourcePane extends SourcePane {
 
         dbConnectionComboBox = new ComboBox<>();
         dbConnectionComboBox.setItems(connections);
-        dbConnectionComboBox.setOnAction((final ActionEvent t) -> {
-            importController.setDBConnection(dbConnectionComboBox.getSelectionModel().getSelectedItem());
-        });
+        dbConnectionComboBox.setOnAction((final ActionEvent t)
+                -> importController.setDBConnection(dbConnectionComboBox.getSelectionModel().getSelectedItem()));
         GridPane.setConstraints(dbConnectionComboBox, 1, 0, 1, 1, HPos.LEFT, VPos.TOP);
 
         final EventHandler<ActionEvent> manageConnectionsAction;

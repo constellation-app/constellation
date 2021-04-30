@@ -54,24 +54,23 @@ import javafx.stage.Window;
  */
 public final class AttributeNode extends Label implements Comparable<AttributeNode> {
 
-    private final AttributeList attributeList;
-    private Attribute attribute;
-    private AttributeTranslator translator = AttributeTranslator.getTranslators().get(0);
-    private ImportTableColumn column = null;
-    private boolean isKey;
+    private static final Image KEY_IMAGE = UserInterfaceIconProvider.KEY.buildImage(16, ConstellationColor.CHERRY.getJavaColor());
+    private static final Image ADD_IMAGE = UserInterfaceIconProvider.ADD.buildImage(16, Color.BLACK);
+    private static final String DOUBLE_UNDERSCORE = "__";
 
+    private final AttributeList attributeList;
     private final ToggleGroup menuGroup = new ToggleGroup();
     private final Menu parseMenu = new Menu("Formatter");
     private final MenuItem deleteMenu = new MenuItem("Delete");
     private final MenuItem setDefaultMenuItem = new MenuItem("Set Default Value...");
-    private String defaultValue = null;
-    private PluginParameters translatorParameters;
 
-    private static final Image KEY_IMAGE = UserInterfaceIconProvider.KEY.buildImage(16, ConstellationColor.CHERRY.getJavaColor());
-    private static final Image ADD_IMAGE = UserInterfaceIconProvider.ADD.buildImage(16, Color.BLACK);
     private Map<String, PluginParameters> recentTranslatorParameters = new HashMap<>();
-
-    private static final String DOUBLE_UNDERSCORE = "__";
+    private AttributeTranslator translator = AttributeTranslator.getTranslators().get(0);
+    private ImportTableColumn column;
+    private PluginParameters translatorParameters;
+    private Attribute attribute;
+    private String defaultValue;
+    private boolean isKey;
 
     /**
      *
@@ -109,13 +108,9 @@ public final class AttributeNode extends Label implements Comparable<AttributeNo
             final RadioMenuItem item = new RadioMenuItem(at.getLabel());
             item.setSelected(at.getClass().equals(translator.getClass()));
             item.setToggleGroup(menuGroup);
-            item.setOnAction((ActionEvent t) -> {
-                attributeItemAction(at);
-            });
+            item.setOnAction((ActionEvent t) -> attributeItemAction(at));
             return item;
-        }).forEachOrdered(item -> {
-            parseMenu.getItems().add(item);
-        });
+        }).forEachOrdered(item -> parseMenu.getItems().add(item));
 
         setDefaultMenuItem.setOnAction((ActionEvent event) -> {
             defaultValue = attributeList.importController.showSetDefaultValueDialog(attribute.getName(), defaultValue);
@@ -124,9 +119,7 @@ public final class AttributeNode extends Label implements Comparable<AttributeNo
         });
         menu.getItems().add(setDefaultMenuItem);
 
-        deleteMenu.setOnAction((ActionEvent event) -> {
-            attributeList.deleteAttributeNode(AttributeNode.this);
-        });
+        deleteMenu.setOnAction((ActionEvent event) -> attributeList.deleteAttributeNode(AttributeNode.this));
         menu.getItems().add(deleteMenu);
 
         setAttribute(attribute, isKey);
@@ -232,7 +225,7 @@ public final class AttributeNode extends Label implements Comparable<AttributeNo
         return translatorParameters;
     }
 
-    public final void setAttribute(final Attribute attribute, final boolean isKey) {
+    public void setAttribute(final Attribute attribute, final boolean isKey) {
         if (attribute != this.attribute || this.isKey != isKey) {
             this.attribute = attribute;
             this.isKey = isKey;

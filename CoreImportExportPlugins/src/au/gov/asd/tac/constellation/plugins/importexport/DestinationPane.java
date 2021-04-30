@@ -36,9 +36,10 @@ import javafx.scene.layout.GridPane;
  */
 public class DestinationPane extends GridPane {
 
+    private static final Insets GRIDPANE_PADDING = new Insets(5);
+    private static final int GAP = 10;
+
     private final ImportController importController;
-    private final static Insets GRIDPANE_PADDING = new Insets(5);
-    private final static int GAP = 10;
 
     public DestinationPane(final ImportController importController) {
         this.importController = importController;
@@ -73,9 +74,8 @@ public class DestinationPane extends GridPane {
 
         final ComboBox<ImportDestination<?>> graphComboBox = new ComboBox<>();
         graphComboBox.setItems(destinations);
-        graphComboBox.setOnAction((final ActionEvent t) -> {
-            DestinationPane.this.importController.setDestination(graphComboBox.getSelectionModel().getSelectedItem());
-        });
+        graphComboBox.setOnAction((final ActionEvent t)
+                -> DestinationPane.this.importController.setDestination(graphComboBox.getSelectionModel().getSelectedItem()));
         graphComboBox.getSelectionModel().select(defaultDestination);
         GridPane.setConstraints(graphComboBox, 0, 0);
 

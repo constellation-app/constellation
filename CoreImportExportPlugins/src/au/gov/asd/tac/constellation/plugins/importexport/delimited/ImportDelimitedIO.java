@@ -59,7 +59,7 @@ import org.openide.util.NbPreferences;
  *
  * @author algol
  */
-public class ImportDelimitedIO {
+public final class ImportDelimitedIO {
 
     private static final String IMPORT_DELIMITED_DIR = "ImportDelimited";
     private static final Logger LOGGER = Logger.getLogger(ImportDelimitedIO.class.getName());

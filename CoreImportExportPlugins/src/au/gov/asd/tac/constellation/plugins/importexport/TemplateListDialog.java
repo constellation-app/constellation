@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.plugins.importexport;
 
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
 import java.io.File;
+import java.util.Locale;
 import java.util.Optional;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -38,10 +39,10 @@ import javafx.stage.Window;
  */
 public class TemplateListDialog {
 
-    private final Window owner;
-    private final boolean isLoading;
     private static final Insets PADDING = new Insets(10, 0, 0, 0);
     private static final int NAMES_OFFSET = 5;
+    private final Window owner;
+    private final boolean isLoading;
 
     public TemplateListDialog(final Window owner, final boolean isLoading) {
         this.owner = owner;
@@ -52,7 +53,7 @@ public class TemplateListDialog {
         final String[] names;
         if (delimIoDir.isDirectory()) {
             names = delimIoDir.list((final File dir, final String name) -> {
-                return name.toLowerCase().endsWith(".json");
+                return name.toLowerCase(Locale.ENGLISH).endsWith(".json");
             });
         } else {
             names = new String[0];

@@ -53,7 +53,7 @@ import org.openide.awt.StatusDisplayer;
 import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
 
-public class ImportJDBCIO {
+public final class ImportJDBCIO {
 
     private static final String IMPORT_DELIMITED_DIR = "ImportDelimited";
     private static final Logger LOGGER = Logger.getLogger(ImportJDBCIO.class.getName());
@@ -121,9 +121,7 @@ public class ImportJDBCIO {
             final ArrayNode definitionArray = rootNode.putArray(DEFINITIONS);
             final List<ImportDefinition> definitions = importController.getDefinitions();
             final String[] columns = importController.getCurrentColumns();
-            definitions.stream().forEach(impdef -> {
-                definitionCompute(definitionArray, columns, impdef);
-            });
+            definitions.stream().forEach(impdef -> definitionCompute(definitionArray, columns, impdef));
 
             mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
             mapper.configure(SerializationFeature.CLOSE_CLOSEABLE, true);

@@ -33,7 +33,6 @@ import java.util.function.Consumer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -71,6 +70,18 @@ import org.apache.commons.lang3.StringUtils;
  */
 public final class RunPane extends BorderPane implements KeyListener {
 
+    private static final int SCROLLPANE_HEIGHT = 450;
+    private static final int SCROLLPANE_VIEW_WIDTH = 400;
+    private static final int SCROLLPANE_VIEW_HEIGHT = 900;
+    private static final int SAMPLEVIEW_HEIGHT = 450;
+    private static final int SAMPLEVIEW_MIN_HEIGHT = 130;
+    private static final int ATTRIBUTEPANE_PREF_WIDTH = 300;
+    private static final int ATTRIBUTEPANE_MIN_WIDTH = 100;
+    private static final Insets ATTIRUBTEPANE_PADDING = new Insets(5);
+    private static final int ATTRIBUTE_GAP = 5;
+    private static final int ATTRIBUTEFILTER_PREFHEIGHT = 50;
+    private static final int TABLECOLUMN_PREFWIDTH = 50;
+
     protected final ImportController importController;
     private final TableView<TableRow> sampleDataView = new TableView<>();
     private final AttributeList sourceVertexAttributeList;
@@ -78,12 +89,12 @@ public final class RunPane extends BorderPane implements KeyListener {
     private final AttributeList transactionAttributeList;
     private Point2D draggingOffset;
     private AttributeNode draggingAttributeNode;
-    private ImportTableColumn mouseOverColumn = null;
+    private ImportTableColumn mouseOverColumn;
     private Rectangle columnRectangle = new Rectangle();
     private int attributeCount = 0;
 
     private final TextField filterField;
-    protected RowFilter rowFilter = null;
+    protected RowFilter rowFilter;
     private String filter = "";
 
     private final SplitPane attributeFilterPane = new SplitPane();
@@ -91,18 +102,6 @@ public final class RunPane extends BorderPane implements KeyListener {
     private String attributeFilter = "";
     private final EasyGridPane attributePane;
     private static final double ATTRIBUTE_PADDING_HEIGHT = 19.75;
-
-    private final static int SCROLLPANE_HEIGHT = 450;
-    private final static int SCROLLPANE_VIEW_WIDTH = 400;
-    private final static int SCROLLPANE_VIEW_HEIGHT = 900;
-    private final static int SAMPLEVIEW_HEIGHT = 450;
-    private final static int SAMPLEVIEW_MIN_HEIGHT = 130;
-    private final static int ATTRIBUTEPANE_PREF_WIDTH = 300;
-    private final static int ATTRIBUTEPANE_MIN_WIDTH = 100;
-    private final static Insets ATTIRUBTEPANE_PADDING = new Insets(5);
-    private final static int ATTRIBUTE_GAP = 5;
-    private final static int ATTRIBUTEFILTER_PREFHEIGHT = 50;
-    private final static int TABLECOLUMN_PREFWIDTH = 50;
 
     // find a better way to determine the multiplier which
     // seems to be dependant on the number of columns and its width. So this
@@ -226,23 +225,20 @@ public final class RunPane extends BorderPane implements KeyListener {
                 USE_COMPUTED_SIZE, -1);
         attributePane.addRow(0, sourceVertexScrollPane, destinationVertexScrollPane, transactionScrollPane);
 
-        attributePane.setOnKeyPressed(new EventHandler<javafx.scene.input.KeyEvent>() {
-            @Override
-            public void handle(javafx.scene.input.KeyEvent event) {
-                final KeyCode c = event.getCode();
-                if (c == KeyCode.DELETE || c == KeyCode.BACK_SPACE) {
-                    attributeFilter = "";
-                    attributeFilterPane.setVisible(false);
-                } else if (c.isLetterKey()) {
-                    attributeFilter += c.getChar();
-                    attributeFilterTextField.setText(attributeFilter);
-                    attributeFilterPane.setVisible(true);
-                } else {
-                    return; // Default case added per Sonar - java:S126
-                }
-                importController.setAttributeFilter(attributeFilter);
-                importController.setDestination(null);
+        attributePane.setOnKeyPressed((javafx.scene.input.KeyEvent event) -> {
+            final KeyCode c = event.getCode();
+            if (c == KeyCode.DELETE || c == KeyCode.BACK_SPACE) {
+                attributeFilter = "";
+                attributeFilterPane.setVisible(false);
+            } else if (c.isLetterKey()) {
+                attributeFilter += c.getChar();
+                attributeFilterTextField.setText(attributeFilter);
+                attributeFilterPane.setVisible(true);
+            } else {
+                return; // Default case added per Sonar - java:S126
             }
+            importController.setAttributeFilter(attributeFilter);
+            importController.setDestination(null);
         });
 
         // A scroll pane to hold the attribute boxes
@@ -276,35 +272,30 @@ public final class RunPane extends BorderPane implements KeyListener {
         columnRectangle.setManaged(false);
         RunPane.this.getChildren().add(columnRectangle);
 
-        setOnMouseDragged((final MouseEvent t) -> {
-            handleAttributeMoved(t.getSceneX(), t.getSceneY());
-        });
+        setOnMouseDragged((final MouseEvent t) -> handleAttributeMoved(t.getSceneX(), t.getSceneY()));
 
-        setOnMouseReleased(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(final MouseEvent t) {
-                if (draggingAttributeNode != null) {
-                    if (mouseOverColumn == null) {
-                        draggingAttributeNode.getAttributeList().addAttributeNode(draggingAttributeNode);
-                    } else {
-                        // If the active column currently has an attribute node then return
-                        // the attribute node to its list
-                        final AttributeNode currentAttributeNode = mouseOverColumn.getAttributeNode();
-                        if (currentAttributeNode != null) {
-                            currentAttributeNode.getAttributeList().addAttributeNode(currentAttributeNode);
-                        }
-                        // Drop the AttributeNode onto the column.
-                        mouseOverColumn.setAttributeNode(draggingAttributeNode);
-                        draggingAttributeNode.setColumn(mouseOverColumn);
-                        validate(mouseOverColumn);
+        setOnMouseReleased((final MouseEvent t) -> {
+            if (draggingAttributeNode != null) {
+                if (mouseOverColumn == null) {
+                    draggingAttributeNode.getAttributeList().addAttributeNode(draggingAttributeNode);
+                } else {
+                    // If the active column currently has an attribute node then return
+                    // the attribute node to its list
+                    final AttributeNode currentAttributeNode = mouseOverColumn.getAttributeNode();
+                    if (currentAttributeNode != null) {
+                        currentAttributeNode.getAttributeList().addAttributeNode(currentAttributeNode);
                     }
-
-                    columnRectangle.setVisible(false);
-                    draggingAttributeNode.setManaged(true);
-                    draggingAttributeNode = null;
-                    draggingOffset = null;
-                    mouseOverColumn = null;
+                    // Drop the AttributeNode onto the column.
+                    mouseOverColumn.setAttributeNode(draggingAttributeNode);
+                    draggingAttributeNode.setColumn(mouseOverColumn);
+                    validate(mouseOverColumn);
                 }
+
+                columnRectangle.setVisible(false);
+                draggingAttributeNode.setManaged(true);
+                draggingAttributeNode = null;
+                draggingOffset = null;
+                mouseOverColumn = null;
             }
         });
     }
@@ -472,20 +463,14 @@ public final class RunPane extends BorderPane implements KeyListener {
     public boolean setFilter(final String filter) {
         this.filter = filter;
         if (filter.isEmpty()) {
-            for (TableRow tableRow : currentRows) {
-                tableRow.setIncluded(true);
-            }
+            currentRows.forEach(tableRow -> tableRow.setIncluded(true));
             return true;
         }
         if (rowFilter.setScript(filter)) {
-            for (TableRow tableRow : currentRows) {
-                tableRow.filter(rowFilter);
-            }
+            currentRows.forEach(tableRow -> tableRow.filter(rowFilter));
             return true;
         } else {
-            for (TableRow tableRow : currentRows) {
-                tableRow.setIncluded(false);
-            }
+            currentRows.forEach(tableRow -> tableRow.setIncluded(false));
             return false;
         }
     }

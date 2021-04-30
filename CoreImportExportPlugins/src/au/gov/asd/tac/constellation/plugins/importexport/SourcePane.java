@@ -43,20 +43,19 @@ import static javafx.scene.layout.Region.USE_PREF_SIZE;
  */
 public abstract class SourcePane extends GridPane {
 
-    protected final ComboBox<ImportDestination<?>> graphComboBox;
-    protected final Pane parametersPane = new Pane();
-    protected final ColumnConstraints column0Constraints = new ColumnConstraints();
-    protected final ColumnConstraints column1Constraints = new ColumnConstraints();
-    protected final ColumnConstraints column2Constraints = new ColumnConstraints();
-
     private static final int GRAPHCOMBO_COLUMN_INDEX = 1;
     private static final int GRAPHCOMBO_ROW_INDEX = 4;
     private static final int GRAPHCOMBO_COLUMN_SPAN = 2;
     private static final int GRAPHCOMBO_ROW_SPAN = 1;
 
-    private final static int GAP = 10;
-    private final static Insets GRIDPANE_PADDING = new Insets(5);
+    private static final int GAP = 10;
+    private static final Insets GRIDPANE_PADDING = new Insets(5);
 
+    protected final ComboBox<ImportDestination<?>> graphComboBox;
+    protected final Pane parametersPane = new Pane();
+    protected final ColumnConstraints column0Constraints = new ColumnConstraints();
+    protected final ColumnConstraints column1Constraints = new ColumnConstraints();
+    protected final ColumnConstraints column2Constraints = new ColumnConstraints();
     protected final ImportController importController;
 
     protected SourcePane(final ImportController importController) {
@@ -128,9 +127,7 @@ public abstract class SourcePane extends GridPane {
         }
         // resets the combo box when set correctly.
         graphComboBox.setItems(destinations);
-        graphComboBox.setOnAction((final ActionEvent t) -> {
-            importController.setDestination(graphComboBox.getSelectionModel().getSelectedItem());
-        });
+        graphComboBox.setOnAction((final ActionEvent t) -> importController.setDestination(graphComboBox.getSelectionModel().getSelectedItem()));
         // Select null triggers the combobox to update to the correct value for
         // some unknown reason. Removal will mean that the combobox will
         // not keep it's state when a graph event occurs

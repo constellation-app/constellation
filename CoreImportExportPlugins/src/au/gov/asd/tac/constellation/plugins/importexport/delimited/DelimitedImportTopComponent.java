@@ -52,7 +52,7 @@ import org.openide.windows.TopComponent;
 public final class DelimitedImportTopComponent extends ImportTopComponent {
 
     private final DelimitedImportPane delimitedImportPane;
-    private final String helpText = "1. Click on the green plus icon to add files.\n"
+    private static final String HELP_TEXT = "1. Click on the green plus icon to add files.\n"
             + "2. Select your destination graph.\n"
             + "3. Drag and drop attributes onto columns.\n"
             + "4. Right click an attribute for more options.\n"
@@ -60,9 +60,9 @@ public final class DelimitedImportTopComponent extends ImportTopComponent {
             + "6. Save your configuration using 'Options > Save'.\n\n"
             + "HINTS:\n* See all supported attributes with 'Options > Show all schema attributes'.\n"
             + "* Start typing to filter attributes (press delete to clear).";
-    protected final DelimitedImportController controller = new DelimitedImportController();
-    protected final ConfigurationPane configurationPane = new ConfigurationPane(controller, helpText);
-    protected final DelimitedSourcePane sourcePane = new DelimitedSourcePane(controller);
+    final DelimitedImportController controller = new DelimitedImportController();
+    final ConfigurationPane configurationPane = new ConfigurationPane(controller, HELP_TEXT);
+    final DelimitedSourcePane sourcePane = new DelimitedSourcePane(controller);
 
     public DelimitedImportTopComponent() {
         super();

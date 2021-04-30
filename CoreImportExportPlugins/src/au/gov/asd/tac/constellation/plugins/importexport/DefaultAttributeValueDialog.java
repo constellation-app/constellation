@@ -40,14 +40,15 @@ import javafx.stage.Window;
  */
 public class DefaultAttributeValueDialog extends Stage {
 
-    private final TextField labelText;
-    private String defaultValue = null;
-    private final static int GAP = 5;
-    private final static int TEXT_WIDTH = 200;
-    private final static int TEXT_HEIGHT = 30;
+    private static final int GAP = 5;
+    private static final int TEXT_WIDTH = 200;
+    private static final int TEXT_HEIGHT = 30;
 
-    private final static Insets GRIDPANE_PADDING = new Insets(10);
-    private final static Insets BUTTONPANE_PADDING = new Insets(5);
+    private static final Insets GRIDPANE_PADDING = new Insets(10);
+    private static final Insets BUTTONPANE_PADDING = new Insets(5);
+
+    private final TextField labelText;
+    private String defaultValue;
 
     public DefaultAttributeValueDialog(final Window owner, final String attributeName, final String initialValue) {
 
@@ -99,9 +100,7 @@ public class DefaultAttributeValueDialog extends Stage {
         buttonPane.getChildren().add(okButton);
 
         final Button cancelButton = new Button("Cancel");
-        cancelButton.setOnAction((ActionEvent event) -> {
-            DefaultAttributeValueDialog.this.hide();
-        });
+        cancelButton.setOnAction(event -> DefaultAttributeValueDialog.this.hide());
         buttonPane.getChildren().add(cancelButton);
 
         final Button clearButton = new Button("Clear");

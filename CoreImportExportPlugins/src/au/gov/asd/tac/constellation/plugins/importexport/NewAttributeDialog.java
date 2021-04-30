@@ -44,20 +44,20 @@ import javafx.stage.Window;
  */
 public class NewAttributeDialog extends Stage {
 
+    private static final int GRIDPANE_GAP = 5;
+    private static final Insets GRIDPANE_PADDING = new Insets(10);
+    private static final int LABEL_PREFWIDTH = 200;
+    private static final int LABEL_PREFHEIGHT = 30;
+    private static final int DESC_PREFWIDTH = 300;
+    private static final int DESC_PREFHEIGHT = 100;
+    private static final Insets BUTTONPANE_PADDING = new Insets(5);
+
     private final GraphElementType elementType;
     private final ComboBox<String> typeBox;
     private final TextField labelText;
     private final TextArea descriptionText;
 
-    private final static int GRIDPANE_GAP = 5;
-    private final static Insets GRIDPANE_PADDING = new Insets(10);
-    private final static int LABEL_PREFWIDTH = 200;
-    private final static int LABEL_PREFHEIGHT = 30;
-    private final static int DESC_PREFWIDTH = 300;
-    private final static int DESC_PREFHEIGHT = 100;
-    private final static Insets BUTTONPANE_PADDING = new Insets(5);
-
-    private Attribute attribute = null;
+    private Attribute attribute;
 
     public NewAttributeDialog(final Window owner, final GraphElementType elementType) {
 
@@ -126,9 +126,7 @@ public class NewAttributeDialog extends Stage {
         buttonPane.getChildren().add(okButton);
 
         final Button cancelButton = new Button("Cancel");
-        cancelButton.setOnAction((ActionEvent event) -> {
-            NewAttributeDialog.this.hide();
-        });
+        cancelButton.setOnAction((ActionEvent event) -> NewAttributeDialog.this.hide());
         buttonPane.getChildren().add(cancelButton);
     }
 

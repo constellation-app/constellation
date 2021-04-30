@@ -29,7 +29,6 @@ import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.geometry.Side;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -49,14 +48,15 @@ import javafx.scene.layout.AnchorPane;
  */
 public class ConfigurationPane extends AnchorPane {
 
-    protected final ImportController importController;
-    protected final TabPane tabPane;
-    private final String helpText;
     private static final double TAB_ANCHOR_POS = 5.0;
     private static final double RUN_BUTTON_ANCHOR_POS = 10.0;
     private static final int DOUBLE_CLICK_AMT = 2;
 
     private static final Image ADD_IMAGE = UserInterfaceIconProvider.ADD.buildImage(16, Color.BLACK);
+
+    protected final ImportController importController;
+    protected final TabPane tabPane;
+    private final String helpText;
 
     public ConfigurationPane(final ImportController importController, final String helpText) {
         this.importController = importController;
@@ -78,9 +78,7 @@ public class ConfigurationPane extends AnchorPane {
 
         // Create a button to allow the user to add a new tab (RunPane).
         Button newRunButton = new Button("", new ImageView(ADD_IMAGE));
-        newRunButton.setOnAction((ActionEvent event) -> {
-            importController.createNewRun();
-        });
+        newRunButton.setOnAction(event -> importController.createNewRun());
         AnchorPane.setTopAnchor(newRunButton, RUN_BUTTON_ANCHOR_POS);
         AnchorPane.setRightAnchor(newRunButton, RUN_BUTTON_ANCHOR_POS);
         getChildren().add(newRunButton);
@@ -111,13 +109,9 @@ public class ConfigurationPane extends AnchorPane {
         final Tab tab = new Tab();
         tab.setGraphic(label);
 
-        tab.setOnClosed(event -> {
-            importController.updateDisplayedAttributes();
-        });
+        tab.setOnClosed(event -> importController.updateDisplayedAttributes());
 
-        label.setOnMouseClicked(event -> {
-            labelClickEvent(tab, label, event);
-        });
+        label.setOnMouseClicked(event -> labelClickEvent(tab, label, event));
 
         // Add the tab
         tabPane.getTabs().add(tab);
@@ -241,9 +235,7 @@ public class ConfigurationPane extends AnchorPane {
         // (This tends to involve Platform.runLater() so let them be queued.)
         tabPane.getTabs().clear();
 
-        for (final ImportDefinition impdef : definitions) {
-            importController.createNewRun();
-        }
+        definitions.forEach(_item -> importController.createNewRun());
 
         // ...then configure each RunPane.
         // (This will queue waiting for the RunPane creations.)

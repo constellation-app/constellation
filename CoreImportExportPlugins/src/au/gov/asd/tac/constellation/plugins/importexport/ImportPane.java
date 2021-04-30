@@ -48,12 +48,14 @@ import org.openide.util.NbPreferences;
  */
 public class ImportPane extends BorderPane {
 
-    protected ImportController importController;
-    protected ImportTopComponent importTopComponent;
-    protected ConfigurationPane configurationPane;
-    protected SourcePane sourcePane;
-    protected EasyGridPane gridPane;
-    protected BorderPane root;
+    private final static Insets GRIDPANE_PADDING = new Insets(0, 0, 10, 0);
+    private final static Insets ACTIONPANE_PADDING = new Insets(0, 0, 20, 0);
+    private final static int GRIDPANE_CONSTRAINT = 200;
+    private final static int ACTIONPANE_MIN_HEIGHT = 40;
+    private final static Image HELP_IMAGE = UserInterfaceIconProvider.HELP.buildImage(16,
+            ConstellationColor.BLUEBERRY.getJavaColor());
+
+    protected final Preferences importExportPrefs = NbPreferences.forModule(ImportExportPreferenceKeys.class);
     protected final Menu optionsMenu;
     protected final MenuItem loadMenuItem;
     protected final MenuItem saveMenuItem;
@@ -61,14 +63,12 @@ public class ImportPane extends BorderPane {
     protected final MenuItem showSchemaAttributesItem;
     protected final Button helpButton;
 
-    private static final Insets GRIDPANE_PADDING = new Insets(0, 0, 10, 0);
-    private static final Insets ACTIONPANE_PADDING = new Insets(0, 0, 20, 0);
-    private static final int GRIDPANE_CONSTRAINT = 200;
-    private static final int ACTIONPANE_MIN_HEIGHT = 40;
-
-    private static final Image HELP_IMAGE = UserInterfaceIconProvider.HELP.buildImage(16,
-            ConstellationColor.BLUEBERRY.getJavaColor());
-    protected final Preferences importExportPrefs = NbPreferences.forModule(ImportExportPreferenceKeys.class);
+    protected ImportController importController;
+    protected ImportTopComponent importTopComponent;
+    protected ConfigurationPane configurationPane;
+    protected SourcePane sourcePane;
+    protected EasyGridPane gridPane;
+    protected BorderPane root;
 
     public ImportPane(final ImportTopComponent importTopComponent, final ImportController controller,
             final ConfigurationPane configurationPane, final SourcePane sourcePane) {

@@ -31,9 +31,7 @@ public class JDBCImportPane extends ImportPane {
 
         optionsMenu.getItems().addAll(showSchemaAttributesItem);
 
-        helpButton.setOnAction(event -> {
-            new HelpCtx(HELP_CTX).display();
-        });
+        helpButton.setOnAction(event -> new HelpCtx(HELP_CTX).display());
         // Setting help keyevent to f1
         setOnKeyPressed(event -> {
             final KeyCode c = event.getCode();

@@ -36,6 +36,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.control.Alert.AlertType;
@@ -44,12 +45,13 @@ import org.apache.commons.lang3.StringUtils;
 public class JDBCImportController extends ImportController {
 
     private static final Logger LOGGER = Logger.getLogger(JDBCImportController.class.getName());
+    private static final String QUERY_LIMIT_TEXT = " limit ";
+    private static final String SELECT_TEXT = "select ";
+
     private JDBCConnection connection;
     private String query;
     private String username;
     private String password;
-    private static final String QUERY_LIMIT_TEXT = " limit ";
-    private static final String SELECT_TEXT = "select ";
 
     public JDBCImportController() {
         super();
@@ -62,7 +64,7 @@ public class JDBCImportController extends ImportController {
     }
 
     public boolean hasDBConnection() {
-        return !(connection == null);
+        return connection != null;
     }
 
     public void setDBConnection(final JDBCConnection connection) {
@@ -89,7 +91,7 @@ public class JDBCImportController extends ImportController {
 
         if (currentDestination instanceof SchemaDestination) {
             final GraphManagerListener graphListener = new GraphManagerListener() {
-                boolean opened = false;
+                private boolean opened;
 
                 @Override
                 public void graphOpened(Graph graph) {
@@ -130,7 +132,7 @@ public class JDBCImportController extends ImportController {
                     .set(ImportJDBCPlugin.SCHEMA_PARAMETER_ID, schema)
                     .executeWriteLater(importGraph);
         }
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     @Override
@@ -144,7 +146,7 @@ public class JDBCImportController extends ImportController {
                     final PreparedStatement ps = dbConnection.prepareStatement(queryCopy);
                     final ResultSet rs = ps.executeQuery()) {
 
-                if (!query.toLowerCase().contains(QUERY_LIMIT_TEXT) && query.toLowerCase().startsWith(SELECT_TEXT)) {
+                if (!query.toLowerCase(Locale.ENGLISH).contains(QUERY_LIMIT_TEXT) && query.toLowerCase(Locale.ENGLISH).startsWith(SELECT_TEXT)) {
                     query += QUERY_LIMIT_TEXT + PREVIEW_ROW_LIMIT;
                 }
                 int count = 0;

@@ -50,14 +50,14 @@ import org.openide.windows.TopComponent;
 public final class JDBCImportTopComponent extends ImportTopComponent {
 
     private final JDBCImportPane jdbcImportPane;
-    private final String helpText = "1. Select the connection to use\n"
+    private final static String HELP_TEXT = "1. Select the connection to use\n"
             + "2. Select your destination graph.\n"
             + "3. Drag and drop attributes onto columns.\n"
             + "4. Right click an attribute for more options.\n"
             + "5. Click the 'Import' button to add data to your graph.\n";
-    protected final JDBCImportController controller = new JDBCImportController();
-    protected final ConfigurationPane configurationPane = new ConfigurationPane(controller, helpText);
-    protected final JDBCSourcePane sourcePane = new JDBCSourcePane(controller);
+    final JDBCImportController controller = new JDBCImportController();
+    final ConfigurationPane configurationPane = new ConfigurationPane(controller, HELP_TEXT);
+    final JDBCSourcePane sourcePane = new JDBCSourcePane(controller);
 
     public JDBCImportTopComponent() {
         super();

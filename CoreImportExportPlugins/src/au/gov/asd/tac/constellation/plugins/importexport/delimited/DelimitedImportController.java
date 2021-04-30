@@ -46,11 +46,11 @@ import org.apache.commons.collections4.CollectionUtils;
 public class DelimitedImportController extends ImportController {
 
     private static final Logger LOGGER = Logger.getLogger(DelimitedImportController.class.getName());
-    private final List<File> files;
-    private File sampleFile = null;
-    private ImportFileParser importFileParser;
 
     private final RefreshRequest refreshRequest = this::updateSampleData;
+    private final List<File> files;
+    private File sampleFile;
+    private ImportFileParser importFileParser;
 
     public DelimitedImportController() {
         super();
@@ -74,9 +74,7 @@ public class DelimitedImportController extends ImportController {
 
         if (currentParameters != null) {
             final List<InputSource> inputSources = new ArrayList<>();
-            files.forEach(file -> {
-                inputSources.add(new InputSource(file));
-            });
+            files.forEach(file -> inputSources.add(new InputSource(file)));
             importFileParser.updateParameters(currentParameters, inputSources);
         }
 
@@ -100,7 +98,7 @@ public class DelimitedImportController extends ImportController {
         if (currentDestination instanceof SchemaDestination) {
 
             final GraphManagerListener graphManagerListener = new GraphManagerListener() {
-                boolean opened = false;
+                private boolean opened = false;
 
                 @Override
                 public void graphOpened(Graph graph) {
@@ -187,9 +185,7 @@ public class DelimitedImportController extends ImportController {
             } else {
                 currentParameters = importFileParser.getParameters(refreshRequest);
                 List<InputSource> inputSources = new ArrayList<>();
-                files.forEach(file -> {
-                    inputSources.add(new InputSource(file));
-                });
+                files.forEach(file -> inputSources.add(new InputSource(file)));
                 importFileParser.updateParameters(currentParameters, inputSources);
             }
             importPane.getSourcePane().setParameters(currentParameters);

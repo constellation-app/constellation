@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.prefs.Preferences;
@@ -42,6 +43,7 @@ import org.openide.util.NbPreferences;
 /**
  *
  * @author sirius
+ * @param <D>
  */
 public abstract class ImportController<D> {
 
@@ -62,7 +64,7 @@ public abstract class ImportController<D> {
     protected ImportDestination<D> currentDestination;
     protected boolean schemaInitialised;
     protected boolean showAllSchemaAttributes;
-    protected PluginParameters currentParameters = null;
+    protected PluginParameters currentParameters;
     protected String attributeFilter = "";
 
     // Attributes that exist in the graph or schema.
@@ -299,12 +301,12 @@ public abstract class ImportController<D> {
         final Map<String, Attribute> displayedAttributes = new HashMap<>();
         if (attributeFilter != null && attributeFilter.length() > 0) {
             for (final String attributeName : autoAddedAttributes.keySet()) {
-                if (attributeName.toLowerCase().contains(attributeFilter.toLowerCase())) {
+                if (attributeName.toLowerCase(Locale.ENGLISH).contains(attributeFilter.toLowerCase(Locale.ENGLISH))) {
                     displayedAttributes.put(attributeName, autoAddedAttributes.get(attributeName));
                 }
             }
             for (final String attributeName : manuallyAddedAttributes.keySet()) {
-                if (attributeName.toLowerCase().contains(attributeFilter.toLowerCase())) {
+                if (attributeName.toLowerCase(Locale.ENGLISH).contains(attributeFilter.toLowerCase(Locale.ENGLISH))) {
                     displayedAttributes.put(attributeName, manuallyAddedAttributes.get(attributeName));
                 }
             }
@@ -351,9 +353,7 @@ public abstract class ImportController<D> {
     public abstract List<File> processImport() throws PluginException;
 
     public void cancelImport() {
-        SwingUtilities.invokeLater(() -> {
-            importPane.close();
-        });
+        SwingUtilities.invokeLater(() -> importPane.close());
     }
 
     protected abstract void updateSampleData();

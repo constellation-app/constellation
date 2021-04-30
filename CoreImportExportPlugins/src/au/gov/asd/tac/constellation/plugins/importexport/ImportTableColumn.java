@@ -42,10 +42,10 @@ import javafx.scene.layout.BorderPane;
 public class ImportTableColumn extends TableColumn<TableRow, CellValue> {
 
     private static final Logger LOGGER = Logger.getLogger(ImportTableColumn.class.getName());
+    private static final Insets BORDERPANE_PADDING = new Insets(2);
 
     private final String label;
     private final int columnIndex;
-    private final static Insets BORDERPANE_PADDING = new Insets(2);
 
     public ImportTableColumn(final String label, final int columnIndex) {
         this.label = label;
@@ -95,9 +95,7 @@ public class ImportTableColumn extends TableColumn<TableRow, CellValue> {
             data.stream().map(row -> row.getProperty(columnIndex)).map(property -> {
                 property.setText(property.get().getOriginalText());
                 return property;
-            }).forEachOrdered(property -> {
-                property.setMessage(null, false);
-            });
+            }).forEachOrdered(property -> property.setMessage(null, false));
         }
         getGraphic().setStyle(columnFailed ? "-fx-background-color: rgba(255, 0, 0, 0.3);"
                 : "-fx-background-color: transparent;");
