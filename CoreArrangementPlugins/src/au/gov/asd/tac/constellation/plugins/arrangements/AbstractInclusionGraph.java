@@ -152,7 +152,6 @@ public abstract class AbstractInclusionGraph {
         // Loop through all vertexes and count the number that have been
         // explictly selected by user and those that have been marked as locked.
         // Vertexes marked as locked will not be 'arranged'.
-        // selected - which infers all vertexes are being considered.
         int incCount = 0;
         int lockedCount = 0;
         for (int position = 0; position < vxCount; position++) {
@@ -179,7 +178,6 @@ public abstract class AbstractInclusionGraph {
         final int x2Attr = VisualConcept.VertexAttribute.X2.get(wg);
         final int y2Attr = VisualConcept.VertexAttribute.Y2.get(wg);
         final int z2Attr = VisualConcept.VertexAttribute.Z2.get(wg);
-        final int selectedAttr = VisualConcept.VertexAttribute.SELECTED.get(wg);
         final int nradiusAttr = VisualConcept.VertexAttribute.NODE_RADIUS.get(wg);
         final int lradiusAttr = VisualConcept.VertexAttribute.LABEL_RADIUS.get(wg);
 
@@ -193,7 +191,6 @@ public abstract class AbstractInclusionGraph {
         VisualConcept.VertexAttribute.X.ensure(storeGraph);
         VisualConcept.VertexAttribute.Y.ensure(storeGraph);
         VisualConcept.VertexAttribute.Z.ensure(storeGraph);
-        VisualConcept.VertexAttribute.SELECTED.ensure(storeGraph);
         if (xyz2AreSet) {
             VisualConcept.VertexAttribute.X2.ensure(storeGraph);
             VisualConcept.VertexAttribute.Y2.ensure(storeGraph);
@@ -206,7 +203,7 @@ public abstract class AbstractInclusionGraph {
             VisualConcept.VertexAttribute.LABEL_RADIUS.ensure(storeGraph);
         }
 
-        // Process any attributes specified by  calls to addAttributeToCopy().
+        // Process any attributes specified by calls to addAttributeToCopy().
         final int[] selectionAttributes = new int[attributesToCopy.size()];
         for (int i = 0; i < attributesToCopy.size(); i++) {
             final Attribute attr = attributesToCopy.get(i);
@@ -220,7 +217,6 @@ public abstract class AbstractInclusionGraph {
         final int incX2Attr = VisualConcept.VertexAttribute.X2.get(storeGraph);
         final int incY2Attr = VisualConcept.VertexAttribute.Y2.get(storeGraph);
         final int incZ2Attr = VisualConcept.VertexAttribute.Z2.get(storeGraph);
-        final int incSelectedAttr = VisualConcept.VertexAttribute.SELECTED.get(storeGraph);
         final int incNradiusAttr = VisualConcept.VertexAttribute.NODE_RADIUS.get(storeGraph);
         final int incLradiusAttr = VisualConcept.VertexAttribute.LABEL_RADIUS.get(storeGraph);
 
@@ -246,7 +242,6 @@ public abstract class AbstractInclusionGraph {
                 storeGraph.setFloatValue(incXAttr, incVxId, wg.getFloatValue(xAttr, vxId));
                 storeGraph.setFloatValue(incYAttr, incVxId, wg.getFloatValue(yAttr, vxId));
                 storeGraph.setFloatValue(incZAttr, incVxId, wg.getFloatValue(zAttr, vxId));
-                storeGraph.setBooleanValue(incSelectedAttr, incVxId, wg.getBooleanValue(selectedAttr, vxId));
                 if (xyz2AreSet) {
                     storeGraph.setFloatValue(incX2Attr, incVxId, wg.getFloatValue(x2Attr, vxId));
                     storeGraph.setFloatValue(incY2Attr, incVxId, wg.getFloatValue(y2Attr, vxId));
