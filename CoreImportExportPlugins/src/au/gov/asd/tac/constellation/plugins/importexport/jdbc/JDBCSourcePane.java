@@ -425,7 +425,7 @@ public class JDBCSourcePane extends SourcePane {
 
                 dialog.sizeToScene();
                 dialog.initModality(Modality.APPLICATION_MODAL);
-                dialog.setAlwaysOnTop(true);
+                //dialog.setAlwaysOnTop(true); // Test if dialog appears behind - maybe dialog.toFront() is suffice to solve the issue.
                 dialog.toFront();
 
                 dialog.showAndWait();

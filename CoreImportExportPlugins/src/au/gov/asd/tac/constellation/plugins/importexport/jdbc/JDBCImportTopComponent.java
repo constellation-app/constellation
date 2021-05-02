@@ -35,12 +35,15 @@ import org.openide.windows.TopComponent;
         preferredID = "JDBCImportTopComponent",
         iconBase = "au/gov/asd/tac/constellation/plugins/importexport/jdbc/resources/jdbc_import.png",
         persistenceType = TopComponent.PERSISTENCE_ALWAYS)
+@TopComponent.Registration(
+        mode = "explorer",
+        openAtStartup = false)
 @ActionID(
         category = "Window",
         id = "au.gov.asd.tac.constellation.plugins.importexport.jdbc.JDBCImportTopComponent")
 @ActionReferences({
     @ActionReference(path = "Menu/File/Import", position = 0),
-    @ActionReference(path = "Toolbars/File", position = 0)})
+    @ActionReference(path = "Toolbars/File", position = 6)})
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_ImportJDBCFileAction",
         preferredID = "JDBCImportTopComponent")
