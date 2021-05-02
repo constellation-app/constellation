@@ -283,7 +283,7 @@ on how to do this, see the ***Build Constellation*** section in the
     <#if licenseFirst??>
     ${licenseFirst}
     </#if>
-    ${licensePrefix}Copyright 2010-2020 Australian Signals Directorate
+    ${licensePrefix}Copyright 2010-2021 Australian Signals Directorate
     ${licensePrefix}
     ${licensePrefix}Licensed under the Apache License, Version 2.0 (the "License");
     ${licensePrefix}you may not use this file except in compliance with the License.

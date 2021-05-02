@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,8 +29,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.control.ComboBox;
 import javafx.scene.layout.HBox;
+import org.controlsfx.control.SearchableComboBox;
 
 /**
  * A drop-down combo box which is the GUI element corresponding to a
@@ -49,21 +49,20 @@ public class SingleChoiceInputPane extends HBox {
 
     public static final int DEFAULT_WIDTH = 300;
 
-    private final ComboBox<ParameterValue> field;
-    
-    // Keep track of entered characters so the user can enter the prefixes of choices to get there quicker.
-    private String prefix;
+    private final SearchableComboBox<ParameterValue> field;
+    private boolean initialRun = true;
+
     private static final Logger LOGGER = Logger.getLogger(SingleChoiceInputPane.class.getName());
 
     public SingleChoiceInputPane(final PluginParameter<SingleChoiceParameterValue> parameter) {
-        field = new ComboBox<>();
+        field = new SearchableComboBox<>();
         field.setPromptText(parameter.getDescription());
         field.setItems(FXCollections.observableList(SingleChoiceParameterType.getOptionsData(parameter)));
         final ParameterValue initialValue = parameter.getParameterValue();
         if (initialValue.getObjectValue() != null) {
             field.getSelectionModel().select(initialValue);
         }
-        field.setEditable(false);
+
         field.setPrefWidth(DEFAULT_WIDTH);
         field.setDisable(!parameter.isEnabled());
         field.setManaged(parameter.isVisible());
@@ -75,43 +74,7 @@ public class SingleChoiceInputPane extends HBox {
             parameter.getParameterValue().getGuiInit().init(field);
         }
 
-        prefix = "";
-
-        // When moving in or out of the field, clear the prefix.
-        field.focusedProperty().addListener(listener -> {
-            prefix = "";
-        });
-
-        // When a character is typed, modify the prefix and find the matching option.
-        field.setOnKeyTyped(event -> {
-            final int c = (int) event.getCharacter().charAt(0);
-            if (c == 8) {
-                // Delete a character.
-                if (prefix.length() > 0) {
-                    prefix = prefix.substring(0, prefix.length() - 1);
-                }
-            } else if (c == 127) {
-                // Delete the entire prefix.
-                prefix = "";
-            } else if (!Character.isISOControl(c)) {
-                // No control characters (TAB in particular).
-                // Add the new character to the end of the prefix.
-                prefix += event.getCharacter().toLowerCase();
-            }
-
-            // Find the matching option and select it.
-            final ObservableList<ParameterValue> items = field.getItems();
-            for (int ix = 0; ix < items.size(); ix++) {
-                final ParameterValue item = items.get(ix);
-                if (item.toString().toLowerCase().startsWith(prefix)) {
-                    field.getSelectionModel().clearAndSelect(ix);
-                    break;
-                }
-            }
-        });
-
         field.setOnAction((final ActionEvent t) -> {
-            final ParameterValue pv = field.getSelectionModel().getSelectedItem();
             SingleChoiceParameterType.setChoiceData(parameter, field.getSelectionModel().getSelectedItem());
         });
 
@@ -131,11 +94,24 @@ public class SingleChoiceInputPane extends HBox {
                         }
                         break;
                     case PROPERTY:
-                        final List<ParameterValue> options = scParameterValue.getOptionsData();
+                        final ObservableList<ParameterValue> options = FXCollections.observableArrayList();
                         EventHandler<ActionEvent> handler = field.getOnAction();
                         field.setOnAction(null);
-                        field.setItems(FXCollections.observableList(options));
+
+                        options.setAll(scParameterValue.getOptionsData());
+                        field.setItems(options);
                         field.setOnAction(handler);
+
+                        if (initialRun){
+                            // This is a workaround to fix dynamically changing drop downs.
+                            // Otherwise when the Constellation is loaded for the first time,
+                            // such lists wouldn't populate until clicked twice on the arrow.
+                            // E.g. `Type Category` drop down in `Select Top N` plugin
+                            field.show();
+                            field.hide();
+                            field.requestFocus();
+                            initialRun = false;
+                        }
 
                         // Only keep the value if it's in the new choices.
                         if (options.contains(scParameterValue.getChoiceData())) {
@@ -145,6 +121,8 @@ public class SingleChoiceInputPane extends HBox {
                         }
 
                         break;
+
+
                     case ENABLED:
                         field.setDisable(!scParameter.isEnabled());
                         break;
@@ -160,7 +138,7 @@ public class SingleChoiceInputPane extends HBox {
                 }
             });
         });
-         
+
         getChildren().add(field);
         final String parameterId = parameter.getId();
         final List<String> singleChoiceRecentValues = RecentParameterValues.getRecentValues(parameterId);

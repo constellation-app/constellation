@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.conversationview;
 
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
-import au.gov.asd.tac.constellation.utilities.tooltip.TooltipUtilities;
 import java.util.List;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -25,11 +24,8 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Skin;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.skin.LabelSkin;
-import javafx.scene.control.skin.TextAreaSkin;
 import static javafx.scene.layout.Region.USE_PREF_SIZE;
-import static org.python.modules.ucnhash.lookup;
 
 /**
  * A SelectableLabel is a TextArea that has been enhanced to provide similar
