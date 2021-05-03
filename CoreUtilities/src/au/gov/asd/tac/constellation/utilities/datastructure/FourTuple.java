@@ -60,7 +60,7 @@ public class FourTuple<A, B, C, D> implements Serializable, Comparable<FourTuple
      * @return a 4-tuple that is templated with the types of first, second,
      * third and fourth
      */
-    public static <A, B, C, D> FourTuple<A, B, C, D> create(A first, B second, C third, D fourth) {
+    public static <A, B, C, D> FourTuple<A, B, C, D> create(final A first, final B second, final C third, final D fourth) {
         return new FourTuple<>(first, second, third, fourth);
     }
 
@@ -102,9 +102,13 @@ public class FourTuple<A, B, C, D> implements Serializable, Comparable<FourTuple
 
     @Override
     public boolean equals(final Object obj) {
-        if (!(obj instanceof FourTuple)) {
+        if (obj == null) {
             return false;
         }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+
         final FourTuple<?, ?, ?, ?> other = (FourTuple<?, ?, ?, ?>) obj;
         return Objects.equals(other.first, first)
                 && Objects.equals(other.second, second)

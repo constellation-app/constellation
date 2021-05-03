@@ -29,7 +29,7 @@ import java.util.stream.Stream;
  * @param <T> the type of the third object in the 3-tuple
  */
 public class ThreeTuple<F, S, T> implements Serializable, Comparable<ThreeTuple<F, S, T>> {
-    
+
     private static final long serialVersionUID = 1L;
 
     private F first;
@@ -54,7 +54,7 @@ public class ThreeTuple<F, S, T> implements Serializable, Comparable<ThreeTuple<
      * @return a 3-tuple that is templated with the types of first, second and
      * third
      */
-    public static <A, B, C> ThreeTuple<A, B, C> create(A first, B second, C third) {
+    public static <A, B, C> ThreeTuple<A, B, C> create(final A first, final B second, final C third) {
         return new ThreeTuple<>(first, second, third);
     }
 
@@ -88,9 +88,13 @@ public class ThreeTuple<F, S, T> implements Serializable, Comparable<ThreeTuple<
 
     @Override
     public boolean equals(final Object obj) {
-        if (!(obj instanceof ThreeTuple)) {
+        if (obj == null) {
             return false;
         }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+
         final ThreeTuple<?, ?, ?> other = (ThreeTuple<?, ?, ?>) obj;
         return Objects.equals(other.first, first)
                 && Objects.equals(other.second, second)

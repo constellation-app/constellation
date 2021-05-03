@@ -48,7 +48,7 @@ public class Tuple<F, S> implements Serializable, Comparable<Tuple<F, S>> {
      * @param second the second object in the tuple
      * @return a tuple that is templated with the types of first and second
      */
-    public static <A, B> Tuple<A, B> create(A first, B second) {
+    public static <A, B> Tuple<A, B> create(final A first, final B second) {
         return new Tuple<>(first, second);
     }
 
@@ -74,7 +74,10 @@ public class Tuple<F, S> implements Serializable, Comparable<Tuple<F, S>> {
 
     @Override
     public boolean equals(final Object obj) {
-        if (!(obj instanceof Tuple)) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
             return false;
         }
         final Tuple<?, ?> other = (Tuple<?, ?>) obj;
