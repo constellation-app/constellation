@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,7 +86,7 @@ public class GraphicsCardUtilities {
                     LOGGER.log(Level.INFO, "Took {0} seconds to retrieve the graphics card capabilities", (endTime - startTime) / 1000);
 
                     final StringBuilder builder = new StringBuilder();
-                    try (BufferedReader in = new BufferedReader(new FileReader(file))) {
+                    try ( BufferedReader in = new BufferedReader(new FileReader(file))) {
                         String line = in.readLine();
                         while (line != null) {
                             builder.append(line);

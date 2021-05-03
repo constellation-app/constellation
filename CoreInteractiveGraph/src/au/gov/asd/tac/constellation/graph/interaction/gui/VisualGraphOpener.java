@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -176,10 +176,11 @@ public final class VisualGraphOpener extends GraphOpener {
         protected Void doInBackground() throws Exception {
             final File graphFile = FileUtil.toFile(gdo.getPrimaryFile());
             if (graph == null) {
+                HandleIoProgress ioProgressHandler = new HandleIoProgress(String.format("Reading %s...", graphFile.getName()));
                 try {
                     final long t0 = System.currentTimeMillis();
                     LOGGER.log(Level.INFO, String.format("Attempting to open %s", graphFile.toString()));
-                    graph = new GraphJsonReader().readGraphZip(graphFile, new HandleIoProgress(String.format("Reading %s...", graphFile.getName())));
+                    graph = new GraphJsonReader().readGraphZip(graphFile, ioProgressHandler);
                     time = System.currentTimeMillis() - t0;
                 } catch (final GraphParseException | IOException | RuntimeException ex) {  
                     gex = ex;
@@ -191,15 +192,17 @@ public final class VisualGraphOpener extends GraphOpener {
                         // a corrupt star file. Check to see if there was a 'backup' star file generated before the star file
                         // was writtien - if so, attmept to load this.
                         final File backupFile = new File(graphFile.toString().concat(BACKUP_EXTENSION));
-                        
+
+                        // Clear previous progress message and reset to indicate we are trying to use backup.
+                        ioProgressHandler.finish();
                         if (backupFile.exists()) {
-                            
+                            // Set new progress message to highlight attempt to load backup
+                            ioProgressHandler = new HandleIoProgress(String.format("Unable to read %s, reading backup %s...", graphFile.getName(), backupFile.getName()));
                             // Try to load backup file that was located, if it loads then clear previous exception, if not the 
                             // original exception is kept to be handled in the done method
                             final long t0 = System.currentTimeMillis();
                             LOGGER.log(Level.WARNING, String.format("Unable to open requested file, attempting to open backup %s", backupFile.toString()));
-                            graph = new GraphJsonReader().readGraphZip(backupFile, new HandleIoProgress(String.format("%s could not be opened, attempting to open backup file", 
-                                    graphFile.getName(), backupFile.getName())));
+                            graph = new GraphJsonReader().readGraphZip(backupFile, ioProgressHandler);
                             time = System.currentTimeMillis() - t0;
                             gex = null;
                             
@@ -207,13 +210,14 @@ public final class VisualGraphOpener extends GraphOpener {
                             // Don't do a move, rather perform the move in two stages, a copy, then a delete to ensure there
                             // is always going to be a valid file somewhere as only the copy or the delete can fail in a given run.
                             FileUtils.copyFile(new File(backupFile.toString()), new File(graphFile.toString()));
-                            FileUtils.deleteQuietly(backupFile);
                         }
                     }
                 }
                 catch (final GraphParseException | IOException | RuntimeException ex) {  
                     LOGGER.log(Level.WARNING, String.format("Unable to open requested file or any associated backup", graphFile.toString()));
                     gex = ex;
+                    // Clear previous progress message and reset to indicate we are trying to use backup.
+                    ioProgressHandler.finish();
                 }
  
                 PluginExecution.withPlugin(new SimplePlugin("Open Graph File") {

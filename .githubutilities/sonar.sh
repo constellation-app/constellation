@@ -2,15 +2,6 @@
 
 source .githubutilities/functions.sh
 
-title "Updating dependencies and building"
-
-ant \
-  -Dnbplatform.active.dir="${NETBEANS_HOME}" \
-  -Dnbplatform.default.netbeans.dest.dir="${NETBEANS_HOME}" \
-  -Dnbplatform.default.harness.dir="${NETBEANS_HOME}"/harness \
-  -Dupdate.dependencies=true \
-  -Dbuild.compiler.debug=true update-dependencies-clean-build
-
 title "Run Sonar Scanning"
 
 if [ ! -z $2 ]; then
