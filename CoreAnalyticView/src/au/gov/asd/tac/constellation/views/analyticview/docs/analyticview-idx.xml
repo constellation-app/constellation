@@ -28,6 +28,7 @@
     <indexitem text="HITS Centrality" target="au.gov.asd.tac.constellation.views.analyticview.analytics.HitsCentralityAnalytic"/>
     <indexitem text="Jaccard Index" target="au.gov.asd.tac.constellation.views.analyticview.analytics.JaccardIndexAnalytic"/>
     <indexitem text="Katz Centrality" target="au.gov.asd.tac.constellation.views.analyticview.analytics.KatzCentralityAnalytic"/>
+    <indexitem text="Levenshtein Distance" target="au.gov.asd.tac.constellation.views.analyticview.analytics.LevenshteinDistanceAnalytic"/>
     <indexitem text="Local Clustering Coefficient" target="au.gov.asd.tac.constellation.views.analyticview.analytics.LocalClusteringCoefficientAnalytic"/>
     <indexitem text="Multiplexity" target="au.gov.asd.tac.constellation.views.analyticview.analytics.MultiplexityAnalytic"/>
     <indexitem text="Pagerank Centrality" target="au.gov.asd.tac.constellation.views.analyticview.analytics.PagerankCentralityAnalytic"/>

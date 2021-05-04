@@ -44,7 +44,7 @@ public class EigenvectorCentralityAnalytic extends ScoreAnalyticPlugin {
 
     @Override
     public String getDocumentationUrl() {
-        return "nbdocs://au.gov.asd.tac.constellation.views.analyticview/au/gov/asd/tac/constellation/views/analyticview/docs/analyticview-analytic-eigenvector-centrality.html";
+        return "nbdocs://au.gov.asd.tac.constellation.views.analyticview/au/gov/asd/tac/constellation/views/analyticview/docs/analytic-eigenvector-centrality.html";
     }
 
     @Override

@@ -44,7 +44,7 @@ public class PreferentialAttachmentAnalytic extends ScoreAnalyticPlugin {
 
     @Override
     public String getDocumentationUrl() {
-        return "nbdocs://au.gov.asd.tac.constellation.views.analyticview/au/gov/asd/tac/constellation/views/analyticview/docs/analyticview-analytic-preferential-attachment.html";
+        return "nbdocs://au.gov.asd.tac.constellation.views.analyticview/au/gov/asd/tac/constellation/views/analyticview/docs/analytic-preferential-attachment.html";
     }
 
     @Override

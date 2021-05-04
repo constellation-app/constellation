@@ -44,7 +44,7 @@ public class GraphDistanceAnalytic extends GraphAnalyticPlugin {
 
     @Override
     public String getDocumentationUrl() {
-        return "nbdocs://au.gov.asd.tac.constellation.views.analyticview/au/gov/asd/tac/constellation/views/analyticview/docs/analyticview-analytic-graph-distance.html";
+        return "nbdocs://au.gov.asd.tac.constellation.views.analyticview/au/gov/asd/tac/constellation/views/analyticview/docs/analytic-graph-distance.html";
     }
 
     @Override
