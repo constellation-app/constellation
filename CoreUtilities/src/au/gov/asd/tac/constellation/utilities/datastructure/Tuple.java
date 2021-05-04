@@ -74,12 +74,10 @@ public class Tuple<F, S> implements Serializable, Comparable<Tuple<F, S>> {
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj == null) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
+
         final Tuple<?, ?> other = (Tuple<?, ?>) obj;
         return Objects.equals(other.first, first)
                 && Objects.equals(other.second, second);

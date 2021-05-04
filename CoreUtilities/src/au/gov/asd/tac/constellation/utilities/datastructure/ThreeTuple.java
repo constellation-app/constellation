@@ -88,10 +88,7 @@ public class ThreeTuple<F, S, T> implements Serializable, Comparable<ThreeTuple<
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
 

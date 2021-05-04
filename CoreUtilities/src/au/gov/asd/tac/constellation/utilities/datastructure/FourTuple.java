@@ -102,10 +102,7 @@ public class FourTuple<A, B, C, D> implements Serializable, Comparable<FourTuple
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
 
