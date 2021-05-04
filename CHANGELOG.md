@@ -1,5 +1,8 @@
 # Constellation Changes
 
+## 2021-04-01 Changes in April 2021
+* Added `FourTuple` to the Core Utilities module.
+
 ## 2021-03-01 Changes in March 2021
 * Added `hasLowLevelTag()` to `PluginReport` classes to check whether a plugin has a "LOW LEVEL" tag specified.
 * Added Keyboard Shortcut to Scatter Plot View. Shortcut is Ctrl-Shift-O

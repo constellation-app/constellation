@@ -22,68 +22,82 @@ import java.util.stream.Stream;
 /**
  * A data-structure for storing a triplet of related values.
  *
+ * @author arcturus
  * @author cygnus_x-1
  *
- * @param <F> the type of the first object in the 3-tuple
- * @param <S> the type of the second object in the 3-tuple
- * @param <T> the type of the third object in the 3-tuple
+ * @param <A> the type of the first object in the 4-tuple
+ * @param <B> the type of the second object in the 4-tuple
+ * @param <C> the type of the third object in the 4-tuple
+ * @param <D> the type of the fourth object in the 4-tuple
  */
-public class ThreeTuple<F, S, T> implements Serializable, Comparable<ThreeTuple<F, S, T>> {
+public class FourTuple<A, B, C, D> implements Serializable, Comparable<FourTuple<A, B, C, D>> {
 
     private static final long serialVersionUID = 1L;
 
-    private F first;
-    private S second;
-    private T third;
+    private A first;
+    private B second;
+    private C third;
+    private D fourth;
 
-    public ThreeTuple(final F first, final S second, final T third) {
+    public FourTuple(final A first, final B second, final C third, final D fourth) {
         this.first = first;
         this.second = second;
         this.third = third;
+        this.fourth = fourth;
     }
 
     /**
      * Convenience method for creating an appropriately typed tuple.
      *
-     * @param <A> the type of the first object in the 3-tuple
-     * @param <B> the type of the second object in the 3-tuple
-     * @param <C> the type of the third object in the 3-tuple
+     * @param <A> the type of the first object in the 4-tuple
+     * @param <B> the type of the second object in the 4-tuple
+     * @param <C> the type of the third object in the 4-tuple
+     * @param <D> the type of the third object in the 4-tuple
      * @param first the first object in the tuple
      * @param second the second object in the tuple
      * @param third the third object in the tuple
-     * @return a 3-tuple that is templated with the types of first, second and
-     * third
+     * @param fourth the fourth object in the tuple
+     * @return a 4-tuple that is templated with the types of first, second,
+     * third and fourth
      */
-    public static <A, B, C> ThreeTuple<A, B, C> create(final A first, final B second, final C third) {
-        return new ThreeTuple<>(first, second, third);
+    public static <A, B, C, D> FourTuple<A, B, C, D> create(final A first, final B second, final C third, final D fourth) {
+        return new FourTuple<>(first, second, third, fourth);
     }
 
-    public F getFirst() {
+    public A getFirst() {
         return first;
     }
 
-    public void setFirst(final F first) {
+    public void setFirst(final A first) {
         this.first = first;
     }
 
-    public S getSecond() {
+    public B getSecond() {
         return second;
     }
 
-    public void setSecond(final S second) {
+    public void setSecond(final B second) {
         this.second = second;
     }
 
-    public T getThird() {
+    public C getThird() {
         return third;
     }
 
-    public void setThird(final T third) {
+    public void setThird(final C third) {
         this.third = third;
     }
 
+    public D getFourth() {
+        return fourth;
+    }
+
+    public void setFourth(final D fourth) {
+        this.fourth = fourth;
+    }
+
     public Stream<Object> stream() {
-        return Stream.of(first, second, third);
+        return Stream.of(first, second, third, fourth);
     }
 
     @Override
@@ -92,23 +106,25 @@ public class ThreeTuple<F, S, T> implements Serializable, Comparable<ThreeTuple<
             return false;
         }
 
-        final ThreeTuple<?, ?, ?> other = (ThreeTuple<?, ?, ?>) obj;
+        final FourTuple<?, ?, ?, ?> other = (FourTuple<?, ?, ?, ?>) obj;
         return Objects.equals(other.first, first)
                 && Objects.equals(other.second, second)
-                && Objects.equals(other.third, third);
+                && Objects.equals(other.third, third)
+                && Objects.equals(other.fourth, fourth);
     }
 
     @Override
     public int hashCode() {
         return (first == null ? 0 : first.hashCode())
                 ^ (second == null ? 0 : second.hashCode())
-                ^ (third == null ? 0 : third.hashCode());
+                ^ (third == null ? 0 : third.hashCode())
+                ^ (fourth == null ? 0 : fourth.hashCode());
     }
 
     @Override
     public String toString() {
-        return String.format("(%s, %s, %s)", first.toString(),
-                second.toString(), third.toString());
+        return String.format("(%s, %s, %s, %s)", first.toString(),
+                second.toString(), third.toString(), fourth.toString());
     }
 
     /**
@@ -124,7 +140,7 @@ public class ThreeTuple<F, S, T> implements Serializable, Comparable<ThreeTuple<
      * prior to the cast.
      */
     @SuppressWarnings("unchecked")
-    public int compareTo(final ThreeTuple<F, S, T> o) {
+    public int compareTo(final FourTuple<A, B, C, D> o) {
         int compare;
 
         if (first instanceof Comparable && o.first instanceof Comparable) {
@@ -161,9 +177,23 @@ public class ThreeTuple<F, S, T> implements Serializable, Comparable<ThreeTuple<
             if (compare != 0) {
                 return compare;
             }
+        } else {
+            // compare the third using strings
+            compare = third.toString().compareTo(o.third.toString());
+            if (compare != 0) {
+                return compare;
+            }
         }
 
-        // compare the third using strings
-        return third.toString().compareTo(o.third.toString());
+        if (fourth instanceof Comparable && o.fourth instanceof Comparable) {
+            // compare the fourth using Comparable
+            compare = ((Comparable) fourth).compareTo((Comparable) o.fourth);
+            if (compare != 0) {
+                return compare;
+            }
+        }
+
+        // compare the fourth using strings
+        return fourth.toString().compareTo(o.fourth.toString());
     }
 }
