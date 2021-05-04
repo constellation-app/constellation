@@ -8,7 +8,4 @@
     <tocitem text="Tools" mergetype="javax.help.SortMerge">
         <tocitem text="Compare Graph" target="au.gov.asd.tac.constellation.functionality.compare"/>
     </tocitem>
-    <tocitem text="Preferences" mergetype="javax.help.SortMerge">
-        <tocitem text="Display" target="au.gov.asd.tac.constellation.functionality.display"/>
-    </tocitem>
 </toc>
