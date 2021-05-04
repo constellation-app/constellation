@@ -98,9 +98,6 @@ public class QualityControlViewPaneNGTest {
         graph.setBooleanValue(vertexSelectedAttribute, vxId2, true);
         graph.setBooleanValue(vertexSelectedAttribute, vxId3, false);
         
-        graph.setStringValue(vertexIdentifierAttribute, vxId2, "someone@someplace.com");
-        graph.setStringValue(vertexTypeAttribute, vxId2, "Email");
-        
         rules = new ArrayList<>(Lookup.getDefault().lookupAll(QualityControlRule.class));
         final List<Integer> vertices = Arrays.asList(vxId1, vxId2);
         
