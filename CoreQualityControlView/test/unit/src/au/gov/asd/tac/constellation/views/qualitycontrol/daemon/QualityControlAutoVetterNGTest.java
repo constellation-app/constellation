@@ -16,7 +16,14 @@
 package au.gov.asd.tac.constellation.views.qualitycontrol.daemon;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
+import au.gov.asd.tac.constellation.graph.file.GraphObjectUtilities;
+import au.gov.asd.tac.constellation.graph.locking.DualGraph;
+import au.gov.asd.tac.constellation.graph.node.GraphNode;
+import org.openide.windows.TopComponent;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -29,6 +36,8 @@ import org.testng.annotations.Test;
  * @author arcturus
  */
 public class QualityControlAutoVetterNGTest {
+
+    private Graph graph;
 
     public QualityControlAutoVetterNGTest() {
     }
@@ -50,8 +59,7 @@ public class QualityControlAutoVetterNGTest {
     }
 
     /**
-     * Test of updateQualityControlState method, of class
-     * QualityControlAutoVetter.
+     * Test of updateQualityControlState method, of class QualityControlAutoVetter.
      */
     @Test
     public void testUpdateQualityControlStateWithNoGraph() {
@@ -74,4 +82,37 @@ public class QualityControlAutoVetterNGTest {
         assertEquals(instance1, instance2);
     }
 
+    @Test
+    public void testInit() throws InterruptedException {
+        // Testing init with no graph open
+        final QualityControlAutoVetter instance = QualityControlAutoVetter.getInstance();
+        instance.init();
+        assertNull(instance.getCurrentGraph());
+        assertEquals(instance.getlastGlobalModCount(), (long) -1);
+
+        // open a new graph
+        graph = new DualGraph(null);
+        //WritableGraph wg = graph.getWritableGraph("add", true);
+
+        // make topcomponent for graphnode
+        TopComponent tc = new TopComponent();
+        tc.setName("TestName");
+        final GraphDataObject gdo = GraphObjectUtilities.createMemoryDataObject("graph", true);
+        final GraphNode graphNode = new GraphNode(graph, gdo, tc, null);
+
+        // Testing init with a graph open
+        instance.init();
+        assertNotNull(instance.getCurrentGraph());
+
+    }
+
+    @Test
+    public void testInitWithRefresh() {
+
+    }
+
+    @Test
+    public void testUpdateQualityControlState() {
+
+    }
 }

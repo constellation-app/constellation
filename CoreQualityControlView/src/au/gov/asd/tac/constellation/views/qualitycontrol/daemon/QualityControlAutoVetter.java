@@ -16,23 +16,13 @@
 package au.gov.asd.tac.constellation.views.qualitycontrol.daemon;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.manager.GraphManagerListener;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
-import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.plugins.PluginInfo;
-import au.gov.asd.tac.constellation.plugins.PluginInteraction;
-import au.gov.asd.tac.constellation.plugins.PluginType;
-import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
-import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlEvent;
 import au.gov.asd.tac.constellation.views.qualitycontrol.rules.QualityControlRule;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,8 +33,7 @@ import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
- * Quality control vetter which listens to graph changes and rates objects in a
- * graph for quality.
+ * Quality control vetter which listens to graph changes and rates objects in a graph for quality.
  * <p>
  * When the graph or graph quality control changes, listeners will be notified.
  *
@@ -135,14 +124,11 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
     /**
      * The graph has changed, so we might have to re-vet quality control.
      * <p>
-     * Rather than just check the graph every time it changes, we do some
-     * optimisation; we only update quality control if something (possibly)
-     * relevant has changed. For instance, changing colors has no effect on
-     * quality control.
+     * Rather than just check the graph every time it changes, we do some optimisation; we only update quality control
+     * if something (possibly) relevant has changed. For instance, changing colors has no effect on quality control.
      * <p>
-     * <b>IMPORTANT</b>: the set of attributes checked here MUST contain the
-     * attributes that are checked in {@link #updateQualityControlState} below,
-     * otherwise changes of relevant values won't cause a quality control
+     * <b>IMPORTANT</b>: the set of attributes checked here MUST contain the attributes that are checked in
+     * {@link #updateQualityControlState} below, otherwise changes of relevant values won't cause a quality control
      * re-vet.
      *
      * @param event The graph change event.
@@ -171,9 +157,17 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
         }
     }
 
+    protected Graph getCurrentGraph() {
+        return currentGraph;
+    }
+
+    protected long getlastGlobalModCount() {
+        return lastGlobalModificationCounter;
+    }
+
     /**
-     * Triggers an update of the QualityControlEvent as well as notifies
-     * listeners. This is used when the priority of categories is changed.
+     * Triggers an update of the QualityControlEvent as well as notifies listeners. This is used when the priority of
+     * categories is changed.
      */
     public void updateQualityEvents() {
         final Graph graph = currentGraph;
@@ -189,18 +183,16 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
     }
 
     /**
-     * Build a new QualityControlState with an updated list of
-     * QualityControlEvent.
+     * Build a new QualityControlState with an updated list of QualityControlEvent.
      *
-     * @param graph The graph to vet for quality control, may be null if there
-     * is no current graph.
+     * @param graph The graph to vet for quality control, may be null if there is no current graph.
      */
     public static void updateQualityControlState(final Graph graph) {
         // notify listeners that rules are running
         buttonListeners.stream().forEach(listener -> listener.qualityControlRuleChanged(false));
 
         final Future<?> stateFuture = PluginExecution.withPlugin(
-                new QualityControlViewStateUpdater()
+                new QualityControlStateUpdater()
         ).executeLater(graph);
 
         try {
@@ -218,7 +210,7 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
         buttonListeners.stream().forEach(listener -> listener.qualityControlRuleChanged(true));
     }
 
-    private static List<QualityControlRule> getRules() {
+    protected static List<QualityControlRule> getRules() {
         if (RULES == null) {
             RULES = new ArrayList<>(Lookup.getDefault().lookupAll(QualityControlRule.class));
             U_RULES = Collections.unmodifiableList(RULES);
@@ -242,13 +234,12 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
     }
 
     /**
-     * Add a {@link QualityControlListener} which will be notified when the
-     * quality control state changes.
+     * Add a {@link QualityControlListener} which will be notified when the quality control state changes.
      * <p>
      * The listener will immediately be called back with the current state.
      * <p>
-     * When calling this method, a separate call to {@code init()} should also
-     * be made if you want the listener to pickup existing graphs.
+     * When calling this method, a separate call to {@code init()} should also be made if you want the listener to
+     * pickup existing graphs.
      *
      * @param listener The listener to register.
      */
@@ -295,74 +286,4 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
         }
         return INSTANCE;
     }
-
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
-    private static class QualityControlViewStateUpdater extends SimpleReadPlugin {
-
-        @Override
-        public void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-            final List<QualityControlRule> registeredRules = new ArrayList<>();
-            final List<Integer> vertexList = new ArrayList<>();
-            final List<String> identifierList = new ArrayList<>();
-            final List<SchemaVertexType> typeList = new ArrayList<>();
-
-            if (graph != null) {
-                final int selectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
-                final int identifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.get(graph);
-                final int typeAttribute = AnalyticConcept.VertexAttribute.TYPE.get(graph);
-
-                if (selectedAttribute != Graph.NOT_FOUND
-                        && identifierAttribute != Graph.NOT_FOUND
-                        && typeAttribute != Graph.NOT_FOUND) {
-                    final int vxCount = graph.getVertexCount();
-                    for (int position = 0; position < vxCount; position++) {
-                        final int vertex = graph.getVertex(position);
-                        final String identifier = graph.getStringValue(identifierAttribute, vertex);
-                        final SchemaVertexType type = graph.getObjectValue(typeAttribute, vertex);
-                        final boolean selected = graph.getBooleanValue(selectedAttribute, vertex);
-
-                        if (selected) {
-                            vertexList.add(vertex);
-                            identifierList.add(identifier);
-                            typeList.add(type);
-                        }
-                    }
-                }
-
-                // Set up and run each rule.
-                if (!vertexList.isEmpty()) {
-                    for (final QualityControlRule rule : QualityControlAutoVetter.getRules()) {
-                        rule.clearResults();
-                        rule.executeRule(graph, vertexList);
-                        registeredRules.add(rule);
-                    }
-                }
-
-                final List<QualityControlRule> uRegisteredRules = Collections.unmodifiableList(registeredRules);
-
-                // Build quality control events based on results of rules.
-                // Sort by descending risk.
-                final List<QualityControlEvent> qualityControlEvents = new ArrayList<>();
-                for (int i = 0; i < vertexList.size(); i++) {
-                    final QualityControlEvent qualityControlEvent = new QualityControlEvent(
-                            vertexList.get(i),
-                            identifierList.get(i), typeList.get(i),
-                            uRegisteredRules
-                    );
-                    qualityControlEvents.add(qualityControlEvent);
-                }
-                Collections.sort(qualityControlEvents, Collections.reverseOrder());
-
-                QualityControlAutoVetter.getInstance().setQualityControlState(
-                        new QualityControlState(graph.getId(), qualityControlEvents, registeredRules)
-                );
-            }
-        }
-
-        @Override
-        public String getName() {
-            return "Quality Control View: Update State";
-        }
-    }
-
 }
