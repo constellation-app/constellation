@@ -16,11 +16,8 @@
 package au.gov.asd.tac.constellation.graph.interaction.plugins.io;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
-import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
-import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
 import au.gov.asd.tac.constellation.graph.file.GraphObjectUtilities;
 import au.gov.asd.tac.constellation.graph.file.io.GraphJsonReader;
@@ -30,8 +27,8 @@ import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.gui.TextIoProgress;
 import java.io.File;
 import org.openide.windows.TopComponent;
@@ -72,61 +69,34 @@ public class AutosaveGraphPluginNGTest {
         graph = new DualGraph(schema);
         
         WritableGraph wg = graph.getWritableGraph("Autosave", true);
-        try {           
-            attrX = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", 0.0, null);
-            if (attrX == Graph.NOT_FOUND) {
-                fail();
-            }
-
-            attrY = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y", "y", 0.0, null);
-            if (attrY == Graph.NOT_FOUND) {
-                fail();
-            }
-
-            attrZ = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z", "z", 0.0, null);
-            if (attrZ == Graph.NOT_FOUND) {
-                fail();
-            }
-
-            vAttrId = wg.addAttribute(GraphElementType.VERTEX, BooleanAttributeDescription.ATTRIBUTE_NAME, "selected", "selected", false, null);
-            if (vAttrId == Graph.NOT_FOUND) {
-                fail();
-            }
-
-            tAttrId = wg.addAttribute(GraphElementType.TRANSACTION, BooleanAttributeDescription.ATTRIBUTE_NAME, "selected", "selected", false, null);
-            if (tAttrId == Graph.NOT_FOUND) {
-                fail();
-            }
-
+        try {     
+            VisualConcept.VertexAttribute.X.ensure(wg);
+            VisualConcept.VertexAttribute.Y.ensure(wg);
+            VisualConcept.VertexAttribute.Z.ensure(wg);
+            VisualConcept.VertexAttribute.SELECTED.ensure(wg);
+            VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
+   
             vxId1 = wg.addVertex();
             wg.setFloatValue(attrX, vxId1, 1.0f);
             wg.setFloatValue(attrY, vxId1, 1.0f);
-            wg.setBooleanValue(vAttrId, vxId1, false);
-          //  wg.setStringValue(vAttrId, vxId1, "foo<Bar>");
             vxId2 = wg.addVertex();
             wg.setFloatValue(attrX, vxId2, 5.0f);
             wg.setFloatValue(attrY, vxId2, 1.0f);
-            wg.setBooleanValue(vAttrId, vxId2, true);
             vxId3 = wg.addVertex();
             wg.setFloatValue(attrX, vxId3, 1.0f);
             wg.setFloatValue(attrY, vxId3, 5.0f);
-            wg.setBooleanValue(vAttrId, vxId3, false);
             vxId4 = wg.addVertex();
             wg.setFloatValue(attrX, vxId4, 5.0f);
             wg.setFloatValue(attrY, vxId4, 5.0f);
-            wg.setBooleanValue(vAttrId, vxId4, false);
             vxId5 = wg.addVertex();
             wg.setFloatValue(attrX, vxId5, 10.0f);
             wg.setFloatValue(attrY, vxId5, 10.0f);
-            wg.setBooleanValue(vAttrId, vxId5, true);
             vxId6 = wg.addVertex();
             wg.setFloatValue(attrX, vxId6, 15.0f);
             wg.setFloatValue(attrY, vxId6, 15.0f);
-            wg.setBooleanValue(vAttrId, vxId6, false);
             vxId7 = wg.addVertex();
             wg.setFloatValue(attrX, vxId7, 100.0f);
             wg.setFloatValue(attrY, vxId7, 100.0f);
-            wg.setBooleanValue(vAttrId, vxId7, true);
 
             txId1 = wg.addTransaction(vxId1, vxId2, false);
             txId2 = wg.addTransaction(vxId1, vxId3, false);
@@ -140,7 +110,6 @@ public class AutosaveGraphPluginNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
-        //graph = null;
     }
 
     /**
@@ -160,8 +129,7 @@ public class AutosaveGraphPluginNGTest {
         final GraphDataObject gdo = GraphObjectUtilities.createMemoryDataObject("graph", true);
         final GraphNode graphNode = new GraphNode(graph, gdo, tc, null);
         AutosaveGraphPlugin instance = new AutosaveGraphPlugin();
-        PluginParameters parameters = instance.createParameters();
-        PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
+        PluginExecution.withPlugin(instance).executeNow(graph);
         
         // check that the autosave file does now exist
         assertEquals(saveFile.exists(), true);  
@@ -171,11 +139,6 @@ public class AutosaveGraphPluginNGTest {
         try {
             // check that the graph from the autosave matches the original graph 
             assertEquals(rg.getVertexCount(), 7);
-            assertEquals(rg.getStringValue(vAttrId, vxId1), "false");
-            assertEquals(rg.getStringValue(vAttrId, vxId2), "true");
-            assertEquals(rg.getStringValue(vAttrId, vxId3), "false");
-            assertEquals(rg.getStringValue(vAttrId, vxId4), "false");
-            assertEquals(rg.getStringValue(vAttrId, vxId5), "true");
             assertEquals(rg.getTransactionCount(), 5);
         } finally {
              rg.release();
