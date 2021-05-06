@@ -70,27 +70,32 @@ public class AutosaveGraphPluginNGTest {
         
         WritableGraph wg = graph.getWritableGraph("Autosave", true);
         try {     
-            VisualConcept.VertexAttribute.X.ensure(wg);
-            VisualConcept.VertexAttribute.Y.ensure(wg);
-            VisualConcept.VertexAttribute.Z.ensure(wg);
-            VisualConcept.VertexAttribute.SELECTED.ensure(wg);
-            VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
+            attrX = VisualConcept.VertexAttribute.X.ensure(wg);
+            attrY = VisualConcept.VertexAttribute.Y.ensure(wg);
+            attrZ = VisualConcept.VertexAttribute.Z.ensure(wg);
+            vAttrId = VisualConcept.VertexAttribute.SELECTED.ensure(wg);
+            tAttrId = VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
    
             vxId1 = wg.addVertex();
             wg.setFloatValue(attrX, vxId1, 1.0f);
             wg.setFloatValue(attrY, vxId1, 1.0f);
+            wg.setBooleanValue(vAttrId, vxId1, false);
             vxId2 = wg.addVertex();
             wg.setFloatValue(attrX, vxId2, 5.0f);
             wg.setFloatValue(attrY, vxId2, 1.0f);
+            wg.setBooleanValue(vAttrId, vxId2, true);
             vxId3 = wg.addVertex();
             wg.setFloatValue(attrX, vxId3, 1.0f);
             wg.setFloatValue(attrY, vxId3, 5.0f);
+            wg.setBooleanValue(vAttrId, vxId3, false);
             vxId4 = wg.addVertex();
             wg.setFloatValue(attrX, vxId4, 5.0f);
             wg.setFloatValue(attrY, vxId4, 5.0f);
+            wg.setBooleanValue(vAttrId, vxId4, false);
             vxId5 = wg.addVertex();
             wg.setFloatValue(attrX, vxId5, 10.0f);
             wg.setFloatValue(attrY, vxId5, 10.0f);
+            wg.setBooleanValue(vAttrId, vxId5, true);
             vxId6 = wg.addVertex();
             wg.setFloatValue(attrX, vxId6, 15.0f);
             wg.setFloatValue(attrY, vxId6, 15.0f);
@@ -139,6 +144,11 @@ public class AutosaveGraphPluginNGTest {
         try {
             // check that the graph from the autosave matches the original graph 
             assertEquals(rg.getVertexCount(), 7);
+            assertEquals(rg.getStringValue(vAttrId, vxId1), "false");
+            assertEquals(rg.getStringValue(vAttrId, vxId2), "true");
+            assertEquals(rg.getStringValue(vAttrId, vxId3), "false");
+            assertEquals(rg.getStringValue(vAttrId, vxId4), "false");
+            assertEquals(rg.getStringValue(vAttrId, vxId5), "true");
             assertEquals(rg.getTransactionCount(), 5);
         } finally {
              rg.release();
