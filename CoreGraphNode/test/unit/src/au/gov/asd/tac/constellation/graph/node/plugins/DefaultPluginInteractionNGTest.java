@@ -42,17 +42,17 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class DefaultPluginInteractionNGTest {
-    
+
     private PluginManager manager;
     private PluginReport report;
-    
+
     private DefaultPluginEnvironment environment;
     private Plugin plugin;
     private Graph graph;
     private PluginSynchronizer synchroniser;
-    
+
     private GraphReport graphReport;
-    
+
     public DefaultPluginInteractionNGTest() {
     }
 
@@ -71,7 +71,7 @@ public class DefaultPluginInteractionNGTest {
         graph = new DualGraph(null);
         synchroniser = new PluginSynchronizer(1);
         graphReport = new GraphReport(graph.getId());
-        
+
         manager = new PluginManager(environment, plugin, graph, false, synchroniser);
         report = new PluginReport(graphReport, plugin);
     }
@@ -79,93 +79,96 @@ public class DefaultPluginInteractionNGTest {
     @AfterMethod
     public void tearDownMethod() throws Exception {
     }
-    
+
     /**
      * Test of createProgressTitle method, of class DefaultPluginInteraction.
      */
     @Test
     public void testCreateProgressTitle() {
         System.out.println("createProgressTitle");
-        
+
         final DefaultPluginInteraction interaction = new DefaultPluginInteraction(manager, report);
-        
-        final String progressTitleNoGraphNode = interaction.createProgressTitle();        
+
+        final String progressTitleNoGraphNode = interaction.createProgressTitle();
         assertEquals(progressTitleNoGraphNode, "Test");
-        
+
         // creates a GraphNode for the given graph which will store a value in a static field we need to access
         new GraphNode(graph, null, new TestTopComponent(), null);
 
-        final String progressTitleWithGraphNode = interaction.createProgressTitle();        
+        final String progressTitleWithGraphNode = interaction.createProgressTitle();
         assertEquals(progressTitleWithGraphNode, "test: Test");
     }
 
     /**
      * Test of setProgress method, of class DefaultPluginInteraction.
+     *
      * @throws InterruptedException
      */
-    @Test
+    @Test(expectedExceptions = InterruptedException.class)
     public void testSetProgress() throws InterruptedException {
         System.out.println("setProgress");
 
         final String message = "this is a test";
         final DefaultPluginInteraction interaction = new DefaultPluginInteraction(manager, report);
-        
+
         assertEquals(interaction.getTimer(), null);
         assertEquals(interaction.getProgress(), null);
-        
+
         interaction.setProgress(1, 2, message, false);
-        
+
         assertEquals(interaction.getTimer().isAlive(), true);
         assertNotEquals(interaction.getProgress(), null);
-        
+
         assertEquals(interaction.getPluginReport().getCurrentStep(), 1);
         assertEquals(interaction.getPluginReport().getTotalSteps(), 2);
         assertEquals(interaction.getPluginReport().getMessage(), message);
-        
+
         interaction.setProgress(1, 1, message, false);
-        
+
         assertEquals(interaction.getTimer().isAlive(), true);
         assertNotEquals(interaction.getProgress(), null);
-        
+
         interaction.setProgress(1, 0, message, false);
         //should allow enough time for the timer to terminate
         Thread.sleep(100);
-        
+
         assertEquals(interaction.getTimer().getState(), State.TERMINATED);
         assertEquals(interaction.getProgress(), null);
     }
-    
+
     /**
-     * Test of setProgress method, of class DefaultPluginInteraction with total steps being 0.
+     * Test of setProgress method, of class DefaultPluginInteraction with total
+     * steps being 0.
+     *
      * @throws InterruptedException
      */
     @Test
     public void testSetProgressTotalStepsZero() throws InterruptedException {
-        System.out.println("setProgressTotalStepsZero");
+            System.out.println("setProgressTotalStepsZero");
 
-        final String message = "this is a test";
+            final String message = "this is a test";
 
-        final DefaultPluginInteraction interaction = new DefaultPluginInteraction(manager, report);
-        
-        assertEquals(interaction.getTimer(), null);
-        assertEquals(interaction.getProgress(), null);
-        
-        interaction.setProgress(0, 0, message, false);
-        
-        assertEquals(interaction.getTimer().isAlive(), true);
-        assertNotEquals(interaction.getProgress(), null);
-        
-        interaction.setProgress(0, 0, message, false);
-        
-        assertEquals(interaction.getTimer().isAlive(), true);
-        assertNotEquals(interaction.getProgress(), null);
-        
-        interaction.setProgress(1, 0, message, false);
-        //should allow enough time for the timer to terminate
-        Thread.sleep(100);
-             
-        assertEquals(interaction.getTimer().getState(), State.TERMINATED);
-        assertEquals(interaction.getProgress(), null);
+            final DefaultPluginInteraction interaction = new DefaultPluginInteraction(manager, report);
+
+            assertEquals(interaction.getTimer(), null);
+            assertEquals(interaction.getProgress(), null);
+
+            interaction.setProgress(0, 0, message, false);
+
+            assertEquals(interaction.getTimer().isAlive(), true);
+            assertNotEquals(interaction.getProgress(), null);
+
+            interaction.setProgress(0, 0, message, false);
+
+            assertEquals(interaction.getTimer().isAlive(), true);
+            assertNotEquals(interaction.getProgress(), null);
+
+            interaction.setProgress(1, 0, message, false);
+            //should allow enough time for the timer to terminate
+            Thread.sleep(100);
+
+            assertEquals(interaction.getTimer().getState(), State.TERMINATED);
+            assertEquals(interaction.getProgress(), null);
     }
 
     /**
@@ -174,37 +177,37 @@ public class DefaultPluginInteractionNGTest {
     @Test
     public void testCancel() {
         System.out.println("cancel");
-        
+
         final DefaultPluginInteraction interaction = new DefaultPluginInteraction(manager, null);
-        
+
         assertEquals(manager.getPluginThread().isInterrupted(), false);
         interaction.cancel();
         assertEquals(manager.getPluginThread().isInterrupted(), true);
     }
-    
+
     @Test
     public void testGetTime() {
         System.out.println("getTime");
-        
+
         final DefaultPluginInteraction interaction = new DefaultPluginInteraction(null, null);
         final Timer timer = interaction.new Timer();
-        
+
         final String time = timer.getTime(1000, 36611000);
         assertEquals(time, "10:10:10");
-        
+
         final String timeLessThanTen = timer.getTime(1000, 32950000);
-        assertEquals(timeLessThanTen, "09:09:09");             
-        
+        assertEquals(timeLessThanTen, "09:09:09");
+
         final String timeStartGreaterThanEnd = timer.getTime(10, 0);
         assertEquals(timeStartGreaterThanEnd, "00:00:00");
-        
+
         final String timeNegativeStart = timer.getTime(-10, 10);
         assertEquals(timeNegativeStart, "00:00:00");
-        
+
         final String timeNegativeEnd = timer.getTime(10, -10);
         assertEquals(timeNegativeEnd, "00:00:00");
     }
-    
+
     private class TestPlugin extends SimplePlugin {
 
         public TestPlugin() {
@@ -215,22 +218,22 @@ public class DefaultPluginInteractionNGTest {
         public String getName() {
             return "Test";
         }
-        
+
         @Override
         protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) {
             //Do nothing
-        }        
+        }
     }
-    
+
     private class TestTopComponent extends TopComponent {
 
         public TestTopComponent() {
             //Do nothing
         }
-               
+
         @Override
         public String getName() {
             return "test";
-        }       
+        }
     }
 }
