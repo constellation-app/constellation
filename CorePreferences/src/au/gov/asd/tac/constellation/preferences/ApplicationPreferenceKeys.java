@@ -107,7 +107,7 @@ public final class ApplicationPreferenceKeys {
      * Jupyter notebook directory.
      */
     public static final String JUPYTER_NOTEBOOK_DIR = "jupyterNotebookDir";
-    public static final String JUPYTER_NOTEBOOK_DIR_DEFAULT = new JFileChooser().getFileSystemView().getDefaultDirectory().getAbsolutePath();
+    public static final String JUPYTER_NOTEBOOK_DIR_DEFAULT = new File(System.getProperty("user.dir")).getPath();
 
     /**
      * Remember Save As location.
