@@ -1,5 +1,9 @@
 # Constellation Changes
 
+## 2021-05-01 Changes in May 2021
+* Update `ProjectUpdater` to sort jars in `project.xml` consistently between Windows and Linux.
+* Remove the file type being added to dependency jars as it counts towards the limited class path length in Windows.
+
 ## 2021-04-01 Changes in April 2021
 * Added `FourTuple` to the Core Utilities module.
 

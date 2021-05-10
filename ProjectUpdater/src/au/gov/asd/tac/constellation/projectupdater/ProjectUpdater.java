@@ -21,6 +21,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -155,7 +156,11 @@ public class ProjectUpdater extends Task {
                 final File[] jarFiles = jarDirectory.listFiles();
 
                 // Sort them so that the project.xml is generated consistently and avoids merge conflicts
-                Arrays.sort(jarFiles);
+                Arrays.sort(jarFiles, (final File o1, final File o2) -> {
+                    final String p1 = o1.getAbsolutePath();
+                    final String p2 = o2.getAbsolutePath();
+                    return p1.compareTo(p2);
+                });
 
                 // Add the class path to project.xml
                 for (final File jarFile : jarFiles) {
