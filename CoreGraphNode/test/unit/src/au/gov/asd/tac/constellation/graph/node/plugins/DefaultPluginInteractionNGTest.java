@@ -144,31 +144,31 @@ public class DefaultPluginInteractionNGTest {
      */
     @Test
     public void testSetProgressTotalStepsZero() throws InterruptedException {
-            System.out.println("setProgressTotalStepsZero");
+        System.out.println("setProgressTotalStepsZero");
 
-            final String message = "this is a test";
+        final String message = "this is a test";
 
-            final DefaultPluginInteraction interaction = new DefaultPluginInteraction(manager, report);
+        final DefaultPluginInteraction interaction = new DefaultPluginInteraction(manager, report);
 
-            assertEquals(interaction.getTimer(), null);
-            assertEquals(interaction.getProgress(), null);
+        assertEquals(interaction.getTimer(), null);
+        assertEquals(interaction.getProgress(), null);
 
-            interaction.setProgress(0, 0, message, false);
+        interaction.setProgress(0, 0, message, false);
 
-            assertEquals(interaction.getTimer().isAlive(), true);
-            assertNotEquals(interaction.getProgress(), null);
+        assertEquals(interaction.getTimer().isAlive(), true);
+        assertNotEquals(interaction.getProgress(), null);
 
-            interaction.setProgress(0, 0, message, false);
+        interaction.setProgress(0, 0, message, false);
 
-            assertEquals(interaction.getTimer().isAlive(), true);
-            assertNotEquals(interaction.getProgress(), null);
+        assertEquals(interaction.getTimer().isAlive(), true);
+        assertNotEquals(interaction.getProgress(), null);
 
-            interaction.setProgress(1, 0, message, false);
-            //should allow enough time for the timer to terminate
-            Thread.sleep(100);
+        interaction.setProgress(1, 0, message, false);
+        //should allow enough time for the timer to terminate
+        Thread.sleep(100);
 
-            assertEquals(interaction.getTimer().getState(), State.TERMINATED);
-            assertEquals(interaction.getProgress(), null);
+        assertEquals(interaction.getTimer().getState(), State.TERMINATED);
+        assertEquals(interaction.getProgress(), null);
     }
 
     /**
