@@ -82,20 +82,20 @@ public class ConstellationHttpProxySelector extends ProxySelector {
         if (isHttp) {
             final String host = uri.getHost().toLowerCase();
 
-            // First step: is this a local host?
-            final boolean isBypassProxyHost = isLocalHost(host, bypassProxyHosts);
-            if (isBypassProxyHost) {
-                LOGGER.log(Level.FINE, "host {0} will bypass the proxy", host);
-                return NO_PROXY;
-            }
-
-            // Second step: do we have a specific proxy for this host?
+            // First step: do we have a specific proxy for this host?
             for (final Pair<String, Pair<String, Integer>> entry : additionalProxies) {
                 final String additionalProxyHost = entry.getKey();
                 if (isValidHost(host, additionalProxyHost)) {
                     LOGGER.log(Level.FINE, "host {0} will use additional proxy {1}", new Object[]{host, additionalProxyHost});
                     return makeProxy(entry.getValue());
                 }
+            }
+
+            // Second step: is this a local host?
+            final boolean isBypassProxyHost = isLocalHost(host, bypassProxyHosts);
+            if (isBypassProxyHost) {
+                LOGGER.log(Level.FINE, "host {0} will bypass the proxy", host);
+                return NO_PROXY;
             }
 
             // Third and last step: do we have a default proxy?
