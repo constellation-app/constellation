@@ -59,11 +59,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
         this.pluginManager = pluginManager;
         this.pluginReport = pluginReport;
     }
-
-    public PluginManager getPluginManager() {
-        return pluginManager;
-    }
-
+    
     public PluginReport getPluginReport() {
         return pluginReport;
     }
