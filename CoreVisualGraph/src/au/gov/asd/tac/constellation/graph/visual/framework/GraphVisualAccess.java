@@ -64,9 +64,6 @@ import java.util.Objects;
  */
 public final class GraphVisualAccess implements VisualAccess {
 
-    //TODO: Determine whether this field is needed
-    private final int[] visualAttributes = new int[VisualProperty.values().length];
-
     private int graphBackgroundColor = Graph.NOT_FOUND;
     private int graphHighlightColor = Graph.NOT_FOUND;
     private int graphBlazeOpacity = Graph.NOT_FOUND;
@@ -651,7 +648,7 @@ public final class GraphVisualAccess implements VisualAccess {
         topLabelSizes = new float[numLabels];
         topLabelColors = new ConstellationColor[numLabels];
         int i = 0;
-        for (GraphLabel label : topLabels.getLabels()) {
+        for (final GraphLabel label : topLabels.getLabels()) {
             topLabelAttrs[i] = readGraph.getAttribute(GraphElementType.VERTEX, label.getAttributeName());
             topLabelSizes[i] = label.getSize();
             topLabelColors[i] = label.getColor() != null ? label.getColor() : VisualGraphDefaults.DEFAULT_LABEL_COLOR;
@@ -666,7 +663,7 @@ public final class GraphVisualAccess implements VisualAccess {
         bottomLabelSizes = new float[numLabels];
         bottomLabelColors = new ConstellationColor[numLabels];
         int i = 0;
-        for (GraphLabel label : bottomLabels.getLabels()) {
+        for (final GraphLabel label : bottomLabels.getLabels()) {
             bottomLabelAttrs[i] = readGraph.getAttribute(GraphElementType.VERTEX, label.getAttributeName());
             bottomLabelSizes[i] = label.getSize();
             bottomLabelColors[i] = label.getColor() != null ? label.getColor() : VisualGraphDefaults.DEFAULT_LABEL_COLOR;
@@ -682,7 +679,7 @@ public final class GraphVisualAccess implements VisualAccess {
         connectionLabelSizes = new float[numLabels];
         connectionLabelColors = new ConstellationColor[numLabels];
         int i = 0;
-        for (GraphLabel label : connectionLabels.getLabels()) {
+        for (final GraphLabel label : connectionLabels.getLabels()) {
             connectionLabelAttrs[i] = readGraph.getAttribute(GraphElementType.TRANSACTION, label.getAttributeName());
             connectionLabelSizes[i] = label.getSize();
             connectionLabelColors[i] = label.getColor() != null ? label.getColor() : VisualGraphDefaults.DEFAULT_LABEL_COLOR;
@@ -1049,7 +1046,7 @@ public final class GraphVisualAccess implements VisualAccess {
     @Override
     public ConstellationColor getConnectionColor(final int connection) {
         ConstellationColor color = null;
-        ConstellationColor mixColor;
+        final ConstellationColor mixColor;
         if (transactionColor != Graph.NOT_FOUND) {
             switch (connectionElementTypes[connection]) {
                 case LINK:
@@ -1187,7 +1184,7 @@ public final class GraphVisualAccess implements VisualAccess {
     @Override
     public LineStyle getConnectionLineStyle(final int connection) {
         LineStyle style = null;
-        LineStyle mixStyle = LineStyle.SOLID;
+        final LineStyle mixStyle = LineStyle.SOLID;
         if (transactionLineStyle != Graph.NOT_FOUND) {
             switch (connectionElementTypes[connection]) {
                 case LINK:
