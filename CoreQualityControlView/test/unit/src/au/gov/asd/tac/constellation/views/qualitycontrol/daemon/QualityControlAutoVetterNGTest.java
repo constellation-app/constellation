@@ -16,14 +16,25 @@
 package au.gov.asd.tac.constellation.views.qualitycontrol.daemon;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
 import au.gov.asd.tac.constellation.graph.file.GraphObjectUtilities;
+import au.gov.asd.tac.constellation.graph.interaction.gui.VisualGraphTopComponent;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
-import au.gov.asd.tac.constellation.graph.node.GraphNode;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
+import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.utilities.camera.Camera;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import org.openide.windows.TopComponent;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -63,8 +74,7 @@ public class QualityControlAutoVetterNGTest {
      */
     @Test
     public void testUpdateQualityControlStateWithNoGraph() {
-        final Graph graph = null;
-
+        graph = null;
         final QualityControlState stateBefore = QualityControlAutoVetter.getInstance().getQualityControlState();
         QualityControlAutoVetter.updateQualityControlState(graph);
         final QualityControlState stateAfter = QualityControlAutoVetter.getInstance().getQualityControlState();
@@ -82,37 +92,284 @@ public class QualityControlAutoVetterNGTest {
         assertEquals(instance1, instance2);
     }
 
+    // Testing init with no graph open
     @Test
-    public void testInit() throws InterruptedException {
-        // Testing init with no graph open
+    public void testInit() throws InterruptedException, NoSuchMethodException, IllegalAccessException,
+            IllegalArgumentException, InvocationTargetException {
+        QualityControlAutoVetter.destroyInstance();
         final QualityControlAutoVetter instance = QualityControlAutoVetter.getInstance();
         instance.init();
         assertNull(instance.getCurrentGraph());
-        assertEquals(instance.getlastGlobalModCount(), (long) -1);
+        assertEquals(instance.getlastGlobalModCount(), (long) 0);
+
+        assertNull(GraphManager.getDefault().getActiveGraph());
 
         // open a new graph
-        graph = new DualGraph(null);
-        //WritableGraph wg = graph.getWritableGraph("add", true);
+        graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
+        WritableGraph wg = graph.getWritableGraph("TEST", true);
+        VisualConcept.GraphAttribute.CAMERA.ensure(wg);
+        wg.commit();
 
         // make topcomponent for graphnode
-        TopComponent tc = new TopComponent();
+        TopComponent tc = new VisualGraphTopComponent();
         tc.setName("TestName");
         final GraphDataObject gdo = GraphObjectUtilities.createMemoryDataObject("graph", true);
-        final GraphNode graphNode = new GraphNode(graph, gdo, tc, null);
+        TopComponent.openAction(tc, tc.getDisplayName(), null, true);
+        tc.open();
+
+        // Sleep until current graph is registered
+        Thread.sleep(1000);
+
+        assertNotNull(GraphManager.getDefault().getActiveGraph());
 
         // Testing init with a graph open
         instance.init();
         assertNotNull(instance.getCurrentGraph());
 
+        // Close current graph and retest
+        tc.close();
+        instance.init();
+        assertNull(instance.getCurrentGraph());
     }
 
     @Test
-    public void testInitWithRefresh() {
+    public void testInitWithRefresh() throws InterruptedException {
+        QualityControlAutoVetter.destroyInstance();
+        final QualityControlAutoVetter instance = QualityControlAutoVetter.getInstance();
+        instance.initWithRefresh(true);
+        assertNull(instance.getCurrentGraph());
+        assertEquals(instance.getlastGlobalModCount(), (long) 0);
 
+        assertNull(GraphManager.getDefault().getActiveGraph());
+
+        // Open a new graph
+        graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
+
+        WritableGraph wg1 = graph.getWritableGraph("TEST", true);
+        VisualConcept.GraphAttribute.CAMERA.ensure(wg1);
+        wg1.commit();
+
+        // make topcomponent for graphnode
+        final GraphDataObject gdo = GraphObjectUtilities.createMemoryDataObject("graph", true);
+        TopComponent tc = new VisualGraphTopComponent(gdo, graph);
+        tc.setName("TestName");
+        TopComponent.openAction(tc, tc.getDisplayName(), null, true);
+        tc.open();
+
+        // Sleep until current graph is registered
+        Thread.sleep(1000);
+
+        assertNotNull(GraphManager.getDefault().getActiveGraph());
+
+        // Testing init with a graph open
+        instance.initWithRefresh(true);
+        assertNotNull(instance.getCurrentGraph());
+
+        // Close current graph and retest
+        tc.close();
+        instance.initWithRefresh(true);
+        assertNull(instance.getCurrentGraph());
+    }
+
+    // Test the adding and removing of observers and their behaviour to trigger the methods of the interface.
+    @Test
+    public void testAddRemoveObserver() throws InterruptedException {
+        // add observer of the button state
+        final testObserver observer = new testObserver();
+        QualityControlAutoVetter.getInstance().addObserver(observer);
+
+        // Check initial status
+        assertFalse(observer.getCanRunStatus());
+
+        QualityControlAutoVetter.updateQualityControlState(null);
+
+        // Sleep until after pluginExecution thread has returned
+        Thread.sleep(1000);
+
+        // Check observer status
+        assertTrue(observer.getCanRunStatus());
+
+        // Reset status and recheck
+        observer.setCanRunStatus(false);
+        assertFalse(observer.getCanRunStatus());
+
+        // Remove observer
+        QualityControlAutoVetter.getInstance().removeObserver(observer);
+
+        // Run update state
+        QualityControlAutoVetter.updateQualityControlState(null);
+
+        // Sleep until after pluginExecution thread has returned
+        Thread.sleep(1000);
+
+        // As it's not an observer it should remain false.
+        assertFalse(observer.getCanRunStatus());
+    }
+
+    // Test the adding and removing of listeners and their behaviour to trigger the methods of the interface.
+    @Test
+    public void testAddRemoveListener() throws InterruptedException {
+        // add observer of the button state
+        final testListener listener = new testListener();
+        QualityControlAutoVetter.getInstance().addListener(listener);
+
+        // Check initial status
+        assertFalse(listener.getStateChangedStatus());
+
+        // Set the state changed
+        QualityControlAutoVetter.getInstance().setQualityControlState(new QualityControlState(null, new ArrayList<>(), new ArrayList<>()));
+
+        // Check observer status - Should have changed to true as the state has changed
+        assertTrue(listener.getStateChangedStatus());
+
+        // Reset status and recheck
+        listener.setStateChangedStatus(false);
+        assertFalse(listener.getStateChangedStatus());
+
+        // Remove observer
+        QualityControlAutoVetter.getInstance().removeListener(listener);
+
+        // Set the state changed
+        QualityControlAutoVetter.getInstance().setQualityControlState(new QualityControlState(null, new ArrayList<>(), new ArrayList<>()));
+
+        // As it's not an observer it should remain false.
+        assertFalse(listener.getStateChangedStatus());
+    }
+
+    // Test if multiple buttonlisteners get fired correctly within the update state.
+    @Test
+    public void testUpdateQualityControlState() throws InterruptedException {
+        graph = null;
+
+        // add observer1 of the button state
+        QualityControlAutoVetter.destroyInstance();
+        final testObserver observer1 = new testObserver();
+        QualityControlAutoVetter.getInstance().addObserver(observer1);
+
+        // add observer1 of the button state
+        final testObserver observer2 = new testObserver();
+        QualityControlAutoVetter.getInstance().addObserver(observer2);
+
+        // Check initial status
+        assertFalse(observer1.getCanRunStatus());
+        assertFalse(observer2.getCanRunStatus());
+
+        QualityControlAutoVetter.updateQualityControlState(graph);
+
+        // Sleep until after pluginExecution thread has returned
+        Thread.sleep(1000);
+
+        // Check updated status
+        assertTrue(observer1.getCanRunStatus());
+        assertTrue(observer2.getCanRunStatus());
     }
 
     @Test
-    public void testUpdateQualityControlState() {
+    public void testGraphChangedNoGraph() throws InterruptedException {
+        QualityControlAutoVetter.destroyInstance();
+        QualityControlAutoVetter instance = QualityControlAutoVetter.getInstance();
 
+        assertNull(instance.getCurrentGraph());
+        assertEquals(instance.getlastGlobalModCount(), (long) 0);
+        assertEquals(instance.getlastCameraModCount(), (long) 0);
+
+        QualityControlAutoVetter.getInstance().graphChanged(null);
+
+        // check that no attribute mod counts have unnecesarily changed.
+        assertNull(instance.getCurrentGraph());
+        assertEquals(instance.getlastGlobalModCount(), (long) 0);
+        assertEquals(instance.getlastCameraModCount(), (long) 0);
+    }
+
+    @Test
+    public void testGraphChangedWithGraph() throws InterruptedException {
+        QualityControlAutoVetter.destroyInstance();
+        QualityControlAutoVetter instance = QualityControlAutoVetter.getInstance();
+
+        assertNull(instance.getCurrentGraph());
+        assertEquals(instance.getlastGlobalModCount(), (long) 0);
+
+        // Open a new graph
+        graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
+
+        // Add camera attribute
+        final WritableGraph wg = graph.getWritableGraph("TEST", true);
+        VisualConcept.GraphAttribute.CAMERA.ensure(wg);
+        wg.commit();
+
+        // make topcomponent for graph
+        final GraphDataObject gdo = GraphObjectUtilities.createMemoryDataObject("graph", true);
+        TopComponent tc = new VisualGraphTopComponent(gdo, graph);
+        tc.setName("TestName");
+        TopComponent.openAction(tc, tc.getDisplayName(), null, true);
+        tc.open();
+
+        // Change camera attribute
+        final WritableGraph wg1 = graph.getWritableGraph("TEST", true);
+        final Camera camera = new Camera();
+        camera.setVisibilityLow(0.67f);
+        wg1.setObjectValue(VisualConcept.GraphAttribute.CAMERA.get(wg1), 0, camera);
+
+        // Sleep until current graph is registered
+        Thread.sleep(1000);
+
+        // Set the current graph
+        instance.newActiveGraph(graph);
+
+        QualityControlAutoVetter.getInstance().graphChanged(null);
+
+        assertNotEquals(instance.getlastGlobalModCount(), (long) 0);
+        assertNotEquals(instance.getlastCameraModCount(), (long) 0);
+
+        wg1.rollBack();
+        tc.close();
+    }
+}
+
+class testObserver implements QualityControlAutoVetterListener {
+
+    protected boolean canRun = false;
+
+    public testObserver() {
+        // Intentionally left blank - Test.
+    }
+
+    public boolean getCanRunStatus() {
+        return canRun;
+    }
+
+    public void setCanRunStatus(final boolean canRun) {
+        this.canRun = canRun;
+    }
+
+    @Override
+    public void qualityControlRuleChanged(boolean canRun) {
+        this.canRun = canRun;
+    }
+}
+
+class testListener implements QualityControlListener {
+
+    protected boolean stateChanged = false;
+    QualityControlState state;
+
+    public testListener() {
+        // Intentionally left blank - Test.
+    }
+
+    public boolean getStateChangedStatus() {
+        return stateChanged;
+    }
+
+    public void setStateChangedStatus(final boolean stateChanged) {
+        this.stateChanged = stateChanged;
+    }
+
+    @Override
+    public void qualityControlChanged(final QualityControlState state) {
+        if (this.state != state) {
+            stateChanged = true;
+        }
+        this.state = state;
     }
 }

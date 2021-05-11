@@ -89,6 +89,7 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
 
     @Override
     public void graphOpened(final Graph graph) {
+        // Method intentionally left blank
     }
 
     @Override
@@ -163,6 +164,10 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
 
     protected long getlastGlobalModCount() {
         return lastGlobalModificationCounter;
+    }
+
+    protected long getlastCameraModCount() {
+        return lastCameraModificationCounter;
     }
 
     /**
@@ -285,5 +290,10 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
             INSTANCE = new QualityControlAutoVetter();
         }
         return INSTANCE;
+    }
+
+    protected static synchronized void destroyInstance() {
+        GraphManager.getDefault().removeGraphManagerListener(INSTANCE);
+        INSTANCE = null;
     }
 }
