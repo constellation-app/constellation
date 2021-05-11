@@ -17,12 +17,16 @@ package au.gov.asd.tac.constellation.views.qualitycontrol.daemon;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
+import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
+import au.gov.asd.tac.constellation.graph.file.GraphObjectUtilities;
+import au.gov.asd.tac.constellation.graph.interaction.gui.VisualGraphTopComponent;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import java.lang.reflect.InvocationTargetException;
+import org.openide.windows.TopComponent;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 import org.testng.annotations.AfterClass;
@@ -100,10 +104,10 @@ public class QualityControlAutoVetterNGTest {
         VisualConcept.GraphAttribute.CAMERA.ensure(wg);
         wg.commit();
 
-//        // make topcomponent for graphnode
-//        TopComponent tc = new VisualGraphTopComponent();
-//        tc.setName("TestName");
-//        final GraphDataObject gdo = GraphObjectUtilities.createMemoryDataObject("graph", true);
+        // make topcomponent for graphnode
+        TopComponent tc = new VisualGraphTopComponent();
+        tc.setName("TestName");
+        final GraphDataObject gdo = GraphObjectUtilities.createMemoryDataObject("graph", true);
 //        TopComponent.openAction(tc, tc.getDisplayName(), null, true);
 //        tc.open();
 //
