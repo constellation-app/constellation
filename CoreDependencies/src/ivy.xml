@@ -83,8 +83,8 @@
         <!--<dependency org="org.python" name="jython-jyni" rev="2.7-alpha5"/>-->
         <dependency org="org.swinglabs" name="swingx" rev="1.6.1"/>
         <!--<dependency org="unfolding" name="unfolding" rev="0.9.6"/>-->
-        <!-- https://mvnrepository.com/artifact/org.mockito/mockito-all -->
-        <dependency org="org.mockito" name="mockito-all" rev="1.10.19"/>
+        <!-- https://mvnrepository.com/artifact/org.mockito/mockito-inline -->
+        <dependency org="org.mockito" name="mockito-inline" rev="3.9.0"/>
 
 
         <!-- Exclusions -->
