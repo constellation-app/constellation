@@ -15,14 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.plugins.delete;
 
-import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
-import au.gov.asd.tac.constellation.graph.WritableGraph;
-import au.gov.asd.tac.constellation.graph.locking.DualGraph;
-import au.gov.asd.tac.constellation.graph.schema.Schema;
-import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
-import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -60,46 +53,46 @@ public class DeleteSelectionPluginNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         graph = new StoreGraph();
-            
-            attrX = VisualConcept.VertexAttribute.X.ensure(graph);
-            attrY = VisualConcept.VertexAttribute.Y.ensure(graph);
-            vAttrId = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
-            tAttrId = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
 
-            vxId1 = graph.addVertex();
-            graph.setFloatValue(attrX, vxId1, 1.0f);
-            graph.setFloatValue(attrY, vxId1, 1.0f);
-            graph.setBooleanValue(vAttrId, vxId1, false);
-            vxId2 = graph.addVertex();
-            graph.setFloatValue(attrX, vxId2, 5.0f);
-            graph.setFloatValue(attrY, vxId2, 1.0f);
-            graph.setBooleanValue(vAttrId, vxId2, false);
-            vxId3 = graph.addVertex();
-            graph.setFloatValue(attrX, vxId3, 1.0f);
-            graph.setFloatValue(attrY, vxId3, 5.0f);
-            graph.setBooleanValue(vAttrId, vxId3, false);
-            vxId4 = graph.addVertex();
-            graph.setFloatValue(attrX, vxId4, 5.0f);
-            graph.setFloatValue(attrY, vxId4, 5.0f);
-            graph.setBooleanValue(vAttrId, vxId4, false);
-            vxId5 = graph.addVertex();
-            graph.setFloatValue(attrX, vxId5, 10.0f);
-            graph.setFloatValue(attrY, vxId5, 10.0f);
-            graph.setBooleanValue(vAttrId, vxId5, false);
-            vxId6 = graph.addVertex();
-            graph.setFloatValue(attrX, vxId6, 15.0f);
-            graph.setFloatValue(attrY, vxId6, 15.0f);
-            graph.setBooleanValue(vAttrId, vxId6, false);
-            vxId7 = graph.addVertex();
-            graph.setFloatValue(attrX, vxId7, 100.0f);
-            graph.setFloatValue(attrY, vxId7, 100.0f);
-            graph.setBooleanValue(vAttrId, vxId7, false);
+        attrX = VisualConcept.VertexAttribute.X.ensure(graph);
+        attrY = VisualConcept.VertexAttribute.Y.ensure(graph);
+        vAttrId = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
+        tAttrId = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
 
-            txId1 = graph.addTransaction(vxId1, vxId2, false);
-            txId2 = graph.addTransaction(vxId1, vxId3, false);
-            txId3 = graph.addTransaction(vxId2, vxId4, false);
-            txId4 = graph.addTransaction(vxId4, vxId2, false);
-            txId5 = graph.addTransaction(vxId5, vxId6, false);
+        vxId1 = graph.addVertex();
+        graph.setFloatValue(attrX, vxId1, 1.0f);
+        graph.setFloatValue(attrY, vxId1, 1.0f);
+        graph.setBooleanValue(vAttrId, vxId1, false);
+        vxId2 = graph.addVertex();
+        graph.setFloatValue(attrX, vxId2, 5.0f);
+        graph.setFloatValue(attrY, vxId2, 1.0f);
+        graph.setBooleanValue(vAttrId, vxId2, false);
+        vxId3 = graph.addVertex();
+        graph.setFloatValue(attrX, vxId3, 1.0f);
+        graph.setFloatValue(attrY, vxId3, 5.0f);
+        graph.setBooleanValue(vAttrId, vxId3, false);
+        vxId4 = graph.addVertex();
+        graph.setFloatValue(attrX, vxId4, 5.0f);
+        graph.setFloatValue(attrY, vxId4, 5.0f);
+        graph.setBooleanValue(vAttrId, vxId4, false);
+        vxId5 = graph.addVertex();
+        graph.setFloatValue(attrX, vxId5, 10.0f);
+        graph.setFloatValue(attrY, vxId5, 10.0f);
+        graph.setBooleanValue(vAttrId, vxId5, false);
+        vxId6 = graph.addVertex();
+        graph.setFloatValue(attrX, vxId6, 15.0f);
+        graph.setFloatValue(attrY, vxId6, 15.0f);
+        graph.setBooleanValue(vAttrId, vxId6, false);
+        vxId7 = graph.addVertex();
+        graph.setFloatValue(attrX, vxId7, 100.0f);
+        graph.setFloatValue(attrY, vxId7, 100.0f);
+        graph.setBooleanValue(vAttrId, vxId7, false);
+
+        txId1 = graph.addTransaction(vxId1, vxId2, false);
+        txId2 = graph.addTransaction(vxId1, vxId3, false);
+        txId3 = graph.addTransaction(vxId2, vxId4, false);
+        txId4 = graph.addTransaction(vxId4, vxId2, false);
+        txId5 = graph.addTransaction(vxId5, vxId6, false);
     }
 
     @AfterMethod
