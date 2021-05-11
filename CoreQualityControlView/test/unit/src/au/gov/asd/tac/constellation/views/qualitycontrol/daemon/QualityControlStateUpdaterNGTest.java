@@ -224,6 +224,7 @@ public class QualityControlStateUpdaterNGTest {
                 assertEquals(qualityControlEvents.get(i).getRules(), event.getRules());
                 assertEquals(qualityControlEvents.get(i).getType(), event.getType());
             }
+            i++;
         }
 
         // check equality of the rules
