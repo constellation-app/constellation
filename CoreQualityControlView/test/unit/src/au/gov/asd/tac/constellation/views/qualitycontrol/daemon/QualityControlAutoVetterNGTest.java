@@ -16,9 +16,17 @@
 package au.gov.asd.tac.constellation.views.qualitycontrol.daemon;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.WritableGraph;
+import au.gov.asd.tac.constellation.graph.locking.DualGraph;
+import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
+import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.utilities.camera.Camera;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotEquals;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
@@ -79,82 +87,26 @@ public class QualityControlAutoVetterNGTest {
     }
 
     // Testing init with no graph open - commented out as TopComponent launches GUI panels which don't execute in the test environment
-//    @Test
-//    public void testInit() throws InterruptedException, NoSuchMethodException, IllegalAccessException,
-//            IllegalArgumentException, InvocationTargetException {
-//        QualityControlAutoVetter.destroyInstance();
-//        final QualityControlAutoVetter instance = QualityControlAutoVetter.getInstance();
-//        instance.init();
-//        assertNull(instance.getCurrentGraph());
-//        assertEquals(instance.getlastGlobalModCount(), (long) 0);
-//
-//        assertNull(GraphManager.getDefault().getActiveGraph());
-//
-//        // open a new graph
-//        graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
-//        WritableGraph wg = graph.getWritableGraph("TEST", true);
-//        VisualConcept.GraphAttribute.CAMERA.ensure(wg);
-//        wg.commit();
-//
-//        // make topcomponent for graphnode
-//        final GraphDataObject gdo = GraphObjectUtilities.createMemoryDataObject("graph", true);
-//        TopComponent tc = new VisualGraphTopComponent(gdo, graph);
-//        tc.setName("TestName");
-//        TopComponent.openAction(tc, tc.getDisplayName(), null, true);
-//        tc.open();
-//
-//        // Sleep until current graph is registered
-//        Thread.sleep(1000);
-//
-//        assertNotNull(GraphManager.getDefault().getActiveGraph());
-//
-//        // Testing init with a graph open
-//        instance.init();
-//        assertNotNull(instance.getCurrentGraph());
-//
-//        // Close current graph and retest
-//        tc.close();
-//        instance.init();
-//        assertNull(instance.getCurrentGraph());
-//    }
-//    @Test
-//    public void testInitWithRefresh() throws InterruptedException {
-//        QualityControlAutoVetter.destroyInstance();
-//        final QualityControlAutoVetter instance = QualityControlAutoVetter.getInstance();
-//        instance.initWithRefresh(true);
-//        assertNull(instance.getCurrentGraph());
-//        assertEquals(instance.getlastGlobalModCount(), (long) 0);
-//
-//        assertNull(GraphManager.getDefault().getActiveGraph());
-//
-//        // Open a new graph
-//        graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
-//
-//        WritableGraph wg1 = graph.getWritableGraph("TEST", true);
-//        VisualConcept.GraphAttribute.CAMERA.ensure(wg1);
-//        wg1.commit();
-//
-//        // make topcomponent for graphnode
-//        final GraphDataObject gdo = GraphObjectUtilities.createMemoryDataObject("graph", true);
-//        TopComponent tc = new VisualGraphTopComponent(gdo, graph);
-//        tc.setName("TestName");
-//        TopComponent.openAction(tc, tc.getDisplayName(), null, true);
-//        tc.open();
-//
-//        // Sleep until current graph is registered
-//        Thread.sleep(1000);
-//
-//        assertNotNull(GraphManager.getDefault().getActiveGraph());
-//
-//        // Testing init with a graph open
-//        instance.initWithRefresh(true);
-//        assertNotNull(instance.getCurrentGraph());
-//
-//        // Close current graph and retest
-//        tc.close();
-//        instance.initWithRefresh(true);
-//        assertNull(instance.getCurrentGraph());
-//    }
+    @Test
+    public void testInit() throws InterruptedException, NoSuchMethodException, IllegalAccessException,
+            IllegalArgumentException, InvocationTargetException {
+        QualityControlAutoVetter.destroyInstance();
+        final QualityControlAutoVetter instance = QualityControlAutoVetter.getInstance();
+        instance.init();
+        assertNull(instance.getCurrentGraph());
+        assertEquals(instance.getlastGlobalModCount(), (long) 0);
+    }
+
+    @Test
+    public void testInitWithRefresh() throws InterruptedException {
+        QualityControlAutoVetter.destroyInstance();
+        final QualityControlAutoVetter instance = QualityControlAutoVetter.getInstance();
+        instance.initWithRefresh(true);
+        assertNull(instance.getCurrentGraph());
+        assertEquals(instance.getlastGlobalModCount(), (long) 0);
+
+    }
+
     // Test the adding and removing of observers and their behaviour to trigger the methods of the interface.
     @Test
     public void testAddRemoveObserver() throws InterruptedException {
@@ -266,49 +218,41 @@ public class QualityControlAutoVetterNGTest {
     }
 
     // Test commented out as TopComponent launches GUI panels which don't execute in the test environment
-//    @Test
-//    public void testGraphChangedWithGraph() throws InterruptedException {
-//        QualityControlAutoVetter.destroyInstance();
-//        QualityControlAutoVetter instance = QualityControlAutoVetter.getInstance();
-//
-//        assertNull(instance.getCurrentGraph());
-//        assertEquals(instance.getlastGlobalModCount(), (long) 0);
-//
-//        // Open a new graph
-//        graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
-//
-//        // Add camera attribute
-//        final WritableGraph wg = graph.getWritableGraph("TEST", true);
-//        VisualConcept.GraphAttribute.CAMERA.ensure(wg);
-//        wg.commit();
-//
-//        // make topcomponent for graph
-//        final GraphDataObject gdo = GraphObjectUtilities.createMemoryDataObject("graph", true);
-//        TopComponent tc = new VisualGraphTopComponent(gdo, graph);
-//        tc.setName("TestName");
-//        TopComponent.openAction(tc, tc.getDisplayName(), null, true);
-//        tc.open();
-//
-//        // Change camera attribute
-//        final WritableGraph wg1 = graph.getWritableGraph("TEST", true);
-//        final Camera camera = new Camera();
-//        camera.setVisibilityLow(0.67f);
-//        wg1.setObjectValue(VisualConcept.GraphAttribute.CAMERA.get(wg1), 0, camera);
-//
-//        // Sleep until current graph is registered
-//        Thread.sleep(1000);
-//
-//        // Set the current graph
-//        instance.newActiveGraph(graph);
-//
-//        QualityControlAutoVetter.getInstance().graphChanged(null);
-//
-//        assertNotEquals(instance.getlastGlobalModCount(), (long) 0);
-//        assertNotEquals(instance.getlastCameraModCount(), (long) 0);
-//
-//        wg1.rollBack();
-//        tc.close();
-//    }
+    @Test
+    public void testGraphChangedWithGraph() throws InterruptedException {
+        QualityControlAutoVetter.destroyInstance();
+        QualityControlAutoVetter instance = QualityControlAutoVetter.getInstance();
+
+        assertNull(instance.getCurrentGraph());
+        assertEquals(instance.getlastGlobalModCount(), (long) 0);
+
+        // Open a new graph
+        graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
+
+        // Add camera attribute
+        final WritableGraph wg = graph.getWritableGraph("TEST", true);
+        VisualConcept.GraphAttribute.CAMERA.ensure(wg);
+        wg.commit();
+
+        // Change camera attribute
+        final WritableGraph wg1 = graph.getWritableGraph("TEST", true);
+        final Camera camera = new Camera();
+        camera.setVisibilityLow(0.67f);
+        wg1.setObjectValue(VisualConcept.GraphAttribute.CAMERA.get(wg1), 0, camera);
+
+        // Sleep until current graph is registered
+        Thread.sleep(1000);
+
+        // Set the current graph
+        instance.newActiveGraph(graph);
+
+        QualityControlAutoVetter.getInstance().graphChanged(null);
+
+        assertNotEquals(instance.getlastGlobalModCount(), (long) 0);
+        assertNotEquals(instance.getlastCameraModCount(), (long) 0);
+
+        wg1.rollBack();
+    }
 }
 
 class testObserver implements QualityControlAutoVetterListener {
