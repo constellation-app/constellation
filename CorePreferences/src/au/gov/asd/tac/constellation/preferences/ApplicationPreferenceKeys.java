@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.preferences;
 import au.gov.asd.tac.constellation.preferences.rest.RestDirectory;
 import java.io.File;
 import java.util.prefs.Preferences;
-import javax.swing.JFileChooser;
 import org.openide.util.Lookup;
 
 /**
