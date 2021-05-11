@@ -1738,6 +1738,82 @@
                 <package>org.locationtech.jts.triangulate</package>
                 <package>org.locationtech.jts.triangulate.quadedge</package>
                 <package>org.locationtech.jts.util</package>
+                <package>org.mockito</package>
+                <package>org.mockito.asm</package>
+                <package>org.mockito.asm.tree</package>
+                <package>org.mockito.asm.tree.analysis</package>
+                <package>org.mockito.asm.util</package>
+                <package>org.mockito.cglib.beans</package>
+                <package>org.mockito.cglib.core</package>
+                <package>org.mockito.cglib.proxy</package>
+                <package>org.mockito.cglib.reflect</package>
+                <package>org.mockito.cglib.transform</package>
+                <package>org.mockito.cglib.transform.impl</package>
+                <package>org.mockito.cglib.util</package>
+                <package>org.mockito.configuration</package>
+                <package>org.mockito.exceptions</package>
+                <package>org.mockito.exceptions.base</package>
+                <package>org.mockito.exceptions.misusing</package>
+                <package>org.mockito.exceptions.stacktrace</package>
+                <package>org.mockito.exceptions.verification</package>
+                <package>org.mockito.exceptions.verification.junit</package>
+                <package>org.mockito.internal</package>
+                <package>org.mockito.internal.configuration</package>
+                <package>org.mockito.internal.configuration.injection</package>
+                <package>org.mockito.internal.configuration.injection.filter</package>
+                <package>org.mockito.internal.configuration.injection.scanner</package>
+                <package>org.mockito.internal.configuration.plugins</package>
+                <package>org.mockito.internal.creation</package>
+                <package>org.mockito.internal.creation.cglib</package>
+                <package>org.mockito.internal.creation.instance</package>
+                <package>org.mockito.internal.creation.settings</package>
+                <package>org.mockito.internal.creation.util</package>
+                <package>org.mockito.internal.debugging</package>
+                <package>org.mockito.internal.exceptions</package>
+                <package>org.mockito.internal.exceptions.stacktrace</package>
+                <package>org.mockito.internal.exceptions.util</package>
+                <package>org.mockito.internal.handler</package>
+                <package>org.mockito.internal.invocation</package>
+                <package>org.mockito.internal.invocation.finder</package>
+                <package>org.mockito.internal.invocation.realmethod</package>
+                <package>org.mockito.internal.junit</package>
+                <package>org.mockito.internal.listeners</package>
+                <package>org.mockito.internal.matchers</package>
+                <package>org.mockito.internal.matchers.apachecommons</package>
+                <package>org.mockito.internal.progress</package>
+                <package>org.mockito.internal.reporting</package>
+                <package>org.mockito.internal.runners</package>
+                <package>org.mockito.internal.runners.util</package>
+                <package>org.mockito.internal.stubbing</package>
+                <package>org.mockito.internal.stubbing.answers</package>
+                <package>org.mockito.internal.stubbing.defaultanswers</package>
+                <package>org.mockito.internal.util</package>
+                <package>org.mockito.internal.util.collections</package>
+                <package>org.mockito.internal.util.io</package>
+                <package>org.mockito.internal.util.junit</package>
+                <package>org.mockito.internal.util.reflection</package>
+                <package>org.mockito.internal.verification</package>
+                <package>org.mockito.internal.verification.api</package>
+                <package>org.mockito.internal.verification.argumentmatching</package>
+                <package>org.mockito.internal.verification.checkers</package>
+                <package>org.mockito.invocation</package>
+                <package>org.mockito.junit</package>
+                <package>org.mockito.listeners</package>
+                <package>org.mockito.mock</package>
+                <package>org.mockito.plugins</package>
+                <package>org.mockito.runners</package>
+                <package>org.mockito.stubbing</package>
+                <package>org.mockito.stubbing.answers</package>
+                <package>org.mockito.verification</package>
+                <package>org.objenesis</package>
+                <package>org.objenesis.instantiator</package>
+                <package>org.objenesis.instantiator.android</package>
+                <package>org.objenesis.instantiator.basic</package>
+                <package>org.objenesis.instantiator.gcj</package>
+                <package>org.objenesis.instantiator.jrockit</package>
+                <package>org.objenesis.instantiator.perc</package>
+                <package>org.objenesis.instantiator.sun</package>
+                <package>org.objenesis.strategy</package>
                 <package>org.opengis.annotation</package>
                 <package>org.opengis.coverage</package>
                 <package>org.opengis.coverage.grid</package>
@@ -2849,6 +2925,10 @@
             <class-path-extension>
                 <runtime-relative-path>ext/log4j-1.2.17-bundle.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/log4j-1.2.17-bundle.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/mockito-all-1.10.19-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/mockito-all-1.10.19-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/nativewindow-natives-windows-i586.jar</runtime-relative-path>
