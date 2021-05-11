@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.graph.interaction.plugins.delete;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
@@ -43,7 +44,7 @@ public class DeleteSelectionPluginNGTest {
     private int vxId1, vxId2, vxId3, vxId4, vxId5, vxId6, vxId7;
     private int txId1, txId2, txId3, txId4, txId5;
     private int vAttrId, tAttrId;
-    private Graph graph;
+    private StoreGraph graph;
     
     public DeleteSelectionPluginNGTest() {
     }
@@ -58,53 +59,47 @@ public class DeleteSelectionPluginNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
-        graph = new DualGraph(schema);
-        
-        WritableGraph wg = graph.getWritableGraph("Delete", true);
-        try {     
-            attrX = VisualConcept.VertexAttribute.X.ensure(wg);
-            attrY = VisualConcept.VertexAttribute.Y.ensure(wg);
-            vAttrId = VisualConcept.VertexAttribute.SELECTED.ensure(wg);
-            tAttrId = VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
+        graph = new StoreGraph();
+            
+            attrX = VisualConcept.VertexAttribute.X.ensure(graph);
+            attrY = VisualConcept.VertexAttribute.Y.ensure(graph);
+            vAttrId = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
+            tAttrId = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
 
-            vxId1 = wg.addVertex();
-            wg.setFloatValue(attrX, vxId1, 1.0f);
-            wg.setFloatValue(attrY, vxId1, 1.0f);
-            wg.setBooleanValue(vAttrId, vxId1, false);
-            vxId2 = wg.addVertex();
-            wg.setFloatValue(attrX, vxId2, 5.0f);
-            wg.setFloatValue(attrY, vxId2, 1.0f);
-            wg.setBooleanValue(vAttrId, vxId2, false);
-            vxId3 = wg.addVertex();
-            wg.setFloatValue(attrX, vxId3, 1.0f);
-            wg.setFloatValue(attrY, vxId3, 5.0f);
-            wg.setBooleanValue(vAttrId, vxId3, false);
-            vxId4 = wg.addVertex();
-            wg.setFloatValue(attrX, vxId4, 5.0f);
-            wg.setFloatValue(attrY, vxId4, 5.0f);
-            wg.setBooleanValue(vAttrId, vxId4, false);
-            vxId5 = wg.addVertex();
-            wg.setFloatValue(attrX, vxId5, 10.0f);
-            wg.setFloatValue(attrY, vxId5, 10.0f);
-            wg.setBooleanValue(vAttrId, vxId5, false);
-            vxId6 = wg.addVertex();
-            wg.setFloatValue(attrX, vxId6, 15.0f);
-            wg.setFloatValue(attrY, vxId6, 15.0f);
-            wg.setBooleanValue(vAttrId, vxId6, false);
-            vxId7 = wg.addVertex();
-            wg.setFloatValue(attrX, vxId7, 100.0f);
-            wg.setFloatValue(attrY, vxId7, 100.0f);
-            wg.setBooleanValue(vAttrId, vxId7, false);
+            vxId1 = graph.addVertex();
+            graph.setFloatValue(attrX, vxId1, 1.0f);
+            graph.setFloatValue(attrY, vxId1, 1.0f);
+            graph.setBooleanValue(vAttrId, vxId1, false);
+            vxId2 = graph.addVertex();
+            graph.setFloatValue(attrX, vxId2, 5.0f);
+            graph.setFloatValue(attrY, vxId2, 1.0f);
+            graph.setBooleanValue(vAttrId, vxId2, false);
+            vxId3 = graph.addVertex();
+            graph.setFloatValue(attrX, vxId3, 1.0f);
+            graph.setFloatValue(attrY, vxId3, 5.0f);
+            graph.setBooleanValue(vAttrId, vxId3, false);
+            vxId4 = graph.addVertex();
+            graph.setFloatValue(attrX, vxId4, 5.0f);
+            graph.setFloatValue(attrY, vxId4, 5.0f);
+            graph.setBooleanValue(vAttrId, vxId4, false);
+            vxId5 = graph.addVertex();
+            graph.setFloatValue(attrX, vxId5, 10.0f);
+            graph.setFloatValue(attrY, vxId5, 10.0f);
+            graph.setBooleanValue(vAttrId, vxId5, false);
+            vxId6 = graph.addVertex();
+            graph.setFloatValue(attrX, vxId6, 15.0f);
+            graph.setFloatValue(attrY, vxId6, 15.0f);
+            graph.setBooleanValue(vAttrId, vxId6, false);
+            vxId7 = graph.addVertex();
+            graph.setFloatValue(attrX, vxId7, 100.0f);
+            graph.setFloatValue(attrY, vxId7, 100.0f);
+            graph.setBooleanValue(vAttrId, vxId7, false);
 
-            txId1 = wg.addTransaction(vxId1, vxId2, false);
-            txId2 = wg.addTransaction(vxId1, vxId3, false);
-            txId3 = wg.addTransaction(vxId2, vxId4, false);
-            txId4 = wg.addTransaction(vxId4, vxId2, false);
-            txId5 = wg.addTransaction(vxId5, vxId6, false);
-        } finally {
-            wg.commit();
-        }
+            txId1 = graph.addTransaction(vxId1, vxId2, false);
+            txId2 = graph.addTransaction(vxId1, vxId3, false);
+            txId3 = graph.addTransaction(vxId2, vxId4, false);
+            txId4 = graph.addTransaction(vxId4, vxId2, false);
+            txId5 = graph.addTransaction(vxId5, vxId6, false);
     }
 
     @AfterMethod
@@ -132,11 +127,10 @@ public class DeleteSelectionPluginNGTest {
      */
     public void testNothingSelected() throws InterruptedException, PluginException, Exception {
         setUpMethod();
-        GraphWriteMethods testGraph = graph.getWritableGraph("Test", true);
         DeleteSelectionPlugin instance = new DeleteSelectionPlugin();
-        PluginExecution.withPlugin(instance).executeNow(testGraph);
-        assertEquals(testGraph.getVertexCount(), 7);
-        assertEquals(testGraph.getTransactionCount(), 5);    
+        PluginExecution.withPlugin(instance).executeNow(graph);
+        assertEquals(graph.getVertexCount(), 7);
+        assertEquals(graph.getTransactionCount(), 5);    
     }
     
     /**
@@ -148,17 +142,16 @@ public class DeleteSelectionPluginNGTest {
      */ 
     public void testSomeVxSelected() throws InterruptedException, PluginException, Exception {
         setUpMethod();
-        GraphWriteMethods testGraph = graph.getWritableGraph("Test", true);
-        testGraph.setBooleanValue(vAttrId, vxId2, true);
-        testGraph.setBooleanValue(vAttrId, vxId4, true);  
-        testGraph.setBooleanValue(vAttrId, vxId6, true);
-        testGraph.setBooleanValue(vAttrId, vxId7, true);
+        graph.setBooleanValue(vAttrId, vxId2, true);
+        graph.setBooleanValue(vAttrId, vxId4, true);  
+        graph.setBooleanValue(vAttrId, vxId6, true);
+        graph.setBooleanValue(vAttrId, vxId7, true);
         
         DeleteSelectionPlugin instance = new DeleteSelectionPlugin();
-        PluginExecution.withPlugin(instance).executeNow(testGraph);
+        PluginExecution.withPlugin(instance).executeNow(graph);
         
-        assertEquals(testGraph.getVertexCount(), 3);
-        assertEquals(testGraph.getTransactionCount(), 1);   
+        assertEquals(graph.getVertexCount(), 3);
+        assertEquals(graph.getTransactionCount(), 1);   
     }
     
     /**
@@ -170,15 +163,14 @@ public class DeleteSelectionPluginNGTest {
      */
     public void testSomeTxSelected() throws InterruptedException, PluginException, Exception {
         setUpMethod();
-        GraphWriteMethods testGraph = graph.getWritableGraph("Test", true);
-        testGraph.setBooleanValue(tAttrId, txId1, true);
-        testGraph.setBooleanValue(tAttrId, txId2, true);
+        graph.setBooleanValue(tAttrId, txId1, true);
+        graph.setBooleanValue(tAttrId, txId2, true);
         
         DeleteSelectionPlugin instance = new DeleteSelectionPlugin();
-        PluginExecution.withPlugin(instance).executeNow(testGraph);
+        PluginExecution.withPlugin(instance).executeNow(graph);
         
-        assertEquals(testGraph.getVertexCount(), 7);
-        assertEquals(testGraph.getTransactionCount(), 3);  
+        assertEquals(graph.getVertexCount(), 7);
+        assertEquals(graph.getTransactionCount(), 3);  
     }
     
     /** 
@@ -190,26 +182,25 @@ public class DeleteSelectionPluginNGTest {
      */
     public void testAllSelected() throws InterruptedException, PluginException, Exception {
         setUpMethod();
-        GraphWriteMethods testGraph = graph.getWritableGraph("Test", true);
-        testGraph.setBooleanValue(vAttrId, vxId1, true);
-        testGraph.setBooleanValue(vAttrId, vxId2, true);
-        testGraph.setBooleanValue(vAttrId, vxId3, true);
-        testGraph.setBooleanValue(vAttrId, vxId4, true);  
-        testGraph.setBooleanValue(vAttrId, vxId5, true);
-        testGraph.setBooleanValue(vAttrId, vxId6, true);
-        testGraph.setBooleanValue(vAttrId, vxId7, true);
+        graph.setBooleanValue(vAttrId, vxId1, true);
+        graph.setBooleanValue(vAttrId, vxId2, true);
+        graph.setBooleanValue(vAttrId, vxId3, true);
+        graph.setBooleanValue(vAttrId, vxId4, true);  
+        graph.setBooleanValue(vAttrId, vxId5, true);
+        graph.setBooleanValue(vAttrId, vxId6, true);
+        graph.setBooleanValue(vAttrId, vxId7, true);
         
-        testGraph.setBooleanValue(tAttrId, txId1, true);
-        testGraph.setBooleanValue(tAttrId, txId2, true);
-        testGraph.setBooleanValue(tAttrId, txId3, true);
-        testGraph.setBooleanValue(tAttrId, txId4, true);
-        testGraph.setBooleanValue(tAttrId, txId5, true);
+        graph.setBooleanValue(tAttrId, txId1, true);
+        graph.setBooleanValue(tAttrId, txId2, true);
+        graph.setBooleanValue(tAttrId, txId3, true);
+        graph.setBooleanValue(tAttrId, txId4, true);
+        graph.setBooleanValue(tAttrId, txId5, true);
         
         DeleteSelectionPlugin instance = new DeleteSelectionPlugin();
-        PluginExecution.withPlugin(instance).executeNow(testGraph);
+        PluginExecution.withPlugin(instance).executeNow(graph);
         
-        assertEquals(testGraph.getVertexCount(), 0);
-        assertEquals(testGraph.getTransactionCount(), 0);  
+        assertEquals(graph.getVertexCount(), 0);
+        assertEquals(graph.getTransactionCount(), 0);  
     }
     
 }
