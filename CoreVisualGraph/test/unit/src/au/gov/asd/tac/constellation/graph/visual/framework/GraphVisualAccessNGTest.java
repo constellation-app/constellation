@@ -85,10 +85,14 @@ public class GraphVisualAccessNGTest {
     @Test
     public void testGetIndigenousChanges() {
         System.out.println("getIndigenousChanges");
-        final GraphVisualAccess instance = new GraphVisualAccess(graph);
-        final List<VisualChange> changes = instance.getIndigenousChanges();
         
-        //update(true)
+        final GraphVisualAccess instance = new GraphVisualAccess(graph);
+        
+        instance.beginUpdate();        
+        final List<VisualChange> changes = instance.getIndigenousChanges();       
+        instance.endUpdate();
+
+        assertEquals(changes.size(), 37);
     }
 
     /**
