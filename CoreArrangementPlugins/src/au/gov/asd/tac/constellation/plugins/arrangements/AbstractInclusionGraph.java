@@ -108,8 +108,8 @@ public abstract class AbstractInclusionGraph {
 
     private boolean updatePositionIfExisting;
     
-    // Attribute used to store whether a vertexes position should be locked and not auto arranged
-    private final int posLockedAttr;
+    // Attribute used to store whether a vertexes position should be pinned and not auto arranged
+    private final int pinnedAttr;
     
     /**
      * Create a new inclusion graph.
@@ -124,7 +124,7 @@ public abstract class AbstractInclusionGraph {
 
         inclusionGraph = null;
         updatePositionIfExisting = true;
-        posLockedAttr = VisualConcept.VertexAttribute.POSITIONLOCKED.ensure(wg);
+        pinnedAttr = VisualConcept.VertexAttribute.PINNED.ensure(wg);
     }
 
     /**
@@ -150,20 +150,20 @@ public abstract class AbstractInclusionGraph {
         final int vxCount = wg.getVertexCount();
 
         // Loop through all vertexes and count the number that have been
-        // explictly selected by user and those that have been marked as locked.
-        // Vertexes marked as locked will not be 'arranged'.
+        // explictly selected by user and those that have been marked as pinned.
+        // Vertexes marked as pinned will not be 'arranged'.
         int incCount = 0;
-        int lockedCount = 0;
+        int pinnedCount = 0;
         for (int position = 0; position < vxCount; position++) {
             final int vxId = wg.getVertex(position);
             if (isVertexIncluded(vxId)) { incCount++; }
-            if (!wg.getBooleanValue(posLockedAttr, vxId)) { lockedCount++; }
+            if (!wg.getBooleanValue(pinnedAttr, vxId)) { pinnedCount++; }
         }
 
         // If every vertex is a candidate to be moved we can just return the
         // current graph.
         inclusionGraphIsOriginalGraph =
-                (incCount == vxCount || incCount == 0) && (lockedCount == 0);
+                (incCount == vxCount || incCount == 0) && (pinnedCount == 0);
         if (inclusionGraphIsOriginalGraph) {
             // All vertices are (implicitly or explicitly) selected.
             // Pass the graph straight through.
@@ -229,9 +229,9 @@ public abstract class AbstractInclusionGraph {
 
             // A vertex goes into the inclusion graph if all vertexes are selected
             // or the explicit vertex is selected and the vertex is not marked as
-            // locked.
+            // pinned.
             final boolean allVertexesSelected = incCount == vxCount || incCount == 0;
-            if ((allVertexesSelected || isVertexIncluded(vxId)) && !wg.getBooleanValue(posLockedAttr, vxId)) {
+            if ((allVertexesSelected || isVertexIncluded(vxId)) && !wg.getBooleanValue(pinnedAttr, vxId)) {
                 vertices.set(vxId);
 
                 // Create the vertex in the inclusion graph with the same vertex

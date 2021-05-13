@@ -27,15 +27,15 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle;
 
 /**
- * Wrapper around UnlockVertexPositionsPlugin which is responsible for setting
- * selected vertexes position_locked attributes to false to ensure the vertexes
+ * Wrapper around UnpinVertexPositionsPlugin which is responsible for setting
+ * selected vertexes PINNED attributes to false to ensure the vertexes
  * are moved when an arrangement plugin is run.
  *
  * @author serpens24
  */
-@ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.plugins.arrangements.grid.UnlockVertexPositionsAction")
-@ActionRegistration(displayName = "#CTL_UnlockVertexPositionsAction",
-        iconBase = "au/gov/asd/tac/constellation/plugins/arrangements/resources/unlock.png",
+@ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.plugins.arrangements.grid.UnpinVertexPositionsAction")
+@ActionRegistration(displayName = "#CTL_UnpinVertexPositionsAction",
+        iconBase = "au/gov/asd/tac/constellation/plugins/arrangements/resources/unpin.png",
         surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Arrange", position = 9999),
@@ -44,8 +44,8 @@ import org.openide.util.NbBundle;
 })
 
 
-@NbBundle.Messages("CTL_UnlockVertexPositionsAction=Unlock Vertex Positions")
-public final class UnlockVertexPositionsAction extends AbstractAction {
+@NbBundle.Messages("CTL_UnpinVertexPositionsAction=Unpin Vertex Positions")
+public final class UnpinVertexPositionsAction extends AbstractAction {
   
     private final GraphNode context;
 
@@ -54,13 +54,13 @@ public final class UnlockVertexPositionsAction extends AbstractAction {
      *
      * @param context GraphNode context.
      */
-    public UnlockVertexPositionsAction(final GraphNode context) {
+    public UnpinVertexPositionsAction(final GraphNode context) {
         this.context = context;
     }
 
     @Override
     public void actionPerformed(final ActionEvent e) {
-        PluginExecutor.startWith(ArrangementPluginRegistry.UNLOCKPOSITIONS)
+        PluginExecutor.startWith(ArrangementPluginRegistry.UNPIN)
                 .executeWriteLater(context.getGraph());
     }
 }

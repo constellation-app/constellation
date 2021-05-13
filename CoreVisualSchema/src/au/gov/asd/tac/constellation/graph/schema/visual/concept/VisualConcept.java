@@ -269,9 +269,10 @@ public class VisualConcept extends SchemaConcept {
                 .setDefaultValue(0.0f)
                 .create()
                 .build();
-        public static final SchemaAttribute POSITIONLOCKED = new SchemaAttribute.Builder(GraphElementType.VERTEX, BooleanAttributeDescription.ATTRIBUTE_NAME, "position_locked")
-                .setDescription("Is the vertex position locked?")
+        public static final SchemaAttribute PINNED = new SchemaAttribute.Builder(GraphElementType.VERTEX, BooleanAttributeDescription.ATTRIBUTE_NAME, "pinned")
+                .setDescription("Is the vertex position pinned?")
                 .setDefaultValue(false)
+                .setDecorator(true)
                 .create()
                 .build();
     }
@@ -368,7 +369,7 @@ public class VisualConcept extends SchemaConcept {
         schemaAttributes.add(VertexAttribute.Y2);
         schemaAttributes.add(VertexAttribute.Z);
         schemaAttributes.add(VertexAttribute.Z2);
-        schemaAttributes.add(VertexAttribute.POSITIONLOCKED);
+        schemaAttributes.add(VertexAttribute.PINNED);
         schemaAttributes.add(TransactionAttribute.COLOR);
         schemaAttributes.add(TransactionAttribute.DIMMED);
         schemaAttributes.add(TransactionAttribute.DIRECTED);

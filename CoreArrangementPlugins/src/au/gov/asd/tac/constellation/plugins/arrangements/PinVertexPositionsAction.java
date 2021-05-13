@@ -26,23 +26,23 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle;
 
 /**
- * Wrapper around LockVertexPositionsPlugin which is responsible for setting
- * selected vertexes position_locked attributes to true to ensure the vertexes
+ * Wrapper around PinVertexPositionsPlugin which is responsible for setting
+ * selected vertexes PINNED attributes to true to ensure the vertexes
  * are not moved when an arrangement plugin is run.
  * 
  * @author serpens24
  */
-@ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.plugins.arrangements.grid.LockVertexPositionsAction")
-@ActionRegistration(displayName = "#CTL_LockVertexPositionsAction",
-        iconBase = "au/gov/asd/tac/constellation/plugins/arrangements/resources/lock.png",
+@ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.plugins.arrangements.grid.PinVertexPositionsAction")
+@ActionRegistration(displayName = "#CTL_PinVertexPositionsAction",
+        iconBase = "au/gov/asd/tac/constellation/plugins/arrangements/resources/pin.png",
         surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Arrange", position = 9998),
     @ActionReference(path = "Toolbars/Arrange", position = 9998),
     @ActionReference(path = "Shortcuts", name = "C-L")
 })
-@NbBundle.Messages("CTL_LockVertexPositionsAction=Lock Vertex Positions")
-public final class LockVertexPositionsAction extends AbstractAction {
+@NbBundle.Messages("CTL_PinVertexPositionsAction=Pin Vertex Positions")
+public final class PinVertexPositionsAction extends AbstractAction {
   
     private final GraphNode context;
 
@@ -51,13 +51,13 @@ public final class LockVertexPositionsAction extends AbstractAction {
      *
      * @param context GraphNode context.
      */
-    public LockVertexPositionsAction(final GraphNode context) {
+    public PinVertexPositionsAction(final GraphNode context) {
         this.context = context;
     }
 
     @Override
     public void actionPerformed(final ActionEvent e) {
-        PluginExecutor.startWith(ArrangementPluginRegistry.LOCKPOSITIONS)
+        PluginExecutor.startWith(ArrangementPluginRegistry.PIN)
                 .executeWriteLater(context.getGraph());
     }
 }

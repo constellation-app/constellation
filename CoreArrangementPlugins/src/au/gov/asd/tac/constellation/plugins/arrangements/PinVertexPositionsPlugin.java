@@ -25,7 +25,7 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Manage the unlocking of vertex positions. A vertex  with its position_locked
+ * Manage the pinning of vertex positions. A vertex  with its PINNED
  * attribute set to true will be ignored (even if selected) when an arrangement
  * plugin is run. This plugin sets the value to false for selected vertexes.
  * 
@@ -33,21 +33,24 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages({
-    "UnlockVertexPositionsPlugin=Unlock position of selected vertexes"
+    "PinVertexPositionsPlugin=Pin position of selected vertexes"
 })
-public class UnlockVertexPositionsPlugin extends SimpleEditPlugin {
+public class PinVertexPositionsPlugin extends SimpleEditPlugin {
   
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
 
         final int vxCount = graph.getVertexCount();
         final int selectedAttr = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
-        final int posLockedAttr = VisualConcept.VertexAttribute.POSITIONLOCKED.ensure(graph);
+        final int pinnedAttr = VisualConcept.VertexAttribute.PINNED.ensure(graph);
+        
+        // Loop through all vertexes. For any selected vertex, set its PINNED
+        // value to true, ensuring the vertex is pinned in position.
         if (vxCount > 0) {
             for (int position = 0; position < vxCount; position++) {
                 final int vxId = graph.getVertex(position);
                 if (graph.getBooleanValue(selectedAttr, vxId)) {
-                    graph.setBooleanValue(posLockedAttr, vxId, false);
+                    graph.setBooleanValue(pinnedAttr, vxId, true);
                 }
             }
         }
