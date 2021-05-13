@@ -15,21 +15,23 @@
  */
 package au.gov.asd.tac.constellation.graph.visual.framework;
 
-import au.gov.asd.tac.constellation.graph.ReadableGraph;
+import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.LayersConcept;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
+import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
-import au.gov.asd.tac.constellation.utilities.visual.LineStyle;
-import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
+import au.gov.asd.tac.constellation.utilities.visual.VisualAccess.ConnectionDirection;
 import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
 import java.util.List;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -94,358 +96,589 @@ public class GraphVisualAccessNGTest {
 
         assertEquals(changes.size(), 37);
     }
-
+    
     /**
-     * Test of updateInternally method, of class GraphVisualAccess.
+     * Test of getBackgroundColor method, of class GraphVisualAccess.
      */
-    @Test
-    public void testUpdateInternally() {
-        System.out.println("updateInternally");
-        final GraphVisualAccess instance = new GraphVisualAccess(graph);
-        instance.updateInternally();
-        
-        //update(false)
-    }
+//    @Test
+//    public void testGetBackgroundColor() {
+//        System.out.println("getBackgroundColor");
+//    }
+    
+    /**
+     * Test of getHighlightColor method, of class GraphVisualAccess.
+     */
+//    @Test
+//    public void testGetHighlightColor() {
+//        System.out.println("getHighlightColor");
+//    }
 
     /**
      * Test of getDrawFlags method, of class GraphVisualAccess.
+     * @throws InterruptedException
      */
     @Test
-    public void testGetDrawFlags() {
+    public void testGetDrawFlags() throws InterruptedException {
         System.out.println("getDrawFlags");
-        GraphVisualAccess instance = null;
-        DrawFlags expResult = null;
-        DrawFlags result = instance.getDrawFlags();
-        assertEquals(result, expResult);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        
+        final GraphVisualAccess instance = new GraphVisualAccess(graph);
+        
+        instance.beginUpdate();        
+        DrawFlags flags = instance.getDrawFlags();       
+        instance.endUpdate();
+        
+        assertEquals(flags, VisualGraphDefaults.DEFAULT_DRAW_FLAGS);
+        
+        final WritableGraph wg = graph.getWritableGraph("Graph Visual Access", true);
+        try {
+            final int graphDrawFlagsAttribute = VisualConcept.GraphAttribute.DRAW_FLAGS.ensure(wg);
+            wg.setObjectValue(graphDrawFlagsAttribute, 0, new DrawFlags(DrawFlags.NODE_LABELS));
+        } finally {
+            wg.commit();
+        }
+        instance.beginUpdate();
+        instance.updateInternally();
+        flags = instance.getDrawFlags();                  
+        instance.endUpdate();
+        
+        assertEquals(flags.getFlags(), 4);
     }
 
     /**
      * Test of getCamera method, of class GraphVisualAccess.
+     * @throws InterruptedException
      */
     @Test
-    public void testGetCamera() {
+    public void testGetCamera() throws InterruptedException {
         System.out.println("getCamera");
-        GraphVisualAccess instance = null;
-        Camera expResult = null;
-        Camera result = instance.getCamera();
-        assertEquals(result, expResult);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        
+        final GraphVisualAccess instance = new GraphVisualAccess(graph);
+        
+        instance.beginUpdate();        
+        Camera camera = instance.getCamera();       
+        instance.endUpdate();
+        
+        assertEquals(camera, VisualGraphDefaults.DEFAULT_CAMERA);
+        assertEquals(camera.getVisibilityHigh(), 1.0f);       
+        
+        final WritableGraph wg = graph.getWritableGraph("Graph Visual Access", true);
+        try {
+            final int graphCameraAttribute = VisualConcept.GraphAttribute.CAMERA.ensure(wg);
+            final Camera newCamera = new Camera();
+            newCamera.setVisibilityHigh(0.6f);
+            wg.setObjectValue(graphCameraAttribute, 0, newCamera);
+        } finally {
+            wg.commit();
+        }
+        instance.beginUpdate();
+        instance.updateInternally();
+        camera = instance.getCamera();                  
+        instance.endUpdate();
+        
+        assertEquals(camera.getVisibilityHigh(), 0.6f);
     }
+    
+    /**
+     * Test of getBlazeSize method, of class GraphVisualAccess.
+     */
+//    @Test
+//    public void testGetBlazeSize() {
+//        System.out.println("getBlazeSize");
+//    }
+    
+    /**
+     * Test of getBlazeOpacity method, of class GraphVisualAccess.
+     */
+//    @Test
+//    public void testGetBlazeOpacity() {
+//        System.out.println("getBlazeOpacity");
+//    }
+    
+    /**
+     * Test of getConnectionOpacity method, of class GraphVisualAccess.
+     */
+//    @Test
+//    public void testGetConnectionOpacity() {
+//        System.out.println("getConnectionOpacity");
+//    }
 
+    private void changeConnectionMode(final Graph graph, final ConnectionMode mode) throws InterruptedException {
+        final WritableGraph wg = graph.getWritableGraph("Graph Visual Access", true);
+        try {
+            final int graphConnectionModeAttribute = VisualConcept.GraphAttribute.CONNECTION_MODE.ensure(wg);
+            wg.setObjectValue(graphConnectionModeAttribute, 0, mode);
+        } finally {
+            wg.commit();
+        }
+    }
+    
+    private void assertConnectionId(final GraphVisualAccess access) {
+        access.beginUpdate();
+        access.updateInternally();
+        final int id = access.getConnectionId(0);                 
+        access.endUpdate();
+        
+        //expected result could be transaction id, edge id, or link id
+        assertEquals(id, 0);
+    }
+    
     /**
      * Test of getConnectionId method, of class GraphVisualAccess.
+     * @throws InterruptedException
      */
     @Test
-    public void testGetConnectionId() {
+    public void testGetConnectionId() throws InterruptedException {
         System.out.println("getConnectionId");
-        int connection = 0;
-        GraphVisualAccess instance = null;
-        int expResult = 0;
-        int result = instance.getConnectionId(connection);
-        assertEquals(result, expResult);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        
+        final GraphVisualAccess instance = new GraphVisualAccess(graph);
+        
+        // Default connection mode is Edge
+        assertConnectionId(instance);
+        
+        changeConnectionMode(graph, ConnectionMode.TRANSACTION);
+        assertConnectionId(instance);
+        
+        changeConnectionMode(graph, ConnectionMode.LINK);
+        assertConnectionId(instance);
     }
-
+    
+    private void assertConnectionDirection(final GraphVisualAccess access, final int pos, final ConnectionDirection expResult) {
+        access.beginUpdate();
+        access.updateInternally();
+        final ConnectionDirection direction = access.getConnectionDirection(pos);                 
+        access.endUpdate();
+        
+        assertEquals(direction, expResult);
+    }
+    
     /**
      * Test of getConnectionDirection method, of class GraphVisualAccess.
+     * @throws InterruptedException
      */
     @Test
-    public void testGetConnectionDirection() {
+    public void testGetConnectionDirection() throws InterruptedException {
         System.out.println("getConnectionDirection");
-        int connection = 0;
-        GraphVisualAccess instance = null;
-        VisualAccess.ConnectionDirection expResult = null;
-        VisualAccess.ConnectionDirection result = instance.getConnectionDirection(connection);
-        assertEquals(result, expResult);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        
+        // TODO: add more test cases to cover function
+        
+        final GraphVisualAccess instance = new GraphVisualAccess(graph);
+        
+        assertConnectionDirection(instance, 0, ConnectionDirection.LOW_TO_HIGH);
+        
+        changeConnectionMode(graph, ConnectionMode.TRANSACTION);
+        assertConnectionDirection(instance, 0, ConnectionDirection.LOW_TO_HIGH);
+        
+        changeConnectionMode(graph, ConnectionMode.LINK);
+        assertConnectionDirection(instance, 0, ConnectionDirection.LOW_TO_HIGH);
+    }
+    
+    private void assertConnectionDirected(final GraphVisualAccess access) {
+        access.beginUpdate();
+        access.updateInternally();
+        final boolean directed = access.getConnectionDirected(0);                 
+        access.endUpdate();
+        
+        assertEquals(directed, true);
     }
 
     /**
      * Test of getConnectionDirected method, of class GraphVisualAccess.
+     * @throws InterruptedException
      */
     @Test
-    public void testGetConnectionDirected() {
+    public void testGetConnectionDirected() throws InterruptedException {
         System.out.println("getConnectionDirected");
-        int connection = 0;
-        GraphVisualAccess instance = null;
-        boolean expResult = false;
-        boolean result = instance.getConnectionDirected(connection);
-        assertEquals(result, expResult);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        
+        final GraphVisualAccess instance = new GraphVisualAccess(graph);
+        
+        boolean directed = instance.getConnectionDirected(0);
+        assertEquals(directed, false);
+        
+        final WritableGraph wg = graph.getWritableGraph("Graph Visual Access", true);
+        try {
+            final int transactionDirectedAttribute = VisualConcept.TransactionAttribute.DIRECTED.ensure(wg);
+            // this is the value the attribute would be set to if it existed before the transaction was created
+            wg.setBooleanValue(transactionDirectedAttribute, tId1, true);
+        } finally {
+            wg.commit();
+        }
+        
+        assertConnectionDirected(instance);
+        
+        changeConnectionMode(graph, ConnectionMode.TRANSACTION);
+        assertConnectionDirected(instance);
+        
+        changeConnectionMode(graph, ConnectionMode.LINK);
+        assertConnectionDirected(instance);
     }
+    
+    /**
+     * Test of getX method, of class GraphVisualAccess.
+     */
+//    @Test
+//    public void testGetX() {
+//        System.out.println("getX");
+//    }
+    
+    /**
+     * Test of getY method, of class GraphVisualAccess.
+     */
+//    @Test
+//    public void testGetY() {
+//        System.out.println("getY");
+//    }
+    /**
+     * Test of getZ method, of class GraphVisualAccess.
+     */
+//    @Test
+//    public void testGetZ() {
+//        System.out.println("getZ");
+//    }
+    /**
+     * Test of getX2 method, of class GraphVisualAccess.
+     */
+//    @Test
+//    public void testGetX2() {
+//        System.out.println("getX2");
+//    }
+    /**
+     * Test of getY2 method, of class GraphVisualAccess.
+     */
+//    @Test
+//    public void testGetY2() {
+//        System.out.println("getY2");
+//    }
+    /**
+     * Test of getZ2 method, of class GraphVisualAccess.
+     */
+//    @Test
+//    public void testGetZ2() {
+//        System.out.println("getZ2");
+//    }
 
     /**
      * Test of getVertexColor method, of class GraphVisualAccess.
+     * @throws InterruptedException
      */
     @Test
-    public void testGetVertexColor() {
+    public void testGetVertexColor() throws InterruptedException {
         System.out.println("getVertexColor");
-        int vertex = 0;
-        GraphVisualAccess instance = null;
-        ConstellationColor expResult = null;
-        ConstellationColor result = instance.getVertexColor(vertex);
-        assertEquals(result, expResult);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        
+        final GraphVisualAccess instance = new GraphVisualAccess(graph);
+        
+        instance.beginUpdate();
+        ConstellationColor colour1 = instance.getVertexColor(0);
+        ConstellationColor colour2 = instance.getVertexColor(1);
+        instance.endUpdate();
+        
+        assertEquals(colour1, VisualGraphDefaults.DEFAULT_VERTEX_COLOR);
+        assertEquals(colour2, VisualGraphDefaults.DEFAULT_VERTEX_COLOR);
+        
+        final WritableGraph wg = graph.getWritableGraph("Graph Visual Access", true);
+        try {
+            final int graphNodeColourReferenceAttribute = VisualConcept.GraphAttribute.NODE_COLOR_REFERENCE.ensure(wg);
+            final int vertexColourAttribute = VisualConcept.VertexAttribute.COLOR.ensure(wg);
+            wg.setStringValue(graphNodeColourReferenceAttribute, 0, VisualConcept.VertexAttribute.COLOR.getName());
+            wg.setObjectValue(vertexColourAttribute, vxId1, ConstellationColor.BANANA);
+            wg.setObjectValue(vertexColourAttribute, vxId2, ConstellationColor.CARROT);
+        } finally {
+            wg.commit();
+        }
+        
+        instance.beginUpdate();
+        instance.updateInternally();
+        colour1 = instance.getVertexColor(0);
+        colour2 = instance.getVertexColor(1);
+        instance.endUpdate();
+        
+        assertEquals(colour1, ConstellationColor.BANANA);
+        assertEquals(colour2, ConstellationColor.CARROT);
     }
+    
+    /**
+     * Test of getBackgroundIcon method, of class GraphVisualAccess.
+     */
+//    @Test
+//    public void testGetBackgroundIcon() {
+//        System.out.println("getBackgroundIcon");
+//    }
+    
+    /**
+     * Test of getForegroundIcon method, of class GraphVisualAccess.
+     */
+//    @Test
+//    public void testGetForegroundIcon() {
+//        System.out.println("getForegroundIcon");
+//    }
+    
+    /**
+     * Test of getVertexSelected method, of class GraphVisualAccess.
+     */
+//    @Test
+//    public void testGetVertexSelected() {
+//        System.out.println("getVertexSelected");
+//    }
 
     /**
      * Test of getVertexVisibility method, of class GraphVisualAccess.
+     * @throws InterruptedException
      */
     @Test
-    public void testGetVertexVisibility() {
+    public void testGetVertexVisibility() throws InterruptedException {
         System.out.println("getVertexVisibility");
-        int vertex = 0;
-        GraphVisualAccess instance = null;
-        float expResult = 0.0F;
-        float result = instance.getVertexVisibility(vertex);
-        assertEquals(result, expResult, 0.0);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        
+        final GraphVisualAccess instance = new GraphVisualAccess(graph);
+        
+        instance.beginUpdate();
+        float visibility1 = instance.getVertexVisibility(0);
+        float visibility2 = instance.getVertexVisibility(1);
+        instance.endUpdate();
+        
+        assertEquals(visibility1, VisualGraphDefaults.DEFAULT_VERTEX_VISIBILITY);
+        assertEquals(visibility2, VisualGraphDefaults.DEFAULT_VERTEX_VISIBILITY);
+        
+        WritableGraph wg = graph.getWritableGraph("Graph Visual Access", true);
+        try {
+            final int vertexLayerVisibilityAttribute = LayersConcept.VertexAttribute.LAYER_VISIBILITY.ensure(wg);
+            wg.setObjectValue(vertexLayerVisibilityAttribute, vxId1, 0.4f);
+            wg.setObjectValue(vertexLayerVisibilityAttribute, vxId2, 0.75f);
+        } finally {
+            wg.commit();
+        }
+        
+        instance.beginUpdate();
+        instance.updateInternally();
+        visibility1 = instance.getVertexVisibility(0);
+        visibility2 = instance.getVertexVisibility(1);
+        instance.endUpdate();
+        
+        assertEquals(visibility1, 0.4f);
+        assertEquals(visibility2, 0.75f);
+        
+        wg = graph.getWritableGraph("Graph Visual Access", true);
+        try {
+            final int vertexVisibilityAttribute = VisualConcept.VertexAttribute.VISIBILITY.ensure(wg);
+            wg.setObjectValue(vertexVisibilityAttribute, vxId1, 0.5f);
+            wg.setObjectValue(vertexVisibilityAttribute, vxId2, 0.2f);
+        } finally {
+            wg.commit();
+        }
+        
+        instance.beginUpdate();
+        instance.updateInternally();
+        visibility1 = instance.getVertexVisibility(0);
+        visibility2 = instance.getVertexVisibility(1);
+        instance.endUpdate();
+        
+        assertEquals(visibility1, 0.2f);
+        assertEquals(visibility2, 0.15f);
     }
+    
+    /**
+     * Test of getVertexDimmed method, of class GraphVisualAccess.
+     */
+//    @Test
+//    public void testGetVertexDimmed() {
+//        System.out.println("getVertexDimmed");
+//    }
+    
+    /**
+     * Test of getRadius method, of class GraphVisualAccess.
+     */
+//    @Test
+//    public void testGetRadius() {
+//        System.out.println("getRadius");
+//    }
 
     /**
      * Test of getBlazed method, of class GraphVisualAccess.
      */
-    @Test
-    public void testGetBlazed() {
-        System.out.println("getBlazed");
-        int vertex = 0;
-        GraphVisualAccess instance = null;
-        boolean expResult = false;
-        boolean result = instance.getBlazed(vertex);
-        assertEquals(result, expResult);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
+//    @Test
+//    public void testGetBlazed() {
+//        System.out.println("getBlazed");
+//    }
 
     /**
      * Test of getBlazeAngle method, of class GraphVisualAccess.
      */
-    @Test
-    public void testGetBlazeAngle() {
-        System.out.println("getBlazeAngle");
-        int vertex = 0;
-        GraphVisualAccess instance = null;
-        int expResult = 0;
-        int result = instance.getBlazeAngle(vertex);
-        assertEquals(result, expResult);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
+//    @Test
+//    public void testGetBlazeAngle() {
+//        System.out.println("getBlazeAngle");
+//    }
 
     /**
      * Test of getBlazeColor method, of class GraphVisualAccess.
      */
-    @Test
-    public void testGetBlazeColor() {
-        System.out.println("getBlazeColor");
-        int vertex = 0;
-        GraphVisualAccess instance = null;
-        ConstellationColor expResult = null;
-        ConstellationColor result = instance.getBlazeColor(vertex);
-        assertEquals(result, expResult);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
+//    @Test
+//    public void testGetBlazeColor() {
+//        System.out.println("getBlazeColor");
+//    }
+    
+    /**
+     * Test of getNWDecorator method, of class GraphVisualAccess.
+     */
+//    @Test
+//    public void testGetNWDecorator() {
+//        System.out.println("getNWDecorator");
+//    }
+    
+    /**
+     * Test of getNEDecorator method, of class GraphVisualAccess.
+     */
+//    @Test
+//    public void testGetNEDecorator() {
+//        System.out.println("getNEDecorator");
+//    }
+    
+    /**
+     * Test of getSEDecorator method, of class GraphVisualAccess.
+     */
+//    @Test
+//    public void testGetSEDecorator() {
+//        System.out.println("getSEDecorator");
+//    }
+    
+    /**
+     * Test of getSWDecorator method, of class GraphVisualAccess.
+     */
+//    @Test
+//    public void testGetSWDecorator() {
+//        System.out.println("getSWDecorator");
+//    }
 
     /**
      * Test of getConnectionColor method, of class GraphVisualAccess.
      */
-    @Test
-    public void testGetConnectionColor() {
-        System.out.println("getConnectionColor");
-        int connection = 0;
-        GraphVisualAccess instance = null;
-        ConstellationColor expResult = null;
-        ConstellationColor result = instance.getConnectionColor(connection);
-        assertEquals(result, expResult);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
+//    @Test
+//    public void testGetConnectionColor() {
+//        System.out.println("getConnectionColor");
+//    }
 
     /**
      * Test of getConnectionSelected method, of class GraphVisualAccess.
      */
-    @Test
-    public void testGetConnectionSelected() {
-        System.out.println("getConnectionSelected");
-        int connection = 0;
-        GraphVisualAccess instance = null;
-        boolean expResult = false;
-        boolean result = instance.getConnectionSelected(connection);
-        assertEquals(result, expResult);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
+//    @Test
+//    public void testGetConnectionSelected() {
+//        System.out.println("getConnectionSelected");
+//    }
 
     /**
      * Test of getConnectionVisibility method, of class GraphVisualAccess.
      */
-    @Test
-    public void testGetConnectionVisibility() {
-        System.out.println("getConnectionVisibility");
-        int connection = 0;
-        GraphVisualAccess instance = null;
-        float expResult = 0.0F;
-        float result = instance.getConnectionVisibility(connection);
-        assertEquals(result, expResult, 0.0);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
+//    @Test
+//    public void testGetConnectionVisibility() {
+//        System.out.println("getConnectionVisibility");
+//    }
 
     /**
      * Test of getConnectionDimmed method, of class GraphVisualAccess.
      */
-    @Test
-    public void testGetConnectionDimmed() {
-        System.out.println("getConnectionDimmed");
-        int connection = 0;
-        GraphVisualAccess instance = null;
-        boolean expResult = false;
-        boolean result = instance.getConnectionDimmed(connection);
-        assertEquals(result, expResult);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
+//    @Test
+//    public void testGetConnectionDimmed() {
+//        System.out.println("getConnectionDimmed");
+//    }
 
     /**
      * Test of getConnectionLineStyle method, of class GraphVisualAccess.
      */
-    @Test
-    public void testGetConnectionLineStyle() {
-        System.out.println("getConnectionLineStyle");
-        int connection = 0;
-        GraphVisualAccess instance = null;
-        LineStyle expResult = null;
-        LineStyle result = instance.getConnectionLineStyle(connection);
-        assertEquals(result, expResult);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
+//    @Test
+//    public void testGetConnectionLineStyle() {
+//        System.out.println("getConnectionLineStyle");
+//    }
 
     /**
      * Test of getConnectionWidth method, of class GraphVisualAccess.
      */
-    @Test
-    public void testGetConnectionWidth() {
-        System.out.println("getConnectionWidth");
-        int connection = 0;
-        GraphVisualAccess instance = null;
-        float expResult = 0.0F;
-        float result = instance.getConnectionWidth(connection);
-        assertEquals(result, expResult, 0.0);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
+//    @Test
+//    public void testGetConnectionWidth() {
+//        System.out.println("getConnectionWidth");
+//    }
 
     /**
      * Test of getConnectionLowVertex method, of class GraphVisualAccess.
      */
-    @Test
-    public void testGetConnectionLowVertex() {
-        System.out.println("getConnectionLowVertex");
-        int connection = 0;
-        GraphVisualAccess instance = null;
-        int expResult = 0;
-        int result = instance.getConnectionLowVertex(connection);
-        assertEquals(result, expResult);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
+//    @Test
+//    public void testGetConnectionLowVertex() {
+//        System.out.println("getConnectionLowVertex");
+//    }
 
     /**
      * Test of getConnectionHighVertex method, of class GraphVisualAccess.
      */
-    @Test
-    public void testGetConnectionHighVertex() {
-        System.out.println("getConnectionHighVertex");
-        int connection = 0;
-        GraphVisualAccess instance = null;
-        int expResult = 0;
-        int result = instance.getConnectionHighVertex(connection);
-        assertEquals(result, expResult);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
+//    @Test
+//    public void testGetConnectionHighVertex() {
+//        System.out.println("getConnectionHighVertex");
+//    }
+    
+    /**
+     * Test of getLinkLowVertex method, of class GraphVisualAccess.
+     */
+//    @Test
+//    public void testGetLinkLowVertex() {
+//        System.out.println("getLinkLowVertex");
+//    }
+    
+    /**
+     * Test of getLinkHighVertex method, of class GraphVisualAccess.
+     */
+//    @Test
+//    public void testGetLinkHighVertex() {
+//        System.out.println("getLinkHighVertex");
+//    }
 
     /**
      * Test of getLinkSource method, of class GraphVisualAccess.
      */
-    @Test
-    public void testGetLinkSource() {
-        System.out.println("getLinkSource");
-        int link = 0;
-        GraphVisualAccess instance = null;
-        int expResult = 0;
-        int result = instance.getLinkSource(link);
-        assertEquals(result, expResult);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
+//    @Test
+//    public void testGetLinkSource() {
+//        System.out.println("getLinkSource");
+//    }
 
     /**
      * Test of getLinkDestination method, of class GraphVisualAccess.
      */
-    @Test
-    public void testGetLinkDestination() {
-        System.out.println("getLinkDestination");
-        int link = 0;
-        GraphVisualAccess instance = null;
-        int expResult = 0;
-        int result = instance.getLinkDestination(link);
-        assertEquals(result, expResult);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
+//    @Test
+//    public void testGetLinkDestination() {
+//        System.out.println("getLinkDestination");
+//    }
 
     /**
      * Test of getLinkConnectionCount method, of class GraphVisualAccess.
      */
-    @Test
-    public void testGetLinkConnectionCount() {
-        System.out.println("getLinkConnectionCount");
-        int link = 0;
-        GraphVisualAccess instance = null;
-        int expResult = 0;
-        int result = instance.getLinkConnectionCount(link);
-        assertEquals(result, expResult);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
+//    @Test
+//    public void testGetLinkConnectionCount() {
+//        System.out.println("getLinkConnectionCount");
+//    }
+    
+    /**
+     * Test of getVertexTopLabelText method, of class GraphVisualAccess.
+     */
+//    @Test
+//    public void testGetVertexTopLabelText() {
+//        System.out.println("getVertexTopLabelText");
+//    }
+    
+    /**
+     * Test of getVertexBottomLabelText method, of class GraphVisualAccess.
+     */
+//    @Test
+//    public void testGetVertexBottomLabelText() {
+//        System.out.println("getVertexBottomLabelText");
+//    }
 
     /**
      * Test of getConnectionLabelText method, of class GraphVisualAccess.
      */
-    @Test
-    public void testGetConnectionLabelText() {
-        System.out.println("getConnectionLabelText");
-        int connection = 0;
-        int labelNum = 0;
-        GraphVisualAccess instance = null;
-        String expResult = "";
-        String result = instance.getConnectionLabelText(connection, labelNum);
-        assertEquals(result, expResult);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
+//    @Test
+//    public void testGetConnectionLabelText() {
+//        System.out.println("getConnectionLabelText");
+//    }
 
     /**
      * Test of updateModCounts method, of class GraphVisualAccess.
      */
-    @Test
-    public void testUpdateModCounts() {
-        System.out.println("updateModCounts");
-        ReadableGraph readGraph = null;
-        GraphVisualAccess instance = null;
-        instance.updateModCounts(readGraph);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }    
+//    @Test
+//    public void testUpdateModCounts() {
+//        System.out.println("updateModCounts");
+//    }    
 }

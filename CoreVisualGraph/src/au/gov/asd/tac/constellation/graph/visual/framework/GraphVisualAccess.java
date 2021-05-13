@@ -991,7 +991,7 @@ public final class GraphVisualAccess implements VisualAccess {
 
     @Override
     public float getVertexVisibility(final int vertex) {
-        float layerVisibility = vertexLayerVisibility != Graph.NOT_FOUND ? accessGraph.getFloatValue(vertexLayerVisibility, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_FILTER_VISIBILITY;
+        final float layerVisibility = vertexLayerVisibility != Graph.NOT_FOUND ? accessGraph.getFloatValue(vertexLayerVisibility, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_FILTER_VISIBILITY;
         return layerVisibility * (vertexVisibility != Graph.NOT_FOUND ? accessGraph.getFloatValue(vertexVisibility, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_VISIBILITY);
     }
 
