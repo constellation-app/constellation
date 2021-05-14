@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
@@ -98,20 +99,62 @@ public class GraphVisualAccessNGTest {
     }
     
     /**
-     * Test of getBackgroundColor method, of class GraphVisualAccess.
+     * Test of the following methods, of class GraphVisualAccess:
+     * getBackgroundColor, getHighlightColor, getBlazeSize, getBlazeOpacity, getConnectionOpacity
+     * @throws InterruptedException
      */
-//    @Test
-//    public void testGetBackgroundColor() {
-//        System.out.println("getBackgroundColor");
-//    }
-    
-    /**
-     * Test of getHighlightColor method, of class GraphVisualAccess.
-     */
-//    @Test
-//    public void testGetHighlightColor() {
-//        System.out.println("getHighlightColor");
-//    }
+    @Test
+    public void testGetGraphAttributesOneLineFunctions() throws InterruptedException {
+        System.out.println("getGraphAttributesOneLineFunctions");
+        
+        final GraphVisualAccess instance = new GraphVisualAccess(graph);
+        
+        instance.beginUpdate();        
+        ConstellationColor backgroundColour = instance.getBackgroundColor();       
+        ConstellationColor highlightColour = instance.getHighlightColor();       
+        float blazeSize = instance.getBlazeSize();       
+        float blazeOpacity = instance.getBlazeOpacity();       
+        float connectionOpacity = instance.getConnectionOpacity();       
+        instance.endUpdate();
+        
+        assertEquals(backgroundColour, VisualGraphDefaults.DEFAULT_BACKGROUND_COLOR);
+        assertEquals(highlightColour, VisualGraphDefaults.DEFAULT_HIGHLIGHT_COLOR);
+        assertEquals(blazeSize, VisualGraphDefaults.DEFAULT_BLAZE_SIZE);
+        assertEquals(blazeOpacity, VisualGraphDefaults.DEFAULT_BLAZE_OPACITY);
+        assertEquals(connectionOpacity, VisualGraphDefaults.DEFAULT_CONNECTION_OPACITY);
+        
+        final WritableGraph wg = graph.getWritableGraph("Graph Visual Access", true);
+        try {
+            final int graphBackgroundColourAttribute = VisualConcept.GraphAttribute.BACKGROUND_COLOR.ensure(wg);
+            final int graphHighlightColourAttribute = VisualConcept.GraphAttribute.HIGHLIGHT_COLOR.ensure(wg);
+            final int graphBlazeSizeAttribute = VisualConcept.GraphAttribute.BLAZE_SIZE.ensure(wg);
+            final int graphBlazeOpacityAttribute = VisualConcept.GraphAttribute.BLAZE_OPACITY.ensure(wg);
+            final int graphConnectionOpacityAttribute = VisualConcept.GraphAttribute.CONNECTION_OPACITY.ensure(wg);
+            
+            wg.setObjectValue(graphBackgroundColourAttribute, 0, ConstellationColor.BANANA);
+            wg.setObjectValue(graphHighlightColourAttribute, 0, ConstellationColor.CARROT);
+            wg.setFloatValue(graphBlazeSizeAttribute, 0, 0.5f);
+            wg.setFloatValue(graphBlazeOpacityAttribute, 0, 0.6f);
+            wg.setFloatValue(graphConnectionOpacityAttribute, 0, 0.7f);
+        } finally {
+            wg.commit();
+        }
+        
+        instance.beginUpdate();
+        instance.updateInternally();
+        backgroundColour = instance.getBackgroundColor();
+        highlightColour = instance.getHighlightColor();       
+        blazeSize = instance.getBlazeSize();       
+        blazeOpacity = instance.getBlazeOpacity();       
+        connectionOpacity = instance.getConnectionOpacity();
+        instance.endUpdate();
+        
+        assertEquals(backgroundColour, ConstellationColor.BANANA);
+        assertEquals(highlightColour, ConstellationColor.CARROT);
+        assertEquals(blazeSize, 0.5f);
+        assertEquals(blazeOpacity, 0.6f);
+        assertEquals(connectionOpacity, 0.7f);
+    }
 
     /**
      * Test of getDrawFlags method, of class GraphVisualAccess.
@@ -177,30 +220,6 @@ public class GraphVisualAccessNGTest {
         
         assertEquals(camera.getVisibilityHigh(), 0.6f);
     }
-    
-    /**
-     * Test of getBlazeSize method, of class GraphVisualAccess.
-     */
-//    @Test
-//    public void testGetBlazeSize() {
-//        System.out.println("getBlazeSize");
-//    }
-    
-    /**
-     * Test of getBlazeOpacity method, of class GraphVisualAccess.
-     */
-//    @Test
-//    public void testGetBlazeOpacity() {
-//        System.out.println("getBlazeOpacity");
-//    }
-    
-    /**
-     * Test of getConnectionOpacity method, of class GraphVisualAccess.
-     */
-//    @Test
-//    public void testGetConnectionOpacity() {
-//        System.out.println("getConnectionOpacity");
-//    }
 
     private void changeConnectionMode(final Graph graph, final ConnectionMode mode) throws InterruptedException {
         final WritableGraph wg = graph.getWritableGraph("Graph Visual Access", true);
@@ -313,48 +332,134 @@ public class GraphVisualAccessNGTest {
     }
     
     /**
-     * Test of getX method, of class GraphVisualAccess.
+     * Test of the following methods, of class GraphVisualAccess:
+     * getX, getY, getZ, getX2, getY2, getZ2, getBackgroundIcon, getForegroundIcon, getVertexSelected, getVertexDimmed, getRadius,
+     * getNWDecorator, getNEDecorator, getSEDecorator, getSWDecorator
+     * @throws InterruptedException
      */
-//    @Test
-//    public void testGetX() {
-//        System.out.println("getX");
-//    }
-    
-    /**
-     * Test of getY method, of class GraphVisualAccess.
-     */
-//    @Test
-//    public void testGetY() {
-//        System.out.println("getY");
-//    }
-    /**
-     * Test of getZ method, of class GraphVisualAccess.
-     */
-//    @Test
-//    public void testGetZ() {
-//        System.out.println("getZ");
-//    }
-    /**
-     * Test of getX2 method, of class GraphVisualAccess.
-     */
-//    @Test
-//    public void testGetX2() {
-//        System.out.println("getX2");
-//    }
-    /**
-     * Test of getY2 method, of class GraphVisualAccess.
-     */
-//    @Test
-//    public void testGetY2() {
-//        System.out.println("getY2");
-//    }
-    /**
-     * Test of getZ2 method, of class GraphVisualAccess.
-     */
-//    @Test
-//    public void testGetZ2() {
-//        System.out.println("getZ2");
-//    }
+    @Test
+    public void testGetVertexAttributesOneLineFunctions() throws InterruptedException {
+        System.out.println("getVertexAttributesOneLineFunctions");
+        
+        final GraphVisualAccess instance = new GraphVisualAccess(graph);
+        
+        instance.beginUpdate();        
+        float x = instance.getX(0);       
+        float y = instance.getY(0);       
+        float z = instance.getZ(0);       
+        float x2 = instance.getX2(0);       
+        float y2 = instance.getY2(0);       
+        float z2 = instance.getZ2(0);
+        
+        String backgroundIcon = instance.getBackgroundIcon(0);       
+        String foregroundIcon = instance.getForegroundIcon(0);       
+        boolean vertexSelected = instance.getVertexSelected(0);       
+        boolean vertexDimmed = instance.getVertexDimmed(0);       
+        float radius = instance.getRadius(0); 
+        
+        String nwDecorator = instance.getNWDecorator(0);
+        String neDecorator = instance.getNEDecorator(0);
+        String seDecorator = instance.getSEDecorator(0);
+        String swDecorator = instance.getSWDecorator(0);
+        instance.endUpdate();
+        
+        assertEquals(x, VisualGraphDefaults.getDefaultX(vxId1));
+        assertEquals(y, VisualGraphDefaults.getDefaultY(vxId1));
+        assertEquals(z, VisualGraphDefaults.getDefaultZ(vxId1));
+        assertEquals(x2, VisualGraphDefaults.DEFAULT_VERTEX_X2);
+        assertEquals(y2, VisualGraphDefaults.DEFAULT_VERTEX_Y2);
+        assertEquals(z2, VisualGraphDefaults.DEFAULT_VERTEX_Z2);
+        
+        assertEquals(backgroundIcon, VisualGraphDefaults.DEFAULT_VERTEX_BACKGROUND_ICON);
+        assertEquals(foregroundIcon, VisualGraphDefaults.DEFAULT_VERTEX_FOREGROUND_ICON);
+        assertEquals(vertexSelected, VisualGraphDefaults.DEFAULT_VERTEX_SELECTED);
+        assertEquals(vertexDimmed, VisualGraphDefaults.DEFAULT_VERTEX_DIMMED);
+        assertEquals(radius, VisualGraphDefaults.DEFAULT_VERTEX_RADIUS);
+        
+        assertEquals(nwDecorator, null);
+        assertEquals(neDecorator, null);
+        assertEquals(seDecorator, null);
+        assertEquals(swDecorator, null);
+        
+        final WritableGraph wg = graph.getWritableGraph("Graph Visual Access", true);
+        try {
+            final int vertexXAttribute = VisualConcept.VertexAttribute.X.ensure(wg);
+            final int vertexYAttribute = VisualConcept.VertexAttribute.Y.ensure(wg);
+            final int vertexZAttribute = VisualConcept.VertexAttribute.Z.ensure(wg);
+            final int vertexX2Attribute = VisualConcept.VertexAttribute.X2.ensure(wg);
+            final int vertexY2Attribute = VisualConcept.VertexAttribute.Y2.ensure(wg);
+            final int vertexZ2Attribute = VisualConcept.VertexAttribute.Z2.ensure(wg);
+            
+            final int vertexBackgroundIconAttribute = VisualConcept.VertexAttribute.BACKGROUND_ICON.ensure(wg);
+            final int vertexForegroundIconAttribute = VisualConcept.VertexAttribute.FOREGROUND_ICON.ensure(wg);
+            final int vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.ensure(wg);
+            final int vertexDimmedAttribute = VisualConcept.VertexAttribute.DIMMED.ensure(wg);
+            final int vertexRadiusAttribute = VisualConcept.VertexAttribute.NODE_RADIUS.ensure(wg);
+            
+            final int graphDecoratorsAttribute = VisualConcept.GraphAttribute.DECORATORS.ensure(wg);
+            
+            wg.setFloatValue(vertexXAttribute, vxId1, 2.0f);
+            wg.setFloatValue(vertexYAttribute, vxId1, 3.0f);
+            wg.setFloatValue(vertexZAttribute, vxId1, 4.0f);
+            wg.setFloatValue(vertexX2Attribute, vxId1, 5.0f);
+            wg.setFloatValue(vertexY2Attribute, vxId1, 6.0f);
+            wg.setFloatValue(vertexZ2Attribute, vxId1, 7.0f);
+            
+            wg.setStringValue(vertexBackgroundIconAttribute, vxId1, "Background.Square");
+            wg.setStringValue(vertexForegroundIconAttribute, vxId1, "Noise");
+            wg.setBooleanValue(vertexSelectedAttribute, vxId1, true);
+            wg.setBooleanValue(vertexDimmedAttribute, vxId1, true);
+            wg.setFloatValue(vertexRadiusAttribute, vxId1, 1.5f);
+            
+            final VertexDecorators decorators = new VertexDecorators(
+                    VisualConcept.VertexAttribute.BACKGROUND_ICON.getName(), 
+                    VisualConcept.VertexAttribute.FOREGROUND_ICON.getName(), 
+                    VisualConcept.VertexAttribute.SELECTED.getName(), 
+                    VisualConcept.VertexAttribute.DIMMED.getName());
+            wg.setObjectValue(graphDecoratorsAttribute, 0, decorators);
+        } finally {
+            wg.commit();
+        }
+        
+        instance.beginUpdate();
+        instance.updateInternally();
+        x = instance.getX(0);       
+        y = instance.getY(0);       
+        z = instance.getZ(0);       
+        x2 = instance.getX2(0);       
+        y2 = instance.getY2(0);       
+        z2 = instance.getZ2(0);
+        
+        backgroundIcon = instance.getBackgroundIcon(0);       
+        foregroundIcon = instance.getForegroundIcon(0);       
+        vertexSelected = instance.getVertexSelected(0);       
+        vertexDimmed = instance.getVertexDimmed(0);       
+        radius = instance.getRadius(0);
+        
+        nwDecorator = instance.getNWDecorator(0);
+        neDecorator = instance.getNEDecorator(0);
+        seDecorator = instance.getSEDecorator(0);
+        swDecorator = instance.getSWDecorator(0);
+        instance.endUpdate();
+        
+        assertEquals(x, 2.0f);
+        assertEquals(y, 3.0f);
+        assertEquals(z, 4.0f);
+        assertEquals(x2, 5.0f);
+        assertEquals(y2, 6.0f);
+        assertEquals(z2, 7.0f);
+        
+        assertEquals(backgroundIcon, "Background.Square");
+        assertEquals(foregroundIcon, "Noise");
+        assertEquals(vertexSelected, true);
+        assertEquals(vertexDimmed, true);
+        assertEquals(radius, 1.5f);
+        
+        assertEquals(nwDecorator, "Background.Square");
+        assertEquals(neDecorator, "Noise");
+        assertEquals(seDecorator, "true");
+        assertEquals(swDecorator, "true");
+    }
 
     /**
      * Test of getVertexColor method, of class GraphVisualAccess.
@@ -395,30 +500,6 @@ public class GraphVisualAccessNGTest {
         assertEquals(colour2, ConstellationColor.CARROT);
     }
     
-    /**
-     * Test of getBackgroundIcon method, of class GraphVisualAccess.
-     */
-//    @Test
-//    public void testGetBackgroundIcon() {
-//        System.out.println("getBackgroundIcon");
-//    }
-    
-    /**
-     * Test of getForegroundIcon method, of class GraphVisualAccess.
-     */
-//    @Test
-//    public void testGetForegroundIcon() {
-//        System.out.println("getForegroundIcon");
-//    }
-    
-    /**
-     * Test of getVertexSelected method, of class GraphVisualAccess.
-     */
-//    @Test
-//    public void testGetVertexSelected() {
-//        System.out.println("getVertexSelected");
-//    }
-
     /**
      * Test of getVertexVisibility method, of class GraphVisualAccess.
      * @throws InterruptedException
@@ -473,22 +554,6 @@ public class GraphVisualAccessNGTest {
         assertEquals(visibility1, 0.2f);
         assertEquals(visibility2, 0.15f);
     }
-    
-    /**
-     * Test of getVertexDimmed method, of class GraphVisualAccess.
-     */
-//    @Test
-//    public void testGetVertexDimmed() {
-//        System.out.println("getVertexDimmed");
-//    }
-    
-    /**
-     * Test of getRadius method, of class GraphVisualAccess.
-     */
-//    @Test
-//    public void testGetRadius() {
-//        System.out.println("getRadius");
-//    }
 
     /**
      * Test of getBlazed method, of class GraphVisualAccess.
@@ -512,38 +577,6 @@ public class GraphVisualAccessNGTest {
 //    @Test
 //    public void testGetBlazeColor() {
 //        System.out.println("getBlazeColor");
-//    }
-    
-    /**
-     * Test of getNWDecorator method, of class GraphVisualAccess.
-     */
-//    @Test
-//    public void testGetNWDecorator() {
-//        System.out.println("getNWDecorator");
-//    }
-    
-    /**
-     * Test of getNEDecorator method, of class GraphVisualAccess.
-     */
-//    @Test
-//    public void testGetNEDecorator() {
-//        System.out.println("getNEDecorator");
-//    }
-    
-    /**
-     * Test of getSEDecorator method, of class GraphVisualAccess.
-     */
-//    @Test
-//    public void testGetSEDecorator() {
-//        System.out.println("getSEDecorator");
-//    }
-    
-    /**
-     * Test of getSWDecorator method, of class GraphVisualAccess.
-     */
-//    @Test
-//    public void testGetSWDecorator() {
-//        System.out.println("getSWDecorator");
 //    }
 
     /**
