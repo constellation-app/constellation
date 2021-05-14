@@ -43,7 +43,7 @@ public final class AttributeRegistry implements Serializable {
         Lookup.Result<AttributeDescription> attrDescrs = Lookup.getDefault().lookupResult(AttributeDescription.class);
         attrDescrs.allClasses().forEach(ad -> {
             DEFAULT_ATTRIBUTE_REGISTRY.registerAttributeIfNewer(ad);
-            LOGGER.info(String.format("Registered Attribute %s", ad.getName()));
+            LOGGER.fine(String.format("Registered Attribute %s", ad.getName()));
         });
     }
 
