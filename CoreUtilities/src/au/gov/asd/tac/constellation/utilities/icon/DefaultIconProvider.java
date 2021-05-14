@@ -66,7 +66,7 @@ public class DefaultIconProvider implements ConstellationIconProvider {
             .build();
     public static final ConstellationIcon PIN = new ConstellationIcon.Builder("Pin", new FileIconData("modules/ext/icons/pin.png", CODE_NAME_BASE))
             .addCategory(BACKGROUND_CATEGORY)
-            .addAlias("true.pinned")
+            .addAlias("true_pinned")
             .build();
 
     @Override

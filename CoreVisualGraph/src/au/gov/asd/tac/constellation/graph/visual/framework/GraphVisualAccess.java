@@ -1053,18 +1053,18 @@ public final class GraphVisualAccess implements VisualAccess {
             // as per comments above.
             if (accessGraph.getAttributeType(decoratorAttrib) == BOOLEAN_ATTRIBUTE_STR)
             {   
-                // Booleans will either have a value of true.<attributeName> or false.<attributeName>
+                // Booleans will either have a value of true_<attributeName> or false_<attributeName>
                 // there are three cases to cater for: 
-                // 1. Both true.<attributeName> and false.<attributeName> are set as aliases for icons
+                // 1. Both true_<attributeName> and false_<attributeName> are set as aliases for icons
                 //    --> In this case we use the supplied icon
-                // 2. Only one of true.<attributeName> or false.<attributeName> is set as an alias for an icon
+                // 2. Only one of true_<attributeName> or false_<attributeName> is set as an alias for an icon
                 //    --> In this case the value tht doesnt have an icon set should display nothing
-                // 3. Neither true.<attributeName> or false.<attributeName> is set as ana alias
+                // 3. Neither true_<attributeName> or false_<attributeName> is set as an alias
                 //    --> In this case there is no override, use the default true/false icons
                 final String notValue = this.bool_dict.get(value);
                 final String attributeName = accessGraph.getAttributeName(decoratorAttrib);
-                final String valueStr = value.concat(".").concat(attributeName);
-                final String notValueStr = notValue.concat(".").concat(attributeName);
+                final String valueStr = value.concat("_").concat(attributeName);
+                final String notValueStr = notValue.concat("_").concat(attributeName);
                 
                 // If an icon or alias doesn't exist for either the true or false value, then there are no
                 // overrides, use defaults
