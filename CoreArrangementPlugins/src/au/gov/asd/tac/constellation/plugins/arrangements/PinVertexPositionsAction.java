@@ -39,7 +39,6 @@ import org.openide.util.NbBundle;
 @ActionReferences({
     @ActionReference(path = "Menu/Arrange", position = 9998),
     @ActionReference(path = "Toolbars/Arrange", position = 9998),
-    @ActionReference(path = "Shortcuts", name = "C-L")
 })
 @NbBundle.Messages("CTL_PinVertexPositionsAction=Pin Vertex Positions")
 public final class PinVertexPositionsAction extends AbstractAction {
