@@ -98,18 +98,6 @@ public class DeleteSelectionPluginNGTest {
     @AfterMethod
     public void tearDownMethod() throws Exception {
     }
-
-    /**
-     * Test of edit method, of class DeleteSelectionPlugin.
-     * @throws Exception
-     */
-    @Test
-    public void testEdit() throws Exception {        
-        testNothingSelected();
-        testSomeVxSelected();
-        testSomeTxSelected();
-        testAllSelected();      
-    }
     
     /**
      * Tests that nothing is deleted as nothing is selected
@@ -118,8 +106,8 @@ public class DeleteSelectionPluginNGTest {
      * @throws PluginException
      * @throws Exception
      */
+    @Test
     public void testNothingSelected() throws InterruptedException, PluginException, Exception {
-        setUpMethod();
         DeleteSelectionPlugin instance = new DeleteSelectionPlugin();
         PluginExecution.withPlugin(instance).executeNow(graph);
         assertEquals(graph.getVertexCount(), 7);
@@ -133,8 +121,8 @@ public class DeleteSelectionPluginNGTest {
      * @throws PluginException
      * @throws Exception
      */ 
+    @Test
     public void testSomeVxSelected() throws InterruptedException, PluginException, Exception {
-        setUpMethod();
         graph.setBooleanValue(vAttrId, vxId2, true);
         graph.setBooleanValue(vAttrId, vxId4, true);  
         graph.setBooleanValue(vAttrId, vxId6, true);
@@ -154,8 +142,8 @@ public class DeleteSelectionPluginNGTest {
      * @throws PluginException
      * @throws Exception 
      */
+    @Test
     public void testSomeTxSelected() throws InterruptedException, PluginException, Exception {
-        setUpMethod();
         graph.setBooleanValue(tAttrId, txId1, true);
         graph.setBooleanValue(tAttrId, txId2, true);
         
@@ -173,8 +161,8 @@ public class DeleteSelectionPluginNGTest {
      * @throws PluginException
      * @throws Exception
      */
+    @Test
     public void testAllSelected() throws InterruptedException, PluginException, Exception {
-        setUpMethod();
         graph.setBooleanValue(vAttrId, vxId1, true);
         graph.setBooleanValue(vAttrId, vxId2, true);
         graph.setBooleanValue(vAttrId, vxId3, true);
