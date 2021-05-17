@@ -147,7 +147,7 @@ public class TimelinePanel extends Region {
 
         // Style the timeline panel:
         this.getStylesheets().add(TimelinePanel.class.getResource(DARK_THEME).toExternalForm());
-        this.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getOutputFontSize()));
+        this.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
     }
 
     // <editor-fold defaultstate="collapsed" desc="Layout Layers">

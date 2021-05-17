@@ -53,7 +53,8 @@ public class Startup implements Runnable {
             final String title = String.format("%s - %s", name, VERSION);
             frame.setTitle(title);
         });
-
-        FontUtilities.initialiseFontPreferenceOnFirstUse();
+        
+        FontUtilities.initialiseOutputFontPreferenceOnFirstUse();
+        FontUtilities.initialiseApplicationFontPreferenceOnFirstUse();
     }
 }

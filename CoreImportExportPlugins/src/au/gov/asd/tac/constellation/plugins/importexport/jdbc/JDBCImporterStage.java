@@ -89,7 +89,7 @@ public class JDBCImporterStage extends Stage {
 
         final Scene scene = new Scene(root);
         scene.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
-        scene.rootProperty().get().setStyle(String.format("-fx-font-size:%d;", FontUtilities.getOutputFontSize()));
+        scene.rootProperty().get().setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
         scene.setFill(Color.WHITESMOKE);
         scene.setOnKeyPressed(event -> {
             final KeyCode c = event.getCode();

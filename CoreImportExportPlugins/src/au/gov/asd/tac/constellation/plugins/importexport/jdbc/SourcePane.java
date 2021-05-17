@@ -254,7 +254,7 @@ public class SourcePane extends GridPane {
                 final Scene scene = new Scene(r);
                 scene.setFill(Color.WHITESMOKE);
                 scene.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
-                scene.rootProperty().get().setStyle(String.format("-fx-font-size:%d;", FontUtilities.getOutputFontSize()));
+                scene.rootProperty().get().setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
 
                 d.setScene(scene);
                 d.setTitle("Add Connection");
@@ -388,7 +388,7 @@ public class SourcePane extends GridPane {
                 final Scene scene = new Scene(r);
                 scene.setFill(Color.WHITESMOKE);
                 scene.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
-                scene.rootProperty().get().setStyle(String.format("-fx-font-size:%d;", FontUtilities.getOutputFontSize()));
+                scene.rootProperty().get().setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
 
                 d.setScene(scene);
                 d.setTitle("Add Driver");
@@ -418,7 +418,7 @@ public class SourcePane extends GridPane {
             final Scene scene = new Scene(root);
             scene.setFill(Color.WHITESMOKE);
             scene.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
-            scene.rootProperty().get().setStyle(String.format("-fx-font-size:%d;", FontUtilities.getOutputFontSize()));
+            scene.rootProperty().get().setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
 
             dialog.setScene(scene);
             dialog.setTitle("Manage Connections");

@@ -454,7 +454,7 @@ public class AttributeEditorPanel extends BorderPane {
     }
 
     public void setFontSize() {
-        currentFontSize = FontUtilities.getOutputFontSize();
+        currentFontSize = FontUtilities.getApplicationFontSize();
         Platform.runLater(() -> {
             root.setStyle(String.format("-fx-font-size:%dpx;", currentFontSize));
         });

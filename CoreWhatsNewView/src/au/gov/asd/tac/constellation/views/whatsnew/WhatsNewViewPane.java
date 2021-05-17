@@ -195,7 +195,7 @@ public class WhatsNewViewPane extends BorderPane {
         boolean headerDone = false;
         final StringBuilder buf = new StringBuilder();
         buf.append("<!DOCTYPE html><html><body>\n");
-        buf.append(String.format("<style>body{font-size:%spx;}</style>", FontUtilities.getOutputFontSize() * 1.5));
+        buf.append(String.format("<style>body{font-size:%spx;}</style>", FontUtilities.getApplicationFontSize() * 1.5));
 
         for (final WhatsNewProvider.WhatsNewEntry wne : wnList) {
             // Use a far-future date to indicate an undated fixed position at the top.
