@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.preferences;
 import au.gov.asd.tac.constellation.preferences.rest.RestDirectory;
 import java.io.File;
 import java.util.prefs.Preferences;
-import javax.swing.JFileChooser;
 import org.openide.util.Lookup;
 
 /**
@@ -107,7 +106,7 @@ public final class ApplicationPreferenceKeys {
      * Jupyter notebook directory.
      */
     public static final String JUPYTER_NOTEBOOK_DIR = "jupyterNotebookDir";
-    public static final String JUPYTER_NOTEBOOK_DIR_DEFAULT = new JFileChooser().getFileSystemView().getDefaultDirectory().getAbsolutePath();
+    public static final String JUPYTER_NOTEBOOK_DIR_DEFAULT = new File(System.getProperty("user.dir")).getPath();
 
     /**
      * Remember Save As location.
