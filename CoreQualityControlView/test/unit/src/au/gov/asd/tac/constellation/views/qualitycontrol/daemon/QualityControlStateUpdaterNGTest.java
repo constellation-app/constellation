@@ -198,7 +198,7 @@ public class QualityControlStateUpdaterNGTest {
         vertexIds.add(1);
 
         // Check rules against vertex ids
-        for (QualityControlRule rule : expectedRegisteredRules) {
+        for (final QualityControlRule rule : expectedRegisteredRules) {
             rule.executeRule(graph.getReadableGraph(), vertexIds);
         }
 

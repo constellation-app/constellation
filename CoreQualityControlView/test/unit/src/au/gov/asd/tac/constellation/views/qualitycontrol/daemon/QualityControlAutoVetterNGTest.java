@@ -22,8 +22,8 @@ import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import org.openide.util.Exceptions;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotEquals;
@@ -88,8 +88,7 @@ public class QualityControlAutoVetterNGTest {
 
     // Testing init with no graph open - commented out as TopComponent launches GUI panels which don't execute in the test environment
     @Test
-    public void testInit() throws InterruptedException, NoSuchMethodException, IllegalAccessException,
-            IllegalArgumentException, InvocationTargetException {
+    public void testInit() {
         QualityControlAutoVetter.destroyInstance();
         final QualityControlAutoVetter instance = QualityControlAutoVetter.getInstance();
         instance.init();
@@ -98,7 +97,7 @@ public class QualityControlAutoVetterNGTest {
     }
 
     @Test
-    public void testInitWithRefresh() throws InterruptedException {
+    public void testInitWithRefresh() {
         QualityControlAutoVetter.destroyInstance();
         final QualityControlAutoVetter instance = QualityControlAutoVetter.getInstance();
         instance.initWithRefresh(true);
@@ -109,9 +108,9 @@ public class QualityControlAutoVetterNGTest {
 
     // Test the adding and removing of observers and their behaviour to trigger the methods of the interface.
     @Test
-    public void testAddRemoveObserver() throws InterruptedException {
+    public void testAddRemoveObserver() {
         // add observer of the button state
-        final testObserver observer = new testObserver();
+        final TestObserver observer = new TestObserver();
         QualityControlAutoVetter.getInstance().addObserver(observer);
 
         // Check initial status
@@ -119,8 +118,12 @@ public class QualityControlAutoVetterNGTest {
 
         QualityControlAutoVetter.updateQualityControlState(null);
 
-        // Sleep until after pluginExecution thread has returned
-        Thread.sleep(1000);
+        try {
+            // Sleep until after pluginExecution thread has returned
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        }
 
         // Check observer status
         assertTrue(observer.getCanRunStatus());
@@ -135,8 +138,12 @@ public class QualityControlAutoVetterNGTest {
         // Run update state
         QualityControlAutoVetter.updateQualityControlState(null);
 
-        // Sleep until after pluginExecution thread has returned
-        Thread.sleep(1000);
+        try {
+            // Sleep until after pluginExecution thread has returned
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        }
 
         // As it's not an observer it should remain false.
         assertFalse(observer.getCanRunStatus());
@@ -144,9 +151,9 @@ public class QualityControlAutoVetterNGTest {
 
     // Test the adding and removing of listeners and their behaviour to trigger the methods of the interface.
     @Test
-    public void testAddRemoveListener() throws InterruptedException {
+    public void testAddRemoveListener() {
         // add observer of the button state
-        final testListener listener = new testListener();
+        final TestListener listener = new TestListener();
         QualityControlAutoVetter.getInstance().addListener(listener);
 
         // Check initial status
@@ -174,16 +181,16 @@ public class QualityControlAutoVetterNGTest {
 
     // Test if multiple buttonlisteners get fired correctly within the update state.
     @Test
-    public void testUpdateQualityControlState() throws InterruptedException {
+    public void testUpdateQualityControlState() {
         graph = null;
 
         // add observer1 of the button state
         QualityControlAutoVetter.destroyInstance();
-        final testObserver observer1 = new testObserver();
+        final TestObserver observer1 = new TestObserver();
         QualityControlAutoVetter.getInstance().addObserver(observer1);
 
         // add observer1 of the button state
-        final testObserver observer2 = new testObserver();
+        final TestObserver observer2 = new TestObserver();
         QualityControlAutoVetter.getInstance().addObserver(observer2);
 
         // Check initial status
@@ -192,8 +199,12 @@ public class QualityControlAutoVetterNGTest {
 
         QualityControlAutoVetter.updateQualityControlState(graph);
 
-        // Sleep until after pluginExecution thread has returned
-        Thread.sleep(1000);
+        try {
+            // Sleep until after pluginExecution thread has returned
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        }
 
         // Check updated status
         assertTrue(observer1.getCanRunStatus());
@@ -201,7 +212,7 @@ public class QualityControlAutoVetterNGTest {
     }
 
     @Test
-    public void testGraphChangedNoGraph() throws InterruptedException {
+    public void testGraphChangedNoGraph() {
         QualityControlAutoVetter.destroyInstance();
         QualityControlAutoVetter instance = QualityControlAutoVetter.getInstance();
 
@@ -219,7 +230,7 @@ public class QualityControlAutoVetterNGTest {
 
     // Test commented out as TopComponent launches GUI panels which don't execute in the test environment
     @Test
-    public void testGraphChangedWithGraph() throws InterruptedException {
+    public void testGraphChangedWithGraph() throws Exception {
         QualityControlAutoVetter.destroyInstance();
         QualityControlAutoVetter instance = QualityControlAutoVetter.getInstance();
 
@@ -231,17 +242,22 @@ public class QualityControlAutoVetterNGTest {
 
         // Add camera attribute
         final WritableGraph wg = graph.getWritableGraph("TEST", true);
-        VisualConcept.GraphAttribute.CAMERA.ensure(wg);
-        wg.commit();
+        try {
+            final int cameraAttrId = VisualConcept.GraphAttribute.CAMERA.ensure(wg);
+            // Change camera attribute
+            final Camera camera = new Camera();
+            camera.setVisibilityLow(0.67f);
+            wg.setObjectValue(cameraAttrId, 0, camera);
+        } finally {
+            wg.commit();
+        }
 
-        // Change camera attribute
-        final WritableGraph wg1 = graph.getWritableGraph("TEST", true);
-        final Camera camera = new Camera();
-        camera.setVisibilityLow(0.67f);
-        wg1.setObjectValue(VisualConcept.GraphAttribute.CAMERA.get(wg1), 0, camera);
-
-        // Sleep until current graph is registered
-        Thread.sleep(1000);
+        try {
+            // Sleep until after pluginExecution thread has returned
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        }
 
         // Set the current graph
         instance.newActiveGraph(graph);
@@ -251,15 +267,14 @@ public class QualityControlAutoVetterNGTest {
         assertNotEquals(instance.getlastGlobalModCount(), (long) 0);
         assertNotEquals(instance.getlastCameraModCount(), (long) 0);
 
-        wg1.rollBack();
     }
 }
 
-class testObserver implements QualityControlAutoVetterListener {
+class TestObserver implements QualityControlAutoVetterListener {
 
     protected boolean canRun = false;
 
-    public testObserver() {
+    public TestObserver() {
         // Intentionally left blank - Test.
     }
 
@@ -277,12 +292,12 @@ class testObserver implements QualityControlAutoVetterListener {
     }
 }
 
-class testListener implements QualityControlListener {
+class TestListener implements QualityControlListener {
 
     protected boolean stateChanged = false;
     QualityControlState state;
 
-    public testListener() {
+    public TestListener() {
         // Intentionally left blank - Test.
     }
 
