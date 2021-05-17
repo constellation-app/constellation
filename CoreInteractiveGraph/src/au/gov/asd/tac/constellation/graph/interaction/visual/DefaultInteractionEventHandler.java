@@ -134,7 +134,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
     // The queue of gesture handlers for events that have been received from the EDT.
     private final BlockingQueue<GestureHandler> queue = new LinkedBlockingQueue<>();
     // State information
-    private EventState eventState = new EventState();
+    protected EventState eventState = new EventState();
     private final BlockingQueue<VisualOperation> operationQueue = new LinkedBlockingQueue<>();
     // The graph this is handling events for
     private Graph graph;
@@ -973,7 +973,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
      */
     public List<Integer> gatherSelectedNodes(final GraphReadMethods rg) {
         List<Integer> selectedIds = VisualGraphUtilities.getSelectedElements(rg);
-        
+
         final int hitId = eventState.getCurrentHitId();
         if (eventState.getCurrentHitType().equals(HitType.VERTEX) && !selectedIds.contains(hitId)) {
             selectedIds.add(hitId);
