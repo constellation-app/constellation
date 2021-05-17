@@ -106,7 +106,7 @@ public final class QualityControlViewPane extends BorderPane {
     private final TableColumn<QualityControlEvent, QualityControlEvent> typeColumn;
     private final TableColumn<QualityControlEvent, QualityControlEvent> qualityColumn;
     private final TableColumn<QualityControlEvent, QualityControlEvent> reasonColumn;
-    protected final TableView<QualityControlEvent> qualityTable;
+    private final TableView<QualityControlEvent> qualityTable;
     private final FlowPane optionsPane;
 
     public QualityControlViewPane() {
@@ -209,6 +209,10 @@ public final class QualityControlViewPane extends BorderPane {
         this.setPadding(new Insets(5));
     }
 
+    public TableView<QualityControlEvent> getQualityTable() {
+        return qualityTable;
+    }
+    
     /**
      * Refresh the data inside QualityControlView with data from the current
      * graph.

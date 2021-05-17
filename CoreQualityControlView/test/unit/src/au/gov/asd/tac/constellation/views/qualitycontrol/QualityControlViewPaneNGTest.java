@@ -141,7 +141,7 @@ public class QualityControlViewPaneNGTest {
             //not ideal but needed in order to allow the code running in JFX thread to complete
             Thread.sleep(100);
 
-            final int noOfItems = instance.qualityTable.getItems().size();
+            final int noOfItems = instance.getQualityTable().getItems().size();
             assertEquals(noOfItems, 0);
         }      
     }
@@ -170,7 +170,7 @@ public class QualityControlViewPaneNGTest {
             //not ideal but needed in order to allow the code running in JFX thread to complete
             Thread.sleep(100);
 
-            final int noOfItems = instance.qualityTable.getItems().size();
+            final int noOfItems = instance.getQualityTable().getItems().size();
             assertEquals(noOfItems, 0);
         }
     }
@@ -199,7 +199,7 @@ public class QualityControlViewPaneNGTest {
             //not ideal but needed in order to allow the code running in JFX thread to complete
             Thread.sleep(100);
 
-            final int noOfItems = instance.qualityTable.getItems().size();
+            final int noOfItems = instance.getQualityTable().getItems().size();
             assertEquals(noOfItems, 2);           
         }       
     }
