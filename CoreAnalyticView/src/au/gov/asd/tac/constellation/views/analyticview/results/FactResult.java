@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 public class FactResult extends AnalyticResult<ElementFact> {
 
     public Set<String> getUniqueFactNames() {
-        return result.stream()
+        return result.values().stream()
                 .map(elementFact -> elementFact.getFactName())
                 .collect(Collectors.toSet());
     }
@@ -67,7 +67,7 @@ public class FactResult extends AnalyticResult<ElementFact> {
 
         @Override
         public String toString() {
-            return String.format("{%s;%s;%s=%s}", getClass().getSimpleName(), identifier, factName, factValue);
+            return String.format("{%s;%s;%s=%s}", getClass().getSimpleName(), id.identifier, factName, factValue);
         }
 
         @Override

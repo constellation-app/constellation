@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,6 +46,7 @@ import au.gov.asd.tac.constellation.graph.interaction.plugins.draw.ToggleSelecti
 import au.gov.asd.tac.constellation.graph.interaction.plugins.io.CloseAction;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.io.SaveAsAction;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
@@ -77,6 +78,7 @@ import au.gov.asd.tac.constellation.plugins.update.UpdateController;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.preferences.DeveloperPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
+import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
 import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
@@ -120,6 +122,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+import org.apache.commons.io.FileUtils;
 import org.netbeans.api.actions.Savable;
 import org.netbeans.spi.actions.AbstractSavable;
 import org.openide.DialogDisplayer;
@@ -542,6 +545,10 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         visualManager.destroy();
 
         StatusDisplayer.getDefault().setStatusText("Closed " + graphNode.getDataObject().getName());
+
+        if (GraphManager.getDefault().getAllGraphs().isEmpty()) {
+            ConstellationIcon.clearCache();
+        }
 
         // Try to free up any unused memory
         final boolean forceGarbageCollectOnClose = NbPreferences.forModule(ApplicationPreferenceKeys.class).getBoolean(DeveloperPreferenceKeys.FORCE_GC_ON_CLOSE, DeveloperPreferenceKeys.FORCE_GC_ON_CLOSE_DEFAULT);
@@ -1060,6 +1067,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
      */
     private class BackgroundWriter extends SwingWorker<Void, Object> {
 
+        private static final String BACKUP_EXTENSION = ".bak";
         private final String name;
         private final GraphDataObject freshGdo;
         private final boolean deleteOldGdo;
@@ -1093,12 +1101,37 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 rg.release();
             }
             try {
+                
+                // Create a 'backup' copy of the file being saved before its saved. This is done to ensure that there are
+                // two distinct saves/write operations that occur meaning that if the application was to terminate on one
+                // of them, then 'one' of the files should be valid still.
+                // i.e.:
+                //  *  if the 'copy' operation fails, then the original file will still be there intact
+                //  *  if the 'write' operation falls over, then we know the backup copy must have already occured so we
+                //     have something to fall back on
+                // This allows load logic to be of the form:
+                //   - try to load star file
+                //     - if star file loads successfully use it
+                //     - if the star file fails to load, check to see if a 'backup' exists
+                //        - if backup was found attempt to load it
+                //        - if backup was not found throw load error
+                final FileObject fileobj = freshGdo.getPrimaryFile();
+                final File srcFile = new File(fileobj.getPath());
+                final String srcfilePath = srcFile.getParent().concat(File.separator).concat(this.name).concat(".").concat(fileobj.getExt());
+                
+                if(srcFile.exists() && !srcFile.isDirectory() && FileUtils.sizeOf(srcFile) > 0) { 
+                    // Create a backup copy of the file before overwriting it. If the backup copy fails, then code will never
+                    // get to execute the save, so the actual file should remain intact. If the save fails, the backup file will
+                    // already have been written.
+                    FileUtils.copyFile(new File(srcfilePath), new File(srcfilePath.concat(BACKUP_EXTENSION)));
+                }
+                
                 try (OutputStream out = new BufferedOutputStream(freshGdo.getPrimaryFile().getOutputStream())) {
                     // Write the graph.
                     cancelled = new GraphJsonWriter().writeGraphToZip(copy, out, new HandleIoProgress("Writing..."));
                 }
                 SaveNotification.saved(freshGdo.getPrimaryFile().getPath());
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 Exceptions.printStackTrace(ex);
             }
 

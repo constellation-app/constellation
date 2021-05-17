@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.layers.utilities;
 
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQuery;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQueryCollection;
+import au.gov.asd.tac.constellation.views.layers.state.LayersViewState;
 
 /**
  *
@@ -51,5 +52,38 @@ public class LayersUtilities {
         }
 
         return newBitmask;
+    }
+
+    /**
+     * Add a new additional layer if the space permits. Display a message if
+     * there is no space.
+     *
+     * @param state
+     */
+    public static void addLayer(final LayersViewState state) {
+        state.addLayer();
+    }
+
+    /**
+     * Add a layer with a certain description
+     *
+     * @param state
+     * @param description
+     */
+    public static void addLayer(final LayersViewState state, final String description) {
+        state.addLayer(description);
+    }
+
+    /**
+     * Add a layer at a certain position. Will override the description of a
+     * layer if the position was taken. If the position is open, a new layer
+     * will be added with the description.
+     *
+     * @param state - the state to alter
+     * @param description the layer description
+     * @param layerNumber the layer to add to
+     */
+    public static void addLayerAt(final LayersViewState state, final String description, final int layerNumber) {
+        state.addLayerAt(layerNumber, description);
     }
 }

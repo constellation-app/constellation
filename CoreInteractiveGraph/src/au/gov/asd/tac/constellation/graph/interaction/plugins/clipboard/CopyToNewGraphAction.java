@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import org.openide.util.NbBundle.Messages;
 @ActionRegistration(displayName = "#CTL_CopyToNewGraphAction", iconBase = "au/gov/asd/tac/constellation/graph/interaction/plugins/clipboard/resources/copyGraph.png", surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Edit", position = 600),
-    @ActionReference(path = "Toolbars/File", position = 1),
+    @ActionReference(path = "Toolbars/File", position = 15),
     @ActionReference(path = "Shortcuts", name = "C-U")
 })
 @Messages("CTL_CopyToNewGraphAction=Copy to New Graph")

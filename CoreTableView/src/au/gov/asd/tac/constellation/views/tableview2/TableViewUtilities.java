@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -180,10 +181,10 @@ public class TableViewUtilities {
             final File file = new File(filePath);
             try {
                 PluginExecution.withPlugin(new ExportToCsvFilePlugin(file, table, pagination, selectedOnly)).executeNow((Graph) null);
-            } catch (InterruptedException ex) {
+            } catch (final InterruptedException ex) {
                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                 Thread.currentThread().interrupt();
-            } catch (PluginException ex) {
+            } catch (final PluginException ex) {
                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
             }
         }
@@ -227,10 +228,10 @@ public class TableViewUtilities {
             final File excelFile = new File(filePath);
             try {
                 PluginExecution.withPlugin(new ExportToExcelFilePlugin(excelFile, table, pagination, rowsPerPage, selectedOnly, sheetName)).executeNow((Graph) null);
-            } catch (InterruptedException ex) {
+            } catch (final InterruptedException ex) {
                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                 Thread.currentThread().interrupt();
-            } catch (PluginException ex) {
+            } catch (final PluginException ex) {
                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
             }
         }
@@ -256,9 +257,7 @@ public class TableViewUtilities {
         private final Pagination pagination;
         private final boolean selectedOnly;
 
-        public ExportToCsvFilePlugin(final File file,
-                final TableView<ObservableList<String>> table,
-                final Pagination pagination,
+        public ExportToCsvFilePlugin(final File file, final TableView<ObservableList<String>> table, final Pagination pagination,
                 final boolean selectedOnly) {
             this.file = file;
             this.table = table;
@@ -274,7 +273,7 @@ public class TableViewUtilities {
                 public void run() {
                     try (final FileWriter fileWriter = new FileWriter(file)) {
                         fileWriter.write(csvData);
-                    } catch (IOException ex) {
+                    } catch (final IOException ex) {
                         interaction.notify(PluginNotificationLevel.ERROR, ex.getLocalizedMessage());
                     }
                 }                    
@@ -298,9 +297,8 @@ public class TableViewUtilities {
         private final boolean selectedOnly;
         private final String sheetName;
 
-        public ExportToExcelFilePlugin(final File file, final TableView<ObservableList<String>> table, 
-                final Pagination pagination, final int rowsPerPage,
-                final boolean selectedOnly, final String sheetName) {
+        public ExportToExcelFilePlugin(final File file, final TableView<ObservableList<String>> table, final Pagination pagination, 
+                final int rowsPerPage, final boolean selectedOnly, final String sheetName) {
             this.file = file;
             this.table = table;
             this.pagination = pagination;
@@ -367,7 +365,7 @@ public class TableViewUtilities {
                         try (final FileOutputStream fileStream = new FileOutputStream(file)) {
                             workbook.write(fileStream);
                             LOGGER.log(Level.INFO, "Table View data written to Excel file");
-                        } catch (IOException ex) {
+                        } catch (final IOException ex) {
                             interaction.notify(PluginNotificationLevel.ERROR, ex.getLocalizedMessage());
                         }
                         workbook.dispose();
@@ -375,7 +373,7 @@ public class TableViewUtilities {
                 };
                 outputThread.start();
                 outputThread.join();
-            } catch (IOException ex) {
+            } catch (final IOException ex) {
                 throw new PluginException(PluginNotificationLevel.ERROR, ex);
             }
         }
@@ -393,7 +391,8 @@ public class TableViewUtilities {
      * @param visibleIndices The visible columns
      * @param data The table data
      */
-    private static void writeRecords(final Sheet sheet, final List<Integer> visibleIndices, final List<ObservableList<String>> data, final int startIndex) {
+    private static void writeRecords(final Sheet sheet, final List<Integer> visibleIndices, final List<ObservableList<String>> data, 
+            final int startIndex) {
         final int[] rowIndex = new int[1];
         rowIndex[0] = startIndex;
         data.forEach(item -> {
@@ -427,14 +426,14 @@ public class TableViewUtilities {
 
         @Override
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            final Set<Integer> elements = table.getItems().stream()
+                    .map(item -> index.get(item)).collect(Collectors.toSet());
             final Set<Integer> selectedElements = table.getSelectionModel().getSelectedItems().stream()
                     .map(selectedItem -> index.get(selectedItem)).collect(Collectors.toSet());
             final boolean isVertex = elementType == GraphElementType.VERTEX;
             final int selectedAttributeId = isVertex ? VisualConcept.VertexAttribute.SELECTED.ensure(graph) : VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
-            final int elementCount = isVertex ? graph.getVertexCount() : graph.getTransactionCount();
-            for (int elementPosition = 0; elementPosition < elementCount; elementPosition++) {
-                final int elementId = isVertex ? graph.getVertex(elementPosition) : graph.getTransaction(elementPosition);
-                graph.setBooleanValue(selectedAttributeId, elementId, selectedElements.contains(elementId));
+            for (final Integer element : elements) {
+                graph.setBooleanValue(selectedAttributeId, element, selectedElements.contains(element));
             }
         }
 
@@ -447,6 +446,7 @@ public class TableViewUtilities {
     /**
      * Write the given TableViewState to the graph.
      */
+    @PluginInfo(tags = {"LOW LEVEL"})
     public static class UpdateStatePlugin extends SimpleEditPlugin {
 
         private final TableViewState tableViewState;

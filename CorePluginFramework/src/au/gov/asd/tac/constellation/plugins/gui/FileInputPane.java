@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -236,10 +236,5 @@ public class FileInputPane extends HBox {
         fieldAndAddButton.setSpacing(2);
         fieldAndAddButton.getChildren().addAll(field, fileAddButton);
         getChildren().add(fieldAndAddButton);
-//        final String parameterId = parameter.getId();
-//        final List<String> fileInputRecentValues = RecentParameterValues.getRecentValues(parameterId);
-//        if (fileInputRecentValues != null) {
-//            parameter.setStringValue(fileInputRecentValues.get(fileInputRecentValues.size() > 1 ? 1 : 0));
-//        }
     }
 }

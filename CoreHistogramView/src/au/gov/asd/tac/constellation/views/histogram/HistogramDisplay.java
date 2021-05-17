@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,6 +66,7 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
     static final String NO_VALUE = "<No Value>";
     private static final String PROPERTY_VALUE = "Property Value";
     private static final String COUNT = "Count";
+    private static final String TOTAL_BINS_COUNT = "Total Bin Count: ";
 
     // The color that shows where a bar would be if it was bigger.
     // This provides a guide to the user so they can click anywhere level with a bar,
@@ -339,9 +340,15 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
 
                 final String headerStringValue = getStringToFit(PROPERTY_VALUE, textWidth, g2);
                 final String headerStringCount = getStringToFit(COUNT, barsWidth, g2);
+                final String headerStringTotalBins = getStringToFit(TOTAL_BINS_COUNT + bins.length, barsWidth, g2);
+                
+                final int countTextWidth = g2.getFontMetrics().stringWidth(headerStringTotalBins);
+                
                 g2.drawString(headerStringValue, LEFT_MARGIN + iconPadding, TOP_MARGIN + (barHeight / 2) + correction);
                 g2.drawString(headerStringCount, barLeft, TOP_MARGIN + (barHeight / 2) + correction);
-
+                g2.drawString(headerStringTotalBins, getParent().getWidth() - countTextWidth, 
+                        TOP_MARGIN + (barHeight / 2) + correction);
+                
                 // Draw the visible bars.
                 for (int bar = firstBar; bar <= lastBar; bar++) {
                     Bin bin = bins[bar];
@@ -566,7 +573,7 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
     @Override
     public void mouseDragged(MouseEvent e) {
         if (binCollection != null
-            && e.getButton() == MouseEvent.BUTTON1) {
+            && e.getModifiersEx() == MouseEvent.BUTTON1_DOWN_MASK) {
             final Point pointOnHistogram = e.getPoint();
             final int bar = getBarAtPoint(pointOnHistogram, false);
             
@@ -578,7 +585,7 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
     }
 
     @Override
-    public void mouseReleased(MouseEvent e) {
+    public void mouseReleased(MouseEvent e) {   
         if (binCollection != null
             && e.getButton() == MouseEvent.BUTTON1) {
             binSelectionMode.mouseReleased(shiftDown, controlDown, binCollection.getBins(), dragStart, dragEnd, topComponent);

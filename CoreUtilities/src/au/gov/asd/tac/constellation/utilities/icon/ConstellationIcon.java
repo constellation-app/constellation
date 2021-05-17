@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import javafx.scene.image.Image;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -65,9 +65,9 @@ public class ConstellationIcon {
     /**
      * A cache to store icons
      */
-    private static final Map<ThreeTuple<IconData, Integer, Color>, Object> ICON_CACHE = new HashMap<>();
-    private static final Map<ThreeTuple<IconData, Integer, Color>, Object> IMAGE_CACHE = new HashMap<>();
-    private static final Map<ThreeTuple<IconData, Integer, Color>, Object> BUFFERED_IMAGE_CACHE = new HashMap<>();
+    private static final Map<ThreeTuple<Integer, Integer, Color>, Object> ICON_CACHE = new HashMap<>();
+    private static final Map<ThreeTuple<Integer, Integer, Color>, Object> IMAGE_CACHE = new HashMap<>();
+    private static final Map<ThreeTuple<Integer, Integer, Color>, Object> BUFFERED_IMAGE_CACHE = new HashMap<>();
 
     private final String name;
     private final IconData iconData;
@@ -233,7 +233,7 @@ public class ConstellationIcon {
      */
     public BufferedImage buildBufferedImage(final int size, final Color color) {
         // build the cache key
-        final ThreeTuple<IconData, Integer, Color> key = buildCacheKey(iconData, size, color);
+        final ThreeTuple<Integer, Integer, Color> key = buildCacheKey(size, color);
 
         BufferedImage icon;
         if (BUFFERED_IMAGE_CACHE.containsKey(key)) {
@@ -300,7 +300,7 @@ public class ConstellationIcon {
      */
     public Icon buildIcon(final int size, final Color color) {
         // build the cache key
-        final ThreeTuple<IconData, Integer, Color> key = buildCacheKey(iconData, size, color);
+        final ThreeTuple<Integer, Integer, Color> key = buildCacheKey(size, color);
 
         final ImageIcon icon;
         if (ICON_CACHE.containsKey(key)) {
@@ -362,7 +362,7 @@ public class ConstellationIcon {
      */
     public Image buildImage(final int size, final Color color) {
         // build the cache key
-        final ThreeTuple<IconData, Integer, Color> key = buildCacheKey(iconData, size, color);
+        final ThreeTuple<Integer, Integer, Color> key = buildCacheKey(size, color);
 
         final Image image;
         if (IMAGE_CACHE.containsKey(key)) {
@@ -381,16 +381,28 @@ public class ConstellationIcon {
     }
 
     /**
+     * Used to clear cache images in the ConstellationIcon cache. This should be
+     * called when closing the last open graph to release consumed resources.
+     * 
+     * Note: The cache's purpose is to prevent duplicates when multiple graphs are open.
+     */
+    public static void clearCache() {
+        BUFFERED_IMAGE_CACHE.clear();
+        ICON_CACHE.clear();
+        IMAGE_CACHE.clear();
+    }
+
+    /**
      * Build a key that can be used to index the icon byte array in the icon
      * cache.
      *
-     * @param iconData The icon data object
      * @param size The size of the icon
      * @param color The colour of the icon
-     * @return The byte array of the icon ready for conversion
+     *
+     * @return A unique key represented as a ThreeTuple
      */
-    private ThreeTuple<IconData, Integer, Color> buildCacheKey(final IconData iconData, final int size, final Color color) {
-        return ThreeTuple.create(iconData, size, color);
+    private ThreeTuple<Integer, Integer, Color> buildCacheKey(final int size, final Color color) {
+        return ThreeTuple.create(name.hashCode() + iconData.hashCode(), size, color);
     }
 
     /**

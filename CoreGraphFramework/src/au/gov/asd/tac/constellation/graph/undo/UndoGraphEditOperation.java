@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -716,14 +716,14 @@ public enum UndoGraphEditOperation {
         @Override
         public void execute(final UndoGraphEditState state, final GraphWriteMethods graph) {
             if (VERBOSE) {
-                System.out.println("setDoubleValueOperation.execute(" + state.getCurrentAttribute() + ", " + state.getCurrentId() + ", " + Double.longBitsToDouble((long) (Double.doubleToRawLongBits(graph.getDoubleValue(state.getCurrentAttribute(), state.getCurrentId())) ^ state.getCurrentDouble())) + ")");
+                System.out.println("setDoubleValueOperation.execute(" + state.getCurrentAttribute() + ", " + state.getCurrentId() + ", " + Double.longBitsToDouble(Double.doubleToRawLongBits(graph.getDoubleValue(state.getCurrentAttribute(), state.getCurrentId())) ^ state.getCurrentDouble()) + ")");
             }
-            graph.setDoubleValue(state.getCurrentAttribute(), state.getCurrentId(), Double.longBitsToDouble((long) (Double.doubleToRawLongBits(graph.getDoubleValue(state.getCurrentAttribute(), state.getCurrentId())) ^ state.getCurrentDouble())));
+            graph.setDoubleValue(state.getCurrentAttribute(), state.getCurrentId(), Double.longBitsToDouble(Double.doubleToRawLongBits(graph.getDoubleValue(state.getCurrentAttribute(), state.getCurrentId())) ^ state.getCurrentDouble()));
         }
 
         @Override
         public void undo(final UndoGraphEditState state, final GraphWriteMethods graph) {
-            graph.setDoubleValue(state.getCurrentAttribute(), state.getCurrentId(), Double.longBitsToDouble((long) (Double.doubleToRawLongBits(graph.getDoubleValue(state.getCurrentAttribute(), state.getCurrentId())) ^ state.getCurrentDouble())));
+            graph.setDoubleValue(state.getCurrentAttribute(), state.getCurrentId(), Double.longBitsToDouble(Double.doubleToRawLongBits(graph.getDoubleValue(state.getCurrentAttribute(), state.getCurrentId())) ^ state.getCurrentDouble()));
         }
 
         @Override

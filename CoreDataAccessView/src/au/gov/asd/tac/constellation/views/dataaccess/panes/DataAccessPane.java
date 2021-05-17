@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -89,7 +89,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.NotificationDisplayer;
@@ -1018,12 +1018,12 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                         final Object obj = param.getValue().getObjectValue();
                         if (obj != null && obj.toString() != null && !obj.toString().isEmpty()) {
                             final String value = param.getValue().getStringValue();
-//                            final String typeValue = param.getValue().getType().toString();
-//                            if (!typeValue.contains("LocalDateParameterType")) {
+                            final String typeValue = param.getValue().getType().toString();
+                            if (!typeValue.contains("LocalDateParameterType")) {
                                 RecentParameterValues.storeRecentValue(id, value);
-//                            } else {
-//                                RecentParameterValues.storeRecentValue(id, obj.toString());
-//                            }
+                            } else {
+                                RecentParameterValues.storeRecentValue(id, obj.toString());
+                            }
                         }
                     }
                 }

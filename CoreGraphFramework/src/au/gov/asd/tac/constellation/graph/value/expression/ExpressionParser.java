@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.graph.value.expression;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,7 +67,7 @@ public class ExpressionParser {
 
         private final char token;
         private final int precedence;
-        private final Map<Operator, Operator> combinations = new EnumMap<>(Operator.class);
+        private final Map<Operator, Operator> combinations = new HashMap<>();
 
         private Operator(char token, int precedence, Operator... combinations) {
             this.token = token;

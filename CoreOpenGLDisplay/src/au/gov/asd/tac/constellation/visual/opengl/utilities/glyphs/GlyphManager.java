@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,11 +30,12 @@ public interface GlyphManager {
 
     /**
      * Performs an identical function to renderText() except that glyphs that
-     * overlap are combined into a single glyph containing the group of glyphs.
-     * This reduces the artifacts when that group of glyphs are rendered.
+     * overlap are combined into a single glyph containing the group of
+     * glyphs.This reduces the artifacts when that group of glyphs are rendered.
      *
      * @param text the text containing the characters to be rendered.
      * @param glyphStream the glyph stream to output the characters to.
+     * @param context related information for the GlyphStream
      */
     public void renderTextAsLigatures(String text, GlyphManager.GlyphStream glyphStream, GlyphStreamContext context);
 
@@ -156,7 +157,8 @@ public interface GlyphManager {
          * @param glyphPosition the position of the glyph in the glyph registry.
          * @param x the x location of the glyph.
          * @param y the y location of the glyph.
+         * @param context related information for the GlyphStream
          */
-         public void addGlyph(int glyphPosition, float x, float y, GlyphStreamContext context);
+        public void addGlyph(int glyphPosition, float x, float y, GlyphStreamContext context);
     }
 }

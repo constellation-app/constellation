@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,13 @@
 package au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs;
 
 /**
- * Contains basic information required in every GlyphStream implementation.
- * Will usually be extended rather than used directly.
- * 
+ * Contains basic information required in every GlyphStream implementation. Will
+ * usually be extended rather than used directly.
+ *
  * @author Nova
  */
 public class GlyphStreamContext {
+
     public int totalScale;
     public float visibility;
     public int labelNumber;

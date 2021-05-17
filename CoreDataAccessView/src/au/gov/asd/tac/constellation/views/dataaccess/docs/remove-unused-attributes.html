@@ -10,10 +10,12 @@
         <h1>Remove Unused Attributes</h1>
         <h2>Remove unused (non-key) attributes from your graph</h2>
 
-        <p>Remove attributes that are not being used in the graph. This includes both node and transaction attributes.</p>
+        <p>
+            This plugin removes any node and transaction attributes on the graph that are not being used (i.e. contain no values).
+        </p>
 
         <p>
-            Note that key attributes are not removed, regardless of whether or not they contain any values.
+            NOTE: This is only applied to non-key attributes. Any key attributes with no values will be retained.
         </p>
     </body>
 </html>

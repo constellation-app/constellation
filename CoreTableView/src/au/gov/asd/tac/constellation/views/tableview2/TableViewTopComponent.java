@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -185,11 +185,11 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
                             attributeTuple.getSecond().getName(),
                             g -> {
                                 final Thread dataUpdateThread = new Thread(UPDATE_DATA) {
-                            @Override
-                            public void run() {
-                                pane.updateData(g, currentState);
-                            }
-                        };
+                                    @Override
+                                    public void run() {
+                                        pane.updateData(g, currentState);
+                                    }
+                                };
                                 dataUpdateThread.start();
                             }));
                 });
@@ -216,7 +216,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
                 stateLock.get();
             } catch (final ExecutionException ex) {
                 // DO NOTHING
-            } catch (InterruptedException ex) {
+            } catch (final InterruptedException ex) {
                 Thread.currentThread().interrupt();
             }
         }
@@ -394,7 +394,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
     
 
     @Override
-    protected void handleGraphClosed(Graph graph) {
+    protected void handleGraphClosed(final Graph graph) {
         pane.paginate(null);
     }
 

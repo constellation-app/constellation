@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,9 @@ import au.gov.asd.tac.constellation.graph.value.readables.LongReadable;
  */
 public class Negative {
 
-    public static final String NAME = "NEGATIVE";
+    // Explicitly calling the constructor on a String appears to be necessary to
+    // allow the registry to find the operator.
+    public static final String NAME = new String("NEGATIVE");
 
     private Negative() {
         // added private constructor to hide implicit public constructor - S1118.

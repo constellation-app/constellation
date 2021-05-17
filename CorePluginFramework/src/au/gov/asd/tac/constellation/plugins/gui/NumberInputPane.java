@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,20 +65,6 @@ public class NumberInputPane<T> extends Pane {
     private static final String INVALID_ID = "invalid";
 
     public NumberInputPane(final PluginParameter<?> parameter) {
-//        final String parameterId = parameter.getId();
-//        final List<String> numberRecentValues = RecentParameterValues.getRecentValues(parameterId);
-//        if (numberRecentValues != null) {
-//            switch (parameter.getType().getId()) {
-//                case FloatParameterType.ID:
-//                    parameter.setFloatValue(Float.valueOf(numberRecentValues.get(numberRecentValues.size() > 1 ? 1 : 0)));
-//                    break;
-//                case IntegerParameterType.ID:
-//                    parameter.setIntegerValue(Integer.valueOf(numberRecentValues.get(numberRecentValues.size() > 1 ? 1 : 0)));
-//                    break;
-//                default:
-//                    break;
-//            }
-//        }
         final NumberParameterValue pv = (NumberParameterValue) parameter.getParameterValue();
         final Number min = pv.getMinimumValue();
         final Number max = pv.getMaximumValue();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,6 @@ public class NodeGlyphStream implements GlyphManager.GlyphStream {
 
     private final FloatArray currentFloats;
     private final IntArray currentInts;
-    private final Object addLock = new Object();
 
     public NodeGlyphStream() {
         this.currentFloats = new FloatArray();
@@ -39,10 +38,8 @@ public class NodeGlyphStream implements GlyphManager.GlyphStream {
     public void addGlyph(final int glyphPosition, final float x, final float y, final GlyphStreamContext streamContext) {
         if (streamContext instanceof NodeGlyphStreamContext) {
             final NodeGlyphStreamContext context = (NodeGlyphStreamContext) streamContext;
-            synchronized (addLock) {
-                currentFloats.add(glyphPosition, x, y, context.visibility);
-                currentInts.add(context.currentNodeID, context.totalScale, context.labelNumber, 0);
-            }
+            currentFloats.add(glyphPosition, x, y, context.visibility);
+            currentInts.add(context.currentNodeID, context.totalScale, context.labelNumber, 0);
         } else {
             throw new IllegalArgumentException("Provided context lacks Node information, please use a NodeGlyphStreamContext");
         }
@@ -52,10 +49,8 @@ public class NodeGlyphStream implements GlyphManager.GlyphStream {
     public void newLine(float width, final GlyphStreamContext streamContext) {
         if (streamContext instanceof NodeGlyphStreamContext) {
             final NodeGlyphStreamContext context = (NodeGlyphStreamContext) streamContext;
-            synchronized (addLock) {
-                currentFloats.add(SharedDrawable.getLabelBackgroundGlyphPosition(), -width / 2.0f - 0.2f, 0.0f, streamContext.visibility);
-                currentInts.add(context.currentNodeID, streamContext.totalScale, streamContext.labelNumber, 0);
-            }
+            currentFloats.add(SharedDrawable.getLabelBackgroundGlyphPosition(), -width / 2.0f - 0.2f, 0.0f, streamContext.visibility);
+            currentInts.add(context.currentNodeID, streamContext.totalScale, streamContext.labelNumber, 0);
         } else {
             throw new IllegalArgumentException("Provided context lacks Node information, please use a NodeGlyphStreamContext");
         }
@@ -70,10 +65,8 @@ public class NodeGlyphStream implements GlyphManager.GlyphStream {
     }
 
     public void trimToSize() {
-        synchronized (addLock) {
-            currentFloats.trimToSize();
-            currentInts.trimToSize();
-        }
+        currentFloats.trimToSize();
+        currentInts.trimToSize();
     }
 
 }

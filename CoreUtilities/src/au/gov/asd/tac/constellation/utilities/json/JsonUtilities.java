@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import org.apache.commons.collections.MapUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.util.Exceptions;
 
@@ -268,7 +268,7 @@ public class JsonUtilities {
      * @return a {@code String} or null if not found
      */
     public static String getTextValues(String attribute, JsonNode node, String delimiter) {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
 
         if (node.has(attribute)) {
             for (JsonNode entry : node.get(attribute)) {
@@ -316,8 +316,7 @@ public class JsonUtilities {
      * @return The formatted JSON, or plain old text if it isn't JSON.
      */
     public static String prettyPrint(String rawString) {
-        // Jackson object mapper for formatting JSON fields returned from GRAVITRON
-        ObjectMapper mapper = new ObjectMapper();
+        final ObjectMapper mapper = new ObjectMapper();
 
         try {
             JsonNode node = mapper.readTree(rawString);
@@ -372,7 +371,7 @@ public class JsonUtilities {
      */
     public static Map<String, String> getStringAsMap(final JsonFactory factory, final String mapAsString) {
         if (StringUtils.isNotEmpty(mapAsString)) {
-            Map<String, String> map = new HashMap<>();
+            final Map<String, String> map = new HashMap<>();
             try (final JsonParser jp = factory.createParser(mapAsString)) {
                 if (jp.nextToken() == JsonToken.START_OBJECT) {
                     while (jp.nextToken() != JsonToken.END_OBJECT) {
@@ -389,6 +388,6 @@ public class JsonUtilities {
                 Exceptions.printStackTrace(ex);
             }
         }
-        return MapUtils.EMPTY_MAP;
+        return MapUtils.EMPTY_SORTED_MAP;
     }
 }

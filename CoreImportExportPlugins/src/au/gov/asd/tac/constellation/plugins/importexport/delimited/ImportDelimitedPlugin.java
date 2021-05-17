@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,11 @@ import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.arrangements.AbstractInclusionGraph;
 import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.arrangements.VertexListInclusionGraph;
+import au.gov.asd.tac.constellation.plugins.importexport.AttributeType;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportAttributeDefinition;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportConstants;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportDefinition;
+import au.gov.asd.tac.constellation.plugins.importexport.RowFilter;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.ImportFileParser;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.InputSource;
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
@@ -67,12 +72,6 @@ import org.openide.util.lookup.ServiceProvider;
 public class ImportDelimitedPlugin extends SimpleEditPlugin {
 
     private static final Logger LOGGER = Logger.getLogger(ImportDelimitedPlugin.class.getName());
-
-    /**
-     * When an attribute is not assigned to a column, the value is -145355 so
-     * its easier to track down if there is an error.
-     */
-    public static final int ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN = -145355;
 
     public static final String PARSER_PARAMETER_ID = PluginParameter.buildId(ImportDelimitedPlugin.class, "parser");
     public static final String FILES_PARAMETER_ID = PluginParameter.buildId(ImportDelimitedPlugin.class, "files");
@@ -297,7 +296,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
         final List<ImportAttributeDefinition> destinationVertexDefinitions = definition.getDefinitions(AttributeType.DESTINATION_VERTEX);
         final List<ImportAttributeDefinition> transactionDefinitions = definition.getDefinitions(AttributeType.TRANSACTION);
 
-        int directedIx = ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN;
+        int directedIx = ImportConstants.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN;
         for (int i = 0; i < transactionDefinitions.size(); i++) {
             if (transactionDefinitions.get(i).getAttribute().getName().equals(ImportController.DIRECTED)) {
                 directedIx = transactionDefinitions.get(i).getColumnIndex();
@@ -336,7 +335,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                     graph.getSchema().completeVertex(graph, destinationVertexId);
                 }
 
-                final boolean isDirected = directedIx == ImportDelimitedPlugin.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN || Boolean.parseBoolean(row[directedIx]);
+                final boolean isDirected = directedIx == ImportConstants.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN || Boolean.parseBoolean(row[directedIx]);
                 final int transactionId = graph.addTransaction(sourceVertexId, destinationVertexId, isDirected);
                 for (final ImportAttributeDefinition attributeDefinition : transactionDefinitions) {
                     if (attributeDefinition.getOverriddenAttributeId() != Graph.NOT_FOUND) {
@@ -364,8 +363,8 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
             // If the attribute is not assigned to a column but has a default
             // value defined or, the attribute is assigned to a column; add
             // the attribute to the graph and store the attribute id
-            if ((attributeDefinition.getColumnIndex() == ImportDelimitedPlugin.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN && attributeDefinition.getDefaultValue() != null)
-                    || (attributeDefinition.getColumnIndex() != ImportDelimitedPlugin.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN)) {
+            if ((attributeDefinition.getColumnIndex() == ImportConstants.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN && attributeDefinition.getDefaultValue() != null)
+                    || (attributeDefinition.getColumnIndex() != ImportConstants.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN)) {
                 int attributeId = graph.getSchema() != null
                         ? graph.getSchema().getFactory().ensureAttribute(graph, elementType, attribute.getName())
                         : Graph.NOT_FOUND;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,9 @@ import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewTopComponent.
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * The result of an AnalyticPlugin, which will be supported by one or more
@@ -33,7 +33,8 @@ import java.util.Map;
  */
 public abstract class AnalyticResult<D extends AnalyticData> {
 
-    protected final List<D> result = new LinkedList<>();
+    protected final Map<IdentificationData, D> result = new HashMap<>();
+//    protected final List<D> result = new LinkedList<>();
     protected final Map<String, String> metadata = new HashMap<>();
     protected boolean ignoreNullResults = false;
     protected AnalyticController analyticController = null;
@@ -56,8 +57,8 @@ public abstract class AnalyticResult<D extends AnalyticData> {
     public void setSelectionOnVisualisation(final GraphElementType elementType, final List<Integer> elementIds) {
         final List<D> selectedElementScores = new ArrayList<>();
         final List<D> ignoredElementScores = new ArrayList<>();
-        result.forEach(elementScore -> {
-            if (!elementType.equals(elementScore.elementType)) {
+        result.values().forEach(elementScore -> {
+            if (!elementType.equals(elementScore.getElementType())) {
                 ignoredElementScores.add(elementScore);
             } else if (elementIds.contains(elementScore.getElementId())) {
                 selectedElementScores.add(elementScore);
@@ -73,19 +74,22 @@ public abstract class AnalyticResult<D extends AnalyticData> {
     }
 
     public final void sort() {
-        result.sort(null);
     }
 
     public final List<D> get() {
-        return Collections.unmodifiableList(result);
+        return Collections.unmodifiableList(result.values().stream().collect(Collectors.toList()));
     }
-
-    public void add(final D result) {
-        this.result.add(result);
+    
+    public final Map<IdentificationData, D> getResult() {
+        return result;
+    }
+    
+    public void add(final D resultData) {
+        this.result.put(resultData.getIdentificationData(), resultData);
     }
 
     public void addAll(final List<D> results) {
-        this.result.addAll(results);
+        results.forEach(result -> this.result.put(result.getIdentificationData(), result));
     }
 
     public final boolean hasMetadata() {

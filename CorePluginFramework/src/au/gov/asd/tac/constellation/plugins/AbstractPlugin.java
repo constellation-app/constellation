@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -94,7 +94,7 @@ public abstract class AbstractPlugin implements Plugin {
         final String helpFileResource = getClass().getSimpleName() + ".html";
         final URL helpURL = getClass().getResource(helpFileResource);
         if (helpURL != null) {
-            try (BufferedReader in = new BufferedReader(new InputStreamReader(helpURL.openStream(), StandardCharsets.UTF_8.name()))) {
+            try ( BufferedReader in = new BufferedReader(new InputStreamReader(helpURL.openStream(), StandardCharsets.UTF_8.name()))) {
                 final StringBuilder out = new StringBuilder();
                 final char[] buffer = new char[1024];
                 int read = in.read(buffer);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,18 +18,18 @@ package au.gov.asd.tac.constellation.plugins.importexport.delimited.io;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.AttributeType;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.GraphDestination;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.ImportAttributeDefinition;
+import au.gov.asd.tac.constellation.plugins.importexport.AttributeType;
+import au.gov.asd.tac.constellation.plugins.importexport.GraphDestination;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportAttributeDefinition;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportConstants;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportDefinition;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportDestination;
+import au.gov.asd.tac.constellation.plugins.importexport.NewAttribute;
+import au.gov.asd.tac.constellation.plugins.importexport.RowFilter;
+import au.gov.asd.tac.constellation.plugins.importexport.SchemaDestination;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.ImportController;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.ImportDefinition;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.ImportDelimitedPlugin;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.ImportDestination;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.NewAttribute;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.RowFilter;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.SchemaDestination;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.ImportFileParser;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.translator.AttributeTranslator;
+import au.gov.asd.tac.constellation.plugins.importexport.translator.AttributeTranslator;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
@@ -159,7 +159,7 @@ public class ImportDelimitedIO {
                             //                    type.put(COLUMN_INDEX, iadef.getColumnIndex());
                             // If the column index is not defined, then set the column label to null so
                             // that the settings still get applied in the attribute list on load
-                            if (iadef.getColumnIndex() == ImportDelimitedPlugin.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN) {
+                            if (iadef.getColumnIndex() == ImportConstants.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN) {
                                 type.putNull(COLUMN_LABEL);
                             } else {
                                 type.put(COLUMN_LABEL, columns[iadef.getColumnIndex() + 1]);
@@ -339,8 +339,8 @@ public class ImportDelimitedIO {
      * @return True if the attribute should be saved, False otherwise
      */
     public static boolean hasSavableAttribute(ImportAttributeDefinition iadef) {
-        return (iadef.getColumnIndex() != ImportDelimitedPlugin.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN)
-                || ((iadef.getColumnIndex() == ImportDelimitedPlugin.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN)
+        return (iadef.getColumnIndex() != ImportConstants.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN)
+                || ((iadef.getColumnIndex() == ImportConstants.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN)
                 && (iadef.getParameters() != null || iadef.getDefaultValue() != null));
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ import org.testng.annotations.Test;
  */
 public class CosineSimilarityPluginNGTest {
 
-    private int transactionCosineAttribute, vertexSelectedAttribute;
+    private int transactionCosineAttribute, vertexSelectedAttribute, transactionIdentifier;
     private int vxId0, vxId1, vxId2, vxId3, vxId4;
     private int txId0, txId1, txId2, txId3, txId4;
     private StoreGraph graph;
@@ -59,7 +59,8 @@ public class CosineSimilarityPluginNGTest {
         // add attributes
         transactionCosineAttribute = SnaConcept.TransactionAttribute.COSINE_SIMILARITY.ensure(graph);
         vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
-
+        transactionIdentifier = VisualConcept.TransactionAttribute.IDENTIFIER.ensure(graph);
+        
         // add vertices
         vxId0 = graph.addVertex();
         vxId1 = graph.addVertex();
@@ -90,10 +91,18 @@ public class CosineSimilarityPluginNGTest {
         parameters.setIntegerValue(CosineSimilarityPlugin.MINIMUM_COMMON_FEATURES_PARAMETER_ID, 1);
         parameters.setBooleanValue(CosineSimilarityPlugin.SELECTED_ONLY_PARAMETER_ID, false);
         PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
-
-        assertEquals(graph.getFloatValue(transactionCosineAttribute, 5), 0.70710677f);
-        assertEquals(graph.getFloatValue(transactionCosineAttribute, 6), 0f);
-        assertEquals(graph.getFloatValue(transactionCosineAttribute, 7), 0f);
+        
+        int transactionCount = graph.getTransactionCount();
+        
+        for (int transactionId = 0; transactionId < transactionCount; transactionId++) {
+            int transaction = graph.getTransaction(transactionId);
+            String identifier = graph.getStringValue(transactionIdentifier, transactionId);
+            if ("1 == similarity == 2".equals(identifier)) {
+                assertEquals(graph.getFloatValue(transactionCosineAttribute, transactionId), 0.70710677f);
+            } else {
+                assertEquals(graph.getFloatValue(transactionCosineAttribute, transactionId), 0f);
+            }
+        }
     }
 
     @Test
@@ -106,9 +115,23 @@ public class CosineSimilarityPluginNGTest {
         parameters.setIntegerValue(CosineSimilarityPlugin.MINIMUM_COMMON_FEATURES_PARAMETER_ID, 1);
         parameters.setBooleanValue(CosineSimilarityPlugin.SELECTED_ONLY_PARAMETER_ID, false);
         PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
-
-        assertEquals(graph.getFloatValue(transactionCosineAttribute, 5), 0.4082483f);
-        assertEquals(graph.getFloatValue(transactionCosineAttribute, 6), 0.70710677f);
-        assertEquals(graph.getFloatValue(transactionCosineAttribute, 7), 0.33333334f);
+        
+        int transactionCount = graph.getTransactionCount();
+        
+        for (int transactionId = 0; transactionId < transactionCount; transactionId++) {
+            int transaction = graph.getTransaction(transactionId);
+            String identifier = graph.getStringValue(transactionIdentifier, transactionId);
+            if ("2 == similarity == 4".equals(identifier)) {
+                assertEquals(graph.getFloatValue(transactionCosineAttribute, transactionId), 0.70710677f);
+            }
+            if ("2 == similarity == 3".equals(identifier)) {
+                assertEquals(graph.getFloatValue(transactionCosineAttribute, transactionId), 0.4082483f);
+            }
+            if ("1 == similarity == 3".equals(identifier)) {
+                assertEquals(graph.getFloatValue(transactionCosineAttribute, transactionId), 0.33333334f);
+            }
+        }
     }
+    
+    
 }

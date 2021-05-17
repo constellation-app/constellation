@@ -6,28 +6,32 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     </head>
     <body>
-        <h2>Compare Graph</h2>
+        <h1>Compare Graph</h1>
+        <h2>Compare two graphs and show the differences in a new graph</h2>
+        
         <p>
-            Compare 2 graphs and show the differences in a new graph. The possible detected changes are additions, deletion and attribute changes.
+            Compare Graph can be accessed via Tools -&gt; Compare Graph
+        </p>
+        <p>
+            Compare Graph does a comparison of two open graphs and shows the differences in a new graph. An output window will also 
+            displayed with descriptions of the differences. Possible detected differences are additions, deletions, and 
+            attribute value changes. 
+        </p>
+        <p>
+            In the new graph, each node and transaction will be coloured according to the change detected. An attribute will also be 
+            added called Compare with value set to whatever change was detected (Added, Removed, Modified, or Unchanged).
         </p>
 
-        <h2>Addition</h2>
-        <p>If a node or transaction was added in the comparison graph, a new attribute called Compare will be set with the value set to <strong>Added</strong> and the colour will be changed to dark green by default.</p>
-
-
-        <h2>Deletion</h2>
-        <p>If a node or transaction was removed in the comparison graph, a new attribute called Compare will be set with the value set to <strong>Removed</strong> and the colour will be changed to red by default.</p>
-
-        <h2>Modification</h2>
-        <p>If an attribute on a node or transaction changed in the comparison graph, a new attribute called Compare will be set with the value set to <strong>Changed</strong> and the colour will be changed to yellow by default.</p>
-
-        <h2>Options</h2>
-        <p>
-            When the comparison runs, a console will appear displaying the changes detected as descriptions.
-        </p>
-
-        <p>
-            It is possible to ignore attributes like the x,y,z coordinates and change the colour scheme used.
-        </p>
+        <h2>Parameters</h2>
+        <ul>
+            <li><em>Original Graph</em> - the graph to use as a starting point for the comparison</li>
+            <li><em>Compare With Graph</em> - the graph to compare against the original graph</li>
+            <li><em>Ignore Node Attributes</em> - node attributes to ignore for the comparison</li>
+            <li><em>Ignore Transaction Attributes</em> - transaction attribute to ignore for the comparison</li>
+            <li><em>Added Colour</em> - the colour to indicate an node/transaction addition (default is Green)</li>
+            <li><em>Removed Colour</em> - the colour to indicate a node/transaction removal (default is Red)</li>
+            <li><em>Changed Colour</em> - the colour to indicate a node/transaction attribute value change (default is Yellow)</li>
+            <li><em>Unchanged Colour</em> - the colour to indicate no change to a node/transaction (default is Grey)</li>
+        </ul>
     </body>
 </html>

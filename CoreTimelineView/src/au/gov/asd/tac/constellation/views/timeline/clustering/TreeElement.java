@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,9 +31,9 @@ public abstract class TreeElement {
 
     public abstract long getUpperTimeExtent();
 
-    public abstract long getLowerDisplayPos();
+    public abstract int getLowerDisplayPos();
 
-    public abstract long getUpperDisplayPos();
+    public abstract int getUpperDisplayPos();
 
     public abstract int getCount();
 

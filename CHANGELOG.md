@@ -1,6 +1,23 @@
 # Constellation Changes
 
+## 2021-05-01 Changes in May 2021
+* Update `ProjectUpdater` to sort jars in `project.xml` consistently between Windows and Linux.
+* Remove the file type being added to dependency jars as it counts towards the limited class path length in Windows.
+
+## 2021-04-01 Changes in April 2021
+* Added `FourTuple` to the Core Utilities module.
+
+## 2021-03-01 Changes in March 2021
+* Added `hasLowLevelTag()` to `PluginReport` classes to check whether a plugin has a "LOW LEVEL" tag specified.
+* Added Keyboard Shortcut to Scatter Plot View. Shortcut is Ctrl-Shift-O
+* Updated all state reading and writing plugins to have a "LOW LEVEL" tag.
+
+## 2021-01-01 Changes in January 2021
+* Moved a number of classes out of `au.gov.asd.tac.constellation.plugins.importexport.delimited` and `au.gov.asd.tac.constellation.plugins.importexport.jdbc` into the base package to help remove duplicate classes.
+* Converted the Tutorial Page into a What's New page for displaying changes in Constellation. 
+
 ## 2020-11-01 Changes in November 2020
+* Added `RecentGraphScreenshotUtilities` to manage taking screenshots of graphs to be used by the Welcome tab.
 * Added `createReadAttributeObject()` to `GraphReadMethods`.
 * Added `createWriteAttributeObject()` to `GraphWriteMethods`.
 * Added `createReadObject()` and `createWriteObject()` in `AttributeDescription`.
@@ -21,6 +38,7 @@
 * Updated `LAYER_MASK_SELECTED` and `LAYER_MASK` attributes to be of type `Long` instead of `Integer`.
 * Updated constructor for `LayersViewStateWriter`.
 * Updated parameters for `setLayers()` and `updateLayers()` in `LayersViewPane`.
+
 
 ## 2020-08-01 Changes in August 2020
 * Updated `DefaultPluginInteraction` and `PluginParameters` to unfocus the Ok button from the plugin swing dialog if there is a multi-line string parameter so that enter can be used in the parameter.

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,8 +31,8 @@ public class TreeNode extends TreeElement implements Comparable<TreeNode> {
     private int selectedLeafCount;
     private long lowerTimeExtent;
     private long upperTimeExtent;
-    private long lowerDisplayPos;
-    private long upperDisplayPos;
+    private int lowerDisplayPos;
+    private int upperDisplayPos;
     private boolean nodesSelectedInLeaves;
 
     public TreeNode(final TreeElement firstChild, final TreeElement lastChild) {
@@ -104,12 +104,12 @@ public class TreeNode extends TreeElement implements Comparable<TreeNode> {
     }
 
     @Override
-    public long getLowerDisplayPos() {
+    public int getLowerDisplayPos() {
         return lowerDisplayPos;
     }
 
     @Override
-    public long getUpperDisplayPos() {
+    public int getUpperDisplayPos() {
         return upperDisplayPos;
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,16 +16,16 @@
 package au.gov.asd.tac.constellation.views.conversationview;
 
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
-import au.gov.asd.tac.constellation.utilities.tooltip.TooltipUtilities;
 import java.util.List;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.CacheHint;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Skin;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.skin.TextAreaSkin;
+import javafx.scene.control.skin.LabelSkin;
+import static javafx.scene.layout.Region.USE_PREF_SIZE;
 
 /**
  * A SelectableLabel is a TextArea that has been enhanced to provide similar
@@ -35,10 +35,10 @@ import javafx.scene.control.skin.TextAreaSkin;
  *
  * @author sirius
  */
-public class SelectableLabel extends TextArea {
+public class SelectableLabel extends Label {
 
     private Node content = null;
-    private TextAreaSkin skin = null;
+    private LabelSkin skin = null;
     private List<MenuItem> contextMenuItems = null;
 
     private double cachedWidth = Double.MIN_VALUE;
@@ -47,10 +47,10 @@ public class SelectableLabel extends TextArea {
     private double cachedHeight = Double.MIN_VALUE;
     private double cachedPrefWidth = Double.MIN_VALUE;
 
-    private class SelectableLabelSkin extends TextAreaSkin {
+    private class SelectableLabelSkin extends LabelSkin {
 
-        public SelectableLabelSkin(final TextArea textArea) {
-            super(textArea);
+        public SelectableLabelSkin(final Label label) {
+            super(label);
         }
 
 //        @Override
@@ -72,7 +72,7 @@ public class SelectableLabel extends TextArea {
         return Orientation.HORIZONTAL;
     }
 
-    @Override
+  /*  @Override
     protected double computePrefWidth(double height) {
         if (cachedHeight != height) {
             if (skin == null) {
@@ -96,7 +96,7 @@ public class SelectableLabel extends TextArea {
         }
 
         return cachedPrefHeight;
-    }
+    } */
 
     public void setSelectableText(String text) {
         cachedHeight = cachedWidth = Double.MIN_VALUE;
@@ -118,26 +118,27 @@ public class SelectableLabel extends TextArea {
         getStyleClass().add("selectable-label");
         setText(text == null ? "" : text);
         setWrapText(wrapText);
-        setEditable(false);
-        setPadding(Insets.EMPTY);
+        final Insets insets = new Insets(3, 3, 3, 3);
+        setPadding(insets);
         setCache(true);
         setCacheHint(CacheHint.SPEED);
         setMinHeight(USE_PREF_SIZE);
+        setMaxWidth(500);
 
         if (style != null) {
             setStyle(style);
         }
 
-        if (tipsPane != null) {
+       /* if (tipsPane != null) {
             TooltipUtilities.activateTextInputControl(this, tipsPane);
-        }
+        } */
 
         this.contextMenuItems = contextMenuItems;
     }
 
     private void initSkin() {
         content = lookup(".content");
-        skin = (TextAreaSkin) getSkin();
+        skin = (LabelSkin) getSkin();
     }
 
 }

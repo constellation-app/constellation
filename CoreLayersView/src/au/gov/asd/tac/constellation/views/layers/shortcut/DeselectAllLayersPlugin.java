@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.views.layers.LayersViewController;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewState;
 import au.gov.asd.tac.constellation.views.layers.utilities.LayersUtilities;
@@ -60,12 +59,10 @@ public class DeselectAllLayersPlugin extends SimpleEditPlugin {
         graph.setObjectValue(layersViewStateAttributeId, 0, newState);
 
         final int newBitmask = LayersUtilities.calculateCurrentLayerSelectionBitMask(
-                currentState.getVxQueriesCollection(), currentState.getTxQueriesCollection());
+                newState.getVxQueriesCollection(), newState.getTxQueriesCollection());
 
         PluginExecution.withPlugin(new UpdateLayerSelectionPlugin(newBitmask))
                 .executeLater(GraphManager.getDefault().getActiveGraph());
-
-        LayersViewController.getDefault().updateQueries(GraphManager.getDefault().getAllGraphs().get(graph.getId()));
     }
 
     @Override

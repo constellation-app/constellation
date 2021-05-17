@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,14 @@ package au.gov.asd.tac.constellation.plugins.importexport.delimited;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.model.CellValue;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.model.TableRow;
+import au.gov.asd.tac.constellation.plugins.importexport.AttributeType;
+import au.gov.asd.tac.constellation.plugins.importexport.EasyGridPane;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportAttributeDefinition;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportDefinition;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportTableCell;
+import au.gov.asd.tac.constellation.plugins.importexport.RowFilter;
+import au.gov.asd.tac.constellation.plugins.importexport.model.CellValue;
+import au.gov.asd.tac.constellation.plugins.importexport.model.TableRow;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.awt.Color;
 import java.awt.event.KeyEvent;

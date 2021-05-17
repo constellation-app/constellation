@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -129,10 +129,6 @@ public class ColorInputPane extends Pane {
         });
 
         getChildren().add(hbox);
-//        final List<String> recentValues = RecentParameterValues.getRecentValues(parameter.getId());
-//        if (recentValues != null) {
-//            parameter.setStringValue(recentValues.get(recentValues.size() > 1 ? 1 : 0));
-//        }
     }
 
     private ComboBox<ConstellationColor> makeNamedCombo() {

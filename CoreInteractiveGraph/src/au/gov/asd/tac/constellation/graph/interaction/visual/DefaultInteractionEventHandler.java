@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,7 +61,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -74,6 +73,8 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JPopupMenu;
@@ -320,13 +321,14 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
     }
 
     private void scheduleXYZChangeOperation(final int[] verticiesMoved) {
+        // VerticiesMoved should be a list of vertexPositions for the verticies moved.
         operationQueue.add(manager.constructMultiChangeOperation(Arrays.asList(
                 new VisualChangeBuilder(VisualProperty.VERTEX_X).forItems(verticiesMoved).withId(currentXYZChangeIds[0]).build(),
                 new VisualChangeBuilder(VisualProperty.VERTEX_Y).forItems(verticiesMoved).withId(currentXYZChangeIds[1]).build(),
                 new VisualChangeBuilder(VisualProperty.VERTEX_Z).forItems(verticiesMoved).withId(currentXYZChangeIds[2]).build()
         )));
     }
-    
+
     /**
      * Respond to a key press event on the graph. This will respond to keys that
      * interact directly with the graph's visuals, such as W,A,S,D to pan. Most
@@ -969,16 +971,8 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
      *
      * @return array of node IDs
      */
-    private List<Integer> gatherSelectedNodes(GraphReadMethods rg) {
-        List<Integer> selectedIds = new ArrayList<>();
-        final int vertexSelctedAttribute = VisualConcept.VertexAttribute.SELECTED.get(rg);
-        if (vertexSelctedAttribute != Graph.NOT_FOUND) {
-            rg.vertexStream().forEach(vertexId -> {
-                if (rg.getBooleanValue(vertexSelctedAttribute, vertexId)) {
-                    selectedIds.add(vertexId);
-                }
-            });
-        }
+    public List<Integer> gatherSelectedNodes(final GraphReadMethods rg) {
+        List<Integer> selectedIds = VisualGraphUtilities.getSelectedElements(rg);
         
         final int hitId = eventState.getCurrentHitId();
         if (eventState.getCurrentHitType().equals(HitType.VERTEX) && !selectedIds.contains(hitId)) {
@@ -998,7 +992,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
 
     private void performDrag(GraphWriteMethods wg, final Camera camera, final Point from, final Point to) {
         // Get the ids of the selected nodes (and those of the associated transaction as well)
-        final List<Integer> draggedNodeIds = gatherSelectedNodes(wg);
+        final List<Integer> draggedNodes = gatherSelectedNodes(wg);
         int nodeBeingDraggedId = eventState.getCurrentHitType().equals(HitType.TRANSACTION) ? wg.getTransactionSourceVertex(eventState.getCurrentHitId()) : eventState.getCurrentHitId();
 
         // Get the position of the node being dragged.
@@ -1013,14 +1007,15 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
         final int y2Attribute = VisualConcept.VertexAttribute.Y2.get(wg);
         final int z2Attribute = VisualConcept.VertexAttribute.Z2.get(wg);
         final int cameraAttribute = VisualConcept.GraphAttribute.CAMERA.get(wg);
-        
-        draggedNodeIds.forEach(vertexId -> {
+
+        draggedNodes.forEach(vertexId -> {
             final Vector3f currentPos = VisualGraphUtilities.getMixedVertexCoordinates(wg, vertexId, xAttribute, x2Attribute, yAttribute, y2Attribute, zAttribute, z2Attribute, cameraAttribute);
             currentPos.add(delta);
             VisualGraphUtilities.setVertexCoordinates(wg, currentPos, vertexId, xAttribute, yAttribute, zAttribute);
         });
 
-        scheduleXYZChangeOperation(Ints.toArray(draggedNodeIds));
+        draggedNodes.replaceAll(id -> wg.getVertexPosition(id)); // Replade the Id's with positions, as required by scheduleXYZCHangeOperation.
+        scheduleXYZChangeOperation(Ints.toArray(draggedNodes));
     }
 
     private void performPointSelection(final boolean toggleSelection, final boolean clearSelection, final GraphElementType elementType, final int elementId) {
@@ -1099,23 +1094,45 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
         final Vector3f graphLocation = visualInteraction.windowToGraphCoordinates(camera, screenLocation);
 
         for (final ContextMenuProvider pmp : popups) {
+            // Retrive list of item names to populate and optional list of icons to assign
+            // Icons will be added corresponding to an image if the icons list is not ull
+            // and a non null icon is provided with corresponding index.
             final List<String> items = pmp.getItems(rg, elementType, clickedId);
+            final List<ImageIcon> icons = pmp.getIcons(rg, elementType, clickedId);
             if (!items.isEmpty()) {
                 final List<String> menuPath = pmp.getMenuPath(elementType);
                 if (CollectionUtils.isEmpty(menuPath)) {
-                    items.forEach(item -> {
-                        popup.add(new AbstractAction(item) {
-                            @Override
-                            public void actionPerformed(final ActionEvent event) {
-                                PluginExecution.withPlugin(new SimplePlugin("Context Menu: " + item) {
-                                    @Override
-                                    protected void execute(final PluginGraphs _graphs, final PluginInteraction _interaction, final PluginParameters _parameters) throws InterruptedException, PluginException {
-                                        pmp.selectItem(item, graph, elementType, clickedId, graphLocation);
-                                    }
-                                }).executeLater(null);
-                            }
-                        });
-                    });
+                    for (int idx = 0; idx < items.size(); idx++) {
+                        final Icon icon = (icons != null && icons.size() > idx + 1) ? (Icon) icons.get(idx) : null;
+                        final String item = items.get(idx);
+                        if (icon == null) {
+                            // No icon was found, add menu item without an icon
+                            popup.add(new AbstractAction(item) {
+                                @Override
+                                public void actionPerformed(final ActionEvent event) {
+                                    PluginExecution.withPlugin(new SimplePlugin("Context Menu: " + item) {
+                                        @Override
+                                        protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+                                            pmp.selectItem(item, graph, elementType, clickedId, graphLocation);
+                                        }
+                                    }).executeLater(null);
+                                }
+                            });
+                        } else {
+                            // An icon was found, add menu item containing the icon
+                            popup.add(new AbstractAction(item, icon) {
+                                @Override
+                                public void actionPerformed(final ActionEvent event) {
+                                    PluginExecution.withPlugin(new SimplePlugin("Context Menu: " + item) {
+                                        @Override
+                                        protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+                                            pmp.selectItem(item, graph, elementType, clickedId, graphLocation);
+                                        }
+                                    }).executeLater(null);
+                                }
+                            });
+                        }
+                    }
                 } else {
                     JComponent currentMenu = popup;
                     levelLoop:
@@ -1136,18 +1153,36 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                         currentMenu = childMenu;
                     }
 
-                    for (final String item : items) {
-                        ((JMenu) currentMenu).add(new AbstractAction(item) {
-                            @Override
-                            public void actionPerformed(final ActionEvent event) {
-                                PluginExecution.withPlugin(new SimplePlugin("Context Menu: " + item) {
-                                    @Override
-                                    protected void execute(final PluginGraphs _graphs, final PluginInteraction _interaction, final PluginParameters _parameters) throws InterruptedException, PluginException {
-                                        pmp.selectItem(item, graph, elementType, clickedId, graphLocation);
-                                    }
-                                }).executeLater(null);
-                            }
-                        });
+                    for (int idx = 0; idx < items.size(); idx++) {
+                        final Icon icon = (icons != null && icons.size() > idx) ? (Icon) icons.get(idx) : null;
+                        final String item = items.get(idx);
+                        if (icon == null) {
+                            // No icon was found, add menu item without an icon
+                            ((JMenu) currentMenu).add(new AbstractAction(item) {
+                                @Override
+                                public void actionPerformed(final ActionEvent event) {
+                                    PluginExecution.withPlugin(new SimplePlugin("Context Menu: " + item) {
+                                        @Override
+                                        protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+                                            pmp.selectItem(item, graph, elementType, clickedId, graphLocation);
+                                        }
+                                    }).executeLater(null);
+                                }
+                            });
+                        } else {
+                            // An icon was found, add menu item containing the icon
+                            ((JMenu) currentMenu).add(new AbstractAction(item, icon) {
+                                @Override
+                                public void actionPerformed(final ActionEvent event) {
+                                    PluginExecution.withPlugin(new SimplePlugin("Context Menu: " + item) {
+                                        @Override
+                                        protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+                                            pmp.selectItem(item, graph, elementType, clickedId, graphLocation);
+                                        }
+                                    }).executeLater(null);
+                                }
+                            });
+                        }
                     }
                 }
             }

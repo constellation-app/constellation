@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,10 +33,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.util.BitSet;
-import java.util.HashMap;
-import java.util.Map;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -151,7 +148,7 @@ public class AdamicAdarIndexPlugin extends SimpleEditPlugin {
         }
 
         // calculate Adamic-Adar index for every pair of vertices on the graph
-        final Map<Tuple<Integer, Integer>, Float> aaiScores = new HashMap<>();
+        SimilarityUtilities.setGraphAndEnsureAttributes(graph, ADAMIC_ADAR_INDEX_ATTRIBUTE);
         for (int vertexOnePosition = update.nextSetBit(0); vertexOnePosition >= 0; vertexOnePosition = update.nextSetBit(vertexOnePosition + 1)) {
             for (int vertexTwoPosition = update.nextSetBit(0); vertexTwoPosition >= 0; vertexTwoPosition = update.nextSetBit(vertexTwoPosition + 1)) {
                 if (!selectedOnly || (selected.get(vertexOnePosition) || selected.get(vertexTwoPosition))) {
@@ -179,13 +176,11 @@ public class AdamicAdarIndexPlugin extends SimpleEditPlugin {
                         sum += (1f / Math.log(graph.getVertexNeighbourCount(graph.getVertex(commonNeighbour))));
                     }
 
-                    aaiScores.put(Tuple.create(vertexOneId, vertexTwoId), sum);
+                    SimilarityUtilities.addScoreToGraph(vertexOneId, vertexTwoId, sum);
                 }
             }
         }
 
-        // update the graph with Adamic-Adar index values
-        SimilarityUtilities.addScoresToGraph(graph, aaiScores, ADAMIC_ADAR_INDEX_ATTRIBUTE);
         // complete with schema
         PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
     }

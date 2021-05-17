@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -155,7 +156,11 @@ public class ProjectUpdater extends Task {
                 final File[] jarFiles = jarDirectory.listFiles();
 
                 // Sort them so that the project.xml is generated consistently and avoids merge conflicts
-                Arrays.sort(jarFiles);
+                Arrays.sort(jarFiles, (final File o1, final File o2) -> {
+                    final String p1 = o1.getAbsolutePath();
+                    final String p2 = o2.getAbsolutePath();
+                    return p1.compareTo(p2);
+                });
 
                 // Add the class path to project.xml
                 for (final File jarFile : jarFiles) {
@@ -240,7 +245,7 @@ public class ProjectUpdater extends Task {
         final Document document = builder.newDocument();
 
         // Read in the existing project.xml into the document
-        try (FileInputStream in = new FileInputStream(xmlFile)) {
+        try ( FileInputStream in = new FileInputStream(xmlFile)) {
             final Source loadSource = new StreamSource(in);
             final Result loadResult = new DOMResult(document);
             transformer.transform(loadSource, loadResult);
@@ -256,7 +261,7 @@ public class ProjectUpdater extends Task {
 //        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, ""); 
         final Transformer transformer = transformerFactory.newTransformer();
 
-        try (FileOutputStream out = new FileOutputStream(xmlFile)) {
+        try ( FileOutputStream out = new FileOutputStream(xmlFile)) {
             final Source saveSource = new DOMSource(document);
             final Result saveResult = new StreamResult(out);
             transformer.transform(saveSource, saveResult);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -807,38 +807,54 @@ public final class PluginParametersPane extends GridPane {
         @SuppressWarnings("unchecked") //All casts in this method are checked prior to casting.
         public final Pane buildParameterPane(final PluginParameter<?> parameter) {
             final String id = parameter.getType().getId();
-            linkParameterWidgetToTop(parameter);
 
+            final Pane pane;
             switch (id) {
                 case StringParameterType.ID:
-                    return new ValueInputPane((PluginParameter<StringParameterValue>) parameter, ValueInputPane.DEFAULT_WIDTH, StringParameterType.getLines((PluginParameter<StringParameterValue>) parameter));
+                    pane = new ValueInputPane((PluginParameter<StringParameterValue>) parameter, ValueInputPane.DEFAULT_WIDTH, StringParameterType.getLines((PluginParameter<StringParameterValue>) parameter));
+                    break;
                 case IntegerParameterType.ID:
-                    return new NumberInputPane<>((PluginParameter<IntegerParameterValue>) parameter);
+                    pane = new NumberInputPane<>((PluginParameter<IntegerParameterValue>) parameter);
+                    break;
                 case FloatParameterType.ID:
-                    return new NumberInputPane<>((PluginParameter<FloatParameterValue>) parameter);
+                    pane = new NumberInputPane<>((PluginParameter<FloatParameterValue>) parameter);
+                    break;
                 case BooleanParameterType.ID:
-                    return new BooleanInputPane((PluginParameter<BooleanParameterValue>) parameter);
+                    pane = new BooleanInputPane((PluginParameter<BooleanParameterValue>) parameter);
+                    break;
                 case SingleChoiceParameterType.ID:
-                    return new SingleChoiceInputPane((PluginParameter<SingleChoiceParameterValue>) parameter);
+                    pane = new SingleChoiceInputPane((PluginParameter<SingleChoiceParameterValue>) parameter);
+                    break;
                 case ColorParameterType.ID:
-                    return new ColorInputPane((PluginParameter<ColorParameterValue>) parameter);
+                    pane = new ColorInputPane((PluginParameter<ColorParameterValue>) parameter);
+                    break;
                 case DateTimeRangeParameterType.ID:
-                    return new DateTimeRangeInputPane((PluginParameter<DateTimeRangeParameterValue>) parameter);
+                    pane = new DateTimeRangeInputPane((PluginParameter<DateTimeRangeParameterValue>) parameter);
+                    break;
                 case FileParameterType.ID:
-                    return new FileInputPane((PluginParameter<FileParameterValue>) parameter);
+                    pane = new FileInputPane((PluginParameter<FileParameterValue>) parameter);
+                    break;
                 case LocalDateParameterType.ID:
-                    return new LocalDateInputPane((PluginParameter<LocalDateParameterValue>) parameter);
+                    pane = new LocalDateInputPane((PluginParameter<LocalDateParameterValue>) parameter);
+                    break;
                 case MultiChoiceParameterType.ID:
-                    return new MultiChoiceInputPane((PluginParameter<MultiChoiceParameterValue>) parameter);
+                    pane = new MultiChoiceInputPane((PluginParameter<MultiChoiceParameterValue>) parameter);
+                    break;
                 case ParameterListParameterType.ID:
-                    return new ParameterListInputPane((PluginParameter<ParameterListParameterValue>) parameter);
+                    pane = new ParameterListInputPane((PluginParameter<ParameterListParameterValue>) parameter);
+                    break;
                 case ActionParameterType.ID:
-                    return new ActionInputPane(parameter);
+                    pane = new ActionInputPane(parameter);
+                    break;
                 case PasswordParameterType.ID:
-                    return new ValueInputPane((PluginParameter<PasswordParameterValue>) parameter, ValueInputPane.DEFAULT_WIDTH);
+                    pane = new ValueInputPane((PluginParameter<PasswordParameterValue>) parameter, ValueInputPane.DEFAULT_WIDTH);
+                    break;
                 default:
                     throw new IllegalArgumentException("Unsupported parameter type ID: " + id);
             }
+            
+            linkParameterWidgetToTop(parameter);
+            return pane;
         }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,6 +70,8 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
     public static final String DUPLICATE_TRANSACTIONS_PARAMETER_ID = PluginParameter.buildId(SplitNodesPlugin.class, "split_level");
     public static final String TRANSACTION_TYPE_PARAMETER_ID = PluginParameter.buildId(SplitNodesPlugin.class, "transaction_type");
     public static final String ALL_OCCURRENCES_PARAMETER_ID = PluginParameter.buildId(SplitNodesPlugin.class, "all_occurances");
+    
+    public static final String COMPLETE_WITH_SCHEMA_OPTION_ID = PluginParameter.buildId(SplitNodesPlugin.class, "complete_schema");
 
     @Override
     public String getType() {
@@ -97,7 +99,7 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
         params.addParameter(split);
 
         final PluginParameter<BooleanParameterValue> duplicateTransactionsParameter = BooleanParameterType.build(DUPLICATE_TRANSACTIONS_PARAMETER_ID);
-        duplicateTransactionsParameter.setName("Duplicate transactions");
+        duplicateTransactionsParameter.setName("Duplicate Transactions");
         duplicateTransactionsParameter.setDescription("Duplicate transactions for split nodes");
         duplicateTransactionsParameter.setBooleanValue(false);
         params.addParameter(duplicateTransactionsParameter);
@@ -112,6 +114,12 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
         allOccurrences.setDescription("Choose to split on all instances of the character(s) rather than just the first instance");
         allOccurrences.setBooleanValue(false);
         params.addParameter(allOccurrences);
+        
+        final PluginParameter<BooleanParameterValue> completeSchema = BooleanParameterType.build(COMPLETE_WITH_SCHEMA_OPTION_ID);
+        completeSchema.setName("Complete with Schema");
+        completeSchema.setDescription("Choose to apply the type schema to the graph");
+        completeSchema.setBooleanValue(true);
+        params.addParameter(completeSchema);
 
         params.addController(DUPLICATE_TRANSACTIONS_PARAMETER_ID, (master, parameters, change) -> {
             if (change == ParameterChange.VALUE) {
@@ -151,7 +159,7 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
         }
     }
 
-    private int createNewNode(final GraphWriteMethods graph, final int selectedNode, final String newNodeIdentifier, final String linkType, final boolean splitIntoSameLevel) {
+    private int createNewNode(final GraphWriteMethods graph, final int selectedNode, final String newNodeIdentifier, final String linkType, final boolean splitIntoSameLevel) {        
         final int vertexIdentifierAttributeId = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
         final int transactionTypeAttributeId = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
         final int transactionDirectedAttribute = VisualConcept.TransactionAttribute.DIRECTED.ensure(graph);
@@ -210,7 +218,7 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
     }
 
     @Override
-    public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+    public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {              
         final Map<String, PluginParameter<?>> splitParameters = parameters.getParameters();
         final String character = splitParameters.get(SPLIT_PARAMETER_ID) != null && splitParameters.get(SPLIT_PARAMETER_ID).getStringValue() != null ? splitParameters.get(SPLIT_PARAMETER_ID).getStringValue() : "";
         final ParameterValue transactionTypeChoice = splitParameters.get(TRANSACTION_TYPE_PARAMETER_ID).getSingleChoice();
@@ -276,7 +284,10 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
                 vlGraph.retrieveCoords();
             }
 
-            PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
+            if (splitParameters.get(COMPLETE_WITH_SCHEMA_OPTION_ID).getBooleanValue()){
+                PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
+            }  
+            
             PluginExecutor.startWith(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
         }
     }

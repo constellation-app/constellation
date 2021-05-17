@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.plugins.importexport.geospatial.ExportToGeoP
 import au.gov.asd.tac.constellation.plugins.importexport.geospatial.ExportToKmlPlugin;
 import au.gov.asd.tac.constellation.plugins.importexport.geospatial.ExportToShapefilePlugin;
 import au.gov.asd.tac.constellation.plugins.importexport.image.ExportToImagePlugin;
+import au.gov.asd.tac.constellation.plugins.importexport.jdbc.ImportJDBCPlugin;
 import au.gov.asd.tac.constellation.plugins.importexport.json.ExportToJsonPlugin;
 import au.gov.asd.tac.constellation.plugins.importexport.text.ExportToTextPlugin;
 
@@ -33,6 +34,7 @@ public class ImportExportPluginRegistry {
 
     // import
     public static final String IMPORT_DELIMITED = ImportDelimitedPlugin.class.getName();
+    public static final String IMPORT_JDBC = ImportJDBCPlugin.class.getName();
 
     // export
     public static final String EXPORT_GEOJSON = ExportToGeoJsonPlugin.class.getName();

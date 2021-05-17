@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs;
 
+import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -100,6 +101,33 @@ public final class GlyphManagerBI implements GlyphManager {
     private final GlyphRectangleBuffer textureBuffer;
 
     /**
+     * A LigatureContext contains all the data required to be cached to improve
+     * the performance of renderTextAsLigatures.
+     */
+    private static class LigatureContext {
+
+        private GlyphRectangle[] glyphRectangles;
+        private int left;
+        private int right;
+        private int top;
+        private int bottom;
+
+        public LigatureContext(final GlyphRectangle[] glyphRectangles, final int left, final int right, final int top, final int bottom) {
+            this.glyphRectangles = glyphRectangles;
+            this.left = left;
+            this.right = right;
+            this.top = top;
+            this.bottom = bottom;
+        }
+    }
+
+    /**
+     * Cache the bulk of the work renderTextAsLigature does to greatly improve
+     * performance.
+     */
+    private static Map<String, LigatureContext> cache;
+
+    /**
      * A default no-op GlyphStream to use when the user specifies null.
      */
     private static final GlyphStream DEFAULT_GLYPH_STREAM = new GlyphStream() {
@@ -148,12 +176,13 @@ public final class GlyphManagerBI implements GlyphManager {
         // doesn't mean that something can't be drawn beyond that height: see
         // Zalgo text. We'll choose a reasonable height.
         //
-
         basey = maxFontHeight;
 
         drawRuns = false;
         drawIndividual = false;
         drawCombined = false;
+
+        cache = new HashMap<>();
     }
 
     public BufferedImage getImage() {
@@ -168,8 +197,7 @@ public final class GlyphManagerBI implements GlyphManager {
      * @return The string with the forbidden characters removed.
      */
     static String cleanString(final String s) {
-        return s
-                .trim()
+        return s.trim()
                 .codePoints()
                 .filter(cp -> !((cp >= 0x202a && cp <= 0x202e) || (cp >= 0x206a && cp <= 0x206f)))
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
@@ -312,6 +340,7 @@ public final class GlyphManagerBI implements GlyphManager {
      * reused.
      *
      * @param text The text top be rendered.
+     * @param context
      */
     @Override
     public void renderTextAsLigatures(final String text, GlyphStream glyphStream, GlyphStreamContext context) {
@@ -323,6 +352,45 @@ public final class GlyphManagerBI implements GlyphManager {
             glyphStream = DEFAULT_GLYPH_STREAM;
         }
 
+        // Retrieve the LigatureContext from the cache to greatly speed up 
+        // building these ligatures which are built every time the graph is 
+        // loaded or when the graph structure changes. Note that items are not 
+        // purged from this cache so there is a small build up of memory over 
+        // time. Guava caching was attempted though it was slower and negating 
+        // the performance improvements of caching.
+        //
+        if (!cache.containsKey(text)) {
+            cache.put(text, buildLigature(text));
+        }
+        final LigatureContext ligature = cache.get(text);
+
+        // Add the background for this text.
+        //
+        glyphStream.newLine((ligature.right - ligature.left) / (float) maxFontHeight, context);
+
+        // The glyphRectangles list contains the absolute positions of each glyph rectangle
+        // in pixels as drawn above.
+        // The OpenGL shaders expect x,y in world units, where x is relative to the centre
+        // of the entire line rather than the left. See NodeLabel.vs etc.
+        // [0] the index of the glyph in the glyphInfoTexture
+        // [1..2] x and y offsets of this glyph from the top centre of the line of text
+        //
+        // * cx centers the text horizontally. Subtracting 0.1f aligns the text
+        //   with the background (which subtracts 0.2 for some reason, see
+        //   ConnectionLabelBatcher and NodeLabelBatcher).
+        // * cy centers the top and bottom vertically.
+        //
+        final float centre = (ligature.left + ligature.right) / 2f;
+        for (final GlyphRectangle gr : ligature.glyphRectangles) {
+            final float cx = (gr.rect.x - centre) / (float) maxFontHeight - 0.1f;
+//            final float cy = (gr.rect.y-top+((maxFontHeight-(bottom-top))/2f))/(float)maxFontHeight;
+//            final float cy = (2*gr.rect.y-top+maxFontHeight-bottom)/(2f*maxFontHeight);
+            final float cy = (gr.rect.y - (ligature.top + ligature.bottom) / 2f) / (float) (maxFontHeight) + 0.5f;
+            glyphStream.addGlyph(gr.position, cx, cy, context);
+        }
+    }
+
+    private LigatureContext buildLigature(final String text) {
         final BufferedImage drawing = new BufferedImage(50 * maxFontHeight, 2 * maxFontHeight, bufferType);
         final Graphics2D g2d = drawing.createGraphics();
         g2d.setBackground(new Color(0, 0, 0, 0));
@@ -332,9 +400,9 @@ public final class GlyphManagerBI implements GlyphManager {
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-
 //        g2d.setColor(Color.ORANGE);
 //        g2d.drawLine(BASEX, BASEY, BASEX+1000, BASEY);
+
         int x = BASEX;
         final int y0 = basey;
 
@@ -344,7 +412,7 @@ public final class GlyphManagerBI implements GlyphManager {
         int right = Integer.MIN_VALUE;
         int top = Integer.MAX_VALUE;
         int bottom = Integer.MIN_VALUE;
-        final List<GlyphRectangle> glyphRectangles = new ArrayList<>();
+        final GlyphRectangle[][] glyphRectangles = new GlyphRectangle[1][0];
 
         for (final FontDirectionalRun drun : FontDirectionalRun.getDirectionRuns(text)) {
             for (final FontRunSequence frun : FontRunSequence.getFontRuns(drun.run, fontsInfo)) {
@@ -355,7 +423,7 @@ public final class GlyphManagerBI implements GlyphManager {
 
                 final String spart = frun.string;
                 final int flags = drun.getFontLayoutDirection() | Font.LAYOUT_NO_START_CONTEXT | Font.LAYOUT_NO_LIMIT_CONTEXT;
-                final GlyphVector gv = frun.font.layoutGlyphVector(frc, spart.toCharArray(), 0, spart.length(), flags);
+                final GlyphVector gv = frun.font.layoutGlyphVector(frc, spart.toCharArray(), 0, spart.length(), flags); // slowest part
 
                 // Some fonts are shaped such that the left edge of the pixel bounds is
                 // to the left of the starting point, and the right edge of the pixel
@@ -410,14 +478,15 @@ public final class GlyphManagerBI implements GlyphManager {
                 // Remember the texture position and rectangle (see below).
                 //
                 final FontMetrics fm = g2d.getFontMetrics(frun.font);
-                merged.forEach(r -> {
+                merged.forEach(r -> { // slowest lamda
                     // Check that the glyph doesn't extend outside the drawing texture.
                     //
                     final int y = Math.max(r.y, 0);
                     final int height = Math.min(r.height, drawing.getHeight() - y);
                     if (height > 0) {
                         final int position = textureBuffer.addRectImage(drawing.getSubimage(r.x, y, r.width, height), 0);
-                        glyphRectangles.add(new GlyphRectangle(position, r, fm.getAscent()));
+                        glyphRectangles[0] = Arrays.copyOf(glyphRectangles[0], glyphRectangles[0].length + 1);
+                        glyphRectangles[0][glyphRectangles[0].length - 1] = GlyphRectangleFactory.create(position, r, fm.getAscent());
                     }
                 });
 
@@ -462,30 +531,7 @@ public final class GlyphManagerBI implements GlyphManager {
 
         g2d.dispose();
 
-        // Add the background for this text.
-        //
-        glyphStream.newLine((right - left) / (float) maxFontHeight, context);
-
-        // The glyphRectangles list contains the absolute positions of each glyph rectangle
-        // in pixels as drawn above.
-        // The OpenGL shaders expect x,y in world units, where x is relative to the centre
-        // of the entire line rather than the left. See NodeLabel.vs etc.
-        // [0] the index of the glyph in the glyphInfoTexture
-        // [1..2] x and y offsets of this glyph from the top centre of the line of text
-        //
-        // * cx centers the text horizontally. Subtracting 0.1f aligns the text
-        //   with the background (which subtracts 0.2 for some reason, see
-        //   ConnectionLabelBatcher and NodeLabelBatcher).
-        // * cy centers the top and bottom vertically.
-        //
-        final float centre = (left + right) / 2f;
-        for (final GlyphRectangle gr : glyphRectangles) {
-            final float cx = (gr.rect.x - centre) / (float) maxFontHeight - 0.1f;
-//            final float cy = (gr.rect.y-top+((maxFontHeight-(bottom-top))/2f))/(float)maxFontHeight;
-//            final float cy = (2*gr.rect.y-top+maxFontHeight-bottom)/(2f*maxFontHeight);
-            final float cy = (gr.rect.y - (top + bottom) / 2f) / (float) (maxFontHeight) + 0.5f;
-            glyphStream.addGlyph(gr.position, cx, cy, context);
-        }
+        return new LigatureContext(glyphRectangles[0], left, right, top, bottom);
     }
 
     @Override
@@ -573,6 +619,7 @@ public final class GlyphManagerBI implements GlyphManager {
         final int ascent;
 
         GlyphRectangle(final int position, final Rectangle rect, final int ascent) {
+
             this.position = position;
             this.rect = rect;
             this.ascent = ascent;
@@ -582,5 +629,35 @@ public final class GlyphManagerBI implements GlyphManager {
         public String toString() {
             return String.format("[GlyphRectangle p=%d r=%s a=%d]", position, rect, ascent);
         }
+    }
+
+    /**
+     * Build distinct GlyphRectangle objects
+     */
+    private static class GlyphRectangleFactory {
+
+        /**
+         * Cache the Rectangles to prevent duplicate objects
+         */
+        private static final Map<Integer, Rectangle> rectangleCache = new HashMap<>();
+
+        /**
+         * Cache the GlyphRectangle to prevent duplicate objects
+         */
+        private static final Map<ThreeTuple<Integer, Integer, Integer>, GlyphRectangle> glyphRectangleCache = new HashMap<>();
+
+        public static GlyphRectangle create(final int position, final Rectangle rect, final int ascent) {
+            final int hashCode = rect.hashCode();
+
+            final ThreeTuple key = ThreeTuple.create(position, hashCode, ascent);
+            final GlyphRectangle rectangle = glyphRectangleCache.get(key);
+            if (rectangle == null) {
+                rectangleCache.putIfAbsent(hashCode, rect);
+                glyphRectangleCache.put(key, new GlyphRectangle(position, rectangleCache.get(hashCode), ascent));
+            }
+
+            return glyphRectangleCache.get(key);
+        }
+
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -129,11 +129,11 @@ public final class IntArray implements Iterable<Integer> {
      */
     public IntArray(final int initialCapacity) {
         super();
-        
+
         if (initialCapacity < 0) {
             throw new IllegalArgumentException("Illegal Capacity: " + initialCapacity);
         }
-        
+
         this.elementData = new int[initialCapacity];
         size = 0;
     }

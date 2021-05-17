@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,17 +20,18 @@ import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.genericjsonio.JsonIO;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.prefs.Preferences;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.NbPreferences;
 
@@ -67,11 +68,12 @@ public class TableViewPreferencesIOUtilities {
      * of transaction mode.
      * @param table the tables content.
      */
-    public static void savePreferences(GraphElementType tableType, final TableView<ObservableList<String>> table, int pageSize) {
+    public static void savePreferences(final GraphElementType tableType, final TableView<ObservableList<String>> table, 
+            final int pageSize) {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
         final File prefDir = new File(userDir, TABLE_VIEW_PREF_DIR);
-        String filePrefix = (tableType == GraphElementType.VERTEX ? VERTEX_FILE_PREFIX : TRANSACTION_FILE_PREFIX);
+        final String filePrefix = tableType == GraphElementType.VERTEX ? VERTEX_FILE_PREFIX : TRANSACTION_FILE_PREFIX;
         final ObservableList<TableColumn<ObservableList<String>, ?>> columns = table.getColumns();
 
         // Ensure preferences directory exists.
@@ -80,8 +82,7 @@ public class TableViewPreferencesIOUtilities {
         }
         if (!prefDir.isDirectory()) {
             final String msg = String.format("Can't create data access directory '%s'.", prefDir);
-            final NotifyDescriptor nd = new NotifyDescriptor.Message(msg, NotifyDescriptor.ERROR_MESSAGE);
-            DialogDisplayer.getDefault().notify(nd);
+            NotifyDisplayer.display(msg, NotifyDescriptor.ERROR_MESSAGE);
             return;
         }
 
@@ -124,10 +125,11 @@ public class TableViewPreferencesIOUtilities {
      * @return A Tuple containing: ordered list of table columns (1) and second
      * Tuple (2) containing details of sort column (1) and sort order (2).
      */
-    public static ThreeTuple<ArrayList<String>, Tuple<String, TableColumn.SortType>, Integer> getPreferences(GraphElementType tableType, int defaultPageSize) {
-        String filePrefix = (tableType == GraphElementType.VERTEX ? VERTEX_FILE_PREFIX : TRANSACTION_FILE_PREFIX);
+    public static ThreeTuple<List<String>, Tuple<String, TableColumn.SortType>, Integer> getPreferences(final GraphElementType tableType, 
+            final int defaultPageSize) {
+        final String filePrefix = (tableType == GraphElementType.VERTEX ? VERTEX_FILE_PREFIX : TRANSACTION_FILE_PREFIX);
         final JsonNode root = JsonIO.loadJsonPreferences(TABLE_VIEW_PREF_DIR, filePrefix);
-        final ArrayList<String> colOrder = new ArrayList<>();
+        final List<String> colOrder = new ArrayList<>();
         String sortColumn = "";
         TableColumn.SortType sortType = TableColumn.SortType.ASCENDING;
         int pageSize = 500;

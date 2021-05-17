@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,6 +60,7 @@ package au.gov.asd.tac.constellation.graph.interaction.plugins.io;
  */
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
+import au.gov.asd.tac.constellation.graph.interaction.plugins.io.screenshot.RecentGraphScreenshotUtilities;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
@@ -199,6 +200,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
             if (newFile != null) {
                 try {
                     saveAs.saveAs(FileUtil.toFileObject(newFile.getParentFile()), newFile.getName());
+                    RecentGraphScreenshotUtilities.takeScreenshot(newFile.getName());
                 } catch (IOException ioE) {
                     Exceptions.attachLocalizedMessage(ioE,
                             Bundle.MSG_SaveAsFailed(

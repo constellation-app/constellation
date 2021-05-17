@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,12 +74,12 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
         autosaveSpinner.getModel().setValue(autosaveFrequency);
     }
 
-    public boolean getTutorialOnStartup() {
-        return startupTutorialCheckbox.isSelected();
+    public boolean getWelcomeOnStartup() {
+        return startupWelcomeCheckbox.isSelected();
     }
 
-    public void setTutorialOnStartup(final boolean tutorialOnStartup) {
-        startupTutorialCheckbox.setSelected(tutorialOnStartup);
+    public void setWelcomeOnStartup(final boolean welcomeOnStartup) {
+        startupWelcomeCheckbox.setSelected(welcomeOnStartup);
     }
 
     public boolean getFreezeGraph() {
@@ -146,7 +146,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
         autosaveSpinner = new JSpinner();
         autosaveLabel = new JLabel();
         startupPanel = new JPanel();
-        startupTutorialCheckbox = new JCheckBox();
+        startupWelcomeCheckbox = new JCheckBox();
         displayPanel = new JPanel();
         freezeGraphCheckBox = new JCheckBox();
         webserverPanel = new JPanel();
@@ -212,20 +212,21 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
 
         startupPanel.setBorder(BorderFactory.createTitledBorder(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.startupPanel.border.title"))); // NOI18N
 
-        Mnemonics.setLocalizedText(startupTutorialCheckbox, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.startupTutorialCheckbox.text")); // NOI18N
+        Mnemonics.setLocalizedText(startupWelcomeCheckbox, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.startupWelcomeCheckbox.text")); // NOI18N
+        startupWelcomeCheckbox.setActionCommand(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.startupWelcomeCheckbox.actionCommand")); // NOI18N
 
         GroupLayout startupPanelLayout = new GroupLayout(startupPanel);
         startupPanel.setLayout(startupPanelLayout);
         startupPanelLayout.setHorizontalGroup(startupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(startupPanelLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addComponent(startupTutorialCheckbox)
+                .addComponent(startupWelcomeCheckbox)
                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         startupPanelLayout.setVerticalGroup(startupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(startupPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(startupTutorialCheckbox)
+                .addComponent(startupWelcomeCheckbox)
                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -474,7 +475,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
     private JTextField restDirectoryText;
     private JPanel saveLocationPanel;
     private JPanel startupPanel;
-    private JCheckBox startupTutorialCheckbox;
+    private JCheckBox startupWelcomeCheckbox;
     private JButton userDirectoryButton;
     private JLabel userDirectoryLabel;
     private JTextField userDirectoryText;

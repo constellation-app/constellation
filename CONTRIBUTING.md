@@ -84,8 +84,7 @@ Modules developed outside of the Core module suite would exist in their own
 module suite and would need to be hosted on a separate repository to Core.
 
 A list of repositories containing modules that can be used by Constellation is
-available in the
-[Repositories Catalog](CATALOG_OF_REPOSITORIES.md).
+available in the [Repositories Catalog][catalog-of-repositories].
 If you have created a module suite dependant on Core then feel free to send a
 pull request to have your repository included in the catalog.
 
@@ -123,7 +122,7 @@ issue in the body of your new issue.
 * Check whether the issue has already been reported in the
 [issues](https://github.com/constellation-app/constellation/issues) page.
 * Double check whether the issue is a bug in this repository or from a module
-from [another repository](CATALOG_OF_REPOSITORIES.md) you have installed.
+from [another repository][catalog-of-repositories] you have installed.
 
 #### How Do I Submit A (Good) Bug Report?
 
@@ -190,8 +189,8 @@ version by looking at the version on the top left of the application title
 * **Are you running Constellation in a virtual machine?** If so, which VM
 software are you using and which operating systems and versions are used for the
 host and the guest?
-* **Which [packages](CATALOG_OF_REPOSITORIES.md) do you have installed?** You
-can get that list by running `Help` > `Module Versions`.
+* **Which [packages][catalog-of-repositories] do you have installed?** You can 
+get that list by running `Help` > `Module Versions`.
 * **Are you using Constellation with multiple monitors?** If so, can you
 reproduce the problem when you use a single monitor?
 
@@ -214,14 +213,14 @@ you would take if the feature you're requesting existed.
 * Check whether the enhancement has already been reported in the
 [issues](https://github.com/constellation-app/constellation/issues) page.
 * Double check whether the enhancement is a feature in this repository or from
-a module from [another repository](CATALOG_OF_REPOSITORIES.md) you have installed.
+a module from [another repository][catalog-of-repositories] you have installed.
 
 #### How Do I Submit A (Good) Enhancement Suggestion?
 
 Enhancement suggestions are tracked as
 [GitHub issues](https://guides.github.com/features/issues). After you've
-determined [which repository](CATALOG_OF_REPOSITORIES.md) your enhancement
-suggestion is related to, create an issue on that repository and provide the
+determined [which repository][catalog-of-repositories] your enhancement 
+suggestion is related to, create an issue on that repository and provide the 
 following information:
 
 * **Use a clear and descriptive title** for the issue to identify the suggestion.
@@ -230,15 +229,15 @@ detail as possible.
 * **Provide specific examples to demonstrate the steps**. Include copy/pasteable
 snippets which you use in those examples, as
 [Markdown code blocks](https://help.github.com/articles/markdown-basics/#multiple-lines).
-* **Describe the current behaviour** and **explain which behaviour you expected to
-see instead** and why.
+* **Describe the current behaviour** and **explain which behaviour you expected 
+to see instead** and why.
 * **Include screenshots and animated GIFs** which show you following the
 described steps and clearly demonstrate the problem. You can use
 [this tool](https://www.cockos.com/licecap) to record GIFs on macOS and Windows,
 and [this tool](https://github.com/colinkeenan/silentcast) on Linux.
 * **Explain why this enhancement would be useful** to most Constellation users
-and isn't something that can or should be implemented as a
-[community package](CATALOG_OF_REPOSITORIES.md).
+and isn't something that can or should be implemented as a 
+[community package][catalog-of-repositories].
 * **List some other applications where this enhancement exists.**
 * **Which version of Constellation are you using?** You can get the exact
 version by looking at the version on the top left of the application title
@@ -249,10 +248,10 @@ version by looking at the version on the top left of the application title
 Unsure where to begin contributing to Constellation? You can start by looking
 through these `beginner` and `help-wanted` issues:
 
-* [Beginner issues][beginner-issues] - issues which should only require a few lines of
-code, and a test or two.
-* [Help wanted issues][help-wanted-issues] - issues which should be a bit more involved
-than `beginner` issues.
+* [Beginner issues][beginner-issues] - issues which should only require a few 
+lines of code, and a test or two.
+* [Help wanted issues][help-wanted-issues] - issues which should be a bit more 
+involved than `beginner` issues.
 
 Both issue lists are sorted by total number of comments. While not perfect, the
 number of comments is a reasonable proxy for impact a given change will have.
@@ -284,7 +283,7 @@ on how to do this, see the ***Build Constellation*** section in the
     <#if licenseFirst??>
     ${licenseFirst}
     </#if>
-    ${licensePrefix}Copyright 2010-2020 Australian Signals Directorate
+    ${licensePrefix}Copyright 2010-2021 Australian Signals Directorate
     ${licensePrefix}
     ${licensePrefix}Licensed under the Apache License, Version 2.0 (the "License");
     ${licensePrefix}you may not use this file except in compliance with the License.
@@ -304,7 +303,8 @@ on how to do this, see the ***Build Constellation*** section in the
 * Javadoc classes and methods
 * All changes are unit tested
 * Include screenshots and animated GIFs in your pull request whenever possible.
-* Format your code using the default NetBeans formatter settings. For specifics see the [style guide](STYLE_GUIDELINES.md).
+* Format your code using the default NetBeans formatter settings. For specifics 
+see the [style guide](STYLE_GUIDELINES.md).
 * Ensure that new ***leaks*** or ***code smells*** are not introduced by parsing
 you code using `sonar-scanner` and checking via [Sonar Qube](https://sonarcloud.io)
 * Document code based on the [style guide](STYLE_GUIDELINES.md)
@@ -329,8 +329,8 @@ should be annotated with `@deprecated`.
 * When developing a plugin, the plugin parameters have a label and description.
    * Note that whenever a parameter has a default value, mention it in the
 parameters description.
-* If your class extends `Plugin.class` and uses the `@ServiceProvider` annotation
-then the class name must end with the word `Plugin`.
+* If your class extends `Plugin.class` and uses the `@ServiceProvider` 
+annotation then the class name must end with the word `Plugin`.
 * Ensure new plugins have been added to the corresponding `*PluginRegistry`.
 * If you're calling arrangement plugins from within your plugin, you must add
 logic to check whether the freeze graph view state is enabled like so:
@@ -352,13 +352,15 @@ logic to check whether the freeze graph view state is enabled like so:
     ```java
     final PluginParameter<SingleChoiceParameterValue> mergeType = SingleChoiceParameterType.build(MERGE_TYPE_PARAMETER_ID);
     ```
-* QUERY_NAME_PARAMETER and DATETIME_RANGE_PARAMETER are defined as singletons within CoreGlobalParameters.java
+* QUERY_NAME_PARAMETER and DATETIME_RANGE_PARAMETER are defined as singletons 
+within CoreGlobalParameters.java
     * Can be accessed by referring to them directly, for example:
     ```java
     final PluginParameter<StringParameterValue> queryName = CoreGlobalParameters.QUERY_NAME_PARAMETER;
     ```
 * If you're using `javafx.stage.Stage` as a dialog, replace it with
-`ConstellationDialog` which makes sure your dialog remains on top (i.e is modal aware).
+`ConstellationDialog` which makes sure your dialog remains on top (i.e is modal 
+aware).
 * When documenting use the following conventions:
     * **nodes** rather than **vertices**
     * Use active voice. For example
@@ -375,7 +377,8 @@ logic to check whether the freeze graph view state is enabled like so:
             * *Turning the dial will increase the volume*
         * BAD:	
             * *If you turn the dial, the volume will increase*
-    * Exception to rule above:  Use conditional statements for warnings or unlikely events.
+    * Exception to rule above:  Use conditional statements for warnings or 
+unlikely events.
         * GOOD:
             * *Clicking the big red button will activate the self-destruct
             * *If you click on the big red button, the self-destruct will activate*
@@ -423,8 +426,8 @@ tests and integration tests.
 
 * To run tests within your module, right click on the module from the Projects
 view and select ***Test***.
-* To run all tests, right click on the ***CONSTELLATION_CORE*** module suite from
-the Projects view and select ***Test***.
+* To run all tests, right click on the ***CONSTELLATION_CORE*** module suite 
+from the Projects view and select ***Test***.
 * Push your changes to a ***Sonar Qube*** instance and make sure that you're not
 introducing new leaks that don't already exist. A good way to check this is to
 filter issues by your author name and date range.
@@ -436,3 +439,4 @@ This contributing guide is adapted from the [Atom Contributing Guide][atom-contr
 [atom-contributing-guide]: https://github.com/atom/atom/blob/master/CONTRIBUTING.md
 [beginner-issues]: https://github.com/constellation-app/constellation/labels/good%20first%20issue
 [help-wanted-issues]: https://github.com/constellation-app/constellation/labels/help%20wanted
+[catelog-of-repositories]: https://github.com/constellation-app/constellation/wiki/Catalogue-of-Repositories

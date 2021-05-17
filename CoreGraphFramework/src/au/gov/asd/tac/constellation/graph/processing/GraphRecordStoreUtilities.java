@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,6 +38,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -71,6 +73,8 @@ public class GraphRecordStoreUtilities {
     private static final String NUMBER_STRING_STRING_FORMAT = "%d:%s:%s";
 
     private static final Charset UTF8 = StandardCharsets.UTF_8;
+
+    private static final Logger LOGGER = Logger.getLogger(GraphRecordStoreUtilities.class.getName());
 
     private static int addVertex(final GraphWriteMethods graph, final Map<String, String> values,
             final Map<String, Integer> vertexMap, final boolean initializeWithSchema, boolean completeWithSchema,
@@ -307,7 +311,12 @@ public class GraphRecordStoreUtilities {
                 }
             }
 
-            graph.setStringValue(attribute, element, entry.getValue());
+            try {
+                graph.setStringValue(attribute, element, entry.getValue());
+            } catch (final Exception ex) {
+                // keeping this as an Exception to catch broad exceptions that can be thrown due to bad data
+                LOGGER.log(Level.SEVERE, "Discarding unexpected value {0} seen in attribute {1}", new Object[]{entry.getValue(), graph.getAttributeName(attribute)});
+            }
         });
     }
 
@@ -1202,19 +1211,21 @@ public class GraphRecordStoreUtilities {
                     final String key;
                     if (ekey == null) {
                         key = TRANSACTION + ekey;
-                    } else switch (ekey) {
-                        case TX_SRC:
-                            key = SOURCE + ID;
-                            break;
-                        case TX_DST:
-                            key = DESTINATION + ID;
-                            break;
-                        case TX_DIR:
-                            key = TRANSACTION + DIRECTED_KEY;
-                            break;
-                        default:
-                            key = TRANSACTION + ekey;
-                            break;
+                    } else {
+                        switch (ekey) {
+                            case TX_SRC:
+                                key = SOURCE + ID;
+                                break;
+                            case TX_DST:
+                                key = DESTINATION + ID;
+                                break;
+                            case TX_DIR:
+                                key = TRANSACTION + DIRECTED_KEY;
+                                break;
+                            default:
+                                key = TRANSACTION + ekey;
+                                break;
+                        }
                     }
                     rs.set(key, evalue != null ? evalue.toString() : null);
                 });
