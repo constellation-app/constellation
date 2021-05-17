@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.util.List;
 import java.util.prefs.Preferences;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
@@ -105,7 +104,7 @@ public class ImportPane extends BorderPane {
 
         showSchemaAttributesCheckBox.setOnAction(event -> {
             // the checkbox has its own listener
-            boolean newPreference = !importExportPrefs.getBoolean(ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES,
+            final boolean newPreference = !importExportPrefs.getBoolean(ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES,
                     ImportExportPreferenceKeys.DEFAULT_SHOW_SCHEMA_ATTRIBUTES);
             importExportPrefs.putBoolean(ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES, newPreference);
             importController.setShowAllSchemaAttributes(newPreference);
@@ -117,23 +116,20 @@ public class ImportPane extends BorderPane {
 
         // show schema attributes menu item
         showSchemaAttributesItem = new MenuItem("Show all schema attributes", showSchemaAttributesCheckBox);
-        showSchemaAttributesItem.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                // ignore if the checkbox was clicked
-                if (!userClickedTheCheckboxFirst[0]) {
-                    final boolean newPreference = !importExportPrefs.getBoolean(
-                            ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES,
-                            ImportExportPreferenceKeys.DEFAULT_SHOW_SCHEMA_ATTRIBUTES);
-                    importExportPrefs.putBoolean(ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES, newPreference);
-                    importController.setShowAllSchemaAttributes(newPreference);
-                    importController.setClearManuallyAdded(false);
-                    importController.setDestination(sourcePane.getDestination());
-                    final int saveResultsItemIndex = optionsMenu.getItems().indexOf(showSchemaAttributesItem);
-                    ((CheckBox) optionsMenu.getItems().get(saveResultsItemIndex).getGraphic()).setSelected(newPreference);
-                }
-                userClickedTheCheckboxFirst[0] = false;
+        showSchemaAttributesItem.setOnAction((ActionEvent event) -> {
+            // ignore if the checkbox was clicked
+            if (!userClickedTheCheckboxFirst[0]) {
+                final boolean newPreference = !importExportPrefs.getBoolean(
+                        ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES,
+                        ImportExportPreferenceKeys.DEFAULT_SHOW_SCHEMA_ATTRIBUTES);
+                importExportPrefs.putBoolean(ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES, newPreference);
+                importController.setShowAllSchemaAttributes(newPreference);
+                importController.setClearManuallyAdded(false);
+                importController.setDestination(sourcePane.getDestination());
+                final int saveResultsItemIndex = optionsMenu.getItems().indexOf(showSchemaAttributesItem);
+                ((CheckBox) optionsMenu.getItems().get(saveResultsItemIndex).getGraphic()).setSelected(newPreference);
             }
+            userClickedTheCheckboxFirst[0] = false;
         });
 
         // setting up menu bar

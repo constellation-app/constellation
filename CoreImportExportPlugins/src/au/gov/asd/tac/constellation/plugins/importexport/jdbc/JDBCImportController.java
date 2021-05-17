@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -94,17 +94,17 @@ public class JDBCImportController extends ImportController {
                 private boolean opened;
 
                 @Override
-                public void graphOpened(Graph graph) {
+                public void graphOpened(final Graph graph) {
                     // Do nothing
                 }
 
                 @Override
-                public void graphClosed(Graph graph) {
+                public void graphClosed(final Graph graph) {
                     // Do nothing
                 }
 
                 @Override
-                public synchronized void newActiveGraph(Graph graph) {
+                public synchronized void newActiveGraph(final Graph graph) {
                     if (graph == importGraph && !opened) {
                         opened = true;
                         GraphManager.getDefault().removeGraphManagerListener(this);

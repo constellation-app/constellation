@@ -29,7 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -225,7 +224,7 @@ public final class RunPane extends BorderPane implements KeyListener {
                 USE_COMPUTED_SIZE, -1);
         attributePane.addRow(0, sourceVertexScrollPane, destinationVertexScrollPane, transactionScrollPane);
 
-        attributePane.setOnKeyPressed((javafx.scene.input.KeyEvent event) -> {
+        attributePane.setOnKeyPressed(event -> {
             final KeyCode c = event.getCode();
             if (c == KeyCode.DELETE || c == KeyCode.BACK_SPACE) {
                 attributeFilter = "";
@@ -235,7 +234,7 @@ public final class RunPane extends BorderPane implements KeyListener {
                 attributeFilterTextField.setText(attributeFilter);
                 attributeFilterPane.setVisible(true);
             } else {
-                return; // Default case added per Sonar - java:S126
+                // Default case added per Sonar - java:S126
             }
             importController.setAttributeFilter(attributeFilter);
             importController.setDestination(null);
@@ -342,7 +341,7 @@ public final class RunPane extends BorderPane implements KeyListener {
             final Point2D tableLocation = sampleDataView.sceneToLocal(sceneX, sceneY);
             mouseOverColumn = null;
             final double offset = getScrollbarOffset();
-            double totalWidth = getTotalWidth(tableLocation, offset);
+            final double totalWidth = getTotalWidth(tableLocation, offset);
 
             if (mouseOverColumn != null) {
                 // Allow for the SplitPane left side inset+padding (1+1 hard-coded).
@@ -556,26 +555,23 @@ public final class RunPane extends BorderPane implements KeyListener {
         });
 
         final List<ImportAttributeDefinition> elementList = impdef.getDefinitions(atype);
-        elementList.stream().forEach(new Consumer<ImportAttributeDefinition>() {
-            @Override
-            public void accept(ImportAttributeDefinition iad) {
-                final String importLabel = iad.getColumnLabel();
-                final ImportTableColumn column = labelToColumn.get(importLabel);
+        elementList.stream().forEach(iad -> {
+            final String importLabel = iad.getColumnLabel();
+            final ImportTableColumn column = labelToColumn.get(importLabel);
 
-                final AttributeNode attrNode = attrList.getAttributeNode(iad.getAttribute().getName());
-                if (attrNode != null) {
-                    // If the column is null then update the settings which will be
-                    // reflected on the attribute lists
-                    attrNode.setTranslator(iad.getTranslator(), iad.getParameters());
-                    attrNode.setDefaultValue(iad.getDefaultValue());
+            final AttributeNode attrNode = attrList.getAttributeNode(iad.getAttribute().getName());
+            if (attrNode != null) {
+                // If the column is null then update the settings which will be
+                // reflected on the attribute lists
+                attrNode.setTranslator(iad.getTranslator(), iad.getParameters());
+                attrNode.setDefaultValue(iad.getDefaultValue());
 
-                    if (column != null) {
-                        // If the column is not null then assign the attribute to a
-                        // column and validate the column
-                        column.setAttributeNode(attrNode);
-                        attrNode.setColumn(column);
-                        attrList.getRunPane().validate(column);
-                    }
+                if (column != null) {
+                    // If the column is not null then assign the attribute to a
+                    // column and validate the column
+                    column.setAttributeNode(attrNode);
+                    attrNode.setColumn(column);
+                    attrList.getRunPane().validate(column);
                 }
             }
         });

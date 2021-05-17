@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -132,67 +132,61 @@ public final class ImportDelimitedIO {
             final ArrayNode definitionArray = rootNode.putArray(DEFINITIONS);
             final List<ImportDefinition> definitions = importController.getDefinitions();
             final String[] columns = importController.getCurrentColumns();
-            final Consumer<ImportDefinition> definitionConsumer = new Consumer<ImportDefinition>() {
-                @Override
-                public void accept(ImportDefinition impdef) {
-                    final ObjectNode def = definitionArray.addObject();
+            final Consumer<ImportDefinition> definitionConsumer = (ImportDefinition impdef) -> {
+                final ObjectNode def = definitionArray.addObject();
 
-                    def.put(FIRST_ROW, impdef.getFirstRow());
+                def.put(FIRST_ROW, impdef.getFirstRow());
 
-                    if (impdef.getRowFilter() != null) {
-                        final ObjectNode filter = def.putObject(FILTER);
-                        final ArrayNode columnsArray = filter.putArray(COLUMNS);
-                        for (final String column : impdef.getRowFilter().getColumns()) {
-                            columnsArray.add(column);
-                        }
-
-                        final String script = impdef.getRowFilter().getScript();
-                        if (script != null) {
-                            filter.put(SCRIPT, script);
-                        } else {
-                            filter.putNull(SCRIPT);
-                        }
+                if (impdef.getRowFilter() != null) {
+                    final ObjectNode filter = def.putObject(FILTER);
+                    final ArrayNode columnsArray = filter.putArray(COLUMNS);
+                    for (final String column : impdef.getRowFilter().getColumns()) {
+                        columnsArray.add(column);
                     }
 
-                    final ObjectNode attrDefs = def.putObject(ATTRIBUTES);
-                    for (final AttributeType attrType : AttributeType.values()) {
-                        final ArrayNode typeArray = attrDefs.putArray(attrType.name());
-                        final List<ImportAttributeDefinition> iadefs = impdef.getDefinitions(attrType);
-                        final Consumer<ImportAttributeDefinition> attributeDefConsumer = new Consumer<ImportAttributeDefinition>() {
-                            @Override
-                            public void accept(ImportAttributeDefinition iadef) {
-                                if (hasSavableAttribute(iadef)) {
-                                    final ObjectNode type = typeArray.addObject();
+                    final String script = impdef.getRowFilter().getScript();
+                    if (script != null) {
+                        filter.put(SCRIPT, script);
+                    } else {
+                        filter.putNull(SCRIPT);
+                    }
+                }
 
-                                    // Remember the column label as a check for a similar column when we load.
-                                    // There's no point remembering the column index:  the user might have moved the columns around.
-                                    // If the column index is not defined, then set the column label to null so
-                                    // that the settings still get applied in the attribute list on load
-                                    if (iadef.getColumnIndex() == ImportConstants.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN) {
-                                        type.putNull(COLUMN_LABEL);
-                                    } else {
-                                        type.put(COLUMN_LABEL, columns[iadef.getColumnIndex() + 1]);
-                                    }
+                final ObjectNode attrDefs = def.putObject(ATTRIBUTES);
+                for (final AttributeType attrType : AttributeType.values()) {
+                    final ArrayNode typeArray = attrDefs.putArray(attrType.name());
+                    final List<ImportAttributeDefinition> iadefs = impdef.getDefinitions(attrType);
+                    final Consumer<ImportAttributeDefinition> attributeDefConsumer = (ImportAttributeDefinition iadef) -> {
+                        if (hasSavableAttribute(iadef)) {
+                            final ObjectNode type = typeArray.addObject();
 
-                                    type.put(ATTRIBUTE_LABEL, iadef.getAttribute().getName());
-                                    if (iadef.getAttribute() instanceof NewAttribute) {
-                                        type.put(ATTRIBUTE_TYPE, iadef.getAttribute().getAttributeType());
-                                        type.put(ATTRIBUTE_DESCRIPTION, iadef.getAttribute().getDescription());
-                                    }
-
-                                    type.put(TRANSLATOR, iadef.getTranslator().getClass().getName());
-                                    type.put(TRANSLATOR_ARGS, iadef.getTranslator().getParameterValues(iadef.getParameters()));
-
-                                    if (iadef.getDefaultValue() != null) {
-                                        type.put(DEFAULT_VALUE, iadef.getDefaultValue());
-                                    } else {
-                                        type.putNull(DEFAULT_VALUE);
-                                    }
-                                }
+                            // Remember the column label as a check for a similar column when we load.
+                            // There's no point remembering the column index:  the user might have moved the columns around.
+                            // If the column index is not defined, then set the column label to null so
+                            // that the settings still get applied in the attribute list on load
+                            if (iadef.getColumnIndex() == ImportConstants.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN) {
+                                type.putNull(COLUMN_LABEL);
+                            } else {
+                                type.put(COLUMN_LABEL, columns[iadef.getColumnIndex() + 1]);
                             }
-                        };
-                        iadefs.stream().forEach(attributeDefConsumer);
-                    }
+
+                            type.put(ATTRIBUTE_LABEL, iadef.getAttribute().getName());
+                            if (iadef.getAttribute() instanceof NewAttribute) {
+                                type.put(ATTRIBUTE_TYPE, iadef.getAttribute().getAttributeType());
+                                type.put(ATTRIBUTE_DESCRIPTION, iadef.getAttribute().getDescription());
+                            }
+
+                            type.put(TRANSLATOR, iadef.getTranslator().getClass().getName());
+                            type.put(TRANSLATOR_ARGS, iadef.getTranslator().getParameterValues(iadef.getParameters()));
+
+                            if (iadef.getDefaultValue() != null) {
+                                type.put(DEFAULT_VALUE, iadef.getDefaultValue());
+                            } else {
+                                type.putNull(DEFAULT_VALUE);
+                            }
+                        }
+                    };
+                    iadefs.stream().forEach(attributeDefConsumer);
                 }
             };
 
@@ -204,7 +198,7 @@ public final class ImportDelimitedIO {
             try {
                 mapper.writeValue(f, rootNode);
                 StatusDisplayer.getDefault().setStatusText(String.format("Import definition saved to %s.", f.getPath()));
-            } catch (IOException ex) {
+            } catch (final IOException ex) {
                 NotifyDisplayer.display(String.format("Can't save import definition: %s", ex.getMessage()),
                         NotifyDescriptor.ERROR_MESSAGE);
                 LOGGER.log(Level.WARNING, ex.getMessage(), ex);
@@ -328,7 +322,7 @@ public final class ImportDelimitedIO {
      * @param iadef Attribute definition
      * @return True if the attribute should be saved, False otherwise
      */
-    public static boolean hasSavableAttribute(ImportAttributeDefinition iadef) {
+    public static boolean hasSavableAttribute(final ImportAttributeDefinition iadef) {
         return (iadef.getColumnIndex() != ImportConstants.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN)
                 || ((iadef.getColumnIndex() == ImportConstants.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN)
                 && (iadef.getParameters() != null || iadef.getDefaultValue() != null));

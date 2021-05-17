@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -161,36 +161,33 @@ public final class ImportJDBCIO {
         for (final AttributeType attrType : AttributeType.values()) {
             final ArrayNode typeArray = attrDefs.putArray(attrType.name());
             final List<ImportAttributeDefinition> iadefs = impdef.getDefinitions(attrType);
-            final Consumer<ImportAttributeDefinition> importConsumer = new Consumer<ImportAttributeDefinition>() {
-                @Override
-                public void accept(ImportAttributeDefinition iadef) {
-                    if (hasSavableAttribute(iadef)) {
-                        final ObjectNode type = typeArray.addObject();
+            final Consumer<ImportAttributeDefinition> importConsumer = (ImportAttributeDefinition iadef) -> {
+                if (hasSavableAttribute(iadef)) {
+                    final ObjectNode type = typeArray.addObject();
 
-                        // Remember the column label as a check for a similar column when we load.
-                        // There's no point remembering the column index:  the user might have moved the columns around.
-                        // If the column index is not defined, then set the column label to null so
-                        // that the settings still get applied in the attribute list on load
-                        if (iadef.getColumnIndex() == ImportConstants.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN) {
-                            type.putNull(COLUMN_LABEL);
-                        } else {
-                            type.put(COLUMN_LABEL, columns[iadef.getColumnIndex() + 1]);
-                        }
+                    // Remember the column label as a check for a similar column when we load.
+                    // There's no point remembering the column index:  the user might have moved the columns around.
+                    // If the column index is not defined, then set the column label to null so
+                    // that the settings still get applied in the attribute list on load
+                    if (iadef.getColumnIndex() == ImportConstants.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN) {
+                        type.putNull(COLUMN_LABEL);
+                    } else {
+                        type.put(COLUMN_LABEL, columns[iadef.getColumnIndex() + 1]);
+                    }
 
-                        type.put(ATTRIBUTE_LABEL, iadef.getAttribute().getName());
-                        if (iadef.getAttribute() instanceof NewAttribute) {
-                            type.put(ATTRIBUTE_TYPE, iadef.getAttribute().getAttributeType());
-                            type.put(ATTRIBUTE_DESCRIPTION, iadef.getAttribute().getDescription());
-                        }
+                    type.put(ATTRIBUTE_LABEL, iadef.getAttribute().getName());
+                    if (iadef.getAttribute() instanceof NewAttribute) {
+                        type.put(ATTRIBUTE_TYPE, iadef.getAttribute().getAttributeType());
+                        type.put(ATTRIBUTE_DESCRIPTION, iadef.getAttribute().getDescription());
+                    }
 
-                        type.put(TRANSLATOR, iadef.getTranslator().getClass().getName());
-                        type.put(TRANSLATOR_ARGS, iadef.getTranslator().getParameterValues(iadef.getParameters()));
+                    type.put(TRANSLATOR, iadef.getTranslator().getClass().getName());
+                    type.put(TRANSLATOR_ARGS, iadef.getTranslator().getParameterValues(iadef.getParameters()));
 
-                        if (iadef.getDefaultValue() != null) {
-                            type.put(DEFAULT_VALUE, iadef.getDefaultValue());
-                        } else {
-                            type.putNull(DEFAULT_VALUE);
-                        }
+                    if (iadef.getDefaultValue() != null) {
+                        type.put(DEFAULT_VALUE, iadef.getDefaultValue());
+                    } else {
+                        type.putNull(DEFAULT_VALUE);
                     }
                 }
             };

@@ -403,7 +403,7 @@ public abstract class ImportController<D> {
         return Collections.unmodifiableSet(keys);
     }
 
-    public void setImportPane(ImportPane importPane) {
+    public void setImportPane(final ImportPane importPane) {
         this.importPane = importPane;
     }
 }

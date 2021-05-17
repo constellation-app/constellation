@@ -111,7 +111,7 @@ public class DelimitedImportController extends ImportController {
                 }
 
                 @Override
-                public synchronized void newActiveGraph(Graph graph) {
+                public synchronized void newActiveGraph(final Graph graph) {
                     if (graph == importGraph && !opened) {
                         opened = true;
                         GraphManager.getDefault().removeGraphManagerListener(this);
@@ -184,7 +184,7 @@ public class DelimitedImportController extends ImportController {
                 currentParameters = null;
             } else {
                 currentParameters = importFileParser.getParameters(refreshRequest);
-                List<InputSource> inputSources = new ArrayList<>();
+                final List<InputSource> inputSources = new ArrayList<>();
                 files.forEach(file -> inputSources.add(new InputSource(file)));
                 importFileParser.updateParameters(currentParameters, inputSources);
             }

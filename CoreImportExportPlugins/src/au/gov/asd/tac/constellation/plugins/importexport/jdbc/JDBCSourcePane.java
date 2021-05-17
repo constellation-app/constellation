@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -94,342 +94,277 @@ public class JDBCSourcePane extends SourcePane {
         GridPane.setConstraints(dbConnectionComboBox, 1, 0, 1, 1, HPos.LEFT, VPos.TOP);
 
         final EventHandler<ActionEvent> manageConnectionsAction;
-        manageConnectionsAction = new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(final ActionEvent t) {
-                final Stage dialog = new Stage();
-                final ComboBox<JDBCDriver> driver = new ComboBox<>();
-
-                final BorderPane root = new BorderPane();
-                final EasyGridPane gridPane = new EasyGridPane();
-
-                gridPane.addColumnConstraint(true, HPos.LEFT, Priority.ALWAYS, Double.MAX_VALUE, GRIDPANE_MIN_WIDTH,
-                        GridPane.USE_COMPUTED_SIZE, -1);
-                gridPane.addRowConstraint(true, VPos.TOP, Priority.ALWAYS, Double.MAX_VALUE, 0,
-                        GridPane.USE_COMPUTED_SIZE, -1);
-                gridPane.addRowConstraint(true, VPos.TOP, Priority.ALWAYS, Double.MAX_VALUE, 0,
-                        GridPane.USE_COMPUTED_SIZE, -1);
-                gridPane.addRowConstraint(true, VPos.BOTTOM, Priority.ALWAYS, Double.MAX_VALUE, 0,
-                        GridPane.USE_COMPUTED_SIZE, -1);
-
-                gridPane.setPadding(GRIDPANE_PADDING);
-                gridPane.setHgap(GAP);
-                gridPane.setVgap(GAP);
-
-                final TabPane tp = new TabPane();
-                final Tab connectionsTab = new Tab("Connections");
-                connectionsTab.setClosable(false);
-
-                final EasyGridPane connectionsPane = new EasyGridPane();
-                connectionsPane.getColumnConstraints().addAll(column0Constraints, column1Constraints, column2Constraints);
-                connectionsPane.setPadding(GRIDPANE_PADDING);
-                connectionsPane.setHgap(GAP);
-                connectionsPane.setVgap(GAP);
-                final TableView connectionsTable = new TableView();
-                connectionsTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-                connectionsTable.getSelectionModel().setCellSelectionEnabled(false);
-                connectionsTable.prefHeightProperty().set(CONNPANE_PREF_HEIGHT);
-                connectionsTable.prefWidthProperty().bind(dialog.widthProperty());
-
-                final TableColumn<String, JDBCConnection> connectionName = new TableColumn<>("Name");
-                connectionName.setCellValueFactory(new PropertyValueFactory<>("connectionName"));
-
-                final TableColumn<String, JDBCConnection> connectionString = new TableColumn<>("Connection String");
-                connectionString.setCellValueFactory(new PropertyValueFactory<>("connectionString"));
-
-                connectionsTable.getColumns().addAll(connectionName, connectionString);
-
-                connectionsTable.getItems().addAll(connectionManager.getConnections());
-                connectionsTable.getSortOrder().add(connectionName);
-
-                connectionsPane.add(connectionsTable, 0, 0, 2, 1);
-
-                final Button removeBtn = new Button("Remove");
-                removeBtn.setOnAction((final ActionEvent t1) -> {
-                    final JDBCConnection d = (JDBCConnection) connectionsTable.getSelectionModel().getSelectedItem();
-                    if (d != null) {
-                        connectionManager.deleteConnection(d.getConnectionName());
+        manageConnectionsAction = (final ActionEvent t) -> {
+            final Stage dialog = new Stage();
+            final ComboBox<JDBCDriver> driver = new ComboBox<>();
+            final BorderPane root = new BorderPane();
+            final EasyGridPane gridPane = new EasyGridPane();
+            gridPane.addColumnConstraint(true, HPos.LEFT, Priority.ALWAYS, Double.MAX_VALUE, GRIDPANE_MIN_WIDTH,
+                    GridPane.USE_COMPUTED_SIZE, -1);
+            gridPane.addRowConstraint(true, VPos.TOP, Priority.ALWAYS, Double.MAX_VALUE, 0,
+                    GridPane.USE_COMPUTED_SIZE, -1);
+            gridPane.addRowConstraint(true, VPos.TOP, Priority.ALWAYS, Double.MAX_VALUE, 0,
+                    GridPane.USE_COMPUTED_SIZE, -1);
+            gridPane.addRowConstraint(true, VPos.BOTTOM, Priority.ALWAYS, Double.MAX_VALUE, 0,
+                    GridPane.USE_COMPUTED_SIZE, -1);
+            gridPane.setPadding(GRIDPANE_PADDING);
+            gridPane.setHgap(GAP);
+            gridPane.setVgap(GAP);
+            final TabPane tp = new TabPane();
+            final Tab connectionsTab = new Tab("Connections");
+            connectionsTab.setClosable(false);
+            final EasyGridPane connectionsPane = new EasyGridPane();
+            connectionsPane.getColumnConstraints().addAll(column0Constraints, column1Constraints, column2Constraints);
+            connectionsPane.setPadding(GRIDPANE_PADDING);
+            connectionsPane.setHgap(GAP);
+            connectionsPane.setVgap(GAP);
+            final TableView connectionsTable = new TableView();
+            connectionsTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+            connectionsTable.getSelectionModel().setCellSelectionEnabled(false);
+            connectionsTable.prefHeightProperty().set(CONNPANE_PREF_HEIGHT);
+            connectionsTable.prefWidthProperty().bind(dialog.widthProperty());
+            final TableColumn<String, JDBCConnection> connectionName = new TableColumn<>("Name");
+            connectionName.setCellValueFactory(new PropertyValueFactory<>("connectionName"));
+            final TableColumn<String, JDBCConnection> connectionString = new TableColumn<>("Connection String");
+            connectionString.setCellValueFactory(new PropertyValueFactory<>("connectionString"));
+            connectionsTable.getColumns().addAll(connectionName, connectionString);
+            connectionsTable.getItems().addAll(connectionManager.getConnections());
+            connectionsTable.getSortOrder().add(connectionName);
+            connectionsPane.add(connectionsTable, 0, 0, 2, 1);
+            final Button removeBtn = new Button("Remove");
+            removeBtn.setOnAction((final ActionEvent t1) -> {
+                final JDBCConnection d = (JDBCConnection) connectionsTable.getSelectionModel().getSelectedItem();
+                if (d != null) {
+                    connectionManager.deleteConnection(d.getConnectionName());
+                    connectionsTable.getItems().clear();
+                    connectionsTable.getItems().addAll(connectionManager.getConnections());
+                    connections.clear();
+                    connections.addAll(connectionManager.getConnections());
+                }
+            });
+            connectionsPane.add(removeBtn, 0, 1, 1, 1);
+            final EventHandler<ActionEvent> addConnectionAction = (final ActionEvent t1) -> {
+                final Stage d = new Stage();
+                // add stuff here.
+                final BorderPane r = new BorderPane();
+                final EasyGridPane gp = new EasyGridPane();
+                gp.getColumnConstraints().addAll(column0Constraints, column1Constraints, column2Constraints);
+                gp.setPadding(GRIDPANE_PADDING);
+                gp.setHgap(GAP);
+                gp.setVgap(GAP);
+                final Label nameLabel = new Label("Connection Name");
+                gp.add(nameLabel, 0, 0, 1, 1);
+                final TextField cn = new TextField();
+                gp.add(cn, 1, 0, 2, 1);
+                final Label driverLabel = new Label("Driver");
+                gp.add(driverLabel, 0, 1, 1, 1);
+                driver.getItems().clear();
+                driver.getItems().addAll(driverManager.getDrivers());
+                gp.add(driver, 1, 1, 1, 1);
+                final Label connectionStringLabel = new Label("Connection String");
+                gp.add(connectionStringLabel, 0, 2, 1, 1);
+                final TextField connectionStringF = new TextField();
+                gp.add(connectionStringF, 1, 2, 2, 1);
+                final Label usernameLabel = new Label("Username");
+                gp.add(usernameLabel, 0, 3, 1, 1);
+                final TextField username = new TextField();
+                gp.add(username, 1, 3, 2, 1);
+                final Label passwordLabel = new Label("Password");
+                gp.add(passwordLabel, 0, 4, 1, 1);
+                final PasswordField password = new PasswordField();
+                gp.add(password, 1, 4, 2, 1);
+                final Button add = new Button("Add");
+                add.setOnAction((final ActionEvent t2) -> {
+                    if (!cn.getText().isBlank() && driver.getValue() != null
+                            && !connectionStringF.getText().isBlank()
+                            && connectionManager.addConnection(cn.getText(), driver.getValue(), username.getText(),
+                                    password.getText(), connectionStringF.getText())) {
                         connectionsTable.getItems().clear();
                         connectionsTable.getItems().addAll(connectionManager.getConnections());
                         connections.clear();
                         connections.addAll(connectionManager.getConnections());
+                        d.close();
                     }
                 });
-                connectionsPane.add(removeBtn, 0, 1, 1, 1);
-
-                final EventHandler<ActionEvent> addConnectionAction = new EventHandler<ActionEvent>() {
+                gp.add(add, 0, 5, 1, 1);
+                final Button test = new Button("Test");
+                test.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
-                    public void handle(final ActionEvent t1) {
-                        final Stage d = new Stage();
-                        // add stuff here.
-                        final BorderPane r = new BorderPane();
-                        final EasyGridPane gp = new EasyGridPane();
-
-                        gp.getColumnConstraints().addAll(column0Constraints, column1Constraints, column2Constraints);
-                        gp.setPadding(GRIDPANE_PADDING);
-                        gp.setHgap(GAP);
-                        gp.setVgap(GAP);
-                        final Label nameLabel = new Label("Connection Name");
-                        gp.add(nameLabel, 0, 0, 1, 1);
-                        final TextField cn = new TextField();
-                        gp.add(cn, 1, 0, 2, 1);
-
-                        final Label driverLabel = new Label("Driver");
-                        gp.add(driverLabel, 0, 1, 1, 1);
-
-                        driver.getItems().clear();
-                        driver.getItems().addAll(driverManager.getDrivers());
-                        gp.add(driver, 1, 1, 1, 1);
-
-                        final Label connectionStringLabel = new Label("Connection String");
-                        gp.add(connectionStringLabel, 0, 2, 1, 1);
-                        final TextField connectionStringF = new TextField();
-                        gp.add(connectionStringF, 1, 2, 2, 1);
-
-                        final Label usernameLabel = new Label("Username");
-                        gp.add(usernameLabel, 0, 3, 1, 1);
-                        final TextField username = new TextField();
-                        gp.add(username, 1, 3, 2, 1);
-
-                        final Label passwordLabel = new Label("Password");
-                        gp.add(passwordLabel, 0, 4, 1, 1);
-                        final PasswordField password = new PasswordField();
-                        gp.add(password, 1, 4, 2, 1);
-
-                        final Button add = new Button("Add");
-                        add.setOnAction((final ActionEvent t2) -> {
-                            if (!cn.getText().isBlank() && driver.getValue() != null
-                                    && !connectionStringF.getText().isBlank()
-                                    && connectionManager.addConnection(cn.getText(), driver.getValue(), username.getText(),
-                                            password.getText(), connectionStringF.getText())) {
-                                connectionsTable.getItems().clear();
-                                connectionsTable.getItems().addAll(connectionManager.getConnections());
-                                connections.clear();
-                                connections.addAll(connectionManager.getConnections());
-                                d.close();
-                            }
-                        });
-
-                        gp.add(add, 0, 5, 1, 1);
-
-                        final Button test = new Button("Test");
-                        test.setOnAction(new EventHandler<ActionEvent>() {
-                            @Override
-                            public void handle(final ActionEvent t2) {
-                                if (!cn.getText().isBlank()
-                                        && driver.getValue() != null
-                                        && !connectionStringF.getText().isBlank()
-                                        && !username.getText().isBlank()
-                                        && !password.getText().isBlank()
-                                        && connectionManager.testConnection(cn.getText(), driver.getValue(), username.getText(),
-                                                password.getText(), connectionStringF.getText())) {
-                                    NotifyDisplayer.displayAlert("JDBC Import", "Connection Success", "", AlertType.INFORMATION);
-                                }
-                            }
-                        });
-
-                        gp.add(test, 1, 5, 1, 1);
-
-                        final ScrollPane sp = new ScrollPane(gp);
-                        sp.setFitToWidth(true);
-
-                        sp.setPrefHeight(SCROLLPANE_PREF_HEIGHT);
-                        sp.setPrefWidth(SCROLLPANE_PREF_WIDTH);
-                        sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-                        sp.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-                        r.setCenter(sp);
-                        final Scene scene = new Scene(r);
-                        scene.setFill(Color.WHITESMOKE);
-                        scene.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
-                        scene.rootProperty().get().setStyle(String.format(FONT_SIZE_FORMAT,
-                                FontUtilities.getOutputFontSize()));
-
-                        d.setScene(scene);
-                        d.setTitle("Add Connection");
-                        d.centerOnScreen();
-                        d.initOwner(dialog);
-                        d.initModality(Modality.APPLICATION_MODAL);
-                        d.showAndWait();
-                    }
-                };
-
-                final Button addBtn = new Button("Add");
-                addBtn.setOnAction(addConnectionAction);
-                connectionsPane.add(addBtn, 1, 1, 1, 1);
-
-                final Tab driversTab = new Tab("Drivers");
-                driversTab.setClosable(false);
-
-                final EasyGridPane dtRoot = new EasyGridPane();
-                dtRoot.getColumnConstraints().addAll(column0Constraints, column1Constraints, column2Constraints);
-                dtRoot.setPadding(GRIDPANE_PADDING);
-                dtRoot.setHgap(GAP);
-                dtRoot.setVgap(GAP);
-                final TableView driverTable = new TableView();
-                driverTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-                driverTable.getSelectionModel().setCellSelectionEnabled(false);
-                driverTable.prefHeightProperty().bind(connectionsTable.heightProperty());
-                driverTable.prefWidthProperty().bind(connectionsTable.widthProperty());
-
-                final TableColumn<String, JDBCDriver> name = new TableColumn<>("Name");
-                name.setCellValueFactory(new PropertyValueFactory<>("name"));
-                final TableColumn<String, JDBCDriver> jar = new TableColumn<>("Filename");
-                jar.setCellValueFactory(new PropertyValueFactory<>("filename"));
-
-                driverTable.getColumns().addAll(name, jar);
-
-                driverTable.getItems().addAll(driverManager.getDrivers());
-                driverTable.getSortOrder().add(name);
-
-                dtRoot.add(driverTable, 0, 0, 2, 1);
-
-                final EventHandler<ActionEvent> removebtnAction = new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(final ActionEvent t1) {
-                        final JDBCDriver d = (JDBCDriver) driverTable.getSelectionModel().getSelectedItem();
-                        if (d != null) {
-                            if (driverManager.isDriverUsed(d.getName())) {
-                                final TextArea a = new TextArea();
-                                a.setWrapText(true);
-                                a.setEditable(false);
-                                a.setText("Connections exist using this Driver.\nThe connections that use this "
-                                        + "driver will be deleted, do you want to proceed?");
-                                final Alert b = new Alert(AlertType.CONFIRMATION, "", ButtonType.NO, ButtonType.YES);
-                                b.getDialogPane().setContent(a);
-                                final Optional<ButtonType> res = b.showAndWait();
-                                if (!res.isPresent() || res.get() == ButtonType.NO) {
-                                    return;
-                                }
-                            }
-
-                            driverManager.removeConnectionsWithDriver(d.getName());
-                            driverManager.deleteDriver(d.getName());
-                            driverTable.getItems().clear();
-                            driverTable.getItems().addAll(driverManager.getDrivers());
-                            driver.getItems().clear();
-                            driver.getItems().addAll(driverManager.getDrivers());
-
-                            connectionsTable.getItems().clear();
-                            connectionsTable.getItems().addAll(connectionManager.getConnections());
-                            connections.clear();
-                            connections.addAll(connectionManager.getConnections());
+                    public void handle(final ActionEvent t2) {
+                        if (!cn.getText().isBlank()
+                                && driver.getValue() != null
+                                && !connectionStringF.getText().isBlank()
+                                && !username.getText().isBlank()
+                                && !password.getText().isBlank()
+                                && connectionManager.testConnection(cn.getText(), driver.getValue(), username.getText(),
+                                        password.getText(), connectionStringF.getText())) {
+                            NotifyDisplayer.displayAlert("JDBC Import", "Connection Success", "", AlertType.INFORMATION);
                         }
                     }
-                };
-
-                final Button removeBtn1 = new Button("Remove");
-                removeBtn1.setOnAction(removebtnAction);
-                dtRoot.add(removeBtn1, 0, 1, 1, 1);
-                final Button addBtn1 = new Button("Add");
-                addBtn1.setOnAction((final ActionEvent t1) -> {
-                    final Stage d = new Stage();
-                    final BorderPane r = new BorderPane();
-                    final EasyGridPane gp = new EasyGridPane();
-
-                    gp.getColumnConstraints().addAll(column0Constraints, column1Constraints, column2Constraints);
-                    gp.setPadding(GRIDPANE_PADDING);
-                    gp.setHgap(GAP);
-                    gp.setVgap(GAP);
-                    final Label nameLabel = new Label("Name");
-                    gp.add(nameLabel, 0, 0, 1, 1);
-                    final ComboBox driverName = new ComboBox();
-                    gp.add(driverName, 1, 0, 2, 1);
-
-                    final Label jarLabel = new Label("Driver");
-                    gp.add(jarLabel, 0, 1, 1, 1);
-
-                    final TextField j = new TextField();
-                    gp.add(j, 1, 1, 1, 1);
-                    final Button chooser = new Button("..");
-                    chooser.setOnAction(new EventHandler<ActionEvent>() {
-                        @Override
-                        public void handle(final ActionEvent t2) {
-                            final FileChooser cho = new FileChooser();
-                            cho.setSelectedExtensionFilter(new ExtensionFilter("Driver jar", "*.jar"));
-                            final File f = cho.showOpenDialog(new Stage());
-                            if (f != null) {
-                                try {
-                                    j.setText(f.getCanonicalPath());
-                                    driverName.getItems().clear();
-                                    driverName.getItems().addAll(JDBCDriver.getDrivers(f));
-                                } catch (final IOException ex) {
-                                    LOGGER.log(Level.WARNING, ex.getMessage(), ex);
-                                }
-                            }
-                        }
-                    });
-                    gp.add(chooser, 2, 1, 1, 1);
-
-                    final Button add = new Button("Add");
-                    add.setOnAction(new EventHandler<ActionEvent>() {
-                        @Override
-                        public void handle(final ActionEvent t2) {
-                            if (driverName.getSelectionModel().getSelectedItem() != null) {
-                                driverManager.addDriver((String) driverName.getSelectionModel().getSelectedItem(), new File(j.getText()));
-                                driverTable.getItems().clear();
-                                driverTable.getItems().addAll(driverManager.getDrivers());
-                                driver.getItems().clear();
-                                driver.getItems().addAll(driverManager.getDrivers());
-                                d.close();
-                            }
-                        }
-                    });
-
-                    gp.add(add, 0, 2, 1, 1);
-
-                    final ScrollPane sp = new ScrollPane(gp);
-                    sp.setFitToWidth(true);
-
-                    sp.setPrefHeight(SCROLLPANE_PREF_HEIGHT);
-                    sp.setPrefWidth(SCROLLPANE_PREF_WIDTH);
-                    sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-                    sp.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-                    r.setCenter(sp);
-                    final Scene scene = new Scene(r);
-                    scene.setFill(Color.WHITESMOKE);
-                    scene.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
-                    scene.rootProperty().get().setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getOutputFontSize()));
-
-                    d.setScene(scene);
-                    d.setTitle("Add Driver");
-                    d.centerOnScreen();
-                    d.initOwner(dialog);
-                    d.initModality(Modality.APPLICATION_MODAL);
-                    d.showAndWait();
                 });
-                dtRoot.add(addBtn1, 1, 1, 1, 1);
-
-                driversTab.setContent(dtRoot);
-
-                connectionsTab.setContent(connectionsPane);
-                tp.getTabs().addAll(connectionsTab, driversTab);
-
-                gridPane.getChildren().addAll(tp);
-
-                final ScrollPane sp = new ScrollPane(gridPane);
+                gp.add(test, 1, 5, 1, 1);
+                final ScrollPane sp = new ScrollPane(gp);
                 sp.setFitToWidth(true);
-
-                sp.setPrefHeight(LARGE_SCROLLPANE_PREF_HEIGHT);
-                sp.setPrefWidth(LARGE_SCROLLPANE_PREF_WIDTH);
+                sp.setPrefHeight(SCROLLPANE_PREF_HEIGHT);
+                sp.setPrefWidth(SCROLLPANE_PREF_WIDTH);
                 sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
                 sp.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-                root.setCenter(sp);
-                final Scene scene = new Scene(root);
-                scene.setFill(Color.WHITESMOKE);
-                scene.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
-                scene.rootProperty().get().setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getOutputFontSize()));
+                r.setCenter(sp);
+                final Scene scene1 = new Scene(r);
+                scene1.setFill(Color.WHITESMOKE);
+                scene1.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
+                scene1.rootProperty().get().setStyle(String.format(FONT_SIZE_FORMAT,
+                        FontUtilities.getOutputFontSize()));
+                d.setScene(scene1);
+                d.setTitle("Add Connection");
+                d.centerOnScreen();
+                d.initOwner(dialog);
+                d.initModality(Modality.APPLICATION_MODAL);
+                d.showAndWait();
+            };
+            final Button addBtn = new Button("Add");
+            addBtn.setOnAction(addConnectionAction);
+            connectionsPane.add(addBtn, 1, 1, 1, 1);
+            final Tab driversTab = new Tab("Drivers");
+            driversTab.setClosable(false);
+            final EasyGridPane dtRoot = new EasyGridPane();
+            dtRoot.getColumnConstraints().addAll(column0Constraints, column1Constraints, column2Constraints);
+            dtRoot.setPadding(GRIDPANE_PADDING);
+            dtRoot.setHgap(GAP);
+            dtRoot.setVgap(GAP);
+            final TableView driverTable = new TableView();
+            driverTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+            driverTable.getSelectionModel().setCellSelectionEnabled(false);
+            driverTable.prefHeightProperty().bind(connectionsTable.heightProperty());
+            driverTable.prefWidthProperty().bind(connectionsTable.widthProperty());
+            final TableColumn<String, JDBCDriver> name = new TableColumn<>("Name");
+            name.setCellValueFactory(new PropertyValueFactory<>("name"));
+            final TableColumn<String, JDBCDriver> jar = new TableColumn<>("Filename");
+            jar.setCellValueFactory(new PropertyValueFactory<>("filename"));
+            driverTable.getColumns().addAll(name, jar);
+            driverTable.getItems().addAll(driverManager.getDrivers());
+            driverTable.getSortOrder().add(name);
+            dtRoot.add(driverTable, 0, 0, 2, 1);
+            final EventHandler<ActionEvent> removebtnAction = (final ActionEvent t1) -> {
+                final JDBCDriver d = (JDBCDriver) driverTable.getSelectionModel().getSelectedItem();
+                if (d != null) {
+                    if (driverManager.isDriverUsed(d.getName())) {
+                        final TextArea a = new TextArea();
+                        a.setWrapText(true);
+                        a.setEditable(false);
+                        a.setText("Connections exist using this Driver.\nThe connections that use this "
+                                + "driver will be deleted, do you want to proceed?");
+                        final Alert b = new Alert(AlertType.CONFIRMATION, "", ButtonType.NO, ButtonType.YES);
+                        b.getDialogPane().setContent(a);
+                        final Optional<ButtonType> res = b.showAndWait();
+                        if (!res.isPresent() || res.get() == ButtonType.NO) {
+                            return;
+                        }
+                    }
 
-                dialog.setScene(scene);
-                dialog.setTitle("Manage Connections");
-                dialog.centerOnScreen();
+                    driverManager.removeConnectionsWithDriver(d.getName());
+                    driverManager.deleteDriver(d.getName());
+                    driverTable.getItems().clear();
+                    driverTable.getItems().addAll(driverManager.getDrivers());
+                    driver.getItems().clear();
+                    driver.getItems().addAll(driverManager.getDrivers());
 
-                dialog.sizeToScene();
-                dialog.initModality(Modality.APPLICATION_MODAL);
-                //dialog.setAlwaysOnTop(true); // Test if dialog appears behind - maybe dialog.toFront() is suffice to solve the issue.
-                dialog.toFront();
-
-                dialog.showAndWait();
-            }
+                    connectionsTable.getItems().clear();
+                    connectionsTable.getItems().addAll(connectionManager.getConnections());
+                    connections.clear();
+                    connections.addAll(connectionManager.getConnections());
+                }
+            };
+            final Button removeBtn1 = new Button("Remove");
+            removeBtn1.setOnAction(removebtnAction);
+            dtRoot.add(removeBtn1, 0, 1, 1, 1);
+            final Button addBtn1 = new Button("Add");
+            addBtn1.setOnAction((final ActionEvent t1) -> {
+                final Stage d = new Stage();
+                final BorderPane r = new BorderPane();
+                final EasyGridPane gp = new EasyGridPane();
+                gp.getColumnConstraints().addAll(column0Constraints, column1Constraints, column2Constraints);
+                gp.setPadding(GRIDPANE_PADDING);
+                gp.setHgap(GAP);
+                gp.setVgap(GAP);
+                final Label nameLabel = new Label("Name");
+                gp.add(nameLabel, 0, 0, 1, 1);
+                final ComboBox driverName = new ComboBox();
+                gp.add(driverName, 1, 0, 2, 1);
+                final Label jarLabel = new Label("Driver");
+                gp.add(jarLabel, 0, 1, 1, 1);
+                final TextField j = new TextField();
+                gp.add(j, 1, 1, 1, 1);
+                final Button chooser = new Button("..");
+                chooser.setOnAction((final ActionEvent t2) -> {
+                    final FileChooser cho = new FileChooser();
+                    cho.setSelectedExtensionFilter(new ExtensionFilter("Driver jar", "*.jar"));
+                    final File f = cho.showOpenDialog(new Stage());
+                    if (f != null) {
+                        try {
+                            j.setText(f.getCanonicalPath());
+                            driverName.getItems().clear();
+                            driverName.getItems().addAll(JDBCDriver.getDrivers(f));
+                        } catch (final IOException ex) {
+                            LOGGER.log(Level.WARNING, ex.getMessage(), ex);
+                        }
+                    }
+                });
+                gp.add(chooser, 2, 1, 1, 1);
+                final Button add = new Button("Add");
+                add.setOnAction((final ActionEvent t2) -> {
+                    if (driverName.getSelectionModel().getSelectedItem() != null) {
+                        driverManager.addDriver((String) driverName.getSelectionModel().getSelectedItem(), new File(j.getText()));
+                        driverTable.getItems().clear();
+                        driverTable.getItems().addAll(driverManager.getDrivers());
+                        driver.getItems().clear();
+                        driver.getItems().addAll(driverManager.getDrivers());
+                        d.close();
+                    }
+                });
+                gp.add(add, 0, 2, 1, 1);
+                final ScrollPane sp = new ScrollPane(gp);
+                sp.setFitToWidth(true);
+                sp.setPrefHeight(SCROLLPANE_PREF_HEIGHT);
+                sp.setPrefWidth(SCROLLPANE_PREF_WIDTH);
+                sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+                sp.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+                r.setCenter(sp);
+                final Scene scene2 = new Scene(r);
+                scene2.setFill(Color.WHITESMOKE);
+                scene2.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
+                scene2.rootProperty().get().setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getOutputFontSize()));
+                d.setScene(scene2);
+                d.setTitle("Add Driver");
+                d.centerOnScreen();
+                d.initOwner(dialog);
+                d.initModality(Modality.APPLICATION_MODAL);
+                d.showAndWait();
+            });
+            dtRoot.add(addBtn1, 1, 1, 1, 1);
+            driversTab.setContent(dtRoot);
+            connectionsTab.setContent(connectionsPane);
+            tp.getTabs().addAll(connectionsTab, driversTab);
+            gridPane.getChildren().addAll(tp);
+            final ScrollPane sp = new ScrollPane(gridPane);
+            sp.setFitToWidth(true);
+            sp.setPrefHeight(LARGE_SCROLLPANE_PREF_HEIGHT);
+            sp.setPrefWidth(LARGE_SCROLLPANE_PREF_WIDTH);
+            sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+            sp.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+            root.setCenter(sp);
+            final Scene scene3 = new Scene(root);
+            scene3.setFill(Color.WHITESMOKE);
+            scene3.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
+            scene3.rootProperty().get().setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getOutputFontSize()));
+            dialog.setScene(scene3);
+            dialog.setTitle("Manage Connections");
+            dialog.centerOnScreen();
+            dialog.sizeToScene();
+            dialog.initModality(Modality.APPLICATION_MODAL);
+            //dialog.setAlwaysOnTop(true); // Test if dialog appears behind - maybe dialog.toFront() is suffice to solve the issue.
+            dialog.toFront();
+            dialog.showAndWait();
         };
 
         final Button manageConnectionsBtn = new Button("Manage connections");

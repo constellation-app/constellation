@@ -174,8 +174,8 @@ public class ConfigurationPane extends AnchorPane {
         });
     }
 
-    private static ObservableList<TableRow> createTableRows(List<String[]> data) {
-        ObservableList<TableRow> rows = FXCollections.observableArrayList();
+    private static ObservableList<TableRow> createTableRows(final List<String[]> data) {
+        final ObservableList<TableRow> rows = FXCollections.observableArrayList();
         final int rowCount = Math.min(101, data.size());
         for (int row = 1; row < rowCount; row++) {
             rows.add(new TableRow(row - 1, data.get(row)));
@@ -199,17 +199,17 @@ public class ConfigurationPane extends AnchorPane {
         return Collections.unmodifiableList(definitions);
     }
 
-    public void deleteAttribute(Attribute attribute) {
-        for (Tab tab : tabPane.getTabs()) {
-            RunPane runPane = (RunPane) tab.getContent();
+    public void deleteAttribute(final Attribute attribute) {
+        for (final Tab tab : tabPane.getTabs()) {
+            final RunPane runPane = (RunPane) tab.getContent();
             runPane.deleteAttribute(attribute);
         }
     }
 
-    public void setDisplayedAttributes(Map<String, Attribute> vertexAttributes,
-            Map<String, Attribute> transactionAttributes, Set<Integer> keys) {
-        for (Tab tab : tabPane.getTabs()) {
-            RunPane runPane = (RunPane) tab.getContent();
+    public void setDisplayedAttributes(final Map<String, Attribute> vertexAttributes,
+            final Map<String, Attribute> transactionAttributes, final Set<Integer> keys) {
+        for (final Tab tab : tabPane.getTabs()) {
+            final RunPane runPane = (RunPane) tab.getContent();
             runPane.setDisplayedAttributes(vertexAttributes, transactionAttributes, keys);
             runPane.setAttributePaneHeight();
         }
@@ -221,9 +221,9 @@ public class ConfigurationPane extends AnchorPane {
      * @return a combined collection of all attributes that have been allocated to a column in any run.
      */
     public Collection<Attribute> getAllocatedAttributes() {
-        List<Attribute> allocatedAttributes = new ArrayList<>();
-        for (Tab tab : tabPane.getTabs()) {
-            RunPane runPane = (RunPane) tab.getContent();
+        final List<Attribute> allocatedAttributes = new ArrayList<>();
+        for (final Tab tab : tabPane.getTabs()) {
+            final RunPane runPane = (RunPane) tab.getContent();
             allocatedAttributes.addAll(runPane.getAllocatedAttributes());
         }
 

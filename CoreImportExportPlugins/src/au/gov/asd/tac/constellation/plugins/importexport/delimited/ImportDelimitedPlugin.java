@@ -126,8 +126,8 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
     private void displaySummaryAlert(final int importedRows, final List<String> validFilenames, final List<String> invalidFilenames) {
         Platform.runLater(() -> {
             boolean success = true;
-            StringBuilder sbHeader = new StringBuilder();
-            StringBuilder sbMessage = new StringBuilder();
+            final StringBuilder sbHeader = new StringBuilder();
+            final StringBuilder sbMessage = new StringBuilder();
 
             if (importedRows > 0) {
                 // At least 1 row was successfully imported. List all successful file imports, as well as any files that there were

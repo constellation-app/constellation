@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -109,8 +109,8 @@ public class DelimitedSourcePane extends SourcePane {
         fileListView.setOnMouseClicked((MouseEvent t) -> fileRemBtn.setDisable(fileListView.getSelectionModel().getSelectedItems().isEmpty()));
 
         fileListView.getSelectionModel().getSelectedItems().addListener((ListChangeListener.Change<? extends File> c) -> {
-            ObservableList<File> allFiles = fileListView.getItems();
-            ObservableList<File> selectedFiles = fileListView.getSelectionModel().getSelectedItems();
+            final ObservableList<File> allFiles = fileListView.getItems();
+            final ObservableList<File> selectedFiles = fileListView.getSelectionModel().getSelectedItems();
             importController.setFiles(allFiles, selectedFiles.isEmpty() ? null : selectedFiles.get(0));
         });
 
@@ -214,7 +214,7 @@ public class DelimitedSourcePane extends SourcePane {
      *
      * @param file The file to remove.
      */
-    public void removeFile(File file) {
+    public void removeFile(final File file) {
         final ObservableList<File> files = fileListView.getItems();
         files.remove(file);
         fileListView.setItems(files);

@@ -62,7 +62,7 @@ public class ActionPane extends BorderPane {
         runBox.getChildren().add(importButton);
     }
 
-    private void displayAlert(String title, String header, boolean successful) {
+    private void displayAlert(final String title, final String header, final boolean successful) {
         final Alert dialog;
         if (successful) {
             dialog = new Alert(Alert.AlertType.CONFIRMATION, "", ButtonType.OK);

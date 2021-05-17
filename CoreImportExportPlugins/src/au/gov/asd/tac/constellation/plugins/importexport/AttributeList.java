@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
@@ -89,35 +88,32 @@ public class AttributeList extends VBox {
 
         attributeNodes.put(attribute.getName(), attributeNode);
 
-        attributeNode.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(final MouseEvent t) {
-                if (t.isPrimaryButtonDown()) {
-                    runPane.setDraggingOffset(new Point2D(t.getX(), t.getY()));
-                    final Point2D location = runPane.sceneToLocal(t.getSceneX(), t.getSceneY());
-                    // If the attribute node is currently assigned to a column then remove it.
-                    final ImportTableColumn currentColumn = attributeNode.getColumn();
-                    if (currentColumn != null) {
-                        currentColumn.setAttributeNode(null);
-                        runPane.validate(currentColumn);
-                    }
-                    attributeNode.setColumn(null);
-                    // Replicates user clicking the attribute
-                    if (!runPane.getChildren().contains(attributeNode)) {
-                        runPane.getChildren().add(attributeNode);
-                    }
-                    attributeNode.setManaged(false);
-                    attributeNode.setLayoutX(location.getX() - runPane.getDraggingOffset().getX());
-                    attributeNode.setLayoutY(location.getY() - runPane.getDraggingOffset().getY());
-                    runPane.setDraggingAttributeNode(attributeNode);
-                    runPane.handleAttributeMoved(t.getSceneX(), t.getSceneY());
+        attributeNode.setOnMousePressed((final MouseEvent t) -> {
+            if (t.isPrimaryButtonDown()) {
+                runPane.setDraggingOffset(new Point2D(t.getX(), t.getY()));
+                final Point2D location = runPane.sceneToLocal(t.getSceneX(), t.getSceneY());
+                // If the attribute node is currently assigned to a column then remove it.
+                final ImportTableColumn currentColumn = attributeNode.getColumn();
+                if (currentColumn != null) {
+                    currentColumn.setAttributeNode(null);
+                    runPane.validate(currentColumn);
                 }
+                attributeNode.setColumn(null);
+                // Replicates user clicking the attribute
+                if (!runPane.getChildren().contains(attributeNode)) {
+                    runPane.getChildren().add(attributeNode);
+                }
+                attributeNode.setManaged(false);
+                attributeNode.setLayoutX(location.getX() - runPane.getDraggingOffset().getX());
+                attributeNode.setLayoutY(location.getY() - runPane.getDraggingOffset().getY());
+                runPane.setDraggingAttributeNode(attributeNode);
+                runPane.handleAttributeMoved(t.getSceneX(), t.getSceneY());
             }
         });
 
         // Add the new attributeNode to the list in the correct place
         // to maintain the sorted order.
-        ObservableList<Node> children = getChildren();
+        final ObservableList<Node> children = getChildren();
         for (int i = 0; i < children.size(); i++) {
             if (attributeNode.compareTo((AttributeNode) children.get(i)) <= 0) {
                 children.add(i, attributeNode);
@@ -138,9 +134,9 @@ public class AttributeList extends VBox {
     }
 
     public void deleteAttribute(final Attribute attribute) {
-        AttributeNode attributeNode = attributeNodes.remove(attribute.getName());
+        final AttributeNode attributeNode = attributeNodes.remove(attribute.getName());
         if (attributeNode != null) {
-            ImportTableColumn column = attributeNode.getColumn();
+            final ImportTableColumn column = attributeNode.getColumn();
             if (column == null) {
                 getChildren().remove(attributeNode);
             } else {
