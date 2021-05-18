@@ -61,7 +61,7 @@ public class BooleanValue implements Copyable, BooleanReadable, BooleanWritable,
 
     @Override
     public boolean equals(Object other) {
-        if (other instanceof BooleanValue) {
+        if (this.getClass() == other.getClass()) {
             return value == ((BooleanValue) other).value;
         }
         return false;

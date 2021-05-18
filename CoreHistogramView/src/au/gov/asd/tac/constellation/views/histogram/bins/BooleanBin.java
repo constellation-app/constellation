@@ -44,7 +44,7 @@ public class BooleanBin extends Bin {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof BooleanBin) {
+        if (this.getClass() == o.getClass()) {
             BooleanBin bin = (BooleanBin) o;
             return key == bin.key;
         }

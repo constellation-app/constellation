@@ -169,7 +169,7 @@ public abstract class GraphElement {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof GraphElement)) {
+        if (this.getClass() != obj.getClass()) {
             return false;
         }
         GraphElement o = (GraphElement) obj;

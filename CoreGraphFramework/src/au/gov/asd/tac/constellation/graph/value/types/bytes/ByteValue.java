@@ -121,7 +121,7 @@ public class ByteValue implements Copyable, ByteReadable, ByteWritable, ShortRea
 
     @Override
     public boolean equals(Object other) {
-        if (other instanceof ByteValue) {
+        if (this.getClass() == other.getClass()) {
             return value == ((ByteValue) other).value;
         }
         return false;
