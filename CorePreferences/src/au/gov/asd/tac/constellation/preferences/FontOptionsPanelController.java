@@ -17,6 +17,8 @@ package au.gov.asd.tac.constellation.preferences;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.logging.Logger;
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import javax.swing.JComponent;
 import org.netbeans.spi.options.OptionsPanelController;
@@ -31,18 +33,19 @@ import org.openide.util.NbPreferences;
  */
 @OptionsPanelController.SubRegistration(
         location = "constellation",
-        displayName = "#FontOption_DisplayName",
-        keywords = "#FontOption_Keywords",
-        keywordsCategory = "constellation/DefaultFontPreferences",
+        displayName = "#ApplicationFontOptions_DisplayName",
+        keywords = "#ApplicationFontOptions_Keywords",
+        keywordsCategory = "constellation/Preferences",
         position = 100)
 @org.openide.util.NbBundle.Messages({
-    "FontOption_DisplayName=Default Font",
-    "FontOption_Keywords=font size"
+    "ApplicationFontOptions_DisplayName=Application Font",
+    "ApplicationFontOptions_Keywords=font size"
 })
 public class FontOptionsPanelController extends OptionsPanelController{
     
     private FontOptionsPanel panel;
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+    private static final Logger LOGGER = Logger.getLogger(FontOptionsPanelController.class.getName());
 
     @Override
     public void update() {

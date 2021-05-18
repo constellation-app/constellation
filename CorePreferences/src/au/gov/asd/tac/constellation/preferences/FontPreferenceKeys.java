@@ -25,10 +25,10 @@ public class FontPreferenceKeys {
     /**
      * Default Font.
      */
-    public static final String FONT_PREFERENCES = "org/netbeans/core/fonts";
-    public static final String FONT_FAMILY = "output.settings.font.family";
-    public static final String FONT_FAMILY_DEFAULT = "Arial";
-    public static final String FONT_SIZE = "output.settings.font.size";
-    public static final String FONT_SIZE_DEFAULT = "12";
+    public static final String FONT_PREFERENCES = "au/gov/asd/tac/constellation/preferences";
+    public static final String FONT_FAMILY = "fontFamily";
+    public static String FONT_FAMILY_DEFAULT = "Arial";
+    public static final String FONT_SIZE = "fontSize";
+    public static String FONT_SIZE_DEFAULT = "12";
     
 }

@@ -15,15 +15,22 @@
  */
 package au.gov.asd.tac.constellation.preferences;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GraphicsEnvironment;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
+import javax.swing.LayoutStyle;
 import javax.swing.SpinnerNumberModel;
 import org.openide.awt.Mnemonics;
 import org.openide.util.NbBundle;
@@ -76,6 +83,8 @@ final class FontOptionsPanel extends javax.swing.JPanel {
         fontSizeLbl = new JLabel();
         fontCombo = new JComboBox<>();
         fontSizeSpinner = new JSpinner();
+        resetBtn = new JButton();
+        warningLabel = new JLabel();
 
         setPreferredSize(new Dimension(604, 529));
 
@@ -90,6 +99,13 @@ final class FontOptionsPanel extends javax.swing.JPanel {
 
         fontSizeSpinner.setModel(new SpinnerNumberModel(12, 6, 45, 1));
 
+        Mnemonics.setLocalizedText(resetBtn, NbBundle.getMessage(FontOptionsPanel.class, "FontOptionsPanel.resetBtn.text")); // NOI18N
+        resetBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                resetBtnActionPerformed(evt);
+            }
+        });
+
         GroupLayout fontPanelLayout = new GroupLayout(fontPanel);
         fontPanel.setLayout(fontPanelLayout);
         fontPanelLayout.setHorizontalGroup(fontPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -102,7 +118,11 @@ final class FontOptionsPanel extends javax.swing.JPanel {
                 .addGroup(fontPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                     .addComponent(fontCombo, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                     .addComponent(fontSizeSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(285, Short.MAX_VALUE))
+                .addContainerGap(196, Short.MAX_VALUE))
+            .addGroup(GroupLayout.Alignment.TRAILING, fontPanelLayout.createSequentialGroup()
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(resetBtn)
+                .addGap(43, 43, 43))
         );
         fontPanelLayout.setVerticalGroup(fontPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(fontPanelLayout.createSequentialGroup()
@@ -114,30 +134,48 @@ final class FontOptionsPanel extends javax.swing.JPanel {
                 .addGroup(fontPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                     .addComponent(fontSizeLbl)
                     .addComponent(fontSizeSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(64, Short.MAX_VALUE))
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                .addComponent(resetBtn)
+                .addContainerGap())
         );
 
         fontSizeLbl.getAccessibleContext().setAccessibleName(NbBundle.getMessage(FontOptionsPanel.class, "FontOptionsPanel.fontSizeLbl.AccessibleContext.accessibleName")); // NOI18N
         fontCombo.getAccessibleContext().setAccessibleName(NbBundle.getMessage(FontOptionsPanel.class, "FontOptionsPanel.fontCombo.AccessibleContext.accessibleName")); // NOI18N
         fontSizeSpinner.getAccessibleContext().setAccessibleName(NbBundle.getMessage(FontOptionsPanel.class, "FontOptionsPanel.fontSizeSpinner.AccessibleContext.accessibleName")); // NOI18N
 
+        warningLabel.setFont(new Font("Tahoma", 1, 11)); // NOI18N
+        warningLabel.setForeground(new Color(102, 102, 102));
+        warningLabel.setIcon(new ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/preferences/resources/warning.png"))); // NOI18N
+        Mnemonics.setLocalizedText(warningLabel, NbBundle.getMessage(FontOptionsPanel.class, "FontOptionsPanel.warningLabel.text")); // NOI18N
+
         GroupLayout layout = new GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(fontPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                    .addComponent(fontPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(warningLabel, GroupLayout.PREFERRED_SIZE, 315, GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(54, 54, 54)
+                .addGap(28, 28, 28)
+                .addComponent(warningLabel)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(fontPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(312, Short.MAX_VALUE))
+                .addContainerGap(308, Short.MAX_VALUE))
         );
 
         fontPanel.getAccessibleContext().setAccessibleName(NbBundle.getMessage(FontOptionsPanel.class, "FontOptionsPanel.fontPanel.AccessibleContext.accessibleName")); // NOI18N
     }// </editor-fold>//GEN-END:initComponents
+
+    private void resetBtnActionPerformed(ActionEvent evt) {//GEN-FIRST:event_resetBtnActionPerformed
+        fontCombo.setSelectedItem("Arial");
+        fontSizeSpinner.setValue(12);
+    }//GEN-LAST:event_resetBtnActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private JComboBox<String> fontCombo;
@@ -145,5 +183,7 @@ final class FontOptionsPanel extends javax.swing.JPanel {
     private JPanel fontPanel;
     private JLabel fontSizeLbl;
     private JSpinner fontSizeSpinner;
+    private JButton resetBtn;
+    private JLabel warningLabel;
     // End of variables declaration//GEN-END:variables
 }

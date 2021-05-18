@@ -62,10 +62,14 @@ public class FontUtilities {
         try {
             if (!p.nodeExists(FontPreferenceKeys.FONT_PREFERENCES)) {
                 p.node(FontPreferenceKeys.FONT_PREFERENCES).put(FontPreferenceKeys.FONT_SIZE, FontPreferenceKeys.FONT_SIZE_DEFAULT);
+                p.node(FontPreferenceKeys.FONT_PREFERENCES).put(FontPreferenceKeys.FONT_FAMILY, FontPreferenceKeys.FONT_FAMILY_DEFAULT);
+            } else {
+                FontPreferenceKeys.FONT_SIZE_DEFAULT = p.node(FontPreferenceKeys.FONT_PREFERENCES).get(FontPreferenceKeys.FONT_SIZE, FontPreferenceKeys.FONT_SIZE_DEFAULT);
+                FontPreferenceKeys.FONT_FAMILY_DEFAULT = p.node(FontPreferenceKeys.FONT_PREFERENCES).get(FontPreferenceKeys.FONT_FAMILY, FontPreferenceKeys.FONT_FAMILY_DEFAULT);
             }
         } catch (final BackingStoreException ex) {
             Exceptions.printStackTrace(ex);
-        }
+        } 
     }
     
      /**
@@ -76,13 +80,12 @@ public class FontUtilities {
      * @return A Font.
      */
     public static synchronized Font getApplicationFont() {
-        final int fontSize = getOutputFontSize();
-        final String fontFamily = getOutputFontFamily();
+        final int fontSize = getApplicationFontSize();
+        final String fontFamily = getApplicationFontFamily();
         final String fontKey = String.format("%s//%d", fontFamily, fontSize);
         if (!FONTS.containsKey(fontKey)) {
             FONTS.put(fontKey, new Font(fontFamily, Font.PLAIN, fontSize));
         }
-
         return FONTS.get(fontKey);
     }
 
@@ -91,27 +94,12 @@ public class FontUtilities {
      * <p>
      * This retrieves the font size specified in Setup &rarr; Options &rarr;
      * Constellation &rarr; Default Font &rarr; Font Size. The default if not
-     * specified is 11.
+     * specified is 12.
      *
      * @return The user's default font size.
      */
     public static int getApplicationFontSize() {
-        int fontSize;
-
-        try {
-            final Preferences p = NbPreferences.root();
-            if (p.nodeExists(FontPreferenceKeys.FONT_PREFERENCES)) {
-                final String fontSizePreference = p.node(FontPreferenceKeys.FONT_PREFERENCES).get(FontPreferenceKeys.FONT_SIZE, 
-                        FontPreferenceKeys.FONT_SIZE_DEFAULT);
-                fontSize = Integer.parseInt(fontSizePreference);
-            } else {
-                fontSize = UIManager.getFont(SWING_FONT).getSize();
-            }
-        } catch (final BackingStoreException | NumberFormatException ex) {
-            fontSize = Integer.parseInt(FontPreferenceKeys.FONT_SIZE_DEFAULT);
-            LOGGER.severe(ex.getLocalizedMessage());
-        }
-
+        int fontSize = Integer.parseInt(FontPreferenceKeys.FONT_SIZE_DEFAULT);
         LOGGER.log(Level.FINE, "Font size is {0}", fontSize);
         return fontSize;
     }
@@ -121,30 +109,16 @@ public class FontUtilities {
      * <p>
      * This retrieves the font family specified in Setup &rarr; Options &rarr;
      * Constellation &rarr; Default Font &rarr; Default Font. The default if not
-     * specified is Dialog.
+     * specified is Arial.
      *
      * @return The user's default font family.
      */
     public static String getApplicationFontFamily() {
-        String fontFamily;
-
-        try {
-            final Preferences p = NbPreferences.root();
-            if (p.nodeExists(FontPreferenceKeys.FONT_PREFERENCES)) {
-                fontFamily = p.node(FontPreferenceKeys.FONT_PREFERENCES).get(FontPreferenceKeys.FONT_FAMILY, 
-                        FontPreferenceKeys.FONT_FAMILY_DEFAULT);
-            } else {
-                fontFamily = FontPreferenceKeys.FONT_FAMILY_DEFAULT;
-            }
-        } catch (final BackingStoreException | NumberFormatException ex) {
-            fontFamily = FontPreferenceKeys.FONT_FAMILY_DEFAULT;
-            LOGGER.severe(ex.getLocalizedMessage());
-        }
-
+        String fontFamily = FontPreferenceKeys.FONT_FAMILY_DEFAULT;
         LOGGER.log(Level.FINE, "Font family is {0}", fontFamily);
         return fontFamily;
     }
-    
+     
     
     /**
      * Set the default font size as a preference if its not already defined.
