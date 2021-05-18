@@ -38,8 +38,7 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Calculates jaccard index for each pair of vertices. This similarity measure
- * does not include loops.
+ * Calculates jaccard index for each pair of vertices. This similarity measure does not include loops.
  *
  * @author cygnus_x-1
  */
@@ -166,7 +165,7 @@ public class JaccardIndexPlugin extends SimpleEditPlugin {
                     final int vertexOneId = graph.getVertex(vertexOnePosition);
                     final int vertexTwoId = graph.getVertex(vertexTwoPosition);
 
-                    final float jaccardIndex = union.cardinality() == 0 ? 0f : (float) intersection.cardinality() / union.cardinality();
+                    final double jaccardIndex = union.cardinality() == 0 ? 0f : intersection.cardinality() / union.cardinality();
                     SimilarityUtilities.addScoreToGraph(vertexOneId, vertexTwoId, jaccardIndex);
                 }
             }

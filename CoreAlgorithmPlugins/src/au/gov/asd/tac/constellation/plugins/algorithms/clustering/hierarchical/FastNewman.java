@@ -31,10 +31,8 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
- * Execute the Fast Newman function which clusters the graph hierarchically by
- * initially placing all vertices in their own cluster and then iteratively
- * merging clusters according to a weight function until the optimal state is
- * reached.
+ * Execute the Fast Newman function which clusters the graph hierarchically by initially placing all vertices in their
+ * own cluster and then iteratively merging clusters according to a weight function until the optimal state is reached.
  *
  * @author sirius
  */
@@ -60,7 +58,7 @@ public class FastNewman {
         if (weightAttribute != null) {
             weightAttributeId = graph.getAttribute(GraphElementType.TRANSACTION, weightAttribute);
         }
-        float totalWeight = 0;
+        double totalWeight = 0;
         if (weightAttributeId != Graph.NOT_FOUND) {
             for (int p = 0; p < transactionCount; p++) {
                 final int transaction = graph.getTransaction(p);
@@ -80,7 +78,7 @@ public class FastNewman {
             groups[position] = new Group();
             groups[position].vertex = vxId;
             if (weightAttributeId == Graph.NOT_FOUND) {
-                groups[position].weight = (float) graph.getVertexTransactionCount(vxId) / transactionCount;
+                groups[position].weight = (double) graph.getVertexTransactionCount(vxId) / transactionCount;
             } else {
                 final int vertexTransactionCount = graph.getVertexTransactionCount(vxId);
                 for (int p = 0; p < vertexTransactionCount; p++) {
@@ -106,7 +104,7 @@ public class FastNewman {
                 link.lowGroup.links.put(link.highGroup, link);
 
                 if (weightAttributeId == Graph.NOT_FOUND) {
-                    link.weight = (float) graph.getLinkTransactionCount(linkId) / transactionCount;
+                    link.weight = (double) graph.getLinkTransactionCount(linkId) / transactionCount;
                 } else {
                     final int linkTransactionCount = graph.getLinkTransactionCount(linkId);
                     for (int tp = 0; tp < linkTransactionCount; tp++) {
@@ -115,7 +113,7 @@ public class FastNewman {
                     }
                     link.weight /= totalWeight;
                 }
-                link.deltaQ = 2f * (link.weight - link.highGroup.weight * link.lowGroup.weight);
+                link.deltaQ = 2d * (link.weight - link.highGroup.weight * link.lowGroup.weight);
 
                 link.initial = initialLinkIds.contains(linkId);
                 links.add(link);
@@ -246,7 +244,7 @@ public class FastNewman {
     public static class Group {
 
         private int vertex;
-        private float weight = 0.0f;
+        private double weight = 0.0;
         private Group parent = null;
         private int mergeStep = Integer.MAX_VALUE;
         private Map<Group, Link> links = new HashMap<>();
@@ -298,8 +296,8 @@ public class FastNewman {
 
         private Group highGroup;
         private Group lowGroup;
-        private float weight = 0.0f;
-        private float deltaQ;
+        private double weight = 0.0f;
+        private double deltaQ;
         private boolean initial = false;
 
         @Override

@@ -22,13 +22,11 @@ import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 
 /**
- * A Utility to set an attribute on the graph called 'lradius' which
- * approximates the distance from the centre of the node to the edge of the
- * longest label.
+ * A Utility to set an attribute on the graph called 'lradius' which approximates the distance from the centre of the
+ * node to the edge of the longest label.
  * <br>
- * Some arrangements use this attribute rather than the node's radius to work
- * out how to space out nodes. Note that this should be reimplemented as a
- * plugin.
+ * Some arrangements use this attribute rather than the node's radius to work out how to space out nodes. Note that this
+ * should be reimplemented as a plugin.
  *
  * @author twilight_sparkle
  */
@@ -36,7 +34,7 @@ public class SetRadiusForArrangement {
 
     private final GraphWriteMethods graph;
     private int[] labelAttrArray;
-    private float[] labelSizeArray;
+    private double[] labelSizeArray;
     private final int labelRadiusAttr;
     private final int nodeRadiusAttr;
     // There are approximately 8 characters in a label for each node radius unit
@@ -57,7 +55,7 @@ public class SetRadiusForArrangement {
         final GraphLabels topLabels = graph.getObjectValue(topLabelsAttr, 0);
 
         labelAttrArray = new int[bottomLabels.getNumberOfLabels() + topLabels.getNumberOfLabels()];
-        labelSizeArray = new float[labelAttrArray.length];
+        labelSizeArray = new double[labelAttrArray.length];
 
         int labelNum = 0;
         for (GraphLabel label : bottomLabels.getLabels()) {
@@ -81,14 +79,14 @@ public class SetRadiusForArrangement {
 
     private void setRadius(final int vxId) {
         // We require the width of the label to be at least 1.5f, which is the radius of the standard node with a little extra padding
-        float maxLabelWidth = 1.5f;
+        double maxLabelWidth = 1.5d;
         for (int i = 0; i < labelAttrArray.length; i++) {
             if (labelAttrArray[i] < 0) {
                 continue;
             }
 
             Object obj = graph.getObjectValue(labelAttrArray[i], vxId);
-            float currentLabelWidth;
+            double currentLabelWidth;
 
             int characters = (obj == null || obj.toString() == null) ? 0 : obj.toString().length();
 
@@ -99,7 +97,7 @@ public class SetRadiusForArrangement {
             }
         }
 
-        float nodeRadius = graph.getFloatValue(nodeRadiusAttr, vxId);
-        graph.setFloatValue(labelRadiusAttr, vxId, maxLabelWidth * nodeRadius);
+        double nodeRadius = graph.getFloatValue(nodeRadiusAttr, vxId);
+        graph.setFloatValue(labelRadiusAttr, vxId, (float) (maxLabelWidth * nodeRadius));
     }
 }

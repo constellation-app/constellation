@@ -88,12 +88,12 @@ public class Scatter3dArranger implements Arranger {
 
         final int vxCount = wg.getVertexCount();
 
-        float maxX = 0;
-        float minX = 0;
-        float maxY = 0;
-        float minY = 0;
-        float maxZ = 0;
-        float minZ = 0;
+        double maxX = 0;
+        double minX = 0;
+        double maxY = 0;
+        double minY = 0;
+        double maxZ = 0;
+        double minZ = 0;
         boolean firstVals = true;
 
         if (vxCount > 0) {
@@ -108,9 +108,9 @@ public class Scatter3dArranger implements Arranger {
                 vertices.clear(vxId);
             }
 
-            float xVal;
-            float yVal;
-            float zVal;
+            double xVal;
+            double yVal;
+            double zVal;
 
             for (int i = 0; i < vxPos; i++) {
                 if (Thread.interrupted()) {
@@ -139,9 +139,9 @@ public class Scatter3dArranger implements Arranger {
                     maxZ = Math.max(zVal, maxZ);
                 }
 
-                wg.setFloatValue(xAttr, vxId, xVal);
-                wg.setFloatValue(yAttr, vxId, yVal);
-                wg.setFloatValue(zAttr, vxId, zVal);
+                wg.setFloatValue(xAttr, vxId, (float) xVal);
+                wg.setFloatValue(yAttr, vxId, (float) yVal);
+                wg.setFloatValue(zAttr, vxId, (float) zVal);
             }
 
             // Scale to 0-100
@@ -169,9 +169,9 @@ public class Scatter3dArranger implements Arranger {
                 yVal = 100 * (yVal - minY) / (maxY - minY);
                 zVal = 100 * (zVal - minZ) / (maxZ - minZ);
 
-                wg.setFloatValue(xAttr, vxId, xVal);
-                wg.setFloatValue(yAttr, vxId, yVal);
-                wg.setFloatValue(zAttr, vxId, zVal);
+                wg.setFloatValue(xAttr, vxId, (float) xVal);
+                wg.setFloatValue(yAttr, vxId, (float) yVal);
+                wg.setFloatValue(zAttr, vxId, (float) zVal);
             }
         }
     }

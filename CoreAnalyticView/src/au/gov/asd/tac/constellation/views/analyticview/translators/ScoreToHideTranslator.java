@@ -90,7 +90,7 @@ public class ScoreToHideTranslator extends AbstractHideTranslator<ScoreResult, E
 
             // get parameter values
             final boolean reset = parameters.getBooleanValue(RESET_PARAMETER_ID);
-            final float threshold = parameters.getFloatValue(THRESHOLD_PARAMETER_ID);
+            final double threshold = parameters.getFloatValue(THRESHOLD_PARAMETER_ID);
 
             // ensure attributes
             final int vertexVisibilityAttribute = VisualConcept.VertexAttribute.VISIBILITY.ensure(graph);
@@ -120,10 +120,10 @@ public class ScoreToHideTranslator extends AbstractHideTranslator<ScoreResult, E
                 }
             } else {
                 // find highest and lowest mean scores among available analytic events
-                float highestMeanScore = 0.0f;
-                float lowestMeanScore = 0.0f;
+                double highestMeanScore = 0.0d;
+                double lowestMeanScore = 0.0d;
                 for (final ElementScore scoreResult : scoreResults.get()) {
-                    final float elementMeanScore = scoreResult.getNamedScores().values().stream()
+                    final double elementMeanScore = scoreResult.getNamedScores().values().stream()
                             .reduce((x, y) -> x + y).get() / scoreResult.getNamedScores().size();
                     if (elementMeanScore > highestMeanScore) {
                         highestMeanScore = elementMeanScore;
@@ -132,14 +132,14 @@ public class ScoreToHideTranslator extends AbstractHideTranslator<ScoreResult, E
                         lowestMeanScore = elementMeanScore;
                     }
                 }
-                final float meanScoreRange = highestMeanScore - lowestMeanScore;
+                final double meanScoreRange = highestMeanScore - lowestMeanScore;
 
                 // hide graph elements where their mean score is less than the normalised threshold score
-                final float normalisedThreshold = (threshold * meanScoreRange) + lowestMeanScore;
+                final double normalisedThreshold = (threshold * meanScoreRange) + lowestMeanScore;
                 for (final ElementScore scoreResult : scoreResults.get()) {
                     final GraphElementType elementType = scoreResult.getElementType();
                     final int elementId = scoreResult.getElementId();
-                    final float elementMeanScore = scoreResult.getNamedScores().values().stream()
+                    final double elementMeanScore = scoreResult.getNamedScores().values().stream()
                             .reduce((x, y) -> x + y).get() / scoreResult.getNamedScores().size();
                     switch (elementType) {
                         case VERTEX:

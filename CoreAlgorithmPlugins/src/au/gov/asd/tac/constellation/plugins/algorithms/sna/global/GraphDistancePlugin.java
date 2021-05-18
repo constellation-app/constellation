@@ -68,12 +68,12 @@ public class GraphDistancePlugin extends SimpleEditPlugin {
             sum += distance;
         }
         final int n = graph.getVertexCount();
-        final float averageDistance = sum / (n * (n - 1));
+        final double averageDistance = sum / (n * (n - 1));
         final int radiusAttributeId = RADIUS.ensure(graph);
         final int diameterAttributeId = DIAMETER.ensure(graph);
         final int averageDistanceAttributeId = AVERAGE_DISTANCE.ensure(graph);
         graph.setFloatValue(radiusAttributeId, 0, minEccentricity);
         graph.setFloatValue(diameterAttributeId, 0, maxEccentricity);
-        graph.setFloatValue(averageDistanceAttributeId, 0, averageDistance);
+        graph.setFloatValue(averageDistanceAttributeId, 0, (float) averageDistance);
     }
 }

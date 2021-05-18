@@ -104,19 +104,19 @@ public class Octree {
         final float maxx = box.maxx;
         final float maxy = box.maxy;
         final float maxz = box.maxz;
-        final float midx = minx + (maxx - minx) / 2;
-        final float midy = miny + (maxy - miny) / 2;
-        final float midz = minz + (maxz - minz) / 2;
+        final double midx = minx + (maxx - minx) / 2;
+        final double midy = miny + (maxy - miny) / 2;
+        final double midz = minz + (maxz - minz) / 2;
 
         nodes = new Octree[8];
-        nodes[TOP_R_F] = new Octree(level + 1, new Box3D(midx, miny, midz, maxx, midy, maxz));
-        nodes[TOP_L_F] = new Octree(level + 1, new Box3D(minx, miny, midz, midx, midy, maxz));
-        nodes[BOT_L_F] = new Octree(level + 1, new Box3D(minx, midy, midz, midx, maxy, maxz));
-        nodes[BOT_R_F] = new Octree(level + 1, new Box3D(midx, midy, midz, maxx, maxy, maxz));
-        nodes[TOP_R_B] = new Octree(level + 1, new Box3D(midx, miny, minz, minz, midy, midz));
-        nodes[TOP_L_B] = new Octree(level + 1, new Box3D(minx, miny, minz, midx, midy, midz));
-        nodes[BOT_L_B] = new Octree(level + 1, new Box3D(minx, midy, minz, midx, maxy, midz));
-        nodes[BOT_R_B] = new Octree(level + 1, new Box3D(midx, midy, minz, maxx, maxy, midz));
+        nodes[TOP_R_F] = new Octree(level + 1, new Box3D((float) midx, miny, (float) midz, maxx, (float) midy, maxz));
+        nodes[TOP_L_F] = new Octree(level + 1, new Box3D(minx, miny, (float) midz, (float) midx, (float) midy, maxz));
+        nodes[BOT_L_F] = new Octree(level + 1, new Box3D(minx, (float) midy, (float) midz, (float) midx, maxy, maxz));
+        nodes[BOT_R_F] = new Octree(level + 1, new Box3D((float) midx, (float) midy, (float) midz, maxx, maxy, maxz));
+        nodes[TOP_R_B] = new Octree(level + 1, new Box3D((float) midx, miny, minz, minz, (float) midy, (float) midz));
+        nodes[TOP_L_B] = new Octree(level + 1, new Box3D(minx, miny, minz, (float) midx, (float) midy, (float) midz));
+        nodes[BOT_L_B] = new Octree(level + 1, new Box3D(minx, (float) midy, minz, (float) midx, maxy, (float) midz));
+        nodes[BOT_R_B] = new Octree(level + 1, new Box3D((float) midx, (float) midy, minz, maxx, maxy, (float) midz));
     }
 
     /*
@@ -213,8 +213,7 @@ public class Octree {
      * Uncollide this orb from its colliding neighbors.
      *
      * @param orb The orb to be uncollided.
-     * @param padding The minimum orb between the orb's edge and the edges of
-     * each neighbor.
+     * @param padding The minimum orb between the orb's edge and the edges of each neighbor.
      * @return the number of collisions.
      */
     public int uncollide(final Orb3D orb, final float padding) {
@@ -228,9 +227,9 @@ public class Octree {
         int collided = 0;
         for (final Orb3D possible : possibles) {
             if (orb != possible) {
-                float x = orb.getX() - possible.getX();
-                float y = orb.getY() - possible.getY();
-                float z = orb.getZ() - possible.getZ();
+                double x = orb.getX() - possible.getX();
+                double y = orb.getY() - possible.getY();
+                double z = orb.getZ() - possible.getZ();
                 final double ll = x * x + y * y + z * z;
                 final double r = possible.r + orb.r + padding;
                 if (ll <= r * r) {
@@ -245,12 +244,12 @@ public class Octree {
                     z += perturbation;
                     perturbation = -perturbation;
 //                    System.out.printf("-Collided %f %f %f x=%f y=%f z=%f\n  %s <> %s\n", l, r, nudge, x, y, z, orb, possible);
-                    orb.setX(orb.getX() - x);
-                    orb.setY(orb.getY() - y);
-                    orb.setZ(orb.getZ() - z);
-                    possible.setX(possible.getX() + x);
-                    possible.setY(possible.getY() + y);
-                    possible.setZ(possible.getZ() + z);
+                    orb.setX((float) (orb.getX() - x));
+                    orb.setY((float) (orb.getY() - y));
+                    orb.setZ((float) (orb.getZ() - z));
+                    possible.setX((float) (possible.getX() + x));
+                    possible.setY((float) (possible.getY() + y));
+                    possible.setZ((float) (possible.getZ() + z));
                 }
             }
         }

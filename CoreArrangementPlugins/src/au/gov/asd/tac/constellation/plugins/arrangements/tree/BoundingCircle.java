@@ -72,11 +72,11 @@ public class BoundingCircle {
         final float[] centre = box.getCentre();
         final float[] min = box.getMin();
         final float[] max = box.getMax();
-        final float minx = min[BBoxf.X];
-        final float maxx = max[BBoxf.X];
-        final float miny = min[BBoxf.Y];
-        final float maxy = max[BBoxf.Y];
-        final float radius = Math.max((maxx - minx) / 2, (maxy - miny) / 2);
+        final double minx = min[BBoxf.X];
+        final double maxx = max[BBoxf.X];
+        final double miny = min[BBoxf.Y];
+        final double maxy = max[BBoxf.Y];
+        final double radius = Math.max((maxx - minx) / 2, (maxy - miny) / 2);
 
         return new BoundingCircle(centre[BBoxf.X], centre[BBoxf.Y], radius);
     }

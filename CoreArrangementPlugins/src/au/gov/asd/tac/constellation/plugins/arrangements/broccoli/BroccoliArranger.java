@@ -28,8 +28,8 @@ import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.util.ArrayList;
 
 /**
- * Given a vertex with neighbours of degree 1, arrange those neighbours in a
- * broccoli shape fanned away from the centre of the graph.
+ * Given a vertex with neighbours of degree 1, arrange those neighbours in a broccoli shape fanned away from the centre
+ * of the graph.
  *
  * @author algol
  */
@@ -95,8 +95,7 @@ public final class BroccoliArranger implements Arranger {
     }
 
     /**
-     * Arrange the neighbours of the given vertex with degree 1 into a fan
-     * relative to the centre.
+     * Arrange the neighbours of the given vertex with degree 1 into a fan relative to the centre.
      *
      * @param centre
      * @param vid
@@ -121,7 +120,7 @@ public final class BroccoliArranger implements Arranger {
             final int size = deg1.size();
 
             final int sideLen = (int) Math.floor(Math.sqrt(size - 1.0)) + 1;
-            final float sideLen1 = sideLen - 1f;
+            final double sideLen1 = sideLen - 1f;
 
             // Generate a suitable up vector for lookAt.
             final Vector3f tmpv = new Vector3f();
@@ -143,9 +142,9 @@ public final class BroccoliArranger implements Arranger {
                 final int vx1Id = deg1.get(i);
 
                 // A position in the unit square.
-                final float xs = sideLen1 > 0 ? (((float) i / sideLen) / sideLen1) * 2 - 1 : 0;
-                final float ys = sideLen1 > 0 ? ((i % sideLen) / sideLen1) * 2 - 1 : 0;
-                final Vector3f v = new Vector3f(xs, ys, 1);
+                final double xs = sideLen1 > 0 ? (((float) i / sideLen) / sideLen1) * 2 - 1 : 0;
+                final double ys = sideLen1 > 0 ? ((i % sideLen) / sideLen1) * 2 - 1 : 0;
+                final Vector3f v = new Vector3f((float) xs, (float) ys, 1);
 
                 // Map the square onto the surface of the unit sphere.
                 v.normalize();

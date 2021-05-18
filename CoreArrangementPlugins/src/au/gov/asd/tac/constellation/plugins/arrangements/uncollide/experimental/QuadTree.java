@@ -24,16 +24,17 @@ import org.python.modules.math;
  * @author algol
  * @author Nova
  */
-class QuadTree extends AbstractTree{
+class QuadTree extends AbstractTree {
+
     static final int TOP_R = 0;
     static final int TOP_L = 1;
     static final int BOT_L = 2;
     static final int BOT_R = 3;
-    
+
     /**
      * Constructor creates QuadTree and inserts all nodes
-     * 
-     * @param graph  The graph the QuadTree should be based on
+     *
+     * @param graph The graph the QuadTree should be based on
      */
     QuadTree(final GraphReadMethods graph) {
         super(graph, Dimensions.TWO);
@@ -43,9 +44,9 @@ class QuadTree extends AbstractTree{
 
     /**
      * Create a subtree of the current tree
-     * 
+     *
      * @param parent
-     * @param box 
+     * @param box
      */
     QuadTree(QuadTree parent, final BoundingBox2D box) {
         super(parent, box);
@@ -76,11 +77,11 @@ class QuadTree extends AbstractTree{
     @Override
     int getIndex(final int vxId) {
         int index = -1;
-        
+
         // Object can completely fit within the top/bottom halves.
         final boolean bottomHalf = wg.getFloatValue(yId, vxId) + wg.getFloatValue(rId, vxId) < box.midY;
         final boolean topHalf = wg.getFloatValue(yId, vxId) - wg.getFloatValue(rId, vxId) > box.midY;
-        
+
         // Object can completely fit witin the left/right halves.
         final boolean leftHalf = wg.getFloatValue(xId, vxId) + wg.getFloatValue(rId, vxId) < box.midX;
         final boolean rightHalf = wg.getFloatValue(xId, vxId) - wg.getFloatValue(rId, vxId) > box.midX;
@@ -104,15 +105,15 @@ class QuadTree extends AbstractTree{
     }
 
     @Override
-    double getDelta(final int vertex1, final int vertex2){
-        float deltaX = wg.getFloatValue(xId, vertex1) - wg.getFloatValue(xId, vertex2);
-        float deltaY = wg.getFloatValue(yId, vertex1) - wg.getFloatValue(yId, vertex2);
+    double getDelta(final int vertex1, final int vertex2) {
+        double deltaX = wg.getFloatValue(xId, vertex1) - wg.getFloatValue(xId, vertex2);
+        double deltaY = wg.getFloatValue(yId, vertex1) - wg.getFloatValue(yId, vertex2);
         return math.sqrt(deltaX * deltaX + deltaY * deltaY);
     }
-    
+
     @Override
-    double getCollisionDistance(final int vertex1, final int vertex2){
-        return math.sqrt(2*wg.getFloatValue(rId, vertex1)) + math.sqrt(2*wg.getFloatValue(rId, vertex2));
+    double getCollisionDistance(final int vertex1, final int vertex2) {
+        return math.sqrt(2 * wg.getFloatValue(rId, vertex1)) + math.sqrt(2 * wg.getFloatValue(rId, vertex2));
     }
 
 }

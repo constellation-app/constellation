@@ -112,7 +112,7 @@ public class FactToSizeTranslator extends AbstractSizeTranslator<FactResult, Ele
             } else {
                 // estimate size of graph
                 final BBoxf graphBoundingBox = BBoxf.getGraphBoundingBox(graph);
-                float graphEstimatedDiameter = 0.0f;
+                double graphEstimatedDiameter = 0.0d;
                 graphEstimatedDiameter = Math.max(graphBoundingBox.getMax()[BBoxf.X] - graphBoundingBox.getMin()[BBoxf.X],
                         graphBoundingBox.getMax()[BBoxf.Y] - graphBoundingBox.getMin()[BBoxf.Y]);
                 graphEstimatedDiameter = Math.max(graphEstimatedDiameter,
@@ -122,14 +122,14 @@ public class FactToSizeTranslator extends AbstractSizeTranslator<FactResult, Ele
                 for (final ElementFact factResult : factResults.get()) {
                     final GraphElementType elementType = factResult.getElementType();
                     final int elementId = factResult.getElementId();
-                    final float elementValue = factResult.getFactValue() ? 1f : 0f;
-                    final float sizeIntensity = (float) Math.log((double) (elementValue * graphEstimatedDiameter));
+                    final double elementValue = factResult.getFactValue() ? 1d : 0d;
+                    final double sizeIntensity = (float) Math.log((double) (elementValue * graphEstimatedDiameter));
                     switch (elementType) {
                         case VERTEX:
-                            graph.setFloatValue(vertexSizeAttribute, elementId, sizeIntensity > 1.0f ? sizeIntensity : 1.0f);
+                            graph.setFloatValue(vertexSizeAttribute, elementId, sizeIntensity > 1.0d ? (float) sizeIntensity : 1.0f);
                             break;
                         case TRANSACTION:
-                            graph.setFloatValue(transactionSizeAttribute, elementId, sizeIntensity > 1.0f ? sizeIntensity : 1.0f);
+                            graph.setFloatValue(transactionSizeAttribute, elementId, sizeIntensity > 1.0d ? (float) sizeIntensity : 1.0f);
                             break;
                         default:
                             throw new InvalidElementTypeException("'Size Elements' is not supported "

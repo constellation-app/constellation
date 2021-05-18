@@ -43,10 +43,10 @@ public class GraphDensityPlugin extends SimpleEditPlugin {
 
         final float edgeCount = graph.getEdgeCount();
         final float vertexCount = graph.getVertexCount();
-        final float density = ((edgeCount) / (vertexCount * (vertexCount - 1)));
+        final double density = ((edgeCount) / (vertexCount * (vertexCount - 1)));
 
         // update the graph with density
         final int densityAttributeId = DENSITY.ensure(graph);
-        graph.setFloatValue(densityAttributeId, 0, density);
+        graph.setFloatValue(densityAttributeId, 0, (float) density);
     }
 }
