@@ -25,6 +25,7 @@ capabilities across large and complex data sets.
 # Table of Contents
 
 -   [Vision Statement](#vision-statement)
+-   [Core Values](#core-values)
 -   [Prerequisites](#prerequisites)
 -   [Download Constellation](#download-constellation)
 -   [Run Constellation](#run-constellation)
@@ -49,6 +50,30 @@ problems in a simple and intuitive way.
     etc.
 
 ![Constellation Application](docs/screenshot.png)
+
+## Core Values
+
+### Performance over Functionality
+
+The most important value is making sure Constellation stays performant.
+If this means we have to sacrifice some functionality if it will degrade
+performance then that’s what we will do. Features are “easy” to add but
+keeping the application performant is harder.
+
+### Generic over Specialisation
+
+Constellation is designed to provide a broad range of functionality with
+the idea of being a “bridge between tools”. For example Constellation’s
+Map View is not meant to be a fully fledged mapping tool; for that use
+ArcGIS.
+
+### Usability over Precision
+
+We value sensible defaults in features so you can just use the them
+rather than having to fill out a form of parameters first. This means
+that running analytics like the “Cosine Similarity Analytic” will be
+accurate but if you want to tweak this then you will have to use a
+different method like a Jupyter Notebook.
 
 ## Prerequisites
 
