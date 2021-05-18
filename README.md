@@ -210,9 +210,12 @@ guide](CONTRIBUTING.md).
     these steps:
 
 1.  Click on `File` &gt; `New Graph` to create a graph
+
 2.  Click on `Experimental` &gt; `Build Graph` &gt; `Sphere Graph` to
     create a random graph.
+
 3.  If you can see a graph try to interact with it using the mouse.
+
 4.  If the graph view remains blank, you may not have a supported
     graphics card.
 
