@@ -156,8 +156,12 @@ public abstract class AbstractInclusionGraph {
         int pinnedCount = 0;
         for (int position = 0; position < vxCount; position++) {
             final int vxId = wg.getVertex(position);
-            if (isVertexIncluded(vxId)) { incCount++; }
-            if (!wg.getBooleanValue(pinnedAttr, vxId)) { pinnedCount++; }
+            if (isVertexIncluded(vxId)) { 
+                incCount++; 
+            }
+            if (!wg.getBooleanValue(pinnedAttr, vxId)) { 
+                pinnedCount++; 
+            }
         }
 
         // If every vertex is a candidate to be moved we can just return the

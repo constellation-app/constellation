@@ -20,7 +20,7 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.LayersConcept;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
-import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabel;
 import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
@@ -68,8 +68,6 @@ public final class GraphVisualAccess implements VisualAccess {
 
     //TODO: Determine whether this field is needed
     private final int[] visualAttributes = new int[VisualProperty.values().length];
-    private final String BOOLEAN_ATTRIBUTE_STR = "boolean";
-    private final Map<String, String> bool_dict = new HashMap<String, String>();
 
     private int graphBackgroundColor = Graph.NOT_FOUND;
     private int graphHighlightColor = Graph.NOT_FOUND;
@@ -150,10 +148,6 @@ public final class GraphVisualAccess implements VisualAccess {
     
     public GraphVisualAccess(final Graph graph) {
         this.graph = graph;
-        
-        // Populate a map to swap between true and false
-        this.bool_dict.put("true", "false");
-        this.bool_dict.put("false", "true");
     }
 
     @Override
@@ -1051,7 +1045,7 @@ public final class GraphVisualAccess implements VisualAccess {
             final String value = accessGraph.getStringValue(decoratorAttrib, accessGraph.getVertex(decoratorVertex));
             // If the attribute is a boolean, construct a value string including the attribute name as well,
             // as per comments above.
-            if (accessGraph.getAttributeType(decoratorAttrib) == BOOLEAN_ATTRIBUTE_STR)
+            if (accessGraph.getAttributeType(decoratorAttrib).equals(BooleanAttributeDescription.ATTRIBUTE_NAME))
             {   
                 // Booleans will either have a value of true_<attributeName> or false_<attributeName>
                 // there are three cases to cater for: 
@@ -1061,7 +1055,8 @@ public final class GraphVisualAccess implements VisualAccess {
                 //    --> In this case the value tht doesnt have an icon set should display nothing
                 // 3. Neither true_<attributeName> or false_<attributeName> is set as an alias
                 //    --> In this case there is no override, use the default true/false icons
-                final String notValue = this.bool_dict.get(value);
+                final boolean valueAsBool = accessGraph.getBooleanValue(decoratorAttrib, accessGraph.getVertex(decoratorVertex));
+                final String notValue = valueAsBool ? "false" : "true";
                 final String attributeName = accessGraph.getAttributeName(decoratorAttrib);
                 final String valueStr = value.concat("_").concat(attributeName);
                 final String notValueStr = notValue.concat("_").concat(attributeName);

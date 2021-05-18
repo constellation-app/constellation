@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
+== 2021-05-19 Added the ability to pin the position of vertexes to prevent them from moving when using arrangement plugins 
+<p>Vertexes can now be pinned, either through the pin/unpin toolbar icons in the arrangements panel, or via the corresponding Arrange menu options. Once pinned Vertexes do not move when arrangement plugins are run, but can be manually moved. The 'pinned' vertex stores this information.</p>
+
 == 2021-04-01 Ability to Search in Single Choice Drop-Down Lists
 <p>Single Choice Drop-Downs are now searchable, which allows you to filter the options in the drop down list based on what is typed.</p>
 
