@@ -95,6 +95,7 @@ public final class GraphOptionsPanelController extends OptionsPanelController {
 
     @Override
     public void cancel() {
+        // Method intentionally left blank - S1186
     }
 
     // Add code to check valid values. may be needed for expansion of this UI manu.

@@ -33,6 +33,7 @@ public class CreateAttributeEditOperation implements EditOperation {
     private AttributePrototype attrNew;
 
     public CreateAttributeEditOperation() {
+        // Method intentionally left blank - S1186
     }
 
     @Override
