@@ -1,6 +1,6 @@
 # Constellation Changes
 
-## 2021-05-01 Changes in May 2021
+## Changes in May 2021
 
 -   Removed `QualityControlViewPane.getLookup()` as it was not needed.
 -   Removed the file type being added to dependency jars as it counts
@@ -8,11 +8,11 @@
 -   Updated `ProjectUpdater` to sort jars in `project.xml` consistently
     between Windows and Linux.
 
-## 2021-04-01 Changes in April 2021
+## Changes in April 2021
 
 -   Added `FourTuple` to the Core Utilities module.
 
-## 2021-03-01 Changes in March 2021
+## Changes in March 2021
 
 -   Added `hasLowLevelTag()` to `PluginReport` classes to check whether
     a plugin has a “LOW LEVEL” tag specified.
@@ -21,7 +21,7 @@
 -   Updated all state reading and writing plugins to have a “LOW LEVEL”
     tag.
 
-## 2021-01-01 Changes in January 2021
+## Changes in January 2021
 
 -   Moved a number of classes out of
     `au.gov.asd.tac.constellation.plugins.importexport.delimited` and
@@ -30,7 +30,7 @@
 -   Converted the Tutorial Page into a What’s New page for displaying
     changes in Constellation.
 
-## 2020-11-01 Changes in November 2020
+## Changes in November 2020
 
 -   Added `RecentGraphScreenshotUtilities` to manage taking screenshots
     of graphs to be used by the Welcome tab.
@@ -77,7 +77,7 @@
 -   Updated parameters for `setLayers()` and `updateLayers()` in
     `LayersViewPane`.
 
-## 2020-08-01 Changes in August 2020
+## Changes in August 2020
 
 -   Updated `DefaultPluginInteraction` and `PluginParameters` to unfocus
     the Ok button from the plugin swing dialog if there is a multi-line
@@ -89,7 +89,7 @@
 -   Added utility methods to `ConstellationColor` which assist with
     getting inverse colors.
 
-## 2020-07-01 Changes in July 2020
+## Changes in July 2020
 
 -   Added `AnalyticSchemaV4UpdateProvider` to upgrade
     `SchemaVertexType`s that have changed.
@@ -104,7 +104,7 @@
     longer runs on the EDT.
 -   Removed the Attribute Calculator.
 
-## 2020-06-01 Changes in June 2020
+## Changes in June 2020
 
 -   Added `LayerConcept` to group all of the layer mask and layer
     visibility attributes together.
@@ -113,7 +113,7 @@
     accessed by direct reference;
     i.e. `CoreGlobalParameters.QUERY_NAME_PARAMETERS`.
 
-## 2020-05-01 Changes in May 2020
+## Changes in May 2020
 
 -   Added feedback for delimiter import.
 -   Added basic support for MacOS.
@@ -145,14 +145,14 @@
     the `build-zip.sh` script in
     `constellation-app/constellation-applications`
 
-## 2020-04-03 Changes in April 2020
+## Changes in April 2020
 
 -   Added search feature to Table View Column Selection.
 -   Fixed the mouse controls of the Map View to be consistent with the
     graph view.
 -   Fixed a bug that caused custom markers to disappear
 
-## 2020-04-01 Changes in April 2020
+## Changes in April 2020
 
 -   Fixed the mouse controls of the Map View to be consistent with the
     graph view.
@@ -216,7 +216,7 @@
 -   Updated `deobfuscate()` in `PasswordDeobfuscator` to now return a
     String instead of a CharSequence.
 
-## 2020-03-01 Changes in March 2020
+## Changes in March 2020
 
 -   Added `AnalyticSchemaPluginRegistry` to Core Analytic Schema
 -   Added new module Core Attribute Calculator to separate it from the
@@ -295,7 +295,7 @@
 -   Updated the Travis run image to use NetBeans 11.3 and include the
     workaround for NetBeans 11.
 
-## 2020-02-01 Changes in February 2020
+## Changes in February 2020
 
 -   Fixed a bug which now ensures that overriding a transaction
     direction using `GraphRecordStoreUtilities.DIRECTED_KEY` persists
@@ -308,14 +308,14 @@
 -   Renamed `SupporPackageAction` to `SupportPackageAction` to fix a
     spelling typo.
 
-## 2020-01-01 Changes in January 2020
+## Changes in January 2020
 
 -   Added `LabelFontsOptionsPanel` to allow setting of fonts rendered on
     the graph through the UI.
 -   Added `ConstellationLabelFonts` interface to allow programmatic
     specification of default label fonts.
 
-## 2019-12-01 Changes in December 2019
+## Changes in December 2019
 
 -   Added method `suppressEvent(boolean, List<>)` to `PluginParameter`
     which allow setting of properties/options without firing change
@@ -327,11 +327,11 @@
     services, as well as image export. This can be specified by
     overriding the new `getMapServerType` method.
 
-## 2019-11-01 Changes in November 2019
+## Changes in November 2019
 
 -   Remove deprecated jai libraries.
 
-## 2019-10-01 Changes in October 2019
+## Changes in October 2019
 
 -   Added `DevOpsNotificationPlugin` to Core Functionality to track
     messages from plugins for developers and administrators attention.
@@ -341,7 +341,7 @@
 -   Fixed a bug with the Restful service caused by multiple servlet
     libraries used that created a clash.
 
-## 2019-08-01 Changes in August 2019
+## Changes in August 2019
 
 -   Added `BrandingUtilities` to Core Utilities to maintain the
     application name “Constellation”.
@@ -373,7 +373,7 @@
 -   Updated `AbstractTopComponent` to log when the view is opened,
     closed, showing, hidden, activated and deactivated.
 
-## 2019-06-01 Changes in June 2019
+## Changes in June 2019
 
 -   Added a `Content.URL` attribute to represent a URL link in the
     `ContentConcept`.
@@ -384,7 +384,7 @@
 -   Removed `OldStringUtilities` and merged the required methods to
     `StringUtilities`.
 
-## 2019-05-01 Changes in May 2019
+## Changes in May 2019
 
 -   Fixed a bug with `SchemaVertexTypeUtilities` and
     `SchemaTransactionTypeUtilities` not respecting overridden types.
@@ -401,7 +401,7 @@
     Malgun Gothic due to licensing restrictions with the Arial font
     resulting it from no longer being installed on Windows by default.
 
-## 2019-04-01 Changes in April 2019
+## Changes in April 2019
 
 -   Renamed `NodeGraphLabelsAttributeDescription,`
     `NodeGraphLabelsAttributeInteraction,` and
@@ -416,7 +416,7 @@
     doesn’t make sense to have an edit plugin without any editing
     occurring.
 
-## 2019-03-01 Changes in March 2019
+## Changes in March 2019
 
 -   Added 23 new country flag icons.
 -   Added Arrange by Node Attribute to combine the function of Arrange
@@ -430,12 +430,12 @@
 -   Updated `Ctrl+Backspace` to do nothing so that pressing it in a text
     area on a docked window won’t cause it to minimize.
 
-## 2019-02-01 Changes in February 2019
+## Changes in February 2019
 
 -   Added a new interface called `DataAccessPreQueryValidation` to check
     before running Data Access View queries.
 
-## 2019-01-01 Changes in January 2019
+## Changes in January 2019
 
 -   Added Enrichment to the `DataAccessPluginCoreType` class.
 -   Moved `au.gov.asd.tac.constellation.analyticview` to
@@ -493,7 +493,7 @@
 -   Updated structure of Merge Transactions Plugin to allow for more
     merge by types.
 
-## 2018-12-01 Changes in December 2018
+## Changes in December 2018
 
 -   Added validation check to `Date-Time` Range Global Parameter in Data
     Access View.
@@ -508,7 +508,7 @@
 -   Updated `MarkerUtilities` with `generateBoundingBox` method.
 -   Updated `ConstellationAbstractMarker` with `getRadius` method.
 
-## 2018-11-01 Changes in November 2018
+## Changes in November 2018
 
 -   Moved the `getOverriddenPlugin` method from the `DataAccessPlugin`
     class to the Plugin class. This technically allows the ability for
@@ -524,7 +524,7 @@
 -   Renamed all plugin parameter id references from `\*_PARAMETER` to
     `\*_PARAMETER_ID`
 
-## 2018-10-01 Changes in October 2018
+## Changes in October 2018
 
 -   Added the `overridenType` property to `SchemaElementType,` and
     removed it from `SchemaVertexType` and `SchemaTransactionType`.
@@ -539,7 +539,7 @@
 -   Updated `SchemaElementType.isSubTypeOf` to take overridden types
     into account.
 
-## 2018-09-01 Changes in September 2018
+## Changes in September 2018
 
 -   Added a new plugin to open a url in a browser called
     `OpenInBrowserPlugin` that is available in Core Functionality.
@@ -550,7 +550,7 @@
 -   Updated `PlaceholderUtilities` with support for collapsing
     placeholders using the standard graph API.
 
-## 2018-08-01 Changes in August 2018
+## Changes in August 2018
 
 -   Added functionality to cache icons.
 -   Fixed a bug in the Analytic schema factory which was not correctly
@@ -559,7 +559,7 @@
 -   Fixed a performance issue with the Table View by moving work off the
     EDT.
 
-## 2018-07-01 Changes in July 2018
+## Changes in July 2018
 
 -   Added `AnalyticConcept.VertexType.USER_NAME`.
 -   Added Subdivision enum containing country subdivisions (currently
@@ -580,7 +580,7 @@
 -   Updated the copyright to Apache Version 2.0 with the Australian
     Signals Directorate being the License owner.
 
-## 2018-06-01 Changes in June 2018
+## Changes in June 2018
 
 -   Added a `RestClient.postWithJson()` to allow you to post your own
     json string in the Core Utilities module.
@@ -603,7 +603,7 @@
 -   Updated the support package generation to ignore the heapdump file
     as it is likely to be several gigabytes in size.
 
-## 2018-05-01 Changes in May 2018
+## Changes in May 2018
 
 -   Added `FilterPlugin` to the Core Data Access View module.
 -   Added `PasswordParameterType` into the Core Plugin Framework module.
@@ -629,7 +629,7 @@
 -   Updated password obfuscation to use a service lookup to get the key.
     To use it implement `PasswordKey` in the Core Security module.
 
-## 2018-04-01 Changes in April 2018
+## Changes in April 2018
 
 -   Added New Nebula into th `Experimental->Tools` menu
 -   Added an FPS counter `OpenGL` renderer that can be enabled from the
@@ -658,7 +658,7 @@
 -   Updated the various `\*Preference` panels to follow and more of an
     MVC pattern.
 
-## 2018-03-01 Changes in March 2018
+## Changes in March 2018
 
 -   Added `FactColorTranslator` and `FactToSizeTranslator` to the Core
     Analytics View module.
@@ -694,7 +694,7 @@
     to that schema. Similarly, `SchemaAttribute.ensure` provides this
     option.
 
-## 2018-02-01 Changes in February 2018
+## Changes in February 2018
 
 -   Fixed memory leaks with the `ListeningTopComponent` and
     `TimelineTopComponent`.
@@ -720,7 +720,7 @@
     -   `removeIgnoredEvent` has been added to allow removal of an
         ignored event.
 
-## 2017-12-01 Changes in December 2017
+## Changes in December 2017
 
 -   Added forward slash (/) to the list of special characters to escape
     in `LuceneUtilities` in the Core Utilities module.
@@ -728,7 +728,7 @@
     which will help reduce unnecessary write locks on the graph and
     reduce overall threads being forked.
 
-## 2017-11-01 Changes in November 2017
+## Changes in November 2017
 
 -   Added `MultiplexityAnalytic` and `WeightAnalytic` plugins and
     analytics.
@@ -737,7 +737,7 @@
 -   Renamed `SnaConcept.GRAPH.GRAPH_DENSITY` to
     `SnaConcept.GRAPH.DENSITY` in the Core Algorithms module.
 
-## 2017-10-01 Changes in October 2017
+## Changes in October 2017
 
 -   Added `GraphNodePluginRegistry` in the Core Graph Node module.
 -   Added `JSingleChoiceComboBoxMenu` as a single choice alternative to
@@ -837,7 +837,7 @@
     one of the `getColorValue(...)` methods. This is to ensure that
     named color values are always used where available.
 
-## 2017-09-01 Changes in September 2017
+## Changes in September 2017
 
 -   Added Auth and supporting classes which allows support for a
     username/password dialog.
@@ -877,7 +877,7 @@
     compatible Java 8u144.
 -   Updated to `NetBeans` 8.2 and Java 8u144.
 
-## 2017-08-01 Changes in August 2017
+## Changes in August 2017
 
 -   Added new module Core Web Server to hold all the classes related to
     managing local web servers and the Constellation REST API.
@@ -913,7 +913,7 @@
 -   Updated the properties map in `SchemaElementType` to be a Map of
     String to String so that serialisation is simplified.
 
-## 2017-07-01 Changes in July 2017
+## Changes in July 2017
 
 -   Added ability to make `AnalyticPlugin` classes hidden from the
     Analytic View GUI using the `isVisible` method.
@@ -948,7 +948,7 @@
     is to avoid dealing with conflicts where a vertex and transaction
     attribute with the same name exist.
 
-## 2017-06-01 Changes in June 2017
+## Changes in June 2017
 
 -   Fixed a bug detecting graphics card compatibility.
 -   Moved all `*AttributeUpdateProvider` classes in
@@ -978,7 +978,7 @@
     ‘au.gov.asd.tac.constellation.schema.simpleschema.update’ to
     ‘au.gov.asd.tac.constellation.schema.simpleschema.compatibility’.
 
-## 2017-05-01 Changes in May 2017
+## Changes in May 2017
 
 -   Added `RawData.isEmpty()`.
 -   Added `ScoringAnalyticPlugin` and `MultiScoringAnalyticPlugin` to
@@ -1054,7 +1054,7 @@
         and feel. This can be done via Tools -&gt; Complete with Schema
         or F5.
 
-## 2017-04-01 Changes in April 2017
+## Changes in April 2017
 
 -   Added `GeoUtilities.dmsToDd` to convert a `Degrees-Minute-Seconds`
     formatted geospatial coordinate to Decimal Degrees.
@@ -1067,7 +1067,7 @@
 -   Moved Tuple to the Core Utilities module.
 -   Removed the Core Charts module.
 
-## 2017-03-01 Changes in March 2017
+## Changes in March 2017
 
 -   Added `DownloadImageUtilities` to the Core Utilities module.
 -   Added `HttpsUtilities.readErrorStreamAndThrow` in the Core Utilities
@@ -1124,7 +1124,7 @@
     are all now appended with `'_NX'` to differentiate them from java
     implementations of the same algorithms.
 
-## 2017-02-01 Changes in February 2017
+## Changes in February 2017
 
 -   Added `CreateCompositesFromDominantNodesPlugin`.
 -   Added `SetDrawFlagPlugin`.
@@ -1219,7 +1219,7 @@
     and more convenient to prevent the Visualisation framework itself
     from having to deal with null cameras.
 
-## 2017-01-01 Changes in January 2017
+## Changes in January 2017
 
 ### Major Changes to Rendering and Event Handling
 
@@ -1329,7 +1329,7 @@
     the color and the decorations attribute.
 -   Double escaping strings in the decorations no longer occur.
 
-## 2016-11-01 Changes in November 2016
+## Changes in November 2016
 
 -   Added `JMultiChoiceComboBox` class to the Core Utilities module.
     This class provides a Swing alternative to `JavaFX's`
@@ -1362,7 +1362,7 @@
     makes the core icon set consistent and allows us to make better use
     of background icons for analytic purposes.
 
-## 2016-10-01 Changes in October 2016
+## Changes in October 2016
 
 -   Added `LogAction` to show the CONSTELLATION logs to the user.
 -   Added a “Support Package” menu item under help which zips the
@@ -1393,7 +1393,7 @@
 -   Updated `ConstellationDialog` to dispose when the `hideDialog` is
     called which should free up resources.
 
-## 2016-09-01 Changes in September 2016
+## Changes in September 2016
 
 -   Added a new Map View based on the third party libraries `'Unfolding`
     Maps’ and `'Processing'`.
@@ -1438,7 +1438,7 @@
     address instead of all addresses, and has a default port instead of
     being dynamically assigned.
 
-## 2016-08-01 Changes in August 2016
+## Changes in August 2016
 
 -   Added Analytic View v2 framework.
     -   Any plugin can now be used as an analytic using the
@@ -1480,7 +1480,7 @@
     Address, Country and Geohash types.
 -   Updated various menu item positions.
 
-## 2016-07-01 Changes in July 2016
+## Changes in July 2016
 
 -   Added “Templates” which allow users to save multiple custom
     visualisations. Templates are essentially constellation files in
@@ -1546,7 +1546,7 @@
     exposed as attributes) so they can be used as regular graph
     attributes.
 
-## 2016-06-01 Changes in June 2016
+## Changes in June 2016
 
 -   Fixed a dormant graph locking bug.
 -   Fixed various bugs.
@@ -1577,7 +1577,7 @@
 -   Updated `CoreImportExport` now using Apache Commons CSV to parse CSV
     files.
 
-## 2016-05-01 Changes in May 2016
+## Changes in May 2016
 
 -   Added a new module called `CoreMapView` which contains the Map View
     framework.
@@ -1588,7 +1588,7 @@
     of the graph.
 -   Renamed the `ResetPlugin` class to `ResetViewPlugin`.
 
-## 2016-02-01 Change in February 2016
+## Change in February 2016
 
 -   Added an icons API so that developers can add custom icons
     programmatically using the `IconProvider` class.
