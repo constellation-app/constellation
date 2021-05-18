@@ -90,7 +90,6 @@
         <!-- Exclusions -->
         <exclude org="javax.media" module="jai_core"/>
         <exclude org="javax.media" module="jai_codec"/>
-        <exclude org="javax.media" module="jai_imageio"/>
         <exclude org="javax.media" module="jai_widget"/>
         <exclude type="source" ext="jar" conf="*"/>
         <exclude type="javadoc" ext="jar" conf="*"/>

@@ -1,5 +1,10 @@
 # Constellation Changes
 
+## 2021-05-01 Changes in May 2021
+* Removed `QualityControlViewPane.getLookup()` as it was not needed.
+* Removed the file type being added to dependency jars as it counts towards the limited class path length in Windows.
+* Updated `ProjectUpdater` to sort jars in `project.xml` consistently between Windows and Linux.
+
 ## 2021-04-01 Changes in April 2021
 * Added `FourTuple` to the Core Utilities module.
 
