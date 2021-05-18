@@ -578,7 +578,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     }
 
     @Override
-    public void finalize() throws Throwable {
+    protected void finalize() throws Throwable {
         try {
             MemoryManager.finalizeObject(VisualGraphTopComponent.class);
         } finally {
