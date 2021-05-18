@@ -27,8 +27,7 @@ import java.util.Date;
 /**
  * A date time range, with the start and end times truncated to the second.
  * <p>
- * This can be an absolute time range with fixed values for start and end, or a
- * period relative to "now".
+ * This can be an absolute time range with fixed values for start and end, or a period relative to "now".
  *
  * @author algol
  */
@@ -69,8 +68,8 @@ public class DateTimeRange {
     /**
      * A relative date range.
      * <p>
-     * When the start and end dates are retrieved, the end date will be "now",
-     * and the start date will be the period before the end date.
+     * When the start and end dates are retrieved, the end date will be "now", and the start date will be the period
+     * before the end date.
      *
      * @param period the period that represents the time range.
      * @param zi the id of the time zone.
@@ -95,11 +94,9 @@ public class DateTimeRange {
     /**
      * The relative period of this instance.
      * <p>
-     * If the period is null, this instance is absolute; use getZonedStartEnd
-     * instead.
+     * If the period is null, this instance is absolute; use getZonedStartEnd instead.
      *
-     * @return The relative Period of this instance, or null if the range is
-     * absolute.
+     * @return The relative Period of this instance, or null if the range is absolute.
      */
     public Period getPeriod() {
         return period;
@@ -112,8 +109,7 @@ public class DateTimeRange {
     /**
      * If the range is absolute, start and end are returned as-is.
      * <p>
-     * If the range is relative, end is "now" and start is the relative datetime
-     * prior to start.
+     * If the range is relative, end is "now" and start is the relative datetime prior to start.
      *
      * @return A ZonedDateTime[2] containing the start,end of the range.
      */
@@ -135,7 +131,7 @@ public class DateTimeRange {
     public boolean equals(final Object other) {
         if (this == other) {
             return true;
-        } else if (!(other instanceof DateTimeRange)) {
+        } else if (this.getClass() != obj.getClass()) {
             return false;
         } else {
             final DateTimeRange otherRange = (DateTimeRange) other;
@@ -162,8 +158,7 @@ public class DateTimeRange {
     /**
      * Parse the output of toString().
      * <p>
-     * If a DateTimeParseException is thrown, a default DateTimeRange value will
-     * be returned.
+     * If a DateTimeParseException is thrown, a default DateTimeRange value will be returned.
      *
      * @param s The string to be parsed.
      *
@@ -214,8 +209,8 @@ public class DateTimeRange {
     }
 
     /**
-     * Absolute ranges return two ISO8601 dates, relative ranges return an
-     * ISO8601 duration; both of these have a timezone appended.
+     * Absolute ranges return two ISO8601 dates, relative ranges return an ISO8601 duration; both of these have a
+     * timezone appended.
      *
      * @return A representation of the range.
      */
