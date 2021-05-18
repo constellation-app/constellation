@@ -66,8 +66,8 @@ import processing.event.KeyEvent;
 import processing.event.MouseEvent;
 
 /**
- * The renderer for the Map View. This class uses Processing to render map tiles
- * using OpenGL, and handles all interactions within the map.
+ * The renderer for the Map View. This class uses Processing to render map tiles using OpenGL, and handles all
+ * interactions within the map.
  *
  * @author cygnus_x-1
  */
@@ -263,11 +263,9 @@ public class MapViewTileRenderer extends PApplet {
     }
 
     /**
-     * Initialise the tile renderer. As of Processing 3, the {@link PApplet}
-     * class no longer extends {@link Applet}, meaning in order to integrate a
-     * processing sketch with Swing or JavaFX you must initialise and extract
-     * the {@link PSurface} class responsible for rendering the sketch and
-     * instead integrate that.
+     * Initialise the tile renderer. As of Processing 3, the {@link PApplet} class no longer extends {@link Applet},
+     * meaning in order to integrate a processing sketch with Swing or JavaFX you must initialise and extract the
+     * {@link PSurface} class responsible for rendering the sketch and instead integrate that.
      *
      * @return
      */
@@ -307,9 +305,8 @@ public class MapViewTileRenderer extends PApplet {
     }
 
     /**
-     * Note that this method is trying to remove references to the
-     * NewtWindowListener as it's preventing the MapViewTileRenderer from being
-     * garbage collected. This is still a work in progress.
+     * Note that this method is trying to remove references to the NewtWindowListener as it's preventing the
+     * MapViewTileRenderer from being garbage collected. This is still a work in progress.
      */
     @Override
     public void dispose() {
@@ -360,7 +357,7 @@ public class MapViewTileRenderer extends PApplet {
         overlays = Lookup.getDefault().lookupAll(MapOverlay.class);
         overlays.forEach(overlay -> overlay.initialise(this, map, dispatcher));
 
-        barScale = new BarScaleUI(this, map, 10f, this.getComponent().getHeight() - 10);
+        barScale = new BarScaleUI(this, map, 10f, this.getComponent().getHeight() - 10f);
 
         updateMarkers(parent.getCurrentGraph(), new MarkerState());
         zoomToLocation(null);
@@ -392,8 +389,8 @@ public class MapViewTileRenderer extends PApplet {
                 final int boxColor = MarkerUtilities.DEFAULT_BOX_COLOR;
                 fill(boxColor);
                 rect(boxOriginX, boxOriginY,
-                        boxDeltaX - boxOriginX,
-                        boxDeltaY - boxOriginY);
+                        (float) (boxDeltaX - boxOriginX),
+                        (float) (boxDeltaY - boxOriginY));
             }
 
             updateClusters(parent.getMarkerState());
@@ -767,10 +764,9 @@ public class MapViewTileRenderer extends PApplet {
     }
 
     /**
-     * Calculate the set of markers which fall either completely or partially
-     * within the selection box. This is done by first checking if any point
-     * location constituting the marker is within the box, and if not then
-     * performing a point in polygon test to look for intersections.
+     * Calculate the set of markers which fall either completely or partially within the selection box. This is done by
+     * first checking if any point location constituting the marker is within the box, and if not then performing a
+     * point in polygon test to look for intersections.
      *
      * @return the set of markers within the selection box
      */
@@ -872,10 +868,9 @@ public class MapViewTileRenderer extends PApplet {
     }
 
     /**
-     * Check for intersection by parameterising the marker and selection edges,
-     * so that x = minX + deltaX * T and y = minY + deltaY * T. This allows us
-     * use to use differential equations to solve for T. If T is between zero
-     * and one for both edges, then they intersect.
+     * Check for intersection by parameterising the marker and selection edges, so that x = minX + deltaX * T and y =
+     * minY + deltaY * T. This allows us use to use differential equations to solve for T. If T is between zero and one
+     * for both edges, then they intersect.
      *
      * @param markerEdge
      * @param selectionEdge

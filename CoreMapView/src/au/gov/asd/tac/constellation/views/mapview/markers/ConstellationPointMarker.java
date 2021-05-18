@@ -45,8 +45,8 @@ public class ConstellationPointMarker extends ConstellationAbstractMarker {
     private PImage TEMPLATE_IMAGE;
 
     // point relative to image
-    private float POINT_X_OFFSET;
-    private float POINT_Y_OFFSET;
+    private double POINT_X_OFFSET;
+    private double POINT_Y_OFFSET;
 
     private static final String POINT_MARKER_ONE_LOCATION_ONLY = "A point marker can only have one location.";
     private static final String POINT_MARKER_ONE_LOCATION_MUST = "A point marker must have exactly one location.";
@@ -79,7 +79,7 @@ public class ConstellationPointMarker extends ConstellationAbstractMarker {
             templateImage.getRGB(0, 0, TEMPLATE_IMAGE.width, TEMPLATE_IMAGE.height, TEMPLATE_IMAGE.pixels, 0, TEMPLATE_IMAGE.width);
             TEMPLATE_IMAGE.updatePixels();
 
-            POINT_X_OFFSET = TEMPLATE_IMAGE.width / 2;
+            POINT_X_OFFSET = TEMPLATE_IMAGE.width / 2d;
             POINT_Y_OFFSET = TEMPLATE_IMAGE.height;
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
@@ -163,9 +163,9 @@ public class ConstellationPointMarker extends ConstellationAbstractMarker {
     }
 
     @Override
-    public boolean isInside(final UnfoldingMap map, final float checkX, final float checkY) {
-        final float x = map.mapDisplay.getScreenPosition(getLocation()).x;
-        final float y = map.mapDisplay.getScreenPosition(getLocation()).y;
+    public boolean isInside(final UnfoldingMap map, final double checkX, final double checkY) {
+        final double x = map.mapDisplay.getScreenPosition(getLocation()).x;
+        final double y = map.mapDisplay.getScreenPosition(getLocation()).y;
         return checkX > x - POINT_X_OFFSET && checkX < x - POINT_X_OFFSET + TEMPLATE_IMAGE.width
                 && checkY > y - POINT_Y_OFFSET && checkY < y - POINT_Y_OFFSET + TEMPLATE_IMAGE.height;
     }
