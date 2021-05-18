@@ -23,9 +23,10 @@ import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlEvent;
 import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlEvent.QualityCategory;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlState;
 import au.gov.asd.tac.constellation.views.qualitycontrol.rules.QualityControlRule;
+import java.awt.GraphicsEnvironment;
 import java.util.ArrayList;
 import java.util.List;
-import javafx.application.Application;
+import javafx.embed.swing.JFXPanel;
 import javafx.scene.control.Tooltip;
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.assertEquals;
@@ -82,22 +83,25 @@ public class DefaultQualityControlAutoButtonNGTest {
     public void testQualityControlChangedWithNullState() throws InterruptedException {
         System.out.println("qualityControlChanged");
         QualityControlState state = null;
-        Application.launch("");
-        DefaultQualityControlAutoButton instance = new DefaultQualityControlAutoButton();
+        if (!GraphicsEnvironment.isHeadless()) {
+            //needed to initialise the toolkit
+            new JFXPanel();
+            DefaultQualityControlAutoButton instance = new DefaultQualityControlAutoButton();
 
-        String expRiskText = String.format(instance.QUALITY_CONTROL_WIDGET_TEXT, Bundle.MSG_NoRisk());
-        String expStyleText = instance.DEFAULT_TEXT_STYLE + instance.BUTTON_STYLE;
-        String expTooltipText = null;
+            String expRiskText = String.format(instance.QUALITY_CONTROL_WIDGET_TEXT, Bundle.MSG_NoRisk());
+            String expStyleText = instance.DEFAULT_TEXT_STYLE + instance.BUTTON_STYLE;
+            String expTooltipText = null;
 
-        instance.qualityControlChanged(state);
+            instance.qualityControlChanged(state);
 
-        String resultRiskText = instance.getText();
-        String resultStyleText = instance.getStyle();
-        final Tooltip resultTooltipText = instance.getTooltip();
+            String resultRiskText = instance.getText();
+            String resultStyleText = instance.getStyle();
+            final Tooltip resultTooltipText = instance.getTooltip();
 
-        assertEquals(resultRiskText, expRiskText);
-        assertEquals(resultStyleText, expStyleText);
-        assertEquals(resultTooltipText, expTooltipText);
+            assertEquals(resultRiskText, expRiskText);
+            assertEquals(resultStyleText, expStyleText);
+            assertEquals(resultTooltipText, expTooltipText);
+        }
     }
 
     /**
@@ -108,21 +112,24 @@ public class DefaultQualityControlAutoButtonNGTest {
     public void testQualityControlChangedWithValidState() throws InterruptedException {
         System.out.println("qualityControlChanged");
         QualityControlState state = new QualityControlState(graph.getId(), events, rules);
-        Application.launch("");
-        DefaultQualityControlAutoButton instance = new DefaultQualityControlAutoButton();
+        if (!GraphicsEnvironment.isHeadless()) {
+            //needed to initialise the toolkit
+            new JFXPanel();
+            DefaultQualityControlAutoButton instance = new DefaultQualityControlAutoButton();
 
-        final String expRiskText = "Quality Category: FATAL";
-        final String expStyleText = "-fx-text-fill: rgb(255,255,255);-fx-background-color: rgba(0,13,13,1.000000);" + instance.BUTTON_STYLE;
-        final String expTooltipText = "Reason 1, Reason2";
+            final String expRiskText = "Quality Category: FATAL";
+            final String expStyleText = "-fx-text-fill: rgb(255,255,255);-fx-background-color: rgba(0,13,13,1.000000);" + instance.BUTTON_STYLE;
+            final String expTooltipText = "Reason 1, Reason2";
 
-        instance.qualityControlChanged(state);
-        Thread.sleep(100);
-        final String resultRiskText = instance.getText();
-        final String resultStyleText = instance.getStyle();
-        final Tooltip resultTooltipText = instance.getTooltip();
+            instance.qualityControlChanged(state);
+            Thread.sleep(100);
+            final String resultRiskText = instance.getText();
+            final String resultStyleText = instance.getStyle();
+            final Tooltip resultTooltipText = instance.getTooltip();
 
-        assertEquals(resultRiskText, expRiskText);
-        assertEquals(resultStyleText, expStyleText);
-        assertEquals(resultTooltipText.getText(), expTooltipText);
+            assertEquals(resultRiskText, expRiskText);
+            assertEquals(resultStyleText, expStyleText);
+            assertEquals(resultTooltipText.getText(), expTooltipText);
+        }
     }
 }
