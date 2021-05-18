@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs;
 
+import au.gov.asd.tac.constellation.utilities.datastructure.FourTuple;
 import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
 import java.awt.Color;
 import java.awt.Font;
@@ -352,11 +353,11 @@ public final class GlyphManagerBI implements GlyphManager {
             glyphStream = DEFAULT_GLYPH_STREAM;
         }
 
-        // Retrieve the LigatureContext from the cache to greatly speed up 
-        // building these ligatures which are built every time the graph is 
-        // loaded or when the graph structure changes. Note that items are not 
-        // purged from this cache so there is a small build up of memory over 
-        // time. Guava caching was attempted though it was slower and negating 
+        // Retrieve the LigatureContext from the cache to greatly speed up
+        // building these ligatures which are built every time the graph is
+        // loaded or when the graph structure changes. Note that items are not
+        // purged from this cache so there is a small build up of memory over
+        // time. Guava caching was attempted though it was slower and negating
         // the performance improvements of caching.
         //
         if (!cache.containsKey(text)) {
@@ -639,7 +640,7 @@ public final class GlyphManagerBI implements GlyphManager {
         /**
          * Cache the Rectangles to prevent duplicate objects
          */
-        private static final Map<Integer, Rectangle> rectangleCache = new HashMap<>();
+        private static final Map<FourTuple<Integer, Integer, Integer, Integer>, Rectangle> rectangleCache = new HashMap<>();
 
         /**
          * Cache the GlyphRectangle to prevent duplicate objects
@@ -647,13 +648,16 @@ public final class GlyphManagerBI implements GlyphManager {
         private static final Map<ThreeTuple<Integer, Integer, Integer>, GlyphRectangle> glyphRectangleCache = new HashMap<>();
 
         public static GlyphRectangle create(final int position, final Rectangle rect, final int ascent) {
-            final int hashCode = rect.hashCode();
+            // Note that the Rectangle hashCode() is not unique so using the
+            // attributes to make a unique key we can use for caching.
+            final FourTuple<Integer, Integer, Integer, Integer> rectangleKey
+                    = FourTuple.create(rect.x, rect.y, rect.width, rect.height);
 
-            final ThreeTuple key = ThreeTuple.create(position, hashCode, ascent);
+            final ThreeTuple key = ThreeTuple.create(position, rectangleKey, ascent);
             final GlyphRectangle rectangle = glyphRectangleCache.get(key);
             if (rectangle == null) {
-                rectangleCache.putIfAbsent(hashCode, rect);
-                glyphRectangleCache.put(key, new GlyphRectangle(position, rectangleCache.get(hashCode), ascent));
+                rectangleCache.putIfAbsent(rectangleKey, rect);
+                glyphRectangleCache.put(key, new GlyphRectangle(position, rectangleCache.get(rectangleKey), ascent));
             }
 
             return glyphRectangleCache.get(key);
