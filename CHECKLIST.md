@@ -71,6 +71,7 @@ submitting a pull request.
     conventions:
 
     -   The constant should end in \_PARAMETER\_ID.
+
     -   An example of creating a plugin parameter looks like:
 
     ``` java
@@ -99,34 +100,59 @@ submitting a pull request.
 - [ ] When documenting use the following conventions:
 
     -   **nodes** rather than **vertices**
+
     -   Use active voice. For example
+
         -   GOOD:
+
             -   *To extract the foo, manipulate the bar*
+
         -   BAD:
+
             -   *The foo can be extracted by manipulating the bar*
+
     -   Give direct instructions (avoid *will* and *if*)
+
         -   GOOD:
+
             -   *To increase the volume, turn the dial*
+
             -   *Turn the dial to increase the volume*
+
             -   *Turning the dial increases the volume*
+
         -   OK:
+
             -   *Turning the dial will increase the volume*
+
         -   BAD:
+
             -   *If you turn the dial, the volume will increase*
+
     -   Exception to rule above: Use conditional statements for warnings
         or unlikely events.
+
         -   GOOD:
+
             -   \*Clicking the big red button will activate the
                 self-destruct
+
             -   *If you click on the big red button, the self-destruct
                 will activate*
+
         -   OK:
+
             -   *Click on the big red button to activate the
                 self-destruct*
+
             -   *To activate the self-destruct, click the big red
                 button*
+
     -   **you** rather than **we**
+
         -   GOOD:
+
             -   *You should save your graph before continuing*
+
         -   BAD:
             -   *We recommend saving your graph before continuing*

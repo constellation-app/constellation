@@ -25,16 +25,27 @@ capabilities across large and complex data sets.
 # Table of Contents
 
 -   [Vision Statement](#vision-statement)
+
 -   [Core Values](#core-values)
+
 -   [Prerequisites](#prerequisites)
+
 -   [Download Constellation](#download-constellation)
+
 -   [Run Constellation](#run-constellation)
+
 -   [Build Constellation](#build-constellation)
+
 -   [Package Constellation](#package-constellation)
+
 -   [Contributing to Constellation](#contributing-to-constellation)
+
 -   [Documentation](#documentation)
+
 -   [Training](#training)
+
 -   [Common Troubleshooting Checks](#common-troubleshooting-checks)
+
 -   [Acknowledgments](#acknowledgments)
 
 ## Vision Statement
@@ -45,6 +56,7 @@ problems in a simple and intuitive way.
 
 -   ***Users***: data analysts, data scientists, and all people
     interested in graph data analysis.
+
 -   ***Data analysis domains***: graph datasets with rich feature data
     e.g. social networks, network infrastructure, chemical composition,
     etc.
@@ -121,6 +133,7 @@ To build Constellation from source code do the following:
         to `C:\Program Files\NetBeans 12\platform\modules` (using
         Windows as an example). Note that you will need to override this
         file when prompted.
+
     -   Download
         [jhall-2.0\_05.jar](https://github.com/constellation-app/third-party-dependencies/blob/master/NetBeans%20Help/jhall-2.0_05.jar?raw=true)
         to `C:\Program Files\NetBeans 12\netbeans\platform\modules\ext`
@@ -143,8 +156,11 @@ To build Constellation from source code do the following:
 To package Constellation in a zip bundle do the following:
 
 -   In NetBeans, expand `Constellation` &gt; `Important Files`
+
 -   Right click on `Build Script` and run the `build-zip`
+
 -   Navigate to the `dist` folder to get `constellation.zip` file
+
 -   If you want to use a specific JRE
     (e.g. `zulu11.37.19-ca-fx-jre11.0.6-win_x64`) then copy this to the
     same level as the `bin` folder and call it `jre`. This is the
@@ -167,17 +183,24 @@ guide](CONTRIBUTING.md).
 ## Documentation
 
 -   Constellation 101 Slides *(coming soon)*
+
 -   Overview Video *(coming later)*
+
 -   [Quick Start Guide](docs/Constellation_Quick_Start_Guide.pdf)
+
 -   User Guide *(coming later)*
+
 -   Built in documentation to Constellation exists
 
 ## Training
 
 -   Basics (Buttonology) *(coming later)*
+
 -   Social Network Analysis *(coming later)*
+
 -   [Developer
     Guide](https://github.com/constellation-app/constellation-training/tree/master/Developer%20Training)
+
 -   [Example Module
     Template](https://github.com/constellation-app/constellation-module-example)
 
@@ -195,6 +218,7 @@ guide](CONTRIBUTING.md).
 
 -   Click on `Help` &gt; `JOGL Version` to see the graphics card
     capabilities of your machine.
+
 -   Click on `Help` &gt; `Show Logs` to view Constellation log
     information.
 

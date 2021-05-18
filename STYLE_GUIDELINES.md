@@ -85,6 +85,7 @@ not
 -   Spaces before/after operators in nearly all cases:
 
     -   `if (a == b)` not `if (a==b)`
+
     -   `for (int i = 0; i < 10; i++) {`
 
 -   …with an exception for cases where it helps clarify order of
@@ -174,9 +175,11 @@ arguments.
 ## New lines
 
 -   Keep code under 80 columns. Break up statements if you must.
+
     -   There are some exceptions (the `PreferencesFrame` class, for
         instance) where breaking things up is even uglier, so the 80
         column limit is occasionally ignored.
+
 -   Avoid the chaining madness that has afflicted Java programming of
     late, where dots are placed at the end (or even beginning) of
     multi-line indented poetry.

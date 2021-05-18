@@ -1,36 +1,52 @@
 ## Attribution
 
+## Attribution
+
 The following is a list of assets used in the Constellation project and
-their proper attribution. \* Icons from -
-material-design-icons-master.zip -
-(https://github.com/google/material-design-icons) © Google Material
-design icons is the official icon set from Google. The icons are
-designed under the material design guidelines. Google made these icons
-available under the Apache License Version 2.0
-(https://www.apache.org/licenses/LICENSE-2.0.txt). - 70-Social-Icons.zip
-- (https://www.sketchappsources.com/resource/download-2010.html) Sketch
-App Sources provides free and premium design resources for Sketch App -
-110893-computer-icons.zip -
-(http://www.iconarchive.com/category/computer-icons.html) -
-206589-international-flags.zip -
-(https://www.flaticon.com/packs/international-flags/2) under the license
-(https://file000.flaticon.com/downloads/license/license.pdf) -
-940113-flags.zip - (https://www.flaticon.com/packs/flags-15) under the
-license (https://file000.flaticon.com/downloads/license/license.pdf) -
-Flag\_of\_FLNKS.svg -
-(https://upload.wikimedia.org/wikipedia/commons/6/66/Flag\_of\_FLNKS.svg)
-- (https://github.com/google/material-design-icons) © Google Material
-design icons is the official icon set from Google. The icons are
-designed under the material design guidelines. Google made these icons
-available under the Apache License Version 2.0
-(https://www.apache.org/licenses/LICENSE-2.0.txt). -
-(https://www.sketchappsources.com/resource/download-2010.html) Sketch
-App Sources provides free and premium design resources for Sketch App -
-(http://www.iconarchive.com/category/computer-icons.html) -
-(https://www.shareicon.net/author/gosquared-com) Share Icon website
-shares free icons to download. (https://www.shareicon.net/tos) -
-(https://www.flaticon.com/packs/countrys-flags) under the license
+their proper attribution.
+
+-   [material-design-icons-master.zip](https://github.com/google/material-design-icons)
+© Google Material design icons is the official icon set from Google. The
+icons are designed under the material design guidelines. Google made
+these icons available under the Apache License Version 2.0
+(https://www.apache.org/licenses/LICENSE-2.0.txt).
+
+-   [70-Social-Icons.zip](https://www.sketchappsources.com/resource/download-2010.html)
+Sketch App Sources provides free and premium design resources for Sketch
+App 
+
+-   [110893-computer-icons.zip](http://www.iconarchive.com/category/computer-icons.html)
+
+-   [206589-international-flags.zip](https://www.flaticon.com/packs/international-flags/2)
+under the license
 (https://file000.flaticon.com/downloads/license/license.pdf)
+
+-   [940113-flags.zip](https://www.flaticon.com/packs/flags-15) under the
+license (https://file000.flaticon.com/downloads/license/license.pdf)
+
+-   [Flag\_of\_FLNKS.svg](https://upload.wikimedia.org/wikipedia/commons/6/66/Flag_of_FLNKS.svg)
+
+-   [Google Material
+Icons](https://github.com/google/material-design-icons) © Google
+Material design icons is the official icon set from Google. The icons
+are designed under the material design guidelines. Google made these
+icons available under the Apache License Version 2.0
+(https://www.apache.org/licenses/LICENSE-2.0.txt).
+
+-   [Sketch App
+Icons](https://www.sketchappsources.com/resource/download-2010.html)
+Sketch App Sources provides free and premium design resources for Sketch
+App 
+
+-   [Computer
+Icons](http://www.iconarchive.com/category/computer-icons.html)
+
+-   [Share
+Icons](https://www.shareicon.net/author/gosquared-com) Share Icon
+website shares free icons to download. (https://www.shareicon.net/tos)
+
+-   [Flat Icons](https://www.flaticon.com/packs/countrys-flags) under the
+license (https://file000.flaticon.com/downloads/license/license.pdf)
 
 The following is a list of third-party libraries used in the development
 of Constellation.

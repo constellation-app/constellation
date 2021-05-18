@@ -20,17 +20,24 @@ question!](#i-dont-want-to-read-this-whole-thing-i-just-have-a-question)
 started?](#what-should-i-know-before-i-get-started) 
 
 -   [Constellation Core](#constellation-core)
+
 -   [Constellation Modules and 
 Repositories](#constellation-modules-and-repositories)
+
 -   [Design Decisions](#design-decisions)
 
 [How Can I Contribute?](#how-can-i-contribute)
+
 -   [Reporting Bugs](#reporting-bugs)
+
 -   [Suggesting Enhancements](#suggesting-enhancements)
+
 -   [Your First Code Contribution](#your-first-code-contribution)
+
 -   [Pull Requests](#pull-requests)
 
 [Style Guides](STYLE_GUIDELINES.md)
+
 -   [Git Commit Messages](#git-commit-messages)
 
 ## Code of Conduct
@@ -133,6 +140,7 @@ issues faster.
 -   Check whether the issue has already been reported in the
     [issues](https://github.com/constellation-app/constellation/issues)
     page.
+
 -   Double check whether the issue is a bug in this repository or from a
     module from \[another repository\]\[catalog-of-repositories\] you
     have installed.
@@ -150,6 +158,7 @@ reproduce the problem:
 
 -   **Use a clear and descriptive title** for the issue to identify the
     problem.
+
 -   **Describe the exact steps which reproduce the problem** in as many
     details as possible. For example, start by explaining how you
     started Constellation, e.g. which command exactly you used in the
@@ -158,19 +167,24 @@ reproduce the problem:
     For example, if you created some nodes, did you use the import
     delimited file option, via the Rest API, Scripting View, create them
     using the edit mode, or another method?
+
 -   **Provide specific examples to demonstrate the steps**. Include
     links to files or GitHub projects, or copy/paste snippets, which you
     use in those examples. If you’re providing snippets in the issue,
     use [Markdown code
     blocks](https://help.github.com/articles/markdown-basics/#multiple-lines).
+
 -   **Describe the behaviour you observed after following the steps**
     and point out what exactly is the problem with that behaviour.
+
 -   **Explain which behaviour you expected to see instead and why.**
+
 -   **Include screenshots and animated GIFs** which show you following
     the described steps and clearly demonstrate the problem. You can use
     [this tool](https://www.cockos.com/licecap) to record GIFs on macOS
     and Windows, and [this
     tool](https://github.com/colinkeenan/silentcast) for Linux.
+
 -   **If you’re reporting Constellation crashing**, include a stack
     trace from the operating system. Include the crash report in the
     issue in a [code
@@ -179,9 +193,11 @@ reproduce the problem:
     attachment](https://help.github.com/articles/file-attachments-on-issues-and-pull-requests),
     or put it in a [gist](https://gist.github.com) and provide a link to
     that gist.
+
 -   **If the problem is related to performance or memory**, include a
     profile file generated via the ***Performance*** toolbar NetBeans
     button.
+
 -   **If the problem is related to graphics**, include the output from
     `Help` &gt; `JOGL Version` in a [code
     block](https://help.github.com/articles/markdown-basics/#multiple-lines),
@@ -189,6 +205,7 @@ reproduce the problem:
     attachment](https://help.github.com/articles/file-attachments-on-issues-and-pull-requests),
     or put it in a [gist](https://gist.github.com) and provide a link to
     that gist.
+
 -   **If the problem wasn’t triggered by a specific action**, describe
     what you were doing before the problem happened and share more
     information using the guidelines below.
@@ -197,11 +214,13 @@ Provide more context by answering these questions:
 
 -   **Did the problem start happening recently** (e.g. after updating to
     a new version of Constellation) or was this always a problem?
+
 -   If the problem started happening recently, **can you reproduce the
     problem in an older version of Constellation?** What’s the most
     recent version in which the problem doesn’t happen? You can download
     older versions of Constellation from [the releases
     page](https://github.com/constellation-app/constellation/releases).
+
 -   **Can you reliably reproduce the issue?** If not, provide details
     about how often the problem happens and under which conditions it
     normally happens.
@@ -212,13 +231,17 @@ wish to provide the Support Package):
 -   **Which version of Constellation are you using?** You can get the
     exact version by looking at the version on the top left of the
     application title
+
 -   **What is the name and version of the OS you are using**?
+
 -   **Are you running Constellation in a virtual machine?** If so, which
     VM software are you using and which operating systems and versions
     are used for the host and the guest?
+
 -   **Which \[packages\]\[catalog-of-repositories\] do you have
     installed?** You can get that list by running `Help` &gt;
     `Module Versions`.
+
 -   **Are you using Constellation with multiple monitors?** If so, can
     you reproduce the problem when you use a single monitor?
 
@@ -243,6 +266,7 @@ take if the feature you’re requesting existed.
 -   Check whether the enhancement has already been reported in the
     [issues](https://github.com/constellation-app/constellation/issues)
     page.
+
 -   Double check whether the enhancement is a feature in this repository
     or from a module from \[another
     repository\]\[catalog-of-repositories\] you have installed.
@@ -257,26 +281,34 @@ and provide the following information:
 
 -   **Use a clear and descriptive title** for the issue to identify the
     suggestion.
+
 -   **Provide a step-by-step description of the suggested enhancement**
     in as much detail as possible.
+
 -   **Provide specific examples to demonstrate the steps**. Include
     copy/pasteable snippets which you use in those examples, as
     [Markdown code
     blocks](https://help.github.com/articles/markdown-basics/#multiple-lines).
+
 -   **Describe the current behaviour** and **explain which behaviour you
     expected to see instead** and why.
+
 -   **Include screenshots and animated GIFs** which show you following
     the described steps and clearly demonstrate the problem. You can use
     [this tool](https://www.cockos.com/licecap) to record GIFs on macOS
     and Windows, and [this
     tool](https://github.com/colinkeenan/silentcast) on Linux.
+
 -   **Explain why this enhancement would be useful** to most
     Constellation users and isn’t something that can or should be
     implemented as a \[community package\]\[catalog-of-repositories\].
+
 -   **List some other applications where this enhancement exists.**
+
 -   **Which version of Constellation are you using?** You can get the
     exact version by looking at the version on the top left of the
     application title
+
 -   **Specify the name and version of the OS you’re using.**
 
 ### Your First Code Contribution
@@ -288,6 +320,7 @@ looking through these `beginner` and `help-wanted` issues:
     issues](https://github.com/constellation-app/constellation/labels/good%20first%20issue) -
     issues which should only require a few lines of code, and a test or
     two.
+
 -   [Help wanted
     issues](https://github.com/constellation-app/constellation/labels/help%20wanted) -
     issues which should be a bit more involved than `beginner` issues.
@@ -309,10 +342,14 @@ section in the [Readme](README.md).
 ### Pull Requests
 
 -   Fill in [the required template](PULL_REQUEST_TEMPLATE.md)
+
 -   Make sure your code compiles
+
 -   Complete the [check list](CHECKLIST.md)
+
 -   Include the copyright header
-    -   In NetBeans click on Tools -&gt; Templates -&gt; Settings
+    
+-   In NetBeans click on Tools -&gt; Templates -&gt; Settings
 
     <!-- -->
 
@@ -321,7 +358,7 @@ section in the [Readme](README.md).
         licensePrefix=*
         licenseLast=*/
 
-    -   In NetBeans click on Tools -&gt; Templates -&gt; Licenses -&gt;
+-   In NetBeans click on Tools -&gt; Templates -&gt; Licenses -&gt;
         Default License -&gt; Open in Editor
 
     <!-- -->
@@ -349,27 +386,46 @@ section in the [Readme](README.md).
 ### Git Commit Messages
 
 -   Use the present tense (“Add feature” not “Added feature”)
+
 -   Use the imperative mood (“Move cursor to…” not “Moves cursor to…”)
+
 -   Limit the first line to 72 characters or less
+
 -   Reference issues and pull requests liberally after the first line
+
 -   Consider starting the commit message with an applicable emoji:
-    -   :art: `:art:` when improving the format/structure of the code
-    -   :racehorse: `:racehorse:` when improving performance
-    -   :non-potable\_water: `:non-potable_water:` when plugging memory
+    
+-   :art: `:art:` when improving the format/structure of the code
+    
+-   :racehorse: `:racehorse:` when improving performance
+    
+-   :non-potable\_water: `:non-potable_water:` when plugging memory
         leaks
-    -   :memo: `:memo:` when writing docs
-    -   :penguin: `:penguin:` when fixing something on Linux
-    -   :apple: `:apple:` when fixing something on macOS
-    -   :checkered\_flag: `:checkered_flag:` when fixing something on
+    
+-   :memo: `:memo:` when writing docs
+    
+-   :penguin: `:penguin:` when fixing something on Linux
+    
+-   :apple: `:apple:` when fixing something on macOS
+    
+-   :checkered\_flag: `:checkered_flag:` when fixing something on
         Windows
-    -   :bug: `:bug:` when fixing a bug
-    -   :fire: `:fire:` when removing code or files
-    -   :green\_heart: `:green_heart:` when fixing the CI build
-    -   :white\_check\_mark: `:white_check_mark:` when adding tests
-    -   :lock: `:lock:` when dealing with security
-    -   :arrow\_up: `:arrow_up:` when upgrading dependencies
-    -   :arrow\_down: `:arrow_down:` when downgrading dependencies
-    -   :shirt: `:shirt:` when removing linter warnings
+    
+-   :bug: `:bug:` when fixing a bug
+    
+-   :fire: `:fire:` when removing code or files
+    
+-   :green\_heart: `:green_heart:` when fixing the CI build
+    
+-   :white\_check\_mark: `:white_check_mark:` when adding tests
+    
+-   :lock: `:lock:` when dealing with security
+    
+-   :arrow\_up: `:arrow_up:` when upgrading dependencies
+    
+-   :arrow\_down: `:arrow_down:` when downgrading dependencies
+    
+-   :shirt: `:shirt:` when removing linter warnings
 
 ## Test Requirements for Contributors
 
@@ -383,8 +439,10 @@ integration tests.
 
 -   To run tests within your module, right click on the module from the
     Projects view and select ***Test***.
+
 -   To run all tests, right click on the ***CONSTELLATION\_CORE***
     module suite from the Projects view and select ***Test***.
+
 -   Push your changes to a ***Sonar Qube*** instance and make sure that
     you’re not introducing new leaks that don’t already exist. A good
     way to check this is to filter issues by your author name and date
