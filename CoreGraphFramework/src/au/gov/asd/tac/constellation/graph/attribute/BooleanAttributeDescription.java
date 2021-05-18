@@ -35,14 +35,11 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * This describes a type of attribute whose values are boolean primitives.
  * <p>
- * When setting these attribute values from numeric types, 0 is considered
- * false, whilst all other values considered true. The
- * {@link #setString setString()} method will utilise
- * {@link Boolean#parseBoolean}.
+ * When setting these attribute values from numeric types, 0 is considered false, whilst all other values considered
+ * true. The {@link #setString setString()} method will utilise {@link Boolean#parseBoolean}.
  * <p>
- * When retrieving these attribute values as numeric types, false is represented
- * as 0, whilst true is represented as 1. The {@link #getString getString()}
- * method will utilise {@link String#valueOf}.
+ * When retrieving these attribute values as numeric types, false is represented as 0, whilst true is represented as 1.
+ * The {@link #getString getString()} method will utilise {@link String#valueOf}.
  *
  * @author cygnus_x-1
  */
@@ -330,6 +327,8 @@ public final class BooleanAttributeDescription extends AbstractAttributeDescript
                 int firstFalse = position2id[nextFalse++];
                 position2id[position] = firstFalse;
                 id2position[firstFalse] = position;
+            } else {
+                // Default case added per S126
             }
         }
 

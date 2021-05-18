@@ -89,6 +89,8 @@ final class HopUtilities {
                     if (!dstsel) {
                         vxToSelect.set(txDestId);
                     }
+                } else {
+                    // Default case added per S126
                 }
             } else {
                 final boolean txSourceIsSelected = graph.getBooleanValue(vxSelectedAttr, txSourceId);

@@ -146,6 +146,8 @@ public class Octree {
                 index = frontQuadrant ? TOP_L_F : backQuadrant ? TOP_L_B : -1;
             } else if (bottomQuadrant) {
                 index = frontQuadrant ? BOT_L_F : backQuadrant ? BOT_L_B : -1;
+            } else {
+                // Default case added per S126
             }
         } // Object can completely fit within the right quadrants.
         else if (orb.getX() - orb.r > midx) {
@@ -153,7 +155,12 @@ public class Octree {
                 index = frontQuadrant ? TOP_R_F : backQuadrant ? TOP_R_B : -1;
             } else if (bottomQuadrant) {
                 index = frontQuadrant ? BOT_R_F : backQuadrant ? BOT_R_B : -1;
+            } else {
+                // Default case added per S126
             }
+        } else {
+            // Default case added per S126
+            return index;
         }
 
         return index;

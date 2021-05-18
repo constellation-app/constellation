@@ -92,6 +92,8 @@ class QuadTree extends AbstractTree {
                 index = TOP_L; // fits in top left quadrant
             } else if (bottomHalf) {
                 index = BOT_L; // fits in bottom left quadrant
+            } else {
+                // Default case added per S126
             }
         } // Object can completely fit within the right half.
         else if (rightHalf) {
@@ -99,7 +101,12 @@ class QuadTree extends AbstractTree {
                 index = TOP_R; // fits in top right quadrant
             } else if (bottomHalf) {
                 index = BOT_R; // fits in bottom right quadrant
+            } else {
+                // Default case added per S126
             }
+        } else {
+            // Default case added per S126
+            return index;
         }
         return index;
     }

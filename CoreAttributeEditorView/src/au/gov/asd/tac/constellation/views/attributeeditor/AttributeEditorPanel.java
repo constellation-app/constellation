@@ -716,6 +716,8 @@ public class AttributeEditorPanel extends BorderPane {
                 event.consume();
             } else if (event.isShortcutDown() && (event.getCode() == KeyCode.A)) {
                 event.consume();
+            } else {
+                // Default case added per S126
             }
         });
         return newList;

@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.geospatial.Distance;
 import au.gov.asd.tac.constellation.views.mapview.MapViewPluginRegistry;
-import static au.gov.asd.tac.constellation.views.mapview.MapViewTileRenderer.LOCK;
 import au.gov.asd.tac.constellation.views.mapview.features.ConstellationAbstractFeature.ConstellationFeatureType;
 import au.gov.asd.tac.constellation.views.mapview.features.ConstellationPointFeature;
 import au.gov.asd.tac.constellation.views.mapview.features.ConstellationShapeFeature;
@@ -390,6 +389,8 @@ public class ToolsOverlay extends MapOverlay {
                         measureVertices.add(map.getLocation(event.getX(), event.getY()));
                     } else if (event.isShiftDown()) {
                         measureCircle = true;
+                    } else {
+                        // Default case added per S126
                     }
                     measureFinished = false;
                     measureOriginX = event.getX();

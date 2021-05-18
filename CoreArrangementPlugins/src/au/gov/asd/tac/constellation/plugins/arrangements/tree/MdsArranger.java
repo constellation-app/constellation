@@ -29,20 +29,17 @@ import org.openide.util.NotImplementedException;
 /**
  * Perform MDS (multidimensional scaling) to two dimensions.
  * <p>
- * Supports using old coordinates as starting locations, partial vertex set
- * arrangement, and arbitrary vertices of influence. Only uses and moves
- * vertices.
+ * Supports using old coordinates as starting locations, partial vertex set arrangement, and arbitrary vertices of
+ * influence. Only uses and moves vertices.
  *
  * Supports updating the progress display.
  *
- * MDS uses an incremental arrangement method, beginning with a subset,
- * arranging that subset with multiple starts, picking the arrangement with
- * minimum stress, introducing more of the graph, and repeating. Each
- * minimization uses steepest descent of semiproportional stress.
+ * MDS uses an incremental arrangement method, beginning with a subset, arranging that subset with multiple starts,
+ * picking the arrangement with minimum stress, introducing more of the graph, and repeating. Each minimization uses
+ * steepest descent of semiproportional stress.
  *
- * Target distances: distance between A and B is minimum number of edges between
- * A and B times scaleFactor. The value of scaleFactor is 100 * scaleSetting
- * (which may be set).
+ * Target distances: distance between A and B is minimum number of edges between A and B times scaleFactor. The value of
+ * scaleFactor is 100 * scaleSetting (which may be set).
  *
  * @author algol
  * @author sol
@@ -157,6 +154,8 @@ public class MdsArranger implements Arranger {
                 vxsToArrange[numVxsToArrange++] = vxId;
             } else if (arrangeIt && !useLocs) {
                 vxsToArrangeLater[numVxsLater++] = vxId;
+            } else {
+                // Default case added per S126
             }
             if (influence && (useLocs || !arrangeIt)) {
                 vxsToInfluence[numVxsToInfluence++] = vxId;
@@ -392,8 +391,8 @@ public class MdsArranger implements Arranger {
     }
 
     /**
-     * This version calculates distances based on graph pathlength weighting
-     * edges by the sum of the extents of the vertices they join.
+     * This version calculates distances based on graph pathlength weighting edges by the sum of the extents of the
+     * vertices they join.
      * <p>
      * Usual edge weights, multiple edges, etc, are not considered.
      */
@@ -417,9 +416,8 @@ public class MdsArranger implements Arranger {
     }
 
     /**
-     * Make a list of vertices in the order in which they will be introduced.
-     * The list is made by taking every kth element, then every k/2 elements
-     * (skipping those already taken), then k/4, etc.
+     * Make a list of vertices in the order in which they will be introduced. The list is made by taking every kth
+     * element, then every k/2 elements (skipping those already taken), then k/4, etc.
      */
     private static int fillOrderToIntroduceVerticesVector(
             final int[] vxsToDo,
@@ -460,12 +458,10 @@ public class MdsArranger implements Arranger {
     }
 
     /**
-     * Alter distanceMatrix so that the distances don't encourage vertices of
-     * large extent to overlap.
+     * Alter distanceMatrix so that the distances don't encourage vertices of large extent to overlap.
      * <p>
-     * Go through all pairs of an influence vertex with an arrange vertex. For
-     * each pair, set their target distance equal to the max of the incoming
-     * value with the sum of their radii.
+     * Go through all pairs of an influence vertex with an arrange vertex. For each pair, set their target distance
+     * equal to the max of the incoming value with the sum of their radii.
      *
      * @param graph
      * @param distanceMatrix
@@ -486,12 +482,10 @@ public class MdsArranger implements Arranger {
     }
 
     /**
-     * Fill in information to initially position this vertex when it is
-     * introduced.
+     * Fill in information to initially position this vertex when it is introduced.
      * <p>
-     * In particular, fill in an entry in each of closestVertices,
-     * nextClosestVertices, and gammas. Note that numVxsToInfluence is changing
-     * each time it is called.
+     * In particular, fill in an entry in each of closestVertices, nextClosestVertices, and gammas. Note that
+     * numVxsToInfluence is changing each time it is called.
      */
     private static void initialPositioningInfoThisVertex(
             final GraphWriteMethods graph,
@@ -574,12 +568,10 @@ public class MdsArranger implements Arranger {
     }
 
     /**
-     * Give a range of vertices their initial locations, based on the their two
-     * nearest neighbors.
+     * Give a range of vertices their initial locations, based on the their two nearest neighbors.
      * <p>
-     * Fills in the appropriate entries in currentX and currentY, using the
-     * corresponding entries of closestVertices, nextClosestVertices, and
-     * gammas.
+     * Fills in the appropriate entries in currentX and currentY, using the corresponding entries of closestVertices,
+     * nextClosestVertices, and gammas.
      */
     private static void positionVertices(
             final int firstOne,
@@ -619,13 +611,11 @@ public class MdsArranger implements Arranger {
     }
 
     /**
-     * Updates the locations in currentX and currentY with numIterations
-     * iterations of MDS.
+     * Updates the locations in currentX and currentY with numIterations iterations of MDS.
      * <p>
-     * Target distances are specified in the ravelled array which is
-     * numMatrixCols by numMatrixCols. The indices in the position vectors and
-     * distance matrix are specified by the entries in arrays vxsToArrange and
-     * vxsToInfluence, which may given overlapping lists of vertices.
+     * Target distances are specified in the ravelled array which is numMatrixCols by numMatrixCols. The indices in the
+     * position vectors and distance matrix are specified by the entries in arrays vxsToArrange and vxsToInfluence,
+     * which may given overlapping lists of vertices.
      * <p>
      * Minimization of semiproportional stress is done.
      */
@@ -712,8 +702,7 @@ public class MdsArranger implements Arranger {
     }
 
     /**
-     * Measures proportional stress, based on current and target positions, only
-     * using specified vertices.
+     * Measures proportional stress, based on current and target positions, only using specified vertices.
      */
     private static float measureStress(
             final float[] currentX,

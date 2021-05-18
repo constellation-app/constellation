@@ -193,6 +193,8 @@ public class RunPane extends BorderPane implements KeyListener {
                 attributeFilter += c.getChar();
                 attributeFilterTextField.setText(attributeFilter);
                 attributeFilterPane.setVisible(true);
+            } else {
+                // Default case added per S126
             }
             importController.setAttributeFilter(attributeFilter);
             importController.setDestination(null);
@@ -339,8 +341,7 @@ public class RunPane extends BorderPane implements KeyListener {
     }
 
     /**
-     * Set this RunPane to display the specified column headers and sample data
-     * rows.
+     * Set this RunPane to display the specified column headers and sample data rows.
      *
      * @param columnLabels Column header labels.
      * @param newRows Rows of sample data.

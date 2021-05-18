@@ -73,6 +73,8 @@ public class HasClosestRelationshipQuestion implements AnalyticQuestionDescripti
             parameters.setBooleanValue(MultiplexityPlugin.GROUP_BY_TOP_LEVEL_TYPE, false);
         } else if (plugin instanceof WeightAnalytic) {
             parameters.setBooleanValue(WeightPlugin.NORMALISE_AVAILABLE_PARAMETER_ID, true);
+        } else {
+            // Default case added per S126
         }
     }
 }

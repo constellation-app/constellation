@@ -35,20 +35,15 @@ import javafx.scene.layout.Pane;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * A NumberSpinner allowing numeric entries, which is the GUI element
- * corresponding to a {@link PluginParameter} of
- * {@link au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType}
- * or
+ * A NumberSpinner allowing numeric entries, which is the GUI element corresponding to a {@link PluginParameter} of
+ * {@link au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType} or
  * {@link au.gov.asd.tac.constellation.plugins.parameters.types.FloatParameterType}.
  * <p>
- * Editing the number spinner's field, either with the buttons or directly, will
- * set the string value of underlying {@link PluginParameter}, and also cause
- * the parameter to validate this value.
+ * Editing the number spinner's field, either with the buttons or directly, will set the string value of underlying
+ * {@link PluginParameter}, and also cause the parameter to validate this value.
  *
- * @param <T> The type of {@link Number} values stored. Note that only
- * {@link Integer} and {@link Float} are supported.
- * @see
- * au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType
+ * @param <T> The type of {@link Number} values stored. Note that only {@link Integer} and {@link Float} are supported.
+ * @see au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType
  * @see au.gov.asd.tac.constellation.plugins.parameters.types.FloatParameterType
  *
  * @author algol
@@ -176,6 +171,8 @@ public class NumberInputPane<T> extends Pane {
                         } else if (currentTextValue != null && currentTextValue.isEmpty()) {
                             field.setId(INVALID_ID);
                             parameter.setError("Invalid value");
+                        } else {
+                            // Default case added per S126
                         }
                         break;
                     case ENABLED:

@@ -234,9 +234,8 @@ public abstract class InfomapGreedy extends InfomapBase {
     }
 
     /**
-     * Update the codelength to reflect the move of node current in
-     * oldModuleDelta to newModuleDelta (Specialized for undirected flow and
-     * when exitFlow == enterFlow
+     * Update the codelength to reflect the move of node current in oldModuleDelta to newModuleDelta (Specialized for
+     * undirected flow and when exitFlow == enterFlow
      *
      * @param current the current node.
      * @param oldModuleDelta the old module delta flow.
@@ -432,6 +431,8 @@ public abstract class InfomapGreedy extends InfomapBase {
                         oldModuleDelta.setDeltaExit(oldModuleDelta.getDeltaExit() + edge.getData().flow);
                     } else if (otherModule == newM) {
                         newModuleDelta.setDeltaExit(newModuleDelta.getDeltaExit() + edge.getData().flow);
+                    } else {
+                        // Default case added per S126
                     }
                 }
 
@@ -446,6 +447,8 @@ public abstract class InfomapGreedy extends InfomapBase {
                         oldModuleDelta.setDeltaEnter(oldModuleDelta.getDeltaEnter() + edge.getData().flow);
                     } else if (otherModule == newM) {
                         newModuleDelta.setDeltaEnter(newModuleDelta.getDeltaEnter() + edge.getData().flow);
+                    } else {
+                        // Default case added per S126
                     }
                 }
 
@@ -476,17 +479,13 @@ public abstract class InfomapGreedy extends InfomapBase {
     }
 
     /**
-     * Try to minimize the codelength by trying to move nodes into the same
-     * modules as neighbouring nodes.
+     * Try to minimize the codelength by trying to move nodes into the same modules as neighbouring nodes.
      *
-     * For each node: 1. Calculate the change in codelength for a move to each
-     * of its neighbouring modules or to an empty module 2. Move to the one that
-     * reduces the codelength the most, if any.
+     * For each node: 1. Calculate the change in codelength for a move to each of its neighbouring modules or to an
+     * empty module 2. Move to the one that reduces the codelength the most, if any.
      *
-     * The first step would require O(d^2), where d is the degree, if
-     * calculating the full change at each neighbour, but a special data
-     * structure is used to accumulate the marginal effect of each link on its
-     * target, giving O(d).
+     * The first step would require O(d^2), where d is the degree, if calculating the full change at each neighbour, but
+     * a special data structure is used to accumulate the marginal effect of each link on its target, giving O(d).
      *
      * @return The number of nodes moved.
      */

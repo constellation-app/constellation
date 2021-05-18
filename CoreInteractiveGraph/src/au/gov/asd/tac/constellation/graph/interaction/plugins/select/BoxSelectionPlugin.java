@@ -113,6 +113,8 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
             yAttr = y2Attr;
             zAttr = z2Attr;
             requiresMix = false;
+        } else {
+            // Default case added per S126
         }
 
         final BitSet vxIncluded = new BitSet();

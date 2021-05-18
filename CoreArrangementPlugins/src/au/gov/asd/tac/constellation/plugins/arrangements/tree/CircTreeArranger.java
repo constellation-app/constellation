@@ -30,12 +30,10 @@ import java.util.HashMap;
 import org.apache.commons.collections4.CollectionUtils;
 
 /**
- * This class provides the arrangement of a single tree (undirected), drawn
- * radially from its root.
+ * This class provides the arrangement of a single tree (undirected), drawn radially from its root.
  *
- * The algorithm will work, if the graph is more than a tree, by ignoring
- * additional edges. The root may be specified; if not specified, it is chosen
- * as one of the maximum valence.
+ * The algorithm will work, if the graph is more than a tree, by ignoring additional edges. The root may be specified;
+ * if not specified, it is chosen as one of the maximum valence.
  *
  * @author algol
  * @author sol
@@ -163,11 +161,9 @@ public final class CircTreeArranger implements Arranger {
     }
 
     /**
-     * For each vertex, record its children in order of the number of their
-     * descendants.
+     * For each vertex, record its children in order of the number of their descendants.
      * <p>
-     * Record result an AtomicQueue stored by parent in hash table. Returns
-     * number of children for vertex.
+     * Record result an AtomicQueue stored by parent in hash table. Returns number of children for vertex.
      */
     private int orderChildren(
             final int vxId,
@@ -189,6 +185,8 @@ public final class CircTreeArranger implements Arranger {
             return 1;
         } else if (children.size() == 1) {
             onlyChildren.set(children.iterator().next().vxId);
+        } else {
+            // Default case added per S126
         }
 
         // Remove these children from consideration.
@@ -249,6 +247,8 @@ public final class CircTreeArranger implements Arranger {
             fullRadii[vxId] = fullRadius;
 
             return fullRadius;
+        } else {
+            // Default case added per S126
         }
 
         // Force inner circle of childless children, if it makes sense to do so.

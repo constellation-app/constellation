@@ -63,9 +63,8 @@ import org.openide.util.lookup.ServiceProviders;
 /**
  * A data access plugin that builds a random sphere graph.
  * <p>
- * The sphere graph is not just a random graph, it is meant to exercise renderer
- * functionality: visibility, dimness, color combinations of transactions, many
- * transactions between nodes, etc.
+ * The sphere graph is not just a random graph, it is meant to exercise renderer functionality: visibility, dimness,
+ * color combinations of transactions, many transactions between nodes, etc.
  *
  * @author canis_majoris
  */
@@ -355,6 +354,8 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         } else if (nVx > 2) {
             graph.setBooleanValue(vxDimmedAttr, vxIds[nVx - 1], true);
             graph.setBooleanValue(vxDimmedAttr, vxIds[nVx - 2], true);
+        } else {
+            // Default case added per S126
         }
 
         if (nVx > 0) {

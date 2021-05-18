@@ -107,6 +107,8 @@ public class PluginsNodeProvider implements SchemaViewNodeProvider {
                     LOGGER.log(Level.WARNING, "null name for plugin %s{0}", pluginClassName);
                 } else if (pluginNames.containsKey(pluginName)) {
                     LOGGER.log(Level.WARNING, "duplicate name {0} for plugins {1}, {2}", new Object[]{pluginName, pluginClassName, pluginNames.get(pluginName)});
+                } else {
+                    // Default case added per S126
                 }
 
                 pluginNames.put(pluginName != null ? pluginName : pluginClassName, pluginClassName);

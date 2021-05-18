@@ -80,12 +80,19 @@ public class HopOutPlugin extends SimpleEditPlugin {
         final boolean incoming = parameters.getParameters().get(INCOMING_PARAMETER_ID).getBooleanValue();
         final boolean undirected = parameters.getParameters().get(UNDIRECTED_PARAMETER_ID).getBooleanValue();
 
-        if (hops == HopUtilities.HOP_OUT_HALF) {
-            HopUtilities.hopOutHalf(graph, outgoing, incoming, undirected);
-        } else if (hops == HopUtilities.HOP_OUT_ONE) {
-            HopUtilities.hopOutOne(graph, outgoing, incoming, undirected);
-        } else if (hops == HopUtilities.HOP_OUT_FULL) {
-            HopUtilities.hopOutFull(graph, outgoing, incoming, undirected);
+        switch (hops) {
+            case HopUtilities.HOP_OUT_HALF:
+                HopUtilities.hopOutHalf(graph, outgoing, incoming, undirected);
+                break;
+            case HopUtilities.HOP_OUT_ONE:
+                HopUtilities.hopOutOne(graph, outgoing, incoming, undirected);
+                break;
+            case HopUtilities.HOP_OUT_FULL:
+                HopUtilities.hopOutFull(graph, outgoing, incoming, undirected);
+                break;
+            default:
+                // Default case added per S126
+                break;
         }
     }
 }

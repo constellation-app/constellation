@@ -27,8 +27,8 @@ import java.util.BitSet;
 public class SP2Traverse {
 
     /**
-     * This method uses parallel-BFS to traverse the graph and gather the
-     * eccentricities of each node, ignoring direction.
+     * This method uses parallel-BFS to traverse the graph and gather the eccentricities of each node, ignoring
+     * direction.
      *
      * @param graph
      * @return
@@ -77,7 +77,10 @@ public class SP2Traverse {
                 check.set(graph.getVertexPosition(graph.getVertexNeighbour(position, 0)), true);
             } else if (graph.getBooleanValue(selectedNodeAttrId, position) && graph.getVertexNeighbourCount(position) > 1) {
                 seeds.set(vxId, true);
-            } // ignore nodes with no neighbour
+            } else {
+                // Default case added per S126
+                // Ignore nodes with no neighbour
+            }
         }
         // now to determine how many pairs of nodes we need to get the shortest path between
         int pairsize = 0;

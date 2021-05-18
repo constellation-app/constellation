@@ -348,6 +348,8 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                     } else if (keyCode == KeyEvent.VK_W) {
                         CameraUtilities.pan(camera, 0, 0.5f * (isShift ? 10 : 1));
                         eventState.addEventName(PAN_ACTION_NAME);
+                    } else {
+                        // Default case added per S126
                     }
                     VisualGraphUtilities.setCamera(wg, camera);
                     scheduleCameraChangeOperation();
@@ -428,6 +430,8 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
             } else if (wg != null) {
                 // In this case, a button is held down but its pressed event was not registered for whatever reason.
                 updateHitTestAndNewLine(wg, point);
+            } else {
+                // Default case added per S126
             }
             return 0;
         });
@@ -483,6 +487,8 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                             clearNewLineModel(camera);
                         }
                     }
+                } else {
+                    // Default case added per S126
                 }
             }
             return 0;
@@ -698,6 +704,8 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
             scheduleNewLineChangeOperation(wg, point, camera, cameraChange);
         } else if (cameraChange) {
             scheduleCameraChangeOperation();
+        } else {
+            // Default case added per S126
         }
     }
 
@@ -938,6 +946,8 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
             if (!selectedIds.contains(dstId)) {
                 selectedIds.add(dstId);
             }
+        } else {
+            // Default case added per S126
         }
         return selectedIds;
     }

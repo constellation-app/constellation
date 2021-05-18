@@ -211,6 +211,8 @@ public class STNumbering {
                             path.add(x);
                             w = x;
                             break;
+                        } else {
+                            // Default case added per S126
                         }
                     }
                 }

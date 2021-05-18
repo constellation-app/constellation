@@ -299,6 +299,8 @@ public class ImportController {
                 } else if (!displayedTransactionAttributes.containsKey(attribute.getName())) {
                     final Attribute newAttribute = new NewAttribute(attribute);
                     displayedTransactionAttributes.put(newAttribute.getName(), newAttribute);
+                } else {
+                    // Default case added per S126
                 }
             });
 

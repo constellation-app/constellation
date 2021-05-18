@@ -30,10 +30,9 @@ public final class ApplicationPreferenceKeys {
     /**
      * The directory where various user data is stored.
      * <p>
-     * Note that this is separate from NbPreferences, which stores stuff in a
-     * mysterious place that the user doesn't necessarily know about. Rather,
-     * this is a directory in an obvious that the user knows about and may
-     * access outside of the application.
+     * Note that this is separate from NbPreferences, which stores stuff in a mysterious place that the user doesn't
+     * necessarily know about. Rather, this is a directory in an obvious that the user knows about and may access
+     * outside of the application.
      *
      * @param prefs Application preferences.
      *
@@ -52,6 +51,8 @@ public final class ApplicationPreferenceKeys {
             }
         } else if (!f.isDirectory()) {
             // TODO: warn the user.
+        } else {
+            // Default case added per S126
         }
 
         return userDir;
@@ -140,6 +141,8 @@ public final class ApplicationPreferenceKeys {
             }
         } else if (!f.isDirectory()) {
             // TODO: warn the user.
+        } else {
+            // Default case added per S126
         }
 
         return restDir;

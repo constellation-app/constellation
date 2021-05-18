@@ -123,6 +123,8 @@ public class JSONImportFileParser extends ImportFileParser {
                 }
             }
             return true;
+        } else {
+            // Default case added per S126
         }
         return false;
     }
@@ -168,8 +170,12 @@ public class JSONImportFileParser extends ImportFileParser {
                     // The node is not an array buy is another container, dive into
                     // it and see if there is any list
                     lookForChildArrays(entry.getValue(), path + "/" + entry.getKey(), (depth + 1));
+                } else {
+                    // Default case added per S126
                 }
             }
+        } else {
+            // Default case added per S126
         }
     }
 
@@ -201,6 +207,8 @@ public class JSONImportFileParser extends ImportFileParser {
                     // potential column title, with nested lists ultimately
                     // representing their data as a merged value string.
                     existingColumns.add(prefix + entry.getKey());
+                } else {
+                    // Default case added per S126
                 }
             }
         }
@@ -291,6 +299,8 @@ public class JSONImportFileParser extends ImportFileParser {
                     line[columnMap.get(prefix + entry.getKey())] = entry.getValue().toString().replaceAll("(^\")|(\"$)", "");
                 }
             }
+        } else {
+            // Default case added per S126
         }
         return line;
     }

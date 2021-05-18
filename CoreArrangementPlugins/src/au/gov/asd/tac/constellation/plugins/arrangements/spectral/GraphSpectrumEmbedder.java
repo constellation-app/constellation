@@ -121,18 +121,34 @@ public class GraphSpectrumEmbedder {
                         continue;
                     } else if (idToMatrixPosition.get(neighbourID) == i) {
                         continue;
+                    } else {
+                        // Default case added per S126
                     }
                     neighbourCount++;
-                    if (type == MatrixType.LAPLACIAN_MATRIX) {
-                        matrixEntries[i][idToMatrixPosition.get(neighbourID)] = -1;
-                    } else if (type == MatrixType.ADJACENCY_MATRIX) {
-                        matrixEntries[i][idToMatrixPosition.get(neighbourID)] = 1;
+                    if (type != null) {
+                        switch (type) {
+                            case LAPLACIAN_MATRIX:
+                                matrixEntries[i][idToMatrixPosition.get(neighbourID)] = -1;
+                                break;
+                            case ADJACENCY_MATRIX:
+                                matrixEntries[i][idToMatrixPosition.get(neighbourID)] = 1;
+                                break;
+                            default:
+                                break;// Default case added per S126
+                        }
                     }
                 }
-                if (type == MatrixType.LAPLACIAN_MATRIX) {
-                    matrixEntries[i][i] = neighbourCount;
-                } else if (type == MatrixType.ADJACENCY_MATRIX) {
-                    matrixEntries[i][i] = 0;
+                if (type != null) {
+                    switch (type) {
+                        case LAPLACIAN_MATRIX:
+                            matrixEntries[i][i] = neighbourCount;
+                            break;
+                        case ADJACENCY_MATRIX:
+                            matrixEntries[i][i] = 0;
+                            break;
+                        default:
+                            break;// Default case added per S126
+                    }
                 }
             }
 

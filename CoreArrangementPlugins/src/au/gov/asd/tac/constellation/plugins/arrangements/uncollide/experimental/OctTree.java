@@ -111,13 +111,19 @@ class OctTree extends AbstractTree {
                     index = TOP_L_F;
                 } else if (backHalf) {
                     index = TOP_L_B;
+                } else {
+                    // Default case added per S126
                 }
             } else if (rightHalf) {
                 if (frontHalf) {
                     index = TOP_R_F;
                 } else if (backHalf) {
                     index = TOP_R_B;
+                } else {
+                    // Default case added per S126
                 }
+            } else {
+                // Default case added per S126
             }
         } else if (bottomHalf) {
             if (leftHalf) {
@@ -133,6 +139,8 @@ class OctTree extends AbstractTree {
                     index = BOT_R_B;
                 }
             }
+        } else {
+            // Default case added per S126
         }
 
         return index;

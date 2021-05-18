@@ -231,6 +231,8 @@ class PQNode {
                     removed.add(grandchild);
                 }
                 toFlatten = child;
+            } else {
+                // Default case added per S126
             }
             if (child == dividingNode) {
                 if (child.label.equals(NodeLabel.PARTIAL)) {
@@ -275,6 +277,8 @@ class PQNode {
                     toFlatten = child;
                 }
                 toRemove = NodeLabel.FULL;
+            } else {
+                // Default case added per S126
             }
             if (child.label.equals(toRemove)) {
                 removeChild(child);
@@ -285,6 +289,8 @@ class PQNode {
                     removed.add(grandchild);
                 }
                 toFlatten = child;
+            } else {
+                // Default case added per S126
             }
         }
         if (toFlatten != null) {
@@ -409,6 +415,8 @@ class PQNode {
             } else if (count > maxCountSinceAnchor) {
                 maxCountSinceAnchor = count;
                 maxNodeSinceAnchor = child;
+            } else {
+                // Default case added per S126
             }
         }
         count += carry;

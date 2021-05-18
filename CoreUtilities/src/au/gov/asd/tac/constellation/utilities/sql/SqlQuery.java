@@ -30,8 +30,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author twilight_sparkle A framework for SQL Queries used in data access
- * plugins that connect to SQL databases.
+ * @author twilight_sparkle A framework for SQL Queries used in data access plugins that connect to SQL databases.
  */
 public class SqlQuery {
 
@@ -348,6 +347,8 @@ public class SqlQuery {
                 addArgument((Integer) value);
             } else if (value instanceof Double) {
                 addArgument((Double) value);
+            } else {
+                // Default case added per S126
             }
             query.append(" UNION ");
             query.append(currentQuery);
@@ -387,6 +388,8 @@ public class SqlQuery {
                 addArgument((Integer) value);
             } else if (value instanceof Double) {
                 addArgument((Double) value);
+            } else {
+                // Default case added per S126
             }
             query.append(" OR ");
         }

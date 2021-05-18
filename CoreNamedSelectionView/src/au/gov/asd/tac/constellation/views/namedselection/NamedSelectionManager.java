@@ -47,24 +47,18 @@ import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
 /**
- * The <code>NamedSelectionManager</code> coordinates the named selection
- * functionality for CONSTELLATION.
+ * The <code>NamedSelectionManager</code> coordinates the named selection functionality for CONSTELLATION.
  * <p>
- * The manager, firstly, acts as a listener for user interaction and graph
- * structure changes that impact on named selections, and pushes these changes
- * (if pertinent) to the named selection browser. Examples of what will be
- * listened for are moving to/from graphs, undo/redo-ing on graphs, and changes
- * to the <code>NamedSelectionState</code>.
+ * The manager, firstly, acts as a listener for user interaction and graph structure changes that impact on named
+ * selections, and pushes these changes (if pertinent) to the named selection browser. Examples of what will be listened
+ * for are moving to/from graphs, undo/redo-ing on graphs, and changes to the <code>NamedSelectionState</code>.
  * <p>
- * The manager is also responsible for managing user driven requests for named
- * selection operations such as execution of unions and intersections on given
- * named selections, and recalling and creation / modification of
+ * The manager is also responsible for managing user driven requests for named selection operations such as execution of
+ * unions and intersections on given named selections, and recalling and creation / modification of
  * <code>NamedSelection</code>s.
  * <p>
- * The manager is implemented as a singleton to allow for application wide
- * knowledge of named selections, and ability to act with in independently of
- * <code>NamedSelectionTopComponent</code> and
- * <code>NamedSelectionShortcuts</code>.
+ * The manager is implemented as a singleton to allow for application wide knowledge of named selections, and ability to
+ * act with in independently of <code>NamedSelectionTopComponent</code> and <code>NamedSelectionShortcuts</code>.
  *
  * @see NamedSelectionState
  * @see NamedSelectionTopComponent
@@ -91,8 +85,8 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
     /**
      * Gets the global <code>NamedSelectionManager</code>.
      * <p>
-     * Accesses the singleton access. Uses the NetBeans 'getDefault' rather than
-     * the more general 'getInstance' as used in singletons.
+     * Accesses the singleton access. Uses the NetBeans 'getDefault' rather than the more general 'getInstance' as used
+     * in singletons.
      *
      * @return The <code>NamedSelectionManager</code> singleton.
      */
@@ -115,8 +109,7 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
     }
 
     /**
-     * Private class that holds the instance of the
-     * <code>NamedSelectionManager</code> for use in the singleton pattern.
+     * Private class that holds the instance of the <code>NamedSelectionManager</code> for use in the singleton pattern.
      *
      * @see NamedSelectionManager
      */
@@ -126,12 +119,10 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
     }
 
     /**
-     * Either creates a new named selection that includes all currently selected
-     * graph elements, and saves the corresponding hotkey to it, or overwrites a
-     * currently existing named selection already assigned to the hotkey.
+     * Either creates a new named selection that includes all currently selected graph elements, and saves the
+     * corresponding hotkey to it, or overwrites a currently existing named selection already assigned to the hotkey.
      * <p>
-     * This method handles all underlying updates of the named selection state
-     * as well.
+     * This method handles all underlying updates of the named selection state as well.
      *
      * @param hotkey the hotkey that will activate the named selection.
      */
@@ -183,11 +174,9 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
     }
 
     /**
-     * Creates a new named selection that includes all currently selected graph
-     * elements.
+     * Creates a new named selection that includes all currently selected graph elements.
      * <p>
-     * This method handles all underlying updates of the named selection state
-     * as well.
+     * This method handles all underlying updates of the named selection state as well.
      */
     public void createNamedSelection() {
         if (graphNode != null) {
@@ -210,15 +199,12 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
     }
 
     /**
-     * Creates a new custom named selection that includes the supplied graph
-     * elements.
+     * Creates a new custom named selection that includes the supplied graph elements.
      * <p>
-     * This method handles all underlying updates of the named selection state
-     * as well.
+     * This method handles all underlying updates of the named selection state as well.
      *
      * @param nodesToSave the nodes to save in the named selection.
-     * @param transactionsToSave the transactions to save in the named
-     * selection.
+     * @param transactionsToSave the transactions to save in the named selection.
      *
      * @return if the save was successful.
      */
@@ -249,14 +235,15 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
                 return true;
             } else if (notifyIfFail) {
                 notifyAllAlloc();
+            } else {
+                // Default case added per S126
             }
         }
         return false;
     }
 
     /**
-     * Overwrites an existing named selection with the currently selected graph
-     * elements.
+     * Overwrites an existing named selection with the currently selected graph elements.
      *
      * @param current The <code>NamedSelection</code> to be overwritten.
      *
@@ -275,8 +262,7 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
     /**
      * Clones an existing named selection to a new named selection.
      * <p>
-     * This method handles all underlying updates of the named selection state
-     * as well.
+     * This method handles all underlying updates of the named selection state as well.
      *
      * @param selection the named selection to be cloned.
      */
@@ -350,11 +336,10 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
     }
 
     /**
-     * Recalls a named selection, and automatically dims non-member graph
-     * elements.
+     * Recalls a named selection, and automatically dims non-member graph elements.
      * <p>
-     * Member elements do not have their 'selected' attribute set, so the
-     * elements retain their original non-selected colours.
+     * Member elements do not have their 'selected' attribute set, so the elements retain their original non-selected
+     * colours.
      *
      * @param notDim The named selection to be recalled.
      *
@@ -370,8 +355,8 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
     /**
      * Resets a graph, and automatically un-dims all member graph elements.
      * <p>
-     * Member elements do not have their 'selected' attribute set, so all
-     * elements retain their original non-selected colours.
+     * Member elements do not have their 'selected' attribute set, so all elements retain their original non-selected
+     * colours.
      *
      * @param reset The named selection to be reset.
      *
@@ -389,8 +374,7 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
      * <p>
      * Results of the union are reflected on the graph.
      *
-     * @param selections <code>ArrayList&lt;NamedSelection&gt;</code> of
-     * selections to be included in the union.
+     * @param selections <code>ArrayList&lt;NamedSelection&gt;</code> of selections to be included in the union.
      *
      * @see ArrayList
      * @see NamedSelection
@@ -416,8 +400,8 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
      * <p>
      * Results of the intersection are reflected on the graph.
      *
-     * @param selections <code>ArrayList&lt;NamedSelection&gt;</code> of
-     * selections to be checked for intersecting member elements.
+     * @param selections <code>ArrayList&lt;NamedSelection&gt;</code> of selections to be checked for intersecting
+     * member elements.
      *
      * @see ArrayList
      * @see NamedSelection
@@ -463,8 +447,7 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
      * Updates the description of the given named selection.
      *
      * @param selection The selection being updated.
-     * @param newDescription The description being set on the given named
-     * selection.
+     * @param newDescription The description being set on the given named selection.
      */
     public void setDescriptionNamedSelection(final NamedSelection selection, final String newDescription) {
         if (!selection.isLocked()) {
@@ -484,8 +467,7 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
     /**
      * Changes the locked state for a given named selection.
      *
-     * @param selection The <code>NamedSelection</code> to have the locked state
-     * changed on.
+     * @param selection The <code>NamedSelection</code> to have the locked state changed on.
      *
      * @see NamedSelection
      */
@@ -501,11 +483,9 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
     }
 
     /**
-     * Looks up a vacant named selection saved spot, and returns the ID for use
-     * in the creation of new named selections.
+     * Looks up a vacant named selection saved spot, and returns the ID for use in the creation of new named selections.
      *
-     * @return An ID corresponding to a vacant position in the named selection
-     * underlying structure.
+     * @return An ID corresponding to a vacant position in the named selection underlying structure.
      */
     public int getAvailableSelection() {
         final int index = state.getCurrentlyAllocated().nextClearBit(START_INDEX);
@@ -550,9 +530,8 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
     /**
      * Removes the given named selections from the named selection state.
      *
-     * @param removeSelections An <code>ArrayList&lt;NamedSelection&gt;</code>
-     * containing the named selections to be removed from the named selection
-     * state.
+     * @param removeSelections An <code>ArrayList&lt;NamedSelection&gt;</code> containing the named selections to be
+     * removed from the named selection state.
      *
      * @see ArrayList
      * @see NamedSelection
@@ -572,8 +551,7 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
     }
 
     /**
-     * Returns the maximum number of named selections that can be stored to a
-     * single graph.
+     * Returns the maximum number of named selections that can be stored to a single graph.
      *
      * @return The maximum number of named selections possible.
      */
@@ -604,11 +582,9 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
     }
 
     /**
-     * Listen to attribute changes in the graph so we can reflect them in the
-     * GUI.
+     * Listen to attribute changes in the graph so we can reflect them in the GUI.
      * <p>
-     * The event may be null, since we call this manually from setNode() after a
-     * graph change.
+     * The event may be null, since we call this manually from setNode() after a graph change.
      *
      * @param evt PropertyChangeEvent.
      */
@@ -647,25 +623,20 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
     }
 
     /**
-     * Requests a intersection operation to be performed for the named
-     * selections that match an array of named selection IDs.
+     * Requests a intersection operation to be performed for the named selections that match an array of named selection
+     * IDs.
      * <p>
-     * This private method takes into account the display settings as per the
-     * current named selection state.
+     * This private method takes into account the display settings as per the current named selection state.
      * <p>
-     * Member and non-member elements of 'intersected' named selections will be
-     * shown as per the display settings (ie, if dim others has been set, then
-     * non-member elements will be dimmed on the graph).
+     * Member and non-member elements of 'intersected' named selections will be shown as per the display settings (ie,
+     * if dim others has been set, then non-member elements will be dimmed on the graph).
      *
-     * @param graph The graph that is to have the intersection operation
-     * performed upon.
-     * @param useCurrentlySelected <code>true</code> to include the currently
-     * selected graph elements in the intersection operation.
-     * @param isSelectResults <code>true</code> to set member elements
-     * 'selected' attribute.
+     * @param graph The graph that is to have the intersection operation performed upon.
+     * @param useCurrentlySelected <code>true</code> to include the currently selected graph elements in the
+     * intersection operation.
+     * @param isSelectResults <code>true</code> to set member elements 'selected' attribute.
      * @param isDimOthers <code>true</code> to dim non-member elements.
-     * @param ids The array of ids of the named selections that are to be
-     * 'intersected'.
+     * @param ids The array of ids of the named selections that are to be 'intersected'.
      */
     private void performIntersection(final Graph graph, final boolean useCurrentlySelected,
             final boolean isSelectResults, final boolean isDimOthers, final int... ids) {
@@ -682,25 +653,19 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
     }
 
     /**
-     * Requests a union operation to be performed for the named selections that
-     * match an array of named selection IDs.
+     * Requests a union operation to be performed for the named selections that match an array of named selection IDs.
      * <p>
-     * This private method takes into account the display settings as per the
-     * current named selection state.
+     * This private method takes into account the display settings as per the current named selection state.
      * <p>
-     * Member and non-member elements of 'unioned' named selections will be
-     * shown as per the display settings (ie, if dim others has been set, then
-     * non-member elements will be dimmed on the graph).
+     * Member and non-member elements of 'unioned' named selections will be shown as per the display settings (ie, if
+     * dim others has been set, then non-member elements will be dimmed on the graph).
      *
-     * @param graph The graph that is to have the union operation performed
-     * upon.
-     * @param useCurrentlySelected <code>true</code> to include the currently
-     * selected graph elements in the union operation.
-     * @param isSelectResults <code>true</code> to set member elements
-     * 'selected' attribute.
+     * @param graph The graph that is to have the union operation performed upon.
+     * @param useCurrentlySelected <code>true</code> to include the currently selected graph elements in the union
+     * operation.
+     * @param isSelectResults <code>true</code> to set member elements 'selected' attribute.
      * @param isDimOthers <code>true</code> to dim non-member elements.
-     * @param ids The array of ids of the named selections that are to be
-     * 'unioned'.
+     * @param ids The array of ids of the named selections that are to be 'unioned'.
      */
     private void performUnion(final Graph graph, final boolean useCurrentlySelected,
             final boolean isSelectResults, final boolean isDimOthers, final int... ids) {
@@ -718,19 +683,15 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
     }
 
     /**
-     * Requests the recall of a named selection on the graph for the given ID
-     * number.
+     * Requests the recall of a named selection on the graph for the given ID number.
      * <p>
-     * This private method takes into account the display settings as per the
-     * current named selection state.
+     * This private method takes into account the display settings as per the current named selection state.
      * <p>
-     * Member and non-member elements of the named selection will be shown as
-     * per the display settings (ie, if dim others has been set, then non-member
-     * elements will be dimmed on the graph).
+     * Member and non-member elements of the named selection will be shown as per the display settings (ie, if dim
+     * others has been set, then non-member elements will be dimmed on the graph).
      *
      * @param graph The graph that is to have the named selection retrieved for.
-     * @param isSelectResults <code>true</code> to set member elements
-     * 'selected' attribute.
+     * @param isSelectResults <code>true</code> to set member elements 'selected' attribute.
      * @param isDimOthers <code>true</code> to dim non-member elements.
      * @param id The id of the named selection that is to be retrieved.
      */
@@ -750,15 +711,13 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
     }
 
     /**
-     * Requests a new named selection to be created on the graph for the given
-     * ID number.
+     * Requests a new named selection to be created on the graph for the given ID number.
      * <p>
-     * Selected graph elements will have their 'named selection' attribute
-     * updated to reflect their membership in the new named selection.
+     * Selected graph elements will have their 'named selection' attribute updated to reflect their membership in the
+     * new named selection.
      *
      * @param graph The graph that is having the named selection created on.
-     * @param id The id of the named selection that is to be included on
-     * currently selected graph elements.
+     * @param id The id of the named selection that is to be included on currently selected graph elements.
      */
     private void performSave(final Graph graph, final int id) {
         final Plugin namedSelectionEdit = new NamedSelectionEditorPlugin(id);
@@ -823,11 +782,9 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
     }
 
     /**
-     * Queries the given graph (via the PluginFramework) for a saved
-     * <code>NamedSelectionState</code>.
+     * Queries the given graph (via the PluginFramework) for a saved <code>NamedSelectionState</code>.
      *
-     * @param graph The graph to retrieve the <code>NamedSelectionState</code>
-     * from.
+     * @param graph The graph to retrieve the <code>NamedSelectionState</code> from.
      *
      * @see NamedSelectionState
      * @see NamedSelectionStatePlugin
@@ -851,13 +808,12 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
     }
 
     /**
-     * Helper method that firstly ensures that the named selection browser (
-     * <code>NamedSelectionTopComponent</code>) has been opened, then manually
-     * updates it with the latest information regarding the state of all known
-     * named selections for this graph.
+     * Helper method that firstly ensures that the named selection browser ( <code>NamedSelectionTopComponent</code>)
+     * has been opened, then manually updates it with the latest information regarding the state of all known named
+     * selections for this graph.
      * <p>
-     * Update state is executed on the EDT to ensure that there are no
-     * incidences where the top component cannot be found.
+     * Update state is executed on the EDT to ensure that there are no incidences where the top component cannot be
+     * found.
      *
      * @see NamedSelectionTopComponent
      */
@@ -892,8 +848,7 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
     }
 
     /**
-     * Helper method that alerts the user that no remaining 'slots' for named
-     * selections remain.
+     * Helper method that alerts the user that no remaining 'slots' for named selections remain.
      */
     private void notifyAllAlloc() {
         final NamedSelectionAllAllocPanel panel = new NamedSelectionAllAllocPanel();
@@ -904,11 +859,10 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
     }
 
     /**
-     * Helper method that notifies the user that they are trying to perform
-     * modifications on a locked / protected named selection.
+     * Helper method that notifies the user that they are trying to perform modifications on a locked / protected named
+     * selection.
      *
-     * @param name The name of the selection that is being intercepted from
-     * modification.
+     * @param name The name of the selection that is being intercepted from modification.
      */
     private void notifyProtected(final String name) {
         final NamedSelectionProtectedPanel panel = new NamedSelectionProtectedPanel(name);

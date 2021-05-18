@@ -123,12 +123,16 @@ public class DefaultIconProvider implements ConstellationIconProvider {
             xDiameter = radius - x;
         } else if (x > 1.0f - radius) {
             xDiameter = x - (1.0f - radius);
+        } else {
+            // Default case added per S126
         }
 
         if (y < radius) {
             yDiameter = radius - y;
         } else if (y > 1.0f - radius) {
             yDiameter = y - (1.0f - radius);
+        } else {
+            // Default case added per S126
         }
 
         if (xDiameter * xDiameter + yDiameter * yDiameter > radius * radius) {

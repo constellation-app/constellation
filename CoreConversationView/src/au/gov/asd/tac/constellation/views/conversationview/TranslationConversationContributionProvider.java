@@ -42,8 +42,7 @@ import javafx.scene.layout.RowConstraints;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * The TranslationConversationContributionProvider adds the contents of the
- * Content.Translated attribute to a message.
+ * The TranslationConversationContributionProvider adds the contents of the Content.Translated attribute to a message.
  *
  * @author sirius
  */
@@ -121,6 +120,8 @@ public class TranslationConversationContributionProvider extends ConversationCon
                     e.consume();
                 } else if (e.getCode() == KeyCode.ESCAPE) {
                     e.consume();
+                } else {
+                    // Default case added per S126
                 }
             });
         }

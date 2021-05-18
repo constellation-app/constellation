@@ -54,15 +54,13 @@ import javafx.util.StringConverter;
 import org.openide.util.NbBundle.Messages;
 
 /**
- * The <code>TimelineChart</code> is a JavaFX based component that can be used
- * for mapping temporal data.
+ * The <code>TimelineChart</code> is a JavaFX based component that can be used for mapping temporal data.
  * <p>
- * The x-axis represents time, and the y-axis represents a field of interest
- * that temporal data is classified against such as names, IDs etc.
+ * The x-axis represents time, and the y-axis represents a field of interest that temporal data is classified against
+ * such as names, IDs etc.
  * <p>
- * The underlying chart is a JavaFX <code>XYChart</code> that has been extended
- * to incorporate temporal aspects and mouse handling events. The mouse handling
- * events are responsible for tasks such as zooming the timeline, shifting the
+ * The underlying chart is a JavaFX <code>XYChart</code> that has been extended to incorporate temporal aspects and
+ * mouse handling events. The mouse handling events are responsible for tasks such as zooming the timeline, shifting the
  * timeline and selecting a datetime range.
  *
  * @see XYChart
@@ -175,6 +173,8 @@ public class TimelineChart extends XYChart<Number, Number> {
                         selection.setLayoutX(0);
                         isSelecting = false;
                         mouseDistanceFromOrigin = 0;
+                    } else {
+                        // Default case added per S126
                     }
                 } else {
                     // We are starting a drag based temporal selection:
@@ -201,6 +201,8 @@ public class TimelineChart extends XYChart<Number, Number> {
 
                         // Update variables based on current mouse pointer position:
                         mouseOrigin = mouseX;
+                    } else {
+                        // Default case added per S126
                     }
 
                 }
@@ -213,8 +215,7 @@ public class TimelineChart extends XYChart<Number, Number> {
     // </editor-fold>
 
     /**
-     * Constructs a new <code>TimelineChart</code> component given a parent
-     * panel and axes.
+     * Constructs a new <code>TimelineChart</code> component given a parent panel and axes.
      *
      * @param parent the panel containing this chart.
      * @param xAxis the x axis.
@@ -318,8 +319,8 @@ public class TimelineChart extends XYChart<Number, Number> {
 
     // <editor-fold defaultstate="collapsed" desc="Axes Look and Feel">
     /**
-     * Formats the axes to set the required look and feel of a timeline rather
-     * than a generic chart which axes are originally suited for.
+     * Formats the axes to set the required look and feel of a timeline rather than a generic chart which axes are
+     * originally suited for.
      */
     private void formatAxes() {
         // Format the yAxis:
@@ -399,8 +400,7 @@ public class TimelineChart extends XYChart<Number, Number> {
     /**
      * Publishes data to the <code>TimelineChart</code> instance.
      *
-     * @param series The data to be published. (Temporal data containing
-     * interactions).
+     * @param series The data to be published. (Temporal data containing interactions).
      * @param lowestObservedDisplayPos Sets the lowest yAxis value.
      * @param highestObservedDisplayPos Sets the highest yAxis value.
      */
@@ -436,17 +436,13 @@ public class TimelineChart extends XYChart<Number, Number> {
     }
 
     /**
-     * Given a lower and upper time extent, sets the timeline's view to the
-     * corresponding pov.
+     * Given a lower and upper time extent, sets the timeline's view to the corresponding pov.
      * <p>
-     * This method performs the conversion from time values to the actual pixel
-     * values, and also handles padding of the timeline to create a sliding
-     * window for the POV.
+     * This method performs the conversion from time values to the actual pixel values, and also handles padding of the
+     * timeline to create a sliding window for the POV.
      *
-     * @param lowerTimeExtent The lower time value to set the left of the
-     * timeline window to.
-     * @param upperTimeExtent The upper time value to set the right of the
-     * timeline window to.
+     * @param lowerTimeExtent The lower time value to set the left of the timeline window to.
+     * @param upperTimeExtent The upper time value to set the right of the timeline window to.
      */
     public void setExtents(final double lowerTimeExtent, final double upperTimeExtent) {
         determineRange((long) lowerTimeExtent, (long) upperTimeExtent, timeline.getWidth());
@@ -465,8 +461,8 @@ public class TimelineChart extends XYChart<Number, Number> {
     }
 
     /**
-     * Helper method that determines the labelling requirements of the time axis
-     * based on the magnitude of time represented by the lower and upper bounds.
+     * Helper method that determines the labelling requirements of the time axis based on the magnitude of time
+     * represented by the lower and upper bounds.
      *
      * @param lowerBound The lower time value of the timeline window.
      * @param upperBound The upper time value of the timeline window.
@@ -709,9 +705,8 @@ public class TimelineChart extends XYChart<Number, Number> {
     }
 
     /**
-     * This method manually lays out all of the interactions and clusters based
-     * on properties such as when they occurred (x axis), and their respective
-     * display positions (y axis).
+     * This method manually lays out all of the interactions and clusters based on properties such as when they occurred
+     * (x axis), and their respective display positions (y axis).
      */
     @Override
     protected void layoutPlotChildren() {
@@ -787,12 +782,10 @@ public class TimelineChart extends XYChart<Number, Number> {
     }
 
     /**
-     * This is called when the range has been invalidated and we need to update
-     * it.
+     * This is called when the range has been invalidated and we need to update it.
      *
-     * If the axis are auto-ranging then we compile a list of all data that the
-     * given axis has to plot and call invalidateRange() on the axis passing it
-     * that data.
+     * If the axis are auto-ranging then we compile a list of all data that the given axis has to plot and call
+     * invalidateRange() on the axis passing it that data.
      */
     @Override
     protected void updateAxisRange() {

@@ -102,6 +102,8 @@ public class ClusteringManager {
             } else if (leaves.size() == 1) {
                 tree = leaves.get(0);
                 return new TimeExtents(tree.getLowerTimeExtent(), tree.getUpperTimeExtent());
+            } else {
+                // Default case added per S126
             }
 
             Collections.sort(leaves);
@@ -201,6 +203,8 @@ public class ClusteringManager {
                         elementsToUndim.add(te);
                     } else if (exclusionState == 2) {
                         elementsToUnhide.add(te);
+                    } else {
+                        // Default case added per S126
                     }
                 } else {
                     final TreeNode node = (TreeNode) te;
@@ -378,6 +382,8 @@ public class ClusteringManager {
                             }
                         }
                     }
+                } else {
+                    // Default case added per S126
                 }
 
                 for (int pos = 0; pos < wg.getTransactionCount(); pos++) {
@@ -668,6 +674,8 @@ public class ClusteringManager {
                             }
                         }
                     }
+                } else {
+                    // Default case added per S126
                 }
 
                 for (Integer vertexId : verticesToBeUndimmed) {

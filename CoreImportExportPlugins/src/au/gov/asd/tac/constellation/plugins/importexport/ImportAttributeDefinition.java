@@ -21,9 +21,8 @@ import au.gov.asd.tac.constellation.plugins.importexport.translator.AttributeTra
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 
 /**
- * An ImportAttributeDefinition provides all the information and functionality
- * to extract a given field out of a table, translate it if necessary, and use
- * it to set a given attribute value on the graph.
+ * An ImportAttributeDefinition provides all the information and functionality to extract a given field out of a table,
+ * translate it if necessary, and use it to set a given attribute value on the graph.
  *
  * @author sirius
  */
@@ -40,12 +39,10 @@ public class ImportAttributeDefinition {
     private static int ROWID_COLUMN_INDEX = -1;
 
     /**
-     * Immutable attributes are defined in {@code ImportController} as mockup
-     * attributes when the "Show all schema attributes" checkbox is selected. No
-     * attribute id is defined at this point because it is not "ensured" to the
-     * graph. When an attribute needs to be added to the graph this
-     * overriddenAttributeId will be used to store the id. This approach
-     * prevents any modifications to the {@code Attribute} interface.
+     * Immutable attributes are defined in {@code ImportController} as mockup attributes when the "Show all schema
+     * attributes" checkbox is selected. No attribute id is defined at this point because it is not "ensured" to the
+     * graph. When an attribute needs to be added to the graph this overriddenAttributeId will be used to store the id.
+     * This approach prevents any modifications to the {@code Attribute} interface.
      */
     private int overriddenAttributeId = ATTRIBUTE_NOT_DEFINED;
 
@@ -70,16 +67,13 @@ public class ImportAttributeDefinition {
     /**
      * Use when loading a template.
      * <p>
-     * The template knows the column name, but not the column index, because the
-     * user might have moved the columns around. We need to remember the column
-     * name so we can fix up the index when assigning this to the correct
-     * column.
+     * The template knows the column name, but not the column index, because the user might have moved the columns
+     * around. We need to remember the column name so we can fix up the index when assigning this to the correct column.
      *
      * @param columnLabel the label of the column that provides the data.
      * @param defaultValue the default value for this column.
      * @param attribute the attribute that will store the data.
-     * @param translator a translator that can modify the values before storing
-     * on the graph.
+     * @param translator a translator that can modify the values before storing on the graph.
      * @param parameters parameters that are passed to the translator.
      */
     public ImportAttributeDefinition(final String columnLabel, final String defaultValue, final Attribute attribute, final AttributeTranslator translator, final PluginParameters parameters) {
@@ -116,8 +110,7 @@ public class ImportAttributeDefinition {
     }
 
     /**
-     * If the attribute id in {@code attribute} is defined then return the id or
-     * return the overridden id
+     * If the attribute id in {@code attribute} is defined then return the id or return the overridden id
      *
      * @return The attribute id
      */
@@ -130,8 +123,7 @@ public class ImportAttributeDefinition {
     }
 
     /**
-     * Set the new attribute id which can be set after an "ensure" is done to
-     * the graph
+     * Set the new attribute id which can be set after an "ensure" is done to the graph
      *
      * @param overriddenAttributeId the id of the overridden attribute.
      */
@@ -147,6 +139,8 @@ public class ImportAttributeDefinition {
             graph.setStringValue(getOverriddenAttributeId(), elementId, translator.translate(cell, parameters));
         } else if (columnIndex == ROWID_COLUMN_INDEX) {
             graph.setStringValue(getOverriddenAttributeId(), elementId, Integer.toString(rowIndex));
+        } else {
+            // Default case added per S126
         }
     }
 

@@ -37,18 +37,15 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
 /**
- * A XMLImportFileParser implements an ImportFileParser that can parse XML
- * files.
+ * A XMLImportFileParser implements an ImportFileParser that can parse XML files.
  * <p>
- * The XML is parser assumes that the data is basically of tabular form but
- * stored in an XML file. In these cases, there is a tag that represents a row
- * and there will generally be many of these row tags under a common parent. To
- * find this tag, the parser examines each tag and compares the number of these
- * tags with the number of its parent tag. The tag with the highest value is
- * assumed to be the row tag.
+ * The XML is parser assumes that the data is basically of tabular form but stored in an XML file. In these cases, there
+ * is a tag that represents a row and there will generally be many of these row tags under a common parent. To find this
+ * tag, the parser examines each tag and compares the number of these tags with the number of its parent tag. The tag
+ * with the highest value is assumed to be the row tag.
  * <p>
- * Once a row tag has been determined, each tag that descends from the row tag,
- * and each attribute of those tags are assumed to be columns.
+ * Once a row tag has been determined, each tag that descends from the row tag, and each attribute of those tags are
+ * assumed to be columns.
  *
  * @author sirius
  */
@@ -175,6 +172,8 @@ public class XMLImportFileParser extends ImportFileParser {
             } else if (childNode instanceof Text) {
                 final Text textNode = (Text) childNode;
                 text.append(textNode.getNodeValue());
+            } else {
+                // Default case added per S126
             }
         }
 

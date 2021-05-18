@@ -39,15 +39,12 @@ import java.util.Set;
 /**
  * Hierarchical layout (Sugiyama based).
  * <p>
- * The hierarchy is not based on the direction of transactions between vertices.
- * Instead, one or more roots are specified. These are placed at level zero.
- * Vertices directly connected to either of these roots are at level one,
- * vertices directly connected to level one are at level two, etc, irregardless
- * of transaction direction.
+ * The hierarchy is not based on the direction of transactions between vertices. Instead, one or more roots are
+ * specified. These are placed at level zero. Vertices directly connected to either of these roots are at level one,
+ * vertices directly connected to level one are at level two, etc, irregardless of transaction direction.
  * <p>
- * Therefore, a parent vertex is not a vertex at the source end of an incoming
- * transaction, it is a connected vertex at level-1 (ie the layer immediately
- * above).
+ * Therefore, a parent vertex is not a vertex at the source end of an incoming transaction, it is a connected vertex at
+ * level-1 (ie the layer immediately above).
  *
  * @author algol
  */
@@ -157,14 +154,12 @@ public class HierarchicalArranger implements Arranger {
     /**
      * Find the pendants in a graph.
      * <p>
-     * Not just find the pendants, but build a taxonomy where each taxon
-     * contains the pendants of a single vertex. This will be convenient for
-     * arranging them separately later.
+     * Not just find the pendants, but build a taxonomy where each taxon contains the pendants of a single vertex. This
+     * will be convenient for arranging them separately later.
      *
      * @param rg The graph to inspect.
      * @param roots A vertex is not a pendant if it is a root.
-     * @param minPendants If there are less than this many pendants, teat them
-     * like normal vertices.
+     * @param minPendants If there are less than this many pendants, teat them like normal vertices.
      * @param pendantSets The sets of pendants.
      */
     private static void findPendants(final GraphReadMethods rg, final Set<Integer> roots, final int minPendants, Map<Integer, Set<Integer>> pendantSets) {
@@ -194,17 +189,14 @@ public class HierarchicalArranger implements Arranger {
     /**
      * Assign a level (distance from the root vertex) to each vertex.
      * <p>
-     * The level of a vertex is the number of hops from the specified root. A
-     * breadth first search is done starting at the root to assign a level to
-     * each vertex.
+     * The level of a vertex is the number of hops from the specified root. A breadth first search is done starting at
+     * the root to assign a level to each vertex.
      * <p>
-     * This is called once for each root. If a vertex already has a level from a
-     * previous call (because the vertex is closer to this root than any
-     * previous root), the minimum level is used.
+     * This is called once for each root. If a vertex already has a level from a previous call (because the vertex is
+     * closer to this root than any previous root), the minimum level is used.
      * <p>
-     * Pendants are a problem; if there are lots of them they just clutter up
-     * the hierarchy. We assign them a pseudo-level of -1 so they can be dealt
-     * with separately.
+     * Pendants are a problem; if there are lots of them they just clutter up the hierarchy. We assign them a
+     * pseudo-level of -1 so they can be dealt with separately.
      *
      * @param wg
      * @param root
@@ -232,6 +224,8 @@ public class HierarchicalArranger implements Arranger {
                     levels[neighbourVxId] = levels[currentVxId] + 1;
                     neighbourQueue.addLast(neighbourVxId);
                     maxLevel = Math.max(maxLevel, levels[neighbourVxId]);
+                } else {
+                    // Default case added per S126
                 }
             }
         }

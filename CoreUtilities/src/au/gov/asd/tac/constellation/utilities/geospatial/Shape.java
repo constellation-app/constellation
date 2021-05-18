@@ -151,8 +151,8 @@ public class Shape {
         private final int srid;
 
         /**
-         * {@code CRS.decode()} is known to have performance issues so we are
-         * going to cache the output to reduce delays.
+         * {@code CRS.decode()} is known to have performance issues so we are going to cache the output to reduce
+         * delays.
          */
         private static final Map<Integer, String> cache = new HashMap<>();
 
@@ -179,8 +179,8 @@ public class Shape {
     }
 
     /**
-     * Check if a geojson string is valid by ensuring it represents a feature
-     * collection containing at least one feature.
+     * Check if a geojson string is valid by ensuring it represents a feature collection containing at least one
+     * feature.
      *
      * @param geoJson a geojson string
      * @return true if the geojson is considered valid, false otherwise.
@@ -191,13 +191,12 @@ public class Shape {
     }
 
     /**
-     * Construct geojson to represent a single shape given a list of
-     * coordinates, a desired shape type and a unique identifier.
+     * Construct geojson to represent a single shape given a list of coordinates, a desired shape type and a unique
+     * identifier.
      *
      * @param uuid a unique identifier for the shape
      * @param type a type of shape
-     * @param coordinates a list of coordinate tuples of the form (longitude,
-     * latitude) from which to build the shape
+     * @param coordinates a list of coordinate tuples of the form (longitude, latitude) from which to build the shape
      * @return a geojson string representing a single shape
      * @throws IOException there was a problem writing the generated shape
      */
@@ -286,13 +285,11 @@ public class Shape {
     }
 
     /**
-     * Construct geojson to represent a collection of shapes given a list of
-     * shapes, and a unique identifier.
+     * Construct geojson to represent a collection of shapes given a list of shapes, and a unique identifier.
      *
      * @param uuid a unique identifier for the shape
      * @param shapes a map of shape ids to shapes
-     * @param attributes a map of shape ids to shape attributes as a map of
-     * attribute name to attribute value
+     * @param attributes a map of shape ids to shape attributes as a map of attribute name to attribute value
      * @return a geojson string representing a collection of shapes
      * @throws IOException there was a problem writing the generated geojson
      */
@@ -359,13 +356,11 @@ public class Shape {
     }
 
     /**
-     * Construct kml to represent a collection of shapes given a list of shapes,
-     * and a unique identifier.
+     * Construct kml to represent a collection of shapes given a list of shapes, and a unique identifier.
      *
      * @param uuid a unique identifier for the shape
      * @param shapes a map of shape ids to shapes
-     * @param attributes a map of shape ids to shape attributes as a map of
-     * attribute name to attribute value
+     * @param attributes a map of shape ids to shape attributes as a map of attribute name to attribute value
      * @return a kml string representing a collection of shapes
      * @throws IOException there was a problem writing the generated kml
      */
@@ -434,13 +429,11 @@ public class Shape {
     }
 
     /**
-     * Construct a geopackage given a list of shapes, a unique identifier, and
-     * an output file.
+     * Construct a geopackage given a list of shapes, a unique identifier, and an output file.
      *
      * @param uuid a unique identifier for the shape
      * @param shapes a map of shape ids to shapes
-     * @param attributes a map of shape ids to additional attributes as a map of
-     * attribute name to attribute value
+     * @param attributes a map of shape ids to additional attributes as a map of attribute name to attribute value
      * @param output the geopackage file to write to
      * @param spatialReference the spatial reference to use for the geopackage
      * @throws IOException there was a problem writing the generated geopackage
@@ -509,6 +502,8 @@ public class Shape {
                             } else if (schemaAttributes.containsKey(compatibleAttributeName)) {
                                 feature.setAttribute(compatibleAttributeName, attributeValue == null
                                         ? null : attributeValue.toString());
+                            } else {
+                                // Default case added per S126
                             }
                         });
                     }
@@ -543,14 +538,13 @@ public class Shape {
     }
 
     /**
-     * Construct a shapefile given a list of shapes of the specified shape type,
-     * a unique identifier, and an output file.
+     * Construct a shapefile given a list of shapes of the specified shape type, a unique identifier, and an output
+     * file.
      *
      * @param uuid a unique identifier for the shape
      * @param type a type of shape
      * @param shapes a map of shape ids to shapes
-     * @param attributes a map of shape ids to additional attributes as a map of
-     * attribute name to attribute value
+     * @param attributes a map of shape ids to additional attributes as a map of attribute name to attribute value
      * @param output the shapefile to write to
      * @param spatialReference the spatial reference to use for the shapefile
      * @throws IOException there was a problem writing the generated shapefile
@@ -658,6 +652,8 @@ public class Shape {
                                         writableFeature.setAttribute(compatibleAttributeName, attributeValue);
                                     } else if (schemaAttributes.containsKey(compatibleAttributeName) && attributeValue != null) {
                                         writableFeature.setAttribute(compatibleAttributeName, attributeValue.toString());
+                                    } else {
+                                        // Default case added per S126
                                     }
                                 });
                             }

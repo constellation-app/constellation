@@ -55,6 +55,8 @@ public final class UpdateElementBitmaskPlugin extends SimpleEditPlugin {
                     graph.setLongValue(vertexBitmaskAttributeId, vertexId, graph.getLongValue(vertexBitmaskAttributeId, vertexId) | (1 << targetMask));
                 } else if (layerAction.equals(LayersAddContextMenu.LayerAction.REMOVE)) {
                     graph.setLongValue(vertexBitmaskAttributeId, vertexId, graph.getLongValue(vertexBitmaskAttributeId, vertexId) & ~(1 << targetMask));
+                } else {
+                    // Default case added per S126
                 }
             }
         }
@@ -71,6 +73,8 @@ public final class UpdateElementBitmaskPlugin extends SimpleEditPlugin {
                     graph.setLongValue(transactionBitmaskAttributeId, transactionId, graph.getLongValue(transactionBitmaskAttributeId, transactionId) | (1 << targetMask));
                 } else if (layerAction.equals(LayersAddContextMenu.LayerAction.REMOVE)) {
                     graph.setLongValue(transactionBitmaskAttributeId, transactionId, graph.getLongValue(transactionBitmaskAttributeId, transactionId) & ~(1 << targetMask));
+                } else {
+                    // Default case added per S126
                 }
             }
         }

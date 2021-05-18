@@ -48,15 +48,12 @@ public class CameraUtilities {
     }
 
     /**
-     * Refocuses the camera to look in a specified direction at a specified
-     * region.
+     * Refocuses the camera to look in a specified direction at a specified region.
      *
      * @param camera The camera object to refocus
-     * @param unitEye A unit vector pointing in the direction the camera should
-     * be looking
+     * @param unitEye A unit vector pointing in the direction the camera should be looking
      * @param up A vector pointing in the desired up direction
-     * @param region The bounding box representing the region the camera should
-     * be looking at
+     * @param region The bounding box representing the region the camera should be looking at
      */
     public static void refocus(final Camera camera, final Vector3f unitEye, final Vector3f up, final BoundingBox region) {
 
@@ -98,6 +95,8 @@ public class CameraUtilities {
                 camera.setMixRatio(camera.getMixRatio() + 1);
             } else if (!increaseMix && camera.getMixRatio() > Camera.MIX_RATIO_MIN) {
                 camera.setMixRatio(camera.getMixRatio() - 1);
+            } else {
+                // Default case added per S126
             }
         }
     }
@@ -149,14 +148,13 @@ public class CameraUtilities {
     }
 
     /**
-     * Rotates the camera around its centre of rotation, about its 'up' vector
-     * and the axis mutually orthogonal to the 'up' and 'eye' vectors.
+     * Rotates the camera around its centre of rotation, about its 'up' vector and the axis mutually orthogonal to the
+     * 'up' and 'eye' vectors.
      *
      * @param camera the camera to perform rotation with.
-     * @param xDegrees the amount in degrees to rotate in the x-direction (that
-     * is about the axis orthogonal to both the 'up' and 'eye' vectors).
-     * @param yDegrees the amount in degrees to rotate in the y-direction (that
-     * is about the 'up' vector).
+     * @param xDegrees the amount in degrees to rotate in the x-direction (that is about the axis orthogonal to both the
+     * 'up' and 'eye' vectors).
+     * @param yDegrees the amount in degrees to rotate in the y-direction (that is about the 'up' vector).
      *
      */
     public static void rotate(final Camera camera, final float xDegrees, final float yDegrees) {
@@ -211,9 +209,8 @@ public class CameraUtilities {
     /**
      * Zoom so that the bounds of the bounding box are visible.
      * <p>
-     * The direction of the zoom in 3D depends on the current lookat position.
-     * If the display is in 2D mode, the eye is moved so that eye->centre is
-     * parallel to the z-axis
+     * The direction of the zoom in 3D depends on the current lookat position. If the display is in 2D mode, the eye is
+     * moved so that eye->centre is parallel to the z-axis
      *
      * @param camera
      * @param box

@@ -49,8 +49,8 @@ import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Allows an image object or an image file to be dropped onto the graph. The
- * currently selected vertices will have their icon changed to show the image.
+ * Allows an image object or an image file to be dropped onto the graph. The currently selected vertices will have their
+ * icon changed to show the image.
  *
  * @author sirius
  */
@@ -98,6 +98,8 @@ public class ImageIconDropper implements GraphDropper {
                         image = ImageIO.read(file);
                     }
                 }
+            } else {
+                // Default case added per S126
             }
             if (image != null) {
                 final BufferedImage resultImage = image;

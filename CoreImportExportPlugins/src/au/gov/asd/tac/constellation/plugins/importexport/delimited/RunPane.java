@@ -71,9 +71,8 @@ import javafx.util.Callback;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * A RunPane displays the UI necessary to allow the user to drag and drop
- * attributes onto columns in the table in order to specify which attribute
- * values should be extracted from which columns.
+ * A RunPane displays the UI necessary to allow the user to drag and drop attributes onto columns in the table in order
+ * to specify which attribute values should be extracted from which columns.
  *
  * @author sirius
  */
@@ -231,6 +230,8 @@ public class RunPane extends BorderPane implements KeyListener {
                 attributeFilter += c.getChar();
                 attributeFilterTextField.setText(attributeFilter);
                 attributeFilterPane.setVisible(true);
+            } else {
+                // Default case added per S126
             }
             importController.setAttributeFilter(attributeFilter);
             importController.setDestination(null);
@@ -381,8 +382,7 @@ public class RunPane extends BorderPane implements KeyListener {
     }
 
     /**
-     * Set this RunPane to display the specified column headers and sample data
-     * rows.
+     * Set this RunPane to display the specified column headers and sample data rows.
      *
      * @param columnLabels Column header labels.
      * @param newRows Rows of sample data.

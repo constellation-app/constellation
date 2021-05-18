@@ -22,11 +22,6 @@ import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcep
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
-import static au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeTransactionsPlugin.LEAD_PARAMETER_ID;
-import static au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeTransactionsPlugin.MERGER_PARAMETER_ID;
-import static au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeTransactionsPlugin.MERGE_TYPE_PARAMETER_ID;
-import static au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeTransactionsPlugin.SELECTED_PARAMETER_ID;
-import static au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeTransactionsPlugin.THRESHOLD_PARAMETER_ID;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -135,6 +130,8 @@ public class MergeTransactionsByDateTime implements MergeTransactionType {
                         // reset the values
                         currentLead = null;
                         mergeGroup = new HashSet<>();
+                    } else {
+                        // Default case added per S126
                     }
                 }
             }

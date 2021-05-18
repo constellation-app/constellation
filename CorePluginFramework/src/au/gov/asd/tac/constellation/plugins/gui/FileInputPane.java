@@ -40,13 +40,12 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 
 /**
- * A text-box and file chooser that together allows the selection or manual
- * entry of a number files, which is the GUI element corresponding to a
- * {@link PluginParameter} of
+ * A text-box and file chooser that together allows the selection or manual entry of a number files, which is the GUI
+ * element corresponding to a {@link PluginParameter} of
  * {@link au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType}.
  * <p>
- * Entering file names manually or making a selection with the file chooser will
- * update the object value of the underlying {@link PluginParameter}.
+ * Entering file names manually or making a selection with the file chooser will update the object value of the
+ * underlying {@link PluginParameter}.
  *
  * @see au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType
  *
@@ -180,6 +179,8 @@ public class FileInputPane extends HBox {
                 event.consume();
             } else if (event.getCode() == KeyCode.ESCAPE) {
                 event.consume();
+            } else {
+                // Default case added per S126
             }
         });
 

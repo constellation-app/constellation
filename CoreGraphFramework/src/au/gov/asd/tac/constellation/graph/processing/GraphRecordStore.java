@@ -39,11 +39,11 @@ public class GraphRecordStore extends TabularRecordStore {
     }
 
     /**
-     * Construct a GraphRecordStore with the optional ability to cache keys and
-     * values within the RecordStore for more efficient lookup.
+     * Construct a GraphRecordStore with the optional ability to cache keys and values within the RecordStore for more
+     * efficient lookup.
      *
-     * @param cacheStrings A flag indicating whether or not to create a cache
-     * for {@link String} values to make lookup faster.
+     * @param cacheStrings A flag indicating whether or not to create a cache for {@link String} values to make lookup
+     * faster.
      */
     public GraphRecordStore(final boolean cacheStrings) {
         super(cacheStrings);
@@ -52,11 +52,10 @@ public class GraphRecordStore extends TabularRecordStore {
     /**
      * Get the values associated with a column in this TabularRecordStore.
      *
-     * @param key A {@link String value} representing a key in this
-     * TabularRecordStore. This can be thought of as a column name.
-     * @return An array of arrays of {@link Object} representing a set of values
-     * from this TabularRecordStore. This data structure is such that arrays are
-     * minimally created, effectively conserving memory.
+     * @param key A {@link String value} representing a key in this TabularRecordStore. This can be thought of as a
+     * column name.
+     * @return An array of arrays of {@link Object} representing a set of values from this TabularRecordStore. This data
+     * structure is such that arrays are minimally created, effectively conserving memory.
      */
     @Override
     protected Object[][] getColumn(final String key) {
@@ -121,6 +120,8 @@ public class GraphRecordStore extends TabularRecordStore {
         } else if (values.length <= record >>> BATCH_BITS) {
             values = Arrays.copyOf(values, capacity >>> BATCH_BITS);
             createColumn(key, values);
+        } else {
+            // Default case added per S126
         }
 
         Object[] batch = values[record >>> BATCH_BITS];
@@ -142,8 +143,7 @@ public class GraphRecordStore extends TabularRecordStore {
     /**
      * Append another RecordStore to this GraphRecordStore.
      *
-     * @param recordStore A GraphRecordStore to be appended to this
-     * GraphRecordStore.
+     * @param recordStore A GraphRecordStore to be appended to this GraphRecordStore.
      */
     @Override
     public void add(final RecordStore recordStore) {
@@ -214,6 +214,8 @@ public class GraphRecordStore extends TabularRecordStore {
                         return false;
                     } else if (!TabularRecordStore.getValue(e.getValue(), record).equals(TabularRecordStore.getValue(other.typedRecords.get(e.getKey()), record))) {
                         return false;
+                    } else {
+                        // Default case added per S126
                     }
                 }
             }
