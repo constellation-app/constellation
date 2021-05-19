@@ -28,7 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.control.Tooltip;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -82,7 +83,6 @@ public class DefaultQualityControlAutoButtonNGTest {
     @Test
     public void testQualityControlChangedWithNullState() throws InterruptedException {
         System.out.println("qualityControlChanged");
-        QualityControlState state = null;
         if (!GraphicsEnvironment.isHeadless()) {
             //needed to initialise the toolkit
             new JFXPanel();
@@ -92,7 +92,7 @@ public class DefaultQualityControlAutoButtonNGTest {
             String expStyleText = instance.DEFAULT_TEXT_STYLE + instance.BUTTON_STYLE;
             String expTooltipText = null;
 
-            instance.qualityControlChanged(state);
+            instance.qualityControlChanged(null);
 
             String resultRiskText = instance.getText();
             String resultStyleText = instance.getStyle();
@@ -111,8 +111,8 @@ public class DefaultQualityControlAutoButtonNGTest {
     @Test
     public void testQualityControlChangedWithValidState() throws InterruptedException {
         System.out.println("qualityControlChanged");
-        QualityControlState state = new QualityControlState(graph.getId(), events, rules);
         if (!GraphicsEnvironment.isHeadless()) {
+            QualityControlState state = new QualityControlState(graph.getId(), events, rules);
             //needed to initialise the toolkit
             new JFXPanel();
             DefaultQualityControlAutoButton instance = new DefaultQualityControlAutoButton();
