@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.welcome.plugins;
 
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.views.whatsnew.WhatsNewTopComponent;
@@ -98,10 +99,10 @@ public class WhatsNewWelcomePlugin implements WelcomePluginInterface {
         newView.setFitWidth(25);
         final Text title = new Text("What's New?");
         title.setFill(Color.WHITE);
-        title.setFont(new Font("Arial", 18));
+        title.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * 1.5));
         final Text subtitle = new Text("Features in the latest version");
         subtitle.setFill(Color.WHITE);
-        subtitle.setFont(new Font("Arial", 10));
+        subtitle.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize()));
         final VBox layoutVBox = new VBox(title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER_LEFT);
         final HBox layoutHBox = new HBox(newView, layoutVBox);
