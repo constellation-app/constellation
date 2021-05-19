@@ -1056,7 +1056,7 @@ public final class GraphVisualAccess implements VisualAccess {
                 // 3. Neither true_<attributeName> or false_<attributeName> is set as an alias
                 //    --> In this case there is no override, use the default true/false icons
                 final boolean valueAsBool = accessGraph.getBooleanValue(decoratorAttrib, accessGraph.getVertex(decoratorVertex));
-                final String notValue = valueAsBool ? "false" : "true";
+                final String notValue = Boolean.toString(!valueAsBool);
                 final String attributeName = accessGraph.getAttributeName(decoratorAttrib);
                 final String valueStr = value.concat("_").concat(attributeName);
                 final String notValueStr = notValue.concat("_").concat(attributeName);
