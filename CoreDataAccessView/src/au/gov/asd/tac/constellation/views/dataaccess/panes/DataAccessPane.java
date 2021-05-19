@@ -44,6 +44,7 @@ import static au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginType
 import au.gov.asd.tac.constellation.views.dataaccess.io.ParameterIOUtilities;
 import au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessPreferenceKeys;
 import au.gov.asd.tac.constellation.views.dataaccess.templates.DataAccessPreQueryValidation;
+import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlViewPane;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetterListener;
 import au.gov.asd.tac.constellation.views.qualitycontrol.widget.QualityControlAutoButton;
 import java.io.File;
@@ -148,6 +149,8 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
 
     public DataAccessPane(DataAccessViewTopComponent topComponent) {
         this.topComponent = topComponent;
+        
+        QualityControlViewPane.readSerializedRulePriorities();
 
         dataAccessTabPane = new TabPane();
         dataAccessTabPane.setSide(Side.TOP);
