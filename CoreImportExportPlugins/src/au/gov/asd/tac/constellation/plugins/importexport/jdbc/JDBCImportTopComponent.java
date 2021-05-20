@@ -74,7 +74,7 @@ public final class JDBCImportTopComponent extends ImportTopComponent {
 
     @Override
     protected String createStyle() {
-        return null;
+        return "resources/jdbc-import.css";
     }
 
     @Override
