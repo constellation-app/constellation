@@ -120,7 +120,7 @@ public class AverageDegreePlugin extends SimpleEditPlugin {
 
             sumDegree += degree;
         }
-        final double averageDegree = sumDegree / includedVertices.cardinality();
+        final float averageDegree = sumDegree / includedVertices.cardinality();
 
         // choose the correct degree attribute
         final int averageDegreeAttributeId;
@@ -135,6 +135,6 @@ public class AverageDegreePlugin extends SimpleEditPlugin {
         }
 
         // update the graph with degree values
-        graph.setFloatValue(averageDegreeAttributeId, 0, (float) averageDegree);
+        graph.setFloatValue(averageDegreeAttributeId, 0, averageDegree);
     }
 }

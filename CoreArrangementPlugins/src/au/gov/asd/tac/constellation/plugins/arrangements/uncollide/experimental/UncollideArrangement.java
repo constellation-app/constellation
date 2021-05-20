@@ -39,6 +39,7 @@ public class UncollideArrangement implements Arranger {
     private boolean maintainMean = false;
     private final double twinScaling;
 
+
     public UncollideArrangement(final Dimensions dimensions, final int maxExpansions) {
         this.twinScaling = math.pow(1.1, -maxExpansions);
         this.dimensions = dimensions;
@@ -67,7 +68,7 @@ public class UncollideArrangement implements Arranger {
         }
     }
 
-    private void uncollide(final GraphWriteMethods wg, final int iter) throws InterruptedException, PluginException {
+    private void uncollide(final GraphWriteMethods wg,final int iter) throws InterruptedException, PluginException {
         final int vertexCount = wg.getVertexCount();
 
         AbstractTree tree = TreeFactory.create(wg, dimensions);
@@ -82,7 +83,7 @@ public class UncollideArrangement implements Arranger {
             tree = TreeFactory.create(wg, dimensions);
         }
 
-        if (Objects.nonNull(interaction)) {
+        if(Objects.nonNull(interaction)) {
             interaction.setBusy("Expanding graph until there are no more colllisions", true);
         }
 
@@ -96,7 +97,7 @@ public class UncollideArrangement implements Arranger {
                 throw new InterruptedException();
             }
         }
-        if (Objects.nonNull(interaction)) {
+        if(Objects.nonNull(interaction)) {
             interaction.setBusy("Expanding graph until there are no more colllisions", false);
         }
     }
@@ -119,7 +120,8 @@ public class UncollideArrangement implements Arranger {
      * Nudges two nodes in approximately the same place so that they do not overlap.
      *
      * @param subject The vertex to check for twins.
-     * @param padding The minimum distance between the vertex's edge and the edges of each neighbor.
+     * @param padding The minimum distance between the vertex's edge and the edges
+     * of each neighbor.
      */
     private void nudgeTwins(final GraphWriteMethods wg, final int subject, final int twin) {
         final int xId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
@@ -128,9 +130,9 @@ public class UncollideArrangement implements Arranger {
         final int rId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.NODE_RADIUS.getName());
 
         double[] deltas;
-        double deltaX = wg.getFloatValue(xId, subject) - wg.getFloatValue(xId, twin);
-        double deltaY = wg.getFloatValue(yId, subject) - wg.getFloatValue(yId, twin);
-        double deltaZ = 0;
+        float deltaX = wg.getFloatValue(xId, subject) - wg.getFloatValue(xId, twin);
+        float deltaY = wg.getFloatValue(yId, subject) - wg.getFloatValue(yId, twin);
+        float deltaZ = 0;
 
         final double collisionDistance;
         final double delta;
@@ -138,16 +140,16 @@ public class UncollideArrangement implements Arranger {
             case TWO:
                 delta = math.sqrt(deltaX * deltaX + deltaY * deltaY);
                 deltas = new double[2];
-                collisionDistance = math.sqrt(2 * wg.getFloatValue(rId, subject)) + math.sqrt(2 * wg.getFloatValue(rId, twin));
+                collisionDistance = math.sqrt(2*wg.getFloatValue(rId, subject)) + math.sqrt(2*wg.getFloatValue(rId, twin));
                 break;
             case THREE:
-                if (zId == GraphConstants.NOT_FOUND) {
+                if (zId == GraphConstants.NOT_FOUND){
                     throw new IllegalArgumentException("Unable to perform 3D uncllide on 2D graph");
                 }
                 deltaZ = wg.getFloatValue(zId, subject) - wg.getFloatValue(zId, twin);
                 delta = Math.cbrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
-                collisionDistance = Math.cbrt(3 * wg.getFloatValue(rId, subject)) + Math.cbrt(3 * wg.getFloatValue(rId, twin));
-                deltas = new double[3];
+                collisionDistance = Math.cbrt(3*wg.getFloatValue(rId, subject)) + Math.cbrt(3*wg.getFloatValue(rId, twin));
+                deltas= new double[3];
                 deltas[2] = deltaZ;
                 break;
             default:
@@ -156,7 +158,7 @@ public class UncollideArrangement implements Arranger {
         deltas[0] = deltaX;
         deltas[1] = deltaY;
 
-        final double twinDistance = collisionDistance * twinScaling; // The required distance for the nodes to be uncollided after maxExpansions number of expansions (each expansions scaled the graph by a factor of 1.1
+        final double twinDistance = collisionDistance*twinScaling; // The required distance for the nodes to be uncollided after maxExpansions number of expansions (each expansions scaled the graph by a factor of 1.1
 
         // If they are in the same spot we will nudge in a random direction
         if (delta == 0) {
@@ -167,20 +169,20 @@ public class UncollideArrangement implements Arranger {
             }
         }
 
-        deltas = Arrays.stream(deltas).filter(x -> x != 0).toArray();
+        deltas = Arrays.stream(deltas).filter(x -> x!=0).toArray();
         double nudge; // nudge needed to move them to just beyond the minimum distance so that are at least a padding apart.
         switch (deltas.length) {
             case 2:
-                nudge = 0.5 * ((twinDistance - delta) + 0.002); // Nudge needed if only moving along one axis
+                nudge = 0.5*((twinDistance - delta) + 0.002); // Nudge needed if only moving along one axis
                 break;
             case 1:
-                nudge = 0.5 * ((twinDistance - delta) + 0.002) / math.sqrt(2); // Nudge needed if moving along two axis
+                nudge = 0.5*((twinDistance - delta) + 0.002) / math.sqrt(2); // Nudge needed if moving along two axis
                 break;
             case 0:
-                nudge = 0.5 * ((twinDistance - delta) + 0.002) / Math.cbrt(3); // Nudge needed if moving along 3 axis
+                nudge = 0.5*((twinDistance - delta) + 0.002) / Math.cbrt(3); // Nudge needed if moving along 3 axis
                 break;
             default:
-                nudge = 0.5 * ((twinDistance - delta) + 0.002); // Should never reach this but need to maske the compiler happy.
+                nudge = 0.5*((twinDistance - delta) + 0.002); // Should never reach this but need to maske the compiler happy.
         }
 
         // Nudge horizontally based on relative position.
@@ -193,8 +195,8 @@ public class UncollideArrangement implements Arranger {
         }
     }
 
-    private void nudge(GraphWriteMethods wg, final int axisId, final double delta, final int subject, final int twin, final double nudge) {
-        if (delta > 0) {
+    private void nudge(GraphWriteMethods wg, final int axisId, final double delta, final int subject, final int twin, final double nudge){
+        if (delta > 0){
             wg.setFloatValue(axisId, subject, wg.getFloatValue(axisId, subject) + (float) nudge);
             wg.setFloatValue(axisId, twin, wg.getFloatValue(axisId, twin) - (float) nudge);
         } else if (delta < 0) {
@@ -204,6 +206,7 @@ public class UncollideArrangement implements Arranger {
             // Default case added per S126
         }
     }
+
 
     @Override
     public void setMaintainMean(boolean b) {

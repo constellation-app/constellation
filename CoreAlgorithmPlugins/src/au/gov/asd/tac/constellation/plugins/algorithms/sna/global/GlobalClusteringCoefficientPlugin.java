@@ -49,7 +49,7 @@ public class GlobalClusteringCoefficientPlugin extends SimpleEditPlugin {
         final Tuple<Float, Float> triangleTriplets = TriangleUtilities.countTrianglesTriplets(graph);
         final float triangleCount = triangleTriplets.getFirst();
         final float tripletCount = triangleTriplets.getSecond();
-        final double clusteringCoefficient = ((3 * triangleCount) / (tripletCount));
+        final float clusteringCoefficient = ((3 * triangleCount) / (tripletCount));
 
         // update the graph with clustering coefficient
         final int triangleCountAttributeId = TRIANGLE_COUNT.ensure(graph);
@@ -57,6 +57,6 @@ public class GlobalClusteringCoefficientPlugin extends SimpleEditPlugin {
         final int clusteringCoefficientAttributeId = CLUSTERING_COEFFICIENT.ensure(graph);
         graph.setFloatValue(triangleCountAttributeId, 0, triangleCount);
         graph.setFloatValue(tripletCountAttributeId, 0, tripletCount);
-        graph.setFloatValue(clusteringCoefficientAttributeId, 0, (float) clusteringCoefficient);
+        graph.setFloatValue(clusteringCoefficientAttributeId, 0, clusteringCoefficient);
     }
 }

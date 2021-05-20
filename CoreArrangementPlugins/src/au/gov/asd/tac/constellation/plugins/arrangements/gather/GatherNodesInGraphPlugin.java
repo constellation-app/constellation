@@ -120,8 +120,8 @@ public final class GatherNodesInGraphPlugin extends SimpleEditPlugin {
                     //cosAngleBetweenVectors should never equals 0 but adding the check just in case
                     //If it does equal 0 we will skip this section and have x,y,z equal the "click point" which was assigned when they were defined
                     if (cosAngleBetweenVectors != 0.0) {
-                        final double rayScalar = adjacentLen / cosAngleBetweenVectors;
-                        ray.scale((float) rayScalar);
+                        final float rayScalar = adjacentLen / cosAngleBetweenVectors;
+                        ray.scale(rayScalar);
                         final Vector3f destination = Vector3f.add(visualState.lookAtEye, ray);
                         x = destination.getX();
                         y = destination.getY();

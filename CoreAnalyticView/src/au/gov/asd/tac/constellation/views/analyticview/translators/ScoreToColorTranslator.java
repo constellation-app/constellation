@@ -122,8 +122,8 @@ public class ScoreToColorTranslator extends AbstractColorTranslator<ScoreResult,
                 graph.setObjectValue(transactionColorReferenceAttribute, 0, null);
             } else {
                 // find highest and lowest mean scores among available analytic events
-                double highestMeanScore = 0.0d;
-                double lowestMeanScore = 0.0d;
+                float highestMeanScore = 0.0f;
+                float lowestMeanScore = 0.0f;
                 for (final ElementScore scoreResult : scoreResults.get()) {
                     final float elementMeanScore = scoreResult.getNamedScores().values().stream()
                             .reduce((x, y) -> x + y).get() / scoreResult.getNamedScores().size();
@@ -134,7 +134,7 @@ public class ScoreToColorTranslator extends AbstractColorTranslator<ScoreResult,
                         lowestMeanScore = elementMeanScore;
                     }
                 }
-                final double meanScoreRange = highestMeanScore - lowestMeanScore;
+                final float meanScoreRange = highestMeanScore - lowestMeanScore;
 
                 // color graph elements based on their mean score normalised by the range of mean scores
                 for (final ElementScore scoreResult : scoreResults.get()) {
@@ -142,14 +142,14 @@ public class ScoreToColorTranslator extends AbstractColorTranslator<ScoreResult,
                     final int elementId = scoreResult.getElementId();
                     final float elementMeanScore = scoreResult.getNamedScores().values().stream()
                             .reduce((x, y) -> x + y).get() / scoreResult.getNamedScores().size();
-                    final double colorIntensity = meanScoreRange != 0 ? (elementMeanScore + lowestMeanScore) / meanScoreRange : elementMeanScore + lowestMeanScore;
+                    final float colorIntensity = meanScoreRange != 0 ? (elementMeanScore + lowestMeanScore) / meanScoreRange : elementMeanScore + lowestMeanScore;
                     switch (elementType) {
                         case VERTEX:
-                            graph.setObjectValue(vertexOverlayColorAttribute, elementId, ConstellationColor.getColorValue((float) (1.0d - colorIntensity), (float) (1.0d - colorIntensity), 1f, 1f));
+                            graph.setObjectValue(vertexOverlayColorAttribute, elementId, ConstellationColor.getColorValue((float) 1.0 - colorIntensity, (float) 1.0 - colorIntensity, 1f, 1f));
                             graph.setObjectValue(vertexIconAttribute, elementId, "transparent");
                             break;
                         case TRANSACTION:
-                            graph.setObjectValue(transactionOverlayColorAttribute, elementId, ConstellationColor.getColorValue((float) (1.0d - colorIntensity), (float) (1.0d - colorIntensity), 1f, 1f));
+                            graph.setObjectValue(transactionOverlayColorAttribute, elementId, ConstellationColor.getColorValue((float) 1.0 - colorIntensity, (float) 1.0 - colorIntensity, 1f, 1f));
                             break;
                         default:
                             throw new InvalidElementTypeException("'Color Elements' is not supported "

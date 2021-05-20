@@ -29,12 +29,14 @@ import java.util.Map;
 public class ClusterUtilities {
 
     /**
-     * Set the color of the vertices and transactions in clusters such that each cluster has a unique color.
+     * Set the color of the vertices and transactions in clusters such that each
+     * cluster has a unique color.
      * <p>
-     * A cluster is identified by the integer clusterId attribute; all vertices will the same cluster value are in the
-     * same cluster.
+     * A cluster is identified by the integer clusterId attribute; all vertices
+     * will the same cluster value are in the same cluster.
      * <p>
-     * The graph meta-color attributes are changed to refer to this (vertex + transaction) attribute.
+     * The graph meta-color attributes are changed to refer to this (vertex +
+     * transaction) attribute.
      *
      * @param wg The graph to modify.
      * @param clusterId The cluster attribute to work with
@@ -103,8 +105,8 @@ public class ClusterUtilities {
     /**
      * Make the graph all explodey based on cluster membership.
      * <p>
-     * A cluster is identified by the integer attribute "cluster"; all vertices will the same cluster value are in the
-     * same cluster.
+     * A cluster is identified by the integer attribute "cluster"; all vertices
+     * will the same cluster value are in the same cluster.
      *
      * @param wg The graph to modify.
      * @param clusterId The cluster attribute to work with.
@@ -141,13 +143,13 @@ public class ClusterUtilities {
         final int z2Id = VisualConcept.VertexAttribute.Z2.ensure(wg);
 
         // Explode the clusters away from the centre of the graph.
-        final double[] centre = bigBox.getCentre();
+        final float[] centre = bigBox.getCentre();
         for (int position = 0; position < vxCount; position++) {
             final int vxId = wg.getVertex(position);
 
             final int cluster = wg.getIntValue(clusterId, vxId);
             final BBoxf box = boxes.get(cluster);
-            final double[] clusterCentre = box.getCentre();
+            final float[] clusterCentre = box.getCentre();
 
             clusterCentre[BBoxf.X] -= centre[BBoxf.X];
             clusterCentre[BBoxf.Y] -= centre[BBoxf.Y];
@@ -165,9 +167,9 @@ public class ClusterUtilities {
             final float y = wg.getFloatValue(yId, vxId);
             final float z = wg.getFloatValue(zId, vxId);
 
-            wg.setFloatValue(x2Id, vxId, x + (float) clusterCentre[BBoxf.X]);
-            wg.setFloatValue(y2Id, vxId, y + (float) clusterCentre[BBoxf.Y]);
-            wg.setFloatValue(z2Id, vxId, z + (float) clusterCentre[BBoxf.Z]);
+            wg.setFloatValue(x2Id, vxId, x + clusterCentre[BBoxf.X]);
+            wg.setFloatValue(y2Id, vxId, y + clusterCentre[BBoxf.Y]);
+            wg.setFloatValue(z2Id, vxId, z + clusterCentre[BBoxf.Z]);
         }
     }
 }

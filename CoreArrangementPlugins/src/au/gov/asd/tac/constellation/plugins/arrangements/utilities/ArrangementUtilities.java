@@ -33,7 +33,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * provides a set of functions pertaining to a graph's components and its vertices
+ * provides a set of functions pertaining to a graph's components and its
+ * vertices
  *
  * @author algol
  */
@@ -42,17 +43,22 @@ public final class ArrangementUtilities {
     public static final int FUNDAMENTAL_SIZE = 2; //20;
 
     /**
-     * Find the minimum sum of weighted edges that must be traversed to reach all other reachable vertices from the
-     * given one, moving either only forward, only backward, or both.
+     * Find the minimum sum of weighted edges that must be traversed to reach
+     * all other reachable vertices from the given one, moving either only
+     * forward, only backward, or both.
      *
-     * The edge weights here are special: the weight of a edge is the sum of the "radii" of the two vertices it joins.
-     * Results are appended to distancesToVertices, which should be cleared first, else the breadth first search will
-     * stop when vertices contained in distancesToVertices are encountered.
+     * The edge weights here are special: the weight of a edge is the sum of the
+     * "radii" of the two vertices it joins. Results are appended to
+     * distancesToVertices, which should be cleared first, else the breadth
+     * first search will stop when vertices contained in distancesToVertices are
+     * encountered.
      *
      * @param graph the read lock that will be used for the operation.
      * @param vxId the id of the vertex to start from.
-     * @param goForward can transactions be traveled along in the forward direction.
-     * @param goBackward can transactions be traveled along in the reverse direction.
+     * @param goForward can transactions be traveled along in the forward
+     * direction.
+     * @param goBackward can transactions be traveled along in the reverse
+     * direction.
      * @param minRadius the minimum radius of vertices.
      *
      * @return the minimum distance to each vertex in the graph.
@@ -83,8 +89,8 @@ public final class ArrangementUtilities {
             final int parentVxId = vxQueue.removeFirst();
 
             // ...and its distance.
-            final double parentRadius = Math.max(minRadius, nradiusAttr != Graph.NOT_FOUND ? graph.getFloatValue(nradiusAttr, parentVxId) : 1);
-            final double parentDistance = distancesToVertices[parentVxId] + parentRadius;
+            final float parentRadius = Math.max(minRadius, nradiusAttr != Graph.NOT_FOUND ? graph.getFloatValue(nradiusAttr, parentVxId) : 1);
+            final float parentDistance = distancesToVertices[parentVxId] + parentRadius;
 
             if (goForward) {
                 // Process outgoing edges.
@@ -95,10 +101,10 @@ public final class ArrangementUtilities {
                     // Get the destination vertex of this outgoing edge.
                     final int childVxId = graph.getEdgeDestinationVertex(edgeId);
                     if (distancesToVertices[childVxId] == NO_DISTANCE) {
-                        final double childRadius = Math.max(minRadius, nradiusAttr != Graph.NOT_FOUND ? graph.getFloatValue(nradiusAttr, childVxId) : 1);
-                        final double childDistance = parentDistance + childRadius;
+                        final float childRadius = Math.max(minRadius, nradiusAttr != Graph.NOT_FOUND ? graph.getFloatValue(nradiusAttr, childVxId) : 1);
+                        final float childDistance = parentDistance + childRadius;
                         vxQueue.add(childVxId);
-                        distancesToVertices[childVxId] = (float) childDistance;
+                        distancesToVertices[childVxId] = childDistance;
                     }
                 }
             }
@@ -112,10 +118,10 @@ public final class ArrangementUtilities {
                     // Get the source vertex of this incoming edge.
                     final int childVxId = graph.getEdgeSourceVertex(edgeId);
                     if (distancesToVertices[childVxId] == NO_DISTANCE) {
-                        final double childRadius = 1.5f * (nradiusAttr != Graph.NOT_FOUND ? graph.getFloatValue(nradiusAttr, childVxId) : 1);
-                        final double childDistance = parentDistance + childRadius;
+                        final float childRadius = 1.5f * (nradiusAttr != Graph.NOT_FOUND ? graph.getFloatValue(nradiusAttr, childVxId) : 1);
+                        final float childDistance = parentDistance + childRadius;
                         vxQueue.add(childVxId);
-                        distancesToVertices[childVxId] = (float) childDistance;
+                        distancesToVertices[childVxId] = childDistance;
                     }
                 }
             }
@@ -127,7 +133,8 @@ public final class ArrangementUtilities {
     /**
      * Get the mean of the x,y,z coordinates of the vertices of a graph.
      *
-     * @param rg the graph read lock that will be used to perform this operation.
+     * @param rg the graph read lock that will be used to perform this
+     * operation.
      * @return the mean of the x,y,z coordinates of the vertices of a graph.
      */
     public static float[] getXyzMean(final GraphReadMethods rg) {
@@ -259,14 +266,16 @@ public final class ArrangementUtilities {
     }
 
     /**
-     * Returns a GraphTaxonomy, with each taxon representing the vertices in a (weak) component.
+     * Returns a GraphTaxonomy, with each taxon representing the vertices in a
+     * (weak) component.
      * <p>
-     * This procedure is fundamentally linear, but may be slowed by construction of reporting structures. It is
-     * implemented as a breadth-first traversal.
+     * This procedure is fundamentally linear, but may be slowed by construction
+     * of reporting structures. It is implemented as a breadth-first traversal.
      * <p>
      * @param wg The graph to get the components from.
      *
-     * @return a GraphTaxonomy, with each taxon representing the vertices in a (weak) component.
+     * @return a GraphTaxonomy, with each taxon representing the vertices in a
+     * (weak) component.
      */
     public static GraphTaxonomy getComponents(final GraphWriteMethods wg) {
         Map<Integer, Set<Integer>> components = new HashMap<>();
@@ -318,7 +327,8 @@ public final class ArrangementUtilities {
      * @param rg The graph containing the vertex.
      * @param seedVxId The vertex to start from.
      *
-     * @return A Set&lt;Integer&gt; containing all of the vertices in the same component as rootVxId.
+     * @return A Set&lt;Integer&gt; containing all of the vertices in the same
+     * component as rootVxId.
      */
     public static Set<Integer> getComponentContainingVertex(final GraphReadMethods rg, final int seedVxId) {
         final Set<Integer> component = new HashSet<>();
@@ -343,15 +353,17 @@ public final class ArrangementUtilities {
     }
 
     /**
-     * Returns a GraphTaxonomy, with each taxon representing the vertices in a (weak) component.
+     * Returns a GraphTaxonomy, with each taxon representing the vertices in a
+     * (weak) component.
      * <p>
-     * This procedure is fundamentally linear, but may be slowed by construction of reporting structures. It is
-     * implemented as a breadth-first traversal.
+     * This procedure is fundamentally linear, but may be slowed by construction
+     * of reporting structures. It is implemented as a breadth-first traversal.
      * <p>
      * @param graph The graph to get the components from.
      * @param verticesToArrange a bit set specifying which vertices to arrange.
      *
-     * @return a GraphTaxonomy, with each taxon representing the vertices in a (weak) component.
+     * @return a GraphTaxonomy, with each taxon representing the vertices in a
+     * (weak) component.
      */
     @Deprecated
     public static GraphTaxonomy getComponents(final GraphWriteMethods graph, final BitSet verticesToArrange) {
@@ -387,7 +399,8 @@ public final class ArrangementUtilities {
      * @param seedVxId The vertex to start from.
      * @param verticesToArrange a BitSet specifying which vertices to arrange.
      *
-     * @return A Set&lt;Integer%gt; containing all of the vertices in the same component as rootVxId.
+     * @return A Set&lt;Integer%gt; containing all of the vertices in the same
+     * component as rootVxId.
      */
     @Deprecated
     public static Set<Integer> getComponentContainingVertex(final GraphReadMethods graph, final int seedVxId, final BitSet verticesToArrange) {
@@ -417,7 +430,8 @@ public final class ArrangementUtilities {
     /**
      * Get the vertices that are sources, ie those with in-degree zero.
      *
-     * @param graph the graph write lock that will be used to perform this operation.
+     * @param graph the graph write lock that will be used to perform this
+     * operation.
      * @return the vertices that are sources, ie those with in-degree zero.
      */
     public static Deque<Integer> getSources(final GraphWriteMethods graph) {
@@ -438,7 +452,8 @@ public final class ArrangementUtilities {
     /**
      * Set x2,y2,z2 to be the same as x,y,z.
      *
-     * @param wg the graph write lock that will be used to perform this operation.
+     * @param wg the graph write lock that will be used to perform this
+     * operation.
      */
     public static void setXYZ2FromXYZ(final GraphWriteMethods wg) {
         final int x2Attr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X2.getName());

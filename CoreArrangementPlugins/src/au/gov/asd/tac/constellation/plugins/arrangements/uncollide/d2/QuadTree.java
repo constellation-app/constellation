@@ -93,18 +93,18 @@ public class QuadTree {
      * Divide the node into four equal parts and initialise the four subnodes with the new bounds.
      */
     private void split() {
-        final double minx = box.minx;
-        final double miny = box.miny;
-        final double maxx = box.maxx;
-        final double maxy = box.maxy;
-        final double midx = minx + (maxx - minx) / 2;
-        final double midy = miny + (maxy - miny) / 2;
+        final float minx = box.minx;
+        final float miny = box.miny;
+        final float maxx = box.maxx;
+        final float maxy = box.maxy;
+        final float midx = minx + (maxx - minx) / 2;
+        final float midy = miny + (maxy - miny) / 2;
 
         nodes = new QuadTree[4];
-        nodes[TOP_R] = new QuadTree(level + 1, new Box2D((float) midx, (float) miny, (float) maxx, (float) midy));
-        nodes[TOP_L] = new QuadTree(level + 1, new Box2D((float) midx, (float) miny, (float) maxx, (float) midy));
-        nodes[BOT_L] = new QuadTree(level + 1, new Box2D((float) midx, (float) miny, (float) maxx, (float) midy));
-        nodes[BOT_R] = new QuadTree(level + 1, new Box2D((float) midx, (float) miny, (float) maxx, (float) midy));
+        nodes[TOP_R] = new QuadTree(level + 1, new Box2D(midx, miny, maxx, midy));
+        nodes[TOP_L] = new QuadTree(level + 1, new Box2D(minx, miny, midx, midy));
+        nodes[BOT_L] = new QuadTree(level + 1, new Box2D(minx, midy, midx, maxy));
+        nodes[BOT_R] = new QuadTree(level + 1, new Box2D(midx, midy, maxx, maxy));
     }
 
     /*
@@ -203,7 +203,8 @@ public class QuadTree {
      * Uncollide this orb from its colliding neighbors.
      *
      * @param orb The orb to be uncollided.
-     * @param padding The minimum distance between the orb's edge and the edges of each neighbor.
+     * @param padding The minimum distance between the orb's edge and the edges
+     * of each neighbor.
      * @return the number of collisions.
      */
     public int uncollide(final Orb2D orb, final float padding) {
@@ -217,8 +218,8 @@ public class QuadTree {
         int collided = 0;
         for (final Orb2D possible : possibles) {
             if (orb != possible) {
-                double x = orb.getX() - possible.getX();
-                double y = orb.getY() - possible.getY();
+                float x = orb.getX() - possible.getX();
+                float y = orb.getY() - possible.getY();
                 final double ll = x * x + y * y;
                 final double r = possible.r + orb.r + padding;
                 if (ll <= r * r) {
@@ -231,10 +232,10 @@ public class QuadTree {
                     y += perturbation;
                     perturbation = -perturbation;
 //                    System.out.printf("-Collided %f %f %f x=%f y=%f\n  %s <> %s\n", l, r, nudge, x, y, circle, possible);
-                    orb.setX((float) (orb.getX() - x));
-                    orb.setY((float) (orb.getY() - y));
-                    possible.setX((float) (possible.getX() + x));
-                    possible.setY((float) (possible.getY() + y));
+                    orb.setX(orb.getX() - x);
+                    orb.setY(orb.getY() - y);
+                    possible.setX(possible.getX() + x);
+                    possible.setY(possible.getY() + y);
                 }
             }
         }

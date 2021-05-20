@@ -32,7 +32,8 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Calculates weight for each pair of vertices. This importance measure does not include loops.
+ * Calculates weight for each pair of vertices. This importance measure does not
+ * include loops.
  *
  * @author canis_majoris
  */
@@ -63,7 +64,7 @@ public class WeightPlugin extends SimpleEditPlugin {
         final boolean normaliseByAvailable = parameters.getBooleanValue(NORMALISE_AVAILABLE_PARAMETER_ID);
 
         // calculate weight for every pair of vertices on the graph
-        double maxWeight = 0;
+        float maxWeight = 0;
         final Map<Integer, Float> weights = new HashMap<>();
         final int linkCount = graph.getLinkCount();
         for (int linkPosition = 0; linkPosition < linkCount; linkPosition++) {
@@ -82,7 +83,7 @@ public class WeightPlugin extends SimpleEditPlugin {
             for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
                 final int transactionId = graph.getLinkTransaction(entry.getKey(), transactionPosition);
                 if (normaliseByAvailable && maxWeight > 0) {
-                    graph.setFloatValue(weightAttribute, transactionId, (float) (entry.getValue() / maxWeight));
+                    graph.setFloatValue(weightAttribute, transactionId, entry.getValue() / maxWeight);
                 } else {
                     graph.setFloatValue(weightAttribute, transactionId, entry.getValue());
                 }

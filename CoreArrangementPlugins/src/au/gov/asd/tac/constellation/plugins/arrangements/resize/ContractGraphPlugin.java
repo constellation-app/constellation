@@ -36,7 +36,7 @@ import org.openide.util.lookup.ServiceProvider;
 @Messages("ContractGraphPlugin=Contract Graph")
 public class ContractGraphPlugin extends SimpleEditPlugin {
 
-    private static final double SCALE = 10d / 11d;
+    private static final float SCALE = 10f / 11f;
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
@@ -68,16 +68,16 @@ public class ContractGraphPlugin extends SimpleEditPlugin {
             final int vertexId = graph.getVertex(vertexPosition);
             if (selectedVertices.isEmpty() || selectedVertices.get(vertexPosition)) {
                 if (vertexXAttributeId != Graph.NOT_FOUND) {
-                    final double x = graph.getFloatValue(vertexXAttributeId, vertexId);
-                    graph.setFloatValue(vertexXAttributeId, vertexId, (float) (x * SCALE));
+                    final float x = graph.getFloatValue(vertexXAttributeId, vertexId);
+                    graph.setFloatValue(vertexXAttributeId, vertexId, x * SCALE);
                 }
                 if (vertexYAttributeId != Graph.NOT_FOUND) {
-                    final double y = graph.getFloatValue(vertexYAttributeId, vertexId);
-                    graph.setFloatValue(vertexYAttributeId, vertexId, (float) (y * SCALE));
+                    final float y = graph.getFloatValue(vertexYAttributeId, vertexId);
+                    graph.setFloatValue(vertexYAttributeId, vertexId, y * SCALE);
                 }
                 if (vertexZAttributeId != Graph.NOT_FOUND) {
-                    final double z = graph.getFloatValue(vertexZAttributeId, vertexId);
-                    graph.setFloatValue(vertexZAttributeId, vertexId, (float) (z * SCALE));
+                    final float z = graph.getFloatValue(vertexZAttributeId, vertexId);
+                    graph.setFloatValue(vertexZAttributeId, vertexId, z * SCALE);
                 }
             }
         }

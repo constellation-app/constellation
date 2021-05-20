@@ -60,7 +60,8 @@ public class BubbleTreeArranger implements Arranger {
      *
      * @param wg the graph to be arranged.
      *
-     * @throws InterruptedException if the thread is interrupted because the arrangement has been canceled.
+     * @throws InterruptedException if the thread is interrupted because the
+     * arrangement has been canceled.
      */
     @Override
     public void arrange(final GraphWriteMethods wg) throws InterruptedException {
@@ -106,11 +107,11 @@ public class BubbleTreeArranger implements Arranger {
         calcLayout(treeRootVxId, relativePositions);
 
         // Copy the x,y,z values from the arranged spanning tree back to the original graph.
-        double minx = Float.MAX_VALUE;
-        double miny = Float.MAX_VALUE;
-        double maxx = -Float.MAX_VALUE;
-        double maxy = -Float.MAX_VALUE;
-        double maxRadius = 0;
+        float minx = Float.MAX_VALUE;
+        float miny = Float.MAX_VALUE;
+        float maxx = -Float.MAX_VALUE;
+        float maxy = -Float.MAX_VALUE;
+        float maxRadius = 0;
         int maxDepth = 1;
         final int wgxId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
         final int wgyId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
@@ -146,15 +147,15 @@ public class BubbleTreeArranger implements Arranger {
 
         // Add depth to the alternate layout.
         // Make the height half of the breadth, and at least high enough for the largest vertex.
-        final double breadth = Math.max(maxx - minx, maxy - miny);
-        final double layerHeight = Math.max(breadth / 2 / maxDepth, maxRadius * 2 * (float) Math.sqrt(2));
+        final float breadth = Math.max(maxx - minx, maxy - miny);
+        final float layerHeight = Math.max(breadth / 2 / maxDepth, maxRadius * 2 * (float) Math.sqrt(2));
 
         for (int position = 0; position < vxCount; position++) {
             final int treeVxId = tree.getVertex(position);
             final int vxId = st.convertTreeVxToOrig(treeVxId);
 
-            final double z = -vxDepth[treeVxId] * layerHeight;
-            wg.setFloatValue(wgzId, vxId, (float) z);
+            final float z = -vxDepth[treeVxId] * layerHeight;
+            wg.setFloatValue(wgzId, vxId, z);
         }
 
         if (maintainMean) {

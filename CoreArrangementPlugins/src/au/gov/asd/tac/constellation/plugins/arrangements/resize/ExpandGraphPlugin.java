@@ -34,7 +34,7 @@ import org.openide.util.lookup.ServiceProvider;
 @Messages("ExpandGraphPlugin=Expand Graph")
 public class ExpandGraphPlugin extends SimpleEditPlugin {
 
-    private static final double SCALE = 11d / 10d;
+    private static final float SCALE = 11f / 10f;
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
@@ -67,15 +67,15 @@ public class ExpandGraphPlugin extends SimpleEditPlugin {
             if (selectedVertices.isEmpty() || selectedVertices.get(vertexPosition)) {
                 if (vertexXAttributeId != Graph.NOT_FOUND) {
                     final float x = graph.getFloatValue(vertexXAttributeId, vertexId);
-                    graph.setFloatValue(vertexXAttributeId, vertexId, (float) (x * SCALE));
+                    graph.setFloatValue(vertexXAttributeId, vertexId, x * SCALE);
                 }
                 if (vertexYAttributeId != Graph.NOT_FOUND) {
                     final float y = graph.getFloatValue(vertexYAttributeId, vertexId);
-                    graph.setFloatValue(vertexYAttributeId, vertexId, (float) (y * SCALE));
+                    graph.setFloatValue(vertexYAttributeId, vertexId, y * SCALE);
                 }
                 if (vertexZAttributeId != Graph.NOT_FOUND) {
                     final float z = graph.getFloatValue(vertexZAttributeId, vertexId);
-                    graph.setFloatValue(vertexZAttributeId, vertexId, (float) (z * SCALE));
+                    graph.setFloatValue(vertexZAttributeId, vertexId, z * SCALE);
                 }
             }
         }

@@ -76,11 +76,13 @@ import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Use a datetime attribute on transactions to split the nodes and transactions into layers on the z-axis.
+ * Use a datetime attribute on transactions to split the nodes and transactions
+ * into layers on the z-axis.
  * <p>
- * Note that we create a new graph with Visual Schema and operate on that. We do this because the resulting graph has
- * duplicate node names which would otherwise be merged on an analytic schema. These nodes are duplicated and lots of
- * transactions are created for visual purposes.
+ * Note that we create a new graph with Visual Schema and operate on that. We do
+ * this because the resulting graph has duplicate node names which would
+ * otherwise be merged on an analytic schema. These nodes are duplicated and
+ * lots of transactions are created for visual purposes.
  *
  * @author procyon
  * @author antares
@@ -393,10 +395,10 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                             final LayerName dn = new LayerName(newLayer, displayNames.get(newLayer));
                             wgcopy.setObjectValue(timeLayerAttr, txId, dn);
 
-                            final double normLayer = newLayer / (remappedLayers.keySet().size() * 1f);
+                            final float normLayer = newLayer / (remappedLayers.keySet().size() * 1f);
 
                             if (!keepTxColors) {
-                                final Color heatmap = new Color(Color.HSBtoRGB((float) ((1d - normLayer) * 2d / 3d), 0.5f, 1));
+                                final Color heatmap = new Color(Color.HSBtoRGB((1 - normLayer) * 2f / 3f, 0.5f, 1));
                                 final ConstellationColor color = ConstellationColor.getColorValue(heatmap.getRed() / 255f, heatmap.getGreen() / 255f, heatmap.getBlue() / 255f, 1f);
                                 wgcopy.setObjectValue(txColorAttr, txId, color);
                             }
@@ -547,7 +549,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
      */
     private void buildBins(final GraphWriteMethods wgcopy, final ArrayList<Float> values, Map<Integer, ArrayList<Float>> remappedLayers, final HashMap<Integer, String> displayNames, final int dtAttr, final Instant d1, final Instant d2, final int unit, final int binAmount) {
         final Calendar dtg = Calendar.getInstance();
-        double maxUnit = dtg.getMaximum(unit);
+        float maxUnit = dtg.getMaximum(unit);
 
         if (binAmount > maxUnit) {
             throw new RuntimeException("The selected bin size, " + binAmount + " exceeds the number of values for the specified bin period, " + (int) maxUnit);
@@ -567,8 +569,8 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                 dtg.setTimeInMillis(date);
                 dtg.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-                final double convUnit = dtg.get(unit);
-                final float layer = (float) (convUnit / maxUnit);
+                final float convUnit = dtg.get(unit);
+                final float layer = convUnit / maxUnit;
                 if (transactionLayers.containsKey(layer)) {
                     transactionLayers.get(layer).add(txId);
                 } else {
@@ -643,8 +645,8 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
     }
 
     /**
-     * Duplicates a node onto a specific layer, recording it in <code>nodeDups</code> and returning the duplicate node
-     * id
+     * Duplicates a node onto a specific layer, recording it in
+     * <code>nodeDups</code> and returning the duplicate node id
      */
     private int getDuplicateNode(final GraphWriteMethods graph, final HashMap<String, Integer> nodeDups, final int nodeId, final int layer) {
         final String key = String.format("%d/%d", nodeId, layer);
@@ -744,7 +746,8 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
     }
 
     /**
-     * Procedure for reordering the graph using transactions as layers on the z-axis.
+     * Procedure for reordering the graph using transactions as layers on the
+     * z-axis.
      *
      *
      *

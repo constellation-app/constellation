@@ -29,8 +29,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * ContractedCompositeNodeState objects store the details of the nodes contained within a composite node which is
- * currently contracted.
+ * ContractedCompositeNodeState objects store the details of the nodes contained
+ * within a composite node which is currently contracted.
  * <p>
  * They are primarily used to allow expansion of these nodes on demand.
  *
@@ -41,7 +41,7 @@ public class ContractedCompositeNodeState {
     private final RecordStore constituentNodeStore;
     private final List<String> expandedIds;
     private final List<String> affectedExpandedIds;
-    private final double[] mean;
+    private final float[] mean;
 
     public RecordStore getConstituentNodeStore() {
         return constituentNodeStore;
@@ -56,7 +56,8 @@ public class ContractedCompositeNodeState {
     }
 
     /**
-     * Get the number of nodes contained with the composite this state represents.
+     * Get the number of nodes contained with the composite this state
+     * represents.
      *
      * @return The number of nodes in the composite
      */
@@ -65,25 +66,30 @@ public class ContractedCompositeNodeState {
     }
 
     /**
-     * Get the original mean position of the nodes contained within this composite.
+     * Get the original mean position of the nodes contained within this
+     * composite.
      *
      * @return An array {x,y,z} containing the coordinates of the mean position.
      */
-    public double[] getMean() {
+    public float[] getMean() {
         return this.mean;
     }
 
     /**
      * Create a new ContractedCompositeNodeStore
      *
-     * @param compositeNodeStore The {@link RecordStore} holding the nodes contained within the composite.
-     * @param nodeRecordStoreIds A list of RecordStore IDs for the nodes contained within the composite.
-     * @param affectedNodeRecordStoreIds A list of RecordStore IDs for the 'affecting' nodes contained within the
-     * composite. Affecting nodes will create and receive transactions when contracting and expanding the composite,
-     * respectively.
-     * @param mean The x,y,z coordinates of the original mean position of the nodes contained within this composite.
+     * @param compositeNodeStore The {@link RecordStore} holding the nodes
+     * contained within the composite.
+     * @param nodeRecordStoreIds A list of RecordStore IDs for the nodes
+     * contained within the composite.
+     * @param affectedNodeRecordStoreIds A list of RecordStore IDs for the
+     * 'affecting' nodes contained within the composite. Affecting nodes will
+     * create and receive transactions when contracting and expanding the
+     * composite, respectively.
+     * @param mean The x,y,z coordinates of the original mean position of the
+     * nodes contained within this composite.
      */
-    public ContractedCompositeNodeState(final RecordStore compositeNodeStore, final List<String> nodeRecordStoreIds, final List<String> affectedNodeRecordStoreIds, final double[] mean) {
+    public ContractedCompositeNodeState(final RecordStore compositeNodeStore, final List<String> nodeRecordStoreIds, final List<String> affectedNodeRecordStoreIds, final float[] mean) {
         this.constituentNodeStore = compositeNodeStore;
         this.expandedIds = nodeRecordStoreIds;
         this.affectedExpandedIds = affectedNodeRecordStoreIds;
@@ -91,12 +97,14 @@ public class ContractedCompositeNodeState {
     }
 
     /**
-     * Expand the composite represented by this state, using the supplied graph write lock.
+     * Expand the composite represented by this state, using the supplied graph
+     * write lock.
      *
      * @param wg The graph write lock with which to perform the expansion.
-     * @param vxId The Graph ID of the node that is being expanded. The caller must ensure that this is the state object
-     * corresponding to this node!
-     * @return A list of graph IDs of the constituent nodes of the now expanded composite.
+     * @param vxId The Graph ID of the node that is being expanded. The caller
+     * must ensure that this is the state object corresponding to this node!
+     * @return A list of graph IDs of the constituent nodes of the now expanded
+     * composite.
      */
     public List<Integer> expand(final GraphWriteMethods wg, final int vxId) {
         // Create rows in the expansion record store for transactions that are currently connected to the composite node and should be connected to expnaded nodes.
@@ -143,12 +151,12 @@ public class ContractedCompositeNodeState {
         final float z = wg.getFloatValue(zAttr, vxId);
         final boolean selected = wg.getBooleanValue(selectedAttr, vxId);
         vertexMap.values().forEach(id -> {
-            final double currentX = wg.getFloatValue(xAttr, id);
-            final double currentY = wg.getFloatValue(yAttr, id);
-            final double currentZ = wg.getFloatValue(zAttr, id);
-            wg.setFloatValue(xAttr, id, (float) (currentX - mean[0] + x));
-            wg.setFloatValue(yAttr, id, (float) (currentY - mean[1] + y));
-            wg.setFloatValue(zAttr, id, (float) (currentZ - mean[2] + z));
+            final float currentX = wg.getFloatValue(xAttr, id);
+            final float currentY = wg.getFloatValue(yAttr, id);
+            final float currentZ = wg.getFloatValue(zAttr, id);
+            wg.setFloatValue(xAttr, id, currentX - mean[0] + x);
+            wg.setFloatValue(yAttr, id, currentY - mean[1] + y);
+            wg.setFloatValue(zAttr, id, currentZ - mean[2] + z);
             wg.setBooleanValue(selectedAttr, id, selected);
         });
 
