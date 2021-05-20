@@ -48,6 +48,14 @@ public class PointSelectionPluginNGTest {
     final private IntArray vxIds = new IntArray();
     final private IntArray txIds = new IntArray();
     
+    // If true is as if control key is held down so consecutive selections will select multiple elements,
+    // or deselect selected elements.
+    boolean toggleSelection;
+    
+    // If true deleselects all other elements aside from the one being selected.
+    // If toggle selection is true this should be false, otherwise consecutive selections will be deselected.
+    boolean clearSelection;
+    
     public PointSelectionPluginNGTest() {
     }
     
@@ -92,6 +100,178 @@ public class PointSelectionPluginNGTest {
     }
     
     /**
+     * Tests selections with both the toggleSelection and clearSelection options on a graph that begins with no elements selected.
+     * 
+     * @throws Exception 
+     */
+    @Test
+    public void testNoElementsSelectedOnGraph() throws Exception {
+        
+        selectAllAndAssert(null, false);
+        
+        // Select vertex vxId1 with clearSelection. All other elements should remain deselected.
+        vxIds.add(vxId1);
+        
+        toggleSelection = false;
+        clearSelection = true;
+
+        Plugin selectPoint1 = new PointSelectionPlugin(vxIds, txIds, toggleSelection, clearSelection);
+        PluginExecution.withPlugin(selectPoint1).executeNow(storeGraph);
+        
+        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId1));
+        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId2));
+        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId3));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId1));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId2));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId3));
+        
+        vxIds.clear();
+        txIds.clear();
+        
+        // Select vertex vxId2 with clearSelection. Should deselect vertex vxId1.
+        vxIds.add(vxId2);
+        
+        toggleSelection = false;
+        clearSelection = true;
+
+        Plugin selectPoint2 = new PointSelectionPlugin(vxIds, txIds, toggleSelection, clearSelection);
+        PluginExecution.withPlugin(selectPoint2).executeNow(storeGraph);
+        
+        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId1));
+        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId2));
+        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId3));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId1));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId2));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId3));
+        
+        vxIds.clear();
+        txIds.clear();
+        
+        // Select transaction txId3 with toggleSelection. Vertex vxId2 should remain selected.
+        txIds.add(txId3);
+        
+        toggleSelection = true;
+        clearSelection = false;
+
+        Plugin selectPoint3 = new PointSelectionPlugin(vxIds, txIds, toggleSelection, clearSelection);
+        PluginExecution.withPlugin(selectPoint3).executeNow(storeGraph);
+        
+        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId1));
+        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId2));
+        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId3));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId1));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId2));
+        assertTrue(storeGraph.getBooleanValue(tAttrId, txId3));
+        
+        vxIds.clear();
+        txIds.clear();
+        
+        // Reselect vertex vxId2 with toggleSelection. Should deselect vertex vxId2 and transaction txId3 should remain selected.
+        vxIds.add(vxId2);
+        
+        toggleSelection = true;
+        clearSelection = false;
+
+        Plugin selectPoint4 = new PointSelectionPlugin(vxIds, txIds, toggleSelection, clearSelection);
+        PluginExecution.withPlugin(selectPoint4).executeNow(storeGraph);
+        
+        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId1));
+        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId2));
+        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId3));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId1));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId2));
+        assertTrue(storeGraph.getBooleanValue(tAttrId, txId3));
+        
+        vxIds.clear();
+        txIds.clear();
+    }
+    
+    /**
+     * Tests selections with both the toggleSelection and clearSelection options on a graph that begins with all elements selected.
+     * 
+     * @throws Exception 
+     */
+    @Test
+    public void testAllElementsSelectedOnGraph() throws Exception {
+        
+        selectAllAndAssert(null, true);
+        
+        // Select vertex vxId1 with toggleSelection. All other elements should remain selected.
+        vxIds.add(vxId1);
+        
+        toggleSelection = true;
+        clearSelection = false;
+
+        Plugin selectPoint1 = new PointSelectionPlugin(vxIds, txIds, toggleSelection, clearSelection);
+        PluginExecution.withPlugin(selectPoint1).executeNow(storeGraph);
+        
+        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId1));
+        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId2));
+        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId3));
+        assertTrue(storeGraph.getBooleanValue(tAttrId, txId1));
+        assertTrue(storeGraph.getBooleanValue(tAttrId, txId2));
+        assertTrue(storeGraph.getBooleanValue(tAttrId, txId3));
+        
+        vxIds.clear();
+        txIds.clear();
+        
+        // Select vertex vxId2 with toggleSelection. Vertex vxId1 should remain deselected and all other elements should remain selected.
+        vxIds.add(vxId2);
+        
+        toggleSelection = true;
+        clearSelection = false;
+
+        Plugin selectPoint2 = new PointSelectionPlugin(vxIds, txIds, toggleSelection, clearSelection);
+        PluginExecution.withPlugin(selectPoint2).executeNow(storeGraph);
+        
+        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId1));
+        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId2));
+        assertTrue(storeGraph.getBooleanValue(vAttrId, vxId3));
+        assertTrue(storeGraph.getBooleanValue(tAttrId, txId1));
+        assertTrue(storeGraph.getBooleanValue(tAttrId, txId2));
+        assertTrue(storeGraph.getBooleanValue(tAttrId, txId3));
+        
+        vxIds.clear();
+        txIds.clear();
+        
+        // Select transaction txId3 with clearSelection. All other elements should be deselected.
+        txIds.add(txId3);
+        
+        toggleSelection = false;
+        clearSelection = true;
+
+        Plugin selectPoint3 = new PointSelectionPlugin(vxIds, txIds, toggleSelection, clearSelection);
+        PluginExecution.withPlugin(selectPoint3).executeNow(storeGraph);
+        
+        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId1));
+        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId2));
+        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId3));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId1));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId2));
+        assertTrue(storeGraph.getBooleanValue(tAttrId, txId3));
+        
+        vxIds.clear();
+        txIds.clear();
+        
+        // Select no elements with clearSelection. Should deselect all elements as this simulates clicking on an empty space on the graph.
+        toggleSelection = false;
+        clearSelection = true;
+
+        Plugin selectPoint4 = new PointSelectionPlugin(vxIds, txIds, toggleSelection, clearSelection);
+        PluginExecution.withPlugin(selectPoint4).executeNow(storeGraph);
+        
+        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId1));
+        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId2));
+        assertFalse(storeGraph.getBooleanValue(vAttrId, vxId3));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId1));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId2));
+        assertFalse(storeGraph.getBooleanValue(tAttrId, txId3));
+        
+        vxIds.clear();
+        txIds.clear();
+    }
+    
+    /**
      * Tests when a vertex is selected and;
      * all vertices and transaction are unselected,
      * toggle selection is true,
@@ -106,8 +286,8 @@ public class PointSelectionPluginNGTest {
         
         vxIds.add(vxId1);
         
-        final boolean toggleSelection = true;
-        final boolean clearSelection = true;
+        toggleSelection = true;
+        clearSelection = true;
 
         Plugin selectPoint = new PointSelectionPlugin(vxIds, txIds, toggleSelection, clearSelection);
         PluginExecution.withPlugin(selectPoint).executeNow(storeGraph);
@@ -135,8 +315,8 @@ public class PointSelectionPluginNGTest {
         
         txIds.add(txId1);
 
-        final boolean toggleSelection = true;
-        final boolean clearSelection = true;
+        toggleSelection = true;
+        clearSelection = true;
         
         Plugin selectPoint = new PointSelectionPlugin(vxIds, txIds, toggleSelection, clearSelection);
         PluginExecution.withPlugin(selectPoint).executeNow(storeGraph);
@@ -164,8 +344,8 @@ public class PointSelectionPluginNGTest {
         
         vxIds.add(vxId1);
         
-        final boolean toggleSelection = true;
-        final boolean clearSelection = true;
+        toggleSelection = true;
+        clearSelection = true;
         
         Plugin selectPoint = new PointSelectionPlugin(vxIds, txIds, toggleSelection, clearSelection);
         PluginExecution.withPlugin(selectPoint).executeNow(storeGraph);
@@ -193,8 +373,8 @@ public class PointSelectionPluginNGTest {
         
         txIds.add(txId1);
         
-        final boolean toggleSelection = true;
-        final boolean clearSelection = true;
+        toggleSelection = true;
+        clearSelection = true;
         
         Plugin selectPoint = new PointSelectionPlugin(vxIds, txIds, toggleSelection, clearSelection);
         PluginExecution.withPlugin(selectPoint).executeNow(storeGraph);
@@ -222,8 +402,8 @@ public class PointSelectionPluginNGTest {
         
         vxIds.add(vxId1);
         
-        final boolean toggleSelection = true;
-        final boolean clearSelection = true;
+        toggleSelection = true;
+        clearSelection = true;
 
         Plugin selectPoint = new PointSelectionPlugin(vxIds, txIds, toggleSelection, clearSelection);
         PluginExecution.withPlugin(selectPoint).executeNow(storeGraph);
@@ -251,8 +431,8 @@ public class PointSelectionPluginNGTest {
         
         txIds.add(txId1);
         
-        final boolean toggleSelection = true;
-        final boolean clearSelection = true;
+        toggleSelection = true;
+        clearSelection = true;
 
         Plugin selectPoint = new PointSelectionPlugin(vxIds, txIds, toggleSelection, clearSelection);
         PluginExecution.withPlugin(selectPoint).executeNow(storeGraph);
@@ -280,8 +460,8 @@ public class PointSelectionPluginNGTest {
         
         vxIds.add(vxId1);
         
-        final boolean toggleSelection = true;
-        final boolean clearSelection = true;
+        toggleSelection = true;
+        clearSelection = true;
         
         Plugin selectPoint = new PointSelectionPlugin(vxIds, txIds, toggleSelection, clearSelection);
         PluginExecution.withPlugin(selectPoint).executeNow(storeGraph);
@@ -309,8 +489,8 @@ public class PointSelectionPluginNGTest {
         
         txIds.add(txId1);
         
-        final boolean toggleSelection = true;
-        final boolean clearSelection = true;
+        toggleSelection = true;
+        clearSelection = true;
         
         Plugin selectPoint = new PointSelectionPlugin(vxIds, txIds, toggleSelection, clearSelection);
         PluginExecution.withPlugin(selectPoint).executeNow(storeGraph);
