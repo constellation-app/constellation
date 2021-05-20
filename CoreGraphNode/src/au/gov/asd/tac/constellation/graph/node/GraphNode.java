@@ -160,7 +160,7 @@ public class GraphNode extends AbstractNode {
     }
 
     @Override
-    protected void finalize() {
+    protected void finalize() throws Throwable {
         try {
             MemoryManager.finalizeObject(GraphNode.class);
         } finally {

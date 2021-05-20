@@ -131,7 +131,7 @@ public class DateTimeRange {
     public boolean equals(final Object other) {
         if (this == other) {
             return true;
-        } else if (this.getClass() != obj.getClass()) {
+        } else if (this.getClass() != other.getClass()) {
             return false;
         } else {
             final DateTimeRange otherRange = (DateTimeRange) other;
