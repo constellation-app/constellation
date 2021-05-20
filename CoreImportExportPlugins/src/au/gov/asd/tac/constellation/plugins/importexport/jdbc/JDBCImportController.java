@@ -145,26 +145,31 @@ public class JDBCImportController extends ImportController {
             try (final Connection dbConnection = connection.getConnection(username, password);
                     final PreparedStatement ps = dbConnection.prepareStatement(queryCopy);
                     final ResultSet rs = ps.executeQuery()) {
+                final int columnCount = ps.getMetaData().getColumnCount();
+                // populate currentColumns
+                currentColumns = new String[columnCount + 1];
+                currentColumns[0] = "Row";
 
+                for (int i = 0; i < columnCount; i++) {
+                    currentColumns[i + 1] = ps.getMetaData().getColumnName(i + 1);
+                }
+
+                // populate currentData
                 if (!query.toLowerCase(Locale.ENGLISH).contains(QUERY_LIMIT_TEXT) && query.toLowerCase(Locale.ENGLISH).startsWith(SELECT_TEXT)) {
                     query += QUERY_LIMIT_TEXT + PREVIEW_ROW_LIMIT;
                 }
                 int count = 0;
                 currentData.clear();
+
                 while (rs.next() && count < PREVIEW_ROW_LIMIT) {
                     count++;
-                    final String[] d = new String[ps.getMetaData().getColumnCount()];
-                    for (int i = 0; i < ps.getMetaData().getColumnCount(); i++) {
+                    final String[] d = new String[columnCount];
+                    for (int i = 0; i < columnCount; i++) {
                         d[i] = rs.getString(i + 1);
                     }
                     currentData.add(d);
                 }
-                currentColumns = new String[ps.getMetaData().getColumnCount() + 1];
-                currentColumns[0] = "Row";
-                final ResultSetMetaData rsmd = ps.getMetaData();
-                for (int i = 0; i < rsmd.getColumnCount(); i++) {
-                    currentColumns[i + 1] = rsmd.getColumnName(i + 1);
-                }
+
             } catch (final MalformedURLException | ClassNotFoundException | SQLException | NoSuchMethodException
                     | InstantiationException | IllegalAccessException | IllegalArgumentException
                     | InvocationTargetException ex) {
