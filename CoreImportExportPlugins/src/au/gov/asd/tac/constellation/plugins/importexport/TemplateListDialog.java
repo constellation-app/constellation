@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.importexport.jdbc.io;
+package au.gov.asd.tac.constellation.plugins.importexport;
 
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
 import java.io.File;
+import java.util.Locale;
 import java.util.Optional;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -28,24 +29,31 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Window;
 
-class TemplateListDialog {
+/**
+ * Display a list of query names and allow the user to select one.
+ *
+ * @author algol
+ */
+public class TemplateListDialog {
 
-    private final Object owner;
+    private static final Insets PADDING = new Insets(10, 0, 0, 0);
+    private static final int NAMES_OFFSET = 5;
+    private final Window owner;
     private final boolean isLoading;
-    private final String initial;
 
-    TemplateListDialog(final Object owner, final boolean isLoading, final String initial) {
+    public TemplateListDialog(final Window owner, final boolean isLoading) {
         this.owner = owner;
         this.isLoading = isLoading;
-        this.initial = initial;
     }
 
     private static String[] getFileLabels(final File delimIoDir) {
         final String[] names;
         if (delimIoDir.isDirectory()) {
             names = delimIoDir.list((final File dir, final String name) -> {
-                return name.toLowerCase().endsWith(".json");
+                return name.toLowerCase(Locale.ENGLISH).endsWith(".json");
             });
         } else {
             names = new String[0];
@@ -53,17 +61,18 @@ class TemplateListDialog {
 
         // Chop off ".json".
         for (int i = 0; i < names.length; i++) {
-            names[i] = FilenameEncoder.decode(names[i].substring(0, names[i].length() - 5));
+            names[i] = FilenameEncoder.decode(names[i].substring(0, names[i].length() - NAMES_OFFSET));
         }
 
         return names;
     }
 
-    String getName(final Object owner, final File delimIoDir) {
+    public String getName(final File delimIoDir) {
         final String[] templateLabels = getFileLabels(delimIoDir);
 
         final Alert dialog = new Alert(Alert.AlertType.CONFIRMATION);
-
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.initOwner(owner);
         final TextField label = new TextField();
         label.setPromptText("Template label");
 
@@ -78,7 +87,7 @@ class TemplateListDialog {
         });
 
         final HBox prompt = new HBox(new Label("Name: "), label);
-        prompt.setPadding(new Insets(10, 0, 0, 0));
+        prompt.setPadding(PADDING);
 
         final VBox vbox = new VBox(nameList, prompt);
 
@@ -96,6 +105,8 @@ class TemplateListDialog {
                 final Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setHeaderText("Import template exists");
                 alert.setContentText(msg);
+                alert.initModality(Modality.WINDOW_MODAL);
+                alert.initOwner(owner);
                 final Optional<ButtonType> confirm = alert.showAndWait();
                 go = confirm.isPresent() && confirm.get() == ButtonType.OK;
             }

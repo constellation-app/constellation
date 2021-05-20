@@ -3,5 +3,6 @@
 <toc version="2.0">
     <tocitem text="Import/Export">
         <tocitem text="Import from Delimited File" target="au.gov.asd.tac.constellation.plugins.importexport.delimited.DelimitedImportPane"/>
+        <tocitem text="Import from JDBC" target="au.gov.asd.tac.constellation.plugins.importexport.jdbc.JDBCImportPane"/>
     </tocitem>
 </toc>
