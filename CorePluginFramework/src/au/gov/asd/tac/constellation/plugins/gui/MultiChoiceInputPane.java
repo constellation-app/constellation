@@ -17,12 +17,10 @@ package au.gov.asd.tac.constellation.plugins.gui;
 
 import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -127,29 +125,6 @@ public class MultiChoiceInputPane extends HBox {
             });
         });
         getChildren().add(field);
-        final String parameterId = parameter.getId();
-        final List<String> multiChoiceRecentValues = RecentParameterValues.getRecentValues(parameterId);
-        if (multiChoiceRecentValues != null) {
-            final String multiChoiceRecentValue = multiChoiceRecentValues.get(multiChoiceRecentValues.size() > 1 ? 1 : 0);
-            final List<String> recentChoices = new ArrayList<>();
-            for (final String recentValue : multiChoiceRecentValue.split("\\n")) {
-                if (recentValue.startsWith("\u2713 ")) {
-                    final String[] values = recentValue.split("\u2713 ");
-                    if (values.length > 0) {
-                        recentChoices.add(values[1]);
-                    }
-                }
-            }
-
-            final List<ParameterValue> pvs = MultiChoiceParameterType.getOptionsData(parameter);
-            final List<ParameterValue> choices = new ArrayList<>();
-            for (final ParameterValue pv : pvs) {
-                if (recentChoices.contains(pv.toString())) {
-                    choices.add(pv);
-                }
-            }
-            parameter.getParameterValue().setChoicesData(choices);
-        }
     }
 
     public class MultiChoiceComboBox<T extends Object> extends CheckComboBox<T> {

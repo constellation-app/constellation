@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.plugins.gui;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterKind;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
@@ -238,10 +237,5 @@ public class FileInputPane extends HBox {
         fieldAndAddButton.setSpacing(2);
         fieldAndAddButton.getChildren().addAll(field, fileAddButton);
         getChildren().add(fieldAndAddButton);
-        final String parameterId = parameter.getId();
-        final List<String> fileInputRecentValues = RecentParameterValues.getRecentValues(parameterId);
-        if (fileInputRecentValues != null) {
-            parameter.setStringValue(fileInputRecentValues.get(fileInputRecentValues.size() > 1 ? 1 : 0));
-        }
     }
 }
