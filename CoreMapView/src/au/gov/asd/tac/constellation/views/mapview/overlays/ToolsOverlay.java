@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.geospatial.Distance;
 import au.gov.asd.tac.constellation.views.mapview.MapViewPluginRegistry;
+import static au.gov.asd.tac.constellation.views.mapview.MapViewTileRenderer.LOCK;
 import au.gov.asd.tac.constellation.views.mapview.features.ConstellationAbstractFeature.ConstellationFeatureType;
 import au.gov.asd.tac.constellation.views.mapview.features.ConstellationPointFeature;
 import au.gov.asd.tac.constellation.views.mapview.features.ConstellationShapeFeature;
