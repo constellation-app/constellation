@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.plugins.importexport.delimited;
 
 import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -75,6 +76,9 @@ public class ActionPane extends BorderPane {
             }
         });
 
+        this.setStyle(String.format("-fx-font-family:\"%s\";", FontUtilities.getApplicationFontFamily()));
+        this.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+        
         runBox.getChildren().add(importButton);
     }
 }

@@ -40,7 +40,7 @@ public class Startup implements Runnable {
     @Override
     public void run() {
         ConstellationSecurityManager.startSecurityLater(null);
-
+        
         // application environment
         final String environment = System.getProperty(SYSTEM_ENVIRONMENT);
         final String name = environment != null

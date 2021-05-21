@@ -60,6 +60,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.PreferenceChangeListener;
 import javax.swing.AbstractAction;
@@ -260,7 +262,7 @@ public final class TableViewTopComponent extends TopComponent implements Propert
     private void setTableFont() {
         // Get the standard font and adjust the row height to suit.
         // Adding one to the font height looks a little bit nicer.
-        final Font font = FontUtilities.getOutputFont();
+        final Font font = FontUtilities.getApplicationFont();
         dataTable.setFont(font);
         final FontMetrics fm = this.getFontMetrics(font);
         dataTable.setRowHeight(fm.getHeight() + 1);

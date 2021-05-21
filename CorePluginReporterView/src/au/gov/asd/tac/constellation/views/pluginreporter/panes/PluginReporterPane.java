@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.plugins.reporting.GraphReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReportFilter;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.pluginreporter.PluginReporterTopComponent;
@@ -100,8 +101,10 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
 
         // The filter drop down
         Label filterLabel = new Label("Filter: ");
+        filterLabel.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
         tagComboBox.setMaxWidth(Double.MAX_VALUE);
         tagComboBox.setMinWidth(50);
+        tagComboBox.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
         // Group these together so the Toolbar treats them as a unit.
         final HBox filterBox = new HBox(filterLabel, tagComboBox);
         filterBox.setAlignment(Pos.BASELINE_LEFT);
@@ -109,6 +112,7 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
         // The clear button
         Button clearButton = new Button("Clear");
         clearButton.setTooltip(new Tooltip("Clear all plugins but show new plugins as they are run"));
+        clearButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
         clearButton.setOnAction((ActionEvent event) -> {
             clearTime = System.currentTimeMillis();
             setPluginReportFilter(defaultReportFilter);
@@ -117,6 +121,7 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
         // The show all button
         Button showAllButton = new Button("Show All");
         showAllButton.setTooltip(new Tooltip("Show all plugins that have been run on this graph"));
+        showAllButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
         showAllButton.setOnAction((ActionEvent event) -> {
             clearTime = -1;
             setPluginReportFilter(defaultReportFilter);
@@ -158,6 +163,9 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
             }
         });
         setCenter(reportBoxScroll);
+        
+        this.setStyle(String.format("-fx-font-family:\"%s\";", FontUtilities.getApplicationFontFamily()));
+        this.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
     }
 
     @Override

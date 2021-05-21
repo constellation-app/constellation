@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.plugins.importexport.ImportDefinition;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPreferenceKeys;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.io.ImportDelimitedIO;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.util.List;
@@ -190,6 +191,9 @@ public class DelimitedImportPane extends BorderPane {
 
         root.setCenter(new VBox(menuToolbar, titledSourcePane, gridPane, actionPane));
         setCenter(root);
+        
+        this.setStyle(String.format("-fx-font-family:\"%s\";", FontUtilities.getApplicationFontFamily()));
+        this.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
     }
 
     public void update(final ImportController importController, final List<ImportDefinition> definitions) {

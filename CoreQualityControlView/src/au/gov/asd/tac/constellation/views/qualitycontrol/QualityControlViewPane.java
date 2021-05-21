@@ -28,6 +28,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.json.JsonUtilities;
 import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlEvent.QualityCategory;
@@ -111,8 +112,12 @@ public final class QualityControlViewPane extends BorderPane {
 
     public QualityControlViewPane() {
         readSerializedRulePriorities();
+                      
+        this.setStyle(String.format("-fx-font-family:\"%s\";", FontUtilities.getApplicationFontFamily()));
+        this.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
 
         qualityTable = new TableView<>();
+        qualityTable.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
         identifierColumn = new TableColumn<>("Identifier");
         identifierColumn.prefWidthProperty().bind(qualityTable.widthProperty().multiply(0.25));
         identifierColumn.setComparator((qce1, qce2) -> {
@@ -156,6 +161,7 @@ public final class QualityControlViewPane extends BorderPane {
         optionsPane.setId("qualitycontrolview-flow-pane");
         optionsPane.setAlignment(Pos.CENTER);
         final Button deleteButton = new Button("Delete From Graph");
+        deleteButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
         deleteButton.setOnAction(event -> {
             final List<QualityControlEvent> qualitycontrolEvents = qualityTable.getSelectionModel().getSelectedItems();
             PluginExecution.withPlugin(new DeleteQualityControlEvents(qualitycontrolEvents)).executeLater(GraphManager.getDefault().getActiveGraph());
@@ -163,6 +169,7 @@ public final class QualityControlViewPane extends BorderPane {
         });
 
         final Button selectButton = new Button("Select On Graph");
+        selectButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
         selectButton.setOnAction(event -> {
             final List<QualityControlEvent> qualitycontrolEvents = qualityTable.getSelectionModel().getSelectedItems();
             PluginExecution.withPlugin(new SelectQualityControlEvents(qualitycontrolEvents)).executeLater(GraphManager.getDefault().getActiveGraph());
@@ -170,6 +177,7 @@ public final class QualityControlViewPane extends BorderPane {
         });
 
         final Button removeButton = new Button("Deselect On Graph");
+        removeButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
         removeButton.setOnAction(event -> {
             final List<QualityControlEvent> qualitycontrolEvents = qualityTable.getSelectionModel().getSelectedItems();
             PluginExecution.withPlugin(new DeselectQualityControlEvents(qualitycontrolEvents)).executeLater(GraphManager.getDefault().getActiveGraph());
@@ -177,12 +185,14 @@ public final class QualityControlViewPane extends BorderPane {
         });
 
         final Button zoomButton = new Button("Zoom On Graph");
+        zoomButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
         zoomButton.setOnAction(event -> {
             final List<QualityControlEvent> qualitycontrolEvents = qualityTable.getSelectionModel().getSelectedItems();
             PluginExecution.withPlugin(new ZoomToQualityControlEvents(qualitycontrolEvents)).executeLater(GraphManager.getDefault().getActiveGraph());
         });
 
         final Button priorityButton = new Button("Category Priority");
+        priorityButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
         priorityButton.setOnAction(event -> {
             showPriorityDialog();
         });

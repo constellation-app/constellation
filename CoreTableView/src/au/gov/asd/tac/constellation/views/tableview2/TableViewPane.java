@@ -29,6 +29,7 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
 import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.tableview2.io.TableViewPreferencesIOUtilities;
@@ -212,7 +213,11 @@ public final class TableViewPane extends BorderPane {
         this.toolbar = initToolbar();
         setLeft(toolbar);
         
+        this.setStyle(String.format("-fx-font-family:\"%s\";", FontUtilities.getApplicationFontFamily()));
+        this.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+        
         this.table = new TableView<>();
+        table.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
         table.itemsProperty().addListener((v, o, n) -> table.refresh());
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         table.setPadding(new Insets(5));
@@ -311,6 +316,7 @@ public final class TableViewPane extends BorderPane {
         copyButton.setGraphic(COPY_ICON);
         copyButton.setMaxWidth(WIDTH);
         copyButton.setPopupSide(Side.RIGHT);
+        copyButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
         final MenuItem copyTableMenu = new MenuItem(COPY_TABLE);
         copyTableMenu.setOnAction(e -> {
             final String data = TableViewUtilities.getTableData(table, pagination, false, false);
@@ -329,6 +335,7 @@ public final class TableViewPane extends BorderPane {
         exportButton.setGraphic(EXPORT_ICON);
         exportButton.setMaxWidth(WIDTH);
         exportButton.setPopupSide(Side.RIGHT);
+        exportButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
         final MenuItem exportCsvItem = new MenuItem(EXPORT_CSV);
         exportCsvItem.setOnAction(e -> {
             if (parent.getCurrentGraph() != null) {
@@ -364,6 +371,7 @@ public final class TableViewPane extends BorderPane {
         preferencesButton.setGraphic(SETTINGS_ICON);
         preferencesButton.setMaxWidth(WIDTH);
         preferencesButton.setPopupSide(Side.RIGHT);
+        preferencesButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
         final Menu setPageSize = createPageSizeMenu();
         final MenuItem savePrefsOption = new MenuItem("Save Table Preferences");
         savePrefsOption.setOnAction(e -> {

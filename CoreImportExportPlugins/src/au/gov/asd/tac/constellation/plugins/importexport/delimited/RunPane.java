@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.plugins.importexport.ImportTableCell;
 import au.gov.asd.tac.constellation.plugins.importexport.RowFilter;
 import au.gov.asd.tac.constellation.plugins.importexport.model.CellValue;
 import au.gov.asd.tac.constellation.plugins.importexport.model.TableRow;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -295,6 +296,9 @@ public class RunPane extends BorderPane implements KeyListener {
                 mouseOverColumn = null;
             }
         });
+        
+        this.setStyle(String.format("-fx-font-family:\"%s\";", FontUtilities.getApplicationFontFamily()));
+        this.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
     }
 
     public Point2D getDraggingOffset() {

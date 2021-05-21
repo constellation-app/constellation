@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.Import
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.InputSource;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.io.File;
 import java.io.IOException;
@@ -236,6 +237,9 @@ public class SourcePane extends GridPane {
         GridPane.setConstraints(optionsBox, 0, 1, 3, 1);
         optionsBox.getItems().addAll(destinationLabel, graphComboBox, importFileParserLabel, importFileParserComboBox, schemaLabel, schemaCheckBox);
         getChildren().add(optionsBox);
+        
+        this.setStyle(String.format("-fx-font-family:\"%s\";", FontUtilities.getApplicationFontFamily()));
+        this.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
     }
 
     public void setParameters(final PluginParameters parameters) {

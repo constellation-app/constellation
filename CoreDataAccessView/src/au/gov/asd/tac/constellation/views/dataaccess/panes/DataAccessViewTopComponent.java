@@ -78,7 +78,7 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
                 dataAccessViewPane.update(graph);
             }
         });
-
+        
         ProxyUtilities.setProxySelector(null);
     }
 

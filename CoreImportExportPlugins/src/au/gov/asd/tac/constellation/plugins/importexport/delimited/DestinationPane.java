@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.plugins.importexport.GraphDestination;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportDestination;
 import au.gov.asd.tac.constellation.plugins.importexport.SchemaDestination;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import java.util.Map;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -82,5 +83,7 @@ public class DestinationPane extends GridPane {
         GridPane.setConstraints(graphComboBox, 0, 0);
 
         getChildren().addAll(graphComboBox);
+        this.setStyle(String.format("-fx-font-family:\"%s\";", FontUtilities.getApplicationFontFamily()));
+        this.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
     }
 }
