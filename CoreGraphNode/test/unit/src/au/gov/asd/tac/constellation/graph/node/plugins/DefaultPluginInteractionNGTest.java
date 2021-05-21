@@ -128,10 +128,7 @@ public class DefaultPluginInteractionNGTest {
         assertNotEquals(interaction.getProgress(), null);
 
         interaction.setProgress(1, 0, message, false);
-        //should allow enough time for the timer to terminate
-        /*Thread.sleep(1000);
 
-        assertEquals(interaction.getTimer().getState(), State.TERMINATED);*/
         assertEquals(interaction.getProgress(), null);
     }
 
@@ -163,10 +160,7 @@ public class DefaultPluginInteractionNGTest {
         assertNotEquals(interaction.getProgress(), null);
 
         interaction.setProgress(1, 0, message, false);
-        //should allow enough time for the timer to terminate
-        /*Thread.sleep(1000);
-
-        assertEquals(interaction.getTimer().getState(), State.TERMINATED);*/
+        
         assertEquals(interaction.getProgress(), null);
     }
 
