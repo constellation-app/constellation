@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.views.welcome.plugins;
 
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
-import au.gov.asd.tac.constelltaion.plugins.importexport.jdbc.JDBCImportTopComponent;
+import au.gov.asd.tac.constellation.plugins.importexport.jdbc.JDBCImportTopComponent;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
