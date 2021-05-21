@@ -92,7 +92,7 @@ public final class QualityControlViewTopComponent extends JavaFxTopComponent<Qua
     }
 
     @Override
-    public void qualityControlChanged(QualityControlState state) {
+    public void qualityControlChanged(final QualityControlState state) {
         if (needsUpdate()) {
             qualityControlViewPane.refreshQualityControlView(state);
         }

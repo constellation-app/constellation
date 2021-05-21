@@ -13,12 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.importexport.jdbc;
+package au.gov.asd.tac.constellation.plugins.importexport;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
-import au.gov.asd.tac.constellation.plugins.importexport.AttributeType;
-import au.gov.asd.tac.constellation.plugins.importexport.ImportAttributeDefinition;
-import au.gov.asd.tac.constellation.plugins.importexport.ImportDefinition;
 import au.gov.asd.tac.constellation.plugins.importexport.translator.AttributeTranslator;
 import au.gov.asd.tac.constellation.plugins.importexport.translator.DefaultAttributeTranslator;
 import java.util.HashMap;
@@ -35,11 +32,23 @@ import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 
+/**
+ * An AttributeList is a UI element that can hold all the available attributes for a given graph element. At present,
+ * three of these are used to hold the source node, destination node and transaction attributes in the UI and provide a
+ * place from which the user can drag these attributes onto columns. Attributes are represented with in the
+ * AttributeList by {@link AttributeNode}s.
+ *
+ * @author sirius
+ */
 public class AttributeList extends VBox {
 
-    private final RunPane runPane;
+    private static final int MIN_WIDTH = 50;
+    private static final int MIN_HEIGHT = 100;
+    private static final int VBOX_SPACING = 1;
+    private static final Insets VBOX_PADDING = new Insets(2);
 
-    final ImportController importController;
+    private final RunPane runPane;
+    protected final ImportController importController;
     private final AttributeType attributeType;
     private final Map<String, AttributeNode> attributeNodes;
     private Set<Integer> keys;
@@ -53,9 +62,9 @@ public class AttributeList extends VBox {
         keys = new HashSet<>();
 
         setAlignment(Pos.CENTER);
-        setMinSize(50, 100);
-        setSpacing(1);
-        setPadding(new Insets(2));
+        setMinSize(MIN_WIDTH, MIN_HEIGHT);
+        setSpacing(VBOX_SPACING);
+        setPadding(VBOX_PADDING);
         setFillWidth(true);
 
         setAlignment(Pos.TOP_CENTER);
@@ -83,7 +92,6 @@ public class AttributeList extends VBox {
             if (t.isPrimaryButtonDown()) {
                 runPane.setDraggingOffset(new Point2D(t.getX(), t.getY()));
                 final Point2D location = runPane.sceneToLocal(t.getSceneX(), t.getSceneY());
-
                 // If the attribute node is currently assigned to a column then remove it.
                 final ImportTableColumn currentColumn = attributeNode.getColumn();
                 if (currentColumn != null) {
@@ -91,15 +99,14 @@ public class AttributeList extends VBox {
                     runPane.validate(currentColumn);
                 }
                 attributeNode.setColumn(null);
-
-                runPane.getChildren().add(attributeNode);
-
+                // Replicates user clicking the attribute
+                if (!runPane.getChildren().contains(attributeNode)) {
+                    runPane.getChildren().add(attributeNode);
+                }
                 attributeNode.setManaged(false);
                 attributeNode.setLayoutX(location.getX() - runPane.getDraggingOffset().getX());
                 attributeNode.setLayoutY(location.getY() - runPane.getDraggingOffset().getY());
-
                 runPane.setDraggingAttributeNode(attributeNode);
-
                 runPane.handleAttributeMoved(t.getSceneX(), t.getSceneY());
             }
         });
@@ -151,9 +158,9 @@ public class AttributeList extends VBox {
         attributeNode.setColumn(null);
     }
 
-    public void setDisplayedAttributes(final Map<String, Attribute> attributes, final Set<Integer> keys) {
+    public void setDisplayedAttributes(final Map<String, Attribute> attributes, final Set<Integer> keySet) {
 
-        this.keys = keys;
+        this.keys = keySet;
 
         // Remove all attributes that no longer exist.
         final Iterator<Entry<String, AttributeNode>> i = attributeNodes.entrySet().iterator();
@@ -185,18 +192,18 @@ public class AttributeList extends VBox {
     }
 
     /**
-     * Create an {@code ImportDefinition} from attributes modified on the
-     * attribute list
+     * Create an {@code ImportDefinition} from attributes modified on the attribute list
      *
-     * @param importDefinition the {@link ImportDefinition} that will hold the
-     * new {@link ImportAttributeDefinition}s.
+     * @param importDefinition the {@link ImportDefinition} that will hold the new {@link ImportAttributeDefinition}s.
      */
     public void createDefinition(final ImportDefinition importDefinition) {
         attributeNodes.values().stream().filter(attributeNode -> (attributeNode.getColumn() == null)).forEachOrdered(attributeNode -> {
             final String defaultValue = attributeNode.getDefaultValue();
             final AttributeTranslator translator = attributeNode.getTranslator();
             if (defaultValue != null || (translator != null && !(translator instanceof DefaultAttributeTranslator))) {
-                final ImportAttributeDefinition attributeDefinition = new ImportAttributeDefinition(defaultValue, attributeNode.getAttribute(), attributeNode.getTranslator(), attributeNode.getTranslatorParameters());
+                final ImportAttributeDefinition attributeDefinition = new ImportAttributeDefinition(defaultValue,
+                        attributeNode.getAttribute(), attributeNode.getTranslator(),
+                        attributeNode.getTranslatorParameters());
                 importDefinition.addDefinition(attributeType, attributeDefinition);
             }
         });

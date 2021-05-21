@@ -3,6 +3,11 @@
 ## 2021-05-01 Changes in May 2021
 * Update `ProjectUpdater` to sort jars in `project.xml` consistently between Windows and Linux.
 * Remove the file type being added to dependency jars as it counts towards the limited class path length in Windows.
+* Added `displayAlert()` and `displayLargeAlert()` to NotifyDisplayer within `CoreUtilities`. They can be used to display alerts without and with `TextArea` elements respectively.
+* Updated `CoreImportExportPlugins` more specifically `Delimited` and `JDBC` packages. Common code was put into a common class to remove duplication. Many classes now extend the parent class for concrete implementations.
+* Removed `QualityControlViewPane.getLookup()` as it was not needed.
+* Removed the file type being added to dependency jars as it counts towards the limited class path length in Windows.
+* Updated `ProjectUpdater` to sort jars in `project.xml` consistently between Windows and Linux.
 
 ## 2021-04-01 Changes in April 2021
 * Added `FourTuple` to the Core Utilities module.
@@ -14,14 +19,14 @@
 
 ## 2021-01-01 Changes in January 2021
 * Moved a number of classes out of `au.gov.asd.tac.constellation.plugins.importexport.delimited` and `au.gov.asd.tac.constellation.plugins.importexport.jdbc` into the base package to help remove duplicate classes.
-* Converted the Tutorial Page into a What's New page for displaying changes in Constellation. 
+* Converted the Tutorial Page into a What's New page for displaying changes in Constellation.
 
 ## 2020-11-01 Changes in November 2020
 * Added `RecentGraphScreenshotUtilities` to manage taking screenshots of graphs to be used by the Welcome tab.
 * Added `createReadAttributeObject()` to `GraphReadMethods`.
 * Added `createWriteAttributeObject()` to `GraphWriteMethods`.
 * Added `createReadObject()` and `createWriteObject()` in `AttributeDescription`.
-* Added a number of classes to `CoreGraphFramework` to support the layers view. 
+* Added a number of classes to `CoreGraphFramework` to support the layers view.
 * Added `ConnectionGlyphStream`, `ConnectionGlyphSteamContext`, `NodeGlyphStream`, `NodeGlyphStreamContext` and `GlyphStreamContext` classes.
 * Moved Layers View Shortcuts from `au.gov.asd.tac.constellation.views.layers.utilities` to `au.gov.asd.tac.constellation.views.layers.shortcut`
 * Removed `setCurrentContext()`, `addGlyph()` and `newLine()` from `ConnectionLabelBatcher` and `NodeLabelBatcher`.
@@ -55,10 +60,10 @@
 * Removed the Attribute Calculator.
 
 ## 2020-06-01 Changes in June 2020
-* Added `LayerConcept` to group all of the layer mask and layer visibility attributes together. 
+* Added `LayerConcept` to group all of the layer mask and layer visibility attributes together.
 * Moved the creation of `QUERY_NAME_PARAMETER` and `DATETIME_RANGE_PARAMETER` within `CoreGlobalParameters` and can be accessed by direct reference; i.e. `CoreGlobalParameters.QUERY_NAME_PARAMETERS`.
 
-## 2020-05-01 Changes in May 2020 
+## 2020-05-01 Changes in May 2020
 * Added feedback for delimiter import.
 * Added basic support for MacOS.
 * Added `ProjectUpdater` which will manage adding dependencies to the `project.xml` file.

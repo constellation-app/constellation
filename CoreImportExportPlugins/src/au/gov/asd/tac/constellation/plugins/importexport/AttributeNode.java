@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.importexport.delimited;
+package au.gov.asd.tac.constellation.plugins.importexport;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersDialog;
-import au.gov.asd.tac.constellation.plugins.importexport.NewAttribute;
 import au.gov.asd.tac.constellation.plugins.importexport.translator.AttributeTranslator;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
@@ -44,45 +43,42 @@ import javafx.stage.Window;
 /**
  * A representation of an Attribute on the GUI.
  * <p>
- * A graph Attribute (more specifically, it's label) is displayed in a Label
- * with a particular background color and a context menu. The context menu
- * allows properties of the AttributeNode (translator, default value) to be
- * edited.
+ * A graph Attribute (more specifically, it's label) is displayed in a Label with a particular background color and a
+ * context menu. The context menu allows properties of the AttributeNode (translator, default value) to be edited.
  * <p>
- * AttributeNodes are originally displayed in their {@link AttributeList} but
- * can be dragged around the GUI, specifically onto column headers to indicate
- * that the user wants to import the values in that column into that specified
- * attribute.
+ * AttributeNodes are originally displayed in their {@link AttributeList} but can be dragged around the GUI,
+ * specifically onto column headers to indicate that the user wants to import the values in that column into that
+ * specified attribute.
  *
  * @author sirius
  */
 public final class AttributeNode extends Label implements Comparable<AttributeNode> {
 
-    private final AttributeList attributeList;
-    private Attribute attribute;
-    private AttributeTranslator translator = AttributeTranslator.getTranslators().get(0);
-    private ImportTableColumn column = null;
-    private boolean isKey;
+    private static final Image KEY_IMAGE = UserInterfaceIconProvider.KEY.buildImage(16, ConstellationColor.CHERRY.getJavaColor());
+    private static final Image ADD_IMAGE = UserInterfaceIconProvider.ADD.buildImage(16, Color.BLACK);
+    private static final String DOUBLE_UNDERSCORE = "__";
 
+    private final AttributeList attributeList;
     private final ToggleGroup menuGroup = new ToggleGroup();
     private final Menu parseMenu = new Menu("Formatter");
     private final MenuItem deleteMenu = new MenuItem("Delete");
     private final MenuItem setDefaultMenuItem = new MenuItem("Set Default Value...");
-    private String defaultValue = null;
-    private PluginParameters translatorParameters;
 
-    private static final Image KEY_IMAGE = UserInterfaceIconProvider.KEY.buildImage(16, ConstellationColor.CHERRY.getJavaColor());
-    private static final Image ADD_IMAGE = UserInterfaceIconProvider.ADD.buildImage(16, Color.BLACK);
     private Map<String, PluginParameters> recentTranslatorParameters = new HashMap<>();
+    private AttributeTranslator translator = AttributeTranslator.getTranslators().get(0);
+    private ImportTableColumn column;
+    private PluginParameters translatorParameters;
+    private Attribute attribute;
+    private String defaultValue;
+    private boolean isKey;
 
     /**
      *
-     * @param attributeList The AttributeList to which this AttributeNode
-     * belongs.
+     * @param attributeList The AttributeList to which this AttributeNode belongs.
      * @param attribute The Attribute that this AttributeNode represents.
      * @param isKey True if this Attribute is a key.
      */
-    public AttributeNode(final AttributeList attributeList, final Attribute attribute, boolean isKey) {
+    public AttributeNode(final AttributeList attributeList, final Attribute attribute, final boolean isKey) {
 
         this.attributeList = attributeList;
 
@@ -98,67 +94,23 @@ public final class AttributeNode extends Label implements Comparable<AttributeNo
 
         // Create a context menu.
         final ContextMenu menu = new ContextMenu();
-//        final ToggleGroup menuGroup = new ToggleGroup();
-//        final Menu parseMenu = new Menu("Translator");
+
         menu.getItems().add(parseMenu);
 
-        List<AttributeTranslator> attributeTranslators = AttributeTranslator.getTranslators();
-        for (Iterator<AttributeTranslator> i = attributeTranslators.iterator(); i.hasNext();) {
+        final List<AttributeTranslator> attributeTranslators = AttributeTranslator.getTranslators();
+        for (final Iterator<AttributeTranslator> i = attributeTranslators.iterator(); i.hasNext();) {
             if (!i.next().appliesToAttributeType(attribute.getAttributeType())) {
                 i.remove();
             }
         }
 
-        for (final AttributeTranslator ap : attributeTranslators) {
-            final RadioMenuItem item = new RadioMenuItem(ap.getLabel());
-            item.setSelected(ap.getClass().equals(translator.getClass()));
+        attributeTranslators.stream().map(at -> {
+            final RadioMenuItem item = new RadioMenuItem(at.getLabel());
+            item.setSelected(at.getClass().equals(translator.getClass()));
             item.setToggleGroup(menuGroup);
-            item.setOnAction((ActionEvent t) -> {
-                PluginParameters parameters;
-                if (recentTranslatorParameters.containsKey(ap.getLabel())) {
-                    parameters = recentTranslatorParameters.get(ap.getLabel());
-                    if (parameters != null) {
-                        parameters = parameters.copy();
-                    }
-                } else {
-                    parameters = ap.createParameters();
-                }
-                if (parameters == null) {
-                    translator = ap;
-                    translatorParameters = null;
-                    recentTranslatorParameters.put(ap.getLabel(), null);
-                    if (AttributeNode.this.getColumn() != null) {
-                        attributeList.getRunPane().validate(AttributeNode.this.column);
-                    }
-                } else {
-                    final Window parent = attributeList.importController.getStage().getParentWindow();
-                    final PluginParametersDialog dialog = new PluginParametersDialog(
-                            parent, ap.getLabel() + " Parameters",
-                            parameters, "Ok", "Cancel");
-
-                    dialog.showAndWait();
-                    if ("Ok".equals(dialog.getResult())) {
-                        translator = ap;
-                        translatorParameters = parameters;
-                        recentTranslatorParameters.put(ap.getLabel(), parameters);
-                        if (AttributeNode.this.getColumn() != null) {
-                            attributeList.getRunPane().validate(AttributeNode.this.column);
-                        }
-                    } else {
-                        updateTranslatorGroupToggle();
-//                        for(MenuItem item1 : parseMenu.getItems())
-//                        {
-//                            if(item1.getText().equals(translator.getLabel()))
-//                            {
-//                                menuGroup.selectToggle((Toggle) item1);
-//                                break;
-//                            }
-//                        }
-                    }
-                }
-            });
-            parseMenu.getItems().add(item);
-        }
+            item.setOnAction((ActionEvent t) -> attributeItemAction(at));
+            return item;
+        }).forEachOrdered(item -> parseMenu.getItems().add(item));
 
         setDefaultMenuItem.setOnAction((ActionEvent event) -> {
             defaultValue = attributeList.importController.showSetDefaultValueDialog(attribute.getName(), defaultValue);
@@ -167,9 +119,7 @@ public final class AttributeNode extends Label implements Comparable<AttributeNo
         });
         menu.getItems().add(setDefaultMenuItem);
 
-        deleteMenu.setOnAction((ActionEvent event) -> {
-            attributeList.deleteAttributeNode(AttributeNode.this);
-        });
+        deleteMenu.setOnAction((ActionEvent event) -> attributeList.deleteAttributeNode(AttributeNode.this));
         menu.getItems().add(deleteMenu);
 
         setAttribute(attribute, isKey);
@@ -177,8 +127,45 @@ public final class AttributeNode extends Label implements Comparable<AttributeNo
         setContextMenu(menu);
     }
 
+    private void attributeItemAction(final AttributeTranslator at) {
+        PluginParameters parameters;
+        if (recentTranslatorParameters.containsKey(at.getLabel())) {
+            parameters = recentTranslatorParameters.get(at.getLabel());
+            if (parameters != null) {
+                parameters = parameters.copy();
+            }
+        } else {
+            parameters = at.createParameters();
+        }
+        if (parameters == null) {
+            translator = at;
+            translatorParameters = null;
+            recentTranslatorParameters.put(at.getLabel(), null);
+            if (AttributeNode.this.getColumn() != null) {
+                attributeList.getRunPane().validate(AttributeNode.this.column);
+            }
+        } else {
+            final Window parent = attributeList.importController.getStage().getParentWindow();
+            final PluginParametersDialog dialog = new PluginParametersDialog(
+                    parent, at.getLabel() + " Parameters",
+                    parameters, "Ok", "Cancel");
+
+            dialog.showAndWait();
+            if (PluginParametersDialog.OK.equalsIgnoreCase(dialog.getResult())) {
+                translator = at;
+                translatorParameters = parameters;
+                recentTranslatorParameters.put(at.getLabel(), parameters);
+                if (AttributeNode.this.getColumn() != null) {
+                    attributeList.getRunPane().validate(AttributeNode.this.column);
+                }
+            } else {
+                updateTranslatorGroupToggle();
+            }
+        }
+    }
+
     private void updateTranslatorGroupToggle() {
-        for (MenuItem item1 : parseMenu.getItems()) {
+        for (final MenuItem item1 : parseMenu.getItems()) {
             if (item1.getText().equals(translator.getLabel())) {
                 menuGroup.selectToggle((Toggle) item1);
                 break;
@@ -190,11 +177,7 @@ public final class AttributeNode extends Label implements Comparable<AttributeNo
      * Update the label text to show the default value
      */
     public void updateDefaultValue() {
-        if (defaultValue == null) {
-            setText(attribute.getName());
-        } else {
-            setText(attribute.getName() + " = " + defaultValue);
-        }
+        setText(attribute.getName() + (defaultValue == null ? "" : (" = " + defaultValue)));
     }
 
     /**
@@ -242,7 +225,7 @@ public final class AttributeNode extends Label implements Comparable<AttributeNo
         return translatorParameters;
     }
 
-    public final void setAttribute(Attribute attribute, boolean isKey) {
+    public void setAttribute(final Attribute attribute, final boolean isKey) {
         if (attribute != this.attribute || this.isKey != isKey) {
             this.attribute = attribute;
             this.isKey = isKey;
@@ -265,13 +248,13 @@ public final class AttributeNode extends Label implements Comparable<AttributeNo
         return column;
     }
 
-    public void setColumn(ImportTableColumn column) {
+    public void setColumn(final ImportTableColumn column) {
         this.column = column;
     }
 
     /**
-     * Order attributes alphabetically, except keys come first and weird labels
-     * (starting with "__") come last.
+     * Order attributes alphabetically, except keys come first and weird labels (starting with "__" - DOUBLE_UNDERSCORE)
+     * come last.
      *
      * @param other The other AttributeNode.
      *
@@ -283,13 +266,14 @@ public final class AttributeNode extends Label implements Comparable<AttributeNo
         if (comp == 0) {
             final String label = attribute.getName();
             final String otherLabel = other.attribute.getName();
-            comp = !label.startsWith("__") && otherLabel.startsWith("__")
-                    ? -1
-                    : label.startsWith("__") && !otherLabel.startsWith("__")
-                    ? 1
-                    : label.compareTo(otherLabel);
+            if (!label.startsWith(DOUBLE_UNDERSCORE) && otherLabel.startsWith(DOUBLE_UNDERSCORE)) {
+                comp = -1;
+            } else if (label.startsWith(DOUBLE_UNDERSCORE) && !otherLabel.startsWith(DOUBLE_UNDERSCORE)) {
+                comp = 1;
+            } else {
+                comp = label.compareTo(otherLabel);
+            }
         }
-
         return comp;
     }
 }
