@@ -48,7 +48,7 @@ public class WhatsNewWelcomePlugin implements WelcomePluginInterface {
     public static final String WHATS_NEW = "resources/welcome_new.png";
     final ImageView newView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(WHATS_NEW)));
     final Button whatsNewBtn = new Button();
-    private final double titleSize = 1.5;
+    private static final double titleSize = 1.5;
         
     /**
      * Get a unique reference that is used to identify the plugin 

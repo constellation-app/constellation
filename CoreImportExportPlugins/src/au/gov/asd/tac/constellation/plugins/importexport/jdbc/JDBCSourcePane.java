@@ -334,7 +334,7 @@ public class JDBCSourcePane extends SourcePane {
                 final Scene scene2 = new Scene(r);
                 scene2.setFill(Color.WHITESMOKE);
                 scene2.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
-                scene2.rootProperty().get().setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+                scene2.rootProperty().get().setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
                 d.setScene(scene2);
                 d.setTitle("Add Driver");
                 d.centerOnScreen();

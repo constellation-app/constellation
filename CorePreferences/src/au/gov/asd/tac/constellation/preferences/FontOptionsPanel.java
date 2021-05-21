@@ -43,7 +43,7 @@ import org.openide.util.NbBundle;
 final class FontOptionsPanel extends JPanel {
 
     private final FontOptionsPanelController controller;
-    private final String fonts[] = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+    private final String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
 
     public FontOptionsPanel(final FontOptionsPanelController controller) {
         this.controller = controller;

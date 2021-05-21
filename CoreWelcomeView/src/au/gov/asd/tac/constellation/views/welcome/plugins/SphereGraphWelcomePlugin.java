@@ -50,8 +50,8 @@ public class SphereGraphWelcomePlugin implements WelcomePluginInterface {
     public static final String NEW_SPHERE = "resources/welcome_add_sphere.png";
     final ImageView newSphere = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(NEW_SPHERE)));   
     final Button sphereGraphButton = new Button();
-    private final double titleSize = 1.2;
-    private final int textSize = 10;
+    private static final double titleSize = 1.2;
+    private static final int textSize = 10;
 
     /**  
      * Get a unique reference that is used to identify the plugin

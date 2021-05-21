@@ -47,7 +47,7 @@ public class JoinCommWelcomePlugin implements WelcomePluginInterface {
     public static final String JOIN = "resources/welcome_join.png";
     final ImageView joinView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(JOIN)));
     final Button joinBtn = new Button();
-    private final double titleSize = 1.5;
+    private static final double titleSize = 1.5;
         
     /**
      * Get a unique reference that is used to identify the plugin 

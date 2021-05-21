@@ -48,8 +48,8 @@ public class SelectionModeWelcomePlugin implements WelcomePluginInterface {
     public static final String NEW_GRAPH = "resources/welcome_add_selection.png";
     final ImageView addView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(NEW_GRAPH)));
     final Button newButton = new Button();
-    private final double titleSize = 1.2;
-    private final int textSize = 10;
+    private static final double titleSize = 1.2;
+    private static final int textSize = 10;
         
     /**
      * Get a unique reference that is used to identify the plugin 

@@ -61,6 +61,7 @@ import org.openide.util.NbPreferences;
 public class PluginReporterPane extends BorderPane implements ListChangeListener<String> {
 
     private static final String FILTERED_TAGS_KEY = "filteredTags";
+    private static final String FONT_SIZE_FORMAT = "-fx-font-size:%d;";
 
     private final ToolBar controlToolbar = new ToolBar();
 
@@ -72,8 +73,6 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
     private final CheckComboBox<String> tagComboBox = new CheckComboBox<>(availableTags);
     private final Set<String> filteredTags = new HashSet<>();
     private PluginReportFilter pluginReportFilter = null;
-    
-    private static final String FONT_SIZE_FORMAT = "-fx-font-size:%d;";
     
     private ObservableList<String> checkedIndices;
 

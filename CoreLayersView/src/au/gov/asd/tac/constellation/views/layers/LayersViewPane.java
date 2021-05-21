@@ -50,12 +50,11 @@ import org.openide.util.HelpCtx;
  */
 public class LayersViewPane extends BorderPane {
 
+    private static final String FONT_SIZE_FORMAT = "-fx-font-size:%d;";
     private final LayersViewController controller;
     private final GridPane layersGridPane;
     private final VBox layersViewPane;
     private final HBox options;
-    
-    private static final String FONT_SIZE_FORMAT = "-fx-font-size:%d;";
 
     public LayersViewPane(final LayersViewController controller) {
 

@@ -47,7 +47,7 @@ public class ProvideFeedbackWelcomePlugin implements WelcomePluginInterface{
     public static final String FEEDBACK = "resources/welcome_feedback.png";
     final ImageView feedView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(FEEDBACK)));
     final Button feedbackButton = new Button();
-    private final double titleSize = 1.5;
+    private static final double titleSize = 1.5;
         
     /**
      * Get a unique reference that is used to identify the plugin 
