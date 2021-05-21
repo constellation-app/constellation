@@ -27,8 +27,10 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
+import java.lang.Thread.State;
 import org.openide.windows.TopComponent;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -102,7 +104,7 @@ public class DefaultPluginInteractionNGTest {
      *
      * @throws InterruptedException
      */
-    /*@Test//(expectedExceptions = InterruptedException.class)
+    @Test
     public void testSetProgress() throws InterruptedException {
         System.out.println("setProgress");
 
@@ -132,7 +134,7 @@ public class DefaultPluginInteractionNGTest {
 
         assertEquals(interaction.getTimer().getState(), State.TERMINATED);
         assertEquals(interaction.getProgress(), null);
-    }*/
+    }
 
     /**
      * Test of setProgress method, of class DefaultPluginInteraction with total
