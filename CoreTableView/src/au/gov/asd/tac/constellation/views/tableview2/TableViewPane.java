@@ -191,6 +191,8 @@ public final class TableViewPane extends BorderPane {
     private final ScheduledExecutorService scheduledExecutorService;
     private ScheduledFuture<?> scheduledFuture;
     
+    private static final String FONT_SIZE_FORMAT = "-fx-font-size:%d;";
+    
     /**
      * Cache strings used in table cells to significantly reduce memory used by 
      * the same string repeated in columns and rows.
@@ -214,10 +216,10 @@ public final class TableViewPane extends BorderPane {
         setLeft(toolbar);
         
         this.setStyle(String.format("-fx-font-family:\"%s\";", FontUtilities.getApplicationFontFamily()));
-        this.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+        this.setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
         
         this.table = new TableView<>();
-        table.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+        table.setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
         table.itemsProperty().addListener((v, o, n) -> table.refresh());
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         table.setPadding(new Insets(5));
@@ -316,7 +318,7 @@ public final class TableViewPane extends BorderPane {
         copyButton.setGraphic(COPY_ICON);
         copyButton.setMaxWidth(WIDTH);
         copyButton.setPopupSide(Side.RIGHT);
-        copyButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+        copyButton.setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
         final MenuItem copyTableMenu = new MenuItem(COPY_TABLE);
         copyTableMenu.setOnAction(e -> {
             final String data = TableViewUtilities.getTableData(table, pagination, false, false);
@@ -335,7 +337,7 @@ public final class TableViewPane extends BorderPane {
         exportButton.setGraphic(EXPORT_ICON);
         exportButton.setMaxWidth(WIDTH);
         exportButton.setPopupSide(Side.RIGHT);
-        exportButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+        exportButton.setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
         final MenuItem exportCsvItem = new MenuItem(EXPORT_CSV);
         exportCsvItem.setOnAction(e -> {
             if (parent.getCurrentGraph() != null) {
@@ -371,7 +373,7 @@ public final class TableViewPane extends BorderPane {
         preferencesButton.setGraphic(SETTINGS_ICON);
         preferencesButton.setMaxWidth(WIDTH);
         preferencesButton.setPopupSide(Side.RIGHT);
-        preferencesButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+        preferencesButton.setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
         final Menu setPageSize = createPageSizeMenu();
         final MenuItem savePrefsOption = new MenuItem("Save Table Preferences");
         savePrefsOption.setOnAction(e -> {

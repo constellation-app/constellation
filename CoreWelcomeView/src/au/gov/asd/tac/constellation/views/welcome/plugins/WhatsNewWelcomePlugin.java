@@ -48,6 +48,7 @@ public class WhatsNewWelcomePlugin implements WelcomePluginInterface {
     public static final String WHATS_NEW = "resources/welcome_new.png";
     final ImageView newView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(WHATS_NEW)));
     final Button whatsNewBtn = new Button();
+    private final double titleSize = 1.5;
         
     /**
      * Get a unique reference that is used to identify the plugin 
@@ -99,7 +100,7 @@ public class WhatsNewWelcomePlugin implements WelcomePluginInterface {
         newView.setFitWidth(25);
         final Text title = new Text("What's New?");
         title.setFill(Color.WHITE);
-        title.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * 1.5));
+        title.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * titleSize));
         final Text subtitle = new Text("Features in the latest version");
         subtitle.setFill(Color.WHITE);
         subtitle.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize()));

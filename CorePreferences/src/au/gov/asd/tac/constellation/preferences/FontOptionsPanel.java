@@ -40,10 +40,10 @@ import org.openide.util.NbBundle;
  *
  * @author Delphinus8821
  */
-final class FontOptionsPanel extends javax.swing.JPanel {
+final class FontOptionsPanel extends JPanel {
 
     private final FontOptionsPanelController controller;
-    final String fonts[] = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+    private final String fonts[] = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
 
     public FontOptionsPanel(final FontOptionsPanelController controller) {
         this.controller = controller;

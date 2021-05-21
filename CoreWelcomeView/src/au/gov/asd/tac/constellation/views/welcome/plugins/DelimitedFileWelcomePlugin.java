@@ -45,6 +45,8 @@ public class DelimitedFileWelcomePlugin implements WelcomePluginInterface {
     public static final String IMPORT = "resources/welcome_import.png";
     final ImageView importImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(IMPORT)));
     final Button importButton = new Button();
+    private final double titleSize = 1.2;
+    private final int textSize = 10;
 
     /**
      * Get a unique reference that is used to identify the plugin 
@@ -95,9 +97,9 @@ public class DelimitedFileWelcomePlugin implements WelcomePluginInterface {
         importImage.setFitHeight(75);
         importImage.setFitWidth(75);
         final Label imTitle = new Label("Import");
-        imTitle.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * 1.2));
+        imTitle.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * titleSize));
         final Label imSubtitle = new Label("Delimited File Importer");
-        imSubtitle.setFont(new Font(FontUtilities.getApplicationFontFamily(), 10));
+        imSubtitle.setFont(new Font(FontUtilities.getApplicationFontFamily(), textSize));
         final VBox layoutVBox = new VBox(importImage, imTitle, imSubtitle);
         layoutVBox.setAlignment(Pos.CENTER);
         importButton.setGraphic(layoutVBox);

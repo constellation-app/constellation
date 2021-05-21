@@ -109,15 +109,17 @@ public final class QualityControlViewPane extends BorderPane {
     private final TableColumn<QualityControlEvent, QualityControlEvent> reasonColumn;
     private final TableView<QualityControlEvent> qualityTable;
     private final FlowPane optionsPane;
+    
+    private static final String FONT_SIZE_FORMAT = "-fx-font-size:%d;";
 
     public QualityControlViewPane() {
         readSerializedRulePriorities();
                       
         this.setStyle(String.format("-fx-font-family:\"%s\";", FontUtilities.getApplicationFontFamily()));
-        this.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+        this.setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
 
         qualityTable = new TableView<>();
-        qualityTable.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+        qualityTable.setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
         identifierColumn = new TableColumn<>("Identifier");
         identifierColumn.prefWidthProperty().bind(qualityTable.widthProperty().multiply(0.25));
         identifierColumn.setComparator((qce1, qce2) -> {
@@ -161,7 +163,7 @@ public final class QualityControlViewPane extends BorderPane {
         optionsPane.setId("qualitycontrolview-flow-pane");
         optionsPane.setAlignment(Pos.CENTER);
         final Button deleteButton = new Button("Delete From Graph");
-        deleteButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+        deleteButton.setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
         deleteButton.setOnAction(event -> {
             final List<QualityControlEvent> qualitycontrolEvents = qualityTable.getSelectionModel().getSelectedItems();
             PluginExecution.withPlugin(new DeleteQualityControlEvents(qualitycontrolEvents))
@@ -170,7 +172,7 @@ public final class QualityControlViewPane extends BorderPane {
         });
 
         final Button selectButton = new Button("Select On Graph");
-        selectButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+        selectButton.setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
         selectButton.setOnAction(event -> {
             final List<QualityControlEvent> qualitycontrolEvents = qualityTable.getSelectionModel().getSelectedItems();
             PluginExecution.withPlugin(new SelectQualityControlEvents(qualitycontrolEvents))
@@ -179,7 +181,7 @@ public final class QualityControlViewPane extends BorderPane {
         });
 
         final Button removeButton = new Button("Deselect On Graph");
-        removeButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+        removeButton.setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
         removeButton.setOnAction(event -> {
             final List<QualityControlEvent> qualitycontrolEvents = qualityTable.getSelectionModel().getSelectedItems();
             PluginExecution.withPlugin(new DeselectQualityControlEvents(qualitycontrolEvents))
@@ -188,7 +190,7 @@ public final class QualityControlViewPane extends BorderPane {
         });
 
         final Button zoomButton = new Button("Zoom On Graph");
-        zoomButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+        zoomButton.setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
         zoomButton.setOnAction(event -> {
             final List<QualityControlEvent> qualitycontrolEvents = qualityTable.getSelectionModel().getSelectedItems();
             PluginExecution.withPlugin(new ZoomToQualityControlEvents(qualitycontrolEvents))
@@ -196,7 +198,7 @@ public final class QualityControlViewPane extends BorderPane {
         });
 
         final Button priorityButton = new Button("Category Priority");
-        priorityButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+        priorityButton.setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
         priorityButton.setOnAction(event -> {
             showPriorityDialog();
         });

@@ -47,6 +47,7 @@ public class ProvideFeedbackWelcomePlugin implements WelcomePluginInterface{
     public static final String FEEDBACK = "resources/welcome_feedback.png";
     final ImageView feedView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(FEEDBACK)));
     final Button feedbackButton = new Button();
+    private final double titleSize = 1.5;
         
     /**
      * Get a unique reference that is used to identify the plugin 
@@ -94,7 +95,7 @@ public class ProvideFeedbackWelcomePlugin implements WelcomePluginInterface{
         feedView.setFitWidth(25);
         final Text title = new Text("Provide Feedback");
         title.setFill(Color.WHITE);
-        title.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * 1.5));
+        title.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * titleSize));
         final Text subtitle = new Text("Let us know your thoughts");
         subtitle.setFill(Color.WHITE);
         subtitle.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize()));

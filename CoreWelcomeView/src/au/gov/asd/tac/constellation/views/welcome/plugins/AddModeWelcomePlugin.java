@@ -49,6 +49,8 @@ public class AddModeWelcomePlugin implements WelcomePluginInterface {
     public static final String NEW_GRAPH = "resources/welcome_add_graph.png";
     final ImageView addView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(NEW_GRAPH)));
     final Button newButton = new Button();
+    private final double titleSize = 1.2;
+    private final int textSize = 10;
         
     /**
      * Get a unique reference that is used to identify the plugin 
@@ -99,9 +101,9 @@ public class AddModeWelcomePlugin implements WelcomePluginInterface {
         addView.setFitHeight(75);
         addView.setFitWidth(75);
         final Label title = new Label("New Graph");
-        title.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * 1.2));
+        title.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * titleSize));
         final Label subtitle = new Label("Add mode");
-        subtitle.setFont(new Font(FontUtilities.getApplicationFontFamily(), 10));
+        subtitle.setFont(new Font(FontUtilities.getApplicationFontFamily(), textSize));
         final VBox layoutVBox = new VBox(addView, title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER);
         newButton.setGraphic(layoutVBox);

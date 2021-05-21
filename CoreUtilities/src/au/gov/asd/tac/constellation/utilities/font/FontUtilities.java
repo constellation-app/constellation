@@ -64,8 +64,10 @@ public class FontUtilities {
                 p.node(FontPreferenceKeys.FONT_PREFERENCES).put(FontPreferenceKeys.FONT_SIZE, FontPreferenceKeys.FONT_SIZE_DEFAULT);
                 p.node(FontPreferenceKeys.FONT_PREFERENCES).put(FontPreferenceKeys.FONT_FAMILY, FontPreferenceKeys.FONT_FAMILY_DEFAULT);
             } else {
-                FontPreferenceKeys.FONT_SIZE_DEFAULT = p.node(FontPreferenceKeys.FONT_PREFERENCES).get(FontPreferenceKeys.FONT_SIZE, FontPreferenceKeys.FONT_SIZE_DEFAULT);
-                FontPreferenceKeys.FONT_FAMILY_DEFAULT = p.node(FontPreferenceKeys.FONT_PREFERENCES).get(FontPreferenceKeys.FONT_FAMILY, FontPreferenceKeys.FONT_FAMILY_DEFAULT);
+                FontPreferenceKeys.FONT_SIZE_DEFAULT = p.node(FontPreferenceKeys.FONT_PREFERENCES).get(FontPreferenceKeys.FONT_SIZE, 
+                        FontPreferenceKeys.FONT_SIZE_DEFAULT);
+                FontPreferenceKeys.FONT_FAMILY_DEFAULT = p.node(FontPreferenceKeys.FONT_PREFERENCES).get(FontPreferenceKeys.FONT_FAMILY, 
+                        FontPreferenceKeys.FONT_FAMILY_DEFAULT);
             }
         } catch (final BackingStoreException ex) {
             Exceptions.printStackTrace(ex);
@@ -103,7 +105,8 @@ public class FontUtilities {
         try {
             final Preferences p = NbPreferences.root();
             if (p.nodeExists(FontPreferenceKeys.FONT_PREFERENCES)) {
-                final String fontSizePreference = p.node(FontPreferenceKeys.FONT_PREFERENCES).get(FontPreferenceKeys.FONT_SIZE, FontPreferenceKeys.FONT_SIZE_DEFAULT);
+                final String fontSizePreference = p.node(FontPreferenceKeys.FONT_PREFERENCES).get(FontPreferenceKeys.FONT_SIZE, 
+                        FontPreferenceKeys.FONT_SIZE_DEFAULT);
                 fontSize = Integer.parseInt(fontSizePreference);
             } else {
                 fontSize = UIManager.getFont(SWING_FONT).getSize();
@@ -160,6 +163,7 @@ public class FontUtilities {
             }
         } catch (final BackingStoreException ex) {
             Exceptions.printStackTrace(ex);
+            LOGGER.severe(ex.getLocalizedMessage());
         }
     }
 

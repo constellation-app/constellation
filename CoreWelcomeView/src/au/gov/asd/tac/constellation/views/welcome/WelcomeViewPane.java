@@ -64,6 +64,8 @@ public class WelcomeViewPane extends BorderPane {
     public static final String ERROR_BUTTON_MESSAGE = String.format("%s Information", BrandingUtilities.APPLICATION_NAME);
     public static final String WELCOME_TEXT = "Welcome to Constellation";
     public static final double SPLIT_POS = 0.2;
+    private final int titleSize = 2;
+    private final double headingSize = 1.5;
 
     //Place holder images
     public static final String LOGO = "resources/constellation-logo.png";
@@ -106,7 +108,7 @@ public class WelcomeViewPane extends BorderPane {
 
             //Create the labels for the left pane
             final Label welcome = new Label(WELCOME_TEXT);
-            welcome.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * 2));
+            welcome.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * titleSize));
             welcome.setAlignment(Pos.CENTER);
             leftVBox.getChildren().add(welcome);
 
@@ -158,7 +160,7 @@ public class WelcomeViewPane extends BorderPane {
             // Create a checkbox to change users preference regarding showing the Tutorial Page on startup 
             final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
             final CheckBox showOnStartUpCheckBox = new CheckBox("Show on Startup");
-            showOnStartUpCheckBox.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * 1.5));
+            showOnStartUpCheckBox.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * headingSize));
             lowerLeftHBox.getChildren().add(showOnStartUpCheckBox);
            
             showOnStartUpCheckBox.selectedProperty().addListener((ov, oldVal, newVal) -> {
@@ -176,7 +178,7 @@ public class WelcomeViewPane extends BorderPane {
             
             //formatting for bottom hbox
             final Label recent = new Label("Recent");
-            recent.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * 2));
+            recent.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * titleSize));
             rightVBox.getChildren().add(topHBox);
             rightVBox.getChildren().add(recent);
             rightVBox.getChildren().add(bottomHBox);

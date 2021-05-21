@@ -46,6 +46,7 @@ public class GettingStartedWelcomePlugin implements WelcomePluginInterface {
     public static final String GETTING_STARTED = "resources/welcome_getting_started.png";
     final ImageView started = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(GETTING_STARTED)));
     final Button startedBtn = new Button();
+    private final double titleSize = 1.5;
     
         
     /**
@@ -93,7 +94,7 @@ public class GettingStartedWelcomePlugin implements WelcomePluginInterface {
         started.setFitHeight(25);
         started.setFitWidth(25);
         final Text title = new Text("Getting Started");
-        title.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * 1.5));
+        title.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * titleSize));
         title.setFill(Color.WHITE);
         final Text subtitle = new Text("Guides & Resources");
         subtitle.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize()));

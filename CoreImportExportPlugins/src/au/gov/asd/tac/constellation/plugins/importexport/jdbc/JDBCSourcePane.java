@@ -214,7 +214,7 @@ public class JDBCSourcePane extends SourcePane {
                 final Scene scene1 = new Scene(r);
                 scene1.setFill(Color.WHITESMOKE);
                 scene1.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
-                scene1.rootProperty().get().setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+                scene1.rootProperty().get().setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
                 d.setScene(scene1);
                 d.setTitle("Add Connection");
                 d.centerOnScreen();

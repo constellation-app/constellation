@@ -46,6 +46,8 @@ public class OpenGraphWelcomePlugin implements WelcomePluginInterface{
     public static final String OPEN = "resources/welcome_open_folder.png";
     final ImageView openImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(OPEN)));
     final Button openFile = new Button();
+    private final double titleSize = 1.2;
+    private final int textSize = 10;
     
     /**
      * Get a unique reference that is used to identify the plugin 
@@ -97,9 +99,9 @@ public class OpenGraphWelcomePlugin implements WelcomePluginInterface{
         openImage.setFitHeight(75);
         openImage.setFitWidth(75);
         final Label title = new Label("Open");
-        title.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * 1.2));
+        title.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * titleSize));
         final Label subtitle = new Label("File Explorer");
-        subtitle.setFont(new Font(FontUtilities.getApplicationFontFamily(), 10));
+        subtitle.setFont(new Font(FontUtilities.getApplicationFontFamily(), textSize));
         final VBox layoutVBox = new VBox(openImage, title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER);
         openFile.setGraphic(layoutVBox);

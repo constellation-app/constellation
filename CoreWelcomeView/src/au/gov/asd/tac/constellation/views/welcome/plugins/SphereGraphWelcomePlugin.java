@@ -50,6 +50,8 @@ public class SphereGraphWelcomePlugin implements WelcomePluginInterface {
     public static final String NEW_SPHERE = "resources/welcome_add_sphere.png";
     final ImageView newSphere = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(NEW_SPHERE)));   
     final Button sphereGraphButton = new Button();
+    private final double titleSize = 1.2;
+    private final int textSize = 10;
 
     /**  
      * Get a unique reference that is used to identify the plugin
@@ -108,9 +110,9 @@ public class SphereGraphWelcomePlugin implements WelcomePluginInterface {
         newSphere.setFitHeight(75);
         newSphere.setFitWidth(75);
         final Label sTitle = new Label("New Graph");
-        sTitle.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * 1.2));
+        sTitle.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * titleSize));
         final Label sSubtitle = new Label("Sphere network");
-        sSubtitle.setFont(new Font(FontUtilities.getApplicationFontFamily(), 10));
+        sSubtitle.setFont(new Font(FontUtilities.getApplicationFontFamily(), textSize));
         final VBox layoutVBox = new VBox(newSphere, sTitle, sSubtitle);
         layoutVBox.setAlignment(Pos.CENTER);
         sphereGraphButton.setGraphic(layoutVBox);

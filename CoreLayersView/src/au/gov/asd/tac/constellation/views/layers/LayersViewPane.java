@@ -54,6 +54,8 @@ public class LayersViewPane extends BorderPane {
     private final GridPane layersGridPane;
     private final VBox layersViewPane;
     private final HBox options;
+    
+    private static final String FONT_SIZE_FORMAT = "-fx-font-size:%d;";
 
     public LayersViewPane(final LayersViewController controller) {
 
@@ -83,7 +85,7 @@ public class LayersViewPane extends BorderPane {
         layersGridPane.setHgap(5);
         layersGridPane.setVgap(5);
         layersGridPane.setPadding(new Insets(0, 10, 10, 10));
-        layersGridPane.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+        layersGridPane.setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
         layersGridPane.addRow(0, layerIdHeadingText, visibilityHeadingText,
                 vxqueryHeadingText, txqueryHeadingText, descriptionHeadingText);
 
@@ -109,7 +111,7 @@ public class LayersViewPane extends BorderPane {
 
         // create options
         final Button addButton = new Button("Add New Layer");
-        addButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+        addButton.setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
         addButton.setAlignment(Pos.CENTER_RIGHT);
         addButton.setOnAction(event -> {
             if (layersGridPane.getRowCount() <= BitMaskQueryCollection.MAX_QUERY_AMT) {
@@ -125,7 +127,7 @@ public class LayersViewPane extends BorderPane {
         HBox.setHgrow(addButton, Priority.ALWAYS);
 
         final Button deselectAllButton = new Button("Deselect All Layers");
-        deselectAllButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+        deselectAllButton.setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
         deselectAllButton.setAlignment(Pos.CENTER_RIGHT);
         deselectAllButton.setOnAction(event -> {
             controller.getVxQueryCollection().setVisibilityOnAll(false);
@@ -150,7 +152,7 @@ public class LayersViewPane extends BorderPane {
         this.setCenter(layersViewPane);
         
         this.setStyle(String.format("-fx-font-family:\"%s\";", FontUtilities.getApplicationFontFamily()));
-        this.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+        this.setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
     }
 
     private void createLayer(final int currentIndex, final boolean checkBoxSelected, final String vxQuery, final String txQuery, final String description, final boolean showVertices, final boolean showTransactions) {
