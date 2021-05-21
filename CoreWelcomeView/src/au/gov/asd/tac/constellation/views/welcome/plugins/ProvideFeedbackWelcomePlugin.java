@@ -44,10 +44,10 @@ import org.openide.util.NbBundle;
 @NbBundle.Messages("ProvideFeedbackWelcomePlugin=Provide Feedback Welcome Plugin")
 public class ProvideFeedbackWelcomePlugin implements WelcomePluginInterface{
     
+    private static final double TITLE_SIZE = 1.5;
     public static final String FEEDBACK = "resources/welcome_feedback.png";
     final ImageView feedView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(FEEDBACK)));
     final Button feedbackButton = new Button();
-    private static final double titleSize = 1.5;
         
     /**
      * Get a unique reference that is used to identify the plugin 
@@ -95,7 +95,7 @@ public class ProvideFeedbackWelcomePlugin implements WelcomePluginInterface{
         feedView.setFitWidth(25);
         final Text title = new Text("Provide Feedback");
         title.setFill(Color.WHITE);
-        title.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * titleSize));
+        title.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * TITLE_SIZE));
         final Text subtitle = new Text("Let us know your thoughts");
         subtitle.setFill(Color.WHITE);
         subtitle.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize()));

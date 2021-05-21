@@ -102,6 +102,7 @@ public final class QualityControlViewPane extends BorderPane {
     private static Map<QualityControlRule, QualityCategory> rulePriorities = null;
     private static final List<ToggleGroup> toggleGroups = new ArrayList<>();
     private static final JsonFactory FACTORY = new MappingJsonFactory();
+    private static final String FONT_SIZE_FORMAT = "-fx-font-size:%d;";
 
     private final TableColumn<QualityControlEvent, QualityControlEvent> identifierColumn;
     private final TableColumn<QualityControlEvent, QualityControlEvent> typeColumn;
@@ -109,8 +110,6 @@ public final class QualityControlViewPane extends BorderPane {
     private final TableColumn<QualityControlEvent, QualityControlEvent> reasonColumn;
     private final TableView<QualityControlEvent> qualityTable;
     private final FlowPane optionsPane;
-    
-    private static final String FONT_SIZE_FORMAT = "-fx-font-size:%d;";
 
     public QualityControlViewPane() {
         readSerializedRulePriorities();

@@ -45,10 +45,10 @@ import org.openide.windows.WindowManager;
 @NbBundle.Messages("WhatsNewWelcomePlugin=Whats New Welcome Plugin")
 public class WhatsNewWelcomePlugin implements WelcomePluginInterface {
     
+    private static final double TITLE_SIZE = 1.5;
     public static final String WHATS_NEW = "resources/welcome_new.png";
     final ImageView newView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(WHATS_NEW)));
     final Button whatsNewBtn = new Button();
-    private static final double titleSize = 1.5;
         
     /**
      * Get a unique reference that is used to identify the plugin 
@@ -100,7 +100,7 @@ public class WhatsNewWelcomePlugin implements WelcomePluginInterface {
         newView.setFitWidth(25);
         final Text title = new Text("What's New?");
         title.setFill(Color.WHITE);
-        title.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * titleSize));
+        title.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * TITLE_SIZE));
         final Text subtitle = new Text("Features in the latest version");
         subtitle.setFill(Color.WHITE);
         subtitle.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize()));

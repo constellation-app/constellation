@@ -43,10 +43,10 @@ import org.openide.util.NbBundle;
 @NbBundle.Messages("GettingStartedWelcomePlugin=Getting Started Welcome Plugin")
 public class GettingStartedWelcomePlugin implements WelcomePluginInterface {
     
+    private static final double TITLE_SIZE = 1.5;
     public static final String GETTING_STARTED = "resources/welcome_getting_started.png";
     final ImageView started = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(GETTING_STARTED)));
     final Button startedBtn = new Button();
-    private static final double titleSize = 1.5;
     
         
     /**
@@ -94,7 +94,7 @@ public class GettingStartedWelcomePlugin implements WelcomePluginInterface {
         started.setFitHeight(25);
         started.setFitWidth(25);
         final Text title = new Text("Getting Started");
-        title.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * titleSize));
+        title.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * TITLE_SIZE));
         title.setFill(Color.WHITE);
         final Text subtitle = new Text("Guides & Resources");
         subtitle.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize()));

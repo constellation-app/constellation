@@ -145,6 +145,8 @@ public final class TableViewPane extends BorderPane {
     private static final ImageView MENU_ICON_SOURCE = new ImageView(UserInterfaceIconProvider.MENU.buildImage(16));
     private static final ImageView MENU_ICON_DESTINATION = new ImageView(UserInterfaceIconProvider.MENU.buildImage(16));
     private static final ImageView MENU_ICON_TRANSACTION = new ImageView(UserInterfaceIconProvider.MENU.buildImage(16));
+    
+    private static final String FONT_SIZE_FORMAT = "-fx-font-size:%d;";    
 
     private static final int WIDTH = 120;
     private static final int DEFAULT_MAX_ROWS_PER_PAGE = 500;
@@ -190,9 +192,7 @@ public final class TableViewPane extends BorderPane {
 
     private final ScheduledExecutorService scheduledExecutorService;
     private ScheduledFuture<?> scheduledFuture;
-    
-    private static final String FONT_SIZE_FORMAT = "-fx-font-size:%d;";
-    
+
     /**
      * Cache strings used in table cells to significantly reduce memory used by 
      * the same string repeated in columns and rows.

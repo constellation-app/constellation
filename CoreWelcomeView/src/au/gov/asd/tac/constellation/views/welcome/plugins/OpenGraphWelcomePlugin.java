@@ -43,11 +43,11 @@ import org.openide.util.NbBundle;
 @NbBundle.Messages("OpenGraphWelcomePlugin=Open Graph Welcome Plugin")
 public class OpenGraphWelcomePlugin implements WelcomePluginInterface{
     
+    private static final double TITLE_SIZE = 1.2;
+    private static final int TEXT_SIZE = 10;
     public static final String OPEN = "resources/welcome_open_folder.png";
     final ImageView openImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(OPEN)));
     final Button openFile = new Button();
-    private static final double titleSize = 1.2;
-    private static final int textSize = 10;
     
     /**
      * Get a unique reference that is used to identify the plugin 
@@ -99,9 +99,9 @@ public class OpenGraphWelcomePlugin implements WelcomePluginInterface{
         openImage.setFitHeight(75);
         openImage.setFitWidth(75);
         final Label title = new Label("Open");
-        title.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * titleSize));
+        title.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * TITLE_SIZE));
         final Label subtitle = new Label("File Explorer");
-        subtitle.setFont(new Font(FontUtilities.getApplicationFontFamily(), textSize));
+        subtitle.setFont(new Font(FontUtilities.getApplicationFontFamily(), TEXT_SIZE));
         final VBox layoutVBox = new VBox(openImage, title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER);
         openFile.setGraphic(layoutVBox);

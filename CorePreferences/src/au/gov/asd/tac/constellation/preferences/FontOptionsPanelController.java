@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.preferences;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.JComponent;
 import org.netbeans.spi.options.OptionsPanelController;

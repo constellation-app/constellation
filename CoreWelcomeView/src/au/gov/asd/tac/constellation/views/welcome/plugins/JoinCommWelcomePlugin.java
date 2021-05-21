@@ -44,10 +44,10 @@ import org.openide.util.NbBundle;
 @NbBundle.Messages("JoinCommWelcomePlugin=Join Comm Welcome Plugin")
 public class JoinCommWelcomePlugin implements WelcomePluginInterface {
     
+    private static final double TITLE_SIZE = 1.5;
     public static final String JOIN = "resources/welcome_join.png";
     final ImageView joinView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(JOIN)));
     final Button joinBtn = new Button();
-    private static final double titleSize = 1.5;
         
     /**
      * Get a unique reference that is used to identify the plugin 
@@ -95,7 +95,7 @@ public class JoinCommWelcomePlugin implements WelcomePluginInterface {
         joinView.setFitWidth(25);
         final Text title = new Text("Join our Community");
         title.setFill(Color.WHITE);
-        title.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * titleSize));
+        title.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * TITLE_SIZE));
         final Text subtitle = new Text("Become a member");
         subtitle.setFill(Color.WHITE);
         subtitle.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize()));
