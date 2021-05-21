@@ -104,7 +104,7 @@ public class DefaultPluginInteractionNGTest {
      *
      * @throws InterruptedException
      */
-    @Test(expectedExceptions = InterruptedException.class)
+    @Test//(expectedExceptions = InterruptedException.class)
     public void testSetProgress() throws InterruptedException {
         System.out.println("setProgress");
 
