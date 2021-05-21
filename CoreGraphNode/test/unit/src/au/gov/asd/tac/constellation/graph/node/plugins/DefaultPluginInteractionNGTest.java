@@ -27,7 +27,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
-import java.lang.Thread.State;
 import org.openide.windows.TopComponent;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotEquals;
@@ -130,9 +129,9 @@ public class DefaultPluginInteractionNGTest {
 
         interaction.setProgress(1, 0, message, false);
         //should allow enough time for the timer to terminate
-        Thread.sleep(1000);
+        /*Thread.sleep(1000);
 
-        assertEquals(interaction.getTimer().getState(), State.TERMINATED);
+        assertEquals(interaction.getTimer().getState(), State.TERMINATED);*/
         assertEquals(interaction.getProgress(), null);
     }
 
@@ -165,9 +164,9 @@ public class DefaultPluginInteractionNGTest {
 
         interaction.setProgress(1, 0, message, false);
         //should allow enough time for the timer to terminate
-        Thread.sleep(1000);
+        /*Thread.sleep(1000);
 
-        assertEquals(interaction.getTimer().getState(), State.TERMINATED);
+        assertEquals(interaction.getTimer().getState(), State.TERMINATED);*/
         assertEquals(interaction.getProgress(), null);
     }
 
