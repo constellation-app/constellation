@@ -1033,9 +1033,6 @@ public class AttributeEditorPanel extends BorderPane {
     }
 
     private Text createAttributeTitleLabel(final String attributeTitle) {
-        //Title
-        Text text = new Text(attributeTitle + SeparatorConstants.COLON);
-//        text.setStyle(String.format("-fx-font-size: %dpx;", FontUtilities.getApplicationFontSize()));
-        return text;
+        return new Text(attributeTitle + SeparatorConstants.COLON);
     }
 }
