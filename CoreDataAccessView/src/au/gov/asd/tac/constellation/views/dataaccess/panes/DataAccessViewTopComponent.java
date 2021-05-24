@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.preferences.FontPreferenceKeys;
+import au.gov.asd.tac.constellation.preferences.ApplicationFontPreferenceKeys;
 import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
 import au.gov.asd.tac.constellation.security.proxy.ProxyUtilities;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
@@ -105,13 +105,13 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
 
     @Override
     public void handleComponentOpened() {
-        PreferenceUtilites.addPreferenceChangeListener(FontPreferenceKeys.FONT_PREFERENCES, this);
+        PreferenceUtilites.addPreferenceChangeListener(ApplicationFontPreferenceKeys.FONT_PREFERENCES, this);
         QualityControlAutoVetter.getInstance().addObserver(dataAccessViewPane);
     }
 
     @Override
     public void handleComponentClosed() {
-        PreferenceUtilites.removePreferenceChangeListener(FontPreferenceKeys.FONT_PREFERENCES, this);
+        PreferenceUtilites.removePreferenceChangeListener(ApplicationFontPreferenceKeys.FONT_PREFERENCES, this);
         QualityControlAutoVetter.getInstance().removeObserver(dataAccessViewPane);
     }
 

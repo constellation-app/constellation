@@ -40,12 +40,12 @@ import org.openide.util.NbBundle;
  *
  * @author Delphinus8821
  */
-final class FontOptionsPanel extends JPanel {
+final class ApplicationFontOptionsPanel extends JPanel {
 
-    private final FontOptionsPanelController controller;
+    private final ApplicationFontOptionsPanelController controller;
     private final String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
 
-    public FontOptionsPanel(final FontOptionsPanelController controller) {
+    public ApplicationFontOptionsPanel(final ApplicationFontOptionsPanelController controller) {
         this.controller = controller;
         initComponents();          
     }
@@ -88,18 +88,18 @@ final class FontOptionsPanel extends JPanel {
 
         setPreferredSize(new Dimension(604, 529));
 
-        fontPanel.setBorder(BorderFactory.createTitledBorder(NbBundle.getMessage(FontOptionsPanel.class, "FontOptionsPanel.fontPanel.border.title"))); // NOI18N
+        fontPanel.setBorder(BorderFactory.createTitledBorder(NbBundle.getMessage(ApplicationFontOptionsPanel.class, "ApplicationFontOptionsPanel.fontPanel.border.title"))); // NOI18N
 
-        Mnemonics.setLocalizedText(fontLbl, NbBundle.getMessage(FontOptionsPanel.class, "FontOptionsPanel.fontLbl.text")); // NOI18N
+        Mnemonics.setLocalizedText(fontLbl, NbBundle.getMessage(ApplicationFontOptionsPanel.class, "ApplicationFontOptionsPanel.fontLbl.text")); // NOI18N
 
-        Mnemonics.setLocalizedText(fontSizeLbl, NbBundle.getMessage(FontOptionsPanel.class, "FontOptionsPanel.fontSizeLbl.text")); // NOI18N
+        Mnemonics.setLocalizedText(fontSizeLbl, NbBundle.getMessage(ApplicationFontOptionsPanel.class, "ApplicationFontOptionsPanel.fontSizeLbl.text")); // NOI18N
 
         fontCombo.setModel(new DefaultComboBoxModel(fonts));
-        fontCombo.setSelectedItem(FontPreferenceKeys.FONT_FAMILY_DEFAULT);
+        fontCombo.setSelectedItem(ApplicationFontPreferenceKeys.FONT_FAMILY_DEFAULT);
 
         fontSizeSpinner.setModel(new SpinnerNumberModel(12, 6, 45, 1));
 
-        Mnemonics.setLocalizedText(resetBtn, NbBundle.getMessage(FontOptionsPanel.class, "FontOptionsPanel.resetBtn.text")); // NOI18N
+        Mnemonics.setLocalizedText(resetBtn, NbBundle.getMessage(ApplicationFontOptionsPanel.class, "ApplicationFontOptionsPanel.resetBtn.text")); // NOI18N
         resetBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 resetBtnActionPerformed(evt);
@@ -139,14 +139,14 @@ final class FontOptionsPanel extends JPanel {
                 .addContainerGap())
         );
 
-        fontSizeLbl.getAccessibleContext().setAccessibleName(NbBundle.getMessage(FontOptionsPanel.class, "FontOptionsPanel.fontSizeLbl.AccessibleContext.accessibleName")); // NOI18N
-        fontCombo.getAccessibleContext().setAccessibleName(NbBundle.getMessage(FontOptionsPanel.class, "FontOptionsPanel.fontCombo.AccessibleContext.accessibleName")); // NOI18N
-        fontSizeSpinner.getAccessibleContext().setAccessibleName(NbBundle.getMessage(FontOptionsPanel.class, "FontOptionsPanel.fontSizeSpinner.AccessibleContext.accessibleName")); // NOI18N
+        fontSizeLbl.getAccessibleContext().setAccessibleName(NbBundle.getMessage(ApplicationFontOptionsPanel.class, "ApplicationFontOptionsPanel.fontSizeLbl.AccessibleContext.accessibleName")); // NOI18N
+        fontCombo.getAccessibleContext().setAccessibleName(NbBundle.getMessage(ApplicationFontOptionsPanel.class, "ApplicationFontOptionsPanel.fontCombo.AccessibleContext.accessibleName")); // NOI18N
+        fontSizeSpinner.getAccessibleContext().setAccessibleName(NbBundle.getMessage(ApplicationFontOptionsPanel.class, "ApplicationFontOptionsPanel.fontSizeSpinner.AccessibleContext.accessibleName")); // NOI18N
 
         warningLabel.setFont(new Font("Tahoma", 1, 11)); // NOI18N
         warningLabel.setForeground(new Color(102, 102, 102));
         warningLabel.setIcon(new ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/preferences/resources/warning.png"))); // NOI18N
-        Mnemonics.setLocalizedText(warningLabel, NbBundle.getMessage(FontOptionsPanel.class, "FontOptionsPanel.warningLabel.text")); // NOI18N
+        Mnemonics.setLocalizedText(warningLabel, NbBundle.getMessage(ApplicationFontOptionsPanel.class, "ApplicationFontOptionsPanel.warningLabel.text")); // NOI18N
 
         GroupLayout layout = new GroupLayout(this);
         this.setLayout(layout);
@@ -169,7 +169,7 @@ final class FontOptionsPanel extends JPanel {
                 .addContainerGap(308, Short.MAX_VALUE))
         );
 
-        fontPanel.getAccessibleContext().setAccessibleName(NbBundle.getMessage(FontOptionsPanel.class, "FontOptionsPanel.fontPanel.AccessibleContext.accessibleName")); // NOI18N
+        fontPanel.getAccessibleContext().setAccessibleName(NbBundle.getMessage(ApplicationFontOptionsPanel.class, "ApplicationFontOptionsPanel.fontPanel.AccessibleContext.accessibleName")); // NOI18N
     }// </editor-fold>//GEN-END:initComponents
 
     private void resetBtnActionPerformed(ActionEvent evt) {//GEN-FIRST:event_resetBtnActionPerformed

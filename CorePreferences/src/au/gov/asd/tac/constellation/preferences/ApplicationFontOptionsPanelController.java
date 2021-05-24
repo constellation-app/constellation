@@ -39,18 +39,18 @@ import org.openide.util.NbPreferences;
     "ApplicationFontOptions_DisplayName=Application Font",
     "ApplicationFontOptions_Keywords=font size"
 })
-public class FontOptionsPanelController extends OptionsPanelController{
+public class ApplicationFontOptionsPanelController extends OptionsPanelController{
     
-    private FontOptionsPanel panel;
+    private ApplicationFontOptionsPanel panel;
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
     @Override
     public void update() {
-        final Preferences prefs = NbPreferences.forModule(FontPreferenceKeys.class);
-        final FontOptionsPanel fontOptionsPanel = getPanel();
+        final Preferences prefs = NbPreferences.forModule(ApplicationFontPreferenceKeys.class);
+        final ApplicationFontOptionsPanel fontOptionsPanel = getPanel();
         
-        fontOptionsPanel.setCurrentFont(prefs.get(FontPreferenceKeys.FONT_FAMILY, FontPreferenceKeys.FONT_FAMILY_DEFAULT));
-        fontOptionsPanel.setFontSize(prefs.get(FontPreferenceKeys.FONT_SIZE, FontPreferenceKeys.FONT_SIZE_DEFAULT));
+        fontOptionsPanel.setCurrentFont(prefs.get(ApplicationFontPreferenceKeys.FONT_FAMILY, ApplicationFontPreferenceKeys.FONT_FAMILY_DEFAULT));
+        fontOptionsPanel.setFontSize(prefs.get(ApplicationFontPreferenceKeys.FONT_SIZE, ApplicationFontPreferenceKeys.FONT_SIZE_DEFAULT));
     }
 
     @Override
@@ -61,11 +61,11 @@ public class FontOptionsPanelController extends OptionsPanelController{
             if (isChanged()) {
                 pcs.firePropertyChange(OptionsPanelController.PROP_CHANGED, false, true);
                 
-                final Preferences prefs = NbPreferences.forModule(FontPreferenceKeys.class);
-                final FontOptionsPanel fontOptionsPanel = getPanel();
+                final Preferences prefs = NbPreferences.forModule(ApplicationFontPreferenceKeys.class);
+                final ApplicationFontOptionsPanel fontOptionsPanel = getPanel();
                 
-                prefs.put(FontPreferenceKeys.FONT_FAMILY, fontOptionsPanel.getCurrentFont());
-                prefs.put(FontPreferenceKeys.FONT_SIZE, fontOptionsPanel.getFontSize());
+                prefs.put(ApplicationFontPreferenceKeys.FONT_FAMILY, fontOptionsPanel.getCurrentFont());
+                prefs.put(ApplicationFontPreferenceKeys.FONT_SIZE, fontOptionsPanel.getFontSize());
             }
         }
     }
@@ -77,17 +77,17 @@ public class FontOptionsPanelController extends OptionsPanelController{
 
     @Override
     public boolean isValid() {
-        final FontOptionsPanel fontOptionsPanel = getPanel();
+        final ApplicationFontOptionsPanel fontOptionsPanel = getPanel();
         return fontOptionsPanel.getCurrentFont() != null 
                 && fontOptionsPanel.getFontSize() != null;  
     }
 
     @Override
     public boolean isChanged() {
-        final Preferences prefs = NbPreferences.forModule(FontPreferenceKeys.class);
-        final FontOptionsPanel fontOptionsPanel = getPanel();
-        return !(fontOptionsPanel.getCurrentFont().equals(prefs.get(FontPreferenceKeys.FONT_FAMILY, FontPreferenceKeys.FONT_FAMILY_DEFAULT))
-                && fontOptionsPanel.getFontSize().equals(prefs.get(FontPreferenceKeys.FONT_SIZE, FontPreferenceKeys.FONT_SIZE_DEFAULT)));
+        final Preferences prefs = NbPreferences.forModule(ApplicationFontPreferenceKeys.class);
+        final ApplicationFontOptionsPanel fontOptionsPanel = getPanel();
+        return !(fontOptionsPanel.getCurrentFont().equals(prefs.get(ApplicationFontPreferenceKeys.FONT_FAMILY, ApplicationFontPreferenceKeys.FONT_FAMILY_DEFAULT))
+                && fontOptionsPanel.getFontSize().equals(prefs.get(ApplicationFontPreferenceKeys.FONT_SIZE, ApplicationFontPreferenceKeys.FONT_SIZE_DEFAULT)));
     }
 
     @Override
@@ -111,9 +111,9 @@ public class FontOptionsPanelController extends OptionsPanelController{
     }
 
     
-    private FontOptionsPanel getPanel() {
+    private ApplicationFontOptionsPanel getPanel() {
         if (panel == null){
-            panel = new FontOptionsPanel(this);
+            panel = new ApplicationFontOptionsPanel(this);
         }
         return panel;
     }

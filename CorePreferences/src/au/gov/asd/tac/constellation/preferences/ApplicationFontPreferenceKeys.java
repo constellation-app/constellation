@@ -20,7 +20,7 @@ package au.gov.asd.tac.constellation.preferences;
  * 
  * @author Delphinus8821
  */
-public class FontPreferenceKeys {
+public class ApplicationFontPreferenceKeys {
     
     /**
      * Default Font.
