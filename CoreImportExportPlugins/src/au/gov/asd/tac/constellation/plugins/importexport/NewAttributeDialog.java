@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.importexport.delimited;
+package au.gov.asd.tac.constellation.plugins.importexport;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeRegistry;
-import au.gov.asd.tac.constellation.plugins.importexport.NewAttribute;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -37,28 +36,35 @@ import javafx.stage.StageStyle;
 import javafx.stage.Window;
 
 /**
- * The NewAttributeDialog provides a dialog box allowing the user to create a
- * new attribute that does not currently exist in the {@link GraphDestination}.
- * This is typically an attribute that does not exist in a currently existing
+ * The NewAttributeDialog provides a dialog box allowing the user to create a new attribute that does not currently
+ * exist in the {@link GraphDestination}. This is typically an attribute that does not exist in a currently existing
  * graph or an attribute that does not exist in a destination schema.
  *
  * @author sirius
  */
 public class NewAttributeDialog extends Stage {
 
+    private static final int GRIDPANE_GAP = 5;
+    private static final Insets GRIDPANE_PADDING = new Insets(10);
+    private static final int LABEL_PREFWIDTH = 200;
+    private static final int LABEL_PREFHEIGHT = 30;
+    private static final int DESC_PREFWIDTH = 300;
+    private static final int DESC_PREFHEIGHT = 100;
+    private static final Insets BUTTONPANE_PADDING = new Insets(5);
+
     private final GraphElementType elementType;
     private final ComboBox<String> typeBox;
     private final TextField labelText;
     private final TextArea descriptionText;
 
-    private Attribute attribute = null;
+    private Attribute attribute;
 
     public NewAttributeDialog(final Window owner, final GraphElementType elementType) {
 
         this.elementType = elementType;
 
         initStyle(StageStyle.UTILITY);
-        initModality(Modality.WINDOW_MODAL);
+        initModality(Modality.APPLICATION_MODAL);
         initOwner(owner);
 
         setTitle("New Attribute");
@@ -69,9 +75,9 @@ public class NewAttributeDialog extends Stage {
         setScene(scene);
 
         final GridPane fieldPane = new GridPane();
-        fieldPane.setHgap(5);
-        fieldPane.setVgap(5);
-        fieldPane.setPadding(new Insets(10));
+        fieldPane.setHgap(GRIDPANE_GAP);
+        fieldPane.setVgap(GRIDPANE_GAP);
+        fieldPane.setPadding(GRIDPANE_PADDING);
         root.setCenter(fieldPane);
 
         final Label typeLabel = new Label("Type:");
@@ -90,7 +96,7 @@ public class NewAttributeDialog extends Stage {
 
         labelText = new TextField();
         labelText.setPromptText("Attribute Label");
-        labelText.setPrefSize(200, 30);
+        labelText.setPrefSize(LABEL_PREFWIDTH, LABEL_PREFHEIGHT);
         GridPane.setConstraints(labelText, 1, 1);
         fieldPane.getChildren().add(labelText);
         labelText.requestFocus();
@@ -101,27 +107,26 @@ public class NewAttributeDialog extends Stage {
 
         descriptionText = new TextArea();
         descriptionText.setPromptText("Attribute Description");
-        descriptionText.setPrefSize(300, 100);
+        descriptionText.setPrefSize(DESC_PREFWIDTH, DESC_PREFHEIGHT);
         GridPane.setConstraints(descriptionText, 1, 2);
         fieldPane.getChildren().add(descriptionText);
 
         final FlowPane buttonPane = new FlowPane();
         buttonPane.setAlignment(Pos.BOTTOM_RIGHT);
-        buttonPane.setPadding(new Insets(5));
-        buttonPane.setHgap(5);
+        buttonPane.setPadding(BUTTONPANE_PADDING);
+        buttonPane.setHgap(GRIDPANE_GAP);
         root.setBottom(buttonPane);
 
         final Button okButton = new Button("Ok");
         okButton.setOnAction((ActionEvent event) -> {
-            attribute = new NewAttribute(elementType, typeBox.getSelectionModel().getSelectedItem(), labelText.getText(), descriptionText.getText());
+            attribute = new NewAttribute(elementType, typeBox.getSelectionModel().getSelectedItem(),
+                    labelText.getText(), descriptionText.getText());
             NewAttributeDialog.this.hide();
         });
         buttonPane.getChildren().add(okButton);
 
         final Button cancelButton = new Button("Cancel");
-        cancelButton.setOnAction((ActionEvent event) -> {
-            NewAttributeDialog.this.hide();
-        });
+        cancelButton.setOnAction((ActionEvent event) -> NewAttributeDialog.this.hide());
         buttonPane.getChildren().add(cancelButton);
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.importexport.delimited;
+package au.gov.asd.tac.constellation.plugins.importexport.jdbc;
 
 import au.gov.asd.tac.constellation.plugins.importexport.ConfigurationPane;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportPane;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportTopComponent;
 import javafx.application.Platform;
 import org.openide.awt.ActionID;
@@ -25,70 +26,67 @@ import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
 
 /**
- * The Delimited Import Top Component. This class provides the Import Delimited window and handles all interactions with
- * the graph.
+ * The JDBC Import Top Component. This class provides the Import JDBC window and handles all interactions with the
+ * graph.
  *
  * @author aldebaran30701
  */
 @TopComponent.Description(
-        preferredID = "DelimitedImportTopComponent",
-        iconBase = "au/gov/asd/tac/constellation/plugins/importexport/delimited/resources/importDelimited.png",
+        preferredID = "JDBCImportTopComponent",
+        iconBase = "au/gov/asd/tac/constellation/plugins/importexport/jdbc/resources/jdbc_import.png",
         persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(
         mode = "explorer",
         openAtStartup = false)
 @ActionID(
         category = "Window",
-        id = "au.gov.asd.tac.constellation.plugins.importexport.delimited.DelimitedImportTopComponent")
+        id = "au.gov.asd.tac.constellation.plugins.importexport.jdbc.JDBCImportTopComponent")
 @ActionReferences({
     @ActionReference(path = "Menu/File/Import", position = 0),
-    @ActionReference(path = "Toolbars/File", position = 5)})
+    @ActionReference(path = "Toolbars/File", position = 6)})
 @TopComponent.OpenActionRegistration(
-        displayName = "#CTL_ImportDelimitedFileAction",
-        preferredID = "DelimitedImportTopComponent")
+        displayName = "#CTL_ImportJDBCFileAction",
+        preferredID = "JDBCImportTopComponent")
 @Messages({
-    "CTL_ImportDelimitedFileAction=From Delimited File...",
-    "HINT_ImportDelimitedFile=Import from Delimited File"})
-public final class DelimitedImportTopComponent extends ImportTopComponent {
+    "CTL_ImportJDBCFileAction=From JDBC...",
+    "HINT_ImportJDBCFile=Import from JDBC"})
+public final class JDBCImportTopComponent extends ImportTopComponent {
 
-    private final DelimitedImportPane delimitedImportPane;
-    private static final String HELP_TEXT = "1. Click on the green plus icon to add files.\n"
+    private final JDBCImportPane jdbcImportPane;
+    private final static String HELP_TEXT = "1. Select the connection to use\n"
             + "2. Select your destination graph.\n"
             + "3. Drag and drop attributes onto columns.\n"
             + "4. Right click an attribute for more options.\n"
-            + "5. Click the 'Import' button to add data to your graph.\n"
-            + "6. Save your configuration using 'Options > Save'.\n\n"
-            + "HINTS:\n* See all supported attributes with 'Options > Show all schema attributes'.\n"
-            + "* Start typing to filter attributes (press delete to clear).";
-    final DelimitedImportController controller = new DelimitedImportController();
+            + "5. Click the 'Import' button to add data to your graph.\n";
+    final JDBCImportController controller = new JDBCImportController();
     final ConfigurationPane configurationPane = new ConfigurationPane(controller, HELP_TEXT);
-    final DelimitedSourcePane sourcePane = new DelimitedSourcePane(controller);
+    final JDBCSourcePane sourcePane = new JDBCSourcePane(controller);
 
-    public DelimitedImportTopComponent() {
+    public JDBCImportTopComponent() {
         super();
-        setName(Bundle.CTL_ImportDelimitedFileAction());
-        setToolTipText(Bundle.HINT_ImportDelimitedFile());
+        setName(Bundle.CTL_ImportJDBCFileAction());
+        setToolTipText(Bundle.HINT_ImportJDBCFile());
         initComponents();
-        delimitedImportPane = new DelimitedImportPane(this, controller, configurationPane, sourcePane);
-        controller.setImportPane(delimitedImportPane);
+        jdbcImportPane = new JDBCImportPane(this, controller, configurationPane, sourcePane);
+        controller.setImportPane(jdbcImportPane);
         initContent();
     }
 
     @Override
     protected String createStyle() {
-        return "resources/delimited-import.css";
+        return "resources/jdbc-import.css";
     }
 
     @Override
-    protected DelimitedImportPane createContent() {
-        return delimitedImportPane;
+    protected ImportPane createContent() {
+        return jdbcImportPane;
     }
 
     @Override
     protected void preparePane() {
         Platform.runLater(() -> {
-            delimitedImportPane.getSourcePane().updateDestinationGraphCombo();
-            delimitedImportPane.updateSourcePane();
+            jdbcImportPane.getSourcePane().updateDestinationGraphCombo();
+            jdbcImportPane.updateSourcePane();
         });
     }
 
@@ -102,12 +100,12 @@ public final class DelimitedImportTopComponent extends ImportTopComponent {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 400, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 300, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 

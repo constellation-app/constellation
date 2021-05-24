@@ -181,7 +181,7 @@ public abstract class QualityControlRule {
 
     @Override
     public int hashCode() {
-        return 71 * 5 + Objects.hashCode(this.results);
+        return 71 * 5 + Objects.hashCode(this.getClass());
     }
 
     @Override
