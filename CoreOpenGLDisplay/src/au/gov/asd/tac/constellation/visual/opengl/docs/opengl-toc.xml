@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE toc PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN" "http://java.sun.com/products/javahelp/toc_2_0.dtd">
 <toc version="2.0">
-    <tocitem text="Graph" mergetype="javax.help.SortMerge">
-        <tocitem text="Visualisation" mergetype="javax.help.SortMerge">
-            <tocitem text="Label Fonts" target="au.gov.asd.tac.constellation.visual.opengl.labelfonts"/>
-        </tocitem>
+    <tocitem text="Preferences" mergetype="javax.help.SortMerge">
+        <tocitem text="Label Fonts" target="au.gov.asd.tac.constellation.visual.opengl.labelfonts"/>
     </tocitem>
 </toc>

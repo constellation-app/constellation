@@ -4,6 +4,9 @@
 == 2021-05-19 Ability to Pin/Unpin Nodes
 <p>Nodes can now be pinned, either through the pin/unpin toolbar icons in the arrangements panel, or via the corresponding Arrange menu options. Once pinned, nodes do not move when arrangement plugins are run, but can be manually moved. The 'pinned' vertex attribute stores this information.</p>
 
+== 2021-04-22 JDBC Database Import Connector View
+<p>The JDBC Connector window has been converted to use the standard view framework and now matches closely with the style of the delimited file importer.</p>
+
 == 2021-04-01 Ability to Search in Single Choice Drop-Down Lists
 <p>Single Choice Drop-Downs are now searchable, which allows you to filter the options in the drop down list based on what is typed.</p>
 
@@ -21,7 +24,7 @@
 == 2021-02-24 Plugin Reporter Drop-Down Lists
 <p>To avoid confusion with the Plugin Reporter, the two drop-down lists for filtering and ignoring plugins to be displayed have been combined.</p>
 
-== 2021-01-28 Histogram View 
+== 2021-01-28 Histogram View
 <p>Fixed an issue with the histogram where a bar selection wasn't applied to the graph.</p>
 
 == 2021-01-27 What's New Page
