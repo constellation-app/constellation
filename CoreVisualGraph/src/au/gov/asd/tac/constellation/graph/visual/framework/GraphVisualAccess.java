@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.LayersConcept;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
+import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabel;
 import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
@@ -30,6 +31,7 @@ import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Connec
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import au.gov.asd.tac.constellation.utilities.visual.LineStyle;
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
@@ -140,7 +142,7 @@ public final class GraphVisualAccess implements VisualAccess {
     private GraphElementType[] connectionElementTypes = new GraphElementType[0];
     private int[] connectionElementIds = new int[0];
     private int[] linkStartingPositions = new int[0];
-
+    
     public GraphVisualAccess(final Graph graph) {
         this.graph = graph;
     }
@@ -1023,24 +1025,69 @@ public final class GraphVisualAccess implements VisualAccess {
         return blaze == null ? VisualGraphDefaults.DEFAULT_BLAZE_COLOR : blaze.getColor();
     }
 
+    private String getDecoratorStr(final int decoratorAttrib, final int decoratorVertex) {
+        // If a valid attribute ID has been supplied, return its value as a string. This will be mapped to an icon
+        // for display as a decorator. Boolean attributes are special cases as it is possible to overload the icon
+        // used for true and false values based on attribute name.
+        // This is acheived in the following way:
+        //   * The value string returned for boolean attributes is appended with the text .<attribute_name> to result
+        //     in a value of the form <value>.<attribute_name>
+        //   * In a class overriding ConstellationIcon ensure an icon is added with a name, or an alias matching 
+        //     the string <value>.<attribute_name>
+        // The icon DefaultIconProvider.TRANSPARENT is able to be aliased to support NOT showing an icon. Ie to NOT
+        // show an icon when a pinned attribute is set to false, add an alias to DefaultIconProvider.TRANSPARENT
+        // with name "false.pinned"
+        if (decoratorAttrib != Graph.NOT_FOUND)
+        {
+            final String value = accessGraph.getStringValue(decoratorAttrib, accessGraph.getVertex(decoratorVertex));
+            // If the attribute is a boolean, construct a value string including the attribute name as well,
+            // as per comments above.
+            if (accessGraph.getAttributeType(decoratorAttrib).equals(BooleanAttributeDescription.ATTRIBUTE_NAME))
+            {   
+                // Booleans will either have a value of true_<attributeName> or false_<attributeName>
+                // there are three cases to cater for: 
+                // 1. Both true_<attributeName> and false_<attributeName> are set as aliases for icons
+                //    --> In this case we use the supplied icon
+                // 2. Only one of true_<attributeName> or false_<attributeName> is set as an alias for an icon
+                //    --> In this case the value tht doesnt have an icon set should display nothing
+                // 3. Neither true_<attributeName> or false_<attributeName> is set as an alias
+                //    --> In this case there is no override, use the default true/false icons
+                final boolean valueAsBool = accessGraph.getBooleanValue(decoratorAttrib, accessGraph.getVertex(decoratorVertex));
+                final String notValue = Boolean.toString(!valueAsBool);
+                final String attributeName = accessGraph.getAttributeName(decoratorAttrib);
+                final String valueStr = value.concat("_").concat(attributeName);
+                final String notValueStr = notValue.concat("_").concat(attributeName);
+                
+                // If an icon or alias doesn't exist for either the true or false value, then there are no
+                // overrides, use defaults
+                if (!IconManager.iconExists(valueStr) && !IconManager.iconExists(notValueStr)) {
+                    return value;
+                }
+                return valueStr;
+            }
+            return value;
+        }
+        return null;
+    }
+    
     @Override
     public String getNWDecorator(final int vertex) {
-        return nwDecorator != Graph.NOT_FOUND ? accessGraph.getStringValue(nwDecorator, accessGraph.getVertex(vertex)) : null;
+        return getDecoratorStr(nwDecorator, vertex);
     }
 
     @Override
     public String getNEDecorator(final int vertex) {
-        return neDecorator != Graph.NOT_FOUND ? accessGraph.getStringValue(neDecorator, accessGraph.getVertex(vertex)) : null;
+        return getDecoratorStr(neDecorator, vertex);
     }
 
     @Override
     public String getSEDecorator(final int vertex) {
-        return seDecorator != Graph.NOT_FOUND ? accessGraph.getStringValue(seDecorator, accessGraph.getVertex(vertex)) : null;
+        return getDecoratorStr(seDecorator, vertex);
     }
 
     @Override
     public String getSWDecorator(final int vertex) {
-        return swDecorator != Graph.NOT_FOUND ? accessGraph.getStringValue(swDecorator, accessGraph.getVertex(vertex)) : null;
+        return getDecoratorStr(swDecorator, vertex);
     }
 
     @Override
