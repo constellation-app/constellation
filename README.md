@@ -81,9 +81,9 @@ ArcGIS.
 
 ### Usability over Precision
 
-We value sensible defaults in features so you can just use the them
-rather than having to fill out a form of parameters first. This means
-that running analytics like the “Cosine Similarity Analytic” will be
+We value sensible defaults in features so you can just use them rather 
+than having to fill out a form of parameters first. This means that 
+running analytics like the “Cosine Similarity Analytic” will be 
 accurate but if you want to tweak this then you will have to use a
 different method like a Jupyter Notebook.
 
