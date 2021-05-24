@@ -171,10 +171,10 @@ public class JDBCImportController extends ImportController {
                 }
 
             } catch (final MalformedURLException | ClassNotFoundException | SQLException | NoSuchMethodException
-                    | InstantiationException | IllegalAccessException | IllegalArgumentException
+                    | InstantiationException | IllegalAccessException | IllegalArgumentException | NullPointerException
                     | InvocationTargetException ex) {
                 NotifyDisplayer.displayAlert("JDBC Import", "Query Error", ex.getMessage(), AlertType.ERROR);
-                LOGGER.log(Level.WARNING, ex.getMessage(), ex);
+                LOGGER.log(Level.WARNING, ex.getMessage());
             }
         }
 
