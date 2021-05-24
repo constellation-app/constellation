@@ -22,19 +22,11 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
-import au.gov.asd.tac.constellation.graph.file.opener.GraphOpener;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.graph.manager.GraphManagerListener;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.plugins.PluginException;
-import au.gov.asd.tac.constellation.plugins.PluginExecutor;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.DelimitedImportPane;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.ImportDelimitedPlugin;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.ImportFileParser;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -125,7 +117,7 @@ public abstract class ImportController<D> {
         dialog.showAndWait();
     }
 
-    public DelimitedImportPane getStage() {
+    public ImportPane getStage() {
         return importPane;
     }
 
@@ -376,56 +368,7 @@ public abstract class ImportController<D> {
         return configurationPane.createDefinitions();
     }
 
-    public List<File> processImport() throws IOException, InterruptedException, PluginException {
-
-        final List<ImportDefinition> definitions = configurationPane.createDefinitions();
-
-        final Graph importGraph = currentDestination.getGraph();
-        final boolean schema = schemaInitialised;
-        final List<File> importFiles = new ArrayList<>(files);
-        final ImportFileParser parser = importFileParser;
-
-        if (currentDestination instanceof SchemaDestination) {
-            GraphManager.getDefault().addGraphManagerListener(new GraphManagerListener() {
-                boolean opened = false;
-
-                @Override
-                public void graphOpened(Graph graph) {
-                    // Method intentionally left blank - S1186
-                }
-
-                @Override
-                public void graphClosed(Graph graph) {
-                    // Method intentionally left blank - S1186
-                }
-
-                @Override
-                public synchronized void newActiveGraph(Graph graph) {
-                    if (graph == importGraph && !opened) {
-                        opened = true;
-                        GraphManager.getDefault().removeGraphManagerListener(this);
-                        PluginExecutor.startWith(ImportExportPluginRegistry.IMPORT_DELIMITED, false)
-                                .set(ImportDelimitedPlugin.DEFINITIONS_PARAMETER_ID, definitions)
-                                .set(ImportDelimitedPlugin.PARSER_PARAMETER_ID, parser)
-                                .set(ImportDelimitedPlugin.FILES_PARAMETER_ID, importFiles)
-                                .set(ImportDelimitedPlugin.SCHEMA_PARAMETER_ID, schema)
-                                .set(ImportDelimitedPlugin.PARSER_PARAMETER_IDS_PARAMETER_ID, currentParameters)
-                                .executeWriteLater(importGraph);
-                    }
-                }
-
-            });
-            GraphOpener.getDefault().openGraph(importGraph, "graph");
-        } else {
-            PluginExecutor.startWith(ImportExportPluginRegistry.IMPORT_DELIMITED, false)
-                    .set(ImportDelimitedPlugin.DEFINITIONS_PARAMETER_ID, definitions)
-                    .set(ImportDelimitedPlugin.PARSER_PARAMETER_ID, parser)
-                    .set(ImportDelimitedPlugin.FILES_PARAMETER_ID, importFiles)
-                    .set(ImportDelimitedPlugin.SCHEMA_PARAMETER_ID, schema)
-                    .executeWriteLater(importGraph);
-        }
-        return files;
-    }
+    public abstract List<File> processImport() throws PluginException;
 
     public void cancelImport() {
         SwingUtilities.invokeLater(() -> importPane.close());
