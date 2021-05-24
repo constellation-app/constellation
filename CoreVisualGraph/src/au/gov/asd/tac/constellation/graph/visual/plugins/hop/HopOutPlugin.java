@@ -91,7 +91,6 @@ public class HopOutPlugin extends SimpleEditPlugin {
                 HopUtilities.hopOutFull(graph, outgoing, incoming, undirected);
                 break;
             default:
-                // Default case added per S126
                 break;
         }
     }

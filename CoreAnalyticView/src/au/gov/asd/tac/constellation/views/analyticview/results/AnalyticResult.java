@@ -48,7 +48,7 @@ public abstract class AnalyticResult<D extends AnalyticData> {
             } else if (result.getElementType() == GraphElementType.TRANSACTION) {
                 transactionsToSelect.add(result.getElementId());
             } else {
-                // Default case added per S126
+                // Do nothing
             }
         });
         analyticController.selectOnGraph(GraphElementType.VERTEX, verticesToSelect);
@@ -64,7 +64,7 @@ public abstract class AnalyticResult<D extends AnalyticData> {
             } else if (elementIds.contains(elementScore.getElementId())) {
                 selectedElementScores.add(elementScore);
             } else {
-                // Default case added per S126
+                // Do nothing
             }
         });
         resultListeners.forEach(listener -> {

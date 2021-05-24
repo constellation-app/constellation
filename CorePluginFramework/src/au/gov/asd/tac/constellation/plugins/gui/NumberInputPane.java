@@ -154,7 +154,7 @@ public class NumberInputPane<T> extends Pane {
                             field.setId(INVALID_ID);
                             parameter.setError("Invalid value");
                         } else {
-                            // Default case added per S126
+                            // Do nothing
                         }
                         break;
                     case ENABLED:

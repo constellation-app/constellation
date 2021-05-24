@@ -258,7 +258,7 @@ public class AttributeReader {
             } else if (type.equals(GraphElementType.TRANSACTION)) {
                 selectedElement = selectedTransactions;
             } else {
-                // Default case added per S126
+                // Do nothing
             }
             for (AttributeData data : attributes) { // for attribute(name, type etc)
 
@@ -310,7 +310,7 @@ public class AttributeReader {
         } else if (attribute.getElementType().equals(GraphElementType.TRANSACTION)) {
             selectedElement = selectedTransactions;
         } else {
-            // Default case added per S126
+            // Do nothing
         }
         final ReadableGraph rg = graph.getReadableGraph();
         try {

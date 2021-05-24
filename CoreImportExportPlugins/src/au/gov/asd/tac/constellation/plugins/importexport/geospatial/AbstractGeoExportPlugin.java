@@ -256,7 +256,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                             throw new PluginException(PluginNotificationLevel.ERROR, ex);
                         }
                     } else {
-                        // Default case added per S126
+                        // Do nothing
                     }
 
                     // ... and record all its attributes
@@ -316,7 +316,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                             throw new PluginException(PluginNotificationLevel.ERROR, ex);
                         }
                     } else {
-                        // Default case added per S126
+                        // Do nothing
                     }
 
                     // ... and record all its attributes
@@ -363,7 +363,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                             throw new PluginException(PluginNotificationLevel.ERROR, ex);
                         }
                     } else {
-                        // Default case added per S126
+                        // Do nothing
                     }
 
                     // ... and record all its attributes
@@ -410,7 +410,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                             throw new PluginException(PluginNotificationLevel.ERROR, ex);
                         }
                     } else {
-                        // Default case added per S126
+                        // Do nothing
                     }
 
                     // ... and record all its attributes

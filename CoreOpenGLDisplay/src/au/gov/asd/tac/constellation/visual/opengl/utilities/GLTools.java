@@ -857,7 +857,7 @@ public final class GLTools {
         } else if (fboStatus == GL3.GL_FRAMEBUFFER_UNSUPPORTED) {
             errtext = "framebuffer unsupported";
         } else {
-            // Default case added per S126
+            // Do nothing
         }
         LOGGER.log(Level.SEVERE, "**** Framebuffer error %{0}: %{1} ({2})", new Object[]{msg, errtext, fboStatus});
     }

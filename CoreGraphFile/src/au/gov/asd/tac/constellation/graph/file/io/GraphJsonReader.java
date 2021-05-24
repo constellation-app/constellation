@@ -412,7 +412,7 @@ public final class GraphJsonReader {
                 final String msg = String.format("Error: expected END_OBJECT, found '%s' at %s", current, jp.getCurrentLocation());
                 throw new GraphParseException(msg);
             } else {
-                // Default case added per S126
+                // Do nothing
             }
 
             current = jp.nextToken();
@@ -696,7 +696,7 @@ public final class GraphJsonReader {
                 } else if (ai != null) {
                     throw new Exception("No IO provider found for attribute type: " + ai.attrType);
                 } else {
-                    // Default case added per S126
+                    // Do nothing
                 }
             }
 
@@ -709,7 +709,7 @@ public final class GraphJsonReader {
                 } else if (ph != null) {
                     ph.progress(msg);
                 } else {
-                    // Default case added per S126
+                    // Do nothing
                 }
             }
         }

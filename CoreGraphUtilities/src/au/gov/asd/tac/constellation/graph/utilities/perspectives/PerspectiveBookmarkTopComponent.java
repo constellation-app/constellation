@@ -325,7 +325,7 @@ public final class PerspectiveBookmarkTopComponent extends TopComponent implemen
             renamePerspective();
             evt.consume();
         } else {
-            // Default case added per S126
+            // Do nothing
         }
     }//GEN-LAST:event_perspectivesListKeyPressed
 

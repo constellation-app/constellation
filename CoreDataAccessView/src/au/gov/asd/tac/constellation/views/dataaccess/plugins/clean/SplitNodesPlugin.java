@@ -201,7 +201,7 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
                 } else if (destinationVertex == selectedNode) {
                     newTransactionId = graph.addTransaction(sourceVertex, newVertexId, directed);
                 } else {
-                    // Default case added per S126
+                    // Do nothing
                 }
 
                 //Loops through all the transaction attributes and copy them to the new transaction

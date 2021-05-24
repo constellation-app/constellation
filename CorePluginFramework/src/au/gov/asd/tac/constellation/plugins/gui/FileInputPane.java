@@ -179,7 +179,7 @@ public class FileInputPane extends HBox {
             } else if (event.getCode() == KeyCode.ESCAPE) {
                 event.consume();
             } else {
-                // Default case added per S126
+                // Do nothing
             }
         });
 

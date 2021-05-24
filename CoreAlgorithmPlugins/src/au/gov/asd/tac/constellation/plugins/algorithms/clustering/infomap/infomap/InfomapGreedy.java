@@ -432,7 +432,7 @@ public abstract class InfomapGreedy extends InfomapBase {
                     } else if (otherModule == newM) {
                         newModuleDelta.setDeltaExit(newModuleDelta.getDeltaExit() + edge.getData().flow);
                     } else {
-                        // Default case added per S126
+                        // Do nothing
                     }
                 }
 
@@ -448,7 +448,7 @@ public abstract class InfomapGreedy extends InfomapBase {
                     } else if (otherModule == newM) {
                         newModuleDelta.setDeltaEnter(newModuleDelta.getDeltaEnter() + edge.getData().flow);
                     } else {
-                        // Default case added per S126
+                        // Do nothing
                     }
                 }
 

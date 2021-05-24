@@ -140,7 +140,7 @@ public class ElementList {
             next[element] = first;
             first = element;
         } else {
-            // Default case added per S126
+            // Do nothing
         }
 
         // Return false to indicate that we did not add the element to the list
@@ -184,7 +184,7 @@ public class ElementList {
             prev[element] = last;
             last = element;
         } else {
-            // Default case added per S126
+            // Do nothing
         }
 
         return false;

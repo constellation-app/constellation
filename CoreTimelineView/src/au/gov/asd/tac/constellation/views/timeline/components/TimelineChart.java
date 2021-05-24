@@ -174,7 +174,7 @@ public class TimelineChart extends XYChart<Number, Number> {
                         isSelecting = false;
                         mouseDistanceFromOrigin = 0;
                     } else {
-                        // Default case added per S126
+                        // Do nothing
                     }
                 } else {
                     // We are starting a drag based temporal selection:
@@ -202,7 +202,7 @@ public class TimelineChart extends XYChart<Number, Number> {
                         // Update variables based on current mouse pointer position:
                         mouseOrigin = mouseX;
                     } else {
-                        // Default case added per S126
+                        // Do nothing
                     }
 
                 }

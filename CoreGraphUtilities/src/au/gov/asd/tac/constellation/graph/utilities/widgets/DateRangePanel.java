@@ -308,7 +308,7 @@ public class DateRangePanel extends javax.swing.JPanel {
         } else if (value.equals(Bundle.PresetRange6())) {
             setPresetDates(Calendar.YEAR, -1);
         } else {
-            // Default case added per S126
+            // Do nothing
         }
     }//GEN-LAST:event_presetDateRangesActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -124,7 +124,7 @@ public class DefaultIconProvider implements ConstellationIconProvider {
         } else if (x > 1.0f - radius) {
             xDiameter = x - (1.0f - radius);
         } else {
-            // Default case added per S126
+            // Do nothing
         }
 
         if (y < radius) {
@@ -132,7 +132,7 @@ public class DefaultIconProvider implements ConstellationIconProvider {
         } else if (y > 1.0f - radius) {
             yDiameter = y - (1.0f - radius);
         } else {
-            // Default case added per S126
+            // Do nothing
         }
 
         if (xDiameter * xDiameter + yDiameter * yDiameter > radius * radius) {

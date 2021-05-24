@@ -159,7 +159,7 @@ public class DateAxis extends Axis<Date> {
             minDate = list.get(0);
             maxDate = list.get(list.size() - 1);
         } else {
-            // Default case added per S126
+            // Do nothing
         }
     }
 

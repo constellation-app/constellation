@@ -235,7 +235,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                     SingleChoiceParameterType.setChoice(unitParam, UNIT_PARAMETER_ID_BIN_DEFAULT);
                     parameters.getParameters().get(AMOUNT_PARAMETER_ID).setEnabled(false);
                 } else {
-                    // Default case added per S126
+                    // Do nothing
                 }
             }
         });
@@ -679,7 +679,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                 graph.setObjectValue(attr, toId, value);
             }
         } else {
-            // Default case added per S126
+            // Do nothing
         }
     }
 

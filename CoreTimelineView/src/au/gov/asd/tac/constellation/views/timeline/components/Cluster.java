@@ -93,7 +93,7 @@ public class Cluster extends Group {
                 } else if (me.getEventType() == MouseEvent.MOUSE_DRAGGED) {
                     isDragging = true;
                 } else {
-                    // Default case added per S126
+                    // Do nothing
                 }
             }
         }

@@ -310,7 +310,7 @@ public class LayersViewPane extends BorderPane {
                 } else if (StringUtils.isBlank(txQuery) && StringUtils.isNotBlank(vxQuery)) {
                     controller.getTxQueryCollection().removeQuery(index);
                 } else {
-                    // Default case added per S126
+                    // Do nothing
                 }
                 description = null;
             }

@@ -150,7 +150,7 @@ class PQNodeList implements Iterable<PQNode> {
             size = toConcat.size;
             return;
         } else {
-            // Default case added per S126
+            // Do nothing
         }
 
         link(last, toConcat.first);

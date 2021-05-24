@@ -256,7 +256,7 @@ public class OverviewPanel extends Pane {
                     } else if (histogram.getData().size() > 1) {
                         histogram.getData().remove(1);
                     } else {
-                        // Default case added per S126
+                        // Do nothing
                     }
                     histogram.getData().add(selectedSeries);
                 }
@@ -408,7 +408,7 @@ public class OverviewPanel extends Pane {
             } else if (t.getEventType() == MouseEvent.MOUSE_DRAGGED) {
                 handleDragging(t);
             } else {
-                // Default case added per S126
+                // Do nothing
             }
         }
 
@@ -530,7 +530,7 @@ public class OverviewPanel extends Pane {
                     origin = t.getX();
                 }
             } else {
-                // Default case added per S126
+                // Do nothing
             }
         }
 

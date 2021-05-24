@@ -50,7 +50,7 @@ public class LayersUtilities {
         } else if (newBitmask > 1) {
             newBitmask = newBitmask & ~0b1;
         } else {
-            // Default case added per S126
+            // Do nothing
         }
 
         return newBitmask;

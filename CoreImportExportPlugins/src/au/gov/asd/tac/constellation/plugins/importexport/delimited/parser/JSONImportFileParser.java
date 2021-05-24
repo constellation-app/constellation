@@ -124,7 +124,7 @@ public class JSONImportFileParser extends ImportFileParser {
             }
             return true;
         } else {
-            // Default case added per S126
+            // Do nothing
         }
         return false;
     }
@@ -171,11 +171,11 @@ public class JSONImportFileParser extends ImportFileParser {
                     // it and see if there is any list
                     lookForChildArrays(entry.getValue(), path + "/" + entry.getKey(), (depth + 1));
                 } else {
-                    // Default case added per S126
+                    // Do nothing
                 }
             }
         } else {
-            // Default case added per S126
+            // Do nothing
         }
     }
 
@@ -208,7 +208,7 @@ public class JSONImportFileParser extends ImportFileParser {
                     // representing their data as a merged value string.
                     existingColumns.add(prefix + entry.getKey());
                 } else {
-                    // Default case added per S126
+                    // Do nothing
                 }
             }
         }
@@ -300,7 +300,7 @@ public class JSONImportFileParser extends ImportFileParser {
                 }
             }
         } else {
-            // Default case added per S126
+            // Do nothing
         }
         return line;
     }

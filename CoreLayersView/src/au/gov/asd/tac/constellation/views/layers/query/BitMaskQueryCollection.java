@@ -144,7 +144,7 @@ public class BitMaskQueryCollection {
                 this.add(query);
             }
         } else {
-            // Default case added per S126
+            // Do nothing
         }
     }
 

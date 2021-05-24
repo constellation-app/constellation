@@ -43,7 +43,7 @@ public class IdentifierInconsistentWithTypeRule extends QualityControlRule {
     private static final int RISK = 30;
 
     public IdentifierInconsistentWithTypeRule() {
-        // Method intentionally left blank - S1186
+        // Method intentionally left blank
     }
 
     @Override

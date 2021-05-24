@@ -112,7 +112,7 @@ public class FontInfo {
             } else if (mustHave.isEmpty() && mustNotHave.isEmpty()) {
                 return true;
             } else {
-                // Default case added per S126
+                // Do nothing
             }
         }
 

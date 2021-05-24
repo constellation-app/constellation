@@ -568,7 +568,7 @@ public class HistogramControls extends JPanel {
                 } else if (currentHistogramState != null) {
                     binFormatterCombo.setSelectedItem(currentHistogramState.getBinFormatter());
                 } else {
-                    // Default case added per S126
+                    // Do nothing
                 }
             } else {
                 topComponent.setBinFormatter((BinFormatter) binFormatterCombo.getSelectedItem(), null);

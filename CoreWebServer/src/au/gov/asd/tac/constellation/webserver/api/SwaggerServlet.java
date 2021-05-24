@@ -168,7 +168,7 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                             schema.put("type", OBJECT);
                         }
                     } else {
-                        // Default case added per S126
+                        // Do nothing
                     }
                 });
 

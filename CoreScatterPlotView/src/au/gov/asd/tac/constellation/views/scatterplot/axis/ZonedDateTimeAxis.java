@@ -158,7 +158,7 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
             minZonedDateTime = list.get(0);
             maxZonedDateTime = list.get(list.size() - 1);
         } else {
-            // Default case added per S126
+            // Do nothing
         }
     }
 

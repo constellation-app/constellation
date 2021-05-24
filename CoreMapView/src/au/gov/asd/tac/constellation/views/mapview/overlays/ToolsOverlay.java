@@ -391,7 +391,7 @@ public class ToolsOverlay extends MapOverlay {
                     } else if (event.isShiftDown()) {
                         measureCircle = true;
                     } else {
-                        // Default case added per S126
+                        // Do nothing
                     }
                     measureFinished = false;
                     measureOriginX = event.getX();

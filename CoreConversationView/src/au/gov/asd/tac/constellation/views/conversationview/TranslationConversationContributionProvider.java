@@ -121,7 +121,7 @@ public class TranslationConversationContributionProvider extends ConversationCon
                 } else if (e.getCode() == KeyCode.ESCAPE) {
                     e.consume();
                 } else {
-                    // Default case added per S126
+                    // Do nothing
                 }
             });
         }

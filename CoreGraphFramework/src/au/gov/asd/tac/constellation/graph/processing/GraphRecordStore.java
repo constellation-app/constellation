@@ -121,7 +121,7 @@ public class GraphRecordStore extends TabularRecordStore {
             values = Arrays.copyOf(values, capacity >>> BATCH_BITS);
             createColumn(key, values);
         } else {
-            // Default case added per S126
+            // Do nothing
         }
 
         Object[] batch = values[record >>> BATCH_BITS];
@@ -215,7 +215,7 @@ public class GraphRecordStore extends TabularRecordStore {
                     } else if (!TabularRecordStore.getValue(e.getValue(), record).equals(TabularRecordStore.getValue(other.typedRecords.get(e.getKey()), record))) {
                         return false;
                     } else {
-                        // Default case added per S126
+                        // Do nothing
                     }
                 }
             }

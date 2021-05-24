@@ -49,7 +49,7 @@ public class LevenshteinDistanceFunction implements DistanceFunction<String> {
         } else if (m == 0) {
             return n <= k ? n : k + 1;
         } else {
-            // Default case added per S126
+            // Do nothing
         }
 
         if (n > m) {

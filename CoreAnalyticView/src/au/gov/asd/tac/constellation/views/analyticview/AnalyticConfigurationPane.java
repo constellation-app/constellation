@@ -456,7 +456,7 @@ public class AnalyticConfigurationPane extends VBox {
             SingleChoiceParameterType.setOptionsData(aggregatorParameter, aggregators);
             SingleChoiceParameterType.setChoiceData(aggregatorParameter, aggregators.get(0));
         } else {
-            // Default case added per S126
+            // Do nothing
         }
         pluginList.getItems().forEach(selectablePlugin -> {
             selectablePlugin.setUpdatedParameter(aggregatorParameter.getId(), aggregatorParameter.getStringValue());
@@ -521,7 +521,7 @@ public class AnalyticConfigurationPane extends VBox {
                 currentQuestion.initialiseParameters(selectablePlugin.plugin, selectablePlugin.parameters);
             });
         } else {
-            // Default case added per S126
+            // Do nothing
         }
         updateGlobalParameters();
     }

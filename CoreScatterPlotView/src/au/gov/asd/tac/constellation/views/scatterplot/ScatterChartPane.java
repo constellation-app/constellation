@@ -154,7 +154,7 @@ public class ScatterChartPane extends BorderPane {
                     selectionXOrigin = mouseX;
                     selectionYOrigin = mouseY;
                 } else {
-                    // Default case added per S126
+                    // Do nothing
                 }
 
                 // Selection was made
@@ -186,7 +186,7 @@ public class ScatterChartPane extends BorderPane {
                         else if (me.getClickCount() == 2) {
                             selectedData = null;
                         } else {
-                            // Default case added per S126
+                            // Do nothing
                         }
                     }
 

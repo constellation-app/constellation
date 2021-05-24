@@ -118,7 +118,7 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
                 mnuRemove.setEnabled(!locked);
                 mnuRename.setEnabled(!locked);
             } else {
-                // Default case added per S126
+                // Do nothing
             }
         }
     };
@@ -140,7 +140,7 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
                     renameElement();
                     break;
                 default:
-                    // Default case added per S126
+                    // Do nothing
                     break;
             }
         }

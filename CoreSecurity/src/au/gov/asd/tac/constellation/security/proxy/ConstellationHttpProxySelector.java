@@ -167,7 +167,7 @@ public class ConstellationHttpProxySelector extends ProxySelector {
         } else if (compareHost.equals(host)) {
             return true;
         } else {
-            // Default case added per S126
+            // Do nothing
         }
 
         return false;

@@ -348,7 +348,7 @@ public class SqlQuery {
             } else if (value instanceof Double) {
                 addArgument((Double) value);
             } else {
-                // Default case added per S126
+                // Do nothing
             }
             query.append(" UNION ");
             query.append(currentQuery);
@@ -389,7 +389,7 @@ public class SqlQuery {
             } else if (value instanceof Double) {
                 addArgument((Double) value);
             } else {
-                // Default case added per S126
+                // Do nothing
             }
             query.append(" OR ");
         }

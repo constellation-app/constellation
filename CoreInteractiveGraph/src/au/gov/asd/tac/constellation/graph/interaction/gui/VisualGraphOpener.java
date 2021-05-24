@@ -262,7 +262,7 @@ public final class VisualGraphOpener extends GraphOpener {
                     doAfter.run();
                 }
             } else {
-                // Default case added per S126
+                // Do nothing
             }
         }
     }

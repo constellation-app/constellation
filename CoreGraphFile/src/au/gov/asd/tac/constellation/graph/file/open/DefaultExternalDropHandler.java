@@ -180,7 +180,7 @@ public class DefaultExternalDropHandler extends ExternalDropHandler {
                 String uriList = (String) t.getTransferData(getUriListDataFlavor());
                 return textURIListToFileList(uriList);
             } else {
-                // Default case added per S126
+                // Do nothing
             }
         } catch (UnsupportedFlavorException ex) {
             ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, ex);

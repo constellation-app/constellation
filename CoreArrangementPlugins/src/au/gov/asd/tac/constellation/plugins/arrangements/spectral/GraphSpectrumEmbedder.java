@@ -122,7 +122,7 @@ public class GraphSpectrumEmbedder {
                     } else if (idToMatrixPosition.get(neighbourID) == i) {
                         continue;
                     } else {
-                        // Default case added per S126
+                        // Do nothing
                     }
                     neighbourCount++;
                     if (type != null) {
@@ -134,7 +134,7 @@ public class GraphSpectrumEmbedder {
                                 matrixEntries[i][idToMatrixPosition.get(neighbourID)] = 1;
                                 break;
                             default:
-                                break;// Default case added per S126
+                                break;
                         }
                     }
                 }
@@ -147,7 +147,7 @@ public class GraphSpectrumEmbedder {
                             matrixEntries[i][i] = 0;
                             break;
                         default:
-                            break;// Default case added per S126
+                            break;
                     }
                 }
             }

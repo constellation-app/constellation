@@ -96,7 +96,7 @@ public class CameraUtilities {
             } else if (!increaseMix && camera.getMixRatio() > Camera.MIX_RATIO_MIN) {
                 camera.setMixRatio(camera.getMixRatio() - 1);
             } else {
-                // Default case added per S126
+                // Do nothing
             }
         }
     }

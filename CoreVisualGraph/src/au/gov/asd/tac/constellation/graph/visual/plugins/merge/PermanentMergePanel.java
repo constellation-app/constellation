@@ -115,7 +115,7 @@ public final class PermanentMergePanel extends JPanel {
             selected_attributes.put(column, row);
             setColumnHeader(row, column);
         } else {
-            // Default case added per S126
+            // Do nothing
         }
         nodeTable.updateUI();
     }

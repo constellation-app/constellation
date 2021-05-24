@@ -105,7 +105,6 @@ public class PluginFinder {
                     dialog.setResult(ButtonType.OK);
                     break;
                 default:
-                    // Default case added per S126
                     break;
             }
         });

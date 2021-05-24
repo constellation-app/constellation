@@ -54,7 +54,6 @@ public class RecentGraphScreenshotUtilities {
             LOGGER.warning(msg);
             return null;
         } else {
-            // Default case added per S126
             return saveDir;
         }
 

@@ -40,7 +40,6 @@ import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginType;
-import static au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginType.getTypeWithPosition;
 import au.gov.asd.tac.constellation.views.dataaccess.io.ParameterIOUtilities;
 import au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessPreferenceKeys;
 import au.gov.asd.tac.constellation.views.dataaccess.templates.DataAccessPreQueryValidation;
@@ -226,7 +225,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                 } else if (tabHasEnabledPlugins(tab)) {
                     pluginSelected = true;
                 } else {
-                    // Default case added per S126
+                    // Do nothing
                 }
             }
             // when no graph present, create new graph
@@ -260,7 +259,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                             null
                     );
                 } else {
-                    // Default case added per S126
+                    // Do nothing
                 }
 
                 PluginExecution.withPlugin(new SimplePlugin("Data Access View: Save State") {
@@ -314,7 +313,6 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                         } else if (e.getMessage() != null) {
                             return e.getMessage();
                         } else {
-                            // Default case added per S126
                             return e.getClass().getName();
                         }
                     }
@@ -328,7 +326,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                 });
                 setExecuteButtonToGo();
             } else {
-                // Default case added per S126
+                // Do nothing
             }
             if (DataAccessPreferenceKeys.isDeselectPluginsOnExecuteEnabled()) {
                 deselectAllPlugins();

@@ -187,7 +187,7 @@ public class QueryEvaluator {
                 } else if (StringUtils.isNotBlank(operatorStack.peek())) {
                     orderedInPostfix.add(operatorStack.pop());
                 } else {
-                    // Default case added per S126
+                    // Do nothing
                 }
             } else { // operator encountered
                 while (!operatorStack.isEmpty() && getPrecedence(token)
@@ -197,7 +197,7 @@ public class QueryEvaluator {
                     } else if (StringUtils.isNotBlank(operatorStack.peek())) {
                         orderedInPostfix.add(operatorStack.pop());
                     } else {
-                        // Default case added per S126
+                        // Do nothing
                     }
                 }
                 operatorStack.push(token);
@@ -211,7 +211,7 @@ public class QueryEvaluator {
             } else if (StringUtils.isNotBlank(operatorStack.peek())) {
                 orderedInPostfix.add(operatorStack.pop());
             } else {
-                // Default case added per S126
+                // Do nothing
             }
         }
         // remove unnecessary braces

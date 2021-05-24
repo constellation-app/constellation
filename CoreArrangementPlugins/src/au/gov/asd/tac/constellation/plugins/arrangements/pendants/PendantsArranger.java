@@ -135,6 +135,6 @@ public class PendantsArranger implements Arranger {
 
     @Override
     public void setMaintainMean(final boolean b) {
-        // Method intentionally left blank - S1186
+        // Method intentionally left blank
     }
 }

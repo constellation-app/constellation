@@ -127,7 +127,7 @@ public class ExcelImportFileParser extends ImportFileParser {
                 }
             }
         } else {
-            // Default case added per S126
+            // Do nothing
         }
         return results;
     }
@@ -221,7 +221,7 @@ public class ExcelImportFileParser extends ImportFileParser {
                 }
             }
         } else {
-            // Default case added per S126
+            // Do nothing
         }
         return results;
 

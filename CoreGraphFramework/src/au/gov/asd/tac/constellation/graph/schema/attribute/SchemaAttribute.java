@@ -290,7 +290,7 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
         } else if (!name.equals(other.getName())) {
             return false;
         } else {
-            // Default case added per S126
+            // Do nothing
         }
         if (description == null) {
             if (other.getDescription() != null) {
@@ -299,7 +299,7 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
         } else if (!description.equals(other.getDescription())) {
             return false;
         } else {
-            // Default case added per S126
+            // Do nothing
         }
         if (defaultValue == null) {
             if (other.getDefaultValue() != null) {
@@ -308,7 +308,7 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
         } else if (!defaultValue.equals(other.getDefaultValue())) {
             return false;
         } else {
-            // Default case added per S126
+            // Do nothing
         }
 
         return true;
@@ -352,7 +352,7 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
         } else if (!name.equals(other.name)) {
             return false;
         } else {
-            // Default case added per S126
+            // Do nothing
         }
         if (description == null) {
             if (other.description != null) {
@@ -361,7 +361,7 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
         } else if (!description.equals(other.description)) {
             return false;
         } else {
-            // Default case added per S126
+            // Do nothing
         }
         if (defaultValue == null) {
             if (other.defaultValue != null) {
@@ -370,7 +370,7 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
         } else if (!defaultValue.equals(other.defaultValue)) {
             return false;
         } else {
-            // Default case added per S126
+            // Do nothing
         }
         if (regex == null) {
             if (other.regex != null) {
@@ -379,7 +379,7 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
         } else if (!regex.equals(other.regex)) {
             return false;
         } else {
-            // Default case added per S126
+            // Do nothing
         }
         if (format == null) {
             if (other.format != null) {
@@ -388,7 +388,7 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
         } else if (!format.equals(other.format)) {
             return false;
         } else {
-            // Default case added per S126
+            // Do nothing
         }
 
         return true;

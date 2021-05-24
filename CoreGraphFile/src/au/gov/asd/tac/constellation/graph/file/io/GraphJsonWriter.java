@@ -328,7 +328,7 @@ public final class GraphJsonWriter implements Cancellable {
             } else if (attr.getDefaultValue() != null) {
                 jg.writeStringField(DEFAULT_FIELD, attr.getDefaultValue().toString());
             } else {
-                // Default case added per S126
+                // Do nothing
             }
 
             if (attr.getAttributeMerger() != null) {
@@ -410,7 +410,7 @@ public final class GraphJsonWriter implements Cancellable {
                 } else if (counter % REPORT_INTERVAL == 0 && progress != null) {
                     progress.progress(counter);
                 } else {
-                    // Default case added per S126
+                    // Do nothing
                 }
             }
         } else if (elementType == GraphElementType.TRANSACTION) {
@@ -443,7 +443,7 @@ public final class GraphJsonWriter implements Cancellable {
                 }
             }
         } else {
-            // Default case added per S126
+            // Do nothing
         }
 
         jg.writeEndArray();

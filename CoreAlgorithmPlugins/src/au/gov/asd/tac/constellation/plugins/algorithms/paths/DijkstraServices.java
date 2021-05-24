@@ -402,7 +402,7 @@ public class DijkstraServices {
                                         } else if (n == vertex) {
                                             break;
                                         } else {
-                                            // Default case added per S126
+                                            // Do nothing
                                         }
                                         final double pathCost = curr.getPriority() + getWeight(curr.getValue(), n, weights);
                                         final FibonacciHeap.Entry<Integer> neigh = entries.get(n);
@@ -420,7 +420,7 @@ public class DijkstraServices {
                                         } else if (pathCost == neigh.getPriority()) {
                                             incMapSet(parent.lookupMap, n, curr.getValue());
                                         } else {
-                                            // Default case added per S126
+                                            // Do nothing
                                         }
                                     }
                                 }

@@ -172,7 +172,7 @@ public abstract class IconData {
         } else if (getClass() != obj.getClass()) {
             return false;
         } else {
-            // Default case added per S126
+            // Do nothing
         }
         final IconData other = (IconData) obj;
         return Arrays.equals(this.data, other.data);

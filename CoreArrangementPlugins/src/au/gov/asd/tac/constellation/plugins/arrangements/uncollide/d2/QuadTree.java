@@ -130,7 +130,7 @@ public class QuadTree {
             } else if (bottomQuadrant) {
                 index = BOT_L;
             } else {
-                // Default case added per S126
+                // Do nothing
             }
         } // Object can completely fit within the right quadrants.
         else if (orb.getX() - orb.r > midx) {
@@ -139,10 +139,10 @@ public class QuadTree {
             } else if (bottomQuadrant) {
                 index = BOT_R;
             } else {
-                // Default case added per S126
+                // Do nothing
             }
         } else {
-            // Default case added per S126
+            // Do nothing
             return index;
         }
 

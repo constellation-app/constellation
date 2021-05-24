@@ -109,11 +109,11 @@ public final class MemoryManagerTopComponent extends TopComponent implements Mem
     }
 
     void writeProperties(java.util.Properties p) {
-        // Method intentionally left blank - S1186
+        // Method intentionally left blank
     }
 
     void readProperties(java.util.Properties p) {
-        // Method intentionally left blank - S1186
+        // Method intentionally left blank
     }
 
     @Override

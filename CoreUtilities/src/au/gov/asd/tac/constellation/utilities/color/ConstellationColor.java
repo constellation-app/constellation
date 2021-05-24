@@ -154,7 +154,7 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
         } else if (ucName.startsWith("#")) {
             return fromHtmlColor(name);
         } else {
-            // Default case added per S126
+            // Do nothing
         }
 
         return null;

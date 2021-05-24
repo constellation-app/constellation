@@ -53,7 +53,7 @@ public class Scatter3dArranger implements Arranger {
     @Override
 
     public void setMaintainMean(final boolean b) {
-        // Method intentionally left blank - S1186 Not relevant for Scatter3D
+        // Method intentionally left blank Not relevant for Scatter3D
     }
 
     @Override

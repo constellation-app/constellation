@@ -110,7 +110,7 @@ public final class SimpleGraphOpener extends GraphOpener {
                 vtc.open();
                 vtc.requestActive();
             } else {
-                // Default case added per S126
+                // Do nothing
             }
 
             if (doAfter != null) {

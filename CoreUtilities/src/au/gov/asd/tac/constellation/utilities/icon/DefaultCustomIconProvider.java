@@ -121,7 +121,7 @@ public class DefaultCustomIconProvider implements CustomIconProvider {
         } else if (!iconDir.isDirectory()) {
             LOGGER.warning(String.format("Icon directory '%s' is not a directory", USER_ICON_DIR));
         } else {
-            // Default case added per S126
+            // Do nothing
         }
         return iconDir.isDirectory() ? iconDir : null;
     }

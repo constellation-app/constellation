@@ -434,7 +434,7 @@ public final class GraphLabelsAndDecoratorsV0 implements Serializable {
                     GraphLabelV0 thisGraphLabel = GraphLabelV0.fromString(currentComponent.substring(currentComponent.indexOf('['), currentComponent.lastIndexOf(']') + 1));
                     thisGraphLabelsAndDecorators.addConnectionLabel(thisGraphLabel);
                 } else {
-                    // Default case added per S126
+                    // Do nothing
                 }
             }
         }

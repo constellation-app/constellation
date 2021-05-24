@@ -82,7 +82,7 @@ public class UpdateProviderManager {
                 } else if (!itemProviders.containsKey(toVersion) && LATEST_VERSIONS.get(itemName) != toVersion) {
                     throw new UpdateProviderException(String.format("Found update provider %s with to-version %d that is not the latest (%d), but no update provider with the corresponding from version.", itemName, toVersion, LATEST_VERSIONS.get(itemName)));
                 } else {
-                    // Default case added per S126
+                    // Do nothing
                 }
             });
         });

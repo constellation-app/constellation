@@ -203,7 +203,7 @@ public class UncollideArrangement implements Arranger {
             wg.setFloatValue(axisId, subject, wg.getFloatValue(axisId, subject) - (float) nudge);
             wg.setFloatValue(axisId, twin, wg.getFloatValue(axisId, twin) + (float) nudge);
         } else {
-            // Default case added per S126
+            // Do nothing
         }
     }
 

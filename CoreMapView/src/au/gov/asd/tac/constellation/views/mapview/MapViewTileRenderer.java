@@ -431,7 +431,7 @@ public class MapViewTileRenderer extends PApplet {
             } else if (!hitMarkers.isEmpty()) {
                 handleMouseSelection(event, new HashSet<>(hitMarkers));
             } else {
-                // Default case added per S126
+                // Do nothing
             }
         }
 
@@ -458,7 +458,7 @@ public class MapViewTileRenderer extends PApplet {
             dispatcher.fireMapEvent(zoomMapEvent);
             dispatcher.unregister(map, ZoomMapEvent.TYPE_ZOOM, map.getId());
         } else {
-            // Default case added per S126
+            // Do nothing
         }
 
         overlays.forEach(overlay -> overlay.mousePressed(event));
@@ -567,7 +567,7 @@ public class MapViewTileRenderer extends PApplet {
             boxDeltaY = -1;
             boxSelectionEnabled = false;
         } else {
-            // Default case added per S126
+            // Do nothing
         }
 
         layers.forEach(layer -> layer.mouseReleased(event));
@@ -600,7 +600,7 @@ public class MapViewTileRenderer extends PApplet {
             } else if (delta > 0) {
                 zoomMapEvent.setZoomLevelDelta(-1);
             } else {
-                // Default case added per S126
+                // Do nothing
             }
             dispatcher.fireMapEvent(zoomMapEvent);
         }
@@ -763,7 +763,7 @@ public class MapViewTileRenderer extends PApplet {
                             custom.remove(marker);
                         }
                     } else {
-                        // Default case added per S126
+                        // Do nothing
                     }
                 }
             });

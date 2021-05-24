@@ -298,7 +298,7 @@ public abstract class InfomapBase {
         } else if (tryIndexing) {
             tryIndexingIteratively();
         } else {
-            // Default case added per S126
+            // Do nothing
         }
 
         queueTopModules(partitionQueue);
@@ -371,7 +371,7 @@ public abstract class InfomapBase {
 
                 break;
             } else {
-                // Default case added per S126
+                // Do nothing
             }
 
             minHierarchicalCodelength += superInfomap.codelength - indexCodelength;
@@ -1340,7 +1340,7 @@ public abstract class InfomapBase {
                     aggregatePerLevelCodelength(module, indexLengths, leafLengths, level + 1);
                 }
             } else {
-                // Default case added per S126
+                // Do nothing
             }
         }
     }

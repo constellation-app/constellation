@@ -250,7 +250,7 @@ public final class TableViewPane extends BorderPane {
                         // remove the row from selected items as it's no longer selected in the table
                         selectedOnlySelectedRows.remove(row);
                     } else {
-                        // Default case added per S126
+                        // Do nothing
                     }
                 });
             }

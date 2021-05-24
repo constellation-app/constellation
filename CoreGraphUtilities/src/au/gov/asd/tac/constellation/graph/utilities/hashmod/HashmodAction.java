@@ -134,7 +134,7 @@ public final class HashmodAction implements ActionListener {
                     attrCount++;
                 }
             } else {
-                // Default case added per S126
+                // Do nothing
             }
             i++;
         }

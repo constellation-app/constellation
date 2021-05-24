@@ -282,12 +282,10 @@ public class GridArranger implements Arranger {
      * @return A Dimension corresponding to the choice of grid.
      */
     private static Dimension getGridSize(final GridChoice gc) {
-        if (null == gc) {
+        if (gc == null) {
             return new Dimension(0, 0);
         } else {
             switch (gc) {
-                case SQUARE:
-                    return new Dimension(0, 0);
                 case HORIZONTAL_LINE:
                     return new Dimension(0, 1);
                 case VERTICAL_LINE:
@@ -305,6 +303,7 @@ public class GridArranger implements Arranger {
                 case FOUR_COLUMNS:
                     return new Dimension(4, 0);
                 default:
+                    // Return a SQUARE
                     return new Dimension(0, 0);
             }
         }

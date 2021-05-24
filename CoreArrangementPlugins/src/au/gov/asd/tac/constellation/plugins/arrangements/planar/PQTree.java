@@ -232,7 +232,7 @@ class PQTree {
             node.removeChild(labeledNode);
             return labeledNode;
         } else {
-            // Default case added per S126
+            // Do nothing
         }
         PQNode newPNode = new PQNode(NodeType.PNODE);
         newPNode.relabel(label);

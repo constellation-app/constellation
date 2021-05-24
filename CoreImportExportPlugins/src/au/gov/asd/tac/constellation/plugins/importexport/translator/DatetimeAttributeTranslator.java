@@ -150,7 +150,7 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
             } else if (val.startsWith("c:")) {
                 parameters.getParameters().get(CUSTOM_PARAMETER_ID).setStringValue(val.substring(2));
             } else {
-                // Default case added per S126
+                // Do nothing
             }
         }
     }

@@ -236,7 +236,7 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
             } else if (notifyIfFail) {
                 notifyAllAlloc();
             } else {
-                // Default case added per S126
+                // Do nothing
             }
         }
         return false;

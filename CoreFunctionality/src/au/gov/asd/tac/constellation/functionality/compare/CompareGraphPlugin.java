@@ -440,7 +440,7 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
 
                 seenVertices.add(vertex);
             } else {
-                // Default case added per S126
+                // Do nothing
             }
 
             // transaction compare
@@ -519,7 +519,7 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
 
                 seenTransactions.add(transaction);
             } else {
-                // Default case added per S126
+                // Do nothing
             }
         }
 

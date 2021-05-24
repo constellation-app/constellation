@@ -365,7 +365,7 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
                 } else if (selectionMode == 0) {
                     graph.setBooleanValue(vxSelectedAttr, vxID, false);
                 } else {
-                    // Default case added per S126
+                    // Do nothing
                 }
             }
 
@@ -384,7 +384,7 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
                         graph.setBooleanValue(txSelectedAttr, txID, false);
                     }
                 } else {
-                    // Default case added per S126
+                    // Do nothing
                 }
             }
         }

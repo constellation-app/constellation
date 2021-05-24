@@ -413,7 +413,7 @@ public class GraphRecordStoreUtilities {
             } else if (!destinationValues.isEmpty()) {
                 addVertex(graph, destinationValues, vertexMap, initializeWithSchema, completeWithSchema, newVertices, ghostVertices, vertexIdAttributes);
             } else {
-                // Default case added per S126
+                // Do nothing
             }
         }
 

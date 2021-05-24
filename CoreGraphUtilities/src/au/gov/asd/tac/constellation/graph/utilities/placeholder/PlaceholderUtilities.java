@@ -273,7 +273,7 @@ public class PlaceholderUtilities {
                             && graph.getTransactionSourceVertex(correlationId) != leadVertex) {
                         graph.setTransactionDestinationVertex(correlationId, leadVertex);
                     } else {
-                        // Default case added per S126
+                        // Do nothing
                     }
                 });
 

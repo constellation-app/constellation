@@ -355,7 +355,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
             graph.setBooleanValue(vxDimmedAttr, vxIds[nVx - 1], true);
             graph.setBooleanValue(vxDimmedAttr, vxIds[nVx - 2], true);
         } else {
-            // Default case added per S126
+            // Do nothing
         }
 
         if (nVx > 0) {

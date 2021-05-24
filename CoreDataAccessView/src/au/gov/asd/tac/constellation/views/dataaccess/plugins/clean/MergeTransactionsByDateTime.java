@@ -136,7 +136,7 @@ public class MergeTransactionsByDateTime implements MergeTransactionType {
                         currentLead = null;
                         mergeGroup = new HashSet<>();
                     } else {
-                        // Default case added per S126
+                        // Do nothing
                     }
                 }
             }

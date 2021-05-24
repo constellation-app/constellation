@@ -751,7 +751,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                     // Do only a partial update, ie the timeline and selection area for histogram:
                     populateFromGraphNode(false);
                 } else {
-                    // Default case added per S126
+                    // Do nothing
                 } // Detect changes of dim to transactions and vertices:
                 /*else if (!timelinePanel.isDimOrHideExpected(currentVertDimModificationCount, currentTransDimModificationCount)) {
                     Platform.runLater(() -> {

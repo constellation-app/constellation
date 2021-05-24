@@ -58,7 +58,7 @@ public class UnionBuilder extends GraphBuilder {
                 final int newTrans = constructTransaction(graph, source, newIDVertexMapping.get(dest), directed);
                 newIDTransactionMapping.put(trans, newTrans);
             } else {
-                // Default case added per S126
+                // Do nothing
             }
         }
 

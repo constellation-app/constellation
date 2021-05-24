@@ -120,7 +120,7 @@ public class PermanentMergePlugin extends SimpleEditPlugin implements HelpCtx.Pr
             } else if (selections.contains(selectedNode)) {
                 selections.remove((Integer) selectedNode);
             } else {
-                // Default case added per S126
+                // Do nothing
             }
 
             this.processTransactions(graph, selections, selectedNode, createLoops, keepSimple);

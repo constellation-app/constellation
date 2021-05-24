@@ -176,7 +176,7 @@ public class PagerankCentralityPlugin extends SimpleEditPlugin {
                                 // If edge is facing towards vertex add the source as a neighbour.
                                 pgVertex.neighbours.add(pagerankVertices.get(neighbourId));
                             } else {
-                                // Default case added per S126
+                                // Do nothing
                             }
                         }
                     }

@@ -99,7 +99,7 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
 
     @Override
     public void graphOpened(final Graph graph) {
-        // Method intentionally left blank - S1186
+        // Method intentionally left blank
     }
 
     @Override

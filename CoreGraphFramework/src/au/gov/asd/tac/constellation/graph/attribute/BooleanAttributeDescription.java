@@ -328,7 +328,7 @@ public final class BooleanAttributeDescription extends AbstractAttributeDescript
                 position2id[position] = firstFalse;
                 id2position[firstFalse] = position;
             } else {
-                // Default case added per S126
+                // Do nothing
             }
         }
 

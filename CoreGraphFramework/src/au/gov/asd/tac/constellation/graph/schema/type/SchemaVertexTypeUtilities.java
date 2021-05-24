@@ -307,7 +307,7 @@ public class SchemaVertexTypeUtilities {
                             } else if (currentExtractedType.compareTo(extractedType) > 0) {
                                 deficientResults.add(extractedType);
                             } else {
-                                // Default case added per S126
+                                // Do nothing
                             }
                         }
                         if (!isDeficientResult) {

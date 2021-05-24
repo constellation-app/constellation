@@ -182,7 +182,7 @@ public final class DateTimeAttributeDescriptionV0 extends AbstractAttributeDescr
             tz = (TimeZone) graph.getObjectValue(tzAttr, 0);
             attrModificationCounter = graph.getValueModificationCounter(tzAttr);
         } else {
-            // Default case added per S126
+            // Do nothing
         }
     }
 

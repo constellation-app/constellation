@@ -177,7 +177,7 @@ public class MappingPanel extends javax.swing.JPanel {
             labels.add(GraphFileConstants.DST);
             labels.add(GraphFileConstants.DIR);
         } else {
-            // Default case added per S126
+            // Do nothing
         }
 
         return labels;

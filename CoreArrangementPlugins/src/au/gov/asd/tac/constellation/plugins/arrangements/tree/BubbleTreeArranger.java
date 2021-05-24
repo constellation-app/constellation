@@ -263,7 +263,7 @@ public class BubbleTreeArranger implements Arranger {
                     return -1;
                 } else {
                     return 0;
-                    // Default case added per S126
+                    // Do nothing
                 }
             });
 

@@ -212,7 +212,7 @@ public class STNumbering {
                             w = x;
                             break;
                         } else {
-                            // Default case added per S126
+                            // Do nothing
                         }
                     }
                 }

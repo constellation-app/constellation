@@ -114,7 +114,7 @@ public class SubstringFormatter extends BinFormatter {
                 } else if (s < 0) {
                     s = 0;
                 } else {
-                    // Default case added per S126
+                    // Do nothing
                 }
 
                 int e = end;

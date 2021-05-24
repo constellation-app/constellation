@@ -270,7 +270,6 @@ public class CopyDataToClipboard implements ActionListener, Action {
             } else if (InputStream.class.equals(flavor.getRepresentationClass())) {
                 return new ByteArrayInputStream(html.getBytes(StandardCharsets.UTF_8));
             } else {
-                // Default case added per S126
                 throw new UnsupportedFlavorException(flavor);
             }
         }

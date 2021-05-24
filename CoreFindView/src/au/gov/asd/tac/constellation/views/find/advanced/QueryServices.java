@@ -593,7 +593,7 @@ public class QueryServices {
             } else if (rule.getOperator().equals(FindTypeOperators.Operator.IS_NOT)) {
                 queryResult = FindComparisons.ColorComparisons.evaluateIsNot(item.getJavaColor(), rule.getColorContent());
             } else {
-                // Default case added per S126
+                // Do nothing
             }
 
             return queryResult;
@@ -800,7 +800,7 @@ public class QueryServices {
             } else if (rule.getOperator().equals(FindTypeOperators.Operator.IS_NOT)) {
                 queryResult = FindComparisons.IconComparisons.evaluateIsNot(item, rule.getIconContent());
             } else {
-                // Default case added per S126
+                // Do nothing
             }
 
             return queryResult;

@@ -106,7 +106,7 @@ public class FileChooser extends JFileChooser {
         } else if (s.endsWith(".nebula")) {
             return NEBULA_ICON;
         } else {
-            // Default case added per S126
+            // Do nothing
         }
 
         return super.getIcon(f);
@@ -148,7 +148,7 @@ public class FileChooser extends JFileChooser {
             } else if (!file.isFile()) {
                 msgPatternRef = "MSG_FileIsNotPlainFile";               //NOI18N
             } else {
-                // Default case added per S126
+                // Do nothing
             }
 
             if (msgPatternRef == null) {

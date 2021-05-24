@@ -78,7 +78,6 @@ public class SP2Traverse {
             } else if (graph.getBooleanValue(selectedNodeAttrId, position) && graph.getVertexNeighbourCount(position) > 1) {
                 seeds.set(vxId, true);
             } else {
-                // Default case added per S126
                 // Ignore nodes with no neighbour
             }
         }

@@ -74,7 +74,7 @@ public class HasClosestRelationshipQuestion implements AnalyticQuestionDescripti
         } else if (plugin instanceof WeightAnalytic) {
             parameters.setBooleanValue(WeightPlugin.NORMALISE_AVAILABLE_PARAMETER_ID, true);
         } else {
-            // Default case added per S126
+            // Do nothing
         }
     }
 }

@@ -503,7 +503,7 @@ public class Shape {
                                 feature.setAttribute(compatibleAttributeName, attributeValue == null
                                         ? null : attributeValue.toString());
                             } else {
-                                // Default case added per S126
+                                // Do nothing
                             }
                         });
                     }
@@ -653,7 +653,7 @@ public class Shape {
                                     } else if (schemaAttributes.containsKey(compatibleAttributeName) && attributeValue != null) {
                                         writableFeature.setAttribute(compatibleAttributeName, attributeValue.toString());
                                     } else {
-                                        // Default case added per S126
+                                        // Do nothing
                                     }
                                 });
                             }

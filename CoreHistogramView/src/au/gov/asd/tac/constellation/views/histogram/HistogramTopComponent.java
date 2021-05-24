@@ -376,7 +376,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
                     } else if ("color".equals(binnedAttributeRecord.getAttributeType())) {
                         binIconMode = BinIconMode.COLOR;
                     } else {
-                        // Default case added per S126
+                        // Do nothing
                     }
 
                     currentBinnedModificationCount = graph.getValueModificationCounter(binnedAttribute);

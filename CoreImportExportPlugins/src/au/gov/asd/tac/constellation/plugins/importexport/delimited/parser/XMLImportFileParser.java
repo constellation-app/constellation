@@ -173,7 +173,7 @@ public class XMLImportFileParser extends ImportFileParser {
                 final Text textNode = (Text) childNode;
                 text.append(textNode.getNodeValue());
             } else {
-                // Default case added per S126
+                // Do nothing
             }
         }
 

@@ -414,7 +414,7 @@ public final class TableViewTopComponent extends TopComponent implements Propert
         } else if (etype == GraphElementType.TRANSACTION) {
             txButton.doClick();
         } else {
-            // Default case added per S126
+            // Do nothing
         }
 
         final int row = dataTable.convertRowIndexToView(id);
@@ -926,7 +926,6 @@ public final class TableViewTopComponent extends TopComponent implements Propert
         } else if (attrId == GraphTableModel.TX_DST_ID_IX) {
             return GraphTableModel.TX_DST_ATTR;
         } else {
-            // Default case added per S126
             throw new IllegalArgumentException(String.format("Unknown attribute id: %d", attrId));
         }
     }

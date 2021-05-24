@@ -186,7 +186,7 @@ public final class CircTreeArranger implements Arranger {
         } else if (children.size() == 1) {
             onlyChildren.set(children.iterator().next().vxId);
         } else {
-            // Default case added per S126
+            // Do nothing
         }
 
         // Remove these children from consideration.
@@ -248,7 +248,7 @@ public final class CircTreeArranger implements Arranger {
 
             return fullRadius;
         } else {
-            // Default case added per S126
+            // Do nothing
         }
 
         // Force inner circle of childless children, if it makes sense to do so.

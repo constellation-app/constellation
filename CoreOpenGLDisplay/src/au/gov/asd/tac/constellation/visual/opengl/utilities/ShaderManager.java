@@ -122,7 +122,7 @@ public class ShaderManager {
                 } else if (line.length() != 0) {
                     value += line + SeparatorConstants.NEWLINE;
                 } else {
-                    // Default case added per S126
+                    // Do nothing
                 }
             }
         }

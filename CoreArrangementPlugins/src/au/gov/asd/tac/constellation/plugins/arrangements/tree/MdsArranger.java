@@ -155,7 +155,7 @@ public class MdsArranger implements Arranger {
             } else if (arrangeIt && !useLocs) {
                 vxsToArrangeLater[numVxsLater++] = vxId;
             } else {
-                // Default case added per S126
+                // Do nothing
             }
             if (influence && (useLocs || !arrangeIt)) {
                 vxsToInfluence[numVxsToInfluence++] = vxId;

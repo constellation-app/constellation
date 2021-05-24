@@ -104,7 +104,7 @@ public final class AutosaveStartup implements Runnable {
                             // This autosave is old enough to be purged; the user won't remember the details of the graph.
                             AutosaveUtilities.deleteAutosave(f);
                         } else {
-                            // Default case added per S126
+                            // Do nothing
                         }
                     } else {
                         // Some information about this autosave is missing so get rid of it.

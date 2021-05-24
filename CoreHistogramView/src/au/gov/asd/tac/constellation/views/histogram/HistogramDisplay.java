@@ -462,7 +462,7 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
                 } else if (metrics.stringWidth(original.substring(0, max) + "...") > width) {
                     break;
                 } else {
-                    // Default case added per S126
+                    // Do nothing
                 }
             }
         }

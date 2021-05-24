@@ -477,11 +477,11 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
     }
 
     void writeProperties(final java.util.Properties p) {
-        // Method intentionally left blank - S1186
+        // Method intentionally left blank
     }
 
     void readProperties(final java.util.Properties p) {
-        // Method intentionally left blank - S1186
+        // Method intentionally left blank
     }
 
 //    /**

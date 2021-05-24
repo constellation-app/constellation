@@ -96,7 +96,7 @@ public class RatioOfReciprocityPlugin extends SimpleEditPlugin {
                             || (linkLowId > linkHighId && transactionDirection == GraphConstants.DOWNHILL)) {
                         transactionOutCount++;
                     } else {
-                        // Default case added per S126
+                        // Do nothing
                     }
                 }
 

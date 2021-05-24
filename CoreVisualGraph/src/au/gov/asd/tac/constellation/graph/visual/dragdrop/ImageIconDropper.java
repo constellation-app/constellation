@@ -99,7 +99,7 @@ public class ImageIconDropper implements GraphDropper {
                     }
                 }
             } else {
-                // Default case added per S126
+                // Do nothing
             }
             if (image != null) {
                 final BufferedImage resultImage = image;

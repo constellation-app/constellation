@@ -193,7 +193,7 @@ public class MarkerUtilities {
                 } else if (latitude > maxLatitude) {
                     maxLatitude = latitude;
                 } else {
-                    // Default case added per S126
+                    // Do nothing
                 }
 
                 if (longitude < minLongitude) {
@@ -201,7 +201,7 @@ public class MarkerUtilities {
                 } else if (longitude > maxLongitude) {
                     maxLongitude = longitude;
                 } else {
-                    // Default case added per S126
+                    // Do nothing
                 }
             }
 

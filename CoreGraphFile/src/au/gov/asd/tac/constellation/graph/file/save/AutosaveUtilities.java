@@ -60,7 +60,6 @@ public final class AutosaveUtilities {
 
             return null;
         } else {
-            // Default case added per S126
             return saveDir;
         }
 
@@ -116,7 +115,7 @@ public final class AutosaveUtilities {
         } else if (path.endsWith(AUTO_EXT)) {
             f2 = new File(path.substring(0, path.length() - 5));
         } else {
-            // Default case added per S126
+            // Do nothing
         }
 
         if (f2 != null) {

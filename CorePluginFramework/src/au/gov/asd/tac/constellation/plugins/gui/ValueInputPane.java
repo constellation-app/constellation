@@ -227,7 +227,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                 } else if (event.getCode() == KeyCode.ESCAPE) {
                     event.consume();
                 } else {
-                    // Default case added per S126
+                    // Do nothing
                 }
             });
 

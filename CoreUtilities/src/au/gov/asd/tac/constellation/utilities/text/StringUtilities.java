@@ -149,7 +149,7 @@ public class StringUtilities {
                     splits.add(unescape(escapedString.substring(part0, i), delimiter));
                     part0 = i + 1;
                 } else {
-                    // Default case added per S126
+                    // Do nothing
                 }
             }
 

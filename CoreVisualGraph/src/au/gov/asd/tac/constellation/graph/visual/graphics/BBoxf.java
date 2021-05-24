@@ -172,7 +172,7 @@ public class BBoxf {
                 zId = z2Id;
                 requiresMix = false;
             } else {
-                // Default case added per S126
+                // Do nothing
             }
         }
 

@@ -140,7 +140,7 @@ public class ImportAttributeDefinition {
         } else if (columnIndex == ROWID_COLUMN_INDEX) {
             graph.setStringValue(getOverriddenAttributeId(), elementId, Integer.toString(rowIndex));
         } else {
-            // Default case added per S126
+            // Do nothing
         }
     }
 

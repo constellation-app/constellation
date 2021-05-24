@@ -236,7 +236,7 @@ public class TabularRecordStore implements RecordStore {
             values = Arrays.copyOf(values, capacity >>> BATCH_BITS);
             createColumn(key, values);
         } else {
-            // Default case added per S126
+            // Do nothing
         }
 
         Object[] batch = values[record >>> BATCH_BITS];

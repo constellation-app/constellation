@@ -208,7 +208,7 @@ public class CopyDataToExcelFile implements ActionListener, Action {
             } else if (e.getActionCommand().equals(Bundle.MSG_SelectedExcel())) {
                 processSelectedRowsToExcel(true);
             } else {
-                // Default case added per S126
+                // Do nothing
             }
         } catch (final IOException ex) {
             Exceptions.printStackTrace(ex);
