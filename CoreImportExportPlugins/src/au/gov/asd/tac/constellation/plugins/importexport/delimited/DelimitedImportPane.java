@@ -63,8 +63,5 @@ public class DelimitedImportPane extends ImportPane {
                 new HelpCtx(HELP_CTX).display();
             }
         });
-        
-        this.setStyle(String.format("-fx-font-family:\"%s\";", FontUtilities.getApplicationFontFamily()));
-        this.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
     }
 }

@@ -84,7 +84,6 @@ final class ApplicationFontOptionsPanel extends JPanel {
         fontCombo = new JComboBox<>();
         fontSizeSpinner = new JSpinner();
         resetBtn = new JButton();
-        warningLabel = new JLabel();
 
         setPreferredSize(new Dimension(604, 529));
 
@@ -110,19 +109,21 @@ final class ApplicationFontOptionsPanel extends JPanel {
         fontPanel.setLayout(fontPanelLayout);
         fontPanelLayout.setHorizontalGroup(fontPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(fontPanelLayout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(fontPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addComponent(fontLbl)
-                    .addComponent(fontSizeLbl))
-                .addGap(152, 152, 152)
-                .addGroup(fontPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addComponent(fontCombo, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                    .addComponent(fontSizeSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(196, Short.MAX_VALUE))
-            .addGroup(GroupLayout.Alignment.TRAILING, fontPanelLayout.createSequentialGroup()
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(resetBtn)
-                .addGap(43, 43, 43))
+                    .addGroup(GroupLayout.Alignment.TRAILING, fontPanelLayout.createSequentialGroup()
+                        .addContainerGap(435, Short.MAX_VALUE)
+                        .addComponent(resetBtn))
+                    .addGroup(fontPanelLayout.createSequentialGroup()
+                        .addGap(27, 27, 27)
+                        .addGroup(fontPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                            .addComponent(fontLbl)
+                            .addComponent(fontSizeLbl))
+                        .addGap(18, 18, 18)
+                        .addGroup(fontPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                            .addComponent(fontSizeSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(fontCombo, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         fontPanelLayout.setVerticalGroup(fontPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(fontPanelLayout.createSequentialGroup()
@@ -143,30 +144,19 @@ final class ApplicationFontOptionsPanel extends JPanel {
         fontCombo.getAccessibleContext().setAccessibleName(NbBundle.getMessage(ApplicationFontOptionsPanel.class, "ApplicationFontOptionsPanel.fontCombo.AccessibleContext.accessibleName")); // NOI18N
         fontSizeSpinner.getAccessibleContext().setAccessibleName(NbBundle.getMessage(ApplicationFontOptionsPanel.class, "ApplicationFontOptionsPanel.fontSizeSpinner.AccessibleContext.accessibleName")); // NOI18N
 
-        warningLabel.setFont(new Font("Tahoma", 1, 11)); // NOI18N
-        warningLabel.setForeground(new Color(102, 102, 102));
-        warningLabel.setIcon(new ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/preferences/resources/warning.png"))); // NOI18N
-        Mnemonics.setLocalizedText(warningLabel, NbBundle.getMessage(ApplicationFontOptionsPanel.class, "ApplicationFontOptionsPanel.warningLabel.text")); // NOI18N
-
         GroupLayout layout = new GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addComponent(fontPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(warningLabel, GroupLayout.PREFERRED_SIZE, 315, GroupLayout.PREFERRED_SIZE)))
+                .addComponent(fontPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addComponent(warningLabel)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(20, 20, 20)
                 .addComponent(fontPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(308, Short.MAX_VALUE))
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         fontPanel.getAccessibleContext().setAccessibleName(NbBundle.getMessage(ApplicationFontOptionsPanel.class, "ApplicationFontOptionsPanel.fontPanel.AccessibleContext.accessibleName")); // NOI18N
@@ -184,6 +174,5 @@ final class ApplicationFontOptionsPanel extends JPanel {
     private JLabel fontSizeLbl;
     private JSpinner fontSizeSpinner;
     private JButton resetBtn;
-    private JLabel warningLabel;
     // End of variables declaration//GEN-END:variables
 }

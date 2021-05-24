@@ -86,9 +86,6 @@ public class ConfigurationPane extends AnchorPane {
 
         // Add a single run to start with
         createTab();
-        
-        this.setStyle(String.format("-fx-font-family:\"%s\";", FontUtilities.getApplicationFontFamily()));
-        this.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
     }
 
     protected final Tab createTab() {

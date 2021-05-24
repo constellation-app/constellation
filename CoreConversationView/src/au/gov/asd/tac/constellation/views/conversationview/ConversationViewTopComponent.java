@@ -104,11 +104,13 @@ public final class ConversationViewTopComponent extends JavaFxTopComponent<Conve
     // End of variables declaration//GEN-END:variables
     @Override
     protected void handleComponentOpened() {
+        super.handleComponentOpened();
         conversation.getGraphUpdateManager().setManaged(true);
     }
 
     @Override
     protected void handleComponentClosed() {
+        super.handleComponentClosed();
         conversation.getGraphUpdateManager().setManaged(false);
     }
 

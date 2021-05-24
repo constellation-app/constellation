@@ -188,11 +188,12 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
      */
     @Override
     protected void handleComponentOpened() {
+        super.handleComponentOpened();
         // Ensure the manager is initialised and determine whether it is managing a graph:
         final boolean isEnabled = NamedSelectionManager.getDefault().isManagingActiveGraph();
         toggleUI(isEnabled);
     }
-
+    
     /**
      * Updates the NamedSelectionTopComponent with the latest
      * <code>NamedSelection</code>s.

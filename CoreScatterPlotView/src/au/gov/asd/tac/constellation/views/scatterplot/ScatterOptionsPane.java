@@ -262,9 +262,6 @@ public class ScatterOptionsPane extends BorderPane {
         this.setId("scatter-options-pane");
         this.setPadding(new Insets(5));
         this.setCenter(optionsToolBar);
-       
-        this.setStyle(String.format("-fx-font-family:\"%s\";", FontUtilities.getApplicationFontFamily()));
-        this.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
     }
 
     /**

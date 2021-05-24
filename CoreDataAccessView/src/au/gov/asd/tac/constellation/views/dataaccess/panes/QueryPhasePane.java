@@ -61,8 +61,6 @@ public class QueryPhasePane extends VBox {
 
         setFillWidth(true);
         getChildren().addAll(globalParametersPane, dataSourceList);
-        
-        this.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
     }
 
     public void enableGraphDependentMenuItems(boolean enabled) {

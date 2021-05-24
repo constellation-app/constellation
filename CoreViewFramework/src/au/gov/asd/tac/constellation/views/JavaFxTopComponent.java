@@ -15,7 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views;
 
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
+import au.gov.asd.tac.constellation.preferences.ApplicationFontPreferenceKeys;
+import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -92,6 +93,7 @@ public abstract class JavaFxTopComponent<P extends Pane> extends ListeningTopCom
             if (createStyle() != null) {
                 scene.getStylesheets().add(getClass().getResource(createStyle()).toExternalForm());
             }
+            scene.getStylesheets().add(JavafxStyleManager.getDynamicStyleSheet());
 
             scrollPane.setHbarPolicy(getHorizontalScrollPolicy());
             if (getHorizontalScrollPolicy() == ScrollBarPolicy.NEVER) {
@@ -125,11 +127,23 @@ public abstract class JavaFxTopComponent<P extends Pane> extends ListeningTopCom
 
     @Override
     protected void updateFont() {
-        if (content != null) {
+        if (scene != null) {
             Platform.runLater(() -> {
-                content.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
-                content.setStyle(String.format("-fx-font-family:\"%s\";", FontUtilities.getApplicationFontFamily()));
+                scene.getStylesheets().remove(JavafxStyleManager.getDynamicStyleSheet());
+                scene.getStylesheets().add(JavafxStyleManager.getDynamicStyleSheet());
             });
         }
     }
+
+    @Override
+    protected void handleComponentClosed() {
+        PreferenceUtilites.removePreferenceChangeListener(ApplicationFontPreferenceKeys.FONT_PREFERENCES, this);
+}
+
+    @Override
+    protected void handleComponentOpened() {
+        PreferenceUtilites.addPreferenceChangeListener(ApplicationFontPreferenceKeys.FONT_PREFERENCES, this);
+    }
+    
+    
 }

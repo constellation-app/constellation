@@ -239,9 +239,6 @@ public class ScatterChartPane extends BorderPane {
         this.getChildren().addAll(selection);
         this.setId("scatter-chart-pane");
         this.setPadding(new Insets(5));
-                
-        this.setStyle(String.format("-fx-font-family:\"%s\";", FontUtilities.getApplicationFontFamily()));
-        this.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
     }
 
     /**

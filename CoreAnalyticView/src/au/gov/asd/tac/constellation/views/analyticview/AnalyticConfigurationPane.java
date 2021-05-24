@@ -331,7 +331,6 @@ public class AnalyticConfigurationPane extends VBox {
 
         // set an initial state for the analytic configuration pane
         reset();
-        this.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
     }
 
     /**

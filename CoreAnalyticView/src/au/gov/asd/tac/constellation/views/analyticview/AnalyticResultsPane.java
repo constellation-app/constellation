@@ -68,7 +68,6 @@ public class AnalyticResultsPane extends VBox {
 
         // populate the analytic results pane
         this.getChildren().addAll(internalVisualisationPane, graphVisualisationPane);
-        this.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
     }
 
     /**

@@ -60,9 +60,6 @@ public class ActionPane extends BorderPane {
             }
         });
 
-        this.setStyle(String.format("-fx-font-family:\"%s\";", FontUtilities.getApplicationFontFamily()));
-        this.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
-        
         runBox.getChildren().add(importButton);
     }
 

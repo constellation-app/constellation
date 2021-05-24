@@ -196,7 +196,7 @@ public final class RunPane extends BorderPane implements KeyListener {
         // add a help place holder
         final Text startupHelpText = new Text();
         startupHelpText.setText(displayText);
-        startupHelpText.setStyle("-fx-font-size: 10pt;-fx-fill: grey;");
+        startupHelpText.setStyle("-fx-fill: grey;");
         sampleDataView.setPlaceholder(startupHelpText);
 
         sourceVertexAttributeList = new AttributeList(importController, this, AttributeType.SOURCE_VERTEX);
@@ -298,9 +298,6 @@ public final class RunPane extends BorderPane implements KeyListener {
                 mouseOverColumn = null;
             }
         });
-        
-        this.setStyle(String.format("-fx-font-family:\"%s\";", FontUtilities.getApplicationFontFamily()));
-        this.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
     }
 
     public Point2D getDraggingOffset() {

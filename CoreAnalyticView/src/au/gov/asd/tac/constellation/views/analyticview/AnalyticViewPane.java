@@ -167,8 +167,6 @@ public class AnalyticViewPane extends BorderPane {
 
         // initialise the top level pane
         this.setCenter(analyticViewPane);
-        
-        this.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
     }
 
     protected final void reset() {

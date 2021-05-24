@@ -73,7 +73,6 @@ public final class WelcomeTopComponent extends JavaFxTopComponent<WelcomeViewPan
        setToolTipText(Bundle.HINT_WelcomeTopComponentTopComponent());
        setLayout(new BorderLayout());
        
-       ProxyUtilities.setProxySelector(null);
        pane = new WelcomeViewPane();
        initContent();
    }

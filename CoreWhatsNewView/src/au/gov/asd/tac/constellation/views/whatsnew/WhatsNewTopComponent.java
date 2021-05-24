@@ -78,7 +78,6 @@ public final class WhatsNewTopComponent extends JavaFxTopComponent<WhatsNewViewP
         setToolTipText(Bundle.HINT_TutorialTopComponentTopComponent());
         setLayout(new BorderLayout());
 
-        ProxyUtilities.setProxySelector(null);
         pane = new WhatsNewViewPane();
         initContent();
     }

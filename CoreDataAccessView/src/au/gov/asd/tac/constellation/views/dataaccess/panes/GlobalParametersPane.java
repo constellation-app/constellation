@@ -41,7 +41,6 @@ public class GlobalParametersPane extends TitledPane {
         params = GlobalParameters.getParameters(presetParams);
 
         setContent(PluginParametersPane.buildPane(params, null, null));
-        getContent().setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));   
     }
 
     /**

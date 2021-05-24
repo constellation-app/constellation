@@ -176,7 +176,6 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
             // Create the scene:
             final Scene scene = new Scene(root);
             scene.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
-            scene.rootProperty().get().setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
 
             splitPane.prefHeightProperty().bind(scene.heightProperty());
             splitPane.prefWidthProperty().bind(scene.widthProperty());

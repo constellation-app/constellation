@@ -150,9 +150,6 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
     public DataAccessPane(DataAccessViewTopComponent topComponent) {
         this.topComponent = topComponent;
         
-        this.setStyle(String.format("-fx-font-family:\"%s\";", FontUtilities.getApplicationFontFamily()));
-        this.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
-
         dataAccessTabPane = new TabPane();
         dataAccessTabPane.setSide(Side.TOP);
         dataAccessTabPane.getSelectionModel().selectedIndexProperty().addListener((ObservableValue<? extends Number> ov, Number t, Number t1) -> {
