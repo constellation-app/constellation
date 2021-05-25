@@ -26,7 +26,7 @@ import org.openide.util.NbPreferences;
 
 /**
  * UI controller for the font preferences panel
- * 
+ *
  * @author Delphinus8821
  */
 @OptionsPanelController.SubRegistration(
@@ -39,8 +39,8 @@ import org.openide.util.NbPreferences;
     "ApplicationFontOptions_DisplayName=Application Font",
     "ApplicationFontOptions_Keywords=font size"
 })
-public class ApplicationFontOptionsPanelController extends OptionsPanelController{
-    
+public class ApplicationFontOptionsPanelController extends OptionsPanelController {
+
     private ApplicationFontOptionsPanel panel;
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
@@ -48,7 +48,7 @@ public class ApplicationFontOptionsPanelController extends OptionsPanelControlle
     public void update() {
         final Preferences prefs = NbPreferences.forModule(ApplicationFontPreferenceKeys.class);
         final ApplicationFontOptionsPanel fontOptionsPanel = getPanel();
-        
+
         fontOptionsPanel.setCurrentFont(prefs.get(ApplicationFontPreferenceKeys.FONT_FAMILY, ApplicationFontPreferenceKeys.FONT_FAMILY_DEFAULT));
         fontOptionsPanel.setFontSize(prefs.get(ApplicationFontPreferenceKeys.FONT_SIZE, ApplicationFontPreferenceKeys.FONT_SIZE_DEFAULT));
     }
@@ -57,13 +57,13 @@ public class ApplicationFontOptionsPanelController extends OptionsPanelControlle
     public void applyChanges() {
         if (isValid()) {
             pcs.firePropertyChange(OptionsPanelController.PROP_VALID, null, null);
-            
+
             if (isChanged()) {
                 pcs.firePropertyChange(OptionsPanelController.PROP_CHANGED, false, true);
-                
+
                 final Preferences prefs = NbPreferences.forModule(ApplicationFontPreferenceKeys.class);
                 final ApplicationFontOptionsPanel fontOptionsPanel = getPanel();
-                
+
                 prefs.put(ApplicationFontPreferenceKeys.FONT_FAMILY, fontOptionsPanel.getCurrentFont());
                 prefs.put(ApplicationFontPreferenceKeys.FONT_SIZE, fontOptionsPanel.getFontSize());
             }
@@ -78,8 +78,8 @@ public class ApplicationFontOptionsPanelController extends OptionsPanelControlle
     @Override
     public boolean isValid() {
         final ApplicationFontOptionsPanel fontOptionsPanel = getPanel();
-        return fontOptionsPanel.getCurrentFont() != null 
-                && fontOptionsPanel.getFontSize() != null;  
+        return fontOptionsPanel.getCurrentFont() != null
+                && fontOptionsPanel.getFontSize() != null;
     }
 
     @Override
@@ -94,7 +94,7 @@ public class ApplicationFontOptionsPanelController extends OptionsPanelControlle
     public JComponent getComponent(final Lookup lookup) {
         return getPanel();
     }
-    
+
     @Override
     public void addPropertyChangeListener(final PropertyChangeListener l) {
         pcs.addPropertyChangeListener(l);
@@ -104,15 +104,14 @@ public class ApplicationFontOptionsPanelController extends OptionsPanelControlle
     public void removePropertyChangeListener(final PropertyChangeListener l) {
         pcs.removePropertyChangeListener(l);
     }
-    
+
     @Override
     public HelpCtx getHelpCtx() {
         return new HelpCtx("au.gov.asd.tac.constellation.preferences.font");
     }
 
-    
     private ApplicationFontOptionsPanel getPanel() {
-        if (panel == null){
+        if (panel == null) {
             panel = new ApplicationFontOptionsPanel(this);
         }
         return panel;

@@ -30,9 +30,10 @@ public final class ApplicationPreferenceKeys {
     /**
      * The directory where various user data is stored.
      * <p>
-     * Note that this is separate from NbPreferences, which stores stuff in a mysterious place that the user doesn't
-     * necessarily know about. Rather, this is a directory in an obvious that the user knows about and may access
-     * outside of the application.
+     * Note that this is separate from NbPreferences, which stores stuff in a
+     * mysterious place that the user doesn't necessarily know about. Rather,
+     * this is a directory in an obvious that the user knows about and may
+     * access outside of the application.
      *
      * @param prefs Application preferences.
      *

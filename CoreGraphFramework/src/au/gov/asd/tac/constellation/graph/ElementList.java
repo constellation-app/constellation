@@ -18,8 +18,9 @@ package au.gov.asd.tac.constellation.graph;
 import java.util.Arrays;
 
 /**
- * A data structure that holds an ordered list of element ids. The elements are stored as a doubly linked list allowing
- * efficient addition and removal from both ends of the list.
+ * A data structure that holds an ordered list of element ids. The elements are
+ * stored as a doubly linked list allowing efficient addition and removal from
+ * both ends of the list.
  *
  * @author sirius
  */
@@ -56,7 +57,8 @@ public class ElementList {
     }
 
     /**
-     * Creates a new ElementList that is identical to the specified other ElementList.
+     * Creates a new ElementList that is identical to the specified other
+     * ElementList.
      *
      * @param original the other ElementList.
      */
@@ -70,8 +72,9 @@ public class ElementList {
     }
 
     /**
-     * Creates a new ElementList with the same elements as the element store. The capacity of the new ElementList will
-     * also be the same as that of the ElementStore.
+     * Creates a new ElementList with the same elements as the element store.
+     * The capacity of the new ElementList will also be the same as that of the
+     * ElementStore.
      *
      * @param elementStore the ElementStore.
      */
@@ -84,8 +87,8 @@ public class ElementList {
     }
 
     /**
-     * Ensures that the list is capable of holding the specified number of elements. The elements will be from 0 to
-     * capacity - 1 inclusive.
+     * Ensures that the list is capable of holding the specified number of
+     * elements. The elements will be from 0 to capacity - 1 inclusive.
      *
      * @param newCapacity the new capacity.
      */
@@ -103,8 +106,9 @@ public class ElementList {
     }
 
     /**
-     * Adds an element to the front of the list. If the element is already in the list, it is removed from its current
-     * position before being added to the front.
+     * Adds an element to the front of the list. If the element is already in
+     * the list, it is removed from its current position before being added to
+     * the front.
      *
      * @param element the element to be added.
      * @return true if the element was added (not already in the list)
@@ -148,8 +152,9 @@ public class ElementList {
     }
 
     /**
-     * Adds an element to the back of the list. If the element is already in the list, it is removed from its current
-     * position before being added to the back.
+     * Adds an element to the back of the list. If the element is already in the
+     * list, it is removed from its current position before being added to the
+     * back.
      *
      * @param element the element to be added.
      * @return true if the element was added (not already in the list)
@@ -201,16 +206,19 @@ public class ElementList {
     }
 
     /**
-     * Returns the first element in the list or Graph.NOT_FOUND if the list is empty.
+     * Returns the first element in the list or Graph.NOT_FOUND if the list is
+     * empty.
      *
-     * @return the first element in the list or Graph.NOT_FOUND if the list is empty.
+     * @return the first element in the list or Graph.NOT_FOUND if the list is
+     * empty.
      */
     public int getFirst() {
         return first;
     }
 
     /**
-     * Returns the last element in the list or Graph.NOT_FOUND if the list is empty.
+     * Returns the last element in the list or Graph.NOT_FOUND if the list is
+     * empty.
      *
      * @return the last element in the list or Graph.NOT_FOUND if the list is
      */
@@ -228,7 +236,8 @@ public class ElementList {
     }
 
     /**
-     * Removes the specified element from the list if it is currently in the list.
+     * Removes the specified element from the list if it is currently in the
+     * list.
      *
      * @param element the element.
      * @return true if the element was removed (was previously in the list).
@@ -256,9 +265,11 @@ public class ElementList {
     }
 
     /**
-     * Removes and returns the first element on the list, or Graph.NOT_FOUND if the list is empty.
+     * Removes and returns the first element on the list, or Graph.NOT_FOUND if
+     * the list is empty.
      *
-     * @return the first element on the list, or Graph.NOT_FOUND if the list is empty.
+     * @return the first element on the list, or Graph.NOT_FOUND if the list is
+     * empty.
      */
     public int removeFirst() {
         final int element = first;
@@ -283,9 +294,11 @@ public class ElementList {
     }
 
     /**
-     * Removes and returns the last element on the list, or Graph.NOT_FOUND if the list is empty.
+     * Removes and returns the last element on the list, or Graph.NOT_FOUND if
+     * the list is empty.
      *
-     * @return the last element on the list, or Graph.NOT_FOUND if the list is empty.
+     * @return the last element on the list, or Graph.NOT_FOUND if the list is
+     * empty.
      */
     public int removeLast() {
         final int element = last;
