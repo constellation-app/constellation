@@ -193,6 +193,7 @@ public final class RunPane extends BorderPane implements KeyListener {
         configBox.getChildren().add(tableBox);
 
         // add a help place holder
+        // TODO: make this text wrap
         final Text startupHelpText = new Text();
         startupHelpText.setText(displayText);
         startupHelpText.setStyle("-fx-font-size: 10pt;-fx-fill: grey;");

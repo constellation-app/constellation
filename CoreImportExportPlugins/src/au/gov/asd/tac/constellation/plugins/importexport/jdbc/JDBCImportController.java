@@ -31,7 +31,6 @@ import java.net.MalformedURLException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -142,8 +141,8 @@ public class JDBCImportController extends ImportController {
             currentColumns = new String[0];
             currentData = new ArrayList<>();
         } else {
-            try (final Connection dbConnection = connection.getConnection(username, password);
-                    final PreparedStatement ps = dbConnection.prepareStatement(queryCopy);
+            try (final Connection dbConnection = connection.getConnection(username, password); 
+                    final PreparedStatement ps = dbConnection.prepareStatement(queryCopy); 
                     final ResultSet rs = ps.executeQuery()) {
                 final int columnCount = ps.getMetaData().getColumnCount();
                 // populate currentColumns
@@ -171,7 +170,7 @@ public class JDBCImportController extends ImportController {
                 }
 
             } catch (final MalformedURLException | ClassNotFoundException | SQLException | NoSuchMethodException
-                    | InstantiationException | IllegalAccessException | IllegalArgumentException | NullPointerException
+                    | InstantiationException | IllegalAccessException | IllegalArgumentException
                     | InvocationTargetException ex) {
                 NotifyDisplayer.displayAlert("JDBC Import", "Query Error", ex.getMessage(), AlertType.ERROR);
                 LOGGER.log(Level.WARNING, ex.getMessage());
