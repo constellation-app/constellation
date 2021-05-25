@@ -173,8 +173,8 @@ public class JDBCSourcePane extends SourcePane {
                 gp.add(passwordLabel, 0, 4, 1, 1);
                 final PasswordField password = new PasswordField();
                 gp.add(password, 1, 4, 2, 1);
-                final Button add = new Button("Add");
-                add.setOnAction((final ActionEvent t2) -> {
+                final Button addConnection = new Button("Add");
+                addConnection.setOnAction((final ActionEvent t2) -> {
                     if (!cn.getText().isBlank() && driver.getValue() != null
                             && !connectionStringF.getText().isBlank()
                             && connectionManager.addConnection(cn.getText(), driver.getValue(), username.getText(),
@@ -186,7 +186,7 @@ public class JDBCSourcePane extends SourcePane {
                         d.close();
                     }
                 });
-                gp.add(add, 0, 5, 1, 1);
+                gp.add(addConnection, 0, 5, 1, 1);
                 final Button test = new Button("Test");
                 test.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
@@ -194,8 +194,6 @@ public class JDBCSourcePane extends SourcePane {
                         if (!cn.getText().isBlank()
                                 && driver.getValue() != null
                                 && !connectionStringF.getText().isBlank()
-                                && !username.getText().isBlank()
-                                && !password.getText().isBlank()
                                 && connectionManager.testConnection(cn.getText(), driver.getValue(), username.getText(),
                                         password.getText(), connectionStringF.getText())) {
                             NotifyDisplayer.displayAlert("JDBC Import", "Connection Success", "", AlertType.INFORMATION);
@@ -222,9 +220,9 @@ public class JDBCSourcePane extends SourcePane {
                 d.initModality(Modality.APPLICATION_MODAL);
                 d.showAndWait();
             };
-            final Button addBtn = new Button("Add");
-            addBtn.setOnAction(addConnectionAction);
-            connectionsPane.add(addBtn, 1, 1, 1, 1);
+            final Button openAddConnectionWindowButton = new Button("Add");
+            openAddConnectionWindowButton.setOnAction(addConnectionAction);
+            connectionsPane.add(openAddConnectionWindowButton, 1, 1, 1, 1);
             final Tab driversTab = new Tab("Drivers");
             driversTab.setClosable(false);
             final EasyGridPane dtRoot = new EasyGridPane();
@@ -278,8 +276,8 @@ public class JDBCSourcePane extends SourcePane {
             final Button removeBtn1 = new Button("Remove");
             removeBtn1.setOnAction(removebtnAction);
             dtRoot.add(removeBtn1, 0, 1, 1, 1);
-            final Button addBtn1 = new Button("Add");
-            addBtn1.setOnAction((final ActionEvent t1) -> {
+            final Button addDriverButton = new Button("Add");
+            addDriverButton.setOnAction((final ActionEvent t1) -> {
                 final Stage d = new Stage();
                 final BorderPane r = new BorderPane();
                 final EasyGridPane gp = new EasyGridPane();
@@ -287,14 +285,14 @@ public class JDBCSourcePane extends SourcePane {
                 gp.setPadding(GRIDPANE_PADDING);
                 gp.setHgap(GAP);
                 gp.setVgap(GAP);
-                final Label nameLabel = new Label("Name");
-                gp.add(nameLabel, 0, 0, 1, 1);
-                final ComboBox driverName = new ComboBox();
-                gp.add(driverName, 1, 0, 2, 1);
                 final Label jarLabel = new Label("Driver");
-                gp.add(jarLabel, 0, 1, 1, 1);
+                gp.add(jarLabel, 0, 0, 1, 1);
                 final TextField j = new TextField();
-                gp.add(j, 1, 1, 1, 1);
+                gp.add(j, 1, 0, 2, 1);
+                final Label nameLabel = new Label("Name");
+                gp.add(nameLabel, 0, 1, 1, 1);
+                final ComboBox driverName = new ComboBox();
+                gp.add(driverName, 1, 1, 1, 1);
                 final Button chooser = new Button("..");
                 chooser.setOnAction((final ActionEvent t2) -> {
                     final FileChooser cho = new FileChooser();
@@ -305,12 +303,13 @@ public class JDBCSourcePane extends SourcePane {
                             j.setText(f.getCanonicalPath());
                             driverName.getItems().clear();
                             driverName.getItems().addAll(JDBCDriver.getDrivers(f));
+                            driverName.getSelectionModel().selectFirst();
                         } catch (final IOException ex) {
                             LOGGER.log(Level.WARNING, ex.getMessage(), ex);
                         }
                     }
                 });
-                gp.add(chooser, 2, 1, 1, 1);
+                gp.add(chooser, 2, 0, 1, 1);
                 final Button add = new Button("Add");
                 add.setOnAction((final ActionEvent t2) -> {
                     if (driverName.getSelectionModel().getSelectedItem() != null) {
@@ -342,7 +341,7 @@ public class JDBCSourcePane extends SourcePane {
                 d.initModality(Modality.APPLICATION_MODAL);
                 d.showAndWait();
             });
-            dtRoot.add(addBtn1, 1, 1, 1, 1);
+            dtRoot.add(addDriverButton, 1, 1, 1, 1);
             driversTab.setContent(dtRoot);
             connectionsTab.setContent(connectionsPane);
             tp.getTabs().addAll(connectionsTab, driversTab);

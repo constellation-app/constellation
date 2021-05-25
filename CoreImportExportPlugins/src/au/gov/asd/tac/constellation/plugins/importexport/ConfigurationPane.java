@@ -181,8 +181,8 @@ public class ConfigurationPane extends AnchorPane {
     private static ObservableList<TableRow> createTableRows(final List<String[]> data) {
         final ObservableList<TableRow> rows = FXCollections.observableArrayList();
         final int rowCount = Math.min(101, data.size());
-        for (int row = 1; row < rowCount; row++) {
-            rows.add(new TableRow(row - 1, data.get(row)));
+        for (int row = 0; row < rowCount; row++) {
+            rows.add(new TableRow(row, data.get(row)));
         }
         return rows;
     }
