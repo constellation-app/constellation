@@ -36,7 +36,7 @@ public class InfoTextPanel extends javax.swing.JPanel {
         initComponents();
         textArea.setText(text);
         textArea.setCaretPosition(0);
-        textArea.setFont(new FontUIResource(Font.DIALOG, Font.PLAIN, FontUtilities.getOutputFontSize()));
+        textArea.setFont(new FontUIResource(Font.DIALOG, Font.PLAIN, FontUtilities.getApplicationFontSize()));
     }
 
     /**

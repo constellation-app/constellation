@@ -29,6 +29,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.json.JsonUtilities;
 import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlEvent.QualityCategory;
@@ -101,6 +102,7 @@ public final class QualityControlViewPane extends BorderPane {
     private static Map<QualityControlRule, QualityCategory> rulePriorities = null;
     private static final List<ToggleGroup> toggleGroups = new ArrayList<>();
     private static final JsonFactory FACTORY = new MappingJsonFactory();
+    private static final String FONT_SIZE_FORMAT = "-fx-font-size:%d;";
 
     private final TableColumn<QualityControlEvent, QualityControlEvent> identifierColumn;
     private final TableColumn<QualityControlEvent, QualityControlEvent> typeColumn;
@@ -111,8 +113,12 @@ public final class QualityControlViewPane extends BorderPane {
 
     public QualityControlViewPane() {
         readSerializedRulePriorities();
+                      
+        this.setStyle(String.format("-fx-font-family:\"%s\";", FontUtilities.getApplicationFontFamily()));
+        this.setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
 
         qualityTable = new TableView<>();
+        qualityTable.setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
         identifierColumn = new TableColumn<>("Identifier");
         identifierColumn.prefWidthProperty().bind(qualityTable.widthProperty().multiply(0.25));
         identifierColumn.setComparator((qce1, qce2) -> {
@@ -156,6 +162,7 @@ public final class QualityControlViewPane extends BorderPane {
         optionsPane.setId("qualitycontrolview-flow-pane");
         optionsPane.setAlignment(Pos.CENTER);
         final Button deleteButton = new Button("Delete From Graph");
+        deleteButton.setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
         deleteButton.setOnAction(event -> {
             final List<QualityControlEvent> qualitycontrolEvents = qualityTable.getSelectionModel().getSelectedItems();
             PluginExecution.withPlugin(new DeleteQualityControlEvents(qualitycontrolEvents))
@@ -164,6 +171,7 @@ public final class QualityControlViewPane extends BorderPane {
         });
 
         final Button selectButton = new Button("Select On Graph");
+        selectButton.setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
         selectButton.setOnAction(event -> {
             final List<QualityControlEvent> qualitycontrolEvents = qualityTable.getSelectionModel().getSelectedItems();
             PluginExecution.withPlugin(new SelectQualityControlEvents(qualitycontrolEvents))
@@ -172,6 +180,7 @@ public final class QualityControlViewPane extends BorderPane {
         });
 
         final Button removeButton = new Button("Deselect On Graph");
+        removeButton.setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
         removeButton.setOnAction(event -> {
             final List<QualityControlEvent> qualitycontrolEvents = qualityTable.getSelectionModel().getSelectedItems();
             PluginExecution.withPlugin(new DeselectQualityControlEvents(qualitycontrolEvents))
@@ -180,6 +189,7 @@ public final class QualityControlViewPane extends BorderPane {
         });
 
         final Button zoomButton = new Button("Zoom On Graph");
+        zoomButton.setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
         zoomButton.setOnAction(event -> {
             final List<QualityControlEvent> qualitycontrolEvents = qualityTable.getSelectionModel().getSelectedItems();
             PluginExecution.withPlugin(new ZoomToQualityControlEvents(qualitycontrolEvents))
@@ -187,6 +197,7 @@ public final class QualityControlViewPane extends BorderPane {
         });
 
         final Button priorityButton = new Button("Category Priority");
+        priorityButton.setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
         priorityButton.setOnAction(event -> {
             showPriorityDialog();
         });

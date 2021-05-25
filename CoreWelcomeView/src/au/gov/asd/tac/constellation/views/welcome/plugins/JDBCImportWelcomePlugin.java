@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.welcome.plugins;
 
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.importexport.jdbc.JDBCImportTopComponent;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import javafx.geometry.Pos;
@@ -40,6 +41,8 @@ import org.openide.windows.WindowManager;
 @NbBundle.Messages("JDBCImportWelcomePlugin=JDBCImport Welcome Plugin")
 public class JDBCImportWelcomePlugin implements WelcomePluginInterface {
 
+    private static final double TITLE_SIZE = 1.2;
+    private static final int TEXT_SIZE = 10;
     public static final String IMPORT = "resources/welcome_import_JDBC.png";
     final ImageView importImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(IMPORT)));
     final Button importButton = new Button();
@@ -92,9 +95,9 @@ public class JDBCImportWelcomePlugin implements WelcomePluginInterface {
         importImage.setFitHeight(75);
         importImage.setFitWidth(75);
         final Label imTitle = new Label("Import");
-        imTitle.setFont(new Font("Arial", 16));
+        imTitle.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * TITLE_SIZE));
         final Label imSubtitle = new Label("JDBC Importer");
-        imSubtitle.setFont(new Font("Arial", 10));
+        imSubtitle.setFont(new Font(FontUtilities.getApplicationFontFamily(), TEXT_SIZE));
         final VBox layoutVBox = new VBox(importImage, imTitle, imSubtitle);
         layoutVBox.setAlignment(Pos.CENTER);
         importButton.setGraphic(layoutVBox);

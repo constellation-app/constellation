@@ -260,7 +260,7 @@ public final class TableViewTopComponent extends TopComponent implements Propert
     private void setTableFont() {
         // Get the standard font and adjust the row height to suit.
         // Adding one to the font height looks a little bit nicer.
-        final Font font = FontUtilities.getOutputFont();
+        final Font font = FontUtilities.getApplicationFont();
         dataTable.setFont(font);
         final FontMetrics fm = this.getFontMetrics(font);
         dataTable.setRowHeight(fm.getHeight() + 1);

@@ -87,6 +87,8 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
         setToolTipText(Bundle.HINT_AnalyticViewTopComponent());
         super.initContent();
 
+
+                
         // analytic view specific listeners
         addStructureChangeHandler(graph -> {
             if (needsUpdate() && !suppressed) {

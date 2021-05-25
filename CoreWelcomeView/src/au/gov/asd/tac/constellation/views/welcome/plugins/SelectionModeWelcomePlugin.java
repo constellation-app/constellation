@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import javafx.geometry.Pos;
@@ -44,6 +45,8 @@ import org.openide.util.NbBundle;
 @NbBundle.Messages("SelectionModeWelcomePlugin=Selection Mode Welcome Plugin")
 public class SelectionModeWelcomePlugin implements WelcomePluginInterface {
     
+    private static final double TITLE_SIZE = 1.2;
+    private static final int TEXT_SIZE = 10;
     public static final String NEW_GRAPH = "resources/welcome_add_selection.png";
     final ImageView addView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(NEW_GRAPH)));
     final Button newButton = new Button();
@@ -95,9 +98,9 @@ public class SelectionModeWelcomePlugin implements WelcomePluginInterface {
         addView.setFitHeight(75);
         addView.setFitWidth(75);
         final Label title = new Label("New Graph");
-        title.setFont(new Font("Arial", 16));
+        title.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * TITLE_SIZE));
         final Label subtitle = new Label("Selection mode");
-        subtitle.setFont(new Font("Arial", 10));
+        subtitle.setFont(new Font(FontUtilities.getApplicationFontFamily(), TEXT_SIZE));
         final VBox layoutVBox = new VBox(addView, title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER);
         newButton.setGraphic(layoutVBox);
