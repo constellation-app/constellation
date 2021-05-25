@@ -172,6 +172,9 @@ public class DateTimeRangeParameterType extends PluginParameterType<DateTimeRang
 
         @Override
         public boolean equals(final Object o) {
+            if (o == null) {
+                return false;
+            }
             return this.getClass() == o.getClass() && Objects.equals(dtr, ((DateTimeRangeParameterValue) o).dtr);
         }
 

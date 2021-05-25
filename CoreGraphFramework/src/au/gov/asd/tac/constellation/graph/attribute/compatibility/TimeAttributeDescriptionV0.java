@@ -313,6 +313,9 @@ public final class TimeAttributeDescriptionV0 extends AbstractAttributeDescripti
 
         @Override
         public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            }
             if (this.getClass() == obj.getClass()) {
                 Representation r = (Representation) obj;
                 return time == r.time;

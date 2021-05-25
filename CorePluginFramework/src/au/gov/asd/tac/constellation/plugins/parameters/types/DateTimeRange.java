@@ -129,6 +129,9 @@ public class DateTimeRange {
 
     @Override
     public boolean equals(final Object other) {
+        if (other == null) {
+            return false;
+        }
         if (this == other) {
             return true;
         } else if (this.getClass() != other.getClass()) {

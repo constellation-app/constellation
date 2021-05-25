@@ -85,6 +85,9 @@ public class DoubleValue implements Copyable, DoubleReadable, DoubleWritable, Fl
 
     @Override
     public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
         if (this.getClass() == other.getClass()) {
             return value == ((DoubleValue) other).value;
         }

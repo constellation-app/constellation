@@ -44,6 +44,9 @@ public class BooleanBin extends Bin {
 
     @Override
     public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        }
         if (this.getClass() == o.getClass()) {
             BooleanBin bin = (BooleanBin) o;
             return key == bin.key;

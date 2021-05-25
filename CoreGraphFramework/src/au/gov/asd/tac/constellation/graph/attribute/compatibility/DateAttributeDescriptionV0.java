@@ -288,6 +288,9 @@ public final class DateAttributeDescriptionV0 extends AbstractAttributeDescripti
 
         @Override
         public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            }
             if (this.getClass() == obj.getClass()) {
                 return toString().equals(obj.toString());
             } else {

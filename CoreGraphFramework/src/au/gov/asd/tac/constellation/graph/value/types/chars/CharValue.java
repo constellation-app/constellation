@@ -136,6 +136,9 @@ public class CharValue implements Copyable, CharReadable, CharWritable, ByteRead
 
     @Override
     public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
         if (this.getClass() == other.getClass()) {
             return value == ((CharValue) other).value;
         }

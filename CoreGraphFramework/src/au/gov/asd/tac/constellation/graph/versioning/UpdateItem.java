@@ -32,6 +32,9 @@ public abstract class UpdateItem implements Comparable<UpdateItem> {
 
     @Override
     public boolean equals(final Object o) {
+        if (o == null) {
+            return false;
+        }
         if (this.getClass() != o.getClass()) {
             return false;
         }

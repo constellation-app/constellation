@@ -85,6 +85,9 @@ public class FloatValue implements Copyable, FloatReadable, FloatWritable, Doubl
 
     @Override
     public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
         if (this.getClass() == other.getClass()) {
             return value == ((FloatValue) other).value;
         }

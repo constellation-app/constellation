@@ -48,6 +48,9 @@ public class LongBin extends Bin {
 
     @Override
     public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        }
         if (this.getClass() == o.getClass()) {
             LongBin bin = (LongBin) o;
             return key == bin.key;

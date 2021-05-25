@@ -160,6 +160,9 @@ public class BooleanParameterType extends PluginParameterType<BooleanParameterVa
 
         @Override
         public boolean equals(final Object o) {
+            if (o == null) {
+                return false;
+            }
             return this.getClass() == o.getClass() && b == ((BooleanParameterValue) o).b;
         }
 

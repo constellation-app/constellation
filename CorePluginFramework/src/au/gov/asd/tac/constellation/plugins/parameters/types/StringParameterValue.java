@@ -97,6 +97,9 @@ public class StringParameterValue extends ParameterValue {
 
     @Override
     public boolean equals(final Object o) {
+        if (o == null) {
+            return false;
+        }
         return this.getClass() == o.getClass() && Objects.equals(s, ((StringParameterValue) o).s);
     }
 

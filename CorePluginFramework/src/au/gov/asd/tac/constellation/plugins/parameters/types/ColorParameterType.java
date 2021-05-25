@@ -168,6 +168,9 @@ public class ColorParameterType extends PluginParameterType<ColorParameterValue>
 
         @Override
         public boolean equals(final Object o) {
+            if (o == null) {
+                return false;
+            }
             return this.getClass() == o.getClass() && c.equals(((ColorParameterValue) o).c);
         }
 

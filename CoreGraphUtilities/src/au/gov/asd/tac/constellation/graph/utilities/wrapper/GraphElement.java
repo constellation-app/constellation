@@ -169,6 +169,9 @@ public abstract class GraphElement {
 
     @Override
     public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
         if (this.getClass() != obj.getClass()) {
             return false;
         }

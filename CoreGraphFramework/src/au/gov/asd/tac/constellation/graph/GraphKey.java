@@ -90,6 +90,9 @@ public class GraphKey {
 
     @Override
     public boolean equals(final Object other) {
+        if (other == null) {
+            return false;
+        }
         if (this.getClass() == other.getClass()) {
             GraphKey key = (GraphKey) other;
 

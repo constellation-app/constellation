@@ -992,6 +992,9 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
         @Override
         public boolean equals(final Object obj) {
+            if (obj == null) {
+                return false;
+            }
             if (this.getClass() == obj.getClass()) {
                 final MySavable m = (MySavable) obj;
                 return tc() == m.tc();

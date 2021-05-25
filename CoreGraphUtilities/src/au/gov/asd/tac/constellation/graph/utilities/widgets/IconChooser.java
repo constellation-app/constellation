@@ -414,6 +414,9 @@ class IconTreeFolder implements Comparable<IconTreeFolder> {
 
     @Override
     public boolean equals(final Object other) {
+        if (other == null) {
+            return false;
+        }
         return this.getClass() == other.getClass() && ((IconTreeFolder) other).name.equals(name);
     }
 
@@ -508,6 +511,9 @@ class IconListElement {
 
     @Override
     public boolean equals(final Object other) {
+        if (other == null) {
+            return false;
+        }
         return this.getClass() == other.getClass() && ((IconListElement) other).name.equals(name);
     }
 

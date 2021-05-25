@@ -97,6 +97,9 @@ public class IntValue implements Copyable, IntReadable, IntWritable, LongReadabl
 
     @Override
     public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
         if (this.getClass() == other.getClass()) {
             return value == ((IntValue) other).value;
         }

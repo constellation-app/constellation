@@ -416,6 +416,9 @@ public class MultiChoiceParameterType extends PluginParameterType<MultiChoicePar
 
         @Override
         public boolean equals(final Object o) {
+            if (o == null) {
+                return false;
+            }
             return this.getClass() == o.getClass() && Objects.equals(choices, ((MultiChoiceParameterValue) o).choices);
         }
 

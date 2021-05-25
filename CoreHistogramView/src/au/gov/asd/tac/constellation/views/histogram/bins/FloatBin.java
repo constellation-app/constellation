@@ -45,6 +45,9 @@ public class FloatBin extends Bin {
 
     @Override
     public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        }
         if (this.getClass() == o.getClass()) {
             FloatBin bin = (FloatBin) o;
             return key == bin.key;

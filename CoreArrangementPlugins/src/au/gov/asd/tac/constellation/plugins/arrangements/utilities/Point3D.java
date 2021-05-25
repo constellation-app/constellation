@@ -429,6 +429,9 @@ public abstract class Point3D implements Cloneable {
      */
     @Override
     public boolean equals(final Object obj) {
+        if (obj == null) {
+            return false;
+        }
         if (this.getClass() == obj.getClass()) {
             Point3D p3d = (Point3D) obj;
             return (getX() == p3d.getX()) && (getY() == p3d.getY() && (getZ() == p3d.getZ()));

@@ -285,6 +285,9 @@ public class FloatParameterType extends PluginParameterType<FloatParameterValue>
 
         @Override
         public boolean equals(final Object o) {
+            if (o == null) {
+                return false;
+            }
             return this.getClass() == o.getClass() && f == ((FloatParameterValue) o).f;
         }
 

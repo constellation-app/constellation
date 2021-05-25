@@ -97,6 +97,9 @@ public class LongValue implements Copyable, LongReadable, LongWritable, IntReada
 
     @Override
     public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
         if (this.getClass() == other.getClass()) {
             return value == ((LongValue) other).value;
         }
