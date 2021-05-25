@@ -143,6 +143,8 @@ public class BitMaskQueryCollection {
             for (final BitMaskQuery query : DEFAULT_TX_QUERIES) {
                 this.add(query);
             }
+        } else {
+            // Do nothing
         }
     }
 

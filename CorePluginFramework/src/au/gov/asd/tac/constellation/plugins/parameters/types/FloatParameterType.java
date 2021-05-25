@@ -23,8 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * The FloatParameterType defines {@link PluginParameter} objects that hold
- * float values.
+ * The FloatParameterType defines {@link PluginParameter} objects that hold float values.
  *
  * @author sirius
  */
@@ -37,15 +36,13 @@ public class FloatParameterType extends PluginParameterType<FloatParameterValue>
     public static final String ID = "float";
 
     /**
-     * The property of this type referring to whether the width of a GUI input
-     * for this parameter should be scaled according to the valid range of
-     * values.
+     * The property of this type referring to whether the width of a GUI input for this parameter should be scaled
+     * according to the valid range of values.
      */
     public static final String SHRINK_VAL = "shrink";
 
     /**
-     * The singleton instance of the type that should be used to construct all
-     * parameters that have this type.
+     * The singleton instance of the type that should be used to construct all parameters that have this type.
      */
     public static final FloatParameterType INSTANCE = new FloatParameterType();
 
@@ -60,12 +57,11 @@ public class FloatParameterType extends PluginParameterType<FloatParameterValue>
     }
 
     /**
-     * Construct a new {@link PluginParameter} of this type with initial value
-     * represented by the given {@link FloatParameterValue}.
+     * Construct a new {@link PluginParameter} of this type with initial value represented by the given
+     * {@link FloatParameterValue}.
      *
      * @param id The String id of the parameter to construct.
-     * @param pv A {@link FloatParameterValue} describing the initial value of
-     * the parameter being constructed.
+     * @param pv A {@link FloatParameterValue} describing the initial value of the parameter being constructed.
      * @return A {@link PluginParameter} of FloatParameterType.
      */
     public static PluginParameter<FloatParameterValue> build(String id, final FloatParameterValue pv) {
@@ -75,32 +71,28 @@ public class FloatParameterType extends PluginParameterType<FloatParameterValue>
     /**
      * Constructs a new instance of this type.
      * <p>
-     * Note: This constructor should not be called directly; it is public for
-     * the purposes of lookup (which may be removed for types in the future). To
-     * buildId parameters from the type, the static method
-     * {@link #build buildId()} should be used, or the singleton
-     * {@link #INSTANCE INSTANCE}.
+     * Note: This constructor should not be called directly; it is public for the purposes of lookup (which may be
+     * removed for types in the future). To buildId parameters from the type, the static method {@link #build buildId()}
+     * should be used, or the singleton {@link #INSTANCE INSTANCE}.
      */
     public FloatParameterType() {
         super(ID);
     }
 
     /**
-     * Sets the whether the width of a GUI input for the given parameter should
-     * be scaled according to the valid range of values.
+     * Sets the whether the width of a GUI input for the given parameter should be scaled according to the valid range
+     * of values.
      *
      * @param parameter A {@link PluginParameter}.
-     * @param shrinkInputWidth Whether the width of a GUI input should be
-     * scaled.
+     * @param shrinkInputWidth Whether the width of a GUI input should be scaled.
      */
     public static void setShrinkInputWidth(PluginParameter<FloatParameterValue> parameter, boolean shrinkInputWidth) {
         parameter.setProperty(SHRINK_VAL, shrinkInputWidth);
     }
 
     /**
-     * Set the minimum allowed value for the given parameter. When values
-     * strictly less than this are set for the given parameter, the parameter
-     * will be considered invalid.
+     * Set the minimum allowed value for the given parameter. When values strictly less than this are set for the given
+     * parameter, the parameter will be considered invalid.
      *
      * @param parameter A {@link PluginParameter}.
      * @param min The minimum value to set.
@@ -110,9 +102,8 @@ public class FloatParameterType extends PluginParameterType<FloatParameterValue>
     }
 
     /**
-     * Set the maximum allowed value for the given parameter. When values
-     * strictly greater than this are set for the given parameter, the parameter
-     * will be considered invalid.
+     * Set the maximum allowed value for the given parameter. When values strictly greater than this are set for the
+     * given parameter, the parameter will be considered invalid.
      *
      * @param parameter A {@link PluginParameter}.
      * @param max The maximum value to set.
@@ -122,9 +113,8 @@ public class FloatParameterType extends PluginParameterType<FloatParameterValue>
     }
 
     /**
-     * Set the 'typical' step between values for the given parameter. This does
-     * not affect the validity of the parameter, but rather acts as advice for a
-     * GUI input that provides discrete changes to the parameter.
+     * Set the 'typical' step between values for the given parameter. This does not affect the validity of the
+     * parameter, but rather acts as advice for a GUI input that provides discrete changes to the parameter.
      *
      * @param parameter A {@link PluginParameter}.
      * @param step The step between values for the parameter.
@@ -140,8 +130,7 @@ public class FloatParameterType extends PluginParameterType<FloatParameterValue>
     }
 
     /**
-     * An implementation of {@link ParameterValue} corresponding to this type.
-     * It holds float values.
+     * An implementation of {@link ParameterValue} corresponding to this type. It holds float values.
      */
     public static class FloatParameterValue extends ParameterValue implements NumberParameterValue {
 
@@ -181,8 +170,7 @@ public class FloatParameterType extends PluginParameterType<FloatParameterValue>
          * Set the current value
          *
          * @param newf The float for this parameter value to hold.
-         * @return True if the new value was different to the current value,
-         * false otherwise.
+         * @return True if the new value was different to the current value, false otherwise.
          */
         public boolean set(final float newf) {
             if (newf != f) {
@@ -297,7 +285,10 @@ public class FloatParameterType extends PluginParameterType<FloatParameterValue>
 
         @Override
         public boolean equals(final Object o) {
-            return o instanceof FloatParameterValue && f == ((FloatParameterValue) o).f;
+            if (o == null) {
+                return false;
+            }
+            return this.getClass() == o.getClass() && f == ((FloatParameterValue) o).f;
         }
 
         @Override

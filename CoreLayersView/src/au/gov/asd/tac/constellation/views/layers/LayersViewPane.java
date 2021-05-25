@@ -317,6 +317,8 @@ public class LayersViewPane extends BorderPane {
                     controller.getVxQueryCollection().removeQuery(index);
                 } else if (StringUtils.isBlank(txQuery) && StringUtils.isNotBlank(vxQuery)) {
                     controller.getTxQueryCollection().removeQuery(index);
+                } else {
+                    // Do nothing
                 }
                 description = null;
             }

@@ -231,6 +231,8 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                     selectedPluginsValid = false;
                 } else if (tabHasEnabledPlugins(tab)) {
                     pluginSelected = true;
+                } else {
+                    // Do nothing
                 }
             }
             // when no graph present, create new graph
@@ -263,6 +265,8 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                             msg,
                             null
                     );
+                } else {
+                    // Do nothing
                 }
 
                 PluginExecution.withPlugin(new SimplePlugin("Data Access View: Save State") {
@@ -315,18 +319,21 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                             return getExceptionDescription(e.getCause());
                         } else if (e.getMessage() != null) {
                             return e.getMessage();
+                        } else {
+                            return e.getClass().getName();
                         }
-                        return e.getClass().getName();
                     }
                 };
                 waiting.setName(DAV_PLUGIN_QUEUE_THREAD_NAME);
                 waiting.start();
                 LOGGER.info("Plugins run.");
             } else if (currentGraphState != null) { // Button is a stop button
-                for (Future<?> running : currentGraphState.runningPlugins.keySet()) {
+                currentGraphState.runningPlugins.keySet().forEach(running -> {
                     running.cancel(true);
-                }
+                });
                 setExecuteButtonToGo();
+            } else {
+                // Do nothing
             }
             if (DataAccessPreferenceKeys.isDeselectPluginsOnExecuteEnabled()) {
                 deselectAllPlugins();
@@ -623,11 +630,9 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         queryPane.addPluginDependentMenuItems(deactivateAllPlugins);
 
         /**
-         * The position order of the menu options has been considered carefully
-         * based on feedback. For instance the "Deactivate all plugins" exists
-         * as the first entry because it is the most common use case and also
-         * makes it less likely for one of the run* options to be clicked
-         * accidently.
+         * The position order of the menu options has been considered carefully based on feedback. For instance the
+         * "Deactivate all plugins" exists as the first entry because it is the most common use case and also makes it
+         * less likely for one of the run* options to be clicked accidently.
          */
         final ContextMenu menu = new ContextMenu();
         menu.getItems().addAll(
@@ -717,8 +722,8 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
     }
 
     /**
-     * Update executeButton, tab contextual menus, etc. to enable running
-     * plug-ins if there is a graph open and plug-ins are selected for running
+     * Update executeButton, tab contextual menus, etc. to enable running plug-ins if there is a graph open and plug-ins
+     * are selected for running
      *
      */
     protected void update() {
@@ -733,8 +738,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
     /**
      * Update executeButton, tab contextual menus, etc., given a readable graph
      *
-     * @param graph the DataAccessPane will be updated to reflect the state of
-     * this graph.
+     * @param graph the DataAccessPane will be updated to reflect the state of this graph.
      */
     protected void update(final Graph graph) {
         if (getCurrentTab() != null) {
@@ -753,8 +757,8 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
     }
 
     /**
-     * Update executeButton, tab contextual menus, etc. to enable running
-     * plug-ins if there is a graph open and plug-ins are selected for running
+     * Update executeButton, tab contextual menus, etc. to enable running plug-ins if there is a graph open and plug-ins
+     * are selected for running
      *
      * @param id
      */
@@ -782,8 +786,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
     }
 
     /**
-     * Called when a field is enabling it's parent plug-in, to enable
-     * executeButton, etc., if there is an open graph.
+     * Called when a field is enabling it's parent plug-in, to enable executeButton, etc., if there is an open graph.
      */
     @Override
     public void hierarchicalUpdate() {
@@ -791,10 +794,9 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
     }
 
     /**
-     * Enable or disable executeButton (not the tab contextual menus) based on
-     * whether any plug-ins are selected. This should *not* be called if
-     * plug-ins are running as in that case executeButton (actually the stop
-     * button) must remain enabled.
+     * Enable or disable executeButton (not the tab contextual menus) based on whether any plug-ins are selected. This
+     * should *not* be called if plug-ins are running as in that case executeButton (actually the stop button) must
+     * remain enabled.
      */
     private void updateForPlugins(boolean graphPresent) {
         boolean pluginSelected = false;
@@ -843,8 +845,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
     }
 
     /**
-     * check whether the selected plugins contain any parameters with invalid
-     * values
+     * check whether the selected plugins contain any parameters with invalid values
      *
      * @param tab
      * @return
@@ -945,12 +946,11 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
     }
 
     /**
-     * Run the selected plug-ins in pane given query pane, optionally waiting
-     * first on a list of futures. This method does not block.
+     * Run the selected plug-ins in pane given query pane, optionally waiting first on a list of futures. This method
+     * does not block.
      *
      * @param pluginPane
-     * @param async if not null, the plug-ins will wait till all futures are
-     * complete before any run.
+     * @param async if not null, the plug-ins will wait till all futures are complete before any run.
      * @return
      */
     private List<Future<?>> runPlugins(final QueryPhasePane pluginPane, final List<Future<?>> async) {
@@ -1003,8 +1003,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
     }
 
     /**
-     * Store current parameter values for all tabs and plug-ins in the recent
-     * values repository.
+     * Store current parameter values for all tabs and plug-ins in the recent values repository.
      */
     private void storeParameterValues() {
         for (final Tab tab : dataAccessTabPane.getTabs()) {

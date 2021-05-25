@@ -390,6 +390,8 @@ public class ToolsOverlay extends MapOverlay {
                         measureVertices.add(map.getLocation(event.getX(), event.getY()));
                     } else if (event.isShiftDown()) {
                         measureCircle = true;
+                    } else {
+                        // Do nothing
                     }
                     measureFinished = false;
                     measureOriginX = event.getX();

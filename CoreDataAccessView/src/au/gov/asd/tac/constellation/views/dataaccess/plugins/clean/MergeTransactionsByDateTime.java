@@ -135,6 +135,8 @@ public class MergeTransactionsByDateTime implements MergeTransactionType {
                         // reset the values
                         currentLead = null;
                         mergeGroup = new HashSet<>();
+                    } else {
+                        // Do nothing
                     }
                 }
             }

@@ -37,6 +37,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.prefs.Preferences;
 import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javax.swing.SwingUtilities;
 import org.openide.util.NbPreferences;
 
@@ -97,6 +99,22 @@ public abstract class ImportController<D> {
         displayedTransactionAttributes = new HashMap<>();
 
         keys = new HashSet<>();
+    }
+
+    /**
+     * Common handling of user alerts/dialogs for the Delimited File Importer.
+     *
+     * @param header Text to place in header bar (immediately below title bar).
+     * @param message Main message to display.
+     * @param alertType Type of alert being displayed, range from undefined, info through to warnings and errors.
+     */
+    public void displayAlert(String header, String message, Alert.AlertType alertType) {
+        final Alert dialog;
+        dialog = new Alert(alertType, "", ButtonType.OK);
+        dialog.setTitle("Delimited Importer");
+        dialog.setHeaderText(header);
+        dialog.setContentText(message);
+        dialog.showAndWait();
     }
 
     public ImportPane getStage() {

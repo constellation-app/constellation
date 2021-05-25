@@ -79,15 +79,13 @@ import org.openide.util.HelpCtx;
 /**
  * The GUI which provides the interface to a {@link PluginParameters} object.
  * <p>
- * Typically this is built from the tree of {@link PluginParametersNode}
- * objects, each of which contain a {@link ParameterLayout} object, that
- * together describe the hierarchical visual structure of the pane.
+ * Typically this is built from the tree of {@link PluginParametersNode} objects, each of which contain a
+ * {@link ParameterLayout} object, that together describe the hierarchical visual structure of the pane.
  * <p>
- * The leaves in this tree correspond to the individual {@link PluginParameter}
- * objects. Each leaf node's layout will add a single widget for interacting
- * with the specified parameter to the pane. Internal nodes typically
- * dateFormatter groups of these widgets, for example placing them horizontally
- * rather than vertically, or grouping them under a subheading.
+ * The leaves in this tree correspond to the individual {@link PluginParameter} objects. Each leaf node's layout will
+ * add a single widget for interacting with the specified parameter to the pane. Internal nodes typically dateFormatter
+ * groups of these widgets, for example placing them horizontally rather than vertically, or grouping them under a
+ * subheading.
  *
  * @author ruby_crucis
  */
@@ -96,8 +94,8 @@ public final class PluginParametersPane extends GridPane {
     private static final Insets HELP_INSETS = new Insets(0, 0, 0, 0);
 
     /**
-     * An abstract class which describes the visual layout of a
-     * {@link PluginParametersNode} within a {@link PluginParametersPane}.
+     * An abstract class which describes the visual layout of a {@link PluginParametersNode} within a
+     * {@link PluginParametersPane}.
      */
     public abstract static class ParameterLayout {
 
@@ -129,8 +127,7 @@ public final class PluginParametersPane extends GridPane {
     }
 
     /**
-     * Returns null elements when trying to retrieve any aspect of the GUI for a
-     * {@link PluginParametersNode}.
+     * Returns null elements when trying to retrieve any aspect of the GUI for a {@link PluginParametersNode}.
      */
     public static class NullLayout extends ParameterLayout {
 
@@ -156,8 +153,7 @@ public final class PluginParametersPane extends GridPane {
     }
 
     /**
-     * Returns a javafx separator and then delegates subsequent GUI construction
-     * to child nodes.
+     * Returns a javafx separator and then delegates subsequent GUI construction to child nodes.
      */
     public static class SeparatedParameterLayout extends ParameterLayout {
 
@@ -247,8 +243,8 @@ public final class PluginParametersPane extends GridPane {
     }
 
     /**
-     * Returns a label with a given title followed by a javafx separator and
-     * then delegates subsequent GUI construction to child nodes.
+     * Returns a label with a given title followed by a javafx separator and then delegates subsequent GUI construction
+     * to child nodes.
      */
     public static class TitledSeparatedParameterLayout extends SeparatedParameterLayout {
 
@@ -308,8 +304,8 @@ public final class PluginParametersPane extends GridPane {
     }
 
     /**
-     * Returns a warning icon and a label with the given message and then
-     * delegates subsequent GUI construction to child nodes.
+     * Returns a warning icon and a label with the given message and then delegates subsequent GUI construction to child
+     * nodes.
      */
     public static class WarningSeparatedParameterLayout extends SeparatedParameterLayout {
 
@@ -367,9 +363,8 @@ public final class PluginParametersPane extends GridPane {
     }
 
     /**
-     * Returns the widget (with associated label and help) corresponding to a
-     * leaf node that contains a single {@link PluginParameter}. Does nothing
-     * for nodes that are not leaf nodes.
+     * Returns the widget (with associated label and help) corresponding to a leaf node that contains a single
+     * {@link PluginParameter}. Does nothing for nodes that are not leaf nodes.
      */
     public static class SingleParameterLayout extends ParameterLayout {
 
@@ -411,8 +406,7 @@ public final class PluginParametersPane extends GridPane {
     }
 
     /**
-     * Iterates through all child nodes and adds their constructed GUIs to an
-     * HBox. Returns this HBox.
+     * Iterates through all child nodes and adds their constructed GUIs to an HBox. Returns this HBox.
      */
     public static class HorizontalParameterGroupLayout extends ParameterLayout {
 
@@ -524,8 +518,8 @@ public final class PluginParametersPane extends GridPane {
     }
 
     /**
-     * Constructs the entire Pane for a {@link PluginParameters} object. Should
-     * be used as the layout for the root node of this object only.
+     * Constructs the entire Pane for a {@link PluginParameters} object. Should be used as the layout for the root node
+     * of this object only.
      */
     public static class ParameterPaneLayout extends ParameterLayout {
 
@@ -618,11 +612,9 @@ public final class PluginParametersPane extends GridPane {
     /**
      * Constructor the Pane for the given set of parameters.
      *
-     * @param parameters The {@link PluginParameters} object to construct the
-     * pane for.
-     * @param top A {@link PluginParametersPaneListener} which will be informed
-     * of changes to the validity of the parameter values set from the
-     * constructed pane.
+     * @param parameters The {@link PluginParameters} object to construct the pane for.
+     * @param top A {@link PluginParametersPaneListener} which will be informed of changes to the validity of the
+     * parameter values set from the constructed pane.
      * @return the new PluginParametersPane.
      */
     public static PluginParametersPane buildPane(final PluginParameters parameters, final PluginParametersPaneListener top) {
@@ -630,16 +622,13 @@ public final class PluginParametersPane extends GridPane {
     }
 
     /**
-     * Constructor the Pane for the given set of parameters, skipping the layout
-     * for parameters which are in the excluded list.
+     * Constructor the Pane for the given set of parameters, skipping the layout for parameters which are in the
+     * excluded list.
      *
-     * @param parameters The {@link PluginParameters} object to construct the
-     * pane for.
-     * @param top A {@link PluginParametersPaneListener} which will be informed
-     * of changes to the validity of the parameter values set from the
-     * constructed pane.
-     * @param excludedParameters A Set of labels of the parameters to be
-     * excluded from this pane.
+     * @param parameters The {@link PluginParameters} object to construct the pane for.
+     * @param top A {@link PluginParametersPaneListener} which will be informed of changes to the validity of the
+     * parameter values set from the constructed pane.
+     * @param excludedParameters A Set of labels of the parameters to be excluded from this pane.
      * @return the new PluginParametersPane.
      */
     public static PluginParametersPane buildPane(final PluginParameters parameters, final PluginParametersPaneListener top, final Set<String> excludedParameters) {
@@ -776,7 +765,6 @@ public final class PluginParametersPane extends GridPane {
                         ldb.setVisible(parameter.isVisible());
                         break;
                     default:
-                        // do nothing
                         break;
                 }
             });
@@ -797,7 +785,6 @@ public final class PluginParametersPane extends GridPane {
                         Platform.runLater(this::parameterHasChanged);
                         break;
                     default:
-                        // do nothing
                         break;
                 }
             });
@@ -852,7 +839,7 @@ public final class PluginParametersPane extends GridPane {
                 default:
                     throw new IllegalArgumentException("Unsupported parameter type ID: " + id);
             }
-            
+
             linkParameterWidgetToTop(parameter);
             return pane;
         }

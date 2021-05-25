@@ -111,13 +111,19 @@ class OctTree extends AbstractTree{
                     index = TOP_L_F;
                 } else if (backHalf) {
                     index = TOP_L_B;
+                } else {
+                    // Do nothing
                 }
             } else if (rightHalf) {
                 if (frontHalf) {
                     index = TOP_R_F;
                 } else if (backHalf) {
                     index = TOP_R_B;
+                } else {
+                    // Do nothing
                 }
+            } else {
+                // Do nothing
             }
         } 
         else if (bottomHalf) {
@@ -134,6 +140,8 @@ class OctTree extends AbstractTree{
                     index = BOT_R_B;
                 }
             }
+        } else {
+            // Do nothing
         }
 
         return index;

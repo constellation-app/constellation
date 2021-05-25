@@ -29,11 +29,9 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
 
 /**
- * Present the user with a list of plugins and allow it to select one, then
- * expand that plugin.
+ * Present the user with a list of plugins and allow it to select one, then expand that plugin.
  * <p>
- * This saves users from having to hunt through the various sections for a
- * plugin when they don't know where it is.
+ * This saves users from having to hunt through the various sections for a plugin when they don't know where it is.
  *
  * @author algol
  */
@@ -44,8 +42,8 @@ public class PluginFinder {
     /**
      * Build a cooperative TextArea and ListView.
      * <p>
-     * The TextArea acts as a filter on the ListView. If there is only one item
-     * in the filtered list, it will be used when the user fires the OK action.
+     * The TextArea acts as a filter on the ListView. If there is only one item in the filtered list, it will be used
+     * when the user fires the OK action.
      *
      * @param dap
      * @param queryPhasePane
@@ -93,16 +91,21 @@ public class PluginFinder {
         dialog.getDialogPane().setContent(root);
 
         lv.setOnMouseClicked(mouseEvent -> {
-            if (mouseEvent.getClickCount() == 1) {
-                final ObservableList<String> items = lv.getSelectionModel().getSelectedItems();
-                if (items.size() == 1) {
+            switch (mouseEvent.getClickCount()) {
+                case 1:
+                    final ObservableList<String> items = lv.getSelectionModel().getSelectedItems();
+                    if (items.size() == 1) {
+                        result = lv.getSelectionModel().getSelectedItem();
+                    } else {
+                        result = null;
+                    }
+                    break;
+                case 2:
                     result = lv.getSelectionModel().getSelectedItem();
-                } else {
-                    result = null;
-                }
-            } else if (mouseEvent.getClickCount() == 2) {
-                result = lv.getSelectionModel().getSelectedItem();
-                dialog.setResult(ButtonType.OK);
+                    dialog.setResult(ButtonType.OK);
+                    break;
+                default:
+                    break;
             }
         });
 

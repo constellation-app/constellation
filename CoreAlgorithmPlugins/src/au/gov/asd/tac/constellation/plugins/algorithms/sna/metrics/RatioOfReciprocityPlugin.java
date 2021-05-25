@@ -33,8 +33,7 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Calculates ratio of reciprocity for each pair of vertices. This importance
- * measure does not include loops.
+ * Calculates ratio of reciprocity for each pair of vertices. This importance measure does not include loops.
  *
  * @author cygnus_x-1
  */
@@ -96,6 +95,8 @@ public class RatioOfReciprocityPlugin extends SimpleEditPlugin {
                     } else if ((linkLowId < linkHighId && transactionDirection == GraphConstants.UPHILL)
                             || (linkLowId > linkHighId && transactionDirection == GraphConstants.DOWNHILL)) {
                         transactionOutCount++;
+                    } else {
+                        // Do nothing
                     }
                 }
 

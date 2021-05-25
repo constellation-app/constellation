@@ -133,6 +133,8 @@ public final class HashmodAction implements ActionListener {
                     csvValues[attrCount] = i;
                     attrCount++;
                 }
+            } else {
+                // Do nothing
             }
             i++;
         }
