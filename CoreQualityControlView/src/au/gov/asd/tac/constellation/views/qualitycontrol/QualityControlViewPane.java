@@ -675,7 +675,7 @@ public final class QualityControlViewPane extends BorderPane {
     /**
      * Reads the preferences object to load the rulePriorities.
      */
-    private static void readSerializedRulePriorities() {
+    public static void readSerializedRulePriorities() {
         getPriorities().clear();
         final Map<String, String> priorityStringMap = JsonUtilities.getStringAsMap(FACTORY, PREFERENCES.get(ApplicationPreferenceKeys.RULE_PRIORITIES, ""));
         for (final Entry<String, String> entry : priorityStringMap.entrySet()) {
