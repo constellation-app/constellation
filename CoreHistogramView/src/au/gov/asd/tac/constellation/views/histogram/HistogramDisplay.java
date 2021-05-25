@@ -75,14 +75,14 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
     private static final String NO_DATA = "<No Data>";
     private static final Font FONT = FontUtilities.getOutputFont();
     private static final int GAP_BETWEEN_BARS = 5;
-    static final int MINIMUM_BAR_HEIGHT = FontUtilities.getOutputFontSize() <= 18 ? 18 : FontUtilities.getOutputFontSize();
-    static final int MAXIMUM_BAR_HEIGHT = FontUtilities.getOutputFontSize() <= 18 ? 18 : FontUtilities.getOutputFontSize() + 10;
+    static final int MINIMUM_BAR_HEIGHT = FontUtilities.getApplicationFontSize() <= 18 ? 18 : FontUtilities.getApplicationFontSize();
+    static final int MAXIMUM_BAR_HEIGHT = FontUtilities.getApplicationFontSize() <= 18 ? 18 : FontUtilities.getApplicationFontSize() + 10;
     private static final int PREFERRED_BAR_LENGTH = 200;
     private static final int MINIMUM_BAR_WIDTH = 4;
     private static final int MINIMUM_SELECTED_WIDTH = 3;
     private static final int MINIMUM_TEXT_WIDTH = 80;
     private static final int PREFERRED_HEIGHT = 600;
-    private static final int MIN_FONT_SIZE = FontUtilities.getOutputFontSize();
+    private static final int MIN_FONT_SIZE = FontUtilities.getApplicationFontSize();
     private static final int TOP_MARGIN = 3;
     private static final int BOTTOM_MARGIN = 3;
     private static final int LEFT_MARGIN = 3;

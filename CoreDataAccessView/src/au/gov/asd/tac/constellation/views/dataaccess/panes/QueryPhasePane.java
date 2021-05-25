@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPaneListener;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,6 +61,8 @@ public class QueryPhasePane extends VBox {
 
         setFillWidth(true);
         getChildren().addAll(globalParametersPane, dataSourceList);
+        
+        this.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
     }
 
     public void enableGraphDependentMenuItems(boolean enabled) {

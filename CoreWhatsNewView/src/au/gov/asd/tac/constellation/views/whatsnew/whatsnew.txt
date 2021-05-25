@@ -1,6 +1,14 @@
 == 3030-12-31 Getting Started
 <p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
+== 2021-05-21 Application Font Setting
+<p>In the CONSTELLATION settings a tab has been added to set the default font family and font size for all of the views in CONSTELLATION.</p>
+<p>The setting requires a restart of CONSTELLATION for it to be applied. </p>
+<p>The setting can be found via Setup -> Options -> CONSTELLATION -> Application Font. </p>
+
+== 2021-05-19 Ability to Pin/Unpin Nodes
+<p>Nodes can now be pinned, either through the pin/unpin toolbar icons in the arrangements panel, or via the corresponding Arrange menu options. Once pinned, nodes do not move when arrangement plugins are run, but can be manually moved. The 'pinned' vertex attribute stores this information.</p>
+
 == 2021-04-22 JDBC Database Import Connector View
 <p>The JDBC Connector window has been converted to use the standard view framework and now matches closely with the style of the delimited file importer.</p>
 

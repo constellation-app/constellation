@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.delimited;
 
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.plugins.importexport.ConfigurationPane;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportPane;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
@@ -62,5 +63,8 @@ public class DelimitedImportPane extends ImportPane {
                 new HelpCtx(HELP_CTX).display();
             }
         });
+        
+        this.setStyle(String.format("-fx-font-family:\"%s\";", FontUtilities.getApplicationFontFamily()));
+        this.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
     }
 }

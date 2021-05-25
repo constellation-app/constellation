@@ -156,7 +156,7 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
                 final long thisCameraModificationCounter = readableGraph.getValueModificationCounter(cameraAttribute);
 
                 if (thisGlobalModificationCounter != lastGlobalModificationCounter) {
-                    if (lastCameraModificationCounter == thisCameraModificationCounter) {
+                    if (lastGlobalModificationCounter == -1 || lastCameraModificationCounter == thisCameraModificationCounter) {
                         updateQualityControlState(graph);
                     }
                     lastGlobalModificationCounter = thisGlobalModificationCounter;

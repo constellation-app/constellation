@@ -2,6 +2,7 @@
 <!DOCTYPE index PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Index Version 2.0//EN" "http://java.sun.com/products/javahelp/index_2_0.dtd">
 <index version="2.0">
     <indexitem text="Application" target="au.gov.asd.tac.constellation.preferences.application"/>
+    <indexitem text="Font" target="au.gov.asd.tac.constellation.preferences.font"/>
     <indexitem text="Developer" target="au.gov.asd.tac.constellation.preferences.developer"/>
     <indexitem text="Graph" target="au.gov.asd.tac.constellation.preferences.graph"/>
 </index>

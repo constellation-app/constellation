@@ -210,11 +210,11 @@ public class JDBCSourcePane extends SourcePane {
                 sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
                 sp.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
                 r.setCenter(sp);
+
                 final Scene scene1 = new Scene(r);
                 scene1.setFill(Color.WHITESMOKE);
                 scene1.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
-                scene1.rootProperty().get().setStyle(String.format(FONT_SIZE_FORMAT,
-                        FontUtilities.getOutputFontSize()));
+                scene1.rootProperty().get().setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
                 d.setScene(scene1);
                 d.setTitle("Add Connection");
                 d.centerOnScreen();
@@ -330,10 +330,11 @@ public class JDBCSourcePane extends SourcePane {
                 sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
                 sp.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
                 r.setCenter(sp);
+
                 final Scene scene2 = new Scene(r);
                 scene2.setFill(Color.WHITESMOKE);
                 scene2.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
-                scene2.rootProperty().get().setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getOutputFontSize()));
+                scene2.rootProperty().get().setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
                 d.setScene(scene2);
                 d.setTitle("Add Driver");
                 d.centerOnScreen();
@@ -353,10 +354,11 @@ public class JDBCSourcePane extends SourcePane {
             sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
             sp.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
             root.setCenter(sp);
+
             final Scene scene3 = new Scene(root);
             scene3.setFill(Color.WHITESMOKE);
             scene3.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
-            scene3.rootProperty().get().setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getOutputFontSize()));
+            scene3.rootProperty().get().setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
             dialog.setScene(scene3);
             dialog.setTitle("Manage Connections");
             dialog.centerOnScreen();

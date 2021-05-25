@@ -307,12 +307,12 @@ public class AttributeEditorPanel extends BorderPane {
         optionsButtons.setPadding(new Insets(2));
         final Text heading = new Text();
         heading.textProperty().bind(title);
-        heading.setStyle("-fx-font-family:\"Arial\"; -fx-font-weight:bold;");
+        heading.setStyle("-fx-font-weight:bold;");
         heading.setFill(Color.web("#e0e0e0"));
         final ToggleButton showAllToggle = new ToggleButton("Show all");
         showAllToggle.setAlignment(Pos.CENTER);
         showAllToggle.setTextAlignment(TextAlignment.CENTER);
-        showAllToggle.setStyle("-fx-font-size: 12; -fx-background-insets: 0, 0; -fx-padding: 0");
+        showAllToggle.setStyle("-fx-background-insets: 0, 0; -fx-padding: 0");
         showAllToggle.setPrefSize(60, 12);
         showAllToggle.setMaxSize(60, 12);
         showAllToggle.setPadding(new Insets(5));
@@ -453,7 +453,7 @@ public class AttributeEditorPanel extends BorderPane {
     }
 
     public void setFontSize() {
-        currentFontSize = FontUtilities.getOutputFontSize();
+        currentFontSize = FontUtilities.getApplicationFontSize();
         Platform.runLater(() -> {
             root.setStyle(String.format("-fx-font-size:%dpx;", currentFontSize));
         });
