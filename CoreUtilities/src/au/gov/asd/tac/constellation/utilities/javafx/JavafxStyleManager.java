@@ -63,14 +63,14 @@ public class JavafxStyleManager {
             tempStyleClass.deleteOnExit();
 
             // dynamically write the style sheet
-            try ( PrintWriter printWriter = new PrintWriter(tempStyleClass)) {
+            try (final PrintWriter printWriter = new PrintWriter(tempStyleClass)) {
                 printWriter.println(String.format(".button { -fx-font-size: %dpx; -fx-font-family:\"%s\"; }", FontUtilities.getApplicationFontSize(), FontUtilities.getApplicationFontFamily()));
                 printWriter.println(String.format(".label { -fx-font-size: %dpx; -fx-font-family:\"%s\"; }", FontUtilities.getApplicationFontSize(), FontUtilities.getApplicationFontFamily()));
                 printWriter.println(String.format(".root { -fx-font-size: %dpx; -fx-font-family:\"%s\"; }", FontUtilities.getApplicationFontSize(), FontUtilities.getApplicationFontFamily()));
             }
 
             dynamicStyleSheet = tempStyleClass.toURI().toString();
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             ex.printStackTrace();
         }
 //        }

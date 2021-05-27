@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.welcome.plugins;
 
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.views.whatsnew.WhatsNewTopComponent;
@@ -27,7 +26,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javax.swing.SwingUtilities;
 import org.openide.util.NbBundle;
@@ -45,7 +43,6 @@ import org.openide.windows.WindowManager;
 @NbBundle.Messages("WhatsNewWelcomePlugin=Whats New Welcome Plugin")
 public class WhatsNewWelcomePlugin implements WelcomePluginInterface {
     
-    private static final double TITLE_SIZE = 1.5;
     public static final String WHATS_NEW = "resources/welcome_new.png";
     final ImageView newView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(WHATS_NEW)));
     final Button whatsNewBtn = new Button();
@@ -100,10 +97,8 @@ public class WhatsNewWelcomePlugin implements WelcomePluginInterface {
         newView.setFitWidth(25);
         final Text title = new Text("What's New?");
         title.setFill(Color.WHITE);
-        title.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * TITLE_SIZE));
         final Text subtitle = new Text("Features in the latest version");
         subtitle.setFill(Color.WHITE);
-        subtitle.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize()));
         final VBox layoutVBox = new VBox(title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER_LEFT);
         final HBox layoutHBox = new HBox(newView, layoutVBox);

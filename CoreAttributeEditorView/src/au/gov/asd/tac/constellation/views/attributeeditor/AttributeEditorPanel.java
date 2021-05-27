@@ -240,7 +240,6 @@ public class AttributeEditorPanel extends BorderPane {
         });
 
         updateEditorPanel(null);
-        setFontSize();
     }
 
     void rebuildColourMenu() {
@@ -346,7 +345,7 @@ public class AttributeEditorPanel extends BorderPane {
         final Button addMenu = new Button(null, new ImageView(UserInterfaceIconProvider.ADD.buildImage(16)));
         addMenu.setAlignment(Pos.CENTER);
         addMenu.setTextAlignment(TextAlignment.CENTER);
-        addMenu.setStyle("-fx-background-color: #666666; -fx-background-radius: 2; -fx-font-size: 12; -fx-background-insets: 0, 0; -fx-padding: 0");
+        addMenu.setStyle("-fx-background-color: #666666; -fx-background-radius: 2; -fx-background-insets: 0, 0; -fx-padding: 0");
         addMenu.setPrefSize(18, 12);
         addMenu.setMaxSize(18, 12);
         addMenu.setPadding(new Insets(5));
@@ -425,7 +424,7 @@ public class AttributeEditorPanel extends BorderPane {
         final Button editKeyButton = new Button(null, new ImageView(UserInterfaceIconProvider.KEY.buildImage(16)));
         editKeyButton.setAlignment(Pos.CENTER);
         editKeyButton.setTextAlignment(TextAlignment.CENTER);
-        editKeyButton.setStyle("-fx-background-color: #666666; -fx-background-radius: 2; -fx-font-size: 12; -fx-background-insets: 0, 0; -fx-padding: 0");
+        editKeyButton.setStyle("-fx-background-color: #666666; -fx-background-radius: 2; -fx-background-insets: 0, 0; -fx-padding: 0");
         editKeyButton.setPrefSize(18, 12);
         editKeyButton.setMaxSize(18, 12);
         editKeyButton.setPadding(new Insets(5));
@@ -451,13 +450,6 @@ public class AttributeEditorPanel extends BorderPane {
         result.setId("heading");
         result.setExpanded(false);
         return result;
-    }
-
-    public void setFontSize() {
-        currentFontSize = FontUtilities.getApplicationFontSize();
-        Platform.runLater(() -> {
-            root.setStyle(String.format("-fx-font-size:%dpx;", currentFontSize));
-        });
     }
 
     private class AddAttributePlugin extends SimpleEditPlugin {
