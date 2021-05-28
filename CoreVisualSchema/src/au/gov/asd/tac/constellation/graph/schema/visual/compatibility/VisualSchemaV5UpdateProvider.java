@@ -54,11 +54,12 @@ public class VisualSchemaV5UpdateProvider extends SchemaUpdateProvider {
     @Override
     protected void schemaUpdate(final StoreGraph graph) {
         final int decoratorsAttribute = VisualConcept.GraphAttribute.DECORATORS.get(graph);
+        final int pinnedAttribute = VisualConcept.VertexAttribute.PINNED.get(graph);
         
         final VertexDecorators oldDecorators = graph.getObjectValue(decoratorsAttribute, 0);
         // create the new set of decorators by adding the pinned attribute as the NE decorator and retain all others
         final VertexDecorators newDecorators = new VertexDecorators(oldDecorators.getNorthWestDecoratorAttribute(), 
-                "pinned", 
+                graph.getAttributeName(pinnedAttribute), 
                 oldDecorators.getSouthEastDecoratorAttribute(), 
                 oldDecorators.getSouthWestDecoratorAttribute()
         );
