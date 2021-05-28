@@ -31,7 +31,6 @@ import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
-import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
@@ -44,7 +43,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -301,22 +299,18 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
             }
         }
 
-        if (!PreferenceUtilites.isGraphViewFrozen()) {
-            try {
-                if (n < 10000) {
-                    // Do a trees layout.
-                    PluginExecutor.startWith(ArrangementPluginRegistry.TREES)
-                            .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
-                } else {
-                    // Do a grid layout.
-                    PluginExecutor.startWith(ArrangementPluginRegistry.GRID_COMPOSITE)
-                            .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
-                }
-            } catch (PluginException ex) {
-                Exceptions.printStackTrace(ex);
+        try {
+            if (n < 10000) {
+                // Do a trees layout.
+                PluginExecutor.startWith(ArrangementPluginRegistry.TREES)
+                        .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
+            } else {
+                // Do a grid layout.
+                PluginExecutor.startWith(ArrangementPluginRegistry.GRID_COMPOSITE)
+                        .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
             }
-        } else {
-            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
+        } catch (PluginException ex) {
+            Exceptions.printStackTrace(ex);
         }
 
         interaction.setProgress(1, 0, "Completed successfully", true);

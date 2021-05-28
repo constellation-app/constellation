@@ -82,14 +82,6 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
         startupWelcomeCheckbox.setSelected(welcomeOnStartup);
     }
 
-    public boolean getFreezeGraph() {
-        return freezeGraphCheckBox.isSelected();
-    }
-
-    public void setFreezeGraph(final boolean freezeGraph) {
-        freezeGraphCheckBox.setSelected(freezeGraph);
-    }
-
     public int getWebserverPort() {
         return (Integer) webserverPortSpinner.getModel().getValue();
     }
@@ -147,8 +139,6 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
         autosaveLabel = new JLabel();
         startupPanel = new JPanel();
         startupWelcomeCheckbox = new JCheckBox();
-        displayPanel = new JPanel();
-        freezeGraphCheckBox = new JCheckBox();
         webserverPanel = new JPanel();
         webserverPortLabel = new JLabel();
         webserverPortSpinner = new JSpinner();
@@ -230,25 +220,6 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        displayPanel.setBorder(BorderFactory.createTitledBorder(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.displayPanel.border.title"))); // NOI18N
-
-        Mnemonics.setLocalizedText(freezeGraphCheckBox, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.freezeGraphCheckBox.text")); // NOI18N
-
-        GroupLayout displayPanelLayout = new GroupLayout(displayPanel);
-        displayPanel.setLayout(displayPanelLayout);
-        displayPanelLayout.setHorizontalGroup(displayPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(displayPanelLayout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addComponent(freezeGraphCheckBox)
-                .addContainerGap(418, Short.MAX_VALUE))
-        );
-        displayPanelLayout.setVerticalGroup(displayPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(displayPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(freezeGraphCheckBox)
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
         webserverPanel.setBorder(BorderFactory.createTitledBorder(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.webserverPanel.border.title"))); // NOI18N
 
         Mnemonics.setLocalizedText(webserverPortLabel, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.webserverPortLabel.text")); // NOI18N
@@ -294,7 +265,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
                     .addComponent(restDirectoryLabel)
                     .addComponent(restDirectoryText, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                     .addComponent(restDirectoryButton))
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
 
         notebookPanel.setBorder(BorderFactory.createTitledBorder(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.notebookPanel.border.title_1"))); // NOI18N
@@ -378,7 +349,6 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
                         .addComponent(userDirectoryText)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(userDirectoryButton))
-                    .addComponent(displayPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(webserverPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(notebookPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(saveLocationPanel, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -392,21 +362,18 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
                     .addComponent(userDirectoryButton)
                     .addComponent(userDirectoryText, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(autosavePanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addComponent(autosavePanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(startupPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(displayPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(webserverPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(notebookPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(saveLocationPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        displayPanel.getAccessibleContext().setAccessibleName(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.displayPanel.AccessibleContext.accessibleName")); // NOI18N
         notebookPanel.getAccessibleContext().setAccessibleName(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.notebookPanel.AccessibleContext.accessibleName")); // NOI18N
         saveLocationPanel.getAccessibleContext().setAccessibleName(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.saveLocationPanel.AccessibleContext.accessibleName")); // NOI18N
     }// </editor-fold>//GEN-END:initComponents
@@ -462,9 +429,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
     private JLabel autosaveLabel;
     private JPanel autosavePanel;
     private JSpinner autosaveSpinner;
-    private JPanel displayPanel;
     private JCheckBox downloadPythonClientCheckBox;
-    private JCheckBox freezeGraphCheckBox;
     private JButton notebookDirectoryButton;
     private JLabel notebookDirectoryLabel;
     private JTextField notebookDirectoryText;
