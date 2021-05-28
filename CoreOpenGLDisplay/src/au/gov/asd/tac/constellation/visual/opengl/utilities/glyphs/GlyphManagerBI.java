@@ -413,7 +413,7 @@ public final class GlyphManagerBI implements GlyphManager {
         int right = Integer.MIN_VALUE;
         int top = Integer.MAX_VALUE;
         int bottom = Integer.MIN_VALUE;
-        final GlyphRectangle[][] glyphRectangles = new GlyphRectangle[1][0];
+        GlyphRectangle[] glyphRectangles = new GlyphRectangle[0];
 
         for (final FontDirectionalRun drun : FontDirectionalRun.getDirectionRuns(text)) {
             for (final FontRunSequence frun : FontRunSequence.getFontRuns(drun.run, fontsInfo)) {
@@ -479,17 +479,17 @@ public final class GlyphManagerBI implements GlyphManager {
                 // Remember the texture position and rectangle (see below).
                 //
                 final FontMetrics fm = g2d.getFontMetrics(frun.font);
-                merged.forEach(r -> { // slowest lamda
+                for (final Rectangle r : merged) {
                     // Check that the glyph doesn't extend outside the drawing texture.
                     //
                     final int y = Math.max(r.y, 0);
                     final int height = Math.min(r.height, drawing.getHeight() - y);
                     if (height > 0) {
                         final int position = textureBuffer.addRectImage(drawing.getSubimage(r.x, y, r.width, height), 0);
-                        glyphRectangles[0] = Arrays.copyOf(glyphRectangles[0], glyphRectangles[0].length + 1);
-                        glyphRectangles[0][glyphRectangles[0].length - 1] = GlyphRectangleFactory.create(position, r, fm.getAscent());
+                        glyphRectangles = Arrays.copyOf(glyphRectangles, glyphRectangles.length + 1);
+                        glyphRectangles[glyphRectangles.length - 1] = GlyphRectangleFactory.create(position, r, fm.getAscent());
                     }
-                });
+                }
 
                 if (drawRuns) {
                     g2d.setColor(Color.RED);
@@ -532,7 +532,7 @@ public final class GlyphManagerBI implements GlyphManager {
 
         g2d.dispose();
 
-        return new LigatureContext(glyphRectangles[0], left, right, top, bottom);
+        return new LigatureContext(glyphRectangles, left, right, top, bottom);
     }
 
     @Override
