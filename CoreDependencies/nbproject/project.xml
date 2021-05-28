@@ -2477,18 +2477,6 @@
                 <binary-origin>release/modules/ext/GeographicLib-Java-1.49.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/byte-buddy-1.10.20-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/byte-buddy-1.10.20-jar.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/byte-buddy-agent-1.10.20-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/byte-buddy-agent-1.10.20-jar.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/checker-qual-3.5.0-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/checker-qual-3.5.0-jar.jar</binary-origin>
-            </class-path-extension>              
-            <class-path-extension>
                 <runtime-relative-path>ext/SparseBitSet-1.2.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/SparseBitSet-1.2.jar</binary-origin>
             </class-path-extension>
@@ -2499,6 +2487,14 @@
             <class-path-extension>
                 <runtime-relative-path>ext/bigint-0.7.1.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/bigint-0.7.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/byte-buddy-1.10.20.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/byte-buddy-1.10.20.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/byte-buddy-agent-1.10.20.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/byte-buddy-agent-1.10.20.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/checker-qual-3.5.0.jar</runtime-relative-path>
@@ -3053,12 +3049,12 @@
                 <binary-origin>release/modules/ext/log4j-1.2.17.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/mockito-core-3.9.0-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/mockito-core-3.9.0-jar.jar</binary-origin>
+                <runtime-relative-path>ext/mockito-core-3.9.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/mockito-core-3.9.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/mockito-inline-3.9.0-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/mockito-inline-3.9.0-jar.jar</binary-origin>
+                <runtime-relative-path>ext/mockito-inline-3.9.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/mockito-inline-3.9.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/nativewindow-natives-windows-i586.jar</runtime-relative-path>
@@ -3085,16 +3081,8 @@
                 <binary-origin>release/modules/ext/newt.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/objenesis-3.2-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/objenesis-3.2-jar.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/org.eclipse.emf.common-2.15.0-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/org.eclipse.emf.common-2.15.0-jar.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/org.eclipse.emf.ecore-2.15.0-jar.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/org.eclipse.emf.ecore-2.15.0-jar.jar</binary-origin>
+                <runtime-relative-path>ext/objenesis-3.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/objenesis-3.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/org.eclipse.emf.common-2.15.0.jar</runtime-relative-path>
