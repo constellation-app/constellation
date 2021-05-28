@@ -36,21 +36,19 @@ import java.util.logging.Logger;
 import org.openide.util.Exceptions;
 
 /**
- * This class contains all of the logic for performing shortest paths
- * calculations on a given set of <code>verticesToPath</code>.
+ * This class contains all of the logic for performing shortest paths calculations on a given set of
+ * <code>verticesToPath</code>.
  * <p>
- * There are two main functions, <code>queryDistance</code> and
- * <code>queryPath</code>,
+ * There are two main functions, <code>queryDistance</code> and <code>queryPath</code>,
  * <p>
- * <code>queryDistance</code> is called first and calculates the shortest
- * distances between nodes on the <code>Graph</code>
- * <p>
- * <code>queryPath</code> is called after <code>queryDistance</code> and
- * calculates the path of the shortest distance between nodes on the
+ * <code>queryDistance</code> is called first and calculates the shortest distances between nodes on the
  * <code>Graph</code>
  * <p>
- * It should be noted that all search operations are multi-threaded, and are
- * performed in parallel when there are sufficient resources on the platform.
+ * <code>queryPath</code> is called after <code>queryDistance</code> and calculates the path of the shortest distance
+ * between nodes on the <code>Graph</code>
+ * <p>
+ * It should be noted that all search operations are multi-threaded, and are performed in parallel when there are
+ * sufficient resources on the platform.
  *
  * @author procyon
  */
@@ -58,26 +56,23 @@ public class DijkstraServices {
 
     private static final int AVAILABLE_THREADS = Math.max(1, (Runtime.getRuntime().availableProcessors() - 1));
     /**
-     * The maximum number of items to assign each thread (until we don't have
-     * enough threads anyway)
+     * The maximum number of items to assign each thread (until we don't have enough threads anyway)
      */
     private static final int MAX_THRESHOLD_DISTANCE = 10;
     /**
-     * The maximum number of items to assign each thread (until we don't have
-     * enough threads anyway)
+     * The maximum number of items to assign each thread (until we don't have enough threads anyway)
      */
     private static final int MAX_THRESHOLD_PATH = 10;
     private static final String SELECTED = VisualConcept.VertexAttribute.SELECTED.getName();
     private final GraphWriteMethods graph;
     /**
-     * A lock object to enforce synchronization; synchronizer does not works on
-     * the field but the object assigned to it.
+     * A lock object to enforce synchronization; synchronizer does not works on the field but the object assigned to it.
      */
     private final Object lock = new Object();
 
     /**
-     * The order of the collection is important and this is what is used to
-     * determine the direction, the first vertex being the source
+     * The order of the collection is important and this is what is used to determine the direction, the first vertex
+     * being the source
      */
     private final Map<Integer, ConcurrentHashMap<Integer, Double>> collection = Collections.<Integer, ConcurrentHashMap<Integer, Double>>synchronizedMap(new LinkedHashMap<>());
     private final ConcurrentHashMap<Integer, Set<Integer>> lookupMap = new ConcurrentHashMap<>();
@@ -93,11 +88,9 @@ public class DijkstraServices {
      * Constructor.
      *
      * @param graph A graph to be modified.
-     * @param verticesToPath The vertex ids of interest. Note that the order of
-     * the vertices is important when <code>followDirection</code> is True and
-     * in this case the first index must source vertex.
-     * @param followDirection If true, take note of edge directions. If false,
-     * ignore edge directions.
+     * @param verticesToPath The vertex ids of interest. Note that the order of the vertices is important when
+     * <code>followDirection</code> is True and in this case the first index must source vertex.
+     * @param followDirection If true, take note of edge directions. If false, ignore edge directions.
      */
     public DijkstraServices(final GraphWriteMethods graph, final List<Integer> verticesToPath, final boolean followDirection) {
         this.graph = graph;
@@ -177,11 +170,10 @@ public class DijkstraServices {
     }
 
     /**
-     * Selects the vertices that lie on each calculated path by
-     * <code>queryPath</code>.
+     * Selects the vertices that lie on each calculated path by <code>queryPath</code>.
      *
-     * @param clearSelection <code>true</code> to clear previously selected
-     * items on the graph, <code>false</code> to add to them.
+     * @param clearSelection <code>true</code> to clear previously selected items on the graph, <code>false</code> to
+     * add to them.
      */
     public void selectOnGraph(final boolean clearSelection) {
 //        Check if we need to deselect the current selections on the graph
@@ -231,8 +223,7 @@ public class DijkstraServices {
     }
 
     /**
-     * Iterates over the entire graph and removes and sets all instances of the
-     * selected attribute to false.
+     * Iterates over the entire graph and removes and sets all instances of the selected attribute to false.
      */
     private void clearSelection() {
         final int selectedVertexAttr = VisualConcept.VertexAttribute.SELECTED.get(graph);
@@ -264,8 +255,7 @@ public class DijkstraServices {
 
     // TODO: it looks like getNeighboursIgnoreDirection and getNeighboursFollowDirection are run twice...check and optimise!
     /**
-     * Get the neighbours of the specified vertex, ignoring the direction of the
-     * edges between them.
+     * Get the neighbours of the specified vertex, ignoring the direction of the edges between them.
      *
      * @param neighbours A List to hold the neighbour ids.
      * @param rg The graph.
@@ -278,8 +268,7 @@ public class DijkstraServices {
     }
 
     /**
-     * Get the neighbours of the specified vertex that are connected by an
-     * outgoing directed edge.
+     * Get the neighbours of the specified vertex that are connected by an outgoing directed edge.
      *
      * @param neighbours A List to hold the neighbour ids.
      * @param rg The graph.
@@ -350,9 +339,8 @@ public class DijkstraServices {
         }
 
         /**
-         * Calculates the shortest distances between nodes on the
-         * <code>Graph</code> and saves its results in it's parent
-         * <code>collection</code>.
+         * Calculates the shortest distances between nodes on the <code>Graph</code> and saves its results in it's
+         * parent <code>collection</code>.
          */
         private void queryDistance() throws InterruptedException {
             //Get a list of all the vertices in the graph
@@ -413,6 +401,8 @@ public class DijkstraServices {
                                             continue;
                                         } else if (n == vertex) {
                                             break;
+                                        } else {
+                                            // Do nothing
                                         }
                                         final double pathCost = curr.getPriority() + getWeight(curr.getValue(), n, weights);
                                         final FibonacciHeap.Entry<Integer> neigh = entries.get(n);
@@ -429,6 +419,8 @@ public class DijkstraServices {
                                             }
                                         } else if (pathCost == neigh.getPriority()) {
                                             incMapSet(parent.lookupMap, n, curr.getValue());
+                                        } else {
+                                            // Do nothing
                                         }
                                     }
                                 }
@@ -457,9 +449,8 @@ public class DijkstraServices {
         }
 
         /**
-         * Calculates the paths that the shortest distances take between nodes
-         * on the <code>Graph</code> and saves its results in it's parent
-         * <code>paths</code>.
+         * Calculates the paths that the shortest distances take between nodes on the <code>Graph</code> and saves its
+         * results in it's parent <code>paths</code>.
          */
         private void queryPath() throws InterruptedException {
             //Use each vertex in our collection as a pivot point and look at the rest of the graph according to it
@@ -535,19 +526,16 @@ public class DijkstraServices {
         }
 
         /**
-         * Returns a sequence of integers representing the shortest path between
-         * two vertices.
+         * Returns a sequence of integers representing the shortest path between two vertices.
          * <p>
-         * Recursive function which calculates the path between the target and
-         * previous nodes by visiting each neighboring node and determining if
-         * the distance to the target correlates with the shortest distance.
+         * Recursive function which calculates the path between the target and previous nodes by visiting each
+         * neighboring node and determining if the distance to the target correlates with the shortest distance.
          *
          * @param target The integer value of the destination vertex.
          * @param previous The integer value of the originating vertex.
-         * @param count The shortest amount of hops between the target and
-         * previous vertices.
-         * @param path The current path being created (is appended on each
-         * recursion if a new vertex is encountered on the shortest path).
+         * @param count The shortest amount of hops between the target and previous vertices.
+         * @param path The current path being created (is appended on each recursion if a new vertex is encountered on
+         * the shortest path).
          * @param shortestPaths List containing the paths found.
          */
         private List<ArrayList<Integer>> findPath(final int target, final int previous, int count, final List<Integer> path, final List<ArrayList<Integer>> shortestPaths) throws InterruptedException {
@@ -593,8 +581,7 @@ public class DijkstraServices {
         }
 
         /**
-         * Helper function used to create and retrieve a weight corresponding to
-         * a distance
+         * Helper function used to create and retrieve a weight corresponding to a distance
          */
         private synchronized double getWeight(final Integer source, final Integer dest, final Map<Tuple<Integer, Integer>, Double> weights) {
             if (weights == null) {

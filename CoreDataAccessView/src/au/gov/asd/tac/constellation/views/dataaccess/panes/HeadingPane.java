@@ -82,6 +82,8 @@ public class HeadingPane extends TitledPane implements PluginParametersPaneListe
 
         expandedProperty().addListener((ChangeListener) (final ObservableValue observable, final Object oldValue, final Object newValue)
                 -> DataAccessPreferences.setExpanded(headingText, (boolean) newValue));
+        
+        getContent().setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
     }
 
     public List<DataSourceTitledPane> getDataSources() {

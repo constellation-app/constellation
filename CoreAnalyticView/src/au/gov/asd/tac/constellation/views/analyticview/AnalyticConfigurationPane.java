@@ -65,13 +65,12 @@ import javafx.scene.web.WebView;
 import org.openide.util.Lookup;
 
 /**
- * The pane holding gui elements related to configuration of an analytic
- * question.
+ * The pane holding gui elements related to configuration of an analytic question.
  *
  * @author cygnus_x-1
  */
 public class AnalyticConfigurationPane extends VBox {
-    
+
     private static final Logger LOGGER = Logger.getLogger(AnalyticConfigurationPane.class.getName());
 
     public static final String AGGREGATOR_PARAMETER_ID = PluginParameter.buildId(AnalyticConfigurationPane.class, "aggregator");
@@ -331,12 +330,12 @@ public class AnalyticConfigurationPane extends VBox {
 
         // set an initial state for the analytic configuration pane
         reset();
+        this.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
     }
 
     /**
-     * Reset to the initial state for the analytic configuration pane. The
-     * question list will be expanded, the first question selected, and the
-     * analytics list populated based on the selected question.
+     * Reset to the initial state for the analytic configuration pane. The question list will be expanded, the first
+     * question selected, and the analytics list populated based on the selected question.
      */
     protected final void reset() {
         Platform.runLater(() -> {
@@ -406,8 +405,7 @@ public class AnalyticConfigurationPane extends VBox {
     /**
      * Updates the AnalyticViewState by running a plugin to save the graph state
      *
-     * @param pluginWasSelected true if the triggered update was from a plugin
-     * being selected
+     * @param pluginWasSelected true if the triggered update was from a plugin being selected
      */
     protected void updateState(boolean pluginWasSelected) {
         stateChanged = true;
@@ -415,8 +413,8 @@ public class AnalyticConfigurationPane extends VBox {
     }
 
     /**
-     * Saves the state of the graph by fetching all currently selected plugins
-     * and updating the state only when the state has been changed
+     * Saves the state of the graph by fetching all currently selected plugins and updating the state only when the
+     * state has been changed
      */
     protected void saveState() {
         if (stateChanged) {
@@ -459,6 +457,8 @@ public class AnalyticConfigurationPane extends VBox {
             aggregators.add(new AnalyticAggregatorParameterValue(AnalyticUtilities.lookupAnalyticAggregator(questionAggregatorType)));
             SingleChoiceParameterType.setOptionsData(aggregatorParameter, aggregators);
             SingleChoiceParameterType.setChoiceData(aggregatorParameter, aggregators.get(0));
+        } else {
+            // Do nothing
         }
         pluginList.getItems().forEach(selectablePlugin -> {
             selectablePlugin.setUpdatedParameter(aggregatorParameter.getId(), aggregatorParameter.getStringValue());
@@ -511,19 +511,21 @@ public class AnalyticConfigurationPane extends VBox {
     }
 
     public final void updateSelectablePluginsParameters() {
-         if (categoryListPane.isExpanded()) {
+        if (categoryListPane.isExpanded()) {
             LOGGER.log(Level.INFO, "Update selectable plugins parameters in analytic config pane.");
             pluginList.getItems().forEach(selectablePlugin -> {
                 selectablePlugin.parameters.updateParameterValues(selectablePlugin.updatedParameters);
             });
-            
+
         } else if (questionListPane.isExpanded() && currentQuestion != null) {
             pluginList.getItems().forEach(selectablePlugin -> {
                 selectablePlugin.parameters.updateParameterValues(selectablePlugin.updatedParameters);
                 currentQuestion.initialiseParameters(selectablePlugin.plugin, selectablePlugin.parameters);
             });
+        } else {
+            // Do nothing
         }
-         updateGlobalParameters();
+        updateGlobalParameters();
     }
 
     public final List<SelectableAnalyticPlugin> getAllSelectablePlugins() {

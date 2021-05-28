@@ -138,12 +138,11 @@ public abstract class JavaFxTopComponent<P extends Pane> extends ListeningTopCom
     @Override
     protected void handleComponentClosed() {
         PreferenceUtilites.removePreferenceChangeListener(ApplicationFontPreferenceKeys.FONT_PREFERENCES, this);
-}
+    }
 
     @Override
     protected void handleComponentOpened() {
         PreferenceUtilites.addPreferenceChangeListener(ApplicationFontPreferenceKeys.FONT_PREFERENCES, this);
     }
-    
-    
+
 }

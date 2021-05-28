@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.views.layers;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQuery;
@@ -50,6 +49,7 @@ import org.openide.util.HelpCtx;
  */
 public class LayersViewPane extends BorderPane {
 
+    private static final String FONT_SIZE_FORMAT = "-fx-font-size:%d;";
     private final LayersViewController controller;
     private final GridPane layersGridPane;
     private final VBox layersViewPane;
@@ -310,6 +310,8 @@ public class LayersViewPane extends BorderPane {
                     controller.getVxQueryCollection().removeQuery(index);
                 } else if (StringUtils.isBlank(txQuery) && StringUtils.isNotBlank(vxQuery)) {
                     controller.getTxQueryCollection().removeQuery(index);
+                } else {
+                    // Do nothing
                 }
                 description = null;
             }

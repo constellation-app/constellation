@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.scatterplot;
 
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.views.scatterplot.state.ScatterPlotState;
 import javafx.geometry.Insets;
 import javafx.scene.layout.BorderPane;

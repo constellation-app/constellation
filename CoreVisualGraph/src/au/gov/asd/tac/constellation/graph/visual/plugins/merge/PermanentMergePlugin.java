@@ -119,6 +119,8 @@ public class PermanentMergePlugin extends SimpleEditPlugin implements HelpCtx.Pr
                 selectedNode = this.createVertex(graph, attributes);
             } else if (selections.contains(selectedNode)) {
                 selections.remove((Integer) selectedNode);
+            } else {
+                // Do nothing
             }
 
             this.processTransactions(graph, selections, selectedNode, createLoops, keepSimple);
@@ -130,8 +132,7 @@ public class PermanentMergePlugin extends SimpleEditPlugin implements HelpCtx.Pr
     }
 
     /**
-     * Create a new vertex and populate its attributes with the ones selected by
-     * the user
+     * Create a new vertex and populate its attributes with the ones selected by the user
      *
      * @param graph containing the created vertex
      * @param attributes set of selected attributes

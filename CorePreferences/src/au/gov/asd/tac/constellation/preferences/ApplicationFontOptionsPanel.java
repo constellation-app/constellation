@@ -15,16 +15,13 @@
  */
 package au.gov.asd.tac.constellation.preferences;
 
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -47,29 +44,29 @@ final class ApplicationFontOptionsPanel extends JPanel {
 
     public ApplicationFontOptionsPanel(final ApplicationFontOptionsPanelController controller) {
         this.controller = controller;
-        initComponents();          
+        initComponents();
     }
 
     public String getCurrentFont() {
         return fontCombo.getSelectedItem().toString();
     }
-    
+
     public void setCurrentFont(final String currentFont) {
         fontCombo.setSelectedItem(currentFont);
     }
-   
+
     public String getFontSize() {
         return fontSizeSpinner.getValue().toString();
     }
-    
+
     public void setFontSize(final String fontSize) {
         fontSizeSpinner.setValue(Integer.parseInt(fontSize));
     }
-    
+
     public String[] getFontList() {
         return fonts;
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

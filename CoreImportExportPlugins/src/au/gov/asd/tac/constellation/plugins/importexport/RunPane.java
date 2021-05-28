@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.plugins.importexport.model.CellValue;
 import au.gov.asd.tac.constellation.plugins.importexport.model.TableRow;
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -63,8 +62,9 @@ import javafx.scene.text.Text;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * A RunPane displays the UI necessary to allow the user to drag and drop attributes onto columns in the table in order
- * to specify which attribute values should be extracted from which columns.
+ * A RunPane displays the UI necessary to allow the user to drag and drop
+ * attributes onto columns in the table in order to specify which attribute
+ * values should be extracted from which columns.
  *
  * @author sirius
  */
@@ -194,6 +194,7 @@ public final class RunPane extends BorderPane implements KeyListener {
         configBox.getChildren().add(tableBox);
 
         // add a help place holder
+        // TODO: make this text wrap
         final Text startupHelpText = new Text();
         startupHelpText.setText(displayText);
         startupHelpText.setStyle("-fx-fill: grey;");
@@ -391,7 +392,8 @@ public final class RunPane extends BorderPane implements KeyListener {
     }
 
     /**
-     * Set this RunPane to display the specified column headers and sample data rows.
+     * Set this RunPane to display the specified column headers and sample data
+     * rows.
      *
      * @param columnLabels Column header labels.
      * @param newRows Rows of sample data.

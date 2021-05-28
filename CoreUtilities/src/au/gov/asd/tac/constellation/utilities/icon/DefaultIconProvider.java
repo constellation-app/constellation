@@ -64,6 +64,10 @@ public class DefaultIconProvider implements ConstellationIconProvider {
     public static final ConstellationIcon EDGE_SQUARE = new ConstellationIcon.Builder("Edge Square", new FileIconData("modules/ext/icons/edge_square.png", CODE_NAME_BASE))
             .addCategory(BACKGROUND_CATEGORY)
             .build();
+    public static final ConstellationIcon PIN = new ConstellationIcon.Builder("Pin", new FileIconData("modules/ext/icons/pin.png", CODE_NAME_BASE))
+            .addCategory(BACKGROUND_CATEGORY)
+            .addAlias("true_pinned")
+            .build();
 
     @Override
     public List<ConstellationIcon> getIcons() {
@@ -81,6 +85,7 @@ public class DefaultIconProvider implements ConstellationIconProvider {
         defaultIcons.add(ROUND_CIRCLE);
         defaultIcons.add(ROUND_SQUARE);
         defaultIcons.add(EDGE_SQUARE);
+        defaultIcons.add(PIN);
         return defaultIcons;
     }
 
@@ -123,12 +128,16 @@ public class DefaultIconProvider implements ConstellationIconProvider {
             xDiameter = radius - x;
         } else if (x > 1.0f - radius) {
             xDiameter = x - (1.0f - radius);
+        } else {
+            // Do nothing
         }
 
         if (y < radius) {
             yDiameter = radius - y;
         } else if (y > 1.0f - radius) {
             yDiameter = y - (1.0f - radius);
+        } else {
+            // Do nothing
         }
 
         if (xDiameter * xDiameter + yDiameter * yDiameter > radius * radius) {

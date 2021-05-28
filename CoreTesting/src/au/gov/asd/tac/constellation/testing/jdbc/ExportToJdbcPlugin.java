@@ -444,7 +444,6 @@ public class ExportToJdbcPlugin extends SimpleReadPlugin {
                                     stmt.setBoolean(paramIx, rg.getTransactionDirection(txId) != Graph.FLAT);
                                     break;
                                 default:
-                                    // do nothing
                                     break;
                             }
                         } else {

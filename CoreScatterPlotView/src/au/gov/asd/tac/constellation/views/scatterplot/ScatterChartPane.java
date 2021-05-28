@@ -27,7 +27,6 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ElementTypeParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.scatterplot.state.ScatterPlotState;
 import java.util.BitSet;
@@ -155,6 +154,8 @@ public class ScatterChartPane extends BorderPane {
                     // Update variables based on current mouse pointer position
                     selectionXOrigin = mouseX;
                     selectionYOrigin = mouseY;
+                } else {
+                    // Do nothing
                 }
 
                 // Selection was made
@@ -185,6 +186,8 @@ public class ScatterChartPane extends BorderPane {
                         } // double click clear selection
                         else if (me.getClickCount() == 2) {
                             selectedData = null;
+                        } else {
+                            // Do nothing
                         }
                     }
 

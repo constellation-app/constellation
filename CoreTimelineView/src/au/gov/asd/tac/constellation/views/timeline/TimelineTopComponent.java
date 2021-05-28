@@ -28,7 +28,6 @@ import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
 import java.awt.BorderLayout;
@@ -182,7 +181,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
 
             // Now that the heights are known, set the position of the splitPane divider:
             splitPane.setDividerPositions(splitPanePosition);
-            
+
             // Set the split pane as the javafx scene:
             container.setScene(scene);
         });
@@ -750,6 +749,8 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                         || currentVertSelectedModificationCount != oldVertSelectedModificationCount) {
                     // Do only a partial update, ie the timeline and selection area for histogram:
                     populateFromGraphNode(false);
+                } else {
+                    // Do nothing
                 } // Detect changes of dim to transactions and vertices:
                 /*else if (!timelinePanel.isDimOrHideExpected(currentVertDimModificationCount, currentTransDimModificationCount)) {
                     Platform.runLater(() -> {

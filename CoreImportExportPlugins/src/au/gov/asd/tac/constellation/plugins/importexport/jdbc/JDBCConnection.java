@@ -61,7 +61,7 @@ public class JDBCConnection {
                 | NoSuchMethodException | InstantiationException | IllegalAccessException
                 | IllegalArgumentException | InvocationTargetException ex) {
             if (showError) {
-                LOGGER.log(Level.WARNING, ex.getMessage(), ex);
+                LOGGER.log(Level.WARNING, ex.getMessage());
                 NotifyDisplayer.displayLargeAlert("JDBC Import", "Testing of the connection failed, "
                         + "please recheck your settings.", ex.getMessage(), Alert.AlertType.ERROR);
             }

@@ -17,11 +17,11 @@ package au.gov.asd.tac.constellation.preferences;
 
 /**
  * Preferences for the default font options window
- * 
+ *
  * @author Delphinus8821
  */
 public class ApplicationFontPreferenceKeys {
-    
+
     /**
      * Default Font.
      */
@@ -30,5 +30,5 @@ public class ApplicationFontPreferenceKeys {
     public static String FONT_FAMILY_DEFAULT = "Arial";
     public static final String FONT_SIZE = "fontSize";
     public static String FONT_SIZE_DEFAULT = "12";
-    
+
 }

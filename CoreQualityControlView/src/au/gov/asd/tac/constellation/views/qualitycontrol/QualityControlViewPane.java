@@ -29,7 +29,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.json.JsonUtilities;
 import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlEvent.QualityCategory;
@@ -112,7 +111,7 @@ public final class QualityControlViewPane extends BorderPane {
 
     public QualityControlViewPane() {
         readSerializedRulePriorities();
-                      
+
         qualityTable = new TableView<>();
         identifierColumn = new TableColumn<>("Identifier");
         identifierColumn.prefWidthProperty().bind(qualityTable.widthProperty().multiply(0.25));
@@ -191,7 +190,7 @@ public final class QualityControlViewPane extends BorderPane {
         priorityButton.setOnAction(event -> {
             showPriorityDialog();
         });
-        
+
         // create help button
         final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
         helpButton.paddingProperty().set(new Insets(2, 0, 0, 0));
@@ -201,7 +200,7 @@ public final class QualityControlViewPane extends BorderPane {
         });
         // Get rid of the ugly button look so the icon stands alone.
         helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
-        
+
         optionsPane.getChildren().addAll(deleteButton, selectButton, removeButton, zoomButton, priorityButton, helpButton);
 
         setBottom(optionsPane);
@@ -213,7 +212,7 @@ public final class QualityControlViewPane extends BorderPane {
     public TableView<QualityControlEvent> getQualityTable() {
         return qualityTable;
     }
-    
+
     /**
      * Refresh the data inside QualityControlView with data from the current
      * graph.
@@ -665,7 +664,7 @@ public final class QualityControlViewPane extends BorderPane {
     /**
      * Reads the preferences object to load the rulePriorities.
      */
-    private static void readSerializedRulePriorities() {
+    public static void readSerializedRulePriorities() {
         getPriorities().clear();
         final Map<String, String> priorityStringMap = JsonUtilities.getStringAsMap(FACTORY, PREFERENCES.get(ApplicationPreferenceKeys.RULE_PRIORITIES, ""));
         for (final Entry<String, String> entry : priorityStringMap.entrySet()) {

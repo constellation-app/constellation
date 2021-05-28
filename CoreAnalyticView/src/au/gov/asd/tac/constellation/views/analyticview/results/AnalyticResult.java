@@ -25,8 +25,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * The result of an AnalyticPlugin, which will be supported by one or more
- * AnalyticVisualisation.
+ * The result of an AnalyticPlugin, which will be supported by one or more AnalyticVisualisation.
  *
  * @author cygnus_x-1
  * @param <D>
@@ -48,6 +47,8 @@ public abstract class AnalyticResult<D extends AnalyticData> {
                 verticesToSelect.add(result.getElementId());
             } else if (result.getElementType() == GraphElementType.TRANSACTION) {
                 transactionsToSelect.add(result.getElementId());
+            } else {
+                // Do nothing
             }
         });
         analyticController.selectOnGraph(GraphElementType.VERTEX, verticesToSelect);
@@ -62,6 +63,8 @@ public abstract class AnalyticResult<D extends AnalyticData> {
                 ignoredElementScores.add(elementScore);
             } else if (elementIds.contains(elementScore.getElementId())) {
                 selectedElementScores.add(elementScore);
+            } else {
+                // Do nothing
             }
         });
         resultListeners.forEach(listener -> {
@@ -79,11 +82,11 @@ public abstract class AnalyticResult<D extends AnalyticData> {
     public final List<D> get() {
         return Collections.unmodifiableList(result.values().stream().collect(Collectors.toList()));
     }
-    
+
     public final Map<IdentificationData, D> getResult() {
         return result;
     }
-    
+
     public void add(final D resultData) {
         this.result.put(resultData.getIdentificationData(), resultData);
     }

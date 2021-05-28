@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.delimited;
 
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.plugins.importexport.ConfigurationPane;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportPane;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
@@ -24,8 +23,9 @@ import org.openide.NotifyDescriptor;
 import org.openide.util.HelpCtx;
 
 /**
- * This pane holds all parts for importing a delimited file. An import controller handles the importing of files The
- * source and configuration panes handle the input and output of the selected data into a graph.
+ * This pane holds all parts for importing a delimited file. An import
+ * controller handles the importing of files The source and configuration panes
+ * handle the input and output of the selected data into a graph.
  *
  * @author aldebaran30701
  */

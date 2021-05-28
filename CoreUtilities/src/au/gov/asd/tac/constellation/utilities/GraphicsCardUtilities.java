@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -111,8 +112,10 @@ public class GraphicsCardUtilities {
                     }
 
                     dxDiagInfo = builder.toString();
-                } catch (Exception e) {
+                } catch (final IOException e) {
                     error = e;
+                    // Restore interrupted state S2142
+                    Thread.currentThread().interrupt();
                 }
             }
         }

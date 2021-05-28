@@ -52,6 +52,8 @@ public final class ApplicationPreferenceKeys {
             }
         } else if (!f.isDirectory()) {
             // TODO: warn the user.
+        } else {
+            // Do nothing
         }
 
         return userDir;
@@ -140,6 +142,8 @@ public final class ApplicationPreferenceKeys {
             }
         } else if (!f.isDirectory()) {
             // TODO: warn the user.
+        } else {
+            // Do nothing
         }
 
         return restDir;

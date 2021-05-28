@@ -31,6 +31,7 @@ public class Scatter3dChoiceParameters {
     private Boolean doNotScale = false;
 
     public Scatter3dChoiceParameters() {
+        // Method intentionally left blank
     }
 
     public static Scatter3dChoiceParameters getDefaultParameters() {

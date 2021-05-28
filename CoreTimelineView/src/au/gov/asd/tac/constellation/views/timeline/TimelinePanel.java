@@ -23,7 +23,6 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
 import au.gov.asd.tac.constellation.views.timeline.clustering.ClusteringManager;
@@ -533,7 +532,7 @@ public class TimelinePanel extends Region {
         selectedOnlyButton.selectedProperty().addListener((observable, oldValue, newValue) -> {
             coordinator.setIsShowingSelectedOnly(newValue);
         });
-        
+
         final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
         helpButton.setTooltip(new Tooltip("Display help for Timeline"));
         helpButton.setOnAction(event -> {
@@ -557,8 +556,8 @@ public class TimelinePanel extends Region {
                 spacer3,
                 btnZoomToSelection,
                 spacer4,
-                btnShowLabels, 
-                spacer5, 
+                btnShowLabels,
+                spacer5,
                 helpButton, cmbAttributeNames);
 
         tb.setCursor(Cursor.DEFAULT);

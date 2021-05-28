@@ -36,7 +36,6 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
@@ -709,6 +708,8 @@ public class AttributeEditorPanel extends BorderPane {
                 event.consume();
             } else if (event.isShortcutDown() && (event.getCode() == KeyCode.A)) {
                 event.consume();
+            } else {
+                // Do nothing
             }
         });
         return newList;

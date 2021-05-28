@@ -100,7 +100,7 @@ public class NotesViewPane extends BorderPane {
     private static final String NOTES_VIEW_ICON = "resources/notes-view.png";
 
     private final Object LOCK = new Object();
-    
+
     private final String fontStyle = String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize());
 
     /**
@@ -120,6 +120,7 @@ public class NotesViewPane extends BorderPane {
         // CheckComboBox to select and deselect various filters for note rendering.
         filterCheckComboBox = new CheckComboBox(availableFilters);
         filterCheckComboBox.setTitle("Select a filter...");
+        filterCheckComboBox.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
         filterCheckComboBox.getCheckModel().getCheckedItems().addListener(new ListChangeListener() {
             @Override
             public void onChanged(final ListChangeListener.Change event) {
@@ -135,7 +136,7 @@ public class NotesViewPane extends BorderPane {
                 }
             }
         });
-        
+
         // create help button
         final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
         helpButton.paddingProperty().set(new Insets(2, 0, 0, 0));
@@ -173,6 +174,7 @@ public class NotesViewPane extends BorderPane {
 
         // Button to add new note.
         final Button addNoteButton = new Button("Add Note");
+        addNoteButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
         addNoteButton.setOnAction(event -> {
             final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
             if (activeGraph != null) {
@@ -444,6 +446,7 @@ public class NotesViewPane extends BorderPane {
 
         final Button editButton = new Button("Edit");
         editButton.setMinWidth(55);
+        editButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
         editButton.setOnAction(event -> {
             openEdit(newNote.getNoteTitle(), newNote.getNoteContent(), newNote);
             event.consume();
@@ -451,13 +454,14 @@ public class NotesViewPane extends BorderPane {
 
         final Button deleteButton = new Button("Delete");
         deleteButton.setMinWidth(55);
+        deleteButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
 
         final VBox noteButtons = new VBox(DEFAULT_SPACING, editButton, deleteButton);
         noteButtons.setAlignment(Pos.CENTER);
 
         final HBox noteBody = newNote.isUserCreated() ? new HBox(DEFAULT_SPACING, noteInformation, noteButtons) : new HBox(DEFAULT_SPACING, noteInformation);
-        noteBody.setStyle("-fx-padding: 5px; -fx-background-color: " + 
-                noteColour + "; -fx-background-radius: 10 10 10 10;");
+        noteBody.setStyle("-fx-padding: 5px; -fx-background-color: "
+                + noteColour + "; -fx-background-radius: 10 10 10 10;");
         notesListVBox.getChildren().add(noteBody);
 
         deleteButton.setOnAction(event -> {

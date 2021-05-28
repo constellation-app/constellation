@@ -52,7 +52,10 @@ public class IntBin extends Bin {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof IntBin) {
+        if (o == null) {
+            return false;
+        }
+        if (this.getClass() == o.getClass()) {
             IntBin bin = (IntBin) o;
             return key == bin.key;
         }

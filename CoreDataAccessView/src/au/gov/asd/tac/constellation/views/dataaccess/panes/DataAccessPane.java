@@ -32,7 +32,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
 import au.gov.asd.tac.constellation.plugins.parameters.types.DateTimeRange;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.AnalyticIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
@@ -149,7 +148,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
 
     public DataAccessPane(DataAccessViewTopComponent topComponent) {
         this.topComponent = topComponent;
-        
+
         dataAccessTabPane = new TabPane();
         dataAccessTabPane.setSide(Side.TOP);
         dataAccessTabPane.getSelectionModel().selectedIndexProperty().addListener((ObservableValue<? extends Number> ov, Number t, Number t1) -> {
@@ -226,6 +225,8 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                     selectedPluginsValid = false;
                 } else if (tabHasEnabledPlugins(tab)) {
                     pluginSelected = true;
+                } else {
+                    // Do nothing
                 }
             }
             // when no graph present, create new graph
@@ -258,6 +259,8 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                             msg,
                             null
                     );
+                } else {
+                    // Do nothing
                 }
 
                 PluginExecution.withPlugin(new SimplePlugin("Data Access View: Save State") {
@@ -310,18 +313,21 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                             return getExceptionDescription(e.getCause());
                         } else if (e.getMessage() != null) {
                             return e.getMessage();
+                        } else {
+                            return e.getClass().getName();
                         }
-                        return e.getClass().getName();
                     }
                 };
                 waiting.setName(DAV_PLUGIN_QUEUE_THREAD_NAME);
                 waiting.start();
                 LOGGER.info("Plugins run.");
             } else if (currentGraphState != null) { // Button is a stop button
-                for (Future<?> running : currentGraphState.runningPlugins.keySet()) {
+                currentGraphState.runningPlugins.keySet().forEach(running -> {
                     running.cancel(true);
-                }
+                });
                 setExecuteButtonToGo();
+            } else {
+                // Do nothing
             }
             if (DataAccessPreferenceKeys.isDeselectPluginsOnExecuteEnabled()) {
                 deselectAllPlugins();

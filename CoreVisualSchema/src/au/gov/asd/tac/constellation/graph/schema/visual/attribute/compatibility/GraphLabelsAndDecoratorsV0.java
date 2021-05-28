@@ -31,17 +31,15 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * An object that holds the descriptions of node and connections labels and node
- * decorators.
+ * An object that holds the descriptions of node and connections labels and node decorators.
  * <p>
- * Note that this should no longer be used and only remains to support legacy
- * graph files.
+ * Note that this should no longer be used and only remains to support legacy graph files.
  *
  * @author algol
  *
  * <p>
- * Replaced by {@link au.gov.asd.tac.constellation.visual.labels.GraphLabels}
- * and {@link au.gov.asd.tac.constellation.visual.decorators.Decorators}.
+ * Replaced by {@link au.gov.asd.tac.constellation.visual.labels.GraphLabels} and
+ * {@link au.gov.asd.tac.constellation.visual.decorators.Decorators}.
  */
 @Deprecated
 public final class GraphLabelsAndDecoratorsV0 implements Serializable {
@@ -80,8 +78,7 @@ public final class GraphLabelsAndDecoratorsV0 implements Serializable {
     /**
      * Decorator corner.
      * <p>
-     * Don't change the order: SceneBatchStore and the shader rely on a specific
-     * order.
+     * Don't change the order: SceneBatchStore and the shader rely on a specific order.
      */
     public enum Decorator {
 
@@ -124,8 +121,7 @@ public final class GraphLabelsAndDecoratorsV0 implements Serializable {
     }
 
     /**
-     * Construct a new GraphLabels instance from an existing GraphLabels
-     * instance.
+     * Construct a new GraphLabels instance from an existing GraphLabels instance.
      *
      * @param glad An existing GraphLabels instance.
      */
@@ -180,8 +176,7 @@ public final class GraphLabelsAndDecoratorsV0 implements Serializable {
     }
 
     /**
-     * Add a label to the bottom of the nodes as long as the label does not
-     * already exists
+     * Add a label to the bottom of the nodes as long as the label does not already exists
      *
      * @param label A label to be added to the bottom of the nodes.
      */
@@ -268,8 +263,7 @@ public final class GraphLabelsAndDecoratorsV0 implements Serializable {
     }
 
     /**
-     * Return a list of attribute ids corresponding to the attribute names in
-     * the graph's labels structure.
+     * Return a list of attribute ids corresponding to the attribute names in the graph's labels structure.
      * <p>
      * If an attribute name is not present, it will be skipped.
      *
@@ -339,8 +333,7 @@ public final class GraphLabelsAndDecoratorsV0 implements Serializable {
      * Set the label to be used for the specified decorator.
      *
      * @param decorator The decorator being set.
-     * @param label The label to use, or null to not use a decorator in this
-     * position.
+     * @param label The label to use, or null to not use a decorator in this position.
      */
     public void setDecoratorLabel(final Decorator decorator, final String label) {
         decoratorLabels[decorator.ordinal()] = label;
@@ -362,15 +355,13 @@ public final class GraphLabelsAndDecoratorsV0 implements Serializable {
     }
 
     /**
-     * Return an int[] containing the ids of the attributes to be used as node
-     * decorators.
+     * Return an int[] containing the ids of the attributes to be used as node decorators.
      * <p>
      * The decorators are in the order NW, SW, NE, SE.
      *
      * @param rg The graph.
      *
-     * @return An int[] containing the ids of the attributes to be used as node
-     * decorators.
+     * @return An int[] containing the ids of the attributes to be used as node decorators.
      */
     public EnumMap<Decorator, Integer> getDecoratorAttributes(final GraphReadMethods rg) {
         final EnumMap<Decorator, Integer> dec = new EnumMap<>(Decorator.class);
@@ -442,6 +433,8 @@ public final class GraphLabelsAndDecoratorsV0 implements Serializable {
                 } else if (currentComponent.startsWith("c")) {
                     GraphLabelV0 thisGraphLabel = GraphLabelV0.fromString(currentComponent.substring(currentComponent.indexOf('['), currentComponent.lastIndexOf(']') + 1));
                     thisGraphLabelsAndDecorators.addConnectionLabel(thisGraphLabel);
+                } else {
+                    // Do nothing
                 }
             }
         }

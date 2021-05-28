@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.plugins.reporting.GraphReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReportFilter;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.pluginreporter.PluginReporterTopComponent;
@@ -61,6 +60,7 @@ import org.openide.util.NbPreferences;
 public class PluginReporterPane extends BorderPane implements ListChangeListener<String> {
 
     private static final String FILTERED_TAGS_KEY = "filteredTags";
+    private static final String FONT_SIZE_FORMAT = "-fx-font-size:%d;";
 
     private final ToolBar controlToolbar = new ToolBar();
 
@@ -72,7 +72,7 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
     private final CheckComboBox<String> tagComboBox = new CheckComboBox<>(availableTags);
     private final Set<String> filteredTags = new HashSet<>();
     private PluginReportFilter pluginReportFilter = null;
-    
+
     private ObservableList<String> checkedIndices;
 
     // The height of the report box last time we looked
@@ -222,7 +222,7 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
                 // TODO: do a better job here of not adding older reports in the first place. The idea here was to reduce memory so this logic is less useful of adding and removing.
                 // remove the oldest one if we have reached the maximum
                 final int size = reportBox.getChildren().size();
-                if (size > MAXIMUM_REPORT_PANES) { 
+                if (size > MAXIMUM_REPORT_PANES) {
                     ((PluginReportPane) reportBox.getChildren().get(size - MAXIMUM_REPORT_PANES)).removeListener();
                     reportBox.getChildren().remove(size - MAXIMUM_REPORT_PANES);
                 }
@@ -242,7 +242,7 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
             for (String tag : tags) {
                 if (!availableTags.contains(tag)) {
                     availableTags.add(tag);
-                }   
+                }
                 if (!filteredTags.contains(tag)) {
                     tagIndex = availableTags.indexOf(tag);
                     selectedIndices[selectedIndexCount++] = tagIndex; //AIOOBE = DED.
