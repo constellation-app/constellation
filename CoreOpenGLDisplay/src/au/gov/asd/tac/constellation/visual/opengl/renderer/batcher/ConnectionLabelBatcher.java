@@ -191,7 +191,7 @@ public class ConnectionLabelBatcher implements SceneBatcher {
             ArrayList<String> lines = LabelUtilities.splitTextIntoLines(text);
             for (final String line : lines) {
                 context.totalScale = totalScale;
-                SharedDrawable.getGlyphManager().renderTextAsLigatures(line, glyphStream, context);
+                SharedDrawable.getGlyphManager().renderTextAsLigatures(line, glyphStream, context, 0);
                 totalScale += currentLabelInfo.get(label, 3);
             }
         }

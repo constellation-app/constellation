@@ -184,8 +184,19 @@ public class NodeLabelBatcher implements SceneBatcher {
             final String labelText = access.getVertexBottomLabelText(pos, label);
             ArrayList<String> lines = LabelUtilities.splitTextIntoLines(labelText);
             for (final String line : lines) {
-                SharedDrawable.getGlyphManager().renderTextAsLigatures(line, glyphStream, new NodeGlyphStreamContext(pos, -totalScale, visibility, label));
-                totalScale += labelBottomInfoReference.get(label, 3);
+                if (line.contains("<") && (line.indexOf(">") > line.indexOf("<"))) {
+                    final String part1 = line.substring(0, line.indexOf("<"));
+                    final String part2 = line.substring(line.indexOf("<"), line.indexOf(">") + 1);
+
+                    SharedDrawable.getGlyphManager().renderTextAsLigatures(part1, glyphStream, new NodeGlyphStreamContext(pos, -totalScale, visibility, label), 0);
+//                    totalScale += labelBottomInfoReference.get(label, 3);
+
+                    SharedDrawable.getGlyphManager().renderTextAsLigatures(part2, glyphStream, new NodeGlyphStreamContext(pos, -totalScale, visibility, label), part1.length() / 2f + 0.4f);
+                    totalScale += labelBottomInfoReference.get(label, 3);
+                } else {
+                    SharedDrawable.getGlyphManager().renderTextAsLigatures(line, glyphStream, new NodeGlyphStreamContext(pos, -totalScale, visibility, label), 0);
+                    totalScale += labelBottomInfoReference.get(label, 3);
+                }
             }
         }
     }
@@ -198,7 +209,7 @@ public class NodeLabelBatcher implements SceneBatcher {
             ArrayList<String> lines = LabelUtilities.splitTextIntoLines(text);
             Collections.reverse(lines);
             for (final String line : lines) {
-                SharedDrawable.getGlyphManager().renderTextAsLigatures(line, glyphStream, new NodeGlyphStreamContext(pos, totalScale, visibility, label));
+                SharedDrawable.getGlyphManager().renderTextAsLigatures(line, glyphStream, new NodeGlyphStreamContext(pos, totalScale, visibility, label), 0);
                 totalScale += labelTopInfoReference.get(label, 3);
             }
         }

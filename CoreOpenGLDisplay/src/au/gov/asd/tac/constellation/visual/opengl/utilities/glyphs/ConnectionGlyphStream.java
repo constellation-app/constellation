@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2021 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,7 +30,6 @@ public class ConnectionGlyphStream implements GlyphManager.GlyphStream {
     private final FloatArray currentFloats;
     private final IntArray currentInts;
     private float currentWidth;
-    private Object addLock = new Object();
 
     public ConnectionGlyphStream() {
         this.currentFloats = new FloatArray();
@@ -41,10 +40,8 @@ public class ConnectionGlyphStream implements GlyphManager.GlyphStream {
     public void addGlyph(int glyphPosition, float x, float y, final GlyphStreamContext streamContext) {
         if (streamContext instanceof ConnectionGlyphStreamContext) {
             final ConnectionGlyphStreamContext context = (ConnectionGlyphStreamContext) streamContext;
-            synchronized (addLock) {
-                currentFloats.add(currentWidth, x, y, context.visibility);
-                currentInts.add(context.currentLowNodeId, context.currentHighNodeId, (context.currentOffset << 16) + (context.totalScale << 2) + context.labelNumber, (glyphPosition << 8) + context.currentStagger * 256 / (Math.min(context.currentLinkLabelCount, ConnectionLabelBatcher.MAX_STAGGERS) + 1));
-            }
+            currentFloats.add(currentWidth, x, y, context.visibility);
+            currentInts.add(context.currentLowNodeId, context.currentHighNodeId, (context.currentOffset << 16) + (context.totalScale << 2) + context.labelNumber, (glyphPosition << 8) + context.currentStagger * 256 / (Math.min(context.currentLinkLabelCount, ConnectionLabelBatcher.MAX_STAGGERS) + 1));
         }
     }
 
@@ -52,11 +49,9 @@ public class ConnectionGlyphStream implements GlyphManager.GlyphStream {
     public void newLine(float width, final GlyphStreamContext streamContext) {
         if (streamContext instanceof ConnectionGlyphStreamContext) {
             final ConnectionGlyphStreamContext context = (ConnectionGlyphStreamContext) streamContext;
-            synchronized (addLock) {
-                currentWidth = -width / 2.0f - 0.2f;
-                currentFloats.add(currentWidth, currentWidth, 0.0f, context.visibility);
-                currentInts.add(context.currentLowNodeId, context.currentHighNodeId, (context.currentOffset << 16) + (context.totalScale << 2) + context.labelNumber, (SharedDrawable.getLabelBackgroundGlyphPosition() << 8) + context.currentStagger * 256 / (Math.min(context.currentLinkLabelCount, MAX_STAGGERS) + 1));
-            }
+            currentWidth = -width / 2.0f - 0.2f;
+            currentFloats.add(currentWidth, currentWidth, 0.0f, context.visibility);
+            currentInts.add(context.currentLowNodeId, context.currentHighNodeId, (context.currentOffset << 16) + (context.totalScale << 2) + context.labelNumber, (SharedDrawable.getLabelBackgroundGlyphPosition() << 8) + context.currentStagger * 256 / (Math.min(context.currentLinkLabelCount, MAX_STAGGERS) + 1));
         }
     }
 
@@ -69,9 +64,7 @@ public class ConnectionGlyphStream implements GlyphManager.GlyphStream {
     }
 
     public void trimToSize() {
-        synchronized (addLock) {
-            currentFloats.trimToSize();
-            currentInts.trimToSize();
-        }
+        currentFloats.trimToSize();
+        currentInts.trimToSize();
     }
 }

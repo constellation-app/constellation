@@ -103,7 +103,7 @@ public class GlyphsFrame extends JFrame {
         glyphPanel.setPreferredSize(new Dimension(img.getWidth() + 1, img.getHeight() + 1));
 
         final String line = getLine();
-        glyphManager.renderTextAsLigatures(line, null, null);
+        glyphManager.renderTextAsLigatures(line, null, null, 0);
 
         showTextureBuffer();
     }
@@ -310,7 +310,7 @@ public class GlyphsFrame extends JFrame {
 
     private void textLinesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textLinesActionPerformed
         final String line = getLine();
-        glyphManager.renderTextAsLigatures(line, null, null);
+        glyphManager.renderTextAsLigatures(line, null, null, 0);
         repaint();
         showTextureBuffer();
     }//GEN-LAST:event_textLinesActionPerformed
@@ -364,7 +364,7 @@ public class GlyphsFrame extends JFrame {
         final boolean drawCombined = cbCGlyphs.isSelected();
         glyphManager.setBoundaries(drawRuns, drawIndividual, drawCombined);
         final String line = getLine();
-        glyphManager.renderTextAsLigatures(line, null, null);
+        glyphManager.renderTextAsLigatures(line, null, null, 0);
         repaint();
     }
 
@@ -381,7 +381,7 @@ public class GlyphsFrame extends JFrame {
 
         showTextureBuffer();
         final String line = getLine();
-        glyphManager.renderTextAsLigatures(line, null, null);
+        glyphManager.renderTextAsLigatures(line, null, null, 0);
 
         repaint();
     }

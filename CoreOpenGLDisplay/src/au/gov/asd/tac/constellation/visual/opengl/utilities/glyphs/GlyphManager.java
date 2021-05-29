@@ -37,7 +37,7 @@ public interface GlyphManager {
      * @param glyphStream the glyph stream to output the characters to.
      * @param context related information for the GlyphStream
      */
-    public void renderTextAsLigatures(String text, GlyphManager.GlyphStream glyphStream, GlyphStreamContext context);
+    public void renderTextAsLigatures(String text, GlyphManager.GlyphStream glyphStream, GlyphStreamContext context, float offset);
 
     /**
      * Returns the number of glyphs.

@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2021 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -49,8 +49,8 @@ public class NodeGlyphStream implements GlyphManager.GlyphStream {
     public void newLine(float width, final GlyphStreamContext streamContext) {
         if (streamContext instanceof NodeGlyphStreamContext) {
             final NodeGlyphStreamContext context = (NodeGlyphStreamContext) streamContext;
-            currentFloats.add(SharedDrawable.getLabelBackgroundGlyphPosition(), -width / 2.0f - 0.2f, 0.0f, streamContext.visibility);
-            currentInts.add(context.currentNodeID, streamContext.totalScale, streamContext.labelNumber, 0);
+            currentFloats.add(SharedDrawable.getLabelBackgroundGlyphPosition(), -width / 2.0f - 0.2f, 0.0f, context.visibility);
+            currentInts.add(context.currentNodeID, context.totalScale, context.labelNumber, 0);
         } else {
             throw new IllegalArgumentException("Provided context lacks Node information, please use a NodeGlyphStreamContext");
         }

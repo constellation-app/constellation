@@ -342,9 +342,10 @@ public final class GlyphManagerBI implements GlyphManager {
      *
      * @param text The text top be rendered.
      * @param context
+     * @param offset
      */
     @Override
-    public void renderTextAsLigatures(final String text, GlyphStream glyphStream, GlyphStreamContext context) {
+    public void renderTextAsLigatures(final String text, GlyphStream glyphStream, GlyphStreamContext context, float offset) {
         if (StringUtils.isBlank(text)) {
             return;
         }
@@ -367,8 +368,7 @@ public final class GlyphManagerBI implements GlyphManager {
 
         // Add the background for this text.
         //
-        glyphStream.newLine((ligature.right - ligature.left) / (float) maxFontHeight, context);
-
+//        glyphStream.newLine((ligature.right - ligature.left) / (float) maxFontHeight, context);
         // The glyphRectangles list contains the absolute positions of each glyph rectangle
         // in pixels as drawn above.
         // The OpenGL shaders expect x,y in world units, where x is relative to the centre
@@ -384,10 +384,8 @@ public final class GlyphManagerBI implements GlyphManager {
         final float centre = (ligature.left + ligature.right) / 2f;
         for (final GlyphRectangle gr : ligature.glyphRectangles) {
             final float cx = (gr.rect.x - centre) / (float) maxFontHeight - 0.1f;
-//            final float cy = (gr.rect.y-top+((maxFontHeight-(bottom-top))/2f))/(float)maxFontHeight;
-//            final float cy = (2*gr.rect.y-top+maxFontHeight-bottom)/(2f*maxFontHeight);
             final float cy = (gr.rect.y - (ligature.top + ligature.bottom) / 2f) / (float) (maxFontHeight) + 0.5f;
-            glyphStream.addGlyph(gr.position, cx, cy, context);
+            glyphStream.addGlyph(gr.position, cx + offset, cy, context);
         }
     }
 
