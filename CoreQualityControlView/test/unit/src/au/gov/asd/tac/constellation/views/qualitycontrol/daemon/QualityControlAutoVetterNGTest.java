@@ -23,7 +23,6 @@ import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import java.util.ArrayList;
-import org.openide.util.Exceptions;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotEquals;
@@ -43,6 +42,7 @@ import org.testng.annotations.Test;
 public class QualityControlAutoVetterNGTest {
 
     private Graph graph;
+    public static final int SLEEP_TIME = 300;
 
     public QualityControlAutoVetterNGTest() {
     }
@@ -64,7 +64,8 @@ public class QualityControlAutoVetterNGTest {
     }
 
     /**
-     * Test of updateQualityControlState method, of class QualityControlAutoVetter.
+     * Test of updateQualityControlState method, of class
+     * QualityControlAutoVetter.
      */
     @Test
     public void testUpdateQualityControlStateWithNoGraph() {
@@ -108,7 +109,7 @@ public class QualityControlAutoVetterNGTest {
 
     // Test the adding and removing of observers and their behaviour to trigger the methods of the interface.
     @Test
-    public void testAddRemoveObserver() {
+    public void testAddRemoveObserver() throws InterruptedException {
         // add observer of the button state
         final TestObserver observer = new TestObserver();
         QualityControlAutoVetter.getInstance().addObserver(observer);
@@ -118,12 +119,8 @@ public class QualityControlAutoVetterNGTest {
 
         QualityControlAutoVetter.updateQualityControlState(null);
 
-        try {
-            // Sleep until after pluginExecution thread has returned
-            Thread.sleep(1000);
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
-        }
+        // Sleep until after pluginExecution thread has returned
+        Thread.sleep(SLEEP_TIME);
 
         // Check observer status
         assertTrue(observer.getCanRunStatus());
@@ -138,12 +135,7 @@ public class QualityControlAutoVetterNGTest {
         // Run update state
         QualityControlAutoVetter.updateQualityControlState(null);
 
-        try {
-            // Sleep until after pluginExecution thread has returned
-            Thread.sleep(1000);
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
-        }
+        Thread.sleep(SLEEP_TIME);
 
         // As it's not an observer it should remain false.
         assertFalse(observer.getCanRunStatus());
@@ -181,7 +173,7 @@ public class QualityControlAutoVetterNGTest {
 
     // Test if multiple buttonlisteners get fired correctly within the update state.
     @Test
-    public void testUpdateQualityControlState() {
+    public void testUpdateQualityControlState() throws InterruptedException {
         graph = null;
 
         // add observer1 of the button state
@@ -199,12 +191,7 @@ public class QualityControlAutoVetterNGTest {
 
         QualityControlAutoVetter.updateQualityControlState(graph);
 
-        try {
-            // Sleep until after pluginExecution thread has returned
-            Thread.sleep(1000);
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
-        }
+        Thread.sleep(SLEEP_TIME);
 
         // Check updated status
         assertTrue(observer1.getCanRunStatus());
@@ -252,12 +239,7 @@ public class QualityControlAutoVetterNGTest {
             wg.commit();
         }
 
-        try {
-            // Sleep until after pluginExecution thread has returned
-            Thread.sleep(1000);
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
-        }
+        Thread.sleep(SLEEP_TIME);
 
         // Set the current graph
         instance.newActiveGraph(graph);
