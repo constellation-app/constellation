@@ -41,7 +41,6 @@ import org.openide.util.NbBundle;
 @NbBundle.Messages("JoinCommWelcomePlugin=Join Comm Welcome Plugin")
 public class JoinCommWelcomePlugin implements WelcomePluginInterface {
 
-    private static final double TITLE_SIZE = 1.5;
     public static final String JOIN = "resources/welcome_join.png";
     final ImageView joinView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(JOIN)));
     final Button joinBtn = new Button();
@@ -93,6 +92,7 @@ public class JoinCommWelcomePlugin implements WelcomePluginInterface {
         final Text title = new Text("Join our Community");
         title.setFill(Color.WHITE);
         final Text subtitle = new Text("Become a member");
+        subtitle.setId("subtitle");
         subtitle.setFill(Color.WHITE);
         final VBox layoutVBox = new VBox(title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER_LEFT);

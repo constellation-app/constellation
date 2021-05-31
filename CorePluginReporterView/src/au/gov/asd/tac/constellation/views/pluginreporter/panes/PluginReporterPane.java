@@ -60,7 +60,6 @@ import org.openide.util.NbPreferences;
 public class PluginReporterPane extends BorderPane implements ListChangeListener<String> {
 
     private static final String FILTERED_TAGS_KEY = "filteredTags";
-    private static final String FONT_SIZE_FORMAT = "-fx-font-size:%d;";
 
     private final ToolBar controlToolbar = new ToolBar();
 

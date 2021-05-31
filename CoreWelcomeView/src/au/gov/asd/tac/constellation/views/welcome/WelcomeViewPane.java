@@ -65,9 +65,6 @@ public class WelcomeViewPane extends BorderPane {
     public static final String WELCOME_TEXT = "Welcome to Constellation";
     public static final double SPLIT_POS = 0.2;
 
-    private static final int TITLE_SIZE = 2;
-    private static final double HEADING_SIZE = 1.5;
-
     //Place holder images
     public static final String LOGO = "resources/constellation-logo.png";
 
@@ -109,7 +106,7 @@ public class WelcomeViewPane extends BorderPane {
 
             //Create the labels for the left pane
             final Label welcome = new Label(WELCOME_TEXT);
-            welcome.setFont(new Font(FontUtilities.getApplicationFontFamily(), TITLE_SIZE));
+            welcome.setId("title");
             welcome.setAlignment(Pos.CENTER);
             leftVBox.getChildren().add(welcome);
 

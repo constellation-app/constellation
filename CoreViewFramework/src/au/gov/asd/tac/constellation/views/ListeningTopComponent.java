@@ -266,13 +266,11 @@ public abstract class ListeningTopComponent<P> extends AbstractTopComponent<P> i
             preferenceMonitorsCopy = new HashMap<>(preferenceMonitors);
         }
         preferenceMonitorsCopy.forEach((preference, handler) -> {
-//            if (event.getKey().equals(preference)) {
-                LOGGER.log(Level.FINER, "ManualUpdate::UpdatePreferences::{0}", preference);
+            LOGGER.log(Level.FINER, "ManualUpdate::UpdatePreferences::{0}", preference);
 
-                if (handler != null) {
-                    handler.accept(event);
-                }
-//            }
+            if (handler != null) {
+                handler.accept(event);
+            }
         });
 
         handlePreferenceChange(event);

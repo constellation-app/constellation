@@ -185,11 +185,11 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
                             attributeTuple.getSecond().getName(),
                             g -> {
                                 final Thread dataUpdateThread = new Thread(UPDATE_DATA) {
-                            @Override
-                            public void run() {
-                                pane.updateData(g, currentState);
-                            }
-                        };
+                                @Override
+                                public void run() {
+                                    pane.updateData(g, currentState);
+                                }
+                            };
                                 dataUpdateThread.start();
                             }));
                 });

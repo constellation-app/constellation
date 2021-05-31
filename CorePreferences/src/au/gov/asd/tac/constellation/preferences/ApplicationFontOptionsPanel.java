@@ -93,7 +93,7 @@ final class ApplicationFontOptionsPanel extends JPanel {
         fontCombo.setModel(new DefaultComboBoxModel(fonts));
         fontCombo.setSelectedItem(ApplicationFontPreferenceKeys.FONT_FAMILY_DEFAULT);
 
-        fontSizeSpinner.setModel(new SpinnerNumberModel(12, 6, 45, 1));
+        fontSizeSpinner.setModel(new SpinnerNumberModel(12, 12, 45, 1));
 
         Mnemonics.setLocalizedText(resetBtn, NbBundle.getMessage(ApplicationFontOptionsPanel.class, "ApplicationFontOptionsPanel.resetBtn.text")); // NOI18N
         resetBtn.addActionListener(new ActionListener() {

@@ -41,7 +41,6 @@ import org.openide.util.NbBundle;
 @NbBundle.Messages("ProvideFeedbackWelcomePlugin=Provide Feedback Welcome Plugin")
 public class ProvideFeedbackWelcomePlugin implements WelcomePluginInterface {
 
-    private static final double TITLE_SIZE = 1.5;
     public static final String FEEDBACK = "resources/welcome_feedback.png";
     final ImageView feedView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(FEEDBACK)));
     final Button feedbackButton = new Button();
@@ -93,6 +92,7 @@ public class ProvideFeedbackWelcomePlugin implements WelcomePluginInterface {
         final Text title = new Text("Provide Feedback");
         title.setFill(Color.WHITE);
         final Text subtitle = new Text("Let us know your thoughts");
+        subtitle.setId("subtitle");
         subtitle.setFill(Color.WHITE);
         final VBox layoutVBox = new VBox(title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER_LEFT);

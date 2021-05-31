@@ -19,6 +19,8 @@ import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Manages the CSS style sheet common to all CONSTELLATION JavaFX components.
@@ -26,6 +28,8 @@ import java.io.PrintWriter;
  * @author twinkle2_little
  */
 public class JavafxStyleManager {
+    
+    private static final Logger LOGGER = Logger.getLogger(JavafxStyleManager.class.getName());
 
     public static final String CSS_BASE_STYLE_PREFIX = "-fx-base:";
     public static final String CSS_FONT_WEIGHT_BOLD = "-fx-font-weight: bold";
@@ -56,7 +60,14 @@ public class JavafxStyleManager {
      * @return
      */
     public static String getDynamicStyleSheet() {
-//        if (dynamicStyleSheet == null) {
+        final double titleSize = FontUtilities.getApplicationFontSize() * 1.5;
+        final double subtitleSize;
+        if (FontUtilities.getApplicationFontSize() < 24){
+            subtitleSize = 12;
+        } else {
+            subtitleSize = FontUtilities.getApplicationFontSize() * 0.5;
+        }
+        
         try {
             // create a new temp file that will be removed as the application exits
             final File tempStyleClass = File.createTempFile("dynamic", ".css");
@@ -64,6 +75,8 @@ public class JavafxStyleManager {
 
             // dynamically write the style sheet
             try (final PrintWriter printWriter = new PrintWriter(tempStyleClass)) {
+                printWriter.println(String.format("#title { -fx-font-size: %fpx; -fx-font-family:\"%s\"; }", titleSize, FontUtilities.getApplicationFontFamily()));
+                printWriter.println(String.format("#subtitle { -fx-font-size: %fpx; -fx-font-family:\"%s\"; }", subtitleSize, FontUtilities.getApplicationFontFamily()));
                 printWriter.println(String.format(".button { -fx-font-size: %dpx; -fx-font-family:\"%s\"; }", FontUtilities.getApplicationFontSize(), FontUtilities.getApplicationFontFamily()));
                 printWriter.println(String.format(".label { -fx-font-size: %dpx; -fx-font-family:\"%s\"; }", FontUtilities.getApplicationFontSize(), FontUtilities.getApplicationFontFamily()));
                 printWriter.println(String.format(".root { -fx-font-size: %dpx; -fx-font-family:\"%s\"; }", FontUtilities.getApplicationFontSize(), FontUtilities.getApplicationFontFamily()));
@@ -71,9 +84,8 @@ public class JavafxStyleManager {
 
             dynamicStyleSheet = tempStyleClass.toURI().toString();
         } catch (final IOException ex) {
-            ex.printStackTrace();
+            LOGGER.log(Level.WARNING, ex.toString());
         }
-//        }
 
         return dynamicStyleSheet;
     }

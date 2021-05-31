@@ -45,8 +45,6 @@ import org.openide.util.NbBundle;
 @NbBundle.Messages("SelectionModeWelcomePlugin=Selection Mode Welcome Plugin")
 public class SelectionModeWelcomePlugin implements WelcomePluginInterface {
     
-    private static final double TITLE_SIZE = 1.2;
-    private static final int TEXT_SIZE = 10;
     public static final String NEW_GRAPH = "resources/welcome_add_selection.png";
     final ImageView addView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(NEW_GRAPH)));
     final Button newButton = new Button();
@@ -98,9 +96,8 @@ public class SelectionModeWelcomePlugin implements WelcomePluginInterface {
         addView.setFitHeight(75);
         addView.setFitWidth(75);
         final Label title = new Label("New Graph");
-        title.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * TITLE_SIZE));
         final Label subtitle = new Label("Selection mode");
-        subtitle.setFont(new Font(FontUtilities.getApplicationFontFamily(), TEXT_SIZE));
+        subtitle.setId("subtitle");
         final VBox layoutVBox = new VBox(addView, title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER);
         newButton.setGraphic(layoutVBox);

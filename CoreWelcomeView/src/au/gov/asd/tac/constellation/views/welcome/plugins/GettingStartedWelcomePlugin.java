@@ -91,6 +91,7 @@ public class GettingStartedWelcomePlugin implements WelcomePluginInterface {
         final Text title = new Text("Getting Started");
         title.setFill(Color.WHITE);
         final Text subtitle = new Text("Guides & Resources");
+        subtitle.setId("subtitle");
         subtitle.setFill(Color.WHITE);
         final VBox layoutVBox = new VBox(title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER_LEFT);
