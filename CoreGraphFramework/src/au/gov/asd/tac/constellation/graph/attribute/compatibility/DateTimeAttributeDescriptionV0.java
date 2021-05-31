@@ -38,25 +38,20 @@ import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * This describes a type of attribute whose values represent date-times. The
- * date-times are stored as primitive long values, whilst the canonical string
- * representation is 'yyyy-MM-dd HH:mm:ss'.
+ * This describes a type of attribute whose values represent date-times. The date-times are stored as primitive long
+ * values, whilst the canonical string representation is 'yyyy-MM-dd HH:mm:ss'.
  * <p>
- * Attribute values can be set from strings in various formats (see
- * {@link #parseDateTime parseDateTime}) using {@link #setString setString()},
- * or from {@link Date} and {@link Calendar} objects using
+ * Attribute values can be set from strings in various formats (see {@link #parseDateTime parseDateTime}) using
+ * {@link #setString setString()}, or from {@link Date} and {@link Calendar} objects using
  * {@link #setObject setObject()}.
  * <p>
- * Attribute values can be retrieved as canonical strings using
- * {@link #getString getString()}, or as {@link Representation} objects (java
- * {@link Date} objects whose toString method yields canonical strings) using
+ * Attribute values can be retrieved as canonical strings using {@link #getString getString()}, or as
+ * {@link Representation} objects (java {@link Date} objects whose toString method yields canonical strings) using
  * {@link #getObject getObject()}.
  * <p>
- * Note that prior to object or string retrieval, the values are updated to
- * reflect the graph's current time-zone.
+ * Note that prior to object or string retrieval, the values are updated to reflect the graph's current time-zone.
  * <p>
- * Note that this attribute description should no longer be used and only
- * remains to support legacy graph files.
+ * Note that this attribute description should no longer be used and only remains to support legacy graph files.
  *
  * @author sirius
  */
@@ -70,9 +65,8 @@ public final class DateTimeAttributeDescriptionV0 extends AbstractAttributeDescr
     public static final TimeZone UTC = TimeZone.getTimeZone("UTC");
     private static final Logger LOGGER = Logger.getLogger(DateTimeAttributeDescriptionV0.class.getName());
     /**
-     * An array of primitives doesn't have a null equivalent, and the default
-     * value of 0 for long is a valid datetime, so we use an otherwise invalid
-     * value to indicate that a value has not been set. See setCapacity().
+     * An array of primitives doesn't have a null equivalent, and the default value of 0 for long is a valid datetime,
+     * so we use an otherwise invalid value to indicate that a value has not been set. See setCapacity().
      */
     public static final long NULL_VALUE = Long.MIN_VALUE;
     public static final long MIN_VALUE = 0;
@@ -84,8 +78,7 @@ public final class DateTimeAttributeDescriptionV0 extends AbstractAttributeDescr
     private TimeZone tz = null;
     public static final String ATTRIBUTE_NAME = "datetime";
     /**
-     * A regular expression that matches legal datetime Strings. yyyy-mm-dd
-     * hh:mm:ss((.sss)+zzzz
+     * A regular expression that matches legal datetime Strings. yyyy-mm-dd hh:mm:ss((.sss)+zzzz
      */
     public static final Pattern RE_DATETIME1 = Pattern.compile("^\\d{4}-\\d{2}-\\d{2}[T ]?\\d{2}:\\d{2}:\\d{2}(\\.\\d{3})?([+-]\\d{4})?$");
     public static final Pattern RE_DATETIME2 = Pattern.compile("^\\d{4}-\\d{2}-\\d{2}[T ]?\\d{2}:\\d{2}(:\\d{2}\\.\\d{3})?([+-]\\d{4})?$");
@@ -188,6 +181,8 @@ public final class DateTimeAttributeDescriptionV0 extends AbstractAttributeDescr
         } else if (attrModificationCounter != graph.getValueModificationCounter(tzAttr)) {
             tz = (TimeZone) graph.getObjectValue(tzAttr, 0);
             attrModificationCounter = graph.getValueModificationCounter(tzAttr);
+        } else {
+            // Do nothing
         }
     }
 
@@ -203,27 +198,22 @@ public final class DateTimeAttributeDescriptionV0 extends AbstractAttributeDescr
     /**
      * Parse a string in (something close to) ISO format to a Calendar.
      *
-     * The following formats are accepted: 'yyyy-mm-dd hh:mm:ss+zzzz',
-     * 'yyyy-mm-dd hh:mm:ss-zzzz', 'yyyy-mm-dd hh:mm:ss.SSS+zzzz', 'yyyy-mm-dd
-     * hh:mm:ss.SSS-zzzz',
+     * The following formats are accepted: 'yyyy-mm-dd hh:mm:ss+zzzz', 'yyyy-mm-dd hh:mm:ss-zzzz', 'yyyy-mm-dd
+     * hh:mm:ss.SSS+zzzz', 'yyyy-mm-dd hh:mm:ss.SSS-zzzz',
      *
-     * (Note that this isn't strictly ISO format, which uses a T instead of a
-     * space.)
+     * (Note that this isn't strictly ISO format, which uses a T instead of a space.)
      *
-     * This is basically doing a SimpleDateFormat.parse(), but a lot faster. All
-     * fields are numeric. The numeric timezone is mandatory.
+     * This is basically doing a SimpleDateFormat.parse(), but a lot faster. All fields are numeric. The numeric
+     * timezone is mandatory.
      *
-     * Parsing isn't strict: the date 2011-99-01 will be accepted. This reflects
-     * the way that SimpleDateFormat.parse() works. The parsing is lenient in
-     * other ways (for instance, punctuation isn't checked), but since the
-     * context is parsing of dates from CONSTELLATION files, this isn't expected
-     * to be a problem. However, this should not be taken as an excuse to write
-     * syntactically incorrect datetime strings elsewhere.
+     * Parsing isn't strict: the date 2011-99-01 will be accepted. This reflects the way that SimpleDateFormat.parse()
+     * works. The parsing is lenient in other ways (for instance, punctuation isn't checked), but since the context is
+     * parsing of dates from CONSTELLATION files, this isn't expected to be a problem. However, this should not be taken
+     * as an excuse to write syntactically incorrect datetime strings elsewhere.
      *
      * @param dt An (almost) ISO datetime to be parsed.
-     * @param tz A TimeZone to use to parse the datetime string. If the string
-     * does not have an explicit time zone, this time zone will be used unless
-     * it is null, in which case UTC will be used.
+     * @param tz A TimeZone to use to parse the datetime string. If the string does not have an explicit time zone, this
+     * time zone will be used unless it is null, in which case UTC will be used.
      *
      * @return A Calendar representing the input datetime.
      */

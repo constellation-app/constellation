@@ -179,6 +179,8 @@ public class DefaultExternalDropHandler extends ExternalDropHandler {
                 //linux
                 String uriList = (String) t.getTransferData(getUriListDataFlavor());
                 return textURIListToFileList(uriList);
+            } else {
+                // Do nothing
             }
         } catch (UnsupportedFlavorException ex) {
             ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, ex);
@@ -193,8 +195,7 @@ public class DefaultExternalDropHandler extends ExternalDropHandler {
      * Opens the given file.
      *
      * @param file file to be opened
-     * @return {@code null} if the file was successfully opened; or a localized
-     * error message in case of failure
+     * @return {@code null} if the file was successfully opened; or a localized error message in case of failure
      */
     String openFile(final File file) {
         FileObject fo = FileUtil.toFileObject(FileUtil.normalizeFile(file));
@@ -205,7 +206,7 @@ public class DefaultExternalDropHandler extends ExternalDropHandler {
     }
     private static DataFlavor uriListDataFlavor;
 
-    DataFlavor getUriListDataFlavor() {
+    protected static DataFlavor getUriListDataFlavor() {
         if (uriListDataFlavor == null) {
             try {
                 uriListDataFlavor = new DataFlavor("text/uri-list;class=java.lang.String");

@@ -89,6 +89,8 @@ final class HopUtilities {
                     if (!dstsel) {
                         vxToSelect.set(txDestId);
                     }
+                } else {
+                    // Do nothing
                 }
             } else {
                 final boolean txSourceIsSelected = graph.getBooleanValue(vxSelectedAttr, txSourceId);

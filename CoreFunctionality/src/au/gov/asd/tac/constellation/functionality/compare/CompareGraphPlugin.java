@@ -291,8 +291,7 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
     }
 
     /**
-     * Compare 2 graphs and create a {@link GraphRecordStore} to store the
-     * differences.
+     * Compare 2 graphs and create a {@link GraphRecordStore} to store the differences.
      *
      * @param original The orignal graph
      * @param compare The graph to compare with
@@ -440,6 +439,8 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
                 }
 
                 seenVertices.add(vertex);
+            } else {
+                // Do nothing
             }
 
             // transaction compare
@@ -517,6 +518,8 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
                 }
 
                 seenTransactions.add(transaction);
+            } else {
+                // Do nothing
             }
         }
 
@@ -524,8 +527,7 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
     }
 
     /**
-     * Create the comparison graph using the original graph as the starting
-     * point and add the result record store
+     * Create the comparison graph using the original graph as the starting point and add the result record store
      *
      * @param originalGraph
      * @param changes
@@ -615,9 +617,8 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
      * GraphRecordStoreUtilities.getAll()
      * </pre>
      * <p>
-     * This is because getAll treats all nodes (i.e even destination nodes) as
-     * source nodes and the order of getAll is source nodes and then
-     * transactions (if any exist).
+     * This is because getAll treats all nodes (i.e even destination nodes) as source nodes and the order of getAll is
+     * source nodes and then transactions (if any exist).
      *
      * @param GraphRecordStore The record store
      * @return A mapping of keys to record store index
@@ -647,17 +648,15 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
     }
 
     /**
-     * Return a mapping of transaction primary key (as a Set) to record store
-     * index.
+     * Return a mapping of transaction primary key (as a Set) to record store index.
      * <p>
      * This implementation assumes that you use:
      * <pre>
      * GraphRecordStoreUtilities.getAll()
      * </pre>
      * <p>
-     * This is because getAll treats all nodes (i.e even destination nodes) as
-     * source nodes and the order of getAll is source nodes and then
-     * transactions (if any exist).
+     * This is because getAll treats all nodes (i.e even destination nodes) as source nodes and the order of getAll is
+     * source nodes and then transactions (if any exist).
      *
      * @param GraphRecordStore The record store
      * @return A mapping of keys to record store index
@@ -714,9 +713,8 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
     }
 
     /**
-     * Add primary key values to the record store so that the node or
-     * transaction is created with the minimum attributes for it to display
-     * correctly.
+     * Add primary key values to the record store so that the node or transaction is created with the minimum attributes
+     * for it to display correctly.
      *
      * @param changes The GraphRecordStore holding the changes
      * @param type The element type
@@ -729,8 +727,8 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
     }
 
     /**
-     * Add attributes to the current change record so that things like the
-     * visual attributes come across in the compare graph
+     * Add attributes to the current change record so that things like the visual attributes come across in the compare
+     * graph
      *
      * @param recordstore The GraphRecordStore of the changes to be processed
      * @param changes The GraphRecordStore holding the changes

@@ -261,9 +261,10 @@ public class BubbleTreeArranger implements Arranger {
                     return 1;
                 } else if (lhs > rhs) {
                     return -1;
+                } else {
+                    return 0;
+                    // Do nothing
                 }
-
-                return 0;
             });
 
             int i = 0;

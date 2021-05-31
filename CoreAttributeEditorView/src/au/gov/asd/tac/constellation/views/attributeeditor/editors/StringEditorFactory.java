@@ -126,6 +126,8 @@ public class StringEditorFactory extends AttributeValueEditorFactory<String> {
                     e.consume();
                 } else if (e.getCode() == KeyCode.ESCAPE) {
                     e.consume();
+                } else {
+                    // Do nothing
                 }
             });
 

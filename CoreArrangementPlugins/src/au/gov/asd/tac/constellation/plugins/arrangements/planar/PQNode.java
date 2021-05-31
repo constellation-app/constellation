@@ -231,6 +231,8 @@ class PQNode {
                     removed.add(grandchild);
                 }
                 toFlatten = child;
+            } else {
+                // Do nothing
             }
             if (child == dividingNode) {
                 if (child.label.equals(NodeLabel.PARTIAL)) {
@@ -275,6 +277,8 @@ class PQNode {
                     toFlatten = child;
                 }
                 toRemove = NodeLabel.FULL;
+            } else {
+                // Do nothing
             }
             if (child.label.equals(toRemove)) {
                 removeChild(child);
@@ -285,6 +289,8 @@ class PQNode {
                     removed.add(grandchild);
                 }
                 toFlatten = child;
+            } else {
+                // Do nothing
             }
         }
         if (toFlatten != null) {
@@ -409,6 +415,8 @@ class PQNode {
             } else if (count > maxCountSinceAnchor) {
                 maxCountSinceAnchor = count;
                 maxNodeSinceAnchor = child;
+            } else {
+                // Do nothing
             }
         }
         count += carry;

@@ -40,7 +40,7 @@ public class Startup implements Runnable {
     @Override
     public void run() {
         ConstellationSecurityManager.startSecurityLater(null);
-
+        
         // application environment
         final String environment = System.getProperty(SYSTEM_ENVIRONMENT);
         final String name = environment != null
@@ -53,7 +53,8 @@ public class Startup implements Runnable {
             final String title = String.format("%s - %s", name, VERSION);
             frame.setTitle(title);
         });
-
-        FontUtilities.initialiseFontPreferenceOnFirstUse();
+        
+        FontUtilities.initialiseOutputFontPreferenceOnFirstUse();
+        FontUtilities.initialiseApplicationFontPreferenceOnFirstUse();
     }
 }

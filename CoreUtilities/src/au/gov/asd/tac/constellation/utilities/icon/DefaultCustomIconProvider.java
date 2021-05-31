@@ -40,8 +40,8 @@ import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
 
 /**
- * The default implementation of CustomIconProvider, saves and loads custom
- * icons to and from the CONSTELLATION user directory.
+ * The default implementation of CustomIconProvider, saves and loads custom icons to and from the CONSTELLATION user
+ * directory.
  *
  * @author cygnus_x-1
  */
@@ -120,6 +120,8 @@ public class DefaultCustomIconProvider implements CustomIconProvider {
             iconDir.mkdir();
         } else if (!iconDir.isDirectory()) {
             LOGGER.warning(String.format("Icon directory '%s' is not a directory", USER_ICON_DIR));
+        } else {
+            // Do nothing
         }
         return iconDir.isDirectory() ? iconDir : null;
     }

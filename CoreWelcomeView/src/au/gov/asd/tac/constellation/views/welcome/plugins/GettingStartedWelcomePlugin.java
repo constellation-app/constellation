@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
 import au.gov.asd.tac.constellation.functionality.browser.OpenInBrowserPlugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import javafx.geometry.Pos;
@@ -42,6 +43,7 @@ import org.openide.util.NbBundle;
 @NbBundle.Messages("GettingStartedWelcomePlugin=Getting Started Welcome Plugin")
 public class GettingStartedWelcomePlugin implements WelcomePluginInterface {
     
+    private static final double TITLE_SIZE = 1.5;
     public static final String GETTING_STARTED = "resources/welcome_getting_started.png";
     final ImageView started = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(GETTING_STARTED)));
     final Button startedBtn = new Button();
@@ -92,10 +94,10 @@ public class GettingStartedWelcomePlugin implements WelcomePluginInterface {
         started.setFitHeight(25);
         started.setFitWidth(25);
         final Text title = new Text("Getting Started");
-        title.setFont(new Font("Arial", 18));
+        title.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * TITLE_SIZE));
         title.setFill(Color.WHITE);
         final Text subtitle = new Text("Guides & Resources");
-        subtitle.setFont(new Font("Arial", 10));
+        subtitle.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize()));
         subtitle.setFill(Color.WHITE);
         final VBox layoutVBox = new VBox(title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER_LEFT);

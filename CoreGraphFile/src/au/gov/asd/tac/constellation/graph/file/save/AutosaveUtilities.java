@@ -59,6 +59,8 @@ public final class AutosaveUtilities {
             LOGGER.warning(msg);
 
             return null;
+        } else {
+            return saveDir;
         }
 
         return saveDir;
@@ -83,8 +85,7 @@ public final class AutosaveUtilities {
     /**
      * Delete the autosave files belonging to the specified graph id.
      * <p>
-     * This is typically for when the VisualTopComponent is closing and the
-     * graph has not been modified.
+     * This is typically for when the VisualTopComponent is closing and the graph has not been modified.
      *
      * @param id The id of the graph from ReadableGraph.getId().
      */
@@ -97,8 +98,7 @@ public final class AutosaveUtilities {
     /**
      * Delete a pair of autosave files.
      * <p>
-     * If the .star is given, the matching .star_auto will be deleted, and vice
-     * versa.
+     * If the .star is given, the matching .star_auto will be deleted, and vice versa.
      *
      * @param f A .star or .star_auto to be deleted.
      */
@@ -114,6 +114,8 @@ public final class AutosaveUtilities {
             f2 = new File(path + "_auto");
         } else if (path.endsWith(AUTO_EXT)) {
             f2 = new File(path.substring(0, path.length() - 5));
+        } else {
+            // Do nothing
         }
 
         if (f2 != null) {
@@ -125,13 +127,11 @@ public final class AutosaveUtilities {
     }
 
     /**
-     * For a given File, find and return the autosave properties for that file
-     * if it exists.
+     * For a given File, find and return the autosave properties for that file if it exists.
      *
      * @param f A File.
      *
-     * @return The autosave properties for that file if an autosave exists,
-     * otherwise null.
+     * @return The autosave properties for that file if an autosave exists, otherwise null.
      */
     public static Properties getAutosave(final File f) {
         for (final File autosave : getAutosaves(AUTO_EXT)) {
@@ -160,8 +160,7 @@ public final class AutosaveUtilities {
     /**
      * Safely move a file.
      * <p>
-     * The destination file is renamed to file.bak, the source file is copied,
-     * the .bak file is deleted.
+     * The destination file is renamed to file.bak, the source file is copied, the .bak file is deleted.
      *
      * @param from The source file.
      * @param to The destination file.
@@ -203,9 +202,8 @@ public final class AutosaveUtilities {
     /**
      * Clean up stray files in the autosave directory.
      * <p>
-     * It's possible to have .star files without a corresponding .star_auto, and
-     * vice versa, depending on exactly where a crash happened. This method gets
-     * rid of dangling files.
+     * It's possible to have .star files without a corresponding .star_auto, and vice versa, depending on exactly where
+     * a crash happened. This method gets rid of dangling files.
      */
     public static void cleanup() {
         // Find .star files aithout a .star_auto.

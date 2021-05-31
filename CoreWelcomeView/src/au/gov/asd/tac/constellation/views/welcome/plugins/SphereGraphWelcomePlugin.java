@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.plugins.PluginExecutor;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.testing.CoreTestingPluginRegistry;
 import au.gov.asd.tac.constellation.testing.construction.SphereGraphBuilderPlugin;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import javafx.geometry.Pos;
@@ -46,6 +47,8 @@ import org.openide.util.NbBundle;
 @NbBundle.Messages("SphereGraphWelcomePlugin=Sphere Graph Welcome Plugin")
 public class SphereGraphWelcomePlugin implements WelcomePluginInterface {
     
+    private static final double TITLE_SIZE = 1.2;
+    private static final int TEXT_SIZE = 10;
     public static final String NEW_SPHERE = "resources/welcome_add_sphere.png";
     final ImageView newSphere = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(NEW_SPHERE)));   
     final Button sphereGraphButton = new Button();
@@ -107,9 +110,9 @@ public class SphereGraphWelcomePlugin implements WelcomePluginInterface {
         newSphere.setFitHeight(75);
         newSphere.setFitWidth(75);
         final Label sTitle = new Label("New Graph");
-        sTitle.setFont(new Font("Arial", 16));
+        sTitle.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * TITLE_SIZE));
         final Label sSubtitle = new Label("Sphere network");
-        sSubtitle.setFont(new Font("Arial", 10));
+        sSubtitle.setFont(new Font(FontUtilities.getApplicationFontFamily(), TEXT_SIZE));
         final VBox layoutVBox = new VBox(newSphere, sTitle, sSubtitle);
         layoutVBox.setAlignment(Pos.CENTER);
         sphereGraphButton.setGraphic(layoutVBox);
