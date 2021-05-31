@@ -42,7 +42,7 @@ import org.testng.annotations.Test;
 public class QualityControlAutoVetterNGTest {
 
     private Graph graph;
-    public static final int SLEEP_TIME = 300;
+    public static final int SLEEP_TIME = 1000;
 
     public QualityControlAutoVetterNGTest() {
     }
