@@ -61,7 +61,10 @@ public class ObjectBin extends Bin {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof ObjectBin) {
+        if (o == null) {
+            return false;
+        }
+        if (this.getClass() == o.getClass()) {
             final ObjectBin bin = (ObjectBin) o;
             return key == null ? bin.key == null : key.equals(bin.key);
         }

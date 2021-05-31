@@ -109,6 +109,8 @@ public final class SimpleGraphOpener extends GraphOpener {
                 final SimpleGraphTopComponent vtc = new SimpleGraphTopComponent(gdo, graph);
                 vtc.open();
                 vtc.requestActive();
+            } else {
+                // Do nothing
             }
 
             if (doAfter != null) {

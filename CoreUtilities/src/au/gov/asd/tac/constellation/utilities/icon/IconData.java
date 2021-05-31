@@ -27,8 +27,7 @@ import javax.imageio.ImageIO;
 import org.openide.util.Exceptions;
 
 /**
- * An IconData stores byte data for use as a {@link ConstellationIcon}, provided
- * via an InputStream.
+ * An IconData stores byte data for use as a {@link ConstellationIcon}, provided via an InputStream.
  *
  * @author cygnus_x-1
  */
@@ -39,32 +38,25 @@ public abstract class IconData {
     private byte[] data = null;
 
     /**
-     * Get an array of bytes representing the data of a
-     * {@link ConstellationIcon} of default size, specified by
-     * {@link ConstellationIcon#DEFAULT_ICON_SIZE}, and original color. This
-     * data will only be created the first time one of the getData methods is
-     * called and will be cached at this point, allowing for lazy loading of
-     * icons into memory.
+     * Get an array of bytes representing the data of a {@link ConstellationIcon} of default size, specified by
+     * {@link ConstellationIcon#DEFAULT_ICON_SIZE}, and original color. This data will only be created the first time
+     * one of the getData methods is called and will be cached at this point, allowing for lazy loading of icons into
+     * memory.
      *
-     * @return An array of bytes representing the data of a
-     * {@link ConstellationIcon}.
+     * @return An array of bytes representing the data of a {@link ConstellationIcon}.
      */
     public byte[] getData() {
         return getData(ConstellationIcon.DEFAULT_ICON_SIZE, null);
     }
 
     /**
-     * Get an array of bytes representing the data of aOL
-     * {@link ConstellationIcon} of the specified size and color. This data will
-     * only be created the first time one of the getData methods is called and
-     * will be cached at this point, allowing for lazy loading of icons into
-     * memory.
+     * Get an array of bytes representing the data of aOL {@link ConstellationIcon} of the specified size and color.
+     * This data will only be created the first time one of the getData methods is called and will be cached at this
+     * point, allowing for lazy loading of icons into memory.
      *
-     * @param size An integer value representing both the height and width of
-     * the icon.
+     * @param size An integer value representing both the height and width of the icon.
      * @param color A {@link Color} representing the color of the icon.
-     * @return An array of bytes representing the data of a
-     * {@link ConstellationIcon}.
+     * @return An array of bytes representing the data of a {@link ConstellationIcon}.
      */
     public byte[] getData(final int size, final Color color) {
         if (size != ConstellationIcon.DEFAULT_ICON_SIZE || color != null) {
@@ -79,15 +71,12 @@ public abstract class IconData {
     }
 
     /**
-     * Build an array of bytes representing the data of a
-     * {@link ConstellationIcon} from the {@link InputStream} specified by
-     * {@link #createInputStream()}.
+     * Build an array of bytes representing the data of a {@link ConstellationIcon} from the {@link InputStream}
+     * specified by {@link #createInputStream()}.
      *
-     * @param size An integer value representing both the height and width of
-     * the icon.
+     * @param size An integer value representing both the height and width of the icon.
      * @param color A {@link Color} representing the color of the icon.
-     * @return An array of bytes representing the data of a
-     * {@link ConstellationIcon}.
+     * @return An array of bytes representing the data of a {@link ConstellationIcon}.
      */
     protected byte[] createData(final int size, final Color color) {
         final ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -135,14 +124,11 @@ public abstract class IconData {
     }
 
     /**
-     * Scale the height and width of the given {@link BufferedImage} to the size
-     * provided.
+     * Scale the height and width of the given {@link BufferedImage} to the size provided.
      *
      * @param image The {@link BufferedImage} to scale.
-     * @param size An integer value representing the height and width to which
-     * to scale the image.
-     * @return A {@link BufferedImage} which is identical to the provided image,
-     * only resized.
+     * @param size An integer value representing the height and width to which to scale the image.
+     * @return A {@link BufferedImage} which is identical to the provided image, only resized.
      */
     private static BufferedImage scaleImage(final BufferedImage image, final int size) {
         if (image == null || image.getType() == BufferedImage.TYPE_4BYTE_ABGR
@@ -185,6 +171,8 @@ public abstract class IconData {
             return false;
         } else if (getClass() != obj.getClass()) {
             return false;
+        } else {
+            // Do nothing
         }
         final IconData other = (IconData) obj;
         return Arrays.equals(this.data, other.data);
@@ -196,14 +184,11 @@ public abstract class IconData {
     }
 
     /**
-     * Build an {@link InputStream} which will provide the data representing a
-     * {@link ConstellationIcon}. Note that this method could be called multiple
-     * times, so a new {@link InputStream} should be returned each time.
+     * Build an {@link InputStream} which will provide the data representing a {@link ConstellationIcon}. Note that this
+     * method could be called multiple times, so a new {@link InputStream} should be returned each time.
      *
-     * @return An {@link InputStream} through which the icon data will be
-     * provided.
-     * @throws IOException If the {@link InputStream} encounters an issue while
-     * transmitting the icon data.
+     * @return An {@link InputStream} through which the icon data will be provided.
+     * @throws IOException If the {@link InputStream} encounters an issue while transmitting the icon data.
      */
     protected abstract InputStream createInputStream() throws IOException;
 }

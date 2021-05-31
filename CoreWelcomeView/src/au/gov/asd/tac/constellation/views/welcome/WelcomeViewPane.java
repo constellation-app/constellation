@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.interaction.plugins.io.screenshot.Rece
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import java.io.File;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -63,6 +64,8 @@ public class WelcomeViewPane extends BorderPane {
     public static final String ERROR_BUTTON_MESSAGE = String.format("%s Information", BrandingUtilities.APPLICATION_NAME);
     public static final String WELCOME_TEXT = "Welcome to Constellation";
     public static final double SPLIT_POS = 0.2;
+    private static final int TITLE_SIZE = 2;
+    private static final double HEADING_SIZE = 1.5;
 
     //Place holder images
     public static final String LOGO = "resources/constellation-logo.png";
@@ -105,7 +108,7 @@ public class WelcomeViewPane extends BorderPane {
 
             //Create the labels for the left pane
             final Label welcome = new Label(WELCOME_TEXT);
-            welcome.setFont(new Font("Arial Unicode MS", 26));
+            welcome.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * TITLE_SIZE));
             welcome.setAlignment(Pos.CENTER);
             leftVBox.getChildren().add(welcome);
 
@@ -157,7 +160,7 @@ public class WelcomeViewPane extends BorderPane {
             // Create a checkbox to change users preference regarding showing the Tutorial Page on startup 
             final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
             final CheckBox showOnStartUpCheckBox = new CheckBox("Show on Startup");
-            showOnStartUpCheckBox.setFont(new Font("Arial", 16));
+            showOnStartUpCheckBox.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * HEADING_SIZE));
             lowerLeftHBox.getChildren().add(showOnStartUpCheckBox);
            
             showOnStartUpCheckBox.selectedProperty().addListener((ov, oldVal, newVal) -> {
@@ -175,7 +178,7 @@ public class WelcomeViewPane extends BorderPane {
             
             //formatting for bottom hbox
             final Label recent = new Label("Recent");
-            recent.setFont(new Font("Arial Unicode MS", 24));
+            recent.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * TITLE_SIZE));
             rightVBox.getChildren().add(topHBox);
             rightVBox.getChildren().add(recent);
             rightVBox.getChildren().add(bottomHBox);

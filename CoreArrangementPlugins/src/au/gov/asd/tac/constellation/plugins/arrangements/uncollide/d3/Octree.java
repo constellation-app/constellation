@@ -146,6 +146,8 @@ public class Octree {
                 index = frontQuadrant ? TOP_L_F : backQuadrant ? TOP_L_B : -1;
             } else if (bottomQuadrant) {
                 index = frontQuadrant ? BOT_L_F : backQuadrant ? BOT_L_B : -1;
+            } else {
+                // Do nothing
             }
         } // Object can completely fit within the right quadrants.
         else if (orb.getX() - orb.r > midx) {
@@ -153,7 +155,11 @@ public class Octree {
                 index = frontQuadrant ? TOP_R_F : backQuadrant ? TOP_R_B : -1;
             } else if (bottomQuadrant) {
                 index = frontQuadrant ? BOT_R_F : backQuadrant ? BOT_R_B : -1;
+            } else {
+                // Do nothing
             }
+        } else {
+            return index;
         }
 
         return index;
@@ -213,8 +219,7 @@ public class Octree {
      * Uncollide this orb from its colliding neighbors.
      *
      * @param orb The orb to be uncollided.
-     * @param padding The minimum orb between the orb's edge and the edges of
-     * each neighbor.
+     * @param padding The minimum orb between the orb's edge and the edges of each neighbor.
      * @return the number of collisions.
      */
     public int uncollide(final Orb3D orb, final float padding) {

@@ -78,6 +78,8 @@ public class LayersAddContextMenu implements ContextMenuProvider {
                             final String description = StringUtils.isBlank(txQuery.getDescription())
                                     ? NO_LAYER_TEXT : txQuery.getDescription();
                             currentLayers.add(String.valueOf(txQuery.getIndex()) + " - " + description);
+                        } else {
+                            // Do nothing
                         }
                     }
                 } else {

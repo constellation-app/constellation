@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
 import au.gov.asd.tac.constellation.functionality.browser.OpenInBrowserPlugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import javafx.geometry.Pos;
@@ -43,6 +44,7 @@ import org.openide.util.NbBundle;
 @NbBundle.Messages("JoinCommWelcomePlugin=Join Comm Welcome Plugin")
 public class JoinCommWelcomePlugin implements WelcomePluginInterface {
     
+    private static final double TITLE_SIZE = 1.5;
     public static final String JOIN = "resources/welcome_join.png";
     final ImageView joinView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(JOIN)));
     final Button joinBtn = new Button();
@@ -93,10 +95,10 @@ public class JoinCommWelcomePlugin implements WelcomePluginInterface {
         joinView.setFitWidth(25);
         final Text title = new Text("Join our Community");
         title.setFill(Color.WHITE);
-        title.setFont(new Font("Arial", 18));
+        title.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * TITLE_SIZE));
         final Text subtitle = new Text("Become a member");
         subtitle.setFill(Color.WHITE);
-        subtitle.setFont(new Font("Arial", 10));
+        subtitle.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize()));
         final VBox layoutVBox = new VBox(title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER_LEFT);
         final HBox layoutHBox = new HBox(joinView, layoutVBox);

@@ -42,7 +42,7 @@ selected.
 
 Explain why this functionality should be in Constellation Core as opposed to a
 different module suite. Note that this question is more applicable when adding
-new functionality. If this change is a minor update to an exising file then it
+new functionality. If this change is a minor update to an existing file then it
 is understood that this change has to be to this module suite and a response
 and therefore a response to this question is not required.
 
@@ -66,7 +66,7 @@ What process did you follow to verify that your change has the desired effects?
 - How did you verify that all changed functionality works as expected?
 - How did you verify that the change has not introduced any regressions?
 
-Describe the actions you performed (e.g., buttons you clicked, text you typed,
+Describe the actions you performed (e.g. buttons you clicked, text you typed,
 commands you ran, etc.), and describe the results you observed.
 
 -->

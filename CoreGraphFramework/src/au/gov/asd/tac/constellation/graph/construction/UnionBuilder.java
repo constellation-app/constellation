@@ -57,6 +57,8 @@ public class UnionBuilder extends GraphBuilder {
             } else if (newIDVertexMapping.containsKey(dest)) {
                 final int newTrans = constructTransaction(graph, source, newIDVertexMapping.get(dest), directed);
                 newIDTransactionMapping.put(trans, newTrans);
+            } else {
+                // Do nothing
             }
         }
 

@@ -42,9 +42,9 @@ import org.openide.windows.WindowManager;
 @Messages("OpenFilePlugin=Open File")
 public class OpenFilePlugin extends SimpleEditPlugin {
 
-    private static boolean running;
+    private boolean running;
     private static File currentDirectory = null;
-    
+
     @Override
     protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         SwingUtilities.invokeLater(() -> {
@@ -57,6 +57,7 @@ public class OpenFilePlugin extends SimpleEditPlugin {
                 final File[] files;
                 try {
                     files = chooseFilesToOpen(chooser);
+                    OpenFilePlugin.setCurrentDirectory(chooser.getCurrentDirectory());
                     currentDirectory = chooser.getCurrentDirectory();
                 } catch (final UserCancelException ex) {
                     return;
@@ -68,6 +69,10 @@ public class OpenFilePlugin extends SimpleEditPlugin {
                 running = false;
             }
         });
+    }
+
+    private static void setCurrentDirectory(final File currentDir) {
+        currentDirectory = currentDir;
     }
 
     /**
@@ -82,7 +87,7 @@ public class OpenFilePlugin extends SimpleEditPlugin {
 
         return chooser;
     }
-    
+
     @Override
     public HelpCtx getHelpCtx() {
         return new HelpCtx(this.getClass().getName());
@@ -93,8 +98,7 @@ public class OpenFilePlugin extends SimpleEditPlugin {
      *
      * @param chooser file chooser to display
      * @return array of selected files,
-     * @exception org.openide.util.UserCancelException if the user cancelled the
-     * operation
+     * @exception org.openide.util.UserCancelException if the user cancelled the operation
      */
     public static File[] chooseFilesToOpen(final JFileChooser chooser)
             throws UserCancelException {
@@ -110,7 +114,7 @@ public class OpenFilePlugin extends SimpleEditPlugin {
         } while (files.length == 0);
         return files;
     }
-    
+
     private static File getCurrentDirectory() {
         if (Boolean.getBoolean("netbeans.openfile.197063")) {
             // Prefer to open from parent of active editor, if any.
