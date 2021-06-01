@@ -7,7 +7,7 @@
 <p>The setting can be found via Setup -> Options -> CONSTELLATION -> Application Font. </p>
 
 == 2021-05-19 Ability to Pin/Unpin Nodes
-<p>Nodes can now be pinned, either through the pin/unpin toolbar icons in the arrangements panel, or via the corresponding Arrange menu options. Once pinned, nodes do not move when arrangement plugins are run, but can be manually moved. The 'pinned' vertex attribute stores this information.</p>
+<p>Nodes can now be pinned, either through the pin/unpin toolbar icons in the arrangements panel, or via the corresponding Arrange menu options. Once pinned, nodes do not move when arrangement plugins are run, but can be manually moved. The 'pinned' node attribute stores this information.</p>
 
 == 2021-04-22 JDBC Database Import Connector View
 <p>The JDBC Connector window has been converted to use the standard view framework and now matches closely with the style of the delimited file importer.</p>
@@ -40,11 +40,11 @@
 
 == 2021-01-12 Notes View
 <p>The Notes View can be used to record notes about a graph.</p>
-<p>It can found in "Experimental > Views > Notes View", or alternatively via the shortcut "Ctrl+Shift+A".</p>
+<p>It can be found in "Experimental > Views > Notes View", or alternatively via the shortcut "Ctrl+Shift+A".</p>
 <p>There are two types of notes that are recorded in the Notes View:</p>
 <ul>
-<li><p>User Notes: These are RED and are created by a user by typing in the fields and clicking the "Add Note" button at the bottom of the view. They may also be edited or deleted later via the buttons on the note itself.</p></li>
-<li><p>Auto Notes: These are BLUE and are generated and added to the graph automatically by plugin execution, similar to Plugin Reporter.</p></li>
+<li><p>User Notes: These are PURPLE and are created by a user by typing in the tile and description and clicking the "Add Note" button at the bottom of the view. They may also be edited or deleted later via the buttons on the note itself.</p></li>
+<li><p>Auto Notes: These are BLUE and are generated and added to the graph automatically by plugin execution, similar to the Plugin Reporter.</p></li>
 </ul>
 <p>Visibility of either User Notes or Auto Notes can be toggled on or off via the "Select a filter..." drop-down menu at the top of the view.</p>
 
@@ -404,7 +404,7 @@ detailing how to use it, default settings are visible when you select the 'Use D
 changes are applied immediately on clicking the 'Apply' or 'OK' buttons.</p>
 
 == 2018-03-29 Default Decorators
-<p>The <i>Geo.Country</i> attribute is now set as a default decorator, meaning a country flag will decorate each vertex with country information.</p>
+<p>The <i>Geo.Country</i> attribute is now set as a default decorator, meaning a country flag will decorate each node with country information.</p>
 
 == 2018-03-07 Zoom to Selection
 <p>Added the animation back in when zooming to a selection (Ctrl+Up) so that you have context to where on the graph you are zooming to.</p>

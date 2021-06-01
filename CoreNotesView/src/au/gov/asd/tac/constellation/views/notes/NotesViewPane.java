@@ -90,8 +90,8 @@ public class NotesViewPane extends BorderPane {
 
     private final int DEFAULT_SPACING = 5;
     private final String PROMPT_COLOUR = "#909090";
-    private final String USER_COLOUR = "#C15A58";
-    private final String AUTO_COLOUR = "#588BC1";
+    private final String USER_COLOUR = "#9e248e";
+    private final String AUTO_COLOUR = "#0374bb";
     private final String DATETIME_PATTERN = "hh:mm:ss a 'on' dd/MM/yyyy"; // TODO: make this a preference so that we can support their local timestamp format instead
 
     private static final String AUTO_NOTES_FILTER = "Auto Notes";
@@ -100,7 +100,7 @@ public class NotesViewPane extends BorderPane {
     private static final String NOTES_VIEW_ICON = "resources/notes-view.png";
 
     private final Object LOCK = new Object();
-    
+
     private final String fontStyle = String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize());
 
     /**
@@ -136,7 +136,7 @@ public class NotesViewPane extends BorderPane {
                 }
             }
         });
-        
+
         // create help button
         final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
         helpButton.paddingProperty().set(new Insets(2, 0, 0, 0));
@@ -220,7 +220,7 @@ public class NotesViewPane extends BorderPane {
         notesViewPaneVBox = new VBox(DEFAULT_SPACING, filterNotesHBox, notesListScrollPane, addNoteVBox);
         notesViewPaneVBox.setAlignment(Pos.BOTTOM_CENTER);
         setCenter(notesViewPaneVBox);
-        
+
         this.setStyle(String.format("-fx-font-family:\"%s\";", FontUtilities.getApplicationFontFamily()));
         this.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
     }
@@ -464,8 +464,8 @@ public class NotesViewPane extends BorderPane {
         noteButtons.setAlignment(Pos.CENTER);
 
         final HBox noteBody = newNote.isUserCreated() ? new HBox(DEFAULT_SPACING, noteInformation, noteButtons) : new HBox(DEFAULT_SPACING, noteInformation);
-        noteBody.setStyle(fontStyle + " -fx-padding: 5px; -fx-background-color: " + 
-                noteColour + "; -fx-background-radius: 10 10 10 10;");
+        noteBody.setStyle(fontStyle + " -fx-padding: 5px; -fx-background-color: "
+                + noteColour + "; -fx-background-radius: 10 10 10 10;");
         notesListVBox.getChildren().add(noteBody);
 
         deleteButton.setOnAction(event -> {
