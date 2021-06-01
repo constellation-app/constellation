@@ -92,7 +92,7 @@ public class JoinCommWelcomePlugin implements WelcomePluginInterface {
         final Text title = new Text("Join our Community");
         title.setFill(Color.WHITE);
         final Text subtitle = new Text("Become a member");
-        subtitle.setId("subtitle");
+        subtitle.setId("smallInfoText");
         subtitle.setFill(Color.WHITE);
         final VBox layoutVBox = new VBox(title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER_LEFT);

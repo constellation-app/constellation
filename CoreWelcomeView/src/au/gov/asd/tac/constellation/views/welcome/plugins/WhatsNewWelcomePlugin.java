@@ -97,7 +97,7 @@ public class WhatsNewWelcomePlugin implements WelcomePluginInterface {
         final Text title = new Text("What's New?");
         title.setFill(Color.WHITE);
         final Text subtitle = new Text("Features in the latest version");
-        subtitle.setId("subtitle");
+        subtitle.setId("smallInfoText");
         subtitle.setFill(Color.WHITE);
         final VBox layoutVBox = new VBox(title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER_LEFT);

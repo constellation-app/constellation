@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.views.welcome.plugins;
 
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.importexport.jdbc.JDBCImportTopComponent;
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import javafx.geometry.Pos;
@@ -26,7 +25,6 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import javax.swing.SwingUtilities;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -94,7 +92,7 @@ public class JDBCImportWelcomePlugin implements WelcomePluginInterface {
         importImage.setFitWidth(75);
         final Label imTitle = new Label("Import");
         final Label imSubtitle = new Label("JDBC Importer");
-        imSubtitle.setId("subtitle");
+        imSubtitle.setId("smallInfoText");
         final VBox layoutVBox = new VBox(importImage, imTitle, imSubtitle);
         layoutVBox.setAlignment(Pos.CENTER);
         importButton.setGraphic(layoutVBox);

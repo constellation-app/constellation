@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.graph.file.GraphFilePluginRegistry;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import javafx.geometry.Pos;
@@ -29,7 +28,6 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
@@ -98,7 +96,7 @@ public class OpenGraphWelcomePlugin implements WelcomePluginInterface{
         openImage.setFitWidth(75);
         final Label title = new Label("Open");
         final Label subtitle = new Label("File Explorer");
-        subtitle.setId("subtitle");
+        subtitle.setId("smallInfoText");
         final VBox layoutVBox = new VBox(openImage, title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER);
         openFile.setGraphic(layoutVBox);

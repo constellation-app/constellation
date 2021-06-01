@@ -61,12 +61,7 @@ public class JavafxStyleManager {
      */
     public static String getDynamicStyleSheet() {
         final double titleSize = FontUtilities.getApplicationFontSize() * 1.5;
-        final double subtitleSize;
-        if (FontUtilities.getApplicationFontSize() < 24){
-            subtitleSize = 12;
-        } else {
-            subtitleSize = FontUtilities.getApplicationFontSize() * 0.5;
-        }
+        final double smallInfoTextSize = FontUtilities.getApplicationFontSize() * 0.8;
         
         try {
             // create a new temp file that will be removed as the application exits
@@ -76,7 +71,7 @@ public class JavafxStyleManager {
             // dynamically write the style sheet
             try (final PrintWriter printWriter = new PrintWriter(tempStyleClass)) {
                 printWriter.println(String.format("#title { -fx-font-size: %fpx; -fx-font-family:\"%s\"; }", titleSize, FontUtilities.getApplicationFontFamily()));
-                printWriter.println(String.format("#subtitle { -fx-font-size: %fpx; -fx-font-family:\"%s\"; }", subtitleSize, FontUtilities.getApplicationFontFamily()));
+                printWriter.println(String.format("#smallInfoText { -fx-font-size: %fpx; -fx-font-family:\"%s\"; }", smallInfoTextSize, FontUtilities.getApplicationFontFamily()));
                 printWriter.println(String.format(".button { -fx-font-size: %dpx; -fx-font-family:\"%s\"; }", FontUtilities.getApplicationFontSize(), FontUtilities.getApplicationFontFamily()));
                 printWriter.println(String.format(".label { -fx-font-size: %dpx; -fx-font-family:\"%s\"; }", FontUtilities.getApplicationFontSize(), FontUtilities.getApplicationFontFamily()));
                 printWriter.println(String.format(".root { -fx-font-size: %dpx; -fx-font-family:\"%s\"; }", FontUtilities.getApplicationFontSize(), FontUtilities.getApplicationFontFamily()));

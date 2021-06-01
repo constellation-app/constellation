@@ -175,6 +175,7 @@ public class WelcomeViewPane extends BorderPane {
 
             //formatting for bottom hbox
             final Label recent = new Label("Recent");
+            recent.setId("title");
             rightVBox.getChildren().add(topHBox);
             rightVBox.getChildren().add(recent);
             rightVBox.getChildren().add(bottomHBox);

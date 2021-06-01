@@ -93,7 +93,7 @@ final class ApplicationFontOptionsPanel extends JPanel {
         fontCombo.setModel(new DefaultComboBoxModel(fonts));
         fontCombo.setSelectedItem(ApplicationFontPreferenceKeys.FONT_FAMILY_DEFAULT);
 
-        fontSizeSpinner.setModel(new SpinnerNumberModel(12, 12, 45, 1));
+        fontSizeSpinner.setModel(new SpinnerNumberModel(14, 12, 45, 1));
 
         Mnemonics.setLocalizedText(resetBtn, NbBundle.getMessage(ApplicationFontOptionsPanel.class, "ApplicationFontOptionsPanel.resetBtn.text")); // NOI18N
         resetBtn.addActionListener(new ActionListener() {
@@ -161,7 +161,7 @@ final class ApplicationFontOptionsPanel extends JPanel {
 
     private void resetBtnActionPerformed(ActionEvent evt) {//GEN-FIRST:event_resetBtnActionPerformed
         fontCombo.setSelectedItem("Arial");
-        fontSizeSpinner.setValue(12);
+        fontSizeSpinner.setValue(14);
     }//GEN-LAST:event_resetBtnActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

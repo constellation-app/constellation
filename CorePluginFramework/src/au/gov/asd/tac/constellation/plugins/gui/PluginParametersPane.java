@@ -734,7 +734,7 @@ public final class PluginParametersPane extends GridPane {
             final Label description = new Label(parameter.getDescription());
             label.setMinWidth(35);
             label.setWrapText(true);
-            description.setStyle("-fx-font-size: 80%;");
+            description.setId("smallInfoText");
             description.getStyleClass().add("description-label");
             description.setWrapText(true);
             final LabelDescriptionBox labels = new LabelDescriptionBox(label, description);

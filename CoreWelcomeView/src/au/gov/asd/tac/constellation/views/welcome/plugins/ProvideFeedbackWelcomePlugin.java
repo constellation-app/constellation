@@ -92,7 +92,7 @@ public class ProvideFeedbackWelcomePlugin implements WelcomePluginInterface {
         final Text title = new Text("Provide Feedback");
         title.setFill(Color.WHITE);
         final Text subtitle = new Text("Let us know your thoughts");
-        subtitle.setId("subtitle");
+        subtitle.setId("smallInfoText");
         subtitle.setFill(Color.WHITE);
         final VBox layoutVBox = new VBox(title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER_LEFT);

@@ -36,6 +36,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
@@ -313,7 +314,7 @@ public class AttributeEditorPanel extends BorderPane {
         showAllToggle.setTextAlignment(TextAlignment.CENTER);
         showAllToggle.setStyle("-fx-background-insets: 0, 0; -fx-padding: 0");
         showAllToggle.setPrefSize(60, 12);
-        showAllToggle.setMaxSize(60, 12);
+        //showAllToggle.setMaxSize(60, 12);
         showAllToggle.setPadding(new Insets(5));
         showAllToggle.setTooltip(new Tooltip("Show hidden attributes"));
         final String key;
@@ -346,7 +347,7 @@ public class AttributeEditorPanel extends BorderPane {
         addMenu.setTextAlignment(TextAlignment.CENTER);
         addMenu.setStyle("-fx-background-color: #666666; -fx-background-radius: 2; -fx-background-insets: 0, 0; -fx-padding: 0");
         addMenu.setPrefSize(18, 12);
-        addMenu.setMaxSize(18, 12);
+       // addMenu.setMaxSize(18, 12);
         addMenu.setPadding(new Insets(5));
         addMenu.setTooltip(new Tooltip("Add an attribute"));
         final ContextMenu addContextMenu = new ContextMenu();
@@ -425,7 +426,6 @@ public class AttributeEditorPanel extends BorderPane {
         editKeyButton.setTextAlignment(TextAlignment.CENTER);
         editKeyButton.setStyle("-fx-background-color: #666666; -fx-background-radius: 2; -fx-background-insets: 0, 0; -fx-padding: 0");
         editKeyButton.setPrefSize(18, 12);
-        editKeyButton.setMaxSize(18, 12);
         editKeyButton.setPadding(new Insets(5));
         editKeyButton.setTooltip(new Tooltip("Edit primary key"));
         if (elementType != GraphElementType.GRAPH) {
@@ -896,6 +896,7 @@ public class AttributeEditorPanel extends BorderPane {
 
     private double getTextWidth(final String text) {
         // we need to manually scale the width using the font size against what we guess is the default, even though this seems unecessary.
+        currentFontSize = FontUtilities.getApplicationFontSize();
         final Text t = new Text(text);
         t.getStyleClass().add("attributeName");
         return t.getLayoutBounds().getWidth() * (currentFontSize / 10.0);

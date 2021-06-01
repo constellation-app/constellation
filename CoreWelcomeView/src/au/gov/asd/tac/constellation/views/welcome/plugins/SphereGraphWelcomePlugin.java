@@ -27,7 +27,6 @@ import au.gov.asd.tac.constellation.plugins.PluginExecutor;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.testing.CoreTestingPluginRegistry;
 import au.gov.asd.tac.constellation.testing.construction.SphereGraphBuilderPlugin;
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import javafx.geometry.Pos;
@@ -36,7 +35,6 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import org.openide.util.NbBundle;
 
 /**  
@@ -109,7 +107,7 @@ public class SphereGraphWelcomePlugin implements WelcomePluginInterface {
         newSphere.setFitWidth(75);
         final Label sTitle = new Label("New Graph");
         final Label sSubtitle = new Label("Sphere network");
-        sSubtitle.setId("subtitle");
+        sSubtitle.setId("smallInfoText");
         final VBox layoutVBox = new VBox(newSphere, sTitle, sSubtitle);
         layoutVBox.setAlignment(Pos.CENTER);
         sphereGraphButton.setGraphic(layoutVBox);
