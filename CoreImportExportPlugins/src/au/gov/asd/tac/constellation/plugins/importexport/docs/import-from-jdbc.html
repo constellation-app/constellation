@@ -16,12 +16,15 @@
             The following is a high level workflow an analyst can follow to get the most out of the import from JDBC feature:
         </p>
         <ol>
-            <li>Select something // todo</li>
-            <li>Click on the <img src="resources/plus_coloured.png" alt=""> to add files.</li>
+            <li>Add the relevant JDBC Driver via "Manage Connections" -> "Drivers" tab.</li>
+            <li>Add the Connection details in "Manage Connections" -> "Connections" tab. If the "Username" and "Password" are not required, leave them blank.</li>
+            <li>Select the connection from the "Connection" drop-down in the main Import window.</li>
+            <li>Enter the "Username" and "Password" if the connection requires them.</li>          
+            <li>Enter the SQL "Query" and Click the "Query" button to retrieve data.</li>
             <li>Select your destination graph.</li>
             <li>Drag and drop attributes from the bottom pane onto your columns.</li>
             <li>Right click an attribute for more options.</li>
-            <li>Click on the Import button to import the data to your destination graph.</li>
+            <li>Click on the "Import" button to import the data to your destination graph.</li>
         </ol>
         <p>
             Some useful hints are:
@@ -58,7 +61,7 @@
         <p>
             Applying an attribute to the column is simple as dragging and dropping an attribute onto a column.
         </p>
-        <img src="resources/dragging_attributes.png" alt="">
+        <img src="resources/dragging_attributes_jdbc_import.png" alt="">
         <p>
             By default, not all attributes available to the selected schema are visible because there can be an overwhelming number
             of attributes depending on the schema. To see all possible attributes you can apply to a graph go to
@@ -69,7 +72,7 @@
             the format from the drop down list or enter your own.
         </p>
         <p>
-            If you want to create your own attributes then you can by clicking on <img src="resources/plus_coloured.png" alt="">
+            If you want to create your own attributes then you can by clicking on <img src="resources/plus_black.png" alt="">
             and selecting a type and entering a label.
         </p>
 
