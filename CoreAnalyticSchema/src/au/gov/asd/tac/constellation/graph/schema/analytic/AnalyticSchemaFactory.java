@@ -182,9 +182,13 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
                     if (StringUtils.isNotBlank(rawLabel.getRawType())) {
                         type = graph.getSchema().resolveVertexType(rawLabel.getRawType());
                     }
+                } else {
+                    // Do nothing
                 }
             } else if (type.isIncomplete()) {
                 type = graph.getSchema().resolveVertexType(type.toString());
+            } else {
+                // Do nothing
             }
 
             // set the identifier - preference is identifier > raw > label > unknown
@@ -197,6 +201,8 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
                     if (StringUtils.isNotBlank(rawLabel.getRawIdentifier())) {
                         identifier = rawLabel.getRawIdentifier();
                     }
+                } else {
+                    // Do nothing
                 }
             }
 
@@ -239,6 +245,8 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
                     }
                 } else if (!Objects.equals(type.getForegroundIcon(), graph.getObjectValue(vertexForegroundIconAttribute, vertexId))) {
                     graph.setObjectValue(vertexForegroundIconAttribute, vertexId, type.getForegroundIcon().getExtendedName());
+                } else {
+                    // Do nothing
                 }
             }
 
@@ -309,6 +317,8 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
                 }
             } else if (type.isIncomplete()) {
                 type = resolveTransactionType(type.getName());
+            } else {
+                // Do nothing
             }
 
             // set the identifier - preference is identifier > label > unknown

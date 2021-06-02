@@ -4,7 +4,16 @@
         <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
             <code-name-base>au.gov.asd.tac.constellation.dependencies</code-name-base>
             <suite-component/>
-            <module-dependencies/>
+            <module-dependencies>
+                <dependency>
+                    <code-name-base>org.openide.actions</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>6.47</specification-version>
+                    </run-dependency>
+                </dependency>
+            </module-dependencies>
             <public-packages>
                 <package>Lib</package>
                 <package>Lib.compiler</package>
@@ -776,6 +785,43 @@
                 <package>junit.framework</package>
                 <package>junit.runner</package>
                 <package>junit.textui</package>
+                <package>net.bytebuddy</package>
+                <package>net.bytebuddy.agent</package>
+                <package>net.bytebuddy.agent.builder</package>
+                <package>net.bytebuddy.asm</package>
+                <package>net.bytebuddy.build</package>
+                <package>net.bytebuddy.description</package>
+                <package>net.bytebuddy.description.annotation</package>
+                <package>net.bytebuddy.description.enumeration</package>
+                <package>net.bytebuddy.description.field</package>
+                <package>net.bytebuddy.description.method</package>
+                <package>net.bytebuddy.description.modifier</package>
+                <package>net.bytebuddy.description.type</package>
+                <package>net.bytebuddy.dynamic</package>
+                <package>net.bytebuddy.dynamic.loading</package>
+                <package>net.bytebuddy.dynamic.scaffold</package>
+                <package>net.bytebuddy.dynamic.scaffold.inline</package>
+                <package>net.bytebuddy.dynamic.scaffold.subclass</package>
+                <package>net.bytebuddy.implementation</package>
+                <package>net.bytebuddy.implementation.attribute</package>
+                <package>net.bytebuddy.implementation.auxiliary</package>
+                <package>net.bytebuddy.implementation.bind</package>
+                <package>net.bytebuddy.implementation.bind.annotation</package>
+                <package>net.bytebuddy.implementation.bytecode</package>
+                <package>net.bytebuddy.implementation.bytecode.assign</package>
+                <package>net.bytebuddy.implementation.bytecode.assign.primitive</package>
+                <package>net.bytebuddy.implementation.bytecode.assign.reference</package>
+                <package>net.bytebuddy.implementation.bytecode.collection</package>
+                <package>net.bytebuddy.implementation.bytecode.constant</package>
+                <package>net.bytebuddy.implementation.bytecode.member</package>
+                <package>net.bytebuddy.jar.asm</package>
+                <package>net.bytebuddy.jar.asm.commons</package>
+                <package>net.bytebuddy.jar.asm.signature</package>
+                <package>net.bytebuddy.matcher</package>
+                <package>net.bytebuddy.pool</package>
+                <package>net.bytebuddy.utility</package>
+                <package>net.bytebuddy.utility.privilege</package>
+                <package>net.bytebuddy.utility.visitor</package>
                 <package>net.opengis.fes20</package>
                 <package>net.opengis.fes20.impl</package>
                 <package>net.opengis.fes20.util</package>
@@ -1782,6 +1828,98 @@
                 <package>org.locationtech.jts.triangulate</package>
                 <package>org.locationtech.jts.triangulate.quadedge</package>
                 <package>org.locationtech.jts.util</package>
+                <package>org.mockito</package>
+                <package>org.mockito.asm</package>
+                <package>org.mockito.asm.tree</package>
+                <package>org.mockito.asm.tree.analysis</package>
+                <package>org.mockito.asm.util</package>
+                <package>org.mockito.cglib.beans</package>
+                <package>org.mockito.cglib.core</package>
+                <package>org.mockito.cglib.proxy</package>
+                <package>org.mockito.cglib.reflect</package>
+                <package>org.mockito.cglib.transform</package>
+                <package>org.mockito.cglib.transform.impl</package>
+                <package>org.mockito.cglib.util</package>
+                <package>org.mockito.codegen</package>
+                <package>org.mockito.configuration</package>
+                <package>org.mockito.creation.instance</package>
+                <package>org.mockito.exceptions</package>
+                <package>org.mockito.exceptions.base</package>
+                <package>org.mockito.exceptions.misusing</package>
+                <package>org.mockito.exceptions.stacktrace</package>
+                <package>org.mockito.exceptions.verification</package>
+                <package>org.mockito.exceptions.verification.junit</package>
+                <package>org.mockito.exceptions.verification.opentest4j</package>
+                <package>org.mockito.hamcrest</package>
+                <package>org.mockito.internal</package>
+                <package>org.mockito.internal.configuration</package>
+                <package>org.mockito.internal.configuration.injection</package>
+                <package>org.mockito.internal.configuration.injection.filter</package>
+                <package>org.mockito.internal.configuration.injection.scanner</package>
+                <package>org.mockito.internal.configuration.plugins</package>
+                <package>org.mockito.internal.creation</package>
+                <package>org.mockito.internal.creation.bytebuddy</package>
+                <package>org.mockito.internal.creation.cglib</package>
+                <package>org.mockito.internal.creation.instance</package>
+                <package>org.mockito.internal.creation.settings</package>
+                <package>org.mockito.internal.creation.util</package>
+                <package>org.mockito.internal.debugging</package>
+                <package>org.mockito.internal.exceptions</package>
+                <package>org.mockito.internal.exceptions.stacktrace</package>
+                <package>org.mockito.internal.exceptions.util</package>
+                <package>org.mockito.internal.framework</package>
+                <package>org.mockito.internal.hamcrest</package>
+                <package>org.mockito.internal.handler</package>
+                <package>org.mockito.internal.invocation</package>
+                <package>org.mockito.internal.invocation.finder</package>
+                <package>org.mockito.internal.invocation.mockref</package>
+                <package>org.mockito.internal.invocation.realmethod</package>
+                <package>org.mockito.internal.junit</package>
+                <package>org.mockito.internal.junit.util</package>
+                <package>org.mockito.internal.listeners</package>
+                <package>org.mockito.internal.matchers</package>
+                <package>org.mockito.internal.matchers.apachecommons</package>
+                <package>org.mockito.internal.matchers.text</package>
+                <package>org.mockito.internal.progress</package>
+                <package>org.mockito.internal.reporting</package>
+                <package>org.mockito.internal.runners</package>
+                <package>org.mockito.internal.runners.util</package>
+                <package>org.mockito.internal.session</package>
+                <package>org.mockito.internal.stubbing</package>
+                <package>org.mockito.internal.stubbing.answers</package>
+                <package>org.mockito.internal.stubbing.defaultanswers</package>
+                <package>org.mockito.internal.util</package>
+                <package>org.mockito.internal.util.collections</package>
+                <package>org.mockito.internal.util.concurrent</package>
+                <package>org.mockito.internal.util.io</package>
+                <package>org.mockito.internal.util.junit</package>
+                <package>org.mockito.internal.util.reflection</package>
+                <package>org.mockito.internal.verification</package>
+                <package>org.mockito.internal.verification.api</package>
+                <package>org.mockito.internal.verification.argumentmatching</package>
+                <package>org.mockito.internal.verification.checkers</package>
+                <package>org.mockito.invocation</package>
+                <package>org.mockito.junit</package>
+                <package>org.mockito.listeners</package>
+                <package>org.mockito.mock</package>
+                <package>org.mockito.plugins</package>
+                <package>org.mockito.quality</package>
+                <package>org.mockito.runners</package>
+                <package>org.mockito.session</package>
+                <package>org.mockito.stubbing</package>
+                <package>org.mockito.stubbing.answers</package>
+                <package>org.mockito.verification</package>
+                <package>org.objenesis</package>
+                <package>org.objenesis.instantiator</package>
+                <package>org.objenesis.instantiator.android</package>
+                <package>org.objenesis.instantiator.annotations</package>
+                <package>org.objenesis.instantiator.basic</package>
+                <package>org.objenesis.instantiator.gcj</package>
+                <package>org.objenesis.instantiator.jrockit</package>
+                <package>org.objenesis.instantiator.perc</package>
+                <package>org.objenesis.instantiator.sun</package>
+                <package>org.objenesis.instantiator.util</package>
+                <package>org.objenesis.strategy</package>
                 <package>org.opengis.annotation</package>
                 <package>org.opengis.coverage</package>
                 <package>org.opengis.coverage.grid</package>
@@ -2351,6 +2489,14 @@
                 <binary-origin>release/modules/ext/bigint-0.7.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/byte-buddy-1.10.20.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/byte-buddy-1.10.20.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/byte-buddy-agent-1.10.20.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/byte-buddy-agent-1.10.20.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/checker-qual-3.5.0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/checker-qual-3.5.0.jar</binary-origin>
             </class-path-extension>
@@ -2903,6 +3049,14 @@
                 <binary-origin>release/modules/ext/log4j-1.2.17.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/mockito-core-3.9.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/mockito-core-3.9.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/mockito-inline-3.9.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/mockito-inline-3.9.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/nativewindow-natives-windows-i586.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/nativewindow-natives-windows-i586.jar</binary-origin>
             </class-path-extension>
@@ -2925,6 +3079,10 @@
             <class-path-extension>
                 <runtime-relative-path>ext/newt.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/newt.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/objenesis-3.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/objenesis-3.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/org.eclipse.emf.common-2.15.0.jar</runtime-relative-path>

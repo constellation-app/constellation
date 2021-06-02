@@ -31,22 +31,17 @@ import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * This describes a type of attribute whose values represent times. The times
- * are stored as primitive int values, whilst the canonical string
- * representation is 'HH:mm:ss.SSS' (with the milliseconds present only if
- * non-zero).
+ * This describes a type of attribute whose values represent times. The times are stored as primitive int values, whilst
+ * the canonical string representation is 'HH:mm:ss.SSS' (with the milliseconds present only if non-zero).
  * <p>
- * Attribute values can be set from canonical strings using
- * {@link #setString setString()}, or from longs and ints using the relevant
- * methods.
+ * Attribute values can be set from canonical strings using {@link #setString setString()}, or from longs and ints using
+ * the relevant methods.
  * <p>
- * Attribute values can be retrieved as canonical strings using
- * {@link #getString getString()}, or as {@link Representation} objects (java
- * {@link Number} objects whose toString method yields canonical strings) using
+ * Attribute values can be retrieved as canonical strings using {@link #getString getString()}, or as
+ * {@link Representation} objects (java {@link Number} objects whose toString method yields canonical strings) using
  * {@link #getObject getObject()}.
  * <p>
- * Note that this attribute description should no longer be used and only
- * remains to support legacy graph files.
+ * Note that this attribute description should no longer be used and only remains to support legacy graph files.
  *
  * @author sirius
  */
@@ -56,9 +51,8 @@ public final class TimeAttributeDescriptionV0 extends AbstractAttributeDescripti
 
     private static final Logger LOGGER = Logger.getLogger(TimeAttributeDescriptionV0.class.getName());
     /**
-     * An array of primitives doesn't have a null equivalent, and the default
-     * value of 0 for int is a valid time, so we use an otherwise invalid value
-     * to indicate that a value has not been set. See setCapacity().
+     * An array of primitives doesn't have a null equivalent, and the default value of 0 for int is a valid time, so we
+     * use an otherwise invalid value to indicate that a value has not been set. See setCapacity().
      */
     public static final int NULL_VALUE = Integer.MIN_VALUE;
     private static final int DEFAULT_VALUE = NULL_VALUE;
@@ -173,15 +167,13 @@ public final class TimeAttributeDescriptionV0 extends AbstractAttributeDescripti
      *
      * The following formats are accepted: 'hh:mm:ss', 'hh:mm:ss.SSS'
      *
-     * This is basically doing a SimpleDateFormat.parse(), but a lot faster. All
-     * fields are numeric. The numeric timezone is mandatory.
+     * This is basically doing a SimpleDateFormat.parse(), but a lot faster. All fields are numeric. The numeric
+     * timezone is mandatory.
      *
-     * Parsing isn't strict: the date 2011-99-01 will be accepted. This reflects
-     * the way that SimpleDateFormat.parse() works. The parsing is lenient in
-     * other ways (for instance, punctuation isn't checked), but since the
-     * context is parsing of dates from CONSTELLATION files, this isn't expected
-     * to be a problem. However, this should not be taken as an excuse to write
-     * syntactically incorrect datetime strings elsewhere.
+     * Parsing isn't strict: the date 2011-99-01 will be accepted. This reflects the way that SimpleDateFormat.parse()
+     * works. The parsing is lenient in other ways (for instance, punctuation isn't checked), but since the context is
+     * parsing of dates from CONSTELLATION files, this isn't expected to be a problem. However, this should not be taken
+     * as an excuse to write syntactically incorrect datetime strings elsewhere.
      *
      * @param time An (almost) ISO datetime to be parsed.
      *
@@ -270,8 +262,7 @@ public final class TimeAttributeDescriptionV0 extends AbstractAttributeDescripti
     }
 
     /**
-     * A representation of Number (as a TimeAttributeDescription) that returns a
-     * String the way we want it.
+     * A representation of Number (as a TimeAttributeDescription) that returns a String the way we want it.
      */
     public static class Representation extends Number implements Comparable<Representation> {
 
@@ -322,7 +313,10 @@ public final class TimeAttributeDescriptionV0 extends AbstractAttributeDescripti
 
         @Override
         public boolean equals(Object obj) {
-            if (obj instanceof Representation) {
+            if (obj == null) {
+                return false;
+            }
+            if (this.getClass() == obj.getClass()) {
                 Representation r = (Representation) obj;
                 return time == r.time;
             }

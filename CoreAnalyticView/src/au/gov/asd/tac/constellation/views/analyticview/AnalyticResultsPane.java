@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.analyticview;
 
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewTopComponent.AnalyticController;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestion;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
@@ -67,6 +68,7 @@ public class AnalyticResultsPane extends VBox {
 
         // populate the analytic results pane
         this.getChildren().addAll(internalVisualisationPane, graphVisualisationPane);
+        this.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
     }
 
     /**

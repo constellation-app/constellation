@@ -55,10 +55,8 @@ import org.openide.windows.TopComponent;
 /**
  * A GraphOpener that opens a graph into a VisualTopComponent.
  * <p>
- * Note that if you don't have support for OpenGL then comment out the
- * ServiceProvider annotation which will mean that
- * {@link au.gov.asd.tac.constellation.graph.node.gui.SimpleGraphTopComponent}
- * is used instead.
+ * Note that if you don't have support for OpenGL then comment out the ServiceProvider annotation which will mean that
+ * {@link au.gov.asd.tac.constellation.graph.node.gui.SimpleGraphTopComponent} is used instead.
  *
  * @author algol
  */
@@ -77,8 +75,8 @@ public final class VisualGraphOpener extends GraphOpener {
     /**
      * Open a graph file into a VisualTopComponent.
      * <p>
-     * A check is done to see if the file to be opened is already open. If it
-     * is, that TopComponent is made active, rather than opening the file again.
+     * A check is done to see if the file to be opened is already open. If it is, that TopComponent is made active,
+     * rather than opening the file again.
      *
      * @param gdo The GraphDataObject to read from.
      */
@@ -182,7 +180,7 @@ public final class VisualGraphOpener extends GraphOpener {
                     LOGGER.log(Level.INFO, String.format("Attempting to open %s", graphFile.toString()));
                     graph = new GraphJsonReader().readGraphZip(graphFile, ioProgressHandler);
                     time = System.currentTimeMillis() - t0;
-                } catch (final GraphParseException | IOException | RuntimeException ex) {  
+                } catch (final GraphParseException | IOException | RuntimeException ex) {
                     gex = ex;
                 }
 
@@ -198,28 +196,27 @@ public final class VisualGraphOpener extends GraphOpener {
                         if (backupFile.exists()) {
                             // Set new progress message to highlight attempt to load backup
                             ioProgressHandler = new HandleIoProgress(String.format("Unable to read %s, reading backup %s...", graphFile.getName(), backupFile.getName()));
-                            // Try to load backup file that was located, if it loads then clear previous exception, if not the 
+                            // Try to load backup file that was located, if it loads then clear previous exception, if not the
                             // original exception is kept to be handled in the done method
                             final long t0 = System.currentTimeMillis();
                             LOGGER.log(Level.WARNING, String.format("Unable to open requested file, attempting to open backup %s", backupFile.toString()));
                             graph = new GraphJsonReader().readGraphZip(backupFile, ioProgressHandler);
                             time = System.currentTimeMillis() - t0;
                             gex = null;
-                            
+
                             // Backup file successfully loaded, copy it over top of corrupt actual file - theres no reason to keep the corrupted file.
                             // Don't do a move, rather perform the move in two stages, a copy, then a delete to ensure there
                             // is always going to be a valid file somewhere as only the copy or the delete can fail in a given run.
                             FileUtils.copyFile(new File(backupFile.toString()), new File(graphFile.toString()));
                         }
                     }
-                }
-                catch (final GraphParseException | IOException | RuntimeException ex) {  
+                } catch (final GraphParseException | IOException | RuntimeException ex) {
                     LOGGER.log(Level.WARNING, String.format("Unable to open requested file or any associated backup", graphFile.toString()));
                     gex = ex;
                     // Clear previous progress message and reset to indicate we are trying to use backup.
                     ioProgressHandler.finish();
                 }
- 
+
                 PluginExecution.withPlugin(new SimplePlugin("Open Graph File") {
                     @Override
                     protected void execute(PluginGraphs graphs, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
@@ -264,6 +261,8 @@ public final class VisualGraphOpener extends GraphOpener {
                 if (doAfter != null) {
                     doAfter.run();
                 }
+            } else {
+                // Do nothing
             }
         }
     }

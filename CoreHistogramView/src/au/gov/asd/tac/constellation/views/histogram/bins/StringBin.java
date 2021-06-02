@@ -52,7 +52,10 @@ public class StringBin extends Bin {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof StringBin) {
+        if (o == null) {
+            return false;
+        }
+        if (this.getClass() == o.getClass()) {
             StringBin bin = (StringBin) o;
             return key == null ? bin.key == null : key.equals(bin.key);
         }

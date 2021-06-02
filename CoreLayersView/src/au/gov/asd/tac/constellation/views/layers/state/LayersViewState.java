@@ -34,6 +34,7 @@ import org.openide.NotifyDescriptor;
  */
 public class LayersViewState {
 
+    private static final String LAYER_MAX_ERROR = "You cannot have more than %d layers open";
     private final BitMaskQueryCollection vxQueries;
     private final BitMaskQueryCollection txQueries;
     private final List<SchemaAttribute> layerAttributes;
@@ -78,8 +79,7 @@ public class LayersViewState {
     }
 
     /**
-     * Add a new additional layer if the space permits. Display a message if
-     * there is no space.
+     * Add a new additional layer if the space permits. Display a message if there is no space.
      */
     public void addLayer() {
         final int count = getLayerCount();
@@ -87,7 +87,7 @@ public class LayersViewState {
             vxQueries.add(new BitMaskQuery(new Query(GraphElementType.VERTEX, null), count + 1, StringUtils.EMPTY));
             txQueries.add(new BitMaskQuery(new Query(GraphElementType.TRANSACTION, null), count + 1, StringUtils.EMPTY));
         } else {
-            NotifyDisplayer.display("You cannot have more than " + BitMaskQueryCollection.MAX_QUERY_AMT + " layers open", NotifyDescriptor.WARNING_MESSAGE);
+            NotifyDisplayer.display(String.format(LAYER_MAX_ERROR, BitMaskQueryCollection.MAX_QUERY_AMT), NotifyDescriptor.WARNING_MESSAGE);
         }
     }
 
@@ -102,14 +102,13 @@ public class LayersViewState {
             vxQueries.add(new BitMaskQuery(new Query(GraphElementType.VERTEX, null), count + 1, description));
             txQueries.add(new BitMaskQuery(new Query(GraphElementType.TRANSACTION, null), count + 1, description));
         } else {
-            NotifyDisplayer.display("You cannot have more than " + BitMaskQueryCollection.MAX_QUERY_AMT + " layers open", NotifyDescriptor.WARNING_MESSAGE);
+            NotifyDisplayer.display(String.format(LAYER_MAX_ERROR, BitMaskQueryCollection.MAX_QUERY_AMT), NotifyDescriptor.WARNING_MESSAGE);
         }
     }
 
     /**
-     * Add a layer at a certain position. Will override the description of a
-     * layer if the position was taken. If the position is open, a new layer
-     * will be added with the description.
+     * Add a layer at a certain position. Will override the description of a layer if the position was taken. If the
+     * position is open, a new layer will be added with the description.
      *
      * @param layerNo the layer to add to
      * @param description the layer description
@@ -131,7 +130,7 @@ public class LayersViewState {
                 txQueries.add(new BitMaskQuery(new Query(GraphElementType.TRANSACTION, null), layerNo, description));
             }
         } else {
-            NotifyDisplayer.display("You cannot have more than " + BitMaskQueryCollection.MAX_QUERY_AMT + " layers open", NotifyDescriptor.WARNING_MESSAGE);
+            NotifyDisplayer.display(String.format(LAYER_MAX_ERROR, BitMaskQueryCollection.MAX_QUERY_AMT), NotifyDescriptor.WARNING_MESSAGE);
         }
     }
 

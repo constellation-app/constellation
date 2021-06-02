@@ -25,8 +25,7 @@ import java.util.regex.Pattern;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * A Rule for identifying node identifier values which do not comply with their
- * specified type.
+ * A Rule for identifying node identifier values which do not comply with their specified type.
  *
  * @author cygnus_x-1
  */
@@ -44,6 +43,7 @@ public class IdentifierInconsistentWithTypeRule extends QualityControlRule {
     private static final int RISK = 30;
 
     public IdentifierInconsistentWithTypeRule() {
+        // Method intentionally left blank
     }
 
     @Override

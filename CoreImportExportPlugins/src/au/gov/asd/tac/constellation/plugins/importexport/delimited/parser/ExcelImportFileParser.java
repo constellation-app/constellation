@@ -35,8 +35,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * A CSVImportFileParser implements an ImportFileParser that can parse CSV
- * files.
+ * A CSVImportFileParser implements an ImportFileParser that can parse CSV files.
  *
  * @author canis_majoris
  */
@@ -127,6 +126,8 @@ public class ExcelImportFileParser extends ImportFileParser {
                     }
                 }
             }
+        } else {
+            // Do nothing
         }
         return results;
     }
@@ -219,6 +220,8 @@ public class ExcelImportFileParser extends ImportFileParser {
                     }
                 }
             }
+        } else {
+            // Do nothing
         }
         return results;
 

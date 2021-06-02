@@ -72,7 +72,7 @@ public class ConversationBubble extends VBox {
         setMinHeight(USE_PREF_SIZE);
         setMaxHeight(USE_PREF_SIZE);
         setSpacing(-5);
-        setStyle(String.format("-fx-font-size: %spx", FontUtilities.getOutputFontSize()));
+        setStyle(String.format("-fx-font-size: %spx", FontUtilities.getApplicationFontSize()));
 
         final VBox bubbleContent = new VBox();
         bubbleContent.setAlignment(Pos.CENTER_LEFT);

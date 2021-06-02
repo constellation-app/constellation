@@ -127,8 +127,8 @@ public abstract class JavaFxTopComponent<P extends Pane> extends ListeningTopCom
     protected void updateFont() {
         if (content != null) {
             Platform.runLater(() -> {
-                content.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getOutputFontSize()));
-                content.setStyle(String.format("-fx-font-family:\"%s\";", FontUtilities.getOutputFontFamily()));
+                content.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+                content.setStyle(String.format("-fx-font-family:\"%s\";", FontUtilities.getApplicationFontFamily()));
             });
         }
     }

@@ -36,8 +36,8 @@ public class StringUtilities {
     /**
      * Escape a String.
      * <p>
-     * A "\" is used to escape the specified characters, and is therefore also
-     * escaped. There are no special characters: "\n" is just an escaped "n".
+     * A "\" is used to escape the specified characters, and is therefore also escaped. There are no special characters:
+     * "\n" is just an escaped "n".
      *
      * @param unescapedString The unescapedString to escape.
      * @param characters The characters to be escaped.
@@ -65,8 +65,8 @@ public class StringUtilities {
     /**
      * Escape and join a list of Strings.
      * <p>
-     * A "\" is used to escape the delimiter character, and is therefore also
-     * escaped. There are no special characters: "\n" is just an escaped "n".
+     * A "\" is used to escape the delimiter character, and is therefore also escaped. There are no special characters:
+     * "\n" is just an escaped "n".
      *
      * @param unescapedStrings The list of strings to escape then join.
      * @param delimiter The join delimiter, treated as a single character.
@@ -150,6 +150,8 @@ public class StringUtilities {
                 } else if (delimiter.contains(character)) {
                     splits.add(unescape(escapedString.substring(part0, i), delimiter));
                     part0 = i + 1;
+                } else {
+                    // Do nothing
                 }
             }
 
@@ -162,10 +164,9 @@ public class StringUtilities {
     }
 
     /**
-     * Remove the specified characters from the given string, if they exist. For
-     * example, when you convert a {@link java.util.Collection} to a
-     * {@link String}, square brackets are added to the edges of the
-     * originalString which may not be wanted.
+     * Remove the specified characters from the given string, if they exist. For example, when you convert a
+     * {@link java.util.Collection} to a {@link String}, square brackets are added to the edges of the originalString
+     * which may not be wanted.
      *
      * @param originalString the String to be modified.
      * @param characters the characters to remove.
@@ -219,9 +220,8 @@ public class StringUtilities {
     }
 
     /**
-     * Convert the string representation of GraphLabelsAndDecorators to a list
-     * of strings based on character(s) to split. This usually requires the
-     * string to be escaped first.
+     * Convert the string representation of GraphLabelsAndDecorators to a list of strings based on character(s) to
+     * split. This usually requires the string to be escaped first.
      *
      * @param labelsString the labels string to split.
      * @param toSplitOn the characters to split on.
@@ -305,13 +305,11 @@ public class StringUtilities {
     }
 
     /**
-     * Returns the supplied string with all characters in the supplied list
-     * escaped with backslashes.
+     * Returns the supplied string with all characters in the supplied list escaped with backslashes.
      *
      * @param originalString The String to escape.
      * @param metaCharacters An array of characters to be escaped
-     * @return the supplied string with all characters in the supplied list
-     * escaped with backslashes.
+     * @return the supplied string with all characters in the supplied list escaped with backslashes.
      */
     public static String escapeString(final String originalString, final char[] metaCharacters) {
         return escapeString(originalString, metaCharacters, '\\');
@@ -331,13 +329,11 @@ public class StringUtilities {
     }
 
     /**
-     * Returns the supplied string with all characters in the supplied list
-     * unescaped with backslashes.
+     * Returns the supplied string with all characters in the supplied list unescaped with backslashes.
      *
      * @param escapedString The string to unescape
      * @param metaCharacters An array of characters to be unescaped
-     * @return the supplied string with all characters in the supplied list
-     * unescaped with backslashes.
+     * @return the supplied string with all characters in the supplied list unescaped with backslashes.
      */
     public static String unescapeString(final String escapedString, final char[] metaCharacters) {
         return unescapeString(escapedString, metaCharacters, '\\');
@@ -357,9 +353,8 @@ public class StringUtilities {
     }
 
     /**
-     * Remove the outer [ ] if either exist. When you convert a
-     * {@link java.util.Collection} to a {@link String}, square brackets are
-     * added to the string.
+     * Remove the outer [ ] if either exist. When you convert a {@link java.util.Collection} to a {@link String}, square
+     * brackets are added to the string.
      *
      * @param originalString the string to be modified.
      * @return A {@link String} with outer square brackets removed

@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPane;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.views.dataaccess.GlobalParameters;
 import java.util.Collections;
 import java.util.Set;
@@ -40,6 +41,7 @@ public class GlobalParametersPane extends TitledPane {
         params = GlobalParameters.getParameters(presetParams);
 
         setContent(PluginParametersPane.buildPane(params, null, null));
+        getContent().setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));   
     }
 
     /**

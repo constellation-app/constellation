@@ -136,8 +136,8 @@ final class GraphOptionsPanel extends javax.swing.JPanel {
 
                 for (final JPanel panel : colorPanels) {
                     final String panelColor = getHTMLColor(panel.getBackground());
-                    if (!panelColor.equals(getHTMLColor(DEFAULT_COLOR))) {
-                        colorStringBuilder.append(getHTMLColor(panel.getBackground()));
+                    if (!StringUtils.equals(panelColor, getHTMLColor(DEFAULT_COLOR))) {
+                        colorStringBuilder.append(panelColor);
                         colorStringBuilder.append(";");
                     } else {
                         colorStringBuilder.append("null");

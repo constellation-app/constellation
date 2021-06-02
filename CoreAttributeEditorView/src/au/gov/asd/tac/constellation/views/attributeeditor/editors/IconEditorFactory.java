@@ -391,6 +391,8 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
                         }
                     }
                     currentNode.icons.add(iconName);
+                } else {
+                    // Do nothing
                 }
             }
         }

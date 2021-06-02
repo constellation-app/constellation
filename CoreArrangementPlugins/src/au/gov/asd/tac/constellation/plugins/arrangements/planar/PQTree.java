@@ -231,6 +231,8 @@ class PQTree {
             PQNode labeledNode = node.labeledChildren.get(label).iterator().next();
             node.removeChild(labeledNode);
             return labeledNode;
+        } else {
+            // Do nothing
         }
         PQNode newPNode = new PQNode(NodeType.PNODE);
         newPNode.relabel(label);

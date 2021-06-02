@@ -109,7 +109,10 @@ public class ShortValue implements Copyable, ShortReadable, ShortWritable, IntRe
 
     @Override
     public boolean equals(Object other) {
-        if (other instanceof ShortValue) {
+        if (other == null) {
+            return false;
+        }
+        if (this.getClass() == other.getClass()) {
             return value == ((ShortValue) other).value;
         }
         return false;
