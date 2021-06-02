@@ -86,6 +86,8 @@
         <!-- https://mvnrepository.com/artifact/org.mockito/mockito-inline -->
         <dependency org="org.mockito" name="mockito-inline" rev="3.9.0"/>
 
+        <!-- https://mvnrepository.com/artifact/org.fxmisc.richtext/richtextfx -->
+        <dependency org="org.fxmisc.richtext" name="richtextfx" rev="0.10.6"/>
 
         <!-- Exclusions -->
         <exclude org="javax.media" module="jai_core"/>
