@@ -83,7 +83,7 @@ public final class ApplicationPreferenceKeys {
     public static final int AUTOSAVE_SCHEDULE_DEFAULT = 5;
 
     /**
-     * Tutorial window.
+     * Whats New window.
      */
     public static final String TUTORIAL_ON_STARTUP = "tutorialMode";
     public static final boolean TUTORIAL_ON_STARTUP_DEFAULT = false;
