@@ -26,8 +26,8 @@ import au.gov.asd.tac.constellation.graph.versioning.UpdateProvider;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * This update ensures that the new pinned vertex attribute is set as the NE vertex decorator. 
- * This will override the existing NE decorator if one exists
+ * This update ensures that the new pinned vertex attribute is set as the NE
+ * vertex decorator. This will override the existing NE decorator if one exists
  *
  * @author antares
  */
@@ -54,13 +54,13 @@ public class VisualSchemaV5UpdateProvider extends SchemaUpdateProvider {
     @Override
     protected void schemaUpdate(final StoreGraph graph) {
         final int decoratorsAttribute = VisualConcept.GraphAttribute.DECORATORS.get(graph);
-        final int pinnedAttribute = VisualConcept.VertexAttribute.PINNED.get(graph);
-        
+        final int pinnedAttribute = VisualConcept.VertexAttribute.PINNED.ensure(graph);
+
         final VertexDecorators oldDecorators = graph.getObjectValue(decoratorsAttribute, 0);
         // create the new set of decorators by adding the pinned attribute as the NE decorator and retain all others
-        final VertexDecorators newDecorators = new VertexDecorators(oldDecorators.getNorthWestDecoratorAttribute(), 
-                graph.getAttributeName(pinnedAttribute), 
-                oldDecorators.getSouthEastDecoratorAttribute(), 
+        final VertexDecorators newDecorators = new VertexDecorators(oldDecorators.getNorthWestDecoratorAttribute(),
+                graph.getAttributeName(pinnedAttribute),
+                oldDecorators.getSouthEastDecoratorAttribute(),
                 oldDecorators.getSouthWestDecoratorAttribute()
         );
         graph.setObjectValue(decoratorsAttribute, 0, newDecorators);
