@@ -90,8 +90,8 @@ public class NotesViewPane extends BorderPane {
 
     private final int DEFAULT_SPACING = 5;
     private final String PROMPT_COLOUR = "#909090";
-    private final String USER_COLOUR = "#C15A58";
-    private final String AUTO_COLOUR = "#588BC1";
+    private final String USER_COLOUR = "#942483";
+    private final String AUTO_COLOUR = "#1c5aa6";
     private final String DATETIME_PATTERN = "hh:mm:ss a 'on' dd/MM/yyyy"; // TODO: make this a preference so that we can support their local timestamp format instead
 
     private static final String AUTO_NOTES_FILTER = "Auto Notes";

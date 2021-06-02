@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.whatsnew;
 import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
 import au.gov.asd.tac.constellation.functionality.browser.OpenInBrowserPlugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
@@ -28,12 +29,17 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.prefs.PreferenceChangeEvent;
+import java.util.prefs.PreferenceChangeListener;
+import java.util.prefs.Preferences;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -49,6 +55,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
+import org.openide.util.NbPreferences;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -156,6 +163,31 @@ public class WhatsNewViewPane extends BorderPane {
             rightVBox.setAlignment(Pos.TOP_CENTER);
             rightVBox.setMaxWidth(600);
             rightVBox.setMinWidth(400);
+            
+            // Create a checkbox to change users preference regarding showing the Tutorial Page on startup 
+            final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+            final CheckBox showOnStartUpCheckBox = new CheckBox("Show on Startup");
+            rightVBox.getChildren().add(showOnStartUpCheckBox);
+            rightVBox.setAlignment(Pos.TOP_RIGHT);
+            rightVBox.setBackground(new Background(new BackgroundFill(Color.valueOf("#333333"), CornerRadii.EMPTY, Insets.EMPTY)));
+            rightVBox.paddingProperty().set(new Insets(5, 5, 5, 5));
+            showOnStartUpCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+                @Override
+                public void changed(ObservableValue<? extends Boolean> ov,
+                        Boolean oldVal, Boolean newVal) {
+                    prefs.putBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, newVal);                     
+                }
+            });        
+            showOnStartUpCheckBox.setSelected(prefs.getBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP_DEFAULT));
+
+            // Create a preferenceListener in order to identify when user preference is changed
+            // Keeps tutorial page and options tutorial selections in-sync when both are open
+            prefs.addPreferenceChangeListener(new PreferenceChangeListener() {
+                @Override
+                public void preferenceChange(PreferenceChangeEvent evt) {
+                    showOnStartUpCheckBox.setSelected(prefs.getBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, showOnStartUpCheckBox.isSelected()));
+                }
+            });
 
             //Create images for Left VBox
             final ImageView menuImage = new ImageView(new Image(WhatsNewTopComponent.class.getResourceAsStream(MENU_IMAGE)));

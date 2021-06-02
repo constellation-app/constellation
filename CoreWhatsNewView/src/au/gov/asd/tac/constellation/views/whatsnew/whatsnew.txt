@@ -1,13 +1,13 @@
 == 3030-12-31 Getting Started
-<p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
+<p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
 == 2021-05-21 Application Font Setting
-<p>In the CONSTELLATION settings a tab has been added to set the default font family and font size for all of the views in CONSTELLATION.</p>
-<p>The setting requires a restart of CONSTELLATION for it to be applied. </p>
-<p>The setting can be found via Setup -> Options -> CONSTELLATION -> Application Font. </p>
+<p>In the Constellation settings a tab has been added to set the default font family and font size for all of the views in Constellation.</p>
+<p>The setting requires a restart of Constellation for it to be applied. </p>
+<p>The setting can be found via Setup -> Options -> Constellation -> Application Font. </p>
 
 == 2021-05-19 Ability to Pin/Unpin Nodes
-<p>Nodes can now be pinned, either through the pin/unpin toolbar icons in the arrangements panel, or via the corresponding Arrange menu options. Once pinned, nodes do not move when arrangement plugins are run, but can be manually moved. The 'pinned' vertex attribute stores this information.</p>
+<p>Nodes can now be pinned, either through the pin/unpin toolbar icons in the arrangements panel, or via the corresponding Arrange menu options. Once pinned, nodes do not move when arrangement plugins are run, but can be manually moved. The 'pinned' node attribute stores this information.</p>
 
 == 2021-04-22 JDBC Database Import Connector View
 <p>The JDBC Connector window has been converted to use the standard view framework and now matches closely with the style of the delimited file importer.</p>
@@ -23,8 +23,8 @@
 
 == 2021-02-25 Blaze Colors - Presets
 <p>The blaze menus have been updated to show preset blaze colors. An option to save a custom color as a preset is represented by a checkbox in the color dialog.</p>
-<p>The blaze toolbar menu now displays up to 10 preset colors. Now with the ability to change the color stored by clicking the tile to load a color picker.</p>
-<p>The preferences found via Setup -> Options -> CONSTELLATION -> Graph now stores preset blaze colors. These can be edited via the color picker upon clicking the colored tile.</p>
+<p>The blaze toolbar menu now displays up to 10 preset colors. It now has the ability to change the color stored by clicking the tile to load a color picker.</p>
+<p>The preferences found via Setup -> Options -> Constellation -> Graph now stores preset blaze colors. These can be edited via the color picker upon clicking the colored tile.</p>
 
 == 2021-02-24 Plugin Reporter Drop-Down Lists
 <p>To avoid confusion with the Plugin Reporter, the two drop-down lists for filtering and ignoring plugins to be displayed have been combined.</p>
@@ -40,11 +40,11 @@
 
 == 2021-01-12 Notes View
 <p>The Notes View can be used to record notes about a graph.</p>
-<p>It can found in "Experimental > Views > Notes View", or alternatively via the shortcut "Ctrl+Shift+A".</p>
+<p>It can be found in "Experimental > Views > Notes View", or alternatively via the shortcut "Ctrl+Shift+A".</p>
 <p>There are two types of notes that are recorded in the Notes View:</p>
 <ul>
-<li><p>User Notes: These are RED and are created by a user by typing in the fields and clicking the "Add Note" button at the bottom of the view. They may also be edited or deleted later via the buttons on the note itself.</p></li>
-<li><p>Auto Notes: These are BLUE and are generated and added to the graph automatically by plugin execution, similar to Plugin Reporter.</p></li>
+<li><p>User Notes: These are PURPLE and are created by a user by typing in the tile and description and clicking the "Add Note" button at the bottom of the view. They may also be edited or deleted later via the buttons on the note itself.</p></li>
+<li><p>Auto Notes: These are BLUE and are generated and added to the graph automatically by plugin execution, similar to the Plugin Reporter.</p></li>
 </ul>
 <p>Visibility of either User Notes or Auto Notes can be toggled on or off via the "Select a filter..." drop-down menu at the top of the view.</p>
 
@@ -398,13 +398,13 @@ Clean section of the Data Access View, 'Removed Unused Attributes', which remove
 <p>The Table View now has a column visibility option for only Key Attributes, and this is now the default setting.</p>
 
 == 2018-04-05 Proxy Settings
-<p>The interface for customising proxy settings (Setup &gt; Options &gt; CONSTELLATION &gt; Proxies) has been
+<p>The interface for customising proxy settings (Setup &gt; Options &gt; Constellation &gt; Proxies) has been
 overhauled to provide a more intuitive experience. In particular, descriptions have been added to each option
 detailing how to use it, default settings are visible when you select the 'Use Default Settings' option, and
 changes are applied immediately on clicking the 'Apply' or 'OK' buttons.</p>
 
 == 2018-03-29 Default Decorators
-<p>The <i>Geo.Country</i> attribute is now set as a default decorator, meaning a country flag will decorate each vertex with country information.</p>
+<p>The <i>Geo.Country</i> attribute is now set as a default decorator, meaning a country flag will decorate each node with country information.</p>
 
 == 2018-03-07 Zoom to Selection
 <p>Added the animation back in when zooming to a selection (Ctrl+Up) so that you have context to where on the graph you are zooming to.</p>
@@ -516,8 +516,8 @@ zoom menu.</li>
 <li>Plugin parameters now follow the naming convention of ExamplePlugin.parameter_name</li>
 </ul>
 
-== 2017-09-28 CONSTELLATION Upgrade
-<p>CONSTELLATION has been upgraded to work on NetBeans 8.2 and Java 8u144 allowing CONSTELLATION to benefit from the latest security and bug fixes.
+== 2017-09-28 Constellation Upgrade
+<p>Constellation has been upgraded to work on NetBeans 8.2 and Java 8u144 allowing Constellation to benefit from the latest security and bug fixes.
 We have also re-organised modules and done some house keeping to make it easier to develop and maintain.</p>
 
 == 2017-09-21 Jupyter notebooks may require manual authentication
@@ -569,7 +569,7 @@ File &gt; Export as well as in the toolbar of the Map View</p>
 words will be extracted and represented as nodes. It also works with regular expressions and can extract known schema types.</p>
 
 == 2017-07-25 REST server Python client is downloaded automatically
-<p>If script downloading is enabled, a new Python REST client script will be downloaded if it doesn't exist, or if the on-disk version does not match CONSTELLATION's version. This means that the on-disk version will be automatically updated, with no user action required.</p>
+<p>If script downloading is enabled, a new Python REST client script will be downloaded if it doesn't exist, or if the on-disk version does not match Constellation's version. This means that the on-disk version will be automatically updated, with no user action required.</p>
 
 == 2017-07-18 Geospatial Export
 <p>You can now export geospatial data in your graph to GeoJSON or Shapefile using the File &gt; Export menu or the toolbar options in the Map View.</p>
@@ -620,7 +620,7 @@ Old graphs will be automatically updated with these new attributes.</p>
 Click <a href="" helpId="au.gov.asd.tac.constellation.views.dataaccess.plugins.utility.SelectTopN">here</a> for the help page.</p>
 
 == 2017-05-04 Improved Stability
-<p>A bug causing CONSTELLATION to crash due to running out of memory has been fixed.</p>
+<p>A bug causing Constellation to crash due to running out of memory has been fixed.</p>
 
 == 2017-05-04 Data Access View Favorites Update
 <p>Plugins in the Favourites category are sorted in the order respective to their category.</p>
@@ -659,7 +659,7 @@ within the Data Access View, and selecting the 'Geospatial Distance' option.</p>
 </ul>
 
 == 2017-03-08 Improved Table View
-<p>Fixed a major performance bug with the table view causing CONSTELLATION to lock up.</p>
+<p>Fixed a major performance bug with the table view causing Constellation to lock up.</p>
 
 == 2017-03-03 Import Excel Spreadsheets
 <p>You can now import Excel spreadsheets using the Delimited File Importer. It will work for both xls and xlsx files. Note that it will only import the first sheet in a file.</p>
@@ -694,9 +694,9 @@ within the Data Access View, and selecting the 'Geospatial Distance' option.</p>
 The existing 'Select Induced Subgraph' item has been renamed <strong>'Select Half-hop Induced Subgraph'</strong>, but is unchanged functionally.</p>
 
 == 2017-01-12 Improved Rendering and Event Handling
-<p> CONSTELLATION's visualistion and event handling framework has been reimplemented from the ground up.
+<p> Constellation's visualistion and event handling framework has been reimplemented from the ground up.
 To the user things will mostly look the same, but performance and stability should be slightly improved. The main benefit of this upgrade
-is that it should now be possible to write other visualisations for CONSTELLATION, for example a lightweight 2D renderer. </p>
+is that it should now be possible to write other visualisations for Constellation, for example a lightweight 2D renderer. </p>
 
 == 2017-01-11 Improved Plugin Reporter
 <p>Fixed a bug with the plugin reporter where the filters were misbehaving.</p>
@@ -718,7 +718,7 @@ the right mouse button handles selection instead of panning and drawing, however
 so that the map controls and graph controls are consistent.</p>
 
 == 2016-11-10 Icons Refresh
-<p>Icons used for visualisation of nodes on a CONSTELLATION graph have undergone a refresh. We have made foreground icons more symbolic, where possible, meaning that they tend to
+<p>Icons used for visualisation of nodes on a Constellation graph have undergone a refresh. We have made foreground icons more symbolic, where possible, meaning that they tend to
 be smaller icons with transparency filling the rest of the image space. In addition to this, the default background icon for all nodes is now the 'Flat Square' icon as it has a
 larger surface area, making it stand out more, and it more accurately represents the colour assigned to it. These changes will allow us to make better use of icons in an analytic
 context by allowing us to visually differentiate nodes using background icons.</p>
@@ -730,7 +730,7 @@ context by allowing us to visually differentiate nodes using background icons.</
 <p>The default arrangement after any plugin is executed is to arrange by grid because it is the fastest arrangement.</p>
 
 == 2016-08-29 Framework Upgraded
-<p>A minor framework upgrade has been completed so that CONSTELLATION now uses Netbeans 8.0.2 and Java 8u92.</p>
+<p>A minor framework upgrade has been completed so that Constellation now uses Netbeans 8.0.2 and Java 8u92.</p>
 
 == 2016-08-04 Analytic View 2.0
 <p>The new and improved Analytic View 2.0 is now available! It has been completely redesigned around a more flexible and robust framework which allows
@@ -759,7 +759,7 @@ help page.</p>
 <p>You can have as many templates as you like - the options will be listed in the "File &gt; New Graph" menu beneath the schema graphs.</p>
 
 == 2016-06-06 Performance Improvement
-<p>There is a significant performance improvement overall to CONSTELLATION after adding caching to the new Icon provider implementation.</p>
+<p>There is a significant performance improvement overall to Constellation after adding caching to the new Icon provider implementation.</p>
 
 == 2016-06-01 Directed Shortest Paths
 <p>The directed shortest paths search algorithm has been added to the selection menu. You need to set a source node and this dictates the direction.</p>
@@ -785,7 +785,7 @@ copy composite nodes between graphs. The existing version will remain an experim
 
 == 2016-03-17 Graph Visibility Threshold
 <p>You can configure a threshold to automatically hide all nodes on the graph. The idea is that you would instead use table view or the histogram to
-clean up the graph before you visualise it in the graph view. The threshold can be set in Tools &gt; Options &gt; CONSTELLATION &gt; Graph Drawing.
+clean up the graph before you visualise it in the graph view. The threshold can be set in Tools &gt; Options &gt; Constellation &gt; Graph Drawing.
 A new button is available in the graph toolbar than will enable/disable the threshold. For more information refer to
 <a href="" helpId="au.gov.asd.tac.constellation.visual.about">this</a> help page.</p>
 
@@ -799,14 +799,14 @@ When enabled, the snow flake icon will change from grey to blue. This feature is
 Unsupported types will be rendered as a white ! icon in front of a yellow sphere.</p>
 
 == 2015-09-18 A New Way to Merge Nodes
-<p>Nodes can now be merged based on types known to CONSTELLATION, meaning that preference will be given to types known by the graph over custom types.
+<p>Nodes can now be merged based on types known to Constellation, meaning that preference will be given to types known by the graph over custom types.
 For more information click <a href="" helpId="au.gov.asd.tac.constellation.views.dataaccess.plugins.merge.MergeNodes">here</a>.</p>
 
 == 2015-09-30 Memory Usage Improvement
-<p>CONSTELLATION will try to clear up unused memory when you open a graph. The idea behind doing it on graph open would be in the scenario when
-you have multiple graphs open with edits made but you have not closed any of them. So, when you open a new graph, CONSTELLATION might try and cleanup
+<p>Constellation will try to clear up unused memory when you open a graph. The idea behind doing it on graph open would be in the scenario when
+you have multiple graphs open with edits made but you have not closed any of them. So, when you open a new graph, Constellation might try and cleanup
 unused memory. This is still an experimental feature. Similar to clearing memory on graph close, the option is under
-Setup &gt; Options &gt; CONSTELLATION &gt; Application and is enabled by default.</p>
+Setup &gt; Options &gt; Constellation &gt; Application and is enabled by default.</p>
 
 == 2015-09-01 Label Rendering Improvements
 <p>The rendering of labels has been improved to display text more accurately (including right-to-left text) and improve compatibility with more graphics cards.</p>
