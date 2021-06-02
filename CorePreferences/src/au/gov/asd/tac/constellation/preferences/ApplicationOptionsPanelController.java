@@ -53,6 +53,7 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
         applicationOptionsPanel.setAutosaveEnabled(prefs.getBoolean(ApplicationPreferenceKeys.AUTOSAVE_ENABLED, ApplicationPreferenceKeys.AUTOSAVE_ENABLED_DEFAULT));
         applicationOptionsPanel.setAutosaveFrequency(prefs.getInt(ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE, ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE_DEFAULT));
         applicationOptionsPanel.setWelcomeOnStartup(prefs.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, ApplicationPreferenceKeys.WELCOME_ON_STARTUP_DEFAULT));
+        applicationOptionsPanel.setWhatsNewOnStartup(prefs.getBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP_DEFAULT));
         applicationOptionsPanel.setFreezeGraph(prefs.getBoolean(ApplicationPreferenceKeys.FREEZE_GRAPH_VIEW, ApplicationPreferenceKeys.FREEZE_GRAPH_VIEW_DEFAULT));
         applicationOptionsPanel.setWebserverPort(prefs.getInt(ApplicationPreferenceKeys.WEBSERVER_PORT, ApplicationPreferenceKeys.WEBSERVER_PORT_DEFAULT));
         applicationOptionsPanel.setNotebookDirectory(prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT));
@@ -76,6 +77,7 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
                 prefs.putBoolean(ApplicationPreferenceKeys.AUTOSAVE_ENABLED, applicationOptionsPanel.getAustosaveEnabled());
                 prefs.putInt(ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE, applicationOptionsPanel.getAustosaveFrequency());
                 prefs.putBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, applicationOptionsPanel.getWelcomeOnStartup());
+                prefs.putBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, applicationOptionsPanel.getWhatsNewOnStartup());
                 prefs.putBoolean(ApplicationPreferenceKeys.FREEZE_GRAPH_VIEW, applicationOptionsPanel.getFreezeGraph());
                 prefs.putInt(ApplicationPreferenceKeys.WEBSERVER_PORT, applicationOptionsPanel.getWebserverPort());
                 prefs.put(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, applicationOptionsPanel.getNotebookDirectory());
@@ -109,6 +111,7 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
                 && applicationOptionsPanel.getAustosaveEnabled() == prefs.getBoolean(ApplicationPreferenceKeys.AUTOSAVE_ENABLED, ApplicationPreferenceKeys.AUTOSAVE_ENABLED_DEFAULT)
                 && applicationOptionsPanel.getAustosaveFrequency() == prefs.getInt(ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE, ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE_DEFAULT)
                 && applicationOptionsPanel.getWelcomeOnStartup() == prefs.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, ApplicationPreferenceKeys.WELCOME_ON_STARTUP_DEFAULT)
+                && applicationOptionsPanel.getWhatsNewOnStartup() == prefs.getBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP_DEFAULT)
                 && applicationOptionsPanel.getFreezeGraph() == prefs.getBoolean(ApplicationPreferenceKeys.FREEZE_GRAPH_VIEW, ApplicationPreferenceKeys.FREEZE_GRAPH_VIEW_DEFAULT)
                 && applicationOptionsPanel.getWebserverPort() == prefs.getInt(ApplicationPreferenceKeys.WEBSERVER_PORT, ApplicationPreferenceKeys.WEBSERVER_PORT_DEFAULT)
                 && applicationOptionsPanel.getNotebookDirectory().equals(prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT))
