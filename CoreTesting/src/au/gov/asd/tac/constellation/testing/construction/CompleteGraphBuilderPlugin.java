@@ -280,7 +280,7 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
                 PluginExecutor.startWith(ArrangementPluginRegistry.GRID_COMPOSITE)
                         .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
             }
-        } catch (PluginException ex) {
+        } catch (final PluginException ex) {
             Exceptions.printStackTrace(ex);
         }
 
