@@ -314,7 +314,6 @@ public class AttributeEditorPanel extends BorderPane {
         showAllToggle.setTextAlignment(TextAlignment.CENTER);
         showAllToggle.setStyle("-fx-background-insets: 0, 0; -fx-padding: 0");
         showAllToggle.setPrefSize(60, 12);
-        //showAllToggle.setMaxSize(60, 12);
         showAllToggle.setPadding(new Insets(5));
         showAllToggle.setTooltip(new Tooltip("Show hidden attributes"));
         final String key;
@@ -347,7 +346,6 @@ public class AttributeEditorPanel extends BorderPane {
         addMenu.setTextAlignment(TextAlignment.CENTER);
         addMenu.setStyle("-fx-background-color: #666666; -fx-background-radius: 2; -fx-background-insets: 0, 0; -fx-padding: 0");
         addMenu.setPrefSize(18, 12);
-       // addMenu.setMaxSize(18, 12);
         addMenu.setPadding(new Insets(5));
         addMenu.setTooltip(new Tooltip("Add an attribute"));
         final ContextMenu addContextMenu = new ContextMenu();
