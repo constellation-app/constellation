@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.analyticview;
 
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewTopComponent.AnalyticController;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestion;
@@ -167,8 +166,6 @@ public class AnalyticViewPane extends BorderPane {
 
         // initialise the top level pane
         this.setCenter(analyticViewPane);
-        
-        this.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
     }
 
     protected final void reset() {

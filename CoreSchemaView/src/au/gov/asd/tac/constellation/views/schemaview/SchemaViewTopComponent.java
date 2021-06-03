@@ -73,11 +73,13 @@ public final class SchemaViewTopComponent extends JavaFxTopComponent<SchemaViewP
 
     @Override
     protected void handleComponentOpened() {
+        super.handleComponentOpened();
         schemaViewPane.populate();
     }
 
     @Override
     protected void handleComponentClosed() {
+        super.handleComponentClosed();
         schemaViewPane.clear();
     }
 

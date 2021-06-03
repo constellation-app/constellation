@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.views.welcome.plugins;
 
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.DelimitedImportTopComponent;
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import javafx.geometry.Pos;
@@ -26,7 +25,6 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import javax.swing.SwingUtilities;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -42,8 +40,6 @@ import org.openide.windows.WindowManager;
 @NbBundle.Messages("DelimitedFileWelcomePlugin=Delimited File Welcome Plugin")
 public class DelimitedFileWelcomePlugin implements WelcomePluginInterface {
     
-    private static final double TITLE_SIZE = 1.2;
-    private static final int TEXT_SIZE = 10;
     public static final String IMPORT = "resources/welcome_import.png";
     final ImageView importImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(IMPORT)));
     final Button importButton = new Button();
@@ -97,9 +93,8 @@ public class DelimitedFileWelcomePlugin implements WelcomePluginInterface {
         importImage.setFitHeight(75);
         importImage.setFitWidth(75);
         final Label imTitle = new Label("Import");
-        imTitle.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * TITLE_SIZE));
         final Label imSubtitle = new Label("Delimited File Importer");
-        imSubtitle.setFont(new Font(FontUtilities.getApplicationFontFamily(), TEXT_SIZE));
+        imSubtitle.setId("smallInfoText");
         final VBox layoutVBox = new VBox(importImage, imTitle, imSubtitle);
         layoutVBox.setAlignment(Pos.CENTER);
         importButton.setGraphic(layoutVBox);

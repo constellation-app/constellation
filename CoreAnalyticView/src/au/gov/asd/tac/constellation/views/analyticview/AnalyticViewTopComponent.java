@@ -202,6 +202,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
 
     @Override
     protected void handleComponentOpened() {
+        super.handleComponentOpened();
         if (needsUpdate()) {
             final Graph current = GraphManager.getDefault().getActiveGraph();
             if (current != null) {
@@ -210,7 +211,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
             analyticViewPane.getConfigurationPane().updateState(false);
         }
     }
-
+    
     @Override
     protected void componentShowing() {
         super.componentShowing();
