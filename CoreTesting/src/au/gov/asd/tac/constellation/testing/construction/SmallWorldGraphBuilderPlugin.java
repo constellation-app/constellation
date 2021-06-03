@@ -238,13 +238,14 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
 
         final int vxIsGoodAttr = graph.addAttribute(GraphElementType.VERTEX, BooleanAttributeDescription.ATTRIBUTE_NAME, "isGood", null, false, null);
         final int vxCountryAttr = SpatialConcept.VertexAttribute.COUNTRY.ensure(graph);
+        final int vxPinnedAttr = VisualConcept.VertexAttribute.PINNED.ensure(graph);
 
         final int txIdAttr = VisualConcept.TransactionAttribute.IDENTIFIER.ensure(graph);
         final int txTypeAttr = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
         final int txDateTimeAttr = TemporalConcept.TransactionAttribute.DATETIME.ensure(graph);
 
         final VertexDecorators decorators;
-        decorators = new VertexDecorators(null, graph.getAttributeName(vxCountryAttr), null, graph.getAttributeName(vxIsGoodAttr));
+        decorators = new VertexDecorators(graph.getAttributeName(vxCountryAttr), graph.getAttributeName(vxPinnedAttr), null, graph.getAttributeName(vxIsGoodAttr));
         final int decoratorsAttr = VisualConcept.GraphAttribute.DECORATORS.ensure(graph);
         graph.setObjectValue(decoratorsAttr, 0, decorators);
 

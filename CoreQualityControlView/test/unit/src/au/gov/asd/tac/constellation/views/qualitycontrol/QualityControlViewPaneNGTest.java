@@ -36,7 +36,6 @@ import au.gov.asd.tac.constellation.views.qualitycontrol.rules.UnknownTypeRule;
 import java.awt.GraphicsEnvironment;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import javafx.embed.swing.JFXPanel;
@@ -66,6 +65,7 @@ public class QualityControlViewPaneNGTest {
     
     private List<QualityControlEvent> events;
     private List<QualityControlRule> rules;
+    private List<Integer> vertices;
     
     public QualityControlViewPaneNGTest() {
     }
@@ -100,7 +100,11 @@ public class QualityControlViewPaneNGTest {
         graph.setBooleanValue(vertexSelectedAttribute, vxId3, false);
         
         rules = new ArrayList<>(Lookup.getDefault().lookupAll(QualityControlRule.class));
-        final List<Integer> vertices = Arrays.asList(vxId1, vxId2);
+        vertices = Arrays.asList(vxId1, vxId2);
+        
+        for (final QualityControlRule rule : rules) {
+            rule.executeRule(graph, vertices);
+        }
         
         events = new ArrayList<>();
         for (final int vertexId : vertices) {
@@ -229,15 +233,16 @@ public class QualityControlViewPaneNGTest {
     @Test
     public void testGetPriorities() {
         System.out.println("getPriorities");
-        
-        final Collection<? extends QualityControlRule> rules = Lookup.getDefault().lookupAll(QualityControlRule.class);
 
         final Map<QualityControlRule, QualityCategory> result = QualityControlViewPane.getPriorities();
         assertEquals(result.size(), rules.size());
         
-        final IdentifierInconsistentWithTypeRule iiRule = new IdentifierInconsistentWithTypeRule();       
+        final IdentifierInconsistentWithTypeRule iiRule = new IdentifierInconsistentWithTypeRule();
+        iiRule.executeRule(graph, vertices);
         final MissingTypeRule mRule = new MissingTypeRule();
+        mRule.executeRule(graph, vertices);
         final UnknownTypeRule uRule = new UnknownTypeRule();
+        uRule.executeRule(graph, vertices);
         
         assertEquals(result.get(iiRule), QualityCategory.INFO);
         assertEquals(result.get(mRule), QualityCategory.SEVERE);

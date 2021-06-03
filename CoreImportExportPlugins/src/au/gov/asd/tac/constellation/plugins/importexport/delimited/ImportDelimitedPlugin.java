@@ -61,7 +61,8 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * An ImportDelimitedPlugin is a plugin that actually does the work of importing data from a table into a graph.
+ * An ImportDelimitedPlugin is a plugin that actually does the work of importing
+ * data from a table into a graph.
  *
  * @author sirius
  */
@@ -115,13 +116,16 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
     }
 
     /**
-     * Build up an import summary dialog detailing successful and unsuccessful file imports.
+     * Build up an import summary dialog detailing successful and unsuccessful
+     * file imports.
      *
      * @param title Title to add to status dialog
-     * @param importedRows Number of rows successfully imported (from valid files)
+     * @param importedRows Number of rows successfully imported (from valid
+     * files)
      * @param validFilenames List of filenames that were imported from
-     * @param invalidFilenames List of files that couldn't be opened/parsed. We try to limit this possibility by
-     * pre-screening files during the initial file selection.
+     * @param invalidFilenames List of files that couldn't be opened/parsed. We
+     * try to limit this possibility by pre-screening files during the initial
+     * file selection.
      */
     private void displaySummaryAlert(final int importedRows, final List<String> validFilenames, final List<String> invalidFilenames) {
         Platform.runLater(() -> {
@@ -132,7 +136,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
             if (importedRows > 0) {
                 // At least 1 row was successfully imported. List all successful file imports, as well as any files that there were
                 // issues for. If there were any files with issues use a warning dialog.
-                sbHeader.append(String.format("Imported %i rows of data from %i files", new Object[]{importedRows, validFilenames.size()}));
+                sbHeader.append(String.format("Imported %d rows of data from %d files", importedRows, validFilenames.size()));
                 sbMessage.append("The following file(s) contained data:");
                 validFilenames.forEach(filename -> {
                     sbMessage.append("\n  ");

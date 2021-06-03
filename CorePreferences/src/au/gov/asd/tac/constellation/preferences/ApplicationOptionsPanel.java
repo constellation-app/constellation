@@ -82,6 +82,14 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
         startupWelcomeCheckbox.setSelected(welcomeOnStartup);
     }
 
+    public boolean getWhatsNewOnStartup() {
+        return startupWhatsNewCheckbox.isSelected();
+    }
+
+    public void setWhatsNewOnStartup(final boolean whatsNewOnStartup) {
+        startupWhatsNewCheckbox.setSelected(whatsNewOnStartup);
+    }
+
     public int getWebserverPort() {
         return (Integer) webserverPortSpinner.getModel().getValue();
     }
@@ -139,6 +147,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
         autosaveLabel = new JLabel();
         startupPanel = new JPanel();
         startupWelcomeCheckbox = new JCheckBox();
+        startupWhatsNewCheckbox = new JCheckBox();
         webserverPanel = new JPanel();
         webserverPortLabel = new JLabel();
         webserverPortSpinner = new JSpinner();
@@ -188,7 +197,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
                 .addComponent(autosaveSpinner, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(autosaveLabel, GroupLayout.PREFERRED_SIZE, 230, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(142, Short.MAX_VALUE))
+                .addContainerGap(182, Short.MAX_VALUE))
         );
         autosavePanelLayout.setVerticalGroup(autosavePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(autosavePanelLayout.createSequentialGroup()
@@ -205,19 +214,26 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
         Mnemonics.setLocalizedText(startupWelcomeCheckbox, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.startupWelcomeCheckbox.text")); // NOI18N
         startupWelcomeCheckbox.setActionCommand(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.startupWelcomeCheckbox.actionCommand")); // NOI18N
 
+        Mnemonics.setLocalizedText(startupWhatsNewCheckbox, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.startupWhatsNewCheckbox.text")); // NOI18N
+        startupWhatsNewCheckbox.setActionCommand(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.startupWhatsNewCheckbox.actionCommand")); // NOI18N
+
         GroupLayout startupPanelLayout = new GroupLayout(startupPanel);
         startupPanel.setLayout(startupPanelLayout);
         startupPanelLayout.setHorizontalGroup(startupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(startupPanelLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addComponent(startupWelcomeCheckbox)
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(startupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                    .addComponent(startupWhatsNewCheckbox)
+                    .addComponent(startupWelcomeCheckbox))
+                .addContainerGap(349, Short.MAX_VALUE))
         );
         startupPanelLayout.setVerticalGroup(startupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(startupPanelLayout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(startupWelcomeCheckbox)
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(startupWhatsNewCheckbox)
+                .addGap(12, 12, 12))
         );
 
         webserverPanel.setBorder(BorderFactory.createTitledBorder(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.webserverPanel.border.title"))); // NOI18N
@@ -363,7 +379,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
                     .addComponent(userDirectoryText, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(autosavePanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(startupPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(webserverPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
@@ -441,6 +457,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
     private JPanel saveLocationPanel;
     private JPanel startupPanel;
     private JCheckBox startupWelcomeCheckbox;
+    private JCheckBox startupWhatsNewCheckbox;
     private JButton userDirectoryButton;
     private JLabel userDirectoryLabel;
     private JTextField userDirectoryText;
