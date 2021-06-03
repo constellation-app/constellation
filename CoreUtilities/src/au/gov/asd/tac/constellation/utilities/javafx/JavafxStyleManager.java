@@ -26,9 +26,10 @@ import java.util.logging.Logger;
  * Manages the CSS style sheet common to all CONSTELLATION JavaFX components.
  *
  * @author twinkle2_little
+ * @author arcturus
  */
 public class JavafxStyleManager {
-    
+
     private static final Logger LOGGER = Logger.getLogger(JavafxStyleManager.class.getName());
 
     public static final String CSS_BASE_STYLE_PREFIX = "-fx-base:";
@@ -42,6 +43,9 @@ public class JavafxStyleManager {
 
     private static String dynamicStyleSheet = null;
 
+    private static String currentFontFamily = null;
+    private static int currentFontSize = 0;
+
     public static String getMainStyleSheet() {
         return JavafxStyleManager.class.getResource("main.css").toExternalForm();
     }
@@ -49,10 +53,6 @@ public class JavafxStyleManager {
     /**
      * Dynamically create a style sheet that will include the new font values so
      * that it can be added to the list of style sheets to be applied.
-     * <p>
-     * TODO: cache the value of the style sheet as this will otherwise create a
-     * temp file for each call. This is a performance and resource drain.
-     * </p>
      * <p>
      * Inspiration taken from https://stackoverflow.com/a/44409349
      * </p>
@@ -62,26 +62,35 @@ public class JavafxStyleManager {
     public static String getDynamicStyleSheet() {
         final double titleSize = FontUtilities.getApplicationFontSize() * 1.5;
         final double smallInfoTextSize = FontUtilities.getApplicationFontSize() * 0.8;
-        
-        try {
-            // create a new temp file that will be removed as the application exits
-            final File tempStyleClass = File.createTempFile("dynamic", ".css");
-            tempStyleClass.deleteOnExit();
 
-            // dynamically write the style sheet
-            try (final PrintWriter printWriter = new PrintWriter(tempStyleClass)) {
-                printWriter.println(String.format("#title { -fx-font-size: %fpx; -fx-font-family:\"%s\"; }", titleSize, FontUtilities.getApplicationFontFamily()));
-                printWriter.println(String.format("#smallInfoText { -fx-font-size: %fpx; -fx-font-family:\"%s\"; }", smallInfoTextSize, FontUtilities.getApplicationFontFamily()));
-                printWriter.println(String.format(".button { -fx-font-size: %dpx; -fx-font-family:\"%s\"; }", FontUtilities.getApplicationFontSize(), FontUtilities.getApplicationFontFamily()));
-                printWriter.println(String.format(".label { -fx-font-size: %dpx; -fx-font-family:\"%s\"; }", FontUtilities.getApplicationFontSize(), FontUtilities.getApplicationFontFamily()));
-                printWriter.println(String.format(".root { -fx-font-size: %dpx; -fx-font-family:\"%s\"; }", FontUtilities.getApplicationFontSize(), FontUtilities.getApplicationFontFamily()));
+        if (dynamicStyleSheet == null || hasFontChanged()) {
+            currentFontSize = FontUtilities.getApplicationFontSize();
+            currentFontFamily = FontUtilities.getApplicationFontFamily();
+            try {
+                // create a new temp file that will be removed as the application exits
+                final File tempStyleClass = File.createTempFile("dynamic", ".css");
+                tempStyleClass.deleteOnExit();
+
+                // dynamically write the style sheet
+                try (final PrintWriter printWriter = new PrintWriter(tempStyleClass)) {
+                    printWriter.println(String.format("#title { -fx-font-size: %fpx; -fx-font-family:\"%s\"; }", titleSize, currentFontFamily));
+                    printWriter.println(String.format("#smallInfoText { -fx-font-size: %fpx; -fx-font-family:\"%s\"; }", smallInfoTextSize, currentFontFamily));
+                    printWriter.println(String.format(".button { -fx-font-size: %dpx; -fx-font-family:\"%s\"; }", currentFontSize, currentFontFamily));
+                    printWriter.println(String.format(".label { -fx-font-size: %dpx; -fx-font-family:\"%s\"; }", currentFontSize, currentFontFamily));
+                    printWriter.println(String.format(".root { -fx-font-size: %dpx; -fx-font-family:\"%s\"; }", currentFontSize, currentFontFamily));
+                }
+
+                dynamicStyleSheet = tempStyleClass.toURI().toString();
+            } catch (final IOException ex) {
+                LOGGER.log(Level.WARNING, ex.toString());
             }
-
-            dynamicStyleSheet = tempStyleClass.toURI().toString();
-        } catch (final IOException ex) {
-            LOGGER.log(Level.WARNING, ex.toString());
         }
 
         return dynamicStyleSheet;
+    }
+
+    private static boolean hasFontChanged() {
+        return FontUtilities.getApplicationFontSize() != currentFontSize
+                || FontUtilities.getApplicationFontFamily() != currentFontFamily;
     }
 }
