@@ -65,10 +65,10 @@ public class SelectAllPlugin extends SimpleQueryPlugin implements DataAccessPlug
             graph.setBooleanValue(selectedAttribute, vertex, true);
         }
         
-        int selectedTransaction = VisualConcept.TransactionAttribute.SELECTED.get(graph);
-        int transactionCount = graph.getTransactionCount();
+        final int selectedTransaction = VisualConcept.TransactionAttribute.SELECTED.get(graph);
+        final int transactionCount = graph.getTransactionCount();
         for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
-            int transaction = graph.getTransaction(transactionPosition);
+            final int transaction = graph.getTransaction(transactionPosition);
             graph.setBooleanValue(selectedTransaction, transaction, true);
         }
         
