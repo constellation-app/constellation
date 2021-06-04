@@ -108,7 +108,7 @@ final class ApplicationFontOptionsPanel extends JPanel {
             .addGroup(fontPanelLayout.createSequentialGroup()
                 .addGroup(fontPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                     .addGroup(GroupLayout.Alignment.TRAILING, fontPanelLayout.createSequentialGroup()
-                        .addContainerGap(435, Short.MAX_VALUE)
+                        .addContainerGap(445, Short.MAX_VALUE)
                         .addComponent(resetBtn))
                     .addGroup(fontPanelLayout.createSequentialGroup()
                         .addGap(27, 27, 27)
@@ -130,11 +130,11 @@ final class ApplicationFontOptionsPanel extends JPanel {
                     .addComponent(fontCombo, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(fontPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(fontSizeLbl)
-                    .addComponent(fontSizeSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                    .addComponent(fontSizeSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addComponent(fontSizeLbl))
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(resetBtn)
-                .addContainerGap())
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         fontSizeLbl.getAccessibleContext().setAccessibleName(NbBundle.getMessage(ApplicationFontOptionsPanel.class, "ApplicationFontOptionsPanel.fontSizeLbl.AccessibleContext.accessibleName")); // NOI18N

@@ -207,7 +207,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
                 .addComponent(autosaveSpinner, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(autosaveLabel, GroupLayout.PREFERRED_SIZE, 230, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(142, Short.MAX_VALUE))
+                .addContainerGap(150, Short.MAX_VALUE))
         );
         autosavePanelLayout.setVerticalGroup(autosavePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(autosavePanelLayout.createSequentialGroup()
@@ -241,7 +241,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
             .addGroup(startupPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(startupWelcomeCheckbox)
-                .addGap(18, 18, 18)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(startupWhatsNewCheckbox)
                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -411,7 +411,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
                 .addComponent(autosavePanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(startupPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addGap(23, 23, 23)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(displayPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(webserverPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
