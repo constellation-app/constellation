@@ -18,7 +18,9 @@ package au.gov.asd.tac.constellation.graph.value.operations;
 import au.gov.asd.tac.constellation.graph.value.ComparisonOperation;
 import au.gov.asd.tac.constellation.graph.value.OperatorRegistry;
 import au.gov.asd.tac.constellation.graph.value.Operators;
+import au.gov.asd.tac.constellation.graph.value.constants.StringConstant;
 import au.gov.asd.tac.constellation.graph.value.readables.BooleanReadable;
+import au.gov.asd.tac.constellation.graph.value.readables.ObjectReadable;
 import java.util.Objects;
 
 /**
@@ -68,6 +70,9 @@ public class Equals {
 
         registry.register(BooleanReadable.class, BooleanReadable.class, BooleanReadable.class, (p1, p2) -> {
             return () -> p1.readBoolean() == p2.readBoolean();
+        });
+        registry.register(ObjectReadable.class, StringConstant.class, BooleanReadable.class, (p1, p2) -> {
+            return () -> p1.readObject().toString().equals(p2.readString());
         });
 
     }
