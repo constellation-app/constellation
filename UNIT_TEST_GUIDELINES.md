@@ -40,6 +40,10 @@ something to finish on your local system might be different to that of the CI
 
 ## Other Things of Note
 
+- We use TestNG rather than JUnit.
+
+- We use the Mockito library for any functionality that needs to be mocked.
+
 - If you need to edit the access modifiers of any part of a class in order to 
 enable testing, do the following:
     - Constants and Functions: Change the access modifier to appropriate level 
