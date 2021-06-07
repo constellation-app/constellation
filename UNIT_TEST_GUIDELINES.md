@@ -8,9 +8,13 @@ Here are a few helpful guidelines for writing unit tests for Constellation.
 that could be encountered when running it.
 
 - For functions that take a graph as input, you should include a test with a 
-null or empty graph and one with a non-empty graph. The non-empty graph should 
-ideally contain the minimum number of graph elements, attributes, and attribute 
-values required to ensure the function works as intended.
+null or empty graph and one with a non-empty graph. 
+    - The non-empty graph should ideally contain the minimum number of vertices, 
+transaction, attributes, and attribute values required to ensure the function 
+works as intended.
+    - Where possible, also try to use a `StoreGraph` rather than a `DualGraph`. 
+Testing of read/write locks is covered elsewhere and so a `DualGraph` usually 
+isn't necessary.
 
 - If your unit test requires the JFX toolkit to be initialised, wrap the test 
 code in the following:
@@ -49,3 +53,7 @@ enable testing, do the following:
     - Constants and Functions: Change the access modifier to appropriate level 
 (usually protected will suffice, don't make public unless absolutely necessary)
     - Fields: Add a getter function (leave the access modifier as is)
+
+- It's good practice to ensure that your unit test fails when the function 
+isn't implemented (or the implementation is commented out). This is to ensure 
+the unit test works properly.
