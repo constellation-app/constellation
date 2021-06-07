@@ -10,7 +10,7 @@ that could be encountered when running it.
 - For functions that take a graph as input, you should include a test with a 
 null or empty graph and one with a non-empty graph. 
     - The non-empty graph should ideally contain the minimum number of vertices, 
-transaction, attributes, and attribute values required to ensure the function 
+transactions, attributes, and attribute values required to ensure the function 
 works as intended.
     - Where possible, also try to use a `StoreGraph` rather than a `DualGraph`. 
 Testing of read/write locks is covered elsewhere and so a `DualGraph` usually 
