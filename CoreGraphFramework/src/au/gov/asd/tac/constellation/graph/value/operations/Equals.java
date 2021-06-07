@@ -71,10 +71,16 @@ public class Equals {
         registry.register(BooleanReadable.class, BooleanReadable.class, BooleanReadable.class, (p1, p2) -> {
             return () -> p1.readBoolean() == p2.readBoolean();
         });
+
+        // Used when query is as follows: dim == 'true'
+        registry.register(BooleanReadable.class, StringConstant.class, BooleanReadable.class, (p1, p2) -> {
+            return () -> String.valueOf(p1.readBoolean()).equals(p2.readString());
+        });
+
+        // Used when query is as follows: Type == 'Manually Created'
         registry.register(ObjectReadable.class, StringConstant.class, BooleanReadable.class, (p1, p2) -> {
             return () -> p1.readObject().toString().equals(p2.readString());
         });
-
     }
 
     static {
