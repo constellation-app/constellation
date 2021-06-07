@@ -20,7 +20,7 @@ code in the following:
     }
 ```
     
-    - Doing this allows the code to pass in our CI which will otherwise hold up 
+Doing this allows the code to pass in our CI which will otherwise hold up 
 until it times out. The catch though is that the CI is passing the test 
 essentially by skipping it which is not ideal. As a result, this advice will 
 likely change once a better solution is found.
