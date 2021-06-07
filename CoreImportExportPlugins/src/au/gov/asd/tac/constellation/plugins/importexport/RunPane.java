@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.plugins.importexport.model.CellValue;
 import au.gov.asd.tac.constellation.plugins.importexport.model.TableRow;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -39,6 +40,7 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
@@ -289,7 +291,16 @@ public final class RunPane extends BorderPane implements KeyListener {
                     // Drop the AttributeNode onto the column.
                     mouseOverColumn.setAttributeNode(draggingAttributeNode);
                     draggingAttributeNode.setColumn(mouseOverColumn);
-                    validate(mouseOverColumn);
+
+                    // If the active column doesn't match the attribute node return it back to the list
+                    if (!validate(mouseOverColumn)) {
+                        NotifyDisplayer.displayAlert("Delimited Importer", "Attribute mismatch", "Column " + mouseOverColumn.getLabel()
+                                + " cannot be converted to " + draggingAttributeNode.getAttribute().getName(), Alert.AlertType.ERROR);
+                        if (draggingAttributeNode != null) {
+                            draggingAttributeNode.getAttributeList().addAttributeNode(draggingAttributeNode);
+                        }
+                        validate(mouseOverColumn);
+                    }
                 }
 
                 columnRectangle.setVisible(false);
@@ -456,10 +467,11 @@ public final class RunPane extends BorderPane implements KeyListener {
         }
     }
 
-    public void validate(final ImportTableColumn column) {
+    public boolean validate(final ImportTableColumn column) {
         if (column != null) {
-            column.validate(currentRows);
+            return column.validate(currentRows);
         }
+        return false;
     }
 
     public boolean setFilter(final String filter) {

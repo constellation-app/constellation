@@ -62,7 +62,7 @@ public class ImportTableColumn extends TableColumn<TableRow, CellValue> {
         return columnIndex;
     }
 
-    public void validate(final List<TableRow> data) {
+    public boolean validate(final List<TableRow> data) {
         final AttributeNode attributeNode = getAttributeNode();
 
         boolean columnFailed = false;
@@ -99,6 +99,8 @@ public class ImportTableColumn extends TableColumn<TableRow, CellValue> {
         }
         getGraphic().setStyle(columnFailed ? "-fx-background-color: rgba(255, 0, 0, 0.3);"
                 : "-fx-background-color: transparent;");
+
+        return !columnFailed;
     }
 
     private boolean processRow(final TableRow row, final AttributeDescription attributeDescription,
