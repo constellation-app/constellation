@@ -126,6 +126,6 @@ public class ProxyOptionsPanelController extends OptionsPanelController implemen
 
     @Override
     public HelpCtx getHelpCtx() {
-        return new HelpCtx("au.gov.asd.tac.constellation.functionality.proxies");
+        return new HelpCtx("au.gov.asd.tac.constellation.security.proxies");
     }
 }
