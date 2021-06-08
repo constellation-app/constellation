@@ -3,7 +3,7 @@
 ## Changes in June 2021
 
 -   Removed `PreferenceUtilites.isGraphViewFrozen()` and related files
-    as this feature has been supersede by the Pin nodes feature.
+    as this feature has been superseded by the Pin nodes feature.
     Plugins no longer need a special check to see if the graph is
     frozen or pinned as this is covered by the arrangement framework.
 
