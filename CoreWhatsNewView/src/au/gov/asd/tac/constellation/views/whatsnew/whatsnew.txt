@@ -1,6 +1,10 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
+== 2021-06-04 Select All Plugin
+<p>The Select All Plugin in the Data Access View now selects everything on the graph including transactions.</p>
+<p>Previously it only selected the vertices on the graph.</p> 
+
 == 2021-05-21 Application Font Setting
 <p>In the Constellation settings a tab has been added to set the default font family and font size for all of the views in Constellation.</p>
 <p>The setting requires a restart of Constellation for it to be applied. </p>
