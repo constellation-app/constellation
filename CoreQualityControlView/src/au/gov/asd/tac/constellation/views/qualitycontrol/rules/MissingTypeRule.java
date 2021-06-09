@@ -55,7 +55,7 @@ public class MissingTypeRule extends QualityControlRule {
         final int typeAttr = AnalyticConcept.VertexAttribute.TYPE.get(graph);
         if (typeAttr != Graph.NOT_FOUND) {
             final String type = graph.getStringValue(typeAttr, vertexId);
-            return type.isBlank() || type.isEmpty();
+            return type == null || type.isBlank() || type.isEmpty();
         }
         return typeAttr == Graph.NOT_FOUND || graph.getObjectValue(typeAttr, vertexId) == null;
     }
