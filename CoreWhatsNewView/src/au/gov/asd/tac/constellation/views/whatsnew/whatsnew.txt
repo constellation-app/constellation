@@ -5,6 +5,9 @@
 <p>The Select All Plugin in the Data Access View now selects everything on the graph including transactions.</p>
 <p>Previously it only selected the vertices on the graph.</p> 
 
+== 2021-05-28 Freeze Graph View Removed
+<p>The freeze graph view option has been removed as the functionality has been replaced by pin/unpin nodes</p>
+
 == 2021-05-21 Application Font Setting
 <p>In the Constellation settings a tab has been added to set the default font family and font size for all of the views in Constellation.</p>
 <p>The setting requires a restart of Constellation for it to be applied. </p>
@@ -794,7 +797,7 @@ A new button is available in the graph toolbar than will enable/disable the thre
 <a href="" helpId="au.gov.asd.tac.constellation.visual.about">this</a> help page.</p>
 
 == 2016-03-17 Freeze Graph View
-<p>When enabled, animations do not run during plugin executions so you graph structure does not change. The button is available in the graph toolbar.
+<p>When enabled, animations do not run during plugin executions so your graph structure does not change. The button is available in the graph toolbar.
 When enabled, the snow flake icon will change from grey to blue. This feature is smart enough to allow you to execute arrangements manually so you can
  keep it on all the time if you like.</p>
 
