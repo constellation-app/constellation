@@ -1,6 +1,10 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
+== 2021-06-04 Select All Plugin
+<p>The Select All Plugin in the Data Access View now selects everything on the graph including transactions.</p>
+<p>Previously it only selected the vertices on the graph.</p> 
+
 == 2021-05-28 Freeze Graph View Removed
 <p>The freeze graph view option has been removed as the functionality has been replaced by pin/unpin nodes</p>
 

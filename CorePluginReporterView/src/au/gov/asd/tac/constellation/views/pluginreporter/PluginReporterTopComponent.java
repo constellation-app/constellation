@@ -100,6 +100,7 @@ public final class PluginReporterTopComponent extends JavaFxTopComponent<PluginR
     // End of variables declaration//GEN-END:variables
     @Override
     protected void handleComponentOpened() {
+        super.handleComponentOpened();
         GraphManager.getDefault().addGraphManagerListener(this);
         GraphReportManager.addGraphReportListener(this);
         handleNewGraph(GraphManager.getDefault().getActiveGraph());
@@ -107,6 +108,7 @@ public final class PluginReporterTopComponent extends JavaFxTopComponent<PluginR
 
     @Override
     protected void handleComponentClosed() {
+        super.handleComponentClosed();
         handleNewGraph(null);
         GraphReportManager.removeGraphReportListener(this);
         GraphManager.getDefault().removeGraphManagerListener(this);

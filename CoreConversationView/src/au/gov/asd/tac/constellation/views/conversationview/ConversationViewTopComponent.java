@@ -72,11 +72,8 @@ public final class ConversationViewTopComponent extends JavaFxTopComponent<Conve
         setName(Bundle.CTL_ConversationViewTopComponent());
         setToolTipText(Bundle.HINT_ConversationViewTopComponent());
         Platform.setImplicitExit(false);
-
-        Platform.runLater(() -> {
-            conversationBox = new ConversationBox(conversation);
-            conversation.getGraphUpdateManager().setManaged(true);
-        });
+        conversationBox = new ConversationBox(conversation);
+        conversation.getGraphUpdateManager().setManaged(true);
         initContent();
     }
 
@@ -104,11 +101,13 @@ public final class ConversationViewTopComponent extends JavaFxTopComponent<Conve
     // End of variables declaration//GEN-END:variables
     @Override
     protected void handleComponentOpened() {
+        super.handleComponentOpened();
         conversation.getGraphUpdateManager().setManaged(true);
     }
 
     @Override
     protected void handleComponentClosed() {
+        super.handleComponentClosed();
         conversation.getGraphUpdateManager().setManaged(false);
     }
 

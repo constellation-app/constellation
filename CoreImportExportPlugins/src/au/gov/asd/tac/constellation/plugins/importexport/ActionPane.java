@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.plugins.importexport;
 
 import au.gov.asd.tac.constellation.plugins.PluginException;
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
@@ -29,7 +28,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 
 /**
- * Action Pane is responsible for allowing the action of importing to be performed
+ * Action Pane is responsible for allowing the action of importing to be
+ * performed
  *
  * @author sirius
  */
@@ -60,9 +60,6 @@ public class ActionPane extends BorderPane {
             }
         });
 
-        this.setStyle(String.format("-fx-font-family:\"%s\";", FontUtilities.getApplicationFontFamily()));
-        this.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
-        
         runBox.getChildren().add(importButton);
     }
 

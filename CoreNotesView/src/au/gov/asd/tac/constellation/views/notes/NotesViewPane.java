@@ -209,7 +209,6 @@ public class NotesViewPane extends BorderPane {
         // VBox in a ScrollPane for holding expanding list of user and plugin generated notes.
         notesListVBox = new VBox(DEFAULT_SPACING);
         notesListVBox.setAlignment(Pos.BOTTOM_CENTER);
-        notesListVBox.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
         notesListScrollPane = new ScrollPane();
         notesListScrollPane.setContent(notesListVBox);
         notesListScrollPane.setStyle(fontStyle + "-fx-padding: 5px; -fx-background-color: transparent;");
@@ -220,9 +219,6 @@ public class NotesViewPane extends BorderPane {
         notesViewPaneVBox = new VBox(DEFAULT_SPACING, filterNotesHBox, notesListScrollPane, addNoteVBox);
         notesViewPaneVBox.setAlignment(Pos.BOTTOM_CENTER);
         setCenter(notesViewPaneVBox);
-
-        this.setStyle(String.format("-fx-font-family:\"%s\";", FontUtilities.getApplicationFontFamily()));
-        this.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
     }
 
     /**
@@ -464,7 +460,7 @@ public class NotesViewPane extends BorderPane {
         noteButtons.setAlignment(Pos.CENTER);
 
         final HBox noteBody = newNote.isUserCreated() ? new HBox(DEFAULT_SPACING, noteInformation, noteButtons) : new HBox(DEFAULT_SPACING, noteInformation);
-        noteBody.setStyle(fontStyle + " -fx-padding: 5px; -fx-background-color: "
+        noteBody.setStyle("-fx-padding: 5px; -fx-background-color: "
                 + noteColour + "; -fx-background-radius: 10 10 10 10;");
         notesListVBox.getChildren().add(noteBody);
 
