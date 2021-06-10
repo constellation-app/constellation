@@ -292,16 +292,8 @@ public final class RunPane extends BorderPane implements KeyListener {
                     mouseOverColumn.setAttributeNode(draggingAttributeNode);
                     draggingAttributeNode.setColumn(mouseOverColumn);
 
-                    // If the active column doesn't match the attribute node return it back to the list
-                    if (!validate(mouseOverColumn)) {
-                        NotifyDisplayer.displayAlert("Delimited Importer", "Attribute mismatch", "Column " + mouseOverColumn.getLabel()
-                                + " cannot be converted to " + draggingAttributeNode.getAttribute().getName(), Alert.AlertType.ERROR);
-                        if (draggingAttributeNode != null) {
-                            draggingAttributeNode.getAttributeList().addAttributeNode(draggingAttributeNode);
-                        }
                         validate(mouseOverColumn);
                     }
-                }
 
                 columnRectangle.setVisible(false);
                 draggingAttributeNode.setManaged(true);
@@ -469,7 +461,17 @@ public final class RunPane extends BorderPane implements KeyListener {
 
     public boolean validate(final ImportTableColumn column) {
         if (column != null) {
-            return column.validate(currentRows);
+            // If the active column doesn't match the attribute node format, return it back to the list
+            if (!column.validate(currentRows)) {
+                if (draggingAttributeNode != null) {
+                    NotifyDisplayer.displayAlert("Delimited Importer", "Attribute mismatch", "Column " + column.getLabel()
+                            + " cannot be converted to " + draggingAttributeNode.getAttribute().getName()
+                            + " attribute format. Try changing the format by right clicking the attribute.", Alert.AlertType.ERROR);
+
+                    draggingAttributeNode.getAttributeList().addAttributeNode(draggingAttributeNode);
+                }
+                column.validate(currentRows);
+            }
         }
         return false;
     }
