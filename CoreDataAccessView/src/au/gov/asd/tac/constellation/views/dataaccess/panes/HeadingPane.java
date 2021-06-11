@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPaneListener;
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
 import java.util.ArrayList;
 import java.util.List;
@@ -82,8 +81,6 @@ public class HeadingPane extends TitledPane implements PluginParametersPaneListe
 
         expandedProperty().addListener((ChangeListener) (final ObservableValue observable, final Object oldValue, final Object newValue)
                 -> DataAccessPreferences.setExpanded(headingText, (boolean) newValue));
-        
-        getContent().setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
     }
 
     public List<DataSourceTitledPane> getDataSources() {

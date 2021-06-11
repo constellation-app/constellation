@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.plugins.importexport;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.plugins.importexport.model.TableRow;
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -42,8 +41,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 
 /**
- * The ConfigurationPane is a UI element that displays a sample of the imported data and allows the user to assign graph
- * attributes to columns in the data.
+ * The ConfigurationPane is a UI element that displays a sample of the imported
+ * data and allows the user to assign graph attributes to columns in the data.
  *
  * @author sirius
  */
@@ -86,9 +85,6 @@ public class ConfigurationPane extends AnchorPane {
 
         // Add a single run to start with
         createTab();
-        
-        this.setStyle(String.format("-fx-font-family:\"%s\";", FontUtilities.getApplicationFontFamily()));
-        this.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
     }
 
     protected final Tab createTab() {
@@ -166,7 +162,8 @@ public class ConfigurationPane extends AnchorPane {
     }
 
     /**
-     * Set the configuration pane to display the specified column headers and sample data rows.
+     * Set the configuration pane to display the specified column headers and
+     * sample data rows.
      *
      * @param columnLabels Column header labels.
      * @param currentData Rows of sample data.
@@ -188,9 +185,11 @@ public class ConfigurationPane extends AnchorPane {
     }
 
     /**
-     * A List&lt;ImportDefinition&gt; where each list element corresponds to a RunPane tab.
+     * A List&lt;ImportDefinition&gt; where each list element corresponds to a
+     * RunPane tab.
      *
-     * @return A List&lt;ImportDefinition&gt; where each list element corresponds to a RunPane tab.
+     * @return A List&lt;ImportDefinition&gt; where each list element
+     * corresponds to a RunPane tab.
      */
     public List<ImportDefinition> createDefinitions() {
         List<ImportDefinition> definitions = new ArrayList<>(tabPane.getTabs().size());
@@ -220,9 +219,11 @@ public class ConfigurationPane extends AnchorPane {
     }
 
     /**
-     * Returns a combined collection of all attributes that have been allocated to a column in any run.
+     * Returns a combined collection of all attributes that have been allocated
+     * to a column in any run.
      *
-     * @return a combined collection of all attributes that have been allocated to a column in any run.
+     * @return a combined collection of all attributes that have been allocated
+     * to a column in any run.
      */
     public Collection<Attribute> getAllocatedAttributes() {
         final List<Attribute> allocatedAttributes = new ArrayList<>();

@@ -27,7 +27,6 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ElementTypeParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.scatterplot.state.ScatterPlotState;
 import java.util.BitSet;
@@ -58,7 +57,8 @@ import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
 
 /**
- * The GUI component of the Scatter Plot displaying the actual scatter plot chart.
+ * The GUI component of the Scatter Plot displaying the actual scatter plot
+ * chart.
  *
  * @author cygnus_x-1
  * @author antares
@@ -242,13 +242,11 @@ public class ScatterChartPane extends BorderPane {
         this.getChildren().addAll(selection);
         this.setId("scatter-chart-pane");
         this.setPadding(new Insets(5));
-                
-        this.setStyle(String.format("-fx-font-family:\"%s\";", FontUtilities.getApplicationFontFamily()));
-        this.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
     }
 
     /**
-     * Refresh the state of the ScatterChartPane based on the given ScatterPlotState.
+     * Refresh the state of the ScatterChartPane based on the given
+     * ScatterPlotState.
      *
      * @param state the ScatterPlotState.
      */
@@ -285,7 +283,8 @@ public class ScatterChartPane extends BorderPane {
     }
 
     /**
-     * Reset the state of the ScatterChartPane based on the given ScatterPlotState.
+     * Reset the state of the ScatterChartPane based on the given
+     * ScatterPlotState.
      */
     protected void resetChart() {
         Platform.runLater(() -> {
@@ -298,10 +297,12 @@ public class ScatterChartPane extends BorderPane {
     }
 
     /**
-     * Return the current selection from the ScatterChart within this ScatterPlotPane.
+     * Return the current selection from the ScatterChart within this
+     * ScatterPlotPane.
      *
      * @param selectionBounds the selection will be based on these bounds.
-     * @return the current selection from the ScatterChart within this ScatterPlotPane.
+     * @return the current selection from the ScatterChart within this
+     * ScatterPlotPane.
      */
     protected Set<ScatterData> getSelectionFromChart(final Bounds selectionBounds) {
         final Set<ScatterData> selectedData = new HashSet<>();
@@ -359,11 +360,15 @@ public class ScatterChartPane extends BorderPane {
     }
 
     /**
-     * Update the current selection on the ScatterChart within this ScatterChartPane. This allows a primary selection
-     * (which will highlight in red) as well as a secondary selection (which will highlight in yellow).
+     * Update the current selection on the ScatterChart within this
+     * ScatterChartPane. This allows a primary selection (which will highlight
+     * in red) as well as a secondary selection (which will highlight in
+     * yellow).
      *
-     * @param primarySelection the set of data objects representing the primary selection.
-     * @param secondarySelection the set of data objects representing the secondary selection.
+     * @param primarySelection the set of data objects representing the primary
+     * selection.
+     * @param secondarySelection the set of data objects representing the
+     * secondary selection.
      */
     protected void selectElementsOnChart(final Set<ScatterData> primarySelection, final Set<ScatterData> secondarySelection) {
         final DropShadow primarySelectionShadow = new DropShadow(BlurType.THREE_PASS_BOX, Color.RED, 20.0, 0.85, 0.0, 0.0);
@@ -425,7 +430,8 @@ public class ScatterChartPane extends BorderPane {
     }
 
     /**
-     * Deselect all on both the ScatterChart within this ScatterChartPane and the active graph.
+     * Deselect all on both the ScatterChart within this ScatterChartPane and
+     * the active graph.
      *
      * @throws InterruptedException if the operation was canceled (interrupted).
      */
@@ -438,7 +444,8 @@ public class ScatterChartPane extends BorderPane {
     }
 
     /**
-     * Refresh the state of the ScatterChartPane based on the given ScatterPlotState.
+     * Refresh the state of the ScatterChartPane based on the given
+     * ScatterPlotState.
      */
     private class ScatterPlotRefresher extends SimpleReadPlugin {
 

@@ -69,7 +69,7 @@ public class ItemsDialog<T> extends ConstellationDialog {
         // add a title
         final Label titleLabel = new Label();
         titleLabel.setText(title);
-        titleLabel.setStyle("-fx-font-size: 11pt;-fx-font-weight: bold;");
+        titleLabel.setStyle("-fx-font-weight: bold;");
         titleLabel.setAlignment(Pos.CENTER);
         titleLabel.setPadding(new Insets(5));
         root.setTop(titleLabel);

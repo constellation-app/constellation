@@ -25,7 +25,7 @@ import java.io.File;
 import java.util.List;
 import java.util.prefs.Preferences;
 import javafx.application.Platform;
-import javafx.geometry.Insets; 
+import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
@@ -54,40 +54,38 @@ import org.openide.util.NbPreferences;
 
 /**
  * WelcomeViewPane contains the content for WelcomeTopComponent
- * 
+ *
  * @author Delphinus8821
  */
 public class WelcomeViewPane extends BorderPane {
-    
+
     private final BorderPane welcomeViewPane;
-    
+
     public static final String ERROR_BUTTON_MESSAGE = String.format("%s Information", BrandingUtilities.APPLICATION_NAME);
     public static final String WELCOME_TEXT = "Welcome to Constellation";
     public static final double SPLIT_POS = 0.2;
-    private static final int TITLE_SIZE = 2;
-    private static final double HEADING_SIZE = 1.5;
 
     //Place holder images
     public static final String LOGO = "resources/constellation-logo.png";
-    
+
     private static final Button[] recentGraphButtons = new Button[10];
 
     public WelcomeViewPane() {
-       welcomeViewPane = new BorderPane();
+        welcomeViewPane = new BorderPane();
         ConstellationSecurityManager.startSecurityLaterFX(() -> {
             Platform.setImplicitExit(false);
-            
+
             final SplitPane splitPane = new SplitPane();
             splitPane.setOrientation(Orientation.HORIZONTAL);
             splitPane.setStyle("-fx-background-color: transparent;");
             final ScrollPane scrollPane = new ScrollPane(splitPane);
             final Rectangle2D visualBounds = Screen.getPrimary().getVisualBounds();
-            
+
             splitPane.setPrefHeight(visualBounds.getHeight());
             splitPane.setPrefWidth(visualBounds.getWidth());
             welcomeViewPane.setCenter(scrollPane);
             welcomeViewPane.autosize();
-            
+
             //Create VBox to handle Browser and controls,
             //or error messages
             final VBox leftVBox = new VBox();
@@ -108,7 +106,7 @@ public class WelcomeViewPane extends BorderPane {
 
             //Create the labels for the left pane
             final Label welcome = new Label(WELCOME_TEXT);
-            welcome.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * TITLE_SIZE));
+            welcome.setId("title");
             welcome.setAlignment(Pos.CENTER);
             leftVBox.getChildren().add(welcome);
 
@@ -129,10 +127,10 @@ public class WelcomeViewPane extends BorderPane {
             bottomHBox.setSpacing(10);
 
             final WelcomePageLayoutProvider layout = Lookup.getDefault().lookup(WelcomePageLayoutProvider.class);
-            
+
             //creating the button events along the top of the page
             final List<WelcomePluginInterface> topPlugins = layout.getTopPlugins();
-            for (final WelcomePluginInterface plugin : topPlugins){
+            for (final WelcomePluginInterface plugin : topPlugins) {
                 final Button currentButton = plugin.getButton();
                 currentButton.setOnAction(e -> {
                     plugin.run();
@@ -151,34 +149,33 @@ public class WelcomeViewPane extends BorderPane {
                 setInfoButtons(currentButton);
                 leftVBox.getChildren().add(currentButton);
             }
-                
+
             leftVBox.setAlignment(Pos.TOP_CENTER);
-            
+
             final HBox lowerLeftHBox = new HBox();
             lowerLeftHBox.setPadding(new Insets(30, 10, 10, 20));
-            
-            // Create a checkbox to change users preference regarding showing the Tutorial Page on startup 
+
+            // Create a checkbox to change users preference regarding showing the Tutorial Page on startup
             final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
             final CheckBox showOnStartUpCheckBox = new CheckBox("Show on Startup");
-            showOnStartUpCheckBox.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * HEADING_SIZE));
             lowerLeftHBox.getChildren().add(showOnStartUpCheckBox);
-           
+
             showOnStartUpCheckBox.selectedProperty().addListener((ov, oldVal, newVal) -> {
                 prefs.putBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, newVal);
-            });        
+            });
             showOnStartUpCheckBox.setSelected(prefs.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, ApplicationPreferenceKeys.WELCOME_ON_STARTUP_DEFAULT));
-            
+
             // Create a preferenceListener in order to identify when user preference is changed
             // Keeps tutorial page and options tutorial selections in-sync when both are open
             prefs.addPreferenceChangeListener(evt -> {
                 showOnStartUpCheckBox.setSelected(prefs.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, showOnStartUpCheckBox.isSelected()));
             });
-            
+
             leftVBox.getChildren().add(lowerLeftHBox);
-            
+
             //formatting for bottom hbox
             final Label recent = new Label("Recent");
-            recent.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * TITLE_SIZE));
+            recent.setId("title");
             rightVBox.getChildren().add(topHBox);
             rightVBox.getChildren().add(recent);
             rightVBox.getChildren().add(bottomHBox);
@@ -199,7 +196,7 @@ public class WelcomeViewPane extends BorderPane {
                     recentGraphButtons[i].setText(fileNames.get(i));
                 }
                 final String text = recentGraphButtons[i].getText();
-                
+
                 final Rectangle2D value = new Rectangle2D(700, 150, 500, 500);
                 final String screenshotFilename = RecentGraphScreenshotUtilities.getScreenshotsDir() + File.separator + text + ".png";
                 if (new File(screenshotFilename).exists()) {

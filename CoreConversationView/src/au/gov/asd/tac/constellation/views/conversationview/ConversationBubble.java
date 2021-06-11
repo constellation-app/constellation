@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.conversationview;
 
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
 import java.util.List;
 import javafx.geometry.Insets;
@@ -72,7 +71,6 @@ public class ConversationBubble extends VBox {
         setMinHeight(USE_PREF_SIZE);
         setMaxHeight(USE_PREF_SIZE);
         setSpacing(-5);
-        setStyle(String.format("-fx-font-size: %spx", FontUtilities.getApplicationFontSize()));
 
         final VBox bubbleContent = new VBox();
         bubbleContent.setAlignment(Pos.CENTER_LEFT);

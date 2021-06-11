@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
 import au.gov.asd.tac.constellation.functionality.browser.OpenInBrowserPlugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import javafx.geometry.Pos;
@@ -29,28 +28,25 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import org.openide.util.NbBundle;
 
 /**
- * The plugin for the Welcome Page that leads to the Getting Started guides and resources
+ * The plugin for the Welcome Page that leads to the Getting Started guides and
+ * resources
  *
  * @author Delphinus8821
  */
-
 @PluginInfo(tags = {"WELCOME"})
 @NbBundle.Messages("GettingStartedWelcomePlugin=Getting Started Welcome Plugin")
 public class GettingStartedWelcomePlugin implements WelcomePluginInterface {
-    
-    private static final double TITLE_SIZE = 1.5;
+
     public static final String GETTING_STARTED = "resources/welcome_getting_started.png";
     final ImageView started = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(GETTING_STARTED)));
     final Button startedBtn = new Button();
-    
-        
+
     /**
-     * Get a unique reference that is used to identify the plugin 
+     * Get a unique reference that is used to identify the plugin
      *
      * @return a unique reference
      */
@@ -58,24 +54,23 @@ public class GettingStartedWelcomePlugin implements WelcomePluginInterface {
     public String getName() {
         return "Getting Started Welcome";
     }
-    
+
     /**
-     * This method describes what action should be taken when the 
-     * link is clicked on the Welcome Page
-     *
+     * This method describes what action should be taken when the link is
+     * clicked on the Welcome Page
      */
     @Override
     public void run() {
         String url = "https://constellation.readthedocs.io/en/latest/";
 
         PluginExecution.withPlugin(CorePluginRegistry.OPEN_IN_BROWSER)
-            .withParameter(OpenInBrowserPlugin.APPLICATION_PARAMETER_ID, "Open " + getName())
-            .withParameter(OpenInBrowserPlugin.URL_PARAMETER_ID, url)
-            .executeLater(null);
+                .withParameter(OpenInBrowserPlugin.APPLICATION_PARAMETER_ID, "Open " + getName())
+                .withParameter(OpenInBrowserPlugin.URL_PARAMETER_ID, url)
+                .executeLater(null);
     }
 
     /**
-     * Determines whether this analytic appear on the Welcome Page 
+     * Determines whether this analytic appear on the Welcome Page
      *
      * @return true is this analytic should be visible, false otherwise.
      */
@@ -83,21 +78,20 @@ public class GettingStartedWelcomePlugin implements WelcomePluginInterface {
     public boolean isVisible() {
         return true;
     }
-    
-     /**
+
+    /**
      * Creates the button object to represent this plugin
-     * 
+     *
      * @return the button object
      */
     @Override
-    public Button getButton(){
+    public Button getButton() {
         started.setFitHeight(25);
         started.setFitWidth(25);
         final Text title = new Text("Getting Started");
-        title.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * TITLE_SIZE));
         title.setFill(Color.WHITE);
         final Text subtitle = new Text("Guides & Resources");
-        subtitle.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize()));
+        subtitle.setId("smallInfoText");
         subtitle.setFill(Color.WHITE);
         final VBox layoutVBox = new VBox(title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER_LEFT);

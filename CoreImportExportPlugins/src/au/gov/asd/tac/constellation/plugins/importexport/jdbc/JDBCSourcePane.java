@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.plugins.importexport.jdbc;
 import au.gov.asd.tac.constellation.plugins.importexport.EasyGridPane;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportController;
 import au.gov.asd.tac.constellation.plugins.importexport.SourcePane;
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.io.File;
@@ -62,7 +61,6 @@ import javafx.stage.Stage;
 public class JDBCSourcePane extends SourcePane {
 
     private static final Logger LOGGER = Logger.getLogger(JDBCSourcePane.class.getName());
-    private static final String FONT_SIZE_FORMAT = "-fx-font-size:%d;";
     private static final int GRIDPANE_MIN_WIDTH = 200;
     private static final int CONNPANE_PREF_HEIGHT = 200;
     private static final int SCROLLPANE_PREF_HEIGHT = 200;
@@ -212,7 +210,6 @@ public class JDBCSourcePane extends SourcePane {
                 final Scene scene1 = new Scene(r);
                 scene1.setFill(Color.WHITESMOKE);
                 scene1.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
-                scene1.rootProperty().get().setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
                 d.setScene(scene1);
                 d.setTitle("Add Connection");
                 d.centerOnScreen();
@@ -333,7 +330,6 @@ public class JDBCSourcePane extends SourcePane {
                 final Scene scene2 = new Scene(r);
                 scene2.setFill(Color.WHITESMOKE);
                 scene2.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
-                scene2.rootProperty().get().setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
                 d.setScene(scene2);
                 d.setTitle("Add Driver");
                 d.centerOnScreen();
@@ -357,7 +353,6 @@ public class JDBCSourcePane extends SourcePane {
             final Scene scene3 = new Scene(root);
             scene3.setFill(Color.WHITESMOKE);
             scene3.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
-            scene3.rootProperty().get().setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
             dialog.setScene(scene3);
             dialog.setTitle("Manage Connections");
             dialog.centerOnScreen();

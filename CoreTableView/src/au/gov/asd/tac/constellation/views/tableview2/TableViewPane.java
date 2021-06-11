@@ -29,7 +29,6 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
 import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.tableview2.io.TableViewPreferencesIOUtilities;
@@ -145,8 +144,6 @@ public final class TableViewPane extends BorderPane {
     private static final ImageView MENU_ICON_SOURCE = new ImageView(UserInterfaceIconProvider.MENU.buildImage(16));
     private static final ImageView MENU_ICON_DESTINATION = new ImageView(UserInterfaceIconProvider.MENU.buildImage(16));
     private static final ImageView MENU_ICON_TRANSACTION = new ImageView(UserInterfaceIconProvider.MENU.buildImage(16));
-    
-    private static final String FONT_SIZE_FORMAT = "-fx-font-size:%d;";    
 
     private static final int WIDTH = 120;
     private static final int DEFAULT_MAX_ROWS_PER_PAGE = 500;
@@ -194,8 +191,8 @@ public final class TableViewPane extends BorderPane {
     private ScheduledFuture<?> scheduledFuture;
 
     /**
-     * Cache strings used in table cells to significantly reduce memory used by the same string repeated in columns and
-     * rows.
+     * Cache strings used in table cells to significantly reduce memory used by
+     * the same string repeated in columns and rows.
      */
     private ImmutableObjectCache displayTextCache;
 
@@ -214,12 +211,8 @@ public final class TableViewPane extends BorderPane {
 
         this.toolbar = initToolbar();
         setLeft(toolbar);
-        
-        this.setStyle(String.format("-fx-font-family:\"%s\";", FontUtilities.getApplicationFontFamily()));
-        this.setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
 
         this.table = new TableView<>();
-        table.setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
         table.itemsProperty().addListener((v, o, n) -> table.refresh());
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         table.setPadding(new Insets(5));
@@ -320,7 +313,6 @@ public final class TableViewPane extends BorderPane {
         copyButton.setGraphic(COPY_ICON);
         copyButton.setMaxWidth(WIDTH);
         copyButton.setPopupSide(Side.RIGHT);
-        copyButton.setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
         final MenuItem copyTableMenu = new MenuItem(COPY_TABLE);
         copyTableMenu.setOnAction(e -> {
             final String data = TableViewUtilities.getTableData(table, pagination, false, false);
@@ -339,7 +331,6 @@ public final class TableViewPane extends BorderPane {
         exportButton.setGraphic(EXPORT_ICON);
         exportButton.setMaxWidth(WIDTH);
         exportButton.setPopupSide(Side.RIGHT);
-        exportButton.setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
         final MenuItem exportCsvItem = new MenuItem(EXPORT_CSV);
         exportCsvItem.setOnAction(e -> {
             if (parent.getCurrentGraph() != null) {
@@ -375,7 +366,6 @@ public final class TableViewPane extends BorderPane {
         preferencesButton.setGraphic(SETTINGS_ICON);
         preferencesButton.setMaxWidth(WIDTH);
         preferencesButton.setPopupSide(Side.RIGHT);
-        preferencesButton.setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
         final Menu setPageSize = createPageSizeMenu();
         final MenuItem savePrefsOption = new MenuItem("Save Table Preferences");
         savePrefsOption.setOnAction(e -> {
@@ -701,9 +691,11 @@ public final class TableViewPane extends BorderPane {
     }
 
     /**
-     * Save current sort order details, i.e. sort column name and order for future reference. This required as the
-     * bespoke data loading in tables is causing sort ordering to be removed - ie when users update column order. By
-     * storing this sort information the values can be used to refresh the sort order within updateSortOrder().
+     * Save current sort order details, i.e. sort column name and order for
+     * future reference. This required as the bespoke data loading in tables is
+     * causing sort ordering to be removed - ie when users update column order.
+     * By storing this sort information the values can be used to refresh the
+     * sort order within updateSortOrder().
      *
      * @param columnName The name of the column sorting is being done on
      * @param sortType Direction of sorting
@@ -714,8 +706,8 @@ public final class TableViewPane extends BorderPane {
     }
 
     /**
-     * Extract any current table sort information and save this information. See other saveSortDetails for reason this
-     * is done.
+     * Extract any current table sort information and save this information. See
+     * other saveSortDetails for reason this is done.
      */
     private void saveSortDetails() {
         if (table.getSortOrder() != null && table.getSortOrder().size() > 0) {
@@ -798,11 +790,11 @@ public final class TableViewPane extends BorderPane {
     /**
      * Update the columns in the table using the graph and state.
      * <p>
-     * Note that column references are reused where possible to ensure certain toolbar/menu operations to work
-     * correctly.
+     * Note that column references are reused where possible to ensure certain
+     * toolbar/menu operations to work correctly.
      * <p>
-     * The entire method is synchronized so it should be thread safe and keeps the locking logic simpler. Maybe this
-     * method could be broken out further.
+     * The entire method is synchronized so it should be thread safe and keeps
+     * the locking logic simpler. Maybe this method could be broken out further.
      *
      * @param graph the graph to retrieve data from.
      * @param state the current table view state.
@@ -1011,8 +1003,9 @@ public final class TableViewPane extends BorderPane {
     }
 
     /**
-     * Allow user to select saved preferences file and update table view format (displayed column/column order and sort
-     * order) to match values found in saved preferences file.
+     * Allow user to select saved preferences file and update table view format
+     * (displayed column/column order and sort order) to match values found in
+     * saved preferences file.
      */
     private void loadPreferences() {
         synchronized (LOCK) {
@@ -1137,8 +1130,8 @@ public final class TableViewPane extends BorderPane {
     /**
      * Update the data in the table using the graph and state.
      * <p>
-     * The entire method is synchronized so it should be thread safe and keeps the locking logic simpler. Maybe this
-     * method could be broken out further.
+     * The entire method is synchronized so it should be thread safe and keeps
+     * the locking logic simpler. Maybe this method could be broken out further.
      *
      * @param graph the graph to retrieve data from.
      * @param state the current table view state.
@@ -1284,8 +1277,8 @@ public final class TableViewPane extends BorderPane {
     /**
      * Update the table selection using the graph and state.
      * <p>
-     * The entire method is synchronized so it should be thread safe and keeps the locking logic simpler. Maybe this
-     * method could be broken out further.
+     * The entire method is synchronized so it should be thread safe and keeps
+     * the locking logic simpler. Maybe this method could be broken out further.
      *
      * @param graph the graph to read selection from.
      * @param state the current table view state.
@@ -1328,8 +1321,8 @@ public final class TableViewPane extends BorderPane {
     }
 
     /**
-     * A version of the updateSelection(Graph, TableViewState) function which is to be run on the JavaFX Application
-     * Thread
+     * A version of the updateSelection(Graph, TableViewState) function which is
+     * to be run on the JavaFX Application Thread
      *
      * @param graph the graph to read selection from.
      * @param state the current table view state.
@@ -1373,7 +1366,8 @@ public final class TableViewPane extends BorderPane {
     }
 
     /**
-     * Adds vertex/transaction ids from a graph to a list of ids if the vertex/transaction is selected
+     * Adds vertex/transaction ids from a graph to a list of ids if the
+     * vertex/transaction is selected
      *
      * @param selectedIds the list that is being added to
      * @param readableGraph the graph to read from

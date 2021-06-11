@@ -21,9 +21,8 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManagerListener;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.preferences.ApplicationFontPreferenceKeys;
 import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
-import au.gov.asd.tac.constellation.views.*;
+import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.prefs.PreferenceChangeListener;
@@ -172,19 +171,19 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
     // End of variables declaration//GEN-END:variables
     @Override
     protected void handleComponentOpened() {
+        super.handleComponentOpened();
         GraphManager.getDefault().addGraphManagerListener(this);
         newActiveGraph(GraphManager.getDefault().getActiveGraph());
 
         PreferenceUtilites.addPreferenceChangeListener(prefs.absolutePath(), this);
-        PreferenceUtilites.addPreferenceChangeListener(ApplicationFontPreferenceKeys.FONT_PREFERENCES, this);
     }
 
     @Override
     protected void handleComponentClosed() {
+        super.handleComponentClosed();
         GraphManager.getDefault().removeGraphManagerListener(this);
         newActiveGraph(null);
 
-        PreferenceUtilites.removePreferenceChangeListener(ApplicationFontPreferenceKeys.FONT_PREFERENCES, this);
         PreferenceUtilites.removePreferenceChangeListener(prefs.absolutePath(), this);
     }
 
