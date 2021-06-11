@@ -1,5 +1,10 @@
 # Constellation Changes
 
+## Changes in June 2021
+
+-    `ImportTableColumn.validate` and `importexport/RunPane.validate` 
+	functions return type changed from `void` to `boolean`.
+
 ## Changes in May 2021
 
 -   Update `ProjectUpdater` to sort jars in `project.xml` consistently 
