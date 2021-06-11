@@ -27,17 +27,15 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ElementTypeParameterValue;
 import au.gov.asd.tac.constellation.utilities.clipboard.ConstellationClipboardOwner;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
+import au.gov.asd.tac.constellation.utilities.tooltip.TooltipUtilities;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.util.BitSet;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.Region;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -52,7 +50,6 @@ public class TextConversationContributionProvider extends ConversationContributi
     
     private static final String DISPLAY_NAME = "Text";
     private int contentAttribute = Graph.NOT_FOUND;
-    private final Insets DEFAULT_INSETS = new Insets (5, 5, 5, 5);
     
     public TextConversationContributionProvider() {
         super(DISPLAY_NAME, 0);
@@ -91,23 +88,21 @@ public class TextConversationContributionProvider extends ConversationContributi
         @Override
         protected Region createContent(final TooltipPane tips) {
             
-            final TextFlow textFlow = new TextFlow();
-            textFlow.setPadding(DEFAULT_INSETS);
+            final EnhancedTextArea textArea = new EnhancedTextArea(text);
+            TooltipUtilities.activateTextInputControl(textArea, tips);
             
             // Implementation for the 'Copy' context menu option.
             final MenuItem copyTextMenuItem = new MenuItem("Copy");
             copyTextMenuItem.setOnAction(event -> {
-                final StringBuilder sb = new StringBuilder();
-                
-                for (final Node node : textFlow.getChildren()) {
-                    if (node instanceof Text) {
-                        sb.append(((Text) node).getText());
-                    }
-                }
-                
-                final StringSelection ss = new StringSelection(sb.toString());
+                final StringSelection ss = new StringSelection(textArea.getSelectedText());
                 final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                 clipboard.setContents(ss, ConstellationClipboardOwner.getOwner());
+            });
+            
+            // Implementation for the 'Select All' context menu option.
+            final MenuItem selectAllTextMenuItem = new MenuItem("Select All");
+            selectAllTextMenuItem.setOnAction(event -> {
+                textArea.selectAll();
             });
             
             // Implementation for the 'Select on Graph' context menu option.
@@ -125,14 +120,19 @@ public class TextConversationContributionProvider extends ConversationContributi
             
             final ContextMenu contextMenu = new ContextMenu();
             contextMenu.getItems().add(copyTextMenuItem);
+            contextMenu.getItems().add(selectAllTextMenuItem);
             contextMenu.getItems().add(selectOnGraphMenuItem);
             
-            textFlow.setOnContextMenuRequested(event -> {
-                contextMenu.show(textFlow, event.getScreenX(), event.getScreenY());
+            textArea.setOnContextMenuRequested(event -> {
+                contextMenu.show(textArea, event.getScreenX(), event.getScreenY());
+                if (textArea.getSelectedText().isEmpty()) {
+                    copyTextMenuItem.setDisable(true);
+                } else {
+                    copyTextMenuItem.setDisable(false);
+                }
             });
             
-            // Return the created region with or without any search results if given any.
-            return SearchText.createRegionWithSearchHits(textFlow, text);
+            return textArea;
         }
         
         @Override

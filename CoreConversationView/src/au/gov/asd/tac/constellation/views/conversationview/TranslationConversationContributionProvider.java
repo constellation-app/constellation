@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
+import au.gov.asd.tac.constellation.utilities.tooltip.TooltipUtilities;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -39,7 +40,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.RowConstraints;
-import javafx.scene.text.TextFlow;
+import org.fxmisc.richtext.InlineCssTextArea;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -76,7 +77,7 @@ public class TranslationConversationContributionProvider extends ConversationCon
         private final int transactionId;
         private String text;
 
-        private final TextFlow translationTextFlow = new TextFlow();
+        private InlineCssTextArea translationTextArea = new InlineCssTextArea();
         private final TextArea editTranslationTextArea = new TextArea();
         private final Button editButton = new Button("Edit");
         private final Button createTranslationButton = new Button("Create Translation");
@@ -181,8 +182,9 @@ public class TranslationConversationContributionProvider extends ConversationCon
                     if (text == null) {
                         content.getChildren().addAll(createTranslationButton);
                     } else {
-                        translationTextFlow.getChildren().clear();
-                        content.getChildren().addAll(SearchText.createRegionWithSearchHits(translationTextFlow, text), editButton);
+                        translationTextArea = new EnhancedTextArea(text);
+                        TooltipUtilities.activateTextInputControl(translationTextArea, tips);
+                        content.getChildren().addAll(translationTextArea, editButton);
                     }
                 }
             });
@@ -193,11 +195,12 @@ public class TranslationConversationContributionProvider extends ConversationCon
             GridPane.setFillWidth(cancelButton, true);
             cancelButton.setOnAction((ActionEvent event) -> {
                 content.getChildren().removeAll(editTranslationTextArea, saveButton, cancelButton);
-                translationTextFlow.getChildren().clear();
-                content.getChildren().addAll(SearchText.createRegionWithSearchHits(translationTextFlow, text), editButton);
+                translationTextArea = new EnhancedTextArea(text);
+                TooltipUtilities.activateTextInputControl(translationTextArea, tips);
+                content.getChildren().addAll(translationTextArea, editButton);
             });
 
-            GridPane.setConstraints(translationTextFlow, 0, 0, 1, 3);
+            GridPane.setConstraints(translationTextArea, 0, 0, 1, 3);
             GridPane.setConstraints(editTranslationTextArea, 0, 0, 1, 3);
             editTranslationTextArea.setWrapText(true);            
 
@@ -205,7 +208,7 @@ public class TranslationConversationContributionProvider extends ConversationCon
             editButton.setMinWidth(Region.USE_PREF_SIZE);
             editButton.setOnAction((ActionEvent event) -> {
                 editTranslationTextArea.setText(text == null ? "" : text);
-                content.getChildren().removeAll(editButton, translationTextFlow);
+                content.getChildren().removeAll(editButton, translationTextArea);
                 editTranslationTextArea.setText(text);
                 content.getChildren().addAll(editTranslationTextArea, saveButton, cancelButton);
                 editTranslationTextArea.selectAll();
@@ -221,8 +224,9 @@ public class TranslationConversationContributionProvider extends ConversationCon
             });
 
             if (text != null) {
-                translationTextFlow.getChildren().clear();
-                content.getChildren().addAll(SearchText.createRegionWithSearchHits(translationTextFlow, text), editButton);
+                translationTextArea = new EnhancedTextArea(text);
+                TooltipUtilities.activateTextInputControl(translationTextArea, tips);
+                content.getChildren().addAll(translationTextArea, editButton);
             } else {
                 content.getChildren().add(createTranslationButton);
             }

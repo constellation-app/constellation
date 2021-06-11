@@ -94,7 +94,7 @@ public final class ConversationBox extends StackPane {
 
     public static final double PADDING = 5;
 
-    protected static Conversation conversation;
+    private static Conversation conversation;
 
     private final ListView<ConversationMessage> bubbles;
     private final BorderPane contributionsPane;
@@ -119,12 +119,14 @@ public final class ConversationBox extends StackPane {
     private volatile boolean isAdjustingContributionProviders = false;
     private volatile boolean isAdjustingSenderLabels;
 
-    // A field to enter a string to for search within the bubble.
-    protected static final TextField searchBubbleTextField = new TextField();
-    protected static Label searchBubbleLabel = new Label();
-    private final VBox searchBubbleVBox = new VBox();
-    private int searchHits = 0;
+    private int found = 0;
+    private final String foundTrue = "-fx-text-fill: yellow;";
+    private final String foundFalse = "-fx-text-fill: red;";
     
+    private final TextField searchTextField = new TextField();
+    private final Label searchLabel = new Label();
+    private final VBox searchVBox = new VBox();
+
     /**
      * Create a ConversationBox with the given Conversation.
      *
@@ -236,50 +238,58 @@ public final class ConversationBox extends StackPane {
         bubbles.setItems(messages);
         conversation.setResultList(messages);
 
-        // Create a text field for search within bubbles.
-        searchBubbleTextField.setPromptText("Type to search for a text...");
-        searchBubbleTextField.setVisible(true);
-        searchBubbleTextField.setStyle("-fx-prompt-text-fill: #868686;");
-        searchBubbleLabel.setText("Found: " + searchHits);
-        searchBubbleLabel.setStyle("-fx-text-fill: red; -fx-effect: dropshadow(gaussian, black, 5.0, 0.0, 0.0, 0.0);");
-        searchBubbleLabel.setPadding(new Insets(4,8,4,8));
-        searchBubbleVBox.getChildren().addAll(searchBubbleTextField, searchBubbleLabel);
+        // Create controls for searching text within bubbles.
+        searchTextField.setPromptText("Type to search...");
+        searchTextField.setStyle("-fx-prompt-text-fill: #868686;");
+        searchLabel.setText("Found: " + found);
+        searchLabel.setStyle(found > 0 ? foundTrue : foundFalse);
+        searchLabel.setPadding(new Insets(4,8,4,8));
+        searchVBox.getChildren().addAll(searchTextField, searchLabel);
 
         final ConversationSearchRefresh conversationSearchRefresh = new ConversationSearchRefresh(conversation);
 
         // Use a dummy provider name to get the toggle pane state remain the same during the search.
-        searchBubbleTextField.addEventHandler(KeyEvent.KEY_TYPED, e -> {
+        searchTextField.addEventHandler(KeyEvent.KEY_TYPED, e -> {
+            found = 0;
             conversationSearchRefresh.updateContributionProviderRefresh("Refresh");
-        });
-        
-        searchBubbleTextField.setOnKeyTyped(e -> {
-            searchHits = 0;
-            searchHits = SearchText.getSearchHits(conversation.getVisibleMessages());
-            if (searchHits > 0) {
-                searchBubbleLabel.setStyle("-fx-text-fill: yellow; -fx-effect: dropshadow(gaussian, black, 5.0, 0.0, 0.0, 0.0);");
-            } else {
-                searchBubbleLabel.setStyle("-fx-text-fill: red; -fx-effect: dropshadow(gaussian, black, 5.0, 0.0, 0.0, 0.0);");
-            }
-        });
-
-        // This code below enables the graph in sync with the search results.
-        searchBubbleTextField.textProperty().addListener((ov, oldValue, newValue) -> {
+            
             final Graph graph = conversation.getGraphUpdateManager().getActiveGraph();
-            try (final ReadableGraph readableGraph = graph.getReadableGraph()) {
-                final List<ConversationContributionProvider> compatibleContributionProviders = ConversationContributionProvider.getCompatibleProviders(readableGraph);
-                for (final ConversationMessage message : messages) {
-                    message.getAllContributions().clear();
-                    for (final ConversationContributionProvider contributionProvider : compatibleContributionProviders) {
-                        final ConversationContribution contribution = contributionProvider.createContribution(readableGraph, message);
-                        if (contribution != null) {
-                            message.getAllContributions().add(contribution);
+            if (graph != null) {
+                try (final ReadableGraph readableGraph = graph.getReadableGraph()) {
+                    final List<ConversationContributionProvider> compatibleContributionProviders = ConversationContributionProvider.getCompatibleProviders(readableGraph);
+                    for (final ConversationMessage message : messages) {
+                        message.getAllContributions().clear();
+                        for (final ConversationContributionProvider contributionProvider : compatibleContributionProviders) {
+                            final ConversationContribution contribution = contributionProvider.createContribution(readableGraph, message);
+                            if (contribution != null) {
+                                message.getAllContributions().add(contribution);
+                            }
                         }
                     }
                 }
             }
         });
+
+//        // This code below enables the graph in sync with the search results.
+//        searchTextField.textProperty().addListener((ov, oldValue, newValue) -> {
+//            final Graph graph = conversation.getGraphUpdateManager().getActiveGraph();
+//            if (graph != null) {
+//                try (final ReadableGraph readableGraph = graph.getReadableGraph()) {
+//                    final List<ConversationContributionProvider> compatibleContributionProviders = ConversationContributionProvider.getCompatibleProviders(readableGraph);
+//                    for (final ConversationMessage message : messages) {
+//                        message.getAllContributions().clear();
+//                        for (final ConversationContributionProvider contributionProvider : compatibleContributionProviders) {
+//                            final ConversationContribution contribution = contributionProvider.createContribution(readableGraph, message);
+//                            if (contribution != null) {
+//                                message.getAllContributions().add(contribution);
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        });
         
-        content.getChildren().addAll(optionsPane, searchBubbleVBox, contributionsPane, bubbles);
+        content.getChildren().addAll(optionsPane, searchVBox, contributionsPane, bubbles);
         getChildren().addAll(content, tipsPane);
     }
 
@@ -325,15 +335,36 @@ public final class ConversationBox extends StackPane {
             update(message);
         }
 
-        public final void update(final ConversationMessage message) { 
+        public final void update(final ConversationMessage message) {
             final List<ConversationContribution> newContributions = message.getVisibleContributions();
+            
             if (!newContributions.equals(currentContributions)) {
                 currentContributions = new ArrayList<>(newContributions);
                 
                 final List<Region> rendered = new ArrayList<>();
-                for (final ConversationContribution contribution : newContributions) {
-                    rendered.add(contribution.getContent(tipsPane));
-                }
+                
+                newContributions.forEach( contribution -> {
+                    Region region = contribution.getContent(tipsPane);
+                    rendered.add(region);
+                    
+                    if (!searchTextField.getText().isEmpty()) {
+                        
+                        if (region instanceof EnhancedTextArea) {
+                            found += ((EnhancedTextArea) region).findText(searchTextField.getText());
+                        }
+
+                        if (region instanceof GridPane) {
+                            ((GridPane) region).getChildren().forEach(child -> {
+                                if (child instanceof EnhancedTextArea) {
+                                    found += ((EnhancedTextArea) child).findText(searchTextField.getText());
+                                }
+                            });
+                        }
+                    }
+                });
+                
+                searchLabel.setText("Found: " + found);
+                searchLabel.setStyle(found > 0 ? foundTrue : foundFalse);
                 
                 final ConversationBubble bubble = new ConversationBubble(rendered, message, tipsPane);
                 if (currentBubble != null) {
