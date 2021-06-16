@@ -15,11 +15,16 @@
  */
 package au.gov.asd.tac.constellation.graph.value.expression;
 
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 
 /**
  *
@@ -27,11 +32,13 @@ import java.util.Map;
  */
 public class ExpressionParser {
 
+    private static final Logger LOGGER = Logger.getLogger(ExpressionParser.class.getName());
     public static final char NO_TOKEN = 0;
     private static final String NESTED_PARENTHESIS_ERROR = "Invalid nesting of parenthesis";
     private static final String ENDS_WITH_OPERATOR_ERROR = "An expression cannot end with an operator";
     private static final String END_OF_QUOTED_STRING_ERROR = "Unexpected end of expression while in quoted string";
     private static final String UNEXPECTED_CHARACTER_ERROR = "Unexpected character: ";
+    private static final String TWO_NON_OPERATORS_SEQUENCE = "2 non-operator tokens in sequence";
 
     private enum ParseState {
         READING_WHITESPACE,
@@ -221,7 +228,10 @@ public class ExpressionParser {
                         break;
                     default:
                         if (tokenSequence.children.get(tokenSequence.children.size() - 1) instanceof OperatorExpression) {
-                            throw new IllegalArgumentException(ENDS_WITH_OPERATOR_ERROR);
+                            Platform.runLater(() -> {
+                                NotifyDisplayer.displayAlert("Query Error", "Malformed Query", ENDS_WITH_OPERATOR_ERROR, Alert.AlertType.ERROR);
+                            });
+                            LOGGER.log(Level.WARNING, "There was a query error: " + ENDS_WITH_OPERATOR_ERROR);
                         }
                 }
             }
@@ -261,7 +271,11 @@ public class ExpressionParser {
                             return;
                         }
                     }
-                    throw new IllegalStateException("2 non-operator tokens in sequence");
+                    Platform.runLater(() -> {
+                        NotifyDisplayer.displayAlert("Query Error", "Malformed Query", TWO_NON_OPERATORS_SEQUENCE, Alert.AlertType.ERROR);
+                    });
+                    LOGGER.log(Level.WARNING, "There was a query error: " + TWO_NON_OPERATORS_SEQUENCE);
+                    return;
                 }
             }
 
@@ -345,7 +359,11 @@ public class ExpressionParser {
                             currentExpression = new SequenceExpression(currentExpression);
                         } else if (c == ')') {
                             if (currentExpression == rootExpression) {
-                                throw new IllegalArgumentException(NESTED_PARENTHESIS_ERROR);
+                                Platform.runLater(() -> {
+                                    NotifyDisplayer.displayAlert("Query Error", "Malformed Query", NESTED_PARENTHESIS_ERROR, Alert.AlertType.ERROR);
+                                });
+                                LOGGER.log(Level.WARNING, "There was a query error: " + NESTED_PARENTHESIS_ERROR);
+                                return null;
                             }
                             final SequenceExpression parentExpression = currentExpression.getParent();
                             parentExpression.addChild(currentExpression);
@@ -353,7 +371,11 @@ public class ExpressionParser {
                         } else if (Operator.OPERATOR_TOKENS.containsKey(c)) {
                             currentExpression.addChild(new OperatorExpression(currentExpression, Operator.OPERATOR_TOKENS.get(c)));
                         } else {
-                            throw new IllegalArgumentException(UNEXPECTED_CHARACTER_ERROR + c);
+                            Platform.runLater(() -> {
+                                NotifyDisplayer.displayAlert("Query Error", "Malformed Query", UNEXPECTED_CHARACTER_ERROR + c, Alert.AlertType.ERROR);
+                            });
+                            LOGGER.log(Level.WARNING, "There was a query error: " + UNEXPECTED_CHARACTER_ERROR + "{0}", c);
+                            return null;
                         }
                     }
                     break;
@@ -371,7 +393,11 @@ public class ExpressionParser {
                         currentExpression = new SequenceExpression(currentExpression);
                     } else if (c == ')') {
                         if (currentExpression == rootExpression) {
-                            throw new IllegalArgumentException(NESTED_PARENTHESIS_ERROR);
+                            Platform.runLater(() -> {
+                                NotifyDisplayer.displayAlert("Query Error", "Malformed Query", NESTED_PARENTHESIS_ERROR, Alert.AlertType.ERROR);
+                            });
+                            LOGGER.log(Level.WARNING, "There was a query error: " + NESTED_PARENTHESIS_ERROR);
+                            return null;
                         }
                         currentExpression.addChild(new VariableExpression(currentExpression, content, contentLength));
                         contentLength = 0;
@@ -385,7 +411,11 @@ public class ExpressionParser {
                         currentExpression.addChild(new OperatorExpression(currentExpression, Operator.OPERATOR_TOKENS.get(c)));
                         state = ParseState.READING_WHITESPACE;
                     } else {
-                        throw new IllegalArgumentException(UNEXPECTED_CHARACTER_ERROR + c);
+                        Platform.runLater(() -> {
+                            NotifyDisplayer.displayAlert("Query Error", "Malformed Query", UNEXPECTED_CHARACTER_ERROR + c, Alert.AlertType.ERROR);
+                        });
+                        LOGGER.log(Level.WARNING, "There was a query error: " + UNEXPECTED_CHARACTER_ERROR + " {0}", c);
+                        return null;
                     }
                     break;
 
@@ -397,7 +427,11 @@ public class ExpressionParser {
                     } else if (c == '\\') {
                         state = ParseState.READING_SINGLE_ESCAPED;
                     } else if (c == 0) {
-                        throw new IllegalArgumentException(END_OF_QUOTED_STRING_ERROR);
+                        Platform.runLater(() -> {
+                            NotifyDisplayer.displayAlert("Query Error", "Malformed Query", END_OF_QUOTED_STRING_ERROR, Alert.AlertType.ERROR);
+                        });
+                        LOGGER.log(Level.WARNING, "There was a query error: " + END_OF_QUOTED_STRING_ERROR);
+                        return null;
                     } else {
                         content[contentLength++] = c;
                     }
@@ -411,7 +445,11 @@ public class ExpressionParser {
                     } else if (c == '\\') {
                         state = ParseState.READING_DOUBLE_ESCAPED;
                     } else if (c == 0) {
-                        throw new IllegalArgumentException(END_OF_QUOTED_STRING_ERROR);
+                        Platform.runLater(() -> {
+                            NotifyDisplayer.displayAlert("Query Error", "Malformed Query", END_OF_QUOTED_STRING_ERROR, Alert.AlertType.ERROR);
+                        });
+                        LOGGER.log(Level.WARNING, "There was a query error: " + END_OF_QUOTED_STRING_ERROR);
+                        return null;
                     } else {
                         content[contentLength++] = c;
                     }
@@ -419,7 +457,11 @@ public class ExpressionParser {
 
                 case READING_SINGLE_ESCAPED:
                     if (c == 0) {
-                        throw new IllegalArgumentException(END_OF_QUOTED_STRING_ERROR);
+                        Platform.runLater(() -> {
+                            NotifyDisplayer.displayAlert("Query Error", "Malformed Query", END_OF_QUOTED_STRING_ERROR, Alert.AlertType.ERROR);
+                        });
+                        LOGGER.log(Level.WARNING, "There was a query error: " + END_OF_QUOTED_STRING_ERROR);
+                        return null;
                     } else {
                         content[contentLength++] = c;
                         state = ParseState.READING_SINGLE_STRING;
@@ -428,7 +470,11 @@ public class ExpressionParser {
 
                 case READING_DOUBLE_ESCAPED:
                     if (c == 0) {
-                        throw new IllegalArgumentException(END_OF_QUOTED_STRING_ERROR);
+                        Platform.runLater(() -> {
+                            NotifyDisplayer.displayAlert("Query Error", "Malformed Query", END_OF_QUOTED_STRING_ERROR, Alert.AlertType.ERROR);
+                        });
+                        LOGGER.log(Level.WARNING, "There was a query error: " + END_OF_QUOTED_STRING_ERROR);
+                        return null;
                     } else {
                         content[contentLength++] = c;
                         state = ParseState.READING_DOUBLE_STRING;
@@ -438,7 +484,11 @@ public class ExpressionParser {
         }
 
         if (currentExpression != rootExpression) {
-            throw new IllegalArgumentException(NESTED_PARENTHESIS_ERROR);
+            Platform.runLater(() -> {
+                NotifyDisplayer.displayAlert("Query Error", "Malformed Query", NESTED_PARENTHESIS_ERROR, Alert.AlertType.ERROR);
+            });
+            LOGGER.log(Level.WARNING, "There was a query error: " + NESTED_PARENTHESIS_ERROR);
+            return null;
         }
         if (rootExpression.children.size() == 1) {
             final Expression onlyChild = rootExpression.children.get(0);
@@ -447,7 +497,11 @@ public class ExpressionParser {
             }
         }
         if (!currentExpression.children.isEmpty() && currentExpression.children.get(currentExpression.children.size() - 1) instanceof OperatorExpression) {
-            throw new IllegalArgumentException(ENDS_WITH_OPERATOR_ERROR);
+            Platform.runLater(() -> {
+                NotifyDisplayer.displayAlert("Query Error", "Malformed Query", ENDS_WITH_OPERATOR_ERROR, Alert.AlertType.ERROR);
+            });
+            LOGGER.log(Level.WARNING, "There was a query error: " + ENDS_WITH_OPERATOR_ERROR);
+            return null;
         }
 
         rootExpression.normalize();

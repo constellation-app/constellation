@@ -45,9 +45,14 @@ import au.gov.asd.tac.constellation.graph.value.operations.Quotient;
 import au.gov.asd.tac.constellation.graph.value.operations.StartsWith;
 import au.gov.asd.tac.constellation.graph.value.operations.Sum;
 import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 
 /**
  *
@@ -55,6 +60,7 @@ import java.util.Map;
  */
 public class ExpressionCompiler {
 
+    private static final Logger LOGGER = Logger.getLogger(ExpressionCompiler.class.getName());
     private static final Map<Operator, String> OPERATOR_CLASSES = new EnumMap<>(Operator.class);
     private static final Map<Operator, String> CONVERTER_CLASSES = new EnumMap<>(Operator.class);
 
@@ -90,6 +96,9 @@ public class ExpressionCompiler {
     }
 
     public static Object compileSequenceExpression(SequenceExpression expression, VariableProvider variableProvider, IntReadable indexReadable, Operators operators) {
+        if (expression == null) {
+            return null;
+        }
         final List<Expression> children = expression.getUnmodifiableChildren();
         switch (children.size()) {
             case 1:
@@ -100,7 +109,10 @@ public class ExpressionCompiler {
                 final String operatorName = CONVERTER_CLASSES.get(operator.getOperator());
                 final Object result = operators.getRegistry(operatorName).apply(right);
                 if (result == null) {
-                    throw new ExpressionException("Unable to find implementation of operator: " + operatorName + " (" + right.getClass().getCanonicalName() + ")");
+                    Platform.runLater(() -> {
+                        NotifyDisplayer.displayAlert("Query Error", "Operator Not Found", String.format("The operator %s cannot be found.\nRecheck the query and try again.\nRefer to the Layers View Help if you need assistance with the query language.", operatorName), Alert.AlertType.ERROR);
+                    });
+                    LOGGER.log(Level.WARNING, String.format("There was a query error: Operator Not Found: %s", operatorName));
                 }
                 return result;
             case 3:
@@ -110,11 +122,18 @@ public class ExpressionCompiler {
                 final String operatorName2 = OPERATOR_CLASSES.get(secondOperator.getOperator());
                 final Object result2 = operators.getRegistry(operatorName2).apply(left, right2);
                 if (result2 == null) {
-                    throw new ExpressionException("Unable to find implementation of operator: " + operatorName2 + " (" + left.getClass().getCanonicalName() + ", " + right2.getClass().getCanonicalName() + ")");
+                    Platform.runLater(() -> {
+                        NotifyDisplayer.displayAlert("Query Error", "Operator Not Found", String.format("The operator %s cannot be found.\nRecheck the query and try again.\nRefer to the Layers View Help if you need assistance with the query language.", operatorName2), Alert.AlertType.ERROR);
+                    });
+                    LOGGER.log(Level.WARNING, String.format("There was a query error: Operator Not Found: %s", operatorName2));
                 }
                 return result2;
             default:
-                throw new IllegalArgumentException("Invalid expression size: " + children.size());
+                Platform.runLater(() -> {
+                    NotifyDisplayer.displayAlert("Query Error", "Malformed Query", String.format("Invalid expression size: ", children.size()), Alert.AlertType.ERROR);
+                });
+                LOGGER.log(Level.WARNING, String.format("There was a query error: Invalid expression size: %s", children.size()));
+                return null;
         }
     }
 
@@ -125,14 +144,22 @@ public class ExpressionCompiler {
             final String variableName = ((VariableExpression) expression).getContent();
             final Object variable = variableProvider.getVariable(variableName, indexReadable);
             if (variable == null) {
-                throw new ExpressionException("Unknown variable: " + variableName);
+                Platform.runLater(() -> {
+                    NotifyDisplayer.displayAlert("Query Error", "Malformed Query", String.format("Unknown variable: ", variableName), Alert.AlertType.ERROR);
+                });
+                LOGGER.log(Level.WARNING, String.format("There was a query error: Unknown variable: %s", variableName));
+                return null;
             }
             return variable;
         } else if (expression instanceof StringExpression) {
             final String content = ((StringExpression) expression).getContent();
             return (StringConstant) () -> content;
         } else {
-            throw new IllegalArgumentException("Should never get here");
+            Platform.runLater(() -> {
+                NotifyDisplayer.displayAlert("Query Error", "Malformed Query", "This error is unexpected and should be reported", Alert.AlertType.ERROR);
+            });
+            LOGGER.log(Level.SEVERE, "There was a query error: This error is unexpected and should be reported");
+            return null;
         }
     }
 }

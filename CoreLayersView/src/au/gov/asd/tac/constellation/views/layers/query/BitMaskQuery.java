@@ -89,7 +89,9 @@ public class BitMaskQuery {
         if (query.requiresUpdate(graph)) {
             if (StringUtils.isNotBlank(query.getQueryString()) && bitIndex != 0) {
                 final Object compiledExpression = query.compile(graph, index);
-                this.result = Access.getDefault().getRegistry(BooleanReadable.class).convert(compiledExpression);
+                if (compiledExpression != null) {
+                    this.result = Access.getDefault().getRegistry(BooleanReadable.class).convert(compiledExpression);
+                }
             }
             return true;
         } else {
