@@ -76,7 +76,6 @@ import org.openide.util.Lookup;
 
 /**
  * The ConversationBox represents the entire GUI for the conversation view.
- *
  * <p>
  * It contains a Conversation, the model for the dynamically generated content
  * based on the current graph selection, as well as a list view of Bubbles to
@@ -120,9 +119,9 @@ public final class ConversationBox extends StackPane {
     private volatile boolean isAdjustingSenderLabels;
 
     private int found = 0;
-    private static final String foundTrue = "-fx-text-fill: yellow;";
-    private static final String foundFalse = "-fx-text-fill: red;";
-    
+    private static final String FOUND_COLOUR_TRUE = "-fx-text-fill: yellow;";
+    private static final String FOUND_COLOUR_FALSE = "-fx-text-fill: red;";
+
     private final TextField searchTextField = new TextField();
     private final Label searchLabel = new Label();
     private final VBox searchVBox = new VBox();
@@ -242,8 +241,8 @@ public final class ConversationBox extends StackPane {
         searchTextField.setPromptText("Type to search...");
         searchTextField.setStyle("-fx-prompt-text-fill: #868686;");
         searchLabel.setText("Found: " + found);
-        searchLabel.setStyle(found > 0 ? foundTrue : foundFalse);
-        searchLabel.setPadding(new Insets(4,8,4,8));
+        searchLabel.setStyle(found > 0 ? FOUND_COLOUR_TRUE : FOUND_COLOUR_FALSE);
+        searchLabel.setPadding(new Insets(4, 8, 4, 8));
         searchVBox.getChildren().addAll(searchTextField, searchLabel);
 
         final ConversationSearchRefresh conversationSearchRefresh = new ConversationSearchRefresh(conversation);
@@ -252,7 +251,7 @@ public final class ConversationBox extends StackPane {
         searchTextField.addEventHandler(KeyEvent.KEY_TYPED, e -> {
             found = 0;
             conversationSearchRefresh.updateContributionProviderRefresh("Refresh");
-            
+
             final Graph graph = conversation.getGraphUpdateManager().getActiveGraph();
             if (graph != null) {
                 try (final ReadableGraph readableGraph = graph.getReadableGraph()) {
@@ -269,13 +268,13 @@ public final class ConversationBox extends StackPane {
                 }
             }
         });
-        
+
         content.getChildren().addAll(optionsPane, searchVBox, contributionsPane, bubbles);
         getChildren().addAll(content, tipsPane);
     }
 
     // A VBox to hold a bubble and a sender.
-    protected class BubbleBox extends GridPane {
+    private class BubbleBox extends GridPane {
 
         private ConversationSender currentSender = null;
         private List<ConversationContribution> currentContributions = null;
@@ -318,18 +317,18 @@ public final class ConversationBox extends StackPane {
 
         public final void update(final ConversationMessage message) {
             final List<ConversationContribution> newContributions = message.getVisibleContributions();
-            
+
             if (!newContributions.equals(currentContributions)) {
                 currentContributions = new ArrayList<>(newContributions);
-                
+
                 final List<Region> rendered = new ArrayList<>();
-                
-                newContributions.forEach( contribution -> {
+
+                newContributions.forEach(contribution -> {
                     Region region = contribution.getContent(tipsPane);
                     rendered.add(region);
-                    
+
                     if (!searchTextField.getText().isEmpty()) {
-                        
+
                         if (region instanceof EnhancedTextArea) {
                             found += ((EnhancedTextArea) region).findText(searchTextField.getText());
                         }
@@ -343,10 +342,10 @@ public final class ConversationBox extends StackPane {
                         }
                     }
                 });
-                
+
                 searchLabel.setText("Found: " + found);
-                searchLabel.setStyle(found > 0 ? foundTrue : foundFalse);
-                
+                searchLabel.setStyle(found > 0 ? FOUND_COLOUR_TRUE : FOUND_COLOUR_FALSE);
+
                 final ConversationBubble bubble = new ConversationBubble(rendered, message, tipsPane);
                 if (currentBubble != null) {
                     getChildren().remove(currentBubble);

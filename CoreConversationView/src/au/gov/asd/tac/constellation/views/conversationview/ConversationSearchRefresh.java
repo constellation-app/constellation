@@ -29,7 +29,6 @@ import java.util.concurrent.Future;
 /**
  * The ConversationSearchRefresh enable the text search within bubble in the
  * conversation view.
- *
  * <p>
  * It contains a Conversation, the model for the dynamically generated content
  * based on the current graph selection, as well as a list view of Bubbles to

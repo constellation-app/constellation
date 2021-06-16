@@ -32,7 +32,6 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.util.BitSet;
-import javafx.geometry.Insets;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.Region;
@@ -47,50 +46,51 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = ConversationContributionProvider.class, position = 1)
 public class TextConversationContributionProvider extends ConversationContributionProvider {
-    
+
     private static final String DISPLAY_NAME = "Text";
     private int contentAttribute = Graph.NOT_FOUND;
-    
+
     public TextConversationContributionProvider() {
         super(DISPLAY_NAME, 0);
     }
-    
+
     @Override
     public boolean isCompatibleWithGraph(final GraphReadMethods graph) {
         contentAttribute = ContentConcept.TransactionAttribute.CONTENT.get(graph);
         return contentAttribute != Graph.NOT_FOUND;
     }
-    
+
     @Override
     public ConversationContribution createContribution(final GraphReadMethods graph, final ConversationMessage message) {
         final String text = graph.getStringValue(contentAttribute, message.getTransaction());
-        
+
         if (text != null) {
             return new TextContribution(message, text);
         }
-        
+
         return null;
     }
-    
+
     protected class TextContribution extends ConversationContribution {
+
         private final String text;
-        
+
         public TextContribution(final ConversationMessage message, final String text) {
             super(TextConversationContributionProvider.this, message);
             this.text = text;
         }
-        
+
         @Override
         protected String getText() {
             return text;
         }
-        
+
         @Override
         protected Region createContent(final TooltipPane tips) {
-            
+
             final EnhancedTextArea textArea = new EnhancedTextArea(text);
             TooltipUtilities.activateTextInputControl(textArea, tips);
-            
+
             // Implementation for the 'Copy' context menu option.
             final MenuItem copyTextMenuItem = new MenuItem("Copy");
             copyTextMenuItem.setOnAction(event -> {
@@ -98,37 +98,37 @@ public class TextConversationContributionProvider extends ConversationContributi
                 final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                 clipboard.setContents(ss, ConstellationClipboardOwner.getOwner());
             });
-            
+
             // Implementation for the 'Select All' context menu option.
             final MenuItem selectAllTextMenuItem = new MenuItem("Select All");
             selectAllTextMenuItem.setOnAction(event -> textArea.selectAll());
-            
+
             // Implementation for the 'Select on Graph' context menu option.
             final MenuItem selectOnGraphMenuItem = new MenuItem("Select on Graph");
             selectOnGraphMenuItem.setOnAction(event -> {
                 final BitSet elementIds = new BitSet();
                 elementIds.set(getMessage().getTransaction());
-                
+
                 PluginExecution.withPlugin(VisualGraphPluginRegistry.CHANGE_SELECTION)
                         .withParameter(ChangeSelectionPlugin.ELEMENT_BIT_SET_PARAMETER_ID, elementIds)
                         .withParameter(ChangeSelectionPlugin.ELEMENT_TYPE_PARAMETER_ID, new ElementTypeParameterValue(GraphElementType.TRANSACTION))
                         .withParameter(ChangeSelectionPlugin.SELECTION_MODE_PARAMETER_ID, SelectionMode.REPLACE)
                         .executeLater(GraphManager.getDefault().getActiveGraph());
             });
-            
+
             final ContextMenu contextMenu = new ContextMenu();
             contextMenu.getItems().add(copyTextMenuItem);
             contextMenu.getItems().add(selectAllTextMenuItem);
             contextMenu.getItems().add(selectOnGraphMenuItem);
-            
+
             textArea.setOnContextMenuRequested(event -> {
                 contextMenu.show(textArea, event.getScreenX(), event.getScreenY());
                 copyTextMenuItem.setDisable(textArea.getSelectedText().isEmpty());
             });
-            
+
             return textArea;
         }
-        
+
         @Override
         public String toString() {
             return "Text Contribution";

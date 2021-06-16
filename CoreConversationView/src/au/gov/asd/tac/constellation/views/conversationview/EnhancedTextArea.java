@@ -24,22 +24,23 @@ import javafx.scene.layout.Background;
 import org.fxmisc.richtext.InlineCssTextArea;
 
 /**
- * 
- * 
+ * EnhancedTextArea is a InlineCssTextArea from the RichTextFX library with
+ * added functionality, such as finding and highlighting text.
+ *
  * @author sol695510
  */
 public class EnhancedTextArea extends InlineCssTextArea {
-    
+
     private final String text;
-    private final Insets insets = new Insets(4,8,4,8);
-    
+    private final Insets insets = new Insets(4, 8, 4, 8);
+
     /**
-     * 
-     * 
-     * @param text 
+     * Constructor.
+     *
+     * @param text
      */
     public EnhancedTextArea(final String text) {
-        
+
         this.text = text;
         this.appendText(text);
         this.setBackground(Background.EMPTY);
@@ -48,27 +49,28 @@ public class EnhancedTextArea extends InlineCssTextArea {
         this.setEditable(false);
         this.setPadding(insets);
     }
-    
+
     /**
-     * 
-     * 
-     * @param searchText
-     * @return 
+     * Finds and highlights passages of the given string found within the text
+     * of the EnhancedTextArea. Also returns the count of passages found.
+     *
+     * @param searchText Text passage to be searched for.
+     * @return Count of passages of searched text found.
      */
     public int findText(final String searchText) {
-        
+
         List<Tuple<Integer, Integer>> found = new ArrayList<>();
-        
+
         if (!searchText.isEmpty()) {
-            
+
             found = StringUtilities.searchRange(text, searchText);
             final String highlight = "-rtfx-background-color: yellow;";
-            
+
             if (!found.isEmpty()) {
                 found.forEach(location -> this.setStyle(location.getFirst(), location.getSecond(), highlight));
             }
         }
-        
+
         return found.size();
     }
 }
