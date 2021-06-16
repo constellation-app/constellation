@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -364,6 +364,8 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
                     graph.setBooleanValue(vxSelectedAttr, vxID, selectionMode >= 0);
                 } else if (selectionMode == 0) {
                     graph.setBooleanValue(vxSelectedAttr, vxID, false);
+                } else {
+                    // Do nothing
                 }
             }
 
@@ -381,6 +383,8 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
                         final int txID = graph.getLinkTransaction(lnID, txPos);
                         graph.setBooleanValue(txSelectedAttr, txID, false);
                     }
+                } else {
+                    // Do nothing
                 }
             }
         }

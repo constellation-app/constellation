@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlEvent.Qua
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import org.openide.util.Lookup;
 
@@ -178,6 +179,23 @@ public abstract class QualityControlRule {
         return getName();
     }
 
+    @Override
+    public int hashCode() {
+        return 71 * 5 + Objects.hashCode(this.getClass());
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        final QualityControlRule other = (QualityControlRule) obj;
+        return Objects.equals(this.results, other.results);
+    }
+    
     /**
      * Get the QualityCategory which maps to the current score
      *

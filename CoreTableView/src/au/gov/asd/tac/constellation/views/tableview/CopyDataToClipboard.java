@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -154,8 +154,7 @@ public class CopyDataToClipboard implements ActionListener, Action {
     /**
      * Copy all rows and specified columns to the clipboard.
      *
-     * @param attrsegs A List of AttributeSegment instances corresponding to the
-     * columns to be copied.
+     * @param attrsegs A List of AttributeSegment instances corresponding to the columns to be copied.
      * @param includeHeader True to include column headers in the copy.
      */
     void processAllRows(final List<AttributeSegment> attrsegs, boolean includeHeader) throws IOException {
@@ -164,8 +163,7 @@ public class CopyDataToClipboard implements ActionListener, Action {
     }
 
     /**
-     * Copy the table to the clipboard in a format that Word is able to
-     * understand.
+     * Copy the table to the clipboard in a format that Word is able to understand.
      *
      *
      */
@@ -271,8 +269,9 @@ public class CopyDataToClipboard implements ActionListener, Action {
                 return new StringReader(html);
             } else if (InputStream.class.equals(flavor.getRepresentationClass())) {
                 return new ByteArrayInputStream(html.getBytes(StandardCharsets.UTF_8));
+            } else {
+                throw new UnsupportedFlavorException(flavor);
             }
-            throw new UnsupportedFlavorException(flavor);
         }
     }
 
@@ -292,8 +291,7 @@ public class CopyDataToClipboard implements ActionListener, Action {
     /**
      * Copy selected rows and specified columns to the clipboard.
      *
-     * @param attrsegs A List of AttributeSegment instances corresponding to the
-     * columns to be copied.
+     * @param attrsegs A List of AttributeSegment instances corresponding to the columns to be copied.
      * @param includeHeader True to include column headers in the copy.
      */
     void processSelectedRows(final ArrayList<AttributeSegment> attrsegs, boolean includeHeader) throws IOException {
@@ -402,11 +400,9 @@ public class CopyDataToClipboard implements ActionListener, Action {
     }
 
     /**
-     * Gets the indices of columns based on the AttributeSegment for that
-     * column.
+     * Gets the indices of columns based on the AttributeSegment for that column.
      *
-     * @param attrsegs A List of AttributeSegment instances corresponding to
-     * columns.
+     * @param attrsegs A List of AttributeSegment instances corresponding to columns.
      *
      * @return The indices that correspond to the columns with names provided.
      */
@@ -458,11 +454,9 @@ public class CopyDataToClipboard implements ActionListener, Action {
     }
 
     /**
-     * An array of length table.getRowCount() containing 0, 1, 2,...
-     * representing all rows in the table.
+     * An array of length table.getRowCount() containing 0, 1, 2,... representing all rows in the table.
      *
-     * @return An array of length table.getRowCount() containing 0, 1, 2,...
-     * representing all rows in the table.
+     * @return An array of length table.getRowCount() containing 0, 1, 2,... representing all rows in the table.
      */
     private int[] allRows() {
         final int[] rowIndices = new int[table.getRowCount()];

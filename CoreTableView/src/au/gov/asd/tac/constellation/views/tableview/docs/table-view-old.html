@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Table View (Experimental)</title>
+        <link rel="stylesheet" href="nbdocs://au.gov.asd.tac.constellation.preferences/au/gov/asd/tac/constellation/preferences/constellation.css" type="text/css">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+    <body>
+        <h1>Table View (Experimental)</h1>
+        <p>
+            <em>NOTE: This is the old implementation of the Table View and is no longer being maintained. We encourage you to use the 
+            new implementation found <a href="/au/gov/asd/tac/constellation/views/tableview/docs/table-view.html">here</a> and 
+            only use this version if necessary.</em>
+        </p>
+        
+        <h2>Introduction</h2>
+        <p>
+            The Table View presents the attributes for all the nodes and transactions in the graph. The highlighted rows in the table 
+            represent the selected elements in the graph. The check box in the 'selected' column is also checked when an element is 
+            selected in the graph. Selection of the table rows (including the use of the shift and control buttons) will result in the 
+            selection of the table rows and the associated elements in the graph itself. Conversely, changes in the selection set of 
+            the graph are reflected in the table. The table displays the attributes for all selected and unselected nodes and 
+            transactions.
+        </p>
+        <ul>
+            <li><img src="resources/selectNode.png" alt="" width="20" height="20">: View the node attributes</li>
+            <li><img src="resources/selectTransaction.png" alt="" width="20" height="20">: View the transaction attributes</li>
+        </ul>
+        
+        <h2>Column Definition</h2>
+        <p>
+            The set of columns displayed in the table can be modified by selecting the button 
+            <img src="resources/editColumns.png" alt="" width="20" height="20">.
+        </p>
+        
+        <h2>Row Ordering</h2>
+        <p>
+            The table rows can be sorting by selecting any of the column headers.
+        </p>
+        
+        <h2>Copy Data</h2>
+        <p>
+            There are multiple ways to copy data from the Table. All copy operations will produce a comma separated output. The data 
+            is only copied to the clipboard.        
+        </p>
+        <h3>Copy all rows</h3>
+        <p>
+            This operation copies all column and all rows within the table. The order of the column values is the same as how it is 
+            listed on the table. This operation can be slow with a large graph.
+        </p>
+        <h3>Copy selected rows</h3>
+        <p>
+            This operation copies all column and selected rows within the table. The order of the column values is the same as how it 
+            is listed on the table.
+        </p>
+        <h3>Copy columns</h3>
+        <p>
+            This operation provides the user the option to select specific column(s) and specific rows. The order is alphabetical by 
+            default.
+        </p>
+        <img src="resources/copydialog.png" alt="" width="544" height="452">
+        <p>
+            Column names that are listed on the right will be copied. The column list on the right can be reordered to determine the 
+            order of the output. Use the up and down arrows on the right to reorder the column names. The "Copy selected row(s) only" 
+            check box allows user to choose whether they would like to copy all rows or just the rows that are currently selected.
+        </p>
+    </body>
+</html>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -127,8 +127,8 @@ public abstract class JavaFxTopComponent<P extends Pane> extends ListeningTopCom
     protected void updateFont() {
         if (content != null) {
             Platform.runLater(() -> {
-                content.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getOutputFontSize()));
-                content.setStyle(String.format("-fx-font-family:\"%s\";", FontUtilities.getOutputFontFamily()));
+                content.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+                content.setStyle(String.format("-fx-font-family:\"%s\";", FontUtilities.getApplicationFontFamily()));
             });
         }
     }

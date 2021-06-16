@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,19 @@
 package au.gov.asd.tac.constellation.views.qualitycontrol.daemon;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.WritableGraph;
+import au.gov.asd.tac.constellation.graph.locking.DualGraph;
+import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
+import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.utilities.camera.Camera;
+import java.util.ArrayList;
+import org.openide.util.Exceptions;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotEquals;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -29,6 +41,8 @@ import org.testng.annotations.Test;
  * @author arcturus
  */
 public class QualityControlAutoVetterNGTest {
+
+    private Graph graph;
 
     public QualityControlAutoVetterNGTest() {
     }
@@ -55,8 +69,7 @@ public class QualityControlAutoVetterNGTest {
      */
     @Test
     public void testUpdateQualityControlStateWithNoGraph() {
-        final Graph graph = null;
-
+        graph = null;
         final QualityControlState stateBefore = QualityControlAutoVetter.getInstance().getQualityControlState();
         QualityControlAutoVetter.updateQualityControlState(graph);
         final QualityControlState stateAfter = QualityControlAutoVetter.getInstance().getQualityControlState();
@@ -74,4 +87,234 @@ public class QualityControlAutoVetterNGTest {
         assertEquals(instance1, instance2);
     }
 
+    // Testing init with no graph open - commented out as TopComponent launches GUI panels which don't execute in the test environment
+    @Test
+    public void testInit() {
+        QualityControlAutoVetter.destroyInstance();
+        final QualityControlAutoVetter instance = QualityControlAutoVetter.getInstance();
+        instance.init();
+        assertNull(instance.getCurrentGraph());
+        assertEquals(instance.getlastGlobalModCount(), (long) 0);
+    }
+
+    @Test
+    public void testInitWithRefresh() {
+        QualityControlAutoVetter.destroyInstance();
+        final QualityControlAutoVetter instance = QualityControlAutoVetter.getInstance();
+        instance.initWithRefresh(true);
+        assertNull(instance.getCurrentGraph());
+        assertEquals(instance.getlastGlobalModCount(), (long) 0);
+
+    }
+
+    // Test the adding and removing of observers and their behaviour to trigger the methods of the interface.
+    @Test
+    public void testAddRemoveObserver() {
+        // add observer of the button state
+        final TestObserver observer = new TestObserver();
+        QualityControlAutoVetter.getInstance().addObserver(observer);
+
+        // Check initial status
+        assertFalse(observer.getCanRunStatus());
+
+        QualityControlAutoVetter.updateQualityControlState(null);
+
+        try {
+            // Sleep until after pluginExecution thread has returned
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+
+        // Check observer status
+        assertTrue(observer.getCanRunStatus());
+
+        // Reset status and recheck
+        observer.setCanRunStatus(false);
+        assertFalse(observer.getCanRunStatus());
+
+        // Remove observer
+        QualityControlAutoVetter.getInstance().removeObserver(observer);
+
+        // Run update state
+        QualityControlAutoVetter.updateQualityControlState(null);
+
+        try {
+            // Sleep until after pluginExecution thread has returned
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+
+        // As it's not an observer it should remain false.
+        assertFalse(observer.getCanRunStatus());
+    }
+
+    // Test the adding and removing of listeners and their behaviour to trigger the methods of the interface.
+    @Test
+    public void testAddRemoveListener() {
+        // add observer of the button state
+        final TestListener listener = new TestListener();
+        QualityControlAutoVetter.getInstance().addListener(listener);
+
+        // Check initial status
+        assertFalse(listener.getStateChangedStatus());
+
+        // Set the state changed
+        QualityControlAutoVetter.getInstance().setQualityControlState(new QualityControlState(null, new ArrayList<>(), new ArrayList<>()));
+
+        // Check observer status - Should have changed to true as the state has changed
+        assertTrue(listener.getStateChangedStatus());
+
+        // Reset status and recheck
+        listener.setStateChangedStatus(false);
+        assertFalse(listener.getStateChangedStatus());
+
+        // Remove observer
+        QualityControlAutoVetter.getInstance().removeListener(listener);
+
+        // Set the state changed
+        QualityControlAutoVetter.getInstance().setQualityControlState(new QualityControlState(null, new ArrayList<>(), new ArrayList<>()));
+
+        // As it's not an observer it should remain false.
+        assertFalse(listener.getStateChangedStatus());
+    }
+
+    // Test if multiple buttonlisteners get fired correctly within the update state.
+    @Test
+    public void testUpdateQualityControlState() {
+        graph = null;
+
+        // add observer1 of the button state
+        QualityControlAutoVetter.destroyInstance();
+        final TestObserver observer1 = new TestObserver();
+        QualityControlAutoVetter.getInstance().addObserver(observer1);
+
+        // add observer1 of the button state
+        final TestObserver observer2 = new TestObserver();
+        QualityControlAutoVetter.getInstance().addObserver(observer2);
+
+        // Check initial status
+        assertFalse(observer1.getCanRunStatus());
+        assertFalse(observer2.getCanRunStatus());
+
+        QualityControlAutoVetter.updateQualityControlState(graph);
+
+        try {
+            // Sleep until after pluginExecution thread has returned
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+
+        // Check updated status
+        assertTrue(observer1.getCanRunStatus());
+        assertTrue(observer2.getCanRunStatus());
+    }
+
+    @Test
+    public void testGraphChangedNoGraph() {
+        QualityControlAutoVetter.destroyInstance();
+        QualityControlAutoVetter instance = QualityControlAutoVetter.getInstance();
+
+        assertNull(instance.getCurrentGraph());
+        assertEquals(instance.getlastGlobalModCount(), (long) 0);
+        assertEquals(instance.getlastCameraModCount(), (long) 0);
+
+        QualityControlAutoVetter.getInstance().graphChanged(null);
+
+        // check that no attribute mod counts have unnecesarily changed.
+        assertNull(instance.getCurrentGraph());
+        assertEquals(instance.getlastGlobalModCount(), (long) 0);
+        assertEquals(instance.getlastCameraModCount(), (long) 0);
+    }
+
+    // Test commented out as TopComponent launches GUI panels which don't execute in the test environment
+    @Test
+    public void testGraphChangedWithGraph() throws Exception {
+        QualityControlAutoVetter.destroyInstance();
+        QualityControlAutoVetter instance = QualityControlAutoVetter.getInstance();
+
+        assertNull(instance.getCurrentGraph());
+        assertEquals(instance.getlastGlobalModCount(), (long) 0);
+
+        // Open a new graph
+        graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
+
+        // Add camera attribute
+        final WritableGraph wg = graph.getWritableGraph("TEST", true);
+        try {
+            final int cameraAttrId = VisualConcept.GraphAttribute.CAMERA.ensure(wg);
+            // Change camera attribute
+            final Camera camera = new Camera();
+            camera.setVisibilityLow(0.67f);
+            wg.setObjectValue(cameraAttrId, 0, camera);
+        } finally {
+            wg.commit();
+        }
+
+        try {
+            // Sleep until after pluginExecution thread has returned
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+
+        // Set the current graph
+        instance.newActiveGraph(graph);
+
+        QualityControlAutoVetter.getInstance().graphChanged(null);
+
+        assertNotEquals(instance.getlastGlobalModCount(), (long) 0);
+        assertNotEquals(instance.getlastCameraModCount(), (long) 0);
+
+    }
+}
+
+class TestObserver implements QualityControlAutoVetterListener {
+
+    protected boolean canRun = false;
+
+    public TestObserver() {
+        // Intentionally left blank - Test.
+    }
+
+    public boolean getCanRunStatus() {
+        return canRun;
+    }
+
+    public void setCanRunStatus(final boolean canRun) {
+        this.canRun = canRun;
+    }
+
+    @Override
+    public void qualityControlRuleChanged(boolean canRun) {
+        this.canRun = canRun;
+    }
+}
+
+class TestListener implements QualityControlListener {
+
+    protected boolean stateChanged = false;
+    QualityControlState state;
+
+    public TestListener() {
+        // Intentionally left blank - Test.
+    }
+
+    public boolean getStateChangedStatus() {
+        return stateChanged;
+    }
+
+    public void setStateChangedStatus(final boolean stateChanged) {
+        this.stateChanged = stateChanged;
+    }
+
+    @Override
+    public void qualityControlChanged(final QualityControlState state) {
+        if (this.state != state) {
+            stateChanged = true;
+        }
+        this.state = state;
+    }
 }

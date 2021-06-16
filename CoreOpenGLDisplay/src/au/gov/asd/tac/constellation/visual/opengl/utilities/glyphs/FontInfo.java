@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -111,6 +111,8 @@ public class FontInfo {
                 return true;
             } else if (mustHave.isEmpty() && mustNotHave.isEmpty()) {
                 return true;
+            } else {
+                // Do nothing
             }
         }
 
@@ -122,8 +124,7 @@ public class FontInfo {
      * <p>
      * The font must not exclude any Unicode scripts.
      *
-     * @param defaultName The name of the default font used when all other fonts
-     * aren't suitable.
+     * @param defaultName The name of the default font used when all other fonts aren't suitable.
      *
      * @return True if this is a suitable default font, otherwise false.
      */
@@ -187,8 +188,7 @@ public class FontInfo {
     }
 
     /**
-     * Parse lines of a string to find fontName[,bold|plain|block]... for each
-     * line.
+     * Parse lines of a string to find fontName[,bold|plain|block]... for each line.
      *
      * @param lines
      * @param fontSize

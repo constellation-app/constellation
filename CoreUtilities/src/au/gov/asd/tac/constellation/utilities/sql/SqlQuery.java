@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,8 +30,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author twilight_sparkle A framework for SQL Queries used in data access
- * plugins that connect to SQL databases.
+ * @author twilight_sparkle A framework for SQL Queries used in data access plugins that connect to SQL databases.
  */
 public class SqlQuery {
 
@@ -348,6 +347,8 @@ public class SqlQuery {
                 addArgument((Integer) value);
             } else if (value instanceof Double) {
                 addArgument((Double) value);
+            } else {
+                // Do nothing
             }
             query.append(" UNION ");
             query.append(currentQuery);
@@ -387,6 +388,8 @@ public class SqlQuery {
                 addArgument((Integer) value);
             } else if (value instanceof Double) {
                 addArgument((Double) value);
+            } else {
+                // Do nothing
             }
             query.append(" OR ");
         }

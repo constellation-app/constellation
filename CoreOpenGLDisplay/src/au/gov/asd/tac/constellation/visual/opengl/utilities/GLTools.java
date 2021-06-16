@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,8 +72,8 @@ public final class GLTools {
      * Get the OpenGL version.
      *
      * @param gl the current OpenGL context.
-     * @param version An int[2] to receive the version: version[0] contains
-     * GL_MAJOR_VERSION, version[1] contains GL_MINOR_VERSION.
+     * @param version An int[2] to receive the version: version[0] contains GL_MAJOR_VERSION, version[1] contains
+     * GL_MINOR_VERSION.
      */
     public static void getOpenGLVersion(final GL3 gl, int[] version) {
         gl.glGetIntegerv(GL3.GL_MAJOR_VERSION, version, 0);
@@ -502,18 +502,16 @@ public final class GLTools {
     /**
      * Load a BufferedImage array into a texture array.
      * <p>
-     * Each BufferedImage must be of type BufferedImage.TYPE_4BYTE_ABGR. The
-     * images will be loaded at 0,0 at each level of the texture array.
+     * Each BufferedImage must be of type BufferedImage.TYPE_4BYTE_ABGR. The images will be loaded at 0,0 at each level
+     * of the texture array.
      * <p>
-     * It appears that the images must have a row length that is a multiple of
-     * four. This is probably due to the particular format we're using, and
-     * could probably be worked around, but the simple fix is to check your row
+     * It appears that the images must have a row length that is a multiple of four. This is probably due to the
+     * particular format we're using, and could probably be worked around, but the simple fix is to check your row
      * length.
      *
      * @param gl the current OpenGL context.
      * @param textureName The name of the texture to bind to with BindTexture().
-     * @param images A List of BufferedImages of type
-     * BufferedImage.TYPE_4BYTE_ABGR.
+     * @param images A List of BufferedImages of type BufferedImage.TYPE_4BYTE_ABGR.
      * @param maxWidth The maximum width of the images.
      * @param maxHeight The maximum height of the images.
      * @param minFilter Texture selection with TEXTURE_MIN_FILTER.
@@ -557,23 +555,19 @@ public final class GLTools {
     /**
      * Load an array of icon textures.
      * <p>
-     * We assume that the textures being loaded are icons, and therefore are
-     * roughly the same size (with a maximum of (width,height).
+     * We assume that the textures being loaded are icons, and therefore are roughly the same size (with a maximum of
+     * (width,height).
      * <p>
-     * The array is limited to GL_MAX_ARRAY_TEXTURE_LAYERS layers. This can be
-     * fairly low (512 on low-end systems), so icons are loaded into an 8x8 icon
-     * matrix in each layer, thus giving a maximum of 512x8x8=32768 icons. (This
-     * assumes that GL_MAX_3D_TEXTURE_SIZE is big enough to take that many
-     * pixels. With the current icon size of 256x256, then
-     * GL_MAX_3D_TEXTURE_SIZE must be at least 2048.)
+     * The array is limited to GL_MAX_ARRAY_TEXTURE_LAYERS layers. This can be fairly low (512 on low-end systems), so
+     * icons are loaded into an 8x8 icon matrix in each layer, thus giving a maximum of 512x8x8=32768 icons. (This
+     * assumes that GL_MAX_3D_TEXTURE_SIZE is big enough to take that many pixels. With the current icon size of
+     * 256x256, then GL_MAX_3D_TEXTURE_SIZE must be at least 2048.)
      * <p>
-     * Icons that are smaller than (width,height) are offset so they are
-     * centred, so the shader can just draw the icons without worrying about
-     * where in the texture they are.
+     * Icons that are smaller than (width,height) are offset so they are centred, so the shader can just draw the icons
+     * without worrying about where in the texture they are.
      * <p>
-     * It appears that the images must have a row length that is a multiple of
-     * four. This is probably due to the particular format we're using, and
-     * could probably be worked around, but the simple fix is to check your row
+     * It appears that the images must have a row length that is a multiple of four. This is probably due to the
+     * particular format we're using, and could probably be worked around, but the simple fix is to check your row
      * length.
      *
      * @param glCurrent the current OpenGL context.
@@ -671,17 +665,14 @@ public final class GLTools {
     /**
      * Singleton holder of list of used icons.
      * <p>
-     * As new icon names are seen in the graph, they are added to this data
-     * structure, which maintains a mapping between an icon name and its index.
+     * As new icon names are seen in the graph, they are added to this data structure, which maintains a mapping between
+     * an icon name and its index.
      * <p>
-     * Note: a LinkedHashMap is used here to maintain the insertion order.
-     * Because the texture array that uses this is shared between multiple
-     * drawables, and some icons must be at predefined indexes (for instance
-     * "highlighted" must be at index 0, "unknown" at index 1), the order of the
-     * icons must not change: a drawable that uses an icon at index 17 (for
-     * example) can't have that icon changing due to a different drawable being
-     * created. Therefore, whenever new icons are added, they are always
-     * appended.
+     * Note: a LinkedHashMap is used here to maintain the insertion order. Because the texture array that uses this is
+     * shared between multiple drawables, and some icons must be at predefined indexes (for instance "highlighted" must
+     * be at index 0, "unknown" at index 1), the order of the icons must not change: a drawable that uses an icon at
+     * index 17 (for example) can't have that icon changing due to a different drawable being created. Therefore,
+     * whenever new icons are added, they are always appended.
      */
     public static final class LoadedIconHelper {
 
@@ -711,10 +702,9 @@ public final class GLTools {
         /**
          * Add an icon label to the index map and return the index of that icon.
          * <p>
-         * If the label already exists, return the existing index. Null labels
-         * and empty labels (ie "") return the index of the transparent icon.
-         * Therefore, a valid icon index (&lt;=0 &amp;&amp; &gt;=MAX_ICON_INDEX)
-         * will always be returned.
+         * If the label already exists, return the existing index. Null labels and empty labels (ie "") return the index
+         * of the transparent icon. Therefore, a valid icon index (&lt;=0 &amp;&amp; &gt;=MAX_ICON_INDEX) will always be
+         * returned.
          *
          * @param label The index of an icon.
          *
@@ -764,8 +754,8 @@ public final class GLTools {
     /**
      * Load the icon textures into a texture array.
      * <p>
-     * This texture array is shared amongst all of the OpenGL drawables, so once
-     * an icon has been added to the list of icons, its index must not change.
+     * This texture array is shared amongst all of the OpenGL drawables, so once an icon has been added to the list of
+     * icons, its index must not change.
      *
      * @param glCurrent the current OpenGL context.
      * @param width the width of each icon.
@@ -811,8 +801,7 @@ public final class GLTools {
     /**
      * Obtain error information.
      * <p>
-     * This is a low-level alternative to using a debug GL context. See the
-     * OpenGL specification 3.3 Core section 2.5.
+     * This is a low-level alternative to using a debug GL context. See the OpenGL specification 3.3 Core section 2.5.
      *
      * @param gl the current OpenGL context.
      * @param msg the message that will be printed out if an error has occurred.
@@ -854,8 +843,7 @@ public final class GLTools {
      * See the OpenGL specification 3.3 Core section 4.4.4.
      *
      * @param gl the current OpenGL context.
-     * @param msg msg the message that will be printed out if an error has
-     * occurred.
+     * @param msg msg the message that will be printed out if an error has occurred.
      */
     public static void checkFramebufferStatus(final GL3 gl, final String msg) {
         int fboStatus = gl.glCheckFramebufferStatus(GL3.GL_DRAW_FRAMEBUFFER);
@@ -868,6 +856,8 @@ public final class GLTools {
             errtext = "framebuffer incomplete missing attachment";
         } else if (fboStatus == GL3.GL_FRAMEBUFFER_UNSUPPORTED) {
             errtext = "framebuffer unsupported";
+        } else {
+            // Do nothing
         }
         LOGGER.log(Level.SEVERE, "**** Framebuffer error %{0}: %{1} ({2})", new Object[]{msg, errtext, fboStatus});
     }
@@ -875,16 +865,15 @@ public final class GLTools {
     /**
      * Windows-DPI-Scaling
      *
-     * JOGL version 2.3.2 on Windows doesn't correctly support DPI scaling.
-     * setSurfaceScale() is not overridden in WindowsJAWTWindow so it is not
-     * possible to scale the the canvas and mouse events at this level. It
-     * should be noted that it is overridden in MacOSXJAWTWindow. Where manual
-     * scaling is required the caller will need to scale each GL viewport and
-     * ensure hit tests take that size into account.
+     * JOGL version 2.3.2 on Windows doesn't correctly support DPI scaling.setSurfaceScale() is not overridden in
+     * WindowsJAWTWindow so it is not possible to scale the the canvas and mouse events at this level. It should be
+     * noted that it is overridden in MacOSXJAWTWindow. Where manual scaling is required the caller will need to scale
+     * each GL viewport and ensure hit tests take that size into account.
      *
-     * If JOGL is ever fixed or another solution is found, either change this
-     * function to return false or look for any code that calls it and remove
-     * it.
+     * If JOGL is ever fixed or another solution is found, either change this function to return false or look for any
+     * code that calls it and remove it.
+     *
+     * @return
      */
     public static boolean needsManualDPIScaling() {
         return Utilities.isWindows();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,9 +51,8 @@ enum Operator {
 }
 
 /**
- * A StoreGraph is an array-based implementation of GraphWriteMethods designed
- * for performance and memory efficiency. It is currently the default
- * implementation used in Constellation.
+ * A StoreGraph is an array-based implementation of GraphWriteMethods designed for performance and memory efficiency. It
+ * is currently the default implementation used in Constellation.
  *
  * @author sirius
  */
@@ -119,10 +118,8 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
      * @param vertexCapacity the initial number of vertices the graph can hold.
      * @param linkCapacity the initial number of links the graph can hold.
      * @param edgeCapacity the initial number of edges the graph can hold.
-     * @param transactionCapacity the initial number of transactions the graph
-     * can hold.
-     * @param attributeCapacity the initial number of attributes the graph can
-     * hold.
+     * @param transactionCapacity the initial number of transactions the graph can hold.
+     * @param attributeCapacity the initial number of attributes the graph can hold.
      */
     public StoreGraph(final int vertexCapacity, final int linkCapacity, final int edgeCapacity, final int transactionCapacity, final int attributeCapacity) {
         this(UUID.randomUUID().toString(), null, vertexCapacity, linkCapacity, edgeCapacity, transactionCapacity, attributeCapacity);
@@ -141,8 +138,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     /**
      * Construct a new StoreGraph.
      * <p>
-     * The capacity of each store will be adjusted up automatically when
-     * necessary.
+     * The capacity of each store will be adjusted up automatically when necessary.
      *
      * @param id the id for this StoreGraph.
      * @param schema the schema for this StoreGraph.
@@ -211,8 +207,12 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     }
 
     @Override
-    public void finalize() {
-        MemoryManager.finalizeObject(StoreGraph.class);
+    protected void finalize() throws Throwable {
+        try {
+            MemoryManager.finalizeObject(StoreGraph.class);
+        } finally {
+            super.finalize();
+        }
     }
 
     private static int powerOf2(final int capacity) {
@@ -240,8 +240,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     }
 
     /**
-     * Creates a new StoreGraph with default capacities, and a specified id and
-     * schema.
+     * Creates a new StoreGraph with default capacities, and a specified id and schema.
      *
      * @param schema the schema for the new StoreGraph.
      * @param graphId the id for the new StoreGraph.
@@ -251,8 +250,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     }
 
     /**
-     * Creates a new StoreGraph with a random, unique id, a specified schema and
-     * specified capacities.
+     * Creates a new StoreGraph with a random, unique id, a specified schema and specified capacities.
      *
      * @param schema the schema for this graph.
      */
@@ -270,8 +268,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     }
 
     /**
-     * Creates a new StoreGraph that is a copy of the original StoreGraph with
-     * the option of creating a new id.
+     * Creates a new StoreGraph that is a copy of the original StoreGraph with the option of creating a new id.
      *
      * @param original the original StoreGraph to be copied.
      * @param useNewId should a new id be created for this StoreGraph.
@@ -281,20 +278,17 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     }
 
     /**
-     * Creates a new StoreGraph this is a copy of the original StoreGraph with
-     * the option of creating a new id.
+     * Creates a new StoreGraph this is a copy of the original StoreGraph with the option of creating a new id.
      *
      * @param original the original StoreGraph to be copied.
-     * @param graphId the id for the new StoreGraph (if null then the id is
-     * copied from the original StoreGraph)
+     * @param graphId the id for the new StoreGraph (if null then the id is copied from the original StoreGraph)
      */
     public StoreGraph(final StoreGraph original, final String graphId) {
         this(graphId == null ? original.getId() : graphId, original.getSchema() == null ? null : original.getSchema().getFactory().createSchema(), original);
     }
 
     /**
-     * Creates a new StoreGraph that is a copy of the original StoreGraph but
-     * with the specified id and schema.
+     * Creates a new StoreGraph that is a copy of the original StoreGraph but with the specified id and schema.
      *
      * @param id the id of this StoreGraph.
      * @param schema the Schema for this StoreGraph.

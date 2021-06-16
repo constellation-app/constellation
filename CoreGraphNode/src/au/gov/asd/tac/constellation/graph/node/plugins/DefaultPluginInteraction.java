@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
@@ -38,7 +39,7 @@ import org.openide.util.Cancellable;
 import org.openide.util.Exceptions;
 
 /**
- * interface for plugins that work in an interactive mode
+ * Interface for plugins that work in an interactive mode
  *
  * @author sirius
  */
@@ -54,11 +55,23 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
 
     private static final String STRING_STRING_FORMAT = "%s: %s";
 
-    public DefaultPluginInteraction(final PluginManager pluginManager, PluginReport pluginReport) {
+    public DefaultPluginInteraction(final PluginManager pluginManager, final PluginReport pluginReport) {
         this.pluginManager = pluginManager;
         this.pluginReport = pluginReport;
     }
+    
+    public PluginReport getPluginReport() {
+        return pluginReport;
+    }
+    
+    public ProgressHandle getProgress() {
+        return progress;
+    }
 
+    public Timer getTimer() {
+        return timer;
+    }
+    
     @Override
     public boolean isInteractive() {
         return pluginManager.isInteractive();
@@ -66,21 +79,21 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
 
     @Override
     public void setBusy(final String graphId, final boolean busy) {
-        GraphNode graphNode = pluginManager.getGraphNode();
+        final GraphNode graphNode = pluginManager.getGraphNode();
         if (graphNode != null) {
             graphNode.makeBusy(busy);
         }
     }
 
-    private String createProgressTitle() {
-        StringBuilder result = new StringBuilder();
+    protected String createProgressTitle() {
+        final StringBuilder result = new StringBuilder();
 
-        GraphNode graphNode = pluginManager.getGraphNode();
+        final GraphNode graphNode = pluginManager.getGraphNode();
         if (graphNode != null) {
-            String graphName = graphNode.getName();
+            final String graphName = graphNode.getName();
             if (graphName != null) {
                 result.append(graphName);
-                result.append(":  ");
+                result.append(": ");
             }
         }
 
@@ -214,15 +227,14 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
         final int[] result = new int[1];
         try {
             SwingUtilities.invokeAndWait(() -> {
-                NotifyDescriptor descriptor = new NotifyDescriptor.Message(message, NotifyDescriptor.QUESTION_MESSAGE);
+                final NotifyDescriptor descriptor = new NotifyDescriptor.Message(message, NotifyDescriptor.QUESTION_MESSAGE);
                 descriptor.setOptions(new Object[]{NotifyDescriptor.YES_OPTION, NotifyDescriptor.NO_OPTION});
-                Integer option = (Integer) DialogDisplayer.getDefault().notify(descriptor);
-                result[0] = option;
+                result[0] = (int) DialogDisplayer.getDefault().notify(descriptor);
             });
-        } catch (InterruptedException ex) {
+        } catch (final InterruptedException ex) {
             Exceptions.printStackTrace(ex);
             Thread.currentThread().interrupt();
-        } catch (InvocationTargetException ex) {
+        } catch (final InvocationTargetException ex) {
             Exceptions.printStackTrace(ex);
         }
 
@@ -256,27 +268,37 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
         return result;
     }
 
-    private class Timer extends Thread {
+    protected class Timer extends Thread {
 
         private final long startTime = System.currentTimeMillis();
 
         public String getTime() {
-            long now = System.currentTimeMillis();
-            long interval = (now - startTime) / 1000;
+            return getTime(startTime, System.currentTimeMillis());
+        }
+        
+        protected String getTime(final long startTime, final long endTime) {
+            // getTime(long, long) was added to allow unit testing to occur so in practice we would not expect this situation to occur
+            // it should still be handled just in case though
+            // if not for the fact that this function version was added purely to allow testing, we would throw an exception here
+            if (startTime < 0 || endTime < 0 || startTime > endTime) {
+                return "00:00:00";
+            }
+            
+            long interval = (endTime - startTime) / 1000;
 
-            long seconds = interval % 60;
+            final long seconds = interval % 60;
             interval /= 60;
 
-            long hours = interval % 60;
+            final long minutes = interval % 60;
             interval /= 60;
 
-            long days = interval;
+            final long hours = interval;
 
-            StringBuilder result = new StringBuilder();
-            result.append(days < 10 ? "0" + days : days);
-            result.append(':');
+            final StringBuilder result = new StringBuilder();
             result.append(hours < 10 ? "0" + hours : hours);
-            result.append(':');
+            result.append(SeparatorConstants.COLON);
+            result.append(minutes < 10 ? "0" + minutes : minutes);
+            result.append(SeparatorConstants.COLON);
             result.append(seconds < 10 ? "0" + seconds : seconds);
 
             return result.toString();
@@ -296,10 +318,10 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
                     progress.progress(getTime() + " " + currentMessage);
                     
                     if ("Finished".equalsIgnoreCase(currentMessage)) {
-                        progress = null;
+                        return;
                     }
                 }
-            } catch (InterruptedException ex) {
+            } catch (final InterruptedException ex) {
                 Thread.currentThread().interrupt();
             }
         }

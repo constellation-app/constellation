@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -261,9 +261,10 @@ public class BubbleTreeArranger implements Arranger {
                     return 1;
                 } else if (lhs > rhs) {
                     return -1;
+                } else {
+                    return 0;
+                    // Do nothing
                 }
-
-                return 0;
             });
 
             int i = 0;

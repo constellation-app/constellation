@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -91,6 +91,8 @@ class QuadTree extends AbstractTree{
                 index = TOP_L; // fits in top left quadrant
             } else if (bottomHalf) {
                 index = BOT_L; // fits in bottom left quadrant
+            } else {
+                // Do nothing
             }
         } // Object can completely fit within the right half.
         else if (rightHalf) {
@@ -98,7 +100,12 @@ class QuadTree extends AbstractTree{
                 index = TOP_R; // fits in top right quadrant
             } else if (bottomHalf) {
                 index = BOT_R; // fits in bottom right quadrant
+            } else {
+                // Do nothing
             }
+        } else {
+            // Do nothing
+            return index;
         }
         return index;
     }

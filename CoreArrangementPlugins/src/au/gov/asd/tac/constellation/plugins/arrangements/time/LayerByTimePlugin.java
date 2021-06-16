@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -234,6 +234,8 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                     SingleChoiceParameterType.setOptions(unitParam, new ArrayList<>(BIN_CALENDAR_UNITS.keySet()));
                     SingleChoiceParameterType.setChoice(unitParam, UNIT_PARAMETER_ID_BIN_DEFAULT);
                     parameters.getParameters().get(AMOUNT_PARAMETER_ID).setEnabled(false);
+                } else {
+                    // Do nothing
                 }
             }
         });
@@ -676,6 +678,8 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                 final Object value = graph.getObjectValue(attr, fromId);
                 graph.setObjectValue(attr, toId, value);
             }
+        } else {
+            // Do nothing
         }
     }
 

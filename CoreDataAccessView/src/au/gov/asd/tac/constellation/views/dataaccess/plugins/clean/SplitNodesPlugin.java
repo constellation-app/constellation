@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,7 +70,7 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
     public static final String DUPLICATE_TRANSACTIONS_PARAMETER_ID = PluginParameter.buildId(SplitNodesPlugin.class, "split_level");
     public static final String TRANSACTION_TYPE_PARAMETER_ID = PluginParameter.buildId(SplitNodesPlugin.class, "transaction_type");
     public static final String ALL_OCCURRENCES_PARAMETER_ID = PluginParameter.buildId(SplitNodesPlugin.class, "all_occurances");
-    
+
     public static final String COMPLETE_WITH_SCHEMA_OPTION_ID = PluginParameter.buildId(SplitNodesPlugin.class, "complete_schema");
 
     @Override
@@ -114,7 +114,7 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
         allOccurrences.setDescription("Choose to split on all instances of the character(s) rather than just the first instance");
         allOccurrences.setBooleanValue(false);
         params.addParameter(allOccurrences);
-        
+
         final PluginParameter<BooleanParameterValue> completeSchema = BooleanParameterType.build(COMPLETE_WITH_SCHEMA_OPTION_ID);
         completeSchema.setName("Complete with Schema");
         completeSchema.setDescription("Choose to apply the type schema to the graph");
@@ -159,7 +159,7 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
         }
     }
 
-    private int createNewNode(final GraphWriteMethods graph, final int selectedNode, final String newNodeIdentifier, final String linkType, final boolean splitIntoSameLevel) {        
+    private int createNewNode(final GraphWriteMethods graph, final int selectedNode, final String newNodeIdentifier, final String linkType, final boolean splitIntoSameLevel) {
         final int vertexIdentifierAttributeId = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
         final int transactionTypeAttributeId = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
         final int transactionDirectedAttribute = VisualConcept.TransactionAttribute.DIRECTED.ensure(graph);
@@ -200,6 +200,8 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
                     newTransactionId = graph.addTransaction(newVertexId, destinationVertex, directed);
                 } else if (destinationVertex == selectedNode) {
                     newTransactionId = graph.addTransaction(sourceVertex, newVertexId, directed);
+                } else {
+                    // Do nothing
                 }
 
                 //Loops through all the transaction attributes and copy them to the new transaction
@@ -218,7 +220,7 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
     }
 
     @Override
-    public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {              
+    public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         final Map<String, PluginParameter<?>> splitParameters = parameters.getParameters();
         final String character = splitParameters.get(SPLIT_PARAMETER_ID) != null && splitParameters.get(SPLIT_PARAMETER_ID).getStringValue() != null ? splitParameters.get(SPLIT_PARAMETER_ID).getStringValue() : "";
         final ParameterValue transactionTypeChoice = splitParameters.get(TRANSACTION_TYPE_PARAMETER_ID).getSingleChoice();
@@ -284,10 +286,10 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
                 vlGraph.retrieveCoords();
             }
 
-            if (splitParameters.get(COMPLETE_WITH_SCHEMA_OPTION_ID).getBooleanValue()){
+            if (splitParameters.get(COMPLETE_WITH_SCHEMA_OPTION_ID).getBooleanValue()) {
                 PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
-            }  
-            
+            }
+
             PluginExecutor.startWith(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
         }
     }
@@ -295,22 +297,17 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
     /**
      * The arrangement to be done after the plugin completes.
      * <p>
-     * Some plugins result in new nodes being created in a graph. In order to
-     * make these nodes visible to the user, the new nodes should undergo a
-     * default arrangement.
+     * Some plugins result in new nodes being created in a graph. In order to make these nodes visible to the user, the
+     * new nodes should undergo a default arrangement.
      * <p>
-     * Be cautious when specifying no arrangement. Due to various graphics
-     * card/driver quirks, we can't leave the nodes at (0,0,0). It's easy to
-     * crash the display this way. Also, we don't want to crush the new nodes
-     * too close together: the camera will zoom in and make them bigger and
-     * slower to draw. Therefore it is highly recommended that plugins do not
-     * specify no arrangement unless they know what they're doing.
+     * Be cautious when specifying no arrangement. Due to various graphics card/driver quirks, we can't leave the nodes
+     * at (0,0,0). It's easy to crash the display this way. Also, we don't want to crush the new nodes too close
+     * together: the camera will zoom in and make them bigger and slower to draw. Therefore it is highly recommended
+     * that plugins do not specify no arrangement unless they know what they're doing.
      * <p>
-     * Note: PluginExecutors should be arrangements. Do the sensible thing when
-     * overriding.
+     * Note: PluginExecutors should be arrangements. Do the sensible thing when overriding.
      *
-     * @return A PluginExecutor that does an arrangement, or null if no
-     * arrangement is to be done.
+     * @return A PluginExecutor that does an arrangement, or null if no arrangement is to be done.
      */
     public PluginExecutor completionArrangement() {
         return PluginExecutor.startWith(ArrangementPluginRegistry.GRID_COMPOSITE)

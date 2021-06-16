@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.preferences;
 import au.gov.asd.tac.constellation.preferences.rest.RestDirectory;
 import java.io.File;
 import java.util.prefs.Preferences;
-import javax.swing.JFileChooser;
 import org.openide.util.Lookup;
 
 /**
@@ -53,6 +52,8 @@ public final class ApplicationPreferenceKeys {
             }
         } else if (!f.isDirectory()) {
             // TODO: warn the user.
+        } else {
+            // Do nothing
         }
 
         return userDir;
@@ -82,7 +83,7 @@ public final class ApplicationPreferenceKeys {
     public static final int AUTOSAVE_SCHEDULE_DEFAULT = 5;
 
     /**
-     * Tutorial window.
+     * Whats New window.
      */
     public static final String TUTORIAL_ON_STARTUP = "tutorialMode";
     public static final boolean TUTORIAL_ON_STARTUP_DEFAULT = false;
@@ -107,7 +108,7 @@ public final class ApplicationPreferenceKeys {
      * Jupyter notebook directory.
      */
     public static final String JUPYTER_NOTEBOOK_DIR = "jupyterNotebookDir";
-    public static final String JUPYTER_NOTEBOOK_DIR_DEFAULT = new JFileChooser().getFileSystemView().getDefaultDirectory().getAbsolutePath();
+    public static final String JUPYTER_NOTEBOOK_DIR_DEFAULT = new File(System.getProperty("user.dir")).getPath();
 
     /**
      * Remember Save As location.
@@ -141,6 +142,8 @@ public final class ApplicationPreferenceKeys {
             }
         } else if (!f.isDirectory()) {
             // TODO: warn the user.
+        } else {
+            // Do nothing
         }
 
         return restDir;

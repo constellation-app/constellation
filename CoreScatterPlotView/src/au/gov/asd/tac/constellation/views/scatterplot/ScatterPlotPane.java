@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.scatterplot;
 
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.views.scatterplot.state.ScatterPlotState;
 import javafx.geometry.Insets;
 import javafx.scene.layout.BorderPane;
@@ -60,6 +61,9 @@ public class ScatterPlotPane extends BorderPane {
 
         this.setId("scatter-plot-pane");
         this.setPadding(new Insets(5));
+               
+        this.setStyle(String.format("-fx-font-family:\"%s\";", FontUtilities.getApplicationFontFamily()));
+        this.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
     }
 
     /**

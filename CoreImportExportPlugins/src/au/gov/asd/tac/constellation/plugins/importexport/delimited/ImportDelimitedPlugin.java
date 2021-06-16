@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,6 +47,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.F
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType.ObjectParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -56,7 +57,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -129,43 +129,41 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
      */
     private void displaySummaryAlert(final int importedRows, final List<String> validFilenames, final List<String> invalidFilenames) {
         Platform.runLater(() -> {
-            final Alert dialog;
-            dialog = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
-            String header = "";
-            String message = "";
+            boolean success = true;
+            final StringBuilder sbHeader = new StringBuilder();
+            final StringBuilder sbMessage = new StringBuilder();
 
             if (importedRows > 0) {
                 // At least 1 row was successfully imported. List all successful file imports, as well as any files that there were
                 // issues for. If there were any files with issues use a warning dialog.
-
-                header = "Imported " + importedRows + " rows of data from " + validFilenames.size() + " files";
-                message = "The following file(s) contained data:";
-                for (final String filename : validFilenames) {
-                    message = message + "\n  " + filename;
-                }
+                sbHeader.append(String.format("Imported %d rows of data from %d files", importedRows, validFilenames.size()));
+                sbMessage.append("The following file(s) contained data:");
+                validFilenames.forEach(filename -> {
+                    sbMessage.append("\n  ");
+                    sbMessage.append(filename);
+                });
                 if (invalidFilenames.size() > 0) {
                     // some invalid files were found - warning condition.
-                    dialog.setAlertType(Alert.AlertType.WARNING);
-                    message = message + "\n\nThe following file(s) could not be parsed. No data was extracted:";
-                    for (final String filename : invalidFilenames) {
-                        message = message + "\n  " + filename;
-                    }
+                    success = false;
+                    sbMessage.append("\n\nThe following file(s) could not be parsed. No data was extracted:");
+                    invalidFilenames.forEach(filename -> {
+                        sbMessage.append("\n  ");
+                        sbMessage.append(filename);
+                    });
                 }
             } else {
                 // No rows were imported list all files that resulted in failures.
-                dialog.setAlertType(Alert.AlertType.WARNING);
-                header = "No data found to import";
-                message = message + "The following file(s) could not be parsed. no data was extracted:";
-                if (invalidFilenames.size() > 0) {
-                    for (final String filename : invalidFilenames) {
-                        message = message + "\n  " + filename;
-                    }
-                }
+                success = false;
+                sbHeader.append("No data found to import");
+                sbMessage.append("The following file(s) could not be parsed. no data was extracted:");
+                invalidFilenames.forEach(filename -> {
+                    sbMessage.append("\n  ");
+                    sbMessage.append(filename);
+                });
             }
-            dialog.setTitle("Delimited Importer");
-            dialog.setHeaderText(header);
-            dialog.setContentText(message);
-            dialog.showAndWait();
+            NotifyDisplayer.displayAlert("Delimited Importer", sbHeader.toString(), sbMessage.toString(),
+                    success ? Alert.AlertType.INFORMATION : Alert.AlertType.WARNING);
+
         });
     }
 
@@ -298,7 +296,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
 
         int directedIx = ImportConstants.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN;
         for (int i = 0; i < transactionDefinitions.size(); i++) {
-            if (transactionDefinitions.get(i).getAttribute().getName().equals(ImportController.DIRECTED)) {
+            if (transactionDefinitions.get(i).getAttribute().getName().equals(DelimitedImportController.DIRECTED)) {
                 directedIx = transactionDefinitions.get(i).getColumnIndex();
                 break;
             }

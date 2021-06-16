@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import au.gov.asd.tac.constellation.preferences.ApplicationFontPreferenceKeys;
 import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
 import au.gov.asd.tac.constellation.security.proxy.ProxyUtilities;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
@@ -78,7 +78,7 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
                 dataAccessViewPane.update(graph);
             }
         });
-
+        
         ProxyUtilities.setProxySelector(null);
     }
 
@@ -105,13 +105,13 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
 
     @Override
     public void handleComponentOpened() {
-        PreferenceUtilites.addPreferenceChangeListener(ApplicationPreferenceKeys.OUTPUT2_PREFERENCE, this);
+        PreferenceUtilites.addPreferenceChangeListener(ApplicationFontPreferenceKeys.FONT_PREFERENCES, this);
         QualityControlAutoVetter.getInstance().addObserver(dataAccessViewPane);
     }
 
     @Override
     public void handleComponentClosed() {
-        PreferenceUtilites.removePreferenceChangeListener(ApplicationPreferenceKeys.OUTPUT2_PREFERENCE, this);
+        PreferenceUtilites.removePreferenceChangeListener(ApplicationFontPreferenceKeys.FONT_PREFERENCES, this);
         QualityControlAutoVetter.getInstance().removeObserver(dataAccessViewPane);
     }
 

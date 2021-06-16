@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.plugins.gui;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterKind;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
@@ -40,13 +39,12 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 
 /**
- * A text-box and file chooser that together allows the selection or manual
- * entry of a number files, which is the GUI element corresponding to a
- * {@link PluginParameter} of
+ * A text-box and file chooser that together allows the selection or manual entry of a number files, which is the GUI
+ * element corresponding to a {@link PluginParameter} of
  * {@link au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType}.
  * <p>
- * Entering file names manually or making a selection with the file chooser will
- * update the object value of the underlying {@link PluginParameter}.
+ * Entering file names manually or making a selection with the file chooser will update the object value of the
+ * underlying {@link PluginParameter}.
  *
  * @see au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType
  *
@@ -180,6 +178,8 @@ public class FileInputPane extends HBox {
                 event.consume();
             } else if (event.getCode() == KeyCode.ESCAPE) {
                 event.consume();
+            } else {
+                // Do nothing
             }
         });
 
@@ -237,10 +237,5 @@ public class FileInputPane extends HBox {
         fieldAndAddButton.setSpacing(2);
         fieldAndAddButton.getChildren().addAll(field, fileAddButton);
         getChildren().add(fieldAndAddButton);
-        final String parameterId = parameter.getId();
-        final List<String> fileInputRecentValues = RecentParameterValues.getRecentValues(parameterId);
-        if (fileInputRecentValues != null) {
-            parameter.setStringValue(fileInputRecentValues.get(fileInputRecentValues.size() > 1 ? 1 : 0));
-        }
     }
 }

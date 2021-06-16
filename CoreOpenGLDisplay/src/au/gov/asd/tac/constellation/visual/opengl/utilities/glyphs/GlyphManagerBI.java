@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs;
 
+import au.gov.asd.tac.constellation.utilities.datastructure.FourTuple;
+import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -105,13 +107,13 @@ public final class GlyphManagerBI implements GlyphManager {
      */
     private static class LigatureContext {
 
-        private List<GlyphRectangle> glyphRectangles;
+        private GlyphRectangle[] glyphRectangles;
         private int left;
         private int right;
         private int top;
         private int bottom;
 
-        public LigatureContext(final List<GlyphRectangle> glyphRectangles, final int left, final int right, final int top, final int bottom) {
+        public LigatureContext(final GlyphRectangle[] glyphRectangles, final int left, final int right, final int top, final int bottom) {
             this.glyphRectangles = glyphRectangles;
             this.left = left;
             this.right = right;
@@ -351,11 +353,11 @@ public final class GlyphManagerBI implements GlyphManager {
             glyphStream = DEFAULT_GLYPH_STREAM;
         }
 
-        // Retrieve the LigatureContext from the cache to greatly speed up 
-        // building these ligatures which are built every time the graph is 
-        // loaded or when the graph structure changes. Note that items are not 
-        // purged from this cache so there is a small build up of memory over 
-        // time. Guava caching was attempted though it was slower and negating 
+        // Retrieve the LigatureContext from the cache to greatly speed up
+        // building these ligatures which are built every time the graph is
+        // loaded or when the graph structure changes. Note that items are not
+        // purged from this cache so there is a small build up of memory over
+        // time. Guava caching was attempted though it was slower and negating
         // the performance improvements of caching.
         //
         if (!cache.containsKey(text)) {
@@ -411,7 +413,7 @@ public final class GlyphManagerBI implements GlyphManager {
         int right = Integer.MIN_VALUE;
         int top = Integer.MAX_VALUE;
         int bottom = Integer.MIN_VALUE;
-        final List<GlyphRectangle> glyphRectangles = new ArrayList<>();
+        final GlyphRectangle[][] glyphRectangles = new GlyphRectangle[1][0];
 
         for (final FontDirectionalRun drun : FontDirectionalRun.getDirectionRuns(text)) {
             for (final FontRunSequence frun : FontRunSequence.getFontRuns(drun.run, fontsInfo)) {
@@ -484,7 +486,8 @@ public final class GlyphManagerBI implements GlyphManager {
                     final int height = Math.min(r.height, drawing.getHeight() - y);
                     if (height > 0) {
                         final int position = textureBuffer.addRectImage(drawing.getSubimage(r.x, y, r.width, height), 0);
-                        glyphRectangles.add(new GlyphRectangle(position, r, fm.getAscent()));
+                        glyphRectangles[0] = Arrays.copyOf(glyphRectangles[0], glyphRectangles[0].length + 1);
+                        glyphRectangles[0][glyphRectangles[0].length - 1] = GlyphRectangleFactory.create(position, r, fm.getAscent());
                     }
                 });
 
@@ -529,7 +532,7 @@ public final class GlyphManagerBI implements GlyphManager {
 
         g2d.dispose();
 
-        return new LigatureContext(glyphRectangles, left, right, top, bottom);
+        return new LigatureContext(glyphRectangles[0], left, right, top, bottom);
     }
 
     @Override
@@ -617,6 +620,7 @@ public final class GlyphManagerBI implements GlyphManager {
         final int ascent;
 
         GlyphRectangle(final int position, final Rectangle rect, final int ascent) {
+
             this.position = position;
             this.rect = rect;
             this.ascent = ascent;
@@ -626,5 +630,38 @@ public final class GlyphManagerBI implements GlyphManager {
         public String toString() {
             return String.format("[GlyphRectangle p=%d r=%s a=%d]", position, rect, ascent);
         }
+    }
+
+    /**
+     * Build distinct GlyphRectangle objects
+     */
+    private static class GlyphRectangleFactory {
+
+        /**
+         * Cache the Rectangles to prevent duplicate objects
+         */
+        private static final Map<FourTuple<Integer, Integer, Integer, Integer>, Rectangle> rectangleCache = new HashMap<>();
+
+        /**
+         * Cache the GlyphRectangle to prevent duplicate objects
+         */
+        private static final Map<ThreeTuple<Integer, Integer, Integer>, GlyphRectangle> glyphRectangleCache = new HashMap<>();
+
+        public static GlyphRectangle create(final int position, final Rectangle rect, final int ascent) {
+            // Note that the Rectangle hashCode() is not unique so using the
+            // attributes to make a unique key we can use for caching.
+            final FourTuple<Integer, Integer, Integer, Integer> rectangleKey
+                    = FourTuple.create(rect.x, rect.y, rect.width, rect.height);
+
+            final ThreeTuple key = ThreeTuple.create(position, rectangleKey, ascent);
+            final GlyphRectangle rectangle = glyphRectangleCache.get(key);
+            if (rectangle == null) {
+                rectangleCache.putIfAbsent(rectangleKey, rect);
+                glyphRectangleCache.put(key, new GlyphRectangle(position, rectangleCache.get(rectangleKey), ascent));
+            }
+
+            return glyphRectangleCache.get(key);
+        }
+
     }
 }

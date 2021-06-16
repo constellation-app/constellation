@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -237,6 +237,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         final int vxZ2Attr = VisualConcept.VertexAttribute.Z2.ensure(graph);
 
         final int vxIsGoodAttr = graph.addAttribute(GraphElementType.VERTEX, BooleanAttributeDescription.ATTRIBUTE_NAME, "isGood", null, false, null);
+        final int vxPinnedAttr = VisualConcept.VertexAttribute.PINNED.ensure(graph);
         final int vxCountry1Attr = SpatialConcept.VertexAttribute.COUNTRY.ensure(graph);
         final int vxCountry2Attr = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Geo.Country2", null, null, null);
         final int vxDecoratorAttr = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Custom Decorator", null, null, null);
@@ -265,9 +266,9 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
 
         final VertexDecorators decorators;
         if (drawManyDecorators) {
-            decorators = new VertexDecorators(graph.getAttributeName(vxIsGoodAttr), SpatialConcept.VertexAttribute.COUNTRY.getName(), graph.getAttributeName(vxCountry2Attr), graph.getAttributeName(vxDecoratorAttr));
+            decorators = new VertexDecorators(graph.getAttributeName(vxIsGoodAttr), graph.getAttributeName(vxPinnedAttr), SpatialConcept.VertexAttribute.COUNTRY.getName(), graph.getAttributeName(vxDecoratorAttr));
         } else {
-            decorators = new VertexDecorators(graph.getAttributeName(vxIsGoodAttr), null, null, null);
+            decorators = new VertexDecorators(graph.getAttributeName(vxIsGoodAttr), graph.getAttributeName(vxPinnedAttr), null, null);
         }
 
         final int bottomLabelsAttr = VisualConcept.GraphAttribute.BOTTOM_LABELS.ensure(graph);
@@ -355,6 +356,8 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         } else if (nVx > 2) {
             graph.setBooleanValue(vxDimmedAttr, vxIds[nVx - 1], true);
             graph.setBooleanValue(vxDimmedAttr, vxIds[nVx - 2], true);
+        } else {
+            // Do nothing
         }
 
         if (nVx > 0) {

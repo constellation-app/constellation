@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,13 +21,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.commons.collections4.CollectionUtils;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.commons.collections4.CollectionUtils;
 
 /**
- * A text hashmod based on a supplied CSV file. Will modify attributes specified
- * in the headers to be values based on the first Key column.
+ * A text hashmod based on a supplied CSV file. Will modify attributes specified in the headers to be values based on
+ * the first Key column.
  *
  * @author CrucisGamma
  */
@@ -35,6 +35,7 @@ public class Hashmod {
 
     private static final Logger LOGGER = Logger.getLogger(Hashmod.class.getName());
 
+    private static final String HEADER_MATCH_STRING = ".*\\.\\.\\..*";
     public static final String ATTRIBUTE_NAME = "hashmod";
     private HashmodCSVImportFileParser parser;
     private String csvFileStr;
@@ -115,9 +116,9 @@ public class Hashmod {
     public int getNumberCSVDataColumns() {
         final String[] headers = getCSVFileHeaders();
         if (headers != null) {
-            
+
             for (int i = 0; i < headers.length; i++) {
-                if (headers[i].matches(".*\\.\\.\\..*")) {
+                if (headers[i].matches(HEADER_MATCH_STRING)) {
                     return i;
                 }
             }
@@ -131,7 +132,7 @@ public class Hashmod {
         if (headers != null) {
             int numTransactions = 0;
             for (int i = getNumberCSVDataColumns(); i < headers.length; i++) {
-                if (!headers[i].matches(".*\\.\\.\\..*")) {
+                if (!headers[i].matches(HEADER_MATCH_STRING)) {
                     return numTransactions;
                 }
                 numTransactions++;
@@ -148,7 +149,7 @@ public class Hashmod {
         if (headers != null) {
             int numTransactions = 0;
             for (int i = getNumberCSVDataColumns(); i < headers.length; i++) {
-                if (headers[i].matches(".*\\.\\.\\..*")) {
+                if (headers[i].matches(HEADER_MATCH_STRING)) {
                     if (numTransactions == transactionCol) {
                         Matcher matchPattern = cardNamePattern.matcher(headers[i]);
                         if (matchPattern.find()) {

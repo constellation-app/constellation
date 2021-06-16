@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,8 +25,7 @@ import au.gov.asd.tac.constellation.views.histogram.bins.StringBin;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * A BinFormatter that allows the user to bin String values by a substring of
- * their original values.
+ * A BinFormatter that allows the user to bin String values by a substring of their original values.
  *
  * @author sirius
  */
@@ -114,6 +113,8 @@ public class SubstringFormatter extends BinFormatter {
                     s = l;
                 } else if (s < 0) {
                     s = 0;
+                } else {
+                    // Do nothing
                 }
 
                 int e = end;

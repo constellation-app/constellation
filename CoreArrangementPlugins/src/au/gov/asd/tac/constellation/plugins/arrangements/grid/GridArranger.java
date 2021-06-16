@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,8 +62,7 @@ public class GridArranger implements Arranger {
      * Construct new ArrangeInGrid instance.
      *
      * @param params Parameters for the arrangement.
-     * @param forceEvenNumCols If true, ensure that there is an even number of
-     * columns in the grid.
+     * @param forceEvenNumCols If true, ensure that there is an even number of columns in the grid.
      */
     public GridArranger(final GridChoiceParameters params, final boolean forceEvenNumCols) {
         this.params = params;
@@ -80,8 +79,7 @@ public class GridArranger implements Arranger {
     /**
      * Specify whether there must be an even number of columns in the grid.
      *
-     * @param b If true, ensure that there is an even number of columns in the
-     * grid.
+     * @param b If true, ensure that there is an even number of columns in the grid.
      */
     public void setForceEvenNumCols(final boolean b) {
         forceEvenNumCols = b;
@@ -276,9 +274,8 @@ public class GridArranger implements Arranger {
     }
 
     /**
-     * Given the choice of grid (one of the GRID_CHOICE_xxx constants), return a
-     * setting from number of rows and number of columns. Zero means
-     * unconstrained.
+     * Given the choice of grid (one of the GRID_CHOICE_xxx constants), return a setting from number of rows and number
+     * of columns. Zero means unconstrained.
      *
      * @param gc The kind of grid to do the arrangement with.
      *
@@ -287,26 +284,28 @@ public class GridArranger implements Arranger {
     private static Dimension getGridSize(final GridChoice gc) {
         if (gc == null) {
             return new Dimension(0, 0);
-        } else if (gc == GridChoice.SQUARE) {
-            return new Dimension(0, 0);
-        } else if (gc == GridChoice.HORIZONTAL_LINE) {
-            return new Dimension(0, 1);
-        } else if (gc == GridChoice.VERTICAL_LINE) {
-            return new Dimension(1, 0);
-        } else if (gc == GridChoice.TWO_ROWS) {
-            return new Dimension(0, 2);
-        } else if (gc == GridChoice.THREE_ROWS) {
-            return new Dimension(0, 3);
-        } else if (gc == GridChoice.FOUR_ROWS) {
-            return new Dimension(0, 4);
-        } else if (gc == GridChoice.TWO_COLUMNS) {
-            return new Dimension(2, 0);
-        } else if (gc == GridChoice.THREE_COLUMNS) {
-            return new Dimension(3, 0);
-        } else if (gc == GridChoice.FOUR_COLUMNS) {
-            return new Dimension(4, 0);
+        } else {
+            switch (gc) {
+                case HORIZONTAL_LINE:
+                    return new Dimension(0, 1);
+                case VERTICAL_LINE:
+                    return new Dimension(1, 0);
+                case TWO_ROWS:
+                    return new Dimension(0, 2);
+                case THREE_ROWS:
+                    return new Dimension(0, 3);
+                case FOUR_ROWS:
+                    return new Dimension(0, 4);
+                case TWO_COLUMNS:
+                    return new Dimension(2, 0);
+                case THREE_COLUMNS:
+                    return new Dimension(3, 0);
+                case FOUR_COLUMNS:
+                    return new Dimension(4, 0);
+                default:
+                    // Return a SQUARE
+                    return new Dimension(0, 0);
+            }
         }
-
-        return new Dimension(0, 0);
     }
 }

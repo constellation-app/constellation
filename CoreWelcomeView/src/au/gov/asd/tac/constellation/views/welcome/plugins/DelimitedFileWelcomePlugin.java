@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,11 @@
  */
 package au.gov.asd.tac.constellation.views.welcome.plugins;
 
-import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.DelimitedImportTopComponent;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
+import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -41,6 +42,8 @@ import org.openide.windows.WindowManager;
 @NbBundle.Messages("DelimitedFileWelcomePlugin=Delimited File Welcome Plugin")
 public class DelimitedFileWelcomePlugin implements WelcomePluginInterface {
     
+    private static final double TITLE_SIZE = 1.2;
+    private static final int TEXT_SIZE = 10;
     public static final String IMPORT = "resources/welcome_import.png";
     final ImageView importImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(IMPORT)));
     final Button importButton = new Button();
@@ -94,9 +97,9 @@ public class DelimitedFileWelcomePlugin implements WelcomePluginInterface {
         importImage.setFitHeight(75);
         importImage.setFitWidth(75);
         final Label imTitle = new Label("Import");
-        imTitle.setFont(new Font("Arial", 16));
+        imTitle.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * TITLE_SIZE));
         final Label imSubtitle = new Label("Delimited File Importer");
-        imSubtitle.setFont(new Font("Arial", 10));
+        imSubtitle.setFont(new Font(FontUtilities.getApplicationFontFamily(), TEXT_SIZE));
         final VBox layoutVBox = new VBox(importImage, imTitle, imSubtitle);
         layoutVBox.setAlignment(Pos.CENTER);
         importButton.setGraphic(layoutVBox);

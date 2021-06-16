@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,15 +46,12 @@ import javafx.scene.layout.HBox;
 import org.controlsfx.control.textfield.TextFields;
 
 /**
- * A text box allowing entry of single line text, multiple line text, or
- * passwords corresponding to a {@link PluginParameter} of
- * {@link au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType}.
+ * A text box allowing entry of single line text, multiple line text, or passwords corresponding to a
+ * {@link PluginParameter} of {@link au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType}.
  * <p>
- * Editing the value in the text box will set the string value for the
- * underlying {@link PluginParameter}.
+ * Editing the value in the text box will set the string value for the underlying {@link PluginParameter}.
  *
- * @see
- * au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType
+ * @see au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType
  *
  * @author ruby_crucis
  */
@@ -137,10 +134,6 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                     recentValuesCombo.setItems(FXCollections.observableList(recentValues));
                 } else {
                     recentValuesCombo.setDisable(true);
-                }
-
-                if (recentValues != null) {
-                    parameter.setStringValue(recentValues.get(0));
                 }
 
                 ListCell<String> button = new ListCell<String>() {
@@ -233,6 +226,8 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                     event.consume();
                 } else if (event.getCode() == KeyCode.ESCAPE) {
                     event.consume();
+                } else {
+                    // Do nothing
                 }
             });
 
@@ -262,7 +257,11 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                             // being entered right-to-left.
                             final String param = parameter.getStringValue();
                             if (!field.getText().equals(param)) {
-                                field.setText(param);
+                                if (param != null) {
+                                    field.setText(param);
+                                } else {
+                                    field.setText("");
+                                }
                             }
                             break;
                         case ENABLED:

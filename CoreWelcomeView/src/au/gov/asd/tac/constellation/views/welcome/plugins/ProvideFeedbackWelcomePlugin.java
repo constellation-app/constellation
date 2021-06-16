@@ -18,9 +18,10 @@ package au.gov.asd.tac.constellation.views.welcome.plugins;
 import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
 import au.gov.asd.tac.constellation.functionality.browser.OpenInBrowserPlugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
+import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -43,6 +44,7 @@ import org.openide.util.NbBundle;
 @NbBundle.Messages("ProvideFeedbackWelcomePlugin=Provide Feedback Welcome Plugin")
 public class ProvideFeedbackWelcomePlugin implements WelcomePluginInterface{
     
+    private static final double TITLE_SIZE = 1.5;
     public static final String FEEDBACK = "resources/welcome_feedback.png";
     final ImageView feedView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(FEEDBACK)));
     final Button feedbackButton = new Button();
@@ -93,10 +95,10 @@ public class ProvideFeedbackWelcomePlugin implements WelcomePluginInterface{
         feedView.setFitWidth(25);
         final Text title = new Text("Provide Feedback");
         title.setFill(Color.WHITE);
-        title.setFont(new Font("Arial", 18));
+        title.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * TITLE_SIZE));
         final Text subtitle = new Text("Let us know your thoughts");
         subtitle.setFill(Color.WHITE);
-        subtitle.setFont(new Font("Arial", 10));
+        subtitle.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize()));
         final VBox layoutVBox = new VBox(title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER_LEFT);
         final HBox layoutHBox = new HBox(feedView, layoutVBox);

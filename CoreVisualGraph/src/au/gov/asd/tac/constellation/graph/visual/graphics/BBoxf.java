@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,11 +66,9 @@ public class BBoxf {
     }
 
     /**
-     * Return true if nothing has been added to the bounding box, false
-     * otherwise.
+     * Return true if nothing has been added to the bounding box, false otherwise.
      *
-     * @return True if nothing has been added to the bounding box, false
-     * otherwise.
+     * @return True if nothing has been added to the bounding box, false otherwise.
      */
     public boolean isEmpty() {
         return min[X] > max[X];
@@ -146,8 +144,7 @@ public class BBoxf {
      * Takes mixing into account.
      *
      * @param rg The graph to create a bounding box from.
-     * @param selectedOnly True to only include selected vertices, false to
-     * include all vertices.
+     * @param selectedOnly True to only include selected vertices, false to include all vertices.
      *
      * @return The bounding box of the relevant vertices.
      */
@@ -174,6 +171,8 @@ public class BBoxf {
                 yId = y2Id;
                 zId = z2Id;
                 requiresMix = false;
+            } else {
+                // Do nothing
             }
         }
 

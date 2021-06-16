@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -390,6 +390,8 @@ public class ToolsOverlay extends MapOverlay {
                         measureVertices.add(map.getLocation(event.getX(), event.getY()));
                     } else if (event.isShiftDown()) {
                         measureCircle = true;
+                    } else {
+                        // Do nothing
                     }
                     measureFinished = false;
                     measureOriginX = event.getX();

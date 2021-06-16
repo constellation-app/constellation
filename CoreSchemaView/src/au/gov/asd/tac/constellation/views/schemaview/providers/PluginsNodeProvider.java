@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -107,6 +107,8 @@ public class PluginsNodeProvider implements SchemaViewNodeProvider {
                     LOGGER.log(Level.WARNING, "null name for plugin %s{0}", pluginClassName);
                 } else if (pluginNames.containsKey(pluginName)) {
                     LOGGER.log(Level.WARNING, "duplicate name {0} for plugins {1}, {2}", new Object[]{pluginName, pluginClassName, pluginNames.get(pluginName)});
+                } else {
+                    // Do nothing
                 }
 
                 pluginNames.put(pluginName != null ? pluginName : pluginClassName, pluginClassName);

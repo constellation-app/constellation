@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,9 +32,8 @@ import java.util.logging.Logger;
 /**
  * This class manages some stock shaders use by the OpenGL SuperBible.
  * <p>
- * For applications, these shaders are pretty much irrelevant. The only thing of
- * use are the shader attribute ids and fragment shader color numbers. (Maybe
- * these should be moved into their own class?)
+ * For applications, these shaders are pretty much irrelevant. The only thing of use are the shader attribute ids and
+ * fragment shader color numbers. (Maybe these should be moved into their own class?)
  *
  * @author algol
  */
@@ -103,8 +102,7 @@ public class ShaderManager {
     /**
      * Read shader sources from a Properties-like file.
      *
-     * @return A Properties instance containing the shader sources keyed by
-     * their names.
+     * @return A Properties instance containing the shader sources keyed by their names.
      * @throws IOException
      */
     private static Properties loadShaders() throws IOException {
@@ -123,6 +121,8 @@ public class ShaderManager {
                     value = "";
                 } else if (line.length() != 0) {
                     value += line + SeparatorConstants.NEWLINE;
+                } else {
+                    // Do nothing
                 }
             }
         }

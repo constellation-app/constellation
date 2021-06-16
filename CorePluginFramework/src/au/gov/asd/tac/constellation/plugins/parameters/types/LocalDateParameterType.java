@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,8 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * The LocalDateParameterType defines {@link PluginParameter} objects that hold
- * {@link LocalDate} values.
+ * The LocalDateParameterType defines {@link PluginParameter} objects that hold {@link LocalDate} values.
  *
  * @author algol
  */
@@ -45,19 +44,16 @@ public class LocalDateParameterType extends PluginParameterType<LocalDateParamet
     /**
      * Constructs a new instance of this type.
      * <p>
-     * Note: This constructor should not be called directly; it is public for
-     * the purposes of lookup (which may be removed for types in the future). To
-     * buildId parameters from the type, the static method
-     * {@link #build buildId()} should be used, or the singleton
-     * {@link #INSTANCE INSTANCE}.
+     * Note: This constructor should not be called directly; it is public for the purposes of lookup (which may be
+     * removed for types in the future). To buildId parameters from the type, the static method {@link #build buildId()}
+     * should be used, or the singleton {@link #INSTANCE INSTANCE}.
      */
     public LocalDateParameterType() {
         super(ID);
     }
 
     /**
-     * The singleton instance of the type that should be used to construct all
-     * parameters that have this type.
+     * The singleton instance of the type that should be used to construct all parameters that have this type.
      */
     public static final LocalDateParameterType INSTANCE = new LocalDateParameterType();
 
@@ -72,12 +68,11 @@ public class LocalDateParameterType extends PluginParameterType<LocalDateParamet
     }
 
     /**
-     * Construct a new {@link PluginParameter} of this type with initial value
-     * represented by the given {@link LocalDateParameterValue}.
+     * Construct a new {@link PluginParameter} of this type with initial value represented by the given
+     * {@link LocalDateParameterValue}.
      *
      * @param id The String id of the parameter to construct.
-     * @param pv A {@link LocalDateParameterValue} describing the initial value
-     * of the parameter being constructed.
+     * @param pv A {@link LocalDateParameterValue} describing the initial value of the parameter being constructed.
      * @return A {@link PluginParameter} of LocalDateParameterType.
      */
     public static PluginParameter<LocalDateParameterValue> build(String id, final LocalDateParameterValue pv) {
@@ -109,8 +104,7 @@ public class LocalDateParameterType extends PluginParameterType<LocalDateParamet
     }
 
     /**
-     * An implementation of {@link ParameterValue} corresponding to this type.
-     * It holds {@link LocalDate} values.
+     * An implementation of {@link ParameterValue} corresponding to this type. It holds {@link LocalDate} values.
      */
     public static class LocalDateParameterValue extends ParameterValue {
 
@@ -124,11 +118,9 @@ public class LocalDateParameterType extends PluginParameterType<LocalDateParamet
         }
 
         /**
-         * Constructs a new LocalDateParameterValue holding the specified
-         * {@link LocalDate}.
+         * Constructs a new LocalDateParameterValue holding the specified {@link LocalDate}.
          *
-         * @param ld The {@link LocalDate} that this parameter value should
-         * hold.
+         * @param ld The {@link LocalDate} that this parameter value should hold.
          */
         public LocalDateParameterValue(final LocalDate ld) {
             this.ld = ld;
@@ -137,8 +129,8 @@ public class LocalDateParameterType extends PluginParameterType<LocalDateParamet
         /**
          * Get the current value from this parameter value.
          * <p>
-         * This will default to {@link LocalDate#now LocalDate.now()} if not
-         * previously set, meaning that the return value will change over time.
+         * This will default to {@link LocalDate#now LocalDate.now()} if not previously set, meaning that the return
+         * value will change over time.
          *
          * @return The {@link LocalDate} that this parameter value is holding.
          */
@@ -150,8 +142,7 @@ public class LocalDateParameterType extends PluginParameterType<LocalDateParamet
          * Set the current value
          *
          * @param newld The {@link LocalDate} for this parameter value to hold.
-         * @return True if the new value was different to the current value,
-         * false otherwise.
+         * @return True if the new value was different to the current value, false otherwise.
          */
         public boolean set(final LocalDate newld) {
             if (!Objects.equals(ld, newld)) {
@@ -207,7 +198,10 @@ public class LocalDateParameterType extends PluginParameterType<LocalDateParamet
 
         @Override
         public boolean equals(final Object o) {
-            return o instanceof LocalDateParameterValue && Objects.equals(ld, ((LocalDateParameterValue) o).ld);
+            if (o == null) {
+                return false;
+            }
+            return this.getClass() == o.getClass() && Objects.equals(ld, ((LocalDateParameterValue) o).ld);
         }
 
         @Override

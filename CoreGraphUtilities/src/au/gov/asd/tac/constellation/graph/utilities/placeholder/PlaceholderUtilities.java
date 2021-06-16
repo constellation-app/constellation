@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,9 +57,8 @@ public class PlaceholderUtilities {
     private static final String DEFAULT_PLACEHOLDER_LABEL = "_placeholder<" + AnalyticConcept.VertexType.PLACEHOLDER.getName() + ">";
 
     /**
-     * Given a String, returns the corresponding name for a placeholder node.
-     * This should be used to ensure the right data merges together by keeping
-     * placeholder node naming consistent.
+     * Given a String, returns the corresponding name for a placeholder node. This should be used to ensure the right
+     * data merges together by keeping placeholder node naming consistent.
      *
      * @param name the name of the placeholder node.
      * @return the corresponding name for a placeholder node.
@@ -69,9 +68,8 @@ public class PlaceholderUtilities {
     }
 
     /**
-     * Adds records to a given RecordStore connecting each given node to a
-     * common placeholder node. This is simply a shortcut for creating groups
-     * which will later be merged using the processRecord method.
+     * Adds records to a given RecordStore connecting each given node to a common placeholder node. This is simply a
+     * shortcut for creating groups which will later be merged using the processRecord method.
      *
      * @param groupName the name of the group.
      * @param recordStore the RecordStore to add the group to.
@@ -93,17 +91,14 @@ public class PlaceholderUtilities {
     }
 
     /**
-     * Processes the data in a Record, merging nodes connected by placeholder
-     * nodes and cleaning up the result.
+     * Processes the data in a Record, merging nodes connected by placeholder nodes and cleaning up the result.
      *
      * @param schema the schema for the new graph.
      * @param record the record to add to the new graph.
      * @param rowProcessor the processor that will interpret the record.
      * @param parameters the parameters that are passed to the row processor.
-     * @param dominanceComparator the comparator that orders the vertices to
-     * determine which get merged.
-     * @param cleanupGraph specifies whether the graph should go through a clean
-     * up operation.
+     * @param dominanceComparator the comparator that orders the vertices to determine which get merged.
+     * @param cleanupGraph specifies whether the graph should go through a clean up operation.
      * @param debug should debug information be produced.
      * @return the new graph.
      * @throws PluginException if an anticipated exception occurs.
@@ -277,6 +272,8 @@ public class PlaceholderUtilities {
                     } else if (graph.getTransactionDestinationVertex(correlationId) == placeholderId
                             && graph.getTransactionSourceVertex(correlationId) != leadVertex) {
                         graph.setTransactionDestinationVertex(correlationId, leadVertex);
+                    } else {
+                        // Do nothing
                     }
                 });
 

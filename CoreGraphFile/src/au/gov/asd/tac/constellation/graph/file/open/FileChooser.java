@@ -86,8 +86,7 @@ public class FileChooser extends JFileChooser {
         addChoosableFileFilters();
 
         /**
-         * Commented out by algol so the CONSTELLATION file filter has
-         * precedence (instead of "All Files").
+         * Commented out by algol so the CONSTELLATION file filter has precedence (instead of "All Files").
          */
 //        setFileFilter(currentFilter);
     }
@@ -106,6 +105,8 @@ public class FileChooser extends JFileChooser {
             return SchemaFactoryUtilities.getDefaultSchemaFactory().getIcon().buildIcon(16);
         } else if (s.endsWith(".nebula")) {
             return NEBULA_ICON;
+        } else {
+            // Do nothing
         }
 
         return super.getIcon(f);
@@ -146,7 +147,10 @@ public class FileChooser extends JFileChooser {
                 msgPatternRef = "MSG_FileIsADirectory";                 //NOI18N
             } else if (!file.isFile()) {
                 msgPatternRef = "MSG_FileIsNotPlainFile";               //NOI18N
+            } else {
+                // Do nothing
             }
+
             if (msgPatternRef == null) {
                 continue;
             }

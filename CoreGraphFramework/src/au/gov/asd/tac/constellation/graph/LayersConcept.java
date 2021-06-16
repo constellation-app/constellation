@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,6 +36,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = SchemaConcept.class)
 public class LayersConcept extends SchemaConcept {
 
+    private static final String CONCEPT_CLASS_LITERAL = "Concept class";
+
     @Override
     public String getName() {
         return "Layers";
@@ -51,7 +53,7 @@ public class LayersConcept extends SchemaConcept {
     public static class GraphAttribute {
 
         private GraphAttribute() {
-            throw new IllegalStateException("Concept class");
+            throw new IllegalStateException(CONCEPT_CLASS_LITERAL);
         }
 
         public static final SchemaAttribute LAYER_MASK_SELECTED = new SchemaAttribute.Builder(GraphElementType.GRAPH, LongAttributeDescription.ATTRIBUTE_NAME, "layer_bitmask_selected")
@@ -64,7 +66,7 @@ public class LayersConcept extends SchemaConcept {
     public static class VertexAttribute {
 
         private VertexAttribute() {
-            throw new IllegalStateException("Concept class");
+            throw new IllegalStateException(CONCEPT_CLASS_LITERAL);
         }
 
         public static final SchemaAttribute LAYER_MASK = new SchemaAttribute.Builder(GraphElementType.VERTEX, LongAttributeDescription.ATTRIBUTE_NAME, "layer_mask")
@@ -83,7 +85,7 @@ public class LayersConcept extends SchemaConcept {
     public static class TransactionAttribute {
 
         private TransactionAttribute() {
-            throw new IllegalStateException("Concept class");
+            throw new IllegalStateException(CONCEPT_CLASS_LITERAL);
         }
 
         public static final SchemaAttribute LAYER_MASK = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, LongAttributeDescription.ATTRIBUTE_NAME, "layer_mask")

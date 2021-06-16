@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,21 +35,17 @@ import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * This describes a type of attribute whose values represent dates (without
- * times) in UTC. The dates are stored as primitive long values, whilst the
- * canonical string representation is 'yyyy-MM-dd'.
+ * This describes a type of attribute whose values represent dates (without times) in UTC. The dates are stored as
+ * primitive long values, whilst the canonical string representation is 'yyyy-MM-dd'.
  * <p>
- * Attribute values can be set from canonical strings using
- * {@link #setString setString()}, or from {@link Date} and {@link Calendar}
- * objects using {@link #setObject setObject()}.
+ * Attribute values can be set from canonical strings using {@link #setString setString()}, or from {@link Date} and
+ * {@link Calendar} objects using {@link #setObject setObject()}.
  * <p>
- * Attribute values can be retrieved as canonical strings using
- * {@link #getString getString()}, or as {@link Representation} objects (java
- * {@link Date} objects whose toString method yields canonical strings) using
+ * Attribute values can be retrieved as canonical strings using {@link #getString getString()}, or as
+ * {@link Representation} objects (java {@link Date} objects whose toString method yields canonical strings) using
  * {@link #getObject getObject()}.
  * <p>
- * Note that this attribute description should no longer be used and only
- * remains to support legacy graph files.
+ * Note that this attribute description should no longer be used and only remains to support legacy graph files.
  *
  * @author sirius
  */
@@ -59,9 +55,8 @@ public final class DateAttributeDescriptionV0 extends AbstractAttributeDescripti
 
     private static final Logger LOGGER = Logger.getLogger(DateAttributeDescriptionV0.class.getName());
     /**
-     * An array of primitives doesn't have a null equivalent, and the default
-     * value of 0 for long is a valid time, so we use an otherwise invalid value
-     * to indicate that a value has not been set. See setCapacity().
+     * An array of primitives doesn't have a null equivalent, and the default value of 0 for long is a valid time, so we
+     * use an otherwise invalid value to indicate that a value has not been set. See setCapacity().
      */
     public static final long NULL_VALUE = Long.MIN_VALUE;
     public static final long DEFAULT_VALUE = NULL_VALUE;
@@ -181,15 +176,12 @@ public final class DateAttributeDescriptionV0 extends AbstractAttributeDescripti
      *
      * The following format is accepted: 'yyyy-mm-dd'
      *
-     * This is basically doing a SimpleDateFormat.parse(), but a lot faster. All
-     * fields are numeric.
+     * This is basically doing a SimpleDateFormat.parse(), but a lot faster. All fields are numeric.
      *
-     * Parsing isn't strict: the date 2011-99-01 will be accepted. This reflects
-     * the way that SimpleDateFormat.parse() works. The parsing is lenient in
-     * other ways (for instance, punctuation isn't checked), but since the
-     * context is parsing of dates from CONSTELLATION files, this isn't expected
-     * to be a problem. However, this should not be taken as an excuse to write
-     * syntactically incorrect datetime strings elsewhere.
+     * Parsing isn't strict: the date 2011-99-01 will be accepted. This reflects the way that SimpleDateFormat.parse()
+     * works. The parsing is lenient in other ways (for instance, punctuation isn't checked), but since the context is
+     * parsing of dates from CONSTELLATION files, this isn't expected to be a problem. However, this should not be taken
+     * as an excuse to write syntactically incorrect datetime strings elsewhere.
      *
      * @param date An (almost) ISO date to be parsed.
      *
@@ -296,7 +288,10 @@ public final class DateAttributeDescriptionV0 extends AbstractAttributeDescripti
 
         @Override
         public boolean equals(Object obj) {
-            if (obj instanceof Representation) {
+            if (obj == null) {
+                return false;
+            }
+            if (this.getClass() == obj.getClass()) {
                 return toString().equals(obj.toString());
             } else {
                 return super.equals(obj);

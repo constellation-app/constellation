@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,9 +79,8 @@ public final class GraphJsonWriter implements Cancellable {
     /**
      * Serialise a graph to a file with all elements written.
      * <p>
-     * The graph is written to a text file. Ancillary files are written to the
-     * same directory. All element values are written, whether they are the same
-     * as their respective defaults or not.
+     * The graph is written to a text file. Ancillary files are written to the same directory. All element values are
+     * written, whether they are the same as their respective defaults or not.
      *
      * @param graph The graph to be written.
      * @param path The file path to write the graph file to.
@@ -119,8 +118,8 @@ public final class GraphJsonWriter implements Cancellable {
     /**
      * Serialise a graph to a zip file.
      * <p>
-     * Only element values that are different to their defaults are written.
-     * This saves spaces when writing and noticeable time when reading.
+     * Only element values that are different to their defaults are written. This saves spaces when writing and
+     * noticeable time when reading.
      *
      * @param graph The graph to serialise.
      * @param path The path name of the file to write the graph to.
@@ -147,8 +146,8 @@ public final class GraphJsonWriter implements Cancellable {
     /**
      * Serialise a graph to a zip file with element writing optimised.
      * <p>
-     * The OutputStream will be wrapped in a ZipOutputStream and the graph and
-     * any ancillary files will be written as ZipEntry files.
+     * The OutputStream will be wrapped in a ZipOutputStream and the graph and any ancillary files will be written as
+     * ZipEntry files.
      *
      * @param graph The graph to serialise.
      * @param out The OutputStream to write a zip file to.
@@ -188,25 +187,20 @@ public final class GraphJsonWriter implements Cancellable {
     /**
      * Serialise a graph in JSON format to an OutputStream.
      * <p>
-     * The graph elements are written in the order GRAPH, VERTEX, TRANSACTION,
-     * META. Each element type will be written, even if there are no elements of
-     * that type.
+     * The graph elements are written in the order GRAPH, VERTEX, TRANSACTION, META. Each element type will be written,
+     * even if there are no elements of that type.
      * <p>
      * Ancillary files are not written: only the JSON is done here.
      * <p>
-     * Originally, the vertices were written to JSON using the position as the
-     * id, so vx_id_ = 0, 1, 2, ... . This required everything else (in
-     * particular the transaction writing code, but also implementers of
-     * AbstractGraphIOProvider.writeObject()) to know about the mapping from
-     * graph vertex id to JSON vertex id. Then I realised that is was much
-     * easier to write the actual vertex id to JSON, because it doesn't matter
-     * what the numbers are in the file, and since the file and JSON ids are the
-     * same, there's no need to keep a mapping.
+     * Originally, the vertices were written to JSON using the position as the id, so vx_id_ = 0, 1, 2, ... . This
+     * required everything else (in particular the transaction writing code, but also implementers of
+     * AbstractGraphIOProvider.writeObject()) to know about the mapping from graph vertex id to JSON vertex id. Then I
+     * realised that is was much easier to write the actual vertex id to JSON, because it doesn't matter what the
+     * numbers are in the file, and since the file and JSON ids are the same, there's no need to keep a mapping.
      *
      * @param graph The graph to serialise.
      * @param out The OutputStream to write to.
-     * @param verbose Determines whether to write default values of attributes
-     * or not.
+     * @param verbose Determines whether to write default values of attributes or not.
      * @param elementTypes The GraphElementTypes to serialise.
      *
      * @return True if the user cancelled the write, false otherwise.
@@ -282,8 +276,7 @@ public final class GraphJsonWriter implements Cancellable {
      * @param jg The JsonGenerator to use for writing.
      * @param graph The graph.
      * @param elementType The GraphElementType being written.
-     * @param writeData If false, write out the attributes but not the data for
-     * the given element type.
+     * @param writeData If false, write out the attributes but not the data for the given element type.
      *
      * @throws IOException
      */
@@ -334,6 +327,8 @@ public final class GraphJsonWriter implements Cancellable {
                 jg.writeBooleanField(DEFAULT_FIELD, (Boolean) attr.getDefaultValue());
             } else if (attr.getDefaultValue() != null) {
                 jg.writeStringField(DEFAULT_FIELD, attr.getDefaultValue().toString());
+            } else {
+                // Do nothing
             }
 
             if (attr.getAttributeMerger() != null) {
@@ -414,6 +409,8 @@ public final class GraphJsonWriter implements Cancellable {
                     return;
                 } else if (counter % REPORT_INTERVAL == 0 && progress != null) {
                     progress.progress(counter);
+                } else {
+                    // Do nothing
                 }
             }
         } else if (elementType == GraphElementType.TRANSACTION) {
@@ -445,6 +442,8 @@ public final class GraphJsonWriter implements Cancellable {
                     progress.progress(counter);
                 }
             }
+        } else {
+            // Do nothing
         }
 
         jg.writeEndArray();

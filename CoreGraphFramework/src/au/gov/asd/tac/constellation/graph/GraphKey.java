@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,7 @@ package au.gov.asd.tac.constellation.graph;
 import java.util.Arrays;
 
 /**
- * A GraphKey represents the key values for a vertex or transaction in the
- * graph.
+ * A GraphKey represents the key values for a vertex or transaction in the graph.
  *
  * @author sirius
  */
@@ -43,8 +42,7 @@ public class GraphKey {
      * Create a new graph key for a transaction in the graph.
      *
      * @param sourceKey the GraphKey for the transaction's source vertex.
-     * @param destinationKey the GraphKey for the transaction's destination
-     * vertex.
+     * @param destinationKey the GraphKey for the transaction's destination vertex.
      * @param undirected is the transaction undirected?
      * @param elements the values of the key attributes for this transaction.
      */
@@ -92,7 +90,10 @@ public class GraphKey {
 
     @Override
     public boolean equals(final Object other) {
-        if (other instanceof GraphKey) {
+        if (other == null) {
+            return false;
+        }
+        if (this.getClass() == other.getClass()) {
             GraphKey key = (GraphKey) other;
 
             if (!Arrays.equals(elements, key.elements)) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,8 +37,7 @@ import org.openide.windows.OnShowing;
 /**
  * Start the autosaver in the background.
  * <p>
- * An OnShowing Runnable runs in the EDT. This is good, because we need to look
- * for autosaved unsaved graphs.
+ * An OnShowing Runnable runs in the EDT. This is good, because we need to look for autosaved unsaved graphs.
  *
  * @author algol
  */
@@ -104,6 +103,8 @@ public final class AutosaveStartup implements Runnable {
                         } else if (now - f.lastModified() > PURGE_PERIOD_MS) {
                             // This autosave is old enough to be purged; the user won't remember the details of the graph.
                             AutosaveUtilities.deleteAutosave(f);
+                        } else {
+                            // Do nothing
                         }
                     } else {
                         // Some information about this autosave is missing so get rid of it.

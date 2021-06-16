@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,12 +38,12 @@ public class UncollideArrangement implements Arranger {
     private PluginInteraction interaction;
     private boolean maintainMean = false;
     private final double twinScaling;
-    
+
 
     public UncollideArrangement(final Dimensions dimensions, final int maxExpansions) {
         this.twinScaling = math.pow(1.1, -maxExpansions);
         this.dimensions = dimensions;
-        
+
     }
 
     public void setInteraction(final PluginInteraction interaction) {
@@ -86,7 +86,7 @@ public class UncollideArrangement implements Arranger {
         if(Objects.nonNull(interaction)) {
             interaction.setBusy("Expanding graph until there are no more colllisions", true);
         }
-        
+
         for (int i = 0; i < iter && tree.hasCollision(); i++) {
 
             PluginExecution.withPlugin(ArrangementPluginRegistry.EXPAND_GRAPH).executeNow(wg);
@@ -101,7 +101,7 @@ public class UncollideArrangement implements Arranger {
             interaction.setBusy("Expanding graph until there are no more colllisions", false);
         }
     }
-    
+
     private int nudgeAllTwins(GraphWriteMethods wg, AbstractTree tree) {
         List<Integer> twins;
         int numberNoTwins = 0;
@@ -111,11 +111,11 @@ public class UncollideArrangement implements Arranger {
                 numberNoTwins++;
             } else {
                 nudgeTwins(wg, subject, twins.get(0));
-            }                  
+            }
         }
         return numberNoTwins;
     }
-    
+
     /**
      * Nudges two nodes in approximately the same place so that they do not overlap.
      *
@@ -128,12 +128,12 @@ public class UncollideArrangement implements Arranger {
         final int yId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
         final int zId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
         final int rId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.NODE_RADIUS.getName());
-        
+
         double[] deltas;
         float deltaX = wg.getFloatValue(xId, subject) - wg.getFloatValue(xId, twin);
         float deltaY = wg.getFloatValue(yId, subject) - wg.getFloatValue(yId, twin);
         float deltaZ = 0;
-        
+
         final double collisionDistance;
         final double delta;
         switch (dimensions) {
@@ -157,11 +157,11 @@ public class UncollideArrangement implements Arranger {
         }
         deltas[0] = deltaX;
         deltas[1] = deltaY;
-        
+
         final double twinDistance = collisionDistance*twinScaling; // The required distance for the nodes to be uncollided after maxExpansions number of expansions (each expansions scaled the graph by a factor of 1.1
 
         // If they are in the same spot we will nudge in a random direction
-        if (delta == 0) { 
+        if (delta == 0) {
             deltaX = ThreadLocalRandom.current().nextInt(-1, 2);
             deltaY = ThreadLocalRandom.current().nextInt(-1, 2);
             if (dimensions.equals(Dimensions.THREE)) {
@@ -184,7 +184,7 @@ public class UncollideArrangement implements Arranger {
             default:
                 nudge = 0.5*((twinDistance - delta) + 0.002); // Should never reach this but need to maske the compiler happy.
         }
-        
+
         // Nudge horizontally based on relative position.
         nudge(wg, xId, deltaX, subject, twin, nudge);
         // Nudge vertically based on relative position.
@@ -194,17 +194,19 @@ public class UncollideArrangement implements Arranger {
             nudge(wg, zId, deltaZ, subject, twin, nudge);
         }
     }
-    
+
     private void nudge(GraphWriteMethods wg, final int axisId, final double delta, final int subject, final int twin, final double nudge){
-        if (delta > 0){ 
+        if (delta > 0){
             wg.setFloatValue(axisId, subject, wg.getFloatValue(axisId, subject) + (float) nudge);
             wg.setFloatValue(axisId, twin, wg.getFloatValue(axisId, twin) - (float) nudge);
         } else if (delta < 0) {
             wg.setFloatValue(axisId, subject, wg.getFloatValue(axisId, subject) - (float) nudge);
-            wg.setFloatValue(axisId, twin, wg.getFloatValue(axisId, twin) + (float) nudge);  
+            wg.setFloatValue(axisId, twin, wg.getFloatValue(axisId, twin) + (float) nudge);
+        } else {
+            // Do nothing
         }
     }
-    
+
 
     @Override
     public void setMaintainMean(boolean b) {

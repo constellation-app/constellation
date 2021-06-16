@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,21 +33,16 @@ import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * JSONImportFileParser implements ImportFileParser and is responsible for
- * extracting tables of data to import from JSON files. Because the intention is
- * to import lists of data, the received file is parsed looking for lists of
- * data embedded within it. The following rules are applied to determine valid
- * lists: 1. List must have 1 or more rows of data. 2. All rows within the list
- * must contain 'complex' JSON objects. These objects are characterized with a
- * set of one or more 'field' key/value pairs contained within braces '{}'.
- * Integers, Strings etc are not permitted as these do not translate to columns.
- * Only one list will be extracted from any JSAON file, if a file contains
- * multiple 'valid' lists (see above), then an algorithm determines which one to
- * use, this is essentially the list closest to the root node of the JSON
- * structure. If multiple valid lists are found at the same depth, the first one
- * encountered is used. A Future enhancement may be to allow the user to specify
- * the path to the list to use, however this first requires an input mechanism
- * on the file importer dialog.
+ * JSONImportFileParser implements ImportFileParser and is responsible for extracting tables of data to import from JSON
+ * files. Because the intention is to import lists of data, the received file is parsed looking for lists of data
+ * embedded within it. The following rules are applied to determine valid lists: 1. List must have 1 or more rows of
+ * data. 2. All rows within the list must contain 'complex' JSON objects. These objects are characterized with a set of
+ * one or more 'field' key/value pairs contained within braces '{}'. Integers, Strings etc are not permitted as these do
+ * not translate to columns. Only one list will be extracted from any JSAON file, if a file contains multiple 'valid'
+ * lists (see above), then an algorithm determines which one to use, this is essentially the list closest to the root
+ * node of the JSON structure. If multiple valid lists are found at the same depth, the first one encountered is used. A
+ * Future enhancement may be to allow the user to specify the path to the list to use, however this first requires an
+ * input mechanism on the file importer dialog.
  *
  * @author serpens24
  */
@@ -83,16 +78,14 @@ public class JSONImportFileParser extends ImportFileParser {
     }
 
     /**
-     * Private function with the sole purpose of determine that the supplied
-     * parent node is an array and that all entries found within it are Objects
-     * (i.e. isObject() returns true). This ensures all elements are built up of
+     * Private function with the sole purpose of determine that the supplied parent node is an array and that all
+     * entries found within it are Objects (i.e. isObject() returns true). This ensures all elements are built up of
      * key/value pairs which map well to column headings and values.
      *
      * @param parent Node to check children of as per description.
-     * @return true if parent is an Array containing 1 or more Object JSON
-     * nodes, and no other children. As this function is designed to only be
-     * called by lookForChildArrays it can be assumed that parent is an array
-     * and not empty as this is checked in lookForChildArrays.
+     * @return true if parent is an Array containing 1 or more Object JSON nodes, and no other children. As this
+     * function is designed to only be called by lookForChildArrays it can be assumed that parent is an array and not
+     * empty as this is checked in lookForChildArrays.
      */
     private boolean checkAllArrayItemsAreObjects(JsonNode parent) {
 
@@ -130,20 +123,19 @@ public class JSONImportFileParser extends ImportFileParser {
                 }
             }
             return true;
+        } else {
+            // Do nothing
         }
         return false;
     }
 
     /**
-     * Private function that navigates the JSON tree looking for all array nodes
-     * that meet the following criteria: 1. List must have 1 or more rows of
-     * data. 2. All rows within the list must contain 'complex' JSON objects.
-     * These objects are characterized with a set of one or more 'field'
-     * key/value pairs contained within braces '{}'. Integers, Strings etc are
-     * not permitted as these do not translate to columns. Function is
-     * responsible for populating the private variables selectedList and
-     * selectedListDepth to highlight the identified best list found within the
-     * JSON structure.
+     * Private function that navigates the JSON tree looking for all array nodes that meet the following criteria: 1.
+     * List must have 1 or more rows of data. 2. All rows within the list must contain 'complex' JSON objects. These
+     * objects are characterized with a set of one or more 'field' key/value pairs contained within braces '{}'.
+     * Integers, Strings etc are not permitted as these do not translate to columns. Function is responsible for
+     * populating the private variables selectedList and selectedListDepth to highlight the identified best list found
+     * within the JSON structure.
      *
      * @param node The node to begin search at.
      * @param path The path to the given node in the overall JSON structure.
@@ -178,22 +170,24 @@ public class JSONImportFileParser extends ImportFileParser {
                     // The node is not an array buy is another container, dive into
                     // it and see if there is any list
                     lookForChildArrays(entry.getValue(), path + "/" + entry.getKey(), (depth + 1));
+                } else {
+                    // Do nothing
                 }
             }
+        } else {
+            // Do nothing
         }
     }
 
     /**
-     * Private function designed to only be called by extractAllColNames. This
-     * recursive function digs down through nested JSON objects to extract
-     * further column names to add to existingColumns and return the updated
-     * value.
+     * Private function designed to only be called by extractAllColNames. This recursive function digs down through
+     * nested JSON objects to extract further column names to add to existingColumns and return the updated value.
      *
      * @param parent he parent node to start column name extraction from.
-     * @param existingColumns List of already identified columns. This list is
-     * added to if new column names are identified.
-     * @param prefix Path prefix, this is used to help build up a fully
-     * qualified column name relative to the list origin.
+     * @param existingColumns List of already identified columns. This list is added to if new column names are
+     * identified.
+     * @param prefix Path prefix, this is used to help build up a fully qualified column name relative to the list
+     * origin.
      * @return Updated list of known column headers.
      */
     private ArrayList<String> extractColNamesFromFields(JsonNode node, ArrayList<String> existingColumns, String prefix) {
@@ -213,6 +207,8 @@ public class JSONImportFileParser extends ImportFileParser {
                     // potential column title, with nested lists ultimately
                     // representing their data as a merged value string.
                     existingColumns.add(prefix + entry.getKey());
+                } else {
+                    // Do nothing
                 }
             }
         }
@@ -220,17 +216,15 @@ public class JSONImportFileParser extends ImportFileParser {
     }
 
     /**
-     * Private wrapper function designed to create a comprehensive list of
-     * column names within the JSON structure starting at the supplied parent
-     * node. This function requires the list to have already been validated, as
-     * is done by lookForChildArrays, which only identifies valid lists.
+     * Private wrapper function designed to create a comprehensive list of column names within the JSON structure
+     * starting at the supplied parent node. This function requires the list to have already been validated, as is done
+     * by lookForChildArrays, which only identifies valid lists.
      *
      * @param parent The parent node to start column name extraction from.
-     * @param existingColumns List of already identified columns. This list is
-     * added to if new column names are identified. If null, then the list is
-     * created, this would be the case upon the first call.
-     * @param prefix Path prefix, this is used to help build up a fully
-     * qualified column name relative to the list origin.
+     * @param existingColumns List of already identified columns. This list is added to if new column names are
+     * identified. If null, then the list is created, this would be the case upon the first call.
+     * @param prefix Path prefix, this is used to help build up a fully qualified column name relative to the list
+     * origin.
      * @return Updated list of known column headers.
      */
     private ArrayList<String> extractAllColNames(JsonNode parent, ArrayList<String> existingColumns, String prefix) {
@@ -263,26 +257,18 @@ public class JSONImportFileParser extends ImportFileParser {
     }
 
     /**
-     * Private function which constructs a line of data (based on column names)
-     * starting at the selected node. The line of data will include all values
-     * at the level of the supplied node as well as any nested values, using a
-     * prefix notation to identify the column name to use - as generated by the
-     * function extractAllColNames. Both this function and the column extraction
-     * functions need to stay in synch in relation to how column names are
-     * constructed.
+     * Private function which constructs a line of data (based on column names) starting at the selected node. The line
+     * of data will include all values at the level of the supplied node as well as any nested values, using a prefix
+     * notation to identify the column name to use - as generated by the function extractAllColNames. Both this function
+     * and the column extraction functions need to stay in synch in relation to how column names are constructed.
      *
      * @param node Node to start line extraction from.
-     * @param columnMap A map listing names of all available columns and
-     * containing an index to the column number that should contain this info.
-     * This map is built up from the list of extracted columns and allows data
-     * at a given JSON path to be correctly matched with the column it belongs
-     * in in the extracted line.
-     * @param prefix Prefix string identifying the JSON path to the node from
-     * the parent node of the list.
-     * @param line The line to add content to, if null setup the line with
-     * enough slots to cover all columns.
-     * @return line of data. This is effectively an array of strings, one per
-     * column.
+     * @param columnMap A map listing names of all available columns and containing an index to the column number that
+     * should contain this info. This map is built up from the list of extracted columns and allows data at a given JSON
+     * path to be correctly matched with the column it belongs in in the extracted line.
+     * @param prefix Prefix string identifying the JSON path to the node from the parent node of the list.
+     * @param line The line to add content to, if null setup the line with enough slots to cover all columns.
+     * @return line of data. This is effectively an array of strings, one per column.
      */
     private String[] getLineContent(JsonNode node, Map<String, Integer> columnMap, String prefix, String[] line) {
 
@@ -310,60 +296,50 @@ public class JSONImportFileParser extends ImportFileParser {
                 if (entry.getValue().isObject()) {
                     line = getLineContent(entry.getValue(), columnMap, (prefix + entry.getKey() + SeparatorConstants.PERIOD), line);
                 } else {
-                    line[columnMap.get(prefix + entry.getKey())] = entry.getValue().toString().replaceAll("^\"|\"$", "");
+                    line[columnMap.get(prefix + entry.getKey())] = entry.getValue().toString().replaceAll("(^\")|(\"$)", "");
                 }
             }
+        } else {
+            // Do nothing
         }
         return line;
     }
 
     /**
-     * Top level processing function. This function is called by both the
-     * overloaded base class functions parse and preview to avoid code
-     * duplication. This function uses the other private functions found in this
-     * class to do the following: 1. identify the best available list within the
-     * overall JSON file to use 2. for the identified list, recursively build up
-     * a list of candidate columns 3. loop through each list entry and extract
-     * values into a list of data to return.
+     * Top level processing function. This function is called by both the overloaded base class functions parse and
+     * preview to avoid code duplication. This function uses the other private functions found in this class to do the
+     * following: 1. identify the best available list within the overall JSON file to use 2. for the identified list,
+     * recursively build up a list of candidate columns 3. loop through each list entry and extract values into a list
+     * of data to return.
      *
-     * Key Considerations: Refer to the following sample JSON example to
-     * demonstrate key processing considerations.
+     * Key Considerations: Refer to the following sample JSON example to demonstrate key processing considerations.
      *
      * {
-     * "parent": { "description": "this is example JSON", "badlist": ["this",
-     * "list", "contains", "strings", "only"], "goodlist": [ { "name":
-     * "record1", "age": 184, "address": { "city": "Adelaide", "state": "SA",
-     * "postcode": 5001, "commerical": ["pub", "shop"], "history": { "est":
-     * 2025, "population": 600 } } }, { "name": "record2", "description":
-     * "example description", "address": { "city": "Canberra", "state": "ACT",
-     * "postcode": 2601, "latitude": -32.2809, "longitude": 149.13 } } ] } }
+     * "parent": { "description": "this is example JSON", "badlist": ["this", "list", "contains", "strings", "only"],
+     * "goodlist": [ { "name": "record1", "age": 184, "address": { "city": "Adelaide", "state": "SA", "postcode": 5001,
+     * "commerical": ["pub", "shop"], "history": { "est": 2025, "population": 600 } } }, { "name": "record2",
+     * "description": "example description", "address": { "city": "Canberra", "state": "ACT", "postcode": 2601,
+     * "latitude": -32.2809, "longitude": 149.13 } } ] } }
      *
-     * 1. The list parent/badlist will be ignored as it doesn't contain only
-     * objects. 2. The list parent/goodlist will be considered as all of the
-     * following conditions are met: - it has at least one entry - all list
-     * entries are complex objects - it is not nested under another list 3. The
-     * list parent/goodlist/1/address/commercial will be ignored as: - it
-     * doesn't contain only objects - it is deeper than parent/goodlist - it is
-     * contained within another list 4. Ultimately list parent/goodlist is
-     * chosen as its the shallowest list found. The only way it would have been
-     * overlooked was if parent/badlist was valid, or if another list node was
-     * added at the same level as parent. 5. The following column names and data
-     * would be extracted (under the parent/goodlist list node). Note, first
-     * column is column name, columns 2 and 3 are records. - name record1
-     * record2 - age 184             <null>
-     * - address.city Adelaide Canberra - address.state SA SA - address.postcode
-     * 5001 2601 - address.commerical ["pub", "shop"] <null>
+     * 1. The list parent/badlist will be ignored as it doesn't contain only objects. 2. The list parent/goodlist will
+     * be considered as all of the following conditions are met: - it has at least one entry - all list entries are
+     * complex objects - it is not nested under another list 3. The list parent/goodlist/1/address/commercial will be
+     * ignored as: - it doesn't contain only objects - it is deeper than parent/goodlist - it is contained within
+     * another list 4. Ultimately list parent/goodlist is chosen as its the shallowest list found. The only way it would
+     * have been overlooked was if parent/badlist was valid, or if another list node was added at the same level as
+     * parent. 5. The following column names and data would be extracted (under the parent/goodlist list node). Note,
+     * first column is column name, columns 2 and 3 are records. - name record1 record2 - age 184             <null>
+     * - address.city Adelaide Canberra - address.state SA SA - address.postcode 5001 2601 - address.commerical ["pub",
+     * "shop"] <null>
      * - address.history.est 2025            <null>
      * - address.history.population 600             <null>
      * - description                    <null> example description - address.latitude               <null>
-     * -32.2809 - address.longitude              <null> 149.13 As can be seen above, if a
-     * filed doesn't exist in a particular row it is nulled. This handles the
-     * case with individual rows have incomplete or differing fields.
+     * -32.2809 - address.longitude              <null> 149.13 As can be seen above, if a filed doesn't exist in a particular row it
+     * is nulled. This handles the case with individual rows have incomplete or differing fields.
      *
      * @param input Input file
      * @param limit How many rows to return
-     * @return a List of String arrays, each of which represents a row in the
-     * resulting table.
+     * @return a List of String arrays, each of which represents a row in the resulting table.
      */
     private List<String[]> getResults(final InputSource input, final int limit) throws IOException {
 
@@ -428,13 +404,11 @@ public class JSONImportFileParser extends ImportFileParser {
     }
 
     /**
-     * Reads the entire file and returns a List of String arrays, each of which
-     * represents a row in the resulting table.
+     * Reads the entire file and returns a List of String arrays, each of which represents a row in the resulting table.
      *
      * @param input Input file
      * @param parameters the parameters that configure the parse operation.
-     * @return a List of String arrays, each of which represents a row in the
-     * resulting table.
+     * @return a List of String arrays, each of which represents a row in the resulting table.
      * @throws IOException if an error occurred while reading the file.
      */
     @Override
@@ -443,14 +417,13 @@ public class JSONImportFileParser extends ImportFileParser {
     }
 
     /**
-     * Reads only {@code limit} lines and returns a List of String arrays, each
-     * of which represents a row in the resulting table.
+     * Reads only {@code limit} lines and returns a List of String arrays, each of which represents a row in the
+     * resulting table.
      *
      * @param input Input file
      * @param parameters the parameters that configure the parse operation.
      * @param limit Row limit
-     * @return a List of String arrays, each of which represents a row in the
-     * resulting table.
+     * @return a List of String arrays, each of which represents a row in the resulting table.
      * @throws IOException if an error occurred while reading the file.
      */
     @Override

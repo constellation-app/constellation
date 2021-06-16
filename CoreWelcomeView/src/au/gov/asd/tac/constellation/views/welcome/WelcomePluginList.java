@@ -16,10 +16,10 @@
 package au.gov.asd.tac.constellation.views.welcome;
 
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
-import au.gov.asd.tac.constellation.views.welcome.plugins.DelimitedFileWelcomePlugin;
-import au.gov.asd.tac.constellation.views.welcome.plugins.JDBCImportWelcomePlugin;
 import au.gov.asd.tac.constellation.views.welcome.plugins.AddModeWelcomePlugin;
+import au.gov.asd.tac.constellation.views.welcome.plugins.DelimitedFileWelcomePlugin;
 import au.gov.asd.tac.constellation.views.welcome.plugins.GettingStartedWelcomePlugin;
+import au.gov.asd.tac.constellation.views.welcome.plugins.JDBCImportWelcomePlugin;
 import au.gov.asd.tac.constellation.views.welcome.plugins.JoinCommWelcomePlugin;
 import au.gov.asd.tac.constellation.views.welcome.plugins.OpenGraphWelcomePlugin;
 import au.gov.asd.tac.constellation.views.welcome.plugins.ProvideFeedbackWelcomePlugin;

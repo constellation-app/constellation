@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -102,6 +102,8 @@ public class ClusteringManager {
             } else if (leaves.size() == 1) {
                 tree = leaves.get(0);
                 return new TimeExtents(tree.getLowerTimeExtent(), tree.getUpperTimeExtent());
+            } else {
+                // Do nothing
             }
 
             Collections.sort(leaves);
@@ -201,6 +203,8 @@ public class ClusteringManager {
                         elementsToUndim.add(te);
                     } else if (exclusionState == 2) {
                         elementsToUnhide.add(te);
+                    } else {
+                        // Do nothing
                     }
                 } else {
                     final TreeNode node = (TreeNode) te;
@@ -378,6 +382,8 @@ public class ClusteringManager {
                             }
                         }
                     }
+                } else {
+                    // Do nothing
                 }
 
                 for (int pos = 0; pos < wg.getTransactionCount(); pos++) {
@@ -668,6 +674,8 @@ public class ClusteringManager {
                             }
                         }
                     }
+                } else {
+                    // Do nothing
                 }
 
                 for (Integer vertexId : verticesToBeUndimmed) {

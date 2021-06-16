@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,9 +35,8 @@ import org.openide.util.NbBundle.Messages;
 
 /**
  * A
- * <code>Cluster</code> object is a JFX object that represents a temporal
- * cluster of events that is graphically displayed on a
- * <code>TimelineChart</code>. the blue bars... you see on timeline.
+ * <code>Cluster</code> object is a JFX object that represents a temporal cluster of events that is graphically
+ * displayed on a <code>TimelineChart</code>. the blue bars... you see on timeline.
  *
  * @see TimelineChart
  *
@@ -65,8 +64,7 @@ public class Cluster extends Group {
     /**
      * The mouse event handler for <code>Cluster</code> objects.
      * <p>
-     * Is responsible for events such as mouse entering, exiting, or clicking on
-     * a <code>Cluster</code> object.
+     * Is responsible for events such as mouse entering, exiting, or clicking on a <code>Cluster</code> object.
      *
      * @see Cluster
      */
@@ -94,6 +92,8 @@ public class Cluster extends Group {
                     isDragging = false;
                 } else if (me.getEventType() == MouseEvent.MOUSE_DRAGGED) {
                     isDragging = true;
+                } else {
+                    // Do nothing
                 }
             }
         }
@@ -103,18 +103,15 @@ public class Cluster extends Group {
     /**
      * Creates a new <code>Cluster</code> instance.
      * <p>
-     * This involves the creation of both a label and rectangle which are
-     * grouped to show the extents of and number of events represented by a
-     * given <code>Cluster</code> object.
+     * This involves the creation of both a label and rectangle which are grouped to show the extents of and number of
+     * events represented by a given <code>Cluster</code> object.
      *
      * @param lowerBound The lower bound of time. (The first x-coordinate).
      * @param upperBound The upper bound of time. (The last x-coordinate).
-     * @param lowerDisplayPos The bottom display position. (The bottom
-     * y-coordinate).
+     * @param lowerDisplayPos The bottom display position. (The bottom y-coordinate).
      * @param upperDisplayPos The top display position. (The top y-coordinate).
      * @param count The number of events the cluster represents.
-     * @param selectedCount The number of events represented by this cluster,
-     * which are also 'selected' on the graph.
+     * @param selectedCount The number of events represented by this cluster, which are also 'selected' on the graph.
      * @param anyNodesSelected ???
      */
     public Cluster(final long lowerBound, final long upperBound,
@@ -257,8 +254,7 @@ public class Cluster extends Group {
     }
 
     /**
-     * Gets the count of events (transactions only) that are currently
-     * 'selected' on the graph.
+     * Gets the count of events (transactions only) that are currently 'selected' on the graph.
      *
      * @return The count of selected events.
      */
@@ -271,8 +267,7 @@ public class Cluster extends Group {
     }
 
     /**
-     * Sets the count of events (transactions only) that are currently
-     * 'selected' on the graph.
+     * Sets the count of events (transactions only) that are currently 'selected' on the graph.
      *
      * @param selectedCount The count of selected events.
      */

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -207,6 +207,8 @@ public class CopyDataToExcelFile implements ActionListener, Action {
                 processAllRowsToExcel(true);
             } else if (e.getActionCommand().equals(Bundle.MSG_SelectedExcel())) {
                 processSelectedRowsToExcel(true);
+            } else {
+                // Do nothing
             }
         } catch (final IOException ex) {
             Exceptions.printStackTrace(ex);
@@ -214,11 +216,9 @@ public class CopyDataToExcelFile implements ActionListener, Action {
     }
 
     /**
-     * An array of length table.getRowCount() containing 0, 1, 2,...
-     * representing all rows in the table.
+     * An array of length table.getRowCount() containing 0, 1, 2,... representing all rows in the table.
      *
-     * @return An array of length table.getRowCount() containing 0, 1, 2,...
-     * representing all rows in the table.
+     * @return An array of length table.getRowCount() containing 0, 1, 2,... representing all rows in the table.
      */
     private int[] allRows() {
         final int[] rowIndices = new int[table.getRowCount()];

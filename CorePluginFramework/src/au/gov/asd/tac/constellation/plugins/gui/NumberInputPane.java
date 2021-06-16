@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,9 @@ import static au.gov.asd.tac.constellation.plugins.parameters.ParameterChange.EN
 import static au.gov.asd.tac.constellation.plugins.parameters.ParameterChange.VALUE;
 import static au.gov.asd.tac.constellation.plugins.parameters.ParameterChange.VISIBLE;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FloatParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.NumberParameterValue;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -35,20 +33,15 @@ import javafx.scene.layout.Pane;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * A NumberSpinner allowing numeric entries, which is the GUI element
- * corresponding to a {@link PluginParameter} of
- * {@link au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType}
- * or
+ * A NumberSpinner allowing numeric entries, which is the GUI element corresponding to a {@link PluginParameter} of
+ * {@link au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType} or
  * {@link au.gov.asd.tac.constellation.plugins.parameters.types.FloatParameterType}.
  * <p>
- * Editing the number spinner's field, either with the buttons or directly, will
- * set the string value of underlying {@link PluginParameter}, and also cause
- * the parameter to validate this value.
+ * Editing the number spinner's field, either with the buttons or directly, will set the string value of underlying
+ * {@link PluginParameter}, and also cause the parameter to validate this value.
  *
- * @param <T> The type of {@link Number} values stored. Note that only
- * {@link Integer} and {@link Float} are supported.
- * @see
- * au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType
+ * @param <T> The type of {@link Number} values stored. Note that only {@link Integer} and {@link Float} are supported.
+ * @see au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType
  * @see au.gov.asd.tac.constellation.plugins.parameters.types.FloatParameterType
  *
  * @author algol
@@ -67,22 +60,6 @@ public class NumberInputPane<T> extends Pane {
     private static final String INVALID_ID = "invalid";
 
     public NumberInputPane(final PluginParameter<?> parameter) {
-
-        final String parameterId = parameter.getId();
-        final List<String> numberRecentValues = RecentParameterValues.getRecentValues(parameterId);
-        if (numberRecentValues != null) {
-            switch (parameter.getType().getId()) {
-                case FloatParameterType.ID:
-                    parameter.setFloatValue(Float.valueOf(numberRecentValues.get(numberRecentValues.size() > 1 ? 1 : 0)));
-                    break;
-                case IntegerParameterType.ID:
-                    parameter.setIntegerValue(Integer.valueOf(numberRecentValues.get(numberRecentValues.size() > 1 ? 1 : 0)));
-                    break;
-                default:
-                    break;
-            }
-        }
-
         final NumberParameterValue pv = (NumberParameterValue) parameter.getParameterValue();
         final Number min = pv.getMinimumValue();
         final Number max = pv.getMaximumValue();
@@ -176,6 +153,8 @@ public class NumberInputPane<T> extends Pane {
                         } else if (currentTextValue != null && currentTextValue.isEmpty()) {
                             field.setId(INVALID_ID);
                             parameter.setError("Invalid value");
+                        } else {
+                            // Do nothing
                         }
                         break;
                     case ENABLED:

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ public class Startup implements Runnable {
     @Override
     public void run() {
         ConstellationSecurityManager.startSecurityLater(null);
-
+        
         // application environment
         final String environment = System.getProperty(SYSTEM_ENVIRONMENT);
         final String name = environment != null
@@ -53,7 +53,8 @@ public class Startup implements Runnable {
             final String title = String.format("%s - %s", name, VERSION);
             frame.setTitle(title);
         });
-
-        FontUtilities.initialiseFontPreferenceOnFirstUse();
+        
+        FontUtilities.initialiseOutputFontPreferenceOnFirstUse();
+        FontUtilities.initialiseApplicationFontPreferenceOnFirstUse();
     }
 }

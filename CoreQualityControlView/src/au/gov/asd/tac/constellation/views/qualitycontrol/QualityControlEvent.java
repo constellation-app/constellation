@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
+import org.openide.util.Lookup;
 
 /**
  * QualityControlEvent for estimating the quality of the data encompassed by a
@@ -143,7 +144,7 @@ public class QualityControlEvent implements Comparable<QualityControlEvent> {
      */
     public static QualityControlRule getRuleByString(final String ruleName) {
         if (StringUtils.isNotEmpty(ruleName)) {
-            for (final QualityControlRule rule : QualityControlViewPane.getLookup().lookupAll(QualityControlRule.class)) {
+            for (final QualityControlRule rule : Lookup.getDefault().lookupAll(QualityControlRule.class)) {
                 if (ruleName.equals(rule.getName())) {
                     return rule;
                 }

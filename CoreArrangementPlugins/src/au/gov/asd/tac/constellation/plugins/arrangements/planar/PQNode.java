@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -231,6 +231,8 @@ class PQNode {
                     removed.add(grandchild);
                 }
                 toFlatten = child;
+            } else {
+                // Do nothing
             }
             if (child == dividingNode) {
                 if (child.label.equals(NodeLabel.PARTIAL)) {
@@ -275,6 +277,8 @@ class PQNode {
                     toFlatten = child;
                 }
                 toRemove = NodeLabel.FULL;
+            } else {
+                // Do nothing
             }
             if (child.label.equals(toRemove)) {
                 removeChild(child);
@@ -285,6 +289,8 @@ class PQNode {
                     removed.add(grandchild);
                 }
                 toFlatten = child;
+            } else {
+                // Do nothing
             }
         }
         if (toFlatten != null) {
@@ -409,6 +415,8 @@ class PQNode {
             } else if (count > maxCountSinceAnchor) {
                 maxCountSinceAnchor = count;
                 maxNodeSinceAnchor = child;
+            } else {
+                // Do nothing
             }
         }
         count += carry;

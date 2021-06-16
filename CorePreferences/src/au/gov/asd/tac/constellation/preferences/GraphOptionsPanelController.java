@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -95,6 +95,7 @@ public final class GraphOptionsPanelController extends OptionsPanelController {
 
     @Override
     public void cancel() {
+        // Method intentionally left blank
     }
 
     // Add code to check valid values. may be needed for expansion of this UI manu.

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -119,6 +119,8 @@ public class PermanentMergePlugin extends SimpleEditPlugin implements HelpCtx.Pr
                 selectedNode = this.createVertex(graph, attributes);
             } else if (selections.contains(selectedNode)) {
                 selections.remove((Integer) selectedNode);
+            } else {
+                // Do nothing
             }
 
             this.processTransactions(graph, selections, selectedNode, createLoops, keepSimple);
@@ -130,8 +132,7 @@ public class PermanentMergePlugin extends SimpleEditPlugin implements HelpCtx.Pr
     }
 
     /**
-     * Create a new vertex and populate its attributes with the ones selected by
-     * the user
+     * Create a new vertex and populate its attributes with the ones selected by the user
      *
      * @param graph containing the created vertex
      * @param attributes set of selected attributes

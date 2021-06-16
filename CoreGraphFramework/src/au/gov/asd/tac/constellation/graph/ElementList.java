@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -143,6 +143,8 @@ public class ElementList {
             prev[first] = element;
             next[element] = first;
             first = element;
+        } else {
+            // Do nothing
         }
 
         // Return false to indicate that we did not add the element to the list
@@ -186,6 +188,8 @@ public class ElementList {
             next[last] = element;
             prev[element] = last;
             last = element;
+        } else {
+            // Do nothing
         }
 
         return false;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,9 @@ package au.gov.asd.tac.constellation.plugins.gui;
 
 import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
 import au.gov.asd.tac.constellation.plugins.parameters.types.LocalDateParameterType.LocalDateParameterValue;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -112,10 +110,5 @@ public class LocalDateInputPane extends Pane {
         });
 
         getChildren().add(field);
-        final String parameterId = parameter.getId();
-        final List<String> dateTimeRecentValues = RecentParameterValues.getRecentValues(parameterId);
-        if (dateTimeRecentValues != null) {
-            parameter.setStringValue(dateTimeRecentValues.get(dateTimeRecentValues.size() > 1 ? 1 : 0));
-        }
     }
 }

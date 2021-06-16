@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,14 +33,13 @@ public class RecentGraphScreenshotUtilities {
 
     private static final String SCREENSHOTS_DIR = "Screenshots";
     private static final Logger LOGGER = Logger.getLogger(RecentGraphScreenshotUtilities.class.getName());
-    
+
     private RecentGraphScreenshotUtilities() {
         throw new IllegalArgumentException("Utility class");
     }
 
     /**
-     * Retrieve the screenshots user directory that is used to save a screenshot
-     * of the graph
+     * Retrieve the screenshots user directory that is used to save a screenshot of the graph
      *
      * @return The screenshot directory location
      */
@@ -54,6 +53,8 @@ public class RecentGraphScreenshotUtilities {
             final String msg = String.format("Recent graph screenshots directory '%s' is not a directory", SCREENSHOTS_DIR);
             LOGGER.warning(msg);
             return null;
+        } else {
+            return saveDir;
         }
 
         return saveDir;
@@ -62,9 +63,8 @@ public class RecentGraphScreenshotUtilities {
     /**
      * Take a screenshot of the graph and save it to the screenshots directory.
      * <p>
-     * Note that most of the code in this method was taken from the
-     * {@code ExportToImagePlugin}. Due to module dependencies, the
-     * ExportToImagePlugin could not be run directly.
+     * Note that most of the code in this method was taken from the {@code ExportToImagePlugin}. Due to module
+     * dependencies, the ExportToImagePlugin could not be run directly.
      *
      * @param filename The filename of the graph
      */

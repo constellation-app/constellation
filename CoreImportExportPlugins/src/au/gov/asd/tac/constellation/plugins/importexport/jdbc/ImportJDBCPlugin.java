@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -218,7 +218,7 @@ public class ImportJDBCPlugin extends SimpleEditPlugin {
 
         int directedIx = ImportConstants.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN;
         for (int i = 0; i < transactionDefinitions.size(); i++) {
-            if (transactionDefinitions.get(i).getAttribute().getName().equals(ImportController.DIRECTED)) {
+            if (transactionDefinitions.get(i).getAttribute().getName().equals(JDBCImportController.DIRECTED)) {
                 directedIx = transactionDefinitions.get(i).getColumnIndex();
                 break;
             }

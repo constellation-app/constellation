@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,8 +31,7 @@ import javafx.util.Pair;
 import org.openide.util.NbPreferences;
 
 /**
- * A ProxySelector that matches local hosts, specific hosts, and a default proxy
- * for HTTP and HTTPS protocols.
+ * A ProxySelector that matches local hosts, specific hosts, and a default proxy for HTTP and HTTPS protocols.
  *
  * @author algol
  */
@@ -82,20 +81,20 @@ public class ConstellationHttpProxySelector extends ProxySelector {
         if (isHttp) {
             final String host = uri.getHost().toLowerCase();
 
-            // First step: is this a local host?
-            final boolean isBypassProxyHost = isLocalHost(host, bypassProxyHosts);
-            if (isBypassProxyHost) {
-                LOGGER.log(Level.FINE, "host {0} will bypass the proxy", host);
-                return NO_PROXY;
-            }
-
-            // Second step: do we have a specific proxy for this host?
+            // First step: do we have a specific proxy for this host?
             for (final Pair<String, Pair<String, Integer>> entry : additionalProxies) {
                 final String additionalProxyHost = entry.getKey();
                 if (isValidHost(host, additionalProxyHost)) {
                     LOGGER.log(Level.FINE, "host {0} will use additional proxy {1}", new Object[]{host, additionalProxyHost});
                     return makeProxy(entry.getValue());
                 }
+            }
+
+            // Second step: is this a local host?
+            final boolean isBypassProxyHost = isLocalHost(host, bypassProxyHosts);
+            if (isBypassProxyHost) {
+                LOGGER.log(Level.FINE, "host {0} will bypass the proxy", host);
+                return NO_PROXY;
             }
 
             // Third and last step: do we have a default proxy?
@@ -111,11 +110,9 @@ public class ConstellationHttpProxySelector extends ProxySelector {
     }
 
     /**
-     * Construct a {@link Proxy} object from the given {@link Pair} containing
-     * an address and port for the proxy.
+     * Construct a {@link Proxy} object from the given {@link Pair} containing an address and port for the proxy.
      *
-     * @param proxy a {@link Pair} object containing an address and port for the
-     * proxy.
+     * @param proxy a {@link Pair} object containing an address and port for the proxy.
      * @return a {@link Proxy} object representing the proxy.
      */
     private List<Proxy> makeProxy(final Pair<String, Integer> proxy) {
@@ -128,20 +125,17 @@ public class ConstellationHttpProxySelector extends ProxySelector {
     /**
      * Is the specified host local?
      * <p>
-     * The host is compared case-insensitively to each name in the localHosts
-     * list. If the local name starts with ".", it is a suffix; the host is
-     * local if it ends with the suffix. If the local name does not start with
-     * ".", it is a host name; the host is local if it equals the local name.
+     * The host is compared case-insensitively to each name in the localHosts list. If the local name starts with ".",
+     * it is a suffix; the host is local if it ends with the suffix. If the local name does not start with ".", it is a
+     * host name; the host is local if it equals the local name.
      * <p>
-     * The localHosts list implicitly has "localhost" and "127.0.0.1" at the
-     * beginning.
+     * The localHosts list implicitly has "localhost" and "127.0.0.1" at the beginning.
      * <p>
      * If nothing matches, the host is not local.
      *
      * @param host A host name.
      *
-     * @return True if the host matches a suffix or name and is therefore local,
-     * false otherwise.
+     * @return True if the host matches a suffix or name and is therefore local, false otherwise.
      */
     private static boolean isLocalHost(final String host, final List<String> localHosts) {
         final String hostLowerCase = host.toLowerCase();
@@ -155,17 +149,15 @@ public class ConstellationHttpProxySelector extends ProxySelector {
     /**
      * Does the specified host match the specified compareHost?
      * <p>
-     * The host is compared to the compareHost. If the compare name starts with
-     * ".", it is a suffix; the host is valid if it ends with that suffix. If
-     * the compare name does not start with ".", it is a host name; the host is
-     * valid if it equals that host name.
+     * The host is compared to the compareHost. If the compare name starts with ".", it is a suffix; the host is valid
+     * if it ends with that suffix. If the compare name does not start with ".", it is a host name; the host is valid if
+     * it equals that host name.
      * <p>
      * If nothing matches, the host is not valid.
      *
      * @param host A host name.
      *
-     * @return True if the host matches a suffix or name and is therefore local,
-     * false otherwise.
+     * @return True if the host matches a suffix or name and is therefore local, false otherwise.
      */
     private static boolean isValidHost(final String host, final String compareHost) {
         if (compareHost.startsWith(".")) {
@@ -174,6 +166,8 @@ public class ConstellationHttpProxySelector extends ProxySelector {
             }
         } else if (compareHost.equals(host)) {
             return true;
+        } else {
+            // Do nothing
         }
 
         return false;

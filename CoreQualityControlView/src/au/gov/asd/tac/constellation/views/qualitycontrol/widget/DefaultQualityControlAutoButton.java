@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,14 +41,14 @@ import org.openide.windows.WindowManager;
 @NbBundle.Messages("MSG_NoRisk=N/A")
 public final class DefaultQualityControlAutoButton extends QualityControlAutoButton implements QualityControlListener {
 
-    private static final String DEFAULT_TEXT_STYLE = "-fx-text-fill: rgb(0,0,0); -fx-background-color: rgb(255,255,255);";
-    private static final String BUTTON_STYLE = "-fx-padding: 2 5 2 5;";
+    protected static final String DEFAULT_TEXT_STYLE = "-fx-text-fill: rgb(0,0,0); -fx-background-color: rgb(255,255,255);";
+    protected static final String BUTTON_STYLE = "-fx-padding: 2 5 2 5;";
     public static final String QUERY_RISK_DEFAULT_STYLE = "-fx-text-fill: rgb(0,0,0); -fx-padding: 2 5 2 5;";
     public static final String QUALITY_CONTROL_WIDGET_TEXT = "Quality Category: %s";
 
     public DefaultQualityControlAutoButton() {
         getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
-        setStyle(QUERY_RISK_DEFAULT_STYLE + BUTTON_STYLE + String.format("-fx-font-size:%d;", FontUtilities.getOutputFontSize()));
+        setStyle(QUERY_RISK_DEFAULT_STYLE + BUTTON_STYLE + String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
 
         setOnAction(value -> {
             SwingUtilities.invokeLater(() -> {

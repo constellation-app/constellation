@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -231,6 +231,8 @@ class PQTree {
             PQNode labeledNode = node.labeledChildren.get(label).iterator().next();
             node.removeChild(labeledNode);
             return labeledNode;
+        } else {
+            // Do nothing
         }
         PQNode newPNode = new PQNode(NodeType.PNODE);
         newPNode.relabel(label);

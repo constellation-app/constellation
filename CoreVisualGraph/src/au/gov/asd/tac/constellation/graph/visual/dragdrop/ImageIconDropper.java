@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,8 +49,8 @@ import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Allows an image object or an image file to be dropped onto the graph. The
- * currently selected vertices will have their icon changed to show the image.
+ * Allows an image object or an image file to be dropped onto the graph. The currently selected vertices will have their
+ * icon changed to show the image.
  *
  * @author sirius
  */
@@ -98,6 +98,8 @@ public class ImageIconDropper implements GraphDropper {
                         image = ImageIO.read(file);
                     }
                 }
+            } else {
+                // Do nothing
             }
             if (image != null) {
                 final BufferedImage resultImage = image;

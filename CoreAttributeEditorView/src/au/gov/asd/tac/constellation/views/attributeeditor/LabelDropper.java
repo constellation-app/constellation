@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,8 +49,7 @@ import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Drop a label indicator onto a graph, change the top node label or transaction
- * label.
+ * Drop a label indicator onto a graph, change the top node label or transaction label.
  *
  * @author algol
  */
@@ -134,8 +133,7 @@ public class LabelDropper implements GraphDropper {
             } catch (final UnsupportedFlavorException | IOException | ClassNotFoundException ex) {
                 Exceptions.printStackTrace(ex);
             } catch (final ClassCastException ex) {
-                //Do nothing
-                //This exception occurs when dragging a label from Attribute Editor to graph area
+                // This exception occurs when dragging a label from Attribute Editor to graph area
             }
         }
 

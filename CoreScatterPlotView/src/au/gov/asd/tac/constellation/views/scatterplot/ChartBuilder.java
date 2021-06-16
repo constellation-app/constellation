@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,11 @@ package au.gov.asd.tac.constellation.views.scatterplot;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.views.scatterplot.axis.AxisBuilder;
 import au.gov.asd.tac.constellation.views.scatterplot.axis.LogarithmicAxisBuilder;
 import au.gov.asd.tac.constellation.views.scatterplot.axis.NumberAxisBuilder;
 import au.gov.asd.tac.constellation.views.scatterplot.state.ScatterPlotState;
-import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.util.Set;
 import java.util.function.Predicate;
 import javafx.scene.chart.Axis;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -147,7 +147,7 @@ public class TimelinePanel extends Region {
 
         // Style the timeline panel:
         this.getStylesheets().add(TimelinePanel.class.getResource(DARK_THEME).toExternalForm());
-        this.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getOutputFontSize()));
+        this.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
     }
 
     // <editor-fold defaultstate="collapsed" desc="Layout Layers">

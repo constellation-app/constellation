@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,8 +33,7 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Calculates ratio of reciprocity for each pair of vertices. This importance
- * measure does not include loops.
+ * Calculates ratio of reciprocity for each pair of vertices. This importance measure does not include loops.
  *
  * @author cygnus_x-1
  */
@@ -96,6 +95,8 @@ public class RatioOfReciprocityPlugin extends SimpleEditPlugin {
                     } else if ((linkLowId < linkHighId && transactionDirection == GraphConstants.UPHILL)
                             || (linkLowId > linkHighId && transactionDirection == GraphConstants.DOWNHILL)) {
                         transactionOutCount++;
+                    } else {
+                        // Do nothing
                     }
                 }
 

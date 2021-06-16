@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,8 +42,7 @@ import javafx.scene.layout.RowConstraints;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * The TranslationConversationContributionProvider adds the contents of the
- * Content.Translated attribute to a message.
+ * The TranslationConversationContributionProvider adds the contents of the Content.Translated attribute to a message.
  *
  * @author sirius
  */
@@ -121,6 +120,8 @@ public class TranslationConversationContributionProvider extends ConversationCon
                     e.consume();
                 } else if (e.getCode() == KeyCode.ESCAPE) {
                     e.consume();
+                } else {
+                    // Do nothing
                 }
             });
         }

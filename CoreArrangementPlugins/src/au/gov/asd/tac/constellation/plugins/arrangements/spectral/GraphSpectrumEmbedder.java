@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -121,18 +121,34 @@ public class GraphSpectrumEmbedder {
                         continue;
                     } else if (idToMatrixPosition.get(neighbourID) == i) {
                         continue;
+                    } else {
+                        // Do nothing
                     }
                     neighbourCount++;
-                    if (type == MatrixType.LAPLACIAN_MATRIX) {
-                        matrixEntries[i][idToMatrixPosition.get(neighbourID)] = -1;
-                    } else if (type == MatrixType.ADJACENCY_MATRIX) {
-                        matrixEntries[i][idToMatrixPosition.get(neighbourID)] = 1;
+                    if (type != null) {
+                        switch (type) {
+                            case LAPLACIAN_MATRIX:
+                                matrixEntries[i][idToMatrixPosition.get(neighbourID)] = -1;
+                                break;
+                            case ADJACENCY_MATRIX:
+                                matrixEntries[i][idToMatrixPosition.get(neighbourID)] = 1;
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 }
-                if (type == MatrixType.LAPLACIAN_MATRIX) {
-                    matrixEntries[i][i] = neighbourCount;
-                } else if (type == MatrixType.ADJACENCY_MATRIX) {
-                    matrixEntries[i][i] = 0;
+                if (type != null) {
+                    switch (type) {
+                        case LAPLACIAN_MATRIX:
+                            matrixEntries[i][i] = neighbourCount;
+                            break;
+                        case ADJACENCY_MATRIX:
+                            matrixEntries[i][i] = 0;
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,8 +35,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * A CSVImportFileParser implements an ImportFileParser that can parse CSV
- * files.
+ * A CSVImportFileParser implements an ImportFileParser that can parse CSV files.
  *
  * @author canis_majoris
  */
@@ -127,6 +126,8 @@ public class ExcelImportFileParser extends ImportFileParser {
                     }
                 }
             }
+        } else {
+            // Do nothing
         }
         return results;
     }
@@ -219,6 +220,8 @@ public class ExcelImportFileParser extends ImportFileParser {
                     }
                 }
             }
+        } else {
+            // Do nothing
         }
         return results;
 

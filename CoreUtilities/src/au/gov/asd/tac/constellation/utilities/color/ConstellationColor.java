@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,8 +26,8 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 /**
- * A ConstellationColor manages data related to a color in CONSTELLATION,
- * including its red, gree, blue and alpha components, and optionally a name.
+ * A ConstellationColor manages data related to a color in CONSTELLATION, including its red, gree, blue and alpha
+ * components, and optionally a name.
  *
  * @author sirius
  * @author cygnus_x-1
@@ -130,8 +130,8 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
     /**
      * Return a ColorValue corresponding to the given name.
      * <p>
-     * If the name does not exist, an attempt will be made to parse the label
-     * string as either the 'RGBrrrgggbbb' or 'r,g,b,a' format.
+     * If the name does not exist, an attempt will be made to parse the label string as either the 'RGBrrrgggbbb' or
+     * 'r,g,b,a' format.
      *
      * @param name a color name
      * @return A ColorValue instance if one can be derived, else null.
@@ -153,6 +153,8 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
             return fromRgbWithCommaColor(ucName);
         } else if (ucName.startsWith("#")) {
             return fromHtmlColor(name);
+        } else {
+            // Do nothing
         }
 
         return null;
@@ -278,11 +280,9 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
     }
 
     /**
-     * Convert a ColorValue to an HTML hex color string (#RRGGBB). Note that the
-     * alpha value is ignored.
+     * Convert a ColorValue to an HTML hex color string (#RRGGBB). Note that the alpha value is ignored.
      *
-     * @return An HTML hex color string (#RRGGBB) corresponding to this
-     * ColorValue.
+     * @return An HTML hex color string (#RRGGBB) corresponding to this ColorValue.
      */
     public String getHtmlColor() {
         final int r = (int) (redColorValue * 255);
@@ -331,8 +331,7 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
     }
 
     /**
-     * Get a contrasting color based on YIQ values. Will return BLACK if the
-     * passed in color is null.
+     * Get a contrasting color based on YIQ values. Will return BLACK if the passed in color is null.
      *
      * @param color HTML color to contrast with
      * @return the ConstellationColor which contrasts with color.
@@ -342,8 +341,7 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
     }
 
     /**
-     * Get a contrasting color based on YIQ values. Will return BLACK if the
-     * passed in color is null.
+     * Get a contrasting color based on YIQ values. Will return BLACK if the passed in color is null.
      *
      * @param color RGB color to contrast with
      * @return the ConstellationColor which contrasts with color.
@@ -353,8 +351,7 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
     }
 
     /**
-     * Get a contrasting color based on YIQ values. Will return BLACK if the
-     * passed in color is null.
+     * Get a contrasting color based on YIQ values. Will return BLACK if the passed in color is null.
      *
      * @param color ConstellationColor color to contrast with
      * @return the ConstellationColor which contrasts with color.
@@ -364,8 +361,7 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
     }
 
     /**
-     * Get a contrasting color based on YIQ values. Will return BLACK if the
-     * passed in color is null.
+     * Get a contrasting color based on YIQ values. Will return BLACK if the passed in color is null.
      *
      * @param color RGB color String separated by commas to contrast with
      * @return the ConstellationColor which contrasts with color.
@@ -375,8 +371,7 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
     }
 
     /**
-     * Get a contrasting color based on YIQ values. Will return BLACK if the
-     * passed in color is null.
+     * Get a contrasting color based on YIQ values. Will return BLACK if the passed in color is null.
      *
      * @param color JavaFX color to contrast with
      * @return the ConstellationColor which contrasts with color.
@@ -405,9 +400,8 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
     /**
      * Convert an RGBA color string "r,g,b,a" or "[r,g,b,a]" to a ColorValue.
      * <p>
-     * Since colors end up as actual Python lists in pandas dataframes, they get
-     * back to here as strings surrounded by brackets, hence we conveniently
-     * look for the brackets and remove them.
+     * Since colors end up as actual Python lists in pandas dataframes, they get back to here as strings surrounded by
+     * brackets, hence we conveniently look for the brackets and remove them.
      *
      * @param color The RGB color string
      * @return A new ColorValue.
@@ -522,8 +516,7 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
     }
 
     /**
-     * Return an array of colors representing a linear palette from startColor
-     * to endColor.
+     * Return an array of colors representing a linear palette from startColor to endColor.
      *
      * @param colorCount The number of colors in the palette.
      * @param startColor The color at the start of the palette.
@@ -614,15 +607,13 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
     /**
      * A fast split method (slightly faster than String.split()).
      *
-     * The maximum size of the resulting String[] must be known beforehand. The
-     * actual size may be less.
+     * The maximum size of the resulting String[] must be known beforehand. The actual size may be less.
      *
      * @param s The string to split.
      * @param size The expected size of the resulting array.
      * @param separator The separator character to split on.
      *
-     * @return A String[] containing the fields that have been split out of the
-     * string.
+     * @return A String[] containing the fields that have been split out of the string.
      */
     private static String[] split(final String s, final int size, final char separator) {
         final String[] a = new String[size];
