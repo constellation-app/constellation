@@ -18,6 +18,10 @@ package au.gov.asd.tac.constellation.graph.value.operations;
 import au.gov.asd.tac.constellation.graph.value.OperatorRegistry;
 import au.gov.asd.tac.constellation.graph.value.Operators;
 import au.gov.asd.tac.constellation.graph.value.StringOperation;
+import au.gov.asd.tac.constellation.graph.value.constants.StringConstant;
+import au.gov.asd.tac.constellation.graph.value.readables.BooleanReadable;
+import au.gov.asd.tac.constellation.graph.value.readables.FloatReadable;
+import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
 
 /**
  *
@@ -43,6 +47,33 @@ public class Contains {
     public static void register(Operators operators) {
         final OperatorRegistry registry = operators.getRegistry(NAME);
         STRING_OPERATION.register(registry);
+
+        // Used when query is as follows: x contains '1'
+        registry.register(FloatReadable.class, StringConstant.class, BooleanReadable.class, (p1, p2) -> {
+            return () -> Float.toString(p1.readFloat()).contains(p2.readString());
+        });
+
+        // Used when query is as follows: x contains 6.1
+        registry.register(FloatReadable.class, FloatReadable.class, BooleanReadable.class, (p1, p2) -> {
+            return () -> Float.toString(p1.readFloat()).contains(Float.toString(p2.readFloat()));
+        });
+
+        // Used when query is as follows: x contains 6
+        registry.register(FloatReadable.class, IntReadable.class, BooleanReadable.class, (p1, p2) -> {
+            return () -> Float.toString(p1.readFloat()).contains(Integer.toString(p2.readInt()));
+        });
+
+        registry.register(IntReadable.class, StringConstant.class, BooleanReadable.class, (p1, p2) -> {
+            return () -> Integer.toString(p1.readInt()).contains(p2.readString());
+        });
+
+        registry.register(IntReadable.class, IntReadable.class, BooleanReadable.class, (p1, p2) -> {
+            return () -> Integer.toString(p1.readInt()).contains(Integer.toString(p2.readInt()));
+        });
+
+        registry.register(IntReadable.class, FloatReadable.class, BooleanReadable.class, (p1, p2) -> {
+            return () -> Integer.toString(p1.readInt()).contains(Float.toString(p2.readFloat()));
+        });
     }
 
     static {
