@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,8 +30,8 @@ import org.fxmisc.richtext.InlineCssTextArea;
  */
 public class EnhancedTextArea extends InlineCssTextArea {
     
-    final String text;
-    final Insets insets = new Insets(4,8,4,8);
+    private final String text;
+    private final Insets insets = new Insets(4,8,4,8);
     
     /**
      * 
@@ -65,9 +65,7 @@ public class EnhancedTextArea extends InlineCssTextArea {
             final String highlight = "-rtfx-background-color: yellow;";
             
             if (!found.isEmpty()) {
-                found.forEach(location -> {
-                    this.setStyle(location.getFirst(), location.getSecond(), highlight);
-                });
+                found.forEach(location -> this.setStyle(location.getFirst(), location.getSecond(), highlight));
             }
         }
         

@@ -101,9 +101,7 @@ public class TextConversationContributionProvider extends ConversationContributi
             
             // Implementation for the 'Select All' context menu option.
             final MenuItem selectAllTextMenuItem = new MenuItem("Select All");
-            selectAllTextMenuItem.setOnAction(event -> {
-                textArea.selectAll();
-            });
+            selectAllTextMenuItem.setOnAction(event -> textArea.selectAll());
             
             // Implementation for the 'Select on Graph' context menu option.
             final MenuItem selectOnGraphMenuItem = new MenuItem("Select on Graph");
@@ -125,11 +123,7 @@ public class TextConversationContributionProvider extends ConversationContributi
             
             textArea.setOnContextMenuRequested(event -> {
                 contextMenu.show(textArea, event.getScreenX(), event.getScreenY());
-                if (textArea.getSelectedText().isEmpty()) {
-                    copyTextMenuItem.setDisable(true);
-                } else {
-                    copyTextMenuItem.setDisable(false);
-                }
+                copyTextMenuItem.setDisable(textArea.getSelectedText().isEmpty());
             });
             
             return textArea;

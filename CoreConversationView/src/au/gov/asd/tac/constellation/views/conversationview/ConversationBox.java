@@ -94,7 +94,7 @@ public final class ConversationBox extends StackPane {
 
     public static final double PADDING = 5;
 
-    private static Conversation conversation;
+    private final Conversation conversation;
 
     private final ListView<ConversationMessage> bubbles;
     private final BorderPane contributionsPane;
@@ -120,8 +120,8 @@ public final class ConversationBox extends StackPane {
     private volatile boolean isAdjustingSenderLabels;
 
     private int found = 0;
-    private final String foundTrue = "-fx-text-fill: yellow;";
-    private final String foundFalse = "-fx-text-fill: red;";
+    private static final String foundTrue = "-fx-text-fill: yellow;";
+    private static final String foundFalse = "-fx-text-fill: red;";
     
     private final TextField searchTextField = new TextField();
     private final Label searchLabel = new Label();
@@ -134,7 +134,7 @@ public final class ConversationBox extends StackPane {
      * display.
      */
     public ConversationBox(final Conversation conversation) {
-        ConversationBox.conversation = conversation;
+        this.conversation = conversation;
 
         setPrefSize(500, 500);
         setCache(true);
@@ -269,25 +269,6 @@ public final class ConversationBox extends StackPane {
                 }
             }
         });
-
-//        // This code below enables the graph in sync with the search results.
-//        searchTextField.textProperty().addListener((ov, oldValue, newValue) -> {
-//            final Graph graph = conversation.getGraphUpdateManager().getActiveGraph();
-//            if (graph != null) {
-//                try (final ReadableGraph readableGraph = graph.getReadableGraph()) {
-//                    final List<ConversationContributionProvider> compatibleContributionProviders = ConversationContributionProvider.getCompatibleProviders(readableGraph);
-//                    for (final ConversationMessage message : messages) {
-//                        message.getAllContributions().clear();
-//                        for (final ConversationContributionProvider contributionProvider : compatibleContributionProviders) {
-//                            final ConversationContribution contribution = contributionProvider.createContribution(readableGraph, message);
-//                            if (contribution != null) {
-//                                message.getAllContributions().add(contribution);
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        });
         
         content.getChildren().addAll(optionsPane, searchVBox, contributionsPane, bubbles);
         getChildren().addAll(content, tipsPane);

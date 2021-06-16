@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,7 +67,7 @@ public final class ConversationSearchRefresh {
                 }
             }).executeWriteLater(graph);
 
-            final Future<?> turningOn = PluginExecutor.startWith(new SimpleEditPlugin("Conversation View: Update Hidden Contribution Providers ON") {
+            PluginExecutor.startWith(new SimpleEditPlugin("Conversation View: Update Hidden Contribution Providers ON") {
                 @Override
                 protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
                     final int stateAttribute = ConversationViewConcept.MetaAttribute.CONVERSATION_VIEW_STATE.ensure(graph);
