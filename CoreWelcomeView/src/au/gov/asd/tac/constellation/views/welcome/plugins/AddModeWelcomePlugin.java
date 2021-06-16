@@ -24,7 +24,6 @@ import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import javafx.geometry.Pos;
@@ -33,7 +32,6 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import org.openide.util.NbBundle;
 
 /**
@@ -46,8 +44,6 @@ import org.openide.util.NbBundle;
 @NbBundle.Messages("AddModeWelcomePlugin=Add Mode Welcome Plugin")
 public class AddModeWelcomePlugin implements WelcomePluginInterface {
     
-    private static final double TITLE_SIZE = 1.2;
-    private static final int TEXT_SIZE = 10;
     public static final String NEW_GRAPH = "resources/welcome_add_graph.png";
     final ImageView addView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(NEW_GRAPH)));
     final Button newButton = new Button();
@@ -101,9 +97,8 @@ public class AddModeWelcomePlugin implements WelcomePluginInterface {
         addView.setFitHeight(75);
         addView.setFitWidth(75);
         final Label title = new Label("New Graph");
-        title.setFont(new Font(FontUtilities.getApplicationFontFamily(), FontUtilities.getApplicationFontSize() * TITLE_SIZE));
         final Label subtitle = new Label("Add mode");
-        subtitle.setFont(new Font(FontUtilities.getApplicationFontFamily(), TEXT_SIZE));
+        subtitle.setId("smallInfoText");
         final VBox layoutVBox = new VBox(addView, title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER);
         newButton.setGraphic(layoutVBox);

@@ -546,9 +546,10 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
 
     @Override
     protected void handleComponentOpened() {
+        super.handleComponentOpened();
         resetContent();
     }
-
+    
     @Override
     protected void handleNewGraph(final Graph graph) {
         if (needsUpdate() && renderer != null) {

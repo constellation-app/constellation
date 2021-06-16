@@ -48,7 +48,6 @@ public class ApplicationFontOptionsPanelController extends OptionsPanelControlle
     public void update() {
         final Preferences prefs = NbPreferences.forModule(ApplicationFontPreferenceKeys.class);
         final ApplicationFontOptionsPanel fontOptionsPanel = getPanel();
-
         fontOptionsPanel.setCurrentFont(prefs.get(ApplicationFontPreferenceKeys.FONT_FAMILY, ApplicationFontPreferenceKeys.FONT_FAMILY_DEFAULT));
         fontOptionsPanel.setFontSize(prefs.get(ApplicationFontPreferenceKeys.FONT_SIZE, ApplicationFontPreferenceKeys.FONT_SIZE_DEFAULT));
     }
@@ -78,6 +77,7 @@ public class ApplicationFontOptionsPanelController extends OptionsPanelControlle
     @Override
     public boolean isValid() {
         final ApplicationFontOptionsPanel fontOptionsPanel = getPanel();
+
         return fontOptionsPanel.getCurrentFont() != null
                 && fontOptionsPanel.getFontSize() != null;
     }
@@ -107,7 +107,7 @@ public class ApplicationFontOptionsPanelController extends OptionsPanelControlle
 
     @Override
     public HelpCtx getHelpCtx() {
-        return new HelpCtx("au.gov.asd.tac.constellation.preferences.font");
+        return new HelpCtx("au.gov.asd.tac.constellation.preferences.applicationfont");
     }
 
     private ApplicationFontOptionsPanel getPanel() {

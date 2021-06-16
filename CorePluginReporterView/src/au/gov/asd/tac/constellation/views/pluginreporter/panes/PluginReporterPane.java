@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.plugins.reporting.GraphReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReportFilter;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.pluginreporter.PluginReporterTopComponent;
@@ -61,7 +60,6 @@ import org.openide.util.NbPreferences;
 public class PluginReporterPane extends BorderPane implements ListChangeListener<String> {
 
     private static final String FILTERED_TAGS_KEY = "filteredTags";
-    private static final String FONT_SIZE_FORMAT = "-fx-font-size:%d;";
 
     private final ToolBar controlToolbar = new ToolBar();
 
@@ -73,7 +71,7 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
     private final CheckComboBox<String> tagComboBox = new CheckComboBox<>(availableTags);
     private final Set<String> filteredTags = new HashSet<>();
     private PluginReportFilter pluginReportFilter = null;
-    
+
     private ObservableList<String> checkedIndices;
 
     // The height of the report box last time we looked
@@ -102,10 +100,8 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
 
         // The filter drop down
         Label filterLabel = new Label("Filter: ");
-        filterLabel.setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
         tagComboBox.setMaxWidth(Double.MAX_VALUE);
         tagComboBox.setMinWidth(50);
-        tagComboBox.setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
         // Group these together so the Toolbar treats them as a unit.
         final HBox filterBox = new HBox(filterLabel, tagComboBox);
         filterBox.setAlignment(Pos.BASELINE_LEFT);
@@ -113,7 +109,6 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
         // The clear button
         Button clearButton = new Button("Clear");
         clearButton.setTooltip(new Tooltip("Clear all plugins but show new plugins as they are run"));
-        clearButton.setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
         clearButton.setOnAction((ActionEvent event) -> {
             clearTime = System.currentTimeMillis();
             setPluginReportFilter(defaultReportFilter);
@@ -122,7 +117,6 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
         // The show all button
         Button showAllButton = new Button("Show All");
         showAllButton.setTooltip(new Tooltip("Show all plugins that have been run on this graph"));
-        showAllButton.setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
         showAllButton.setOnAction((ActionEvent event) -> {
             clearTime = -1;
             setPluginReportFilter(defaultReportFilter);
@@ -164,9 +158,6 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
             }
         });
         setCenter(reportBoxScroll);
-        
-        this.setStyle(String.format("-fx-font-family:\"%s\";", FontUtilities.getApplicationFontFamily()));
-        this.setStyle(String.format(FONT_SIZE_FORMAT, FontUtilities.getApplicationFontSize()));
     }
 
     @Override
@@ -230,7 +221,7 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
                 // TODO: do a better job here of not adding older reports in the first place. The idea here was to reduce memory so this logic is less useful of adding and removing.
                 // remove the oldest one if we have reached the maximum
                 final int size = reportBox.getChildren().size();
-                if (size > MAXIMUM_REPORT_PANES) { 
+                if (size > MAXIMUM_REPORT_PANES) {
                     ((PluginReportPane) reportBox.getChildren().get(size - MAXIMUM_REPORT_PANES)).removeListener();
                     reportBox.getChildren().remove(size - MAXIMUM_REPORT_PANES);
                 }
@@ -250,7 +241,7 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
             for (String tag : tags) {
                 if (!availableTags.contains(tag)) {
                     availableTags.add(tag);
-                }   
+                }
                 if (!filteredTags.contains(tag)) {
                     tagIndex = availableTags.indexOf(tag);
                     selectedIndices[selectedIndexCount++] = tagIndex; //AIOOBE = DED.

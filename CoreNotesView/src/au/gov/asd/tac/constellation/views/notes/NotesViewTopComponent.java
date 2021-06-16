@@ -92,6 +92,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
 
     @Override
     protected void handleComponentOpened() {
+        super.handleComponentOpened();
         /**
          * listener is not removed so that plugin reports created when the Notes
          * View is not open will render when it is opened later.
@@ -101,6 +102,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
 
     @Override
     protected void handleComponentClosed() {
+        super.handleComponentClosed();
         notesViewPane.closeEdit();
         notesViewPane.selectAllFilters();
         notesViewPane.clearAllNotes();
