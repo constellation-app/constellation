@@ -5,7 +5,6 @@ currently night time (as well as the various stages of twilight).
 
 <div style="text-align: center">
 
-![](resources/mapview-layers-day-night.png)  
-*The day / night layer.*
+![Day/Night Layer](resources/MapLayersDayNight.png)
 
 </div>

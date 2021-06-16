@@ -31,11 +31,11 @@ The raw results of data access queries can be saved to files using the
 When you first check the "Save Results" item, a directory chooser dialog
 will appear so you can select the directory that the results will be
 saved to. The directory will be remembered and results will be saved
-until you uncheck the item, even if you exit CONSTELLATION and start
+until you uncheck the item, even if you exit Constellation and start
 again.
 
 To stop saving results, uncheck "Save Results". The next time you check
-it, CONSTELLATION will remember the folder that you were previously
+it, Constellation will remember the folder that you were previously
 saving to, and use it as the initial directory for the directory
 chooser. (This is an easy way to find out where your save directory is.)
 

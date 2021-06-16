@@ -10,7 +10,7 @@
 </colgroup>
 <thead>
 <tr class="header">
-<th scope="col"><strong>CONSTELLATION Action</strong></th>
+<th scope="col"><strong>Constellation Action</strong></th>
 <th scope="col"><strong>Keyboard Shortcut</strong></th>
 <th scope="col"><strong>User Action</strong></th>
 <th scope="col"><strong>Menu Icon</strong></th>
@@ -70,7 +70,7 @@ counts) to the clipboard.
 The Graph Element Buttons will toggle which graph elements the Histogram
 View will list. Options include Node, Transaction, Edge, and Link.
 
-NOTE: Edges and Links in CONSTELLATION do not have Attributes.
+NOTE: Edges and Links in Constellation do not have Attributes.
 
 ## Category Drop Down List
 

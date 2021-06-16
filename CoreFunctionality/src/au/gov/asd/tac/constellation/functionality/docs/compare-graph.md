@@ -1,30 +1,34 @@
-## Compare Graph
+# Compare Graph
 
-Compare 2 graphs and show the differences in a new graph. The possible
-detected changes are additions, deletion and attribute changes.
+## Compare two graphs and show the differences in a new graph
 
-## Addition
+Compare Graph can be accessed via Tools -&gt; Compare Graph
 
-If a node or transaction was added in the comparison graph, a new
-attribute called Compare will be set with the value set to **Added** and
-the colour will be changed to dark green by default.
+Compare Graph does a comparison of two open graphs and shows the
+differences in a new graph. An output window will also displayed with
+descriptions of the differences. Possible detected differences are
+additions, deletions, and attribute value changes.
 
-## Deletion
+In the new graph, each node and transaction will be coloured according
+to the change detected. An attribute will also be added called Compare
+with value set to whatever change was detected (Added, Removed,
+Modified, or Unchanged).
 
-If a node or transaction was removed in the comparison graph, a new
-attribute called Compare will be set with the value set to **Removed**
-and the colour will be changed to red by default.
+## Parameters
 
-## Modification
-
-If an attribute on a node or transaction changed in the comparison
-graph, a new attribute called Compare will be set with the value set to
-**Changed** and the colour will be changed to yellow by default.
-
-## Options
-
-When the comparison runs, a console will appear displaying the changes
-detected as descriptions.
-
-It is possible to ignore attributes like the x,y,z coordinates and
-change the colour scheme used.
+-   *Original Graph* - the graph to use as a starting point for the
+    comparison
+-   *Compare With Graph* - the graph to compare against the original
+    graph
+-   *Ignore Node Attributes* - node attributes to ignore for the
+    comparison
+-   *Ignore Transaction Attributes* - transaction attribute to ignore
+    for the comparison
+-   *Added Colour* - the colour to indicate an node/transaction addition
+    (default is Green)
+-   *Removed Colour* - the colour to indicate a node/transaction removal
+    (default is Red)
+-   *Changed Colour* - the colour to indicate a node/transaction
+    attribute value change (default is Yellow)
+-   *Unchanged Colour* - the colour to indicate no change to a
+    node/transaction (default is Grey)

@@ -10,7 +10,7 @@
 </colgroup>
 <thead>
 <tr class="header">
-<th scope="col"><strong>CONSTELLATION Action</strong></th>
+<th scope="col"><strong>Constellation Action</strong></th>
 <th scope="col"><strong>Keyboard Shortcut</strong></th>
 <th scope="col"><strong>User Action</strong></th>
 <th scope="col"><strong>Menu Icon</strong></th>

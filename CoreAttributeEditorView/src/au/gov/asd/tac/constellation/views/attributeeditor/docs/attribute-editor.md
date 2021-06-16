@@ -4,7 +4,7 @@
 <caption>Attribute Editor Actions</caption>
 <thead>
 <tr class="header">
-<th scope="col"><strong>CONSTELLATION Action</strong></th>
+<th scope="col"><strong>Constellation Action</strong></th>
 <th scope="col"><strong>Keyboard Shortcut</strong></th>
 <th scope="col"><strong>User Action</strong></th>
 <th style="text-align: center;" scope="col"><strong>Menu Icon</strong></th>
@@ -45,13 +45,13 @@ There are four different kinds of attributes you can see in the
 Attribute Editor:
 
 -   *Schema Attributes* - These are regular old attributes which
-    CONSTELLATION has defined in a schema. They have a black background
+    Constellation has defined in a schema. They have a black background
     by default.
 -   *Primary Key Attributes* - These are important attributes that
     define a graph element. The set of primary key attribute values are
     unique to each graph element. They have a red background by default.
 -   *Custom Attributes* - These are attributes which are not defined in
-    a CONSTELLATION schema. They have a blue background by default.
+    a Constellation schema. They have a blue background by default.
 -   *Hidden Attributes* - These are attributes which have been hidden.
     You can hide an attribute by right-clicking on it and selecting
     "Hide Attribute". They have a grey background by default.

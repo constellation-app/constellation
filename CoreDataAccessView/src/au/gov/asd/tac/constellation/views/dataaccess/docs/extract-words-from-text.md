@@ -26,7 +26,7 @@ transaction of type Referenced.
 -   *Lower Case* - Converts content and Words to Extract (if supplied)
     to lowercase.
 -   *Extract Schema Types* - Cycles through the schema node types known
-    by CONSTELLATION. For each schema type that has an associated
+    by Constellation. For each schema type that has an associated
     regular expression, all matches for that regular expression found in
     the content are added to the graph.
 -   *Transactions* - Choose whether to link nodes to words found in

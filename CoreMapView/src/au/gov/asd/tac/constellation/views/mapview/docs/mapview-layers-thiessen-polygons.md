@@ -5,7 +5,7 @@ colored segments which equally separate markers.
 
 <div style="text-align: center">
 
-![](resources/mapview-layers-thiessen-polygons.png)  
-*The thiessen polygons layer.*
+![Thiessen Polygon
+Layer](resources/mapview-layers-thiessen-polygons.png)
 
 </div>

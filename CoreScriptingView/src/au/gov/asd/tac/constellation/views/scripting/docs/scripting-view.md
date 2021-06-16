@@ -10,7 +10,7 @@
 </colgroup>
 <thead>
 <tr class="header">
-<th scope="col"><strong>CONSTELLATION Action</strong></th>
+<th scope="col"><strong>Constellation Action</strong></th>
 <th scope="col"><strong>Keyboard Shortcut</strong></th>
 <th scope="col"><strong>User Action</strong></th>
 <th scope="col"><strong>Menu Icon</strong></th>
@@ -89,7 +89,7 @@ graph.
 
 Every user action in Constellation is designed to be a disposable
 operation (generally on the graph) called a plugin. The Scripting View
-provides the ability to run any plugin available to CONSTELLATION using
+provides the ability to run any plugin available to Constellation using
 the provided utilities object. The utilities object provides two ways to
 run a plugin:
 
@@ -101,4 +101,4 @@ run a plugin:
     strings to parameter values as strings.
 
 Plugin names and parameters are documented in the Plugins tab of the
-Schema View within CONSTELLATION.
+Schema View within Constellation.

@@ -25,7 +25,6 @@ maximum line width, the widths will be scaled to the maximum line width.
 
 <div style="text-align: center">
 
-![](resources/mapview-layers-paths.png)  
-*The paths (location) layer.*
+![Location Paths Layer](resources/mapview-layers-paths.png)
 
 </div>

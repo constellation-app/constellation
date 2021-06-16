@@ -4,7 +4,7 @@
 <caption>Notes View Actions</caption>
 <thead>
 <tr class="header">
-<th scope="col"><strong>CONSTELLATION Action</strong></th>
+<th scope="col"><strong>Constellation Action</strong></th>
 <th scope="col"><strong>Keyboard Shortcut</strong></th>
 <th scope="col"><strong>User Action</strong></th>
 <th style="text-align: center;" scope="col"><strong>Menu Icon</strong></th>
@@ -48,11 +48,11 @@ the note.
 
 ## Auto Generated Notes
 
-These are notes which are created by CONSTELLATION and are coloured
+These are notes which are created by Constellation and are coloured
 blue. These notes are generated when plugins are executed. Unlike user
 generated notes, these notes cannot be edited or removed.
 
 NOTE: Auto generated notes are always created in the background but they
 won't be added to the Notes View unless the view is open. If you close
-CONSTELLATION before it has a chance to add those notes to the Notes
+Constellation before it has a chance to add those notes to the Notes
 View, those notes will be lost.

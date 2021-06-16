@@ -4,7 +4,7 @@
 <caption>Quality Control View Actions</caption>
 <thead>
 <tr class="header">
-<th scope="col"><strong>CONSTELLATION Action</strong></th>
+<th scope="col"><strong>Constellation Action</strong></th>
 <th scope="col"><strong>Keyboard Shortcut</strong></th>
 <th scope="col"><strong>User Action</strong></th>
 <th style="text-align: center;" scope="col"><strong>Menu Icon</strong></th>
@@ -48,7 +48,7 @@ Quality Control View Actions
 
 ## IMPORTANT!!!
 
-Although CONSTELLATION provides this Quality Control View, the user
+Although Constellation provides this Quality Control View, the user
 remains responsible for ensuring that their data is acceptable for
 further analysis.
 
@@ -56,7 +56,7 @@ further analysis.
 
 The Quality Control View is a quick and easy way to look at nodes on the
 graph and determine whether or not they have any obvious quality issues
-based on a series of rules built into CONSTELLATION. Selecting nodes in
+based on a series of rules built into Constellation. Selecting nodes in
 the graph will cause them to be processed against any registered quality
 control rules, and ranked in the Quality Control View according to their
 quality. This quality rating will be a given category (see below) along

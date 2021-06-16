@@ -4,7 +4,7 @@
 <caption>Conversation View Actions</caption>
 <thead>
 <tr class="header">
-<th scope="col"><strong>CONSTELLATION Action</strong></th>
+<th scope="col"><strong>Constellation Action</strong></th>
 <th scope="col"><strong>Keyboard Shortcut</strong></th>
 <th scope="col"><strong>User Action</strong></th>
 <th style="text-align: center;" scope="col"><strong>Menu Icon</strong></th>
@@ -41,7 +41,7 @@ then no conversation text will be displayed.
 The content is displayed in chat "bubbles", similar to those used by
 some smart phones and instant messaging clients. The text and time
 stamps can be selected and copied. To copy selected text, press Ctrl-C
-or right click and use the context menu. CONSTELLATION will "beep" if
+or right click and use the context menu. Constellation will "beep" if
 you use Ctrl-C but copy the text anyway. When text is selected in a
 bubble, any text already selected in other bubbles is not automatically
 deselected however only text in the current bubble is copied.

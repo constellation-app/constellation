@@ -4,7 +4,7 @@
 <caption>Data Access View Actions</caption>
 <thead>
 <tr class="header">
-<th scope="col"><strong>CONSTELLATION Action</strong></th>
+<th scope="col"><strong>Constellation Action</strong></th>
 <th scope="col"><strong>Keyboard Shortcut</strong></th>
 <th scope="col"><strong>User Action</strong></th>
 <th style="text-align: center;" scope="col"><strong>Menu Icon</strong></th>
@@ -24,7 +24,7 @@ Data Access View Actions
 
 ## Introduction
 
-Data Access View is the interface for interacting with CONSTELLATION
+Data Access View is the interface for interacting with Constellation
 plugins that involve data. It allows users to perform queries that do
 things such as import, enrich, and clean data, all from the one window.
 
@@ -66,8 +66,8 @@ restored.
 
 ## Global Parameters
 
-Refer to the [Global Parameters](data-access-global-parameters.html)
-page for more details on the global parameters section.
+Refer to the [Global Parameters](datetime-range.html) page for more
+details on the global parameters section.
 
 ## Filtering
 

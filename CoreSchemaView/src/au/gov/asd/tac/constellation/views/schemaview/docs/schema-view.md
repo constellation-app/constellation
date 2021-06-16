@@ -10,7 +10,7 @@
 </colgroup>
 <thead>
 <tr class="header">
-<th scope="col"><strong>CONSTELLATION Action</strong></th>
+<th scope="col"><strong>Constellation Action</strong></th>
 <th scope="col"><strong>Keyboard Shortcut</strong></th>
 <th scope="col"><strong>User Action</strong></th>
 <th scope="col"><strong>Menu Icon</strong></th>
@@ -33,7 +33,7 @@ Schema View Actions
 ## Introduction
 
 The Schema View is the source of information for all attributes, types,
-and plugins that are available in the CONSTELLATION schema(s) of the
+and plugins that are available in the Constellation schema(s) of the
 current graph.
 
 <div style="text-align: center">
@@ -78,7 +78,7 @@ whether filter on values that start with or contains the search term.
 
 From the Plugins tab of the Schema View, you can view all the plugins
 available to users. This is particularly useful for users accessing
-CONSTELLATION programmatically (e.g. via the REST API). Expanding a
+Constellation programmatically (e.g. via the REST API). Expanding a
 plugin will provide details on the plugin name, alias, and important
 details for all associated parameters.
 

@@ -1,4 +1,4 @@
-# Find
+# Find and Replace
 
 <table data-border="1">
 <caption>Find Actions</caption>
@@ -10,7 +10,7 @@
 </colgroup>
 <thead>
 <tr class="header">
-<th scope="col"><strong>CONSTELLATION Action</strong></th>
+<th scope="col"><strong>Constellation Action</strong></th>
 <th scope="col"><strong>Keyboard Shortcut</strong></th>
 <th scope="col"><strong>User Action</strong></th>
 <th scope="col"><strong>Menu Icon</strong></th>
@@ -20,7 +20,7 @@
 <tr class="odd">
 <td>Open Find View</td>
 <td>Ctrl + F</td>
-<td>Edit -&gt; Find</td>
+<td>Edit -&gt; Find...</td>
 <td><div style="text-align: center">
 <img src="../resources/find.png" width="16" height="16" />
 </div></td>
@@ -30,50 +30,53 @@
 
 Find Actions
 
-The *Find Window* allows the creation of sophisticated rules to be
-searched for, and 'matched' on a graph. An example of a Find Window can
-be seen below.
+The Find View allows the creation of sophisticated rules to be searched
+for, and 'matched' on a graph. You can choose to find on nodes,
+transactions, edges, or links.
 
-  
+<div style="text-align: center">
 
-## Major Elements of the Find Window
+![Find](resources/FindView.png)
 
-![](resources/find-main.png)
+</div>
 
-There are several major components found on a Find Window. They are:
+## Basic Find
 
-1.  Combo-box where a selection between searching on 'Nodes' or
-    'Transactions' may be made. Searches will only be performed on the
-    selected graph element type.
-2.  Combo-box where a selection between whether 'all' (binary AND) or
-    'any' (binary OR) rules must be matched for a graph element to be
-    returned as a result of a search.
-3.  A find 'rule'. For any given search operation, one or more find
-    rules must be created.
-4.  An input box where the value to be matched is placed.
-5.  A check-box that determines whether any results of a search are
-    added to the current selection on the graph, or replace it. (Ticked
-    indicates that the results are added.)
-6.  Removes the find rule it appears on.
-7.  Adds a blank find rule to the end of the list.
-8.  Indicates the number of results found for the search.
-9.  Button that reset the window to a single blank rule.
-10. Combo-box that allows the selection of the graph attribute to search
-    on.
-11. Combo-box that indicates the form the search will take. For example
-    'contains', 'is', 'occurred on', 'is between', etc.
-12. Button that allows the adding of a delimited list of strings to be
-    added.
-13. Option for string attributes that allows a list of values to be
-    searched for. A comma separated list in the value input box will be
-    searched and results returned for any matches. (List searches are
-    performed as binary OR operations).
-14. Option to force case-sensitive searches on strings.
-15. Button that performs a search with the rules specified.
+In the Basic Find tab, you are able to before a basic search on
+attribute values in your graph. Click on "Select attributes..." to
+display a drop down list of attributes you can search on and type your
+search term into the "Find what:" text box. There are options below the
+text box to interpret your search as standard text or a regular
+expression (RegEx) and options to make the search case-sensitive or only
+match the exact search term. You can reset your search by clicking on
+"Reset to Default".
 
-  
+Once you have setup your search, click "Find" to select everything on
+the graph matching the specified criteria.
 
-## Supported Find Rule Types
+NOTE: Anything already selected on the graph will be deselected if it is
+not a part of the result set of the search. If you want to instead
+append the results to the current selection, tick "Add results to
+current selection".
+
+## Replace
+
+In the Replace tab, you are able to perform a basic search and replace
+on attribute values in your graph. The setup is similar to that of the
+basic find except with an additional "Replace with:" text box to specify
+the replacement text.
+
+Once you have setup your search, click "Replace". This will highlight
+everything on the graph matching the find text and replace the find text
+with the replace text.
+
+## Advanced Find
+
+In the Advanced Find tab, you are able to create a series of find rules
+to be used for your search. At the top of the tab, you can choose a
+graph element has to match all of the rules or any of them. You can add
+or remove rules from by clicking on the "+" or "-" located to the left
+of a rule.
 
 There are currently 8 supported attribute types that can be searched for
 in various ways. Attribute types that are not registered as one of the
@@ -95,3 +98,7 @@ following types will be searched as 'strings.' The types are as follows:
     ![](resources/find-string.png)
 -   Time searches:  
     ![](resources/find-time.png)
+
+Once you have setup your search, click "Find" to select everything on
+the graph matching any or all (depending on what was selected) of the
+specified criteria.
