@@ -68,7 +68,7 @@ public final class ApplicationPreferenceKeys {
         return new File(System.getProperty("user.home"), ".CONSTELLATION").getPath();
     }
 
-    /**
+    /** 
      * User directory.
      */
     public static final String USER_DIR = "userDir";
@@ -87,16 +87,12 @@ public final class ApplicationPreferenceKeys {
      */
     public static final String TUTORIAL_ON_STARTUP = "tutorialMode";
     public static final boolean TUTORIAL_ON_STARTUP_DEFAULT = false;
+ 
     /**
      * Welcome window.
      */
     public static final String WELCOME_ON_STARTUP = "welcomeMode";
     public static final boolean WELCOME_ON_STARTUP_DEFAULT = true;
-    /**
-     * Freeze graph view.
-     */
-    public static final String FREEZE_GRAPH_VIEW = "freezeGraphView";
-    public static final boolean FREEZE_GRAPH_VIEW_DEFAULT = true;
 
     /**
      * Web server listening port.
@@ -177,6 +173,7 @@ public final class ApplicationPreferenceKeys {
     public static final String CHART_DISPLAY_CONSTELLATION = "constellation";
     public static final String CHART_DISPLAY_BROWSER = "browser";
     public static final String CHART_DISPLAY_DEFAULT = CHART_DISPLAY_CONSTELLATION;
+
     /**
      * Scripting.
      */

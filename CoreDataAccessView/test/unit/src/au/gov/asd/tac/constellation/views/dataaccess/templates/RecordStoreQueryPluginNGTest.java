@@ -15,26 +15,17 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.templates;
 
-import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
-import au.gov.asd.tac.constellation.graph.WritableGraph;
-import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStore;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
-import au.gov.asd.tac.constellation.graph.schema.Schema;
-import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
-import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
 import java.util.ArrayList;
 import java.util.List;
-import org.testng.Assert;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 import org.testng.annotations.AfterClass;
@@ -86,76 +77,6 @@ public class RecordStoreQueryPluginNGTest {
         }
         final RecordStore result = instance.getResult();
         assertEquals(result.size(), 2);
-    }
-
-    /**
-     * Test of edit method, of class RecordStoreQueryPlugin.
-     */
-    @Test
-    public void testEditWhenAllVerticiesAreInTheCenterAndFrozenView() {
-        Assert.assertTrue(PreferenceUtilites.isGraphViewFrozen());
-
-        final RecordStoreQueryPlugin instance = new RecordStoreQueryPluginMockImpl();
-        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
-        final Graph graph = new DualGraph(schema); // only using a dual graph because of the need to pass a GraphWriteMethods graph to the edit() method.
-        final PluginInteraction interaction = null;
-        final PluginParameters parameters = null;
-        try {
-            ReadableGraph rg = graph.getReadableGraph();
-            try {
-                instance.read(rg, interaction, parameters);
-            } finally {
-                rg.release();
-            }
-            instance.query(interaction, parameters);
-
-            GraphRecordStore query;
-
-            rg = graph.getReadableGraph();
-            try {
-                query = GraphRecordStoreUtilities.getAll(rg, false, false);
-            } finally {
-                rg.release();
-            }
-
-            final WritableGraph wg = graph.getWritableGraph("", true);
-            try {
-                VisualConcept.VertexAttribute.X.ensure(wg);
-                VisualConcept.VertexAttribute.Y.ensure(wg);
-                VisualConcept.VertexAttribute.Z.ensure(wg);
-                VisualConcept.GraphAttribute.CAMERA.ensure(wg);
-
-                instance.edit(wg, interaction, parameters);
-            } finally {
-                wg.commit();
-            }
-
-            rg = graph.getReadableGraph();
-            try {
-                query = GraphRecordStoreUtilities.getTransactions(rg, false, false);
-            } finally {
-                rg.release();
-            }
-
-            // verify nothing has moved
-            query.reset();
-            query.next();
-            assertEquals(query.get(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.X), "10.0");
-            assertEquals(query.get(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.Y), "10.0");
-            assertEquals(query.get(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.Z), "10.0");
-            assertEquals(query.get(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.X), "20.0");
-            assertEquals(query.get(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.Y), "20.0");
-            assertEquals(query.get(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.Z), "20.0");
-            query.next();
-            assertEquals(query.get(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.X), "30.0");
-            assertEquals(query.get(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.Y), "30.0");
-            assertEquals(query.get(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.Z), "30.0");
-            assertEquals(query.get(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.X), "40.0");
-            assertEquals(query.get(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.Y), "40.0");
-            assertEquals(query.get(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.Z), "40.0");
-        } catch (InterruptedException | PluginException ex) {
-            fail(ex.getLocalizedMessage());
-        }
     }
 
     /**
@@ -243,7 +164,6 @@ public class RecordStoreQueryPluginNGTest {
             recordStore.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.Y, 40);
             recordStore.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.Z, 40);
 
-//            System.out.println(recordStore.toStringVerbose());
             return recordStore;
         }
 
