@@ -83,6 +83,7 @@
         <!--<dependency org="org.python" name="jython-jyni" rev="2.7-alpha5"/>-->
         <dependency org="org.swinglabs" name="swingx" rev="1.6.1"/>
         <!--<dependency org="unfolding" name="unfolding" rev="0.9.6"/>-->
+        <dependency org="com.github.rjeschke" name="txtmark" rev="0.13"/>
 
         <!-- Exclusions -->
         <exclude org="javax.media" module="jai_core"/>

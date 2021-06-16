@@ -1,0 +1,1 @@
+au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractTypesFromTextPlugin,views/data_access_view/import/extract-types-from-text.md
