@@ -49,6 +49,7 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.Tooltip;
@@ -60,7 +61,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -197,9 +197,11 @@ public final class RunPane extends BorderPane implements KeyListener {
 
         // add a help place holder
         // TODO: make this text wrap
-        final Text startupHelpText = new Text();
+        final TextArea startupHelpText = new TextArea();
         startupHelpText.setText(displayText);
-        startupHelpText.setStyle("-fx-fill: grey;");
+        startupHelpText.setStyle("-fx-text-fill: grey;");
+        startupHelpText.setWrapText(true);
+
         sampleDataView.setPlaceholder(startupHelpText);
 
         sourceVertexAttributeList = new AttributeList(importController, this, AttributeType.SOURCE_VERTEX);
@@ -291,9 +293,8 @@ public final class RunPane extends BorderPane implements KeyListener {
                     // Drop the AttributeNode onto the column.
                     mouseOverColumn.setAttributeNode(draggingAttributeNode);
                     draggingAttributeNode.setColumn(mouseOverColumn);
-
-                        validate(mouseOverColumn);
-                    }
+                    validate(mouseOverColumn);
+                }
 
                 columnRectangle.setVisible(false);
                 draggingAttributeNode.setManaged(true);

@@ -67,6 +67,9 @@ public class JDBCSourcePane extends SourcePane {
     private static final int SCROLLPANE_PREF_WIDTH = 400;
     private static final int LARGE_SCROLLPANE_PREF_HEIGHT = 400;
     private static final int LARGE_SCROLLPANE_PREF_WIDTH = 800;
+    private static final int ADD_CONNECTION_PANE_HEIGHT = 255;
+    private static final int ADD_DRIVER_PANE_HEIGHT = 150;
+    private static final int MANAGE_CONNECTIONS_PANE_HEIGHT = 325;
     private static final Insets GRIDPANE_PADDING = new Insets(5);
     private static final int GAP = 10;
 
@@ -215,6 +218,9 @@ public class JDBCSourcePane extends SourcePane {
                 d.centerOnScreen();
                 d.initOwner(dialog);
                 d.initModality(Modality.APPLICATION_MODAL);
+                d.setAlwaysOnTop(true);
+                d.setWidth(LARGE_SCROLLPANE_PREF_WIDTH);
+                d.setHeight(ADD_CONNECTION_PANE_HEIGHT);
                 d.showAndWait();
             };
             final Button openAddConnectionWindowButton = new Button("Add");
@@ -293,7 +299,8 @@ public class JDBCSourcePane extends SourcePane {
                 final Button chooser = new Button("..");
                 chooser.setOnAction((final ActionEvent t2) -> {
                     final FileChooser cho = new FileChooser();
-                    cho.setSelectedExtensionFilter(new ExtensionFilter("Driver jar", "*.jar"));
+                    cho.getExtensionFilters().add(new ExtensionFilter(".jar", "*.jar"));
+
                     final File f = cho.showOpenDialog(new Stage());
                     if (f != null) {
                         try {
@@ -335,6 +342,9 @@ public class JDBCSourcePane extends SourcePane {
                 d.centerOnScreen();
                 d.initOwner(dialog);
                 d.initModality(Modality.APPLICATION_MODAL);
+                d.setAlwaysOnTop(true);
+                d.setWidth(LARGE_SCROLLPANE_PREF_WIDTH);
+                d.setHeight(ADD_DRIVER_PANE_HEIGHT);
                 d.showAndWait();
             });
             dtRoot.add(addDriverButton, 1, 1, 1, 1);
@@ -358,8 +368,9 @@ public class JDBCSourcePane extends SourcePane {
             dialog.centerOnScreen();
             dialog.sizeToScene();
             dialog.initModality(Modality.APPLICATION_MODAL);
-            //dialog.setAlwaysOnTop(true); // Test if dialog appears behind - maybe dialog.toFront() is suffice to solve the issue.
-            dialog.toFront();
+            dialog.setAlwaysOnTop(true);
+            dialog.setWidth(LARGE_SCROLLPANE_PREF_WIDTH);
+            dialog.setHeight(MANAGE_CONNECTIONS_PANE_HEIGHT);
             dialog.showAndWait();
         };
 

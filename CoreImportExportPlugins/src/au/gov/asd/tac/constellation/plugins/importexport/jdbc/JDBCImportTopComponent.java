@@ -54,9 +54,9 @@ public final class JDBCImportTopComponent extends ImportTopComponent {
 
     private final JDBCImportPane jdbcImportPane;
     private final static String HELP_TEXT = "1. Add the relevant JDBC Driver via 'Manage Connections' -> 'Drivers' tab. \n"
-            + "2. Add the Connection details in 'Manage Connections' -> 'Connections' tab. \n"
+            + "2. Add the Connection details in 'Manage Connections' -> 'Connections' tab. "
             + "If the 'Username' and 'Password' are not required, leave them blank.\n"
-            + "3. Select the connection from the 'Connection' drop-down in the main \n"
+            + "3. Select the connection from the 'Connection' drop-down in the main "
             + "Import window.\n"
             + "4. Enter 'Username' and 'Password' if the connection requires them.\n"
             + "5. Enter the SQL 'Query' and Click the 'Query' button to retrieve data.\n"

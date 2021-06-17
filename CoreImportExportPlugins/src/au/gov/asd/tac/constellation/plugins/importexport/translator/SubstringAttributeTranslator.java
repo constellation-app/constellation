@@ -42,14 +42,14 @@ public class SubstringAttributeTranslator extends AttributeTranslator {
         final PluginParameters parameters = new PluginParameters();
 
         final PluginParameter<IntegerParameterValue> startParam = IntegerParameterType.build(FIRST_PARAMETER_ID);
-        startParam.setName("First");
-        startParam.setDescription("The position of the first character to include");
+        startParam.setName("The position of the first character to include");
+        //startParam.setDescription("The position of the first character to include");
         startParam.setIntegerValue(0);
         parameters.addParameter(startParam);
 
         final PluginParameter<IntegerParameterValue> stopParam = IntegerParameterType.build(LAST_PARAMETER_ID);
-        stopParam.setName("Last");
-        stopParam.setDescription("The position of the last character to include");
+        stopParam.setName("The position of the last character to include");
+        //stopParam.setDescription("The position of the last character to include");
         stopParam.setIntegerValue(1000);
         parameters.addParameter(stopParam);
 
