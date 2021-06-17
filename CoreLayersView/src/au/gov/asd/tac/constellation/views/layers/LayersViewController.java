@@ -188,7 +188,7 @@ public class LayersViewController {
     }
 
     public boolean getParentVisibility() {
-        return parent != null ? parent.getVisibility() : false;
+        return parent != null && parent.getVisibility();
     }
 
     public void readStateFuture() {
