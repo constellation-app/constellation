@@ -118,7 +118,7 @@ public final class ConversationBox extends StackPane {
     private volatile boolean isAdjustingContributionProviders = false;
     private volatile boolean isAdjustingSenderLabels;
 
-    private int found = 0;
+    private static int found = 0;
     private static final String FOUND_COLOUR_TRUE = "-fx-text-fill: yellow;";
     private static final String FOUND_COLOUR_FALSE = "-fx-text-fill: red;";
 
@@ -271,6 +271,13 @@ public final class ConversationBox extends StackPane {
 
         content.getChildren().addAll(optionsPane, searchVBox, contributionsPane, bubbles);
         getChildren().addAll(content, tipsPane);
+    }
+    
+    /**
+     * Reset the ConversationBox prior to updating the contents.
+     */
+    public static void reset(){
+        found = 0;
     }
 
     // A VBox to hold a bubble and a sender.

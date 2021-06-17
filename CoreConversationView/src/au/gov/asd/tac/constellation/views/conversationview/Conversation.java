@@ -555,6 +555,7 @@ public class Conversation {
 
         @Override
         protected boolean update(GraphReadMethods graph) {
+            ConversationBox.reset();
             if (resultMessages != null) {
                 resultMessages.setAll(visibleMessages);
             }
