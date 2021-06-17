@@ -107,7 +107,7 @@ public class ApplicationFontOptionsPanelController extends OptionsPanelControlle
 
     @Override
     public HelpCtx getHelpCtx() {
-        return new HelpCtx("au.gov.asd.tac.constellation.preferences.font");
+        return new HelpCtx("au.gov.asd.tac.constellation.preferences.applicationfont");
     }
 
     private ApplicationFontOptionsPanel getPanel() {

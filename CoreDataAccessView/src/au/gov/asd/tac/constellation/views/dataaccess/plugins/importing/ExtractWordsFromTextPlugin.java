@@ -49,7 +49,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParamet
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleQueryPlugin;
-import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
@@ -536,16 +535,10 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
             }
         }
 
-        if (!PreferenceUtilites.isGraphViewFrozen()) {
-            // complete with schema, arrange in trees, and reset view
-            PluginExecutor.startWith(VisualSchemaPluginRegistry.COMPLETE_SCHEMA)
-                    .followedBy(ArrangementPluginRegistry.TREES)
-                    .executeNow(wg);
-        } else {
-            PluginExecutor.startWith(VisualSchemaPluginRegistry.COMPLETE_SCHEMA)
-                    .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
-                    .executeNow(wg);
-        }
+        PluginExecutor.startWith(VisualSchemaPluginRegistry.COMPLETE_SCHEMA)
+                .followedBy(ArrangementPluginRegistry.TREES)
+                .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
+                .executeNow(wg);
 
         interaction.setProgress(1, 0, "Completed successfully", true);
     }

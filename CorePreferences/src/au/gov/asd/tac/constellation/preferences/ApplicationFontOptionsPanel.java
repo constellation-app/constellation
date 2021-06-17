@@ -82,7 +82,7 @@ final class ApplicationFontOptionsPanel extends JPanel {
         fontSizeSpinner = new JSpinner();
         resetBtn = new JButton();
 
-        setPreferredSize(new Dimension(604, 529));
+        setPreferredSize(new Dimension(604, 147));
 
         fontPanel.setBorder(BorderFactory.createTitledBorder(NbBundle.getMessage(ApplicationFontOptionsPanel.class, "ApplicationFontOptionsPanel.fontPanel.border.title"))); // NOI18N
 
@@ -92,6 +92,11 @@ final class ApplicationFontOptionsPanel extends JPanel {
 
         fontCombo.setModel(new DefaultComboBoxModel(fonts));
         fontCombo.setSelectedItem(ApplicationFontPreferenceKeys.FONT_FAMILY_DEFAULT);
+        fontCombo.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                fontComboActionPerformed(evt);
+            }
+        });
 
         fontSizeSpinner.setModel(new SpinnerNumberModel(12, 12, 45, 1));
 
@@ -106,20 +111,20 @@ final class ApplicationFontOptionsPanel extends JPanel {
         fontPanel.setLayout(fontPanelLayout);
         fontPanelLayout.setHorizontalGroup(fontPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(fontPanelLayout.createSequentialGroup()
-                .addGroup(fontPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addGroup(GroupLayout.Alignment.TRAILING, fontPanelLayout.createSequentialGroup()
-                        .addContainerGap(445, Short.MAX_VALUE)
-                        .addComponent(resetBtn))
+                .addGap(27, 27, 27)
+                .addGroup(fontPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
                     .addGroup(fontPanelLayout.createSequentialGroup()
-                        .addGap(27, 27, 27)
                         .addGroup(fontPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
                             .addComponent(fontLbl)
                             .addComponent(fontSizeLbl))
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(fontPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                            .addComponent(fontSizeSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addComponent(fontCombo, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                            .addComponent(fontCombo, GroupLayout.PREFERRED_SIZE, 120, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(fontSizeSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 383, Short.MAX_VALUE))
+                    .addGroup(fontPanelLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(resetBtn)))
                 .addContainerGap())
         );
         fontPanelLayout.setVerticalGroup(fontPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -128,7 +133,7 @@ final class ApplicationFontOptionsPanel extends JPanel {
                 .addGroup(fontPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                     .addComponent(fontLbl)
                     .addComponent(fontCombo, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(fontPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                     .addComponent(fontSizeSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                     .addComponent(fontSizeLbl))
@@ -151,7 +156,7 @@ final class ApplicationFontOptionsPanel extends JPanel {
         );
         layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(20, 20, 20)
+                .addContainerGap()
                 .addComponent(fontPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -163,6 +168,10 @@ final class ApplicationFontOptionsPanel extends JPanel {
         fontCombo.setSelectedItem("Arial");
         fontSizeSpinner.setValue(12);
     }//GEN-LAST:event_resetBtnActionPerformed
+
+    private void fontComboActionPerformed(ActionEvent evt) {//GEN-FIRST:event_fontComboActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_fontComboActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private JComboBox<String> fontCombo;
