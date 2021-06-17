@@ -49,31 +49,31 @@ public class EndsWith {
         STRING_OPERATION.register(registry);
 
         // Used when query is as follows: x endswith '1'
-        registry.register(FloatReadable.class, StringConstant.class, BooleanReadable.class, (p1, p2) -> {
-            return () -> Float.toString(p1.readFloat()).endsWith(p2.readString());
-        });
+        registry.register(FloatReadable.class, StringConstant.class, BooleanReadable.class, (p1, p2) -> 
+            () -> Float.toString(p1.readFloat()).endsWith(p2.readString())
+        );
 
         // Used when query is as follows: x endswith 6.1
-        registry.register(FloatReadable.class, FloatReadable.class, BooleanReadable.class, (p1, p2) -> {
-            return () -> Float.toString(p1.readFloat()).endsWith(Float.toString(p2.readFloat()));
-        });
+        registry.register(FloatReadable.class, FloatReadable.class, BooleanReadable.class, (p1, p2) -> 
+            () -> Float.toString(p1.readFloat()).endsWith(Float.toString(p2.readFloat()))
+        );
 
         // Used when query is as follows: x endswith 6
-        registry.register(FloatReadable.class, IntReadable.class, BooleanReadable.class, (p1, p2) -> {
-            return () -> Float.toString(p1.readFloat()).endsWith(Integer.toString(p2.readInt()));
-        });
+        registry.register(FloatReadable.class, IntReadable.class, BooleanReadable.class, (p1, p2) -> 
+            () -> Float.toString(p1.readFloat()).endsWith(Integer.toString(p2.readInt()))
+        );
 
-        registry.register(IntReadable.class, StringConstant.class, BooleanReadable.class, (p1, p2) -> {
-            return () -> Integer.toString(p1.readInt()).endsWith(p2.readString());
-        });
+        registry.register(IntReadable.class, StringConstant.class, BooleanReadable.class, (p1, p2) -> 
+            () -> Integer.toString(p1.readInt()).endsWith(p2.readString())
+        );
 
-        registry.register(IntReadable.class, IntReadable.class, BooleanReadable.class, (p1, p2) -> {
-            return () -> Integer.toString(p1.readInt()).endsWith(Integer.toString(p2.readInt()));
-        });
+        registry.register(IntReadable.class, IntReadable.class, BooleanReadable.class, (p1, p2) -> 
+            () -> Integer.toString(p1.readInt()).endsWith(Integer.toString(p2.readInt()))
+        );
 
-        registry.register(IntReadable.class, FloatReadable.class, BooleanReadable.class, (p1, p2) -> {
-            return () -> Integer.toString(p1.readInt()).endsWith(Float.toString(p2.readFloat()));
-        });
+        registry.register(IntReadable.class, FloatReadable.class, BooleanReadable.class, (p1, p2) -> 
+            () -> Integer.toString(p1.readInt()).endsWith(Float.toString(p2.readFloat()))
+        );
     }
 
     static {

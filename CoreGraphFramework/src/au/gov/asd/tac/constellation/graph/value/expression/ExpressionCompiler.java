@@ -63,6 +63,13 @@ public class ExpressionCompiler {
     private static final Logger LOGGER = Logger.getLogger(ExpressionCompiler.class.getName());
     private static final Map<Operator, String> OPERATOR_CLASSES = new EnumMap<>(Operator.class);
     private static final Map<Operator, String> CONVERTER_CLASSES = new EnumMap<>(Operator.class);
+    private static final String QUERY_ERROR = "Query Error";
+    private static final String MALFORMED_QUERY = "Malformed Query";
+    private static final String OPERATOR_NOT_FOUND = "Operator Not Found";
+    private static final String OPERATOR_NOT_FOUND_MSG = "There was a query error: Operator Not Found: {0}";
+    private static final String OPERATOR_ERROR_MSG = "The operator %s cannot be found.\n"
+            + "Recheck the query and try again.\n"
+            + "Refer to the Layers View Help if you need assistance with the query language.";
 
     static {
         OPERATOR_CLASSES.put(Operator.ADD, Sum.NAME);
@@ -109,10 +116,9 @@ public class ExpressionCompiler {
                 final String operatorName = CONVERTER_CLASSES.get(operator.getOperator());
                 final Object result = operators.getRegistry(operatorName).apply(right);
                 if (result == null) {
-                    Platform.runLater(() -> {
-                        NotifyDisplayer.displayAlert("Query Error", "Operator Not Found", String.format("The operator %s cannot be found.\nRecheck the query and try again.\nRefer to the Layers View Help if you need assistance with the query language.", operatorName), Alert.AlertType.ERROR);
-                    });
-                    LOGGER.log(Level.WARNING, String.format("There was a query error: Operator Not Found: %s", operatorName));
+                    Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR, OPERATOR_NOT_FOUND, 
+                            String.format(OPERATOR_ERROR_MSG, operatorName), Alert.AlertType.ERROR));
+                    LOGGER.log(Level.WARNING, OPERATOR_NOT_FOUND_MSG, operatorName);
                 }
                 return result;
             case 3:
@@ -122,17 +128,15 @@ public class ExpressionCompiler {
                 final String operatorName2 = OPERATOR_CLASSES.get(secondOperator.getOperator());
                 final Object result2 = operators.getRegistry(operatorName2).apply(left, right2);
                 if (result2 == null) {
-                    Platform.runLater(() -> {
-                        NotifyDisplayer.displayAlert("Query Error", "Operator Not Found", String.format("The operator %s cannot be found.\nRecheck the query and try again.\nRefer to the Layers View Help if you need assistance with the query language.", operatorName2), Alert.AlertType.ERROR);
-                    });
-                    LOGGER.log(Level.WARNING, String.format("There was a query error: Operator Not Found: %s", operatorName2));
+                    Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR, OPERATOR_NOT_FOUND, 
+                            String.format(OPERATOR_ERROR_MSG, operatorName2), Alert.AlertType.ERROR));
+                    LOGGER.log(Level.WARNING, OPERATOR_NOT_FOUND_MSG, operatorName2);
                 }
                 return result2;
             default:
-                Platform.runLater(() -> {
-                    NotifyDisplayer.displayAlert("Query Error", "Malformed Query", String.format("Invalid expression size: ", children.size()), Alert.AlertType.ERROR);
-                });
-                LOGGER.log(Level.WARNING, String.format("There was a query error: Invalid expression size: %s", children.size()));
+                Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR, MALFORMED_QUERY, 
+                        String.format("Invalid expression size: ", children.size()), Alert.AlertType.ERROR));
+                LOGGER.log(Level.WARNING, "There was a query error: Invalid expression size: {0}", children.size());
                 return null;
         }
     }
@@ -144,10 +148,9 @@ public class ExpressionCompiler {
             final String variableName = ((VariableExpression) expression).getContent();
             final Object variable = variableProvider.getVariable(variableName, indexReadable);
             if (variable == null) {
-                Platform.runLater(() -> {
-                    NotifyDisplayer.displayAlert("Query Error", "Malformed Query", String.format("Unknown variable: ", variableName), Alert.AlertType.ERROR);
-                });
-                LOGGER.log(Level.WARNING, String.format("There was a query error: Unknown variable: %s", variableName));
+                Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR, MALFORMED_QUERY, 
+                        String.format("Unknown variable: ", variableName), Alert.AlertType.ERROR));
+                LOGGER.log(Level.WARNING, "There was a query error: Unknown variable: {0}", variableName);
                 return null;
             }
             return variable;
@@ -155,9 +158,8 @@ public class ExpressionCompiler {
             final String content = ((StringExpression) expression).getContent();
             return (StringConstant) () -> content;
         } else {
-            Platform.runLater(() -> {
-                NotifyDisplayer.displayAlert("Query Error", "Malformed Query", "This error is unexpected and should be reported", Alert.AlertType.ERROR);
-            });
+            Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR, MALFORMED_QUERY, "This error is unexpected and should be reported", 
+                    Alert.AlertType.ERROR));
             LOGGER.log(Level.SEVERE, "There was a query error: This error is unexpected and should be reported");
             return null;
         }
