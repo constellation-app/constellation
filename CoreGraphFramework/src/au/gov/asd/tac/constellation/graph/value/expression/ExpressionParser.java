@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -129,6 +130,31 @@ public class ExpressionParser {
 
     public abstract static class Expression {
 
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 37 * hash + Objects.hashCode(this.parent);
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final Expression other = (Expression) obj;
+            if (!Objects.equals(this.parent, other.parent)) {
+                return false;
+            }
+            return true;
+        }
+
         private SequenceExpression parent;
 
         private Expression(SequenceExpression parent) {
@@ -151,9 +177,34 @@ public class ExpressionParser {
 
     public static class VariableExpression extends Expression {
 
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 89 * hash + Objects.hashCode(this.content);
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final VariableExpression other = (VariableExpression) obj;
+            if (!Objects.equals(this.content, other.content)) {
+                return false;
+            }
+            return true;
+        }
+
         private final String content;
 
-        private VariableExpression(SequenceExpression parent, char[] content, int contentLength) {
+        protected VariableExpression(SequenceExpression parent, char[] content, int contentLength) {
             super(parent);
             this.content = new String(content, 0, contentLength);
         }
@@ -170,9 +221,34 @@ public class ExpressionParser {
 
     public static class StringExpression extends Expression {
 
+        @Override
+        public int hashCode() {
+            int hash = 3;
+            hash = 67 * hash + Objects.hashCode(this.content);
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final StringExpression other = (StringExpression) obj;
+            if (!Objects.equals(this.content, other.content)) {
+                return false;
+            }
+            return true;
+        }
+
         private final String content;
 
-        private StringExpression(SequenceExpression parent, char[] content, int contentLength) {
+        protected StringExpression(SequenceExpression parent, char[] content, int contentLength) {
             super(parent);
             this.content = new String(content, 0, contentLength);
         }
@@ -189,9 +265,34 @@ public class ExpressionParser {
 
     public static class OperatorExpression extends Expression {
 
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 59 * hash + Objects.hashCode(this.operator);
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final OperatorExpression other = (OperatorExpression) obj;
+            if (this.operator != other.operator) {
+                return false;
+            }
+            return true;
+        }
+
         private Operator operator;
 
-        private OperatorExpression(SequenceExpression parent, Operator operator) {
+        OperatorExpression(SequenceExpression parent, Operator operator) {
             super(parent);
             this.operator = operator;
         }
@@ -208,10 +309,35 @@ public class ExpressionParser {
 
     public static class SequenceExpression extends Expression {
 
+        @Override
+        public int hashCode() {
+            int hash = 5;
+            hash = 73 * hash + Objects.hashCode(this.children);
+            return hash;
+        }
+
+        @Override
+        public boolean equals(final Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final SequenceExpression other = (SequenceExpression) obj;
+            if (!Objects.equals(this.children, other.children)) {
+                return false;
+            }
+            return true;
+        }
+
         private final List<Expression> children = new ArrayList<>();
         private final List<Expression> unmodifiableChildren = Collections.unmodifiableList(children);
 
-        private SequenceExpression(SequenceExpression parent) {
+        protected SequenceExpression(SequenceExpression parent) {
             super(parent);
         }
 
@@ -219,7 +345,7 @@ public class ExpressionParser {
             return unmodifiableChildren;
         }
 
-        private void addChild(Expression expression) {
+        protected void addChild(Expression expression) {
 
             if (expression instanceof SequenceExpression) {
                 final SequenceExpression tokenSequence = (SequenceExpression) expression;
