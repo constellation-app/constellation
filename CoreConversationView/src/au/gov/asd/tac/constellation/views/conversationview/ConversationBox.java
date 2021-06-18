@@ -406,6 +406,8 @@ public final class ConversationBox extends StackPane {
 
             // Handle the case where the cell is empty.
             if (empty || message == null) {
+                searchLabel.setText("Found: " + found);
+                searchLabel.setStyle(found > 0 ? FOUND_COLOUR_TRUE : FOUND_COLOUR_FALSE);
                 setStyle(JavafxStyleManager.CSS_BACKGROUND_COLOR_TRANSPARENT);
                 setGraphic(null);
             } else {
