@@ -29,6 +29,6 @@ public class ApplicationFontPreferenceKeys {
     public static final String FONT_FAMILY = "fontFamily";
     public static String FONT_FAMILY_DEFAULT = "Arial";
     public static final String FONT_SIZE = "fontSize";
-    public static String FONT_SIZE_DEFAULT = "14";
+    public static String FONT_SIZE_DEFAULT = "12";
 
 }

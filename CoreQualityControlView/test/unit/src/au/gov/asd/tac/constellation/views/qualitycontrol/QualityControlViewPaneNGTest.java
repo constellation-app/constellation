@@ -237,12 +237,13 @@ public class QualityControlViewPaneNGTest {
         final Map<QualityControlRule, QualityCategory> result = QualityControlViewPane.getPriorities();
         assertEquals(result.size(), rules.size());
         
+        for (final QualityControlRule rule: result.keySet()) {
+            rule.clearResults();
+        }
+        
         final IdentifierInconsistentWithTypeRule iiRule = new IdentifierInconsistentWithTypeRule();
-        iiRule.executeRule(graph, vertices);
         final MissingTypeRule mRule = new MissingTypeRule();
-        mRule.executeRule(graph, vertices);
         final UnknownTypeRule uRule = new UnknownTypeRule();
-        uRule.executeRule(graph, vertices);
         
         assertEquals(result.get(iiRule), QualityCategory.INFO);
         assertEquals(result.get(mRule), QualityCategory.SEVERE);
