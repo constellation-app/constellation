@@ -108,6 +108,7 @@ public class LayersViewPane extends BorderPane {
         // create options
         final Button addButton = new Button("Add New Layer");
         addButton.setAlignment(Pos.CENTER_RIGHT);
+        addButton.setTooltip(new Tooltip("CTRL + ALT + L"));
         addButton.setOnAction(event -> {
             if (layersGridPane.getRowCount() <= BitMaskQueryCollection.MAX_QUERY_AMT) {
                 final int newQueryIndex = Math.max(controller.getTxQueryCollection().getHighestQueryIndex() + 1,
@@ -122,6 +123,7 @@ public class LayersViewPane extends BorderPane {
         HBox.setHgrow(addButton, Priority.ALWAYS);
 
         final Button deselectAllButton = new Button("Deselect All Layers");
+        deselectAllButton.setTooltip(new Tooltip("CTRL + ALT + D"));
         deselectAllButton.setAlignment(Pos.CENTER_RIGHT);
         deselectAllButton.setOnAction(event -> {
             controller.getVxQueryCollection().setVisibilityOnAll(false);
