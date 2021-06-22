@@ -16,19 +16,24 @@
 package au.gov.asd.tac.constellation.views.layers;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.value.expression.ExpressionParser;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQuery;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQueryCollection;
 import au.gov.asd.tac.constellation.views.layers.query.Query;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
@@ -49,10 +54,14 @@ import org.openide.util.HelpCtx;
  */
 public class LayersViewPane extends BorderPane {
 
+    private static final Logger LOGGER = Logger.getLogger(LayersViewPane.class.getName());
     private final LayersViewController controller;
     private final GridPane layersGridPane;
     private final VBox layersViewPane;
     private final HBox options;
+    private static final String QUERY_WARNING_TEXT = "Invalid query structure";
+    private static final String QUERY_WARNING_STYLE = "-fx-background-color: rgba(241,74,74,0.85);";
+    private static final String QUERY_DEFAULT_STYLE = "-fx-shadow-highlight-color, -fx-text-box-border, -fx-control-inner-background;";
 
     public LayersViewPane(final LayersViewController controller) {
 
@@ -172,6 +181,7 @@ public class LayersViewPane extends BorderPane {
         final Node vxQueryTextArea = new TextArea();
         ((TextArea) vxQueryTextArea).setPrefRowCount(1);
         ((TextArea) vxQueryTextArea).setText(vxQuery);
+        ((TextArea) vxQueryTextArea).setStyle(testQueryValidity(vxQuery) ? QUERY_DEFAULT_STYLE : QUERY_WARNING_STYLE);
         ((TextArea) vxQueryTextArea).focusedProperty().addListener((observable, oldVal, newVal) -> {
             if (!newVal) {
                 syncLayers();
@@ -183,6 +193,7 @@ public class LayersViewPane extends BorderPane {
         final Node txQueryTextArea = new TextArea();
         ((TextArea) txQueryTextArea).setPrefRowCount(1);
         ((TextArea) txQueryTextArea).setText(txQuery);
+        ((TextArea) txQueryTextArea).setStyle(testQueryValidity(txQuery) ? QUERY_DEFAULT_STYLE : QUERY_WARNING_STYLE);
         ((TextArea) txQueryTextArea).focusedProperty().addListener((observable, oldVal, newVal) -> {
             if (!newVal) {
                 syncLayers();
@@ -266,6 +277,27 @@ public class LayersViewPane extends BorderPane {
         setLayers(BitMaskQueryCollection.DEFAULT_VX_QUERIES, BitMaskQueryCollection.DEFAULT_TX_QUERIES);
     }
 
+    /**
+     * Tests if the Expression String parses correctly. Does not check if there
+     * are returnable results. Suppresses the error dialogs within the parse
+     * method.
+     *
+     * @param queryText the expression string to test
+     * @return true if the query is valid, false otherwise
+     */
+    private boolean testQueryValidity(final String queryText) {
+        boolean validity = true;
+        if (queryText == null) {
+            return validity;
+        }
+        ExpressionParser.hideErrorPrompts(true);
+        if (ExpressionParser.parse(queryText) == null) {
+            validity = false;
+        }
+        ExpressionParser.hideErrorPrompts(false);
+        return validity;
+    }
+
     private synchronized void syncLayers() {
         int index = 0;
         boolean visible = false;
@@ -285,11 +317,40 @@ public class LayersViewPane extends BorderPane {
                 case 1:
                     visible = ((CheckBox) item).isSelected();
                     break;
-                case 2:
+                case 2: {
                     vxQuery = ((TextArea) item).getText();
+                    if (!testQueryValidity(vxQuery)) {
+                        ((TextArea) item).setStyle(QUERY_WARNING_STYLE);
+                        final ContextMenu contextMenu = new ContextMenu();
+                        MenuItem errorItem = new MenuItem(QUERY_WARNING_TEXT);
+                        contextMenu.getItems().addAll(errorItem);
+                        ((TextArea) item).setContextMenu(contextMenu);
+                        // Only create a context menu when the item is loaded.
+                        // When not loaded, 0.0f will be returned as the position
+                        if (item.getBoundsInParent().getCenterY() > 1.0f) {
+                            contextMenu.show(item, Side.RIGHT, 0, 0);
+                        }
+                    } else {
+                        ((TextArea) item).setStyle(QUERY_DEFAULT_STYLE);
+                    }
                     break;
+                }
                 case 3:
                     txQuery = ((TextArea) item).getText();
+                    if (!testQueryValidity(txQuery)) {
+                        ((TextArea) item).setStyle(QUERY_WARNING_STYLE);
+                        final ContextMenu contextMenu = new ContextMenu();
+                        MenuItem errorItem = new MenuItem(QUERY_WARNING_TEXT);
+                        contextMenu.getItems().addAll(errorItem);
+                        ((TextArea) item).setContextMenu(contextMenu);
+                        // Only create a context menu when the item is loaded.
+                        // When not loaded, 0.0f will be returned as the position
+                        if (item.getBoundsInParent().getCenterY() > 1.0f) {
+                            contextMenu.show(item, Side.RIGHT, 0, 0);
+                        }
+                    } else {
+                        ((TextArea) item).setStyle(QUERY_DEFAULT_STYLE);
+                    }
                     break;
                 case 4:
                     description = ((TextArea) item).getText();

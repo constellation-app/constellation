@@ -9,8 +9,8 @@
         <h1>The Constellation Expressions Framework</h1>
         <p>
             The expressions framework is a structure which can be used to query or assign the Vertex and Transaction attributes within a graph.
-            The framework will work on all attributes which do not include a restricted character within it's AttributeName. An expression can 
-            return 0..* (none or many) matches.
+            The framework will work on all attributes which <b>do not</b> include a restricted character within it's AttributeName. An expression can 
+            return <b>0..*</b> (none or many) matches.
         </p>
         
         <h2>Query Language</h2>
@@ -20,15 +20,15 @@
         </p>
         
         <h2>Forming a Query Expression</h2>
-        <p> A valid query for a vertex or transaction takes the form of [AttributeName] [Operator] [value]. </p>
-        <p>The AttributeName used will not include any restricted characters, and will be case sensitive.</p>
-        <p>The AttributeName will be represented as plain, unquoted text.</p>
-        <p>The Operator must be separated by atleast one whitespace character.</p>
-        <p>The Operator must be valid and from the list specified below.</p>
-        <p>The Value must be quoted using single('value') or double quotes("value").</p>
+        <p> A valid query for a vertex or transaction takes the form of <b>[AttributeName] [Operator] [value]</b>. </p>
+        <p>The <b>AttributeName</b> used will not include any restricted characters, and will be case sensitive.</p>
+        <p>The <b>AttributeName</b> will be represented as plain, unquoted text.</p>
+        <p>The <b>Operator</b> must be separated by atleast one whitespace character.</p>
+        <p>The <b>Operator</b> must be valid and from the list specified below.</p>
+        <p>The <b>Value</b> must be quoted using single('value') or double quotes("value").</p>
         <br/>
         <p>
-            How to form an expression to find a vertex with the Label attribute matching <b>"Vertex #1&lt;Unknown&gt;"</b>.
+            How to form an expression to find a vertex with the <b>Label</b> attribute matching <b>"Vertex #1&lt;Unknown&gt;"</b>.
         </p>
         <ul>
             <li>AttributeName is <b>Label</b></li>
@@ -36,7 +36,7 @@
             <li>Value is <b>"Vertex #1&lt;Unknown&gt;"</b> or <b>'Vertex #1&lt;Unknown&gt;'</b></li>
         </ul>
         <br/>
-        <p>Combining these into the pattern [AttributeName] [Operator] [Value] yields the following suitable query strings.</p>
+        <p>Combining these into the pattern <b>[AttributeName] [Operator] [Value]</b> yields the following suitable query strings.</p>
         <ul>
             <li>Label == "Vertex #1&lt;Unknown&gt;"</li>
             <li>Label == 'Vertex #1&lt;Unknown&gt;'</li>
@@ -212,7 +212,7 @@
         <ul>
             <li>Single Quote - '''</li>
             <li>Double Quote - '"'</li>
-            <li>Parenthesis - '(' and ')' (when not used as a nesting delimiter)</li>
+            <li>Parenthesis - '(' and ')' (<em>when not used as a nesting delimiter</em>)</li>
         </ul>
         
         <h2>Advanced Usage</h2>

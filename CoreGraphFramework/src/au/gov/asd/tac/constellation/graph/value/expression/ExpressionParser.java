@@ -35,7 +35,7 @@ public class ExpressionParser {
 
     private static final Logger LOGGER = Logger.getLogger(ExpressionParser.class.getName());
     public static final char NO_TOKEN = 0;
-    protected static boolean isHeadless = false;
+    private static boolean isHeadless = false;
     private static final String QUERY_ERROR = "Query Error";
     private static final String MALFORMED_QUERY = "Malformed Query";
     private static final String QUERY_ERROR_MSG = "There was a query error: {0}";
@@ -53,25 +53,7 @@ public class ExpressionParser {
         READING_SINGLE_ESCAPED,
         READING_DOUBLE_ESCAPED
     }
-    
-    /**
-     * Order of precedence
-     * 1
-     * 2 !
-     * 3 * / %
-     * 4 - + contains startswith endswith
-     * 5
-     * 6 >= <= > <
-     * 7 == !=
-     * 8 &
-     * 9 ^
-     * 10 |
-     * 11 &&
-     * 12 ||
-     * 13
-     * 14 =
-     * 
-     */
+
     public enum Operator {
         NOT('!', 2),
         MULTIPLY('*', 3),
@@ -157,6 +139,10 @@ public class ExpressionParser {
 
     private ExpressionParser() {
         // added private constructor to hide implicit public constructor - S1118.
+    }
+
+    public static void hideErrorPrompts(final boolean hide) {
+        isHeadless = hide;
     }
 
     public abstract static class Expression {
@@ -388,7 +374,7 @@ public class ExpressionParser {
                         break;
                     default:
                         if (tokenSequence.children.get(tokenSequence.children.size() - 1) instanceof OperatorExpression) {
-                            Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR, 
+                            Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
                                     MALFORMED_QUERY, ENDS_WITH_OPERATOR_ERROR, Alert.AlertType.ERROR));
                             LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, ENDS_WITH_OPERATOR_ERROR);
                         }
@@ -430,9 +416,9 @@ public class ExpressionParser {
                             return;
                         }
                     }
-                    if(!isHeadless){
-                        Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR, 
-                            MALFORMED_QUERY, TWO_NON_OPERATORS_SEQUENCE, Alert.AlertType.ERROR));
+                    if (!isHeadless) {
+                        Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
+                                MALFORMED_QUERY, TWO_NON_OPERATORS_SEQUENCE, Alert.AlertType.ERROR));
                     }
                     LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, TWO_NON_OPERATORS_SEQUENCE);
                     return;
@@ -508,7 +494,7 @@ public class ExpressionParser {
             switch (state) {
                 case READING_WHITESPACE:
                     if (c != ' ' && c != 0) {
-                        if (isLetter(c) || isDigit(c) || c == '_' || c == '{' || c == '}') {
+                        if (isLetter(c) || isDigit(c) || isAllowable(c)) {
                             content[contentLength++] = c;
                             state = ParseState.READING_VARIABLE;
                         } else if (c == '\'') {
@@ -519,9 +505,9 @@ public class ExpressionParser {
                             currentExpression = new SequenceExpression(currentExpression);
                         } else if (c == ')') {
                             if (currentExpression == rootExpression) {
-                                if(!isHeadless){
-                                    Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR, 
-                                        MALFORMED_QUERY, NESTED_PARENTHESIS_ERROR, Alert.AlertType.ERROR));
+                                if (!isHeadless) {
+                                    Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
+                                            MALFORMED_QUERY, NESTED_PARENTHESIS_ERROR, Alert.AlertType.ERROR));
                                 }
                                 LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, NESTED_PARENTHESIS_ERROR);
                                 return null;
@@ -532,9 +518,9 @@ public class ExpressionParser {
                         } else if (Operator.OPERATOR_TOKENS.containsKey(c)) {
                             currentExpression.addChild(new OperatorExpression(currentExpression, Operator.OPERATOR_TOKENS.get(c)));
                         } else {
-                            if(!isHeadless){
-                                Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR, 
-                                    MALFORMED_QUERY, UNEXPECTED_CHARACTER_ERROR + c, Alert.AlertType.ERROR));
+                            if (!isHeadless) {
+                                Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
+                                        MALFORMED_QUERY, UNEXPECTED_CHARACTER_ERROR + c, Alert.AlertType.ERROR));
                             }
                             LOGGER.log(Level.WARNING, QUERY_ERROR_MSG + UNEXPECTED_CHARACTER_ERROR, c);
                             return null;
@@ -547,7 +533,7 @@ public class ExpressionParser {
                         currentExpression.addChild(new VariableExpression(currentExpression, content, contentLength));
                         contentLength = 0;
                         state = ParseState.READING_WHITESPACE;
-                    } else if (isLetter(c) || isDigit(c) || c == '_' || c == '{' || c == '}') { // Allow letters, numbers, underscores and curly braces.
+                    } else if (isLetter(c) || isDigit(c) || isAllowable(c)) {
                         content[contentLength++] = c;
                     } else if (c == '(') {
                         currentExpression.addChild(new VariableExpression(currentExpression, content, contentLength));
@@ -555,9 +541,9 @@ public class ExpressionParser {
                         currentExpression = new SequenceExpression(currentExpression);
                     } else if (c == ')') {
                         if (currentExpression == rootExpression) {
-                            if(!isHeadless){
-                                Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR, 
-                                    MALFORMED_QUERY, NESTED_PARENTHESIS_ERROR, Alert.AlertType.ERROR));
+                            if (!isHeadless) {
+                                Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
+                                        MALFORMED_QUERY, NESTED_PARENTHESIS_ERROR, Alert.AlertType.ERROR));
                             }
                             LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, NESTED_PARENTHESIS_ERROR);
                             return null;
@@ -574,9 +560,9 @@ public class ExpressionParser {
                         currentExpression.addChild(new OperatorExpression(currentExpression, Operator.OPERATOR_TOKENS.get(c)));
                         state = ParseState.READING_WHITESPACE;
                     } else {
-                        if(!isHeadless){
-                            Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR, 
-                                MALFORMED_QUERY, UNEXPECTED_CHARACTER_ERROR + c, Alert.AlertType.ERROR));
+                        if (!isHeadless) {
+                            Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
+                                    MALFORMED_QUERY, UNEXPECTED_CHARACTER_ERROR + c, Alert.AlertType.ERROR));
                         }
                         LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, UNEXPECTED_CHARACTER_ERROR);
                         return null;
@@ -591,9 +577,9 @@ public class ExpressionParser {
                     } else if (c == '\\') {
                         state = ParseState.READING_SINGLE_ESCAPED;
                     } else if (c == 0) {
-                        if(!isHeadless){
-                            Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR, 
-                                MALFORMED_QUERY, END_OF_QUOTED_STRING_ERROR, Alert.AlertType.ERROR));
+                        if (!isHeadless) {
+                            Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
+                                    MALFORMED_QUERY, END_OF_QUOTED_STRING_ERROR, Alert.AlertType.ERROR));
                         }
                         LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, END_OF_QUOTED_STRING_ERROR);
                         return null;
@@ -610,9 +596,9 @@ public class ExpressionParser {
                     } else if (c == '\\') {
                         state = ParseState.READING_DOUBLE_ESCAPED;
                     } else if (c == 0) {
-                        if(!isHeadless){
-                            Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR, 
-                                MALFORMED_QUERY, END_OF_QUOTED_STRING_ERROR, Alert.AlertType.ERROR));
+                        if (!isHeadless) {
+                            Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
+                                    MALFORMED_QUERY, END_OF_QUOTED_STRING_ERROR, Alert.AlertType.ERROR));
                         }
                         LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, END_OF_QUOTED_STRING_ERROR);
                         return null;
@@ -623,9 +609,9 @@ public class ExpressionParser {
 
                 case READING_SINGLE_ESCAPED:
                     if (c == 0) {
-                        if(!isHeadless){
-                            Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR, 
-                                MALFORMED_QUERY, END_OF_QUOTED_STRING_ERROR, Alert.AlertType.ERROR));
+                        if (!isHeadless) {
+                            Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
+                                    MALFORMED_QUERY, END_OF_QUOTED_STRING_ERROR, Alert.AlertType.ERROR));
                         }
                         LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, END_OF_QUOTED_STRING_ERROR);
                         return null;
@@ -637,9 +623,9 @@ public class ExpressionParser {
 
                 case READING_DOUBLE_ESCAPED:
                     if (c == 0) {
-                        if(!isHeadless){
-                            Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR, 
-                                MALFORMED_QUERY, END_OF_QUOTED_STRING_ERROR, Alert.AlertType.ERROR));
+                        if (!isHeadless) {
+                            Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
+                                    MALFORMED_QUERY, END_OF_QUOTED_STRING_ERROR, Alert.AlertType.ERROR));
                         }
                         LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, END_OF_QUOTED_STRING_ERROR);
                         return null;
@@ -652,9 +638,9 @@ public class ExpressionParser {
         }
 
         if (currentExpression != rootExpression) {
-            if(!isHeadless){
-                Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR, 
-                    MALFORMED_QUERY, NESTED_PARENTHESIS_ERROR, Alert.AlertType.ERROR));
+            if (!isHeadless) {
+                Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
+                        MALFORMED_QUERY, NESTED_PARENTHESIS_ERROR, Alert.AlertType.ERROR));
             }
             LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, NESTED_PARENTHESIS_ERROR);
             return null;
@@ -666,9 +652,9 @@ public class ExpressionParser {
             }
         }
         if (!currentExpression.children.isEmpty() && currentExpression.children.get(currentExpression.children.size() - 1) instanceof OperatorExpression) {
-            if(!isHeadless){
-                Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR, 
-                    MALFORMED_QUERY, ENDS_WITH_OPERATOR_ERROR, Alert.AlertType.ERROR));
+            if (!isHeadless) {
+                Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
+                        MALFORMED_QUERY, ENDS_WITH_OPERATOR_ERROR, Alert.AlertType.ERROR));
             }
             LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, ENDS_WITH_OPERATOR_ERROR);
             return null;
@@ -680,6 +666,10 @@ public class ExpressionParser {
 
     private static boolean isLetter(char c) {
         return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+    }
+
+    private static boolean isAllowable(char c) {
+        return (c == '_' || c == '{' || c == '}');
     }
 
     private static boolean isDigit(char c) {
