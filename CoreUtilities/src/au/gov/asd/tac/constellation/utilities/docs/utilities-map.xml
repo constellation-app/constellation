@@ -3,6 +3,6 @@
 <map version="2.0">
     <mapID target="au.gov.asd.tac.constellation.utilities.icons" url="icons.html"/>
     <mapID target="au.gov.asd.tac.constellation.utilities.decorators" url="decorators.html"/>
-    <mapID target="au.gov.asd.tac.constellation.utilities.jupyter" url="jupyter-notebook.html"/>
-    <mapID target="au.gov.asd.tac.constellation.utilities.rest" url="rest-server.html"/>
+    <mapID target="au.gov.asd.tac.constellation.utilities.jupyter" url="about-jupyter-notebook-server.html"/>
+    <mapID target="au.gov.asd.tac.constellation.utilities.rest" url="about-rest-server.html"/>
 </map>
