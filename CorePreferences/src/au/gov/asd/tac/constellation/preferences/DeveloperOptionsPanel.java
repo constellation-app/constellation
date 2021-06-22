@@ -125,7 +125,7 @@ public class DeveloperOptionsPanel extends javax.swing.JPanel {
             .addGroup(memoryPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(gcOnOpenCheckbox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(gcOnCloseCheckbox)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -181,9 +181,9 @@ public class DeveloperOptionsPanel extends javax.swing.JPanel {
                 .addComponent(memoryPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(glPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(masterResetButton)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         glPanel.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(DeveloperOptionsPanel.class, "DeveloperOptionsPanel.glPanel.AccessibleContext.accessibleName")); // NOI18N
