@@ -366,7 +366,6 @@ public class JDBCSourcePane extends SourcePane {
             dialog.setScene(scene3);
             dialog.setTitle("Manage Connections");
             dialog.centerOnScreen();
-            dialog.sizeToScene();
             dialog.initModality(Modality.APPLICATION_MODAL);
             dialog.setAlwaysOnTop(true);
             dialog.setWidth(LARGE_SCROLLPANE_PREF_WIDTH);
