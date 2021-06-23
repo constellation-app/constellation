@@ -6,7 +6,5 @@
     <indexitem text="Open Graph" target="au.gov.asd.tac.constellation.graph.file.openGraph"/>
     <indexitem text="Open Recent Graph" target="au.gov.asd.tac.constellation.graph.file.openRecentGraph"/>
     <indexitem text="Save Graph" target="au.gov.asd.tac.constellation.graph.file.saveGraph"/>
-    <indexitem text="Mouse Actions: Add Mode" target="au.gov.asd.tac.constellation.graph.file.mouseAddMode"/>
-    <indexitem text="Mouse Actions: Selection Mode" target="au.gov.asd.tac.constellation.graph.file.mouseSelectionMode"/>
     <indexitem text="Nebula" target="au.gov.asd.tac.constellation.graph.file.nebula"/>
 </index>
