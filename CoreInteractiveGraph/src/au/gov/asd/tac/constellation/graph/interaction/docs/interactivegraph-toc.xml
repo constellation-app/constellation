@@ -4,7 +4,7 @@
     <tocitem text="Graph" mergetype="javax.help.SortMerge">
         <tocitem text="Editing" mergetype="javax.help.SortMerge">
             <tocitem text="Add and Selection Modes" target="au.gov.asd.tac.constellation.graph.interaction.addselectmode"/>
-            <tocitem text="Cut, Copy, Paste" target="au.gov.asd.tac.constellation.graph.interaction.cliboard"/>
+            <tocitem text="Cut, Copy, Paste" target="au.gov.asd.tac.constellation.graph.interaction.cutcopypaste"/>
         </tocitem>
     </tocitem>
 </toc>
