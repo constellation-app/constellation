@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui;
 
+import java.util.Optional;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextArea;
@@ -91,5 +92,29 @@ public class NotifyDisplayer {
         Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
         stage.setAlwaysOnTop(true);
         dialog.showAndWait();
+    }
+
+    /**
+     * Utility display method to show an Alert and get the confirmation of the
+     * user. Alert.AlertType.CONFIRMATION is used. This utility method differs
+     * from displayAlert as it uses a TextArea to display a large amount of
+     * text.
+     *
+     * @param title the title of the alert
+     * @param header the header message for the alert
+     * @param message the message to display within the alert
+     *
+     * @return the user confirmation type
+     */
+    public static Optional<ButtonType> displayConfirmationAlert(final String title, final String header, final String message) {
+        final Alert dialog;
+        dialog = new Alert(Alert.AlertType.CONFIRMATION, "", ButtonType.NO, ButtonType.YES);
+        dialog.setTitle(title);
+        dialog.setHeaderText(header);
+        dialog.setContentText(message);
+        dialog.setResizable(true);
+        Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
+        stage.setAlwaysOnTop(true);
+        return dialog.showAndWait();
     }
 }

@@ -58,6 +58,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
@@ -175,7 +176,7 @@ public final class RunPane extends BorderPane implements KeyListener {
         filterField = new TextField();
         filterField.setFocusTraversable(false);
         filterField.setMinHeight(USE_PREF_SIZE);
-        filterField.setText("Filter");
+        filterField.setText("Start typing to search, e.g.:first_name==\"NICK\"");
         filterField.setStyle("-fx-background-color: black; -fx-text-fill: white;");
         filterField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (setFilter(newValue)) {
@@ -188,10 +189,13 @@ public final class RunPane extends BorderPane implements KeyListener {
         sampleDataView.setMinHeight(SAMPLEVIEW_MIN_HEIGHT);
         sampleDataView.setPrefHeight(SAMPLEVIEW_HEIGHT);
         sampleDataView.setMaxHeight(Double.MAX_VALUE);
+        HBox.setHgrow(filterField, Priority.ALWAYS);
 
-        final VBox tableBox = new VBox();
+        final HBox filterBox = new HBox(new Label("Filter: "), filterField);
+        filterBox.setAlignment(Pos.CENTER_LEFT);
+
+        final VBox tableBox = new VBox(filterBox, sampleDataView);
         VBox.setVgrow(sampleDataView, Priority.ALWAYS);
-        tableBox.getChildren().addAll(filterField, sampleDataView);
 
         configBox.getChildren().add(tableBox);
 

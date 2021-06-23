@@ -124,6 +124,43 @@ public class JDBCConnectionManager {
         }
     }
 
+    /**
+     * Add a connection with a username and password.
+     *
+     * @param currentconnectionName
+     * @param newconnectionName
+     * @param driver
+     * @param username
+     * @param password
+     * @param connectionString
+     * @return true if the connection was successful, false otherwise.
+     */
+    public boolean updateConnection(final String currentconnectionName, final String newconnectionName, final JDBCDriver driver, final String username, final String password, final String connectionString) {
+        final JDBCConnection newConnection = new JDBCConnection(newconnectionName, driver, connectionString);
+        if (testConnection(newconnectionName, driver, username, password, connectionString)) {
+            try (final Connection connection = sql.getConnection()) {
+                try (final PreparedStatement statement = connection.prepareStatement("update connection set "
+                        + " name = ?, driver_name = ?, connection_string = ? where name = ?")) {
+                    statement.setString(1, newconnectionName);
+                    statement.setString(2, driver.getName());
+                    statement.setString(3, connectionString);
+                    statement.setString(4, currentconnectionName);
+                    statement.executeUpdate();
+                }
+                connectionMap.remove(currentconnectionName);
+                connectionMap.put(newconnectionName, newConnection);
+
+            } catch (final IOException | SQLException ex) {
+                NotifyDisplayer.displayLargeAlert("JDBC Import", "Failed to update the connection " + newconnectionName + " in the database.",
+                        ex.getMessage(), AlertType.ERROR);
+                return false;
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public void deleteConnection(final String name) {
         final JDBCConnection d = connectionMap.get(name);
 
