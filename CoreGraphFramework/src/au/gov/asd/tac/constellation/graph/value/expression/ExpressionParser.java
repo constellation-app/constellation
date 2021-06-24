@@ -41,7 +41,7 @@ public class ExpressionParser {
     private static final String QUERY_ERROR_MSG = "There was a query error: {0}";
     private static final String NESTED_PARENTHESIS_ERROR = "Invalid nesting of parenthesis";
     private static final String ENDS_WITH_OPERATOR_ERROR = "An expression cannot end with an operator";
-    private static final String END_OF_QUOTED_STRING_ERROR = "Unexpected end of expression while in quoted string";
+    private static final String END_OF_QUOTED_STRING_ERROR = "Unexpected end of expression while in quoted string.\nCould not find the pair to: %s";
     private static final String UNEXPECTED_CHARACTER_ERROR = "Unexpected character: ";
     private static final String TWO_NON_OPERATORS_SEQUENCE = "2 non-operator tokens in sequence";
 
@@ -505,11 +505,13 @@ public class ExpressionParser {
                             currentExpression = new SequenceExpression(currentExpression);
                         } else if (c == ')') {
                             if (currentExpression == rootExpression) {
+                                final String errorMessage = "Found closing parenthesis ) within variable.\n"
+                                        + "parentheses must be used in pairs to enclose variables.";
                                 if (!isHeadless) {
                                     Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
-                                            MALFORMED_QUERY, NESTED_PARENTHESIS_ERROR, Alert.AlertType.ERROR));
+                                            MALFORMED_QUERY, errorMessage, Alert.AlertType.ERROR));
                                 }
-                                LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, NESTED_PARENTHESIS_ERROR);
+                                LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, errorMessage);
                                 return null;
                             }
                             final SequenceExpression parentExpression = currentExpression.getParent();
@@ -518,11 +520,12 @@ public class ExpressionParser {
                         } else if (Operator.OPERATOR_TOKENS.containsKey(c)) {
                             currentExpression.addChild(new OperatorExpression(currentExpression, Operator.OPERATOR_TOKENS.get(c)));
                         } else {
+                            final String errorMessage = String.format(UNEXPECTED_CHARACTER_ERROR + "\nEnsure values are surrounded with Single or Double quotes.", c);
                             if (!isHeadless) {
                                 Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
-                                        MALFORMED_QUERY, UNEXPECTED_CHARACTER_ERROR + c, Alert.AlertType.ERROR));
+                                        MALFORMED_QUERY, errorMessage, Alert.AlertType.ERROR));
                             }
-                            LOGGER.log(Level.WARNING, QUERY_ERROR_MSG + UNEXPECTED_CHARACTER_ERROR, c);
+                            LOGGER.log(Level.WARNING, errorMessage);
                             return null;
                         }
                     }
@@ -541,11 +544,13 @@ public class ExpressionParser {
                         currentExpression = new SequenceExpression(currentExpression);
                     } else if (c == ')') {
                         if (currentExpression == rootExpression) {
+                            final String errorMessage = "Found closing parenthesis ) within variable.\n"
+                                    + "parentheses must be used in pairs to enclose variables.";
                             if (!isHeadless) {
                                 Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
-                                        MALFORMED_QUERY, NESTED_PARENTHESIS_ERROR, Alert.AlertType.ERROR));
+                                        MALFORMED_QUERY, errorMessage, Alert.AlertType.ERROR));
                             }
-                            LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, NESTED_PARENTHESIS_ERROR);
+                            LOGGER.log(Level.WARNING, errorMessage);
                             return null;
                         }
                         currentExpression.addChild(new VariableExpression(currentExpression, content, contentLength));
@@ -560,11 +565,12 @@ public class ExpressionParser {
                         currentExpression.addChild(new OperatorExpression(currentExpression, Operator.OPERATOR_TOKENS.get(c)));
                         state = ParseState.READING_WHITESPACE;
                     } else {
+                        final String errorMessage = String.format(UNEXPECTED_CHARACTER_ERROR + "\nEnsure values are surrounded with Single or Double quotes.", c);
                         if (!isHeadless) {
                             Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
-                                    MALFORMED_QUERY, UNEXPECTED_CHARACTER_ERROR + c, Alert.AlertType.ERROR));
+                                    MALFORMED_QUERY, errorMessage, Alert.AlertType.ERROR));
                         }
-                        LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, UNEXPECTED_CHARACTER_ERROR);
+                        LOGGER.log(Level.WARNING, errorMessage);
                         return null;
                     }
                     break;
@@ -577,11 +583,12 @@ public class ExpressionParser {
                     } else if (c == '\\') {
                         state = ParseState.READING_SINGLE_ESCAPED;
                     } else if (c == 0) {
+                        final String errorMessage = String.format(END_OF_QUOTED_STRING_ERROR, "'");
                         if (!isHeadless) {
                             Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
-                                    MALFORMED_QUERY, END_OF_QUOTED_STRING_ERROR, Alert.AlertType.ERROR));
+                                    MALFORMED_QUERY, errorMessage, Alert.AlertType.ERROR));
                         }
-                        LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, END_OF_QUOTED_STRING_ERROR);
+                        LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, errorMessage);
                         return null;
                     } else {
                         content[contentLength++] = c;
@@ -596,11 +603,12 @@ public class ExpressionParser {
                     } else if (c == '\\') {
                         state = ParseState.READING_DOUBLE_ESCAPED;
                     } else if (c == 0) {
+                        final String errorMessage = String.format(END_OF_QUOTED_STRING_ERROR, '"');
                         if (!isHeadless) {
                             Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
-                                    MALFORMED_QUERY, END_OF_QUOTED_STRING_ERROR, Alert.AlertType.ERROR));
+                                    MALFORMED_QUERY, errorMessage, Alert.AlertType.ERROR));
                         }
-                        LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, END_OF_QUOTED_STRING_ERROR);
+                        LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, errorMessage);
                         return null;
                     } else {
                         content[contentLength++] = c;
@@ -609,11 +617,12 @@ public class ExpressionParser {
 
                 case READING_SINGLE_ESCAPED:
                     if (c == 0) {
+                        final String errorMessage = "Found escaped character ' at end of expression.";
                         if (!isHeadless) {
                             Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
-                                    MALFORMED_QUERY, END_OF_QUOTED_STRING_ERROR, Alert.AlertType.ERROR));
+                                    MALFORMED_QUERY, errorMessage, Alert.AlertType.ERROR));
                         }
-                        LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, END_OF_QUOTED_STRING_ERROR);
+                        LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, errorMessage);
                         return null;
                     } else {
                         content[contentLength++] = c;
@@ -623,11 +632,12 @@ public class ExpressionParser {
 
                 case READING_DOUBLE_ESCAPED:
                     if (c == 0) {
+                        final String errorMessage = "Found escaped character \" at end of expression.";
                         if (!isHeadless) {
                             Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
-                                    MALFORMED_QUERY, END_OF_QUOTED_STRING_ERROR, Alert.AlertType.ERROR));
+                                    MALFORMED_QUERY, errorMessage, Alert.AlertType.ERROR));
                         }
-                        LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, END_OF_QUOTED_STRING_ERROR);
+                        LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, errorMessage);
                         return null;
                     } else {
                         content[contentLength++] = c;

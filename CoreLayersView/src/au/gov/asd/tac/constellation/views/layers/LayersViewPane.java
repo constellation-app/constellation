@@ -181,6 +181,7 @@ public class LayersViewPane extends BorderPane {
         final Node vxQueryTextArea = new TextArea();
         ((TextArea) vxQueryTextArea).setPrefRowCount(1);
         ((TextArea) vxQueryTextArea).setText(vxQuery);
+        ((TextArea) vxQueryTextArea).setWrapText(true);
         ((TextArea) vxQueryTextArea).setStyle(testQueryValidity(vxQuery) ? QUERY_DEFAULT_STYLE : QUERY_WARNING_STYLE);
         ((TextArea) vxQueryTextArea).focusedProperty().addListener((observable, oldVal, newVal) -> {
             if (!newVal) {
@@ -193,6 +194,7 @@ public class LayersViewPane extends BorderPane {
         final Node txQueryTextArea = new TextArea();
         ((TextArea) txQueryTextArea).setPrefRowCount(1);
         ((TextArea) txQueryTextArea).setText(txQuery);
+        ((TextArea) txQueryTextArea).setWrapText(true);
         ((TextArea) txQueryTextArea).setStyle(testQueryValidity(txQuery) ? QUERY_DEFAULT_STYLE : QUERY_WARNING_STYLE);
         ((TextArea) txQueryTextArea).focusedProperty().addListener((observable, oldVal, newVal) -> {
             if (!newVal) {
@@ -205,6 +207,7 @@ public class LayersViewPane extends BorderPane {
         final Node descriptionTextArea = new TextArea();
         ((TextArea) descriptionTextArea).setPrefRowCount(1);
         ((TextArea) descriptionTextArea).setText(description);
+        ((TextArea) descriptionTextArea).setWrapText(true);
         ((TextArea) descriptionTextArea).focusedProperty().addListener((observable, oldVal, newVal) -> {
             if (!newVal) {
                 syncLayers();
