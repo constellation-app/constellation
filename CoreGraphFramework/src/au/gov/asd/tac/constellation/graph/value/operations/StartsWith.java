@@ -48,31 +48,31 @@ public class StartsWith {
         final OperatorRegistry registry = operators.getRegistry(NAME);
         STRING_OPERATION.register(registry);
 
-        // Used when query is as follows: x startswith '1'
-        registry.register(FloatReadable.class, StringConstant.class, BooleanReadable.class, (p1, p2) -> 
-            () -> Float.toString(p1.readFloat()).startsWith(p2.readString())
+        //  e.g. Used when query is as follows: x startswith '1'
+        registry.register(FloatReadable.class, StringConstant.class, BooleanReadable.class, (p1, p2)
+                -> () -> Float.toString(p1.readFloat()).startsWith(p2.readString())
         );
 
-        // Used when query is as follows: x startswith 6.1
-        registry.register(FloatReadable.class, FloatReadable.class, BooleanReadable.class, (p1, p2) -> 
-            () -> Float.toString(p1.readFloat()).startsWith(Float.toString(p2.readFloat()))
+        //  e.g. Used when query is as follows: x startswith 6.1
+        registry.register(FloatReadable.class, FloatReadable.class, BooleanReadable.class, (p1, p2)
+                -> () -> Float.toString(p1.readFloat()).startsWith(Float.toString(p2.readFloat()))
         );
 
-        // Used when query is as follows: x startswith 6
-        registry.register(FloatReadable.class, IntReadable.class, BooleanReadable.class, (p1, p2) -> 
-            () -> Float.toString(p1.readFloat()).startsWith(Integer.toString(p2.readInt()))
+        //  e.g. Used when query is as follows: x startswith 6
+        registry.register(FloatReadable.class, IntReadable.class, BooleanReadable.class, (p1, p2)
+                -> () -> Float.toString(p1.readFloat()).startsWith(Integer.toString(p2.readInt()))
         );
 
-        registry.register(IntReadable.class, StringConstant.class, BooleanReadable.class, (p1, p2) -> 
-            () -> Integer.toString(p1.readInt()).startsWith(p2.readString())
+        registry.register(IntReadable.class, StringConstant.class, BooleanReadable.class, (p1, p2)
+                -> () -> Integer.toString(p1.readInt()).startsWith(p2.readString())
         );
 
-        registry.register(IntReadable.class, IntReadable.class, BooleanReadable.class, (p1, p2) -> 
-            () -> Integer.toString(p1.readInt()).startsWith(Integer.toString(p2.readInt()))
+        registry.register(IntReadable.class, IntReadable.class, BooleanReadable.class, (p1, p2)
+                -> () -> Integer.toString(p1.readInt()).startsWith(Integer.toString(p2.readInt()))
         );
 
-        registry.register(IntReadable.class, FloatReadable.class, BooleanReadable.class, (p1, p2) -> 
-            () -> Integer.toString(p1.readInt()).startsWith(Float.toString(p2.readFloat()))
+        registry.register(IntReadable.class, FloatReadable.class, BooleanReadable.class, (p1, p2)
+                -> () -> Integer.toString(p1.readInt()).startsWith(Float.toString(p2.readFloat()))
         );
     }
 
