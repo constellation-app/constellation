@@ -27,13 +27,10 @@ import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
@@ -59,9 +56,10 @@ public class LayersViewPane extends BorderPane {
     private final GridPane layersGridPane;
     private final VBox layersViewPane;
     private final HBox options;
+    private final Label errorLabel;
     private static final String QUERY_WARNING_TEXT = "Invalid query structure";
     private static final String QUERY_WARNING_STYLE = "-fx-background-color: rgba(241,74,74,0.85);";
-    private static final String QUERY_DEFAULT_STYLE = "-fx-shadow-highlight-color, -fx-text-box-border, -fx-control-inner-background;";
+    private static final String QUERY_DEFAULT_STYLE = "-fx-shadow-highlight-color; -fx-text-box-border; -fx-control-inner-background;";
 
     public LayersViewPane(final LayersViewController controller) {
 
@@ -85,6 +83,13 @@ public class LayersViewPane extends BorderPane {
         final Label vxqueryHeadingText = new Label("Vertex Query");
         final Label txqueryHeadingText = new Label("Transaction Query");
         final Label descriptionHeadingText = new Label("Description");
+
+        errorLabel = new Label(QUERY_WARNING_TEXT);
+        errorLabel.setPadding(new Insets(2, 0, 0, 0));
+        errorLabel.setTextAlignment(TextAlignment.CENTER);
+        errorLabel.setStyle("-fx-text-fill: rgba(241,74,74,0.85);");
+        errorLabel.setVisible(false);
+        HBox.setHgrow(errorLabel, Priority.ALWAYS);
 
         // create gridpane and alignments
         layersGridPane = new GridPane();
@@ -143,7 +148,7 @@ public class LayersViewPane extends BorderPane {
         });
         HBox.setHgrow(deselectAllButton, Priority.ALWAYS);
 
-        this.options = new HBox(5, addButton, deselectAllButton, helpButton);
+        this.options = new HBox(5, addButton, deselectAllButton, helpButton, errorLabel);
         options.setAlignment(Pos.TOP_LEFT);
         options.setPadding(new Insets(0, 0, 0, 10));
 
@@ -238,6 +243,11 @@ public class LayersViewPane extends BorderPane {
             controller.getTxQueryCollection().add(txbitMaskQuery);
         }
 
+        if (!errorLabel.isVisible()) {
+            // check tx and vx
+            errorLabel.setVisible(!testQueryValidity(vxQuery) || !testQueryValidity(vxQuery));
+        }
+
         // Add created items to grid pane
         layersGridPane.addRow(currentIndex + 1, layerIdText, visibilityCheckBox, vxQueryTextArea, txQueryTextArea, descriptionTextArea);
     }
@@ -253,6 +263,7 @@ public class LayersViewPane extends BorderPane {
     private void updateLayers(final BitMaskQuery[] vxQueries, final BitMaskQuery[] txQueries) {
         synchronized (this) {
             layersGridPane.getChildren().removeIf(node -> GridPane.getRowIndex(node) > 0);
+            errorLabel.setVisible(false);
             final int iteratorEnd = Math.max(vxQueries.length, txQueries.length);
             for (int position = 0; position < iteratorEnd; position++) {
                 final BitMaskQuery vxQuery = vxQueries[position];
@@ -304,6 +315,7 @@ public class LayersViewPane extends BorderPane {
     private synchronized void syncLayers() {
         int index = 0;
         boolean visible = false;
+        boolean hasErrors = false;
         String vxQuery = null;
         String txQuery = null;
         String description = null;
@@ -322,39 +334,24 @@ public class LayersViewPane extends BorderPane {
                     break;
                 case 2: {
                     vxQuery = ((TextArea) item).getText();
-                    if (!testQueryValidity(vxQuery)) {
-                        ((TextArea) item).setStyle(QUERY_WARNING_STYLE);
-                        final ContextMenu contextMenu = new ContextMenu();
-                        MenuItem errorItem = new MenuItem(QUERY_WARNING_TEXT);
-                        contextMenu.getItems().addAll(errorItem);
-                        ((TextArea) item).setContextMenu(contextMenu);
-                        // Only create a context menu when the item is loaded.
-                        // When not loaded, 0.0f will be returned as the position
-                        if (item.getBoundsInParent().getCenterY() > 1.0f) {
-                            contextMenu.show(item, Side.RIGHT, 0, 0);
-                        }
-                    } else {
-                        ((TextArea) item).setStyle(QUERY_DEFAULT_STYLE);
+                    boolean validQuery = testQueryValidity(vxQuery);
+                    if (!hasErrors) {
+                        hasErrors = !validQuery;
+                        errorLabel.setVisible(hasErrors);
                     }
+                    ((TextArea) item).setStyle(validQuery ? QUERY_DEFAULT_STYLE : QUERY_WARNING_STYLE);
                     break;
                 }
-                case 3:
+                case 3: {
                     txQuery = ((TextArea) item).getText();
-                    if (!testQueryValidity(txQuery)) {
-                        ((TextArea) item).setStyle(QUERY_WARNING_STYLE);
-                        final ContextMenu contextMenu = new ContextMenu();
-                        MenuItem errorItem = new MenuItem(QUERY_WARNING_TEXT);
-                        contextMenu.getItems().addAll(errorItem);
-                        ((TextArea) item).setContextMenu(contextMenu);
-                        // Only create a context menu when the item is loaded.
-                        // When not loaded, 0.0f will be returned as the position
-                        if (item.getBoundsInParent().getCenterY() > 1.0f) {
-                            contextMenu.show(item, Side.RIGHT, 0, 0);
-                        }
-                    } else {
-                        ((TextArea) item).setStyle(QUERY_DEFAULT_STYLE);
+                    boolean validQuery = testQueryValidity(txQuery);
+                    if (!hasErrors) {
+                        hasErrors = !validQuery;
+                        errorLabel.setVisible(hasErrors);
                     }
+                    ((TextArea) item).setStyle(validQuery ? QUERY_DEFAULT_STYLE : QUERY_WARNING_STYLE);
                     break;
+                }
                 case 4:
                     description = ((TextArea) item).getText();
                     break;
