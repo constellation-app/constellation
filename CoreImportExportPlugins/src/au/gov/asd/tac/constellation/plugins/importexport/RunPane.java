@@ -177,7 +177,7 @@ public final class RunPane extends BorderPane implements KeyListener {
         filterField.setFocusTraversable(false);
         filterField.setMinHeight(USE_PREF_SIZE);
         filterField.setText("Start typing to search, e.g.:first_name==\"NICK\"");
-        filterField.setStyle("-fx-background-color: black; -fx-text-fill: white;");
+        filterField.setStyle("-fx-background-color: grey; -fx-text-fill: black;");
         filterField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (setFilter(newValue)) {
                 filterField.setStyle("-fx-background-color: black; -fx-text-fill: white;");
