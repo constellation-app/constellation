@@ -5,6 +5,11 @@
 -  	Changed `ImportTableColumn.validate` and `importexport/RunPane.validate` 
 	functions return type from `void` to `boolean`.
 
+-   Removed `PreferenceUtilites.isGraphViewFrozen()` and related files
+    as this feature has been superseded by the Pin nodes feature.
+    Plugins no longer need a special check to see if the graph is
+    frozen or pinned as this is covered by the arrangement framework.
+
 ## Changes in May 2021
 
 -   Update `ProjectUpdater` to sort jars in `project.xml` consistently 

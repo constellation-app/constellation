@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.qualitycontrol.rules;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -53,6 +54,10 @@ public class MissingTypeRule extends QualityControlRule {
     @Override
     protected boolean executeRule(final GraphReadMethods graph, final int vertexId) {
         final int typeAttr = AnalyticConcept.VertexAttribute.TYPE.get(graph);
+        if (typeAttr != Graph.NOT_FOUND) {
+            final String type = graph.getStringValue(typeAttr, vertexId);
+            return StringUtils.isBlank(type);
+        }
         return typeAttr == Graph.NOT_FOUND || graph.getObjectValue(typeAttr, vertexId) == null;
     }
 }

@@ -58,7 +58,7 @@ public class UnknownTypeRule extends QualityControlRule {
         final int typeAttribute = AnalyticConcept.VertexAttribute.TYPE.get(graph);
         if (typeAttribute != Graph.NOT_FOUND) {
             final SchemaVertexType type = graph.getObjectValue(typeAttribute, vertexId);
-            return type == null || SchemaVertexTypeUtilities.getDefaultType().equals(type);
+            return type != null && SchemaVertexTypeUtilities.getDefaultType().equals(type);
         }
         return false;
     }
