@@ -245,7 +245,7 @@ public class LayersViewPane extends BorderPane {
 
         if (!errorLabel.isVisible()) {
             // check tx and vx
-            errorLabel.setVisible(!testQueryValidity(vxQuery) || !testQueryValidity(vxQuery));
+            errorLabel.setVisible(!testQueryValidity(vxQuery) || !testQueryValidity(txQuery));
         }
 
         // Add created items to grid pane

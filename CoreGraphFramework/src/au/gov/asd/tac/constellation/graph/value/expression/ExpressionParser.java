@@ -165,11 +165,7 @@ public class ExpressionParser {
             if (getClass() != obj.getClass()) {
                 return false;
             }
-            final Expression other = (Expression) obj;
-            if (!Objects.equals(this.parent, other.parent)) {
-                return false;
-            }
-            return true;
+            return Objects.equals(this.parent, ((Expression) obj).parent);
         }
 
         private SequenceExpression parent;
@@ -212,11 +208,7 @@ public class ExpressionParser {
             if (getClass() != obj.getClass()) {
                 return false;
             }
-            final VariableExpression other = (VariableExpression) obj;
-            if (!Objects.equals(this.content, other.content)) {
-                return false;
-            }
-            return true;
+            return Objects.equals(this.content, ((VariableExpression) obj).content);
         }
 
         private final String content;
@@ -256,11 +248,7 @@ public class ExpressionParser {
             if (getClass() != obj.getClass()) {
                 return false;
             }
-            final StringExpression other = (StringExpression) obj;
-            if (!Objects.equals(this.content, other.content)) {
-                return false;
-            }
-            return true;
+            return Objects.equals(this.content, ((StringExpression) obj).content);
         }
 
         private final String content;
@@ -300,11 +288,7 @@ public class ExpressionParser {
             if (getClass() != obj.getClass()) {
                 return false;
             }
-            final OperatorExpression other = (OperatorExpression) obj;
-            if (this.operator != other.operator) {
-                return false;
-            }
-            return true;
+            return this.operator == ((OperatorExpression) obj).operator;
         }
 
         private Operator operator;
@@ -344,11 +328,7 @@ public class ExpressionParser {
             if (getClass() != obj.getClass()) {
                 return false;
             }
-            final SequenceExpression other = (SequenceExpression) obj;
-            if (!Objects.equals(this.children, other.children)) {
-                return false;
-            }
-            return true;
+            return Objects.equals(this.children, ((SequenceExpression) obj).children);
         }
 
         private final List<Expression> children = new ArrayList<>();

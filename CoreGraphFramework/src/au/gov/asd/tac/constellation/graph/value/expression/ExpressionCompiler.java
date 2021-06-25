@@ -176,7 +176,8 @@ public class ExpressionCompiler {
                     } else if (right2 == null && left != null) {
                         errorMessage2 = String.format(SINGLE_PARSE_ERROR_MSG, children.get(2).toString());
                         errorName2 = TERM_PARSE_ERROR;
-                    } else if (right2 == null && left == null) {
+                    } else if (right2 == null) {
+                        // left always evaluates to null here
                         errorMessage2 = String.format(DOUBLE_PARSE_ERROR_MSG, children.get(0).toString(), children.get(2).toString());
                         errorName2 = TERM_PARSE_ERROR;
                     } else {
