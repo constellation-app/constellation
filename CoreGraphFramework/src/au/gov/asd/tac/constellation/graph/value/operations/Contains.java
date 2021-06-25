@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.graph.value.constants.StringConstant;
 import au.gov.asd.tac.constellation.graph.value.readables.BooleanReadable;
 import au.gov.asd.tac.constellation.graph.value.readables.FloatReadable;
 import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
+import au.gov.asd.tac.constellation.graph.value.readables.ObjectReadable;
 
 /**
  *
@@ -73,6 +74,11 @@ public class Contains {
 
         registry.register(IntReadable.class, FloatReadable.class, BooleanReadable.class, (p1, p2)
                 -> () -> Integer.toString(p1.readInt()).contains(Float.toString(p2.readFloat()))
+        );
+
+        // e.g. Used when query is as follows: Type contains 'Manually Created'
+        registry.register(ObjectReadable.class, StringConstant.class, BooleanReadable.class, (p1, p2)
+                -> () -> p1.readObject().toString().contains(p2.readString())
         );
     }
 

@@ -68,18 +68,18 @@ public class Equals {
         final OperatorRegistry registry = operators.getRegistry(NAME);
         COMPARISON_OPERATION.register(registry);
 
-        registry.register(BooleanReadable.class, BooleanReadable.class, BooleanReadable.class, (p1, p2) -> 
-            () -> p1.readBoolean() == p2.readBoolean()
+        registry.register(BooleanReadable.class, BooleanReadable.class, BooleanReadable.class, (p1, p2)
+                -> () -> p1.readBoolean() == p2.readBoolean()
         );
 
-        // Used when query is as follows: dim == 'true'
-        registry.register(BooleanReadable.class, StringConstant.class, BooleanReadable.class, (p1, p2) -> 
-            () -> String.valueOf(p1.readBoolean()).equals(p2.readString())
+        // e.g. Used when query is as follows: dim == 'true'
+        registry.register(BooleanReadable.class, StringConstant.class, BooleanReadable.class, (p1, p2)
+                -> () -> String.valueOf(p1.readBoolean()).equals(p2.readString())
         );
 
-        // Used when query is as follows: Type == 'Manually Created'
-        registry.register(ObjectReadable.class, StringConstant.class, BooleanReadable.class, (p1, p2) -> 
-            () -> p1.readObject().toString().equals(p2.readString())
+        // e.g. Used when query is as follows: Type == 'Manually Created'
+        registry.register(ObjectReadable.class, StringConstant.class, BooleanReadable.class, (p1, p2)
+                -> () -> p1.readObject().toString().equals(p2.readString())
         );
     }
 
