@@ -38,6 +38,8 @@ public class JDBCConnectionManager {
     private SQLiteDBManager sql;
     private File driversDir;
 
+    private static final String ACTION_JDBC_IMPORT = "JDBC Import";
+
     private JDBCConnectionManager() {
         //load drivers from db
         final File basePath = new File(String.format("%s%s.CONSTELLATION%sJDBCImport%s", System.getProperty("user.home"), File.separator, File.separator, File.separator));
@@ -114,7 +116,7 @@ public class JDBCConnectionManager {
                 connectionMap.put(connectionName, conn);
 
             } catch (final IOException | SQLException ex) {
-                NotifyDisplayer.displayLargeAlert("JDBC Import", "Failed to add the connection to the database.",
+                NotifyDisplayer.displayLargeAlert(ACTION_JDBC_IMPORT, "Failed to add the connection to the database.",
                         ex.getMessage(), AlertType.ERROR);
                 return false;
             }
@@ -151,7 +153,7 @@ public class JDBCConnectionManager {
                 connectionMap.put(newconnectionName, newConnection);
 
             } catch (final IOException | SQLException ex) {
-                NotifyDisplayer.displayLargeAlert("JDBC Import", "Failed to update the connection " + newconnectionName + " in the database.",
+                NotifyDisplayer.displayLargeAlert(ACTION_JDBC_IMPORT, "Failed to update the connection " + newconnectionName + " in the database.",
                         ex.getMessage(), AlertType.ERROR);
                 return false;
             }
@@ -173,7 +175,7 @@ public class JDBCConnectionManager {
                 }
             }
         } catch (final SQLException | IOException ex) {
-            NotifyDisplayer.displayLargeAlert("JDBC Import", "Failed to delete the connection from the database.",
+            NotifyDisplayer.displayLargeAlert(ACTION_JDBC_IMPORT, "Failed to delete the connection from the database.",
                     ex.getMessage(), AlertType.ERROR);
         }
     }

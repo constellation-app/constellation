@@ -465,19 +465,18 @@ public final class RunPane extends BorderPane implements KeyListener {
     }
 
     public boolean validate(final ImportTableColumn column) {
-        if (column != null) {
-            // If the active column doesn't match the attribute node format, return it back to the list
-            if (!column.validate(currentRows)) {
-                if (draggingAttributeNode != null) {
-                    NotifyDisplayer.displayAlert("Delimited Importer", "Attribute mismatch", "Column " + column.getLabel()
-                            + " cannot be converted to " + draggingAttributeNode.getAttribute().getName()
-                            + " attribute format. Try changing the format by right clicking the attribute.", Alert.AlertType.ERROR);
+        // If the active column doesn't match the attribute node format, return it back to the list
+        if (column != null && !column.validate(currentRows)) {
+            if (draggingAttributeNode != null) {
+                NotifyDisplayer.displayAlert("Delimited Importer", "Attribute mismatch", "Column " + column.getLabel()
+                        + " cannot be converted to " + draggingAttributeNode.getAttribute().getName()
+                        + " attribute format. Try changing the format by right clicking the attribute.", Alert.AlertType.ERROR);
 
-                    draggingAttributeNode.getAttributeList().addAttributeNode(draggingAttributeNode);
-                }
-                column.validate(currentRows);
+                draggingAttributeNode.getAttributeList().addAttributeNode(draggingAttributeNode);
             }
+            column.validate(currentRows);
         }
+
         return false;
     }
 

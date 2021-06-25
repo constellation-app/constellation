@@ -71,6 +71,8 @@ public class JDBCSourcePane extends SourcePane {
     private static final int MANAGE_CONNECTIONS_PANE_HEIGHT = 345;
     private static final Insets GRIDPANE_PADDING = new Insets(5);
     private static final int GAP = 10;
+    private static final String ACTION_CANCEL = "Cancel";
+    private static final String TITLE_JDBC_IMPORT = "JDBC Import";
 
     private final ComboBox<JDBCConnection> dbConnectionComboBox;
 
@@ -132,9 +134,9 @@ public class JDBCSourcePane extends SourcePane {
             connectionsTable.getSortOrder().add(connectionName);
             connectionsPane.add(connectionsTable, 0, 0, 4, 1);
 
-            final EventHandler<ActionEvent> addConnectionAction = (final ActionEvent event) -> {
-                AddOrModifyConnection(connectionsTable, null);
-            };
+            final EventHandler<ActionEvent> addConnectionAction
+                    = (final ActionEvent event) -> addOrModifyConnection(connectionsTable, null);
+
             final Button openAddConnectionWindowButton = new Button("Add");
             openAddConnectionWindowButton.setOnAction(addConnectionAction);
             connectionsPane.add(openAddConnectionWindowButton, 0, 1, 1, 1);
@@ -143,7 +145,7 @@ public class JDBCSourcePane extends SourcePane {
             final EventHandler<ActionEvent> editConnectionAction = (final ActionEvent event) -> {
                 final JDBCConnection connection = (JDBCConnection) connectionsTable.getSelectionModel().getSelectedItem();
                 if (connection != null) {
-                    AddOrModifyConnection(connectionsTable, connection);
+                    addOrModifyConnection(connectionsTable, connection);
                 } else {
                     NotifyDisplayer.displayAlert("Manage Connections", "Select a connection to modify", "", AlertType.INFORMATION);
                 }
@@ -165,7 +167,7 @@ public class JDBCSourcePane extends SourcePane {
             });
             connectionsPane.add(removeBtn, 2, 1, 1, 1);
 
-            final Button buttonCancel2 = new Button("Cancel");
+            final Button buttonCancel2 = new Button(ACTION_CANCEL);
             buttonCancel2.setOnAction((final ActionEvent event) -> {
                 event.consume();
                 Stage stage = (Stage) buttonCancel2.getScene().getWindow();
@@ -197,8 +199,7 @@ public class JDBCSourcePane extends SourcePane {
                 final JDBCDriver d = (JDBCDriver) driverTable.getSelectionModel().getSelectedItem();
                 if (d != null) {
                     if (driverManager.isDriverUsed(d.getName())) {
-                        final Optional<ButtonType> res = NotifyDisplayer.displayConfirmationAlert(
-                                "JDBC Import", "Remove Driver", "Connections exist using this Driver.\nThe "
+                        final Optional<ButtonType> res = NotifyDisplayer.displayConfirmationAlert(TITLE_JDBC_IMPORT, "Remove Driver", "Connections exist using this Driver.\nThe "
                                 + "connections that use this driver will be deleted, do you want to proceed?");
                         if (!res.isPresent() || res.get() == ButtonType.NO) {
                             return;
@@ -258,7 +259,7 @@ public class JDBCSourcePane extends SourcePane {
                 add.setOnAction((final ActionEvent t2) -> {
                     if (driverName.getSelectionModel().getSelectedItem() != null) {
                         if (driverManager.isDriverUsed((String) driverName.getSelectionModel().getSelectedItem())) {
-                            final Optional<ButtonType> res = NotifyDisplayer.displayConfirmationAlert("JDBC Import",
+                            final Optional<ButtonType> res = NotifyDisplayer.displayConfirmationAlert(TITLE_JDBC_IMPORT,
                                     "Add Driver", "This Driver already exists.\n Do you want to overwrite?");
                             if (!res.isPresent() || res.get() == ButtonType.NO) {
                                 return;
@@ -273,7 +274,7 @@ public class JDBCSourcePane extends SourcePane {
                     }
                 });
                 gp.add(add, 0, 2, 1, 1);
-                final Button buttonCancel = new Button("Cancel");
+                final Button buttonCancel = new Button(ACTION_CANCEL);
                 buttonCancel.setOnAction((final ActionEvent event) -> {
                     event.consume();
                     Stage stage = (Stage) buttonCancel.getScene().getWindow();
@@ -308,7 +309,7 @@ public class JDBCSourcePane extends SourcePane {
             removeBtn1.setOnAction(removebtnAction);
             driversTabGridPane.add(removeBtn1, 2, 1, 1, 1);
 
-            final Button buttonCancel = new Button("Cancel");
+            final Button buttonCancel = new Button(ACTION_CANCEL);
             buttonCancel.setOnAction((final ActionEvent event) -> {
                 event.consume();
                 Stage stage = (Stage) buttonCancel.getScene().getWindow();
@@ -394,7 +395,7 @@ public class JDBCSourcePane extends SourcePane {
 
     }
 
-    private void AddOrModifyConnection(TableView<JDBCConnection> connectionsTable, JDBCConnection connection) {
+    private void addOrModifyConnection(TableView<JDBCConnection> connectionsTable, JDBCConnection connection) {
         final boolean add = (connection == null);
         final ComboBox<JDBCDriver> driversComboBox = new ComboBox();
         final JDBCDriverManager driverManager = JDBCDriverManager.getDriverManager();
@@ -440,21 +441,18 @@ public class JDBCSourcePane extends SourcePane {
         addConnection.setOnAction((final ActionEvent t2) -> {
 
             if (add && connectionsTable.getItems().stream().anyMatch(v -> v.getConnectionName().equals(cn.getText()))) {
-                final Optional<ButtonType> res = NotifyDisplayer.displayConfirmationAlert(
-                        "JDBC Import", "Add Connection", "There exist another connection with this name "
+                final Optional<ButtonType> res = NotifyDisplayer.displayConfirmationAlert(TITLE_JDBC_IMPORT, "Add Connection", "There exist another connection with this name "
                         + cn.getText() + ". Do you want to overwrite it?");
                 if (!res.isPresent() || res.get() == ButtonType.NO) {
                     return;
                 }
             }
 
-            if (!add && !cn.getText().isBlank() && !cn.getText().equals(connection.getConnectionName())) {
-                if (connectionsTable.getItems().stream().anyMatch(v -> v.getConnectionName().equals(cn.getText()))) {
-                    NotifyDisplayer.displayAlert(
-                            "JDBC Import", "Modify Connection", "There exist another connection with the name "
-                            + cn.getText() + ". Choose a different name to proceed.", AlertType.CONFIRMATION);
-                    return;
-                }
+            if (!add && !cn.getText().isBlank() && !cn.getText().equals(connection.getConnectionName())
+                    && connectionsTable.getItems().stream().anyMatch(v -> v.getConnectionName().equals(cn.getText()))) {
+                NotifyDisplayer.displayAlert(TITLE_JDBC_IMPORT, "Modify Connection", "There exist another connection with the name "
+                        + cn.getText() + ". Choose a different name to proceed.", AlertType.CONFIRMATION);
+                return;
             }
 
             if (!cn.getText().isBlank() && driversComboBox.getValue() != null
@@ -480,13 +478,13 @@ public class JDBCSourcePane extends SourcePane {
                         && !connectionStringF.getText().isBlank()
                         && connectionManager.testConnection(cn.getText(), driversComboBox.getValue(), username.getText(),
                                 password.getText(), connectionStringF.getText())) {
-                    NotifyDisplayer.displayAlert("JDBC Import", "Connection Success", "", AlertType.INFORMATION);
+                    NotifyDisplayer.displayAlert(TITLE_JDBC_IMPORT, "Connection Success", "", AlertType.INFORMATION);
                 }
             }
         });
         gp.add(test, 1, 5, 1, 1);
 
-        final Button buttonCancel = new Button("Cancel");
+        final Button buttonCancel = new Button(ACTION_CANCEL);
         buttonCancel.setOnAction((final ActionEvent event) -> {
             event.consume();
             Stage currentStage = (Stage) buttonCancel.getScene().getWindow();
