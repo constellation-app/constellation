@@ -7,30 +7,20 @@
     </head>
     <body>
         <h1>Layers View</h1>
-        <p>
-            The Layers View holds a collection of Layers. Each Layer can represent a static set of elements, or a dynamically 
-            calculated set of elements which match a query criteria. The query structure is based on the expressions framework.
-            <br/>
-            Each layer has a visibility checkbox which determines if that layer is toggled. All elements are on the base layer 0.
-            When one or more check boxes are selected, only the elements that are members of those layers are visibly displayed. 
-            All other elements will have their <strong>visibility</strong> attribute value toggled to 0.0 (invisible).
-            <br/>
-            Arrangements on graphs with a visual schema will be ran on the base layer 0. 
-        </p>
         <table border="1">
             <caption>Layers View Actions</caption>
             <tr>
                 <th scope="col">
-                    <strong>Constellation Action</strong>
+                    "Constellation Action"
                 </th>
                 <th scope="col">
-                    <strong>Keyboard Shortcut</strong>
+                    "Keyboard Shortcut"
                 </th>
                 <th scope="col">
-                    <strong>User Action</strong>
+                    "User Action"
                 </th>
                 <th scope="col">
-                    <strong>Menu Icon</strong>
+                    "Menu Icon"
                 </th>
             </tr>
             <tr>
@@ -86,7 +76,16 @@
                 <td>N/A</td>
             </tr>
         </table>
-        
+        <p>
+            The Layers View holds a collection of Layers. Each Layer can represent a static set of elements, or a dynamically 
+            calculated set of elements which match a query criteria. The query structure is based on the expressions framework.
+            <br/>
+            Each layer has a visibility checkbox which determines if that layer is toggled. All elements are on the base layer 0.
+            When one or more check boxes are selected, only the elements that are members of those layers are visibly displayed. 
+            All other elements will have their "visibility" attribute value toggled to 0.0 (invisible).
+            <br/>
+            Arrangements on graphs with a visual schema will be ran on the base layer 0. 
+        </p>
         
         <figure>
                 <img src="resources/layers-view-example.png" alt="Layers View">
@@ -128,7 +127,7 @@
             vertex with that label. If you then change Vertex #0's label to something like 'V#0', the query will note the 
             change and recalculate for the whole graph. 
         </p>
-        <p><strong>NOTE: Layers View does not allow for the use of the assignment operator = or keyword assign.</strong></p>
+        <p>"NOTE: Layers View does not allow for the use of the assignment operator = or keyword assign."</p>
         <a href="nbdocs://au.gov.asd.tac.constellation.graph/au/gov/asd/tac/constellation/graph/docs/expressions.html">Click here for more information on the structure of the expression framework.</a>
             </body>
 </html>

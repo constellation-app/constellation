@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQuery;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQueryCollection;
 import au.gov.asd.tac.constellation.views.layers.query.Query;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -131,6 +132,7 @@ public class LayersViewPane extends BorderPane {
                 controller.writeState();
             } else {
                 NotifyDisplayer.display("You cannot have more than " + BitMaskQueryCollection.MAX_QUERY_AMT + " layers", NotifyDescriptor.WARNING_MESSAGE);
+                LOGGER.log(Level.INFO, "Layer count maximum reached. Maximum is currently: {0}", BitMaskQueryCollection.MAX_QUERY_AMT);
             }
             event.consume();
         });
@@ -332,7 +334,7 @@ public class LayersViewPane extends BorderPane {
                 case 1:
                     visible = ((CheckBox) item).isSelected();
                     break;
-                case 2: {
+                case 2:
                     vxQuery = ((TextArea) item).getText();
                     boolean validQuery = testQueryValidity(vxQuery);
                     if (!hasErrors) {
@@ -341,17 +343,15 @@ public class LayersViewPane extends BorderPane {
                     }
                     ((TextArea) item).setStyle(validQuery ? QUERY_DEFAULT_STYLE : QUERY_WARNING_STYLE);
                     break;
-                }
-                case 3: {
+                case 3:
                     txQuery = ((TextArea) item).getText();
-                    boolean validQuery = testQueryValidity(txQuery);
+                    boolean validQuery2 = testQueryValidity(txQuery);
                     if (!hasErrors) {
-                        hasErrors = !validQuery;
+                        hasErrors = !validQuery2;
                         errorLabel.setVisible(hasErrors);
                     }
-                    ((TextArea) item).setStyle(validQuery ? QUERY_DEFAULT_STYLE : QUERY_WARNING_STYLE);
+                    ((TextArea) item).setStyle(validQuery2 ? QUERY_DEFAULT_STYLE : QUERY_WARNING_STYLE);
                     break;
-                }
                 case 4:
                     description = ((TextArea) item).getText();
                     break;
