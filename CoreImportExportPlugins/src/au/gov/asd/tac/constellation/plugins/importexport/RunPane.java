@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.plugins.importexport.model.CellValue;
 import au.gov.asd.tac.constellation.plugins.importexport.model.TableRow;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -39,6 +40,7 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
@@ -289,6 +291,7 @@ public final class RunPane extends BorderPane implements KeyListener {
                     // Drop the AttributeNode onto the column.
                     mouseOverColumn.setAttributeNode(draggingAttributeNode);
                     draggingAttributeNode.setColumn(mouseOverColumn);
+
                     validate(mouseOverColumn);
                 }
 
@@ -456,10 +459,19 @@ public final class RunPane extends BorderPane implements KeyListener {
         }
     }
 
-    public void validate(final ImportTableColumn column) {
-        if (column != null) {
+    public boolean validate(final ImportTableColumn column) {
+        // If the validation fails (when the active column doesn't match the attribute node format), return it back to the list
+        if (column != null && !column.validate(currentRows)) {
+            if (draggingAttributeNode != null) {
+                NotifyDisplayer.displayAlert("Delimited Importer", "Attribute mismatch", "Column " + column.getLabel()
+                        + " cannot be converted to " + draggingAttributeNode.getAttribute().getName()
+                        + " attribute format. Try changing the format by right clicking the attribute.", Alert.AlertType.ERROR);
+
+                draggingAttributeNode.getAttributeList().addAttributeNode(draggingAttributeNode);
+            }
             column.validate(currentRows);
         }
+        return false;
     }
 
     public boolean setFilter(final String filter) {
