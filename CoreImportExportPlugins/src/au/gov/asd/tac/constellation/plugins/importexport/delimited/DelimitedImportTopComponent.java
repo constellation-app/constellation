@@ -59,7 +59,7 @@ public final class DelimitedImportTopComponent extends ImportTopComponent {
             + "5. Click the 'Import' button to add data to your graph.\n"
             + "6. Save your configuration using 'Options > Save'.\n\n"
             + "HINTS:\n* See all supported attributes with 'Options > Show all schema attributes'.\n"
-            + "* Start typing to search as <column_name>==\"<search text>\".\n"
+            + "* Filter in the Configuration Pane by adding searches of the form <column_name>==\"<search text>\"."
             + "* E.g.:first_name==\"Nick\"";
     final DelimitedImportController controller = new DelimitedImportController();
     final ConfigurationPane configurationPane = new ConfigurationPane(controller, HELP_TEXT);

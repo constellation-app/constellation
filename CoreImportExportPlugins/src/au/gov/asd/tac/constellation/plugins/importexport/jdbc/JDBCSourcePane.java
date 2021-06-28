@@ -170,7 +170,7 @@ public class JDBCSourcePane extends SourcePane {
             final Button buttonCancel2 = new Button(ACTION_CANCEL);
             buttonCancel2.setOnAction((final ActionEvent event) -> {
                 event.consume();
-                Stage stage = (Stage) buttonCancel2.getScene().getWindow();
+                final Stage stage = (Stage) buttonCancel2.getScene().getWindow();
                 stage.close();
             });
             connectionsPane.add(buttonCancel2, 3, 1, 1, 1);
@@ -277,7 +277,7 @@ public class JDBCSourcePane extends SourcePane {
                 final Button buttonCancel = new Button(ACTION_CANCEL);
                 buttonCancel.setOnAction((final ActionEvent event) -> {
                     event.consume();
-                    Stage stage = (Stage) buttonCancel.getScene().getWindow();
+                    final Stage stage = (Stage) buttonCancel.getScene().getWindow();
                     stage.close();
                 });
                 gp.add(buttonCancel, 2, 2, 1, 1);
@@ -312,7 +312,7 @@ public class JDBCSourcePane extends SourcePane {
             final Button buttonCancel = new Button(ACTION_CANCEL);
             buttonCancel.setOnAction((final ActionEvent event) -> {
                 event.consume();
-                Stage stage = (Stage) buttonCancel.getScene().getWindow();
+                final Stage stage = (Stage) buttonCancel.getScene().getWindow();
                 stage.close();
             });
             driversTabGridPane.add(buttonCancel, 3, 1, 1, 1);
@@ -397,7 +397,7 @@ public class JDBCSourcePane extends SourcePane {
 
     private void addOrModifyConnection(TableView<JDBCConnection> connectionsTable, JDBCConnection connection) {
         final boolean add = (connection == null);
-        final ComboBox<JDBCDriver> driversComboBox = new ComboBox();
+        final ComboBox<JDBCDriver> driversComboBox = new ComboBox<>();
         final JDBCDriverManager driverManager = JDBCDriverManager.getDriverManager();
         final JDBCConnectionManager connectionManager = JDBCConnectionManager.getConnectionManager();
         final ObservableList<JDBCConnection> connections = FXCollections.observableArrayList();
@@ -470,16 +470,13 @@ public class JDBCSourcePane extends SourcePane {
         });
         gp.add(addConnection, 0, 5, 1, 1);
         final Button test = new Button("Test");
-        test.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(final ActionEvent t2) {
-                if (!cn.getText().isBlank()
-                        && driversComboBox.getValue() != null
-                        && !connectionStringF.getText().isBlank()
-                        && connectionManager.testConnection(cn.getText(), driversComboBox.getValue(), username.getText(),
-                                password.getText(), connectionStringF.getText())) {
-                    NotifyDisplayer.displayAlert(TITLE_JDBC_IMPORT, "Connection Success", "", AlertType.INFORMATION);
-                }
+        test.setOnAction(t -> {
+            if (!cn.getText().isBlank()
+                    && driversComboBox.getValue() != null
+                    && !connectionStringF.getText().isBlank()
+                    && connectionManager.testConnection(cn.getText(), driversComboBox.getValue(), username.getText(),
+                            password.getText(), connectionStringF.getText())) {
+                NotifyDisplayer.displayAlert(TITLE_JDBC_IMPORT, "Connection Success", "", AlertType.INFORMATION);
             }
         });
         gp.add(test, 1, 5, 1, 1);

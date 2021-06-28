@@ -55,13 +55,12 @@ public class NotifyDisplayer {
      * @param alertType the alert icon to add to the alert
      */
     public static void displayAlert(final String title, final String header, final String message, final Alert.AlertType alertType) {
-        final Alert dialog;
-        dialog = new Alert(alertType, "", ButtonType.OK);
+        final Alert dialog = new Alert(alertType, "", ButtonType.OK);
         dialog.setTitle(title);
         dialog.setHeaderText(header);
         dialog.setContentText(message);
         dialog.setResizable(true);
-        Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
+        final Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
         stage.setAlwaysOnTop(true);
         dialog.showAndWait();
     }
@@ -79,8 +78,7 @@ public class NotifyDisplayer {
      * @param alertType the alert icon to add to the alert
      */
     public static void displayLargeAlert(final String title, final String header, final String message, final Alert.AlertType alertType) {
-        final Alert dialog;
-        dialog = new Alert(alertType, "", ButtonType.OK);
+        final Alert dialog = new Alert(alertType, "", ButtonType.OK);
         dialog.setTitle(title);
         dialog.setHeaderText(header);
         final TextArea ta = new TextArea();
@@ -89,7 +87,7 @@ public class NotifyDisplayer {
         ta.setText(message);
         dialog.getDialogPane().setExpandableContent(ta);
         dialog.setResizable(true);
-        Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
+        final Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
         stage.setAlwaysOnTop(true);
         dialog.showAndWait();
     }
@@ -107,13 +105,12 @@ public class NotifyDisplayer {
      * @return the user confirmation type
      */
     public static Optional<ButtonType> displayConfirmationAlert(final String title, final String header, final String message) {
-        final Alert dialog;
-        dialog = new Alert(Alert.AlertType.CONFIRMATION, "", ButtonType.NO, ButtonType.YES);
+        final Alert dialog = new Alert(Alert.AlertType.CONFIRMATION, "", ButtonType.NO, ButtonType.YES);
         dialog.setTitle(title);
         dialog.setHeaderText(header);
         dialog.setContentText(message);
         dialog.setResizable(true);
-        Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
+        final Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
         stage.setAlwaysOnTop(true);
         return dialog.showAndWait();
     }
