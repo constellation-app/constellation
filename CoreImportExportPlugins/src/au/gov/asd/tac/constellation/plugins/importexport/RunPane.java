@@ -176,13 +176,13 @@ public final class RunPane extends BorderPane implements KeyListener {
         filterField = new TextField();
         filterField.setFocusTraversable(false);
         filterField.setMinHeight(USE_PREF_SIZE);
-        filterField.setText("Start typing to search, e.g.:first_name==\"NICK\"");
-        filterField.setStyle("-fx-background-color: black; -fx-text-fill: white;");
+        filterField.setPromptText("Start typing to search, e.g.:first_name==\"NICK\"");
+        filterField.setStyle("-fx-background-color: black; -fx-text-fill: white;-fx-prompt-text-fill:white;");
         filterField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (setFilter(newValue)) {
-                filterField.setStyle("-fx-background-color: black; -fx-text-fill: white;");
+                filterField.setStyle("-fx-background-color: black; -fx-text-fill: white;-fx-prompt-text-fill:white;");
             } else {
-                filterField.setStyle("-fx-background-color: red; -fx-text-fill: black;");
+                filterField.setStyle("-fx-background-color: red; -fx-text-fill: black;-fx-prompt-text-fill:white;");
             }
         });
 
@@ -487,7 +487,8 @@ public final class RunPane extends BorderPane implements KeyListener {
             currentRows.forEach(tableRow -> tableRow.setIncluded(true));
             return true;
         }
-        if (rowFilter.setScript(filter)) {
+
+        if (rowFilter != null && rowFilter.setScript(filter)) {
             currentRows.forEach(tableRow -> tableRow.filter(rowFilter));
             return true;
         } else {
