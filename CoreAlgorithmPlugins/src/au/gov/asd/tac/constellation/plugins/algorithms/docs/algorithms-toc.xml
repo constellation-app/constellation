@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE toc PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN" "http://java.sun.com/products/javahelp/toc_2_0.dtd">
 <toc version="2.0">
+    <tocitem text="Selection" mergetype="javax.help.SortMerge">
+        <tocitem text="Shortest Paths" target="au.gov.asd.tac.constellation.plugins.algorithms.paths.ShortestPathsPlugin"/>
+    </tocitem>
     <tocitem text="Tools" mergetype="javax.help.SortMerge">
         <tocitem text="Cluster" mergetype="javax.help.SortMerge">
             <tocitem text="Chinese Whispers" target="au.gov.asd.tac.constellation.plugins.algorithms.clustering.chinesewhispers"/>
             <tocitem text="K-Truss" target="au.gov.asd.tac.constellation.plugins.algorithms.clustering.ktruss"/>
         </tocitem>
-        <tocitem text="Shortest Paths" target="au.gov.asd.tac.constellation.plugins.algorithms.paths.ShortestPathsPlugin"/>
     </tocitem>
 </toc>

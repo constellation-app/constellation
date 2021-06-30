@@ -115,6 +115,7 @@ public final class AttributeNode extends Label implements Comparable<AttributeNo
         setDefaultMenuItem.setOnAction((ActionEvent event) -> {
             defaultValue = attributeList.importController.showSetDefaultValueDialog(attribute.getName(), defaultValue);
             updateDefaultValue();
+            attributeList.getRunPane().setDraggingAttributeNode(this);
             attributeList.getRunPane().validate(AttributeNode.this.column);
         });
         menu.getItems().add(setDefaultMenuItem);
@@ -142,6 +143,7 @@ public final class AttributeNode extends Label implements Comparable<AttributeNo
             translatorParameters = null;
             recentTranslatorParameters.put(at.getLabel(), null);
             if (AttributeNode.this.getColumn() != null) {
+                attributeList.getRunPane().setDraggingAttributeNode(this);
                 attributeList.getRunPane().validate(AttributeNode.this.column);
             }
         } else {
@@ -156,6 +158,7 @@ public final class AttributeNode extends Label implements Comparable<AttributeNo
                 translatorParameters = parameters;
                 recentTranslatorParameters.put(at.getLabel(), parameters);
                 if (AttributeNode.this.getColumn() != null) {
+                    attributeList.getRunPane().setDraggingAttributeNode(this);
                     attributeList.getRunPane().validate(AttributeNode.this.column);
                 }
             } else {
@@ -215,6 +218,7 @@ public final class AttributeNode extends Label implements Comparable<AttributeNo
         this.translatorParameters = params;
         recentTranslatorParameters.put(translator.getLabel(), params);
         if (AttributeNode.this.getColumn() != null) {
+            attributeList.getRunPane().setDraggingAttributeNode(this);
             attributeList.getRunPane().validate(AttributeNode.this.column);
         }
 

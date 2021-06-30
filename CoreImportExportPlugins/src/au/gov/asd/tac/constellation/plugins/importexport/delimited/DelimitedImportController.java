@@ -172,7 +172,9 @@ public class DelimitedImportController extends ImportController {
         }
 
         if (configurationPane != null) {
-            currentData.remove(0); //Remove the first row with column headers
+            if (!currentData.isEmpty()) {
+                currentData.remove(0); //Remove the first row with column headers
+            }
             configurationPane.setSampleData(currentColumns, currentData);
         }
     }

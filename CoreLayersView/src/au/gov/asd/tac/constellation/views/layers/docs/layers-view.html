@@ -10,18 +10,10 @@
         <table border="1">
             <caption>Layers View Actions</caption>
             <tr>
-                <th scope="col">
-                    <strong>Constellation Action</strong>
-                </th>
-                <th scope="col">
-                    <strong>Keyboard Shortcut</strong>
-                </th>
-                <th scope="col">
-                    <strong>User Action</strong>
-                </th>
-                <th scope="col">
-                    <strong>Menu Icon</strong>
-                </th>
+                <th scope="col">Constellation Action</th>
+                <th scope="col">Keyboard Shortcut</th>
+                <th scope="col">User Action</th>
+                <th scope="col">Menu Icon</th>
             </tr>
             <tr>
                 <td>
@@ -49,7 +41,7 @@
                 <td>
                     Click "Add New Layer"
                 </td>
-                <td></td>
+                <td>N/A</td>
             </tr>
             <tr>
                 <td>
@@ -61,180 +53,73 @@
                 <td>
                     Click "Deselect All Layers"
                 </td>
-                <td></td>
+                <td>N/A</td>
             </tr>
             <tr>
                 <td>
-                    Toggle On/Off Layer x
+                    Toggle On/Off Layer
                 </td>
                 <td>
-                    Ctrl + Alt + x (x is the corresponding layer number)
+                    Ctrl + Alt + x (x is layer number)
                 </td>
                 <td>
-                    Tick/Untick Visibility Box of corresponding layer
+                    Toggle Visibility Checkbox
                 </td>
-                <td></td>
+                <td>N/A</td>
             </tr>
         </table>
-        
-        <h2>Introduction</h2>
         <p>
-            The Layers View holds a collection of Layers. Each Layer can represent a static set of elements, or a dynamically 
-            calculated set of elements which match a query criteria.
+            The Layers View holds a collection of Layers. Each Layer can represent a static set of elements, or a dynamically
+            calculated set of elements which match a query criteria. The query structure is based on the expressions framework.
+            <br/>
+            Each layer has a visibility checkbox which determines if that layer is toggled. All elements are on the base layer 0.
+            When one or more check boxes are selected, only the elements that are members of those layers are visibly displayed.
+            All other elements will have their "visibility" attribute value toggled to 0.0 (invisible).
+            <br/>
+            Arrangements on graphs with a visual schema will be ran on the base layer 0.
         </p>
-        
-        <div style="text-align: center">
-            <img src="resources/layers-view-example.png" alt="Layers View">
-        </div>
-        
+
+        <figure>
+                <img src="resources/layers-view-example.png" alt="Layers View">
+                <br/>
+            <figcaption>Fig.1 - Layers view interface</figcaption>
+        </figure>
+        <br/>
         <h2>Creating and Using Layers</h2>
         <p>
             The two main ways to create and use layers are through the Layers View window and through the use of shortcut keys
             (see table at the top of the page for shortcut details). The maximum amount of layers you can create is 64.
         </p>
         <p>
-            When a single layer is toggled on, that layer will be displayed on the graph. When multiple manual layers are selected, 
-            it will display everything on layer x, as well as everything on layer y (i.e. the union of all selected layers).
+            When a single layer is toggled on, that layer will be displayed on the graph. When multiple manual layers are selected,
+            it will display everything on layer x, as well as everything on layer y (i.e. the union of all selected layers). Combining
+            both query and manual layers will produce undefined results and should not be used when accuracy of results is needed.
         </p>
-        
+
         <h2>Layer Types</h2>
-        <img src="resources/layers-context.png" alt="Layers Context Menu">
+        <figure>
+            <img src="resources/layers-context.png" alt="Layers Context Menu">
+            <br/>
+            <figcaption>Fig.2 - Right-click context menu used for adding elements to a manual layer.</figcaption>
+        </figure>
+        <br/>
         <p>
-            There are two main layer types within the Layers View. The differentiating factor of the two being the way elements are 
+            There are two main layer types within the Layers View. The differentiating factor of the two being the way elements are
             chosen to be displayed.
         </p>
-        <ul>
-            <li><em>Manual Layer</em> - A manual layer is a static layer only containing elements added via right click context 
-                menu (see above image).</li>
-            <li><em>Query Layer</em> - A query layer is a dynamic layer that shows the elements represented by the specified 
-                Vertex and Transaction queries. Since a query layer is dynamic, it will get recalculated if the value the layer 
-                is concerned about changes. e.g. Layer 1 has a vertex query described as Label == 'Vertex #0'. This will show the 
-                vertex with that label. If you then change Vertex #0's label to something like 'V#0', the query will note the 
-                change and recalculate for the whole graph.</li>
-        </ul>
-        
-        <h2>Query Language</h2>
+        <h3>Manual Layer</h3>
         <p>
-            A valid query for a vertex or transaction takes the form of [attributeName] [operator] [value]. Any attribute name can 
-            be used to query the graph and values must be surrounded with single or double quotes. e.g. The vertex query Label == 
-            'Vertex #0' would show all graph elements whose label is Vertex #0.
+            A manual layer is a static layer only containing elements added via right click context menu (see above image) or manually set layer_mask Attribute.
         </p>
-            
-        <h3>Operators</h3>
+        <h3>Query Layer</h3>
         <p>
-            Operators can be used to query, edit and compare values. This is the current list of supported query operators:
+            A query layer is a dynamic layer that shows the elements represented by the specified
+            Vertex and Transaction queries. Query layers are dynamically recalculated upon changes to those attributes being queried.
+            This is to ensure the accuracy of the shown layer. e.g. Layer 1 has a vertex query described as Label == 'Vertex #0'. This will show the
+            vertex with that label. If you then change Vertex #0's label to something like 'V#0', the query will note the
+            change and recalculate for the whole graph.
         </p>
-        
-        <table border="1">
-            <caption>Layers View Query Operators</caption>
-            <tr>
-                <th scope="col">
-                    <strong>Operator</strong>
-                </th>
-                <th scope="col">
-                    <strong>Query Representation</strong>
-                </th>
-            </tr>
-            <tr>
-                <td>Equals</td>
-                <td>==</td>
-            </tr>
-            <tr>
-                <td>Not Equals</td>
-                <td>!=</td>
-            </tr>
-            <tr>
-                <td>Greater Than</td>
-                <td>&gt;</td>
-            </tr>
-            <tr>
-                <td>Less Than</td>
-                <td>&lt;</td>
-            </tr>
-            <tr>
-                <td>Greater Than Or Equals</td>
-                <td>&gt;=</td>
-            </tr>
-            <tr>
-                <td>Less Than Or Equals</td>
-                <td>&lt;=</td>
-            </tr>
-            <tr>
-                <td>Assign</td>
-                <td>=</td>
-            </tr>
-            <tr>
-                <td>And</td>
-                <td>&</td>
-            </tr>
-            <tr>
-                <td>Or</td>
-                <td>|</td>
-            </tr>
-            <tr>
-                <td>XOR</td>
-                <td>^</td>
-            </tr>
-            <tr>
-                <td>Not</td>
-                <td>!</td>
-            </tr>
-            <tr>
-                <td>Add</td>
-                <td>+</td>
-            </tr>
-            <tr>
-                <td>Subtract</td>
-                <td>-</td>
-            </tr>
-            <tr>
-                <td>Multiply</td>
-                <td>*</td>
-            </tr>
-            <tr>
-                <td>Divide</td>
-                <td>/</td>
-            </tr>
-            <tr>
-                <td>Modulo</td>
-                <td>%</td>
-            </tr>
-            <tr>
-                <td>Contains</td>
-                <td>contains</td>
-            </tr>
-            <tr>
-                <td>Starts With</td>
-                <td>startswith</td>
-            </tr>
-            <tr>
-                <td>Ends With</td>
-                <td>endswith</td>
-            </tr>
-            <tr>
-                <td>Or</td>
-                <td>or</td>
-            </tr>
-            <tr>
-                <td>And</td>
-                <td>and</td>
-            </tr>
-            <tr>
-                <td>Equals</td>
-                <td>equals</td>
-            </tr>
-            <tr>
-                <td>Not Equals</td>
-                <td>notequals</td>
-            </tr>
-        </table>
-        
-        <h2>Nested Queries</h2>
-        <p>
-            The query language also allows for nested queries. This makes querying complex conditions possible. Nested queries are 
-            created by surrounding internal queries with ( and ).
-        </p>
-        <p>e.g. Label == 'Vertex #0&lt;Unknown&gt;' || Label == 'Vertex #1&lt;Unknown&gt;' shows elements that satisfy either constraint.</p>
-        <p>e.g. Label == 'Vertex #0&lt;Unknown&gt;' &AMP; nradius == '1.5' shows elements that satisfy both constraints.</p>
-    </body>
+        <p>NOTE: Layers View does not allow for the use of the assignment operator = or keyword assign.</p>
+        <a href="nbdocs://au.gov.asd.tac.constellation.graph/au/gov/asd/tac/constellation/graph/docs/expressions.html">Click here for more information on the structure of the expression framework.</a>
+            </body>
 </html>

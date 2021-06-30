@@ -6,7 +6,5 @@
     <mapID target="au.gov.asd.tac.constellation.graph.file.openRecentGraph" url="openRecentGraph.html"/>
     <mapID target="au.gov.asd.tac.constellation.graph.file.newGraph" url="newGraph.html"/>
     <mapID target="au.gov.asd.tac.constellation.graph.file.saveGraph" url="saveGraph.html"/>
-    <mapID target="au.gov.asd.tac.constellation.graph.file.mouseAddMode" url="mouseAddMode.html"/>
-    <mapID target="au.gov.asd.tac.constellation.graph.file.mouseSelectionMode" url="mouseSelectionMode.html"/>
     <mapID target="au.gov.asd.tac.constellation.graph.file.nebula" url="nebula.html"/>
 </map>
