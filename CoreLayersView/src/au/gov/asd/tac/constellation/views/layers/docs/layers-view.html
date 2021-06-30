@@ -10,18 +10,10 @@
         <table border="1">
             <caption>Layers View Actions</caption>
             <tr>
-                <th scope="col">
-                    Constellation Action
-                </th>
-                <th scope="col">
-                    Keyboard Shortcut
-                </th>
-                <th scope="col">
-                    User Action
-                </th>
-                <th scope="col">
-                    Menu Icon
-                </th>
+                <th scope="col">Constellation Action</th>
+                <th scope="col">Keyboard Shortcut</th>
+                <th scope="col">User Action</th>
+                <th scope="col">Menu Icon</th>
             </tr>
             <tr>
                 <td>
@@ -77,16 +69,16 @@
             </tr>
         </table>
         <p>
-            The Layers View holds a collection of Layers. Each Layer can represent a static set of elements, or a dynamically 
+            The Layers View holds a collection of Layers. Each Layer can represent a static set of elements, or a dynamically
             calculated set of elements which match a query criteria. The query structure is based on the expressions framework.
             <br/>
             Each layer has a visibility checkbox which determines if that layer is toggled. All elements are on the base layer 0.
-            When one or more check boxes are selected, only the elements that are members of those layers are visibly displayed. 
+            When one or more check boxes are selected, only the elements that are members of those layers are visibly displayed.
             All other elements will have their "visibility" attribute value toggled to 0.0 (invisible).
             <br/>
-            Arrangements on graphs with a visual schema will be ran on the base layer 0. 
+            Arrangements on graphs with a visual schema will be ran on the base layer 0.
         </p>
-        
+
         <figure>
                 <img src="resources/layers-view-example.png" alt="Layers View">
                 <br/>
@@ -99,11 +91,11 @@
             (see table at the top of the page for shortcut details). The maximum amount of layers you can create is 64.
         </p>
         <p>
-            When a single layer is toggled on, that layer will be displayed on the graph. When multiple manual layers are selected, 
-            it will display everything on layer x, as well as everything on layer y (i.e. the union of all selected layers). Combining 
+            When a single layer is toggled on, that layer will be displayed on the graph. When multiple manual layers are selected,
+            it will display everything on layer x, as well as everything on layer y (i.e. the union of all selected layers). Combining
             both query and manual layers will produce undefined results and should not be used when accuracy of results is needed.
         </p>
-        
+
         <h2>Layer Types</h2>
         <figure>
             <img src="resources/layers-context.png" alt="Layers Context Menu">
@@ -112,7 +104,7 @@
         </figure>
         <br/>
         <p>
-            There are two main layer types within the Layers View. The differentiating factor of the two being the way elements are 
+            There are two main layer types within the Layers View. The differentiating factor of the two being the way elements are
             chosen to be displayed.
         </p>
         <h3>Manual Layer</h3>
@@ -121,11 +113,11 @@
         </p>
         <h3>Query Layer</h3>
         <p>
-            A query layer is a dynamic layer that shows the elements represented by the specified 
-            Vertex and Transaction queries. Query layers are dynamically recalculated upon changes to those attributes being queried. 
-            This is to ensure the accuracy of the shown layer. e.g. Layer 1 has a vertex query described as Label == 'Vertex #0'. This will show the 
-            vertex with that label. If you then change Vertex #0's label to something like 'V#0', the query will note the 
-            change and recalculate for the whole graph. 
+            A query layer is a dynamic layer that shows the elements represented by the specified
+            Vertex and Transaction queries. Query layers are dynamically recalculated upon changes to those attributes being queried.
+            This is to ensure the accuracy of the shown layer. e.g. Layer 1 has a vertex query described as Label == 'Vertex #0'. This will show the
+            vertex with that label. If you then change Vertex #0's label to something like 'V#0', the query will note the
+            change and recalculate for the whole graph.
         </p>
         <p>NOTE: Layers View does not allow for the use of the assignment operator = or keyword assign.</p>
         <a href="nbdocs://au.gov.asd.tac.constellation.graph/au/gov/asd/tac/constellation/graph/docs/expressions.html">Click here for more information on the structure of the expression framework.</a>

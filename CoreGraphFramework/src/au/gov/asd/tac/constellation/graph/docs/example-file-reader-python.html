@@ -1,26 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Using Python to read CONSTELLATION .star files</title>
+        <title>Example Constellation File Reader</title>
+        <link rel="stylesheet" href="nbdocs://au.gov.asd.tac.constellation.preferences/au/gov/asd/tac/constellation/preferences/constellation.css" type="text/css">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     </head>
     <body>
-        <h1>Using Python to read CONSTELLATION .star files</h1>
+        <h1>Example Constellation File Reader</h1>
 
-        <p>The CONSTELLATION file format uses JSON to store data (see ... for details).
-            One of the advantages of using JSON is that a .star file can be manipulated using
-            any language that has a JSON library.</p>
+        <p>
+            The Constellation file format uses JSON to store data. One of the advantages of using JSON is that a .star file can be 
+            manipulated using any language that has a JSON library.
+        </p>
+        <p>
+            This section will use Python 2.6 to provide examples of reading .star files.
+        </p>
 
-        <p>This section will use Python 2.6 to provide examples of reading .star files.</p>
-
-        <h2>Reading a .star file</h2>
-
-        <p>The Python script below (given the path of a .star file on the command line) will read the JSON document from the .star file and display some data from the JSON document. We'll use the output
-            of this script to investigate CONSTELLATION's JSON document format.</p>
-
+        <h2>Reading a .star File</h2>
+        <p>
+            The Python script below (given the path of a .star file on the command line) will read the JSON document from the .star 
+            file and display some data from the JSON document. We'll use the output of this script to investigate Constellation's 
+            JSON document format.
+        </p>
         <pre>
         #
-        # Read the JSON document from a CONSTELLATION .star file.
+        # Read the JSON document from a Constellation .star file.
         #
 
         from __future__ import print_function
@@ -31,7 +35,7 @@
         import zipfile
 
         def read_graph(fnam):
-            '''Read a CONSTELLATION graph from a .star file.'''
+            '''Read a Constellation graph from a .star file.'''
 
             try:
                 zf = zipfile.ZipFile(fnam, 'r')
@@ -81,8 +85,9 @@
             pprint.pprint(vertex_data[0], indent=2)
         </pre>
 
-        <p>The output from the script (using a typical graph) is shown below.</p>
-
+        <p>
+            The output from the script (using a typical graph) is shown below:
+        </p>
         <pre>
         Graph structure:
         [ { u'attribute_mod_count': 65,
@@ -122,16 +127,16 @@
           u'z': 6.3245554000000004}
         </pre>
 
-        <p>The basic top-level structure of the graph document (leaving aside the first 'version' section)
-            consists of lists of dictionaries with a single key. The top level array contains 'graph', 'vertex',
-            'transaction', and 'meta', each containing a two-element list: a dictionary with the key 'attrs',
-            and a dictionary with the key 'data'.</p>
-
-        <p>Suppose we want to find the names of nodes that have a secondary country of
-            'Canada'. The following function will find those nodes. (The function is shown in
-            two variants: one using a list comprehension, and one using long form. Use
-            whichever variant you are most comfortable with.<p>
-
+        <p>
+            The basic top-level structure of the graph document (leaving aside the first 'version' section) consists of lists of 
+            dictionaries with a single key. The top level array contains 'graph', 'vertex', 'transaction', and 'meta', each 
+            containing a two-element list: a dictionary with the key 'attrs', and a dictionary with the key 'data'.
+        </p>
+        <p>
+            Suppose we want to find the names of nodes that have a secondary country of 'Canada'. The following function will find 
+            those nodes. (The function is shown in two variants: one using a list comprehension, and one using long form. Use
+            whichever variant you are most comfortable with.
+        </p>
         <pre>
         def find_vertex_country(graph, country):
             vertex_data = graph_section(graph, 'vertex', sub='data')
@@ -158,25 +163,27 @@
             return names
         </pre>
 
-        <p>The output from both functions is (unsurprisingly) the same.</p>
-
+        <p>
+            The output from both functions is (unsurprisingly) the same:
+        </p>
         <pre>
         [u'Node 1', u'Node 6']
         </pre>
 
-        <p>Note the use of <span class="tt">vx.get()</span> instead of using standard
-            dictionary lookup notation <span class="tt">vx[]</span>. This is because a vertex
-            attribute with a null value is not written to the JSON document, and therefore
-            does not have a key in the Python dictionary when it is read. Attempting to read a
-            dictionary with a non-existent key results in a KeyError being thrown, which isn't
-            good for our output.</p>
+        <p>
+            NOTE: We use "vx.get" instead of using standard dictionary lookup notation "vx[]". This is because a vertex attribute 
+            with a null value is not written to the JSON document, and therefore does not have a key in the Python dictionary when 
+            it is read. Attempting to read a dictionary with a non-existent key results in a KeyError being thrown, which isn't
+            good for our output.
+        </p>
+        <p>
+            The documentation for get(key [,default]) says: "Return the value for key if key is in the dictionary, else default. If 
+            default is not given, it defaults to None, so that this method never raises a KeyError." This is just what we want.
+        </p>
 
-        <p>The documentation for get(key [,default]) says: "Return the value for key if key
-            is in the dictionary, else default. If default is not given, it defaults to None, so
-            that this method never raises a KeyError." This is just what we want.</p>
-
-        <p>To find out which nodes do not have a country associated with them:</p>
-
+        <p>
+            To find out which nodes do not have a country associated with them:
+        </p>
         <pre>
         def find_vertex_no_country(graph):
             vertex_data = graph_section(graph, 'vertex', sub='data')
@@ -186,19 +193,21 @@
 
             return names
         </pre>
-
-        <p>Output:</p>
-
+        <p>
+            Output:
+        </p>
         <pre>
         [u'Node 0', u'Node 5']
         </pre>
 
-        <p>These examples can be used as starting points for more complicated queries, such as "all
-            countries starting with 'U'", or "events between two dates".
-
-        <p>To find all of the countries that are associated with vertices in this graph, we use a set
-            to add the known countries, and then display a sorted list.</p>
-
+        <p>
+            These examples can be used as starting points for more complicated queries, such as "all countries starting with 'U'", 
+            or "events between two dates".
+        </p>
+        <p>
+            To find all of the countries that are associated with vertices in this graph, we use a set to add the known countries, 
+            and then display a sorted list.
+        </p>
         <pre>
         def find_unique_countries(graph):
             vertex_data = graph_section(graph, 'vertex', sub='data')
@@ -213,9 +222,9 @@
         countries = find_unique_countries(graph)
         print('\nNode countries:\n%s' % '\n'.join(sorted(countries)))
         </pre>
-
-        <p>Output:</p>
-
+        <p>
+            Output:
+        </p>
         <pre>
         Node countries:
         Australia
@@ -225,9 +234,9 @@
         India
         </pre>
 
-        <p>Because the JSON document is designed for storage rather than graph manipulation, it is more
-            difficult to find results for queries such as 'find all transactions with the same country at both
-            ends'.</p>
-
+        <p>
+            Because the JSON document is designed for storage rather than graph manipulation, it is more difficult to find results 
+            for queries such as "find all transactions with the same country at both ends".
+        </p>
     </body>
 </html>
