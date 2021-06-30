@@ -554,7 +554,7 @@ public class Conversation {
 
         @Override
         protected boolean update(GraphReadMethods graph) {
-            ConversationBox.found = 0;
+            ConversationBox.foundCount = 0;
 
             if (resultMessages != null) {
                 resultMessages.setAll(visibleMessages);

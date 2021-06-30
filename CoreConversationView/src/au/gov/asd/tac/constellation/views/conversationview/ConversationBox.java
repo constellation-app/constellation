@@ -123,9 +123,7 @@ public final class ConversationBox extends StackPane {
     private volatile boolean isAdjustingContributionProviders = false;
     private volatile boolean isAdjustingSenderLabels;
 
-    protected static int found;
-    private final String FOUND_COLOUR_TRUE = "-fx-text-fill: yellow;";
-    private final String FOUND_COLOUR_FALSE = "-fx-text-fill: red;";
+    protected static int foundCount;
     private final Label foundLabel = new Label();
 
     private final TextField searchTextField = new TextField();
@@ -245,8 +243,8 @@ public final class ConversationBox extends StackPane {
         // Create controls for searching text within bubbles.
         searchTextField.setPromptText("Type to search...");
         searchTextField.setStyle("-fx-prompt-text-fill: #868686;");
-        foundLabel.setText("Found: " + found);
-        foundLabel.setStyle(found > 0 ? FOUND_COLOUR_TRUE : FOUND_COLOUR_FALSE);
+        foundLabel.setText("Found: " + foundCount);
+        foundLabel.setStyle(foundCount > 0 ? "-fx-text-fill: yellow;" : "-fx-text-fill: red;");
         foundLabel.setPadding(new Insets(4, 8, 4, 8));
         searchVBox.getChildren().addAll(searchTextField, foundLabel);
 
@@ -279,8 +277,8 @@ public final class ConversationBox extends StackPane {
         Platform.runLater(() -> {
             final ConversationSearchRefresh conversationSearchRefresh = new ConversationSearchRefresh(conversation);
             conversationSearchRefresh.updateContributionProviderRefresh("Refresh");
-            foundLabel.setText("Found: " + found);
-            foundLabel.setStyle(found > 0 ? FOUND_COLOUR_TRUE : FOUND_COLOUR_FALSE);
+            foundLabel.setText("Found: " + foundCount);
+            foundLabel.setStyle(foundCount > 0 ? "-fx-text-fill: yellow;" : "-fx-text-fill: red;");
         });
     }
 
@@ -341,23 +339,23 @@ public final class ConversationBox extends StackPane {
                     if (!searchTextField.getText().isEmpty()) {
 
                         if (region instanceof EnhancedTextArea) {
-                            found += ((EnhancedTextArea) region).highlightText(searchTextField.getText());
-                            LOGGER.log(Level.WARNING, "FOUND = {0}", found);
+                            foundCount += ((EnhancedTextArea) region).highlightText(searchTextField.getText());
+                            LOGGER.log(Level.WARNING, "FOUND = {0}", foundCount);
                         }
 
                         if (region instanceof GridPane) {
                             ((GridPane) region).getChildren().forEach(child -> {
                                 if (child instanceof EnhancedTextArea) {
-                                    found += ((EnhancedTextArea) child).highlightText(searchTextField.getText());
-                                    LOGGER.log(Level.WARNING, "FOUND = {0}", found);
+                                    foundCount += ((EnhancedTextArea) child).highlightText(searchTextField.getText());
+                                    LOGGER.log(Level.WARNING, "FOUND = {0}", foundCount);
                                 }
                             });
                         }
                     }
                 });
 
-                foundLabel.setText("Found: " + found);
-                foundLabel.setStyle(found > 0 ? FOUND_COLOUR_TRUE : FOUND_COLOUR_FALSE);
+                foundLabel.setText("Found: " + foundCount);
+                foundLabel.setStyle(foundCount > 0 ? "-fx-text-fill: yellow;" : "-fx-text-fill: red;");
 
                 final ConversationBubble bubble = new ConversationBubble(rendered, message, tipsPane);
                 if (currentBubble != null) {
