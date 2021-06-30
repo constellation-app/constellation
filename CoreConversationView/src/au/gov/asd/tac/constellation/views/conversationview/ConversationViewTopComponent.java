@@ -100,6 +100,13 @@ public final class ConversationViewTopComponent extends JavaFxTopComponent<Conve
         conversation.getGraphUpdateManager().setManaged(needsUpdate());
     }
 
+    @Override
+    protected void handleGraphClosed(final Graph graph) {
+        if (needsUpdate() && graph != null) {
+            conversationBox.resetFound();
+        }
+    }
+
     void writeProperties(java.util.Properties p) {
         // Required for @ConvertAsProperties
     }
@@ -116,13 +123,6 @@ public final class ConversationViewTopComponent extends JavaFxTopComponent<Conve
     @Override
     protected ConversationBox createContent() {
         return conversationBox;
-    }
-
-    @Override
-    protected void handleGraphClosed(final Graph graph) {
-        if (needsUpdate() && graph != null) {
-            conversationBox.resetFound();
-        }
     }
 
     /**

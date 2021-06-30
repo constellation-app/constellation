@@ -124,6 +124,9 @@ public final class ConversationBox extends StackPane {
     private volatile boolean isAdjustingSenderLabels;
 
     protected static int foundCount;
+    private final String foundText = "Found: ";
+    private final String foundPassColour = "-fx-text-fill: yellow;";
+    private final String foundFailColour = "-fx-text-fill: red;";
     private final Label foundLabel = new Label();
 
     private final TextField searchTextField = new TextField();
@@ -243,8 +246,8 @@ public final class ConversationBox extends StackPane {
         // Create controls for searching text within bubbles.
         searchTextField.setPromptText("Type to search...");
         searchTextField.setStyle("-fx-prompt-text-fill: #868686;");
-        foundLabel.setText("Found: " + foundCount);
-        foundLabel.setStyle(foundCount > 0 ? "-fx-text-fill: yellow;" : "-fx-text-fill: red;");
+        foundLabel.setText(foundText + foundCount);
+        foundLabel.setStyle(foundCount > 0 ? foundPassColour : foundFailColour);
         foundLabel.setPadding(new Insets(4, 8, 4, 8));
         searchVBox.getChildren().addAll(searchTextField, foundLabel);
 
@@ -277,8 +280,8 @@ public final class ConversationBox extends StackPane {
         Platform.runLater(() -> {
             final ConversationSearchRefresh conversationSearchRefresh = new ConversationSearchRefresh(conversation);
             conversationSearchRefresh.updateContributionProviderRefresh("Refresh");
-            foundLabel.setText("Found: " + foundCount);
-            foundLabel.setStyle(foundCount > 0 ? "-fx-text-fill: yellow;" : "-fx-text-fill: red;");
+            foundLabel.setText(foundText + foundCount);
+            foundLabel.setStyle(foundCount > 0 ? foundPassColour : foundFailColour);
         });
     }
 
@@ -354,8 +357,8 @@ public final class ConversationBox extends StackPane {
                     }
                 });
 
-                foundLabel.setText("Found: " + foundCount);
-                foundLabel.setStyle(foundCount > 0 ? "-fx-text-fill: yellow;" : "-fx-text-fill: red;");
+                foundLabel.setText(foundText + foundCount);
+                foundLabel.setStyle(foundCount > 0 ? foundPassColour : foundFailColour);
 
                 final ConversationBubble bubble = new ConversationBubble(rendered, message, tipsPane);
                 if (currentBubble != null) {
