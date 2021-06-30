@@ -122,11 +122,11 @@ public class Conversation {
      * Create a new Conversation.
      */
     public Conversation() {
-        conversationExistanceUpdater.dependOn(graphUpdateController.getNewGraphUpdateComponent());  
-        
+        conversationExistanceUpdater.dependOn(graphUpdateController.getNewGraphUpdateComponent());
+
         conversationStateUpdater.dependOn(conversationExistanceUpdater);
         conversationStateUpdater.dependOn(graphUpdateController.createAttributeUpdateComponent(ConversationViewConcept.MetaAttribute.CONVERSATION_VIEW_STATE));
-        
+
         possibleSenderAttributeUpdater.dependOn(conversationExistanceUpdater);
         possibleSenderAttributeUpdater.dependOn(graphUpdateController.getAttributeUpdateComponent());
 
@@ -135,11 +135,11 @@ public class Conversation {
 
         contributionProviderUpdater.dependOn(conversationExistanceUpdater);
         contributionProviderUpdater.dependOn(graphUpdateController.getAttributeUpdateComponent());
-        
+
         messageUpdater.dependOn(conversationExistanceUpdater);
         messageUpdater.dependOn(graphUpdateController.createAttributeUpdateComponent(VisualConcept.VertexAttribute.SELECTED));
         messageUpdater.dependOn(graphUpdateController.createAttributeUpdateComponent(VisualConcept.TransactionAttribute.SELECTED));
-        
+
         contributionUpdater.dependOn(messageUpdater);
 
         datetimeUpdater.dependOn(contributionUpdater);
@@ -200,7 +200,6 @@ public class Conversation {
         @Override
         protected boolean update(GraphReadMethods graph) {
 
-            
             ConversationState newConversationState;
             if (graph != null) {
                 final int conversationStateAttribute = ConversationViewConcept.MetaAttribute.CONVERSATION_VIEW_STATE.get(graph);
@@ -555,6 +554,8 @@ public class Conversation {
 
         @Override
         protected boolean update(GraphReadMethods graph) {
+            ConversationBox.found = 0;
+
             if (resultMessages != null) {
                 resultMessages.setAll(visibleMessages);
             }
@@ -621,14 +622,5 @@ public class Conversation {
 
         updateController.registerChange(contributorUpdater);
         updateController.update();
-    }
-    
-    /**
-     * Get a list of all messages that will be rendered.
-     * 
-     * @return A list of all messages that will be rendered.
-     */
-    protected final List<ConversationMessage> getVisibleMessages() {
-        return visibleMessages;
     }
 }

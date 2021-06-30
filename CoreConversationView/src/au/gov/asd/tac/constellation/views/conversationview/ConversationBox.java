@@ -35,6 +35,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -91,6 +94,8 @@ import org.openide.util.Lookup;
  */
 public final class ConversationBox extends StackPane {
 
+    private static final Logger LOGGER = Logger.getLogger(ConversationBox.class.getName());
+
     public static final double PADDING = 5;
 
     private final Conversation conversation;
@@ -118,12 +123,12 @@ public final class ConversationBox extends StackPane {
     private volatile boolean isAdjustingContributionProviders = false;
     private volatile boolean isAdjustingSenderLabels;
 
-    private int found = 0;
-    private static final String FOUND_COLOUR_TRUE = "-fx-text-fill: yellow;";
-    private static final String FOUND_COLOUR_FALSE = "-fx-text-fill: red;";
+    protected static int found;
+    private final String FOUND_COLOUR_TRUE = "-fx-text-fill: yellow;";
+    private final String FOUND_COLOUR_FALSE = "-fx-text-fill: red;";
+    private final Label foundLabel = new Label();
 
     private final TextField searchTextField = new TextField();
-    private final Label searchLabel = new Label();
     private final VBox searchVBox = new VBox();
 
     /**
@@ -213,7 +218,7 @@ public final class ConversationBox extends StackPane {
                     } else {
                         button.getStyleClass().add("center-pill");
                     }
-                    button.setOnAction((ActionEvent event) -> {
+                    button.setOnAction(event -> {
                         if (!isAdjustingContributionProviders) {
                             updateContributionProviderVisibility(contributor.getKey(), button.isSelected());
                         }
@@ -240,17 +245,14 @@ public final class ConversationBox extends StackPane {
         // Create controls for searching text within bubbles.
         searchTextField.setPromptText("Type to search...");
         searchTextField.setStyle("-fx-prompt-text-fill: #868686;");
-        searchLabel.setText("Found: " + found);
-        searchLabel.setStyle(found > 0 ? FOUND_COLOUR_TRUE : FOUND_COLOUR_FALSE);
-        searchLabel.setPadding(new Insets(4, 8, 4, 8));
-        searchVBox.getChildren().addAll(searchTextField, searchLabel);
-
-        final ConversationSearchRefresh conversationSearchRefresh = new ConversationSearchRefresh(conversation);
+        foundLabel.setText("Found: " + found);
+        foundLabel.setStyle(found > 0 ? FOUND_COLOUR_TRUE : FOUND_COLOUR_FALSE);
+        foundLabel.setPadding(new Insets(4, 8, 4, 8));
+        searchVBox.getChildren().addAll(searchTextField, foundLabel);
 
         // Use a dummy provider name to get the toggle pane state remain the same during the search.
         searchTextField.addEventHandler(KeyEvent.KEY_TYPED, e -> {
-            found = 0;
-            conversationSearchRefresh.updateContributionProviderRefresh("Refresh");
+            resetFound();
 
             final Graph graph = conversation.getGraphUpdateManager().getActiveGraph();
             if (graph != null) {
@@ -271,6 +273,15 @@ public final class ConversationBox extends StackPane {
 
         content.getChildren().addAll(optionsPane, searchVBox, contributionsPane, bubbles);
         getChildren().addAll(content, tipsPane);
+    }
+
+    protected void resetFound() {
+        Platform.runLater(() -> {
+            final ConversationSearchRefresh conversationSearchRefresh = new ConversationSearchRefresh(conversation);
+            conversationSearchRefresh.updateContributionProviderRefresh("Refresh");
+            foundLabel.setText("Found: " + found);
+            foundLabel.setStyle(found > 0 ? FOUND_COLOUR_TRUE : FOUND_COLOUR_FALSE);
+        });
     }
 
     // A VBox to hold a bubble and a sender.
@@ -330,21 +341,23 @@ public final class ConversationBox extends StackPane {
                     if (!searchTextField.getText().isEmpty()) {
 
                         if (region instanceof EnhancedTextArea) {
-                            found += ((EnhancedTextArea) region).findText(searchTextField.getText());
+                            found += ((EnhancedTextArea) region).highlightText(searchTextField.getText());
+                            LOGGER.log(Level.WARNING, "FOUND = {0}", found);
                         }
 
                         if (region instanceof GridPane) {
                             ((GridPane) region).getChildren().forEach(child -> {
                                 if (child instanceof EnhancedTextArea) {
-                                    found += ((EnhancedTextArea) child).findText(searchTextField.getText());
+                                    found += ((EnhancedTextArea) child).highlightText(searchTextField.getText());
+                                    LOGGER.log(Level.WARNING, "FOUND = {0}", found);
                                 }
                             });
                         }
                     }
                 });
 
-                searchLabel.setText("Found: " + found);
-                searchLabel.setStyle(found > 0 ? FOUND_COLOUR_TRUE : FOUND_COLOUR_FALSE);
+                foundLabel.setText("Found: " + found);
+                foundLabel.setStyle(found > 0 ? FOUND_COLOUR_TRUE : FOUND_COLOUR_FALSE);
 
                 final ConversationBubble bubble = new ConversationBubble(rendered, message, tipsPane);
                 if (currentBubble != null) {

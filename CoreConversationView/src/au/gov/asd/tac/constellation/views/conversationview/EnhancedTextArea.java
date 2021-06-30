@@ -15,34 +15,43 @@
  */
 package au.gov.asd.tac.constellation.views.conversationview;
 
+import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.graph.visual.VisualGraphPluginRegistry;
+import au.gov.asd.tac.constellation.graph.visual.plugins.select.ChangeSelectionPlugin;
+import au.gov.asd.tac.constellation.graph.visual.plugins.select.SelectionMode;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.parameters.types.ElementTypeParameterValue;
+import au.gov.asd.tac.constellation.utilities.clipboard.ConstellationClipboardOwner;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.List;
 import javafx.geometry.Insets;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.Background;
 import org.fxmisc.richtext.InlineCssTextArea;
 
 /**
  * EnhancedTextArea is a InlineCssTextArea from the RichTextFX library with
- * added functionality, such as finding and highlighting text.
+ * added methods for functionality, such as highlighting text.
  *
  * @author sol695510
  */
-public class EnhancedTextArea extends InlineCssTextArea {
+public final class EnhancedTextArea extends InlineCssTextArea {
 
-    private final String text;
     private final Insets insets = new Insets(4, 8, 4, 8);
 
     /**
-     * Constructor.
-     *
-     * @param text
+     * Default constructor.
      */
-    public EnhancedTextArea(final String text) {
+    public EnhancedTextArea() {
 
-        this.text = text;
-        this.appendText(text);
         this.setBackground(Background.EMPTY);
         this.setAutoHeight(true);
         this.setWrapText(true);
@@ -51,19 +60,70 @@ public class EnhancedTextArea extends InlineCssTextArea {
     }
 
     /**
+     * Constructor with context menu for Conversation View.
+     *
+     * @param text
+     * @param contribution Provides information required for context menu.
+     */
+    public EnhancedTextArea(final String text, final ConversationContribution contribution) {
+
+        this.setBackground(Background.EMPTY);
+        this.setAutoHeight(true);
+        this.setWrapText(true);
+        this.setEditable(false);
+        this.setPadding(insets);
+        this.appendText(text);
+
+        // Implementation for the 'Copy' context menu option.
+        final MenuItem copyTextMenuItem = new MenuItem("Copy");
+        copyTextMenuItem.setOnAction(event -> {
+            final StringSelection ss = new StringSelection(this.getSelectedText());
+            final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            clipboard.setContents(ss, ConstellationClipboardOwner.getOwner());
+        });
+
+        // Implementation for the 'Select All' context menu option.
+        final MenuItem selectAllTextMenuItem = new MenuItem("Select All");
+        selectAllTextMenuItem.setOnAction(event -> this.selectAll());
+
+        // Implementation for the 'Select on Graph' context menu option.
+        final MenuItem selectOnGraphMenuItem = new MenuItem("Select on Graph");
+        selectOnGraphMenuItem.setOnAction(event -> {
+            final BitSet elementIds = new BitSet();
+            elementIds.set(contribution.getMessage().getTransaction());
+
+            PluginExecution.withPlugin(VisualGraphPluginRegistry.CHANGE_SELECTION)
+                    .withParameter(ChangeSelectionPlugin.ELEMENT_BIT_SET_PARAMETER_ID, elementIds)
+                    .withParameter(ChangeSelectionPlugin.ELEMENT_TYPE_PARAMETER_ID, new ElementTypeParameterValue(GraphElementType.TRANSACTION))
+                    .withParameter(ChangeSelectionPlugin.SELECTION_MODE_PARAMETER_ID, SelectionMode.REPLACE)
+                    .executeLater(GraphManager.getDefault().getActiveGraph());
+        });
+
+        final ContextMenu contextMenu = new ContextMenu();
+        contextMenu.getItems().add(copyTextMenuItem);
+        contextMenu.getItems().add(selectAllTextMenuItem);
+        contextMenu.getItems().add(selectOnGraphMenuItem);
+
+        this.setOnContextMenuRequested(event -> {
+            contextMenu.show(this, event.getScreenX(), event.getScreenY());
+            copyTextMenuItem.setDisable(this.getSelectedText().isEmpty());
+        });
+    }
+
+    /**
      * Finds and highlights passages of the given string found within the text
-     * of the EnhancedTextArea. Also returns the count of passages found.
+     * of the EnhancedTextArea and returns the count of passages found.
      *
      * @param searchText Text passage to be searched for.
      * @return Count of passages of searched text found.
      */
-    public int findText(final String searchText) {
+    public int highlightText(final String searchText) {
 
         List<Tuple<Integer, Integer>> found = new ArrayList<>();
 
         if (!searchText.isEmpty()) {
 
-            found = StringUtilities.searchRange(text, searchText);
+            found = StringUtilities.searchRange(this.getText(), searchText);
             final String highlight = "-rtfx-background-color: yellow;";
 
             if (!found.isEmpty()) {

@@ -40,13 +40,14 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.RowConstraints;
-import org.fxmisc.richtext.InlineCssTextArea;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * The TranslationConversationContributionProvider adds the contents of the Content.Translated attribute to a message.
+ * The TranslationConversationContributionProvider adds the contents of the
+ * Content.Translated attribute to a message.
  *
  * @author sirius
+ * @author sol695510
  */
 @ServiceProvider(service = ConversationContributionProvider.class)
 public class TranslationConversationContributionProvider extends ConversationContributionProvider {
@@ -77,12 +78,12 @@ public class TranslationConversationContributionProvider extends ConversationCon
         private final int transactionId;
         private String text;
 
-        private InlineCssTextArea translationTextArea = new InlineCssTextArea();
-        private final TextArea editTranslationTextArea = new TextArea();
-        private final Button editButton = new Button("Edit");
         private final Button createTranslationButton = new Button("Create Translation");
         private final Button saveButton = new Button("Save");
         private final Button cancelButton = new Button("Cancel");
+        private final Button editButton = new Button("Edit");
+        private final TextArea editTranslationTextArea = new TextArea();
+        private EnhancedTextArea translationTextArea = new EnhancedTextArea();
 
         public TranslationContribution(final String graphId, final ConversationMessage message, final String text) {
             super(TranslationConversationContributionProvider.this, message);
@@ -120,16 +121,15 @@ public class TranslationConversationContributionProvider extends ConversationCon
                 } else if (e.isShortcutDown() && (e.getCode() == KeyCode.A)) {
                     /**
                      * If Ctrl + A is pressed, Constellation does a 'Select All'
-                     * on the graph and takes you out of editing the translation.
-                     * This consumes that event first and then manually does a 'Select All'
-                     * on the translation Text Area.
+                     * on the graph and takes you out of editing the
+                     * translation. This consumes that event first and then
+                     * manually does a 'Select All' on the
+                     * editTranslationTextArea.
                      */
                     e.consume();
                     editTranslationTextArea.selectAll();
                 } else if (e.getCode() == KeyCode.ESCAPE) {
                     e.consume();
-                } else {
-                    // Do nothing
                 }
             });
         }
@@ -138,7 +138,7 @@ public class TranslationConversationContributionProvider extends ConversationCon
         protected String getText() {
             return text;
         }
-        
+
         @Override
         protected Region createContent(final TooltipPane tips) {
 
@@ -164,25 +164,52 @@ public class TranslationConversationContributionProvider extends ConversationCon
             row2Constraints.setVgrow(Priority.ALWAYS);
             content.getRowConstraints().addAll(row0Constraints, row1Constraints, row2Constraints);
 
+            GridPane.setConstraints(translationTextArea, 0, 0, 1, 3);
+            GridPane.setConstraints(editTranslationTextArea, 0, 0, 1, 3);
+            editTranslationTextArea.setWrapText(true);
+
+            if (text != null) {
+                translationTextArea = new EnhancedTextArea(text, this);
+                TooltipUtilities.activateTextInputControl(translationTextArea, tips);
+                content.getChildren().addAll(translationTextArea, editButton);
+            } else {
+                content.getChildren().add(createTranslationButton);
+            }
+
+            GridPane.setConstraints(createTranslationButton, 1, 0);
+            createTranslationButton.setOnAction((ActionEvent event) -> {
+                content.getChildren().remove(createTranslationButton);
+                content.getChildren().addAll(editTranslationTextArea, saveButton, cancelButton);
+                editTranslationTextArea.requestFocus();
+            });
+
+            GridPane.setConstraints(editButton, 1, 0);
+            editButton.setMinWidth(Region.USE_PREF_SIZE);
+            editButton.setOnAction((ActionEvent event) -> {
+                content.getChildren().removeAll(translationTextArea, editButton);
+                content.getChildren().addAll(editTranslationTextArea, saveButton, cancelButton);
+                editTranslationTextArea.setText(text);
+                editTranslationTextArea.selectAll();
+                editTranslationTextArea.requestFocus();
+            });
+
             GridPane.setConstraints(saveButton, 1, 0);
-            saveButton.setPrefWidth(55);
+            saveButton.setPrefWidth(65);
             saveButton.setMinWidth(Region.USE_PREF_SIZE);
             saveButton.setOnAction((ActionEvent event) -> {
+                content.getChildren().removeAll(editTranslationTextArea, saveButton, cancelButton);
+
                 Graph graph = GraphNode.getGraph(graphId);
                 if (graph != null) {
-                    text = editTranslationTextArea.getText();
-                    if (text.isEmpty()) {
-                        text = null;
-                    }
-                    final Plugin plugin = new SetTranslationPlugin(transactionId, text);
-                    PluginExecution.withPlugin(plugin).executeLater(graph);
 
-                    content.getChildren().removeAll(editTranslationTextArea, saveButton, cancelButton);
-
-                    if (text == null) {
+                    if (editTranslationTextArea.getText().isEmpty() || editTranslationTextArea.getText().isBlank() || editTranslationTextArea.getText() == null) {
                         content.getChildren().addAll(createTranslationButton);
                     } else {
-                        translationTextArea = new EnhancedTextArea(text);
+                        text = editTranslationTextArea.getText();
+                        final Plugin plugin = new SetTranslationPlugin(transactionId, text);
+                        PluginExecution.withPlugin(plugin).executeLater(graph);
+
+                        translationTextArea = new EnhancedTextArea(text, this);
                         TooltipUtilities.activateTextInputControl(translationTextArea, tips);
                         content.getChildren().addAll(translationTextArea, editButton);
                     }
@@ -190,46 +217,26 @@ public class TranslationConversationContributionProvider extends ConversationCon
             });
 
             GridPane.setConstraints(cancelButton, 1, 1);
-            cancelButton.setPrefWidth(55);
+            cancelButton.setPrefWidth(65);
             cancelButton.setMinWidth(Region.USE_PREF_SIZE);
             GridPane.setFillWidth(cancelButton, true);
             cancelButton.setOnAction((ActionEvent event) -> {
                 content.getChildren().removeAll(editTranslationTextArea, saveButton, cancelButton);
-                translationTextArea = new EnhancedTextArea(text);
-                TooltipUtilities.activateTextInputControl(translationTextArea, tips);
-                content.getChildren().addAll(translationTextArea, editButton);
+
+                if (editTranslationTextArea.getText().isEmpty() || editTranslationTextArea.getText().isBlank() || editTranslationTextArea.getText() == null) {
+                    content.getChildren().addAll(createTranslationButton);
+                } else {
+                    editTranslationTextArea.clear();
+
+                    if (text != null) {
+                        translationTextArea = new EnhancedTextArea(text, this);
+                        TooltipUtilities.activateTextInputControl(translationTextArea, tips);
+                        content.getChildren().addAll(translationTextArea, editButton);
+                    } else {
+                        content.getChildren().addAll(createTranslationButton);
+                    }
+                }
             });
-
-            GridPane.setConstraints(translationTextArea, 0, 0, 1, 3);
-            GridPane.setConstraints(editTranslationTextArea, 0, 0, 1, 3);
-            editTranslationTextArea.setWrapText(true);            
-
-            GridPane.setConstraints(editButton, 1, 0);
-            editButton.setMinWidth(Region.USE_PREF_SIZE);
-            editButton.setOnAction((ActionEvent event) -> {
-                editTranslationTextArea.setText(text == null ? "" : text);
-                content.getChildren().removeAll(editButton, translationTextArea);
-                editTranslationTextArea.setText(text);
-                content.getChildren().addAll(editTranslationTextArea, saveButton, cancelButton);
-                editTranslationTextArea.selectAll();
-                editTranslationTextArea.requestFocus();
-            });
-
-            GridPane.setConstraints(createTranslationButton, 1, 0);
-            createTranslationButton.setOnAction((ActionEvent event) -> {
-                editTranslationTextArea.setText("");
-                content.getChildren().remove(createTranslationButton);
-                content.getChildren().addAll(editTranslationTextArea, saveButton, cancelButton);
-                editTranslationTextArea.requestFocus();
-            });
-
-            if (text != null) {
-                translationTextArea = new EnhancedTextArea(text);
-                TooltipUtilities.activateTextInputControl(translationTextArea, tips);
-                content.getChildren().addAll(translationTextArea, editButton);
-            } else {
-                content.getChildren().add(createTranslationButton);
-            }
 
             return content;
         }
