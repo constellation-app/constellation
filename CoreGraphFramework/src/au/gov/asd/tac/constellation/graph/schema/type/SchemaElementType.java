@@ -222,7 +222,7 @@ public abstract class SchemaElementType<T extends SchemaElementType<?>> {
         SchemaElementType<?> currentType = this;
         SchemaElementType<?> nextType = currentType.getSuperType();
         while (nextType != currentType) {
-            hierarchyAsString.insert(0, SeparatorConstants.PERIOD);
+            hierarchyAsString.insert(0, HIERARCHY_SEPARATOR_CHARACTER);
             hierarchyAsString.insert(0, nextType.getName());
             currentType = nextType;
             nextType = nextType.getSuperType();

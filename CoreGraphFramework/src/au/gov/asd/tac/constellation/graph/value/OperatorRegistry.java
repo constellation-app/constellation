@@ -84,6 +84,9 @@ public class OperatorRegistry {
     }
 
     public Object apply(Object parameter1, Object parameter2) {
+        if(parameter1 == null || parameter2 == null){
+            return null;
+        }
         final Class<?> parameter1Class = parameter1.getClass();
         final Class<?> parameter2Class = parameter2.getClass();
         final List<BiFunctionRecord<?, ?, ?>> applicableRecords = new ArrayList<>();
