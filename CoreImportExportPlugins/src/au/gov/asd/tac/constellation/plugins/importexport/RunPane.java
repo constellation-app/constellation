@@ -177,12 +177,12 @@ public final class RunPane extends BorderPane implements KeyListener {
         filterField.setFocusTraversable(false);
         filterField.setMinHeight(USE_PREF_SIZE);
         filterField.setPromptText("Start typing to search, e.g.:first_name==\"NICK\"");
-        filterField.setStyle("-fx-background-color: black; -fx-text-fill: white;-fx-prompt-text-fill:white;");
+        filterField.setStyle("-fx-background-color: black; -fx-text-fill: white;-fx-prompt-text-fill:grey;");
         filterField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (setFilter(newValue)) {
-                filterField.setStyle("-fx-background-color: black; -fx-text-fill: white;-fx-prompt-text-fill:white;");
+                filterField.setStyle("-fx-background-color: black; -fx-text-fill: white;-fx-prompt-text-fill:grey;");
             } else {
-                filterField.setStyle("-fx-background-color: red; -fx-text-fill: black;-fx-prompt-text-fill:white;");
+                filterField.setStyle("-fx-background-color: red; -fx-text-fill: black;-fx-prompt-text-fill:grey;");
             }
         });
 
