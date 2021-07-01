@@ -28,13 +28,11 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipUtilities;
-import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.IndexRange;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
@@ -90,8 +88,9 @@ public class TranslationConversationContributionProvider extends ConversationCon
             this.graphId = graphId;
             this.transactionId = message.getTransaction();
             this.text = text;
+
             editTranslationTextArea.setStyle("-fx-text-fill: #000000");
-            editTranslationTextArea.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
+            editTranslationTextArea.setOnKeyPressed(e -> {
                 if (e.getCode() == KeyCode.DELETE) {
                     IndexRange selection = editTranslationTextArea.getSelection();
                     if (selection.getLength() == 0) {
@@ -120,10 +119,10 @@ public class TranslationConversationContributionProvider extends ConversationCon
                     e.consume();
                 } else if (e.isShortcutDown() && (e.getCode() == KeyCode.A)) {
                     /**
-                     * If Ctrl + A is pressed, Constellation does a 'Select All'
-                     * on the graph and takes you out of editing the
-                     * translation. This consumes that event first and then
-                     * manually does a 'Select All' on the
+                     * If Ctrl + A is pressed while editTranslationTextArea is
+                     * focused, all graph elements are selected, focus moves to
+                     * the graph, and changes are lost. So the Ctrl + A event is
+                     * consumed and 'selectAll()' is called on
                      * editTranslationTextArea.
                      */
                     e.consume();
@@ -168,24 +167,27 @@ public class TranslationConversationContributionProvider extends ConversationCon
             GridPane.setConstraints(editTranslationTextArea, 0, 0, 1, 3);
             editTranslationTextArea.setWrapText(true);
 
-            if (text != null) {
+            // Create translation contributions.
+            if (text == null || text.isBlank()) {
+                content.getChildren().add(createTranslationButton);
+            } else {
                 translationTextArea = new EnhancedTextArea(text, this);
                 TooltipUtilities.activateTextInputControl(translationTextArea, tips);
                 content.getChildren().addAll(translationTextArea, editButton);
-            } else {
-                content.getChildren().add(createTranslationButton);
             }
 
+            // Define the createTranslationButton.
             GridPane.setConstraints(createTranslationButton, 1, 0);
-            createTranslationButton.setOnAction((ActionEvent event) -> {
+            createTranslationButton.setOnAction(event -> {
                 content.getChildren().remove(createTranslationButton);
                 content.getChildren().addAll(editTranslationTextArea, saveButton, cancelButton);
                 editTranslationTextArea.requestFocus();
             });
 
+            // Define the editButton.
             GridPane.setConstraints(editButton, 1, 0);
             editButton.setMinWidth(Region.USE_PREF_SIZE);
-            editButton.setOnAction((ActionEvent event) -> {
+            editButton.setOnAction(event -> {
                 content.getChildren().removeAll(translationTextArea, editButton);
                 content.getChildren().addAll(editTranslationTextArea, saveButton, cancelButton);
                 editTranslationTextArea.setText(text);
@@ -193,48 +195,46 @@ public class TranslationConversationContributionProvider extends ConversationCon
                 editTranslationTextArea.requestFocus();
             });
 
+            // Define the saveButton.
             GridPane.setConstraints(saveButton, 1, 0);
             saveButton.setPrefWidth(65);
             saveButton.setMinWidth(Region.USE_PREF_SIZE);
-            saveButton.setOnAction((ActionEvent event) -> {
+            saveButton.setOnAction(event -> {
                 content.getChildren().removeAll(editTranslationTextArea, saveButton, cancelButton);
 
                 Graph graph = GraphNode.getGraph(graphId);
+
                 if (graph != null) {
+                    text = editTranslationTextArea.getText();
+                    final Plugin plugin = new SetTranslationPlugin(transactionId, text);
+                    PluginExecution.withPlugin(plugin).executeLater(graph);
+                }
 
-                    if (editTranslationTextArea.getText().isEmpty() || editTranslationTextArea.getText().isBlank() || editTranslationTextArea.getText() == null) {
-                        content.getChildren().addAll(createTranslationButton);
-                    } else {
-                        text = editTranslationTextArea.getText();
-                        final Plugin plugin = new SetTranslationPlugin(transactionId, text);
-                        PluginExecution.withPlugin(plugin).executeLater(graph);
-
-                        translationTextArea = new EnhancedTextArea(text, this);
-                        TooltipUtilities.activateTextInputControl(translationTextArea, tips);
-                        content.getChildren().addAll(translationTextArea, editButton);
-                    }
+                if (text == null || text.isBlank()) {
+                    content.getChildren().addAll(createTranslationButton);
+                } else {
+                    translationTextArea = new EnhancedTextArea(text, this);
+                    TooltipUtilities.activateTextInputControl(translationTextArea, tips);
+                    content.getChildren().addAll(translationTextArea, editButton);
                 }
             });
 
+            // Define the cancelButton.
             GridPane.setConstraints(cancelButton, 1, 1);
             cancelButton.setPrefWidth(65);
             cancelButton.setMinWidth(Region.USE_PREF_SIZE);
             GridPane.setFillWidth(cancelButton, true);
-            cancelButton.setOnAction((ActionEvent event) -> {
+            cancelButton.setOnAction(event -> {
                 content.getChildren().removeAll(editTranslationTextArea, saveButton, cancelButton);
 
-                if (editTranslationTextArea.getText().isEmpty() || editTranslationTextArea.getText().isBlank() || editTranslationTextArea.getText() == null) {
+                editTranslationTextArea.clear();
+
+                if (text == null || text.isBlank()) {
                     content.getChildren().addAll(createTranslationButton);
                 } else {
-                    editTranslationTextArea.clear();
-
-                    if (text != null) {
-                        translationTextArea = new EnhancedTextArea(text, this);
-                        TooltipUtilities.activateTextInputControl(translationTextArea, tips);
-                        content.getChildren().addAll(translationTextArea, editButton);
-                    } else {
-                        content.getChildren().addAll(createTranslationButton);
-                    }
+                    translationTextArea = new EnhancedTextArea(text, this);
+                    TooltipUtilities.activateTextInputControl(translationTextArea, tips);
+                    content.getChildren().addAll(translationTextArea, editButton);
                 }
             });
 

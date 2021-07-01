@@ -103,7 +103,7 @@ public final class ConversationViewTopComponent extends JavaFxTopComponent<Conve
     @Override
     protected void handleGraphClosed(final Graph graph) {
         if (needsUpdate() && graph != null) {
-            conversationBox.resetFound();
+            conversationBox.refreshFoundControls();
         }
     }
 

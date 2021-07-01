@@ -61,7 +61,6 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -243,43 +242,47 @@ public final class ConversationBox extends StackPane {
         bubbles.setItems(messages);
         conversation.setResultList(messages);
 
-        // Create controls for searching text within bubbles.
+        // Create controls to allow the user to search and highlight text within contributions.
         searchTextField.setPromptText("Type to search...");
         searchTextField.setStyle("-fx-prompt-text-fill: #868686;");
+        searchTextField.setOnKeyPressed(e -> {
+            final Graph graph = conversation.getGraphUpdateManager().getActiveGraph();
+
+            if (graph != null) {
+                refreshFoundControls();
+
+                try (final ReadableGraph readableGraph = graph.getReadableGraph()) {
+                    final List<ConversationContributionProvider> compatibleContributionProviders = ConversationContributionProvider.getCompatibleProviders(readableGraph);
+
+                    messages.forEach(message -> {
+                        message.getAllContributions().clear();
+
+                        compatibleContributionProviders.forEach(contributionProvider -> {
+                            final ConversationContribution contribution = contributionProvider.createContribution(readableGraph, message);
+
+                            if (contribution != null) {
+                                message.getAllContributions().add(contribution);
+                            }
+                        });
+                    });
+                }
+            }
+        });
+
         foundLabel.setText(FOUND_TEXT + foundCount);
         foundLabel.setStyle(foundCount > 0 ? FOUND_PASS_COLOUR : FOUND_FAIL_COLOUR);
         foundLabel.setPadding(new Insets(4, 8, 4, 8));
         searchVBox.getChildren().addAll(searchTextField, foundLabel);
 
-        // Use a dummy provider name to get the toggle pane state remain the same during the search.
-        searchTextField.addEventHandler(KeyEvent.KEY_TYPED, e -> {
-            resetFound();
-
-            final Graph graph = conversation.getGraphUpdateManager().getActiveGraph();
-            if (graph != null) {
-                try (final ReadableGraph readableGraph = graph.getReadableGraph()) {
-                    final List<ConversationContributionProvider> compatibleContributionProviders = ConversationContributionProvider.getCompatibleProviders(readableGraph);
-                    for (final ConversationMessage message : messages) {
-                        message.getAllContributions().clear();
-                        for (final ConversationContributionProvider contributionProvider : compatibleContributionProviders) {
-                            final ConversationContribution contribution = contributionProvider.createContribution(readableGraph, message);
-                            if (contribution != null) {
-                                message.getAllContributions().add(contribution);
-                            }
-                        }
-                    }
-                }
-            }
-        });
-
         content.getChildren().addAll(optionsPane, searchVBox, contributionsPane, bubbles);
         getChildren().addAll(content, tipsPane);
     }
 
-    protected void resetFound() {
+    protected void refreshFoundControls() {
+        final ConversationSearchRefresh conversationSearchRefresh = new ConversationSearchRefresh(conversation);
+        conversationSearchRefresh.updateContributionProviderRefresh("Refresh");
+
         Platform.runLater(() -> {
-            final ConversationSearchRefresh conversationSearchRefresh = new ConversationSearchRefresh(conversation);
-            conversationSearchRefresh.updateContributionProviderRefresh("Refresh");
             foundLabel.setText(FOUND_TEXT + foundCount);
             foundLabel.setStyle(foundCount > 0 ? FOUND_PASS_COLOUR : FOUND_FAIL_COLOUR);
         });
