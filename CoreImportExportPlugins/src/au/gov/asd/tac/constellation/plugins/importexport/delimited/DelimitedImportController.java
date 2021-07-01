@@ -57,6 +57,7 @@ public class DelimitedImportController extends ImportController {
         files = new ArrayList<>();
         importFileParser = ImportFileParser.DEFAULT_PARSER;
         schemaInitialised = true;
+        insertHeaders = false;
     }
 
     public void setImportPane(final DelimitedImportPane importPane) {
@@ -150,7 +151,13 @@ public class DelimitedImportController extends ImportController {
                         PREVIEW_ROW_LIMIT);
                 final String[] columns = currentData.isEmpty() ? new String[0] : (String[]) currentData.get(0);
                 currentColumns = new String[columns.length + 1];
-                System.arraycopy(columns, 0, currentColumns, 1, columns.length);
+                if (isInsertHeadersEnabled()) {
+                    for (int i = 1; i < columns.length + 1; i++) {
+                        currentColumns[i] = "Col" + i;
+                    }
+                } else {
+                    System.arraycopy(columns, 0, currentColumns, 1, columns.length);
+                }
                 currentColumns[0] = "Row";
             } catch (final FileNotFoundException ex) {
                 final String warningMsg = "The following file could not be found "
@@ -172,7 +179,7 @@ public class DelimitedImportController extends ImportController {
         }
 
         if (configurationPane != null) {
-            if (!currentData.isEmpty()) {
+            if (!currentData.isEmpty() && !isInsertHeadersEnabled()) {
                 currentData.remove(0); //Remove the first row with column headers
             }
             configurationPane.setSampleData(currentColumns, currentData);

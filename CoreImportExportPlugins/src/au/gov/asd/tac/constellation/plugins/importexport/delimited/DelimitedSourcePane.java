@@ -51,8 +51,9 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 
 /**
- * The SourcePane provides the UI necessary to allow the user to specify where the imported data should come from. This
- * is typically done by selecting a file.
+ * The SourcePane provides the UI necessary to allow the user to specify where
+ * the imported data should come from. This is typically done by selecting a
+ * file.
  *
  * @author sirius
  */
@@ -66,6 +67,7 @@ public class DelimitedSourcePane extends SourcePane {
 
     private final ComboBox<ImportFileParser> importFileParserComboBox;
     private final CheckBox schemaCheckBox;
+    private final CheckBox insertHeadersCheckBox;
     private final ListView<File> fileListView = new ListView<>();
     protected File defaultDirectory = new File(System.getProperty("user.home"));
 
@@ -142,16 +144,21 @@ public class DelimitedSourcePane extends SourcePane {
 
         //SCHEMA
         final Label schemaLabel = new Label("Initialise With Schema:");
-
         schemaCheckBox = new CheckBox();
         schemaCheckBox.setSelected(importController.isSchemaInitialised());
         schemaCheckBox.setOnAction((final ActionEvent event) -> importController.setSchemaInitialised(schemaCheckBox.isSelected()));
+
+        //INSERT COLUMN HEADERS
+        final Label insertHeadersLabel = new Label("Insert Column Headers:");
+        insertHeadersCheckBox = new CheckBox();
+        insertHeadersCheckBox.setSelected(importController.isInsertHeadersEnabled());
+        insertHeadersCheckBox.setOnAction(t -> importController.setinsertHeaders(insertHeadersCheckBox.isSelected()));
 
         final ToolBar optionsBox = new ToolBar();
         optionsBox.setMinWidth(0);
         GridPane.setConstraints(optionsBox, 0, 1, 3, 1);
         optionsBox.getItems().addAll(destinationLabel, graphComboBox, importFileParserLabel, importFileParserComboBox,
-                schemaLabel, schemaCheckBox);
+                schemaLabel, schemaCheckBox, insertHeadersLabel, insertHeadersCheckBox);
         getChildren().add(optionsBox);
     }
 
@@ -209,8 +216,10 @@ public class DelimitedSourcePane extends SourcePane {
     }
 
     /**
-     * Allow a file to be removed from fileListView. This would be triggered by code in InputController if the file was
-     * found to be missing or invalid - these checks are triggered when a new file is selected in the fileListView.
+     * Allow a file to be removed from fileListView. This would be triggered by
+     * code in InputController if the file was found to be missing or invalid -
+     * these checks are triggered when a new file is selected in the
+     * fileListView.
      *
      * @param file The file to remove.
      */
