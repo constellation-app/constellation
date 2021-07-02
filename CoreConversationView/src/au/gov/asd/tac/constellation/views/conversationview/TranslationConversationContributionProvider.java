@@ -122,11 +122,11 @@ public class TranslationConversationContributionProvider extends ConversationCon
                      * If Ctrl + A is pressed while editTranslationTextArea is
                      * focused, all graph elements are selected, focus moves to
                      * the graph, and changes are lost. So the Ctrl + A event is
-                     * consumed and 'selectAll()' is called on
+                     * consumed and 'requestFocus()' is called on
                      * editTranslationTextArea.
                      */
                     e.consume();
-                    editTranslationTextArea.selectAll();
+                    editTranslationTextArea.requestFocus();
                 } else if (e.getCode() == KeyCode.ESCAPE) {
                     e.consume();
                 }
