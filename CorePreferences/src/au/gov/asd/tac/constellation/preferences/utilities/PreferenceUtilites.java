@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.preferences.utilities;
 
-import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
@@ -83,15 +82,5 @@ public class PreferenceUtilites {
         }
 
         return false;
-    }
-
-    /**
-     * Return whether or not to freeze the graph view
-     *
-     * @return True if the graph view should be frozen, False otherwise
-     */
-    public static boolean isGraphViewFrozen() {
-        final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-        return prefs.getBoolean(ApplicationPreferenceKeys.FREEZE_GRAPH_VIEW, ApplicationPreferenceKeys.FREEZE_GRAPH_VIEW_DEFAULT);
     }
 }

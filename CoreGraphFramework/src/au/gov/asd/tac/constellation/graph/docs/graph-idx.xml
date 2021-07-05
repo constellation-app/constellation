@@ -4,7 +4,9 @@
     <indexitem text="The Constellation Graph Model" target="au.gov.asd.tac.constellation.graph.about"/>
     <indexitem text="Attributes" target="au.gov.asd.tac.constellation.graph.attributes"/>
     <indexitem text="Types" target="au.gov.asd.tac.constellation.graph.types"/>
-    <indexitem text="The CONSTELLATION File Format" target="au.gov.asd.tac.constellation.graph.io.fileformat"/>
-    <indexitem text="A Python File Reader" target="au.gov.asd.tac.constellation.graph.io.pythonreader"/>
-    <indexitem text="A Python File Writer" target="au.gov.asd.tac.constellation.graph.io.pythonwriter"/>
+    <indexitem text="Expressions" target="au.gov.asd.tac.constellation.graph.expressions"/>
+    <indexitem text="The Constellation File Format" target="au.gov.asd.tac.constellation.graph.io.fileformat"/>
+    <indexitem text="Example Constellation File Reader" target="au.gov.asd.tac.constellation.graph.io.pythonreader"/>
+    <indexitem text="Example Constellation File Writer" target="au.gov.asd.tac.constellation.graph.io.pythonwriter"/>
+
 </index>

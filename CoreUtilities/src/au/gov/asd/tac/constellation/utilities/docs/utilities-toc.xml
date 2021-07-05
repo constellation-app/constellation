@@ -8,7 +8,7 @@
         </tocitem>
     </tocitem>
     <tocitem text="Jupyter">
-        <tocitem text="About Jupyter Notebook server" target="au.gov.asd.tac.constellation.utilities.jupyter"/>
-        <tocitem text="About the CONSTELLATION REST Server" target="au.gov.asd.tac.constellation.utilities.rest"/>
+        <tocitem text="About The Jupyter Notebook Server" target="au.gov.asd.tac.constellation.utilities.jupyter"/>
+        <tocitem text="About The Constellation REST Server" target="au.gov.asd.tac.constellation.utilities.rest"/>
     </tocitem>
 </toc>

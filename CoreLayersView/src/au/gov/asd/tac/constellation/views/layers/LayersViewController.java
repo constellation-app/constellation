@@ -91,6 +91,9 @@ public class LayersViewController {
     }
 
     public void setListenedAttributes() {
+        if(parent == null){
+            return;
+        }
         parent.removeValueHandlers(valueMonitors);
         valueMonitors.addAll(parent.setChangeListeners(List.copyOf(changeListeners)));
     }
@@ -172,6 +175,9 @@ public class LayersViewController {
      * View pane.
      */
     public void readState() {
+        if(parent == null){
+            return;
+        }
         final LayersViewPane pane = parent.getContent();
         final Graph graph = GraphManager.getDefault().getActiveGraph();
         if (pane == null || graph == null) {
@@ -182,10 +188,13 @@ public class LayersViewController {
     }
 
     public boolean getParentVisibility() {
-        return parent != null ? parent.getVisibility() : null;
+        return parent != null && parent.getVisibility();
     }
 
     public void readStateFuture() {
+        if(parent == null){
+            return;
+        }
         final LayersViewPane pane = parent.getContent();
         final Graph graph = GraphManager.getDefault().getActiveGraph();
         if (pane == null || graph == null) {

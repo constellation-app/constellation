@@ -466,7 +466,7 @@ public final class RunPane extends BorderPane implements KeyListener {
     }
 
     public boolean validate(final ImportTableColumn column) {
-        // If the active column doesn't match the attribute node format, return it back to the list
+        // If the validation fails (when the active column doesn't match the attribute node format), return it back to the list
         if (column != null && !column.validate(currentRows)) {
             if (draggingAttributeNode != null) {
                 NotifyDisplayer.displayAlert("Delimited Importer", "Attribute mismatch", "Column " + column.getLabel()

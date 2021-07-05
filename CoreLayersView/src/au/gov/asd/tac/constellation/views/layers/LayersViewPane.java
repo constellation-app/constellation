@@ -16,12 +16,15 @@
 package au.gov.asd.tac.constellation.views.layers;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.value.expression.ExpressionParser;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQuery;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQueryCollection;
 import au.gov.asd.tac.constellation.views.layers.query.Query;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -49,10 +52,15 @@ import org.openide.util.HelpCtx;
  */
 public class LayersViewPane extends BorderPane {
 
+    private static final Logger LOGGER = Logger.getLogger(LayersViewPane.class.getName());
     private final LayersViewController controller;
     private final GridPane layersGridPane;
     private final VBox layersViewPane;
     private final HBox options;
+    private final Label errorLabel;
+    private static final String QUERY_WARNING_TEXT = "Invalid query structure";
+    private static final String QUERY_WARNING_STYLE = "-fx-background-color: rgba(241,74,74,0.85);";
+    private static final String QUERY_DEFAULT_STYLE = "-fx-shadow-highlight-color; -fx-text-box-border; -fx-control-inner-background;";
 
     public LayersViewPane(final LayersViewController controller) {
 
@@ -76,6 +84,13 @@ public class LayersViewPane extends BorderPane {
         final Label vxqueryHeadingText = new Label("Vertex Query");
         final Label txqueryHeadingText = new Label("Transaction Query");
         final Label descriptionHeadingText = new Label("Description");
+
+        errorLabel = new Label(QUERY_WARNING_TEXT);
+        errorLabel.setPadding(new Insets(2, 0, 0, 0));
+        errorLabel.setTextAlignment(TextAlignment.CENTER);
+        errorLabel.setStyle("-fx-text-fill: rgba(241,74,74,0.85);");
+        errorLabel.setVisible(false);
+        HBox.setHgrow(errorLabel, Priority.ALWAYS);
 
         // create gridpane and alignments
         layersGridPane = new GridPane();
@@ -108,6 +123,7 @@ public class LayersViewPane extends BorderPane {
         // create options
         final Button addButton = new Button("Add New Layer");
         addButton.setAlignment(Pos.CENTER_RIGHT);
+        addButton.setTooltip(new Tooltip("CTRL + ALT + L"));
         addButton.setOnAction(event -> {
             if (layersGridPane.getRowCount() <= BitMaskQueryCollection.MAX_QUERY_AMT) {
                 final int newQueryIndex = Math.max(controller.getTxQueryCollection().getHighestQueryIndex() + 1,
@@ -116,12 +132,14 @@ public class LayersViewPane extends BorderPane {
                 controller.writeState();
             } else {
                 NotifyDisplayer.display("You cannot have more than " + BitMaskQueryCollection.MAX_QUERY_AMT + " layers", NotifyDescriptor.WARNING_MESSAGE);
+                LOGGER.log(Level.INFO, "Layer count maximum reached. Maximum is currently: {0}", BitMaskQueryCollection.MAX_QUERY_AMT);
             }
             event.consume();
         });
         HBox.setHgrow(addButton, Priority.ALWAYS);
 
         final Button deselectAllButton = new Button("Deselect All Layers");
+        deselectAllButton.setTooltip(new Tooltip("CTRL + ALT + D"));
         deselectAllButton.setAlignment(Pos.CENTER_RIGHT);
         deselectAllButton.setOnAction(event -> {
             controller.getVxQueryCollection().setVisibilityOnAll(false);
@@ -132,7 +150,7 @@ public class LayersViewPane extends BorderPane {
         });
         HBox.setHgrow(deselectAllButton, Priority.ALWAYS);
 
-        this.options = new HBox(5, addButton, deselectAllButton, helpButton);
+        this.options = new HBox(5, addButton, deselectAllButton, helpButton, errorLabel);
         options.setAlignment(Pos.TOP_LEFT);
         options.setPadding(new Insets(0, 0, 0, 10));
 
@@ -170,6 +188,8 @@ public class LayersViewPane extends BorderPane {
         final Node vxQueryTextArea = new TextArea();
         ((TextArea) vxQueryTextArea).setPrefRowCount(1);
         ((TextArea) vxQueryTextArea).setText(vxQuery);
+        ((TextArea) vxQueryTextArea).setWrapText(true);
+        ((TextArea) vxQueryTextArea).setStyle(testQueryValidity(vxQuery) ? QUERY_DEFAULT_STYLE : QUERY_WARNING_STYLE);
         ((TextArea) vxQueryTextArea).focusedProperty().addListener((observable, oldVal, newVal) -> {
             if (!newVal) {
                 syncLayers();
@@ -181,6 +201,8 @@ public class LayersViewPane extends BorderPane {
         final Node txQueryTextArea = new TextArea();
         ((TextArea) txQueryTextArea).setPrefRowCount(1);
         ((TextArea) txQueryTextArea).setText(txQuery);
+        ((TextArea) txQueryTextArea).setWrapText(true);
+        ((TextArea) txQueryTextArea).setStyle(testQueryValidity(txQuery) ? QUERY_DEFAULT_STYLE : QUERY_WARNING_STYLE);
         ((TextArea) txQueryTextArea).focusedProperty().addListener((observable, oldVal, newVal) -> {
             if (!newVal) {
                 syncLayers();
@@ -192,6 +214,7 @@ public class LayersViewPane extends BorderPane {
         final Node descriptionTextArea = new TextArea();
         ((TextArea) descriptionTextArea).setPrefRowCount(1);
         ((TextArea) descriptionTextArea).setText(description);
+        ((TextArea) descriptionTextArea).setWrapText(true);
         ((TextArea) descriptionTextArea).focusedProperty().addListener((observable, oldVal, newVal) -> {
             if (!newVal) {
                 syncLayers();
@@ -222,6 +245,11 @@ public class LayersViewPane extends BorderPane {
             controller.getTxQueryCollection().add(txbitMaskQuery);
         }
 
+        if (!errorLabel.isVisible()) {
+            // check tx and vx
+            errorLabel.setVisible(!testQueryValidity(vxQuery) || !testQueryValidity(txQuery));
+        }
+
         // Add created items to grid pane
         layersGridPane.addRow(currentIndex + 1, layerIdText, visibilityCheckBox, vxQueryTextArea, txQueryTextArea, descriptionTextArea);
     }
@@ -237,6 +265,7 @@ public class LayersViewPane extends BorderPane {
     private void updateLayers(final BitMaskQuery[] vxQueries, final BitMaskQuery[] txQueries) {
         synchronized (this) {
             layersGridPane.getChildren().removeIf(node -> GridPane.getRowIndex(node) > 0);
+            errorLabel.setVisible(false);
             final int iteratorEnd = Math.max(vxQueries.length, txQueries.length);
             for (int position = 0; position < iteratorEnd; position++) {
                 final BitMaskQuery vxQuery = vxQueries[position];
@@ -264,9 +293,31 @@ public class LayersViewPane extends BorderPane {
         setLayers(BitMaskQueryCollection.DEFAULT_VX_QUERIES, BitMaskQueryCollection.DEFAULT_TX_QUERIES);
     }
 
+    /**
+     * Tests if the Expression String parses correctly. Does not check if there
+     * are returnable results. Suppresses the error dialogs within the parse
+     * method.
+     *
+     * @param queryText the expression string to test
+     * @return true if the query is valid, false otherwise
+     */
+    private boolean testQueryValidity(final String queryText) {
+        boolean validity = true;
+        if (queryText == null) {
+            return validity;
+        }
+        ExpressionParser.hideErrorPrompts(true);
+        if (ExpressionParser.parse(queryText) == null) {
+            validity = false;
+        }
+        ExpressionParser.hideErrorPrompts(false);
+        return validity;
+    }
+
     private synchronized void syncLayers() {
         int index = 0;
         boolean visible = false;
+        boolean hasErrors = false;
         String vxQuery = null;
         String txQuery = null;
         String description = null;
@@ -285,9 +336,21 @@ public class LayersViewPane extends BorderPane {
                     break;
                 case 2:
                     vxQuery = ((TextArea) item).getText();
+                    boolean validQuery = testQueryValidity(vxQuery);
+                    if (!hasErrors) {
+                        hasErrors = !validQuery;
+                        errorLabel.setVisible(hasErrors);
+                    }
+                    ((TextArea) item).setStyle(validQuery ? QUERY_DEFAULT_STYLE : QUERY_WARNING_STYLE);
                     break;
                 case 3:
                     txQuery = ((TextArea) item).getText();
+                    boolean validQuery2 = testQueryValidity(txQuery);
+                    if (!hasErrors) {
+                        hasErrors = !validQuery2;
+                        errorLabel.setVisible(hasErrors);
+                    }
+                    ((TextArea) item).setStyle(validQuery2 ? QUERY_DEFAULT_STYLE : QUERY_WARNING_STYLE);
                     break;
                 case 4:
                     description = ((TextArea) item).getText();

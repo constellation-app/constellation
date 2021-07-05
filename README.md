@@ -130,7 +130,7 @@ To build Constellation from source code do the following:
 
     -   Download
         [org-netbeans-modules-javahelp.jar](https://github.com/constellation-app/third-party-dependencies/blob/master/NetBeans%20Help/org-netbeans-modules-javahelp.jar?raw=true)
-        to `C:\Program Files\NetBeans 12\platform\modules` (using
+        to `C:\Program Files\NetBeans 12\netbeans\platform\modules` (using
         Windows as an example). Note that you will need to override this
         file when prompted.
 
