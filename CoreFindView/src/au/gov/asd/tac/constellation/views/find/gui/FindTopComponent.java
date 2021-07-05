@@ -129,8 +129,6 @@ public final class FindTopComponent extends TopComponent implements GraphChangeL
         // Create label and container to show user when no active graph selected:
         panelNoGraph.setLayout(new BorderLayout());
         panelNoGraph.setName("panelNoGraph");
-        lblNoGraph.setBackground(Color.WHITE);
-        lblNoGraph.setForeground(Color.LIGHT_GRAY);
         lblNoGraph.setOpaque(true);
         lblNoGraph.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblNoGraph.setVerticalAlignment(javax.swing.SwingConstants.CENTER);
@@ -207,8 +205,6 @@ public final class FindTopComponent extends TopComponent implements GraphChangeL
 
         panelFind.add(findCriteriaPanel);
 
-        shader();
-
         // saveStateToGraph(), not saving the state as there are too many write
         // locks. The state is saved when you run a search, which is good enough.
         this.validate();
@@ -260,8 +256,6 @@ public final class FindTopComponent extends TopComponent implements GraphChangeL
                 panelFind.add(findCriteriaPanel);
             }
 
-            shader();
-
             this.validate();
             this.repaint();
         } else {
@@ -284,9 +278,6 @@ public final class FindTopComponent extends TopComponent implements GraphChangeL
 
         // We now have a new state:
         saveStateToGraph();
-
-        // Re-shade remaining:
-        shader();
 
         this.validate();
         this.repaint();
@@ -812,37 +803,6 @@ public final class FindTopComponent extends TopComponent implements GraphChangeL
         replacePanel.setEnabled(showUI);
         this.validate();
         this.repaint();
-    }
-
-    /**
-     * Shades the FindCriteriaPanels blue and white consecutively.
-     */
-    private void shader() {
-        int panelFindCount = 0;
-
-        for (int i = 0; i < panelFind.getComponentCount(); i++) {
-            final Component item = panelFind.getComponent(i);
-            if (item instanceof FindCriteriaPanel) {
-                final Color color;
-
-                // Shade every second panel:
-                if ((panelFindCount % 2) == 0) {
-                    color = PALE_BLUE;
-                } else {
-                    color = Color.WHITE;
-                }
-
-                item.setBackground(color);
-
-                item.validate();
-                item.repaint();
-
-                panelFindCount++;
-            }
-        }
-
-        panelFind.validate();
-        panelFind.repaint();
     }
 
     /**

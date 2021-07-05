@@ -24,6 +24,14 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>org.netbeans.libs.flatlaf</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>1.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>org.netbeans.modules.autoupdate.services</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -55,6 +63,14 @@
                     <compile-dependency/>
                     <run-dependency>
                         <specification-version>7.67.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.openide.modules</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>7.56</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>

@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.io;
 
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.util.Optional;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -31,6 +32,7 @@ class QueryListDialog {
 
     static String getQueryName(final Object owner, final String[] queryNames) {
         final Alert dialog = new Alert(Alert.AlertType.CONFIRMATION);
+        dialog.getDialogPane().getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
 
         final ObservableList<String> q = FXCollections.observableArrayList(queryNames);
         final ListView<String> nameList = new ListView<>(q);

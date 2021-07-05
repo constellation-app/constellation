@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -145,6 +146,7 @@ public class JsonIO {
             if (f.exists()) {
                 final String msg = String.format("'%s' already exists. Do you want to overwrite it?", fileName);
                 final Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.getDialogPane().getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
                 alert.setHeaderText("Preference file exists");
                 alert.setContentText(msg);
                 final Optional<ButtonType> option = alert.showAndWait();

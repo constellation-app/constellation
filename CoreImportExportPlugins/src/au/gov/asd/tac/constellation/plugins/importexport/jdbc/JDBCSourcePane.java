@@ -250,6 +250,7 @@ public class JDBCSourcePane extends SourcePane {
                         a.setText("Connections exist using this Driver.\nThe connections that use this "
                                 + "driver will be deleted, do you want to proceed?");
                         final Alert b = new Alert(AlertType.CONFIRMATION, "", ButtonType.NO, ButtonType.YES);
+                        b.getDialogPane().getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
                         b.getDialogPane().setContent(a);
                         final Optional<ButtonType> res = b.showAndWait();
                         if (!res.isPresent() || res.get() == ButtonType.NO) {

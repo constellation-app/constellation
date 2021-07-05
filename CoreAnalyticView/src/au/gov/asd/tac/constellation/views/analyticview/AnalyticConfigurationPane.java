@@ -64,7 +64,8 @@ import javafx.scene.web.WebView;
 import org.openide.util.Lookup;
 
 /**
- * The pane holding gui elements related to configuration of an analytic question.
+ * The pane holding gui elements related to configuration of an analytic
+ * question.
  *
  * @author cygnus_x-1
  */
@@ -295,8 +296,6 @@ public class AnalyticConfigurationPane extends VBox {
         final CountDownLatch cdl = new CountDownLatch(1);
         Platform.runLater(() -> {
             this.documentationView = new WebView();
-            documentationView.getEngine().setUserStyleSheetLocation(
-                    getClass().getResource("resources/analytic-view.css").toExternalForm());
             populateDocumentationPane(null);
             cdl.countDown();
         });
@@ -331,8 +330,9 @@ public class AnalyticConfigurationPane extends VBox {
     }
 
     /**
-     * Reset to the initial state for the analytic configuration pane. The question list will be expanded, the first
-     * question selected, and the analytics list populated based on the selected question.
+     * Reset to the initial state for the analytic configuration pane. The
+     * question list will be expanded, the first question selected, and the
+     * analytics list populated based on the selected question.
      */
     protected final void reset() {
         Platform.runLater(() -> {
@@ -402,7 +402,8 @@ public class AnalyticConfigurationPane extends VBox {
     /**
      * Updates the AnalyticViewState by running a plugin to save the graph state
      *
-     * @param pluginWasSelected true if the triggered update was from a plugin being selected
+     * @param pluginWasSelected true if the triggered update was from a plugin
+     * being selected
      */
     protected void updateState(boolean pluginWasSelected) {
         stateChanged = true;
@@ -410,8 +411,8 @@ public class AnalyticConfigurationPane extends VBox {
     }
 
     /**
-     * Saves the state of the graph by fetching all currently selected plugins and updating the state only when the
-     * state has been changed
+     * Saves the state of the graph by fetching all currently selected plugins
+     * and updating the state only when the state has been changed
      */
     protected void saveState() {
         if (stateChanged) {

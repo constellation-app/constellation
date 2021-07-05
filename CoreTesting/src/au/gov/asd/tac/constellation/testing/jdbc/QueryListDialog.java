@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.testing.jdbc;
 
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.util.Optional;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -31,6 +32,7 @@ class QueryListDialog {
 
     static String getQueryName(final Object owner, final String[] labels) {
         final Alert dialog = new Alert(Alert.AlertType.CONFIRMATION);
+        dialog.getDialogPane().getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
         dialog.setTitle("Saved JDBC parameters");
 
         final ObservableList<String> q = FXCollections.observableArrayList(labels);

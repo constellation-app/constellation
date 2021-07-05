@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -29,9 +30,11 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
 
 /**
- * Present the user with a list of plugins and allow it to select one, then expand that plugin.
+ * Present the user with a list of plugins and allow it to select one, then
+ * expand that plugin.
  * <p>
- * This saves users from having to hunt through the various sections for a plugin when they don't know where it is.
+ * This saves users from having to hunt through the various sections for a
+ * plugin when they don't know where it is.
  *
  * @author algol
  */
@@ -42,8 +45,8 @@ public class PluginFinder {
     /**
      * Build a cooperative TextArea and ListView.
      * <p>
-     * The TextArea acts as a filter on the ListView. If there is only one item in the filtered list, it will be used
-     * when the user fires the OK action.
+     * The TextArea acts as a filter on the ListView. If there is only one item
+     * in the filtered list, it will be used when the user fires the OK action.
      *
      * @param dap
      * @param queryPhasePane
@@ -64,6 +67,7 @@ public class PluginFinder {
         dialog.setTitle("Select a plugin");
         dialog.setHeaderText("Select a plugin");
         dialog.setResizable(true);
+        dialog.getDialogPane().getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
 
         final TextField tf = new TextField();
         tf.textProperty().addListener((ov, oldValue, newValue) -> {

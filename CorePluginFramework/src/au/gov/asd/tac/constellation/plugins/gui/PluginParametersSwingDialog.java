@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.plugins.gui;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.awt.Dimension;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
@@ -115,7 +116,6 @@ public class PluginParametersSwingDialog {
         Platform.runLater(() -> {
             final BorderPane root = new BorderPane();
             root.setPadding(new Insets(10));
-            root.setStyle("-fx-background-color: #DDDDDD;");
 
             // Attempt to give the window a sensible width and/or height.
             root.setMinWidth(500);
@@ -123,6 +123,7 @@ public class PluginParametersSwingDialog {
             final PluginParametersPane parametersPane = PluginParametersPane.buildPane(parameters, null, excludedParameters);
             root.setCenter(parametersPane);
             final Scene scene = new Scene(root);
+            scene.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
             xp.setScene(scene);
             xp.setPreferredSize(new Dimension((int) scene.getWidth(), (int) scene.getHeight()));
             latch.countDown();
@@ -141,7 +142,7 @@ public class PluginParametersSwingDialog {
         final Object r = DialogDisplayer.getDefault().notify(dd);
         result = r == DialogDescriptor.OK_OPTION ? OK : r == DialogDescriptor.CANCEL_OPTION ? CANCEL : null;
     }
-    
+
     public void showAndWaitNoFocus() {
         //Having 'No' button as initial value means focus is off of 'Ok' and 'Cancel' buttons
         final DialogDescriptor dd = new DialogDescriptor(xp, title, true, DialogDescriptor.OK_CANCEL_OPTION, DialogDescriptor.NO_OPTION, null);

@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2021 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.utilities.genericjsonio;
 
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.gui.DraggableCell;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.util.Optional;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -53,6 +54,7 @@ public class JsonIODialog {
      */
     public static String getSelection(final String[] names) {
         final Alert dialog = new Alert(Alert.AlertType.CONFIRMATION);
+        dialog.getDialogPane().getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
         final ObservableList<String> q = FXCollections.observableArrayList(names);
         final ListView<String> nameList = new ListView<>(q);
 
@@ -71,7 +73,7 @@ public class JsonIODialog {
         dialog.setHeaderText("Select a preference to load.");
 
         // The remove button has been wrapped inside the btOk, this has been done because any ButtonTypes added
-        // to an alert window will automatically close the window when pressed. 
+        // to an alert window will automatically close the window when pressed.
         // Wrapping it in another button can allow us to consume the closing event and keep the window open.
         final Button btOk = (Button) dialog.getDialogPane().lookupButton(removeButton);
         btOk.addEventFilter(ActionEvent.ACTION, event -> {
@@ -103,10 +105,10 @@ public class JsonIODialog {
 
         // opens up a slightly different dialog window to allow the user to name the
         // preference when it is being saved
-        // create a text input dialog 
+        // create a text input dialog
         TextInputDialog td = new TextInputDialog();
         td.setTitle("Preference name");
-        // setHeaderText 
+        // setHeaderText
         td.setHeaderText("Enter a name for the preference");
         Optional<String> result = td.showAndWait();
         if (result.isPresent()) {

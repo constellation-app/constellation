@@ -32,17 +32,7 @@ public class JavafxStyleManager {
 
     private static final Logger LOGGER = Logger.getLogger(JavafxStyleManager.class.getName());
 
-    public static final String CSS_BASE_STYLE_PREFIX = "-fx-base:";
-    public static final String CSS_FONT_WEIGHT_BOLD = "-fx-font-weight: bold";
-    public static final String CSS_BACKGROUND_COLOR_TRANSPARENT = "-fx-background-color: transparent;";
-
-    public static final String UNEDITABLE_COMBOBOX = "uneditableCombo";
-    public static final String HIDDEN = "hidden";
-    public static final String LIGHT_NAME_TEXT = "lightNameText";
-    public static final String LIGHT_MESSAGE_TEXT = "lightMessageText";
-
     private static String dynamicStyleSheet = null;
-
     private static String currentFontFamily = null;
     private static int currentFontSize = 0;
 

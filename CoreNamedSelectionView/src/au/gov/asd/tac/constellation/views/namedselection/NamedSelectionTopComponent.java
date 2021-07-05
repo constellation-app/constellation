@@ -21,7 +21,6 @@ import au.gov.asd.tac.constellation.views.namedselection.panes.NamedSelectionMod
 import au.gov.asd.tac.constellation.views.namedselection.panes.NamedSelectionProtectedPanel;
 import au.gov.asd.tac.constellation.views.namedselection.panes.NamedSelectionRenamerPanel;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.KeyAdapter;
@@ -49,7 +48,8 @@ import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
 
 /**
- * Top component which displays the named selection browser, and handles named selection user interactions.
+ * Top component which displays the named selection browser, and handles named
+ * selection user interactions.
  *
  * @author betelgeuse
  */
@@ -86,7 +86,8 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
     private final JLabel lblNoGraph = new JLabel(Bundle.No_Active_Graph());
     private final JPanel panelNoGraph = new JPanel();
     /**
-     * Uses an overloaded MouseAdapter class to intercept mouse interactions on the <code>lstNamedSelections</code>.
+     * Uses an overloaded MouseAdapter class to intercept mouse interactions on
+     * the <code>lstNamedSelections</code>.
      *
      * @see MouseAdapter
      */
@@ -123,7 +124,8 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
         }
     };
     /**
-     * Uses an overloaded KeyAdapter class to intercept mouse interactions on the <code>lstNamedSelections</code>.
+     * Uses an overloaded KeyAdapter class to intercept mouse interactions on
+     * the <code>lstNamedSelections</code>.
      *
      * @see KeyAdapter
      */
@@ -158,8 +160,6 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
         // Create label and container to show user when no active graph selected:
         panelNoGraph.setLayout(new BorderLayout());
         panelNoGraph.setName("panelNoGraph");
-        lblNoGraph.setBackground(Color.WHITE);
-        lblNoGraph.setForeground(Color.LIGHT_GRAY);
         lblNoGraph.setOpaque(true);
         lblNoGraph.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblNoGraph.setVerticalAlignment(javax.swing.SwingConstants.CENTER);
@@ -187,8 +187,9 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
     }
 
     /**
-     * Overridden <code>componentOpened</code> method ensures that the <code>NamedSelectionManager</code> is
-     * instantiated to ensure that elements of this component are updated.
+     * Overridden <code>componentOpened</code> method ensures that the
+     * <code>NamedSelectionManager</code> is instantiated to ensure that
+     * elements of this component are updated.
      */
     @Override
     protected void handleComponentOpened() {
@@ -197,11 +198,13 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
         final boolean isEnabled = NamedSelectionManager.getDefault().isManagingActiveGraph();
         toggleUI(isEnabled);
     }
-    
+
     /**
-     * Updates the NamedSelectionTopComponent with the latest <code>NamedSelection</code>s.
+     * Updates the NamedSelectionTopComponent with the latest
+     * <code>NamedSelection</code>s.
      *
-     * @param selections The <code>ArrayList&lt;NamedSelection&gt;</code> pertinent to the currently active graph.
+     * @param selections The <code>ArrayList&lt;NamedSelection&gt;</code>
+     * pertinent to the currently active graph.
      *
      * @see NamedSelection
      * @see NamedSelectionTopComponent
@@ -232,27 +235,32 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
     }
 
     /**
-     * Sets the selected state of the toggle button responsible for dimming others.
+     * Sets the selected state of the toggle button responsible for dimming
+     * others.
      *
-     * @param isDimOthers <code>true</code> sets the button selected state * to <code>true</code>.
+     * @param isDimOthers <code>true</code> sets the button selected state * to
+     * <code>true</code>.
      */
     public void updateDimOthers(final boolean isDimOthers) {
         btnDimMode.setSelected(isDimOthers);
     }
 
     /**
-     * Sets the selected state of the toggle button responsible for causing result of named selection to be returned in
-     * a selected/non selected manner.
+     * Sets the selected state of the toggle button responsible for causing
+     * result of named selection to be returned in a selected/non selected
+     * manner.
      *
-     * @param isSelectResults <code>true</code> sets the button selected state to <code>true</code>.
+     * @param isSelectResults <code>true</code> sets the button selected state
+     * to <code>true</code>.
      */
     public void updateSelectResults(final boolean isSelectResults) {
         btnSelectResults.setSelected(isSelectResults);
     }
 
     /**
-     * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The
-     * content of this method is always regenerated by the Form Editor.
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -471,7 +479,8 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
     /**
      * Event handler for <code>btnIntersection</code> clicks.
      * <p>
-     * This triggers an intersection operation for the currently selected named selections.
+     * This triggers an intersection operation for the currently selected named
+     * selections.
      *
      * @param evt The registered event.
      */
@@ -482,7 +491,8 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
     /**
      * Event handler for <code>btnUnion</code> clicks.
      * <p>
-     * This triggers a union operation for the currently selected named selections.
+     * This triggers a union operation for the currently selected named
+     * selections.
      *
      * @param evt The registered event.
      */
@@ -506,8 +516,9 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
      * <p>
      * This triggers the recall of the currently selected named selection.
      * <p>
-     * As this menu item appears in the context menu (right-click menu), the selection would typically be updated to
-     * what is under the mouse pointer at the time of the mouse click.
+     * As this menu item appears in the context menu (right-click menu), the
+     * selection would typically be updated to what is under the mouse pointer
+     * at the time of the mouse click.
      *
      * @param evt The registered event.
      */
@@ -520,8 +531,9 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
      * <p>
      * This causes currently selected named selection to be removed.
      * <p>
-     * As this menu item appears in the context menu (right-click menu), the selection would typically be updated to
-     * what is under the mouse pointer at the time of the mouse click.
+     * As this menu item appears in the context menu (right-click menu), the
+     * selection would typically be updated to what is under the mouse pointer
+     * at the time of the mouse click.
      *
      * @param evt The registered event.
      */
@@ -534,8 +546,9 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
      * <p>
      * This causes currently selected named selection to be renamed.
      * <p>
-     * As this menu item appears in the context menu (right-click menu), the selection would typically be updated to
-     * what is under the mouse pointer at the time of the mouse click.
+     * As this menu item appears in the context menu (right-click menu), the
+     * selection would typically be updated to what is under the mouse pointer
+     * at the time of the mouse click.
      *
      * @param evt The registered event.
      */
@@ -546,7 +559,8 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
     /**
      * Event handler for <code>btnDimMode</code> clicks.
      * <p>
-     * This causes the state of the 'dim others' button to be toggled (and saved to the graph).
+     * This causes the state of the 'dim others' button to be toggled (and saved
+     * to the graph).
      *
      * @param evt The registered event.
      */
@@ -557,8 +571,8 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
     /**
      * Event handler for <code>btnSelectResults</code> clicks.
      * <p>
-     * This causes the state of the 'return results of operations as "selected"' button to be toggled (and saved to the
-     * graph).
+     * This causes the state of the 'return results of operations as "selected"'
+     * button to be toggled (and saved to the graph).
      *
      * @param evt The registered event.
      */
@@ -569,11 +583,12 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
     /**
      * Event handler for <code>mnuDimOthers</code> selections.
      * <p>
-     * This causes currently selected named selection to be returned, and all non-member graph elements of the given
-     * named selection to be dimmed.
+     * This causes currently selected named selection to be returned, and all
+     * non-member graph elements of the given named selection to be dimmed.
      * <p>
-     * As this menu item appears in the context menu (right-click menu), the selection would typically be updated to
-     * what is under the mouse pointer at the time of the mouse click.
+     * As this menu item appears in the context menu (right-click menu), the
+     * selection would typically be updated to what is under the mouse pointer
+     * at the time of the mouse click.
      *
      * @param evt The registered event.
      */
@@ -584,10 +599,12 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
     /**
      * Event handler for <code>mnuClone</code> selections.
      * <p>
-     * This causes currently selected named selections to be cloned to a new named selection.
+     * This causes currently selected named selections to be cloned to a new
+     * named selection.
      * <p>
-     * As this menu item appears in the context menu (right-click menu), the selection would typically be updated to
-     * what is under the mouse pointer at the time of the mouse click.
+     * As this menu item appears in the context menu (right-click menu), the
+     * selection would typically be updated to what is under the mouse pointer
+     * at the time of the mouse click.
      *
      * @param evt The registered event.
      */
@@ -598,11 +615,12 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
     /**
      * Event handler for <code>mnuDescritpion</code> selections.
      * <p>
-     * This causes the a dialog box to be created that allows for the modification of the given named selection's
-     * description.
+     * This causes the a dialog box to be created that allows for the
+     * modification of the given named selection's description.
      * <p>
-     * As this menu item appears in the context menu (right-click menu), the selection would typically be updated to
-     * what is under the mouse pointer at the time of the mouse click.
+     * As this menu item appears in the context menu (right-click menu), the
+     * selection would typically be updated to what is under the mouse pointer
+     * at the time of the mouse click.
      *
      * @param evt The registered event.
      */
@@ -666,7 +684,8 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
     }
 
     /**
-     * Handles the enabling and disabling of the top component based on whether there is an active graph.
+     * Handles the enabling and disabling of the top component based on whether
+     * there is an active graph.
      *
      * @param isEnabled <code>true</code> if there is an active graph.
      */
@@ -691,7 +710,8 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
     }
 
     /**
-     * Helper method that adds a <code>NamedSelection</code> to the list of current Named Selections.
+     * Helper method that adds a <code>NamedSelection</code> to the list of
+     * current Named Selections.
      *
      * @param selection The selection to be appended to the list.
      */
@@ -703,8 +723,8 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
     }
 
     /**
-     * Helper method that removes the currently selected <code>NamedSelection</code>s from the list of current Named
-     * Selections.
+     * Helper method that removes the currently selected
+     * <code>NamedSelection</code>s from the list of current Named Selections.
      */
     private void removeElement() {
         final int[] indices = lstNamedSelections.getSelectedIndices();
@@ -753,8 +773,8 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
     }
 
     /**
-     * Helper method that modifies the description of the highlighted named selection through the
-     * <code>NamedSelectionManager</code>.
+     * Helper method that modifies the description of the highlighted named
+     * selection through the <code>NamedSelectionManager</code>.
      *
      * @see NamedSelectionManager
      */
@@ -783,8 +803,8 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
     }
 
     /**
-     * Helper method that requests the locked state to be switched for the current selection through the
-     * <code>NamedSelectionManager</code>.
+     * Helper method that requests the locked state to be switched for the
+     * current selection through the <code>NamedSelectionManager</code>.
      *
      * @see NamedSelectionManager
      */
@@ -800,8 +820,8 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
     }
 
     /**
-     * Helper method that requests the Manager dims all other graph elements other than those in the currently
-     * highlighted named selection.
+     * Helper method that requests the Manager dims all other graph elements
+     * other than those in the currently highlighted named selection.
      *
      * @see NamedSelectionManager
      */
@@ -814,7 +834,8 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
     }
 
     /**
-     * Helper method that requests the current Named Selection gets cloned in the <code>NamedSelectionManager</code>.
+     * Helper method that requests the current Named Selection gets cloned in
+     * the <code>NamedSelectionManager</code>.
      *
      * @see NamedSelectionManager
      */
@@ -827,8 +848,9 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
     }
 
     /**
-     * Helper method that determines the currently highlighted named selections, and requests an intersection operation
-     * be performed on them through the <code>NamedSelectionManager</code>.
+     * Helper method that determines the currently highlighted named selections,
+     * and requests an intersection operation be performed on them through the
+     * <code>NamedSelectionManager</code>.
      *
      * @see NamedSelectionManager
      */
@@ -847,8 +869,9 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
     }
 
     /**
-     * Helper method that determines the currently highlighted named selections, and requests a union operation be
-     * performed on them through the <code>NamedSelectionManager</code>.
+     * Helper method that determines the currently highlighted named selections,
+     * and requests a union operation be performed on them through the
+     * <code>NamedSelectionManager</code>.
      *
      * @see NamedSelectionManager
      */
@@ -875,7 +898,8 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
     }
 
     /**
-     * Helper method that requests a named selection be created through the <code>NamedSelectionManager</code>.
+     * Helper method that requests a named selection be created through the
+     * <code>NamedSelectionManager</code>.
      *
      * @see NamedSelectionManager
      */
@@ -884,7 +908,8 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
     }
 
     /**
-     * Helper method that requests a named selection be overwritten through the <code>NamedSelectionManager</code>.
+     * Helper method that requests a named selection be overwritten through the
+     * <code>NamedSelectionManager</code>.
      *
      * @see NamedSelectionManager
      */
@@ -895,7 +920,8 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
     }
 
     /**
-     * Helper method that requests a named selection be recalled through the <code>NamedSelectionManager</code>.
+     * Helper method that requests a named selection be recalled through the
+     * <code>NamedSelectionManager</code>.
      *
      * @see NamedSelectionManager
      */
@@ -909,7 +935,8 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
     }
 
     /**
-     * Helper method that updates the dim others state in the <code>NamedSelectionManager</code>
+     * Helper method that updates the dim others state in the
+     * <code>NamedSelectionManager</code>
      *
      * @see NamedSelectionManager
      */
@@ -918,7 +945,8 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
     }
 
     /**
-     * Helper method that updates the select results state in the <code>NamedSelectionManager</code>
+     * Helper method that updates the select results state in the
+     * <code>NamedSelectionManager</code>
      *
      * @see NamedSelectionManager
      */
@@ -927,10 +955,11 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
     }
 
     /**
-     * Helper method that notifies the user that they are trying to perform modifications on a locked / protected named
-     * selection.
+     * Helper method that notifies the user that they are trying to perform
+     * modifications on a locked / protected named selection.
      *
-     * @param name The name of the selection that is being intercepted from modification.
+     * @param name The name of the selection that is being intercepted from
+     * modification.
      */
     private void notifyProtected(final String name) {
         final NamedSelectionProtectedPanel panel = new NamedSelectionProtectedPanel(name);
@@ -945,9 +974,11 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
     }
 
     /**
-     * Extended <code>JList</code> used in the generation of the list of named selections.
+     * Extended <code>JList</code> used in the generation of the list of named
+     * selections.
      * <p>
-     * This class has been extended so that tooltips can be intercepted and populated with named selection descriptions.
+     * This class has been extended so that tooltips can be intercepted and
+     * populated with named selection descriptions.
      *
      * @see JList
      */
@@ -963,7 +994,8 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
     }
 
     /**
-     * Helper class used to force updates to <code>lstNamedSelections</code> to the EDT thread.
+     * Helper class used to force updates to <code>lstNamedSelections</code> to
+     * the EDT thread.
      *
      * @see SwingUtilities.invokeLater
      */
@@ -977,7 +1009,8 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
     }
 
     /**
-     * Custom <code>ListCellrenderer</code> which is able to handle <code>NamedSelection</code>s.
+     * Custom <code>ListCellrenderer</code> which is able to handle
+     * <code>NamedSelection</code>s.
      * <p>
      * This class is utilized by <code>lstNamedSelections</code>.
      *
@@ -1032,7 +1065,8 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
     }
 
     /**
-     * Custom list model that is able to handle and store <code>NamedSelection</code>s.
+     * Custom list model that is able to handle and store
+     * <code>NamedSelection</code>s.
      *
      * @see AbstractListModel
      * @see NamedSelection
@@ -1072,9 +1106,11 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
         }
 
         /**
-         * Remove the named selection that matches the 'prototype' named selection.
+         * Remove the named selection that matches the 'prototype' named
+         * selection.
          *
-         * @param selection The named selection that acts as a prototype for removal.
+         * @param selection The named selection that acts as a prototype for
+         * removal.
          */
         public void removeElement(final NamedSelection selection) {
             final int index = selections.indexOf(selection);

@@ -152,7 +152,6 @@ public class StringCriteriaPanel extends javax.swing.JPanel implements ActionLis
 
         org.openide.awt.Mnemonics.setLocalizedText(chkCaseSensitive, org.openide.util.NbBundle.getMessage(StringCriteriaPanel.class, "StringCriteriaPanel.chkCaseSensitive.text")); // NOI18N
         chkCaseSensitive.setName("chkCaseSensitive"); // NOI18N
-        chkCaseSensitive.setOpaque(false);
         chkCaseSensitive.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 chkCaseSensitiveActionPerformed(evt);
@@ -161,7 +160,7 @@ public class StringCriteriaPanel extends javax.swing.JPanel implements ActionLis
 
         pnlHolder.setOpaque(false);
 
-        pnlInput.setBackground(new java.awt.Color(255, 255, 255));
+        pnlInput.setBackground(null);
         pnlInput.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.SystemColor.controlDkShadow));
         pnlInput.setMinimumSize(new java.awt.Dimension(100, 20));
         pnlInput.setPreferredSize(new java.awt.Dimension(271, 20));
@@ -196,7 +195,7 @@ public class StringCriteriaPanel extends javax.swing.JPanel implements ActionLis
         pnlInputLayout.setVerticalGroup(
             pnlInputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(btnMore, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-            .addComponent(txtString, javax.swing.GroupLayout.DEFAULT_SIZE, 18, Short.MAX_VALUE)
+            .addComponent(txtString, javax.swing.GroupLayout.PREFERRED_SIZE, 18, Short.MAX_VALUE)
         );
 
         org.openide.awt.Mnemonics.setLocalizedText(lblString, org.openide.util.NbBundle.getMessage(StringCriteriaPanel.class, "StringCriteriaPanel.lblString.text")); // NOI18N
@@ -226,7 +225,6 @@ public class StringCriteriaPanel extends javax.swing.JPanel implements ActionLis
         org.openide.awt.Mnemonics.setLocalizedText(chkList, org.openide.util.NbBundle.getMessage(StringCriteriaPanel.class, "StringCriteriaPanel.chkList.text")); // NOI18N
         chkList.setToolTipText(org.openide.util.NbBundle.getMessage(StringCriteriaPanel.class, "StringCriteriaPanel.chkList.toolTipText")); // NOI18N
         chkList.setName("chkCaseSensitive"); // NOI18N
-        chkList.setOpaque(false);
         chkList.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 chkListActionPerformed(evt);

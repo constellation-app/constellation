@@ -30,6 +30,7 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.json.JsonUtilities;
 import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlEvent.QualityCategory;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetter;
@@ -541,6 +542,7 @@ public final class QualityControlViewPane extends BorderPane {
         rulesScrollPane.setContent(buttonGrid);
 
         final Alert alert = new Alert(Alert.AlertType.INFORMATION, "Select Rule Priorities", ButtonType.OK, ButtonType.CANCEL);
+        alert.getDialogPane().getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
         alert.setTitle("Select Rule Priorities");
         alert.setHeaderText("Customise the priority of rules");
         alert.getDialogPane().setContent(rulesScrollPane);
@@ -627,6 +629,7 @@ public final class QualityControlViewPane extends BorderPane {
         sp.setContent(vbox);
 
         final Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.getDialogPane().getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
         alert.setHeaderText(String.format(Bundle.MSG_QualtyControlRules(), identifier));
         alert.getDialogPane().setContent(sp);
         alert.setResizable(true);

@@ -106,7 +106,7 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
 
     @Override
     protected String createStyle() {
-        return "resources/layers-view.css";
+        return null;
     }
 
     @Override
@@ -140,7 +140,7 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
         super.handleComponentOpened();
         preparePane();
     }
-    
+
     @Override
     protected void componentShowing() {
         super.componentShowing();
