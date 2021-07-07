@@ -49,6 +49,7 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.Tooltip;
@@ -57,10 +58,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -175,31 +176,37 @@ public final class RunPane extends BorderPane implements KeyListener {
         filterField = new TextField();
         filterField.setFocusTraversable(false);
         filterField.setMinHeight(USE_PREF_SIZE);
-        filterField.setText("Filter");
-        filterField.setStyle("-fx-background-color: black; -fx-text-fill: white;");
+        filterField.setPromptText("Start typing to search, e.g.:first_name==\"NICK\"");
+        filterField.setStyle("-fx-background-color: black; -fx-text-fill: white;-fx-prompt-text-fill:grey;");
         filterField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (setFilter(newValue)) {
-                filterField.setStyle("-fx-background-color: black; -fx-text-fill: white;");
+                filterField.setStyle("-fx-background-color: black; -fx-text-fill: white;-fx-prompt-text-fill:grey;");
             } else {
-                filterField.setStyle("-fx-background-color: red; -fx-text-fill: black;");
+                filterField.setStyle("-fx-background-color: red; -fx-text-fill: black;-fx-prompt-text-fill:grey;");
             }
         });
 
         sampleDataView.setMinHeight(SAMPLEVIEW_MIN_HEIGHT);
         sampleDataView.setPrefHeight(SAMPLEVIEW_HEIGHT);
         sampleDataView.setMaxHeight(Double.MAX_VALUE);
+        HBox.setHgrow(filterField, Priority.ALWAYS);
 
-        final VBox tableBox = new VBox();
+        final HBox filterBox = new HBox(new Label("Filter: "), filterField);
+        filterBox.setAlignment(Pos.CENTER_LEFT);
+
+        final VBox tableBox = new VBox(filterBox, sampleDataView);
         VBox.setVgrow(sampleDataView, Priority.ALWAYS);
-        tableBox.getChildren().addAll(filterField, sampleDataView);
 
         configBox.getChildren().add(tableBox);
 
         // add a help place holder
         // TODO: make this text wrap
-        final Text startupHelpText = new Text();
+        final TextArea startupHelpText = new TextArea();
         startupHelpText.setText(displayText);
-        startupHelpText.setStyle("-fx-fill: grey;");
+        startupHelpText.setStyle("-fx-text-fill: grey;");
+        startupHelpText.setWrapText(true);
+        startupHelpText.setEditable(false);
+
         sampleDataView.setPlaceholder(startupHelpText);
 
         sourceVertexAttributeList = new AttributeList(importController, this, AttributeType.SOURCE_VERTEX);
@@ -291,7 +298,6 @@ public final class RunPane extends BorderPane implements KeyListener {
                     // Drop the AttributeNode onto the column.
                     mouseOverColumn.setAttributeNode(draggingAttributeNode);
                     draggingAttributeNode.setColumn(mouseOverColumn);
-
                     validate(mouseOverColumn);
                 }
 
@@ -471,6 +477,7 @@ public final class RunPane extends BorderPane implements KeyListener {
             }
             column.validate(currentRows);
         }
+
         return false;
     }
 
@@ -480,7 +487,8 @@ public final class RunPane extends BorderPane implements KeyListener {
             currentRows.forEach(tableRow -> tableRow.setIncluded(true));
             return true;
         }
-        if (rowFilter.setScript(filter)) {
+
+        if (rowFilter != null && rowFilter.setScript(filter)) {
             currentRows.forEach(tableRow -> tableRow.filter(rowFilter));
             return true;
         } else {
