@@ -420,7 +420,7 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
         switch (command) {
             case ADD_CUSTOM_BLAZE_ACTION:
                 final Pair<Boolean, ConstellationColor> colorResult = BlazeUtilities.colorDialog(selectionResult.getValue());
-                if (colorResult != null && colorResult.getKey()) {
+                if (colorResult.getKey()) {
                     final ConstellationColor color = colorResult.getValue();
                     plugin = PluginRegistry.get(VisualGraphPluginRegistry.ADD_CUSTOM_BLAZE);
                     parameters = DefaultPluginParameters.getDefaultParameters(plugin);
