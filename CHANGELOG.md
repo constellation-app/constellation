@@ -1,5 +1,11 @@
 # Constellation Changes
 
+## Changes in July 2021
+
+-   Exceptions thrown in the `DefaultPluginEnvironment` are now presented to 
+    the user using the classes `NotifyDescriptor.Exception`. 
+    This displays an exception dialog to the user.
+
 ## Changes in June 2021
 
 -  	Changed `ImportTableColumn.validate` and `importexport/RunPane.validate` 
