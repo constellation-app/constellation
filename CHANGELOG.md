@@ -3,7 +3,7 @@
 ## Changes in July 2021
 
 -   Exceptions thrown in the `DefaultPluginEnvironment` are now presented to 
-    the user using the classes `NotifyDescriptor.Exception`. 
+    the user using the class `NotifyDescriptor.Exception`. 
     This displays an exception dialog to the user.
 
 ## Changes in June 2021
