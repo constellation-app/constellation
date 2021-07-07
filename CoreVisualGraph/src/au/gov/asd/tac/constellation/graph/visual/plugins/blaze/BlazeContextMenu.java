@@ -117,7 +117,7 @@ public class BlazeContextMenu implements ContextMenuProvider {
                         ? BlazeUtilities.DEFAULT_BLAZE.getColor()
                         : clickedBlaze.getColor();
                 final Pair<Boolean, ConstellationColor> colorResult = BlazeUtilities.colorDialog(defaultColor);
-                if (colorResult.getKey()) {
+                if (colorResult != null && colorResult.getKey()) {
                     plugin = PluginRegistry.get(VisualGraphPluginRegistry.ADD_CUSTOM_BLAZE);
                     parameters = DefaultPluginParameters.getDefaultParameters(plugin);
                     parameters.setObjectValue(BlazeUtilities.COLOR_PARAMETER_ID, colorResult.getValue());

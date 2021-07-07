@@ -127,6 +127,8 @@ public class BlazeUtilities {
             if (dlgParams.getBooleanValue(PRESET_PARAMETER_ID)) {
                 savePreset(blazeColor.getJavaColor());
             }
+        } else {
+            return null;
         }
         return new Pair<>(isOk, blazeColor);
     }
