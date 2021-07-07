@@ -38,6 +38,8 @@ public class JDBCConnectionManager {
     private SQLiteDBManager sql;
     private File driversDir;
 
+    private static final String ACTION_JDBC_IMPORT = "JDBC Import";
+
     private JDBCConnectionManager() {
         //load drivers from db
         final File basePath = new File(String.format("%s%s.CONSTELLATION%sJDBCImport%s", System.getProperty("user.home"), File.separator, File.separator, File.separator));
@@ -114,7 +116,44 @@ public class JDBCConnectionManager {
                 connectionMap.put(connectionName, conn);
 
             } catch (final IOException | SQLException ex) {
-                NotifyDisplayer.displayLargeAlert("JDBC Import", "Failed to add the connection to the database.",
+                NotifyDisplayer.displayLargeAlert(ACTION_JDBC_IMPORT, "Failed to add the connection to the database.",
+                        ex.getMessage(), AlertType.ERROR);
+                return false;
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Add a connection with a username and password.
+     *
+     * @param currentconnectionName
+     * @param newconnectionName
+     * @param driver
+     * @param username
+     * @param password
+     * @param connectionString
+     * @return true if the connection was successful, false otherwise.
+     */
+    public boolean updateConnection(final String currentconnectionName, final String newconnectionName, final JDBCDriver driver, final String username, final String password, final String connectionString) {
+        final JDBCConnection newConnection = new JDBCConnection(newconnectionName, driver, connectionString);
+        if (testConnection(newconnectionName, driver, username, password, connectionString)) {
+            try (final Connection connection = sql.getConnection()) {
+                try (final PreparedStatement statement = connection.prepareStatement("update connection set "
+                        + " name = ?, driver_name = ?, connection_string = ? where name = ?")) {
+                    statement.setString(1, newconnectionName);
+                    statement.setString(2, driver.getName());
+                    statement.setString(3, connectionString);
+                    statement.setString(4, currentconnectionName);
+                    statement.executeUpdate();
+                }
+                connectionMap.remove(currentconnectionName);
+                connectionMap.put(newconnectionName, newConnection);
+
+            } catch (final IOException | SQLException ex) {
+                NotifyDisplayer.displayLargeAlert(ACTION_JDBC_IMPORT, "Failed to update the connection " + newconnectionName + " in the database.",
                         ex.getMessage(), AlertType.ERROR);
                 return false;
             }
@@ -136,7 +175,7 @@ public class JDBCConnectionManager {
                 }
             }
         } catch (final SQLException | IOException ex) {
-            NotifyDisplayer.displayLargeAlert("JDBC Import", "Failed to delete the connection from the database.",
+            NotifyDisplayer.displayLargeAlert(ACTION_JDBC_IMPORT, "Failed to delete the connection from the database.",
                     ex.getMessage(), AlertType.ERROR);
         }
     }
