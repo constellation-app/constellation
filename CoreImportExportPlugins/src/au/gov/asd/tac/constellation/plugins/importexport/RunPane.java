@@ -45,7 +45,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
@@ -82,7 +81,6 @@ public final class RunPane extends BorderPane implements KeyListener {
     private static final int ATTRIBUTEPANE_MIN_WIDTH = 100;
     private static final Insets ATTIRUBTEPANE_PADDING = new Insets(5);
     private static final int ATTRIBUTE_GAP = 5;
-    private static final int ATTRIBUTEFILTER_PREFHEIGHT = 50;
     private static final int TABLECOLUMN_PREFWIDTH = 50;
 
     protected final ImportController importController;
@@ -100,9 +98,7 @@ public final class RunPane extends BorderPane implements KeyListener {
     protected RowFilter rowFilter;
     private String filter = "";
 
-    private final SplitPane attributeFilterPane = new SplitPane();
     private final TextField attributeFilterTextField = new TextField();
-    private String attributeFilter = "";
     private final EasyGridPane attributePane;
     private static final double ATTRIBUTE_PADDING_HEIGHT = 19.75;
 
@@ -235,22 +231,6 @@ public final class RunPane extends BorderPane implements KeyListener {
                 USE_COMPUTED_SIZE, -1);
         attributePane.addRow(0, sourceVertexScrollPane, destinationVertexScrollPane, transactionScrollPane);
 
-        attributePane.setOnKeyPressed(event -> {
-            final KeyCode c = event.getCode();
-            if (c == KeyCode.DELETE || c == KeyCode.BACK_SPACE) {
-                attributeFilter = "";
-                attributeFilterPane.setVisible(false);
-            } else if (c.isLetterKey()) {
-                attributeFilter += c.getChar();
-                attributeFilterTextField.setText(attributeFilter);
-                attributeFilterPane.setVisible(true);
-            } else {
-                // Default case added per Sonar - java:S126
-            }
-            importController.setAttributeFilter(attributeFilter);
-            importController.setDestination(null);
-        });
-
         // A scroll pane to hold the attribute boxes
         final ScrollPane attributeScrollPane = new ScrollPane();
         attributeScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
@@ -267,14 +247,20 @@ public final class RunPane extends BorderPane implements KeyListener {
         VBox.setVgrow(titledAttributePane, Priority.ALWAYS);
         titledAttributePane.setMinSize(0, 0);
 
-        final Label filterLabel = new Label("Attribute Filter:");
-        attributeFilterPane.getItems().addAll(filterLabel, attributeFilterTextField);
-        VBox.setVgrow(attributeFilterPane, Priority.ALWAYS);
-        attributeFilterTextField.setEditable(false);
-        attributeFilterPane.setVisible(false);
-        attributeFilterPane.setPrefHeight(ATTRIBUTEFILTER_PREFHEIGHT);
+        attributeFilterTextField.setFocusTraversable(false);
+        attributeFilterTextField.setMinHeight(USE_PREF_SIZE);
+        attributeFilterTextField.setPromptText("Start typing to search attributes");
+        attributeFilterTextField.setStyle("-fx-background-color: black; -fx-text-fill: white;-fx-prompt-text-fill:grey;");
+        attributeFilterTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            importController.setAttributeFilter(attributeFilterTextField.getText());
+            importController.setDestination(null);
+        });
 
-        configBox.getChildren().addAll(attributeFilterPane, titledAttributePane);
+        HBox.setHgrow(attributeFilterTextField, Priority.ALWAYS);
+        final HBox attributeFilterBox = new HBox(new Label("Attribute Filter: "), attributeFilterTextField);
+        attributeFilterBox.setAlignment(Pos.CENTER_LEFT);
+
+        configBox.getChildren().addAll(attributeFilterBox, titledAttributePane);
         configBox.onKeyPressedProperty().bind(attributePane.onKeyPressedProperty());
 
         columnRectangle.setStyle("-fx-fill: rgba(200, 200, 200, 0.3);");
