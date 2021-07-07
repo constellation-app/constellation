@@ -54,7 +54,6 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -82,6 +81,8 @@ public final class RunPane extends BorderPane implements KeyListener {
     private static final Insets ATTIRUBTEPANE_PADDING = new Insets(5);
     private static final int ATTRIBUTE_GAP = 5;
     private static final int TABLECOLUMN_PREFWIDTH = 50;
+    private static final String FILTER_STYLE = "-fx-background-color: black; -fx-text-fill: white;-fx-prompt-text-fill:grey;";
+    private static final String FILTER_STYLE_ALERT = "-fx-background-color: red; -fx-text-fill: black;-fx-prompt-text-fill:grey;";
 
     protected final ImportController importController;
     private final TableView<TableRow> sampleDataView = new TableView<>();
@@ -173,12 +174,12 @@ public final class RunPane extends BorderPane implements KeyListener {
         filterField.setFocusTraversable(false);
         filterField.setMinHeight(USE_PREF_SIZE);
         filterField.setPromptText("Start typing to search, e.g.:first_name==\"NICK\"");
-        filterField.setStyle("-fx-background-color: black; -fx-text-fill: white;-fx-prompt-text-fill:grey;");
+        filterField.setStyle(FILTER_STYLE);
         filterField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (setFilter(newValue)) {
-                filterField.setStyle("-fx-background-color: black; -fx-text-fill: white;-fx-prompt-text-fill:grey;");
+                filterField.setStyle(FILTER_STYLE);
             } else {
-                filterField.setStyle("-fx-background-color: red; -fx-text-fill: black;-fx-prompt-text-fill:grey;");
+                filterField.setStyle(FILTER_STYLE_ALERT);
             }
         });
 
@@ -250,7 +251,7 @@ public final class RunPane extends BorderPane implements KeyListener {
         attributeFilterTextField.setFocusTraversable(false);
         attributeFilterTextField.setMinHeight(USE_PREF_SIZE);
         attributeFilterTextField.setPromptText("Start typing to search attributes");
-        attributeFilterTextField.setStyle("-fx-background-color: black; -fx-text-fill: white;-fx-prompt-text-fill:grey;");
+        attributeFilterTextField.setStyle(FILTER_STYLE);
         attributeFilterTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             importController.setAttributeFilter(attributeFilterTextField.getText());
             importController.setDestination(null);
