@@ -101,7 +101,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             try {
                 ConstellationLogger.getDefault().pluginStarted(plugin, parameters, graph);
             } catch (final Exception ex) {
-                LOGGER.log(Level.WARNING, EXCEPTION_MESSAGE, ex);
+                LOGGER.log(Level.WARNING, EXCEPTION_MESSAGE);
             }
 
             PluginManager manager = new PluginManager(DefaultPluginEnvironment.this, plugin, graph, interactive, synchronizer);
@@ -171,7 +171,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
                 try {
                     ConstellationLogger.getDefault().pluginStopped(plugin, parameters);
                 } catch (final Exception ex) {
-                    LOGGER.log(Level.WARNING, EXCEPTION_MESSAGE, ex);
+                    LOGGER.log(Level.WARNING, EXCEPTION_MESSAGE);
                 }
             }
 
@@ -208,7 +208,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
         try {
             ConstellationLogger.getDefault().pluginStarted(plugin, parameters, graph);
         } catch (final Exception ex) {
-            LOGGER.log(Level.WARNING, EXCEPTION_MESSAGE, ex);
+            LOGGER.log(Level.WARNING, EXCEPTION_MESSAGE);
         }
 
         try {
@@ -246,7 +246,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             try {
                 ConstellationLogger.getDefault().pluginStopped(plugin, parameters);
             } catch (final Exception ex) {
-                LOGGER.log(Level.WARNING, EXCEPTION_MESSAGE, ex);
+                LOGGER.log(Level.WARNING, EXCEPTION_MESSAGE);
             }
         }
 
@@ -282,7 +282,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
         try {
             ConstellationLogger.getDefault().pluginStarted(plugin, parameters, GraphNode.getGraph(graph != null ? graph.getId() : null));
         } catch (final Exception ex) {
-            LOGGER.log(Level.WARNING, EXCEPTION_MESSAGE, ex);
+            LOGGER.log(Level.WARNING, EXCEPTION_MESSAGE);
         }
 
         try {
@@ -310,7 +310,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             try {
                 ConstellationLogger.getDefault().pluginStopped(plugin, parameters);
             } catch (final Exception ex) {
-                LOGGER.log(Level.WARNING, EXCEPTION_MESSAGE, ex);
+                LOGGER.log(Level.WARNING, EXCEPTION_MESSAGE);
             }
 
         }
@@ -346,7 +346,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
         try {
             ConstellationLogger.getDefault().pluginStarted(plugin, parameters, GraphNode.getGraph(graph != null ? graph.getId() : null));
         } catch (final Exception ex) {
-            LOGGER.log(Level.WARNING, EXCEPTION_MESSAGE, ex);
+            LOGGER.log(Level.WARNING, EXCEPTION_MESSAGE);
         }
 
         try {
@@ -375,7 +375,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             try {
                 ConstellationLogger.getDefault().pluginStopped(plugin, parameters);
             } catch (Exception ex) {
-                LOGGER.log(Level.WARNING, EXCEPTION_MESSAGE, ex);
+                LOGGER.log(Level.WARNING, EXCEPTION_MESSAGE);
             }
         }
         return null;
@@ -385,7 +385,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
         try {
             ConstellationLogger.getDefault().pluginError(plugin, error);
         } catch (final Exception ex) {
-            LOGGER.log(Level.WARNING, EXCEPTION_MESSAGE, ex);
+            LOGGER.log(Level.WARNING, EXCEPTION_MESSAGE);
         }
     }
 }
