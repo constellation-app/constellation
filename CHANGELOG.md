@@ -2,9 +2,10 @@
 
 ## Changes in July 2021
 
--   Exceptions thrown in the `DefaultPluginEnvironment` are now presented to 
-    the user using the class `NotifyDescriptor.Exception`. 
-    This displays an exception dialog to the user.
+-   Updated the way exceptions are displayed to the user. Exceptions thrown in 
+    the `DefaultPluginEnvironment` are now presented to the user using the 
+    class `NotifyDescriptor.Exception`. This presents an exception dialog 
+    when Constellation is ran from the built 
 
 ## Changes in June 2021
 
