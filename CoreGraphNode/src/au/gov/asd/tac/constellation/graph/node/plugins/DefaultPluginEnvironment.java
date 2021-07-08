@@ -58,8 +58,6 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
 
     private static final String GRAPH_NULL_WARNING_MESSAGE = "{0} plugin was executed on a graph which was null";
 
-    private static final String EXCEPTION_MESSAGE = "An unexpected exception was caught.";
-
     @Override
     public Future<?> executePluginLater(final Graph graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive, final List<Future<?>> async, final PluginSynchronizer synchronizer) {
 
@@ -101,7 +99,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             try {
                 ConstellationLogger.getDefault().pluginStarted(plugin, parameters, graph);
             } catch (final Exception ex) {
-                LOGGER.log(Level.WARNING, EXCEPTION_MESSAGE);
+                LOGGER.log(Level.WARNING, ex.getLocalizedMessage());
             }
 
             PluginManager manager = new PluginManager(DefaultPluginEnvironment.this, plugin, graph, interactive, synchronizer);
@@ -171,7 +169,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
                 try {
                     ConstellationLogger.getDefault().pluginStopped(plugin, parameters);
                 } catch (final Exception ex) {
-                    LOGGER.log(Level.WARNING, EXCEPTION_MESSAGE);
+                    LOGGER.log(Level.WARNING, ex.getLocalizedMessage());
                 }
             }
 
@@ -208,7 +206,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
         try {
             ConstellationLogger.getDefault().pluginStarted(plugin, parameters, graph);
         } catch (final Exception ex) {
-            LOGGER.log(Level.WARNING, EXCEPTION_MESSAGE);
+            LOGGER.log(Level.WARNING, ex.getLocalizedMessage());
         }
 
         try {
@@ -246,7 +244,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             try {
                 ConstellationLogger.getDefault().pluginStopped(plugin, parameters);
             } catch (final Exception ex) {
-                LOGGER.log(Level.WARNING, EXCEPTION_MESSAGE);
+                LOGGER.log(Level.WARNING, ex.getLocalizedMessage());
             }
         }
 
@@ -282,7 +280,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
         try {
             ConstellationLogger.getDefault().pluginStarted(plugin, parameters, GraphNode.getGraph(graph != null ? graph.getId() : null));
         } catch (final Exception ex) {
-            LOGGER.log(Level.WARNING, EXCEPTION_MESSAGE);
+            LOGGER.log(Level.WARNING, ex.getLocalizedMessage());
         }
 
         try {
@@ -310,7 +308,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             try {
                 ConstellationLogger.getDefault().pluginStopped(plugin, parameters);
             } catch (final Exception ex) {
-                LOGGER.log(Level.WARNING, EXCEPTION_MESSAGE);
+                LOGGER.log(Level.WARNING, ex.getLocalizedMessage());
             }
 
         }
@@ -346,7 +344,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
         try {
             ConstellationLogger.getDefault().pluginStarted(plugin, parameters, GraphNode.getGraph(graph != null ? graph.getId() : null));
         } catch (final Exception ex) {
-            LOGGER.log(Level.WARNING, EXCEPTION_MESSAGE);
+            LOGGER.log(Level.WARNING, ex.getLocalizedMessage());
         }
 
         try {
@@ -375,7 +373,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             try {
                 ConstellationLogger.getDefault().pluginStopped(plugin, parameters);
             } catch (Exception ex) {
-                LOGGER.log(Level.WARNING, EXCEPTION_MESSAGE);
+                LOGGER.log(Level.WARNING, ex.getLocalizedMessage());
             }
         }
         return null;
@@ -385,7 +383,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
         try {
             ConstellationLogger.getDefault().pluginError(plugin, error);
         } catch (final Exception ex) {
-            LOGGER.log(Level.WARNING, EXCEPTION_MESSAGE);
+            LOGGER.log(Level.WARNING, ex.getLocalizedMessage());
         }
     }
 }
