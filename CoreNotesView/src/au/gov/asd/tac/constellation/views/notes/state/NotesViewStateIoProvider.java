@@ -61,7 +61,7 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
 
             for (int i = 0; i < notesArray.size(); i++) {
                 if (!notesArray.get(i).isNull()) {
-                    if (!notesArray.get(i).get(4).isNull()) {
+                    if (notesArray.get(i).get(4) != null) {
                         noteViewEntries.add(new NotesViewEntry(
                                 notesArray.get(i).get(0).asText(),
                                 notesArray.get(i).get(1).asText(),
@@ -69,6 +69,29 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                                 notesArray.get(i).get(3).asBoolean(),
                                 notesArray.get(i).get(4).asBoolean()
                         ));
+
+                        if (notesArray.get(i).get(3).asBoolean() == true && notesArray.get(i).get(4).asBoolean() == false) {
+                            // Add the selected nodes
+                            JsonNode nodesArrayNode = notesArray.get(i).get(5);
+                            if (nodesArrayNode != null) {
+                                List<Integer> selectedNodes = new ArrayList();
+                                for (int j = 0; j < nodesArrayNode.size(); j++) {
+                                    selectedNodes.add(nodesArrayNode.get(j).asInt());
+                                }
+                                noteViewEntries.get(i).setNodesSelected(selectedNodes);
+                            }
+
+                            // Add the selected transactions
+                            JsonNode transactionsArrayNode = notesArray.get(i).get(6);
+                            if (transactionsArrayNode != null) {
+                                List<Integer> selectedTransactions = new ArrayList();
+                                for (int j = 0; j < transactionsArrayNode.size(); j++) {
+                                    selectedTransactions.add(transactionsArrayNode.get(j).asInt());
+                                }
+                                noteViewEntries.get(i).setTransactionsSelected(selectedTransactions);
+                            }
+                        }
+
                     } else {
                         // If a note was created without a graphAttribute boolean variable, it will now be recreated with the variable
                         // This variable will be true by default, meaning it is applied to the entire graph
@@ -79,28 +102,6 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                                 notesArray.get(i).get(3).asBoolean(),
                                 true
                         ));
-                    }
-
-                    if (notesArray.get(i).get(3).asBoolean() == true && notesArray.get(i).get(4).asBoolean() == false) {
-                        // Add the selected nodes
-                        JsonNode nodesArrayNode = notesArray.get(i).get(5);
-                        if (nodesArrayNode != null) {
-                            List<Integer> selectedNodes = new ArrayList();
-                            for (int j = 0; j < nodesArrayNode.size(); j++) {
-                                selectedNodes.add(nodesArrayNode.get(j).asInt());
-                            }
-                            noteViewEntries.get(i).setNodesSelected(selectedNodes);
-                        }
-
-                        // Add the selected transactions
-                        JsonNode transactionsArrayNode = notesArray.get(i).get(6);
-                        if (transactionsArrayNode != null) {
-                            List<Integer> selectedTransactions = new ArrayList();
-                            for (int j = 0; j < transactionsArrayNode.size(); j++) {
-                                selectedTransactions.add(transactionsArrayNode.get(j).asInt());
-                            }
-                            noteViewEntries.get(i).setTransactionsSelected(selectedTransactions);
-                        }
                     }
                 }
             }

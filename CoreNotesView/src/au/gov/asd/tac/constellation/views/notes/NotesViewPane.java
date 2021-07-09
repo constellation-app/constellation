@@ -774,6 +774,9 @@ public class NotesViewPane extends BorderPane {
         updateSelectedElements();
 
         if (!nodesSelected.isEmpty()) {
+            if (noteToEdit.isGraphAttribute()) {
+                noteToEdit.setGraphAttribute(false);
+            }
             final List<Integer> originalNodes = noteToEdit.getNodesSelected();
             for (int node : nodesSelected) {
                 if (!originalNodes.contains(node)) {
@@ -784,6 +787,9 @@ public class NotesViewPane extends BorderPane {
         }
 
         if (!transactionsSelected.isEmpty()) {
+            if (noteToEdit.isGraphAttribute()) {
+                noteToEdit.setGraphAttribute(false);
+            }
             final List<Integer> originalTransactions = noteToEdit.getTransactionsSelected();
             for (int transaction : transactionsSelected) {
                 if (!originalTransactions.contains(transaction)) {
@@ -820,6 +826,10 @@ public class NotesViewPane extends BorderPane {
                 }
             }
             noteToEdit.setTransactionsSelected(originalTransactions);
+        }
+
+        if (noteToEdit.getNodesSelected().isEmpty() && noteToEdit.getTransactionsSelected().isEmpty()) {
+            noteToEdit.setGraphAttribute(true);
         }
 
     }

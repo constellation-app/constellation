@@ -31,7 +31,7 @@ public class NotesViewEntry implements PluginReportListener {
     private String noteTitle;
     private String noteContent;
     private final Boolean userCreated;
-    private final Boolean graphAttribute;
+    private Boolean graphAttribute;
     private List<Integer> nodesSelected;
     private List<Integer> transactionsSelected;
 
@@ -67,6 +67,9 @@ public class NotesViewEntry implements PluginReportListener {
         return graphAttribute;
     }
 
+    public void setGraphAttribute(final Boolean graphAttribute) {
+        this.graphAttribute = graphAttribute;
+    }
     public List<Integer> getNodesSelected() {
         return nodesSelected;
     }
