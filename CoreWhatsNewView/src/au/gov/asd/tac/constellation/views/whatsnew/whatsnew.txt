@@ -1,6 +1,10 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
+== 2021-07-07 Exception Handling
+<p>Fatal errors and exceptions will now be presented as a dialog box in the executable version.</p>
+<p>Previously only a small red icon on the bottom right of the application was shown when an exception occurred.</p>
+
 == 2021-06-04 Select All Plugin
 <p>The Select All Plugin in the Data Access View now selects everything on the graph including transactions.</p>
 <p>Previously it only selected the vertices on the graph.</p> 
