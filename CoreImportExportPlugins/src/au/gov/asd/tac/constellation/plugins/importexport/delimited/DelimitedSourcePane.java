@@ -75,7 +75,7 @@ public class DelimitedSourcePane extends SourcePane {
         super(importController);
 
         final Label fileLabel = new Label("Files:");
-        GridPane.setConstraints(fileLabel, 0, 0, 1, 1, HPos.LEFT, VPos.TOP);
+        GridPane.setConstraints(fileLabel, 0, 1, 1, 1, HPos.LEFT, VPos.TOP);
 
         fileListView.setMinHeight(0);
         fileListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -91,12 +91,12 @@ public class DelimitedSourcePane extends SourcePane {
         fileScrollPane.setContent(fileListView);
         fileScrollPane.setHbarPolicy(ScrollBarPolicy.AS_NEEDED);
         fileScrollPane.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
-        GridPane.setConstraints(fileScrollPane, 1, 0);
+        GridPane.setConstraints(fileScrollPane, 1, 1);
 
         final VBox fileButtonBox = new VBox();
         fileButtonBox.setFillWidth(true);
         fileButtonBox.setSpacing(FILEVBOX_SPACING);
-        GridPane.setConstraints(fileButtonBox, 2, 0);
+        GridPane.setConstraints(fileButtonBox, 2, 1);
 
         final Button fileAddBtn = new Button("", new ImageView(UserInterfaceIconProvider.ADD_ALTERNATE.buildImage(40,
                 ConstellationColor.EMERALD.getJavaColor())));
@@ -156,7 +156,7 @@ public class DelimitedSourcePane extends SourcePane {
 
         final ToolBar optionsBox = new ToolBar();
         optionsBox.setMinWidth(0);
-        GridPane.setConstraints(optionsBox, 0, 1, 3, 1);
+        GridPane.setConstraints(optionsBox, 0, 0, 3, 1);
         optionsBox.getItems().addAll(destinationLabel, graphComboBox, importFileParserLabel, importFileParserComboBox,
                 schemaLabel, schemaCheckBox, insertHeadersLabel, insertHeadersCheckBox);
         getChildren().add(optionsBox);
