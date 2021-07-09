@@ -168,7 +168,6 @@ public class DelimitedSourcePane extends SourcePane {
                 fileChooser.setSelectedExtensionFilter(extensionFilter);
             }
         }
-        fileChooser.getExtensionFilters().add(new ExtensionFilter("All Files", "*.*"));
 
         final List<File> newFiles = fileChooser.showOpenMultipleDialog(DelimitedSourcePane.this.getScene().getWindow());
 
