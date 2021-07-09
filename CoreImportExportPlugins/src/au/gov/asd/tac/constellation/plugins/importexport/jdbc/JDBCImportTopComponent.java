@@ -66,7 +66,9 @@ public final class JDBCImportTopComponent extends ImportTopComponent {
             + "9. Click the 'Import' button to add data to your graph.\n\n"
             + "HINTS:\n* See all supported attributes with 'Options > Show all schema attributes'.\n"
             + "* Filter in the Configuration Pane by adding searches of the form <column_name>==\"<search text>\"."
-            + "* E.g.:first_name==\"Nick\"";
+            + "* E.g.:first_name==\"Nick\"\n"
+            + "* To filter Attributes, start typing in the Attributes Filter.";
+
     final JDBCImportController controller = new JDBCImportController();
     final ConfigurationPane configurationPane = new ConfigurationPane(controller, HELP_TEXT);
     final JDBCSourcePane sourcePane = new JDBCSourcePane(controller);

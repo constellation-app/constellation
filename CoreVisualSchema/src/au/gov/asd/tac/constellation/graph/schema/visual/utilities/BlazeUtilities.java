@@ -106,7 +106,7 @@ public class BlazeUtilities {
      * @return a pair containing 1) if the user pressed OK and 2) the selected
      * blaze color.
      */
-    public static Pair<Boolean, ConstellationColor> colorDialog(ConstellationColor blazeColor) {
+    public static Pair<Boolean, ConstellationColor> colorDialog(final ConstellationColor blazeColor) {
         final PluginParameters dlgParams = new PluginParameters();
         final PluginParameter<ColorParameterType.ColorParameterValue> colorParam = ColorParameterType.build(COLOR_PARAMETER_ID);
         colorParam.setName("Color");
@@ -122,13 +122,14 @@ public class BlazeUtilities {
         final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(BLAZE_COLOR_PARAMETER_ID, dlgParams);
         dialog.showAndWait();
         final boolean isOk = PluginParametersDialog.OK.equals(dialog.getResult());
+        ConstellationColor colorResult = blazeColor;
         if (isOk) {
-            blazeColor = dlgParams.getColorValue(COLOR_PARAMETER_ID);
+            colorResult = dlgParams.getColorValue(COLOR_PARAMETER_ID);
             if (dlgParams.getBooleanValue(PRESET_PARAMETER_ID)) {
-                savePreset(blazeColor.getJavaColor());
+                savePreset(colorResult.getJavaColor());
             }
         }
-        return new Pair<>(isOk, blazeColor);
+        return new Pair<>(isOk, colorResult);
     }
 
     /**
