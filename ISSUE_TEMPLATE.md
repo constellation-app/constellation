@@ -8,7 +8,7 @@ maintainers' discretion.
 * Have you read Constellation's Code of Conduct? By filing an issue, you are
 expected to comply with it, including treating everyone with respect:
 https://github.com/constellation-app/constellation/blob/master/CODE_OF_CONDUCT.md
-
+* The "Steps to Reproduce" should outline the steps required to reproduce the issue. The rest should filled out accordingly.
 -->
 
 ### Prerequisites
