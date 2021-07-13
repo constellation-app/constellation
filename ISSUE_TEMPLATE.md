@@ -43,12 +43,21 @@ https://github.com/constellation-app/constellation/blob/master/CODE_OF_CONDUCT.m
 
 3.  \[and so on…\]
 
+### Behaviour
+
+Strive to include measurable metrics that can be aimed for (if applicable), see examples below.
+
 **Expected behaviour:** \[What you expect to happen\]
+
+-   e.g. should take 5 seconds or less to finish **OR** should be accomplished in 2 or less clicks,
+    **NOT** should finish faster **OR** should take less clicks to be accomplished.
 
 **Actual behaviour:** \[What actually happens\]
 
-**Reproduces how often:** \[What percentage of the time does it
-reproduce?\]
+-   e.g. takes 10 or more seconds to finish **OR** takes 2 or more clicks to accomplish the task,
+    **NOT** takes too long to finish **OR** takes too many clicks to accomplish the task.
+
+**Reproduces how often:** \[What percentage of the time does it reproduce?\]
 
 ### Additional Information
 
