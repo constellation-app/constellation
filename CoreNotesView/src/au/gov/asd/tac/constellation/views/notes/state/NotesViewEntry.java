@@ -35,15 +35,15 @@ public class NotesViewEntry implements PluginReportListener {
     private List<Integer> nodesSelected;
     private List<Integer> transactionsSelected;
 
-    public NotesViewEntry(final String dateTime, final String noteTitle, final String noteContent, final Boolean userCreated, final Boolean graphAttribute) {
+    public NotesViewEntry(final String dateTime, final String noteTitle, final String noteContent, final boolean userCreated, final boolean graphAttribute) {
         this.dateTime = dateTime;
         this.noteTitle = noteTitle;
         this.noteContent = noteContent;
         this.userCreated = userCreated;
         this.graphAttribute = graphAttribute;
         if (userCreated) {
-            this.nodesSelected = new ArrayList();
-            this.transactionsSelected = new ArrayList();
+            this.nodesSelected = new ArrayList<>();
+            this.transactionsSelected = new ArrayList<>();
         }
     }
 

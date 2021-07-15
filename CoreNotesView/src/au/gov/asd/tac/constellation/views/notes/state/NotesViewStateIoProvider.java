@@ -72,9 +72,9 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
 
                         if (notesArray.get(i).get(3).asBoolean() == true && notesArray.get(i).get(4).asBoolean() == false) {
                             // Add the selected nodes
-                            JsonNode nodesArrayNode = notesArray.get(i).get(5);
+                            final JsonNode nodesArrayNode = notesArray.get(i).get(5);
                             if (nodesArrayNode != null) {
-                                List<Integer> selectedNodes = new ArrayList();
+                                final List<Integer> selectedNodes = new ArrayList<>();
                                 for (int j = 0; j < nodesArrayNode.size(); j++) {
                                     selectedNodes.add(nodesArrayNode.get(j).asInt());
                                 }
@@ -82,9 +82,9 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                             }
 
                             // Add the selected transactions
-                            JsonNode transactionsArrayNode = notesArray.get(i).get(6);
+                            final JsonNode transactionsArrayNode = notesArray.get(i).get(6);
                             if (transactionsArrayNode != null) {
-                                List<Integer> selectedTransactions = new ArrayList();
+                                List<Integer> selectedTransactions = new ArrayList<>();
                                 for (int j = 0; j < transactionsArrayNode.size(); j++) {
                                     selectedTransactions.add(transactionsArrayNode.get(j).asInt());
                                 }
@@ -152,9 +152,9 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                             if (note.getNodesSelected() != null) {
                                 // Add nodes that are selected to the note
                                 final int nodesLength = note.getNodesSelected().size();
-                                int[] nodesArray = new int[nodesLength];
+                                final int[] nodesArray = new int[nodesLength];
                                 final List<Integer> nodesSelected = note.getNodesSelected();
-                                Iterator<Integer> nodesIterator = nodesSelected.iterator();
+                                final Iterator<Integer> nodesIterator = nodesSelected.iterator();
                                 for (int i = 0; i < nodesLength; i++) {
                                     nodesArray[i] = nodesIterator.next();
                                 }
@@ -164,9 +164,9 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                             if (note.getTransactionsSelected() != null) {
                                 // Add transactions that are selected to the note
                                 final int transactionsLength = note.getTransactionsSelected().size();
-                                int[] transactionsArray = new int[transactionsLength];
+                                final int[] transactionsArray = new int[transactionsLength];
                                 final List<Integer> transactionsSelected = note.getTransactionsSelected();
-                                Iterator<Integer> transactionsIterator = transactionsSelected.iterator();
+                                final Iterator<Integer> transactionsIterator = transactionsSelected.iterator();
                                 for (int i = 0; i < transactionsLength; i++) {
                                     transactionsArray[i] = transactionsIterator.next();
                                 }

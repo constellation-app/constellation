@@ -119,9 +119,9 @@ public class NotesViewPane extends BorderPane {
 
     private final String fontStyle = String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize());
 
-    private final List<Integer> nodesSelected = new ArrayList();
-    private final List<Integer> transactionsSelected = new ArrayList();
-    private Boolean applySelected;
+    private final List<Integer> nodesSelected = new ArrayList<>();
+    private final List<Integer> transactionsSelected = new ArrayList<>();
+    private boolean applySelected;
 
     private String editSelection = "";
 
@@ -184,11 +184,7 @@ public class NotesViewPane extends BorderPane {
         applyToSelection.setSelected(true);
         applySelected = true;
         applyToSelection.selectedProperty().addListener((ov, oldVal, newVal) -> {
-            if (applyToSelection.isSelected() == true) {
-                applySelected = true;
-            } else {
-                applySelected = false;
-            }
+            applySelected = applyToSelection.isSelected();
         });
 
         // TextArea to enter new note content.
@@ -217,11 +213,18 @@ public class NotesViewPane extends BorderPane {
                     JOptionPane.showMessageDialog(null, "Type in missing fields.", "Invalid Text", JOptionPane.WARNING_MESSAGE);
                 } else {
                     synchronized (LOCK) {
+                        notesViewEntries.add(new NotesViewEntry(
+                                Long.toString(ZonedDateTime.now().toInstant().toEpochMilli()),
+                                titleField.getText(),
+                                contentField.getText(),
+                                true,
+                                !applySelected
+                        ));
                         if (applySelected) {
                             // Get selected nodes from the graph
-                            List<Integer> selectedNodes = new ArrayList();
+                            final List<Integer> selectedNodes = new ArrayList<>();
                             // Get selected transactions from the graph
-                            List<Integer> selectedTransactions = new ArrayList();
+                            final List<Integer> selectedTransactions = new ArrayList<>();
 
                             final ReadableGraph rg = activeGraph.getReadableGraph();
                             try {
@@ -261,14 +264,6 @@ public class NotesViewPane extends BorderPane {
                             } finally {
                                 rg.release();
                             }
-                            notesViewEntries.add(new NotesViewEntry(
-                                    Long.toString(ZonedDateTime.now().toInstant().toEpochMilli()),
-                                    titleField.getText(),
-                                    contentField.getText(),
-                                    true,
-                                    !applySelected
-                            ));
-
                         }
                     }
                     titleField.clear();
@@ -398,17 +393,24 @@ public class NotesViewPane extends BorderPane {
      */
     protected void setFilters(final List<String> selectedFilters) {
         Platform.runLater(() -> {
-            this.selectedFilters.clear();
+            if (this.selectedFilters.contains(SELECTED_FILTER) && (selectedFilters.contains(USER_NOTES_FILTER) || selectedFilters.contains(AUTO_NOTES_FILTER))) {
+                this.selectedFilters.clear();
 
-            selectedFilters.forEach(filter -> {
-                if (selectedFilters.contains(SELECTED_FILTER)) {
-                    this.selectedFilters.clear();
-                    this.selectedFilters.add(SELECTED_FILTER);
-                } else {
-                    this.selectedFilters.add(filter);
-                }
-            });
-
+                selectedFilters.forEach(filter -> {
+                    if (!filter.equals(SELECTED_FILTER)) {
+                        this.selectedFilters.add(filter);
+                    }
+                });
+            } else {
+                this.selectedFilters.clear();
+                selectedFilters.forEach(filter -> {
+                    if (selectedFilters.contains(SELECTED_FILTER)) {
+                        this.selectedFilters.add(SELECTED_FILTER);
+                    } else {
+                        this.selectedFilters.add(filter);
+                    }
+                });
+            }
             updateFilters();
         });
     }
@@ -435,13 +437,13 @@ public class NotesViewPane extends BorderPane {
                             notesToRender.add(entry);
                         }
                         // Show notes related to the selected nodes
-                        for (int node : nodesSelected) {
+                        for (final int node : nodesSelected) {
                             if (entry.getNodesSelected() != null && entry.getNodesSelected().contains(node) && !notesToRender.contains(entry)) {
                                 notesToRender.add(entry);
                             }
                         }
                         // Shows notes related to the selected transactions 
-                        for (int transaction : transactionsSelected) {
+                        for (final int transaction : transactionsSelected) {
                             if (entry.getTransactionsSelected() != null && entry.getTransactionsSelected().contains(transaction)
                                     && !notesToRender.contains(entry)) {
                                 notesToRender.add(entry);
@@ -543,8 +545,28 @@ public class NotesViewPane extends BorderPane {
         final Label contentLabel = new Label(newNote.getNoteContent());
         contentLabel.setWrapText(true);
 
-        final VBox noteInformation = new VBox(DEFAULT_SPACING, dateTimeLabel, titleLabel, contentLabel);
-        HBox.setHgrow(noteInformation, Priority.ALWAYS);
+        final VBox noteInformation;
+
+        // If the note is user created add the selection details
+        if (newNote.isUserCreated()) {
+            String selectionLabelText;
+            if (newNote.isGraphAttribute()) {
+                selectionLabelText = "Note selection is applied to the graph.";
+            } else {
+                selectionLabelText = "Note selection is applied to " + newNote.getNodesSelected().size() + " nodes and "
+                        + newNote.getTransactionsSelected().size() + " transactions.";
+            }
+            final Label selectionLabel = new Label(selectionLabelText);
+            selectionLabel.setWrapText(true);
+            selectionLabel.setStyle("-fx-font-weight: bold; -fx-font-style: italic; " + fontStyle);
+
+            noteInformation = new VBox(DEFAULT_SPACING, dateTimeLabel, titleLabel, contentLabel, selectionLabel);
+            HBox.setHgrow(noteInformation, Priority.ALWAYS);
+
+        } else {
+            noteInformation = new VBox(DEFAULT_SPACING, dateTimeLabel, titleLabel, contentLabel);
+            HBox.setHgrow(noteInformation, Priority.ALWAYS);
+        }
 
         final Button editButton = new Button("Edit");
         editButton.setMinWidth(55);
@@ -573,18 +595,39 @@ public class NotesViewPane extends BorderPane {
                 final BitSet elementIdsTx = new BitSet();
                 final BitSet elementIdsVx = new BitSet();
 
-                // Add nodes that are selected to the note
-                final int nodesLength = newNote.getNodesSelected().size();
-                final List<Integer> nodesSelected = newNote.getNodesSelected();
-                for (int i = 0; i < nodesLength; i++) {
-                    elementIdsVx.set(nodesSelected.get(i));
-                }
+                if (newNote.isGraphAttribute()) {
+                    // Select all elements with right click menu if the user note is applied to the whole graph
+                    final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+                    final ReadableGraph rg = activeGraph.getReadableGraph();
+                    try {
+                        final int vxCount = rg.getVertexCount();
+                        for (int position = 0; position < vxCount; position++) {
+                            final int vxId = rg.getVertex(position);
+                            elementIdsVx.set(vxId);
+                        }
+                        final int txCount = rg.getTransactionCount();
+                        for (int position = 0; position < txCount; position++) {
+                            final int txId = rg.getTransaction(position);
+                            elementIdsTx.set(txId);
+                        }
+                    } finally {
+                        rg.release();
+                    }
+                } else {
+                    // Select the specific nodes and/or transactions applied to the note
+                    // Add nodes that are selected to the note
+                    final int nodesLength = newNote.getNodesSelected().size();
+                    final List<Integer> nodesSelected = newNote.getNodesSelected();
+                    for (int i = 0; i < nodesLength; i++) {
+                        elementIdsVx.set(nodesSelected.get(i));
+                    }
 
-                // Add transactions that are selected to the note
-                final int transactionsLength = newNote.getTransactionsSelected().size();
-                final List<Integer> transactionsSelected = newNote.getTransactionsSelected();
-                for (int i = 0; i < transactionsLength; i++) {
-                    elementIdsTx.set(transactionsSelected.get(i));
+                    // Add transactions that are selected to the note
+                    final int transactionsLength = newNote.getTransactionsSelected().size();
+                    final List<Integer> transactionsSelected = newNote.getTransactionsSelected();
+                    for (int i = 0; i < transactionsLength; i++) {
+                        elementIdsTx.set(transactionsSelected.get(i));
+                    }
                 }
 
                 PluginExecution.withPlugin(VisualGraphPluginRegistry.CHANGE_SELECTION)
@@ -778,7 +821,7 @@ public class NotesViewPane extends BorderPane {
                 noteToEdit.setGraphAttribute(false);
             }
             final List<Integer> originalNodes = noteToEdit.getNodesSelected();
-            for (int node : nodesSelected) {
+            for (final int node : nodesSelected) {
                 if (!originalNodes.contains(node)) {
                     originalNodes.add(node);
                 }
@@ -791,7 +834,7 @@ public class NotesViewPane extends BorderPane {
                 noteToEdit.setGraphAttribute(false);
             }
             final List<Integer> originalTransactions = noteToEdit.getTransactionsSelected();
-            for (int transaction : transactionsSelected) {
+            for (final int transaction : transactionsSelected) {
                 if (!originalTransactions.contains(transaction)) {
                     originalTransactions.add(transaction);
                 }
@@ -808,7 +851,7 @@ public class NotesViewPane extends BorderPane {
 
         if (!nodesSelected.isEmpty()) {
             final List<Integer> originalNodes = noteToEdit.getNodesSelected();
-            for (int node : nodesSelected) {
+            for (final int node : nodesSelected) {
                 if (originalNodes.contains(node)) {
                     final int index = originalNodes.indexOf(node);
                     originalNodes.remove(index);
@@ -819,7 +862,7 @@ public class NotesViewPane extends BorderPane {
 
         if (!transactionsSelected.isEmpty()) {
             final List<Integer> originalTransactions = noteToEdit.getTransactionsSelected();
-            for (int transaction : transactionsSelected) {
+            for (final int transaction : transactionsSelected) {
                 if (originalTransactions.contains(transaction)) {
                     final int index = originalTransactions.indexOf(transaction);
                     originalTransactions.remove(index);
@@ -831,6 +874,5 @@ public class NotesViewPane extends BorderPane {
         if (noteToEdit.getNodesSelected().isEmpty() && noteToEdit.getTransactionsSelected().isEmpty()) {
             noteToEdit.setGraphAttribute(true);
         }
-
     }
 }
