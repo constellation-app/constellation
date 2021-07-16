@@ -51,18 +51,30 @@ public class DelimitedImportController extends ImportController {
     private final List<File> files;
     private File sampleFile;
     private ImportFileParser importFileParser;
+    private boolean filesIncludeHeaders;
 
     public DelimitedImportController() {
         super();
         files = new ArrayList<>();
         importFileParser = ImportFileParser.DEFAULT_PARSER;
         schemaInitialised = true;
-        insertHeaders = false;
+        filesIncludeHeaders = true;
     }
 
     public void setImportPane(final DelimitedImportPane importPane) {
         this.importPane = importPane;
         super.setImportPane(importPane);
+    }
+
+    public void setfilesIncludeHeaders(final boolean filesIncludeHeaders) {
+        if (this.filesIncludeHeaders != filesIncludeHeaders) {
+            this.filesIncludeHeaders = filesIncludeHeaders;
+            updateSampleData();
+        }
+    }
+
+    public boolean isFilesIncludeHeadersEnabled() {
+        return filesIncludeHeaders;
     }
 
     public boolean hasFiles() {
@@ -151,7 +163,7 @@ public class DelimitedImportController extends ImportController {
                         PREVIEW_ROW_LIMIT);
                 final String[] columns = currentData.isEmpty() ? new String[0] : (String[]) currentData.get(0);
                 currentColumns = new String[columns.length + 1];
-                if (isInsertHeadersEnabled()) {
+                if (!isFilesIncludeHeadersEnabled()) {
                     for (int i = 1; i < columns.length + 1; i++) {
                         currentColumns[i] = "Col" + i;
                     }
@@ -179,7 +191,7 @@ public class DelimitedImportController extends ImportController {
         }
 
         if (configurationPane != null) {
-            if (!currentData.isEmpty() && !isInsertHeadersEnabled()) {
+            if (!currentData.isEmpty() && isFilesIncludeHeadersEnabled()) {
                 currentData.remove(0); //Remove the first row with column headers
             }
             configurationPane.setSampleData(currentColumns, currentData);

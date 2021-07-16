@@ -67,7 +67,7 @@ public class DelimitedSourcePane extends SourcePane {
 
     private final ComboBox<ImportFileParser> importFileParserComboBox;
     private final CheckBox schemaCheckBox;
-    private final CheckBox insertHeadersCheckBox;
+    private final CheckBox filesIncludeHeadersCheckBox;
     private final ListView<File> fileListView = new ListView<>();
     protected File defaultDirectory = new File(System.getProperty("user.home"));
 
@@ -132,7 +132,7 @@ public class DelimitedSourcePane extends SourcePane {
         updateDestinationGraphCombo();
 
         // IMPORT FILE PARSER
-        final Label importFileParserLabel = new Label("Import File Parser:");
+        final Label importFileParserLabel = new Label("File Parser:");
 
         final ObservableList<ImportFileParser> parsers = FXCollections.observableArrayList();
         parsers.addAll(ImportFileParser.getParsers().values());
@@ -148,17 +148,17 @@ public class DelimitedSourcePane extends SourcePane {
         schemaCheckBox.setSelected(importController.isSchemaInitialised());
         schemaCheckBox.setOnAction((final ActionEvent event) -> importController.setSchemaInitialised(schemaCheckBox.isSelected()));
 
-        //INSERT COLUMN HEADERS
-        final Label insertHeadersLabel = new Label("Insert Column Headers:");
-        insertHeadersCheckBox = new CheckBox();
-        insertHeadersCheckBox.setSelected(importController.isInsertHeadersEnabled());
-        insertHeadersCheckBox.setOnAction(t -> importController.setinsertHeaders(insertHeadersCheckBox.isSelected()));
+        //INSERT COLUMN HEADERS FOR FILES WITH MISSING HEADERS
+        final Label insertHeadersLabel = new Label("Files Include Headers:");
+        filesIncludeHeadersCheckBox = new CheckBox();
+        filesIncludeHeadersCheckBox.setSelected(importController.isFilesIncludeHeadersEnabled());
+        filesIncludeHeadersCheckBox.setOnAction(t -> importController.setfilesIncludeHeaders(filesIncludeHeadersCheckBox.isSelected()));
 
         final ToolBar optionsBox = new ToolBar();
         optionsBox.setMinWidth(0);
         GridPane.setConstraints(optionsBox, 0, 0, 3, 1);
         optionsBox.getItems().addAll(destinationLabel, graphComboBox, importFileParserLabel, importFileParserComboBox,
-                schemaLabel, schemaCheckBox, insertHeadersLabel, insertHeadersCheckBox);
+                schemaLabel, schemaCheckBox, insertHeadersLabel, filesIncludeHeadersCheckBox);
         getChildren().add(optionsBox);
     }
 

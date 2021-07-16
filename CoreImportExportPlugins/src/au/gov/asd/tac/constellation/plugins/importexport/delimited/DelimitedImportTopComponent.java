@@ -47,8 +47,8 @@ import org.openide.windows.TopComponent;
         displayName = "#CTL_ImportDelimitedFileAction",
         preferredID = "DelimitedImportTopComponent")
 @Messages({
-    "CTL_ImportDelimitedFileAction=From Delimited File...",
-    "HINT_ImportDelimitedFile=Import from Delimited File"})
+    "CTL_ImportDelimitedFileAction=From File...",
+    "HINT_ImportDelimitedFile=Import from File"})
 public final class DelimitedImportTopComponent extends ImportTopComponent {
 
     private final DelimitedImportPane delimitedImportPane;
