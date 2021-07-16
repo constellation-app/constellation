@@ -102,7 +102,7 @@ public class NotesViewPane extends BorderPane {
     private Stage editStage;
 
     private final int DEFAULT_SPACING = 5;
-    private final int OPTIONS_SPACING = 200;
+    private final int OPTIONS_SPACING = 150;
     private final int EDIT_MIN_WIDTH = 600;
     private final String PROMPT_COLOUR = "#909090";
     private final String USER_COLOUR = "#942483";
@@ -180,7 +180,7 @@ public class NotesViewPane extends BorderPane {
         titleField.setStyle(fontStyle + "-fx-prompt-text-fill: " + PROMPT_COLOUR + ";");
 
         // Checkbox to apply note to selection
-        final CheckBox applyToSelection = new CheckBox("Apply note to graph selection");
+        final CheckBox applyToSelection = new CheckBox("Link note to graph selection");
         applyToSelection.setSelected(true);
         applySelected = true;
         applyToSelection.selectedProperty().addListener((ov, oldVal, newVal) -> {
@@ -239,8 +239,6 @@ public class NotesViewPane extends BorderPane {
                                         }
                                     }
                                 }
-                                // Add selected nodes to the note entry
-                                notesViewEntries.get(notesViewEntries.size() - 1).setNodesSelected(selectedNodes);
 
                                 // Add selected transactions
                                 final int txSelectedAttr = rg.getAttribute(GraphElementType.TRANSACTION, VisualConcept.TransactionAttribute.SELECTED.getName());
@@ -253,12 +251,15 @@ public class NotesViewPane extends BorderPane {
                                         }
                                     }
                                 }
-                                // Add selected transactions to the node entry
-                                notesViewEntries.get(notesViewEntries.size() - 1).setTransactionsSelected(selectedTransactions);
 
                                 // If there are no selected nodes or transactions on the graph, set the graph attribute to true
                                 if (selectedNodes.isEmpty() && selectedTransactions.isEmpty()) {
-                                    applySelected = false;
+                                    notesViewEntries.get(notesViewEntries.size() - 1).setGraphAttribute(true);
+                                } else {
+                                    // Add selected nodes to the note entry
+                                    notesViewEntries.get(notesViewEntries.size() - 1).setNodesSelected(selectedNodes);
+                                    // Add selected transactions to the node entry
+                                    notesViewEntries.get(notesViewEntries.size() - 1).setTransactionsSelected(selectedTransactions);
                                 }
 
                             } finally {
@@ -551,9 +552,9 @@ public class NotesViewPane extends BorderPane {
         if (newNote.isUserCreated()) {
             String selectionLabelText;
             if (newNote.isGraphAttribute()) {
-                selectionLabelText = "Note selection is applied to the graph.";
+                selectionLabelText = "Note selection is linked to the graph.";
             } else {
-                selectionLabelText = "Note selection is applied to " + newNote.getNodesSelected().size() + " nodes and "
+                selectionLabelText = "Note selection is linked to " + newNote.getNodesSelected().size() + " nodes and "
                         + newNote.getTransactionsSelected().size() + " transactions.";
             }
             final Label selectionLabel = new Label(selectionLabelText);
@@ -639,7 +640,7 @@ public class NotesViewPane extends BorderPane {
                 PluginExecution.withPlugin(VisualGraphPluginRegistry.CHANGE_SELECTION)
                         .withParameter(ChangeSelectionPlugin.ELEMENT_BIT_SET_PARAMETER_ID, elementIdsVx)
                         .withParameter(ChangeSelectionPlugin.ELEMENT_TYPE_PARAMETER_ID, new ElementTypeParameterValue(GraphElementType.VERTEX))
-                        .withParameter(ChangeSelectionPlugin.SELECTION_MODE_PARAMETER_ID, SelectionMode.ADD)
+                        .withParameter(ChangeSelectionPlugin.SELECTION_MODE_PARAMETER_ID, SelectionMode.REPLACE)
                         .executeLater(GraphManager.getDefault().getActiveGraph());
             });
 
