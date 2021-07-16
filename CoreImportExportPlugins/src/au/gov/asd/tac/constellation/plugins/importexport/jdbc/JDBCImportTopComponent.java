@@ -48,8 +48,8 @@ import org.openide.windows.TopComponent;
         displayName = "#CTL_ImportJDBCFileAction",
         preferredID = "JDBCImportTopComponent")
 @Messages({
-    "CTL_ImportJDBCFileAction=From JDBC...",
-    "HINT_ImportJDBCFile=Import from JDBC"})
+    "CTL_ImportJDBCFileAction=From Database...",
+    "HINT_ImportJDBCFile=Import from Database"})
 public final class JDBCImportTopComponent extends ImportTopComponent {
 
     private final JDBCImportPane jdbcImportPane;

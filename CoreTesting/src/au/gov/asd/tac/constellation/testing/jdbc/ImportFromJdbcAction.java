@@ -34,8 +34,8 @@ import org.openide.util.NbBundle.Messages;
 @ActionRegistration(displayName = "#CTL_ImportFromJdbcAction", iconBase = "au/gov/asd/tac/constellation/testing/jdbc/import.png", surviveFocusChange = true)
 @ActionReference(path = "Menu/Experimental/Import", position = 0)
 @Messages({
-    "CTL_ImportFromJdbcAction=From JDBC...",
-    "MSG_ImportFromJdbc=Import from JDBC"
+    "CTL_ImportFromJdbcAction=From Database...",
+    "MSG_ImportFromJdbc=Import from Database"
 })
 public final class ImportFromJdbcAction implements ActionListener {
 

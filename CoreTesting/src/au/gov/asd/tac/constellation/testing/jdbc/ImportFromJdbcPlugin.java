@@ -53,7 +53,7 @@ import org.openide.util.NbBundle;
  * @author algol
  */
 //@ServiceProvider(service = Plugin.class)
-@NbBundle.Messages("ImportFromJdbcPlugin=Import from JDBC")
+@NbBundle.Messages("ImportFromJdbcPlugin=Import from Database")
 public class ImportFromJdbcPlugin extends SimpleEditPlugin {
 
     private static final Logger LOGGER = Logger.getLogger(ImportFromJdbcPlugin.class.getName());
