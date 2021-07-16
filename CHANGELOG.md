@@ -1,5 +1,16 @@
 # Constellation Changes
 
+## Changes in July 2021
+
+-   Update to `openEdit`, `updateNotesUI`, `createNote` and the constructor in 
+    `NotesViewPane` to include variables to hold what graph elements are 
+    selected and applied to the note. Also included a right click context menu
+    option for user created notes.
+
+-   Added `updateSelectedElements`, `addToSelectedElements` and 
+    `removeFromSelectedElements to `NotesViewPane` to allow for modification of
+    the selected elements applied to user notes. 
+
 ## Changes in June 2021
 
 -  	Changed `ImportTableColumn.validate` and `importexport/RunPane.validate` 
