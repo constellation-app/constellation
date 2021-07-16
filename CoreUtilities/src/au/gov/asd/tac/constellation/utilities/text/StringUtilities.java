@@ -15,7 +15,9 @@
  */
 package au.gov.asd.tac.constellation.utilities.text;
 
+import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.StringJoiner;
@@ -373,5 +375,39 @@ public class StringUtilities {
      */
     public static String removeSpecialCharacters(final String originalString) {
         return originalString != null ? originalString.replaceAll("[^A-Za-z0-9]", "") : null;
+    }
+
+    /**
+     * Returns list of tuples of all found hits of a search string (Start
+     * position and End position) within the supplied text. 
+     */
+    public static List<Tuple<Integer, Integer>> searchRange(final String text, final String searchStr) {
+        final List<Tuple<Integer, Integer>> expected = new ArrayList<>();
+        if ((text != null) && (searchStr != null)) {
+            String lwrText = text.toLowerCase();
+            final String lwrSearch = searchStr.toLowerCase();
+            final int txtLen = lwrText.length();
+            int currLen = txtLen;
+            int currTxtStart = 0;
+            int origTxtStart = 0;
+            int hitStart = 0;
+            int hitEnd = 0;
+            while (hitEnd < txtLen) {
+                if (lwrText.contains(lwrSearch)) {
+                    origTxtStart = origTxtStart + hitEnd;
+                    hitStart = lwrText.indexOf(lwrSearch);
+                    hitEnd = hitStart + lwrSearch.length();
+                    final Tuple<Integer, Integer> tuple = Tuple.create(origTxtStart + hitStart, origTxtStart + hitEnd);
+                    expected.add(tuple);
+                    currTxtStart = hitEnd;
+                    lwrText = lwrText.substring(currTxtStart, currLen);
+                    currLen = currLen - currTxtStart;
+                } else {
+                    break;
+                }
+            }
+            return expected;
+        }
+        return Collections.emptyList();
     }
 }
