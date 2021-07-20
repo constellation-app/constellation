@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.notes;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReportListener;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReportManager;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
@@ -71,6 +72,20 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
         notesViewPane = new NotesViewPane(notesViewController);
 
         initContent();
+
+        addAttributeValueChangeHandler(VisualConcept.VertexAttribute.SELECTED, graph -> {
+            if (!needsUpdate()) {
+                return;
+            }
+            notesViewPane.updateNotesUI();
+        });
+
+        addAttributeValueChangeHandler(VisualConcept.TransactionAttribute.SELECTED, graph -> {
+            if (!needsUpdate()) {
+                return;
+            }
+            notesViewPane.updateNotesUI();
+        });
     }
 
     @Override
