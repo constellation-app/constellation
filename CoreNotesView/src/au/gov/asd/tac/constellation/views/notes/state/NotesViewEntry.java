@@ -17,6 +17,8 @@ package au.gov.asd.tac.constellation.views.notes.state;
 
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReportListener;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Holds the information for a note in the Notes View.
@@ -29,12 +31,20 @@ public class NotesViewEntry implements PluginReportListener {
     private String noteTitle;
     private String noteContent;
     private final Boolean userCreated;
+    private Boolean graphAttribute;
+    private List<Integer> nodesSelected;
+    private List<Integer> transactionsSelected;
 
-    public NotesViewEntry(final String dateTime, final String noteTitle, final String noteContent, final Boolean userCreated) {
+    public NotesViewEntry(final String dateTime, final String noteTitle, final String noteContent, final boolean userCreated, final boolean graphAttribute) {
         this.dateTime = dateTime;
         this.noteTitle = noteTitle;
         this.noteContent = noteContent;
         this.userCreated = userCreated;
+        this.graphAttribute = graphAttribute;
+        if (userCreated) {
+            this.nodesSelected = new ArrayList<>();
+            this.transactionsSelected = new ArrayList<>();
+        }
     }
 
     public String getDateTime() {
@@ -51,6 +61,29 @@ public class NotesViewEntry implements PluginReportListener {
 
     public Boolean isUserCreated() {
         return userCreated;
+    }
+
+    public Boolean isGraphAttribute() {
+        return graphAttribute;
+    }
+
+    public void setGraphAttribute(final Boolean graphAttribute) {
+        this.graphAttribute = graphAttribute;
+    }
+    public List<Integer> getNodesSelected() {
+        return nodesSelected;
+    }
+
+    public List<Integer> getTransactionsSelected() {
+        return transactionsSelected;
+    }
+
+    public void setNodesSelected(final List<Integer> nodesSelected) {
+        this.nodesSelected = nodesSelected;
+    }
+
+    public void setTransactionsSelected(final List<Integer> transactionsSelected) {
+        this.transactionsSelected = transactionsSelected;
     }
 
     public void setNoteTitle(final String noteTitle) {
