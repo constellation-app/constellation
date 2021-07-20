@@ -119,15 +119,16 @@ public final class EnhancedTextArea extends InlineCssTextArea {
      */
     public int highlightText(final String searchText) {
 
+        // Clear any previous highlighting.
+        this.setStyle(0, this.getText().length(), "-rtfx-background-color: transparent;");
+
         List<Tuple<Integer, Integer>> found = new ArrayList<>();
 
         if (!searchText.isEmpty()) {
-
             found = StringUtilities.searchRange(this.getText(), searchText);
-            final String highlight = "-rtfx-background-color: yellow;";
 
             if (!found.isEmpty()) {
-                found.forEach(location -> this.setStyle(location.getFirst(), location.getSecond(), highlight));
+                found.forEach(location -> this.setStyle(location.getFirst(), location.getSecond(), "-rtfx-background-color: yellow;"));
             }
         }
 

@@ -101,9 +101,16 @@ public final class ConversationViewTopComponent extends JavaFxTopComponent<Conve
     }
 
     @Override
+    protected void handleGraphOpened(final Graph graph) {
+        if (needsUpdate() && graph != null) {
+            conversationBox.refreshCountUI(false);
+        }
+    }
+
+    @Override
     protected void handleGraphClosed(final Graph graph) {
         if (needsUpdate() && graph != null) {
-            conversationBox.refreshFoundControls();
+            conversationBox.refreshCountUI(true);
         }
     }
 

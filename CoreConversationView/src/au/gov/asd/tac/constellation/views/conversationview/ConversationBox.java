@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.views.conversationview;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -122,7 +121,7 @@ public final class ConversationBox extends StackPane {
     private volatile boolean isAdjustingContributionProviders = false;
     private volatile boolean isAdjustingSenderLabels;
 
-    protected static int foundCount;
+    private int foundCount;
     private static final String FOUND_TEXT = "Found: ";
     private static final String FOUND_PASS_COLOUR = "-fx-text-fill: yellow;";
     private static final String FOUND_FAIL_COLOUR = "-fx-text-fill: red;";
@@ -245,30 +244,7 @@ public final class ConversationBox extends StackPane {
         // Create controls to allow the user to search and highlight text within contributions.
         searchTextField.setPromptText("Type to search...");
         searchTextField.setStyle("-fx-prompt-text-fill: #868686;");
-        searchTextField.setOnKeyPressed(e -> {
-            final Graph graph = conversation.getGraphUpdateManager().getActiveGraph();
-
-            if (graph != null) {
-                refreshFoundControls();
-
-                try (final ReadableGraph readableGraph = graph.getReadableGraph()) {
-                    final List<ConversationContributionProvider> compatibleContributionProviders = ConversationContributionProvider.getCompatibleProviders(readableGraph);
-
-                    messages.forEach(message -> {
-                        message.getAllContributions().clear();
-
-                        compatibleContributionProviders.forEach(contributionProvider -> {
-                            final ConversationContribution contribution = contributionProvider.createContribution(readableGraph, message);
-
-                            if (contribution != null) {
-                                message.getAllContributions().add(contribution);
-                            }
-                        });
-                    });
-                }
-            }
-        });
-
+        searchTextField.setOnKeyTyped(e -> highlightRegions());
         foundLabel.setText(FOUND_TEXT + foundCount);
         foundLabel.setStyle(foundCount > 0 ? FOUND_PASS_COLOUR : FOUND_FAIL_COLOUR);
         foundLabel.setPadding(new Insets(4, 8, 4, 8));
@@ -278,14 +254,57 @@ public final class ConversationBox extends StackPane {
         getChildren().addAll(content, tipsPane);
     }
 
-    protected void refreshFoundControls() {
-        final ConversationSearchRefresh conversationSearchRefresh = new ConversationSearchRefresh(conversation);
-        conversationSearchRefresh.updateContributionProviderRefresh("Refresh");
+    /**
+     * Refresh the UI for the count of 'found'.
+     *
+     * @param resetCount True if foundCount is to be set to 0, otherwise False
+     * to leave foundCount unchanged.
+     */
+    protected void refreshCountUI(final boolean resetCount) {
+
+        if (resetCount) {
+            foundCount = 0;
+        }
 
         Platform.runLater(() -> {
             foundLabel.setText(FOUND_TEXT + foundCount);
             foundLabel.setStyle(foundCount > 0 ? FOUND_PASS_COLOUR : FOUND_FAIL_COLOUR);
         });
+    }
+
+    /**
+     * Highlights the currently visible regions in the Conversation View based
+     * on the text currently present in the searchTextField.
+     */
+    private void highlightRegions() {
+
+        foundCount = 0;
+
+        final List<ConversationMessage> visibleMessages = conversation.getVisibleMessages();
+
+        visibleMessages.forEach(message -> {
+            final List<ConversationContribution> visibleContributions = message.getVisibleContributions();
+
+            visibleContributions.forEach(contribution -> {
+                final Region region = contribution.getContent(tipsPane);
+
+                if (region instanceof EnhancedTextArea) {
+                    foundCount += ((EnhancedTextArea) region).highlightText(searchTextField.getText());
+                    LOGGER.log(Level.WARNING, "FOUND = {0}", foundCount);
+                }
+
+                if (region instanceof GridPane) {
+                    ((GridPane) region).getChildren().forEach(child -> {
+                        if (child instanceof EnhancedTextArea) {
+                            foundCount += ((EnhancedTextArea) child).highlightText(searchTextField.getText());
+                            LOGGER.log(Level.WARNING, "FOUND = {0}", foundCount);
+                        }
+                    });
+                }
+            });
+        });
+
+        refreshCountUI(false);
     }
 
     // A VBox to hold a bubble and a sender.
@@ -341,27 +360,7 @@ public final class ConversationBox extends StackPane {
                 newContributions.forEach(contribution -> {
                     Region region = contribution.getContent(tipsPane);
                     rendered.add(region);
-
-                    if (!searchTextField.getText().isEmpty()) {
-
-                        if (region instanceof EnhancedTextArea) {
-                            foundCount += ((EnhancedTextArea) region).highlightText(searchTextField.getText());
-                            LOGGER.log(Level.WARNING, "FOUND = {0}", foundCount);
-                        }
-
-                        if (region instanceof GridPane) {
-                            ((GridPane) region).getChildren().forEach(child -> {
-                                if (child instanceof EnhancedTextArea) {
-                                    foundCount += ((EnhancedTextArea) child).highlightText(searchTextField.getText());
-                                    LOGGER.log(Level.WARNING, "FOUND = {0}", foundCount);
-                                }
-                            });
-                        }
-                    }
                 });
-
-                foundLabel.setText(FOUND_TEXT + foundCount);
-                foundLabel.setStyle(foundCount > 0 ? FOUND_PASS_COLOUR : FOUND_FAIL_COLOUR);
 
                 final ConversationBubble bubble = new ConversationBubble(rendered, message, tipsPane);
                 if (currentBubble != null) {
@@ -421,6 +420,7 @@ public final class ConversationBox extends StackPane {
             } else {
                 // Look for the bubble in the cache.
                 BubbleBox bubbleBox = bubbleCache.get(message);
+
                 if (bubbleBox != null) {
                     // If the bubble is in the cache then update it for
                     // and changes that may have occurred in the message.
@@ -434,6 +434,8 @@ public final class ConversationBox extends StackPane {
                 setStyle("-fx-background-color: " + message.getBackgroundColor() + "; -fx-padding: 5 5 5 5;");
                 setGraphic(bubbleBox);
             }
+
+            highlightRegions();
         }
     }
 

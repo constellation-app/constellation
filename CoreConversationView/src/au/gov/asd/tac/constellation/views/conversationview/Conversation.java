@@ -554,8 +554,6 @@ public class Conversation {
 
         @Override
         protected boolean update(GraphReadMethods graph) {
-            ConversationBox.foundCount = 0;
-
             if (resultMessages != null) {
                 resultMessages.setAll(visibleMessages);
             }
@@ -622,5 +620,15 @@ public class Conversation {
 
         updateController.registerChange(contributorUpdater);
         updateController.update();
+    }
+
+    /**
+     * Returns the current list of visible messages for the current
+     * conversation.
+     *
+     * @return List of current visible messages.
+     */
+    protected final List<ConversationMessage> getVisibleMessages() {
+        return visibleMessages;
     }
 }
