@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.openide.util.lookup.ServiceProvider;
@@ -60,12 +61,48 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
 
             for (int i = 0; i < notesArray.size(); i++) {
                 if (!notesArray.get(i).isNull()) {
-                    noteViewEntries.add(new NotesViewEntry(
-                            notesArray.get(i).get(0).asText(),
-                            notesArray.get(i).get(1).asText(),
-                            notesArray.get(i).get(2).asText(),
-                            notesArray.get(i).get(3).asBoolean()
-                    ));
+                    if (notesArray.get(i).get(4) != null) {
+                        noteViewEntries.add(new NotesViewEntry(
+                                notesArray.get(i).get(0).asText(),
+                                notesArray.get(i).get(1).asText(),
+                                notesArray.get(i).get(2).asText(),
+                                notesArray.get(i).get(3).asBoolean(),
+                                notesArray.get(i).get(4).asBoolean()
+                        ));
+
+                        if (notesArray.get(i).get(3).asBoolean() == true && notesArray.get(i).get(4).asBoolean() == false) {
+                            // Add the selected nodes
+                            final JsonNode nodesArrayNode = notesArray.get(i).get(5);
+                            if (nodesArrayNode != null) {
+                                final List<Integer> selectedNodes = new ArrayList<>();
+                                for (int j = 0; j < nodesArrayNode.size(); j++) {
+                                    selectedNodes.add(nodesArrayNode.get(j).asInt());
+                                }
+                                noteViewEntries.get(i).setNodesSelected(selectedNodes);
+                            }
+
+                            // Add the selected transactions
+                            final JsonNode transactionsArrayNode = notesArray.get(i).get(6);
+                            if (transactionsArrayNode != null) {
+                                List<Integer> selectedTransactions = new ArrayList<>();
+                                for (int j = 0; j < transactionsArrayNode.size(); j++) {
+                                    selectedTransactions.add(transactionsArrayNode.get(j).asInt());
+                                }
+                                noteViewEntries.get(i).setTransactionsSelected(selectedTransactions);
+                            }
+                        }
+
+                    } else {
+                        // If a note was created without a graphAttribute boolean variable, it will now be recreated with the variable
+                        // This variable will be true by default, meaning it is applied to the entire graph
+                        noteViewEntries.add(new NotesViewEntry(
+                                notesArray.get(i).get(0).asText(),
+                                notesArray.get(i).get(1).asText(),
+                                notesArray.get(i).get(2).asText(),
+                                notesArray.get(i).get(3).asBoolean(),
+                                true
+                        ));
+                    }
                 }
             }
             // Reading filters from state.
@@ -109,12 +146,37 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                         jsonGenerator.writeString(note.getNoteTitle());
                         jsonGenerator.writeString(note.getNoteContent());
                         jsonGenerator.writeBoolean(note.isUserCreated());
+                        jsonGenerator.writeBoolean(note.isGraphAttribute());
+
+                        if (!note.isGraphAttribute()) {
+                            if (note.getNodesSelected() != null) {
+                                // Add nodes that are selected to the note
+                                final int nodesLength = note.getNodesSelected().size();
+                                final int[] nodesArray = new int[nodesLength];
+                                final List<Integer> nodesSelected = note.getNodesSelected();
+                                final Iterator<Integer> nodesIterator = nodesSelected.iterator();
+                                for (int i = 0; i < nodesLength; i++) {
+                                    nodesArray[i] = nodesIterator.next();
+                                }
+                                jsonGenerator.writeArray(nodesArray, 0, nodesLength);
+                            }
+
+                            if (note.getTransactionsSelected() != null) {
+                                // Add transactions that are selected to the note
+                                final int transactionsLength = note.getTransactionsSelected().size();
+                                final int[] transactionsArray = new int[transactionsLength];
+                                final List<Integer> transactionsSelected = note.getTransactionsSelected();
+                                final Iterator<Integer> transactionsIterator = transactionsSelected.iterator();
+                                for (int i = 0; i < transactionsLength; i++) {
+                                    transactionsArray[i] = transactionsIterator.next();
+                                }
+                                jsonGenerator.writeArray(transactionsArray, 0, transactionsLength);
+                            }
+                        }
                         jsonGenerator.writeEndArray();
                     }
                 }
-
                 jsonGenerator.writeEndArray(); // End writing notes to state.
-
                 jsonGenerator.writeArrayFieldStart(FILTERS_FIELD); // Start writing filters to state.
 
                 for (final String filter : state.getFilters()) {
@@ -124,9 +186,7 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                         jsonGenerator.writeString(filter);
                     }
                 }
-
                 jsonGenerator.writeEndArray(); // End writing filters to state.
-
                 jsonGenerator.writeEndObject();
             }
         }

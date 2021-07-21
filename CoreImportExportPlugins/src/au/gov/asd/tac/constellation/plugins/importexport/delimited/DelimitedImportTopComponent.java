@@ -60,7 +60,9 @@ public final class DelimitedImportTopComponent extends ImportTopComponent {
             + "6. Save your configuration using 'Options > Save'.\n\n"
             + "HINTS:\n* See all supported attributes with 'Options > Show all schema attributes'.\n"
             + "* Filter in the Configuration Pane by adding searches of the form <column_name>==\"<search text>\"."
-            + "* E.g. first_name==\"Nick\"";
+            + "* E.g. first_name==\"Nick\""
+            + "* To filter Attributes, start typing in the Attributes Filter.";
+
     final DelimitedImportController controller = new DelimitedImportController();
     final ConfigurationPane configurationPane = new ConfigurationPane(controller, HELP_TEXT);
     final DelimitedSourcePane sourcePane = new DelimitedSourcePane(controller);
