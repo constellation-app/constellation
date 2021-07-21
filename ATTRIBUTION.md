@@ -585,5 +585,15 @@ of Constellation.
 <td>BSD</td>
 <td></td>
 </tr>
+<tr class="odd">
+<td></td>
+<td>The 2-Clause BSD License</td>
+<td>https://opensource.org/licenses/BSD-2-Clause</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>GNU General Public License, version 2, with the Classpath Exception</td>
+<td>http://openjdk.java.net/legal/gplv2+ce.html</td>
+</tr>
 </tbody>
 </table>

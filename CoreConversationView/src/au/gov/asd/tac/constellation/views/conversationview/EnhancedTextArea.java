@@ -123,7 +123,7 @@ public final class EnhancedTextArea extends InlineCssTextArea {
         // Clear any previous highlighting.
         this.setStyle(0, this.getText().length(), "-rtfx-background-color: transparent;");
 
-        // If searchText isn't whitespace, empty or null, find its ocurrences in the EhancedTextArea's text.
+        // If searchText isn't whitespace, empty or null, find its occurrences in the EnhancedTextArea's text.
         List<Tuple<Integer, Integer>> found = StringUtils.isBlank(searchText) ? new ArrayList<>() : StringUtilities.searchRange(this.getText(), searchText);
 
         // Highlight each occurence at its associated location.
