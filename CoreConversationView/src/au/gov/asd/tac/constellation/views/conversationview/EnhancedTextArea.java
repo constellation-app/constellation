@@ -112,11 +112,11 @@ public final class EnhancedTextArea extends InlineCssTextArea {
     }
 
     /**
-     * Finds and highlights occurrences of the given string found within the
-     * EnhancedTextArea's text and returns the count of occurrences found.
+     * Finds and highlights occurrences of the given text string found within
+     * the EnhancedTextArea's text and returns the count of occurrences found.
      *
-     * @param searchText Text passage to be searched for.
-     * @return Count of passages of searched text found.
+     * @param searchText Text string to be searched.
+     * @return Count of the occurrences of the searched text string found.
      */
     public int highlightText(final String searchText) {
 
