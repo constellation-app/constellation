@@ -112,8 +112,8 @@ public final class EnhancedTextArea extends InlineCssTextArea {
     }
 
     /**
-     * Finds and highlights passages of the given string found within the text
-     * of the EnhancedTextArea and returns the count of passages found.
+     * Finds and highlights occurrences of the given string found within the
+     * EnhancedTextArea's text and returns the count of occurrences found.
      *
      * @param searchText Text passage to be searched for.
      * @return Count of passages of searched text found.
@@ -126,7 +126,7 @@ public final class EnhancedTextArea extends InlineCssTextArea {
         // If searchText isn't whitespace, empty or null, find its occurrences in the EnhancedTextArea's text.
         List<Tuple<Integer, Integer>> found = StringUtils.isBlank(searchText) ? new ArrayList<>() : StringUtilities.searchRange(this.getText(), searchText);
 
-        // Highlight each occurence at its associated location.
+        // Highlight each occurrence at its associated location.
         found.forEach(location -> this.setStyle(location.getFirst(), location.getSecond(), "-rtfx-background-color: yellow;"));
 
         return found.size();
