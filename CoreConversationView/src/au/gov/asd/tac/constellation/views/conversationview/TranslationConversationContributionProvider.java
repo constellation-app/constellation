@@ -38,6 +38,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.RowConstraints;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -168,7 +169,7 @@ public class TranslationConversationContributionProvider extends ConversationCon
             editTranslationTextArea.setWrapText(true);
 
             // Create translation contributions.
-            if (text == null || text.isBlank()) {
+            if (StringUtils.isBlank(text)) {
                 content.getChildren().add(createTranslationButton);
             } else {
                 translationTextArea = new EnhancedTextArea(text, this);
@@ -210,7 +211,7 @@ public class TranslationConversationContributionProvider extends ConversationCon
                     PluginExecution.withPlugin(plugin).executeLater(graph);
                 }
 
-                if (text == null || text.isBlank()) {
+                if (StringUtils.isBlank(text)) {
                     content.getChildren().addAll(createTranslationButton);
                 } else {
                     translationTextArea = new EnhancedTextArea(text, this);
@@ -229,7 +230,7 @@ public class TranslationConversationContributionProvider extends ConversationCon
 
                 editTranslationTextArea.clear();
 
-                if (text == null || text.isBlank()) {
+                if (StringUtils.isBlank(text)) {
                     content.getChildren().addAll(createTranslationButton);
                 } else {
                     translationTextArea = new EnhancedTextArea(text, this);

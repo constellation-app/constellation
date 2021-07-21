@@ -124,7 +124,7 @@ public class TooltipUtilities {
     private static void selectActiveArea(final TextInputControl control, final List<TooltipProvider.TooltipDefinition> definitions) {
         int s = Integer.MAX_VALUE;
         int e = Integer.MIN_VALUE;
-        for (TooltipDefinition definition : definitions) {
+        for (final TooltipDefinition definition : definitions) {
             if (definition.getStart() >= 0 && definition.getStart() < s) {
                 s = definition.getStart();
             }
@@ -143,8 +143,8 @@ public class TooltipUtilities {
         final TooltipNode[] tooltipNode = new TooltipNode[1];
 
         // PLACEHOLDER CODE TO IMITATE TOOLTIPPANE POPUP. REMOVE LATER ONCE TOOLTIPPANE CONFIRMED WORKING.
-        Popup popup = new Popup();
-        Label popupMsg = new Label();
+        final Popup popup = new Popup();
+        final Label popupMsg = new Label();
         popupMsg.setStyle(
                 "-fx-background-color: black;"
                 + "-fx-text-fill: white;"
@@ -170,7 +170,7 @@ public class TooltipUtilities {
                 popupMsg.setText(
                         "Character '" + textArea.getText(characterIndex[0], characterIndex[0] + 1)
                         + "' at Index '" + characterIndex[0] + "'");
-                Point2D pos = event.getScreenPosition();
+                final Point2D pos = event.getScreenPosition();
                 popup.show(textArea, pos.getX(), pos.getY() + 10);
                 // ^
             }
@@ -190,7 +190,7 @@ public class TooltipUtilities {
     private static void selectActiveArea(final InlineCssTextArea textArea, final List<TooltipProvider.TooltipDefinition> definitions) {
         int s = Integer.MAX_VALUE;
         int e = Integer.MIN_VALUE;
-        for (TooltipDefinition definition : definitions) {
+        for (final TooltipDefinition definition : definitions) {
             if (definition.getStart() >= 0 && definition.getStart() < s) {
                 s = definition.getStart();
             }

@@ -358,7 +358,7 @@ public final class ConversationBox extends StackPane {
                 final List<Region> rendered = new ArrayList<>();
 
                 newContributions.forEach(contribution -> {
-                    Region region = contribution.getContent(tipsPane);
+                    final Region region = contribution.getContent(tipsPane);
                     rendered.add(region);
                 });
 

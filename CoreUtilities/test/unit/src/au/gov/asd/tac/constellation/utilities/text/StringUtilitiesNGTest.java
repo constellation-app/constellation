@@ -170,7 +170,7 @@ public class StringUtilitiesNGTest {
         final String text = "The quick brown fox";
         final String searchStr = "Quick";
         final List<Tuple<Integer, Integer>> expected = new ArrayList<>();
-        Tuple<Integer, Integer> tuple = Tuple.create(4, 9);
+        final Tuple<Integer, Integer> tuple = Tuple.create(4, 9);
         expected.add(tuple);
         assertEquals(StringUtilities.searchRange(text, searchStr), expected);
     }

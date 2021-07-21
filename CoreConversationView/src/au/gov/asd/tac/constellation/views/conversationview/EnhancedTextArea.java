@@ -35,6 +35,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.Background;
+import org.apache.commons.lang3.StringUtils;
 import org.fxmisc.richtext.InlineCssTextArea;
 
 /**
@@ -122,15 +123,11 @@ public final class EnhancedTextArea extends InlineCssTextArea {
         // Clear any previous highlighting.
         this.setStyle(0, this.getText().length(), "-rtfx-background-color: transparent;");
 
-        List<Tuple<Integer, Integer>> found = new ArrayList<>();
+        // If searchText isn't whitespace, empty or null, find its ocurrences in the EhancedTextArea's text.
+        List<Tuple<Integer, Integer>> found = StringUtils.isBlank(searchText) ? new ArrayList<>() : StringUtilities.searchRange(this.getText(), searchText);
 
-        if (!searchText.isEmpty()) {
-            found = StringUtilities.searchRange(this.getText(), searchText);
-
-            if (!found.isEmpty()) {
-                found.forEach(location -> this.setStyle(location.getFirst(), location.getSecond(), "-rtfx-background-color: yellow;"));
-            }
-        }
+        // Highlight each occurence at its associated location.
+        found.forEach(location -> this.setStyle(location.getFirst(), location.getSecond(), "-rtfx-background-color: yellow;"));
 
         return found.size();
     }
