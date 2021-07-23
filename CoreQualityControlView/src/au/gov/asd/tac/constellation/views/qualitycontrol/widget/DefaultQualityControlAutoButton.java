@@ -82,12 +82,12 @@ public final class DefaultQualityControlAutoButton extends QualityControlAutoBut
         final String riskText;
         final String styleText;
         final String tooltipText;
-        if (event != null && event.getCategory() != QualityCategory.DEFAULT) {
+        if (event != null && event.getCategory() != QualityCategory.OK) {
             riskText = String.format(QUALITY_CONTROL_WIDGET_TEXT, String.valueOf(event.getCategory().name()));
             styleText = QualityControlViewPane.qualityStyle(event.getCategory(), 1);
             tooltipText = event.getReasons();
         } else {
-            riskText = String.format(QUALITY_CONTROL_WIDGET_TEXT, Bundle.MSG_NoRisk());
+            riskText = String.format(QUALITY_CONTROL_WIDGET_TEXT, String.valueOf(QualityCategory.OK.name()));
             styleText = DEFAULT_TEXT_STYLE;
             tooltipText = null;
         }

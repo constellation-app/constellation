@@ -215,15 +215,15 @@ public class QualityControlViewPaneNGTest {
     public void testQualityStyle() {
         System.out.println("qualityStyle");
 
-        final String defaultStyle = QualityControlViewPane.qualityStyle(QualityCategory.DEFAULT);
+        final String defaultStyle = QualityControlViewPane.qualityStyle(QualityCategory.MINOR);
         assertEquals(defaultStyle, String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(%d,%d,255,%f);", 253, 253, 0.75f));       
-        final String infoStyle = QualityControlViewPane.qualityStyle(QualityCategory.INFO);
+        final String infoStyle = QualityControlViewPane.qualityStyle(QualityCategory.MEDIUM);
         assertEquals(infoStyle, String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(%d,%d,255,%f);", 179, 179, 0.75f));
-        final String warningStyle = QualityControlViewPane.qualityStyle(QualityCategory.WARNING);
+        final String warningStyle = QualityControlViewPane.qualityStyle(QualityCategory.MAJOR);
         assertEquals(warningStyle, String.format("-fx-text-fill: rgb(255,255,255);-fx-background-color: rgba(%d,%d,255,%f);", 102, 102, 0.75f));
         final String severeStyle = QualityControlViewPane.qualityStyle(QualityCategory.SEVERE);
         assertEquals(severeStyle, String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(255,%d,%d,%f);", 26, 26, 0.75f));
-        final String fatalStyle = QualityControlViewPane.qualityStyle(QualityCategory.FATAL);
+        final String fatalStyle = QualityControlViewPane.qualityStyle(QualityCategory.CRITICAL);
         assertEquals(fatalStyle, String.format("-fx-text-fill: rgb(255,255,255);-fx-background-color: rgba(0,%d,%d,%f);", 13, 13, 0.75f));
     }
 
@@ -245,9 +245,9 @@ public class QualityControlViewPaneNGTest {
         final MissingTypeRule mRule = new MissingTypeRule();
         final UnknownTypeRule uRule = new UnknownTypeRule();
         
-        assertEquals(result.get(iiRule), QualityCategory.INFO);
+        assertEquals(result.get(iiRule), QualityCategory.MEDIUM);
         assertEquals(result.get(mRule), QualityCategory.SEVERE);
-        assertEquals(result.get(uRule), QualityCategory.DEFAULT);
+        assertEquals(result.get(uRule), QualityCategory.MINOR);
     }
     
     /**

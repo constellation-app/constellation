@@ -32,11 +32,11 @@ import org.testng.annotations.Test;
  */
 public class QualityControlEventNGTest {
 
-    private final static QualityControlEvent.QualityCategory DEFAULT = QualityControlEvent.QualityCategory.DEFAULT;
-    private final static QualityControlEvent.QualityCategory INFO = QualityControlEvent.QualityCategory.INFO;
-    private final static QualityControlEvent.QualityCategory WARNING = QualityControlEvent.QualityCategory.WARNING;
+    private final static QualityControlEvent.QualityCategory DEFAULT = QualityControlEvent.QualityCategory.MINOR;
+    private final static QualityControlEvent.QualityCategory INFO = QualityControlEvent.QualityCategory.MEDIUM;
+    private final static QualityControlEvent.QualityCategory WARNING = QualityControlEvent.QualityCategory.MAJOR;
     private final static QualityControlEvent.QualityCategory SEVERE = QualityControlEvent.QualityCategory.SEVERE;
-    private final static QualityControlEvent.QualityCategory FATAL = QualityControlEvent.QualityCategory.FATAL;
+    private final static QualityControlEvent.QualityCategory FATAL = QualityControlEvent.QualityCategory.CRITICAL;
 
     public QualityControlEventNGTest() {
     }
