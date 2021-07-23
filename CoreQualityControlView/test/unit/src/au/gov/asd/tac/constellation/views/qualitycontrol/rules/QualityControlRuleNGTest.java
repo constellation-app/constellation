@@ -122,7 +122,7 @@ public class QualityControlRuleNGTest {
     @Test
     public void testGetCategoryByScore() {
         assertEquals(QualityControlRule.getCategoryByScore(QualityControlEvent.MINOR_VALUE - 1),
-                QualityControlEvent.QualityCategory.MINOR); // ONE BELOW
+                QualityControlEvent.QualityCategory.OK); // ONE BELOW
         assertEquals(QualityControlRule.getCategoryByScore(QualityControlEvent.MINOR_VALUE),
                 QualityControlEvent.QualityCategory.MINOR); // ON VALUE
         assertEquals(QualityControlRule.getCategoryByScore(QualityControlEvent.MINOR_VALUE + 1),
