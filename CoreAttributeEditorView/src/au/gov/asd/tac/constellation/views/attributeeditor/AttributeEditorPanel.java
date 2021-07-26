@@ -591,7 +591,8 @@ public class AttributeEditorPanel extends BorderPane {
         attributePane.setGraphic(gridPane);
         attributePane.setTooltip(new Tooltip(attribute.getAttributeDescription()));
 
-        attributePane.setExpanded(false);
+        attributePane.setExpanded(attribute.isKeepExpanded());
+
 
         attributePane.setOnDragDetected(event -> {
             final Dragboard db = attributePane.startDragAndDrop(TransferMode.COPY);
@@ -675,6 +676,11 @@ public class AttributeEditorPanel extends BorderPane {
             }
         });
         attributePane.setContent(dataAndMoreButtonBox);
+
+        //attributePane TitledPane EXPAND and COLLAPSE events
+        attributePane.expandedProperty().addListener((observable, wasExpanded, isNowExpanded) -> {
+            attribute.setKeepExpanded(isNowExpanded);
+        });
     }
 
     private Button createLoadMoreButton(final VBox parent, final AttributeData attribute) {
