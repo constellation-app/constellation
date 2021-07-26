@@ -72,4 +72,9 @@ public class TextPluginInteraction implements PluginInteraction {
         throw new UnsupportedOperationException(NOT_SUPPORTED); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public void notifyException(PluginNotificationLevel level, Exception exception) {
+        LOGGER.info(String.format("level=%s exception=%s", level, exception));
+    }
+
 }

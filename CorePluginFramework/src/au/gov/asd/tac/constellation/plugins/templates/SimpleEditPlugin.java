@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.plugins.templates;
 
-import au.gov.asd.tac.constellation.graph.DuplicateKeyException;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
@@ -86,7 +85,7 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
     }
 
     @Override
-    public final void run(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+    public final void run(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException, RuntimeException {
 
         boolean inControlOfProgress = true;
 
@@ -109,30 +108,32 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
 
                 WritableGraph writableGraph = graph.getWritableGraph(getName(), isSignificant(), this);
                 try {
-                    interaction.setProgress(0, 0, "Editing...", true);
 
+                    interaction.setProgress(0, 0, "Editing...", true);
                     try {
                         description = describedEdit(writableGraph, interaction, parameters);
                         if (!"Editing...".equals(interaction.getCurrentMessage())) {
                             inControlOfProgress = false;
                         }
-                    } catch (InterruptedException e) {
+                    } catch (final InterruptedException e) {
+                        // Notify the user that the plugin was interrupted and throw the exception back to the caller for generic handling.
+                        interaction.notify(PluginNotificationLevel.INFO, "Plugin cancelled: " + graphs.getGraph() + SeparatorConstants.COLON + " " + getName());
                         cancelled = true;
-                        interaction.notify(PluginNotificationLevel.INFO, "Action cancelled: " + graphs.getGraph() + SeparatorConstants.COLON + " " + getName());
                         throw e;
-                    } catch (PluginException e) {
+                    } catch (final PluginException e) {
+                        // Logging the PluginException and throwing the exception back to the caller for generic handling.
+                        final String msg0 = String.format("PluginException caught in %s.run()", SimpleEditPlugin.class.getName());
                         final String msg = Bundle.MSG_Edit_Failed(graph, getName());
-                        interaction.notify(PluginNotificationLevel.ERROR, msg + SeparatorConstants.NEWLINE + e.getMessage());
+                        LOGGER.log(Level.SEVERE, "{0}" + SeparatorConstants.SEMICOLON + SeparatorConstants.NEWLINE + "{1}" + SeparatorConstants.NEWLINE + "{2}", new Object[]{msg0, msg, e.getMessage()});
                         cancelled = true;
-                        LOGGER.log(Level.WARNING, msg, e);
                         throw e;
-                    } catch (Exception ex) {
+                    } catch (final RuntimeException e) {
+                        // Notify the user that there was a RuntimeException and throw the exception back to the caller for generic handling.
                         final String msg0 = String.format("Unexpected non-plugin exception caught in %s.run()", SimpleEditPlugin.class.getName());
                         final String msg = Bundle.MSG_Edit_Failed(graph, getName());
-                        interaction.notify(PluginNotificationLevel.ERROR, msg0 + SeparatorConstants.SEMICOLON + SeparatorConstants.NEWLINE + msg + SeparatorConstants.NEWLINE + ex.getMessage());
+                        interaction.notify(PluginNotificationLevel.ERROR, msg0 + SeparatorConstants.SEMICOLON + SeparatorConstants.NEWLINE + msg + SeparatorConstants.NEWLINE + e.getMessage());
                         cancelled = true;
-                        LOGGER.log(Level.WARNING, ex, () -> msg0 + SeparatorConstants.SEMICOLON + " " + msg);
-                        throw new RuntimeException(ex);
+                        throw e;
                     }
 
                 } finally {
@@ -142,8 +143,6 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
                         writableGraph.commit(description);
                     }
                 }
-            } catch (DuplicateKeyException ex) {
-                interaction.notify(PluginNotificationLevel.ERROR, ex.getMessage());
             } finally {
                 interaction.setProgress(2, 1, inControlOfProgress ? "Finished" : interaction.getCurrentMessage(), true);
             }
@@ -154,12 +153,12 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
     }
 
     @Override
-    public final void run(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+    public final void run(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException, RuntimeException {
         throw new UnsupportedOperationException("Read mode is not supported by this plugin");
     }
 
     @Override
-    public void run(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+    public void run(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException, RuntimeException {
 
         boolean inControlOfProgress = true;
 
@@ -174,6 +173,22 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
                 if (!WAITING_INTERACTION.equals(interaction.getCurrentMessage())) {
                     inControlOfProgress = false;
                 }
+            } catch (final InterruptedException e) {
+                // Notify the user that the plugin was interrupted and throw the exception back to the caller for generic handling.
+                interaction.notify(PluginNotificationLevel.INFO, "Plugin cancelled: " + graph + SeparatorConstants.COLON + " " + getName());
+                throw e;
+            } catch (final PluginException e) {
+                // Logging the PluginException and throwing the exception back to the caller for generic handling.
+                final String msg0 = String.format("PluginException caught in %s.run()", SimpleEditPlugin.class.getName());
+                final String msg = Bundle.MSG_Edit_Failed(graph, getName());
+                LOGGER.log(Level.SEVERE, "{0}" + SeparatorConstants.SEMICOLON + SeparatorConstants.NEWLINE + "{1}" + SeparatorConstants.NEWLINE + "{2}", new Object[]{msg0, msg, e.getMessage()});
+                throw e;
+            } catch (final RuntimeException e) {
+                // Notify the user that there was a RuntimeException and throw the exception back to the caller for generic handling.
+                final String msg0 = String.format("Unexpected non-plugin exception caught in %s.run()", SimpleEditPlugin.class.getName());
+                final String msg = Bundle.MSG_Edit_Failed(graph, getName());
+                interaction.notify(PluginNotificationLevel.ERROR, msg0 + SeparatorConstants.SEMICOLON + SeparatorConstants.NEWLINE + msg + SeparatorConstants.NEWLINE + e.getMessage());
+                throw e;
             } finally {
                 interaction.setProgress(2, 1, inControlOfProgress ? "Finished" : interaction.getCurrentMessage(), true);
             }
@@ -202,8 +217,10 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
      * @throws InterruptedException if the plugin execution is canceled.
      * @throws PluginException if an anticipated error occurs during plugin
      * execution.
+     * @throws RuntimeException if an unexpected error occurs during the plugin
+     * execution.
      */
-    protected Object describedEdit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+    protected Object describedEdit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException, RuntimeException {
         edit(graph, interaction, parameters);
         return getName();
     }
@@ -220,6 +237,8 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
      * @throws InterruptedException if the plugin execution is canceled.
      * @throws PluginException if an anticipated error occurs during plugin
      * execution.
+     * @throws RuntimeException if an unexpected error occurs during the plugin
+     * execution.
      */
-    protected abstract void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException;
+    protected abstract void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException, RuntimeException;
 }

@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import org.netbeans.api.progress.ProgressHandle;
@@ -59,11 +60,11 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
         this.pluginManager = pluginManager;
         this.pluginReport = pluginReport;
     }
-    
+
     public PluginReport getPluginReport() {
         return pluginReport;
     }
-    
+
     public ProgressHandle getProgress() {
         return progress;
     }
@@ -71,7 +72,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
     public Timer getTimer() {
         return timer;
     }
-    
+
     @Override
     public boolean isInteractive() {
         return pluginManager.isInteractive();
@@ -93,7 +94,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
             final String graphName = graphNode.getName();
             if (graphName != null) {
                 result.append(graphName);
-                result.append(": ");
+                result.append(SeparatorConstants.SEMICOLON + " ");
             }
         }
 
@@ -223,6 +224,30 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
     }
 
     @Override
+    public void notifyException(PluginNotificationLevel level, Exception exception) {
+        final String title = pluginManager.getPlugin().getName();
+        switch (level) {
+            case FATAL:
+                LOGGER.log(Level.SEVERE, title, exception);
+                break;
+            case ERROR:
+                LOGGER.log(Level.SEVERE, title, exception);
+                break;
+            case WARNING:
+                LOGGER.log(Level.WARNING, title, exception);
+                break;
+            case INFO:
+                LOGGER.log(Level.INFO, title, exception);
+                break;
+            case DEBUG:
+                LOGGER.log(Level.FINE, title, exception);
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
     public boolean confirm(final String message) {
         final int[] result = new int[1];
         try {
@@ -275,7 +300,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
         public String getTime() {
             return getTime(startTime, System.currentTimeMillis());
         }
-        
+
         protected String getTime(final long startTime, final long endTime) {
             // getTime(long, long) was added to allow unit testing to occur so in practice we would not expect this situation to occur
             // it should still be handled just in case though
@@ -283,7 +308,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
             if (startTime < 0 || endTime < 0 || startTime > endTime) {
                 return "00:00:00";
             }
-            
+
             long interval = (endTime - startTime) / 1000;
 
             final long seconds = interval % 60;
@@ -314,9 +339,9 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
                     if (progress == null) {
                         return;
                     }
-                    
+
                     progress.progress(getTime() + " " + currentMessage);
-                    
+
                     if ("Finished".equalsIgnoreCase(currentMessage)) {
                         return;
                     }

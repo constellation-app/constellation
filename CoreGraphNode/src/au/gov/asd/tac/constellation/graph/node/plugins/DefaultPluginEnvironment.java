@@ -38,8 +38,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.openide.NotifyDescriptor;
-import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -76,11 +74,11 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
                     if (future != null) {
                         try {
                             future.get();
-                        } catch (InterruptedException ex) {
-                            Exceptions.printStackTrace(ex);
+                        } catch (final InterruptedException ex) {
+                            LOGGER.log(Level.SEVERE, "Execution interrupted", ex);
                             Thread.currentThread().interrupt();
-                        } catch (ExecutionException ex) {
-                            Exceptions.printStackTrace(ex);
+                        } catch (final ExecutionException ex) {
+                            LOGGER.log(Level.SEVERE, "Execution Exception", ex);
                         }
                     }
                 }
@@ -90,7 +88,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             final boolean alwaysSilent = callingConstraints.isAlwaysSilent() || callingConstraints.getSilentCount() > 0;
 
             PluginReport currentReport = null;
-            GraphReport graphReport = graph == null ? null : GraphReportManager.getGraphReport(graph.getId());
+            final GraphReport graphReport = graph == null ? null : GraphReportManager.getGraphReport(graph.getId());
             if (graphReport != null) {
                 currentReport = graphReport.addPluginReport(plugin);
                 callingConstraints.setCurrentReport(currentReport);
@@ -102,9 +100,9 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
             }
 
-            PluginManager manager = new PluginManager(DefaultPluginEnvironment.this, plugin, graph, interactive, synchronizer);
-            PluginGraphs graphs = new DefaultPluginGraphs(manager);
-            PluginInteraction interaction = new DefaultPluginInteraction(manager, currentReport);
+            final PluginManager manager = new PluginManager(DefaultPluginEnvironment.this, plugin, graph, interactive, synchronizer);
+            final PluginGraphs graphs = new DefaultPluginGraphs(manager);
+            final PluginInteraction interaction = new DefaultPluginInteraction(manager, currentReport);
 
             try {
                 if (parameters != null) {
@@ -125,7 +123,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
                         }
                     }
                 } else {
-                    ThreadConstraints calledConstraints = ThreadConstraints.getConstraints();
+                    final ThreadConstraints calledConstraints = ThreadConstraints.getConstraints();
                     calledConstraints.setAlwaysSilent(alwaysSilent);
                     try {
                         plugin.run(graphs, interaction, parameters);
@@ -139,26 +137,14 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
                 }
             } catch (final InterruptedException ex) {
                 auditPluginError(plugin, ex);
-                interaction.notify(PluginNotificationLevel.INFO, "Plugin Cancelled: " + plugin.getName());
+                reportException(interaction, currentReport, PluginNotificationLevel.INFO, ex);
                 Thread.currentThread().interrupt();
-                if (currentReport != null) {
-                    currentReport.setError(ex);
-                }
             } catch (final PluginException ex) {
                 auditPluginError(plugin, ex);
-                interaction.notify(ex.getNotificationLevel(), ex.getMessage());
-                ex.printStackTrace();
-                if (currentReport != null) {
-                    currentReport.setError(ex);
-                }
-            } catch (final Exception ex) {
-                new NotifyDescriptor.Exception(ex);
+                reportException(interaction, currentReport, ex.getNotificationLevel(), ex);
+            } catch (final RuntimeException ex) {
                 auditPluginError(plugin, ex);
-                final String msg = String.format("Unexpected non-plugin exception caught in %s.executePluginLater();%n", DefaultPluginEnvironment.class.getName());
-                LOGGER.log(Level.WARNING, msg, ex);
-                if (currentReport != null) {
-                    currentReport.setError(ex);
-                }
+                reportException(interaction, currentReport, PluginNotificationLevel.ERROR, ex);
             } finally {
                 if (currentReport != null) {
                     currentReport.stop();
@@ -190,7 +176,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
         callingConstraints.setSilentCount(0);
         callingConstraints.setAlwaysSilent(alwaysSilent || silentCount > 0);
 
-        GraphReport graphReport = graph == null ? null : GraphReportManager.getGraphReport(graph.getId());
+        final GraphReport graphReport = graph == null ? null : GraphReportManager.getGraphReport(graph.getId());
         PluginReport parentReport = null;
         PluginReport currentReport = null;
         if (graphReport != null) {
@@ -203,6 +189,10 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             callingConstraints.setCurrentReport(currentReport);
         }
 
+        final PluginManager manager = new PluginManager(DefaultPluginEnvironment.this, plugin, graph, interactive, null);
+        final PluginGraphs graphs = new DefaultPluginGraphs(manager);
+        final PluginInteraction interaction = new DefaultPluginInteraction(manager, currentReport);
+
         try {
             ConstellationLogger.getDefault().pluginStarted(plugin, parameters, graph);
         } catch (final Exception ex) {
@@ -210,9 +200,6 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
         }
 
         try {
-            PluginManager manager = new PluginManager(DefaultPluginEnvironment.this, plugin, graph, interactive, null);
-            PluginGraphs graphs = new DefaultPluginGraphs(manager);
-            PluginInteraction interaction = new DefaultPluginInteraction(manager, currentReport);
             if (parameters != null) {
                 plugin.updateParameters(graph, parameters);
             }
@@ -222,15 +209,14 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
                 }
             } else {
                 plugin.run(graphs, interaction, parameters);
-
             }
-        } catch (final Exception ex) {
-            new NotifyDescriptor.Exception(ex);
+        } catch (final InterruptedException ex) {
             auditPluginError(plugin, ex);
-            if (currentReport != null) {
-                currentReport.setError(ex);
-            }
-            throw ex;
+            reportException(interaction, currentReport, PluginNotificationLevel.ERROR, ex);
+            Thread.currentThread().interrupt();
+        } catch (final PluginException | RuntimeException ex) {
+            auditPluginError(plugin, ex);
+            reportException(interaction, currentReport, PluginNotificationLevel.ERROR, ex);
         } finally {
             callingConstraints.setSilentCount(silentCount);
             callingConstraints.setAlwaysSilent(alwaysSilent);
@@ -276,6 +262,8 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             }
             callingConstraints.setCurrentReport(currentReport);
         }
+        final PluginManager manager = new PluginManager(DefaultPluginEnvironment.this, plugin, graph, interactive, null);
+        final PluginInteraction interaction = new DefaultPluginInteraction(manager, currentReport);
 
         try {
             ConstellationLogger.getDefault().pluginStarted(plugin, parameters, GraphNode.getGraph(graph != null ? graph.getId() : null));
@@ -284,17 +272,14 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
         }
 
         try {
-            final PluginManager manager = new PluginManager(DefaultPluginEnvironment.this, plugin, graph, interactive, null);
-            final PluginInteraction interaction = new DefaultPluginInteraction(manager, currentReport);
-
             plugin.run(graph, interaction, parameters);
-        } catch (final Exception ex) {
-            new NotifyDescriptor.Exception(ex);
+        } catch (final InterruptedException ex) {
             auditPluginError(plugin, ex);
-            if (currentReport != null) {
-                currentReport.setError(ex);
-            }
-            throw ex;
+            reportException(interaction, currentReport, PluginNotificationLevel.ERROR, ex);
+            Thread.currentThread().interrupt();
+        } catch (final PluginException | RuntimeException ex) {
+            auditPluginError(plugin, ex);
+            reportException(interaction, currentReport, PluginNotificationLevel.ERROR, ex);
         } finally {
             callingConstraints.setSilentCount(silentCount);
             callingConstraints.setAlwaysSilent(alwaysSilent);
@@ -328,7 +313,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
         callingConstraints.setSilentCount(0);
         callingConstraints.setAlwaysSilent(alwaysSilent || silentCount > 0);
 
-        GraphReport graphReport = graph == null ? null : GraphReportManager.getGraphReport(graph.getId());
+        final GraphReport graphReport = graph == null ? null : GraphReportManager.getGraphReport(graph.getId());
         PluginReport parentReport = null;
         PluginReport currentReport = null;
         if (graphReport != null) {
@@ -341,6 +326,8 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             callingConstraints.setCurrentReport(currentReport);
         }
 
+        final PluginManager manager = new PluginManager(DefaultPluginEnvironment.this, plugin, graph, interactive, null);
+        final PluginInteraction interaction = new DefaultPluginInteraction(manager, currentReport);
         try {
             ConstellationLogger.getDefault().pluginStarted(plugin, parameters, GraphNode.getGraph(graph != null ? graph.getId() : null));
         } catch (final Exception ex) {
@@ -348,18 +335,14 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
         }
 
         try {
-            PluginManager manager = new PluginManager(DefaultPluginEnvironment.this, plugin, graph, interactive, null);
-            PluginInteraction interaction = new DefaultPluginInteraction(manager, currentReport);
-
             plugin.run(graph, interaction, parameters);
-
-        } catch (final Exception ex) {
-            new NotifyDescriptor.Exception(ex);
+        } catch (final InterruptedException ex) {
             auditPluginError(plugin, ex);
-            if (currentReport != null) {
-                currentReport.setError(ex);
-            }
-            throw ex;
+            reportException(interaction, currentReport, PluginNotificationLevel.ERROR, ex);
+            Thread.currentThread().interrupt();
+        } catch (final PluginException | RuntimeException ex) {
+            auditPluginError(plugin, ex);
+            reportException(interaction, currentReport, PluginNotificationLevel.ERROR, ex);
         } finally {
             callingConstraints.setSilentCount(silentCount);
             callingConstraints.setAlwaysSilent(alwaysSilent);
@@ -372,7 +355,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
 
             try {
                 ConstellationLogger.getDefault().pluginStopped(plugin, parameters);
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
             }
         }
@@ -384,6 +367,24 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             ConstellationLogger.getDefault().pluginError(plugin, error);
         } catch (final Exception ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+        }
+    }
+
+    /**
+     * Reports the Exception to the user via the PluginInteraction and sets the
+     * current report to its error state.
+     *
+     * @param interaction the PluginInteraction object to report to
+     * @param currentReport the current report
+     * @param level the level of the exception
+     * @param ex the exception
+     * @param message the message to notify the user with
+     */
+    private void reportException(final PluginInteraction interaction, final PluginReport currentReport,
+            final PluginNotificationLevel level, final Exception ex) {
+        interaction.notifyException(level, ex);
+        if (currentReport != null) {
+            currentReport.setError(ex);
         }
     }
 }

@@ -54,6 +54,7 @@ public abstract class SimpleReadPlugin extends AbstractPlugin {
     private static final Logger LOGGER = Logger.getLogger(SimpleReadPlugin.class.getName());
 
     public SimpleReadPlugin() {
+        // This constructor is intentionally left blank.
     }
 
     public SimpleReadPlugin(String pluginName) {
@@ -61,7 +62,7 @@ public abstract class SimpleReadPlugin extends AbstractPlugin {
     }
 
     @Override
-    public final void run(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+    public final void run(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException, RuntimeException {
         final Graph graph = graphs.getGraph();
 
         // Make the graph appear busy
@@ -76,16 +77,24 @@ public abstract class SimpleReadPlugin extends AbstractPlugin {
                 try {
 
                     interaction.setProgress(0, 0, "Working...", true);
-
                     try {
                         read(readableGraph, interaction, parameters);
-                    } catch (InterruptedException e) {
-                        interaction.notify(PluginNotificationLevel.INFO, "Plugin cancelled: " + graphs.getGraph() + ": " + getName());
+                    } catch (final InterruptedException e) {
+                        // Notify the user that the plugin was interrupted and throw the exception back to the caller for generic handling.
+                        interaction.notify(PluginNotificationLevel.INFO, "Plugin cancelled: " + graphs.getGraph() + SeparatorConstants.SEMICOLON + " " + getName());
                         throw e;
-                    } catch (Exception e) {
+                    } catch (final PluginException e) {
+                        // Logging the PluginException and throwing the exception back to the caller for generic handling.
+                        final String msg0 = String.format("PluginException caught in %s.run()", SimpleReadPlugin.class.getName());
                         final String msg = Bundle.MSG_Read_Failed(graph, getName());
-                        interaction.notify(PluginNotificationLevel.ERROR, msg + SeparatorConstants.NEWLINE + e.getMessage());
-                        LOGGER.log(Level.WARNING, msg, e);
+                        LOGGER.log(Level.SEVERE, "{0}" + SeparatorConstants.SEMICOLON + SeparatorConstants.NEWLINE + "{1}" + SeparatorConstants.NEWLINE + "{2}", new Object[]{msg0, msg, e.getMessage()});
+                        throw e;
+                    } catch (final RuntimeException e) {
+                        // Notify the user that there was a RuntimeException and throw the exception back to the caller for generic handling.
+                        final String msg0 = String.format("Unexpected non-plugin exception caught in %s.run()", SimpleReadPlugin.class.getName());
+                        final String msg = Bundle.MSG_Read_Failed(graph, getName());
+                        interaction.notify(PluginNotificationLevel.ERROR, msg0 + SeparatorConstants.SEMICOLON + SeparatorConstants.NEWLINE + msg + SeparatorConstants.NEWLINE + e.getMessage());
+                        throw e;
                     }
 
                 } finally {
@@ -102,7 +111,7 @@ public abstract class SimpleReadPlugin extends AbstractPlugin {
     }
 
     @Override
-    public void run(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+    public void run(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException, RuntimeException {
         // Make the graph appear busy
         interaction.setBusy(graph.getId(), true);
         try {
@@ -113,13 +122,22 @@ public abstract class SimpleReadPlugin extends AbstractPlugin {
 
                 try {
                     read(graph, interaction, parameters);
-                } catch (InterruptedException e) {
-                    interaction.notify(PluginNotificationLevel.INFO, "Plugin cancelled: " + graph + ": " + getName());
+                } catch (final InterruptedException e) {
+                    // Notify the user that the plugin was interrupted and throw the exception back to the caller for generic handling.
+                    interaction.notify(PluginNotificationLevel.INFO, "Plugin cancelled: " + graph + SeparatorConstants.COLON + " " + getName());
                     throw e;
-                } catch (Exception e) {
+                } catch (final PluginException e) {
+                    // Logging the PluginException and throwing the exception back to the caller for generic handling.
+                    final String msg0 = String.format("PluginException caught in %s.run()", SimpleReadPlugin.class.getName());
                     final String msg = Bundle.MSG_Read_Failed(graph, getName());
-                    interaction.notify(PluginNotificationLevel.ERROR, msg + SeparatorConstants.NEWLINE + e.getMessage());
-                    LOGGER.log(Level.WARNING, msg, e);
+                    LOGGER.log(Level.SEVERE, "{0}" + SeparatorConstants.SEMICOLON + SeparatorConstants.NEWLINE + "{1}" + SeparatorConstants.NEWLINE + "{2}", new Object[]{msg0, msg, e.getMessage()});
+                    throw e;
+                } catch (final RuntimeException e) {
+                    // Notify the user that there was a RuntimeException and throw the exception back to the caller for generic handling.
+                    final String msg0 = String.format("Unexpected non-plugin exception caught in %s.run()", SimpleReadPlugin.class.getName());
+                    final String msg = Bundle.MSG_Read_Failed(graph, getName());
+                    interaction.notify(PluginNotificationLevel.ERROR, msg0 + SeparatorConstants.SEMICOLON + SeparatorConstants.NEWLINE + msg + SeparatorConstants.NEWLINE + e.getMessage());
+                    throw e;
                 }
 
             } finally {
@@ -132,7 +150,7 @@ public abstract class SimpleReadPlugin extends AbstractPlugin {
     }
 
     @Override
-    public final void run(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+    public final void run(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException, RuntimeException {
         run((GraphReadMethods) graph, interaction, parameters);
     }
 
@@ -148,6 +166,8 @@ public abstract class SimpleReadPlugin extends AbstractPlugin {
      * @throws InterruptedException if the plugin execution is canceled.
      * @throws PluginException if an anticipated error occurs during plugin
      * execution.
+     * @throws RuntimeException if an unexpected error occurs during the plugin
+     * execution.
      */
-    protected abstract void read(GraphReadMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException;
+    protected abstract void read(GraphReadMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException, RuntimeException;
 }

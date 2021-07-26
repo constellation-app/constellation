@@ -72,6 +72,15 @@ public interface PluginInteraction {
     void notify(final PluginNotificationLevel level, final String message);
 
     /**
+     * Sends a notification via notify and aditionally logs the exception
+     * stacktrace
+     *
+     * @param level the notification level.
+     * @param exception The Exception to log
+     */
+    void notifyException(final PluginNotificationLevel level, final Exception exception);
+
+    /**
      * Present a confirmation message to the user.
      *
      * @param message A message to present to the user.
