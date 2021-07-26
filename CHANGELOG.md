@@ -2,6 +2,9 @@
 
 ## Changes in July 2021
 
+-   Update to Quality Control category names and colours in 
+    'QualityControlEvent' to be easier to understand. 
+
 -   Update to `openEdit`, `updateNotesUI`, `createNote` and the constructor in 
     `NotesViewPane` to include variables to hold what graph elements are 
     selected and applied to the note. Also included a right click context menu
