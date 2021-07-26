@@ -215,16 +215,18 @@ public class QualityControlViewPaneNGTest {
     public void testQualityStyle() {
         System.out.println("qualityStyle");
 
-        final String defaultStyle = QualityControlViewPane.qualityStyle(QualityCategory.DEFAULT);
-        assertEquals(defaultStyle, String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(%d,%d,255,%f);", 253, 253, 0.75f));       
-        final String infoStyle = QualityControlViewPane.qualityStyle(QualityCategory.INFO);
-        assertEquals(infoStyle, String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(%d,%d,255,%f);", 179, 179, 0.75f));
-        final String warningStyle = QualityControlViewPane.qualityStyle(QualityCategory.WARNING);
-        assertEquals(warningStyle, String.format("-fx-text-fill: rgb(255,255,255);-fx-background-color: rgba(%d,%d,255,%f);", 102, 102, 0.75f));
+        final String okStyle = QualityControlViewPane.qualityStyle(QualityCategory.OK);
+        assertEquals(okStyle, String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(0,200,0,%f);", 0.75f));
+        final String minorStyle = QualityControlViewPane.qualityStyle(QualityCategory.MINOR);
+        assertEquals(minorStyle, String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(90,150,255,%f);", 0.75f));
+        final String mediumStyle = QualityControlViewPane.qualityStyle(QualityCategory.MEDIUM);
+        assertEquals(mediumStyle, String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(255,215,0,%f);", 0.75f));
+        final String majorStyle = QualityControlViewPane.qualityStyle(QualityCategory.MAJOR);
+        assertEquals(majorStyle, String.format("-fx-text-fill: rgb(255,255,255);-fx-background-color: rgba(255,%d,0,%f);", 102, 0.75f));
         final String severeStyle = QualityControlViewPane.qualityStyle(QualityCategory.SEVERE);
         assertEquals(severeStyle, String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(255,%d,%d,%f);", 26, 26, 0.75f));
-        final String fatalStyle = QualityControlViewPane.qualityStyle(QualityCategory.FATAL);
-        assertEquals(fatalStyle, String.format("-fx-text-fill: rgb(255,255,255);-fx-background-color: rgba(0,%d,%d,%f);", 13, 13, 0.75f));
+        final String criticalStyle = QualityControlViewPane.qualityStyle(QualityCategory.CRITICAL);
+        assertEquals(criticalStyle, String.format("-fx-text-fill: rgb(255,255,255);-fx-background-color: rgba(150,%d,%d,%f);", 13, 13, 0.75f));
     }
 
     /**
@@ -245,9 +247,9 @@ public class QualityControlViewPaneNGTest {
         final MissingTypeRule mRule = new MissingTypeRule();
         final UnknownTypeRule uRule = new UnknownTypeRule();
         
-        assertEquals(result.get(iiRule), QualityCategory.INFO);
+        assertEquals(result.get(iiRule), QualityCategory.MEDIUM);
         assertEquals(result.get(mRule), QualityCategory.SEVERE);
-        assertEquals(result.get(uRule), QualityCategory.DEFAULT);
+        assertEquals(result.get(uRule), QualityCategory.MINOR);
     }
     
     /**
