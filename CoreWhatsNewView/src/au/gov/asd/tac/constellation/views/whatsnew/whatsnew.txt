@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
+== 2021-07-27 Default Graph Label Colour Change
+<p>The default graph label colour has been changed to white to improve visibility of the label on the graph background. The label colour is able to be changed in the Attribute Editor as a Graph Attribute.</p>
+
 == 2021-07-26 Quality Control Category Changes
 <p>Quality Control category names and colours have been updated to match commonly seen category names and colours. The category names are now Minor, Medium, Major, Severe and Critical.</p>
 <p>A new category OK has been added for when a Quality Control rule has not been flagged.<p> 
