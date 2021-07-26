@@ -41,7 +41,7 @@ import org.openide.windows.WindowManager;
 @NbBundle.Messages("MSG_NoRisk=N/A")
 public final class DefaultQualityControlAutoButton extends QualityControlAutoButton implements QualityControlListener {
 
-    protected static final String DEFAULT_TEXT_STYLE = "-fx-text-fill: rgb(0,0,0); -fx-background-color: rgb(255,255,255);";
+    protected static final String DEFAULT_TEXT_STYLE = "-fx-text-fill: rgb(0,0,0); -fx-background-color: rgb(0,200,0,);";
     protected static final String BUTTON_STYLE = "-fx-padding: 2 5 2 5;";
     public static final String QUERY_RISK_DEFAULT_STYLE = "-fx-text-fill: rgb(0,0,0); -fx-padding: 2 5 2 5;";
     public static final String QUALITY_CONTROL_WIDGET_TEXT = "Quality Category: %s";
@@ -82,12 +82,12 @@ public final class DefaultQualityControlAutoButton extends QualityControlAutoBut
         final String riskText;
         final String styleText;
         final String tooltipText;
-        if (event != null && event.getCategory() != QualityCategory.DEFAULT) {
+        if (event != null && event.getCategory() != QualityCategory.OK) {
             riskText = String.format(QUALITY_CONTROL_WIDGET_TEXT, String.valueOf(event.getCategory().name()));
             styleText = QualityControlViewPane.qualityStyle(event.getCategory(), 1);
             tooltipText = event.getReasons();
         } else {
-            riskText = String.format(QUALITY_CONTROL_WIDGET_TEXT, Bundle.MSG_NoRisk());
+            riskText = String.format(QUALITY_CONTROL_WIDGET_TEXT, String.valueOf(QualityCategory.OK.name()));
             styleText = DEFAULT_TEXT_STYLE;
             tooltipText = null;
         }
