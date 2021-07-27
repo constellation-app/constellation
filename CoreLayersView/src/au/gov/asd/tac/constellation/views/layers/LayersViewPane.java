@@ -222,6 +222,16 @@ public class LayersViewPane extends BorderPane {
             }
         });
 
+        // Layer Deletion
+        final Node deleteButton = new Button("Delete");
+        ((Button) deleteButton).setMinWidth(60);
+        deleteButton.setOnMouseClicked(e -> {
+            controller.getVxQueryCollection().removeQueryAndSort(currentIndex);
+            controller.getTxQueryCollection().removeQueryAndSort(currentIndex);
+            controller.writeState();
+            controller.execute();
+        });
+
         // Default layer Handling
         if (currentIndex == 0) {
             layerIdText.setDisable(true);
@@ -230,6 +240,7 @@ public class LayersViewPane extends BorderPane {
             vxQueryTextArea.setDisable(true);
             txQueryTextArea.setDisable(true);
             descriptionTextArea.setDisable(true);
+            deleteButton.setDisable(true);
         }
 
         // Adding to collections based on checkbox preferences.
@@ -251,7 +262,7 @@ public class LayersViewPane extends BorderPane {
         }
 
         // Add created items to grid pane
-        layersGridPane.addRow(currentIndex + 1, layerIdText, visibilityCheckBox, vxQueryTextArea, txQueryTextArea, descriptionTextArea);
+        layersGridPane.addRow(currentIndex + 1, layerIdText, visibilityCheckBox, vxQueryTextArea, txQueryTextArea, descriptionTextArea, deleteButton);
     }
 
     public synchronized void setLayers(final BitMaskQuery[] vxLayers, final BitMaskQuery[] txLayers) {

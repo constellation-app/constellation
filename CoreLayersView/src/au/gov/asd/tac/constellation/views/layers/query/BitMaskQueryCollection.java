@@ -212,4 +212,19 @@ public class BitMaskQueryCollection {
         }
         queries[index] = null;
     }
+
+    /**
+     * Remove a query, reset its index and shift the position in the array.
+     *
+     * @param index the query to remove.
+     */
+    public void removeQueryAndSort(final int index) {
+        System.arraycopy(queries, index + 1, queries, index, queries.length - index - 1);
+        int queryIndex = 0;
+        for (final BitMaskQuery query : queries) {
+            if (query != null) {
+                query.setIndex(queryIndex++);
+            }
+        }
+    }
 }
