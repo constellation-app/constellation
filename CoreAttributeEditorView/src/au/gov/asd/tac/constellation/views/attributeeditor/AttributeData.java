@@ -140,7 +140,7 @@ public class AttributeData extends AttributePrototype {
         return isKeepExpanded;
     }
 
-    public void setKeepExpanded(boolean isKeepExpanded) {
+    public void setKeepExpanded(final boolean isKeepExpanded) {
         this.isKeepExpanded = isKeepExpanded;
     }
 }

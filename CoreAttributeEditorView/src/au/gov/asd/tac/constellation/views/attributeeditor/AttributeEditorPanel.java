@@ -678,9 +678,8 @@ public class AttributeEditorPanel extends BorderPane {
         attributePane.setContent(dataAndMoreButtonBox);
 
         //attributePane TitledPane EXPAND and COLLAPSE events
-        attributePane.expandedProperty().addListener((observable, wasExpanded, isNowExpanded) -> {
-            attribute.setKeepExpanded(isNowExpanded);
-        });
+        attributePane.expandedProperty().addListener((observable, wasExpanded, isNowExpanded)
+                -> attribute.setKeepExpanded(isNowExpanded));
     }
 
     private Button createLoadMoreButton(final VBox parent, final AttributeData attribute) {
