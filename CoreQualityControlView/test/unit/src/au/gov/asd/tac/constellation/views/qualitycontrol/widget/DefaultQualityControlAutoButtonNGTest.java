@@ -66,7 +66,7 @@ public class DefaultQualityControlAutoButtonNGTest {
 
         //mock QualityControlEvent
         qualityControlEvent = mock(QualityControlEvent.class);
-        when(qualityControlEvent.getCategory()).thenReturn(QualityCategory.FATAL);
+        when(qualityControlEvent.getCategory()).thenReturn(QualityCategory.CRITICAL);
         when(qualityControlEvent.getReasons()).thenReturn("Reason 1, Reason2");
 
         events.add(qualityControlEvent);
@@ -88,10 +88,9 @@ public class DefaultQualityControlAutoButtonNGTest {
             new JFXPanel();
             DefaultQualityControlAutoButton instance = new DefaultQualityControlAutoButton();
 
-            String expRiskText = String.format(instance.QUALITY_CONTROL_WIDGET_TEXT, Bundle.MSG_NoRisk());
+            String expRiskText = "Quality Category: " + QualityCategory.OK.name();
             String expStyleText = instance.DEFAULT_TEXT_STYLE + instance.BUTTON_STYLE;
             String expTooltipText = null;
-
             instance.qualityControlChanged(null);
 
             String resultRiskText = instance.getText();
@@ -117,8 +116,8 @@ public class DefaultQualityControlAutoButtonNGTest {
             new JFXPanel();
             DefaultQualityControlAutoButton instance = new DefaultQualityControlAutoButton();
 
-            final String expRiskText = "Quality Category: FATAL";
-            final String expStyleText = "-fx-text-fill: rgb(255,255,255);-fx-background-color: rgba(0,13,13,1.000000);" + instance.BUTTON_STYLE;
+            final String expRiskText = "Quality Category: CRITICAL";
+            final String expStyleText = "-fx-text-fill: rgb(255,255,255);-fx-background-color: rgba(150,13,13,1.000000);" + instance.BUTTON_STYLE;
             final String expTooltipText = "Reason 1, Reason2";
 
             instance.qualityControlChanged(state);

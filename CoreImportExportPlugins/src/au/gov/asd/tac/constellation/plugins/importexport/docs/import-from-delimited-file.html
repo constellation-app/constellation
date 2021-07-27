@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Import From Delimited File</title>
+        <title>Import From File</title>
         <link rel="stylesheet" href="nbdocs://au.gov.asd.tac.constellation.preferences/au/gov/asd/tac/constellation/preferences/constellation.css" type="text/css">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     </head>
     <body>
-        <h1>Import From Delimited File</h1>
+        <h1>Import From File</h1>
         <table border="1">
-            <caption>Import From Delimited File Actions</caption>
+            <caption>Import From File Actions</caption>
             <tr>
                 <th scope="col">Constellation Action</th>
                 <th scope="col">Keyboard Shortcut</th>
@@ -23,25 +23,24 @@
                     
                 </td>
                 <td>
-                    File -&gt; Import -&gt; From Delimited File...
+                    File -&gt; Import -&gt; From File...
                 </td>
                 <td style="text-align: center">
-                    <img src="../delimited/resources/importDelimited.png" alt="Import From Delimited File Icon">
+                    <img src="../delimited/resources/importDelimited.png" alt="Import From File Icon">
                 </td>
             </tr>
         </table>
         
         <h2>Introduction</h2>
         <p>
-            The "Import From Delimited File" window allows you to import data from the following sources:
+            The "Import From File" window allows you to import data from the following sources:
         </p>
         <ul>
             <li>Comma-separated values (CSV)</li>
             <li>Tab-separated values (TSV)</li>
             <li>Excel</li>
             <li>XML</li>
-            <li>JSON</li>
-            <li>SQLite</li>
+            <li>JSON</li>            
         </ul>
         
         <div style="text-align: center">
@@ -53,7 +52,7 @@
             The following is a high level workflow an analyst can follow (explained in detail later on):
         </p>
         <ol>
-            <li>Select the file type you want to import with Import File Parser</li>
+            <li>Select the file type you want to import with File Parser</li>
             <li>Click on the <img src="resources/plus_coloured.png" alt="Add File Button"> to add files.</li>
             <li>Select your destination graph.</li>
             <li>Drag and drop attributes from the bottom pane onto your columns.</li>
@@ -68,7 +67,7 @@
         <ul>
             <li>See all supported attributes using Options -&gt; Show all schema attributes</li>
             <li>Hover over the attribute name for a tooltip.</li>
-            <li>Filter in the Configuration Pane by adding searches of the form &lt;column_name&gt; =="&lt;search text&gt;" E.g.: first_name=="Nick".</li>
+            <li>Filter in the Configuration Pane by adding searches of the form &lt;column_name&gt; =="&lt;search text&gt;" E.g. first_name=="Nick".</li>
         </ul>
 
         <h2>Add and Remove Files to Import</h2>

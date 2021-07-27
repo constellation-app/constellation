@@ -58,7 +58,7 @@ import org.openide.util.lookup.ServiceProvider;
 
 @ServiceProvider(service = Plugin.class)
 @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
-@NbBundle.Messages("ImportJDBCPlugin=Import from JDBC Sources")
+@NbBundle.Messages("ImportJDBCPlugin=Import from Database")
 public class ImportJDBCPlugin extends SimpleEditPlugin {
 
     public static final String QUERY_PARAMETER_ID = PluginParameter.buildId(ImportJDBCPlugin.class, "query");
