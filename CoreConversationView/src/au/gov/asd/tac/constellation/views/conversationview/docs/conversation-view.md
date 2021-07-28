@@ -4,10 +4,10 @@
 <caption>Conversation View Actions</caption>
 <thead>
 <tr class="header">
-<th scope="col"><strong>Constellation Action</strong></th>
-<th scope="col"><strong>Keyboard Shortcut</strong></th>
-<th scope="col"><strong>User Action</strong></th>
-<th style="text-align: center;" scope="col"><strong>Menu Icon</strong></th>
+<th scope="col">Constellation Action</th>
+<th scope="col">Keyboard Shortcut</th>
+<th scope="col">User Action</th>
+<th style="text-align: center;" scope="col">Menu Icon</th>
 </tr>
 </thead>
 <tbody>

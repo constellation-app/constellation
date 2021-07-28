@@ -10,10 +10,10 @@
 </colgroup>
 <thead>
 <tr class="header">
-<th scope="col"><strong>Constellation Action</strong></th>
-<th scope="col"><strong>Keyboard Shortcut</strong></th>
-<th scope="col"><strong>User Action</strong></th>
-<th scope="col"><strong>Menu Icon</strong></th>
+<th scope="col">Constellation Action</th>
+<th scope="col">Keyboard Shortcut</th>
+<th scope="col">User Action</th>
+<th scope="col">Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -89,8 +89,8 @@ options to copy data from the clicked cell, row or column.
     exactly as it appears in the Table View.
 -   *Export Table* ![Export Table Button](resources/TableExport.png) -
     Clicking on the export toolbar button will provide you with options
-    to export the table in various file formats. The table will be
-    copied exactly as it appears in the Table View.
+    to export the table to CSV or Excel. The table will be copied
+    exactly as it appears in the Table View.
 -   *Other Settings* ![Other Settings
     Button](resources/TableOtherSettings.png) - Clicking on the other
     settings toolbar button will provide you with options to load and

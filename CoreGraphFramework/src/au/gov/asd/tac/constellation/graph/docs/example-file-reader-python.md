@@ -1,21 +1,21 @@
-# Using Python to read CONSTELLATION .star files
+# Example Constellation File Reader
 
-The CONSTELLATION file format uses JSON to store data (see ... for
-details). One of the advantages of using JSON is that a .star file can
-be manipulated using any language that has a JSON library.
+The Constellation file format uses JSON to store data. One of the
+advantages of using JSON is that a .star file can be manipulated using
+any language that has a JSON library.
 
 This section will use Python 2.6 to provide examples of reading .star
 files.
 
-## Reading a .star file
+## Reading a .star File
 
 The Python script below (given the path of a .star file on the command
 line) will read the JSON document from the .star file and display some
 data from the JSON document. We'll use the output of this script to
-investigate CONSTELLATION's JSON document format.
+investigate Constellation's JSON document format.
 
             #
-            # Read the JSON document from a CONSTELLATION .star file.
+            # Read the JSON document from a Constellation .star file.
             #
 
             from __future__ import print_function
@@ -26,7 +26,7 @@ investigate CONSTELLATION's JSON document format.
             import zipfile
 
             def read_graph(fnam):
-                '''Read a CONSTELLATION graph from a .star file.'''
+                '''Read a Constellation graph from a .star file.'''
 
                 try:
                     zf = zipfile.ZipFile(fnam, 'r')
@@ -76,7 +76,7 @@ investigate CONSTELLATION's JSON document format.
                 pprint.pprint(vertex_data[0], indent=2)
             
 
-The output from the script (using a typical graph) is shown below.
+The output from the script (using a typical graph) is shown below:
 
             Graph structure:
             [ { u'attribute_mod_count': 65,
@@ -152,18 +152,17 @@ long form. Use whichever variant you are most comfortable with.
                 return names
             
 
-The output from both functions is (unsurprisingly) the same.
+The output from both functions is (unsurprisingly) the same:
 
             [u'Node 1', u'Node 6']
             
 
-Note the use of <span class="tt">vx.get()</span> instead of using
-standard dictionary lookup notation <span class="tt">vx\[\]</span>. This
-is because a vertex attribute with a null value is not written to the
-JSON document, and therefore does not have a key in the Python
-dictionary when it is read. Attempting to read a dictionary with a
-non-existent key results in a KeyError being thrown, which isn't good
-for our output.
+NOTE: We use "vx.get" instead of using standard dictionary lookup
+notation "vx\[\]". This is because a vertex attribute with a null value
+is not written to the JSON document, and therefore does not have a key
+in the Python dictionary when it is read. Attempting to read a
+dictionary with a non-existent key results in a KeyError being thrown,
+which isn't good for our output.
 
 The documentation for get(key \[,default\]) says: "Return the value for
 key if key is in the dictionary, else default. If default is not given,
@@ -220,4 +219,4 @@ Output:
 
 Because the JSON document is designed for storage rather than graph
 manipulation, it is more difficult to find results for queries such as
-'find all transactions with the same country at both ends'.
+"find all transactions with the same country at both ends".

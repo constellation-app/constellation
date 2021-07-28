@@ -1,12 +1,12 @@
-# Import from JDBC
+# Import from Database
 
-The "Import from JDBC" window allows you to import data using a JDBC
-Connection to a database.
+The "Import from Database" window allows you to import data from a
+database using a JDBC Connection.
 
 ## High level workflow steps
 
 The following is a high level workflow an analyst can follow to get the
-most out of the import from JDBC feature:
+most out of the import from database feature:
 
 1.  Add the relevant JDBC Driver via "Manage Connections" -&gt;
     "Drivers" tab.
@@ -28,6 +28,9 @@ Some useful hints are:
 -   See all supported attributes using Options -&gt; Show all schema
     attributes
 -   Hover over the attribute name for a tooltip.
+-   Filter in the Configuration Pane by adding searches of the form
+    &lt;column\_name&gt; =="&lt;search text&gt;" E.g.
+    first\_name=="Nick".
 
 Once establish a connection, the **Configuration** section will display
 the first 100 rows as a preview. The limit of 100 rows is to make the
