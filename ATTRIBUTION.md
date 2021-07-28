@@ -586,14 +586,31 @@ of Constellation.
 <td></td>
 </tr>
 <tr class="odd">
-<td></td>
+<td>richtextfx-0.10.6.jar</td>
+<td>The 2-Clause BSD License</td>
+<td>https://opensource.org/licenses/BSD-2-Clause</td>
+<td>GNU General Public License, version 2, with the Classpath Exception</td>
+<td>http://openjdk.java.net/legal/gplv2+ce.html</td>
+</tr>
+<tr class="even">
+<td>flowless-0.6.3.jar</td>
+<td>The 2-Clause BSD License</td>
+<td>https://opensource.org/licenses/BSD-2-Clause</td>
+</tr>
+<tr class="odd">
+<td>undofx-2.1.0.jar</td>
 <td>The 2-Clause BSD License</td>
 <td>https://opensource.org/licenses/BSD-2-Clause</td>
 </tr>
 <tr class="even">
-<td></td>
-<td>GNU General Public License, version 2, with the Classpath Exception</td>
-<td>http://openjdk.java.net/legal/gplv2+ce.html</td>
+<td>wellbehavedfx-0.3.3.jar</td>
+<td>The 2-Clause BSD License</td>
+<td>https://opensource.org/licenses/BSD-2-Clause</td>
+</tr>
+<tr class="odd">
+<td>reactfx-2.0-M5.jar</td>
+<td>The 2-Clause BSD License</td>
+<td>https://opensource.org/licenses/BSD-2-Clause</td>
 </tr>
 </tbody>
 </table>
