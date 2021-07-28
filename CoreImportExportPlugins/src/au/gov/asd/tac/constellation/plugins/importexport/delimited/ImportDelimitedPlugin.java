@@ -68,7 +68,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
-@NbBundle.Messages("ImportDelimitedPlugin=Import Delimited Data")
+@NbBundle.Messages("ImportDelimitedPlugin=Import From File")
 public class ImportDelimitedPlugin extends SimpleEditPlugin {
 
     private static final Logger LOGGER = Logger.getLogger(ImportDelimitedPlugin.class.getName());

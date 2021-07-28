@@ -37,7 +37,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class TSVImportFileParser extends ImportFileParser {
 
     public TSVImportFileParser() {
-        super("Tab Separated", 1);
+        super("TSV", 1);
     }
 
     @Override

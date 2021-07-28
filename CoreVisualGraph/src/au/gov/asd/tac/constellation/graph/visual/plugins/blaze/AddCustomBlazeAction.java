@@ -56,11 +56,14 @@ public final class AddCustomBlazeAction extends AbstractAction {
         ConstellationColor blazeColor = selectionResult.getValue();
         if (!selectedVertices.isEmpty()) {
             final Pair<Boolean, ConstellationColor> colorResult = BlazeUtilities.colorDialog(blazeColor);
-            blazeColor = colorResult.getValue();
-            PluginExecution.withPlugin(VisualGraphPluginRegistry.ADD_CUSTOM_BLAZE)
-                    .withParameter(BlazeUtilities.VERTEX_IDS_PARAMETER_ID, selectedVertices)
-                    .withParameter(BlazeUtilities.COLOR_PARAMETER_ID, blazeColor)
-                    .executeLater(context.getGraph());
+            if (colorResult.getKey()) {
+                blazeColor = colorResult.getValue();
+                PluginExecution.withPlugin(VisualGraphPluginRegistry.ADD_CUSTOM_BLAZE)
+                        .withParameter(BlazeUtilities.VERTEX_IDS_PARAMETER_ID, selectedVertices)
+                        .withParameter(BlazeUtilities.COLOR_PARAMETER_ID, blazeColor)
+                        .executeLater(context.getGraph());
+            }
+
         }
     }
 }

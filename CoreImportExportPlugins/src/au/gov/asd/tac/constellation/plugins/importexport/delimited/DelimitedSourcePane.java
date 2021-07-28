@@ -51,8 +51,9 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 
 /**
- * The SourcePane provides the UI necessary to allow the user to specify where the imported data should come from. This
- * is typically done by selecting a file.
+ * The SourcePane provides the UI necessary to allow the user to specify where
+ * the imported data should come from. This is typically done by selecting a
+ * file.
  *
  * @author sirius
  */
@@ -66,6 +67,7 @@ public class DelimitedSourcePane extends SourcePane {
 
     private final ComboBox<ImportFileParser> importFileParserComboBox;
     private final CheckBox schemaCheckBox;
+    private final CheckBox filesIncludeHeadersCheckBox;
     private final ListView<File> fileListView = new ListView<>();
     protected File defaultDirectory = new File(System.getProperty("user.home"));
 
@@ -73,7 +75,7 @@ public class DelimitedSourcePane extends SourcePane {
         super(importController);
 
         final Label fileLabel = new Label("Files:");
-        GridPane.setConstraints(fileLabel, 0, 0, 1, 1, HPos.LEFT, VPos.TOP);
+        GridPane.setConstraints(fileLabel, 0, 1, 1, 1, HPos.LEFT, VPos.TOP);
 
         fileListView.setMinHeight(0);
         fileListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -89,12 +91,12 @@ public class DelimitedSourcePane extends SourcePane {
         fileScrollPane.setContent(fileListView);
         fileScrollPane.setHbarPolicy(ScrollBarPolicy.AS_NEEDED);
         fileScrollPane.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
-        GridPane.setConstraints(fileScrollPane, 1, 0);
+        GridPane.setConstraints(fileScrollPane, 1, 1);
 
         final VBox fileButtonBox = new VBox();
         fileButtonBox.setFillWidth(true);
         fileButtonBox.setSpacing(FILEVBOX_SPACING);
-        GridPane.setConstraints(fileButtonBox, 2, 0);
+        GridPane.setConstraints(fileButtonBox, 2, 1);
 
         final Button fileAddBtn = new Button("", new ImageView(UserInterfaceIconProvider.ADD_ALTERNATE.buildImage(40,
                 ConstellationColor.EMERALD.getJavaColor())));
@@ -130,7 +132,7 @@ public class DelimitedSourcePane extends SourcePane {
         updateDestinationGraphCombo();
 
         // IMPORT FILE PARSER
-        final Label importFileParserLabel = new Label("Import File Parser:");
+        final Label importFileParserLabel = new Label("File Parser:");
 
         final ObservableList<ImportFileParser> parsers = FXCollections.observableArrayList();
         parsers.addAll(ImportFileParser.getParsers().values());
@@ -142,16 +144,21 @@ public class DelimitedSourcePane extends SourcePane {
 
         //SCHEMA
         final Label schemaLabel = new Label("Initialise With Schema:");
-
         schemaCheckBox = new CheckBox();
         schemaCheckBox.setSelected(importController.isSchemaInitialised());
         schemaCheckBox.setOnAction((final ActionEvent event) -> importController.setSchemaInitialised(schemaCheckBox.isSelected()));
 
+        //INSERT COLUMN HEADERS FOR FILES WITH MISSING HEADERS
+        final Label insertHeadersLabel = new Label("Files Include Headers:");
+        filesIncludeHeadersCheckBox = new CheckBox();
+        filesIncludeHeadersCheckBox.setSelected(importController.isFilesIncludeHeadersEnabled());
+        filesIncludeHeadersCheckBox.setOnAction(t -> importController.setfilesIncludeHeaders(filesIncludeHeadersCheckBox.isSelected()));
+
         final ToolBar optionsBox = new ToolBar();
         optionsBox.setMinWidth(0);
-        GridPane.setConstraints(optionsBox, 0, 1, 3, 1);
+        GridPane.setConstraints(optionsBox, 0, 0, 3, 1);
         optionsBox.getItems().addAll(destinationLabel, graphComboBox, importFileParserLabel, importFileParserComboBox,
-                schemaLabel, schemaCheckBox);
+                schemaLabel, schemaCheckBox, insertHeadersLabel, filesIncludeHeadersCheckBox);
         getChildren().add(optionsBox);
     }
 
@@ -168,7 +175,6 @@ public class DelimitedSourcePane extends SourcePane {
                 fileChooser.setSelectedExtensionFilter(extensionFilter);
             }
         }
-        fileChooser.getExtensionFilters().add(new ExtensionFilter("All Files", "*.*"));
 
         final List<File> newFiles = fileChooser.showOpenMultipleDialog(DelimitedSourcePane.this.getScene().getWindow());
 
@@ -209,8 +215,10 @@ public class DelimitedSourcePane extends SourcePane {
     }
 
     /**
-     * Allow a file to be removed from fileListView. This would be triggered by code in InputController if the file was
-     * found to be missing or invalid - these checks are triggered when a new file is selected in the fileListView.
+     * Allow a file to be removed from fileListView. This would be triggered by
+     * code in InputController if the file was found to be missing or invalid -
+     * these checks are triggered when a new file is selected in the
+     * fileListView.
      *
      * @param file The file to remove.
      */

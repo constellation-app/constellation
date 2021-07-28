@@ -52,9 +52,9 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Component id="warningLabel" min="-2" max="-2" attributes="0"/>
-              <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Component id="blazeSizePanel" min="-2" max="-2" attributes="0"/>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Component id="blazeColourPanel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
@@ -99,17 +99,17 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="blazeSizeDescription" min="-2" max="-2" attributes="0"/>
                       <Component id="blazeSlider" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="blazeOpacitySlider" min="-2" max="-2" attributes="0"/>
                       <Component id="blazeOpacityDescription" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -139,7 +139,7 @@
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="Default Blaze Colours">
+            <TitledBorder title="Blaze Custom Colors">
               <ResourceString PropertyName="titleX" bundle="au/gov/asd/tac/constellation/preferences/Bundle.properties" key="GraphOptionsPanel.blazeColourPanel.border.title" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </TitledBorder>
           </Border>
@@ -182,9 +182,9 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
                       <Component id="colorPanel1" min="-2" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="103" alignment="1" groupAlignment="0" attributes="0">
                           <Component id="colorPanel8" min="-2" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Group type="103" alignment="0" groupAlignment="0" max="-2" attributes="0">
                               <Component id="colorPanel10" max="32767" attributes="0"/>
                               <Component id="colorPanel9" max="32767" attributes="0"/>
                               <Component id="colorPanel7" max="32767" attributes="0"/>
@@ -193,7 +193,7 @@
                               <Component id="colorPanel5" alignment="1" max="32767" attributes="0"/>
                               <Component id="colorPanel4" alignment="1" pref="25" max="32767" attributes="0"/>
                               <Component id="colorPanel3" alignment="1" max="32767" attributes="0"/>
-                              <Component id="colorPanel2" alignment="1" pref="25" max="32767" attributes="0"/>
+                              <Component id="colorPanel2" alignment="1" min="-2" pref="25" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
@@ -251,7 +251,7 @@
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                  <EmptySpace min="0" pref="25" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>
@@ -292,7 +292,7 @@
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="25" max="32767" attributes="0"/>
+                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>

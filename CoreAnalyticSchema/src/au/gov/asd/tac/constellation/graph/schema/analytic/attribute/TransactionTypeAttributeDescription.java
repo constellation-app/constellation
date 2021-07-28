@@ -19,6 +19,8 @@ import au.gov.asd.tac.constellation.graph.attribute.AbstractObjectAttributeDescr
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionTypeUtilities;
+import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
+import au.gov.asd.tac.constellation.graph.value.readables.ObjectReadable;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -66,5 +68,11 @@ public class TransactionTypeAttributeDescription extends AbstractObjectAttribute
         if (defaultValue instanceof SchemaTransactionType && defaultValue.isIncomplete()) {
             defaultValue = DEFAULT_VALUE;
         }
+    }
+
+    @Override
+    public Object createReadObject(IntReadable indexReadable) {
+        return (ObjectReadable) () -> data[indexReadable.readInt()] != null
+                ? ((SchemaTransactionType) data[indexReadable.readInt()]).getName() : data[indexReadable.readInt()];
     }
 }

@@ -211,15 +211,15 @@ final class GraphOptionsPanel extends javax.swing.JPanel {
         );
         blazeSizePanelLayout.setVerticalGroup(blazeSizePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(blazeSizePanelLayout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(blazeSizePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                     .addComponent(blazeSizeDescription)
                     .addComponent(blazeSlider, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(blazeSizePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                     .addComponent(blazeOpacitySlider, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                     .addComponent(blazeOpacityDescription))
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         blazeColourPanel.setBorder(BorderFactory.createTitledBorder(NbBundle.getMessage(GraphOptionsPanel.class, "GraphOptionsPanel.blazeColourPanel.border.title"))); // NOI18N
@@ -255,7 +255,7 @@ final class GraphOptionsPanel extends javax.swing.JPanel {
             .addGap(0, 23, Short.MAX_VALUE)
         );
         colorPanel2Layout.setVerticalGroup(colorPanel2Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 25, Short.MAX_VALUE)
         );
 
         colorPanel3.addMouseListener(new MouseAdapter() {
@@ -286,7 +286,7 @@ final class GraphOptionsPanel extends javax.swing.JPanel {
             .addGap(0, 25, Short.MAX_VALUE)
         );
         colorPanel4Layout.setVerticalGroup(colorPanel4Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGap(0, 25, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         colorPanel5.addMouseListener(new MouseAdapter() {
@@ -428,7 +428,7 @@ final class GraphOptionsPanel extends javax.swing.JPanel {
                             .addComponent(colorPanel5, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(colorPanel4, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE)
                             .addComponent(colorPanel3, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(colorPanel2, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE))))
+                            .addComponent(colorPanel2, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -454,9 +454,9 @@ final class GraphOptionsPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(warningLabel)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(blazeSizePanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(blazeColourPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );

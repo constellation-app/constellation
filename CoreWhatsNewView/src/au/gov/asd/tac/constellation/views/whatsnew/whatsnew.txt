@@ -1,6 +1,21 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
+== 2021-07-27 Keep multiple values expanded in the Attribute Editor
+<p>When the graph selection is changed, any expanded node or transaction attributes in the Attribute Editor will now remain expanded and populate values of the new selection.</p>
+<p>When the graph is zoomed in or out, any expanded attribute will remain expanded with the same values.</p>
+
+== 2021-07-27 Default Graph Label Colour Change
+<p>The default graph label colour has been changed to white to improve visibility of the label on the graph background. The label colour is able to be changed in the Attribute Editor as a Graph Attribute.</p>
+
+== 2021-07-26 Quality Control Category Changes
+<p>Quality Control category names and colours have been updated to match commonly seen category names and colours. The category names are now Minor, Medium, Major, Severe and Critical.</p>
+<p>A new category OK has been added for when a Quality Control rule has not been flagged.<p> 
+
+== 2021-07-15 Notes View Selection
+<p>User Notes now have the option to include nodes and transactions on the graph that are selected when the note is created. If no elements are selected, the note will be applied to the whole graph.</p>
+<p>To view what graph elements are applied to the note, a right click context menu has been added to user notes with the option to select on graph which will highlight the relevant nodes and transactions, or the whole graph.</p>
+
 == 2021-06-04 Select All Plugin
 <p>The Select All Plugin in the Data Access View now selects everything on the graph including transactions.</p>
 <p>Previously it only selected the vertices on the graph.</p> 
