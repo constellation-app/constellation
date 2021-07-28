@@ -40,8 +40,9 @@ import javafx.stage.Window;
 import org.openide.util.NbPreferences;
 
 /**
- * This pane holds all parts for importing a delimited file. An import controller handles the importing of files The
- * source and configuration panes handle the input and output of the selected data into a graph.
+ * This pane holds all parts for importing a delimited file. An import
+ * controller handles the importing of files The source and configuration panes
+ * handle the input and output of the selected data into a graph.
  *
  * @author aldebaran30701
  */
@@ -78,7 +79,7 @@ public class ImportPane extends BorderPane {
         root = new BorderPane();
 
         // titled source pane
-        final TitledPane titledSourcePane = new TitledPane("Source", sourcePane);
+        final TitledPane titledSourcePane = new TitledPane("Source and Destination", sourcePane);
         titledSourcePane.setCollapsible(true);
 
         // Options menu
