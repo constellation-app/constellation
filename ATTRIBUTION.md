@@ -587,10 +587,14 @@ of Constellation.
 </tr>
 <tr class="odd">
 <td>richtextfx-0.10.6.jar</td>
-<td>The 2-Clause BSD License</td>
-<td>https://opensource.org/licenses/BSD-2-Clause</td>
-<td>GNU General Public License, version 2, with the Classpath Exception</td>
-<td>http://openjdk.java.net/legal/gplv2+ce.html</td>
+<td><ul>
+<li>The 2-Clause BSD License</li>
+<li>GNU General Public License, version 2, with the Classpath Exception</li>
+</ul></td>
+<td><ul>
+<li>https://opensource.org/licenses/BSD-2-Clause</li>
+<li>http://openjdk.java.net/legal/gplv2+ce.html</li>
+</ul></td>
 </tr>
 <tr class="even">
 <td>flowless-0.6.3.jar</td>
