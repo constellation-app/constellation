@@ -152,17 +152,18 @@ public final class ConversationBox extends StackPane {
             tipsPane.setEnabled(showToolTip.isSelected());
         });
 
-        conversation.setSenderAttributeListener((List<String> possibleSenderAttributes, List<String> senderAttributes) -> {
+        conversation.setSenderAttributeListener((possibleSenderAttributes, senderAttributes) -> {
             isAdjustingSenderLabels = true;
             senderAttributesCombo.getCheckModel().clearChecks();
+            possibleSenderAttributes.stream().filter(possibleAttribute -> possibleAttribute != null);
             senderAttributesChoices.setAll(possibleSenderAttributes);
-            for (String senderAttribute : senderAttributes) {
+            for (final String senderAttribute : senderAttributes) {
                 senderAttributesCombo.getCheckModel().check(senderAttribute);
             }
             isAdjustingSenderLabels = false;
         });
 
-        senderAttributesCombo.getCheckModel().getCheckedItems().addListener((ListChangeListener.Change<? extends String> c) -> {
+        senderAttributesCombo.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change<? extends String> c) -> {
             if (!isAdjustingSenderLabels) {
                 updateSenderAttributes(senderAttributesCombo.getCheckModel().getCheckedItems());
             }
@@ -170,7 +171,7 @@ public final class ConversationBox extends StackPane {
 
         final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor()));
         final Button helpButton = new Button("", helpImage);
-        helpButton.setOnAction((ActionEvent event) -> {
+        helpButton.setOnAction(event -> {
             final Help help = Lookup.getDefault().lookup(Help.class);
             if (help != null) {
                 final String helpId = this.getClass().getPackage().getName();
@@ -181,10 +182,10 @@ public final class ConversationBox extends StackPane {
         });
 
         final Button addAttributesButton = new Button("Add Content Attributes");
-        addAttributesButton.setOnAction((ActionEvent event) -> {
+        addAttributesButton.setOnAction(event -> {
             PluginExecution.withPlugin(new AddContentAttributesPlugin()).executeLater(GraphManager.getDefault().getActiveGraph());
         });
-        Tooltip aabt = new Tooltip("Adds content related transaction attributes to the graph.");
+        final Tooltip aabt = new Tooltip("Adds content related transaction attributes to the graph.");
         addAttributesButton.setTooltip(aabt);
 
         optionsPane.getItems().addAll(senderAttributesCombo, showToolTip, addAttributesButton, helpButton);
@@ -200,12 +201,12 @@ public final class ConversationBox extends StackPane {
         contributionsPane.setCenter(togglesPane);
 
         // Create toggle buttons that allow the user to turn on and off the content contributors.
-        conversation.setContributorListener((Map<String, Boolean> contributors) -> {
+        conversation.setContributorListener(contributors -> {
             isAdjustingContributionProviders = true;
             try {
                 togglesPane.getChildren().clear();
                 int buttonCount = 0;
-                for (Entry<String, Boolean> contributor : contributors.entrySet()) {
+                for (final Entry<String, Boolean> contributor : contributors.entrySet()) {
                     final ToggleButton button = new ToggleButton(contributor.getKey());
                     button.setSelected(contributor.getValue());
                     if (contributors.size() == 1) {
@@ -261,7 +262,6 @@ public final class ConversationBox extends StackPane {
      * to leave foundCount unchanged.
      */
     protected void refreshCountUI(final boolean resetCount) {
-
         if (resetCount) {
             foundCount = 0;
         }
@@ -277,7 +277,6 @@ public final class ConversationBox extends StackPane {
      * on the text currently present in the searchTextField.
      */
     private void highlightRegions() {
-
         foundCount = 0;
 
         final List<ConversationMessage> visibleMessages = conversation.getVisibleMessages();
@@ -466,10 +465,8 @@ public final class ConversationBox extends StackPane {
                         if (newState.getHiddenContributionProviders().remove(contributionProviderName)) {
                             graph.setObjectValue(stateAttribute, 0, newState);
                         }
-                    } else {
-                        if (newState.getHiddenContributionProviders().add(contributionProviderName)) {
-                            graph.setObjectValue(stateAttribute, 0, newState);
-                        }
+                    } else if (newState.getHiddenContributionProviders().add(contributionProviderName)) {
+                        graph.setObjectValue(stateAttribute, 0, newState);
                     }
                 }
             }).executeLater(graph);
