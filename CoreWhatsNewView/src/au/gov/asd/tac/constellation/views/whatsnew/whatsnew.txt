@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
+== 2021-07-21 Conversation View
+<p>The Conversation View now has a search bar where a letter or passage can be searched for within the currently visible conversation.</p>
+
 == 2021-07-27 Keep multiple values expanded in the Attribute Editor
 <p>When the graph selection is changed, any expanded node or transaction attributes in the Attribute Editor will now remain expanded and populate values of the new selection.</p>
 <p>When the graph is zoomed in or out, any expanded attribute will remain expanded with the same values.</p>
