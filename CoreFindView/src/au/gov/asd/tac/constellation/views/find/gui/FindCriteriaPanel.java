@@ -178,7 +178,9 @@ public class FindCriteriaPanel extends JPanel implements DateTimeListenerInterfa
      * @see FindRule
      */
     public FindRule getState() {
-        localState.removeAllArgs();
+        if (localState.getArgs() != null) {
+            localState.getArgs().clear();
+        }
 
         if (localState.getType() != null) {
             // Add the arguments based on the type:
