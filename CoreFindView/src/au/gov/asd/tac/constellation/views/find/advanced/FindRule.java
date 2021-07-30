@@ -348,7 +348,7 @@ public class FindRule {
      * this <code>FindRule</code>
      */
     public float getFloatFirstArg() {
-        return args != null ? (Float) args.get(FLT_FIRST) : 0.0f;
+        return args != null ? (Float) args.get(FLT_FIRST) : 0.0F;
     }
 
     /**
@@ -359,7 +359,7 @@ public class FindRule {
      * this <code>FindRule</code>
      */
     public float getFloatSecondArg() {
-        return args != null ? (Float) args.get(FLT_SECOND) : 0.0f;
+        return args != null ? (Float) args.get(FLT_SECOND) : 0.0F;
     }
 
     /**

@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -155,7 +156,7 @@ public final class ConversationBox extends StackPane {
         conversation.setSenderAttributeListener((possibleSenderAttributes, senderAttributes) -> {
             isAdjustingSenderLabels = true;
             senderAttributesCombo.getCheckModel().clearChecks();
-            possibleSenderAttributes.stream().filter(possibleAttribute -> possibleAttribute != null);
+            possibleSenderAttributes.stream().filter(Objects::nonNull);
             senderAttributesChoices.setAll(possibleSenderAttributes);
             for (final String senderAttribute : senderAttributes) {
                 senderAttributesCombo.getCheckModel().check(senderAttribute);
@@ -182,9 +183,8 @@ public final class ConversationBox extends StackPane {
         });
 
         final Button addAttributesButton = new Button("Add Content Attributes");
-        addAttributesButton.setOnAction(event -> {
-            PluginExecution.withPlugin(new AddContentAttributesPlugin()).executeLater(GraphManager.getDefault().getActiveGraph());
-        });
+        addAttributesButton.setOnAction(event ->
+            PluginExecution.withPlugin(new AddContentAttributesPlugin()).executeLater(GraphManager.getDefault().getActiveGraph()));
         final Tooltip aabt = new Tooltip("Adds content related transaction attributes to the graph.");
         addAttributesButton.setTooltip(aabt);
 
