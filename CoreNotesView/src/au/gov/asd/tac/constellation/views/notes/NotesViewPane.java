@@ -42,6 +42,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -92,7 +94,9 @@ public class NotesViewPane extends BorderPane {
     private final ObservableList<String> availableFilters;
     private final List<String> selectedFilters;
     private final CheckComboBox filterCheckComboBox;
+    private CheckComboBox autoFilterCheckComboBox;
     private Boolean isSelectedFiltersUpdating = false;
+    private Boolean isAutoSelectedFiltersUpdating = false;
 
     private final HBox filterNotesHBox;
     private final VBox notesViewPaneVBox;
@@ -121,9 +125,14 @@ public class NotesViewPane extends BorderPane {
 
     private final List<Integer> nodesSelected = new ArrayList<>();
     private final List<Integer> transactionsSelected = new ArrayList<>();
+    private final List<String> tagsUpdater = new ArrayList<>();
+    private ObservableList<String> tagsFiltersList;
+    private final List<String> tagsSelectedFiltersList = new ArrayList<>();
     private boolean applySelected;
 
     private String editSelection = "";
+
+    public final Logger LOGGER = Logger.getLogger(NotesViewPane.class.getName());
 
     /**
      * NotesViewPane constructor.
@@ -160,6 +169,41 @@ public class NotesViewPane extends BorderPane {
             }
         });
 
+        notesViewEntries.forEach(entry -> {
+            if (!entry.isUserCreated()) {
+
+                final List<String> tags = entry.getTags();
+                for (final String tag : tags) {
+                    if (!tagsUpdater.contains(tag)) {
+                        tagsUpdater.add(tag);
+                        LOGGER.log(Level.WARNING, tag);
+                    }
+                }
+            }
+        });
+
+        tagsFiltersList = FXCollections.observableArrayList(tagsUpdater);
+
+        // CheckComboBox for the Auto Note filters
+        autoFilterCheckComboBox = new CheckComboBox(tagsFiltersList);
+        autoFilterCheckComboBox.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+        autoFilterCheckComboBox.getCheckModel().getCheckedItems().addListener(new ListChangeListener() {
+            @Override
+            public void onChanged(final ListChangeListener.Change event) {
+                if (!isAutoSelectedFiltersUpdating) {
+
+                    updateSelectedTagsCombo(autoFilterCheckComboBox.getCheckModel().getCheckedItems());
+
+                    final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+                    if (activeGraph != null) {
+                        updateNotesUI();
+                        controller.writeState(activeGraph);
+                    }
+                }
+            }
+        });
+        autoFilterCheckComboBox.setStyle("visibility: hidden;");
+
         final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
         helpButton.paddingProperty().set(new Insets(2, 0, 0, 0));
         helpButton.setTooltip(new Tooltip("Display help for Notes View"));
@@ -170,7 +214,7 @@ public class NotesViewPane extends BorderPane {
         helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
 
         // VBox to store control items used to filter notes.
-        filterNotesHBox = new HBox(DEFAULT_SPACING, filterCheckComboBox, helpButton);
+        filterNotesHBox = new HBox(DEFAULT_SPACING, filterCheckComboBox, autoFilterCheckComboBox, helpButton);
         filterNotesHBox.setAlignment(Pos.CENTER_LEFT);
         filterNotesHBox.setStyle("-fx-padding: 5px;");
 
@@ -339,6 +383,15 @@ public class NotesViewPane extends BorderPane {
                     false
             );
 
+            final String[] tags = pluginReport.getTags();
+            final List<String> tagsList = new ArrayList<>();
+            for (String tag : tags) {
+                tagsList.add(tag);
+            }
+            note.setTags(tagsList);
+
+            updateTagsFiltersAvailable();
+
             /**
              * Listener monitors changes to the plugin report as it executes and finishes. Affects the output of getMessage().
              */
@@ -412,6 +465,12 @@ public class NotesViewPane extends BorderPane {
                     }
                 });
             }
+            if (this.selectedFilters.contains(AUTO_NOTES_FILTER)) {
+                autoFilterCheckComboBox.setStyle("visibility: visible;");
+                updateTagsFiltersAvailable();
+            } else {
+                autoFilterCheckComboBox.setStyle("visibility: hidden;");
+            }
             updateFilters();
         });
     }
@@ -429,9 +488,15 @@ public class NotesViewPane extends BorderPane {
             synchronized (LOCK) {
                 notesViewEntries.forEach(entry -> {
                     // Add note to render list if its respective filter is selected.
-                    if ((selectedFilters.contains(USER_NOTES_FILTER) && entry.isUserCreated())
-                            || (selectedFilters.contains(AUTO_NOTES_FILTER) && !entry.isUserCreated())) {
+                    if ((selectedFilters.contains(USER_NOTES_FILTER) && entry.isUserCreated())) {
                         notesToRender.add(entry);
+
+                    } else if (selectedFilters.contains(AUTO_NOTES_FILTER) && !entry.isUserCreated()) {
+                        final boolean addNote = updateAutoNotesDisplayed(entry);
+                        if (addNote) {
+                            notesToRender.add(entry);
+                        }
+
                     } else if (selectedFilters.contains(SELECTED_FILTER) && entry.isUserCreated()) {
                         // if no nodes or transactions are selected, show notes applied to the whole graph 
                         if (entry.isGraphAttribute()) {
@@ -481,6 +546,7 @@ public class NotesViewPane extends BorderPane {
 
             isSelectedFiltersUpdating = false;
         });
+        updateTagFilters();
     }
 
     /**
@@ -524,6 +590,7 @@ public class NotesViewPane extends BorderPane {
      */
     protected void selectAllFilters() {
         setFilters(availableFilters);
+        updateSelectedTagsCombo(tagsFiltersList);
     }
 
     /**
@@ -875,5 +942,81 @@ public class NotesViewPane extends BorderPane {
         if (noteToEdit.getNodesSelected().isEmpty() && noteToEdit.getTransactionsSelected().isEmpty()) {
             noteToEdit.setGraphAttribute(true);
         }
+    }
+
+    /**
+     * Updates the tags filters array with what tags are currently available
+     */
+    public void updateTagsFiltersAvailable() {
+
+        notesViewEntries.forEach(entry -> {
+            if (!entry.isUserCreated()) {
+                final List<String> tags = entry.getTags();
+                for (final String tag : tags) {
+                    if (!tagsUpdater.contains(tag)) {
+                        tagsUpdater.add(tag);
+                        LOGGER.log(Level.WARNING, tag);
+                    }
+                }
+            }
+        });
+
+
+        tagsFiltersList = FXCollections.observableArrayList(tagsUpdater);
+        autoFilterCheckComboBox.getItems().clear();
+        autoFilterCheckComboBox.getItems().addAll(tagsFiltersList);
+    }
+
+    /**
+     * Updates what tags filters are currently selected
+     *
+     * @param selectedTagsFilters
+     */
+    public void updateSelectedTagsCombo(final List<String> selectedTagsFilters) {
+        Platform.runLater(() -> {
+
+            this.tagsSelectedFiltersList.clear();
+            selectedTagsFilters.forEach(filter -> {
+                this.tagsSelectedFiltersList.add(filter);
+
+            });
+        });
+
+        updateTagFilters();
+    }
+
+    /**
+     * Updates UI with what tags filters are selected
+     */
+    public void updateTagFilters() {
+        Platform.runLater(() -> {
+            isAutoSelectedFiltersUpdating = true;
+
+            autoFilterCheckComboBox.getCheckModel().clearChecks();
+
+            tagsSelectedFiltersList.forEach(filter -> {
+                autoFilterCheckComboBox.getCheckModel().check(filter);
+            });
+
+            isAutoSelectedFiltersUpdating = false;
+        });
+    }
+
+    /**
+     * Decides what Auto Notes are shown depending on what filters are selected
+     *
+     * @param entry
+     * @return boolean
+     */
+    public boolean updateAutoNotesDisplayed(final NotesViewEntry entry) {
+        if (tagsSelectedFiltersList.isEmpty()) {
+            return true;
+        }
+        for (final String filter : tagsSelectedFiltersList) {
+            if (entry.getTags().contains(filter)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
