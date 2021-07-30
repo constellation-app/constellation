@@ -277,7 +277,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
 
         final PluginParameter<FloatParameterValue> probability = FloatParameterType.build(PROBABILITY_PARAMETER_ID);
         probability.setName("Probability");
-        probability.setDescription("0 ≤ p ≤ 1");
+        probability.setDescription("0 <= p <= 1");
         FloatParameterType.setMinimum(probability, 0f);
         FloatParameterType.setMaximum(probability, 1f);
         FloatParameterType.setStep(probability, 0.1f);

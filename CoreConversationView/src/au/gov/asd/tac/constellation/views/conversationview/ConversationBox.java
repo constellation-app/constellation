@@ -34,6 +34,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -49,8 +52,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
@@ -72,7 +77,6 @@ import org.openide.util.Lookup;
 
 /**
  * The ConversationBox represents the entire GUI for the conversation view.
- *
  * <p>
  * It contains a Conversation, the model for the dynamically generated content
  * based on the current graph selection, as well as a list view of Bubbles to
@@ -84,11 +88,13 @@ import org.openide.util.Lookup;
  *
  * @author sirius
  * @author antares
+ * @author sol695510
  */
 public final class ConversationBox extends StackPane {
 
+    private static final Logger LOGGER = Logger.getLogger(ConversationBox.class.getName());
+
     public static final double PADDING = 5;
-    private static final double CLEARANCE = 200;
 
     private final Conversation conversation;
 
@@ -100,7 +106,7 @@ public final class ConversationBox extends StackPane {
     protected Font font = Font.getDefault();
     protected ToolBar optionsPane = new ToolBar();
 
-    // A cache to hold bubble for the listview
+    // A cache to hold bubble for the listview.
     private final Map<ConversationMessage, BubbleBox> bubbleCache = new HashMap<>();
 
     // Allow the user to choose the displayed actor name.
@@ -115,8 +121,17 @@ public final class ConversationBox extends StackPane {
     private volatile boolean isAdjustingContributionProviders = false;
     private volatile boolean isAdjustingSenderLabels;
 
+    private int foundCount;
+    private static final String FOUND_TEXT = "Found: ";
+    private static final String FOUND_PASS_COLOUR = "-fx-text-fill: yellow;";
+    private static final String FOUND_FAIL_COLOUR = "-fx-text-fill: red;";
+    private final Label foundLabel = new Label();
+
+    private final TextField searchTextField = new TextField();
+    private final VBox searchVBox = new VBox();
+
     /**
-     * Create a ConversationBox with the given Conversation,
+     * Create a ConversationBox with the given Conversation.
      *
      * @param conversation The Conversation that this ConversationBox will
      * display.
@@ -184,7 +199,7 @@ public final class ConversationBox extends StackPane {
         togglesPane.setAlignment(Pos.CENTER);
         contributionsPane.setCenter(togglesPane);
 
-        // Create toggle buttons that allow the user to turn on and off the content contributors
+        // Create toggle buttons that allow the user to turn on and off the content contributors.
         conversation.setContributorListener((Map<String, Boolean> contributors) -> {
             isAdjustingContributionProviders = true;
             try {
@@ -202,7 +217,7 @@ public final class ConversationBox extends StackPane {
                     } else {
                         button.getStyleClass().add("center-pill");
                     }
-                    button.setOnAction((ActionEvent event) -> {
+                    button.setOnAction(event -> {
                         if (!isAdjustingContributionProviders) {
                             updateContributionProviderVisibility(contributor.getKey(), button.isSelected());
                         }
@@ -215,22 +230,84 @@ public final class ConversationBox extends StackPane {
             }
         });
 
-        // Create the bubbles pane
+        // Create the bubbles pane.
         bubbles = new ListView<>();
         bubbles.setStyle(JavafxStyleManager.CSS_BACKGROUND_COLOR_TRANSPARENT);
         bubbles.setCellFactory(callback -> new BubbleCell());
         VBox.setVgrow(bubbles, Priority.ALWAYS);
 
-        // Hook up the bubbles pane to the conversation
+        // Hook up the bubbles pane to the conversation.
         final ObservableList<ConversationMessage> messages = FXCollections.observableArrayList();
         bubbles.setItems(messages);
         conversation.setResultList(messages);
 
-        content.getChildren().addAll(optionsPane, contributionsPane, bubbles);
+        // Create controls to allow the user to search and highlight text within contributions.
+        searchTextField.setPromptText("Type to search...");
+        searchTextField.setStyle("-fx-prompt-text-fill: #868686;");
+        searchTextField.setOnKeyTyped(e -> highlightRegions());
+        foundLabel.setText(FOUND_TEXT + foundCount);
+        foundLabel.setStyle(foundCount > 0 ? FOUND_PASS_COLOUR : FOUND_FAIL_COLOUR);
+        foundLabel.setPadding(new Insets(4, 8, 4, 8));
+        searchVBox.getChildren().addAll(searchTextField, foundLabel);
+
+        content.getChildren().addAll(optionsPane, searchVBox, contributionsPane, bubbles);
         getChildren().addAll(content, tipsPane);
     }
 
-    // A VBox to hold a bubble and a sender
+    /**
+     * Refresh the UI for the count of 'found'.
+     *
+     * @param resetCount True if foundCount is to be set to 0, otherwise False
+     * to leave foundCount unchanged.
+     */
+    protected void refreshCountUI(final boolean resetCount) {
+
+        if (resetCount) {
+            foundCount = 0;
+        }
+
+        Platform.runLater(() -> {
+            foundLabel.setText(FOUND_TEXT + foundCount);
+            foundLabel.setStyle(foundCount > 0 ? FOUND_PASS_COLOUR : FOUND_FAIL_COLOUR);
+        });
+    }
+
+    /**
+     * Highlights the currently visible regions in the Conversation View based
+     * on the text currently present in the searchTextField.
+     */
+    private void highlightRegions() {
+
+        foundCount = 0;
+
+        final List<ConversationMessage> visibleMessages = conversation.getVisibleMessages();
+
+        visibleMessages.forEach(message -> {
+            final List<ConversationContribution> visibleContributions = message.getVisibleContributions();
+
+            visibleContributions.forEach(contribution -> {
+                final Region region = contribution.getContent(tipsPane);
+
+                if (region instanceof EnhancedTextArea) {
+                    foundCount += ((EnhancedTextArea) region).highlightText(searchTextField.getText());
+                    LOGGER.log(Level.WARNING, "FOUND = {0}", foundCount);
+                }
+
+                if (region instanceof GridPane) {
+                    ((GridPane) region).getChildren().forEach(child -> {
+                        if (child instanceof EnhancedTextArea) {
+                            foundCount += ((EnhancedTextArea) child).highlightText(searchTextField.getText());
+                            LOGGER.log(Level.WARNING, "FOUND = {0}", foundCount);
+                        }
+                    });
+                }
+            });
+        });
+
+        refreshCountUI(false);
+    }
+
+    // A VBox to hold a bubble and a sender.
     private class BubbleBox extends GridPane {
 
         private ConversationSender currentSender = null;
@@ -274,13 +351,16 @@ public final class ConversationBox extends StackPane {
 
         public final void update(final ConversationMessage message) {
             final List<ConversationContribution> newContributions = message.getVisibleContributions();
+
             if (!newContributions.equals(currentContributions)) {
                 currentContributions = new ArrayList<>(newContributions);
 
                 final List<Region> rendered = new ArrayList<>();
-                for (final ConversationContribution contribution : newContributions) {
-                    rendered.add(contribution.getContent(tipsPane));
-                }
+
+                newContributions.forEach(contribution -> {
+                    final Region region = contribution.getContent(tipsPane);
+                    rendered.add(region);
+                });
 
                 final ConversationBubble bubble = new ConversationBubble(rendered, message, tipsPane);
                 if (currentBubble != null) {
@@ -303,7 +383,7 @@ public final class ConversationBox extends StackPane {
         }
     }
 
-    // A ListView cell that holds a BubbleBox as its graphic
+    // A ListView cell that holds a BubbleBox as its graphic.
     private class BubbleCell extends ListCell<ConversationMessage> {
 
         public BubbleCell() {
@@ -333,19 +413,20 @@ public final class ConversationBox extends StackPane {
         protected void updateItem(final ConversationMessage message, final boolean empty) {
             super.updateItem(message, empty);
 
-            // Handle the case where the cell is empty
+            // Handle the case where the cell is empty.
             if (empty || message == null) {
                 setStyle(JavafxStyleManager.CSS_BACKGROUND_COLOR_TRANSPARENT);
                 setGraphic(null);
             } else {
-                // Look for the bubble in the cache
+                // Look for the bubble in the cache.
                 BubbleBox bubbleBox = bubbleCache.get(message);
+
                 if (bubbleBox != null) {
                     // If the bubble is in the cache then update it for
-                    // and changes that may have occurred in the message
+                    // and changes that may have occurred in the message.
                     bubbleBox.update(message);
                 } else {
-                    // Else make a new bubble for the message
+                    // Else make a new bubble for the message.
                     bubbleBox = new BubbleBox(message);
                     bubbleCache.put(message, bubbleBox);
                 }
@@ -353,6 +434,8 @@ public final class ConversationBox extends StackPane {
                 setStyle("-fx-background-color: " + message.getBackgroundColor() + "; -fx-padding: 5 5 5 5;");
                 setGraphic(bubbleBox);
             }
+
+            highlightRegions();
         }
     }
 
