@@ -43,9 +43,11 @@
  */
 package au.gov.asd.tac.constellation.graph.file.open;
 
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.prefs.Preferences;
 import javax.swing.JFileChooser;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -54,12 +56,14 @@ import org.openide.awt.ActionRegistration;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
 import org.openide.util.HelpCtx;
+import org.openide.util.NbPreferences;
 import org.openide.util.UserCancelException;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
 /**
- * Action which allows user open file from disk. It is installed in Menu | File | Open file... .
+ * Action which allows user open file from disk. It is installed in Menu | File
+ * | Open file... .
  *
  * @author Jesse Glick
  * @author Marian Petras
@@ -74,11 +78,11 @@ import org.openide.windows.WindowManager;
     @ActionReference(path = "Shortcuts", name = "C-O")})
 public class OpenFileAction implements ActionListener {
 
-    /**
-     * stores the last current directory of the file chooser
-     */
-    private static File currentDirectory = null;
     private boolean running;
+
+    private static final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+    private static String lastFileSaveLocation = prefs.get(ApplicationPreferenceKeys.FILE_SAVE_LOCATION, "");
+    private static boolean rememberSaveLocation = prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION_DEFAULT);
 
     private HelpCtx getHelpCtx() {
         return new HelpCtx(this.getClass().getName());
@@ -97,8 +101,18 @@ public class OpenFileAction implements ActionListener {
         return chooser;
     }
 
-    private static void setCurrentDirectory(final File currentDir) {
-        currentDirectory = currentDir;
+    /**
+     * When the preference "Remember Open/Save Location" is set, save the
+     * Current Directory.
+     *
+     */
+    private static void saveCurrentDirectory(final File currentDir) {
+        lastFileSaveLocation = prefs.get(ApplicationPreferenceKeys.FILE_SAVE_LOCATION, "");
+        rememberSaveLocation = prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION_DEFAULT);
+
+        if (!lastFileSaveLocation.equals(currentDir.getAbsolutePath()) && rememberSaveLocation) {
+            prefs.put(ApplicationPreferenceKeys.FILE_SAVE_LOCATION, currentDir.getAbsolutePath());
+        }
     }
 
     /**
@@ -106,7 +120,8 @@ public class OpenFileAction implements ActionListener {
      *
      * @param chooser file chooser to display
      * @return array of selected files,
-     * @exception org.openide.util.UserCancelException if the user cancelled the operation
+     * @exception org.openide.util.UserCancelException if the user cancelled the
+     * operation
      */
     public static File[] chooseFilesToOpen(final JFileChooser chooser)
             throws UserCancelException {
@@ -124,7 +139,8 @@ public class OpenFileAction implements ActionListener {
     }
 
     /**
-     * {@inheritDoc} Displays a file chooser dialog and opens the selected files.
+     * {@inheritDoc} Displays a file chooser dialog and opens the selected
+     * files.
      */
     @Override
     public void actionPerformed(final ActionEvent e) {
@@ -137,7 +153,7 @@ public class OpenFileAction implements ActionListener {
             File[] files;
             try {
                 files = chooseFilesToOpen(chooser);
-                OpenFileAction.setCurrentDirectory(chooser.getCurrentDirectory());
+                saveCurrentDirectory(chooser.getCurrentDirectory());
             } catch (UserCancelException ex) {
                 return;
             }
@@ -149,6 +165,11 @@ public class OpenFileAction implements ActionListener {
         }
     }
 
+    /**
+     * When the preference "Remember Open/Save Location" is set, get the
+     * Directory saved in the preference, otherwise use the user's home
+     * directory
+     */
     private static File getCurrentDirectory() {
         if (Boolean.getBoolean("netbeans.openfile.197063")) {
             // Prefer to open from parent of active editor, if any.
@@ -163,12 +184,16 @@ public class OpenFileAction implements ActionListener {
                 }
             }
         }
-        // Otherwise, use last-selected directory, if any.
-        if (currentDirectory != null && currentDirectory.exists()) {
-            return currentDirectory;
+
+        lastFileSaveLocation = prefs.get(ApplicationPreferenceKeys.FILE_SAVE_LOCATION, "");
+        rememberSaveLocation = prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION_DEFAULT);
+
+        //Check prefferences for last saved directory
+        if (lastFileSaveLocation.isEmpty() || !rememberSaveLocation) {
+            // Fall back to default location ($HOME or similar).
+            return new File(System.getProperty("user.home"));
+        } else {
+            return new File(lastFileSaveLocation);
         }
-        // Fall back to default location ($HOME or similar).
-        currentDirectory = new File(System.getProperty("user.home"));  // algol
-        return currentDirectory;
     }
 }

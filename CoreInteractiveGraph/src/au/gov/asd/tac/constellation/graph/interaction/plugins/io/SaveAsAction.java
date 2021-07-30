@@ -68,7 +68,6 @@ import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
@@ -150,10 +149,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
     private boolean isDirty = true;
     private PropertyChangeListener registryListener;
     private LookupListener lookupListener;
-    private static String lastDir = "";
     private boolean isSaved = false;
-
-    private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
     public SaveAsAction() {
         this(Utilities.actionsGlobalContext(), true);
@@ -258,12 +254,13 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
         chooser.setFileFilter(new FileNameExtensionFilter(String.format("%s graphs [.star]", BrandingUtilities.APPLICATION_NAME), "star"));
         chooser.setDialogTitle(Bundle.MSG_SaveAsTitle());
         chooser.setMultiSelectionEnabled(false);
-        if (newFile != null) {
+        if (newFile.exists()) {
             chooser.setCurrentDirectory(newFile.getParentFile());
             chooser.setSelectedFile(newFile);
         } else {
             final File initialFolder = getInitialFolderFrom(newFile, lastFileSaveLocation, rememberSaveLocation);
             chooser.setCurrentDirectory(initialFolder);
+            chooser.setSelectedFile(newFile);
         }
 
         final File origFile = newFile;
@@ -319,11 +316,11 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
             }
         }
 
+        // When the preference "Remember Open/Save Location" is set,
         // save the curent directory if a file was selected
         if (newFile != null) {
-            lastDir = chooser.getCurrentDirectory().getAbsolutePath();
+            String lastDir = chooser.getCurrentDirectory().getAbsolutePath();
             if (!lastFileSaveLocation.equals(lastDir) && rememberSaveLocation) {
-                pcs.firePropertyChange("changed", false, true);
                 prefs.put(ApplicationPreferenceKeys.FILE_SAVE_LOCATION, lastDir);
             }
         }
@@ -342,26 +339,22 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
     }
 
     /**
-     * @param newFile File being 'saved as'
-     * @return Initial folder selected in file chooser. If the file is in
-     * netbeans user dir then user's os-dependent home dir or last used folder
-     * will be used instead of file's parent folder.
+     * @param newFile File being 'saved'
+     * @return Initial folder selected in file chooser. When the preference
+     * "Remember Open/Save Location" is set, get the Directory saved in the
+     * preference, otherwise use the user's home directory
      */
     private File getInitialFolderFrom(final File newFile, String lastFileSaveLocation, boolean rememberSaveLocation) {
         if (newFile != null) {
             File parent = newFile.getParentFile();
             if (parent == null) {
-                if (lastDir.isEmpty()) {
-                    //Check prefferences for last saved directory
-                    if (lastFileSaveLocation.isEmpty() || !rememberSaveLocation) {
-                        return new File(System.getProperty("user.home"));
-                    } else {
-                        return new File(lastFileSaveLocation);
-                    }
-
+                //Check prefferences for last saved directory
+                if (lastFileSaveLocation.isEmpty() || !rememberSaveLocation) {
+                    return new File(System.getProperty("user.home"));
                 } else {
-                    return new File(lastDir);
+                    return new File(lastFileSaveLocation);
                 }
+
             } else {
                 return parent;
             }

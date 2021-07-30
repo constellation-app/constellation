@@ -108,11 +108,11 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
         downloadPythonClientCheckBox.setSelected(downloadPythonClient);
     }
 
-    public boolean getRememberSaveLocation() {
+    public boolean getRememberOpenSaveLocation() {
         return rememberSaveLocationCheckBox.isSelected();
     }
 
-    public void setRememberSaveLocation(final boolean rememberSaveLocation) {
+    public void setRememberOpenSaveLocation(final boolean rememberSaveLocation) {
         this.rememberSaveLocationCheckBox.setSelected(rememberSaveLocation);
     }
 
