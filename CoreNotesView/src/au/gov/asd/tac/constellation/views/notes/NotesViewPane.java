@@ -42,7 +42,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -176,7 +175,6 @@ public class NotesViewPane extends BorderPane {
                 for (final String tag : tags) {
                     if (!tagsUpdater.contains(tag)) {
                         tagsUpdater.add(tag);
-                        LOGGER.log(Level.WARNING, tag);
                     }
                 }
             }
@@ -955,7 +953,6 @@ public class NotesViewPane extends BorderPane {
                 for (final String tag : tags) {
                     if (!tagsUpdater.contains(tag)) {
                         tagsUpdater.add(tag);
-                        LOGGER.log(Level.WARNING, tag);
                     }
                 }
             }
@@ -1018,5 +1015,14 @@ public class NotesViewPane extends BorderPane {
             }
         }
         return false;
+    }
+
+    /**
+     * Returns an unmodifiable view backed by tagsSelectedFiltersList.
+     *
+     * @return Unmodifiable view backed by tagsSelectedFiltersList.
+     */
+    protected List<String> getTagsFilters() {
+        return Collections.unmodifiableList(tagsSelectedFiltersList);
     }
 }
