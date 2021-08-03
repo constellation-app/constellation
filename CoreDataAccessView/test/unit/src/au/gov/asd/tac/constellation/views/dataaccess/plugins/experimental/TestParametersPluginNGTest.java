@@ -36,7 +36,6 @@ import java.time.format.DateTimeFormatter;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -307,12 +306,7 @@ public class TestParametersPluginNGTest {
         // Set plugin parameters here before execution
         result.getParameters().get(TestParametersPlugin.LEVEL_PARAMETER_ID).setStringValue("None");
 
-        try {
-            instance.query(recordStore, interaction, result);
-        } catch (final PluginException ex) {
-            fail();
-            throw ex;
-        }
+        instance.query(recordStore, interaction, result);
     }
 
     /**
@@ -335,29 +329,24 @@ public class TestParametersPluginNGTest {
         // Set plugin parameters here before execution
         result.getParameters().get(TestParametersPlugin.LEVEL_PARAMETER_ID).setStringValue("None");
 
-        try {
-            final RecordStore queryResults = instance.query(recordStore, interaction, result);
-            // Test the amount of entries in the RecordStore
-            assertEquals(queryResults.size(), 1);
+        final RecordStore queryResults = instance.query(recordStore, interaction, result);
+        // Test the amount of entries in the RecordStore
+        assertEquals(queryResults.size(), 1);
 
-            final DateTimeRange dtr = result.getDateTimeRangeValue(CoreGlobalParameters.DATETIME_RANGE_PARAMETER_ID);
-            final ZonedDateTime[] dtrStartEnd = dtr.getZonedStartEnd();
+        final DateTimeRange dtr = result.getDateTimeRangeValue(CoreGlobalParameters.DATETIME_RANGE_PARAMETER_ID);
+        final ZonedDateTime[] dtrStartEnd = dtr.getZonedStartEnd();
 
-            // Test the values entered
-            assertEquals(queryResults.get(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.RAW), "name1@domain1.com");
-            assertEquals(queryResults.get(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE), "Email");
-            assertEquals(queryResults.get(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.COMMENT), "TESTPARAMETERSPLUGIN");
-            assertEquals(queryResults.get(GraphRecordStoreUtilities.SOURCE + TemporalConcept.VertexAttribute.LAST_SEEN), DateTimeFormatter.ISO_INSTANT.format(dtrStartEnd[0]).replace("Z", ".000Z"));
+        // Test the values entered
+        assertEquals(queryResults.get(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.RAW), "name1@domain1.com");
+        assertEquals(queryResults.get(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE), "Email");
+        assertEquals(queryResults.get(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.COMMENT), "TESTPARAMETERSPLUGIN");
+        assertEquals(queryResults.get(GraphRecordStoreUtilities.SOURCE + TemporalConcept.VertexAttribute.LAST_SEEN), DateTimeFormatter.ISO_INSTANT.format(dtrStartEnd[0]).replace("Z", ".000Z"));
 
-            assertEquals(queryResults.get(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.RAW), "name2@domain2.com");
-            assertEquals(queryResults.get(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.TYPE), "Email");
-            assertEquals(queryResults.get(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.COMMENT), "TESTPARAMETERSPLUGIN");
-            assertEquals(queryResults.get(GraphRecordStoreUtilities.DESTINATION + TemporalConcept.VertexAttribute.LAST_SEEN), DateTimeFormatter.ISO_INSTANT.format(dtrStartEnd[1]).replace("Z", ".000Z"));
+        assertEquals(queryResults.get(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.RAW), "name2@domain2.com");
+        assertEquals(queryResults.get(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.TYPE), "Email");
+        assertEquals(queryResults.get(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.COMMENT), "TESTPARAMETERSPLUGIN");
+        assertEquals(queryResults.get(GraphRecordStoreUtilities.DESTINATION + TemporalConcept.VertexAttribute.LAST_SEEN), DateTimeFormatter.ISO_INSTANT.format(dtrStartEnd[1]).replace("Z", ".000Z"));
 
-        } catch (final PluginException ex) {
-            fail();
-            throw ex;
-        }
     }
 
     /**
@@ -380,12 +369,7 @@ public class TestParametersPluginNGTest {
         // Set plugin parameters here before execution
         result.getParameters().get(TestParametersPlugin.CRASH_PARAMETER_ID).setBooleanValue(false);
 
-        try {
-            instance.query(recordStore, interaction, result);
-        } catch (final PluginException ex) {
-            fail();
-            throw ex;
-        }
+        instance.query(recordStore, interaction, result);
     }
 
     /**
@@ -408,11 +392,7 @@ public class TestParametersPluginNGTest {
         // Set plugin parameters here before execution
         result.getParameters().get(TestParametersPlugin.CRASH_PARAMETER_ID).setBooleanValue(true);
 
-        try {
-            instance.query(recordStore, interaction, result);
-        } catch (final PluginException ex) {
-            throw ex;
-        }
+        instance.query(recordStore, interaction, result);
     }
 
     /**
