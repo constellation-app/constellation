@@ -43,6 +43,7 @@ public class AttributeData extends AttributePrototype {
     private long modificationCount;
     private final boolean isKey;
     private final boolean isSchema;
+    private boolean isKeepExpanded;
 
     /**
      * Create a new AttributeData object corresponding to an attribute as it
@@ -127,5 +128,19 @@ public class AttributeData extends AttributePrototype {
      */
     public boolean isSchema() {
         return isSchema;
+    }
+
+    /**
+     * Should multiple values of this attribute be always expanded .
+     *
+     * @return True if the attribute values should always be expanded, false
+     * otherwise.
+     */
+    public boolean isKeepExpanded() {
+        return isKeepExpanded;
+    }
+
+    public void setKeepExpanded(final boolean isKeepExpanded) {
+        this.isKeepExpanded = isKeepExpanded;
     }
 }
