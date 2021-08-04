@@ -81,11 +81,11 @@ public class RecentFilesWelcomePage {
     }
 
     private static void saveCurrentDirectory(final String path) {
-        final String lastFileSaveLocation = prefs.get(ApplicationPreferenceKeys.FILE_SAVE_LOCATION, "");
-        final boolean rememberSaveLocation = prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION_DEFAULT);
+        final String lastFileOpenAndSaveLocation = prefs.get(ApplicationPreferenceKeys.FILE_OPEN_AND_SAVE_LOCATION, "");
+        final boolean rememberOpenAndSaveLocation = prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
 
-        if (!lastFileSaveLocation.equals(path) && rememberSaveLocation) {
-            prefs.put(ApplicationPreferenceKeys.FILE_SAVE_LOCATION, path);
+        if (!lastFileOpenAndSaveLocation.equals(path) && rememberOpenAndSaveLocation) {
+            prefs.put(ApplicationPreferenceKeys.FILE_OPEN_AND_SAVE_LOCATION, path);
         }
     }
 }

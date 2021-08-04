@@ -81,8 +81,8 @@ public class OpenFileAction implements ActionListener {
     private boolean running;
 
     private static final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-    private static String lastFileSaveLocation = prefs.get(ApplicationPreferenceKeys.FILE_SAVE_LOCATION, "");
-    private static boolean rememberSaveLocation = prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION_DEFAULT);
+    private static String lastFileOpenAndSaveLocation = prefs.get(ApplicationPreferenceKeys.FILE_OPEN_AND_SAVE_LOCATION, "");
+    private static boolean rememberOpenAndSaveLocation = prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
 
     private HelpCtx getHelpCtx() {
         return new HelpCtx(this.getClass().getName());
@@ -107,11 +107,11 @@ public class OpenFileAction implements ActionListener {
      *
      */
     private static void saveCurrentDirectory(final File currentDir) {
-        lastFileSaveLocation = prefs.get(ApplicationPreferenceKeys.FILE_SAVE_LOCATION, "");
-        rememberSaveLocation = prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION_DEFAULT);
+        lastFileOpenAndSaveLocation = prefs.get(ApplicationPreferenceKeys.FILE_OPEN_AND_SAVE_LOCATION, "");
+        rememberOpenAndSaveLocation = prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
 
-        if (!lastFileSaveLocation.equals(currentDir.getAbsolutePath()) && rememberSaveLocation) {
-            prefs.put(ApplicationPreferenceKeys.FILE_SAVE_LOCATION, currentDir.getAbsolutePath());
+        if (!lastFileOpenAndSaveLocation.equals(currentDir.getAbsolutePath()) && rememberOpenAndSaveLocation) {
+            prefs.put(ApplicationPreferenceKeys.FILE_OPEN_AND_SAVE_LOCATION, currentDir.getAbsolutePath());
         }
     }
 
@@ -185,10 +185,10 @@ public class OpenFileAction implements ActionListener {
             }
         }
 
-        lastFileSaveLocation = prefs.get(ApplicationPreferenceKeys.FILE_SAVE_LOCATION, "");
-        rememberSaveLocation = prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION_DEFAULT);
+        lastFileOpenAndSaveLocation = prefs.get(ApplicationPreferenceKeys.FILE_OPEN_AND_SAVE_LOCATION, "");
+        rememberOpenAndSaveLocation = prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
 
         //Check prefferences for last saved directory
-        return new File((lastFileSaveLocation.isEmpty() || !rememberSaveLocation) ? System.getProperty("user.home") : lastFileSaveLocation);
+        return new File((lastFileOpenAndSaveLocation.isEmpty() || !rememberOpenAndSaveLocation) ? System.getProperty("user.home") : lastFileOpenAndSaveLocation);
     }
 }

@@ -239,8 +239,8 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
      */
     private File getNewFileName() {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-        final String lastFileSaveLocation = prefs.get(ApplicationPreferenceKeys.FILE_SAVE_LOCATION, "");
-        final boolean rememberSaveLocation = prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION_DEFAULT);
+        final String lastFileOpenAndSaveLocation = prefs.get(ApplicationPreferenceKeys.FILE_OPEN_AND_SAVE_LOCATION, "");
+        final boolean rememberOpenAndSaveLocation = prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
         File newFile = null;
         FileObject currentFileObject = getCurrentFileObject();
         if (currentFileObject != null) {
@@ -258,7 +258,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
             chooser.setCurrentDirectory(newFile.getParentFile());
             chooser.setSelectedFile(newFile);
         } else {
-            final File initialFolder = getInitialFolderFrom(newFile, lastFileSaveLocation, rememberSaveLocation);
+            final File initialFolder = getInitialFolderFrom(newFile, lastFileOpenAndSaveLocation, rememberOpenAndSaveLocation);
             chooser.setCurrentDirectory(initialFolder);
             chooser.setSelectedFile(newFile);
         }
@@ -320,8 +320,8 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
         // save the curent directory if a file was selected
         if (newFile != null) {
             final String lastDir = chooser.getCurrentDirectory().getAbsolutePath();
-            if (!lastFileSaveLocation.equals(lastDir) && rememberSaveLocation) {
-                prefs.put(ApplicationPreferenceKeys.FILE_SAVE_LOCATION, lastDir);
+            if (!lastFileOpenAndSaveLocation.equals(lastDir) && rememberOpenAndSaveLocation) {
+                prefs.put(ApplicationPreferenceKeys.FILE_OPEN_AND_SAVE_LOCATION, lastDir);
             }
         }
         return newFile;
@@ -344,12 +344,12 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
      * "Remember Open/Save Location" is set, get the Directory saved in the
      * preference, otherwise use the user's home directory
      */
-    private File getInitialFolderFrom(final File newFile, String lastFileSaveLocation, boolean rememberSaveLocation) {
+    private File getInitialFolderFrom(final File newFile, String lastFileOpenAndSaveLocation, boolean rememberOpenSaveLocation) {
         if (newFile != null) {
             File parent = newFile.getParentFile();
             if (parent == null) {
                 //Check prefferences for last saved directory
-                return new File((lastFileSaveLocation.isEmpty() || !rememberSaveLocation) ? System.getProperty("user.home") : lastFileSaveLocation);
+                return new File((lastFileOpenAndSaveLocation.isEmpty() || !rememberOpenSaveLocation) ? System.getProperty("user.home") : lastFileOpenAndSaveLocation);
             } else {
                 return parent;
             }

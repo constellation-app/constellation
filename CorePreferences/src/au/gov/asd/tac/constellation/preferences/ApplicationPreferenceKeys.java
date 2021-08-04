@@ -109,13 +109,13 @@ public final class ApplicationPreferenceKeys {
     /**
      * Remember Open and Save location.
      */
-    public static final String REMEMBER_SAVE_LOCATION = "rememberSaveLocation";
-    public static final boolean REMEMBER_SAVE_LOCATION_DEFAULT = true;
+    public static final String REMEMBER_OPEN_AND_SAVE_LOCATION = "rememberOpenAndSaveLocation";
+    public static final boolean REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT = true;
 
     /**
      * File Save location.
      */
-    public static final String FILE_SAVE_LOCATION = "fileSaveLocation";
+    public static final String FILE_OPEN_AND_SAVE_LOCATION = "fileOpenAndSaveLocation";
 
     /**
      * A directory where the webserver can write files to emulate REST requests.
