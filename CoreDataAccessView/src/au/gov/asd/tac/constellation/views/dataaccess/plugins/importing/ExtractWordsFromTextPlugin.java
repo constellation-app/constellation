@@ -36,7 +36,6 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.PluginType;
-import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -536,7 +535,6 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
         }
 
         PluginExecutor.startWith(VisualSchemaPluginRegistry.COMPLETE_SCHEMA)
-                .followedBy(ArrangementPluginRegistry.TREES)
                 .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
                 .executeNow(wg);
 
