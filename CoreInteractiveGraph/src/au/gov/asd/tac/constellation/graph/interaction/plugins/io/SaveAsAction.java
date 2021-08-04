@@ -319,7 +319,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
         // When the preference "Remember Open/Save Location" is set,
         // save the curent directory if a file was selected
         if (newFile != null) {
-            String lastDir = chooser.getCurrentDirectory().getAbsolutePath();
+            final String lastDir = chooser.getCurrentDirectory().getAbsolutePath();
             if (!lastFileSaveLocation.equals(lastDir) && rememberSaveLocation) {
                 prefs.put(ApplicationPreferenceKeys.FILE_SAVE_LOCATION, lastDir);
             }
@@ -349,12 +349,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
             File parent = newFile.getParentFile();
             if (parent == null) {
                 //Check prefferences for last saved directory
-                if (lastFileSaveLocation.isEmpty() || !rememberSaveLocation) {
-                    return new File(System.getProperty("user.home"));
-                } else {
-                    return new File(lastFileSaveLocation);
-                }
-
+                return new File((lastFileSaveLocation.isEmpty() || !rememberSaveLocation) ? System.getProperty("user.home") : lastFileSaveLocation);
             } else {
                 return parent;
             }

@@ -189,11 +189,6 @@ public class OpenFileAction implements ActionListener {
         rememberSaveLocation = prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION_DEFAULT);
 
         //Check prefferences for last saved directory
-        if (lastFileSaveLocation.isEmpty() || !rememberSaveLocation) {
-            // Fall back to default location ($HOME or similar).
-            return new File(System.getProperty("user.home"));
-        } else {
-            return new File(lastFileSaveLocation);
-        }
+        return new File((lastFileSaveLocation.isEmpty() || !rememberSaveLocation) ? System.getProperty("user.home") : lastFileSaveLocation);
     }
 }
