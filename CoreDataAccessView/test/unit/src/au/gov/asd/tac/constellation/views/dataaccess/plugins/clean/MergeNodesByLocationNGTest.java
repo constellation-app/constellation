@@ -145,7 +145,7 @@ public class MergeNodesByLocationNGTest {
         graph.setStringValue(vertexIdentifierAttribute, vxId2, "V2");
         graph.setStringValue(vertexIdentifierAttribute, vxId3, "V3");
 
-        Map result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
+        Map<Integer, Set<Integer>> result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
         assertEquals(result, expResult);
     }
 
@@ -154,42 +154,7 @@ public class MergeNodesByLocationNGTest {
      * selectedOnly = False
      */
     @Test
-    public void testGetNodesToMergee_Threshold_1600000_selectedOnlyFalse_1() throws Exception {
-        System.out.println("testGetNodesToMergee_Threshold_1600000_selectedOnlyFalse_1");
-        Comparator<String> leadVertexChooser = null;
-        int threshold = 1600000;
-        boolean selectedOnly = false;
-        MergeNodesByLocation instance = new MergeNodesByLocation();
-
-        // set the Latitude of each vertex to something unique
-        graph.setStringValue(vertexLatitudeAttribute, vxId1, "15");
-        graph.setStringValue(vertexLatitudeAttribute, vxId2, "25");
-        graph.setStringValue(vertexLatitudeAttribute, vxId3, "37");
-        graph.setStringValue(vertexLatitudeAttribute, vxId4, "26");
-        graph.setStringValue(vertexLatitudeAttribute, vxId5, "38");
-
-        // set the Longitude of each vertex to something unique
-        graph.setStringValue(vertexLongitudeAttribute, vxId1, "35");
-        graph.setStringValue(vertexLongitudeAttribute, vxId2, "45");
-        graph.setStringValue(vertexLongitudeAttribute, vxId3, "56");
-        graph.setStringValue(vertexLongitudeAttribute, vxId4, "46");
-        graph.setStringValue(vertexLongitudeAttribute, vxId5, "57");
-
-        Map<Integer, Set<Integer>> expResult = new HashMap<>();
-        Set<Integer> cluster1 = new HashSet<>();
-        cluster1.addAll(Arrays.asList(new Integer[]{0, 1, 2, 3, 4}));
-        expResult.put(5, cluster1);
-
-        Map result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
-        assertEquals(result, expResult);
-    }
-
-    /**
-     * Test of getNodesToMerge method, of class MergeNodesByLocation, with
-     * selectedOnly = False
-     */
-    @Test
-    public void testGetNodesToMergee_Threshold_1600000_selectedOnlyFalse_2() throws Exception {
+    public void testGetNodesToMergee_Threshold_1600000_selectedOnlyFalse() throws Exception {
         System.out.println("testGetNodesToMergee_Threshold_1600000_selectedOnlyFalse_2");
         Comparator<String> leadVertexChooser = null;
         int threshold = 1600000;
@@ -201,7 +166,7 @@ public class MergeNodesByLocationNGTest {
         cluster.addAll(Arrays.asList(new Integer[]{0, 1}));
         expResult.put(5, cluster);
 
-        Map result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
+        Map<Integer, Set<Integer>> result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
         assertEquals(result, expResult);
     }
 
@@ -217,7 +182,7 @@ public class MergeNodesByLocationNGTest {
         boolean selectedOnly = false;
         MergeNodesByLocation instance = new MergeNodesByLocation();
         Map<Integer, Set<Integer>> expResult = new HashMap<>();
-        Map result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
+        Map<Integer, Set<Integer>> result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
         assertEquals(result, expResult);
     }
 
@@ -245,52 +210,7 @@ public class MergeNodesByLocationNGTest {
         cluster.addAll(Arrays.asList(new Integer[]{0, 1}));
         expResult.put(5, cluster);
 
-        Map result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
-        assertEquals(result, expResult);
-    }
-
-    /**
-     * Test of getNodesToMerge method, of class MergeNodesByLocation, with
-     * selectedOnly = True and all Nodes selected
-     */
-    @Test
-    public void testGetNodesToMergee_selectedOnlyTrue__AllNodesSelected_2() throws Exception {
-        System.out.println("testGetNodesToMergee_selectedOnlyTrue__AllNodesSelected_2");
-        Comparator<String> leadVertexChooser = null;
-        int threshold = 1590000;
-        boolean selectedOnly = true;
-        MergeNodesByLocation instance = new MergeNodesByLocation();
-
-        // set the Latitude of each vertex to something unique
-        graph.setStringValue(vertexLatitudeAttribute, vxId1, "15");
-        graph.setStringValue(vertexLatitudeAttribute, vxId2, "25");
-        graph.setStringValue(vertexLatitudeAttribute, vxId3, "37");
-        graph.setStringValue(vertexLatitudeAttribute, vxId4, "26");
-        graph.setStringValue(vertexLatitudeAttribute, vxId5, "38");
-
-        // set the Longitude of each vertex to something unique
-        graph.setStringValue(vertexLongitudeAttribute, vxId1, "35");
-        graph.setStringValue(vertexLongitudeAttribute, vxId2, "45");
-        graph.setStringValue(vertexLongitudeAttribute, vxId3, "56");
-        graph.setStringValue(vertexLongitudeAttribute, vxId4, "46");
-        graph.setStringValue(vertexLongitudeAttribute, vxId5, "57");
-
-        // select all nodes
-        graph.setBooleanValue(vertexSelectedAttribute, vxId1, true);
-        graph.setBooleanValue(vertexSelectedAttribute, vxId2, true);
-        graph.setBooleanValue(vertexSelectedAttribute, vxId3, true);
-        graph.setBooleanValue(vertexSelectedAttribute, vxId4, true);
-        graph.setBooleanValue(vertexSelectedAttribute, vxId5, true);
-
-        Map<Integer, Set<Integer>> expResult = new HashMap<>();
-        Set<Integer> cluster1 = new HashSet<>();
-        cluster1.addAll(Arrays.asList(new Integer[]{1, 3}));
-        Set<Integer> cluster2 = new HashSet<>();
-        cluster2.addAll(Arrays.asList(new Integer[]{2, 4}));
-        expResult.put(5, cluster1);
-        expResult.put(6, cluster2);
-
-        Map result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
+        Map<Integer, Set<Integer>> result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
         assertEquals(result, expResult);
     }
 
@@ -332,7 +252,7 @@ public class MergeNodesByLocationNGTest {
         cluster.addAll(Arrays.asList(new Integer[]{2, 4}));
         expResult.put(5, cluster);
 
-        Map result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
+        Map<Integer, Set<Integer>> result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
         assertEquals(result, expResult);
     }
 }
