@@ -77,17 +77,14 @@
         <dependency org="org.eclipse.jetty" name="jetty-servlet" rev="11.0.5"/>
         <dependency org="org.ejml" name="ejml-all" rev="0.40"/>
         <dependency org="org.json" name="json" rev="20210307"/>
-        <dependency org="org.mockito" name="mockito-inline" rev="3.11.1"/>
-        <!--<dependency org="org.processing" name="core" rev="3.3.7"/>-->
+        <dependency org="org.mockito" name="mockito-inline" rev="3.11.2"/>
         <dependency org="org.python" name="jython-standalone" rev="2.7.2"/>
-        <!--<dependency org="org.python" name="jython-jyni" rev="2.7-alpha5"/>-->
         <dependency org="org.swinglabs" name="swingx" rev="1.6.1"/>
-        <!--<dependency org="unfolding" name="unfolding" rev="0.9.6"/>-->
-        <!-- https://mvnrepository.com/artifact/org.mockito/mockito-inline -->
-        <dependency org="org.mockito" name="mockito-inline" rev="3.9.0"/>
-
-        <!-- https://mvnrepository.com/artifact/org.fxmisc.richtext/richtextfx -->
         <dependency org="org.fxmisc.richtext" name="richtextfx" rev="0.10.6"/>
+        
+        <!-- Downloaded Manually -->
+        <!--<dependency org="unfolding" name="unfolding" rev="0.9.6"/>-->
+        <!--<dependency org="org.processing" name="core" rev="3.3.7"/>-->
 
         <!-- Exclusions -->
         <exclude org="javax.media" module="jai_core"/>
