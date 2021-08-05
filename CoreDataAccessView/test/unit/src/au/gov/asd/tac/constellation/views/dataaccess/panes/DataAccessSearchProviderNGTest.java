@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessUtilities;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessSearchProvider.PluginDisplayer;
 import javafx.scene.control.Tab;
+import javax.swing.Icon;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -61,12 +62,14 @@ public class DataAccessSearchProviderNGTest {
 
     protected NotificationDisplayer notifDisplayer;
 
+    private static final Icon WARNING_ICON = UserInterfaceIconProvider.WARNING.buildIcon(16, ConstellationColor.DARK_ORANGE.getJavaColor());
+
     public DataAccessSearchProviderNGTest() {
     }
 
     @BeforeClass
     public void setUpClass() throws Exception {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
     }
 
     @AfterClass
@@ -92,7 +95,7 @@ public class DataAccessSearchProviderNGTest {
         System.out.println("evaluate fail");
 
         // Creating mocks
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
         daPane = mock(DataAccessPane.class);
         qpPane = mock(QueryPhasePane.class);
         request = mock(SearchRequest.class);
@@ -112,13 +115,13 @@ public class DataAccessSearchProviderNGTest {
 
         // Mock the request text to be an unmatchable string
         when(request.getText()).thenReturn("nothignshouldmatchthisstring");
-        when(response.addResult(Mockito.anyObject(), Mockito.anyString())).thenReturn(true);
+        when(response.addResult(Mockito.any(), Mockito.anyString())).thenReturn(true);
         DataAccessSearchProvider instance = new DataAccessSearchProvider();
         instance.evaluate(request, response);
 
         // Verify that addResult was never called.
         // This should mean that no plugin name matched the input
-        verify(response, never()).addResult(Mockito.anyObject(), Mockito.anyString());
+        verify(response, never()).addResult(Mockito.any(), Mockito.anyString());
     }
 
     /**
@@ -130,7 +133,7 @@ public class DataAccessSearchProviderNGTest {
         System.out.println("evaluate null");
 
         // Creating mocks
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
         daPane = mock(DataAccessPane.class);
         qpPane = mock(QueryPhasePane.class);
         request = mock(SearchRequest.class);
@@ -150,13 +153,13 @@ public class DataAccessSearchProviderNGTest {
 
         // Mock the request text to be null
         when(request.getText()).thenReturn(null);
-        when(response.addResult(Mockito.anyObject(), Mockito.anyString())).thenReturn(true);
+        when(response.addResult(Mockito.any(), Mockito.anyString())).thenReturn(true);
         DataAccessSearchProvider instance = new DataAccessSearchProvider();
         instance.evaluate(request, response);
 
         // Verify that addResult was never called.
         // This should mean that no plugin name matched the input
-        verify(response, never()).addResult(Mockito.anyObject(), Mockito.anyString());
+        verify(response, never()).addResult(Mockito.any(), Mockito.anyString());
     }
 
     /**
@@ -167,7 +170,7 @@ public class DataAccessSearchProviderNGTest {
         System.out.println("evaluate success");
 
         // Creating mocks
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
         daPane = mock(DataAccessPane.class);
         qpPane = mock(QueryPhasePane.class);
         request = mock(SearchRequest.class);
@@ -189,15 +192,15 @@ public class DataAccessSearchProviderNGTest {
         when(request.getText()).thenReturn("Select");
 
         // Return a valid response when results are added that match the expected
-        when(response.addResult(Mockito.anyObject(), Mockito.eq("Select Top N"))).thenReturn(true);
-        when(response.addResult(Mockito.anyObject(), Mockito.eq("Select All"))).thenReturn(true);
+        when(response.addResult(Mockito.any(), Mockito.eq("Select Top N"))).thenReturn(true);
+        when(response.addResult(Mockito.any(), Mockito.eq("Select All"))).thenReturn(true);
 
         DataAccessSearchProvider instance = new DataAccessSearchProvider();
         instance.evaluate(request, response);
 
         // Verify that addResult was called on the correct plugins
-        verify(response, times(1)).addResult(Mockito.anyObject(), Mockito.eq("Select Top N"));
-        verify(response, times(1)).addResult(Mockito.anyObject(), Mockito.eq("Select All"));
+        verify(response, times(1)).addResult(Mockito.any(), Mockito.eq("Select Top N"));
+        verify(response, times(1)).addResult(Mockito.any(), Mockito.eq("Select All"));
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -211,7 +214,7 @@ public class DataAccessSearchProviderNGTest {
         System.out.println("testRun1 testing query phase pane was successfully returned");
 
         // Setting up mocks
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
         daPane = mock(DataAccessPane.class);
         qpPane = mock(QueryPhasePane.class);
 
@@ -221,7 +224,7 @@ public class DataAccessSearchProviderNGTest {
 
         // Mock the static method getQueryPhasePane to return the mocked QueryPhasePane
         try (MockedStatic<DataAccessPane> mockedStatic = Mockito.mockStatic(DataAccessPane.class)) {
-            mockedStatic.when(() -> DataAccessPane.getQueryPhasePane(Mockito.anyObject())).thenReturn(qpPane);
+            mockedStatic.when(() -> DataAccessPane.getQueryPhasePane(Mockito.any())).thenReturn(qpPane);
 
             // Return a new tab when the DataAccessPane mock is prompted for getCurrentTab
             when(daPane.getCurrentTab()).thenReturn(new Tab());
@@ -242,7 +245,7 @@ public class DataAccessSearchProviderNGTest {
                 verify(daPane, times(1)).getCurrentTab();
 
                 // Verify that getQueryPhasePane was succcessfully called.
-                mockedStatic.verify(() -> DataAccessPane.getQueryPhasePane(Mockito.anyObject()));
+                mockedStatic.verify(() -> DataAccessPane.getQueryPhasePane(Mockito.any()));
             }
         }
     }
@@ -255,7 +258,7 @@ public class DataAccessSearchProviderNGTest {
         System.out.println("testRun2 testing null tab returned");
 
         // Setting up mocks
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
         daPane = mock(DataAccessPane.class);
         notifDisplayer = mock(NotificationDisplayer.class);
         final Notification notif = new Notification() {
@@ -272,7 +275,7 @@ public class DataAccessSearchProviderNGTest {
 
             // Mock the static method getDefault() to return the mock of NotificationDisplayer
             try (MockedStatic<NotificationDisplayer> mockedStatic3 = Mockito.mockStatic(NotificationDisplayer.class)) {
-                when(notifDisplayer.notify("Data Access view", UserInterfaceIconProvider.WARNING.buildIcon(16, ConstellationColor.DARK_ORANGE.getJavaColor()), PluginDisplayer.STEP_STRING, null)).thenReturn(notif);
+                when(notifDisplayer.notify("Data Access view", WARNING_ICON, PluginDisplayer.STEP_STRING, null)).thenReturn(notif);
                 mockedStatic3.when(() -> NotificationDisplayer.getDefault()).thenReturn(notifDisplayer);
 
                 PluginDisplayer pd = new PluginDisplayer("SelectTopN");
@@ -282,7 +285,7 @@ public class DataAccessSearchProviderNGTest {
                 verify(daPane, times(1)).getCurrentTab();
 
                 // verify notificationdisplayer was called with correct string
-                verify(notifDisplayer, times(1)).notify(Mockito.anyString(), Mockito.eq(UserInterfaceIconProvider.WARNING.buildIcon(16, ConstellationColor.DARK_ORANGE.getJavaColor())), Mockito.eq(PluginDisplayer.STEP_STRING), Mockito.eq(null));
+                verify(notifDisplayer, times(1)).notify(Mockito.anyString(), Mockito.eq(WARNING_ICON), Mockito.eq(PluginDisplayer.STEP_STRING), Mockito.eq(null));
             }
         }
     }
@@ -295,7 +298,7 @@ public class DataAccessSearchProviderNGTest {
         System.out.println("testRun3 null data access pane");
 
         // Setting up mocks
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
         notifDisplayer = mock(NotificationDisplayer.class);
         final Notification notif = new Notification() {
             @Override
@@ -310,14 +313,14 @@ public class DataAccessSearchProviderNGTest {
 
             // Mock the static method getDefault() to return the mock of NotificationDisplayer
             try (MockedStatic<NotificationDisplayer> mockedStatic3 = Mockito.mockStatic(NotificationDisplayer.class)) {
-                when(notifDisplayer.notify("Data Access view", UserInterfaceIconProvider.WARNING.buildIcon(16, ConstellationColor.DARK_ORANGE.getJavaColor()), PluginDisplayer.DAV_STEP_STRING, null)).thenReturn(notif);
+                when(notifDisplayer.notify("Data Access view", WARNING_ICON, PluginDisplayer.DAV_STEP_STRING, null)).thenReturn(notif);
                 mockedStatic3.when(() -> NotificationDisplayer.getDefault()).thenReturn(notifDisplayer);
 
                 PluginDisplayer pd = new PluginDisplayer("SelectTopN");
                 pd.run();
 
                 // verify notificationdisplayer was called with correct string
-                verify(notifDisplayer, times(1)).notify(Mockito.anyString(), Mockito.eq(UserInterfaceIconProvider.WARNING.buildIcon(16, ConstellationColor.DARK_ORANGE.getJavaColor())), Mockito.eq(PluginDisplayer.DAV_STEP_STRING), Mockito.eq(null));
+                verify(notifDisplayer, times(1)).notify(Mockito.anyString(), Mockito.eq(WARNING_ICON), Mockito.eq(PluginDisplayer.DAV_STEP_STRING), Mockito.eq(null));
             }
         }
     }
