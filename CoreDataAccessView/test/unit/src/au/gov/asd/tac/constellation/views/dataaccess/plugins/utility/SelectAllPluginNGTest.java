@@ -28,7 +28,6 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -78,20 +77,9 @@ public class SelectAllPluginNGTest {
         System.out.println("select all edit with nothing on graph");
         // Open a new graph
         graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
-        int vxCount = 0;
-        int txCount = 0;
 
         // run select all plugin
         PluginExecution.withPlugin(new SelectAllPlugin()).executeNow(graph);
-
-        // Verify no extra elements are added
-        final ReadableGraph rg = graph.getReadableGraph();
-        try {
-            assertEquals(rg.getVertexCount(), vxCount);
-            assertEquals(rg.getTransactionCount(), txCount);
-        } finally {
-            rg.close();
-        }
     }
 
     /**
@@ -109,13 +97,7 @@ public class SelectAllPluginNGTest {
         try {
             // Create Selected Attributes
             selectedV = VisualConcept.VertexAttribute.SELECTED.ensure(wg);
-            if (selectedV == Graph.NOT_FOUND) {
-                fail();
-            }
             selectedT = VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
-            if (selectedT == Graph.NOT_FOUND) {
-                fail();
-            }
         } finally {
             wg.commit();
         }
@@ -147,13 +129,7 @@ public class SelectAllPluginNGTest {
         try {
             // Create Selected Attributes
             selectedV = VisualConcept.VertexAttribute.SELECTED.ensure(wg);
-            if (selectedV == Graph.NOT_FOUND) {
-                fail();
-            }
             selectedT = VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
-            if (selectedT == Graph.NOT_FOUND) {
-                fail();
-            }
 
             // Add vertices
             vxId1 = wg.addVertex();
@@ -211,13 +187,7 @@ public class SelectAllPluginNGTest {
         try {
             // Create Selected Attributes
             selectedV = VisualConcept.VertexAttribute.SELECTED.ensure(wg);
-            if (selectedV == Graph.NOT_FOUND) {
-                fail();
-            }
             selectedT = VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
-            if (selectedT == Graph.NOT_FOUND) {
-                fail();
-            }
 
             // Add vertices
             vxId1 = wg.addVertex();

@@ -41,7 +41,7 @@ import org.openide.util.lookup.ServiceProviders;
 @Messages("SelectAllPlugin=Select All")
 public class SelectAllPlugin extends SimpleQueryPlugin implements DataAccessPlugin {
 
-    private static final String ATTRIBUTE_ERROR = "The SelectAllPlugin could not successfully complete because it does not contain the attribute %s";
+    private static final String ATTRIBUTE_ERROR = "Select All could not successfully complete because it does not contain the %s.";
 
     @Override
     public String getType() {
@@ -65,7 +65,7 @@ public class SelectAllPlugin extends SimpleQueryPlugin implements DataAccessPlug
 
         final int selectedVertex = VisualConcept.VertexAttribute.SELECTED.get(graph);
         if (selectedVertex == Graph.NOT_FOUND) {
-            throw new PluginException(PluginNotificationLevel.ERROR, String.format(ATTRIBUTE_ERROR, "VisualConcept.VertexAttribute.SELECTED"));
+            throw new PluginException(PluginNotificationLevel.ERROR, String.format(ATTRIBUTE_ERROR, "Select Vertex Attribute: 'Selected'"));
         }
         final int vertexCount = graph.getVertexCount();
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
@@ -75,7 +75,7 @@ public class SelectAllPlugin extends SimpleQueryPlugin implements DataAccessPlug
 
         final int selectedTransaction = VisualConcept.TransactionAttribute.SELECTED.get(graph);
         if (selectedTransaction == Graph.NOT_FOUND) {
-            throw new PluginException(PluginNotificationLevel.ERROR, String.format(ATTRIBUTE_ERROR, "VisualConcept.TransactionAttribute.SELECTED"));
+            throw new PluginException(PluginNotificationLevel.ERROR, String.format(ATTRIBUTE_ERROR, "Select Transaction Attribute: 'Selected'"));
         }
         final int transactionCount = graph.getTransactionCount();
         for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
