@@ -159,7 +159,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
         notebookDirectoryText = new JTextField();
         notebookDirectoryButton = new JButton();
         downloadPythonClientCheckBox = new JCheckBox();
-        OpenAndSaveLocationPanel = new JPanel();
+        openAndSaveLocationPanel = new JPanel();
         rememberOpenAndSaveLocationCheckBox = new JCheckBox();
 
         Mnemonics.setLocalizedText(userDirectoryLabel, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.userDirectoryLabel.text")); // NOI18N
@@ -330,22 +330,22 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        OpenAndSaveLocationPanel.setBorder(BorderFactory.createTitledBorder(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.OpenAndSaveLocationPanel.border.title"))); // NOI18N
+        openAndSaveLocationPanel.setBorder(BorderFactory.createTitledBorder(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.openAndSaveLocationPanel.border.title"))); // NOI18N
 
         rememberOpenAndSaveLocationCheckBox.setSelected(true);
         Mnemonics.setLocalizedText(rememberOpenAndSaveLocationCheckBox, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.rememberOpenAndSaveLocationCheckBox.text")); // NOI18N
         rememberOpenAndSaveLocationCheckBox.setActionCommand(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.rememberOpenAndSaveLocationCheckBox.actionCommand")); // NOI18N
 
-        GroupLayout OpenAndSaveLocationPanelLayout = new GroupLayout(OpenAndSaveLocationPanel);
-        OpenAndSaveLocationPanel.setLayout(OpenAndSaveLocationPanelLayout);
-        OpenAndSaveLocationPanelLayout.setHorizontalGroup(OpenAndSaveLocationPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(OpenAndSaveLocationPanelLayout.createSequentialGroup()
+        GroupLayout openAndSaveLocationPanelLayout = new GroupLayout(openAndSaveLocationPanel);
+        openAndSaveLocationPanel.setLayout(openAndSaveLocationPanelLayout);
+        openAndSaveLocationPanelLayout.setHorizontalGroup(openAndSaveLocationPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(openAndSaveLocationPanelLayout.createSequentialGroup()
                 .addGap(19, 19, 19)
                 .addComponent(rememberOpenAndSaveLocationCheckBox)
                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        OpenAndSaveLocationPanelLayout.setVerticalGroup(OpenAndSaveLocationPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(OpenAndSaveLocationPanelLayout.createSequentialGroup()
+        openAndSaveLocationPanelLayout.setVerticalGroup(openAndSaveLocationPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(openAndSaveLocationPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(rememberOpenAndSaveLocationCheckBox)
                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -367,7 +367,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
                         .addComponent(userDirectoryButton))
                     .addComponent(webserverPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(notebookPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(OpenAndSaveLocationPanel, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(openAndSaveLocationPanel, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -386,12 +386,12 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(notebookPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(OpenAndSaveLocationPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addComponent(openAndSaveLocationPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         notebookPanel.getAccessibleContext().setAccessibleName(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.notebookPanel.AccessibleContext.accessibleName")); // NOI18N
-        OpenAndSaveLocationPanel.getAccessibleContext().setAccessibleName(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.OpenAndSaveLocationPanel.AccessibleContext.accessibleName")); // NOI18N
+        openAndSaveLocationPanel.getAccessibleContext().setAccessibleName(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.openAndSaveLocationPanel.AccessibleContext.accessibleName")); // NOI18N
     }// </editor-fold>//GEN-END:initComponents
 
     private void userDirectoryButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_userDirectoryButtonActionPerformed
@@ -441,7 +441,6 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_restDirectoryButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private JPanel OpenAndSaveLocationPanel;
     private JCheckBox autosaveCheckBox;
     private JLabel autosaveLabel;
     private JPanel autosavePanel;
@@ -451,6 +450,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
     private JLabel notebookDirectoryLabel;
     private JTextField notebookDirectoryText;
     private JPanel notebookPanel;
+    private JPanel openAndSaveLocationPanel;
     private JCheckBox rememberOpenAndSaveLocationCheckBox;
     private JButton restDirectoryButton;
     private JLabel restDirectoryLabel;
