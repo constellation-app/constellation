@@ -254,7 +254,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
         chooser.setFileFilter(new FileNameExtensionFilter(String.format("%s graphs [.star]", BrandingUtilities.APPLICATION_NAME), "star"));
         chooser.setDialogTitle(Bundle.MSG_SaveAsTitle());
         chooser.setMultiSelectionEnabled(false);
-        if (newFile.exists()) {
+        if (newFile != null && newFile.exists()) {
             chooser.setCurrentDirectory(newFile.getParentFile());
             chooser.setSelectedFile(newFile);
         } else {
