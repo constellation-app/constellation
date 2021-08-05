@@ -95,7 +95,7 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                             // Create auto notes with the tags they have assigned to them
                             final JsonNode tagsArrayNode = notesArray.get(i).get(5);
                             if (tagsArrayNode != null) {
-                                List<String> tagsArray = new ArrayList<>();
+                                final List<String> tagsArray = new ArrayList<>();
                                 for (int j = 0; j < tagsArrayNode.size(); j++) {
                                     tagsArray.add(tagsArrayNode.get(j).asText());
                                 }

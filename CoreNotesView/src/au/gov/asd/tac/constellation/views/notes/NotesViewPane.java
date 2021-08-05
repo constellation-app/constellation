@@ -185,18 +185,15 @@ public class NotesViewPane extends BorderPane {
         // CheckComboBox for the Auto Note filters
         autoFilterCheckComboBox = new CheckComboBox(tagsFiltersList);
         autoFilterCheckComboBox.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
-        autoFilterCheckComboBox.getCheckModel().getCheckedItems().addListener(new ListChangeListener() {
-            @Override
-            public void onChanged(final ListChangeListener.Change event) {
-                if (!isAutoSelectedFiltersUpdating) {
+        autoFilterCheckComboBox.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change event) -> {
+            if (!isAutoSelectedFiltersUpdating) {
 
-                    updateSelectedTagsCombo(autoFilterCheckComboBox.getCheckModel().getCheckedItems());
+                updateSelectedTagsCombo(autoFilterCheckComboBox.getCheckModel().getCheckedItems());
 
-                    final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-                    if (activeGraph != null) {
-                        updateNotesUI();
-                        controller.writeState(activeGraph);
-                    }
+                final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+                if (activeGraph != null) {
+                    updateNotesUI();
+                    controller.writeState(activeGraph);
                 }
             }
         });
@@ -383,7 +380,7 @@ public class NotesViewPane extends BorderPane {
 
             final String[] tags = pluginReport.getTags();
             final List<String> tagsList = new ArrayList<>();
-            for (String tag : tags) {
+            for (final String tag : tags) {
                 tagsList.add(tag);
             }
             note.setTags(tagsList);
@@ -490,8 +487,7 @@ public class NotesViewPane extends BorderPane {
                         notesToRender.add(entry);
 
                     } else if (selectedFilters.contains(AUTO_NOTES_FILTER) && !entry.isUserCreated()) {
-                        final boolean addNote = updateAutoNotesDisplayed(entry);
-                        if (addNote) {
+                        if (updateAutoNotesDisplayed(entry)) {
                             notesToRender.add(entry);
                         }
 
