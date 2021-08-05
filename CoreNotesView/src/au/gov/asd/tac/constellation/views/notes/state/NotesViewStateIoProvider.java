@@ -43,6 +43,7 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
 
     private static final String FILTERS_FIELD = "filters";
     private static final String NOTES_FIELD = "notes";
+    private static final String TAGS_FILTERS_FIELD = "tags_filters";
 
     @Override
     public String getName() {
@@ -90,6 +91,17 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                                 }
                                 noteViewEntries.get(i).setTransactionsSelected(selectedTransactions);
                             }
+                        } else if (notesArray.get(i).get(3).asBoolean() == false) {
+                            // Create auto notes with the tags they have assigned to them
+                            final JsonNode tagsArrayNode = notesArray.get(i).get(5);
+                            if (tagsArrayNode != null) {
+                                final List<String> tagsArray = new ArrayList<>();
+                                for (int j = 0; j < tagsArrayNode.size(); j++) {
+                                    tagsArray.add(tagsArrayNode.get(j).asText());
+                                }
+                                noteViewEntries.get(i).setTags(tagsArray);
+                            }
+
                         }
 
                     } else {
@@ -115,7 +127,17 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                 }
             }
 
-            final NotesViewState state = new NotesViewState(noteViewEntries, selectedFilters);
+            // Reading tags filters from state
+            final List<String> selectedTagsFilters = new ArrayList<>();
+            final ArrayNode tagsFiltersArray = (ArrayNode) jnode.withArray(TAGS_FILTERS_FIELD);
+
+            for (int i = 0; i < tagsFiltersArray.size(); i++) {
+                if (!tagsFiltersArray.get(i).isNull()) {
+                    selectedTagsFilters.add(tagsFiltersArray.get(i).asText());
+                }
+            }
+
+            final NotesViewState state = new NotesViewState(noteViewEntries, selectedFilters, selectedTagsFilters);
             graph.setObjectValue(attributeId, elementId, state);
         }
     }
@@ -148,7 +170,7 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                         jsonGenerator.writeBoolean(note.isUserCreated());
                         jsonGenerator.writeBoolean(note.isGraphAttribute());
 
-                        if (!note.isGraphAttribute()) {
+                        if (!note.isGraphAttribute() && note.isUserCreated()) {
                             if (note.getNodesSelected() != null) {
                                 // Add nodes that are selected to the note
                                 final int nodesLength = note.getNodesSelected().size();
@@ -173,6 +195,16 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                                 jsonGenerator.writeArray(transactionsArray, 0, transactionsLength);
                             }
                         }
+                        if (!note.isUserCreated()) {
+                            final int tagsLength = note.getTags().size();
+                            final String[] tagsArray = new String[tagsLength];
+                            final Iterator<String> tagsIterator = note.getTags().iterator();
+                            for (int i = 0; i < tagsLength; i++) {
+                                tagsArray[i] = tagsIterator.next();
+                            }
+
+                            jsonGenerator.writeArray(tagsArray, 0, tagsLength);
+                        }
                         jsonGenerator.writeEndArray();
                     }
                 }
@@ -187,6 +219,16 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                     }
                 }
                 jsonGenerator.writeEndArray(); // End writing filters to state.
+                jsonGenerator.writeArrayFieldStart(TAGS_FILTERS_FIELD); // Start writing tags filters to state.
+
+                for (final String filter : state.getTagsFilters()) {
+                    if (filter == null) {
+                        jsonGenerator.writeNull();
+                    } else {
+                        jsonGenerator.writeString(filter);
+                    }
+                }
+                jsonGenerator.writeEndArray(); // End writing tags filters to state.
                 jsonGenerator.writeEndObject();
             }
         }
