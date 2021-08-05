@@ -397,7 +397,7 @@ public abstract class SchemaFactory {
      * @return The default vertex label color.
      */
     public ConstellationColor getVertexLabelColor() {
-        return ConstellationColor.LIGHT_BLUE;
+        return ConstellationColor.WHITE;
     }
 
     /**

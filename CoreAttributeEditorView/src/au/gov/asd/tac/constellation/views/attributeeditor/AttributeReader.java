@@ -39,15 +39,18 @@ import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
 
 /**
- * The AttributeReader is responsible for populating the data model for CONSTELLATION's attribute editor. It keeps a
- * reference to the current graph, and contains a number of methods that perform different types of updates in response
- * to various graph changes.
+ * The AttributeReader is responsible for populating the data model for
+ * CONSTELLATION's attribute editor. It keeps a reference to the current graph,
+ * and contains a number of methods that perform different types of updates in
+ * response to various graph changes.
  * <br>
- * The data model which this class populates is an {@link AttributeState} object. Some of this data is also stored in
- * this class - this should be changed in the future so that the model either belongs to the the class that uses it, or
- * alternatively is stored on the graph.
+ * The data model which this class populates is an {@link AttributeState}
+ * object. Some of this data is also stored in this class - this should be
+ * changed in the future so that the model either belongs to the the class that
+ * uses it, or alternatively is stored on the graph.
  * <br>
- * Note that this class doesn't listen to the graph - this is the role of the {@link AttributeEditorTopComponent}.
+ * Note that this class doesn't listen to the graph - this is the role of the
+ * {@link AttributeEditorTopComponent}.
  *
  * @author twinkle2_little
  */
@@ -74,7 +77,8 @@ public class AttributeReader {
     }
 
     /**
-     * Gets the attribute's name and values from the graph and returns an AttributeState.
+     * Gets the attribute's name and values from the graph and returns an
+     * AttributeState.
      *
      * @return The state of all the selected attributes.
      */
@@ -83,10 +87,12 @@ public class AttributeReader {
     }
 
     /**
-     * Gets the attribute's name and values from the graph and returns an AttributeState.
+     * Gets the attribute's name and values from the graph and returns an
+     * AttributeState.
      *
-     * @param preferenceChanged - since there are not modification counter for a preference a boolean needs to be passed
-     * to determine if a preference has changed.
+     * @param preferenceChanged - since there are not modification counter for a
+     * preference a boolean needs to be passed to determine if a preference has
+     * changed.
      * @return The state of all the selected attributes.
      */
     public AttributeState refreshAttributes(boolean preferenceChanged) {
@@ -113,7 +119,7 @@ public class AttributeReader {
             long currAttributeModificationCount = rg.getAttributeModificationCounter();
             attributeModified = currAttributeModificationCount != lastAttributeModificationCount;
             lastAttributeModificationCount = currAttributeModificationCount;
-            if (attributeModified || selectionModified || preferenceChanged) {
+            if (attributeModified || preferenceChanged) {
                 updateElementAttributeNames(rg, ACCEPTED_ELEMENT_TYPES, hiddenAttrsSet, showAllPrefs);
             }
             List<GraphElementType> toPopulate = new ArrayList<>(activeElementTypes);
