@@ -29,6 +29,8 @@ import java.util.Map;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.VBox;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
@@ -302,7 +304,7 @@ public class QueryPhasePaneNGTest {
         // (so CI won't actually tell you whether this is passing or not)
         if (!GraphicsEnvironment.isHeadless()) {
             new JFXPanel();
-        
+                    
             final QueryPhasePane instance = new QueryPhasePane(plugins, null, null);
             for (final Node child : instance.getDataSourceList().getChildren()) {
                 final HeadingPane heading = (HeadingPane) child;
@@ -314,6 +316,11 @@ public class QueryPhasePaneNGTest {
                     assertFalse(dataSource.isExpanded());
                 }
             }
+            
+            // these are added purely to get the function working
+            final VBox parent = new VBox(instance);
+            final VBox grandparent = new VBox(parent);
+            new ScrollPane(grandparent);
             
             instance.expandPlugin("Test Plugin");
             
@@ -348,14 +355,71 @@ public class QueryPhasePaneNGTest {
     }
 
     /**
-     * Test of showMatchingPlugins method, of class QueryPhasePane.
+     * Test of showMatchingPlugins method, of class QueryPhasePane. Only one plugin match
      */
     @Test
-    public void testShowMatchingPlugins() {
-        System.out.println("showMatchingPlugins");
-        String text = "";
-        QueryPhasePane instance = null;
-        instance.showMatchingPlugins(text);
+    public void testShowMatchingPluginsOneMatch() {
+        System.out.println("showMatchingPluginsOneMatch");
+        
+        // TODO: Find a way to instantiate toolkit in a headless environment
+        // This unit test should pass locally but will hold up in a headless environment (e.g. CI)
+        // Putting it in this if loop is a temp fix for the hold up in CI but it does it by skipping the test 
+        // (so CI won't actually tell you whether this is passing or not)
+        if (!GraphicsEnvironment.isHeadless()) {
+            new JFXPanel();
+                    
+            plugins.put("test", Arrays.asList(new TestDataAccessPlugin()));
+            plugins.put("anothertest", Arrays.asList(new AnotherTestDataAccessPlugin()));
+            
+            final QueryPhasePane instance = new QueryPhasePane(plugins, null, null);
+            for (final Node child : instance.getDataSourceList().getChildren()) {
+                final HeadingPane heading = (HeadingPane) child;
+                //default value for HeadingPane expansion is true so setting to false
+                heading.setExpanded(false);
+            }
+            
+            instance.showMatchingPlugins("Another Test Plugin");
+            
+            for (final Node child : instance.getDataSourceList().getChildren()) {
+                final HeadingPane heading = (HeadingPane) child;
+                
+                assertEquals(heading.isExpanded(), "anothertest".equals(heading.getText()));
+            }  
+        }
+    }
+    
+    /**
+     * Test of showMatchingPlugins method, of class QueryPhasePane. Multiple plugin matches
+     */
+    @Test
+    public void testShowMatchingPluginsMultipleMatch() {
+        System.out.println("showMatchingPluginsMultipleMatch");
+        
+        // TODO: Find a way to instantiate toolkit in a headless environment
+        // This unit test should pass locally but will hold up in a headless environment (e.g. CI)
+        // Putting it in this if loop is a temp fix for the hold up in CI but it does it by skipping the test 
+        // (so CI won't actually tell you whether this is passing or not)
+        if (!GraphicsEnvironment.isHeadless()) {
+            new JFXPanel();
+                    
+            plugins.put("test", Arrays.asList(new TestDataAccessPlugin()));
+            plugins.put("anothertest", Arrays.asList(new AnotherTestDataAccessPlugin()));
+            
+            final QueryPhasePane instance = new QueryPhasePane(plugins, null, null);
+            for (final Node child : instance.getDataSourceList().getChildren()) {
+                final HeadingPane heading = (HeadingPane) child;
+                //default value for HeadingPane expansion is true so setting to false
+                heading.setExpanded(false);
+            }
+            
+            instance.showMatchingPlugins("Test Plugin");
+            
+            for (final Node child : instance.getDataSourceList().getChildren()) {
+                final HeadingPane heading = (HeadingPane) child;
+                
+                assertTrue(heading.isExpanded());
+            }  
+        }
     }
     
     private class TestDataAccessPlugin extends SimplePlugin implements DataAccessPlugin {
