@@ -34,6 +34,7 @@ public class NotesViewEntry implements PluginReportListener {
     private Boolean graphAttribute;
     private List<Integer> nodesSelected;
     private List<Integer> transactionsSelected;
+    private List<String> tags = new ArrayList<>();
 
     public NotesViewEntry(final String dateTime, final String noteTitle, final String noteContent, final boolean userCreated, final boolean graphAttribute) {
         this.dateTime = dateTime;
@@ -92,6 +93,14 @@ public class NotesViewEntry implements PluginReportListener {
 
     public void setNoteContent(final String noteContent) {
         this.noteContent = noteContent;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(final List<String> tags) {
+        this.tags = tags;
     }
 
     @Override

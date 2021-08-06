@@ -38,16 +38,16 @@ public class DataAccessPluginCoreType extends DataAccessPluginType {
 
     @Override
     public List<PositionalDataAccessPluginType> getPluginTypeList() {
-        final ArrayList<PositionalDataAccessPluginType> pluginTypeList = new ArrayList<>();
-        pluginTypeList.add(new DataAccessPluginType.PositionalDataAccessPluginType(FAVOURITES, Integer.MIN_VALUE));
-        pluginTypeList.add(new DataAccessPluginType.PositionalDataAccessPluginType(IMPORT, 1000));
-        pluginTypeList.add(new DataAccessPluginType.PositionalDataAccessPluginType(EXTEND, 2000));
-        pluginTypeList.add(new DataAccessPluginType.PositionalDataAccessPluginType(ENRICHMENT, 2300));
-        pluginTypeList.add(new DataAccessPluginType.PositionalDataAccessPluginType(CLEAN, 3000));
-        pluginTypeList.add(new DataAccessPluginType.PositionalDataAccessPluginType(WORKFLOW, 4000));
-        pluginTypeList.add(new DataAccessPluginType.PositionalDataAccessPluginType(UTILITY, 5000));
-        pluginTypeList.add(new DataAccessPluginType.PositionalDataAccessPluginType(EXPERIMENTAL, Integer.MAX_VALUE - 1));
-        pluginTypeList.add(new DataAccessPluginType.PositionalDataAccessPluginType(DEVELOPER, Integer.MAX_VALUE));
+        final List<PositionalDataAccessPluginType> pluginTypeList = new ArrayList<>();
+        pluginTypeList.add(new PositionalDataAccessPluginType(FAVOURITES, Integer.MIN_VALUE));
+        pluginTypeList.add(new PositionalDataAccessPluginType(IMPORT, 1000));
+        pluginTypeList.add(new PositionalDataAccessPluginType(EXTEND, 2000));
+        pluginTypeList.add(new PositionalDataAccessPluginType(ENRICHMENT, 2300));
+        pluginTypeList.add(new PositionalDataAccessPluginType(CLEAN, 3000));
+        pluginTypeList.add(new PositionalDataAccessPluginType(WORKFLOW, 4000));
+        pluginTypeList.add(new PositionalDataAccessPluginType(UTILITY, 5000));
+        pluginTypeList.add(new PositionalDataAccessPluginType(EXPERIMENTAL, Integer.MAX_VALUE - 1));
+        pluginTypeList.add(new PositionalDataAccessPluginType(DEVELOPER, Integer.MAX_VALUE));
 
         return pluginTypeList;
     }
