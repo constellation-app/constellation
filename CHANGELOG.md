@@ -1,5 +1,18 @@
 # Constellation Changes
 
+## Changes in August 2021
+
+-   Added 'updateTagsFiltersAvailable', 'updateSelectedTagsCombo', 
+    'updateTagsFilters', 'updateAutoNotesDisplayed' and 'getTagsFilters' to 
+    'NotesViewPane' to control the tags filters used in the check combo box 
+    to update the Auto Notes filters.
+
+-   Update 'setFilters' in 'NotesViewPane' to include the Auto Notes filters. 
+
+-   Update to 'readObject' and 'writeObject' in 'NotesViewStateIoProvider'
+    to include Plugin Reporter tags in each Auto Note when they are written 
+    to the graph file.
+
 ## Changes in July 2021
 
 -   Update to Quality Control category names and colours in 
