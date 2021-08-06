@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
+== 2021-08-05 Auto Notes Filters
+<p>Additional filters have been added to the Notes View to filter on which Auto Notes are shown. When the Auto Notes filter is selected, an additional drop down list of filters for the Auto Notes is displayed.</p>
+
 == 2021-07-30 Remember File Open/Save Location
 <p>By default, the "Remember Open/Save Location" preference is enabled, which will default the previously opened or saved location when opening or saving a file. </p>
 <p>When this option is unticked, the open or save location defaults to the user's home directory</p>

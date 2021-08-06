@@ -84,7 +84,7 @@ public class NotesViewController {
         }
 
         PluginExecution.withPlugin(
-                new NotesViewStateWriter(pane.getNotes(), pane.getFilters())
+                new NotesViewStateWriter(pane.getNotes(), pane.getFilters(), pane.getTagsFilters())
         ).executeLater(graph);
     }
 
@@ -135,10 +135,12 @@ public class NotesViewController {
 
         private final List<NotesViewEntry> notes;
         private final List<String> filters;
+        private final List<String> tagsFilters;
 
-        public NotesViewStateWriter(final List<NotesViewEntry> notes, final List<String> filters) {
+        public NotesViewStateWriter(final List<NotesViewEntry> notes, final List<String> filters, final List<String> tagsFilters) {
             this.notes = notes;
             this.filters = filters;
+            this.tagsFilters = tagsFilters;
         }
 
         @Override
@@ -153,6 +155,7 @@ public class NotesViewController {
             final NotesViewState newState = currentState == null ? new NotesViewState() : new NotesViewState(currentState);
             newState.setNotes(notes);
             newState.setFilters(filters);
+            newState.setTagsFilters(tagsFilters);
 
             graph.setObjectValue(stateAttributeId, 0, newState);
         }
