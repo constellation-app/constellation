@@ -183,6 +183,8 @@ public class DraggableCellNGTest {
             new JFXPanel();
             
             final DraggableCell<String> instance = new DraggableCell<>();
+            // opacity is 1 by default so setting to a different value to ensure we know the value changed to 1 in the end
+            instance.setOpacity(0.5);
             
             // mocking the required dragboard
             final Dragboard dragboard = mock(Dragboard.class);
