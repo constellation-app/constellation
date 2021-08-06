@@ -34,7 +34,7 @@ public abstract class FilterPlugin extends SimpleEditPlugin {
 
     public static final String FILTER_TYPE_PARAMETER_ID = PluginParameter.buildId(FilterPlugin.class, "filter_type");
 
-    static final String FILTER_TYPE_VALUE_PROVIDED_DOES_NOT_MATCH = "Filter type value provided does not match a known trust level.";
+    protected static final String FILTER_TYPE_VALUE_PROVIDED_DOES_NOT_MATCH = "Filter type value provided does not match a known trust level.";
 
     @Override
     public PluginParameters createParameters() {
@@ -122,12 +122,7 @@ public abstract class FilterPlugin extends SimpleEditPlugin {
         @Override
         public boolean setObjectValue(Object o) {
             final FilterTypeParameterValue t = (FilterTypeParameterValue) o;
-            if (this.filterType == null && t.filterType == null) {
-                return true;
-            } else if (this.filterType != null && !this.filterType.equals(t.filterType)) {
-                this.filterType = t.filterType;
-                return true;
-            } else if (this.filterType == null) {
+            if (this.filterType != t.filterType) {
                 this.filterType = t.filterType;
                 return true;
             }
