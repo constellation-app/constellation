@@ -15,13 +15,16 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.plugins.importing;
 
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
+import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.ContentConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginRegistry;
 import java.util.HashSet;
 import java.util.Set;
@@ -60,6 +63,39 @@ public class ExtractWordsFromTextPluginNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+    }
+
+    /**
+     * Test of getType method, of class ExtractWordFromTextPlugin.
+     */
+    @Test
+    public void testGetType() {
+        ExtractWordsFromTextPlugin instance = new ExtractWordsFromTextPlugin();
+        String expResult = "Import";
+        String result = instance.getType();
+        assertEquals(result, expResult);
+    }
+
+    /**
+     * Test of getPosition method, of class ExtractWordsFromTextPlugin.
+     */
+    @Test
+    public void testGetPosition() {
+        ExtractWordsFromTextPlugin instance = new ExtractWordsFromTextPlugin();
+        int expResult = 1001;
+        int result = instance.getPosition();
+        assertEquals(result, expResult);
+    }
+
+    /**
+     * Test of getDescription method, of class ExtractWordFromTextPlugin.
+     */
+    @Test
+    public void testGetDescription() {
+        ExtractWordsFromTextPlugin instance = new ExtractWordsFromTextPlugin();
+        String expResult = "Extract words from text and add them to the graph";
+        String result = instance.getDescription();
+        assertEquals(result, expResult);
     }
 
     /**
@@ -548,5 +584,35 @@ public class ExtractWordsFromTextPluginNGTest {
         newNodes.add(graph.getStringValue(vertexIdentifierAttributeId, graph.getVertex(3)));
         assertTrue(newNodes.contains("do"));
         assertTrue(newNodes.contains("DO"));
+    }
+
+    /**
+     * Test updateParameters
+     *
+     */
+    @Test
+    public void testUpdateParameters() {
+        final int vertexIdentifierAttributeId = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
+        final int transactionContentAttributeId = ContentConcept.TransactionAttribute.CONTENT.ensure(graph);
+        final int transactionTypeAttributeId = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
+
+        graph.getSchema().newGraph(graph);
+        final int srcId = graph.addVertex();
+        graph.setStringValue(vertexIdentifierAttributeId, srcId, "Node0");
+
+        final int dstId = graph.addVertex();
+        graph.setStringValue(vertexIdentifierAttributeId, dstId, "Node1");
+
+        final int txId = graph.addTransaction(srcId, dstId, true);
+        graph.setObjectValue(transactionTypeAttributeId, txId, AnalyticConcept.TransactionType.COMMUNICATION);
+        graph.setStringValue(transactionContentAttributeId, txId, "Can you do this?\nWill you  DO  that?");
+
+        ExtractWordsFromTextPlugin instance = new ExtractWordsFromTextPlugin();
+        Graph graph1 = new DualGraph(graph.getSchema(), graph);
+
+        PluginParameters parameters = instance.createParameters();
+        parameters.getParameters().get(ExtractWordsFromTextPlugin.ATTRIBUTE_PARAMETER_ID).setStringValue(ContentConcept.TransactionAttribute.CONTENT.getName());
+
+        instance.updateParameters(graph1, parameters);
     }
 }
