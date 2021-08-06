@@ -320,7 +320,7 @@ public class QueryPhasePaneNGTest {
             // these are added purely to get the function working
             final VBox parent = new VBox(instance);
             final VBox grandparent = new VBox(parent);
-            new ScrollPane(grandparent);
+            new ExtendedScrollPane(grandparent);
             
             instance.expandPlugin("Test Plugin");
             
@@ -468,5 +468,16 @@ public class QueryPhasePaneNGTest {
             return 0;
         }
         
+    }
+    
+    /**
+     * This class is added purely so that a ScrollPane can be a parent (doesn't seem to be a public-facing way to do so otherwise)
+     */
+    private class ExtendedScrollPane extends ScrollPane {
+
+        public ExtendedScrollPane(final Node node) {
+            super(node);
+            getChildren().add(node);
+        }
     }
 }
