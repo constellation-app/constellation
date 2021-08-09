@@ -614,5 +614,6 @@ public class ExtractWordsFromTextPluginNGTest {
         parameters.getParameters().get(ExtractWordsFromTextPlugin.ATTRIBUTE_PARAMETER_ID).setStringValue(ContentConcept.TransactionAttribute.CONTENT.getName());
 
         instance.updateParameters(graph1, parameters);
+        assertTrue(parameters.hasParameter(ExtractWordsFromTextPlugin.ATTRIBUTE_PARAMETER_ID));
     }
 }

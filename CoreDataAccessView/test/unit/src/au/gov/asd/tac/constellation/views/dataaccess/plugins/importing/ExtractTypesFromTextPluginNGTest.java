@@ -17,9 +17,13 @@ package au.gov.asd.tac.constellation.views.dataaccess.plugins.importing;
 
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStore;
+import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.text.TextPluginInteraction;
@@ -128,4 +132,49 @@ public class ExtractTypesFromTextPluginNGTest {
         assertEquals(result, expResult);
     }
 
+    /**
+     * Test of query method in class ExtractTypesFromTextPlugin using a null string
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testNullQuery() throws Exception {
+        RecordStore query = new GraphRecordStore();
+        ExtractTypesFromTextPlugin instance = new ExtractTypesFromTextPlugin();
+        PluginInteraction interaction = new TextPluginInteraction();
+
+        PluginParameters parameters = instance.createParameters();
+        parameters.getParameters().get(ExtractTypesFromTextPlugin.TEXT_PARAMETER_ID).setStringValue(null);
+
+        RecordStore expResult = new GraphRecordStore();
+        try {
+            RecordStore result = instance.query(query, interaction, parameters);
+            assertEquals(result, expResult);
+        } catch (PluginException ex) {
+            assertEquals(ex.getMessage(), "No text provided from which to extract types.");
+        }
+    }
+
+    /**
+     * Test of query method in class ExtractTypesFromTextPlugin using a string where a detection regex is picked up
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testRegexQuery() throws Exception {
+        RecordStore query = new GraphRecordStore();
+        ExtractTypesFromTextPlugin instance = new ExtractTypesFromTextPlugin();
+        PluginInteraction interaction = new TextPluginInteraction();
+
+        PluginParameters parameters = instance.createParameters();
+        parameters.getParameters().get(ExtractTypesFromTextPlugin.TEXT_PARAMETER_ID).setStringValue("abc@def.ghi");
+
+        RecordStore result = instance.query(query, interaction, parameters);
+        RecordStore expResult = new GraphRecordStore();
+        expResult.add();
+        expResult.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, "abc@def.ghi");
+        expResult.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, "Online Identifier.Email");
+        expResult.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.SEED, "true");
+        assertEquals(result, expResult);
+    }
 }
