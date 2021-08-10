@@ -35,6 +35,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -118,11 +119,11 @@ public class DataAccessStateIoProviderNGTest {
         
         final ArgumentCaptor<DataAccessState> captor = ArgumentCaptor.forClass(DataAccessState.class);
         
-        verify(graph, times(1)).setObjectValue(eq(ATTRIBUTE_ID), eq(ELEMENT_ID), captor.capture());
+        verify(graph).setObjectValue(eq(ATTRIBUTE_ID), eq(ELEMENT_ID), captor.capture());
         
         final List<Map<String, String>> state = captor.getValue().getState();
         
-        assertEquals(state.size(), 0);
+        assertTrue(state.isEmpty());
     }
     
     @Test
@@ -136,11 +137,11 @@ public class DataAccessStateIoProviderNGTest {
         
         final ArgumentCaptor<DataAccessState> captor = ArgumentCaptor.forClass(DataAccessState.class);
         
-        verify(graph, times(1)).setObjectValue(eq(ATTRIBUTE_ID), eq(ELEMENT_ID), captor.capture());
+        verify(graph).setObjectValue(eq(ATTRIBUTE_ID), eq(ELEMENT_ID), captor.capture());
         
         final List<Map<String, String>> state = captor.getValue().getState();
         
-        assertEquals(state.size(), 0);
+        assertTrue(state.isEmpty());
     }
     
     @Test
@@ -168,7 +169,7 @@ public class DataAccessStateIoProviderNGTest {
         
         // The code is written with the assumption that it is called within a document
         // that has already started being written. Without starting the object in the test
-        // the code would through invalid json exceptions.
+        // the code would throw invalid json exceptions.
         jsonGenerator.writeStartObject();
         
         dataAccessStateIoProvider.writeObject(attribute, ELEMENT_ID, jsonGenerator, graph, null, false);
@@ -203,7 +204,7 @@ public class DataAccessStateIoProviderNGTest {
         
         // The code is written with the assumption that it is called within a document
         // that has already started being written. Without starting the object in the test
-        // the code would through invalid json exceptions.
+        // the code would throw invalid json exceptions.
         jsonGenerator.writeStartObject();
         
         dataAccessStateIoProvider.writeObject(attribute, ELEMENT_ID, jsonGenerator, graph, null, false);

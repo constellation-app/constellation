@@ -56,7 +56,7 @@ public class DataAccessStateNGTest {
     
     @Test
     public void testConstructorEmptyList() {
-        assertEquals(dataAccessState.getState(), Collections.EMPTY_LIST);
+        assertEquals(dataAccessState.getState(), Collections.emptyList());
     }
     
     @Test
