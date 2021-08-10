@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
 import static au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeNodesPlugin.LEAD_PARAMETER_ID;
 import static au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeNodesPlugin.MERGER_PARAMETER_ID;
 import static au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeNodesPlugin.MERGE_TYPE_PARAMETER_ID;
@@ -53,7 +54,7 @@ public class MergeNodesByTypeNGTest {
 
     private int vertexIdentifierAttribute, vertexTypeAttribute, vertexSelectedAttribute;
     private int vxId1, vxId2, vxId3, vxId4, vxId5, vxId6;
-    private int txId1, txId2, txId3;
+    private int txId1, txId2, txId3, txId4, txId5;
     private StoreGraph graph;
     
     public MergeNodesByTypeNGTest() {
@@ -84,18 +85,21 @@ public class MergeNodesByTypeNGTest {
         vxId3 = graph.addVertex();
         vxId4 = graph.addVertex();
         vxId5 = graph.addVertex();
+        vxId6 = graph.addVertex();
 
         // set the identifier of each vertex to something unique
         graph.setStringValue(vertexIdentifierAttribute, vxId1, "V1");
         graph.setStringValue(vertexIdentifierAttribute, vxId2, "V2");
-        graph.setStringValue(vertexIdentifierAttribute, vxId3, "V3");
-        graph.setStringValue(vertexIdentifierAttribute, vxId3, "V4");
-        graph.setStringValue(vertexIdentifierAttribute, vxId3, "V5");
+        graph.setStringValue(vertexIdentifierAttribute, vxId3, "V2");
+        graph.setStringValue(vertexIdentifierAttribute, vxId4, "V3");
+        graph.setStringValue(vertexIdentifierAttribute, vxId5, "V3");
 
         // add transactions
         txId1 = graph.addTransaction(vxId1, vxId2, false);
         txId2 = graph.addTransaction(vxId3, vxId4, false);
         txId3 = graph.addTransaction(vxId5, vxId3, false);
+        txId4 = graph.addTransaction(vxId1, vxId3, false);
+        txId5 = graph.addTransaction(vxId4, vxId6, false);
 
         // select all
         graph.setBooleanValue(vertexSelectedAttribute, vxId1, true);
@@ -124,8 +128,8 @@ public class MergeNodesByTypeNGTest {
         mergeTypeParameter.setBooleanValue(false);
         parameters.addParameter(mergeTypeParameter);
         
-        final PluginParameter<BooleanParameterType.BooleanParameterValue> thresholdParameter = BooleanParameterType.build(THRESHOLD_PARAMETER_ID);
-        thresholdParameter.setBooleanValue(false);
+        final PluginParameter<IntegerParameterType.IntegerParameterValue> thresholdParameter = IntegerParameterType.build(THRESHOLD_PARAMETER_ID);
+        thresholdParameter.setIntegerValue(0);
         parameters.addParameter(thresholdParameter);
         
         final PluginParameter<BooleanParameterType.BooleanParameterValue> mergeParameter = BooleanParameterType.build(MERGER_PARAMETER_ID);
@@ -214,7 +218,7 @@ public class MergeNodesByTypeNGTest {
         // set the identifier of each vertex to something unique
         graph.setStringValue(vertexIdentifierAttribute, vxId1, "V1");
         graph.setStringValue(vertexIdentifierAttribute, vxId2, "V2");
-        graph.setStringValue(vertexIdentifierAttribute, vxId3, "V3");
+        graph.setStringValue(vertexIdentifierAttribute, vxId3, "V2");
 
         Map<Integer, Set<Integer>> result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
         assertEquals(result, expResult);
@@ -251,16 +255,19 @@ public class MergeNodesByTypeNGTest {
         // set the vertex Type Attribute of each vertex 
         graph.setStringValue(vertexTypeAttribute, vxId1,  AnalyticConcept.VertexType.DOCUMENT.getName());
         graph.setStringValue(vertexTypeAttribute, vxId2,  AnalyticConcept.VertexType.DOCUMENT.getName());
-        graph.setStringValue(vertexTypeAttribute, vxId3,  AnalyticConcept.VertexType.PERSON.getName());
-        graph.setStringValue(vertexTypeAttribute, vxId4,  AnalyticConcept.VertexType.ONLINE_IDENTIFIER.getName());
-        graph.setStringValue(vertexTypeAttribute, vxId5,  AnalyticConcept.VertexType.ONLINE_IDENTIFIER.getName());
+        graph.setStringValue(vertexTypeAttribute, vxId3,  AnalyticConcept.VertexType.ONLINE_IDENTIFIER.getName());
+        graph.setStringValue(vertexTypeAttribute, vxId4,  AnalyticConcept.VertexType.DOCUMENT.getName());
+        graph.setStringValue(vertexTypeAttribute, vxId5,  AnalyticConcept.VertexType.DOCUMENT.getName());
+        graph.setStringValue(vertexTypeAttribute, vxId6,  AnalyticConcept.VertexType.DOCUMENT.getName());
         
         Map<Integer, Set<Integer>> expResult = new HashMap<>();
         Set<Integer> cluster = new HashSet<>();
-        cluster.addAll(Arrays.asList(3, 4));
-        expResult.put(3, cluster);
-        
-        Map result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
+        cluster.addAll(Arrays.asList(1, 2));
+        expResult.put(1, cluster);
+        Set<Integer> cluster2 = new HashSet<>();
+        cluster2.addAll(Arrays.asList(3, 4));
+        expResult.put(3, cluster2);
+        Map<Integer, Set<Integer>> result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
         assertEquals(result, expResult);      
     }
     
@@ -276,31 +283,28 @@ public class MergeNodesByTypeNGTest {
         boolean selectedOnly = true;
         MergeNodesByType instance = new MergeNodesByType();
         
-        //Add another vertex
-        vxId6 = graph.addVertex();
-        
         // set the vertex Type Attribute of each vertex 
         graph.setStringValue(vertexTypeAttribute, vxId1, AnalyticConcept.VertexType.ONLINE_IDENTIFIER.getName());
         graph.setStringValue(vertexTypeAttribute, vxId2, AnalyticConcept.VertexType.PERSON.getName());
         graph.setStringValue(vertexTypeAttribute, vxId3, AnalyticConcept.VertexType.PERSON.getName());
         graph.setStringValue(vertexTypeAttribute, vxId4, AnalyticConcept.VertexType.PERSON.getName());
-        graph.setStringValue(vertexTypeAttribute, vxId5, AnalyticConcept.VertexType.ONLINE_IDENTIFIER.getName());
+        graph.setStringValue(vertexTypeAttribute, vxId5, AnalyticConcept.VertexType.PERSON.getName());
         graph.setStringValue(vertexTypeAttribute, vxId6, AnalyticConcept.VertexType.ONLINE_IDENTIFIER.getName());
         
         // select some nodes
         graph.setBooleanValue(vertexSelectedAttribute, vxId1, true);
         graph.setBooleanValue(vertexSelectedAttribute, vxId2, false);
         graph.setBooleanValue(vertexSelectedAttribute, vxId3, true);
-        graph.setBooleanValue(vertexSelectedAttribute, vxId4, false);
+        graph.setBooleanValue(vertexSelectedAttribute, vxId4, true);
         graph.setBooleanValue(vertexSelectedAttribute, vxId5, true);
-        graph.setBooleanValue(vertexSelectedAttribute, vxId6, true);
+        graph.setBooleanValue(vertexSelectedAttribute, vxId6, false);
         
         Map<Integer, Set<Integer>> expResult = new HashMap<>();
         Set<Integer> cluster = new HashSet<>();
-        cluster.addAll(Arrays.asList(4, 5));
-        expResult.put(4, cluster);
+        cluster.addAll(Arrays.asList(3, 4));
+        expResult.put(3, cluster);
         
-        Map result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
+        Map<Integer, Set<Integer>>  result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
         assertEquals(result, expResult);      
     }
 
