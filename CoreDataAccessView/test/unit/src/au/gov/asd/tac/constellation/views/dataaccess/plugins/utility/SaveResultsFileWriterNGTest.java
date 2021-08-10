@@ -60,8 +60,9 @@ import org.testng.annotations.Test;
 public class SaveResultsFileWriterNGTest {
 
     // Mocked dependencies
-    private final MockedStatic<DataAccessPreferenceKeys> mockedDataAccessPreferenceKeys = mockStatic(DataAccessPreferenceKeys.class);
-    private final MockedStatic<ConstellationLoggerHelper> mockedConstellationLoggerHelper = mockStatic(ConstellationLoggerHelper.class);
+    private MockedStatic<DataAccessPreferenceKeys> mockedDataAccessPreferenceKeys;
+    private MockedStatic<RecordStoreUtilities> mockedRecordStoreUtilities;
+    private MockedStatic<ConstellationLoggerHelper> mockedConstellationLoggerHelper;
     
     // Flags capturing validity checks
     private boolean fileCreated = true;  // Was the file with requesated filename/path created (well, does it exist).
@@ -81,12 +82,16 @@ public class SaveResultsFileWriterNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        Plugin plugin = new ExampleClass();
-        TabularRecordStore tabularRecordStore = new TabularRecordStore();
+        mockedDataAccessPreferenceKeys = mockStatic(DataAccessPreferenceKeys.class);
+        mockedRecordStoreUtilities = mockStatic(RecordStoreUtilities.class);
+        mockedConstellationLoggerHelper = mockStatic(ConstellationLoggerHelper.class);
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        mockedDataAccessPreferenceKeys.close();
+        mockedRecordStoreUtilities.close();
+        mockedConstellationLoggerHelper.close();
     }
 
     /**
@@ -110,11 +115,9 @@ public class SaveResultsFileWriterNGTest {
         Plugin plugin = new ExampleClass();
         TabularRecordStore tabularRecordStore = new TabularRecordStore();
                 
-        mockedDataAccessPreferenceKeys.when(DataAccessPreferenceKeys::getDataAccessResultsDir).thenReturn(null);
+        mockedDataAccessPreferenceKeys.when(() -> DataAccessPreferenceKeys.getDataAccessResultsDir()).thenReturn(null);
         try {
             SaveResultsFileWriter.writeRecordStore(plugin, tabularRecordStore);
-            // TODO: do we really like the concept of file silently not saving because
-            // there is no save directory - or should it throw
             Assert.assertTrue(true, "Testing writing record to non existant directory.");
         } catch (Exception ex) {
             Assert.assertTrue(false, "Exception is not expected.");
@@ -131,28 +134,28 @@ public class SaveResultsFileWriterNGTest {
         Plugin plugin = new ExampleClass();
         TabularRecordStore tabularRecordStore = new TabularRecordStore();
 
-        mockedDataAccessPreferenceKeys.when(DataAccessPreferenceKeys::getDataAccessResultsDir).thenReturn(new File("/BADDIR/"));
+        mockedDataAccessPreferenceKeys.when(() -> DataAccessPreferenceKeys.getDataAccessResultsDir()).thenReturn(new File("/BADDIR/"));
+        mockedConstellationLoggerHelper.when(() -> ConstellationLoggerHelper.exportPropertyBuilder(any(), any(), any(), any())).thenAnswer(invocation -> { 
+            Object[] args = invocation.getArguments();
+            File passedFile = (File)args[2];
+            constellationLoggerHelperStatus = (String)args[3];
+
+            // Ensure the file was not created
+            fileCreated = passedFile.exists();
+            if (fileCreated) passedFile.delete();
+
+            // Return properties (which are ignored)
+            Properties properties = new Properties();
+            return properties;
+        });
         try {
-            // Mock exportPropertyBuilder to check passed File and status values
-            mockedConstellationLoggerHelper.when(() -> ConstellationLoggerHelper.exportPropertyBuilder(any(), any(), any(), any())).thenAnswer(invocation -> { 
-                Object[] args = invocation.getArguments();
-                File passedFile = (File)args[2];
-                constellationLoggerHelperStatus = (String)args[3];
-                
-                // Ensure the file was not created
-                fileCreated = passedFile.exists();
-                if (fileCreated) passedFile.delete();
-                
-                // Return properties (which are ignored)
-                Properties properties = new Properties();
-                return properties;
-            });
             SaveResultsFileWriter.writeRecordStore(plugin, tabularRecordStore);
-            
+
             // Execution should not make it this far, an invalid file should result in an exception.
             Assert.assertTrue(false, "Exception is expected.");
-            
+
         } catch (Exception ex) {
+            mockedRecordStoreUtilities.verify(times(0), () -> RecordStoreUtilities.toCsv(Mockito.any(), Mockito.any()));
             Assert.assertFalse(fileCreated, "Record store file was not created.");
             Assert.assertEquals(constellationLoggerHelperStatus, ConstellationLoggerHelper.FAILURE,
                     "ConstellationLoggerHelper passed status = FAILURE.");
@@ -174,36 +177,39 @@ public class SaveResultsFileWriterNGTest {
         tabularRecordStore.add();
         tabularRecordStore.set(key, value);
 
+        // This test actually creates the output file in user.home directory, checksa its contents, and then removes it.
         mockedDataAccessPreferenceKeys.when(DataAccessPreferenceKeys::getDataAccessResultsDir).thenReturn(new File(System.getProperty("user.home")));
-        try {
-            // Mock exportPropertyBuilder to check passed File and status values and to validate file contents
-            mockedConstellationLoggerHelper.when(() -> ConstellationLoggerHelper.exportPropertyBuilder(any(), any(), any(), any())).thenAnswer((var invocation) -> { 
-                Object[] args = invocation.getArguments();
-                File passedFile = (File)args[2];
-                constellationLoggerHelperStatus = (String)args[3];
-                
-                // Ensure the file was created
-                fileCreated = passedFile.exists();
-                if (fileCreated) {
-                    // Read file and confirm it contains 3 rows
-                    int rows = 0;
-                    Scanner reader = new Scanner(passedFile);
-                    while (reader.hasNextLine()) {
-                        rows++;
-                        String data = reader.nextLine();
-                        if (rows == 1) dataValid = dataValid & (data.equals(key));
-                        if (rows == 2) dataValid = dataValid & (data.equals(value));
-                        if (rows >= 3) dataValid = false;
-                    }
-                    if (rows == 0) dataValid = false;
-                    passedFile.delete();
+        mockedRecordStoreUtilities.when(() -> RecordStoreUtilities.toCsv(Mockito.any(), Mockito.any())).thenCallRealMethod();
+        mockedConstellationLoggerHelper.when(() -> ConstellationLoggerHelper.exportPropertyBuilder(any(), any(), any(), any())).thenAnswer((var invocation) -> { 
+            Object[] args = invocation.getArguments();
+            File passedFile = (File)args[2];
+            constellationLoggerHelperStatus = (String)args[3];
+
+            // Ensure the file was created
+            fileCreated = passedFile.exists();
+            if (fileCreated) {
+                // Read file and confirm it contains 3 rows
+                int rows = 0;
+                Scanner reader = new Scanner(passedFile);
+                while (reader.hasNextLine()) {
+                    rows++;
+                    String data = reader.nextLine();
+                    if (rows == 1) dataValid = dataValid & (data.equals(key));
+                    if (rows == 2) dataValid = dataValid & (data.equals(value));
+                    if (rows >= 3) dataValid = false;
                 }
-                
-                // Return properties (which are ignored)
-                Properties properties = new Properties();
-                return properties;
-            });
+                if (rows == 0) dataValid = false;
+                passedFile.delete();
+            }
+
+            // Return properties (which are ignored)
+            Properties properties = new Properties();
+            return properties;
+        });
+
+        try {
             SaveResultsFileWriter.writeRecordStore(plugin, tabularRecordStore);
+            mockedRecordStoreUtilities.verify(times(1), () -> RecordStoreUtilities.toCsv(Mockito.any(), Mockito.any()));
 
             Assert.assertTrue(fileCreated, "Record store file was created.");
             Assert.assertEquals(constellationLoggerHelperStatus, ConstellationLoggerHelper.SUCCESS,
