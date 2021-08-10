@@ -119,8 +119,8 @@ public class SaveResultsFileWriterNGTest {
         try {
             SaveResultsFileWriter.writeRecordStore(plugin, tabularRecordStore);
             Assert.assertTrue(true, "Testing writing record to non existant directory.");
-        } catch (Exception ex) {
-            Assert.assertTrue(false, "Exception is not expected.");
+        } catch (PluginException ex) {
+            Assert.fail("PluginException is not expected.");
         }
     }
      
@@ -152,14 +152,13 @@ public class SaveResultsFileWriterNGTest {
             SaveResultsFileWriter.writeRecordStore(plugin, tabularRecordStore);
 
             // Execution should not make it this far, an invalid file should result in an exception.
-            Assert.assertTrue(false, "Exception is expected.");
+            Assert.fail("PluginException is expected.");
 
         } catch (Exception ex) {
             mockedRecordStoreUtilities.verify(times(0), () -> RecordStoreUtilities.toCsv(Mockito.any(), Mockito.any()));
             Assert.assertFalse(fileCreated, "Record store file was not created.");
             Assert.assertEquals(constellationLoggerHelperStatus, ConstellationLoggerHelper.FAILURE,
                     "ConstellationLoggerHelper passed status = FAILURE.");
-            Assert.assertTrue(true, "Exception is expected.");
         }
     }
    
@@ -177,7 +176,7 @@ public class SaveResultsFileWriterNGTest {
         tabularRecordStore.add();
         tabularRecordStore.set(key, value);
 
-        // This test actually creates the output file in user.home directory, checksa its contents, and then removes it.
+        // This test actually creates the output file in user.home directory, checks its contents, and then removes it.
         mockedDataAccessPreferenceKeys.when(DataAccessPreferenceKeys::getDataAccessResultsDir).thenReturn(new File(System.getProperty("user.home")));
         mockedRecordStoreUtilities.when(() -> RecordStoreUtilities.toCsv(Mockito.any(), Mockito.any())).thenCallRealMethod();
         mockedConstellationLoggerHelper.when(() -> ConstellationLoggerHelper.exportPropertyBuilder(any(), any(), any(), any())).thenAnswer((var invocation) -> { 
@@ -194,9 +193,15 @@ public class SaveResultsFileWriterNGTest {
                 while (reader.hasNextLine()) {
                     rows++;
                     String data = reader.nextLine();
-                    if (rows == 1) dataValid = dataValid & (data.equals(key));
-                    if (rows == 2) dataValid = dataValid & (data.equals(value));
-                    if (rows >= 3) dataValid = false;
+                    if (rows == 1) {
+                        dataValid = dataValid && (data.equals(key));
+                    }
+                    if (rows == 2) {
+                        dataValid = dataValid && (data.equals(value));
+                    }
+                    if (rows >= 3) {
+                        dataValid = false;
+                    }
                 }
                 if (rows == 0) dataValid = false;
                 passedFile.delete();
@@ -215,10 +220,8 @@ public class SaveResultsFileWriterNGTest {
             Assert.assertEquals(constellationLoggerHelperStatus, ConstellationLoggerHelper.SUCCESS,
                     "ConstellationLoggerHelper passed status = SUCCESS.");
             Assert.assertTrue(dataValid, "Record contents matches expected.");
-            Assert.assertTrue(true, "Exception is not expected.");
-            
-        } catch (Exception ex) {
-            Assert.assertTrue(false, "Exception is not expected.");
+        } catch (PluginException ex) {
+            Assert.fail("PluginException is not expected.");
         }
     }
 
@@ -227,7 +230,7 @@ public class SaveResultsFileWriterNGTest {
         @Override
         public String getName() {
             // getName must return a string and not an exception as it is called during testing.
-            return new String("ExampleClassName");
+            return "ExampleClassName";
         }
 
         @Override
