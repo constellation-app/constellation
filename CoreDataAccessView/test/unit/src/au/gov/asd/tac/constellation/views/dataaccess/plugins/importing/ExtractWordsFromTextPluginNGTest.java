@@ -39,6 +39,7 @@ import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.Ex
 import java.util.HashSet;
 import java.util.Set;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -623,7 +624,7 @@ public class ExtractWordsFromTextPluginNGTest {
         assertTrue(parameters.hasParameter(ExtractWordsFromTextPlugin.ATTRIBUTE_PARAMETER_ID));
         assertEquals(parameters.getParameters().get(ExtractWordsFromTextPlugin.WORDS_PARAMETER_ID).getStringValue(), "text");
         assertEquals(parameters.getParameters().get(ExtractWordsFromTextPlugin.USE_REGEX_PARAMETER_ID).getBooleanValue(), true);
-        assertTrue(!parameters.hasParameter(ExtractWordsFromTextPlugin.SELECTED_ONLY_PARAMETER_ID));
+        assertFalse(parameters.hasParameter(ExtractWordsFromTextPlugin.SELECTED_ONLY_PARAMETER_ID));
 
         parameters = instance.createParameters();
         instance.updateParameters(graph1, parameters);
