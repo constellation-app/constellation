@@ -24,8 +24,18 @@ import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcep
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.ContentConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginRegistry;
+import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractWordsFromTextPlugin.ATTRIBUTE_PARAMETER_ID;
+import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractWordsFromTextPlugin.USE_REGEX_PARAMETER_ID;
+import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractWordsFromTextPlugin.WORDS_PARAMETER_ID;
 import java.util.HashSet;
 import java.util.Set;
 import static org.testng.Assert.assertEquals;
@@ -592,28 +602,33 @@ public class ExtractWordsFromTextPluginNGTest {
      */
     @Test
     public void testUpdateParameters() {
-        final int vertexIdentifierAttributeId = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
-        final int transactionContentAttributeId = ContentConcept.TransactionAttribute.CONTENT.ensure(graph);
-        final int transactionTypeAttributeId = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
-
-        graph.getSchema().newGraph(graph);
-        final int srcId = graph.addVertex();
-        graph.setStringValue(vertexIdentifierAttributeId, srcId, "Node0");
-
-        final int dstId = graph.addVertex();
-        graph.setStringValue(vertexIdentifierAttributeId, dstId, "Node1");
-
-        final int txId = graph.addTransaction(srcId, dstId, true);
-        graph.setObjectValue(transactionTypeAttributeId, txId, AnalyticConcept.TransactionType.COMMUNICATION);
-        graph.setStringValue(transactionContentAttributeId, txId, "Can you do this?\nWill you  DO  that?");
-
         ExtractWordsFromTextPlugin instance = new ExtractWordsFromTextPlugin();
+        PluginParameters parameters = new PluginParameters();
+
+        final PluginParameter<SingleChoiceParameterValue> attributeType = SingleChoiceParameterType.build(ATTRIBUTE_PARAMETER_ID);
+        parameters.addParameter(attributeType);
+
+        final PluginParameter<StringParameterValue> textParameter = StringParameterType.build(WORDS_PARAMETER_ID);
+        textParameter.setStringValue("text");
+        parameters.addParameter(textParameter);
+
+        final PluginParameter<BooleanParameterValue> useRegexParameter = BooleanParameterType.build(USE_REGEX_PARAMETER_ID);
+        useRegexParameter.setBooleanValue(true);
+        parameters.addParameter(useRegexParameter);
+
         Graph graph1 = new DualGraph(graph.getSchema(), graph);
-
-        PluginParameters parameters = instance.createParameters();
-        parameters.getParameters().get(ExtractWordsFromTextPlugin.ATTRIBUTE_PARAMETER_ID).setStringValue(ContentConcept.TransactionAttribute.CONTENT.getName());
-
         instance.updateParameters(graph1, parameters);
+
+        assertEquals(parameters.getParameters().size(), 3);
         assertTrue(parameters.hasParameter(ExtractWordsFromTextPlugin.ATTRIBUTE_PARAMETER_ID));
+        assertEquals(parameters.getParameters().get(ExtractWordsFromTextPlugin.WORDS_PARAMETER_ID).getStringValue(), "text");
+        assertEquals(parameters.getParameters().get(ExtractWordsFromTextPlugin.USE_REGEX_PARAMETER_ID).getBooleanValue(), true);
+        assertTrue(!parameters.hasParameter(ExtractWordsFromTextPlugin.SELECTED_ONLY_PARAMETER_ID));
+
+        parameters = instance.createParameters();
+        instance.updateParameters(graph1, parameters);
+
+        assertEquals(parameters.getParameters().size(), 11);
+        assertTrue(parameters.hasParameter(ExtractWordsFromTextPlugin.SELECTED_ONLY_PARAMETER_ID));
     }
 }

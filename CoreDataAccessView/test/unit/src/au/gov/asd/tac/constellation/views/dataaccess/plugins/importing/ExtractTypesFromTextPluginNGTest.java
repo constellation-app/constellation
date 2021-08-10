@@ -137,22 +137,14 @@ public class ExtractTypesFromTextPluginNGTest {
      *
      * @throws Exception
      */
-    @Test
+    @Test(expectedExceptions = PluginException.class)
     public void testNullQuery() throws Exception {
         RecordStore query = new GraphRecordStore();
         ExtractTypesFromTextPlugin instance = new ExtractTypesFromTextPlugin();
         PluginInteraction interaction = new TextPluginInteraction();
 
         PluginParameters parameters = instance.createParameters();
-        parameters.getParameters().get(ExtractTypesFromTextPlugin.TEXT_PARAMETER_ID).setStringValue(null);
-
-        RecordStore expResult = new GraphRecordStore();
-        try {
-            RecordStore result = instance.query(query, interaction, parameters);
-            assertEquals(result, expResult);
-        } catch (PluginException ex) {
-            assertEquals(ex.getMessage(), "No text provided from which to extract types.");
-        }
+        RecordStore result = instance.query(query, interaction, parameters);
     }
 
     /**
@@ -173,7 +165,7 @@ public class ExtractTypesFromTextPluginNGTest {
         RecordStore expResult = new GraphRecordStore();
         expResult.add();
         expResult.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, "abc@def.ghi");
-        expResult.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, "Online Identifier.Email");
+        expResult.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, AnalyticConcept.VertexType.EMAIL_ADDRESS);
         expResult.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.SEED, "true");
         assertEquals(result, expResult);
     }
