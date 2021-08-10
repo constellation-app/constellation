@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.views.dataaccess.plugins.utility;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.processing.RecordStore;
 import au.gov.asd.tac.constellation.graph.processing.RecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.processing.TabularRecordStore;
 import au.gov.asd.tac.constellation.plugins.Plugin;
@@ -29,21 +28,15 @@ import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessPreferenceKeys;
 import java.io.File;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.doNothing;
 import org.openide.util.HelpCtx;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
@@ -118,7 +111,7 @@ public class SaveResultsFileWriterNGTest {
         mockedDataAccessPreferenceKeys.when(() -> DataAccessPreferenceKeys.getDataAccessResultsDir()).thenReturn(null);
         try {
             SaveResultsFileWriter.writeRecordStore(plugin, tabularRecordStore);
-            Assert.assertTrue(true, "Testing writing record to non existant directory.");
+            Assert.assertTrue(true, "Testing writing record to non existant directory - code will do nothing.");
         } catch (PluginException ex) {
             Assert.fail("PluginException is not expected.");
         }
