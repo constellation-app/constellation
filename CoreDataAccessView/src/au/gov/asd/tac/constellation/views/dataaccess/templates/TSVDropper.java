@@ -63,92 +63,85 @@ public class TSVDropper implements GraphDropper {
     @Override
     public BiConsumer<Graph, DropInfo> drop(final DropTargetDropEvent dtde) {
 
-        // Only work on files
-        final Transferable transferable = dtde.getTransferable();
-        if (transferable.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+	// Only work on files
+	final Transferable transferable = dtde.getTransferable();
+	if (transferable.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+	    try {
+		// Get the data as a list of files
+		final Object data = dtde.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
+		@SuppressWarnings("unchecked") //data will be list of files which extends Object type
+		final List<File> files = (List<File>) data;
 
-            try {
+		// Create a record store to hold the combined results
+		final RecordStore recordStore = new GraphRecordStore();
 
-                // Get the data as a list of files
-                final Object data = dtde.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
-                @SuppressWarnings("unchecked") //data will be list of files which extends Object type
-                final List<File> files = (List<File>) data;
+		boolean badData = false;
 
-                // Create a record store to hold the combined results
-                final RecordStore recordStore = new GraphRecordStore();
+		// Process each file...
+		for (final File file : files) {
+		    // Only process files
+		    if (file.isFile()) {
+			// Only process files that have a .tsv or .tsv.gz extension
+			// If any file does not have this extension then reject all the files.
+			final InputStream in;
+			if (file.getName().endsWith(".tsv.gz")) {
+			    in = new GZIPInputStream(new FileInputStream(file));
+			} else if (file.getName().endsWith(".tsv")) {
+			    in = new FileInputStream(file);
+			} else {
+			    badData = true;
+			    break;
+			}
 
-                boolean badData = false;
-                // Process each file...
-                for (File file : files) {
+			// Open a reader so that we can read the file line by line
+			try (BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8.name()))) {
+			    String[] columnHeaders = null;
 
-                    // Only process files
-                    if (file.isFile()) {
+			    String line = reader.readLine();
+			    while (line != null) {
+				String[] fields = line.split(SeparatorConstants.TAB);
 
-                        // Only process files that have a .tsv or .tsv.gz extension
-                        // If any file does not have this extension then reject all the files.
-                        final InputStream in;
-                        if (file.getName().endsWith(".tsv.gz")) {
-                            in = new GZIPInputStream(new FileInputStream(file));
-                        } else if (file.getName().endsWith(".tsv")) {
-                            in = new FileInputStream(file);
-                        } else {
-                            badData = true;
-                            break;
-                        }
+				if (columnHeaders == null) {
+				    columnHeaders = fields;
+				} else {
+				    recordStore.add();
+				    final int fieldsCount = Math.min(columnHeaders.length, fields.length);
+				    for (int i = 0; i < fieldsCount; i++) {
+					recordStore.set(columnHeaders[i], fields[i]);
+				    }
+				}
 
-                        // Open a reader so that we can read the file line by line
-                        try (BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8.name()))) {
+				line = reader.readLine();
+			    }
+			}
+			// If any directories are encountered then don't allow the drop
+		    } else {
+			badData = true;
+			break;
+		    }
+		}
 
-                            String[] columnHeaders = null;
+		if (!badData && recordStore.size() > 0) {
+		    return (graph, dropInfo) -> {
+			PluginExecution.withPlugin(new RecordStoreQueryPlugin("Drag and Drop: TSV File to Graph") {
+			    @Override
+			    protected RecordStore query(final RecordStore query, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+				ConstellationLoggerHelper.importPropertyBuilder(
+					this,
+					recordStore.getAll(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL),
+					files,
+					ConstellationLoggerHelper.SUCCESS
+				);
+				return recordStore;
+			    }
+			}).executeLater(graph);
+		    };
+		}
+	    } catch (final UnsupportedFlavorException | IOException ex) {
+		Exceptions.printStackTrace(ex);
+	    }
+	}
 
-                            String line = reader.readLine();
-                            while (line != null) {
-
-                                String[] fields = line.split(SeparatorConstants.TAB);
-
-                                if (columnHeaders == null) {
-                                    columnHeaders = fields;
-                                } else {
-                                    recordStore.add();
-                                    int fieldsCount = Math.min(columnHeaders.length, fields.length);
-                                    for (int i = 0; i < fieldsCount; i++) {
-                                        recordStore.set(columnHeaders[i], fields[i]);
-                                    }
-                                }
-
-                                line = reader.readLine();
-                            }
-                        }
-
-                        // If any directories are encountered then don't allow the drop
-                    } else {
-                        badData = true;
-                        break;
-                    }
-                }
-
-                if (!badData && recordStore.size() > 0) {
-                    return (graph, dropInfo) -> {
-
-                        PluginExecution.withPlugin(new RecordStoreQueryPlugin("Drag and Drop: TSV File to Graph") {
-                            @Override
-                            protected RecordStore query(final RecordStore query, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                                ConstellationLoggerHelper.importPropertyBuilder(
-                                        this,
-                                        recordStore.getAll(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL),
-                                        files,
-                                        ConstellationLoggerHelper.SUCCESS
-                                );
-                                return recordStore;
-                            }
-                        }).executeLater(graph);
-                    };
-                }
-            } catch (final UnsupportedFlavorException | IOException ex) {
-                Exceptions.printStackTrace(ex);
-            }
-        }
-
-        return null;
+	return null;
     }
 }
