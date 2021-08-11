@@ -1,0 +1,17 @@
+{
+    "ATTR NAME": [
+        {
+            "global": {
+                "key1": "value1",
+                "key2": "value2"
+            },
+            "plugins": {}
+        },
+        {
+            "global": {
+                "key3": "value3"
+            },
+            "plugins": {}
+        }
+    ]
+}

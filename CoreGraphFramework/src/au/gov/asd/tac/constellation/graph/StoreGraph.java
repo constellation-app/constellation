@@ -656,8 +656,8 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     }
 
     @Override
-    public boolean linkExists(final int vertex) {
-        return lStore.elementExists(vertex);
+    public boolean linkExists(final int link) {
+        return lStore.elementExists(link);
     }
 
     @Override
@@ -666,8 +666,8 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     }
 
     @Override
-    public boolean transactionExists(final int vertex) {
-        return tStore.elementExists(vertex);
+    public boolean transactionExists(final int transaction) {
+        return tStore.elementExists(transaction);
     }
 
     @Override

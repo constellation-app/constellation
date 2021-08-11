@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import javafx.application.Platform;
 import javafx.scene.Node;
@@ -48,7 +49,7 @@ public class QueryPhasePane extends VBox {
     public QueryPhasePane(final Map<String, List<DataAccessPlugin>> plugins, final PluginParametersPaneListener top, final PluginParameters presetGlobalParms) {
         globalParametersPane = new GlobalParametersPane(presetGlobalParms);
 
-        for (final Map.Entry<String, List<DataAccessPlugin>> pluginsOfType : plugins.entrySet()) {
+        for (final Entry<String, List<DataAccessPlugin>> pluginsOfType : plugins.entrySet()) {
             final List<DataAccessPlugin> pluginList = pluginsOfType.getValue();
             if (!pluginList.isEmpty()) {
                 final String type = pluginsOfType.getKey();
@@ -62,23 +63,35 @@ public class QueryPhasePane extends VBox {
         getChildren().addAll(globalParametersPane, dataSourceList);
     }
 
-    public void enableGraphDependentMenuItems(boolean enabled) {
-        for (MenuItem menuItem : graphDependentMenuItems) {
+    protected VBox getDataSourceList() {
+        return dataSourceList;
+    }
+    
+    protected Set<MenuItem> getGraphDependentMenuItems() {
+        return graphDependentMenuItems;
+    }
+
+    protected Set<MenuItem> getPluginDependentMenuItems() {
+        return pluginDependentMenuItems;
+    }
+    
+    public void enableGraphDependentMenuItems(final boolean enabled) {
+        for (final MenuItem menuItem : graphDependentMenuItems) {
             menuItem.setDisable(!enabled);
         }
     }
 
-    public void addGraphDependentMenuItems(MenuItem... menuItems) {
+    public void addGraphDependentMenuItems(final MenuItem... menuItems) {
         graphDependentMenuItems.addAll(Arrays.asList(menuItems));
     }
 
-    public void enablePluginDependentMenuItems(boolean enabled) {
-        for (MenuItem menuItem : pluginDependentMenuItems) {
+    public void enablePluginDependentMenuItems(final boolean enabled) {
+        for (final MenuItem menuItem : pluginDependentMenuItems) {
             menuItem.setDisable(!enabled);
         }
     }
 
-    public void addPluginDependentMenuItems(MenuItem... menuItems) {
+    public void addPluginDependentMenuItems(final MenuItem... menuItems) {
         pluginDependentMenuItems.addAll(Arrays.asList(menuItems));
     }
 
