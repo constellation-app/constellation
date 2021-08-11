@@ -57,58 +57,58 @@ public class RecordStoreDropper implements GraphDropper {
     protected static final DataFlavor RECORD_STORE_FLAVOR;
 
     static {
-	DataFlavor recordStoreFlavor = null;
-	byte[] recordStoreBytes = null;
+        DataFlavor recordStoreFlavor = null;
+        byte[] recordStoreBytes = null;
 
-	try {
-	    recordStoreFlavor = new DataFlavor("text/plain;class=java.io.InputStream;charset=UTF-8");
-	    recordStoreBytes = "RecordStore=".getBytes(StandardCharsets.UTF_8.name());
-	} catch (ClassNotFoundException | UnsupportedEncodingException ex) {
-	    Exceptions.printStackTrace(ex);
-	}
+        try {
+            recordStoreFlavor = new DataFlavor("text/plain;class=java.io.InputStream;charset=UTF-8");
+            recordStoreBytes = "RecordStore=".getBytes(StandardCharsets.UTF_8.name());
+        } catch (ClassNotFoundException | UnsupportedEncodingException ex) {
+            Exceptions.printStackTrace(ex);
+        }
 
-	RECORD_STORE_FLAVOR = recordStoreFlavor;
-	RECORD_STORE_BYTES = recordStoreBytes;
+        RECORD_STORE_FLAVOR = recordStoreFlavor;
+        RECORD_STORE_BYTES = recordStoreBytes;
     }
 
     @Override
     public BiConsumer<Graph, DropInfo> drop(final DropTargetDropEvent dtde) {
-	try {
-	    final Transferable transferable = dtde.getTransferable();
-	    if (transferable.isDataFlavorSupported(RECORD_STORE_FLAVOR)) {
-		final Object data = transferable.getTransferData(RECORD_STORE_FLAVOR);
-		if (data instanceof InputStream) {
-		    try (final InputStream in = (InputStream) data) {
+        try {
+            final Transferable transferable = dtde.getTransferable();
+            if (transferable.isDataFlavorSupported(RECORD_STORE_FLAVOR)) {
+                final Object data = transferable.getTransferData(RECORD_STORE_FLAVOR);
+                if (data instanceof InputStream) {
+                    try (final InputStream in = (InputStream) data) {
 
-			final byte[] buffer = new byte[RECORD_STORE_BYTES.length];
-			if (in.read(buffer) == buffer.length && Arrays.equals(buffer, RECORD_STORE_BYTES)) {
-			    final RecordStore recordStore = RecordStoreUtilities.fromJson(in);
+                        final byte[] buffer = new byte[RECORD_STORE_BYTES.length];
+                        if (in.read(buffer) == buffer.length && Arrays.equals(buffer, RECORD_STORE_BYTES)) {
+                            final RecordStore recordStore = RecordStoreUtilities.fromJson(in);
 
-			    if (recordStore != null) {
-				return (graph, dropInfo) -> {
-				    PluginExecution.withPlugin(new RecordStoreQueryPlugin("Drag and Drop: RecordStore To Graph") {
-					@Override
-					protected RecordStore query(final RecordStore query, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-					    ConstellationLoggerHelper.importPropertyBuilder(
-						    this,
-						    recordStore.getAll(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL),
-						    null,
-						    ConstellationLoggerHelper.SUCCESS
-					    );
-					    return recordStore;
-					}
-				    }).executeLater(graph);
-				};
-			    }
-			}
-		    }
-		}
-	    }
-	} catch (UnsupportedFlavorException | IOException ex) {
-	    Exceptions.printStackTrace(ex);
-	}
+                            if (recordStore != null) {
+                                return (graph, dropInfo) -> {
+                                    PluginExecution.withPlugin(new RecordStoreQueryPlugin("Drag and Drop: RecordStore To Graph") {
+                                        @Override
+                                        protected RecordStore query(final RecordStore query, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+                                            ConstellationLoggerHelper.importPropertyBuilder(
+                                                    this,
+                                                    recordStore.getAll(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL),
+                                                    null,
+                                                    ConstellationLoggerHelper.SUCCESS
+                                            );
+                                            return recordStore;
+                                        }
+                                    }).executeLater(graph);
+                                };
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (UnsupportedFlavorException | IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
 
-	return null;
+        return null;
     }
 
 }
