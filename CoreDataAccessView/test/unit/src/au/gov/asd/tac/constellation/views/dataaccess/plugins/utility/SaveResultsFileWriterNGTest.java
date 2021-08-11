@@ -95,26 +95,24 @@ public class SaveResultsFileWriterNGTest {
         Plugin plugin = new ExampleClass();
         String filename = SaveResultsFileWriter.generateFilename(plugin, "xml");
         Pattern pattern = Pattern.compile("[0-9]{8}T[0-9]{9}-ExampleClass.xml");
-        Matcher matcher = pattern.matcher(filename.toString());
+        Matcher matcher = pattern.matcher(filename);
         Assert.assertTrue(matcher.matches(), "Testing generated filename matches pattern - yyyyMMddTHHmmssSSS.");
     }
         
     /**
      * Test of writeRecordStore method for case when DataAccessPreferenceKeys.getDataAccessResultsDir() returns null.
-     * Expectation is that no attempted writes are made.
+     * The expectation is that no attempted writes are made.
+     * This test executes a code path through SaveResultsFileWriter.writeRecordStore that does not throw an exception.
+     * @throws java.lang.Exception
      */
     @Test
-    public void testWriteRecordStoreNoDataAccessResultsDir() {
+    public void testWriteRecordStoreNoDataAccessResultsDir() throws Exception {
         Plugin plugin = new ExampleClass();
         TabularRecordStore tabularRecordStore = new TabularRecordStore();
                 
         mockedDataAccessPreferenceKeys.when(() -> DataAccessPreferenceKeys.getDataAccessResultsDir()).thenReturn(null);
-        try {
-            SaveResultsFileWriter.writeRecordStore(plugin, tabularRecordStore);
-            Assert.assertTrue(true, "Testing writing record to non existant directory - code will do nothing.");
-        } catch (PluginException ex) {
-            Assert.fail("PluginException is not expected.");
-        }
+        SaveResultsFileWriter.writeRecordStore(plugin, tabularRecordStore);
+        Assert.assertTrue(true, "Testing writing record to non existant directory - code will do nothing.");
     }
      
     /**
@@ -159,9 +157,11 @@ public class SaveResultsFileWriterNGTest {
      * Test of writeRecordStore method for case when DataAccessPreferenceKeys.getDataAccessResultsDir() returns a
      * valid directory. Confirm file is created with expected contents and that no exception is thrown. confirm
      * ConstellationLoggerHelper.exportPropertyBuilder called with appropriate SUCCESS status.
+     * This test executes a code path through SaveResultsFileWriter.writeRecordStore that does not throw an exception.
+     * @throws java.lang.Exception
      */
     @Test
-    public void testWriteRecordStore() {
+    public void testWriteRecordStore() throws Exception {
         Plugin plugin = new ExampleClass();
         TabularRecordStore tabularRecordStore = new TabularRecordStore();
         String key = "TEST1KEY";
@@ -205,17 +205,13 @@ public class SaveResultsFileWriterNGTest {
             return properties;
         });
 
-        try {
-            SaveResultsFileWriter.writeRecordStore(plugin, tabularRecordStore);
-            mockedRecordStoreUtilities.verify(times(1), () -> RecordStoreUtilities.toCsv(Mockito.any(), Mockito.any()));
+        SaveResultsFileWriter.writeRecordStore(plugin, tabularRecordStore);
+        mockedRecordStoreUtilities.verify(times(1), () -> RecordStoreUtilities.toCsv(Mockito.any(), Mockito.any()));
 
-            Assert.assertTrue(fileCreated, "Record store file was created.");
-            Assert.assertEquals(constellationLoggerHelperStatus, ConstellationLoggerHelper.SUCCESS,
-                    "ConstellationLoggerHelper passed status = SUCCESS.");
-            Assert.assertTrue(dataValid, "Record contents matches expected.");
-        } catch (PluginException ex) {
-            Assert.fail("PluginException is not expected.");
-        }
+        Assert.assertTrue(fileCreated, "Record store file was created.");
+        Assert.assertEquals(constellationLoggerHelperStatus, ConstellationLoggerHelper.SUCCESS,
+                "ConstellationLoggerHelper passed status = SUCCESS.");
+        Assert.assertTrue(dataValid, "Record contents matches expected.");
     }
 
     private static class ExampleClass implements Plugin {
