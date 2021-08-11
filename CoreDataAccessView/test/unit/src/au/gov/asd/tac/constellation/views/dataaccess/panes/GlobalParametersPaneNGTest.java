@@ -45,73 +45,76 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class GlobalParametersPaneNGTest {
-//    private static MockedStatic<PluginParametersPane> pluginParametersPaneMockedStatic;
-//    private static MockedStatic<GlobalParameters> globalParametersMockedStatic;
-//    
-//    private GlobalParametersPane globalParametersPane;
-//    private PluginParameters parameters;
-//    
-//    public GlobalParametersPaneNGTest() {
-//    }
-//
-//    @BeforeClass
-//    public static void setUpClass() throws Exception {
-//        pluginParametersPaneMockedStatic = Mockito.mockStatic(PluginParametersPane.class);
-//        globalParametersMockedStatic = Mockito.mockStatic(GlobalParameters.class);
-//        
-//        // TODO Find a better solution for this. Because of this limitation these tests
-//        //      will not be run on the CI server.
-//        if (!GraphicsEnvironment.isHeadless()) {
-//            new JFXPanel();
-//        } else {
-//            throw new SkipException("This class requires the build to have a display present.");
-//        }
-//    }
-//
-//    @AfterClass
-//    public static void tearDownClass() throws Exception {
-//        pluginParametersPaneMockedStatic.close();
-//        globalParametersMockedStatic.close();
-//    }
-//
-//    @BeforeMethod
-//    public void setUpMethod() throws Exception {
-//        pluginParametersPaneMockedStatic.reset();
-//        globalParametersMockedStatic.reset();
-//        
-//        parameters = mock(PluginParameters.class);
-//        
-//        globalParametersMockedStatic.when(() -> GlobalParameters.getParameters(parameters)).thenReturn(parameters);
-//        pluginParametersPaneMockedStatic.when(() -> PluginParametersPane.buildPane(eq(parameters), isNull(), isNull())).thenReturn(null);
-//        
-//        globalParametersPane = new GlobalParametersPane(parameters);
-//    }
-//
-//    @AfterMethod
-//    public void tearDownMethod() throws Exception {
-//    }
-//    
-//    @Test
-//    public void constructor() {
-//        assertTrue(globalParametersPane.isExpanded());
-//        assertEquals(globalParametersPane.getText(), "Global Parameters");
-//        assertFalse(globalParametersPane.isCollapsible());
-//        assertTrue(globalParametersPane.getStyleClass().contains("titled-pane-heading"));
-//    }
-//    
-//    @Test
-//    public void getParams() {
-//        assertSame(globalParametersPane.getParams(), parameters);
-//    }
-//    
-//    @Test
-//    public void getParamLabels() {
-//        final PluginParameter param1 = mock(PluginParameter.class);
-//        final PluginParameter param2 = mock(PluginParameter.class);
-//        
-//        when(parameters.getParameters())
-//                .thenReturn(Map.of("hello", param1, "world", param2));
-//        
-//        assertEquals(globalParametersPane.getParamLabels(), Set.of("hello", "world"));
-//    }
+    private static MockedStatic<PluginParametersPane> pluginParametersPaneMockedStatic;
+    private static MockedStatic<GlobalParameters> globalParametersMockedStatic;
+    
+    private GlobalParametersPane globalParametersPane;
+    private PluginParameters parameters;
+    
+    public GlobalParametersPaneNGTest() {
+    }
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        // TODO Find a better solution for this. Because of this limitation these tests
+        //      will not be run on the CI server.
+        if (!GraphicsEnvironment.isHeadless()) {
+            // Interestingly once you throw the skip exception it doesn't call the tear down class
+            // so we need to instantiate the static mocks only once we know we will be running the
+            // tests.
+            pluginParametersPaneMockedStatic = Mockito.mockStatic(PluginParametersPane.class);
+            globalParametersMockedStatic = Mockito.mockStatic(GlobalParameters.class);
+            
+            new JFXPanel();
+        } else {
+            throw new SkipException("This class requires the build to have a display present.");
+        }
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+        pluginParametersPaneMockedStatic.close();
+        globalParametersMockedStatic.close();
+    }
+
+    @BeforeMethod
+    public void setUpMethod() throws Exception {
+        pluginParametersPaneMockedStatic.reset();
+        globalParametersMockedStatic.reset();
+        
+        parameters = mock(PluginParameters.class);
+        
+        globalParametersMockedStatic.when(() -> GlobalParameters.getParameters(parameters)).thenReturn(parameters);
+        pluginParametersPaneMockedStatic.when(() -> PluginParametersPane.buildPane(eq(parameters), isNull(), isNull())).thenReturn(null);
+        
+        globalParametersPane = new GlobalParametersPane(parameters);
+    }
+
+    @AfterMethod
+    public void tearDownMethod() throws Exception {
+    }
+    
+    @Test
+    public void constructor() {
+        assertTrue(globalParametersPane.isExpanded());
+        assertEquals(globalParametersPane.getText(), "Global Parameters");
+        assertFalse(globalParametersPane.isCollapsible());
+        assertTrue(globalParametersPane.getStyleClass().contains("titled-pane-heading"));
+    }
+    
+    @Test
+    public void getParams() {
+        assertSame(globalParametersPane.getParams(), parameters);
+    }
+    
+    @Test
+    public void getParamLabels() {
+        final PluginParameter param1 = mock(PluginParameter.class);
+        final PluginParameter param2 = mock(PluginParameter.class);
+        
+        when(parameters.getParameters())
+                .thenReturn(Map.of("hello", param1, "world", param2));
+        
+        assertEquals(globalParametersPane.getParamLabels(), Set.of("hello", "world"));
+    }
 }
