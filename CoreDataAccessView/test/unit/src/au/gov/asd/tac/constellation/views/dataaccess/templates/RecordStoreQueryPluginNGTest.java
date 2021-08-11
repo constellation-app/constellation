@@ -89,11 +89,11 @@ public class RecordStoreQueryPluginNGTest {
     }
 
     /**
-     * Test of query method, of class RecordStoreQueryPlugin.
+     * Test of edit method, of class RecordStoreQueryPlugin.
      */
     @Test
-    public void testQuery() throws InterruptedException, PluginException {
-	System.out.println("query");
+    public void testEdit() throws InterruptedException, PluginException {
+	System.out.println("edit");
 
 	final RecordStoreQueryPlugin instance = new RecordStoreQueryPluginMockImpl();
 	final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
