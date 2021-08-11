@@ -24,7 +24,6 @@ import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -120,14 +119,6 @@ public class SplitNodesPluginSplitLogicNGTest {
         graph = null;
     }
 
-    @Test
-    public void testGetType() {
-        MergeNodesPlugin instance = new MergeNodesPlugin();
-        String expResult = DataAccessPluginCoreType.CLEAN;
-        String result = instance.getType();
-        assertEquals(result, expResult);
-    }
-
     /**
      * Test of splitting logic, of class SplitNodesPlugin.
      *
@@ -139,7 +130,6 @@ public class SplitNodesPluginSplitLogicNGTest {
         final PluginParameters parameters = instance.createParameters();
 
         parameters.setStringValue(SplitNodesPlugin.SPLIT_PARAMETER_ID, ",");
-        parameters.setStringValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, "false");
         graph.setBooleanValue(vertexSelectedAttribute, vxId1, true);
         PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
 
@@ -155,7 +145,6 @@ public class SplitNodesPluginSplitLogicNGTest {
         final PluginParameters parameters = instance.createParameters();
 
         parameters.setStringValue(SplitNodesPlugin.SPLIT_PARAMETER_ID, ",");
-        parameters.setStringValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, "false");
         graph.setBooleanValue(vertexSelectedAttribute, vxId2, true);
         PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
 
@@ -172,7 +161,6 @@ public class SplitNodesPluginSplitLogicNGTest {
         final PluginParameters parameters = instance.createParameters();
 
         parameters.setStringValue(SplitNodesPlugin.SPLIT_PARAMETER_ID, ",");
-        parameters.setStringValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, "false");
         graph.setBooleanValue(vertexSelectedAttribute, vxId3, true);
         PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
 
@@ -188,7 +176,6 @@ public class SplitNodesPluginSplitLogicNGTest {
         final PluginParameters parameters = instance.createParameters();
 
         parameters.setStringValue(SplitNodesPlugin.SPLIT_PARAMETER_ID, ",");
-        parameters.setStringValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, "false");
         graph.setBooleanValue(vertexSelectedAttribute, vxId4, true);
         PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
 
@@ -205,7 +192,7 @@ public class SplitNodesPluginSplitLogicNGTest {
         final PluginParameters parameters = instance.createParameters();
 
         parameters.setStringValue(SplitNodesPlugin.SPLIT_PARAMETER_ID, ",");
-        parameters.setStringValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, "true");
+        parameters.setBooleanValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, true);
         graph.setBooleanValue(vertexSelectedAttribute, vxId1, true);
         PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
 
@@ -221,7 +208,7 @@ public class SplitNodesPluginSplitLogicNGTest {
         final PluginParameters parameters = instance.createParameters();
 
         parameters.setStringValue(SplitNodesPlugin.SPLIT_PARAMETER_ID, ",");
-        parameters.setStringValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, "true");
+        parameters.setBooleanValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, true);
         graph.setBooleanValue(vertexSelectedAttribute, vxId2, true);
         PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
 
@@ -238,7 +225,7 @@ public class SplitNodesPluginSplitLogicNGTest {
         final PluginParameters parameters = instance.createParameters();
 
         parameters.setStringValue(SplitNodesPlugin.SPLIT_PARAMETER_ID, ",");
-        parameters.setStringValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, "true");
+        parameters.setBooleanValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, true);
         graph.setBooleanValue(vertexSelectedAttribute, vxId3, true);
         PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
 
@@ -254,7 +241,7 @@ public class SplitNodesPluginSplitLogicNGTest {
         final PluginParameters parameters = instance.createParameters();
 
         parameters.setStringValue(SplitNodesPlugin.SPLIT_PARAMETER_ID, ",");
-        parameters.setStringValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, "true");
+        parameters.setBooleanValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, true);
         graph.setBooleanValue(vertexSelectedAttribute, vxId4, true);
         PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
 
