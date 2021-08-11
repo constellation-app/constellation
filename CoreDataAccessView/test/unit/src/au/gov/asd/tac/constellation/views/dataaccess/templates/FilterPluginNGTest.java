@@ -140,7 +140,7 @@ public class FilterPluginNGTest {
      */
     @Test
     public void testValidateStringWhenValid() {
-        System.out.println("validateString");
+        System.out.println("validateStringWhenValid");
 
         final String s = "Remove";
         final FilterTypeParameterValue instance = new FilterTypeParameterValue();
@@ -155,7 +155,7 @@ public class FilterPluginNGTest {
      */
     @Test
     public void testValidateStringWhenInvalid() {
-        System.out.println("validateString");
+        System.out.println("validateStringWhenInvalid");
 
         final String s = "Foo";
         final FilterTypeParameterValue instance = new FilterTypeParameterValue();
@@ -170,7 +170,7 @@ public class FilterPluginNGTest {
      */
     @Test
     public void testSetStringValueWhenValid() {
-        System.out.println("setStringValue");
+        System.out.println("setStringValueWhenValid");
 
         final String s = "Remove";
         final FilterTypeParameterValue instance = new FilterTypeParameterValue();
@@ -185,7 +185,7 @@ public class FilterPluginNGTest {
      */
     @Test
     public void testSetStringValueWhenInvalid() {
-        System.out.println("setStringValue");
+        System.out.println("setStringValueWhenInvalid");
 
         final String s = "Foo";
         final FilterTypeParameterValue instance = new FilterTypeParameterValue();
