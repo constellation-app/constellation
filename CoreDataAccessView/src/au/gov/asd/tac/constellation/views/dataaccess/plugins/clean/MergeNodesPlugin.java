@@ -90,7 +90,7 @@ public class MergeNodesPlugin extends SimpleQueryPlugin implements DataAccessPlu
         return "Merge nodes in your graph together";
     }
 
-    private static final Comparator<String> LONGEST_VERTEX_CHOOSER = (String o1, String o2) -> {
+    protected static final Comparator<String> LONGEST_VERTEX_CHOOSER = (String o1, String o2) -> {
         if (o1.length() > o2.length()) {
             return -1;
         } else if (o1.length() < o2.length()) {
@@ -100,7 +100,7 @@ public class MergeNodesPlugin extends SimpleQueryPlugin implements DataAccessPlu
         }
     };
 
-    private static final Comparator<String> SHORTEST_VERTEX_CHOOSER = (String o1, String o2) -> {
+    protected static final Comparator<String> SHORTEST_VERTEX_CHOOSER = (String o1, String o2) -> {
         if (o1.length() > o2.length()) {
             return 1;
         } else if (o1.length() < o2.length()) {

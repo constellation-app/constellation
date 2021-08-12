@@ -1,7 +1,17 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2010-2021 Australian Signals Directorate
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package au.gov.asd.tac.constellation.views.dataaccess.plugins.clean;
 
@@ -15,9 +25,11 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
 import static au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeNodesPlugin.LEAD_PARAMETER_ID;
+import static au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeNodesPlugin.LONGEST_VERTEX_CHOOSER;
 import static au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeNodesPlugin.MERGER_PARAMETER_ID;
 import static au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeNodesPlugin.MERGE_TYPE_PARAMETER_ID;
 import static au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeNodesPlugin.SELECTED_PARAMETER_ID;
+import static au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeNodesPlugin.SHORTEST_VERTEX_CHOOSER;
 import static au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeNodesPlugin.THRESHOLD_PARAMETER_ID;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -43,26 +55,6 @@ public class MergeNodesByPrefixNGTest {
     private StoreGraph graph;
     private int vxId1, vxId2, vxId3, vxId4, vxId5;
     private int vertexIdentifierAttribute, vertexSelectedAttribute;
-
-    private final Comparator<String> LONGEST_VERTEX_CHOOSER = (String o1, String o2) -> {
-        if (o1.length() > o2.length()) {
-            return -1;
-        } else if (o1.length() < o2.length()) {
-            return 1;
-        } else {
-            return o1.compareTo(o2);
-        }
-    };
-
-    private final Comparator<String> SHORTEST_VERTEX_CHOOSER = (String o1, String o2) -> {
-        if (o1.length() > o2.length()) {
-            return 1;
-        } else if (o1.length() < o2.length()) {
-            return -1;
-        } else {
-            return o1.compareTo(o2);
-        }
-    };
 
     public MergeNodesByPrefixNGTest() {
         // Intentionally left blank.
