@@ -21,7 +21,6 @@ import au.gov.asd.tac.constellation.views.dataaccess.DataAccessUtilities;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessSearchProvider.PluginDisplayer;
 import javafx.scene.control.Tab;
 import javax.swing.Icon;
-import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.doNothing;
@@ -48,16 +47,9 @@ import org.testng.annotations.Test;
  */
 public class DataAccessSearchProviderNGTest {
 
-    @Mock
     SearchResponse response;
-
-    @Mock
     SearchRequest request;
-
-    @Mock
     DataAccessPane daPane;
-
-    @Mock
     QueryPhasePane qpPane;
 
     protected NotificationDisplayer notifDisplayer;
@@ -69,7 +61,6 @@ public class DataAccessSearchProviderNGTest {
 
     @BeforeClass
     public void setUpClass() throws Exception {
-        MockitoAnnotations.openMocks(this);
     }
 
     @AfterClass
@@ -78,6 +69,7 @@ public class DataAccessSearchProviderNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        MockitoAnnotations.openMocks(this);
     }
 
     @AfterMethod
@@ -95,7 +87,6 @@ public class DataAccessSearchProviderNGTest {
         System.out.println("evaluate fail");
 
         // Creating mocks
-        MockitoAnnotations.openMocks(this);
         daPane = mock(DataAccessPane.class);
         qpPane = mock(QueryPhasePane.class);
         request = mock(SearchRequest.class);
@@ -133,7 +124,6 @@ public class DataAccessSearchProviderNGTest {
         System.out.println("evaluate null");
 
         // Creating mocks
-        MockitoAnnotations.openMocks(this);
         daPane = mock(DataAccessPane.class);
         qpPane = mock(QueryPhasePane.class);
         request = mock(SearchRequest.class);
@@ -170,7 +160,6 @@ public class DataAccessSearchProviderNGTest {
         System.out.println("evaluate success");
 
         // Creating mocks
-        MockitoAnnotations.openMocks(this);
         daPane = mock(DataAccessPane.class);
         qpPane = mock(QueryPhasePane.class);
         request = mock(SearchRequest.class);
@@ -214,7 +203,6 @@ public class DataAccessSearchProviderNGTest {
         System.out.println("testRun1 testing query phase pane was successfully returned");
 
         // Setting up mocks
-        MockitoAnnotations.openMocks(this);
         daPane = mock(DataAccessPane.class);
         qpPane = mock(QueryPhasePane.class);
 
@@ -258,7 +246,6 @@ public class DataAccessSearchProviderNGTest {
         System.out.println("testRun2 testing null tab returned");
 
         // Setting up mocks
-        MockitoAnnotations.openMocks(this);
         daPane = mock(DataAccessPane.class);
         notifDisplayer = mock(NotificationDisplayer.class);
         final Notification notif = new Notification() {
@@ -298,7 +285,6 @@ public class DataAccessSearchProviderNGTest {
         System.out.println("testRun3 null data access pane");
 
         // Setting up mocks
-        MockitoAnnotations.openMocks(this);
         notifDisplayer = mock(NotificationDisplayer.class);
         final Notification notif = new Notification() {
             @Override
