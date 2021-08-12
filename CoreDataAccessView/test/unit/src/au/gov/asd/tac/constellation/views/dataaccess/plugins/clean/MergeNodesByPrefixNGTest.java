@@ -1,0 +1,242 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package au.gov.asd.tac.constellation.views.dataaccess.plugins.clean;
+
+import au.gov.asd.tac.constellation.graph.StoreGraph;
+import au.gov.asd.tac.constellation.graph.schema.Schema;
+import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
+import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
+import static au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeNodesPlugin.LEAD_PARAMETER_ID;
+import static au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeNodesPlugin.MERGER_PARAMETER_ID;
+import static au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeNodesPlugin.MERGE_TYPE_PARAMETER_ID;
+import static au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeNodesPlugin.SELECTED_PARAMETER_ID;
+import static au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeNodesPlugin.THRESHOLD_PARAMETER_ID;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+/**
+ * Unit tests for MergeNodesByPrefix.
+ *
+ * @author sol695510
+ */
+public class MergeNodesByPrefixNGTest {
+
+    private StoreGraph graph;
+    private int vxId1, vxId2, vxId3, vxId4, vxId5;
+    private int vertexIdentifierAttribute, vertexSelectedAttribute;
+
+    private final Comparator<String> LONGEST_VERTEX_CHOOSER = (String o1, String o2) -> {
+        if (o1.length() > o2.length()) {
+            return -1;
+        } else if (o1.length() < o2.length()) {
+            return 1;
+        } else {
+            return o1.compareTo(o2);
+        }
+    };
+
+    private final Comparator<String> SHORTEST_VERTEX_CHOOSER = (String o1, String o2) -> {
+        if (o1.length() > o2.length()) {
+            return 1;
+        } else if (o1.length() < o2.length()) {
+            return -1;
+        } else {
+            return o1.compareTo(o2);
+        }
+    };
+
+    public MergeNodesByPrefixNGTest() {
+        // Intentionally left blank.
+    }
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        // Intentionally left blank.
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+        // Intentionally left blank.
+    }
+
+    @BeforeMethod
+    public void setUpMethod() throws Exception {
+        // Create graph.
+        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
+        graph = new StoreGraph(schema);
+
+        // Add attributes.
+        vertexIdentifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
+        vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
+
+        // Add vertices.
+        vxId1 = graph.addVertex();
+        vxId2 = graph.addVertex();
+        vxId3 = graph.addVertex();
+        vxId4 = graph.addVertex();
+        vxId5 = graph.addVertex();
+
+        // Set vertice identifiers.
+        graph.setStringValue(vertexIdentifierAttribute, vxId1, "pre v1");
+        graph.setStringValue(vertexIdentifierAttribute, vxId2, "pre v2");
+        graph.setStringValue(vertexIdentifierAttribute, vxId3, "prefix v3");
+        graph.setStringValue(vertexIdentifierAttribute, vxId4, "fix v4");
+        graph.setStringValue(vertexIdentifierAttribute, vxId5, "fix v5");
+
+        // Set vertice selection.
+        graph.setBooleanValue(vertexSelectedAttribute, vxId1, true);
+        graph.setBooleanValue(vertexSelectedAttribute, vxId2, true);
+        graph.setBooleanValue(vertexSelectedAttribute, vxId3, false);
+        graph.setBooleanValue(vertexSelectedAttribute, vxId4, false);
+        graph.setBooleanValue(vertexSelectedAttribute, vxId5, false);
+    }
+
+    @AfterMethod
+    public void tearDownMethod() throws Exception {
+        // Intentionally left blank.
+    }
+
+    /**
+     * Test of updateParameters method.
+     */
+    @Test
+    public void testUpdateParameters() {
+        System.out.println("testUpdateParameters");
+
+        final PluginParameters pluginParameters = new PluginParameters();
+
+        pluginParameters.addParameter(BooleanParameterType.build(MERGE_TYPE_PARAMETER_ID));
+        pluginParameters.addParameter(IntegerParameterType.build(THRESHOLD_PARAMETER_ID));
+        pluginParameters.addParameter(BooleanParameterType.build(MERGER_PARAMETER_ID));
+        pluginParameters.addParameter(BooleanParameterType.build(LEAD_PARAMETER_ID));
+        pluginParameters.addParameter(BooleanParameterType.build(SELECTED_PARAMETER_ID));
+
+        Map<String, PluginParameter<?>> parameters = pluginParameters.getParameters();
+
+        MergeNodesByPrefix instance = new MergeNodesByPrefix();
+        instance.updateParameters(parameters);
+
+        assertTrue(parameters.get(MERGE_TYPE_PARAMETER_ID).isEnabled());
+        assertEquals(parameters.get(THRESHOLD_PARAMETER_ID).getDescription(), "The prefix length to consider");
+        assertEquals(parameters.get(THRESHOLD_PARAMETER_ID).getIntegerValue(), 9);
+        assertTrue(parameters.get(THRESHOLD_PARAMETER_ID).isEnabled());
+        assertTrue(parameters.get(MERGER_PARAMETER_ID).isEnabled());
+        assertTrue(parameters.get(LEAD_PARAMETER_ID).isEnabled());
+        assertTrue(parameters.get(SELECTED_PARAMETER_ID).isEnabled());
+    }
+
+    /**
+     * Test of getNodesToMerge method with shortestLeadVertexChooser and
+     * threshold = 0.
+     */
+    @Test
+    public void testGetNodesToMerge_shortestLeadVertexChooser_threshold0() {
+        System.out.println("testGetNodesToMerge_shortestLeadVertexChooser_threshold0");
+
+        Comparator<String> leadVertexChooser = SHORTEST_VERTEX_CHOOSER;
+        int threshold = 0;
+        boolean selectedOnly = false;
+
+        MergeNodesByPrefix instance = new MergeNodesByPrefix();
+        Map result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
+
+        Set<Integer> cluster = new HashSet<>(Arrays.asList(0, 1, 2, 3, 4));
+
+        Map<Integer, Set<Integer>> expResult = new HashMap<>();
+        expResult.put(3, cluster);
+
+        assertEquals(result, expResult);
+    }
+
+    /**
+     * Test of getNodesToMerge method with shortestLeadVertexChooser and
+     * threshold = 3.
+     */
+    @Test
+    public void testGetNodesToMerge_shortestLeadVertexChooser_threshold3() {
+        System.out.println("testGetNodesToMerge_shortestLeadVertexChooser_threshold0");
+
+        Comparator<String> leadVertexChooser = SHORTEST_VERTEX_CHOOSER;
+        int threshold = 3;
+        boolean selectedOnly = false;
+
+        MergeNodesByPrefix instance = new MergeNodesByPrefix();
+        Map result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
+
+        Set<Integer> cluster = new HashSet<>(Arrays.asList(0, 1, 2));
+        Set<Integer> cluster2 = new HashSet<>(Arrays.asList(3, 4));
+
+        Map<Integer, Set<Integer>> expResult = new HashMap<>();
+        expResult.put(0, cluster);
+        expResult.put(3, cluster2);
+
+        assertEquals(result, expResult);
+    }
+
+    /**
+     * Test of getNodesToMerge method with longestLeadVertexChooser and
+     * threshold = 5.
+     */
+    @Test
+    public void testGetNodesToMerge_longestLeadVertexChooser_threshold5() {
+        System.out.println("testGetNodesToMerge_longestLeadVertexChooser_threshold0");
+
+        Comparator<String> leadVertexChooser = LONGEST_VERTEX_CHOOSER;
+        int threshold = 5;
+        boolean selectedOnly = false;
+
+        MergeNodesByPrefix instance = new MergeNodesByPrefix();
+        Map result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
+
+        Set<Integer> cluster = new HashSet<>(Arrays.asList(0, 1));
+        Set<Integer> cluster2 = new HashSet<>(Arrays.asList(3, 4));
+
+        Map<Integer, Set<Integer>> expResult = new HashMap<>();
+        expResult.put(0, cluster);
+        expResult.put(3, cluster2);
+
+        assertEquals(result, expResult);
+    }
+
+    /**
+     * Test of getNodesToMerge method with longestLeadVertexChooser and
+     * threshold = 5 and selectOnly = true.
+     */
+    @Test
+    public void testGetNodesToMerge_longestLeadVertexChooser_threshold5_selectOnlyTrue() {
+        System.out.println("testGetNodesToMerge_longestLeadVertexChooser_threshold5_selectOnlyTrue");
+
+        Comparator<String> leadVertexChooser = LONGEST_VERTEX_CHOOSER;
+        int threshold = 5;
+        boolean selectedOnly = true;
+
+        MergeNodesByPrefix instance = new MergeNodesByPrefix();
+        Map result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
+
+        Set<Integer> cluster = new HashSet<>(Arrays.asList(0, 1));
+
+        Map<Integer, Set<Integer>> expResult = new HashMap<>();
+        expResult.put(0, cluster);
+
+        assertEquals(result, expResult);
+    }
+}
