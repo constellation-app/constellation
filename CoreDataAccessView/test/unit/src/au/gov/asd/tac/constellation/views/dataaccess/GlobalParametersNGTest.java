@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.dataaccess;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.ActionParameterType;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -79,6 +80,8 @@ public class GlobalParametersNGTest {
         
         when(param1.getId()).thenReturn("param1");
         when(param2.getId()).thenReturn("param2");
+        when(param1.getType()).thenReturn(ActionParameterType.INSTANCE);
+        when(param2.getType()).thenReturn(ActionParameterType.INSTANCE);
                 
         final GlobalParameters.PositionalPluginParameter positionalParam1
                 = new GlobalParameters.PositionalPluginParameter(param1, 10);
