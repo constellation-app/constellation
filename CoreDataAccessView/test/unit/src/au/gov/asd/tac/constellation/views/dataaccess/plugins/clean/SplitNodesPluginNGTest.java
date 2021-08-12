@@ -166,7 +166,7 @@ public class SplitNodesPluginNGTest {
         final PluginParameters params = instance.createParameters();
         
         final PluginParameter<SingleChoiceParameterValue> transactionTypeParam = (PluginParameter<SingleChoiceParameterValue>) params.getParameters().get(SplitNodesPlugin.TRANSACTION_TYPE_PARAMETER_ID);
-        assertEquals(SingleChoiceParameterType.getOptions(transactionTypeParam).size(), 0);
+        assertTrue(SingleChoiceParameterType.getOptions(transactionTypeParam).isEmpty());
         
         final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
         instance.updateParameters(new DualGraph(schema, graph), params);
