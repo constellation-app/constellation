@@ -1,0 +1,15 @@
+[
+    {
+        "global": {
+            "key1": "value1",
+            "key2": null,
+            "key3": 3
+        }
+    },
+    {
+        "global": {
+            "key4": "value4"
+        },
+        "something": "amazing"
+    }
+]

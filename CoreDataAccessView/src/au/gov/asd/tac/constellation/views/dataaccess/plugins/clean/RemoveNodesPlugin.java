@@ -113,7 +113,7 @@ public class RemoveNodesPlugin extends SimpleQueryPlugin implements DataAccessPl
                             verticesToRemove.add(vxId);
                         }
                     }
-                    for (final Integer vertex : verticesToRemove) {
+                    for (final int vertex : verticesToRemove) {
                         if (removeNodesByLength(wg, vertex, identifierAttribute, threshold)) {
                             removedCount++;
                         }
