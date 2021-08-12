@@ -22,7 +22,8 @@ import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import org.testng.Assert;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -33,7 +34,7 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class RemoveUnusedAttributesPluginTest {
+public class RemoveUnusedAttributesPluginNGTest {
 
     GraphWriteMethods graph = new StoreGraph();
     int vertex1, vertex2, vertex3;
@@ -41,7 +42,7 @@ public class RemoveUnusedAttributesPluginTest {
     int transaction1, transaction2;
     int transactionAttribute1, transactionAttribute2, transactionAttribute3;
 
-    public RemoveUnusedAttributesPluginTest() {
+    public RemoveUnusedAttributesPluginNGTest() {
     }
 
     @BeforeClass
@@ -84,12 +85,12 @@ public class RemoveUnusedAttributesPluginTest {
         PluginParameters parameters = null;
         RemoveUnusedAttributesPlugin instance = new RemoveUnusedAttributesPlugin();
         instance.edit(graph, interaction, parameters);
-        Assert.assertEquals(graph.getAttribute(GraphElementType.VERTEX, "test1"), GraphConstants.NOT_FOUND);
-        Assert.assertEquals(graph.getAttribute(GraphElementType.VERTEX, "test2"), GraphConstants.NOT_FOUND);
-        Assert.assertEquals(graph.getAttribute(GraphElementType.VERTEX, "test3"), GraphConstants.NOT_FOUND);
-        Assert.assertEquals(graph.getAttribute(GraphElementType.TRANSACTION, "test4"), GraphConstants.NOT_FOUND);
-        Assert.assertEquals(graph.getAttribute(GraphElementType.TRANSACTION, "test5"), GraphConstants.NOT_FOUND);
-        Assert.assertEquals(graph.getAttribute(GraphElementType.TRANSACTION, "test6"), GraphConstants.NOT_FOUND);
+        assertEquals(graph.getAttribute(GraphElementType.VERTEX, "test1"), GraphConstants.NOT_FOUND);
+        assertEquals(graph.getAttribute(GraphElementType.VERTEX, "test2"), GraphConstants.NOT_FOUND);
+        assertEquals(graph.getAttribute(GraphElementType.VERTEX, "test3"), GraphConstants.NOT_FOUND);
+        assertEquals(graph.getAttribute(GraphElementType.TRANSACTION, "test4"), GraphConstants.NOT_FOUND);
+        assertEquals(graph.getAttribute(GraphElementType.TRANSACTION, "test5"), GraphConstants.NOT_FOUND);
+        assertEquals(graph.getAttribute(GraphElementType.TRANSACTION, "test6"), GraphConstants.NOT_FOUND);
     }
 
     @Test
@@ -103,12 +104,12 @@ public class RemoveUnusedAttributesPluginTest {
         PluginParameters parameters = null;
         RemoveUnusedAttributesPlugin instance = new RemoveUnusedAttributesPlugin();
         instance.edit(graph, interaction, parameters);
-        Assert.assertEquals(graph.getAttribute(GraphElementType.VERTEX, "test1"), GraphConstants.NOT_FOUND);
-        Assert.assertNotEquals(graph.getAttribute(GraphElementType.VERTEX, "test2"), GraphConstants.NOT_FOUND);
-        Assert.assertNotEquals(graph.getAttribute(GraphElementType.VERTEX, "test3"), GraphConstants.NOT_FOUND);
-        Assert.assertNotEquals(graph.getAttribute(GraphElementType.TRANSACTION, "test4"), GraphConstants.NOT_FOUND);
-        Assert.assertEquals(graph.getAttribute(GraphElementType.TRANSACTION, "test5"), GraphConstants.NOT_FOUND);
-        Assert.assertEquals(graph.getAttribute(GraphElementType.TRANSACTION, "test6"), GraphConstants.NOT_FOUND);
+        assertEquals(graph.getAttribute(GraphElementType.VERTEX, "test1"), GraphConstants.NOT_FOUND);
+        assertNotEquals(graph.getAttribute(GraphElementType.VERTEX, "test2"), GraphConstants.NOT_FOUND);
+        assertNotEquals(graph.getAttribute(GraphElementType.VERTEX, "test3"), GraphConstants.NOT_FOUND);
+        assertNotEquals(graph.getAttribute(GraphElementType.TRANSACTION, "test4"), GraphConstants.NOT_FOUND);
+        assertEquals(graph.getAttribute(GraphElementType.TRANSACTION, "test5"), GraphConstants.NOT_FOUND);
+        assertEquals(graph.getAttribute(GraphElementType.TRANSACTION, "test6"), GraphConstants.NOT_FOUND);
     }
 
     @Test
@@ -123,12 +124,12 @@ public class RemoveUnusedAttributesPluginTest {
         PluginParameters parameters = null;
         RemoveUnusedAttributesPlugin instance = new RemoveUnusedAttributesPlugin();
         instance.edit(graph, interaction, parameters);
-        Assert.assertNotEquals(graph.getAttribute(GraphElementType.VERTEX, "test1"), GraphConstants.NOT_FOUND);
-        Assert.assertNotEquals(graph.getAttribute(GraphElementType.VERTEX, "test2"), GraphConstants.NOT_FOUND);
-        Assert.assertNotEquals(graph.getAttribute(GraphElementType.VERTEX, "test3"), GraphConstants.NOT_FOUND);
-        Assert.assertNotEquals(graph.getAttribute(GraphElementType.TRANSACTION, "test4"), GraphConstants.NOT_FOUND);
-        Assert.assertEquals(graph.getAttribute(GraphElementType.TRANSACTION, "test5"), GraphConstants.NOT_FOUND);
-        Assert.assertEquals(graph.getAttribute(GraphElementType.TRANSACTION, "test6"), GraphConstants.NOT_FOUND);
+        assertNotEquals(graph.getAttribute(GraphElementType.VERTEX, "test1"), GraphConstants.NOT_FOUND);
+        assertNotEquals(graph.getAttribute(GraphElementType.VERTEX, "test2"), GraphConstants.NOT_FOUND);
+        assertNotEquals(graph.getAttribute(GraphElementType.VERTEX, "test3"), GraphConstants.NOT_FOUND);
+        assertNotEquals(graph.getAttribute(GraphElementType.TRANSACTION, "test4"), GraphConstants.NOT_FOUND);
+        assertEquals(graph.getAttribute(GraphElementType.TRANSACTION, "test5"), GraphConstants.NOT_FOUND);
+        assertEquals(graph.getAttribute(GraphElementType.TRANSACTION, "test6"), GraphConstants.NOT_FOUND);
     }
 
 }
