@@ -19,13 +19,16 @@ import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.util.List;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * An object representing the state of the Table View.
  *
  * @author cygnus_x-1
  */
-public class TableViewState {
+public final class TableViewState {
 
     private boolean selectedOnly;
     private GraphElementType elementType;
@@ -95,17 +98,42 @@ public class TableViewState {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        TableViewState that = (TableViewState) o;
+
+        return new EqualsBuilder()
+                .append(isSelectedOnly(), that.isSelectedOnly())
+                .append(getElementType(), that.getElementType())
+                .append(getTransactionColumnAttributes(), that.getTransactionColumnAttributes())
+                .append(getVertexColumnAttributes(), that.getVertexColumnAttributes())
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder()
+                .append(isSelectedOnly())
+                .append(getElementType())
+                .append(getVertexColumnAttributes())
+                .append(getTransactionColumnAttributes())
+                .toHashCode();
+    }
+    
+    @Override
     public String toString() {
-        final StringBuilder repr = new StringBuilder();
-        repr.append("TableViewState[selectedOnly=");
-        repr.append(selectedOnly);
-        repr.append(", elementType=");
-        repr.append(elementType);
-        repr.append(", transactionColumnAttributes=");
-        repr.append(transactionColumnAttributes);
-        repr.append(", vertexColumnAttributes=");
-        repr.append(vertexColumnAttributes);
-        repr.append("]");
-        return repr.toString();
+        return new ToStringBuilder(this)
+                .append("slelectedOnly", isSelectedOnly())
+                .append("elementType", getElementType())
+                .append("transactionColumnAttributes", getTransactionColumnAttributes())
+                .append("vertexColumnAttributes", getVertexColumnAttributes())
+                .toString();
     }
 }
