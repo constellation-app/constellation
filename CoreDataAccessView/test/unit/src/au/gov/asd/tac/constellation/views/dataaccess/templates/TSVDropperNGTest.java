@@ -65,25 +65,25 @@ public class TSVDropperNGTest {
      */
     @Test
     public void dropWithValidTsv() throws UnsupportedFlavorException, IOException {
-	System.out.println("dropWithValidTsv");
+        System.out.println("dropWithValidTsv");
 
-	final DropTargetDropEvent dtde = mock(DropTargetDropEvent.class);
-	final Transferable transferable = mock(Transferable.class);
+        final DropTargetDropEvent dtde = mock(DropTargetDropEvent.class);
+        final Transferable transferable = mock(Transferable.class);
 
-	when(dtde.getTransferable()).thenReturn(transferable);
-	when(transferable.isDataFlavorSupported(DataFlavor.javaFileListFlavor)).thenReturn(Boolean.TRUE);
+        when(dtde.getTransferable()).thenReturn(transferable);
+        when(transferable.isDataFlavorSupported(DataFlavor.javaFileListFlavor)).thenReturn(true);
 
-	final File file = new File(TSVDropperNGTest.class.getResource("./resources/sample.tsv").getFile());
-	final List<File> data = new ArrayList<>();
-	data.add(file);
-	when(transferable.getTransferData(DataFlavor.javaFileListFlavor)).thenReturn(data);
+        final File file = new File(TSVDropperNGTest.class.getResource("./resources/sample.tsv").getFile());
+        final List<File> data = new ArrayList<>();
+        data.add(file);
+        when(transferable.getTransferData(DataFlavor.javaFileListFlavor)).thenReturn(data);
 
-	final BiConsumer expResult = null;
-	final TSVDropper instance = new TSVDropper();
-	final BiConsumer result = instance.drop(dtde);
+        final BiConsumer expResult = null;
+        final TSVDropper instance = new TSVDropper();
+        final BiConsumer result = instance.drop(dtde);
 
-	// TODO: would like to be able to test more than not null
-	assertNotEquals(result, expResult);
+        // TODO: would like to be able to test more than not null
+        assertNotEquals(result, expResult);
     }
 
     /**
@@ -91,25 +91,25 @@ public class TSVDropperNGTest {
      */
     @Test
     public void dropWithValidTsvCompressed() throws UnsupportedFlavorException, IOException {
-	System.out.println("dropWithValidTsvCompressed");
+        System.out.println("dropWithValidTsvCompressed");
 
-	final DropTargetDropEvent dtde = mock(DropTargetDropEvent.class);
-	final Transferable transferable = mock(Transferable.class);
+        final DropTargetDropEvent dtde = mock(DropTargetDropEvent.class);
+        final Transferable transferable = mock(Transferable.class);
 
-	when(dtde.getTransferable()).thenReturn(transferable);
-	when(transferable.isDataFlavorSupported(DataFlavor.javaFileListFlavor)).thenReturn(Boolean.TRUE);
+        when(dtde.getTransferable()).thenReturn(transferable);
+        when(transferable.isDataFlavorSupported(DataFlavor.javaFileListFlavor)).thenReturn(true);
 
-	final File file = new File(TSVDropperNGTest.class.getResource("./resources/sample.tsv.gz").getFile());
-	final List<File> data = new ArrayList<>();
-	data.add(file);
-	when(transferable.getTransferData(DataFlavor.javaFileListFlavor)).thenReturn(data);
+        final File file = new File(TSVDropperNGTest.class.getResource("./resources/sample.tsv.gz").getFile());
+        final List<File> data = new ArrayList<>();
+        data.add(file);
+        when(transferable.getTransferData(DataFlavor.javaFileListFlavor)).thenReturn(data);
 
-	final BiConsumer expResult = null;
-	final TSVDropper instance = new TSVDropper();
-	final BiConsumer result = instance.drop(dtde);
+        final BiConsumer expResult = null;
+        final TSVDropper instance = new TSVDropper();
+        final BiConsumer result = instance.drop(dtde);
 
-	// TODO: would like to be able to test more than not null
-	assertNotEquals(result, expResult);
+        // TODO: would like to be able to test more than not null
+        assertNotEquals(result, expResult);
     }
 
     /**
@@ -117,19 +117,19 @@ public class TSVDropperNGTest {
      */
     @Test
     public void dropWithInvalidDataFlavour() throws UnsupportedFlavorException, IOException {
-	System.out.println("dropWithInvalidDataFlavour");
+        System.out.println("dropWithInvalidDataFlavour");
 
-	final DropTargetDropEvent dtde = mock(DropTargetDropEvent.class);
-	final Transferable transferable = mock(Transferable.class);
+        final DropTargetDropEvent dtde = mock(DropTargetDropEvent.class);
+        final Transferable transferable = mock(Transferable.class);
 
-	when(dtde.getTransferable()).thenReturn(transferable);
-	when(transferable.isDataFlavorSupported(DataFlavor.javaFileListFlavor)).thenReturn(Boolean.FALSE);
+        when(dtde.getTransferable()).thenReturn(transferable);
+        when(transferable.isDataFlavorSupported(DataFlavor.javaFileListFlavor)).thenReturn(false);
 
-	final BiConsumer expResult = null;
-	final TSVDropper instance = new TSVDropper();
-	final BiConsumer result = instance.drop(dtde);
+        final BiConsumer expResult = null;
+        final TSVDropper instance = new TSVDropper();
+        final BiConsumer result = instance.drop(dtde);
 
-	assertEquals(result, expResult);
+        assertEquals(result, expResult);
     }
 
 }
