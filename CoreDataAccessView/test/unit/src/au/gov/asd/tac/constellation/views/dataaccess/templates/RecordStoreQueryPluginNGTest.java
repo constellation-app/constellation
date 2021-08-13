@@ -34,7 +34,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import java.util.ArrayList;
 import java.util.List;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -71,21 +71,19 @@ public class RecordStoreQueryPluginNGTest {
      * Test of getResult method, of class RecordStoreQueryPlugin.
      */
     @Test
-    public void testGetResult() {
-	System.out.println("getResult");
+    public void testGetResult() throws InterruptedException, PluginException {
+        System.out.println("getResult");
 
-	final RecordStoreQueryPlugin instance = new RecordStoreQueryPluginMockImpl();
-	final GraphReadMethods graph = new StoreGraph();
-	final PluginInteraction interaction = null;
-	final PluginParameters parameters = null;
-	try {
-	    instance.read(graph, interaction, parameters);
-	    instance.query(interaction, parameters);
-	} catch (InterruptedException | PluginException ex) {
-	    fail(ex.getLocalizedMessage());
-	}
-	final RecordStore result = instance.getResult();
-	assertEquals(result.size(), 2);
+        final RecordStoreQueryPlugin instance = new RecordStoreQueryPluginMockImpl();
+        final GraphReadMethods graph = new StoreGraph();
+        final PluginInteraction interaction = null;
+        final PluginParameters parameters = null;
+
+        instance.read(graph, interaction, parameters);
+        instance.query(interaction, parameters);
+
+        final RecordStore result = instance.getResult();
+        assertEquals(result.size(), 2);
     }
 
     /**
@@ -93,66 +91,66 @@ public class RecordStoreQueryPluginNGTest {
      */
     @Test
     public void testEdit() throws InterruptedException, PluginException {
-	System.out.println("edit");
+        System.out.println("edit");
 
-	final RecordStoreQueryPlugin instance = new RecordStoreQueryPluginMockImpl();
-	final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
-	final Graph graph = new DualGraph(schema); // only using a dual graph because of the need to pass a GraphWriteMethods graph to the edit() method.
-	final PluginInteraction interaction = null;
-	final PluginParameters parameters = null;
+        final RecordStoreQueryPlugin instance = new RecordStoreQueryPluginMockImpl();
+        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
+        final Graph graph = new DualGraph(schema); // only using a dual graph because of the need to pass a GraphWriteMethods graph to the edit() method.
+        final PluginInteraction interaction = null;
+        final PluginParameters parameters = null;
 
-	ReadableGraph rg = graph.getReadableGraph();
-	try {
-	    instance.read(rg, interaction, parameters);
-	    instance.query(interaction, parameters);
-	} finally {
-	    rg.release();
-	}
+        ReadableGraph rg = graph.getReadableGraph();
+        try {
+            instance.read(rg, interaction, parameters);
+            instance.query(interaction, parameters);
+        } finally {
+            rg.release();
+        }
 
-	GraphRecordStore query;
+        GraphRecordStore query;
 
-	rg = graph.getReadableGraph();
-	try {
-	    query = GraphRecordStoreUtilities.getAll(rg, false, false);
-	} finally {
-	    rg.release();
-	}
+        rg = graph.getReadableGraph();
+        try {
+            query = GraphRecordStoreUtilities.getAll(rg, false, false);
+        } finally {
+            rg.release();
+        }
 
-	final WritableGraph wg = graph.getWritableGraph("", true);
-	try {
-	    VisualConcept.VertexAttribute.X.ensure(wg);
-	    VisualConcept.VertexAttribute.Y.ensure(wg);
-	    VisualConcept.VertexAttribute.Z.ensure(wg);
-	    VisualConcept.GraphAttribute.CAMERA.ensure(wg);
+        final WritableGraph wg = graph.getWritableGraph("", true);
+        try {
+            VisualConcept.VertexAttribute.X.ensure(wg);
+            VisualConcept.VertexAttribute.Y.ensure(wg);
+            VisualConcept.VertexAttribute.Z.ensure(wg);
+            VisualConcept.GraphAttribute.CAMERA.ensure(wg);
 
-	    instance.edit(wg, interaction, parameters);
-	} finally {
-	    wg.commit();
-	}
+            instance.edit(wg, interaction, parameters);
+        } finally {
+            wg.commit();
+        }
 
-	rg = graph.getReadableGraph();
-	try {
-	    query = GraphRecordStoreUtilities.getTransactions(rg, false, false);
-	} finally {
-	    rg.release();
-	}
+        rg = graph.getReadableGraph();
+        try {
+            query = GraphRecordStoreUtilities.getTransactions(rg, false, false);
+        } finally {
+            rg.release();
+        }
 
-	// verify nothing has moved
-	query.reset();
-	query.next();
-	assertEquals(query.get(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.X), "10.0");
-	assertEquals(query.get(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.Y), "10.0");
-	assertEquals(query.get(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.Z), "10.0");
-	assertEquals(query.get(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.X), "20.0");
-	assertEquals(query.get(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.Y), "20.0");
-	assertEquals(query.get(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.Z), "20.0");
-	query.next();
-	assertEquals(query.get(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.X), "30.0");
-	assertEquals(query.get(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.Y), "30.0");
-	assertEquals(query.get(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.Z), "30.0");
-	assertEquals(query.get(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.X), "40.0");
-	assertEquals(query.get(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.Y), "40.0");
-	assertEquals(query.get(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.Z), "40.0");
+        // verify nothing has moved
+        query.reset();
+        query.next();
+        assertEquals(query.get(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.X), "10.0");
+        assertEquals(query.get(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.Y), "10.0");
+        assertEquals(query.get(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.Z), "10.0");
+        assertEquals(query.get(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.X), "20.0");
+        assertEquals(query.get(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.Y), "20.0");
+        assertEquals(query.get(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.Z), "20.0");
+        query.next();
+        assertEquals(query.get(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.X), "30.0");
+        assertEquals(query.get(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.Y), "30.0");
+        assertEquals(query.get(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.Z), "30.0");
+        assertEquals(query.get(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.X), "40.0");
+        assertEquals(query.get(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.Y), "40.0");
+        assertEquals(query.get(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.Z), "40.0");
     }
 
     /**
@@ -160,12 +158,12 @@ public class RecordStoreQueryPluginNGTest {
      */
     @Test
     public void testGetRecordStoreType() {
-	System.out.println("getRecordStoreType");
+        System.out.println("getRecordStoreType");
 
-	final RecordStoreQueryPlugin instance = new RecordStoreQueryPluginMockImpl();
-	final String expResult = GraphRecordStoreUtilities.SOURCE;
-	final String result = instance.getRecordStoreType();
-	assertEquals(result, expResult);
+        final RecordStoreQueryPlugin instance = new RecordStoreQueryPluginMockImpl();
+        final String expResult = GraphRecordStoreUtilities.SOURCE;
+        final String result = instance.getRecordStoreType();
+        assertEquals(result, expResult);
     }
 
     /**
@@ -173,16 +171,16 @@ public class RecordStoreQueryPluginNGTest {
      */
     @Test
     public void testAddValidator() {
-	System.out.println("addValidator");
+        System.out.println("addValidator");
 
-	final RecordStoreValidator validator = new RecordStoreValidator1MockImpl();
-	final RecordStoreQueryPlugin instance = new RecordStoreQueryPluginMockImpl();
+        final RecordStoreValidator validator = new RecordStoreValidator1MockImpl();
+        final RecordStoreQueryPlugin instance = new RecordStoreQueryPluginMockImpl();
 
-	assertEquals(instance.getValidators().size(), 0);
+        assertTrue(instance.getValidators().isEmpty());
 
-	instance.addValidator(validator);
+        instance.addValidator(validator);
 
-	assertEquals(instance.getValidators().size(), 1);
+        assertEquals(instance.getValidators().size(), 1);
     }
 
     /**
@@ -190,24 +188,24 @@ public class RecordStoreQueryPluginNGTest {
      */
     @Test
     public void testRemoveValidator() {
-	System.out.println("removeValidator");
+        System.out.println("removeValidator");
 
-	final RecordStoreValidator validator1 = new RecordStoreValidator1MockImpl();
-	final RecordStoreValidator validator2 = new RecordStoreValidator2MockImpl();
-	final RecordStoreQueryPlugin instance = new RecordStoreQueryPluginMockImpl();
+        final RecordStoreValidator validator1 = new RecordStoreValidator1MockImpl();
+        final RecordStoreValidator validator2 = new RecordStoreValidator2MockImpl();
+        final RecordStoreQueryPlugin instance = new RecordStoreQueryPluginMockImpl();
 
-	assertEquals(instance.getValidators().size(), 0);
+        assertTrue(instance.getValidators().isEmpty());
 
-	instance.addValidator(validator1);
-	instance.addValidator(validator1);
-	instance.addValidator(validator2);
-	instance.addValidator(validator2);
+        instance.addValidator(validator1);
+        instance.addValidator(validator1);
+        instance.addValidator(validator2);
+        instance.addValidator(validator2);
 
-	assertEquals(instance.getValidators().size(), 4);
+        assertEquals(instance.getValidators().size(), 4);
 
-	instance.removeValidator(RecordStoreValidator1MockImpl.class);
+        instance.removeValidator(RecordStoreValidator1MockImpl.class);
 
-	assertEquals(instance.getValidators().size(), 2);
+        assertEquals(instance.getValidators().size(), 2);
     }
 
     /**
@@ -215,46 +213,46 @@ public class RecordStoreQueryPluginNGTest {
      */
     @Test
     public void testGetValidators() {
-	System.out.println("getValidators");
+        System.out.println("getValidators");
 
-	final RecordStoreQueryPlugin instance = new RecordStoreQueryPluginMockImpl();
-	final List<RecordStoreValidator> expResult = new ArrayList<>();
-	final List<RecordStoreValidator> result = instance.getValidators();
-	assertEquals(result, expResult);
+        final RecordStoreQueryPlugin instance = new RecordStoreQueryPluginMockImpl();
+        final List<RecordStoreValidator> expResult = new ArrayList<>();
+        final List<RecordStoreValidator> result = instance.getValidators();
+        assertEquals(result, expResult);
     }
 
     private class RecordStoreQueryPluginMockImpl extends RecordStoreQueryPlugin {
 
-	@Override
-	public RecordStore query(final RecordStore query, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-	    final RecordStore recordStore = new GraphRecordStore();
-	    recordStore.add();
-	    recordStore.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, "foo");
-	    recordStore.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.X, 10);
-	    recordStore.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.Y, 10);
-	    recordStore.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.Z, 10);
-	    recordStore.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, "bar");
-	    recordStore.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.X, 20);
-	    recordStore.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.Y, 20);
-	    recordStore.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.Z, 20);
+        @Override
+        public RecordStore query(final RecordStore query, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            final RecordStore recordStore = new GraphRecordStore();
+            recordStore.add();
+            recordStore.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, "foo");
+            recordStore.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.X, 10);
+            recordStore.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.Y, 10);
+            recordStore.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.Z, 10);
+            recordStore.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, "bar");
+            recordStore.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.X, 20);
+            recordStore.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.Y, 20);
+            recordStore.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.Z, 20);
 
-	    recordStore.add();
-	    recordStore.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, "foo2");
-	    recordStore.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.X, 30);
-	    recordStore.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.Y, 30);
-	    recordStore.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.Z, 30);
-	    recordStore.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, "bar2");
-	    recordStore.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.X, 40);
-	    recordStore.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.Y, 40);
-	    recordStore.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.Z, 40);
+            recordStore.add();
+            recordStore.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, "foo2");
+            recordStore.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.X, 30);
+            recordStore.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.Y, 30);
+            recordStore.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.Z, 30);
+            recordStore.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, "bar2");
+            recordStore.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.X, 40);
+            recordStore.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.Y, 40);
+            recordStore.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.Z, 40);
 
-	    return recordStore;
-	}
+            return recordStore;
+        }
 
-	@Override
-	public String getName() {
-	    return "Record Store Query Plugin Test";
-	}
+        @Override
+        public String getName() {
+            return "Record Store Query Plugin Test";
+        }
 
     }
 
