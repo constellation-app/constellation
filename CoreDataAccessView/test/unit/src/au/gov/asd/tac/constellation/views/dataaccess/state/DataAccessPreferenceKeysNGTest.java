@@ -27,13 +27,9 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.validateMockitoUsage;
 import static org.mockito.Mockito.when;
-import org.mockito.MockitoAnnotations;
-import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -61,14 +57,10 @@ public class DataAccessPreferenceKeysNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        // Before each method, open the mocks.
-        MockitoAnnotations.openMocks(this);
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
-        // Check usage is correct before moving on
-        validateMockitoUsage();
     }
 
     /**
@@ -144,7 +136,7 @@ public class DataAccessPreferenceKeysNGTest {
      * Tests with an invalid directory.
      */
     @Test
-    public void testIsSaveResultsEnabled() {
+    public void testIsSaveResultsEnabled() throws IOException {
         System.out.println("isSaveResultsEnabled");
 
         // mocking code from another test method
@@ -178,10 +170,6 @@ public class DataAccessPreferenceKeysNGTest {
                 boolean result2 = DataAccessPreferenceKeys.isSaveResultsEnabled();
                 assertEquals(result2, expResult2);
             }
-        } catch (final IOException ex) {
-            // Fail when test cannot create a file
-            Exceptions.printStackTrace(ex);
-            fail();
         } finally {
             // Cleanup
             if (tempFile != null && tempFile.exists()) {
@@ -232,7 +220,7 @@ public class DataAccessPreferenceKeysNGTest {
      * directory. Should return null as it is invalid.
      */
     @Test
-    public void testGetDataAccessResultsDir() {
+    public void testGetDataAccessResultsDir() throws IOException {
         System.out.println("getDataAccessResultsDir");
 
         final String key = SAVE_DATA_DIR_PREF;
@@ -260,10 +248,6 @@ public class DataAccessPreferenceKeysNGTest {
                 final File expResult = null;
                 assertEquals(DataAccessPreferenceKeys.getDataAccessResultsDir(), expResult);
             }
-        } catch (final IOException ex) {
-            // Fail when test cannot create a file
-            Exceptions.printStackTrace(ex);
-            fail();
         } finally {
             // Cleanup
             if (tempFile != null && tempFile.exists()) {
@@ -364,7 +348,7 @@ public class DataAccessPreferenceKeysNGTest {
      * DataAccessPreferenceKeys. Test invalid directory
      */
     @Test
-    public void testGetDataAccessResultsDirEx2() {
+    public void testGetDataAccessResultsDirEx2() throws IOException {
 
         System.out.println("getDataAccessResultsDirEx2");
 
@@ -396,10 +380,6 @@ public class DataAccessPreferenceKeysNGTest {
                 // Verify that a file is returned because it does not care about directory.
                 assertEquals(DataAccessPreferenceKeys.getDataAccessResultsDirEx(), tempFile);
             }
-        } catch (final IOException ex) {
-            // Fail when test cannot create a file
-            Exceptions.printStackTrace(ex);
-            fail();
         } finally {
             // Cleanup
             if (tempFile != null && tempFile.exists()) {
@@ -440,7 +420,7 @@ public class DataAccessPreferenceKeysNGTest {
      * store a path to a file...
      */
     @Test
-    public void testSetDataAccessResultsDir2() {
+    public void testSetDataAccessResultsDir2() throws IOException {
         System.out.println("setDataAccessResultsDir2");
 
         final String previousDir = PREVIOUS_DATA_DIR_PREF;
@@ -462,9 +442,6 @@ public class DataAccessPreferenceKeysNGTest {
             assertEquals(preferences.get(currentDir, null), "");
             assertEquals(preferences.get(previousDir, null), null);
 
-        } catch (final IOException ex) {
-            Exceptions.printStackTrace(ex);
-            fail();
         } finally {
             // Cleanup
             if (dir != null && dir.exists()) {
@@ -510,7 +487,7 @@ public class DataAccessPreferenceKeysNGTest {
      * directory. Should return null as it is invalid.
      */
     @Test
-    public void testGetPreviousDataAccessResultsDir() {
+    public void testGetPreviousDataAccessResultsDir() throws IOException {
         System.out.println("getPreviousDataAccessResultsDir");
 
         final String key = PREVIOUS_DATA_DIR_PREF;
@@ -538,10 +515,6 @@ public class DataAccessPreferenceKeysNGTest {
                 final File expResult = null;
                 assertEquals(DataAccessPreferenceKeys.getPreviousDataAccessResultsDir(), expResult);
             }
-        } catch (final IOException ex) {
-            // Fail when test cannot create a file
-            Exceptions.printStackTrace(ex);
-            fail();
         } finally {
             // Cleanup
             if (tempFile != null && tempFile.exists()) {
