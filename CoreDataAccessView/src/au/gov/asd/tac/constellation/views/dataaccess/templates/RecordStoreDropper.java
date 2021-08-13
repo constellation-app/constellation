@@ -54,7 +54,7 @@ public class RecordStoreDropper implements GraphDropper {
 
     private static final byte[] RECORD_STORE_BYTES;
 
-    private static final DataFlavor RECORD_STORE_FLAVOR;
+    protected static final DataFlavor RECORD_STORE_FLAVOR;
 
     static {
         DataFlavor recordStoreFlavor = null;
