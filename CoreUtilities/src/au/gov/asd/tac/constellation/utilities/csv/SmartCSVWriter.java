@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.utilities.csv;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.regex.Pattern;
 
 /**
  * A CSVWRiter that is designed to take the place of the OpenCSV CSVWriter
@@ -27,7 +28,14 @@ import java.io.Writer;
  * @author sirius
  */
 public class SmartCSVWriter implements AutoCloseable {
-
+    private static final Pattern FIND_QUOTES = Pattern.compile("\"");
+    
+    private static final char NEW_LINE = '\n';
+    private static final char LINE_FEED = '\r';
+    private static final char QUOTE = '"';
+    
+    private static final String DOUBLE_QUOTES = "\"\"";
+    
     private final Writer out;
     private final char separator;
     private final boolean escapeAlways;
@@ -96,17 +104,17 @@ public class SmartCSVWriter implements AutoCloseable {
             }
 
             if (field != null) {
-                if (escapeAlways || field.indexOf('"') >= 0 || field.indexOf(separator) >= 0 || field.indexOf('\n') >= 0 || field.indexOf('\r') >= 0) {
-                    out.write('"');
-                    out.write(field.replaceAll("\"", "\"\""));
-                    out.write('"');
+                if (escapeAlways || field.indexOf(QUOTE) >= 0 || field.indexOf(separator) >= 0 || field.indexOf(NEW_LINE) >= 0 || field.indexOf(LINE_FEED) >= 0) {
+                    out.write(QUOTE);
+                    out.write(FIND_QUOTES.matcher(field).replaceAll(DOUBLE_QUOTES));
+                    out.write(QUOTE);
                 } else {
                     out.write(field);
                 }
             }
         }
 
-        out.write('\n');
+        out.write(NEW_LINE);
     }
 
     @Override
