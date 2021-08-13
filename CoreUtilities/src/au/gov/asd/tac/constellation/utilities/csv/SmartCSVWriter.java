@@ -15,6 +15,9 @@
  */
 package au.gov.asd.tac.constellation.utilities.csv;
 
+import static au.gov.asd.tac.constellation.utilities.text.SeparatorConstants.LINEFEED;
+import static au.gov.asd.tac.constellation.utilities.text.SeparatorConstants.NEWLINE;
+import static au.gov.asd.tac.constellation.utilities.text.SeparatorConstants.QUOTE;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.regex.Pattern;
@@ -29,10 +32,6 @@ import java.util.regex.Pattern;
  */
 public class SmartCSVWriter implements AutoCloseable {
     private static final Pattern FIND_QUOTES = Pattern.compile("\"");
-    
-    private static final char NEW_LINE = '\n';
-    private static final char LINE_FEED = '\r';
-    private static final char QUOTE = '"';
     
     private static final String DOUBLE_QUOTES = "\"\"";
     
@@ -104,7 +103,7 @@ public class SmartCSVWriter implements AutoCloseable {
             }
 
             if (field != null) {
-                if (escapeAlways || field.indexOf(QUOTE) >= 0 || field.indexOf(separator) >= 0 || field.indexOf(NEW_LINE) >= 0 || field.indexOf(LINE_FEED) >= 0) {
+                if (escapeAlways || field.contains(QUOTE) || field.indexOf(separator) >= 0 || field.contains(NEWLINE) || field.contains(LINEFEED)) {
                     out.write(QUOTE);
                     out.write(FIND_QUOTES.matcher(field).replaceAll(DOUBLE_QUOTES));
                     out.write(QUOTE);
@@ -114,7 +113,7 @@ public class SmartCSVWriter implements AutoCloseable {
             }
         }
 
-        out.write(NEW_LINE);
+        out.write(NEWLINE);
     }
 
     @Override
