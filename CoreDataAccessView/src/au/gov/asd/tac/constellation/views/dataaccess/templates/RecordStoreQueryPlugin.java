@@ -70,7 +70,7 @@ import java.util.stream.Collectors;
 @PluginInfo(minLogInterval = 5000, pluginType = PluginType.SEARCH, tags = {"SEARCH"})
 public abstract class RecordStoreQueryPlugin extends SimpleQueryPlugin {
 
-    protected final String PLUGIN_NAME = getName();
+    protected final String pluginName = getName();
 
     protected RecordStore queryRecordStore;
     private RecordStore result = null;
@@ -82,11 +82,11 @@ public abstract class RecordStoreQueryPlugin extends SimpleQueryPlugin {
     /**
      * Base constructor for all implementations of RecordStoreQueryPlugin
      */
-    public RecordStoreQueryPlugin() {
+    protected RecordStoreQueryPlugin() {
         this(null);
     }
 
-    public RecordStoreQueryPlugin(String pluginName) {
+    protected RecordStoreQueryPlugin(String pluginName) {
         super(pluginName);
         validators = new ArrayList<>();
     }
@@ -203,12 +203,12 @@ public abstract class RecordStoreQueryPlugin extends SimpleQueryPlugin {
                     if (wg.isRecordingEdit()) {
                         saveOriginalPositionCoordinates(wg, xOriginal, yOriginal, zOriginal);
                     }
-                    
+
                     // run the arrangement
                     final VertexListInclusionGraph vlGraph = new VertexListInclusionGraph(wg, Connections.NONE, newVertices);
                     arrangement.executeNow(vlGraph.getInclusionGraph());
                     vlGraph.retrieveCoords();
-                    
+
                     // restore the original positions
                     if (wg.isRecordingEdit()) {
                         restoreOriginalPositionCoordinates(wg, xOriginal, yOriginal, zOriginal);
@@ -323,7 +323,7 @@ public abstract class RecordStoreQueryPlugin extends SimpleQueryPlugin {
     protected List<RecordStoreValidator> getValidators() {
         return Collections.unmodifiableList(validators);
     }
-    
+
     /**
      * Save the original position coordinates so that they can be restored.
      *

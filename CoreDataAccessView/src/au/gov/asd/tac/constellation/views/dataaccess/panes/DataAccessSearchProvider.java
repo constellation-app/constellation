@@ -39,7 +39,12 @@ public class DataAccessSearchProvider implements SearchProvider {
 
     @Override
     public void evaluate(final SearchRequest request, final SearchResponse response) {
-        final String text = request.getText().toLowerCase();
+        final String text;
+        if (request != null && request.getText() != null) {
+            text = request.getText().toLowerCase();
+        } else {
+            return;
+        }
         final Map<String, List<DataAccessPlugin>> plugins = DataAccessPane.lookupPlugins();
 
         final List<String> pluginNames = new ArrayList<>();
@@ -60,11 +65,14 @@ public class DataAccessSearchProvider implements SearchProvider {
         }
     }
 
-    private static class PluginDisplayer implements Runnable {
+    protected static class PluginDisplayer implements Runnable {
+
+        protected static final String DAV_STEP_STRING = "Please open the Data Access view and create a step.";
+        protected static final String STEP_STRING = "Please create a step in the Data Access view.";
 
         private final String pluginName;
 
-        private PluginDisplayer(final String pluginName) {
+        protected PluginDisplayer(final String pluginName) {
             this.pluginName = pluginName;
         }
 
@@ -82,10 +90,10 @@ public class DataAccessSearchProvider implements SearchProvider {
 
                     return;
                 } else {
-                    message = "Please create a step in the Data Access view.";
+                    message = STEP_STRING;
                 }
             } else {
-                message = "Please open the Data Access view and create a step.";
+                message = DAV_STEP_STRING;
             }
 
             NotificationDisplayer.getDefault().notify("Data Access view",
