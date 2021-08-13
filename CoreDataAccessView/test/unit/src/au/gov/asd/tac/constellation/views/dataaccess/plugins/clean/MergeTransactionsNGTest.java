@@ -53,6 +53,24 @@ public class MergeTransactionsNGTest {
     private int vxId1, vxId2;
     private int txId1, txId2, txId3, txId4, txId5;
     private StoreGraph graph;
+
+    private MergeTransactionType testMergeTransactionType = new MergeTransactionType() {
+        @Override
+        public String getName() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void updateParameters(Map<String, PluginParameter<?>> parameters) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public Map<Integer, Set<Integer>> getTransactionsToMerge(GraphWriteMethods graph, Comparator<Long> leadTransactionChooser, int threshold, boolean selectedOnly) throws MergeTransactionType.MergeException {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+    };
+
     private final boolean SAVE_GRAPH_FILES = false; // change this to true if you want to see the graph files
 
     public MergeTransactionsNGTest() {
@@ -186,23 +204,6 @@ public class MergeTransactionsNGTest {
 
     @Test
     public void testSortTransactions1() throws Exception {
-        MergeTransactionType instance = new MergeTransactionType() {
-            @Override
-            public String getName() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void updateParameters(Map<String, PluginParameter<?>> parameters) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public Map<Integer, Set<Integer>> getTransactionsToMerge(GraphWriteMethods graph, Comparator<Long> leadTransactionChooser, int threshold, boolean selectedOnly) throws MergeTransactionType.MergeException {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-        };
-
         Integer[] transactions = new Integer[3];
         transactions[0] = txId1;
         transactions[1] = txId2;
@@ -210,29 +211,13 @@ public class MergeTransactionsNGTest {
 
         Integer[] originalTransactions = transactions.clone();
 
-        instance.sortTransactions(transactions, graph, transactionTypeAttribute, transactionDateTimeAttribute, MergeTransactionsPlugin.LATEST_TRANSACTION_CHOOSER);
+        testMergeTransactionType.sortTransactions(transactions, graph, transactionTypeAttribute, transactionDateTimeAttribute, MergeTransactionsPlugin.LATEST_TRANSACTION_CHOOSER);
 
         assertArrayEquals(originalTransactions, transactions);
     }
 
     @Test
     public void testSortTransactions2() throws Exception {
-        MergeTransactionType instance = new MergeTransactionType() {
-            @Override
-            public String getName() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void updateParameters(Map<String, PluginParameter<?>> parameters) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public Map<Integer, Set<Integer>> getTransactionsToMerge(GraphWriteMethods graph, Comparator<Long> leadTransactionChooser, int threshold, boolean selectedOnly) throws MergeTransactionType.MergeException {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-        };
 
         Integer[] transactions = new Integer[3];
         transactions[0] = txId3;
@@ -244,30 +229,13 @@ public class MergeTransactionsNGTest {
         expecting[1] = txId2;
         expecting[2] = txId3;
 
-        instance.sortTransactions(transactions, graph, transactionTypeAttribute, transactionDateTimeAttribute, MergeTransactionsPlugin.LATEST_TRANSACTION_CHOOSER);
+        testMergeTransactionType.sortTransactions(transactions, graph, transactionTypeAttribute, transactionDateTimeAttribute, MergeTransactionsPlugin.LATEST_TRANSACTION_CHOOSER);
 
         assertArrayEquals(expecting, transactions);
     }
 
     @Test
     public void testSortTransactionsWithEarliest() throws Exception {
-        MergeTransactionType instance = new MergeTransactionType() {
-            @Override
-            public String getName() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void updateParameters(Map<String, PluginParameter<?>> parameters) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public Map<Integer, Set<Integer>> getTransactionsToMerge(GraphWriteMethods graph, Comparator<Long> leadTransactionChooser, int threshold, boolean selectedOnly) throws MergeTransactionType.MergeException {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-        };
-
         Integer[] transactions = new Integer[3];
         transactions[0] = txId3;
         transactions[1] = txId2;
@@ -278,30 +246,13 @@ public class MergeTransactionsNGTest {
         expecting[1] = txId2;
         expecting[2] = txId1;
 
-        instance.sortTransactions(transactions, graph, transactionTypeAttribute, transactionDateTimeAttribute, MergeTransactionsPlugin.EARLIEST_TRANSACTION_CHOOSER);
+        testMergeTransactionType.sortTransactions(transactions, graph, transactionTypeAttribute, transactionDateTimeAttribute, MergeTransactionsPlugin.EARLIEST_TRANSACTION_CHOOSER);
 
         assertArrayEquals(expecting, transactions);
     }
 
     @Test
     public void testSortTransactionsWithEarliest2() throws Exception {
-        MergeTransactionType instance = new MergeTransactionType() {
-            @Override
-            public String getName() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void updateParameters(Map<String, PluginParameter<?>> parameters) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public Map<Integer, Set<Integer>> getTransactionsToMerge(GraphWriteMethods graph, Comparator<Long> leadTransactionChooser, int threshold, boolean selectedOnly) throws MergeTransactionType.MergeException {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-        };
-
         Integer[] transactions = new Integer[3];
         transactions[0] = txId1;
         transactions[1] = txId2;
@@ -312,7 +263,7 @@ public class MergeTransactionsNGTest {
         expecting[1] = txId2;
         expecting[2] = txId1;
 
-        instance.sortTransactions(transactions, graph, transactionTypeAttribute, transactionDateTimeAttribute, MergeTransactionsPlugin.EARLIEST_TRANSACTION_CHOOSER);
+        testMergeTransactionType.sortTransactions(transactions, graph, transactionTypeAttribute, transactionDateTimeAttribute, MergeTransactionsPlugin.EARLIEST_TRANSACTION_CHOOSER);
 
         assertArrayEquals(expecting, transactions);
     }
@@ -600,23 +551,6 @@ public class MergeTransactionsNGTest {
 
     @Test
     public void testSortTransactionsWithNullType1() {
-        MergeTransactionType instance = new MergeTransactionType() {
-            @Override
-            public String getName() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void updateParameters(Map<String, PluginParameter<?>> parameters) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public Map<Integer, Set<Integer>> getTransactionsToMerge(GraphWriteMethods graph, Comparator<Long> leadTransactionChooser, int threshold, boolean selectedOnly) throws MergeTransactionType.MergeException {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-        };
-
         Integer[] transactions = new Integer[2];
         transactions[0] = txId4;
         transactions[1] = txId2;
@@ -625,29 +559,12 @@ public class MergeTransactionsNGTest {
         expecting[0] = txId4;
         expecting[1] = txId2;
 
-        instance.sortTransactions(transactions, graph, transactionTypeAttribute, transactionDateTimeAttribute, MergeTransactionsPlugin.LATEST_TRANSACTION_CHOOSER);
+        testMergeTransactionType.sortTransactions(transactions, graph, transactionTypeAttribute, transactionDateTimeAttribute, MergeTransactionsPlugin.LATEST_TRANSACTION_CHOOSER);
         assertArrayEquals(expecting, transactions);
     }
 
     @Test
     public void testSortTransactionsWithNullType2() {
-        MergeTransactionType instance = new MergeTransactionType() {
-            @Override
-            public String getName() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void updateParameters(Map<String, PluginParameter<?>> parameters) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public Map<Integer, Set<Integer>> getTransactionsToMerge(GraphWriteMethods graph, Comparator<Long> leadTransactionChooser, int threshold, boolean selectedOnly) throws MergeTransactionType.MergeException {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-        };
-
         Integer[] transactions = new Integer[2];
         transactions[0] = txId3;
         transactions[1] = txId4;
@@ -656,29 +573,12 @@ public class MergeTransactionsNGTest {
         expecting[0] = txId4;
         expecting[1] = txId3;
 
-        instance.sortTransactions(transactions, graph, transactionTypeAttribute, transactionDateTimeAttribute, MergeTransactionsPlugin.LATEST_TRANSACTION_CHOOSER);
+        testMergeTransactionType.sortTransactions(transactions, graph, transactionTypeAttribute, transactionDateTimeAttribute, MergeTransactionsPlugin.LATEST_TRANSACTION_CHOOSER);
         assertArrayEquals(expecting, transactions);
     }
 
     @Test
     public void testSortTransactionsWithNotNullTypes() {
-        MergeTransactionType instance = new MergeTransactionType() {
-            @Override
-            public String getName() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void updateParameters(Map<String, PluginParameter<?>> parameters) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public Map<Integer, Set<Integer>> getTransactionsToMerge(GraphWriteMethods graph, Comparator<Long> leadTransactionChooser, int threshold, boolean selectedOnly) throws MergeTransactionType.MergeException {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-        };
-
         Integer[] transactions = new Integer[2];
         transactions[0] = txId4;
         transactions[1] = txId5;
@@ -687,38 +587,21 @@ public class MergeTransactionsNGTest {
         expecting[0] = txId5;
         expecting[1] = txId4;
 
-        instance.sortTransactions(transactions, graph, transactionTypeAttribute, transactionDateTimeAttribute, MergeTransactionsPlugin.LATEST_TRANSACTION_CHOOSER);
+        testMergeTransactionType.sortTransactions(transactions, graph, transactionTypeAttribute, transactionDateTimeAttribute, MergeTransactionsPlugin.LATEST_TRANSACTION_CHOOSER);
         assertArrayEquals(expecting, transactions);
     }
 
     @Test
     public void testCompareTypeHierarchy() {
-        MergeTransactionType instance = new MergeTransactionType() {
-            @Override
-            public String getName() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void updateParameters(Map<String, PluginParameter<?>> parameters) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public Map<Integer, Set<Integer>> getTransactionsToMerge(GraphWriteMethods graph, Comparator<Long> leadTransactionChooser, int threshold, boolean selectedOnly) throws MergeTransactionType.MergeException {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-        };
-
-        Boolean result = instance.compareTypeHierarchy(graph.getObjectValue(transactionTypeAttribute, txId4),
+        Boolean result = testMergeTransactionType.compareTypeHierarchy(graph.getObjectValue(transactionTypeAttribute, txId4),
                 graph.getObjectValue(transactionTypeAttribute, txId5));
         assertFalse(result);
 
-        result = instance.compareTypeHierarchy(graph.getObjectValue(transactionTypeAttribute, txId4),
+        result = testMergeTransactionType.compareTypeHierarchy(graph.getObjectValue(transactionTypeAttribute, txId4),
                 graph.getObjectValue(transactionTypeAttribute, txId4));
         assertTrue(result);
 
-        result = instance.compareTypeHierarchy(null, null);
+        result = testMergeTransactionType.compareTypeHierarchy(null, null);
         assertTrue(result);
     }
 }

@@ -45,7 +45,6 @@ public class MergeTransactionsPluginNGTest {
     private int vxId1, vxId2;
     private int txId1, txId2, txId3, txId4, txId5;
     private StoreGraph graph;
-    private final boolean SAVE_GRAPH_FILES = false;
 
     public MergeTransactionsPluginNGTest() {
     }
