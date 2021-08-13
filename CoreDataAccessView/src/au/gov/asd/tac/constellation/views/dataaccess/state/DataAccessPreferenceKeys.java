@@ -82,9 +82,9 @@ public final class DataAccessPreferenceKeys {
     public static void setDataAccessResultsDir(final File dir) {
         final Preferences prefs = NbPreferences.forModule(DataAccessPreferenceKeys.class);
         if (dir != null && dir.isDirectory()) {
-            prefs.put(PREVIOUS_DATA_DIR_PREF, prefs.get(SAVE_DATA_DIR_PREF, ""));
+            prefs.put(PREVIOUS_DATA_DIR_PREF, prefs.get(SAVE_DATA_DIR_PREF, StringUtils.EMPTY));
         }
-        prefs.put(SAVE_DATA_DIR_PREF, dir == null || !dir.isDirectory() ? "" : dir.getAbsolutePath());
+        prefs.put(SAVE_DATA_DIR_PREF, dir == null || !dir.isDirectory() ? StringUtils.EMPTY : dir.getAbsolutePath());
 
     }
 
@@ -115,7 +115,7 @@ public final class DataAccessPreferenceKeys {
      */
     protected static File getDir(final String pref) {
         final Preferences prefs = NbPreferences.forModule(DataAccessPreferenceKeys.class);
-        final String s = prefs.get(pref, "");
+        final String s = prefs.get(pref, StringUtils.EMPTY);
 
         return StringUtils.isNotEmpty(s) ? new File(s) : null;
     }
