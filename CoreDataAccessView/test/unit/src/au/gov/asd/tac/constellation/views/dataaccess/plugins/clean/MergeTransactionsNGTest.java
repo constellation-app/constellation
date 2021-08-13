@@ -596,7 +596,7 @@ public class MergeTransactionsNGTest {
         assertTrue(result);
     }
 
-    public class TestMergeTransactionType implements MergeTransactionType {
+    private class TestMergeTransactionType implements MergeTransactionType {
 
         public String getName() {
             return "";
