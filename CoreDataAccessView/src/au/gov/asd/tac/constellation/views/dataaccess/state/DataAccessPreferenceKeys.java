@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.dataaccess.state;
 
 import java.io.File;
 import java.util.prefs.Preferences;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.NbPreferences;
 
 /**
@@ -25,9 +26,9 @@ import org.openide.util.NbPreferences;
  */
 public final class DataAccessPreferenceKeys {
 
-    private static final String SAVE_DATA_DIR_PREF = "saveDataDir";
-    private static final String PREVIOUS_DATA_DIR_PREF = "prevSaveDataDir";
-    private static final String DESELECT_PLUGINS_ON_EXECUTE_PREF = "deselectPluginsOnExecute";
+    protected static final String SAVE_DATA_DIR_PREF = "saveDataDir";
+    protected static final String PREVIOUS_DATA_DIR_PREF = "prevSaveDataDir";
+    protected static final String DESELECT_PLUGINS_ON_EXECUTE_PREF = "deselectPluginsOnExecute";
 
     /**
      * Return whether the save results is enabled or not
@@ -69,19 +70,22 @@ public final class DataAccessPreferenceKeys {
      * <p>
      * Use null to stop writing results.
      * <p>
-     * If the directory is non-null, it will be saved separately so it can be
-     * retrieved and used as a default the next time the user wants to specify a
-     * directory.
+     * If the path is a directory and is non-null, it will be saved separately
+     * so it can be retrieved and used as a default the next time the user wants
+     * to specify a directory. If the file is not a directory, an empty string
+     * will be stored as the directory, and the previous directory will not be
+     * updated.
      *
      * @param dir A directory to write data access results to, or null to not
      * write results.
      */
     public static void setDataAccessResultsDir(final File dir) {
         final Preferences prefs = NbPreferences.forModule(DataAccessPreferenceKeys.class);
-        prefs.put(SAVE_DATA_DIR_PREF, dir == null ? "" : dir.getAbsolutePath());
-        if (dir != null) {
-            prefs.put(PREVIOUS_DATA_DIR_PREF, dir.getAbsolutePath());
+        if (dir != null && dir.isDirectory()) {
+            prefs.put(PREVIOUS_DATA_DIR_PREF, prefs.get(SAVE_DATA_DIR_PREF, ""));
         }
+        prefs.put(SAVE_DATA_DIR_PREF, dir == null || !dir.isDirectory() ? "" : dir.getAbsolutePath());
+
     }
 
     /**
@@ -109,11 +113,11 @@ public final class DataAccessPreferenceKeys {
      *
      * @return The preference as a directory; null if the directory is not set.
      */
-    private static File getDir(final String pref) {
+    protected static File getDir(final String pref) {
         final Preferences prefs = NbPreferences.forModule(DataAccessPreferenceKeys.class);
         final String s = prefs.get(pref, "");
 
-        return !s.isEmpty() ? new File(s) : null;
+        return StringUtils.isNotEmpty(s) ? new File(s) : null;
     }
 
     /**
