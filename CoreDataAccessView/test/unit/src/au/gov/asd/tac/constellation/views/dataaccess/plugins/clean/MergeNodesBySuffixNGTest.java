@@ -115,23 +115,18 @@ public class MergeNodesBySuffixNGTest {
         final PluginParameters parameters = new PluginParameters();
 
         final PluginParameter<BooleanParameterType.BooleanParameterValue> mergeTypeParameter = BooleanParameterType.build(MERGE_TYPE_PARAMETER_ID);
-        mergeTypeParameter.setBooleanValue(false);
         parameters.addParameter(mergeTypeParameter);
 
         final PluginParameter<IntegerParameterType.IntegerParameterValue> thresholdParameter = IntegerParameterType.build(THRESHOLD_PARAMETER_ID);
-        thresholdParameter.setIntegerValue(0);
         parameters.addParameter(thresholdParameter);
 
         final PluginParameter<BooleanParameterType.BooleanParameterValue> mergeParameter = BooleanParameterType.build(MERGER_PARAMETER_ID);
-        mergeParameter.setBooleanValue(false);
         parameters.addParameter(mergeParameter);
 
         final PluginParameter<BooleanParameterType.BooleanParameterValue> leadParameter = BooleanParameterType.build(LEAD_PARAMETER_ID);
-        leadParameter.setBooleanValue(false);
         parameters.addParameter(leadParameter);
 
         final PluginParameter<BooleanParameterType.BooleanParameterValue> selectedParameter = BooleanParameterType.build(SELECTED_PARAMETER_ID);
-        selectedParameter.setBooleanValue(false);
         parameters.addParameter(selectedParameter);
 
         final Map<String, PluginParameter<?>> parametersMap = parameters.getParameters();
@@ -173,28 +168,6 @@ public class MergeNodesBySuffixNGTest {
         Map<Integer, Set<Integer>> result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
         assertEquals(result, expResult);
     }
-
-    //TODO: Hard to test without dialog box access
-    /**
-     * Test of getNodesToMerge method, of class MergeNodesBySuffix, with no
-     * valid leadVertexChooser
-     */
-//    @Test
-//    public void testGetNodesToMerge_WithLeadVertexChooserNull() {
-//        System.out.println("getNodesToMerge");
-//        Comparator<String> leadVertexChooser = null;
-//        int threshold = 0;
-//        boolean selectedOnly = false;
-//        MergeNodesBySuffix instance = new MergeNodesBySuffix();
-//
-//        Map<Integer, Set<Integer>> expResult = new HashMap<>();
-//        Set<Integer> cluster = new HashSet<>();
-//        cluster.addAll(Arrays.asList(3, 4));
-//        expResult.put(3, cluster);
-//
-//        Map<Integer, Set<Integer>> result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
-//        assertEquals(result, expResult);
-//    }
 
     /**
      * Test of getNodesToMerge method, of class MergeNodesBySuffix, with a
