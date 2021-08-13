@@ -50,13 +50,13 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class TableiewStateIoProviderNGTest {
+public class TableViewStateIoProviderNGTest {
     private static final int ATTRIBUTE_ID = 55;
     private static final int ELEMENT_ID = 77;
     
     private TableViewStateIoProvider tableViewStateIoProvider;
     
-    public TableiewStateIoProviderNGTest() {
+    public TableViewStateIoProviderNGTest() {
     }
 
     @BeforeClass

@@ -27,6 +27,6 @@ public class TableViewStateAttributeDescriptionNGTest {
     
     @Test
     public void confirmInitialNameOfAttrDescription() {
-        assertEquals(new TableViewStateAttributeDescription().getName(), "table_view_tate");
+        assertEquals(new TableViewStateAttributeDescription().getName(), "table_view_state");
     }
 }
