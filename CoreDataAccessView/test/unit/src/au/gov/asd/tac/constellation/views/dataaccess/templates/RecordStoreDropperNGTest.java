@@ -68,32 +68,32 @@ public class RecordStoreDropperNGTest {
      */
     @Test
     public void testDrop() throws UnsupportedFlavorException, IOException {
-	System.out.println("drop");
+        System.out.println("drop");
 
-	final DropTargetDropEvent dtde = mock(DropTargetDropEvent.class);
-	final Transferable transferable = mock(Transferable.class);
+        final DropTargetDropEvent dtde = mock(DropTargetDropEvent.class);
+        final Transferable transferable = mock(Transferable.class);
 
-	when(dtde.getTransferable()).thenReturn(transferable);
-	when(transferable.isDataFlavorSupported(RECORD_STORE_FLAVOR)).thenReturn(Boolean.TRUE);
-	when(transferable.getTransferData(RECORD_STORE_FLAVOR)).thenReturn(getRecordStoreAsStream());
+        when(dtde.getTransferable()).thenReturn(transferable);
+        when(transferable.isDataFlavorSupported(RECORD_STORE_FLAVOR)).thenReturn(true);
+        when(transferable.getTransferData(RECORD_STORE_FLAVOR)).thenReturn(getRecordStoreAsStream());
 
-	final RecordStoreDropper instance = new RecordStoreDropper();
-	final BiConsumer expResult = null;
-	final BiConsumer result = instance.drop(dtde);
+        final RecordStoreDropper instance = new RecordStoreDropper();
+        final BiConsumer expResult = null;
+        final BiConsumer result = instance.drop(dtde);
 
-	// TODO: would like to be able to test more than not null
-	assertNotEquals(result, expResult);
+        // TODO: would like to be able to test more than not null
+        assertNotEquals(result, expResult);
     }
 
     private InputStream getRecordStoreAsStream() throws IOException {
-	final RecordStore recordStore = new GraphRecordStore();
-	recordStore.add();
-	recordStore.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, "foo");
-	recordStore.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, "bar");
+        final RecordStore recordStore = new GraphRecordStore();
+        recordStore.add();
+        recordStore.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, "foo");
+        recordStore.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, "bar");
 
-	final String RecordStoreAsJson = RecordStoreUtilities.toJson(recordStore);
+        final String RecordStoreAsJson = RecordStoreUtilities.toJson(recordStore);
 
-	return new ByteArrayInputStream(("RecordStore=" + RecordStoreAsJson).getBytes());
+        return new ByteArrayInputStream(("RecordStore=" + RecordStoreAsJson).getBytes());
     }
 
 }
