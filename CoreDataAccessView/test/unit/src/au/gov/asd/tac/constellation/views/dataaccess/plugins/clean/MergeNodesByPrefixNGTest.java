@@ -122,9 +122,9 @@ public class MergeNodesByPrefixNGTest {
         pluginParameters.addParameter(BooleanParameterType.build(LEAD_PARAMETER_ID));
         pluginParameters.addParameter(BooleanParameterType.build(SELECTED_PARAMETER_ID));
 
-        Map<String, PluginParameter<?>> parameters = pluginParameters.getParameters();
+        final Map<String, PluginParameter<?>> parameters = pluginParameters.getParameters();
 
-        MergeNodesByPrefix instance = new MergeNodesByPrefix();
+        final MergeNodesByPrefix instance = new MergeNodesByPrefix();
         instance.updateParameters(parameters);
 
         assertTrue(parameters.get(MERGE_TYPE_PARAMETER_ID).isEnabled());
@@ -144,16 +144,16 @@ public class MergeNodesByPrefixNGTest {
     public void testGetNodesToMerge_shortestLeadVertexChooser_threshold0() {
         System.out.println("testGetNodesToMerge_shortestLeadVertexChooser_threshold0");
 
-        Comparator<String> leadVertexChooser = SHORTEST_VERTEX_CHOOSER;
-        int threshold = 0;
-        boolean selectedOnly = false;
+        final Comparator<String> leadVertexChooser = SHORTEST_VERTEX_CHOOSER;
+        final int threshold = 0;
+        final boolean selectedOnly = false;
 
-        MergeNodesByPrefix instance = new MergeNodesByPrefix();
-        Map result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
+        final MergeNodesByPrefix instance = new MergeNodesByPrefix();
+        final Map<Integer, Set<Integer>> result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
 
-        Set<Integer> cluster = new HashSet<>(Arrays.asList(0, 1, 2, 3, 4));
+        final Set<Integer> cluster = new HashSet<>(Arrays.asList(0, 1, 2, 3, 4));
 
-        Map<Integer, Set<Integer>> expResult = new HashMap<>();
+        final Map<Integer, Set<Integer>> expResult = new HashMap<>();
         expResult.put(3, cluster);
 
         assertEquals(result, expResult);
@@ -167,17 +167,17 @@ public class MergeNodesByPrefixNGTest {
     public void testGetNodesToMerge_shortestLeadVertexChooser_threshold3() {
         System.out.println("testGetNodesToMerge_shortestLeadVertexChooser_threshold0");
 
-        Comparator<String> leadVertexChooser = SHORTEST_VERTEX_CHOOSER;
-        int threshold = 3;
-        boolean selectedOnly = false;
+        final Comparator<String> leadVertexChooser = SHORTEST_VERTEX_CHOOSER;
+        final int threshold = 3;
+        final boolean selectedOnly = false;
 
-        MergeNodesByPrefix instance = new MergeNodesByPrefix();
-        Map result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
+        final MergeNodesByPrefix instance = new MergeNodesByPrefix();
+        final Map<Integer, Set<Integer>> result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
 
-        Set<Integer> cluster = new HashSet<>(Arrays.asList(0, 1, 2));
-        Set<Integer> cluster2 = new HashSet<>(Arrays.asList(3, 4));
+        final Set<Integer> cluster = new HashSet<>(Arrays.asList(0, 1, 2));
+        final Set<Integer> cluster2 = new HashSet<>(Arrays.asList(3, 4));
 
-        Map<Integer, Set<Integer>> expResult = new HashMap<>();
+        final Map<Integer, Set<Integer>> expResult = new HashMap<>();
         expResult.put(0, cluster);
         expResult.put(3, cluster2);
 
@@ -192,17 +192,17 @@ public class MergeNodesByPrefixNGTest {
     public void testGetNodesToMerge_longestLeadVertexChooser_threshold5() {
         System.out.println("testGetNodesToMerge_longestLeadVertexChooser_threshold0");
 
-        Comparator<String> leadVertexChooser = LONGEST_VERTEX_CHOOSER;
-        int threshold = 5;
-        boolean selectedOnly = false;
+        final Comparator<String> leadVertexChooser = LONGEST_VERTEX_CHOOSER;
+        final int threshold = 5;
+        final boolean selectedOnly = false;
 
-        MergeNodesByPrefix instance = new MergeNodesByPrefix();
-        Map result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
+        final MergeNodesByPrefix instance = new MergeNodesByPrefix();
+        final Map<Integer, Set<Integer>> result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
 
-        Set<Integer> cluster = new HashSet<>(Arrays.asList(0, 1));
-        Set<Integer> cluster2 = new HashSet<>(Arrays.asList(3, 4));
+        final Set<Integer> cluster = new HashSet<>(Arrays.asList(0, 1));
+        final Set<Integer> cluster2 = new HashSet<>(Arrays.asList(3, 4));
 
-        Map<Integer, Set<Integer>> expResult = new HashMap<>();
+        final Map<Integer, Set<Integer>> expResult = new HashMap<>();
         expResult.put(0, cluster);
         expResult.put(3, cluster2);
 
@@ -217,16 +217,16 @@ public class MergeNodesByPrefixNGTest {
     public void testGetNodesToMerge_longestLeadVertexChooser_threshold5_selectOnlyTrue() {
         System.out.println("testGetNodesToMerge_longestLeadVertexChooser_threshold5_selectOnlyTrue");
 
-        Comparator<String> leadVertexChooser = LONGEST_VERTEX_CHOOSER;
-        int threshold = 5;
-        boolean selectedOnly = true;
+        final Comparator<String> leadVertexChooser = LONGEST_VERTEX_CHOOSER;
+        final int threshold = 5;
+        final boolean selectedOnly = true;
 
-        MergeNodesByPrefix instance = new MergeNodesByPrefix();
-        Map result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
+        final MergeNodesByPrefix instance = new MergeNodesByPrefix();
+        final Map<Integer, Set<Integer>> result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
 
-        Set<Integer> cluster = new HashSet<>(Arrays.asList(0, 1));
+        final Set<Integer> cluster = new HashSet<>(Arrays.asList(0, 1));
 
-        Map<Integer, Set<Integer>> expResult = new HashMap<>();
+        final Map<Integer, Set<Integer>> expResult = new HashMap<>();
         expResult.put(0, cluster);
 
         assertEquals(result, expResult);
