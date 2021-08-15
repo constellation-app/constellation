@@ -35,7 +35,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages("AddContentAttributesPlugin=Add Content Attributes")
-@PluginInfo(tags = {"ANALYTIC"})
+@PluginInfo(tags = {"MODIFY"})
 public class AddContentAttributesPlugin extends SimpleEditPlugin {
 
     @Override
