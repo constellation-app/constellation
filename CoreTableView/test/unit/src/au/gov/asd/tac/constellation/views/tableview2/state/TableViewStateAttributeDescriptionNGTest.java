@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.views.tableview.state;
+package au.gov.asd.tac.constellation.views.tableview2.state;
 
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewStateAttributeDescription;
 import static org.testng.AssertJUnit.assertEquals;
