@@ -147,7 +147,8 @@ public class TableViewPreferencesIOUtilities {
 
                 // Extract sort order details
                 sortColumn = colSortNode.fieldNames().next();
-                if (colSortNode.get(sortColumn).asText().equals("DESCENDING")) {
+                if (TableColumn.SortType.DESCENDING.name()
+                        .equals(colSortNode.get(sortColumn).asText())) {
                     sortType = TableColumn.SortType.DESCENDING;
                 }
                 
