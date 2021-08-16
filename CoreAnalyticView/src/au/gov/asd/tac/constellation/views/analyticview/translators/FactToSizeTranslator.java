@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.visual.graphics.BBoxf;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -62,6 +63,7 @@ public class FactToSizeTranslator extends AbstractSizeTranslator<FactResult, Ele
                 .executeLater(GraphManager.getDefault().getActiveGraph());
     }
 
+    @PluginInfo(tags = {"MODIFY"})
     private class SizeElementsPlugin extends SimpleEditPlugin {
 
         protected static final String RESET_PARAMETER_ID = "SizeElementsPlugin.reset";

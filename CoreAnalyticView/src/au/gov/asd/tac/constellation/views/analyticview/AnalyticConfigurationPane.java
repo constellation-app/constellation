@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPane;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -64,7 +65,8 @@ import javafx.scene.web.WebView;
 import org.openide.util.Lookup;
 
 /**
- * The pane holding gui elements related to configuration of an analytic question.
+ * The pane holding gui elements related to configuration of an analytic
+ * question.
  *
  * @author cygnus_x-1
  */
@@ -331,8 +333,9 @@ public class AnalyticConfigurationPane extends VBox {
     }
 
     /**
-     * Reset to the initial state for the analytic configuration pane. The question list will be expanded, the first
-     * question selected, and the analytics list populated based on the selected question.
+     * Reset to the initial state for the analytic configuration pane. The
+     * question list will be expanded, the first question selected, and the
+     * analytics list populated based on the selected question.
      */
     protected final void reset() {
         Platform.runLater(() -> {
@@ -402,7 +405,8 @@ public class AnalyticConfigurationPane extends VBox {
     /**
      * Updates the AnalyticViewState by running a plugin to save the graph state
      *
-     * @param pluginWasSelected true if the triggered update was from a plugin being selected
+     * @param pluginWasSelected true if the triggered update was from a plugin
+     * being selected
      */
     protected void updateState(boolean pluginWasSelected) {
         stateChanged = true;
@@ -410,8 +414,8 @@ public class AnalyticConfigurationPane extends VBox {
     }
 
     /**
-     * Saves the state of the graph by fetching all currently selected plugins and updating the state only when the
-     * state has been changed
+     * Saves the state of the graph by fetching all currently selected plugins
+     * and updating the state only when the state has been changed
      */
     protected void saveState() {
         if (stateChanged) {
@@ -617,7 +621,7 @@ public class AnalyticConfigurationPane extends VBox {
     /**
      * Write the given AnalyticViewState to the active graph.
      */
-    @PluginInfo(tags = {"LOW LEVEL"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
     private static final class AnalyticViewStateWriter extends SimpleEditPlugin {
 
         private final AnalyticQuestionDescription<?> question;
@@ -652,7 +656,7 @@ public class AnalyticConfigurationPane extends VBox {
     /**
      * Update the display by reading and writing to/from the state attribute.
      */
-    @PluginInfo(tags = {"LOW LEVEL"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
     private static final class AnalyticViewStateUpdater extends SimpleEditPlugin {
 
         private final AnalyticConfigurationPane analyticConfigurationPane;
