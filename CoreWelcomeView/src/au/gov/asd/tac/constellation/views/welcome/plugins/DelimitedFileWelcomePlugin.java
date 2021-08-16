@@ -51,7 +51,7 @@ public class DelimitedFileWelcomePlugin implements WelcomePluginInterface {
      */
     @Override
     public String getName() {
-        return "Import Delimited File Welcome";
+        return "Import File Welcome";
     }
     
     /**
@@ -93,7 +93,7 @@ public class DelimitedFileWelcomePlugin implements WelcomePluginInterface {
         importImage.setFitHeight(75);
         importImage.setFitWidth(75);
         final Label imTitle = new Label("Import");
-        final Label imSubtitle = new Label("Delimited File Importer");
+        final Label imSubtitle = new Label("File Importer");
         imSubtitle.setId("smallInfoText");
         final VBox layoutVBox = new VBox(importImage, imTitle, imSubtitle);
         layoutVBox.setAlignment(Pos.CENTER);
