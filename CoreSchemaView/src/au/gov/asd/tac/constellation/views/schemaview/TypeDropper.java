@@ -94,68 +94,7 @@ public class TypeDropper implements GraphDropper {
 
                 if (data != null) {
                     return (graph, dropInfo) -> {
-                        PluginExecution.withPlugin(new SimpleEditPlugin("Drag and Drop: Type to Vertex") {
-                            @Override
-                            public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                                final int ix = data.indexOf(':');
-                                if (ix != -1) {
-                                    final String attrLabel = data.substring(0, ix);
-                                    final String value = data.substring(ix + 1);
-                                    final int attrId = wg.getAttribute(GraphElementType.VERTEX, attrLabel);
-                                    if (attrId != Graph.NOT_FOUND) {
-                                        final int vxId;
-
-                                        if (dropInfo.isIsVertex()) {
-                                            vxId = dropInfo.id;
-
-                                            // If the vertex is selected, modify all of the selected vertices.
-                                            // Otherwise, just modify the dropped-on vertex.
-                                            final int selectedId = VisualConcept.VertexAttribute.SELECTED.ensure(wg);
-                                            if (wg.getBooleanValue(selectedId, vxId)) {
-                                                final GraphIndexResult gir = GraphIndexUtilities.filterElements(wg, selectedId, true);
-                                                while (true) {
-                                                    final int selVxId = gir.getNextElement();
-                                                    if (selVxId == Graph.NOT_FOUND) {
-                                                        break;
-                                                    }
-
-                                                    wg.setStringValue(attrId, selVxId, data);
-                                                    if (graph.getSchema() != null) {
-                                                        graph.getSchema().completeVertex(wg, selVxId);
-                                                    }
-                                                }
-                                            } else {
-                                                wg.setStringValue(attrId, vxId, data);
-                                                if (graph.getSchema() != null) {
-                                                    graph.getSchema().completeVertex(wg, vxId);
-                                                }
-                                            }
-                                        } else {
-                                            vxId = wg.addVertex();
-                                            final int xId = VisualConcept.VertexAttribute.X.ensure(wg);
-                                            final int yId = VisualConcept.VertexAttribute.Y.ensure(wg);
-                                            final int zId = VisualConcept.VertexAttribute.Z.ensure(wg);
-                                            wg.setStringValue(attrId, vxId, value);
-                                            wg.setFloatValue(xId, vxId, dropInfo.location.getX());
-                                            wg.setFloatValue(yId, vxId, dropInfo.location.getY());
-                                            wg.setFloatValue(zId, vxId, dropInfo.location.getZ());
-
-                                            if (graph.getSchema() != null) {
-                                                graph.getSchema().newVertex(wg, vxId);
-                                                graph.getSchema().completeVertex(wg, vxId);
-                                            }
-                                        }
-
-                                        ConstellationLoggerHelper.importPropertyBuilder(
-                                                this,
-                                                Arrays.asList(data),
-                                                null,
-                                                ConstellationLoggerHelper.SUCCESS
-                                        );
-                                    }
-                                }
-                            }
-                        }).executeLater(graph);
+                        PluginExecution.withPlugin(new TypeDropperPlugin(data, dropInfo, graph)).executeLater(graph);
                     };
                 }
             } catch (final UnsupportedFlavorException | IOException | ClassNotFoundException ex) {
@@ -164,4 +103,89 @@ public class TypeDropper implements GraphDropper {
         }
         return null;
     }
+
+    /**
+     * Plugin to help once the type had been dropped on a vertex
+     */
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+    public static class TypeDropperPlugin extends SimpleEditPlugin {
+
+        final String data;
+        final DropInfo dropInfo;
+        final Graph graph;
+
+        public TypeDropperPlugin(final String data, final DropInfo dropInfo, final Graph graph) {
+            this.data = data;
+            this.dropInfo = dropInfo;
+            this.graph = graph;
+        }
+
+        @Override
+        public String getName() {
+            return "Drag and Drop: Type to Vertex";
+        }
+
+        @Override
+        public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            final int ix = data.indexOf(':');
+            if (ix != -1) {
+                final String attrLabel = data.substring(0, ix);
+                final String value = data.substring(ix + 1);
+                final int attrId = wg.getAttribute(GraphElementType.VERTEX, attrLabel);
+                if (attrId != Graph.NOT_FOUND) {
+                    final int vxId;
+
+                    if (dropInfo.isIsVertex()) {
+                        vxId = dropInfo.id;
+
+                        // If the vertex is selected, modify all of the selected vertices.
+                        // Otherwise, just modify the dropped-on vertex.
+                        final int selectedId = VisualConcept.VertexAttribute.SELECTED.ensure(wg);
+                        if (wg.getBooleanValue(selectedId, vxId)) {
+                            final GraphIndexResult gir = GraphIndexUtilities.filterElements(wg, selectedId, true);
+                            while (true) {
+                                final int selVxId = gir.getNextElement();
+                                if (selVxId == Graph.NOT_FOUND) {
+                                    break;
+                                }
+
+                                wg.setStringValue(attrId, selVxId, data);
+                                if (graph.getSchema() != null) {
+                                    graph.getSchema().completeVertex(wg, selVxId);
+                                }
+                            }
+                        } else {
+                            wg.setStringValue(attrId, vxId, data);
+                            if (graph.getSchema() != null) {
+                                graph.getSchema().completeVertex(wg, vxId);
+                            }
+                        }
+                    } else {
+                        vxId = wg.addVertex();
+                        final int xId = VisualConcept.VertexAttribute.X.ensure(wg);
+                        final int yId = VisualConcept.VertexAttribute.Y.ensure(wg);
+                        final int zId = VisualConcept.VertexAttribute.Z.ensure(wg);
+                        wg.setStringValue(attrId, vxId, value);
+                        wg.setFloatValue(xId, vxId, dropInfo.location.getX());
+                        wg.setFloatValue(yId, vxId, dropInfo.location.getY());
+                        wg.setFloatValue(zId, vxId, dropInfo.location.getZ());
+
+                        if (graph.getSchema() != null) {
+                            graph.getSchema().newVertex(wg, vxId);
+                            graph.getSchema().completeVertex(wg, vxId);
+                        }
+                    }
+
+                    ConstellationLoggerHelper.importPropertyBuilder(
+                            this,
+                            Arrays.asList(data),
+                            null,
+                            ConstellationLoggerHelper.SUCCESS
+                    );
+                }
+            }
+        }
+
+    }
+
 }
