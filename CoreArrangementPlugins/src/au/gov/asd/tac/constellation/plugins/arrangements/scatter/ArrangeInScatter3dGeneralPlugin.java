@@ -22,8 +22,10 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.utilities.AttributeUtilities;
 import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.arrangements.SelectedInclusionGraph;
 import au.gov.asd.tac.constellation.plugins.arrangements.SetRadiusForArrangement;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
@@ -50,6 +52,7 @@ import org.openide.util.lookup.ServiceProvider;
     "ArrangeInScatter3dGeneralPlugin=Arrange in Scatter 3D",
     "SelectedOnly=Arrange only selected nodes"
 })
+@PluginInfo(pluginType = PluginType.DISPLAY, tags = {"MODIFY"})
 public class ArrangeInScatter3dGeneralPlugin extends SimpleEditPlugin {
 
     public static final String SCATTER_3D_X_ATTRIBUTE = PluginParameter.buildId(ArrangeInScatter3dGeneralPlugin.class, "scatter3d_x_attribute");
@@ -60,13 +63,13 @@ public class ArrangeInScatter3dGeneralPlugin extends SimpleEditPlugin {
     public static final String SCATTER_3D_Z_LOGARITHMIC = PluginParameter.buildId(ArrangeInScatter3dGeneralPlugin.class, "scatter3d_logarithmic_z");
     public static final String SCATTER_3D_DO_NOT_SCALE = PluginParameter.buildId(ArrangeInScatter3dGeneralPlugin.class, "scatter3d_do_not_scale");
 
-    private final String X_ATTRIBUTE = "X Attribute";
-    private final String Y_ATTRIBUTE = "Y Attribute";
-    private final String Z_ATTRIBUTE = "Z Attribute";
-    private final String X_LOGARITHMIC = "Use Logarithmic Scaling for X";
-    private final String Y_LOGARITHMIC = "Use Logarithmic Scaling for Y";
-    private final String Z_LOGARITHMIC = "Use Logarithmic Scaling for Z";
-    private final String DO_NOT_USE_SCALE = "Do not use final Scaling algorithm";
+    private static final String X_ATTRIBUTE = "X Attribute";
+    private static final String Y_ATTRIBUTE = "Y Attribute";
+    private static final String Z_ATTRIBUTE = "Z Attribute";
+    private static final String X_LOGARITHMIC = "Use Logarithmic Scaling for X";
+    private static final String Y_LOGARITHMIC = "Use Logarithmic Scaling for Y";
+    private static final String Z_LOGARITHMIC = "Use Logarithmic Scaling for Z";
+    private static final String DO_NOT_USE_SCALE = "Do not use final Scaling algorithm";
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
@@ -165,15 +168,17 @@ public class ArrangeInScatter3dGeneralPlugin extends SimpleEditPlugin {
             rg.release();
         }
 
-        final List<String> keys = new ArrayList<>(vertexAttributes.keySet());
+        if (vertexAttributes != null) {
+            final List<String> keys = new ArrayList<>(vertexAttributes.keySet());
 
-        final PluginParameter<SingleChoiceParameterValue> xAttribute = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(SCATTER_3D_X_ATTRIBUTE);
-        SingleChoiceParameterType.setOptions(xAttribute, keys);
+            final PluginParameter<SingleChoiceParameterValue> xAttribute = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(SCATTER_3D_X_ATTRIBUTE);
+            SingleChoiceParameterType.setOptions(xAttribute, keys);
 
-        final PluginParameter<SingleChoiceParameterValue> yAttribute = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(SCATTER_3D_Y_ATTRIBUTE);
-        SingleChoiceParameterType.setOptions(yAttribute, keys);
+            final PluginParameter<SingleChoiceParameterValue> yAttribute = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(SCATTER_3D_Y_ATTRIBUTE);
+            SingleChoiceParameterType.setOptions(yAttribute, keys);
 
-        final PluginParameter<SingleChoiceParameterValue> zAttribute = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(SCATTER_3D_Z_ATTRIBUTE);
-        SingleChoiceParameterType.setOptions(zAttribute, keys);
+            final PluginParameter<SingleChoiceParameterValue> zAttribute = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(SCATTER_3D_Z_ATTRIBUTE);
+            SingleChoiceParameterType.setOptions(zAttribute, keys);
+        }
     }
 }
