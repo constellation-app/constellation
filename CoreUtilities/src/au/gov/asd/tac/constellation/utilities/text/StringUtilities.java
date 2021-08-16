@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.StringJoiner;
+import java.util.regex.Pattern;
 
 /**
  * Provides various string operations such as escaping and pretty printing.
@@ -32,7 +33,14 @@ public class StringUtilities {
 
     public static final String ESCAPE_CHARACTER = "\\";
     public static final String SPECIAL_CHARACTERS = ".[]^$()*+?";
+    
+    private static final Pattern NON_SPECIAL_CHARACTERS = Pattern.compile("[^A-Za-z0-9]");
+    private static final Pattern OPENING_SQUARE_BRACKET = Pattern.compile("^\\[");
+    private static final Pattern ENDING_SQUARE_BRACKET = Pattern.compile("]$");
 
+    private StringUtilities() {
+    }
+    
     /**
      * Escape a String.
      * <p>
@@ -361,7 +369,9 @@ public class StringUtilities {
      */
     public static String removeSquareBracketsFromString(final String originalString) {
         if (originalString.startsWith("[") || originalString.endsWith("]")) {
-            return originalString.replaceAll("\\[", "").replaceFirst("]$", "");
+            return ENDING_SQUARE_BRACKET.matcher(
+                    OPENING_SQUARE_BRACKET.matcher(originalString).replaceAll("")
+            ).replaceAll("");
         } else {
             return originalString;
         }
@@ -374,7 +384,8 @@ public class StringUtilities {
      * @return A {@link String} without special characters
      */
     public static String removeSpecialCharacters(final String originalString) {
-        return originalString != null ? originalString.replaceAll("[^A-Za-z0-9]", "") : null;
+        return originalString != null ? 
+                NON_SPECIAL_CHARACTERS.matcher(originalString).replaceAll("") : null;
     }
 
     /**
