@@ -155,68 +155,60 @@ public class TableViewPreferencesIOUtilitiesNGTest {
             // so we need to instantiate the static mocks only once we know we will be running the
             // tests.
             new JFXPanel();
-        } else {
-            // Close off all static mocks as the test class will not be cleaned up
-            jsonIOStaticMock.close();
-            nbPreferencesStaticMock.close();
-            applicationPrefKeysStaticMock.close();
-            
-            throw new SkipException("This class requires the build to have a display present.");
+        
+            nbPreferencesStaticMock.when(() -> NbPreferences.forModule(ApplicationPreferenceKeys.class))
+                    .thenReturn(null);
+            applicationPrefKeysStaticMock.when(() -> ApplicationPreferenceKeys.getUserDir(null))
+                    .thenReturn(System.getProperty("java.io.tmpdir"));
+
+            final ObservableList<TableColumn<ObservableList<String>, ? extends Object>> columns = mock(ObservableList.class);
+            when(columns.size()).thenReturn(4);
+
+            final ObservableList<TableColumn<ObservableList<String>, ? extends Object>> sortOrder = mock(ObservableList.class);
+            when(sortOrder.isEmpty()).thenReturn(Boolean.FALSE);
+
+            final TableColumn<ObservableList<String>, ? extends Object> column1 = mock(TableColumn.class);
+            final TableColumn<ObservableList<String>, ? extends Object> column2 = mock(TableColumn.class);
+            final TableColumn<ObservableList<String>, ? extends Object> column3 = mock(TableColumn.class);
+            final TableColumn<ObservableList<String>, ? extends Object> column4 = mock(TableColumn.class);
+
+            when(column1.isVisible()).thenReturn(Boolean.TRUE);
+            when(column1.getText()).thenReturn("ABC");
+
+            when(column2.isVisible()).thenReturn(Boolean.TRUE);
+            when(column2.getText()).thenReturn("DEF");
+            when(column2.getSortType()).thenReturn(TableColumn.SortType.ASCENDING);
+
+            when(column3.isVisible()).thenReturn(Boolean.FALSE);
+            when(column3.getText()).thenReturn("GHI");
+
+            when(column4.isVisible()).thenReturn(Boolean.TRUE); // <- This seem wrong. Its dropped.
+            when(column4.getText()).thenReturn("JKL");
+
+            doReturn(column1).when(columns).get(0);
+            doReturn(column2).when(columns).get(1);
+            doReturn(column3).when(columns).get(2);
+            doReturn(column4).when(columns).get(3);
+
+            doReturn(column2).when(sortOrder).get(0);
+
+            final TableView<ObservableList<String>> tableView = mock(TableView.class);
+            when(tableView.getColumns()).thenReturn(columns);
+            when(tableView.getSortOrder()).thenReturn(sortOrder);
+
+            TableViewPreferencesIOUtilities.savePreferences(GraphElementType.TRANSACTION, tableView, 5);
+
+            final ObjectMapper objectMapper = new ObjectMapper();
+            final ArrayNode expectedJsonTree = (ArrayNode) objectMapper.readTree(
+                    new FileInputStream(getClass().getResource("resources/transaction-preferences.json").getPath())
+            );
+
+            jsonIOStaticMock.verify(() -> JsonIO.saveJsonPreferences(
+                    eq("TableViewPreferences"),
+                    any(ObjectMapper.class),
+                    eq(expectedJsonTree),
+                    eq("transaction-")
+            ));
         }
-        
-        
-        nbPreferencesStaticMock.when(() -> NbPreferences.forModule(ApplicationPreferenceKeys.class))
-                .thenReturn(null);
-        applicationPrefKeysStaticMock.when(() -> ApplicationPreferenceKeys.getUserDir(null))
-                .thenReturn(System.getProperty("java.io.tmpdir"));
-        
-        final ObservableList<TableColumn<ObservableList<String>, ? extends Object>> columns = mock(ObservableList.class);
-        when(columns.size()).thenReturn(4);
-        
-        final ObservableList<TableColumn<ObservableList<String>, ? extends Object>> sortOrder = mock(ObservableList.class);
-        when(sortOrder.isEmpty()).thenReturn(Boolean.FALSE);
-        
-        final TableColumn<ObservableList<String>, ? extends Object> column1 = mock(TableColumn.class);
-        final TableColumn<ObservableList<String>, ? extends Object> column2 = mock(TableColumn.class);
-        final TableColumn<ObservableList<String>, ? extends Object> column3 = mock(TableColumn.class);
-        final TableColumn<ObservableList<String>, ? extends Object> column4 = mock(TableColumn.class);
-        
-        when(column1.isVisible()).thenReturn(Boolean.TRUE);
-        when(column1.getText()).thenReturn("ABC");
-        
-        when(column2.isVisible()).thenReturn(Boolean.TRUE);
-        when(column2.getText()).thenReturn("DEF");
-        when(column2.getSortType()).thenReturn(TableColumn.SortType.ASCENDING);
-        
-        when(column3.isVisible()).thenReturn(Boolean.FALSE);
-        when(column3.getText()).thenReturn("GHI");
-        
-        when(column4.isVisible()).thenReturn(Boolean.TRUE); // <- This seem wrong. Its dropped.
-        when(column4.getText()).thenReturn("JKL");
-        
-        doReturn(column1).when(columns).get(0);
-        doReturn(column2).when(columns).get(1);
-        doReturn(column3).when(columns).get(2);
-        doReturn(column4).when(columns).get(3);
-        
-        doReturn(column2).when(sortOrder).get(0);
-        
-        final TableView<ObservableList<String>> tableView = mock(TableView.class);
-        when(tableView.getColumns()).thenReturn(columns);
-        when(tableView.getSortOrder()).thenReturn(sortOrder);
-        
-        TableViewPreferencesIOUtilities.savePreferences(GraphElementType.TRANSACTION, tableView, 5);
-        
-        final ObjectMapper objectMapper = new ObjectMapper();
-        final ArrayNode expectedJsonTree = (ArrayNode) objectMapper.readTree(
-                new FileInputStream(getClass().getResource("resources/transaction-preferences.json").getPath())
-        );
-        
-        jsonIOStaticMock.verify(() -> JsonIO.saveJsonPreferences(
-                eq("TableViewPreferences"),
-                any(ObjectMapper.class),
-                eq(expectedJsonTree),
-                eq("transaction-")
-        ));
     }
 }
