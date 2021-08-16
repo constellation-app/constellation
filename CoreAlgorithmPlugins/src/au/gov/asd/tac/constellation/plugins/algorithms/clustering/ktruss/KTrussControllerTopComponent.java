@@ -895,7 +895,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
         }
     }
 
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
     public static final class Update extends SimpleEditPlugin {
 
         private final KTrussState state;

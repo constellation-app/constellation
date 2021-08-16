@@ -59,7 +59,7 @@ public final class KTrussAction extends AbstractAction {
         PluginExecution.withPlugin(new KTrussPlugin()).executeLater(graph);
     }
 
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"GENERAL"})
     public static class KTrussPlugin extends SimpleReadPlugin {
 
         @Override
