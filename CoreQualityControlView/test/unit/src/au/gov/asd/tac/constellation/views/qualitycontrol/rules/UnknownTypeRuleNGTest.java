@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
@@ -28,13 +29,12 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
- * Missing Type Rule Test.
  *
- * @author arcturus
+ * @author aldebaran30701
  */
-public class MissingTypeRuleNGTest {
+public class UnknownTypeRuleNGTest {
 
-    public MissingTypeRuleNGTest() {
+    public UnknownTypeRuleNGTest() {
     }
 
     @BeforeClass
@@ -54,44 +54,28 @@ public class MissingTypeRuleNGTest {
     }
 
     /**
-     * Test of executeRule method, of class MissingTypeRule.
+     * Test of executeRule method, of class UnknownTypeRule.
      *
-     * @throws java.lang.InterruptedException
+     * Return false when the vx's type is null
      */
     @Test
-    public void testExecuteRule() throws InterruptedException {
-        final StoreGraph graph = new StoreGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
-        final int vx0 = graph.addVertex();
-
-        final MissingTypeRule instance = new MissingTypeRule();
-        final boolean expResult = true;
-        final boolean result = instance.executeRule(graph, vx0);
-        assertEquals(result, expResult);
-    }
-
-    /**
-     * Test of executeRule method, of class MissingTypeRule.
-     *
-     * Test when null is returned from type attribute
-     *
-     * @throws java.lang.InterruptedException
-     */
-    @Test
-    public void testExecuteRuleNull() throws InterruptedException {
+    public void testExecuteRule() {
         final StoreGraph graph = new StoreGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
         final int vx0 = graph.addVertex();
 
         final int typeAttr = AnalyticConcept.VertexAttribute.TYPE.ensure(graph);
         assertEquals(graph.getObjectValue(typeAttr, vx0), (Object) null);
 
-        final MissingTypeRule instance = new MissingTypeRule();
-        final boolean expResult = true;
+        final UnknownTypeRule instance = new UnknownTypeRule();
+        final boolean expResult = false;
         final boolean result = instance.executeRule(graph, vx0);
         assertEquals(result, expResult);
     }
 
     /**
-     * Test of executeRule method, of class MissingTypeRule.
+     * Test of executeRule method, of class UnknownTypeRule.
+     *
+     * Return false when the vx's type is a known type
      *
      * @throws java.lang.InterruptedException
      */
@@ -102,9 +86,30 @@ public class MissingTypeRuleNGTest {
         final int vx0 = graph.addVertex();
         graph.setObjectValue(typeAttr, vx0, AnalyticConcept.VertexType.COUNTRY);
 
-        final MissingTypeRule instance = new MissingTypeRule();
+        final UnknownTypeRule instance = new UnknownTypeRule();
         final boolean expResult = false;
         final boolean result = instance.executeRule(graph, vx0);
         assertEquals(result, expResult);
     }
+
+    /**
+     * Test of executeRule method, of class UnknownTypeRule.
+     *
+     * Return true when the vx's type is of type 'Unknown'
+     *
+     * @throws java.lang.InterruptedException
+     */
+    @Test
+    public void testExecuteRuleWithUnknownType() throws InterruptedException {
+        final StoreGraph graph = new StoreGraph(SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema());
+        final int typeAttr = AnalyticConcept.VertexAttribute.TYPE.ensure(graph);
+        final int vx0 = graph.addVertex();
+        graph.setObjectValue(typeAttr, vx0, SchemaVertexType.unknownType());
+
+        final UnknownTypeRule instance = new UnknownTypeRule();
+        final boolean expResult = true;
+        final boolean result = instance.executeRule(graph, vx0);
+        assertEquals(result, expResult);
+    }
+
 }

@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.testing.CoreTestingPluginRegistry;
 import au.gov.asd.tac.constellation.testing.construction.SphereGraphBuilderPlugin;
 import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
@@ -41,7 +42,7 @@ import org.openide.util.NbBundle;
  * The New Graph with a Sphere plugin for the Welcome Page.  
  * @author canis_majoris
  */
-@PluginInfo(tags = {"WELCOME"})
+@PluginInfo(pluginType = PluginType.CREATE, tags = {"CREATE", "EXPERIMENTAL", " WELCOME"})
 @NbBundle.Messages("SphereGraphWelcomePlugin=Sphere Graph Welcome Plugin")
 public class SphereGraphWelcomePlugin implements WelcomePluginInterface {
     
