@@ -20,7 +20,9 @@ import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
@@ -190,14 +192,9 @@ public class CopyDataToExcelFile implements ActionListener, Action {
             wb.write(fos);
             wb.dispose();
         }
-        final int count = auditCounter;
 
-        PluginExecution.withPlugin(new SimplePlugin("Export to Excel") {
-            @Override
-            protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                ConstellationLoggerHelper.copyPropertyBuilder(this, count, ConstellationLoggerHelper.SUCCESS);
-            }
-        }).executeLater(null);
+        final int count = auditCounter;
+        PluginExecution.withPlugin(new ExportToExcelPlugin(count)).executeLater(null);
     }
 
     @Override
@@ -216,9 +213,11 @@ public class CopyDataToExcelFile implements ActionListener, Action {
     }
 
     /**
-     * An array of length table.getRowCount() containing 0, 1, 2,... representing all rows in the table.
+     * An array of length table.getRowCount() containing 0, 1, 2,...
+     * representing all rows in the table.
      *
-     * @return An array of length table.getRowCount() containing 0, 1, 2,... representing all rows in the table.
+     * @return An array of length table.getRowCount() containing 0, 1, 2,...
+     * representing all rows in the table.
      */
     private int[] allRows() {
         final int[] rowIndices = new int[table.getRowCount()];
@@ -264,5 +263,28 @@ public class CopyDataToExcelFile implements ActionListener, Action {
      */
     public void setMousePosition(final Point MousePosition) {
         this.mousePosition = MousePosition;
+    }
+
+    /**
+     * Plugin to export to Excel.
+     */
+    @PluginInfo(pluginType = PluginType.EXPORT, tags = {"EXPORT"})
+    protected static class ExportToExcelPlugin extends SimplePlugin {
+
+        private final int count;
+
+        protected ExportToExcelPlugin(final int count) {
+            this.count = count;
+        }
+
+        @Override
+        public String getName() {
+            return "Table View: Export to Excel";
+        }
+
+        @Override
+        protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            ConstellationLoggerHelper.copyPropertyBuilder(this, count, ConstellationLoggerHelper.SUCCESS);
+        }
     }
 }
