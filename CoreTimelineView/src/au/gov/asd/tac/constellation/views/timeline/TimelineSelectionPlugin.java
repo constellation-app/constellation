@@ -33,7 +33,7 @@ import org.openide.util.NbBundle.Messages;
  * @author betelgeuse
  */
 @Messages("TimelineSelectionPlugin=Timeline: Update Selection")
-@PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECTION"})
+@PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
 public class TimelineSelectionPlugin extends SimpleEditPlugin {
 
     private final Set<Integer> vertices;
