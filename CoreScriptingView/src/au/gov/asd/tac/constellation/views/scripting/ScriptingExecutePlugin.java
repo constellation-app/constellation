@@ -67,7 +67,7 @@ import org.python.jsr223.PyScriptEngine;
  * @author cygnus_x-1
  */
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(pluginType = PluginType.NONE, tags = {"LOW LEVEL"})
+@PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
 @Messages("ScriptingExecutePlugin=Execute Script")
 public class ScriptingExecutePlugin extends SimplePlugin {
 
