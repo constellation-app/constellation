@@ -22,7 +22,9 @@ import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersDialog;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersSwingDialog;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
@@ -517,31 +519,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
     }
 
     public void selectOnGraph(final GraphElementType graphElementType, final Set<Integer> elementIds) {
-        PluginExecution.withPlugin(new SimpleEditPlugin(UPDATE_SELECTION_PLUGIN) {
-            @Override
-            protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                switch (graphElementType) {
-                    case VERTEX:
-                        final int vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
-                        final int vertexCount = graph.getVertexCount();
-                        for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
-                            final int vertexId = graph.getVertex(vertexPosition);
-                            graph.setBooleanValue(vertexSelectedAttribute, vertexId, elementIds.contains(vertexId));
-                        }
-                        break;
-                    case TRANSACTION:
-                        final int transactionSelectedAttribute = VisualConcept.TransactionAttribute.SELECTED.get(graph);
-                        final int transactionCount = graph.getTransactionCount();
-                        for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
-                            final int transactionId = graph.getTransaction(transactionPosition);
-                            graph.setBooleanValue(transactionSelectedAttribute, transactionId, elementIds.contains(transactionId));
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }).executeLater(getCurrentGraph());
+        PluginExecution.withPlugin(new SelectOnGraphPlugin(graphElementType, elementIds)).executeLater(getCurrentGraph());;
     }
 
     @Override
@@ -606,4 +584,47 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
+
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
+    public static class SelectOnGraphPlugin extends SimpleEditPlugin {
+
+        final GraphElementType graphElementType;
+        final Set<Integer> elementIds;
+
+        public SelectOnGraphPlugin(final GraphElementType graphElementType, final Set<Integer> elementIds) {
+            this.graphElementType = graphElementType;
+            this.elementIds = elementIds;
+        }
+
+        @Override
+        public String getName() {
+            return "Select on Graph";
+        }
+
+        @Override
+        protected void edit(GraphWriteMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+            switch (graphElementType) {
+                    case VERTEX:
+                        final int vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
+                        final int vertexCount = graph.getVertexCount();
+                        for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
+                            final int vertexId = graph.getVertex(vertexPosition);
+                            graph.setBooleanValue(vertexSelectedAttribute, vertexId, elementIds.contains(vertexId));
+                        }
+                        break;
+                    case TRANSACTION:
+                        final int transactionSelectedAttribute = VisualConcept.TransactionAttribute.SELECTED.get(graph);
+                        final int transactionCount = graph.getTransactionCount();
+                        for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
+                            final int transactionId = graph.getTransaction(transactionPosition);
+                            graph.setBooleanValue(transactionSelectedAttribute, transactionId, elementIds.contains(transactionId));
+                        }
+                        break;
+                    default:
+                        break;
+                }
+        }
+
+    }
+
 }
