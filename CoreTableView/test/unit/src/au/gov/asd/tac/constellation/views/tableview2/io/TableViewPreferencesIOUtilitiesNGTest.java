@@ -41,7 +41,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import org.openide.util.NbPreferences;
 import static org.testng.AssertJUnit.assertEquals;
-import org.testng.SkipException;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -172,17 +171,17 @@ public class TableViewPreferencesIOUtilitiesNGTest {
             final TableColumn<ObservableList<String>, ? extends Object> column3 = mock(TableColumn.class);
             final TableColumn<ObservableList<String>, ? extends Object> column4 = mock(TableColumn.class);
 
-            when(column1.isVisible()).thenReturn(Boolean.TRUE);
+            when(column1.isVisible()).thenReturn(true);
             when(column1.getText()).thenReturn("ABC");
 
-            when(column2.isVisible()).thenReturn(Boolean.TRUE);
+            when(column2.isVisible()).thenReturn(true);
             when(column2.getText()).thenReturn("DEF");
             when(column2.getSortType()).thenReturn(TableColumn.SortType.ASCENDING);
 
-            when(column3.isVisible()).thenReturn(Boolean.FALSE);
+            when(column3.isVisible()).thenReturn(false);
             when(column3.getText()).thenReturn("GHI");
 
-            when(column4.isVisible()).thenReturn(Boolean.TRUE); // <- This seem wrong. Its dropped.
+            when(column4.isVisible()).thenReturn(true); // <- This seem wrong. Its dropped.
             when(column4.getText()).thenReturn("JKL");
 
             doReturn(column1).when(columns).get(0);
