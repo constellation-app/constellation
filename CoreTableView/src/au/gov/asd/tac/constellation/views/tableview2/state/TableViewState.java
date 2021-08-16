@@ -98,7 +98,7 @@ public final class TableViewState {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
@@ -107,13 +107,13 @@ public final class TableViewState {
             return false;
         }
 
-        TableViewState that = (TableViewState) o;
+        final TableViewState rhs = (TableViewState) o;
 
         return new EqualsBuilder()
-                .append(isSelectedOnly(), that.isSelectedOnly())
-                .append(getElementType(), that.getElementType())
-                .append(getTransactionColumnAttributes(), that.getTransactionColumnAttributes())
-                .append(getVertexColumnAttributes(), that.getVertexColumnAttributes())
+                .append(isSelectedOnly(), rhs.isSelectedOnly())
+                .append(getElementType(), rhs.getElementType())
+                .append(getTransactionColumnAttributes(), rhs.getTransactionColumnAttributes())
+                .append(getVertexColumnAttributes(), rhs.getVertexColumnAttributes())
                 .isEquals();
     }
 
