@@ -16,7 +16,9 @@
 package au.gov.asd.tac.constellation.plugins.algorithms.paths;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 
@@ -27,6 +29,7 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
  */
 //@ServiceProvider(service = Plugin.class)
 //@NbBundle.Messages("ShortestPaths2Plugin=Shortest Paths 2")
+@PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
 public class ShortestPaths2Plugin extends SimpleEditPlugin {
 
     @Override
