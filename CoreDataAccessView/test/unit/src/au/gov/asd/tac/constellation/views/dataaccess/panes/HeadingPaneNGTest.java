@@ -26,8 +26,6 @@ import javafx.embed.swing.JFXPanel;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
@@ -43,6 +41,7 @@ import org.testng.annotations.Test;
  * @author Auriga2
  */
 public class HeadingPaneNGTest {
+
     private static MockedStatic<DataAccessPreferences> dataAccessPreferencesMockedStatic;
     private final PluginParametersPaneListener top = mock(PluginParametersPaneListener.class);
     private final DataAccessPlugin dataAccessPlugin = mock(DataAccessPlugin.class);
@@ -131,16 +130,73 @@ public class HeadingPaneNGTest {
     @Test
     public void testHierarchicalUpdate_paneIsNotQueryEnabled() {
         System.out.println("testHierarchicalUpdate_paneIsNotQueryEnabled");
+        final TestListener listener = new TestListener();
 
-        headingPane.hierarchicalUpdate();
+        final HeadingPane listenedHeadingPane = new HeadingPane(headingText, pluginsList, listener, globalParamLabels);
 
-        verify(top, times(1)).hierarchicalUpdate();
+        assertFalse(listener.hasHierarchicalUpdated());
+        listenedHeadingPane.hierarchicalUpdate();
+        assertTrue(listener.hasHierarchicalUpdated());
     }
 
     /**
-     * TODO: Test of validityChanged method, of class HeadingPane, when pane is
-     * QueryEnabled. Tricky because HeadingPane is creating a List of
-     * new
-     * DataSourceTitledPanes in the constructor.
+     * Test heading pane sends message to listeners when the pane is enabled and
+     * the validity has changed.
      */
+    @Test
+    public void testValidityChanged_paneIsQueryEnabled() {
+        System.out.println("testValidityChanged_paneIsQueryEnabled");
+        final TestListener listener = new TestListener();
+
+        final HeadingPane listenedHeadingPane = new HeadingPane(headingText, pluginsList, listener, globalParamLabels);
+
+        assertFalse(listener.hasValidityUpdated());
+        listenedHeadingPane.validityChanged(true);
+        assertTrue(listener.hasValidityUpdated());
+    }
+
+    /**
+     * Test heading pane does not send a message to listeners when the pane is
+     * disabled and the validity has changed.
+     */
+    @Test
+    public void testValidityChanged_paneIsNotQueryEnabled() {
+        System.out.println("testValidityChanged_paneIsNotQueryEnabled");
+        final TestListener listener = new TestListener();
+
+        final HeadingPane listenedHeadingPane = new HeadingPane(headingText, pluginsList, listener, globalParamLabels);
+
+        assertFalse(listener.hasValidityUpdated());
+        listenedHeadingPane.validityChanged(false);
+        assertFalse(listener.hasValidityUpdated());
+    }
+
+    /**
+     * Test listener of type pluginParametersPaneListener so triggering of
+     * listeners can be tested.
+     */
+    private static class TestListener implements PluginParametersPaneListener {
+
+        private boolean didHierarchicalUpdate = false;
+        private boolean didValidityUpdate = false;
+
+        public boolean hasHierarchicalUpdated() {
+            return didHierarchicalUpdate;
+        }
+
+        public boolean hasValidityUpdated() {
+            return didValidityUpdate;
+        }
+
+        @Override
+        public void validityChanged(boolean valid) {
+            didValidityUpdate = true;
+        }
+
+        @Override
+        public void hierarchicalUpdate() {
+            didHierarchicalUpdate = true;
+        }
+
+    }
 }
