@@ -223,6 +223,11 @@ public class AddRecordStore extends RestService {
         }
 
         @Override
+        public String getName() {
+            return "Import from REST API";
+        }
+        
+        @Override
         protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
             GraphRecordStoreUtilities.addRecordStoreToGraph(graph, recordStore, false, completeWithSchema, null);
 

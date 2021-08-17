@@ -156,6 +156,11 @@ public class SetGraphValues extends RestService {
         }
 
         @Override
+        public String getName() {
+            return "Set graph attributes from REST API";
+        }
+        
+        @Override
         protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
             for (int i = 0; i < columns.size(); i++) {
                 final String attributeName = columns.get(i).asText();
