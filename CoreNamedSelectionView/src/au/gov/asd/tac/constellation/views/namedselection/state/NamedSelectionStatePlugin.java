@@ -18,7 +18,9 @@ package au.gov.asd.tac.constellation.views.namedselection.state;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import org.openide.util.NbBundle.Messages;
@@ -32,6 +34,7 @@ import org.openide.util.NbBundle.Messages;
  * @author betelgeuse
  */
 @Messages("NamedSelectionStatePlugin=Named Selection: Update State")
+@PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
 public class NamedSelectionStatePlugin extends SimpleEditPlugin {
 
     private NamedSelectionState state = null;
