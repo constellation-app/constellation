@@ -13,21 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.views.tableview.state;
+@HelpSetRegistration(helpSet = "tableview-hs.xml", position = 0)
+package au.gov.asd.tac.constellation.views.tableview2.docs;
 
-import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.attribute.io.AbstractGraphIOProvider;
-import org.openide.util.lookup.ServiceProvider;
-
-/**
- *
- * @author algol
- */
-@ServiceProvider(service = AbstractGraphIOProvider.class)
-public class TableStateVertexIOProvider extends TableStateIOProvider {
-
-    @Override
-    public String getName() {
-        return TableState.getAttrLabel(GraphElementType.VERTEX);
-    }
-}
+import org.netbeans.api.javahelp.HelpSetRegistration;
