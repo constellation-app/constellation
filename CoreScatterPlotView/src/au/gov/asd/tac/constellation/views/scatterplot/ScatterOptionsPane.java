@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
@@ -343,7 +344,7 @@ public class ScatterOptionsPane extends BorderPane {
     /**
      * Write the given ScatterPlotState to the active graph.
      */
-    @PluginInfo(tags = {"LOW LEVEL"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
     private static class ScatterPlotStateWriter extends SimpleEditPlugin {
 
         private final ScatterPlotState scatterPlotState;
