@@ -63,7 +63,7 @@ import org.openide.util.NbBundle;
  * @author algol
  */
 //@ServiceProvider(service = Plugin.class)
-@PluginInfo(pluginType = PluginType.EXPORT, tags = {"EXPORT"})
+@PluginInfo(pluginType = PluginType.EXPORT, tags = {"EXPORT", "EXPERIMENTAL"})
 @NbBundle.Messages("ExportToJdbcPlugin=Export to JDBC")
 public class ExportToJdbcPlugin extends SimpleReadPlugin {
 

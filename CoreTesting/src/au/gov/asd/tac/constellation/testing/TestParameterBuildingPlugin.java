@@ -16,7 +16,9 @@
 package au.gov.asd.tac.constellation.testing;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
@@ -44,6 +46,7 @@ import org.openide.util.NbBundle.Messages;
  * @author algol
  */
 @Messages("TestParameterBuildingPlugin=Test Parameter Building")
+@PluginInfo(pluginType = PluginType.NONE, tags = {"EXPERIMENTAL", "DEVELOPER", "CREATE"})
 public class TestParameterBuildingPlugin extends SimpleQueryPlugin {
 
     public static final String LOCALDATE_PARAMETER_ID = PluginParameter.buildId(TestParameterBuildingPlugin.class, "localdate");

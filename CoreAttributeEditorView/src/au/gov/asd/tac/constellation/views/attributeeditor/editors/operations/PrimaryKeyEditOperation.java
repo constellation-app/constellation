@@ -19,7 +19,9 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.List;
@@ -43,6 +45,7 @@ public class PrimaryKeyEditOperation implements EditOperation {
         PluginExecution.withPlugin(new PrimaryKeyEditPlugin()).executeLater(GraphManager.getDefault().getActiveGraph());
     }
 
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
     private final class PrimaryKeyEditPlugin extends SimpleEditPlugin {
 
         @Override

@@ -91,7 +91,7 @@ public class NotesViewController {
     /**
      * Read the current state from the graph.
      */
-    @PluginInfo(tags = {"LOW LEVEL"})
+    @PluginInfo(tags = {"EXPERIMENTAL", "LOW LEVEL"})
     public static final class NotesViewStateReader extends SimpleReadPlugin {
 
         private final NotesViewPane pane;
@@ -130,7 +130,7 @@ public class NotesViewController {
     /**
      * Write the current state to the graph.
      */
-    @PluginInfo(tags = {"LOW LEVEL"})
+    @PluginInfo(tags = {"EXPERIMENTAL", "LOW LEVEL"})
     private static final class NotesViewStateWriter extends SimpleEditPlugin {
 
         private final List<NotesViewEntry> notes;

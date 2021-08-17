@@ -18,7 +18,9 @@ package au.gov.asd.tac.constellation.plugins.arrangements.hierarchical;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.arrangements.AbstractInclusionGraph.Connections;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.GraphComponentArranger;
@@ -42,6 +44,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages("ArrangeInHierarchyPlugin=Arrange in Hierarchy")
+@PluginInfo(pluginType = PluginType.DISPLAY, tags = {"MODIFY"})
 public class ArrangeInHierarchyPlugin extends SimpleEditPlugin {
 
     public static final String ROOTS_PARAMETER_ID = PluginParameter.buildId(ArrangeInHierarchyPlugin.class, "roots");

@@ -17,7 +17,9 @@ package au.gov.asd.tac.constellation.plugins.arrangements.proximity;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.SelectedInclusionGraph;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -32,6 +34,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("ArrangeByProximity3DPlugin=Arrange by Proximity 3D")
+@PluginInfo(pluginType = PluginType.DISPLAY, tags = {"MODIFY"})
 public class ArrangeByProximity3DPlugin extends SimpleEditPlugin {
 
     @Override

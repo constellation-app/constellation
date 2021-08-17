@@ -72,6 +72,27 @@ public class MissingTypeRuleNGTest {
     /**
      * Test of executeRule method, of class MissingTypeRule.
      *
+     * Test when null is returned from type attribute
+     *
+     * @throws java.lang.InterruptedException
+     */
+    @Test
+    public void testExecuteRuleNull() throws InterruptedException {
+        final StoreGraph graph = new StoreGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
+        final int vx0 = graph.addVertex();
+
+        final int typeAttr = AnalyticConcept.VertexAttribute.TYPE.ensure(graph);
+        assertEquals(graph.getObjectValue(typeAttr, vx0), (Object) null);
+
+        final MissingTypeRule instance = new MissingTypeRule();
+        final boolean expResult = true;
+        final boolean result = instance.executeRule(graph, vx0);
+        assertEquals(result, expResult);
+    }
+
+    /**
+     * Test of executeRule method, of class MissingTypeRule.
+     *
      * @throws java.lang.InterruptedException
      */
     @Test
