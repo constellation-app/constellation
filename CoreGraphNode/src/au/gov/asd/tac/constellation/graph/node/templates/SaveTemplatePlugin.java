@@ -49,7 +49,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author twilight_sparkle
  */
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(pluginType = PluginType.CREATE, tags = {"CREATE"})
+@PluginInfo(pluginType = PluginType.EXPORT, tags = {"UTILITY"})
 @NbBundle.Messages("SaveTemplatePlugin=Save Template")
 public class SaveTemplatePlugin extends SimplePlugin {
 

@@ -51,7 +51,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author twilight_sparkle
  */
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+@PluginInfo(pluginType = PluginType.UPDATE, tags = {"UTILITY"})
 @NbBundle.Messages("ManageTemplatesPlugin=Manage Templates")
 public class ManageTemplatesPlugin extends SimplePlugin {
 
