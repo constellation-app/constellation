@@ -19,7 +19,9 @@ import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.arrangements.AbstractInclusionGraph.Connections;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomyArranger;
@@ -40,6 +42,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages("ArrangeByGroupPlugin=Arrange by Group")
+@PluginInfo(pluginType = PluginType.DISPLAY, tags = {"MODIFY"})
 public class ArrangeByGroupPlugin extends SimpleEditPlugin {
 
     public static final String ATTRIBUTE_LABEL_PARAMETER_ID = PluginParameter.buildId(ArrangeByGroupPlugin.class, "attribute_label");

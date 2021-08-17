@@ -18,7 +18,9 @@ package au.gov.asd.tac.constellation.plugins.arrangements.circle;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import org.openide.util.NbBundle.Messages;
@@ -32,12 +34,12 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("ArrangeInCirclesPlugin=Arrange in Circles")
+@PluginInfo(pluginType = PluginType.DISPLAY, tags = {"MODIFY"})
 public class ArrangeInCirclesPlugin extends SimpleEditPlugin {
 
     private int xAttribute;
     private int yAttribute;
     private int zAttribute;
-    private int selectedAttribute;
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
@@ -48,7 +50,7 @@ public class ArrangeInCirclesPlugin extends SimpleEditPlugin {
         xAttribute = VisualConcept.VertexAttribute.X.get(graph);
         yAttribute = VisualConcept.VertexAttribute.Y.get(graph);
         zAttribute = VisualConcept.VertexAttribute.Z.get(graph);
-        selectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
+        final int selectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
 
         int[] parents = new int[graph.getVertexCapacity()];
         int[] depths = new int[graph.getVertexCapacity()];
