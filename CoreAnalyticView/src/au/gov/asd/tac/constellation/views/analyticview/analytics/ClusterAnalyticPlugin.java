@@ -25,7 +25,6 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginRegistry;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -41,7 +40,6 @@ import org.openide.util.Exceptions;
  *
  * @author cygnus_x-1
  */
-@PluginInfo(tags = {"ANALYTIC"})
 public abstract class ClusterAnalyticPlugin extends AnalyticPlugin<ClusterResult> {
 
     protected ClusterResult result;

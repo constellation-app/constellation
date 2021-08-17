@@ -34,7 +34,6 @@ import au.gov.asd.tac.constellation.graph.utilities.SubgraphUtilities;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginRegistry;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
@@ -61,7 +60,6 @@ import org.openide.util.Exceptions;
  *
  * @author cygnus_x-1
  */
-@PluginInfo(tags = {"ANALYTIC"})
 public abstract class FactAnalyticPlugin extends AnalyticPlugin<FactResult> {
 
     public static final String TRANSACTION_TYPES_PARAMETER_ID = PluginParameter.buildId(ScoreAnalyticPlugin.class, "transaction_types");
