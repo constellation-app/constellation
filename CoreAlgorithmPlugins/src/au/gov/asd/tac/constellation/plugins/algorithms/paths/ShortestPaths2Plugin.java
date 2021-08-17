@@ -29,7 +29,7 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
  */
 //@ServiceProvider(service = Plugin.class)
 //@NbBundle.Messages("ShortestPaths2Plugin=Shortest Paths 2")
-@PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+@PluginInfo(pluginType = PluginType.SEARCH, tags = {"ANALYTIC"})
 public class ShortestPaths2Plugin extends SimpleEditPlugin {
 
     @Override

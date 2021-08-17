@@ -39,6 +39,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
 import javax.swing.ScrollPaneConstants;
@@ -694,7 +695,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
         }
     }
 
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL", "MODIFY"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
     public static final class Update extends SimpleEditPlugin {
 
         private final HierarchicalState state;
