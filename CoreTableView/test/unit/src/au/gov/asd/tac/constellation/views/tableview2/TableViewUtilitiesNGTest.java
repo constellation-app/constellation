@@ -30,6 +30,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
@@ -41,9 +43,14 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.util.Callback;
 import org.apache.commons.io.IOUtils;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.mockito.ArgumentCaptor;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.doReturn;
@@ -51,6 +58,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertNotSame;
 import org.testng.annotations.Test;
 
 /**
@@ -209,7 +217,7 @@ public class TableViewUtilitiesNGTest {
             
             File tmpFile = null;
             try (MockedStatic<TableViewUtilities> tableViewUtilsMockedStatic = Mockito.mockStatic(TableViewUtilities.class)) {
-                tmpFile = File.createTempFile("constellationTest", "csv");
+                tmpFile = File.createTempFile("constellationTest", ".csv");
                 final String csv = "COLUMN_1,COLUMN_2\nrow1Column1,row1Column2\nrow2Column1,row2Column2\n";
                 
                 tableViewUtilsMockedStatic.when(() -> TableViewUtilities.getTableData(table, pagination, true, true))
@@ -271,20 +279,189 @@ public class TableViewUtilitiesNGTest {
     
     @Test
     public void updateStatePlugin() throws InterruptedException, PluginException {
+        final GraphWriteMethods graph = mock(GraphWriteMethods.class);
+
+        final TableViewState tableViewState = new TableViewState();
+        tableViewState.setElementType(GraphElementType.META);
+
+        final TableViewUtilities.UpdateStatePlugin updateStatePlugin
+                = new TableViewUtilities.UpdateStatePlugin(tableViewState);
+
+        updateStatePlugin.edit(graph, null, null);
+
+        final ArgumentCaptor<TableViewState> captor = ArgumentCaptor.forClass(TableViewState.class);
+        verify(graph).setObjectValue(eq(0), eq(0), captor.capture());
+
+        assertEquals(tableViewState, captor.getValue());
+        assertNotSame(tableViewState, captor.getValue());
+
+        assertEquals("Table View: Update State", updateStatePlugin.getName());
+    }
+    
+    @Test
+    public void exportToExcelFileSelectedOnly() throws IOException, InterruptedException, PluginException {
+        final boolean selectedOnly = true;
+        final String sheetName = "My Sheet";
+
         // TODO Find a better solution for this. Because of this limitation these tests
         //      will not be run on the CI server.
-//        if (!GraphicsEnvironment.isHeadless()) {
-//            new JFXPanel();
+        if (!GraphicsEnvironment.isHeadless()) {
+            new JFXPanel();
         
-            final GraphWriteMethods graph = mock(GraphWriteMethods.class);
-            final TableViewState tableViewState = mock(TableViewState.class);
+            final TableView<ObservableList<String>> table = mock(TableView.class);
+            final TableView.TableViewSelectionModel<ObservableList<String>> selectionModel = mock(TableView.TableViewSelectionModel.class);
+            final Pagination pagination = mock(Pagination.class);
+            final PluginInteraction pluginInteraction = mock(PluginInteraction.class);
+            final Callback<Integer, Node> callback = mock(Callback.class);
+            
+            File tmpFile = null;
+            try {
+                tmpFile = File.createTempFile("constellationTest", ".xls");
+                
+                when(pagination.getPageFactory()).thenReturn(callback);
+                when(callback.call(anyInt())).thenReturn(table);
+                when(table.getSelectionModel()).thenReturn(selectionModel);
+                
+                when(pagination.getCurrentPageIndex()).thenReturn(42);
+                when(pagination.getPageCount()).thenReturn(2);
+                
+                final TableColumn<ObservableList<String>, ? extends Object> column1
+                        = mock(TableColumn.class);
+                final TableColumn<ObservableList<String>, ? extends Object> column2
+                        = mock(TableColumn.class);
+
+                when(column1.getText()).thenReturn("COLUMN_1");
+                when(column2.getText()).thenReturn("COLUMN_2");
+                
+                when(column1.isVisible()).thenReturn(true);
+                when(column2.isVisible()).thenReturn(true);
+                
+                when(table.getColumns()).thenReturn(FXCollections.observableArrayList(column1, column2));
+            
+                // Page 1
+                doReturn(FXCollections.observableList(List.of(
+                        FXCollections.observableList(List.of("row1Column1", "row1Column2", "row1InvisibleColumn3")))))
+                        // Page 2
+                        .doReturn(FXCollections.observableList(List.of(
+                                FXCollections.observableList(List.of("row2Column1", "row2Column2", "row2InvisibleColumn3")))))
+                        .when(selectionModel).getSelectedItems();
+                
+                final TableViewUtilities.ExportToExcelFilePlugin exportToExcel
+                        = new TableViewUtilities.ExportToExcelFilePlugin(tmpFile, table, 
+                                pagination, 1, selectedOnly, sheetName);
+                
+                exportToExcel.execute(null, pluginInteraction, null);
+                
+                // Due to date/times etc. no two files are the same at the byte level
+                // So open the saved file, iterating over it, generating a CSV that can
+                // be verified.
+                final String csvInFile = generateCsvFromExcelFile(tmpFile, sheetName);
+                final String expected = "COLUMN_1,COLUMN_2\nrow1Column1,row1Column2\nrow2Column1,row2Column2\n";
+                
+                assertEquals(expected, csvInFile);
+                
+                // Verifies that it resets to the current page
+                verify(callback).call(42);
+                
+                assertEquals("Table View: Export to Excel File", exportToExcel.getName());
+                
+            } finally {
+                if (tmpFile != null) {
+                    tmpFile.delete();
+                }
+            }
+        }
+    }
+    
+    @Test
+    public void exportToExcelFileAllRows() throws IOException, InterruptedException, PluginException {
+        final boolean selectedOnly = false;
+        final String sheetName = "My Sheet";
         
-            final TableViewUtilities.UpdateStatePlugin updateStatePlugin
-                    = new TableViewUtilities.UpdateStatePlugin(tableViewState);
+        // TODO Find a better solution for this. Because of this limitation these tests
+        //      will not be run on the CI server.
+        if (!GraphicsEnvironment.isHeadless()) {
+            new JFXPanel();
+        
+            final TableView<ObservableList<String>> table = mock(TableView.class);
+            final Pagination pagination = mock(Pagination.class);
+            final PluginInteraction pluginInteraction = mock(PluginInteraction.class);
+            final Callback<Integer, Node> callback = mock(Callback.class);
             
-            updateStatePlugin.edit(graph, null, null);
+            File tmpFile = null;
+            try {
+                tmpFile = File.createTempFile("constellationTest", ".xls");
+                
+                when(pagination.getPageFactory()).thenReturn(callback);
+                when(callback.call(anyInt())).thenReturn(table);
+                
+                when(pagination.getCurrentPageIndex()).thenReturn(42);
+                when(pagination.getPageCount()).thenReturn(2);
+                
+                final TableColumn<ObservableList<String>, ? extends Object> column1 
+                        = mock(TableColumn.class);
+                final TableColumn<ObservableList<String>, ? extends Object> column2 
+                        = mock(TableColumn.class);
+
+                when(column1.getText()).thenReturn("COLUMN_1");
+                when(column2.getText()).thenReturn("COLUMN_2");
+                
+                when(column1.isVisible()).thenReturn(true);
+                when(column2.isVisible()).thenReturn(true);
+                
+                when(table.getColumns())
+                        .thenReturn(FXCollections.observableArrayList(column1, column2));
             
-            
-//        }
+                // Page 1
+                doReturn(FXCollections.observableList(List.of(
+                        FXCollections.observableList(List.of("row1Column1", "row1Column2", "row1InvisibleColumn3")))))
+                        // Page 2
+                        .doReturn(FXCollections.observableList(List.of(
+                                FXCollections.observableList(List.of("row2Column1", "row2Column2", "row2InvisibleColumn3")))))
+                        .when(table).getItems();
+                
+                final TableViewUtilities.ExportToExcelFilePlugin exportToExcel
+                        = new TableViewUtilities.ExportToExcelFilePlugin(tmpFile, table, 
+                                pagination, 1, selectedOnly, sheetName);
+                
+                exportToExcel.execute(null, pluginInteraction, null);
+                
+                // Due to date/times etc. no two files are the same at the byte level
+                // So open the saved file, iterating over it, generating a CSV that can
+                // be verified.
+                final String csvInFile = generateCsvFromExcelFile(tmpFile, sheetName);
+                final String expected = "COLUMN_1,COLUMN_2\nrow1Column1,row1Column2\nrow2Column1,row2Column2\n";
+                
+                assertEquals(expected, csvInFile);
+                
+                // Verifies that it resets to the current page
+                verify(callback).call(42);
+                
+                assertEquals("Table View: Export to Excel File", exportToExcel.getName());
+                
+            } finally {
+                if (tmpFile != null) {
+                    tmpFile.delete();
+                }
+            }
+        }
+    }
+    
+    private String generateCsvFromExcelFile(File file, final String sheetName) throws IOException {
+        final Workbook wb = WorkbookFactory.create(new FileInputStream(file));
+        final Sheet sheet = wb.getSheet(sheetName);
+
+        final StringBuilder output = new StringBuilder();
+        for (int i = 0; i <= sheet.getLastRowNum(); i++) {
+            final Row row = sheet.getRow(i);
+            output.append(
+                IntStream.range(0, row.getLastCellNum())
+                        .mapToObj(cellId -> row.getCell(cellId).toString())
+                        .collect(Collectors.joining(","))
+            );
+            output.append("\n");
+        }
+        
+        return output.toString();
     }
 }
