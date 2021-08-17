@@ -246,10 +246,10 @@ public final class PerspectiveBookmarkTopComponent extends TopComponent implemen
             Future<?> f = PluginExecution.withPlugin(new AddPerspectivePlugin(perspectiveModel, perspectivesList)).executeLater(graph);
             try {
                 f.get();
-            } catch (InterruptedException ex) {
+            } catch (final InterruptedException ex) {
                 Thread.currentThread().interrupt();
                 Exceptions.printStackTrace(ex);
-            } catch (ExecutionException ex) {
+            } catch (final ExecutionException ex) {
                 Exceptions.printStackTrace(ex);
             }
             updateOnGraph("Add Perspective Model");
