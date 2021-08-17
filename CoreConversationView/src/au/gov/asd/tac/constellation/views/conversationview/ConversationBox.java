@@ -20,7 +20,9 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
@@ -183,8 +185,8 @@ public final class ConversationBox extends StackPane {
         });
 
         final Button addAttributesButton = new Button("Add Content Attributes");
-        addAttributesButton.setOnAction(event ->
-            PluginExecution.withPlugin(new AddContentAttributesPlugin()).executeLater(GraphManager.getDefault().getActiveGraph()));
+        addAttributesButton.setOnAction(event
+                -> PluginExecution.withPlugin(new AddContentAttributesPlugin()).executeLater(GraphManager.getDefault().getActiveGraph()));
         final Tooltip aabt = new Tooltip("Adds content related transaction attributes to the graph.");
         addAttributesButton.setTooltip(aabt);
 
@@ -451,25 +453,7 @@ public final class ConversationBox extends StackPane {
     private void updateContributionProviderVisibility(final String contributionProviderName, final boolean visible) {
         final Graph graph = conversation.getGraphUpdateManager().getActiveGraph();
         if (graph != null) {
-            PluginExecution.withPlugin(new SimpleEditPlugin("Conversation View: Update Hidden Contribution Providers") {
-
-                @Override
-                protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                    final int stateAttribute = ConversationViewConcept.MetaAttribute.CONVERSATION_VIEW_STATE.ensure(graph);
-                    final ConversationState originalState = (ConversationState) graph.getObjectValue(stateAttribute, 0);
-                    final ConversationState newState = new ConversationState(originalState);
-                    if (originalState == null) {
-                        newState.setSenderAttributesToKeys(graph);
-                    }
-                    if (visible) {
-                        if (newState.getHiddenContributionProviders().remove(contributionProviderName)) {
-                            graph.setObjectValue(stateAttribute, 0, newState);
-                        }
-                    } else if (newState.getHiddenContributionProviders().add(contributionProviderName)) {
-                        graph.setObjectValue(stateAttribute, 0, newState);
-                    }
-                }
-            }).executeLater(graph);
+            PluginExecution.withPlugin(new UpdateHiddenContributorProviders(visible, contributionProviderName)).executeLater(graph);
         }
     }
 
@@ -485,20 +469,74 @@ public final class ConversationBox extends StackPane {
     private void updateSenderAttributes(final List<String> senderAttributes) {
         final Graph graph = conversation.getGraphUpdateManager().getActiveGraph();
         if (graph != null) {
-            PluginExecution.withPlugin(new SimpleEditPlugin("Conversation View: Update Sender Attributes") {
+            PluginExecution.withPlugin(new UpdateSenderAttributes(senderAttributes)).executeLater(graph);
+        }
+    }
 
-                @Override
-                protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                    final int stateAttribute = ConversationViewConcept.MetaAttribute.CONVERSATION_VIEW_STATE.ensure(graph);
-                    final ConversationState originalState = (ConversationState) graph.getObjectValue(stateAttribute, 0);
-                    final ConversationState newState = new ConversationState(originalState);
-                    if (!senderAttributes.equals(newState.getSenderAttributes())) {
-                        newState.getSenderAttributes().clear();
-                        newState.getSenderAttributes().addAll(senderAttributes);
-                        graph.setObjectValue(stateAttribute, 0, newState);
-                    }
+    /**
+     * Plugin to update hidden contribution providers.
+     */
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
+    private static class UpdateHiddenContributorProviders extends SimpleEditPlugin {
+
+        private final Boolean visible;
+        private final String contributionProviderName;
+
+        public UpdateHiddenContributorProviders(final Boolean visible, final String contributionProviderName) {
+            this.visible = visible;
+            this.contributionProviderName = contributionProviderName;
+        }
+
+        @Override
+        public String getName() {
+            return "Conversation View: Update Hidden Contribution Providers";
+        }
+
+        @Override
+        protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            final int stateAttribute = ConversationViewConcept.MetaAttribute.CONVERSATION_VIEW_STATE.ensure(graph);
+            final ConversationState originalState = (ConversationState) graph.getObjectValue(stateAttribute, 0);
+            final ConversationState newState = new ConversationState(originalState);
+            if (originalState == null) {
+                newState.setSenderAttributesToKeys(graph);
+            }
+            if (visible) {
+                if (newState.getHiddenContributionProviders().remove(contributionProviderName)) {
+                    graph.setObjectValue(stateAttribute, 0, newState);
                 }
-            }).executeLater(graph);
+            } else if (newState.getHiddenContributionProviders().add(contributionProviderName)) {
+                graph.setObjectValue(stateAttribute, 0, newState);
+            }
+        }
+    }
+
+    /**
+     * Plugin to update sender attributes.
+     */
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
+    private static class UpdateSenderAttributes extends SimpleEditPlugin {
+
+        private final List<String> senderAttributes;
+
+        public UpdateSenderAttributes(final List<String> senderAttributes) {
+            this.senderAttributes = senderAttributes;
+        }
+
+        @Override
+        public String getName() {
+            return "Conversation View: Update Sender Attributes";
+        }
+
+        @Override
+        protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            final int stateAttribute = ConversationViewConcept.MetaAttribute.CONVERSATION_VIEW_STATE.ensure(graph);
+            final ConversationState originalState = (ConversationState) graph.getObjectValue(stateAttribute, 0);
+            final ConversationState newState = new ConversationState(originalState);
+            if (!senderAttributes.equals(newState.getSenderAttributes())) {
+                newState.getSenderAttributes().clear();
+                newState.getSenderAttributes().addAll(senderAttributes);
+                graph.setObjectValue(stateAttribute, 0, newState);
+            }
         }
     }
 }
