@@ -705,9 +705,6 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     @PluginInfo(pluginType = PluginType.NONE, tags = {"MODIFY"})
     private class FilterSelection extends SimpleEditPlugin {
 
-        public FilterSelection() {
-        }
-
         @Override
         public String getName() {
             return "Histogram View: Filter Selection";
@@ -730,9 +727,6 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     @PluginInfo(pluginType = PluginType.NONE, tags = {"MODIFY"})
     private class SaveBinsToGraph extends SimpleEditPlugin {
 
-        public SaveBinsToGraph() {
-        }
-
         @Override
         public String getName() {
             return "Histogram View: Save Bins To Graph";
@@ -751,9 +745,6 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     @PluginInfo(pluginType = PluginType.EXPORT, tags = {"EXPORT"})
     private class SaveBinsToClipboard extends SimpleReadPlugin {
 
-        public SaveBinsToClipboard() {
-        }
-
         @Override
         public String getName() {
             return "Histogram View: Save Bins To Clipboard";
@@ -770,9 +761,6 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
      */
     @PluginInfo(pluginType = PluginType.NONE, tags = {"MODIFY"})
     private class ExpandSelection extends SimpleEditPlugin {
-
-        public ExpandSelection() {
-        }
 
         @Override
         public String getName() {
