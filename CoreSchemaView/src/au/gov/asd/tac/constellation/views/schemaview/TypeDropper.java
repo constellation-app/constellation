@@ -107,7 +107,7 @@ public class TypeDropper implements GraphDropper {
     /**
      * Plugin to help once the type had been dropped on a vertex
      */
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
     public static class TypeDropperPlugin extends SimpleEditPlugin {
 
         final String data;
