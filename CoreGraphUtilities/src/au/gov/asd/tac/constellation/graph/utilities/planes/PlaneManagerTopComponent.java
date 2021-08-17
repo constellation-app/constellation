@@ -484,7 +484,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
     /**
      * Plugin to update the plane visibility on the graph.
      */
-    @PluginInfo(pluginType = PluginType.VIEW, tags = {"VIEW"})
+    @PluginInfo(pluginType = PluginType.VIEW, tags = {"MODIFY"})
     private static class UpdatePlaneVisibilityPlugin extends SimpleEditPlugin {
 
         private final BitSet visibleLayers;
@@ -515,7 +515,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
     /**
      * Plugin to import the plane on the graph.
      */
-    @PluginInfo(pluginType = PluginType.VIEW, tags = {"VIEW"})
+    @PluginInfo(pluginType = PluginType.VIEW, tags = {"IMPORT"})
     private static class ImportPlanePlugin extends SimpleEditPlugin {
 
         private final File f;
@@ -577,7 +577,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
     /**
      * Plugin to remove the plane from the graph.
      */
-    @PluginInfo(pluginType = PluginType.VIEW, tags = {"VIEW"})
+    @PluginInfo(pluginType = PluginType.VIEW, tags = {"DELETE"})
     private static class RemovePlanePlugin extends SimpleEditPlugin {
 
         final List<Integer> toRemove;
@@ -611,7 +611,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
     /**
      * Plugin to set the plane position on the graph.
      */
-    @PluginInfo(pluginType = PluginType.VIEW, tags = {"VIEW"})
+    @PluginInfo(pluginType = PluginType.VIEW, tags = {"MODIFY"})
     private static class SetPlanePositionPlugin extends SimpleEditPlugin {
 
         final PlanePositionPanel ppp;
@@ -690,7 +690,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
     /**
      * Plugin to scale the plane on the graph.
      */
-    @PluginInfo(pluginType = PluginType.VIEW, tags = {"VIEW"})
+    @PluginInfo(pluginType = PluginType.VIEW, tags = {"MODIFY"})
     private static class ScalePlanesPlugin extends SimpleEditPlugin {
 
         final List<Integer> selectedPlanes;
