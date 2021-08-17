@@ -420,7 +420,7 @@ public class TableViewUtilities {
      * graph change event, we can check to see if it was this plugin that did
      * the changes. If it was, we don't have to change the table.
      */
-    @PluginInfo(pluginType = PluginType.SELECTION, tags = {"MODIFY", "SELECT"})
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
     private static class SelectionToGraphPlugin extends SimpleEditPlugin {
 
         private final TableView<ObservableList<String>> table;
@@ -456,7 +456,7 @@ public class TableViewUtilities {
     /**
      * Write the given TableViewState to the graph.
      */
-    @PluginInfo(tags = {"LOW LEVEL"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
     public static class UpdateStatePlugin extends SimpleEditPlugin {
 
         private final TableViewState tableViewState;

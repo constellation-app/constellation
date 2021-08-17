@@ -36,7 +36,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("DeleteSelectionPlugin=Delete Selection")
-@PluginInfo(pluginType = PluginType.DELETE, tags = {"DELETE", "MODIFY"})
+@PluginInfo(pluginType = PluginType.DELETE, tags = {"DELETE"})
 public class DeleteSelectionPlugin extends SimpleEditPlugin {
 
     @Override
