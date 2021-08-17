@@ -24,7 +24,9 @@ import static au.gov.asd.tac.constellation.graph.schema.visual.utilities.BlazeUt
 import static au.gov.asd.tac.constellation.graph.schema.visual.utilities.BlazeUtilities.VERTEX_IDS_PARAMETER_ID;
 import static au.gov.asd.tac.constellation.graph.schema.visual.utilities.BlazeUtilities.VERTEX_ID_PARAMETER_ID;
 import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType;
@@ -50,6 +52,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages("AddCustomBlazePlugin=Add Custom Blazes")
+@PluginInfo(pluginType = PluginType.CREATE, tags = {"CREATE"})
 public class AddCustomBlazePlugin extends SimpleEditPlugin {
 
     @Override
