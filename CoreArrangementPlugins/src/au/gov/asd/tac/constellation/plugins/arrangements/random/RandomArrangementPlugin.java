@@ -37,7 +37,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("RandomArrangementPlugin=Arrange Randomly")
-@PluginInfo(minLogInterval = 5000, pluginType = PluginType.DISPLAY, tags = {"LOW LEVEL"})
+@PluginInfo(minLogInterval = 5000, pluginType = PluginType.DISPLAY, tags = {"MODIFY"})
 public class RandomArrangementPlugin extends SimpleEditPlugin {
 
     public static final String DIMENSIONS_PARAMETER_ID = PluginParameter.buildId(RandomArrangementPlugin.class, "dimensions");

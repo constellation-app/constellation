@@ -15,12 +15,14 @@
  */
 package au.gov.asd.tac.constellation.graph.file.open;
 
-import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
@@ -40,36 +42,11 @@ import org.openide.windows.WindowManager;
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("OpenFilePlugin=Open File")
-public class OpenFilePlugin extends SimpleEditPlugin {
+@PluginInfo(pluginType = PluginType.IMPORT, tags = {"LOW LEVEL"})
+public class OpenFilePlugin extends SimpleReadPlugin {
 
     private boolean running;
     private static File currentDirectory = null;
-
-    @Override
-    protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-        SwingUtilities.invokeLater(() -> {
-            if (running) {
-                return;
-            }
-            try {
-                running = true;
-                final JFileChooser chooser = prepareFileChooser();
-                final File[] files;
-                try {
-                    files = chooseFilesToOpen(chooser);
-                    OpenFilePlugin.setCurrentDirectory(chooser.getCurrentDirectory());
-                    currentDirectory = chooser.getCurrentDirectory();
-                } catch (final UserCancelException ex) {
-                    return;
-                }
-                for (int i = 0; i < files.length; i++) {
-                    OpenFile.openFile(files[i], -1);
-                }
-            } finally {
-                running = false;
-            }
-        });
-    }
 
     private static void setCurrentDirectory(final File currentDir) {
         currentDirectory = currentDir;
@@ -98,7 +75,8 @@ public class OpenFilePlugin extends SimpleEditPlugin {
      *
      * @param chooser file chooser to display
      * @return array of selected files,
-     * @exception org.openide.util.UserCancelException if the user cancelled the operation
+     * @exception org.openide.util.UserCancelException if the user cancelled the
+     * operation
      */
     public static File[] chooseFilesToOpen(final JFileChooser chooser)
             throws UserCancelException {
@@ -134,5 +112,31 @@ public class OpenFilePlugin extends SimpleEditPlugin {
             currentDirectory = new File(System.getProperty("user.home"));
         }
         return currentDirectory;
+    }
+
+    @Override
+    protected void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+        SwingUtilities.invokeLater(() -> {
+            if (running) {
+                return;
+            }
+            try {
+                running = true;
+                final JFileChooser chooser = prepareFileChooser();
+                final File[] files;
+                try {
+                    files = chooseFilesToOpen(chooser);
+                    OpenFilePlugin.setCurrentDirectory(chooser.getCurrentDirectory());
+                    currentDirectory = chooser.getCurrentDirectory();
+                } catch (final UserCancelException ex) {
+                    return;
+                }
+                for (int i = 0; i < files.length; i++) {
+                    OpenFile.openFile(files[i], -1);
+                }
+            } finally {
+                running = false;
+            }
+        });
     }
 }

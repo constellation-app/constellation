@@ -24,7 +24,6 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
-import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalConstants;
@@ -238,7 +237,7 @@ public class ClusteringManager {
         public void exclusionStateNotify(final long vxModCount, final long txModCount);
     }
 
-    @PluginInfo(pluginType = PluginType.NONE, tags = {"LOW LEVEL"})
+    @PluginInfo(tags = {"MODIFY"})
     public final class InitDimOrHidePlugin extends SimplePlugin {
 
         final String dateTimeAttr;
@@ -403,7 +402,7 @@ public class ClusteringManager {
         }
     }
 
-    @PluginInfo(pluginType = PluginType.NONE, tags = {"LOW LEVEL"})
+    @PluginInfo(tags = {"MODIFY"})
     public final class UpdateDimOrHidePlugin extends SimplePlugin {
 
         final long lowerTimeExtent;

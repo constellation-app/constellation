@@ -18,25 +18,28 @@ package au.gov.asd.tac.constellation.plugins.arrangements;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Manage the unpinning of vertex positions. A vertex  with its PINNED
- * attribute set to true will be ignored (even if selected) when an arrangement
- * plugin is run. This plugin sets the value to false for selected vertexes.
- * 
+ * Manage the unpinning of vertex positions. A vertex with its PINNED attribute
+ * set to true will be ignored (even if selected) when an arrangement plugin is
+ * run. This plugin sets the value to false for selected vertexes.
+ *
  * @author serpens24
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages({
     "UnpinVertexPositionsPlugin=Unpin position of selected vertexes"
 })
+@PluginInfo(pluginType = PluginType.DISPLAY, tags = {"MODIFY"})
 public class UnpinVertexPositionsPlugin extends SimpleEditPlugin {
-  
+
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
 
@@ -51,5 +54,5 @@ public class UnpinVertexPositionsPlugin extends SimpleEditPlugin {
                 }
             }
         }
-    } 
+    }
 }
