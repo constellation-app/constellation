@@ -26,7 +26,7 @@ import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import static au.gov.asd.tac.constellation.views.dataaccess.templates.RecordStoreDropper.RECORD_STORE_FLAVOR;
-import au.gov.asd.tac.constellation.views.dataaccess.templates.RecordStoreDropper.RecordStoreDropperRecordStoreQueryPlugin;
+import au.gov.asd.tac.constellation.views.dataaccess.templates.RecordStoreDropper.RecordStoreDropperToGraphPlugin;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DropTargetDropEvent;
@@ -96,7 +96,7 @@ public class RecordStoreDropperNGTest {
     }
 
     @Test
-    public void testRecordStoreDropperQueryPlugin() throws InterruptedException, PluginException {
+    public void testRecordStoreDropperToGraphPlugin() throws InterruptedException, PluginException {
         final PluginInteraction interaction = mock(PluginInteraction.class);
         final PluginParameters parameters = mock(PluginParameters.class);
 
@@ -110,7 +110,7 @@ public class RecordStoreDropperNGTest {
         recordStore.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, "foo");
         recordStore.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, "bar");
 
-        final RecordStoreDropperRecordStoreQueryPlugin plugin = new RecordStoreDropperRecordStoreQueryPlugin(recordStore);
+        final RecordStoreDropperToGraphPlugin plugin = new RecordStoreDropperToGraphPlugin(recordStore);
         final RecordStore expResult = plugin.query(recordStore, interaction, parameters);
 
         assertEquals(recordStore, expResult);

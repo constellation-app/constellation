@@ -123,7 +123,7 @@ public class TSVDropper implements GraphDropper {
 
                 if (!badData && recordStore.size() > 0) {
                     return (graph, dropInfo) -> {
-                        PluginExecution.withPlugin(new TSVDropperRecordStoreQueryPlugin(recordStore, files)).executeLater(graph);
+                        PluginExecution.withPlugin(new TSVDropperToGraphPlugin(recordStore, files)).executeLater(graph);
                     };
                 }
             } catch (final UnsupportedFlavorException | IOException ex) {
@@ -135,18 +135,18 @@ public class TSVDropper implements GraphDropper {
     }
 
     @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
-    public static class TSVDropperRecordStoreQueryPlugin extends RecordStoreQueryPlugin {
+    public static class TSVDropperToGraphPlugin extends RecordStoreQueryPlugin {
 
         private final RecordStore recordStore;
         private final List<File> files;
 
-        public TSVDropperRecordStoreQueryPlugin(final RecordStore recordStore, final List<File> files) {
+        public TSVDropperToGraphPlugin(final RecordStore recordStore, final List<File> files) {
             this.recordStore = recordStore;
             this.files = files;
         }
 
         @Override
-        protected RecordStore query(RecordStore query, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+        protected RecordStore query(final RecordStore query, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
             ConstellationLoggerHelper.importPropertyBuilder(
                     this,
                     recordStore.getAll(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL),
@@ -158,7 +158,7 @@ public class TSVDropper implements GraphDropper {
 
         @Override
         public String getName() {
-            return "TSV Dropper Record Store Query Plugin";
+            return "Drag and Drop: TSV File to Graph";
         }
 
     }

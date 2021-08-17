@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.views.dataaccess.templates.TSVDropper.TSVDropperToGraphPlugin;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -71,6 +72,9 @@ public class TSVDropperNGTest {
 
     /**
      * Test of drop method, of class TSVDropper.
+     *
+     * @throws java.awt.datatransfer.UnsupportedFlavorException
+     * @throws java.io.IOException
      */
     @Test
     public void dropWithValidTsv() throws UnsupportedFlavorException, IOException {
@@ -97,6 +101,9 @@ public class TSVDropperNGTest {
 
     /**
      * Test of drop method, of class TSVDropper.
+     *
+     * @throws java.awt.datatransfer.UnsupportedFlavorException
+     * @throws java.io.IOException
      */
     @Test
     public void dropWithValidTsvCompressed() throws UnsupportedFlavorException, IOException {
@@ -123,6 +130,9 @@ public class TSVDropperNGTest {
 
     /**
      * Test of drop method, of class TSVDropper.
+     *
+     * @throws java.awt.datatransfer.UnsupportedFlavorException
+     * @throws java.io.IOException
      */
     @Test
     public void dropWithInvalidDataFlavour() throws UnsupportedFlavorException, IOException {
@@ -142,7 +152,7 @@ public class TSVDropperNGTest {
     }
 
     @Test
-    public void testTSVDropperRecordStoreQueryPlugin() throws InterruptedException, PluginException {
+    public void testTSVDropperToGraphPlugin() throws InterruptedException, PluginException {
         final PluginInteraction interaction = mock(PluginInteraction.class);
         final PluginParameters parameters = mock(PluginParameters.class);
 
@@ -160,7 +170,7 @@ public class TSVDropperNGTest {
         final List<File> files = new ArrayList<>();
         files.add(file);
 
-        final TSVDropper.TSVDropperRecordStoreQueryPlugin plugin = new TSVDropper.TSVDropperRecordStoreQueryPlugin(recordStore, files);
+        final TSVDropperToGraphPlugin plugin = new TSVDropperToGraphPlugin(recordStore, files);
         final RecordStore expResult = plugin.query(recordStore, interaction, parameters);
 
         assertEquals(recordStore, expResult);
