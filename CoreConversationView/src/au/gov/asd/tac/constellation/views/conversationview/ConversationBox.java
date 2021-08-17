@@ -32,6 +32,7 @@ import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
 import au.gov.asd.tac.constellation.views.conversationview.state.ConversationState;
 import au.gov.asd.tac.constellation.views.conversationview.state.ConversationViewConcept;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -477,12 +478,12 @@ public final class ConversationBox extends StackPane {
      * Plugin to update hidden contribution providers.
      */
     @PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
-    private static class UpdateHiddenContributorProviders extends SimpleEditPlugin {
+    private class UpdateHiddenContributorProviders extends SimpleEditPlugin {
 
-        private final Boolean visible;
+        private final boolean visible;
         private final String contributionProviderName;
 
-        public UpdateHiddenContributorProviders(final Boolean visible, final String contributionProviderName) {
+        public UpdateHiddenContributorProviders(final boolean visible, final String contributionProviderName) {
             this.visible = visible;
             this.contributionProviderName = contributionProviderName;
         }
@@ -514,12 +515,12 @@ public final class ConversationBox extends StackPane {
      * Plugin to update sender attributes.
      */
     @PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
-    private static class UpdateSenderAttributes extends SimpleEditPlugin {
+    private class UpdateSenderAttributes extends SimpleEditPlugin {
 
         private final List<String> senderAttributes;
 
         public UpdateSenderAttributes(final List<String> senderAttributes) {
-            this.senderAttributes = senderAttributes;
+            this.senderAttributes = Collections.unmodifiableList(senderAttributes);
         }
 
         @Override
