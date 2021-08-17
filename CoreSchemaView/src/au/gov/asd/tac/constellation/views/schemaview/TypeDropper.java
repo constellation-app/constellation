@@ -110,9 +110,9 @@ public class TypeDropper implements GraphDropper {
     @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
     public static class TypeDropperPlugin extends SimpleEditPlugin {
 
-        final String data;
-        final DropInfo dropInfo;
-        final Graph graph;
+        private final String data;
+        private final DropInfo dropInfo;
+        private final Graph graph;
 
         public TypeDropperPlugin(final String data, final DropInfo dropInfo, final Graph graph) {
             this.data = data;
