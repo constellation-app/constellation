@@ -52,7 +52,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages("AddCustomBlazePlugin=Add Custom Blazes")
-@PluginInfo(pluginType = PluginType.CREATE, tags = {"CREATE"})
+@PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
 public class AddCustomBlazePlugin extends SimpleEditPlugin {
 
     @Override
