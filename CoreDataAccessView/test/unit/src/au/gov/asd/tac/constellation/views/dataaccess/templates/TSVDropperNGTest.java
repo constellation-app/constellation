@@ -15,6 +15,15 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.templates;
 
+import au.gov.asd.tac.constellation.graph.StoreGraph;
+import au.gov.asd.tac.constellation.graph.processing.GraphRecordStore;
+import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
+import au.gov.asd.tac.constellation.graph.processing.RecordStore;
+import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -132,4 +141,28 @@ public class TSVDropperNGTest {
         assertEquals(result, expResult);
     }
 
+    @Test
+    public void testTSVDropperRecordStoreQueryPlugin() throws InterruptedException, PluginException {
+        final PluginInteraction interaction = mock(PluginInteraction.class);
+        final PluginParameters parameters = mock(PluginParameters.class);
+
+        final StoreGraph graph = new StoreGraph(new AnalyticSchemaFactory().createSchema());
+        VisualConcept.VertexAttribute.X.ensure(graph);
+        VisualConcept.VertexAttribute.Y.ensure(graph);
+        VisualConcept.VertexAttribute.Z.ensure(graph);
+
+        final RecordStore recordStore = new GraphRecordStore();
+        recordStore.add();
+        recordStore.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, "foo");
+        recordStore.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, "bar");
+
+        final File file = new File(TSVDropperNGTest.class.getResource("./resources/sample.tsv").getFile());
+        final List<File> files = new ArrayList<>();
+        files.add(file);
+
+        final TSVDropper.TSVDropperRecordStoreQueryPlugin plugin = new TSVDropper.TSVDropperRecordStoreQueryPlugin(recordStore, files);
+        final RecordStore expResult = plugin.query(recordStore, interaction, parameters);
+
+        assertEquals(recordStore, expResult);
+    }
 }

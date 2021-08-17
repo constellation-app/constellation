@@ -123,18 +123,7 @@ public class TSVDropper implements GraphDropper {
 
                 if (!badData && recordStore.size() > 0) {
                     return (graph, dropInfo) -> {
-                        PluginExecution.withPlugin(new RecordStoreQueryPlugin("Drag and Drop: TSV File to Graph") {
-                            @Override
-                            protected RecordStore query(final RecordStore query, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                                ConstellationLoggerHelper.importPropertyBuilder(
-                                        this,
-                                        recordStore.getAll(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL),
-                                        files,
-                                        ConstellationLoggerHelper.SUCCESS
-                                );
-                                return recordStore;
-                            }
-                        }).executeLater(graph);
+                        PluginExecution.withPlugin(new TSVDropperRecordStoreQueryPlugin(recordStore, files)).executeLater(graph);
                     };
                 }
             } catch (final UnsupportedFlavorException | IOException ex) {
@@ -143,5 +132,34 @@ public class TSVDropper implements GraphDropper {
         }
 
         return null;
+    }
+
+    @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
+    public static class TSVDropperRecordStoreQueryPlugin extends RecordStoreQueryPlugin {
+
+        private final RecordStore recordStore;
+        private final List<File> files;
+
+        public TSVDropperRecordStoreQueryPlugin(final RecordStore recordStore, final List<File> files) {
+            this.recordStore = recordStore;
+            this.files = files;
+        }
+
+        @Override
+        protected RecordStore query(RecordStore query, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+            ConstellationLoggerHelper.importPropertyBuilder(
+                    this,
+                    recordStore.getAll(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL),
+                    files,
+                    ConstellationLoggerHelper.SUCCESS
+            );
+            return recordStore;
+        }
+
+        @Override
+        public String getName() {
+            return "TSV Dropper Record Store Query Plugin";
+        }
+
     }
 }

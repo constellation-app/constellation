@@ -15,12 +15,18 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.templates;
 
+import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStore;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
 import au.gov.asd.tac.constellation.graph.processing.RecordStoreUtilities;
+import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import static au.gov.asd.tac.constellation.views.dataaccess.templates.RecordStoreDropper.RECORD_STORE_FLAVOR;
+import au.gov.asd.tac.constellation.views.dataaccess.templates.RecordStoreDropper.RecordStoreDropperRecordStoreQueryPlugin;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DropTargetDropEvent;
@@ -30,6 +36,7 @@ import java.io.InputStream;
 import java.util.function.BiConsumer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -65,6 +72,9 @@ public class RecordStoreDropperNGTest {
 
     /**
      * Test of drop method, of class RecordStoreDropper.
+     *
+     * @throws java.awt.datatransfer.UnsupportedFlavorException
+     * @throws java.io.IOException
      */
     @Test
     public void testDrop() throws UnsupportedFlavorException, IOException {
@@ -83,6 +93,27 @@ public class RecordStoreDropperNGTest {
 
         // TODO: would like to be able to test more than not null
         assertNotEquals(result, expResult);
+    }
+
+    @Test
+    public void testRecordStoreDropperQueryPlugin() throws InterruptedException, PluginException {
+        final PluginInteraction interaction = mock(PluginInteraction.class);
+        final PluginParameters parameters = mock(PluginParameters.class);
+
+        final StoreGraph graph = new StoreGraph(new AnalyticSchemaFactory().createSchema());
+        VisualConcept.VertexAttribute.X.ensure(graph);
+        VisualConcept.VertexAttribute.Y.ensure(graph);
+        VisualConcept.VertexAttribute.Z.ensure(graph);
+
+        final RecordStore recordStore = new GraphRecordStore();
+        recordStore.add();
+        recordStore.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, "foo");
+        recordStore.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, "bar");
+
+        final RecordStoreDropperRecordStoreQueryPlugin plugin = new RecordStoreDropperRecordStoreQueryPlugin(recordStore);
+        final RecordStore expResult = plugin.query(recordStore, interaction, parameters);
+
+        assertEquals(recordStore, expResult);
     }
 
     private InputStream getRecordStoreAsStream() throws IOException {
