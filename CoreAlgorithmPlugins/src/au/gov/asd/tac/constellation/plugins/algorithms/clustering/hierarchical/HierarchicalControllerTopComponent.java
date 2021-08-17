@@ -856,7 +856,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                 }
                 verticesToPath.add(group.getVertex());
             }
-            final ArrayList<Integer> verticesToPathList = new ArrayList<>(verticesToPath);
+            final List<Integer> verticesToPathList = new ArrayList<>(verticesToPath);
             final DijkstraServices ds = new DijkstraServices(graph, verticesToPathList, false);
             ds.queryPaths(true);
         }
