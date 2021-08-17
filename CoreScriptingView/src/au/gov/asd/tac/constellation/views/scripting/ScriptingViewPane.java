@@ -417,7 +417,7 @@ public class ScriptingViewPane extends JPanel {
         }
     }
 
-    @PluginInfo(pluginType = PluginType.CREATE, tags = {"CREATE"})
+    @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
     public static class LoadScriptPlugin extends SimplePlugin {
 
         final JFileChooser fileChooser;
