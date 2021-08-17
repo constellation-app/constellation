@@ -27,7 +27,9 @@ import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -189,10 +191,40 @@ public class AddRecordStore extends RestService {
     }
 
     private static void addToGraph(final Graph graph, final RecordStore recordStore, final boolean completeWithSchema, final String arrange, final boolean resetView) {
-        final Plugin p = new SimpleEditPlugin("Import from REST API") {
-            @Override
-            protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-                GraphRecordStoreUtilities.addRecordStoreToGraph(graph, recordStore, false, completeWithSchema, null);
+        final Plugin p = new ImportFromRestApiPlugin(recordStore, completeWithSchema, arrange);
+
+        PluginExecutor pe = PluginExecutor.startWith(p);
+
+        if (resetView) {
+            pe = pe.followedBy(InteractiveGraphPluginRegistry.RESET_VIEW);
+        }
+
+        try {
+            pe.executeNow(graph);
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            throw new RestServiceException(ex);
+        } catch (final PluginException ex) {
+            throw new RestServiceException(ex);
+        }
+    }
+    
+    @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
+    private static class ImportFromRestApiPlugin extends SimpleEditPlugin {
+        
+        private final RecordStore recordStore;
+        private final boolean completeWithSchema;
+        private final String arrange;
+        
+        public ImportFromRestApiPlugin(final RecordStore recordStore, final boolean completeWithSchema, final String arrange) {
+            this.recordStore = recordStore;
+            this.completeWithSchema = completeWithSchema;
+            this.arrange = arrange;
+        }
+
+        @Override
+        protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            GraphRecordStoreUtilities.addRecordStoreToGraph(graph, recordStore, false, completeWithSchema, null);
 
                 // Do the optional arrangement inside this anonymous "addRecordStoreToGraph" plugin.
                 // This way, any extra nodes are added and arranged in one go.
@@ -216,22 +248,7 @@ public class AddRecordStore extends RestService {
                 } catch (final PluginException ex) {
                     Exceptions.printStackTrace(ex);
                 }
-            }
-        };
-
-        PluginExecutor pe = PluginExecutor.startWith(p);
-
-        if (resetView) {
-            pe = pe.followedBy(InteractiveGraphPluginRegistry.RESET_VIEW);
         }
-
-        try {
-            pe.executeNow(graph);
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-            throw new RestServiceException(ex);
-        } catch (final PluginException ex) {
-            throw new RestServiceException(ex);
-        }
-    }
+        
+    } 
 }
