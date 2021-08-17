@@ -115,7 +115,7 @@ public class OpenFilePlugin extends SimpleReadPlugin {
     }
 
     @Override
-    protected void read(GraphReadMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+    protected void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         SwingUtilities.invokeLater(() -> {
             if (running) {
                 return;
