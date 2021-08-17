@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -64,6 +65,7 @@ public class ScoreToColorTranslator extends AbstractColorTranslator<ScoreResult,
                 .executeLater(GraphManager.getDefault().getActiveGraph());
     }
 
+    @PluginInfo(tags = {"MODIFY"})
     private class ColorElementsPlugin extends SimpleEditPlugin {
 
         protected static final String RESET_PARAMETER_ID = "ColorElementsPlugin.reset";

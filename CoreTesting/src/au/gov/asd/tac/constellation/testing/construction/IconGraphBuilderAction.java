@@ -21,7 +21,9 @@ import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegi
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
@@ -59,12 +61,7 @@ public class IconGraphBuilderAction extends AbstractAction {
     @Override
     public void actionPerformed(final ActionEvent e) {
         final Graph graph = context.getGraph();
-        PluginExecutor.startWith(new SimpleEditPlugin("Build Icon Graph") {
-            @Override
-            public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-                IconGraph.makeGraph(graph);
-            }
-        }).followedBy(ArrangementPluginRegistry.GRID_COMPOSITE)
+        PluginExecutor.startWith(new BuildIconGraphPlugin()).followedBy(ArrangementPluginRegistry.GRID_COMPOSITE)
                 .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW).executeWriteLater(graph);
     }
 
@@ -96,4 +93,23 @@ public class IconGraphBuilderAction extends AbstractAction {
             }
         }
     }
+
+    /**
+     * Plugin to create an icon graph
+     */
+    @PluginInfo(pluginType = PluginType.CREATE, tags = {"CREATE", "EXPERIMENTAL"})
+    public static class BuildIconGraphPlugin extends SimpleEditPlugin {
+
+        @Override
+        public String getName() {
+            return "Build Icon Graph";
+        }
+
+        @Override
+        public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+            IconGraph.makeGraph(graph);
+        }
+
+    }
+
 }
