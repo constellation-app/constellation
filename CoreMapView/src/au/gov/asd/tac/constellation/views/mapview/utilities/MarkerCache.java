@@ -174,16 +174,16 @@ public abstract class MarkerCache extends ObjectCache<ConstellationAbstractMarke
         assert !SwingUtilities.isEventDispatchThread();
 
         // clear cache of cluster markers
-        final Set<ConstellationAbstractMarker> oldClusterMarkers = CACHE.keySet().stream()
+        final Set<ConstellationAbstractMarker> oldClusterMarkers = cache.keySet().stream()
                 .filter(marker -> (marker instanceof ConstellationClusterMarker))
                 .collect(Collectors.toSet());
-        oldClusterMarkers.forEach(marker -> CACHE.remove(marker));
+        oldClusterMarkers.forEach(marker -> cache.remove(marker));
 
         final Set<ConstellationClusterMarker> clusterMarkers = new HashSet<>();
         if (markerState.isShowClusterMarkers()) {
             // generate points for clusters
             final Map<DoublePoint, List<ConstellationAbstractMarker>> markerPoints = new HashMap<>();
-            CACHE.keySet().forEach(marker -> {
+            cache.keySet().forEach(marker -> {
                 final DoublePoint point = new DoublePoint(
                         new double[]{
                             map.getScreenPosition(marker.getLocation()).x,

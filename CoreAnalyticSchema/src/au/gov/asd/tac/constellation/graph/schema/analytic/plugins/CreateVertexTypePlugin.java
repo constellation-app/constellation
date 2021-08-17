@@ -47,7 +47,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author algol
  */
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(pluginType = PluginType.CREATE, tags = {"SCHEMA", "TYPE", "VERTEX"})
+@PluginInfo(pluginType = PluginType.CREATE, tags = {"CREATE"})
 @Messages("CreateVertexTypePlugin=Create Vertex Type")
 public class CreateVertexTypePlugin extends SimpleEditPlugin {
 
