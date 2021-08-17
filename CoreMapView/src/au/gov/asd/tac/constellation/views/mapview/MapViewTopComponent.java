@@ -519,7 +519,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
     }
 
     public void selectOnGraph(final GraphElementType graphElementType, final Set<Integer> elementIds) {
-        PluginExecution.withPlugin(new SelectOnGraphPlugin(graphElementType, elementIds)).executeLater(getCurrentGraph());;
+        PluginExecution.withPlugin(new SelectOnGraphPlugin(graphElementType, elementIds)).executeLater(getCurrentGraph());
     }
 
     @Override
@@ -588,8 +588,8 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
     @PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
     public static class SelectOnGraphPlugin extends SimpleEditPlugin {
 
-        final GraphElementType graphElementType;
-        final Set<Integer> elementIds;
+        private final GraphElementType graphElementType;
+        private final Set<Integer> elementIds;
 
         public SelectOnGraphPlugin(final GraphElementType graphElementType, final Set<Integer> elementIds) {
             this.graphElementType = graphElementType;
@@ -598,31 +598,31 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
 
         @Override
         public String getName() {
-            return "Select on Graph";
+            return MapViewTopComponent.UPDATE_SELECTION_PLUGIN;
         }
 
         @Override
         protected void edit(GraphWriteMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
             switch (graphElementType) {
-                    case VERTEX:
-                        final int vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
-                        final int vertexCount = graph.getVertexCount();
-                        for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
-                            final int vertexId = graph.getVertex(vertexPosition);
-                            graph.setBooleanValue(vertexSelectedAttribute, vertexId, elementIds.contains(vertexId));
-                        }
-                        break;
-                    case TRANSACTION:
-                        final int transactionSelectedAttribute = VisualConcept.TransactionAttribute.SELECTED.get(graph);
-                        final int transactionCount = graph.getTransactionCount();
-                        for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
-                            final int transactionId = graph.getTransaction(transactionPosition);
-                            graph.setBooleanValue(transactionSelectedAttribute, transactionId, elementIds.contains(transactionId));
-                        }
-                        break;
-                    default:
-                        break;
-                }
+                case VERTEX:
+                    final int vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
+                    final int vertexCount = graph.getVertexCount();
+                    for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
+                        final int vertexId = graph.getVertex(vertexPosition);
+                        graph.setBooleanValue(vertexSelectedAttribute, vertexId, elementIds.contains(vertexId));
+                    }
+                    break;
+                case TRANSACTION:
+                    final int transactionSelectedAttribute = VisualConcept.TransactionAttribute.SELECTED.get(graph);
+                    final int transactionCount = graph.getTransactionCount();
+                    for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
+                        final int transactionId = graph.getTransaction(transactionPosition);
+                        graph.setBooleanValue(transactionSelectedAttribute, transactionId, elementIds.contains(transactionId));
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
 
     }
