@@ -20,7 +20,9 @@ import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
@@ -154,7 +156,8 @@ public class CopyDataToClipboard implements ActionListener, Action {
     /**
      * Copy all rows and specified columns to the clipboard.
      *
-     * @param attrsegs A List of AttributeSegment instances corresponding to the columns to be copied.
+     * @param attrsegs A List of AttributeSegment instances corresponding to the
+     * columns to be copied.
      * @param includeHeader True to include column headers in the copy.
      */
     void processAllRows(final List<AttributeSegment> attrsegs, boolean includeHeader) throws IOException {
@@ -163,7 +166,8 @@ public class CopyDataToClipboard implements ActionListener, Action {
     }
 
     /**
-     * Copy the table to the clipboard in a format that Word is able to understand.
+     * Copy the table to the clipboard in a format that Word is able to
+     * understand.
      *
      *
      */
@@ -291,7 +295,8 @@ public class CopyDataToClipboard implements ActionListener, Action {
     /**
      * Copy selected rows and specified columns to the clipboard.
      *
-     * @param attrsegs A List of AttributeSegment instances corresponding to the columns to be copied.
+     * @param attrsegs A List of AttributeSegment instances corresponding to the
+     * columns to be copied.
      * @param includeHeader True to include column headers in the copy.
      */
     void processSelectedRows(final ArrayList<AttributeSegment> attrsegs, boolean includeHeader) throws IOException {
@@ -390,19 +395,15 @@ public class CopyDataToClipboard implements ActionListener, Action {
         }
 
         final int count = auditCounter;
-
-        PluginExecution.withPlugin(new SimplePlugin("Copy To Clipboard") {
-            @Override
-            protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                ConstellationLoggerHelper.copyPropertyBuilder(this, count, ConstellationLoggerHelper.SUCCESS);
-            }
-        }).executeLater(null);
+        PluginExecution.withPlugin(new CopyToClipBoardPlugin(count)).executeLater(null);
     }
 
     /**
-     * Gets the indices of columns based on the AttributeSegment for that column.
+     * Gets the indices of columns based on the AttributeSegment for that
+     * column.
      *
-     * @param attrsegs A List of AttributeSegment instances corresponding to columns.
+     * @param attrsegs A List of AttributeSegment instances corresponding to
+     * columns.
      *
      * @return The indices that correspond to the columns with names provided.
      */
@@ -454,9 +455,11 @@ public class CopyDataToClipboard implements ActionListener, Action {
     }
 
     /**
-     * An array of length table.getRowCount() containing 0, 1, 2,... representing all rows in the table.
+     * An array of length table.getRowCount() containing 0, 1, 2,...
+     * representing all rows in the table.
      *
-     * @return An array of length table.getRowCount() containing 0, 1, 2,... representing all rows in the table.
+     * @return An array of length table.getRowCount() containing 0, 1, 2,...
+     * representing all rows in the table.
      */
     private int[] allRows() {
         final int[] rowIndices = new int[table.getRowCount()];
@@ -502,5 +505,28 @@ public class CopyDataToClipboard implements ActionListener, Action {
      */
     public void setMousePosition(final Point MousePosition) {
         this.mousePosition = MousePosition;
+    }
+
+    /**
+     * Plugin to copy to clipboard.
+     */
+    @PluginInfo(pluginType = PluginType.COPY, tags = {"EXPORT"})
+    protected static class CopyToClipBoardPlugin extends SimplePlugin {
+
+        private final int count;
+
+        protected CopyToClipBoardPlugin(final int count) {
+            this.count = count;
+        }
+
+        @Override
+        public String getName() {
+            return "Table View: Copy To Clipboard";
+        }
+
+        @Override
+        protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            ConstellationLoggerHelper.copyPropertyBuilder(this, count, ConstellationLoggerHelper.SUCCESS);
+        }
     }
 }
