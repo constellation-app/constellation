@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -43,6 +44,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author procyon
  */
 @ServiceProvider(service = Plugin.class)
+@PluginInfo(tags = {"ANALYTIC"})
 @Messages("DirectedShortestPathsPlugin=Directed Shortest Paths")
 public class DirectedShortestPathsPlugin extends SimpleEditPlugin {
 

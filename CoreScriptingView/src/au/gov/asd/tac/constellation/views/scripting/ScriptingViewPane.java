@@ -21,8 +21,10 @@ import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginRegistry;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.importexport.text.ExportToTextPlugin;
 import au.gov.asd.tac.constellation.plugins.parameters.DefaultPluginParameters;
@@ -278,32 +280,7 @@ public class ScriptingViewPane extends JPanel {
 
         final int state = fileChooser.showOpenDialog(this);
         if (state == JFileChooser.APPROVE_OPTION) {
-            PluginExecution.withPlugin(new SimplePlugin("Scripting View: Load Script") {
-                @Override
-                protected void execute(final PluginGraphs _graphs, final PluginInteraction _interaction, final PluginParameters _parameters) throws InterruptedException, PluginException {
-                    try {
-                        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(
-                                new FileInputStream(fileChooser.getSelectedFile()), StandardCharsets.UTF_8.name()))) {
-                            final StringBuilder b = new StringBuilder();
-                            while (true) {
-                                final String s = reader.readLine();
-                                if (s == null) {
-                                    break;
-                                }
-                                b.append(s).append(SeparatorConstants.NEWLINE);
-                            }
-
-                            SwingUtilities.invokeLater(() -> {
-                                setScriptFile(fileChooser.getSelectedFile());
-                                scriptEditor.setText(b.toString());
-                            });
-                        }
-                    } catch (final IOException ex) {
-                        Exceptions.printStackTrace(ex);
-                    }
-                }
-            }).executeLater(null);
-
+            PluginExecution.withPlugin(new LoadScriptPlugin(fileChooser, scriptEditor, this)).executeLater(null);
         }
     }
 
@@ -439,4 +416,49 @@ public class ScriptingViewPane extends JPanel {
             DialogDisplayer.getDefault().notify(notifyDescriptor);
         }
     }
+
+    @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
+    public static class LoadScriptPlugin extends SimplePlugin {
+
+        final JFileChooser fileChooser;
+        final RSyntaxTextArea scriptEditor;
+        final ScriptingViewPane pane;
+
+        public LoadScriptPlugin(final JFileChooser fileChooser, final RSyntaxTextArea scriptEditor, final ScriptingViewPane pane) {
+            this.fileChooser = fileChooser;
+            this.scriptEditor = scriptEditor;
+            this.pane = pane;
+        }
+
+        @Override
+        public String getName() {
+            return "Scripting View: Load Script";
+        }
+
+        @Override
+        protected void execute(final PluginGraphs _graphs, final PluginInteraction _interaction, final PluginParameters _parameters) throws InterruptedException, PluginException {
+            try {
+                try (final BufferedReader reader = new BufferedReader(new InputStreamReader(
+                        new FileInputStream(fileChooser.getSelectedFile()), StandardCharsets.UTF_8.name()))) {
+                    final StringBuilder b = new StringBuilder();
+                    while (true) {
+                        final String s = reader.readLine();
+                        if (s == null) {
+                            break;
+                        }
+                        b.append(s).append(SeparatorConstants.NEWLINE);
+                    }
+
+                    SwingUtilities.invokeLater(() -> {
+                        pane.setScriptFile(fileChooser.getSelectedFile());
+                        scriptEditor.setText(b.toString());
+                    });
+                }
+            } catch (final IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+
+    }
+
 }
