@@ -15,6 +15,11 @@
  */
 package au.gov.asd.tac.constellation.views.layers;
 
+import au.gov.asd.tac.constellation.views.layers.LayersViewController.AddAttributesPlugin;
+import au.gov.asd.tac.constellation.views.layers.LayersViewController.CaptureListenedAttributesPlugin;
+import au.gov.asd.tac.constellation.views.layers.LayersViewController.LayersStateReaderPlugin;
+import au.gov.asd.tac.constellation.views.layers.LayersViewController.LayersStateWriterPlugin;
+import au.gov.asd.tac.constellation.views.layers.LayersViewController.UpdateQueryPlugin;
 import au.gov.asd.tac.constellation.views.layers.shortcut.DeselectAllLayersPlugin;
 import au.gov.asd.tac.constellation.views.layers.shortcut.EnableLayerPlugin;
 import au.gov.asd.tac.constellation.views.layers.shortcut.NewLayerPlugin;
@@ -37,5 +42,12 @@ public final class LayersPluginRegistry {
     public static final String ENABLE_LAYER = EnableLayerPlugin.class.getName();
     public static final String NEW_LAYER = NewLayerPlugin.class.getName();
 
-    // 
+    // Controller
+    public static final String ADD_ATTRIBUTES = AddAttributesPlugin.class.getName();
+    public static final String CAPTURE_LISTENED_ATTRIBUTES = CaptureListenedAttributesPlugin.class.getName();
+    public static final String UPDATE_QUERY = UpdateQueryPlugin.class.getName();
+
+    // State
+    public static final String STATE_WRITER = LayersStateWriterPlugin.class.getName();
+    public static final String STATE_READER = LayersStateReaderPlugin.class.getName();
 }

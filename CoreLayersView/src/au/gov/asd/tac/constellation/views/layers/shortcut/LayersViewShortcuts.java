@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.layers.shortcut;
 
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.views.layers.LayersPluginRegistry;
 import au.gov.asd.tac.constellation.views.layers.LayersViewController;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQueryCollection;
 import au.gov.asd.tac.constellation.views.layers.utilities.LayersUtilities;
@@ -74,7 +75,7 @@ public class LayersViewShortcuts extends AbstractAction {
         final Future<?> future = LayersViewController.getDefault().writeState();
 
         try {
-            if(future != null){
+            if (future != null) {
                 future.get();
             }
         } catch (final InterruptedException ex) {
@@ -95,10 +96,10 @@ public class LayersViewShortcuts extends AbstractAction {
         final String hotkey = e.getActionCommand();
         switch (hotkey) {
             case "CA-L":
-                PluginExecution.withPlugin(new NewLayerPlugin()).executeLater(GraphManager.getDefault().getActiveGraph());
+                PluginExecution.withPlugin(LayersPluginRegistry.NEW_LAYER).executeLater(GraphManager.getDefault().getActiveGraph());
                 break;
             case "CA-D":
-                final Future<?> deselectFuture = PluginExecution.withPlugin(new DeselectAllLayersPlugin()).executeLater(GraphManager.getDefault().getActiveGraph());
+                final Future<?> deselectFuture = PluginExecution.withPlugin(LayersPluginRegistry.DESELECT_ALL_LAYERS).executeLater(GraphManager.getDefault().getActiveGraph());
                 try {
                     deselectFuture.get();
                 } catch (final InterruptedException ex) {
