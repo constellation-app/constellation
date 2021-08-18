@@ -18,7 +18,9 @@ package au.gov.asd.tac.constellation.views.find;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.ArrayList;
@@ -30,6 +32,7 @@ import java.util.regex.Pattern;
  *
  * @author twinkle2_little
  */
+@PluginInfo(pluginType = PluginType.SEARCH, tags = {"SEARCH", "MODIFY"})
 public class ReplacePlugin extends SimpleEditPlugin {
 
     private final GraphElementType elementType;

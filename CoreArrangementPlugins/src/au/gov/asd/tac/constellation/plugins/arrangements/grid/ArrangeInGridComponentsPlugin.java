@@ -39,7 +39,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("ArrangeInGridComponentsPlugin=Arrange Components in Grid")
-@PluginInfo(minLogInterval = 5000, pluginType = PluginType.DISPLAY, tags = {"LOW LEVEL"})
+@PluginInfo(minLogInterval = 5000, pluginType = PluginType.DISPLAY, tags = {"MODIFY"})
 public class ArrangeInGridComponentsPlugin extends SimpleEditPlugin {
 
     @Override

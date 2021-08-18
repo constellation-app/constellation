@@ -17,9 +17,10 @@ package au.gov.asd.tac.constellation.plugins.algorithms.clustering.chinesewhispe
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.algorithms.AlgorithmPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusterUtilities;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusteringConcept;
@@ -58,18 +59,30 @@ public class ChineseWhispersAction extends AbstractAction {
     @Override
     public void actionPerformed(final ActionEvent e) {
         PluginExecutor.startWith(AlgorithmPluginRegistry.CLUSTER_CHINESE_WHISPERS)
-                // When the clustering is done, make the graph look nice.
-                .followedBy(new SimpleEditPlugin("Chinese Whispers: Cleanup") {
-                    @Override
-                    protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                        // When the clustering is done, make the graph look nice.
-                        final int clusterId = ClusteringConcept.VertexAttribute.CHINESE_WHISPERS_CLUSTER.ensure(graph);
-                        final int vxColorId = ClusteringConcept.VertexAttribute.CHINESE_WHISPERS_COLOR.ensure(graph);
-                        final int txColorId = ClusteringConcept.TransactionAttribute.CHINESE_WHISPERS_COLOR.ensure(graph);
-                        ClusterUtilities.colorClusters(graph, clusterId, vxColorId, txColorId);
-                        ClusterUtilities.explodeGraph(graph, clusterId);
-                    }
-                })
+                .followedBy(new ChineseWhispersCleanupPlugin())
                 .executeWriteLater(context.getGraph());
+    }
+
+    /**
+     * Color the clusters and arrange graph after clustering has been performed.
+     */
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+    public static class ChineseWhispersCleanupPlugin extends SimpleEditPlugin {
+
+        @Override
+        public String getName() {
+            return "Chinese Whispers: Cleanup";
+        }
+
+        @Override
+        public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+            // When the clustering is done, make the graph look nice.
+            final int clusterId = ClusteringConcept.VertexAttribute.CHINESE_WHISPERS_CLUSTER.ensure(graph);
+            final int vxColorId = ClusteringConcept.VertexAttribute.CHINESE_WHISPERS_COLOR.ensure(graph);
+            final int txColorId = ClusteringConcept.TransactionAttribute.CHINESE_WHISPERS_COLOR.ensure(graph);
+            ClusterUtilities.colorClusters(graph, clusterId, vxColorId, txColorId);
+            ClusterUtilities.explodeGraph(graph, clusterId);
+        }
+
     }
 }

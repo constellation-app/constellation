@@ -38,7 +38,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages("UncollidePlugin=Uncollide")
-@PluginInfo(minLogInterval = 5000, pluginType = PluginType.DISPLAY, tags = {"LOW LEVEL"})
+@PluginInfo(minLogInterval = 5000, pluginType = PluginType.DISPLAY, tags = {"MODIFY"})
 public class UncollidePlugin extends SimpleEditPlugin {
 
     public static final String DIMENSION_PARAMETER_ID = PluginParameter.buildId(UncollidePlugin.class, "dimension");

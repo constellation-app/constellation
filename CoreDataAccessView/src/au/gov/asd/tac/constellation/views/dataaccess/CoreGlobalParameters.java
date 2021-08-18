@@ -37,7 +37,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class CoreGlobalParameters extends GlobalParameters {
 
     private static List<PositionalPluginParameter> CORE_GLOBAL_PARAMETER_IDS = null;
-    private static final DateTimeFormatter TIMESTAMP_FORMAT = DateTimeFormatter
+    protected static final DateTimeFormatter TIMESTAMP_FORMAT = DateTimeFormatter
             .ofPattern("yyyy-MM-dd HH:mm:ss z").withZone(ZoneId.systemDefault());
 
     /**
@@ -65,7 +65,7 @@ public class CoreGlobalParameters extends GlobalParameters {
         return CORE_GLOBAL_PARAMETER_IDS;
     }
 
-    private List<PositionalPluginParameter> buildParameterList(final PluginParameters previous) {
+    protected List<PositionalPluginParameter> buildParameterList(final PluginParameters previous) {
         final PluginParameter<StringParameterValue> queryNameParameter = QUERY_NAME_PARAMETER;
         queryNameParameter.setName("Query Name");
         queryNameParameter.setDescription("A reference name for the query");
@@ -82,7 +82,7 @@ public class CoreGlobalParameters extends GlobalParameters {
         return positionalPluginParametersList;
     }
 
-    private void updateParameterList(final PluginParameters previous) {
+    protected void updateParameterList(final PluginParameters previous) {
         @SuppressWarnings("unchecked") //QUERY_NAME_PARAMETER will always be of type StringParameter
         final PluginParameter<StringParameterValue> queryNameParameter = (PluginParameter<StringParameterValue>) CORE_GLOBAL_PARAMETER_IDS.get(QUERY_NAME_PARAMETER_ID_INDEX).getParameter();
         queryNameParameter.setStringValue(String.format("%s at %s", System.getProperty("user.name"), TIMESTAMP_FORMAT.format(Instant.now())));

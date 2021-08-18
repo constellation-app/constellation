@@ -49,8 +49,8 @@ import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Allows an image object or an image file to be dropped onto the graph. The currently selected vertices will have their
- * icon changed to show the image.
+ * Allows an image object or an image file to be dropped onto the graph. The
+ * currently selected vertices will have their icon changed to show the image.
  *
  * @author sirius
  */
@@ -107,30 +107,7 @@ public class ImageIconDropper implements GraphDropper {
                     final String iconName = loadDraggedImage(resultImage);
                     if (iconName != null) {
 
-                        PluginExecution.withPlugin(new SimpleEditPlugin("Set Vertex Icons") {
-
-                            @Override
-                            protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                                int selectedAttr = VisualConcept.VertexAttribute.SELECTED.get(graph);
-                                int iconAttr = VisualConcept.VertexAttribute.FOREGROUND_ICON.get(graph);
-                                if (selectedAttr != Graph.NOT_FOUND && iconAttr != Graph.NOT_FOUND) {
-
-                                    GraphIndexResult selectionResult = GraphIndexUtilities.filterElements(graph, selectedAttr, true);
-                                    int vertex = selectionResult.getNextElement();
-                                    while (vertex != Graph.NOT_FOUND) {
-                                        graph.setStringValue(iconAttr, vertex, iconName);
-                                        vertex = selectionResult.getNextElement();
-                                    }
-                                }
-                                ConstellationLoggerHelper.importPropertyBuilder(
-                                        this,
-                                        Arrays.asList(iconName),
-                                        null,
-                                        ConstellationLoggerHelper.SUCCESS
-                                );
-                            }
-
-                        }).interactively(true).executeLater(graph);
+                        PluginExecution.withPlugin(new SetVertexIconsPlugin(iconName)).interactively(true).executeLater(graph);
                     }
                 };
             }
@@ -164,5 +141,46 @@ public class ImageIconDropper implements GraphDropper {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             return null;
         }
+    }
+
+    /**
+     * Plugin to add the required Layers View attributes.
+     */
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+    public static class SetVertexIconsPlugin extends SimpleEditPlugin {
+
+        final String iconName;
+
+        public SetVertexIconsPlugin(final String iconName) {
+            this.iconName = iconName;
+
+        }
+
+        @Override
+        public String getName() {
+            return "Set Vertex Icons";
+        }
+
+        @Override
+        protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            int selectedAttr = VisualConcept.VertexAttribute.SELECTED.get(graph);
+            int iconAttr = VisualConcept.VertexAttribute.FOREGROUND_ICON.get(graph);
+            if (selectedAttr != Graph.NOT_FOUND && iconAttr != Graph.NOT_FOUND) {
+
+                GraphIndexResult selectionResult = GraphIndexUtilities.filterElements(graph, selectedAttr, true);
+                int vertex = selectionResult.getNextElement();
+                while (vertex != Graph.NOT_FOUND) {
+                    graph.setStringValue(iconAttr, vertex, iconName);
+                    vertex = selectionResult.getNextElement();
+                }
+            }
+            ConstellationLoggerHelper.importPropertyBuilder(
+                    this,
+                    Arrays.asList(iconName),
+                    null,
+                    ConstellationLoggerHelper.SUCCESS
+            );
+        }
+
     }
 }

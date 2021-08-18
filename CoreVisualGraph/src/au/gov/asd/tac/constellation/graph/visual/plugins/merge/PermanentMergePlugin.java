@@ -20,7 +20,9 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
@@ -49,6 +51,7 @@ import org.openide.util.lookup.ServiceProvider;
     "PermanentMergePlugin=Merge Nodes Plugin",
     "ErrorInsufficientItems=There must be at least 2 nodes selected to perform a merge."
 })
+@PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
 public class PermanentMergePlugin extends SimpleEditPlugin implements HelpCtx.Provider {
 
     public static final String PRIMARY_NODE_PARAMETER_ID = PluginParameter.buildId(PermanentMergePlugin.class, "primary_vertex_id");
@@ -132,7 +135,8 @@ public class PermanentMergePlugin extends SimpleEditPlugin implements HelpCtx.Pr
     }
 
     /**
-     * Create a new vertex and populate its attributes with the ones selected by the user
+     * Create a new vertex and populate its attributes with the ones selected by
+     * the user
      *
      * @param graph containing the created vertex
      * @param attributes set of selected attributes

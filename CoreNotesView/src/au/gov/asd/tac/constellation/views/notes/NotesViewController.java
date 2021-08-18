@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
@@ -66,9 +67,7 @@ public class NotesViewController {
             return;
         }
 
-        PluginExecution.withPlugin(
-                new NotesViewStateReader(pane)
-        ).executeLater(graph);
+        PluginExecution.withPlugin(new NotesViewStateReader(pane)).executeLater(graph);
     }
 
     /**
@@ -83,15 +82,13 @@ public class NotesViewController {
             return;
         }
 
-        PluginExecution.withPlugin(
-                new NotesViewStateWriter(pane.getNotes(), pane.getFilters())
-        ).executeLater(graph);
+        PluginExecution.withPlugin(new NotesViewStateWriter(pane.getNotes(), pane.getFilters(), pane.getTagsFilters())).executeLater(graph);
     }
 
     /**
      * Read the current state from the graph.
      */
-    @PluginInfo(tags = {"LOW LEVEL"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"EXPERIMENTAL", "LOW LEVEL"})
     public static final class NotesViewStateReader extends SimpleReadPlugin {
 
         private final NotesViewPane pane;
@@ -130,15 +127,17 @@ public class NotesViewController {
     /**
      * Write the current state to the graph.
      */
-    @PluginInfo(tags = {"LOW LEVEL"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"EXPERIMENTAL", "LOW LEVEL"})
     private static final class NotesViewStateWriter extends SimpleEditPlugin {
 
         private final List<NotesViewEntry> notes;
         private final List<String> filters;
+        private final List<String> tagsFilters;
 
-        public NotesViewStateWriter(final List<NotesViewEntry> notes, final List<String> filters) {
+        public NotesViewStateWriter(final List<NotesViewEntry> notes, final List<String> filters, final List<String> tagsFilters) {
             this.notes = notes;
             this.filters = filters;
+            this.tagsFilters = tagsFilters;
         }
 
         @Override
@@ -153,6 +152,7 @@ public class NotesViewController {
             final NotesViewState newState = currentState == null ? new NotesViewState() : new NotesViewState(currentState);
             newState.setNotes(notes);
             newState.setFilters(filters);
+            newState.setTagsFilters(tagsFilters);
 
             graph.setObjectValue(stateAttributeId, 0, newState);
         }

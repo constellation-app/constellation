@@ -50,7 +50,7 @@ public class JDBCImportWelcomePlugin implements WelcomePluginInterface {
      */
     @Override
     public String getName() {
-        return "Import JDBC Welcome";
+        return "Import Database Welcome";
     }
 
     /**
@@ -91,7 +91,7 @@ public class JDBCImportWelcomePlugin implements WelcomePluginInterface {
         importImage.setFitHeight(75);
         importImage.setFitWidth(75);
         final Label imTitle = new Label("Import");
-        final Label imSubtitle = new Label("JDBC Importer");
+        final Label imSubtitle = new Label("Database Importer");
         imSubtitle.setId("smallInfoText");
         final VBox layoutVBox = new VBox(importImage, imTitle, imSubtitle);
         layoutVBox.setAlignment(Pos.CENTER);

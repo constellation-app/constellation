@@ -19,8 +19,10 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
+import au.gov.asd.tac.constellation.graph.operations.SetFloatValuesOperation;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
@@ -68,7 +70,7 @@ import java.util.stream.Collectors;
 @PluginInfo(minLogInterval = 5000, pluginType = PluginType.SEARCH, tags = {"SEARCH"})
 public abstract class RecordStoreQueryPlugin extends SimpleQueryPlugin {
 
-    protected final String PLUGIN_NAME = getName();
+    protected final String pluginName = getName();
 
     protected RecordStore queryRecordStore;
     private RecordStore result = null;
@@ -80,11 +82,11 @@ public abstract class RecordStoreQueryPlugin extends SimpleQueryPlugin {
     /**
      * Base constructor for all implementations of RecordStoreQueryPlugin
      */
-    public RecordStoreQueryPlugin() {
+    protected RecordStoreQueryPlugin() {
         this(null);
     }
 
-    public RecordStoreQueryPlugin(String pluginName) {
+    protected RecordStoreQueryPlugin(String pluginName) {
         super(pluginName);
         validators = new ArrayList<>();
     }
@@ -193,10 +195,24 @@ public abstract class RecordStoreQueryPlugin extends SimpleQueryPlugin {
             if (!newVertices.isEmpty()) {
                 final PluginExecutor arrangement = completionArrangement();
                 if (arrangement != null) {
+                    final float[] xOriginal = new float[wg.getVertexCount()];
+                    final float[] yOriginal = new float[wg.getVertexCount()];
+                    final float[] zOriginal = new float[wg.getVertexCount()];
+
+                    // save original positions
+                    if (wg.isRecordingEdit()) {
+                        saveOriginalPositionCoordinates(wg, xOriginal, yOriginal, zOriginal);
+                    }
+
                     // run the arrangement
                     final VertexListInclusionGraph vlGraph = new VertexListInclusionGraph(wg, Connections.NONE, newVertices);
                     arrangement.executeNow(vlGraph.getInclusionGraph());
                     vlGraph.retrieveCoords();
+
+                    // restore the original positions
+                    if (wg.isRecordingEdit()) {
+                        restoreOriginalPositionCoordinates(wg, xOriginal, yOriginal, zOriginal);
+                    }
                 }
             }
 
@@ -308,4 +324,71 @@ public abstract class RecordStoreQueryPlugin extends SimpleQueryPlugin {
         return Collections.unmodifiableList(validators);
     }
 
+    /**
+     * Save the original position coordinates so that they can be restored.
+     *
+     * @param wg The graph
+     * @param xOriginal Float array to store the x positions, indexed by
+     * position
+     * @param yOriginal Float array to store the y positions, indexed by
+     * position
+     * @param zOriginal Float array to store the z positions, indexed by
+     * position
+     */
+    private void saveOriginalPositionCoordinates(final GraphWriteMethods wg, final float[] xOriginal, final float[] yOriginal, final float[] zOriginal) {
+        final int xAttr = VisualConcept.VertexAttribute.X.ensure(wg);
+        final int yAttr = VisualConcept.VertexAttribute.Y.ensure(wg);
+        final int zAttr = VisualConcept.VertexAttribute.Z.ensure(wg);
+
+        final int vertexCount = wg.getVertexCount();
+        for (int position = 0; position < vertexCount; position++) {
+            final int vxId = wg.getVertex(position);
+            xOriginal[position] = wg.getFloatValue(xAttr, vxId);
+            yOriginal[position] = wg.getFloatValue(yAttr, vxId);
+            zOriginal[position] = wg.getFloatValue(zAttr, vxId);
+        }
+    }
+
+    /**
+     * Restore the original position coordinates.
+     * <p>
+     * Note that if the original position is 0,0,0 then its not going to be
+     * restored because we don't want the graphics card to crash.
+     *
+     * @param wg The graph
+     * @param xOriginal Float array to store the x positions, indexed by
+     * position
+     * @param yOriginal Float array to store the y positions, indexed by
+     * position
+     * @param zOriginal Float array to store the z positions, indexed by
+     * position
+     */
+    private void restoreOriginalPositionCoordinates(final GraphWriteMethods wg, final float[] xOriginal, final float[] yOriginal, final float[] zOriginal) {
+        final int xAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
+        final int yAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
+        final int zAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
+
+        final SetFloatValuesOperation setXOperation = new SetFloatValuesOperation(wg, GraphElementType.VERTEX, xAttr);
+        final SetFloatValuesOperation setYOperation = new SetFloatValuesOperation(wg, GraphElementType.VERTEX, yAttr);
+        final SetFloatValuesOperation setZOperation = new SetFloatValuesOperation(wg, GraphElementType.VERTEX, zAttr);
+
+        final int vxCount = wg.getVertexCount();
+        for (int position = 0; position < vxCount; position++) {
+            final int vxId = wg.getVertex(position);
+            if (xOriginal[position] != 0) {
+                setXOperation.setValue(vxId, xOriginal[position]);
+            }
+            if (yOriginal[position] != 0) {
+                setYOperation.setValue(vxId, yOriginal[position]);
+            }
+            if (zOriginal[position] != 0) {
+                setZOperation.setValue(vxId, zOriginal[position]);
+            }
+        }
+
+        // restore the x,y,z float values efficiently
+        wg.executeGraphOperation(setXOperation);
+        wg.executeGraphOperation(setYOperation);
+        wg.executeGraphOperation(setZOperation);
+    }
 }

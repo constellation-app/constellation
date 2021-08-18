@@ -33,7 +33,9 @@ import au.gov.asd.tac.constellation.graph.visual.graphics.BBoxf;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -73,6 +75,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = Plugin.class)
 })
 @Messages("SphereGraphBuilderPlugin=Sphere Graph Builder")
+@PluginInfo(pluginType = PluginType.NONE, tags = {"EXPERIMENTAL", "CREATE"})
 public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
 
     public static final String N_PARAMETER_ID = PluginParameter.buildId(SphereGraphBuilderPlugin.class, "n");
@@ -257,7 +260,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         final List<GraphLabel> topLabels = new ArrayList<>();
         final List<GraphLabel> transactionLabels = new ArrayList<>();
         if (useLabels) {
-            bottomLabels.add(new GraphLabel(VisualConcept.VertexAttribute.IDENTIFIER.getName(), ConstellationColor.LIGHT_BLUE));
+            bottomLabels.add(new GraphLabel(VisualConcept.VertexAttribute.IDENTIFIER.getName(), ConstellationColor.WHITE));
             bottomLabels.add(new GraphLabel(VisualConcept.VertexAttribute.FOREGROUND_ICON.getName(), ConstellationColor.DARK_GREEN, 0.5f));
             topLabels.add(new GraphLabel(AnalyticConcept.VertexAttribute.TYPE.getName(), ConstellationColor.MAGENTA, 0.5f));
             topLabels.add(new GraphLabel(SpatialConcept.VertexAttribute.COUNTRY.getName(), ConstellationColor.DARK_ORANGE, 0.5f));

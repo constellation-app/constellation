@@ -16,12 +16,15 @@
 
 package au.gov.asd.tac.constellation.graph.file.open;
 
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.prefs.Preferences;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 
+import org.openide.util.NbPreferences;
 
 /**
  * Get the recent files for the welcome page 
@@ -35,6 +38,7 @@ public class RecentFilesWelcomePage {
     static final List<String> fileNames = new ArrayList<>();
     
     
+    private static final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
     private RecentFilesWelcomePage() {
     }
     
@@ -72,6 +76,16 @@ public class RecentFilesWelcomePage {
             final File f = new File(path);
             final File nf = FileUtil.normalizeFile(f);
             OpenFile.open(FileUtil.toFileObject(nf), -1);
-        } 
-    }  
+            saveCurrentDirectory(path);
+        }
+    }
+
+    private static void saveCurrentDirectory(final String path) {
+        final String lastFileOpenAndSaveLocation = prefs.get(ApplicationPreferenceKeys.FILE_OPEN_AND_SAVE_LOCATION, "");
+        final boolean rememberOpenAndSaveLocation = prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
+
+        if (!lastFileOpenAndSaveLocation.equals(path) && rememberOpenAndSaveLocation) {
+            prefs.put(ApplicationPreferenceKeys.FILE_OPEN_AND_SAVE_LOCATION, path);
+        }
+    }
 }

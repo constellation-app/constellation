@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.conversationview;
 
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import javafx.application.Platform;
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -64,8 +65,8 @@ import org.openide.windows.TopComponent;
 })
 public final class ConversationViewTopComponent extends JavaFxTopComponent<ConversationBox> {
 
-    private Conversation conversation = new Conversation();
-    private ConversationBox conversationBox;
+    private final Conversation conversation = new Conversation();
+    private final ConversationBox conversationBox;
 
     public ConversationViewTopComponent() {
         initComponents();
@@ -75,6 +76,60 @@ public final class ConversationViewTopComponent extends JavaFxTopComponent<Conve
         conversationBox = new ConversationBox(conversation);
         conversation.getGraphUpdateManager().setManaged(true);
         initContent();
+    }
+
+    @Override
+    protected void handleComponentOpened() {
+        super.handleComponentOpened();
+        conversation.getGraphUpdateManager().setManaged(true);
+    }
+
+    @Override
+    protected void handleComponentClosed() {
+        super.handleComponentClosed();
+        conversation.getGraphUpdateManager().setManaged(false);
+    }
+
+    @Override
+    protected void componentActivated() {
+        conversation.getGraphUpdateManager().setManaged(needsUpdate());
+    }
+
+    @Override
+    protected void componentDeactivated() {
+        conversation.getGraphUpdateManager().setManaged(needsUpdate());
+    }
+
+    @Override
+    protected void handleGraphOpened(final Graph graph) {
+        if (needsUpdate() && graph != null) {
+            conversationBox.refreshCountUI(false);
+        }
+    }
+
+    @Override
+    protected void handleGraphClosed(final Graph graph) {
+        if (needsUpdate() && graph != null) {
+            conversationBox.refreshCountUI(true);
+        }
+    }
+
+    void writeProperties(java.util.Properties p) {
+        // Required for @ConvertAsProperties
+    }
+
+    void readProperties(java.util.Properties p) {
+        // Required for @ConvertAsProperties
+    }
+
+    @Override
+    protected String createStyle() {
+        return "resources/conversation.css";
+    }
+
+    @Override
+    protected ConversationBox createContent() {
+        return conversationBox;
     }
 
     /**
@@ -99,43 +154,4 @@ public final class ConversationViewTopComponent extends JavaFxTopComponent<Conve
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
-    @Override
-    protected void handleComponentOpened() {
-        super.handleComponentOpened();
-        conversation.getGraphUpdateManager().setManaged(true);
-    }
-
-    @Override
-    protected void handleComponentClosed() {
-        super.handleComponentClosed();
-        conversation.getGraphUpdateManager().setManaged(false);
-    }
-
-    @Override
-    protected void componentActivated() {
-        conversation.getGraphUpdateManager().setManaged(needsUpdate());
-    }
-
-    @Override
-    protected void componentDeactivated() {
-        conversation.getGraphUpdateManager().setManaged(needsUpdate());
-    }
-
-    void writeProperties(java.util.Properties p) {
-        // Required for @ConvertAsProperties
-    }
-
-    void readProperties(java.util.Properties p) {
-        // Required for @ConvertAsProperties
-    }
-
-    @Override
-    protected String createStyle() {
-        return "resources/conversation.css";
-    }
-
-    @Override
-    protected ConversationBox createContent() {
-        return conversationBox;
-    }
 }

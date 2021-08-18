@@ -41,7 +41,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author algol
  */
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(pluginType = PluginType.CREATE, tags = {"SCHEMA", "TYPE", "TRANSACTION"})
+@PluginInfo(pluginType = PluginType.CREATE, tags = {"CREATE"})
 @Messages("CreateTransactionTypePlugin=Create Transaction Type")
 public class CreateTransactionTypePlugin extends SimpleEditPlugin {
 

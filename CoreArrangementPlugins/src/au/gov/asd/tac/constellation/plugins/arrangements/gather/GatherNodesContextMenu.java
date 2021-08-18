@@ -23,7 +23,9 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.visual.contextmenu.ContextMenuProvider;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
@@ -63,31 +65,13 @@ public class GatherNodesContextMenu implements ContextMenuProvider {
         switch (elementType) {
 
             case GRAPH:
-                PluginExecution.withPlugin(new SimpleEditPlugin(Bundle.GatherNodesContextMenu()) {
-                    @Override
-                    public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                        final BitSet gathers = selectedVertexBits(graph);
-
-                        PluginExecution.withPlugin(ArrangementPluginRegistry.GATHER_NODES_IN_GRAPH)
-                                .withParameter(GatherNodesInGraphPlugin.XYZ_PARAMETER_ID, unprojected)
-                                .withParameter(GatherNodesInGraphPlugin.GATHERS_PARAMETER_ID, gathers)
-                                .executeNow(graph);
-                    }
-                }).executeLater(graph);
+                PluginExecution.withPlugin(new GatherNodesForGraphContextMenuPlugin(unprojected))
+                        .executeLater(graph);
                 break;
 
             case VERTEX:
-                PluginExecution.withPlugin(new SimpleEditPlugin(Bundle.GatherNodesContextMenu()) {
-                    @Override
-                    public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                        final BitSet gathers = selectedVertexBits(graph);
-
-                        PluginExecution.withPlugin(ArrangementPluginRegistry.GATHER_NODES)
-                                .withParameter(GatherNodesPlugin.VXID_PARAMETER_ID, element)
-                                .withParameter(GatherNodesPlugin.GATHERS_PARAMETER_ID, gathers)
-                                .executeNow(graph);
-                    }
-                }).executeLater(graph);
+                PluginExecution.withPlugin(new GatherNodesForVertexContextMenuPlugin(element))
+                        .executeLater(graph);
                 break;
             default:
                 break;
@@ -101,7 +85,7 @@ public class GatherNodesContextMenu implements ContextMenuProvider {
      *
      * @return A BitSet where selected vertex ids in the graph are set.
      */
-    private BitSet selectedVertexBits(final GraphReadMethods graph) {
+    private static BitSet selectedVertexBits(final GraphReadMethods graph) {
         final int selectedAttributeId = graph.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
         final int vertexCount = graph.getVertexCount();
         final BitSet vertexBits = new BitSet();
@@ -114,5 +98,57 @@ public class GatherNodesContextMenu implements ContextMenuProvider {
         }
 
         return vertexBits;
+    }
+
+    @PluginInfo(pluginType = PluginType.DISPLAY, tags = {"MODIFY"})
+    public static class GatherNodesForGraphContextMenuPlugin extends SimpleEditPlugin {
+
+        final Vector3f unprojected;
+
+        public GatherNodesForGraphContextMenuPlugin(final Vector3f unprojected) {
+            this.unprojected = unprojected;
+        }
+
+        @Override
+        protected void edit(GraphWriteMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+            final BitSet gathers = selectedVertexBits(graph);
+
+            PluginExecution.withPlugin(ArrangementPluginRegistry.GATHER_NODES_IN_GRAPH)
+                    .withParameter(GatherNodesInGraphPlugin.XYZ_PARAMETER_ID, unprojected)
+                    .withParameter(GatherNodesInGraphPlugin.GATHERS_PARAMETER_ID, gathers)
+                    .executeNow(graph);
+        }
+
+        @Override
+        public String getName() {
+            return "Gather Nodes For Graph Context Menu";
+        }
+
+    }
+
+    @PluginInfo(pluginType = PluginType.DISPLAY, tags = {"MODIFY"})
+    public static class GatherNodesForVertexContextMenuPlugin extends SimpleEditPlugin {
+
+        private final int element;
+
+        public GatherNodesForVertexContextMenuPlugin(final int element) {
+            this.element = element;
+        }
+
+        @Override
+        protected void edit(GraphWriteMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+            final BitSet gathers = selectedVertexBits(graph);
+
+            PluginExecution.withPlugin(ArrangementPluginRegistry.GATHER_NODES)
+                    .withParameter(GatherNodesPlugin.VXID_PARAMETER_ID, element)
+                    .withParameter(GatherNodesPlugin.GATHERS_PARAMETER_ID, gathers)
+                    .executeNow(graph);
+        }
+
+        @Override
+        public String getName() {
+            return "Gather Nodes For Vertex Context Menu";
+        }
+
     }
 }

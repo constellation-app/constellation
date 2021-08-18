@@ -74,28 +74,31 @@
         
         <h2>Quality Control Categories</h2>
         <p>
-            There are five levels of quality control categories for nodes that are selected.
+            There are six levels of quality control categories for nodes that are selected.
         </p>
         <ul>
-            <li><em>FATAL</em> - 
-                Any node which is specifically disallowed (whether it be disallowed for queries,
-                or simply should not be in your graph) will have a black background, and may be
-                blocked from further analysis.
+            <li><em>CRITICAL</em> - 
+                Any node which is specifically disallowed (whether it be disallowed for queries, or 
+                simply should not be in your graph) will have a dark red background, and may be blocked 
+                from further analysis.
             </li>
             <li><em>SEVERE</em> - 
                 Any node which is considered of particularly bad quality will have a red background,
                 but will never be blocked.
             </li>
-            <li><em>WARNING</em> -  
-                Any node which is considered of very questionable quality will have a purple background.
+            <li><em>MAJOR</em> -  
+                Any node which is considered of very questionable quality will have an orange background.
             </li>
-            <li><em>INFO</em> -  
-                Any node which is considered of questionable quality will have a blue background.
+            <li><em>MEDIUM</em> -  
+                Any node which is considered of questionable quality will have a yellow background.
             </li>
-            <li><em>DEFAULT</em> - 
-                Any node which is considered of good quality will have a white background. This
-                does not mean that these nodes are necessarily of high quality, only that no
-                quality control rules matched - such nodes require manual checking by the user.
+            <li><em>MINOR</em> -  
+                Any node which is considered of slightly questionable quality will have a blue background.
+            </li>
+            <li><em>OK</em> - 
+                Any node which is considered of good quality will have a green background. This does not 
+                mean that these nodes are necessarily of high quality, only that no quality control rules 
+                matched - such nodes require manual checking by the user.
             </li>
         </ul>
 

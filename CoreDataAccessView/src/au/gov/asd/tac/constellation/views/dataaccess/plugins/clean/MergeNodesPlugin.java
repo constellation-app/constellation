@@ -26,8 +26,10 @@ import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaPluginRegist
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -62,6 +64,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = DataAccessPlugin.class),
     @ServiceProvider(service = Plugin.class)})
 @Messages("MergeNodesPlugin=Merge Nodes")
+@PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
 public class MergeNodesPlugin extends SimpleQueryPlugin implements DataAccessPlugin {
 
     public static final String MERGE_TYPE_PARAMETER_ID = PluginParameter.buildId(MergeNodesPlugin.class, "merge_type");
@@ -90,7 +93,7 @@ public class MergeNodesPlugin extends SimpleQueryPlugin implements DataAccessPlu
         return "Merge nodes in your graph together";
     }
 
-    private static final Comparator<String> LONGEST_VERTEX_CHOOSER = (String o1, String o2) -> {
+    protected static final Comparator<String> LONGEST_VERTEX_CHOOSER = (String o1, String o2) -> {
         if (o1.length() > o2.length()) {
             return -1;
         } else if (o1.length() < o2.length()) {
@@ -100,7 +103,7 @@ public class MergeNodesPlugin extends SimpleQueryPlugin implements DataAccessPlu
         }
     };
 
-    private static final Comparator<String> SHORTEST_VERTEX_CHOOSER = (String o1, String o2) -> {
+    protected static final Comparator<String> SHORTEST_VERTEX_CHOOSER = (String o1, String o2) -> {
         if (o1.length() > o2.length()) {
             return 1;
         } else if (o1.length() < o2.length()) {

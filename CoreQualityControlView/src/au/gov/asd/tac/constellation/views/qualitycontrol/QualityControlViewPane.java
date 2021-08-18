@@ -24,7 +24,9 @@ import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
@@ -690,6 +692,7 @@ public final class QualityControlViewPane extends BorderPane {
     /**
      * Delete nodes in a graph matching rows selected in QualityControlView.
      */
+    @PluginInfo(pluginType = PluginType.DELETE, tags = {"DELETE"})
     protected static class DeleteQualityControlEvents extends SimpleEditPlugin {
 
         private final List<QualityControlEvent> qualitycontrolEvents;
@@ -722,6 +725,7 @@ public final class QualityControlViewPane extends BorderPane {
      * Selects on the graph only nodes which have a corresponding selected
      * QualityControlEvent.
      */
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
     protected static class SelectQualityControlEvents extends SimpleEditPlugin {
 
         private final List<QualityControlEvent> qualitycontrolEvents;
@@ -768,6 +772,7 @@ public final class QualityControlViewPane extends BorderPane {
      * Selects on the graph only nodes which do not have a corresponding
      * selected QualityControlEvent.
      */
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
     protected static class DeselectQualityControlEvents extends SimpleEditPlugin {
 
         private final List<QualityControlEvent> qualitycontrolEvents;
@@ -807,6 +812,7 @@ public final class QualityControlViewPane extends BorderPane {
      * Zoom the camera of the Graph to the extents of nodes corresponding to any
      * selected QualityControlEvent.
      */
+    @PluginInfo(pluginType = PluginType.VIEW, tags = {"VIEW"})
     private static class ZoomToQualityControlEvents extends SimpleEditPlugin {
 
         private final List<QualityControlEvent> qualitycontrolEvents;
