@@ -86,18 +86,7 @@ public class RecordStoreDropper implements GraphDropper {
 
                             if (recordStore != null) {
                                 return (graph, dropInfo) -> {
-                                    PluginExecution.withPlugin(new RecordStoreQueryPlugin("Drag and Drop: RecordStore To Graph") {
-                                        @Override
-                                        protected RecordStore query(final RecordStore query, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                                            ConstellationLoggerHelper.importPropertyBuilder(
-                                                    this,
-                                                    recordStore.getAll(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL),
-                                                    null,
-                                                    ConstellationLoggerHelper.SUCCESS
-                                            );
-                                            return recordStore;
-                                        }
-                                    }).executeLater(graph);
+                                    PluginExecution.withPlugin(new RecordStoreDropperToGraphPlugin(recordStore)).executeLater(graph);
                                 };
                             }
                         }
@@ -109,6 +98,33 @@ public class RecordStoreDropper implements GraphDropper {
         }
 
         return null;
+    }
+
+    @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
+    public static class RecordStoreDropperToGraphPlugin extends RecordStoreQueryPlugin {
+
+        private final RecordStore recordStore;
+
+        public RecordStoreDropperToGraphPlugin(final RecordStore recordStore) {
+            this.recordStore = recordStore;
+        }
+
+        @Override
+        protected RecordStore query(final RecordStore query, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            ConstellationLoggerHelper.importPropertyBuilder(
+                    this,
+                    recordStore.getAll(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL),
+                    null,
+                    ConstellationLoggerHelper.SUCCESS
+            );
+            return recordStore;
+        }
+
+        @Override
+        public String getName() {
+            return "Drag and Drop: RecordStore To Graph";
+        }
+
     }
 
 }

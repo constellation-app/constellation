@@ -52,8 +52,8 @@ import org.openide.util.lookup.ServiceProviders;
 @ServiceProviders({
     @ServiceProvider(service = DataAccessPlugin.class),
     @ServiceProvider(service = Plugin.class)})
-@PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
 @Messages("ExtractTypesFromTextPlugin=Extract Types from Text")
+@PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
 public class ExtractTypesFromTextPlugin extends RecordStoreQueryPlugin implements DataAccessPlugin {
 
     // plugin parameters
