@@ -18,7 +18,9 @@ package au.gov.asd.tac.constellation.graph.visual.plugins.select.structure;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.ArrayList;
@@ -32,6 +34,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("SelectBackbonePlugin=Add to Selection: Backbone")
+@PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
 public class SelectBackbonePlugin extends SimpleEditPlugin {
 
     @Override
