@@ -21,7 +21,7 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.views.layers.context.LayersAddContextMenu;
+import au.gov.asd.tac.constellation.views.layers.context.LayerAction;
 
 /**
  * Updates each selected element's bitmask for viewing them on different layers
@@ -31,9 +31,9 @@ import au.gov.asd.tac.constellation.views.layers.context.LayersAddContextMenu;
 public final class UpdateElementBitmaskPlugin extends SimpleEditPlugin {
 
     private final long targetMask;
-    private final LayersAddContextMenu.LayerAction layerAction;
+    private final LayerAction layerAction;
 
-    public UpdateElementBitmaskPlugin(final int bitmask, final LayersAddContextMenu.LayerAction layerAction) {
+    public UpdateElementBitmaskPlugin(final int bitmask, final LayerAction layerAction) {
         this.targetMask = bitmask;
         this.layerAction = layerAction;
     }
@@ -51,9 +51,9 @@ public final class UpdateElementBitmaskPlugin extends SimpleEditPlugin {
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
             final int vertexId = graph.getVertex(vertexPosition);
             if (graph.getBooleanValue(vertexSelectedAttributeId, vertexId)) {
-                if (layerAction.equals(LayersAddContextMenu.LayerAction.ADD)) {
+                if (layerAction.equals(LayerAction.ADD)) {
                     graph.setLongValue(vertexBitmaskAttributeId, vertexId, graph.getLongValue(vertexBitmaskAttributeId, vertexId) | (1 << targetMask));
-                } else if (layerAction.equals(LayersAddContextMenu.LayerAction.REMOVE)) {
+                } else if (layerAction.equals(LayerAction.REMOVE)) {
                     graph.setLongValue(vertexBitmaskAttributeId, vertexId, graph.getLongValue(vertexBitmaskAttributeId, vertexId) & ~(1 << targetMask));
                 } else {
                     // Do nothing
@@ -69,9 +69,9 @@ public final class UpdateElementBitmaskPlugin extends SimpleEditPlugin {
         for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
             final int transactionId = graph.getTransaction(transactionPosition);
             if (graph.getBooleanValue(transactionSelectedAttributeId, transactionId)) {
-                if (layerAction.equals(LayersAddContextMenu.LayerAction.ADD)) {
+                if (layerAction.equals(LayerAction.ADD)) {
                     graph.setLongValue(transactionBitmaskAttributeId, transactionId, graph.getLongValue(transactionBitmaskAttributeId, transactionId) | (1 << targetMask));
-                } else if (layerAction.equals(LayersAddContextMenu.LayerAction.REMOVE)) {
+                } else if (layerAction.equals(LayerAction.REMOVE)) {
                     graph.setLongValue(transactionBitmaskAttributeId, transactionId, graph.getLongValue(transactionBitmaskAttributeId, transactionId) & ~(1 << targetMask));
                 } else {
                     // Do nothing

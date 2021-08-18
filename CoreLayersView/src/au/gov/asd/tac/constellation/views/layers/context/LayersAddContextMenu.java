@@ -42,11 +42,6 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ContextMenuProvider.class, position = 210)
 public class LayersAddContextMenu implements ContextMenuProvider {
 
-    public enum LayerAction {
-        ADD,
-        REMOVE
-    }
-
     private static final String LAYER_MENU = "Layers";
     private static final String NO_LAYER_TEXT = "[NO DESCRIPTION]";
     private static final String ADD_TO_LAYER = "Add Selection to Layer...";
