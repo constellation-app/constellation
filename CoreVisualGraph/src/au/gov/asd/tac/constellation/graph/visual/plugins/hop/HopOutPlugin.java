@@ -17,7 +17,9 @@ package au.gov.asd.tac.constellation.graph.visual.plugins.hop;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
@@ -35,6 +37,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("HopOutPlugin=Hop Out")
+@PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
 public class HopOutPlugin extends SimpleEditPlugin {
 
     public static final String HOPS_PARAMETER_ID = PluginParameter.buildId(HopOutPlugin.class, "hops");

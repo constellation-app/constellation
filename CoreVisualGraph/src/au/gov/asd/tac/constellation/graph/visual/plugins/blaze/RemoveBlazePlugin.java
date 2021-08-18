@@ -22,7 +22,9 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import static au.gov.asd.tac.constellation.graph.schema.visual.utilities.BlazeUtilities.VERTEX_IDS_PARAMETER_ID;
 import static au.gov.asd.tac.constellation.graph.schema.visual.utilities.BlazeUtilities.VERTEX_ID_PARAMETER_ID;
 import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
@@ -45,6 +47,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages("RemoveBlazePlugin=Remove Blazes")
+@PluginInfo(pluginType = PluginType.DELETE, tags = {"MODIFY"})
 public class RemoveBlazePlugin extends SimpleEditPlugin {
 
     @Override
