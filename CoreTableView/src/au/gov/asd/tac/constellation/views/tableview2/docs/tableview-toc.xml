@@ -3,6 +3,5 @@
 <toc version="2.0">
     <tocitem text="Views">
         <tocitem text="Table View" target="au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent"/>
-        <tocitem text="Table View (Experimental)" target="au.gov.asd.tac.constellation.views.tableview.about"/>
     </tocitem>
 </toc>
