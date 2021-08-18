@@ -258,7 +258,7 @@ public class TableViewUtilities {
      * Plugin to export to CSV file.
      */
     @PluginInfo(pluginType = PluginType.EXPORT, tags = {"EXPORT"})
-    private static class ExportToCsvFilePlugin extends SimplePlugin {
+    protected static class ExportToCsvFilePlugin extends SimplePlugin {
 
         private final File file;
         private final TableView<ObservableList<String>> table;
