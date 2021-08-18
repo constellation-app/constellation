@@ -695,7 +695,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
         }
     }
 
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
     public static final class Update extends SimpleEditPlugin {
 
         private final HierarchicalState state;
