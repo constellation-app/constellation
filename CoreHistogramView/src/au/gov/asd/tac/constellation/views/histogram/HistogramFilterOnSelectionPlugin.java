@@ -43,7 +43,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages("HistogramFilterOnSelectionPlugin=Filter Histogram on Selection")
-@PluginInfo(pluginType = PluginType.NONE, tags = {"MODIFY"})
+@PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
 public class HistogramFilterOnSelectionPlugin extends SimpleEditPlugin {
 
     public static final String ELEMENT_TYPE_PARAMETER_ID = PluginParameter.buildId(HistogramFilterOnSelectionPlugin.class, "element_type");

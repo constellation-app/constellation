@@ -41,7 +41,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages("HistogramClearFilterPlugin=Clear Histogram Filter")
-@PluginInfo(pluginType = PluginType.NONE, tags = {"MODIFY"})
+@PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
 public class HistogramClearFilterPlugin extends SimpleEditPlugin {
 
     public static final String ELEMENT_TYPE_PARAMETER_ID = PluginParameter.buildId(HistogramClearFilterPlugin.class, "element_type");
