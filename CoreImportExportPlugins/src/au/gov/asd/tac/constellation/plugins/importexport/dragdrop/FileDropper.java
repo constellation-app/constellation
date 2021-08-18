@@ -71,30 +71,7 @@ public class FileDropper implements GraphDropper {
                     final List<File> files = (List<File>) data;
                     files.stream().forEach(file -> {
                         if (file.isFile()) {
-                            PluginExecution.withPlugin(new SimplePlugin("Drag and Drop: File to Graph") {
-                                @Override
-                                public void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                                    try {
-                                        final Graph g = new GraphJsonReader().readGraphZip(file, new HandleIoProgress(String.format("Reading %s...", file.getName())));
-                                        GraphOpener.getDefault().openGraph(g, file.getName());
-
-                                        final ReadableGraph rg = g.getReadableGraph();
-                                        try {
-                                            ConstellationLoggerHelper.importPropertyBuilder(
-                                                    this,
-                                                    GraphRecordStoreUtilities.getVertices(rg, false, false, false).getAll(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL),
-                                                    Arrays.asList(file),
-                                                    ConstellationLoggerHelper.SUCCESS
-                                            );
-                                        } finally {
-                                            rg.release();
-                                        }
-                                    } catch (final IOException | GraphParseException ex) {
-                                        Logger.getLogger(FileDropper.class.getName()).log(Level.WARNING, String.format("Error loading file %s: %s", file.getPath(), ex.getMessage()));
-                                        NotifyDisplayer.display("Error loading graph: " + ex.getMessage(), NotifyDescriptor.ERROR_MESSAGE);
-                                    }
-                                }
-                            }).executeLater(graph);
+                            PluginExecution.withPlugin(new DragAndDropFilePlugin(file)).executeLater(graph);
                         }
                     });
                 };
@@ -104,5 +81,43 @@ public class FileDropper implements GraphDropper {
         }
 
         return null;
+    }
+
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+    public static class DragAndDropFilePlugin extends SimplePlugin {
+
+        final File file;
+
+        public DragAndDropFilePlugin(final File file) {
+            this.file = file;
+        }
+
+        @Override
+        public String getName() {
+            return "Drag and Drop: File to Graph";
+        }
+
+        @Override
+        public void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            try {
+                final Graph g = new GraphJsonReader().readGraphZip(file, new HandleIoProgress(String.format("Reading %s...", file.getName())));
+                GraphOpener.getDefault().openGraph(g, file.getName());
+
+                final ReadableGraph rg = g.getReadableGraph();
+                try {
+                    ConstellationLoggerHelper.importPropertyBuilder(
+                            this,
+                            GraphRecordStoreUtilities.getVertices(rg, false, false, false).getAll(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL),
+                            Arrays.asList(file),
+                            ConstellationLoggerHelper.SUCCESS
+                    );
+                } finally {
+                    rg.release();
+                }
+            } catch (final IOException | GraphParseException ex) {
+                Logger.getLogger(FileDropper.class.getName()).log(Level.WARNING, String.format("Error loading file %s: %s", file.getPath(), ex.getMessage()));
+                NotifyDisplayer.display("Error loading graph: " + ex.getMessage(), NotifyDescriptor.ERROR_MESSAGE);
+            }
+        }
     }
 }

@@ -74,32 +74,7 @@ public class JsonDropper implements GraphDropper {
                         // Skip the leading "indicator=".
                         final String data = t.substring(INDICATOR.length());
 
-                        PluginExecution.withPlugin(new SimpleEditPlugin("Drag and Drop: JSON to Graph") {
-                            @Override
-                            public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                                try {
-                                    final RecordStore rs = GraphRecordStoreUtilities.fromJson(data);
-                                    final List<Integer> newVertices = GraphRecordStoreUtilities.addRecordStoreToGraph(wg, rs, true, true, null);
-                                    if (!newVertices.isEmpty()) {
-                                        final VertexListInclusionGraph vlGraph = new VertexListInclusionGraph(wg, AbstractInclusionGraph.Connections.NONE, newVertices);
-                                        PluginExecution.withPlugin(ArrangementPluginRegistry.GRID_COMPOSITE).executeNow(vlGraph.getInclusionGraph());
-                                        vlGraph.retrieveCoords();
-
-                                        ConstellationLoggerHelper.importPropertyBuilder(
-                                                this,
-                                                rs.getAll(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL),
-                                                null,
-                                                ConstellationLoggerHelper.SUCCESS
-                                        );
-                                    }
-                                } catch (final IOException | ClassCastException ex) {
-                                    NotificationDisplayer.getDefault().notify("Drag/drop error",
-                                            UserInterfaceIconProvider.ERROR.buildIcon(16, ConstellationColor.CHERRY.getJavaColor()),
-                                            "The document you dragged could not be parsed: " + ex.getMessage(), null
-                                    );
-                                }
-                            }
-                        }).executeLater(graph);
+                        PluginExecution.withPlugin(new DragAndDropJSONPlugin(data)).executeLater(graph);
                     };
                 }
 
@@ -109,5 +84,45 @@ public class JsonDropper implements GraphDropper {
         }
 
         return null;
+    }
+
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+    public static class DragAndDropJSONPlugin extends SimpleEditPlugin {
+
+        final String data;
+
+        public DragAndDropJSONPlugin(final String data) {
+            this.data = data;
+        }
+
+        @Override
+        public String getName() {
+            return "Drag and Drop: JSON to Graph";
+        }
+
+        @Override
+        public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            try {
+                final RecordStore rs = GraphRecordStoreUtilities.fromJson(data);
+                final List<Integer> newVertices = GraphRecordStoreUtilities.addRecordStoreToGraph(wg, rs, true, true, null);
+                if (!newVertices.isEmpty()) {
+                    final VertexListInclusionGraph vlGraph = new VertexListInclusionGraph(wg, AbstractInclusionGraph.Connections.NONE, newVertices);
+                    PluginExecution.withPlugin(ArrangementPluginRegistry.GRID_COMPOSITE).executeNow(vlGraph.getInclusionGraph());
+                    vlGraph.retrieveCoords();
+
+                    ConstellationLoggerHelper.importPropertyBuilder(
+                            this,
+                            rs.getAll(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL),
+                            null,
+                            ConstellationLoggerHelper.SUCCESS
+                    );
+                }
+            } catch (final IOException | ClassCastException ex) {
+                NotificationDisplayer.getDefault().notify("Drag/drop error",
+                        UserInterfaceIconProvider.ERROR.buildIcon(16, ConstellationColor.CHERRY.getJavaColor()),
+                        "The document you dragged could not be parsed: " + ex.getMessage(), null
+                );
+            }
+        }
     }
 }
