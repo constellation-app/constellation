@@ -26,10 +26,12 @@ public class SeparatorConstants {
     public static final String COMMA = ",";
     public static final String HYPHEN = "-";
     public static final String NEWLINE = "\n";
+    public static final String LINEFEED = "\r";
     public static final String PERIOD = ".";
     public static final String PIPE = "|";
     public static final String SEMICOLON = ";";
     public static final String TAB = "\t";
     public static final String UNDERSCORE = "_";
     public static final String WHITESPACE = "\\s";
+    public static final String QUOTE = "\"";
 }

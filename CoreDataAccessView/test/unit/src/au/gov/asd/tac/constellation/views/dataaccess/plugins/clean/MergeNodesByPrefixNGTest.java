@@ -52,6 +52,7 @@ import org.testng.annotations.Test;
  */
 public class MergeNodesByPrefixNGTest {
 
+    private Schema schema;
     private StoreGraph graph;
     private int vxId1, vxId2, vxId3, vxId4, vxId5;
     private int vertexIdentifierAttribute, vertexSelectedAttribute;
@@ -73,7 +74,7 @@ public class MergeNodesByPrefixNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         // Create graph.
-        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
+        schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
         graph = new StoreGraph(schema);
 
         // Add attributes.
@@ -134,6 +135,27 @@ public class MergeNodesByPrefixNGTest {
         assertTrue(parameters.get(MERGER_PARAMETER_ID).isEnabled());
         assertTrue(parameters.get(LEAD_PARAMETER_ID).isEnabled());
         assertTrue(parameters.get(SELECTED_PARAMETER_ID).isEnabled());
+    }
+
+    /**
+     * Test of getNodesToMerge method with shortestLeadVertexChooser and
+     * threshold = 0 and a graph with no vertices with an indentifierAttribute.
+     */
+    @Test
+    public void testGetNodesToMerge_shortestLeadVertexChooser_threshold0_NoIdentifierAttribute() {
+        System.out.println("testGetNodesToMerge_shortestLeadVertexChooser_threshold0");
+
+        final Comparator<String> leadVertexChooser = SHORTEST_VERTEX_CHOOSER;
+        final int threshold = 0;
+        final boolean selectedOnly = false;
+
+        final MergeNodesByPrefix instance = new MergeNodesByPrefix();
+        final StoreGraph graph_NoIdentierAttribute = new StoreGraph(schema);
+        final Map<Integer, Set<Integer>> result = instance.getNodesToMerge(graph_NoIdentierAttribute, leadVertexChooser, threshold, selectedOnly);
+
+        final Map<Integer, Set<Integer>> expResult = new HashMap<>();
+
+        assertEquals(result, expResult);
     }
 
     /**
@@ -228,6 +250,26 @@ public class MergeNodesByPrefixNGTest {
 
         final Map<Integer, Set<Integer>> expResult = new HashMap<>();
         expResult.put(0, cluster);
+
+        assertEquals(result, expResult);
+    }
+
+    /**
+     * Test of getNodesToMerge method with longestLeadVertexChooser and
+     * threshold = 7 and selectOnly = true.
+     */
+    @Test
+    public void testGetNodesToMerge_longestLeadVertexChooser_threshold7_selectOnlyTrue() {
+        System.out.println("testGetNodesToMerge_longestLeadVertexChooser_threshold5_selectOnlyTrue");
+
+        final Comparator<String> leadVertexChooser = LONGEST_VERTEX_CHOOSER;
+        final int threshold = 7;
+        final boolean selectedOnly = true;
+
+        final MergeNodesByPrefix instance = new MergeNodesByPrefix();
+        final Map<Integer, Set<Integer>> result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
+
+        final Map<Integer, Set<Integer>> expResult = new HashMap<>();
 
         assertEquals(result, expResult);
     }
