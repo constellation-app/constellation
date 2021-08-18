@@ -1,7 +1,7 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
-== 2021-08-18 ==
+== 2021-08-18 Removed Old Table View
 <p>Removed the old table view implementation as the new one has now fully replaced it.</p>
 
 == 2021-08-05 Auto Notes Filters
