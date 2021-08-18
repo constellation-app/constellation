@@ -251,7 +251,7 @@ public class TranslationConversationContributionProvider extends ConversationCon
     /**
      * Plugin to set the translation.
      */
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
     private class SetTranslationPlugin extends SimpleEditPlugin {
 
         private final int transactionId;
