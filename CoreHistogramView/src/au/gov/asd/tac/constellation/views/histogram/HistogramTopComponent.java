@@ -588,7 +588,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     /**
      * Plugin to only select bins.
      */
-    @PluginInfo(pluginType = PluginType.NONE, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"SELECT"})
     private class HistogramSelectOnlyBins extends SimpleEditPlugin {
 
         private final int firstBin;
@@ -616,7 +616,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     /**
      * Plugin to select bins.
      */
-    @PluginInfo(pluginType = PluginType.NONE, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"SELECT"})
     private class SelectBins extends SimpleEditPlugin {
 
         private final int firstBin;
@@ -646,7 +646,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     /**
      * Plugin to invert bins.
      */
-    @PluginInfo(pluginType = PluginType.NONE, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
     private class InvertBins extends SimpleEditPlugin {
 
         private final int firstBin;
@@ -674,7 +674,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     /**
      * Plugin to complete bins.
      */
-    @PluginInfo(pluginType = PluginType.NONE, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
     private class CompleteBins extends SimpleEditPlugin {
 
         private final int firstBin;
@@ -702,7 +702,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     /**
      * Plugin to filter selection.
      */
-    @PluginInfo(pluginType = PluginType.NONE, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
     private class FilterSelection extends SimpleEditPlugin {
 
         @Override
@@ -724,7 +724,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     /**
      * Plugin to save bins to graph.
      */
-    @PluginInfo(pluginType = PluginType.NONE, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
     private class SaveBinsToGraph extends SimpleEditPlugin {
 
         @Override
@@ -759,7 +759,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     /**
      * Plugin to expand selection.
      */
-    @PluginInfo(pluginType = PluginType.NONE, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
     private class ExpandSelection extends SimpleEditPlugin {
 
         @Override
