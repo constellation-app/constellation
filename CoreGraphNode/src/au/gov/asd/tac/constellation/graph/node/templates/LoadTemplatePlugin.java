@@ -22,8 +22,10 @@ import au.gov.asd.tac.constellation.graph.file.opener.GraphOpener;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType;
@@ -43,6 +45,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author twilight_sparkle
  */
 @ServiceProvider(service = Plugin.class)
+@PluginInfo(pluginType = PluginType.IMPORT, tags = {"UTILITY"})
 @NbBundle.Messages("LoadTemplatePlugin=Load Template")
 public class LoadTemplatePlugin extends SimplePlugin {
 
