@@ -74,8 +74,8 @@ import org.openide.util.lookup.ServiceProviders;
 @ServiceProviders({
     @ServiceProvider(service = DataAccessPlugin.class),
     @ServiceProvider(service = Plugin.class)})
-@PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
 @Messages("ExtractWordsFromTextPlugin=Extract Words from Text")
+@PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
 public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements DataAccessPlugin {
 
     public static final String ATTRIBUTE_PARAMETER_ID = PluginParameter.buildId(ExtractWordsFromTextPlugin.class, "attribute");

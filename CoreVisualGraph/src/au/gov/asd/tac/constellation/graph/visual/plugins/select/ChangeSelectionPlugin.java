@@ -20,7 +20,9 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ElementTypeParameterValue;
@@ -42,6 +44,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages("ChangeSelectionPlugin=Change Selection")
+@PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
 public class ChangeSelectionPlugin extends SimpleEditPlugin {
 
     public static final String ELEMENT_BIT_SET_PARAMETER_ID = PluginParameter.buildId(ChangeSelectionPlugin.class, "element_bit_set");
