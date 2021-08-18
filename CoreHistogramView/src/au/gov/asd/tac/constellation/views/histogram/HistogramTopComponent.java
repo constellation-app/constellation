@@ -588,7 +588,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     /**
      * Plugin to only select bins.
      */
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"SELECT"})
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
     private class HistogramSelectOnlyBins extends SimpleEditPlugin {
 
         private final int firstBin;
@@ -616,7 +616,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     /**
      * Plugin to select bins.
      */
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"SELECT"})
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
     private class SelectBins extends SimpleEditPlugin {
 
         private final int firstBin;
