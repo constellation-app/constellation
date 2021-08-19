@@ -52,7 +52,7 @@ public class HelpServlet extends ConstellationHttpServlet {
             ".js", "text/javascript",
             ".png", "image/png",
             ".txt", "text/plain",
-            ".md", "text/html" // this allows an markdown file be converted to html on the fly
+            ".md", "text/html" // this allows a markdown file be converted to html on the fly
     );
 
     @Override

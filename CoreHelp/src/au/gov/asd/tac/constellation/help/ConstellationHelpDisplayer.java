@@ -153,19 +153,20 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
     private static void copyFromZipFile(final String zipFile, final String filepath, final OutputStream out) throws IOException {
         // TODO: need to rework this so that the local version includes a custom header and footer
         if (filepath.endsWith(".md")) {
-            ZipFile zip = new ZipFile(zipFile);
-            final Enumeration<? extends ZipEntry> entries = zip.entries();
+            try (ZipFile zip = new ZipFile(zipFile)) {
+                final Enumeration<? extends ZipEntry> entries = zip.entries();
 
-            while (entries.hasMoreElements()) {
-                ZipEntry entry = entries.nextElement();
-                if (filepath.equals(entry.getName())) {
-                    final InputStream input = zip.getInputStream(entry);
-                    final String html = Processor.process(input);
-                    out.write(html.getBytes());
+                while (entries.hasMoreElements()) {
+                    ZipEntry entry = entries.nextElement();
+                    if (filepath.equals(entry.getName())) {
+                        final InputStream input = zip.getInputStream(entry);
+                        final String html = Processor.process(input);
+                        out.write(html.getBytes());
+                    }
                 }
             }
-            // TODO: perhaps move this to another method
         } else {
+            // TODO: perhaps move this to another method
             final Path p = Paths.get(zipFile);
             try {
                 try (final FileSystem fs = FileSystems.newFileSystem(p, null)) {
