@@ -92,7 +92,7 @@ public class LayersAddContextMenu implements ContextMenuProvider {
     @Override
     public void selectItem(final String item, final Graph graph, final GraphElementType elementType, final int elementId, final Vector3f unprojected) {
         PluginExecution.withPlugin(new UpdateElementBitmaskPlugin(
-                Integer.parseInt(item.substring(0, 2).trim()), LayerAction.ADD))
+                Integer.parseInt(item.substring(0, 2).trim()), LayerAction.ADD, true))
                 .executeLater(GraphManager.getDefault().getActiveGraph());
     }
 }

@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.views.layers.LayersViewController.UpdateQuer
 import au.gov.asd.tac.constellation.views.layers.shortcut.DeselectAllLayersPlugin;
 import au.gov.asd.tac.constellation.views.layers.shortcut.EnableLayerPlugin;
 import au.gov.asd.tac.constellation.views.layers.shortcut.NewLayerPlugin;
+import au.gov.asd.tac.constellation.views.layers.utilities.ShuffleElementBitmaskPlugin;
 import au.gov.asd.tac.constellation.views.layers.utilities.UpdateElementBitmaskPlugin;
 import au.gov.asd.tac.constellation.views.layers.utilities.UpdateLayerSelectionPlugin;
 
@@ -36,6 +37,7 @@ public final class LayersPluginRegistry {
     // Utility
     public static final String UPDATE_ELEMENT_BITMASK = UpdateElementBitmaskPlugin.class.getName();
     public static final String UPDATE_LAYER_SELECTION = UpdateLayerSelectionPlugin.class.getName();
+    public static final String SHUFFLE_ELEMENT_BITMASK = ShuffleElementBitmaskPlugin.class.getName();
 
     // Shortcuts
     public static final String DESELECT_ALL_LAYERS = DeselectAllLayersPlugin.class.getName();

@@ -116,7 +116,7 @@ public class UpdateElementBitmaskPluginNGTest {
         assertTrue(1.0f == graph.getFloatValue(layerVisibilityT, txId2));
         assertTrue(false == graph.getBooleanValue(selectedT, txId2));
 
-        PluginExecution.withPlugin(new UpdateElementBitmaskPlugin(2, LayerAction.ADD)).executeNow(graph);
+        PluginExecution.withPlugin(new UpdateElementBitmaskPlugin(2, LayerAction.ADD, true)).executeNow(graph);
 
         // Check Vertex unchanged
         assertTrue(1 == graph.getIntValue(layerMaskV, vxId1));
@@ -162,7 +162,7 @@ public class UpdateElementBitmaskPluginNGTest {
         graph.setBooleanValue(selectedT, txId2, true);
         graph.setBooleanValue(selectedV, vxId2, true);
 
-        PluginExecution.withPlugin(new UpdateElementBitmaskPlugin(1, LayerAction.ADD)).executeNow(graph);
+        PluginExecution.withPlugin(new UpdateElementBitmaskPlugin(1, LayerAction.ADD, true)).executeNow(graph);
 
         // Check Vertex values
         assertTrue(1 == graph.getIntValue(layerMaskV, vxId1));
@@ -183,7 +183,7 @@ public class UpdateElementBitmaskPluginNGTest {
         assertTrue(true == graph.getBooleanValue(selectedT, txId2));
 
         // Remove from layers
-        PluginExecution.withPlugin(new UpdateElementBitmaskPlugin(1, LayerAction.REMOVE)).executeNow(graph);
+        PluginExecution.withPlugin(new UpdateElementBitmaskPlugin(1, LayerAction.REMOVE, true)).executeNow(graph);
 
         // check vertices set correctly
         assertTrue(1 == graph.getIntValue(layerMaskV, vxId1));

@@ -228,6 +228,8 @@ public class LayersViewPane extends BorderPane {
         deleteButton.setOnMouseClicked(e -> {
             controller.getVxQueryCollection().removeQueryAndSort(currentIndex);
             controller.getTxQueryCollection().removeQueryAndSort(currentIndex);
+            controller.removeBitmaskFromElements(currentIndex);
+            controller.shuffleElementBitmasks(currentIndex);
             controller.writeState();
             controller.execute();
         });

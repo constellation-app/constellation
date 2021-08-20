@@ -31,11 +31,14 @@ import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
+import au.gov.asd.tac.constellation.views.layers.context.LayerAction;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQuery;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQueryCollection;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewState;
 import au.gov.asd.tac.constellation.views.layers.utilities.LayersUtilities;
+import au.gov.asd.tac.constellation.views.layers.utilities.ShuffleElementBitmaskPlugin;
+import au.gov.asd.tac.constellation.views.layers.utilities.UpdateElementBitmaskPlugin;
 import au.gov.asd.tac.constellation.views.layers.utilities.UpdateLayerSelectionPlugin;
 import java.util.ArrayList;
 import java.util.List;
@@ -116,7 +119,7 @@ public class LayersViewController {
     public void addAttributes() {
         final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
         if (activeGraph != null) {
-            PluginExecution.withPlugin(LayersPluginRegistry.ADD_ATTRIBUTES).executeLater(activeGraph);
+            PluginExecution.withPlugin(new AddAttributesPlugin()).executeLater(activeGraph);
         }
     }
 
@@ -238,6 +241,59 @@ public class LayersViewController {
 
     public BitMaskQueryCollection getTxQueryCollection() {
         return txBitMaskCollection;
+    }
+
+    /**
+     * Removes the bitmask specified by currentIndex from all elements on the
+     * graph
+     *
+     * @param currentIndex the layer index (bitmask) to use when removing from
+     * elements.
+     */
+    public void removeBitmaskFromElements(final int currentIndex) {
+        final Graph graph = GraphManager.getDefault().getActiveGraph();
+        if (graph == null) {
+            return;
+        }
+        final Future<?> f = PluginExecution.withPlugin(new UpdateElementBitmaskPlugin(currentIndex,
+                LayerAction.REMOVE, false)).executeLater(graph);
+        try {
+            f.get();
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            Exceptions.printStackTrace(ex);
+        } catch (final ExecutionException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+
+    }
+
+    /**
+     * Move the layer from current layer to one lower. Used for deletion of
+     * layers to maintain order.
+     *
+     * @param currentIndex the layer which is blank and needs to be shifted
+     * into.
+     */
+    public void shuffleElementBitmasks(final int currentIndex) {
+        final Graph graph = GraphManager.getDefault().getActiveGraph();
+        if (graph == null) {
+            return;
+        }
+        final Future<?> f = PluginExecution.withPlugin(new ShuffleElementBitmaskPlugin(currentIndex)).executeLater(graph);
+        try {
+            f.get();
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            Exceptions.printStackTrace(ex);
+        } catch (final ExecutionException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+
+    }
+
+    protected LayersViewTopComponent getParent() {
+        return parent;
     }
 
     /**
