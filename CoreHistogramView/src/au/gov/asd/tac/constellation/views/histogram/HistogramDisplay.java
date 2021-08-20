@@ -34,6 +34,7 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -563,9 +564,9 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
     }
 
     @Override
-    public void mouseDragged(MouseEvent e) {
+    public void mouseDragged(final MouseEvent e) {
         if (binCollection != null
-                && e.getModifiersEx() == MouseEvent.BUTTON1_DOWN_MASK) {
+                && e.getModifiersEx() == InputEvent.BUTTON1_DOWN_MASK) {
             final Point pointOnHistogram = e.getPoint();
             final int bar = getBarAtPoint(pointOnHistogram, false);
 

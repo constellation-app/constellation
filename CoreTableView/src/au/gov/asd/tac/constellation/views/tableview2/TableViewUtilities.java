@@ -74,6 +74,9 @@ public class TableViewUtilities {
     private static final String CSV_EXT = ".csv";
     private static final String XLSX_EXT = ".xlsx";
 
+    private TableViewUtilities() {
+    }
+    
     /**
      * Retrieve data from the given table as comma-separated values.
      *
@@ -255,7 +258,7 @@ public class TableViewUtilities {
      * Plugin to export to CSV file.
      */
     @PluginInfo(pluginType = PluginType.EXPORT, tags = {"EXPORT"})
-    private static class ExportToCsvFilePlugin extends SimplePlugin {
+    protected static class ExportToCsvFilePlugin extends SimplePlugin {
 
         private final File file;
         private final TableView<ObservableList<String>> table;
@@ -297,7 +300,7 @@ public class TableViewUtilities {
      * Plugin to export to Excel file.
      */
     @PluginInfo(pluginType = PluginType.EXPORT, tags = {"EXPORT"})
-    private static class ExportToExcelFilePlugin extends SimplePlugin {
+    protected static class ExportToExcelFilePlugin extends SimplePlugin {
 
         private final File file;
         private final TableView<ObservableList<String>> table;
@@ -421,7 +424,7 @@ public class TableViewUtilities {
      * the changes. If it was, we don't have to change the table.
      */
     @PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
-    private static class SelectionToGraphPlugin extends SimpleEditPlugin {
+    protected static class SelectionToGraphPlugin extends SimpleEditPlugin {
 
         private final TableView<ObservableList<String>> table;
         private final Map<ObservableList<String>, Integer> index;

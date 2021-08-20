@@ -79,7 +79,7 @@ public class ConnectionLabelBatcher implements SceneBatcher {
 
     public ConnectionLabelBatcher() {
         // Create the batch
-        labelBatch = new Batch(GL3.GL_POINTS);
+        labelBatch = new Batch(GL.GL_POINTS);
         final ConstellationColor summaryColor = VisualGraphDefaults.DEFAULT_LABEL_COLOR;
         summaryLabelInfo.setRow(summaryColor.getRed(), summaryColor.getGreen(), summaryColor.getBlue(), VisualGraphDefaults.DEFAULT_LABEL_SIZE * LabelUtilities.NRADIUS_TO_LABEL_UNITS, 0);
         floatsTarget = labelBatch.newFloatBuffer(FLOAT_BUFFER_WIDTH, false);

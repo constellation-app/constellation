@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.Batch;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.ShaderManager;
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
 import java.awt.Point;
@@ -60,7 +61,7 @@ public class SelectionBoxRenderable implements GLRenderable {
     private final int vertexTarget;
 
     public SelectionBoxRenderable() {
-        batch = new Batch(GL3.GL_TRIANGLE_FAN);
+        batch = new Batch(GL.GL_TRIANGLE_FAN);
         vertexTarget = batch.newFloatBuffer(VERTEX_BUFFER_WIDTH, true);
         colorTarget = batch.newFloatBuffer(COLOR_BUFFER_WIDTH, true);
     }
@@ -132,8 +133,8 @@ public class SelectionBoxRenderable implements GLRenderable {
             final GL3 gl = drawable.getGL().getGL3();
 
             // Map the vertex buffer.
-            gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, batch.getBufferName(vertexTarget));
-            final ByteBuffer bbuf = gl.glMapBuffer(GL3.GL_ARRAY_BUFFER, GL3.GL_WRITE_ONLY);
+            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, batch.getBufferName(vertexTarget));
+            final ByteBuffer bbuf = gl.glMapBuffer(GL.GL_ARRAY_BUFFER, GL.GL_WRITE_ONLY);
             final FloatBuffer fbuf = bbuf.asFloatBuffer();
 
             // We should have the same buffer size we started with.
@@ -155,10 +156,10 @@ public class SelectionBoxRenderable implements GLRenderable {
 
             fbuf.put(v);
 
-            gl.glUnmapBuffer(GL3.GL_ARRAY_BUFFER);
+            gl.glUnmapBuffer(GL.GL_ARRAY_BUFFER);
 
             // Disable depth so the rectangle is drawn over everything else.
-            gl.glDisable(GL3.GL_DEPTH_TEST);
+            gl.glDisable(GL.GL_DEPTH_TEST);
             gl.glDepthMask(false);
 
             Matrix44f mvpMatrix = new Matrix44f();
@@ -170,7 +171,7 @@ public class SelectionBoxRenderable implements GLRenderable {
             batch.draw(gl);
 
             // Reenable depth.
-            gl.glEnable(GL3.GL_DEPTH_TEST);
+            gl.glEnable(GL.GL_DEPTH_TEST);
             gl.glDepthMask(true);
         }
     }
