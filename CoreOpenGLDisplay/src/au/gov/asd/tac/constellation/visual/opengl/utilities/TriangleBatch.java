@@ -174,27 +174,27 @@ public class TriangleBatch {
         buf = FloatBuffer.wrap(GLTools.toFloatArray(allVerts));
         gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, bufferObjects[VERTEX_DATA]);
         gl.glEnableVertexAttribArray(ShaderManager.ATTRIBUTE_VERTEX);
-        gl.glBufferData(GL3.GL_ARRAY_BUFFER, GLBuffers.SIZEOF_FLOAT * 3 * nNumVerts, buf, GL3.GL_STATIC_DRAW);
+        gl.glBufferData(GL3.GL_ARRAY_BUFFER, GLBuffers.SIZEOF_FLOAT * 3L * nNumVerts, buf, GL3.GL_STATIC_DRAW);
         gl.glVertexAttribPointer(ShaderManager.ATTRIBUTE_VERTEX, 3, GL3.GL_FLOAT, false, 0, 0);
 
         // Normal data.
         buf = FloatBuffer.wrap(GLTools.toFloatArray(allNorms));
         gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, bufferObjects[NORMAL_DATA]);
         gl.glEnableVertexAttribArray(ShaderManager.ATTRIBUTE_NORMAL);
-        gl.glBufferData(GL3.GL_ARRAY_BUFFER, GLBuffers.SIZEOF_FLOAT * 3 * nNumVerts, buf, GL3.GL_STATIC_DRAW);
+        gl.glBufferData(GL3.GL_ARRAY_BUFFER, GLBuffers.SIZEOF_FLOAT * 3L * nNumVerts, buf, GL3.GL_STATIC_DRAW);
         gl.glVertexAttribPointer(ShaderManager.ATTRIBUTE_NORMAL, 3, GL3.GL_FLOAT, false, 0, 0);
 
         // Texture coordinates.
         buf = FloatBuffer.wrap(GLTools.toFloatArray(allTexCoords));
         gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, bufferObjects[TEXTURE_DATA]);
         gl.glEnableVertexAttribArray(ShaderManager.ATTRIBUTE_TEXTURE0);
-        gl.glBufferData(GL3.GL_ARRAY_BUFFER, GLBuffers.SIZEOF_FLOAT * nNumVerts * 2, buf, GL3.GL_STATIC_DRAW);
+        gl.glBufferData(GL3.GL_ARRAY_BUFFER, GLBuffers.SIZEOF_FLOAT * nNumVerts * 2L, buf, GL3.GL_STATIC_DRAW);
         gl.glVertexAttribPointer(ShaderManager.ATTRIBUTE_TEXTURE0, 2, GL3.GL_FLOAT, false, 0, 0);
 
         // Indexes.
         ShortBuffer shortBuf = ShortBuffer.wrap(allIndexes);
         gl.glBindBuffer(GL3.GL_ELEMENT_ARRAY_BUFFER, bufferObjects[INDEX_DATA]);
-        gl.glBufferData(GL3.GL_ELEMENT_ARRAY_BUFFER, GLBuffers.SIZEOF_SHORT * nNumIndexes, shortBuf, GL3.GL_STATIC_DRAW);
+        gl.glBufferData(GL3.GL_ELEMENT_ARRAY_BUFFER, (long) GLBuffers.SIZEOF_SHORT * nNumIndexes, shortBuf, GL3.GL_STATIC_DRAW);
 
         // Done
         gl.glBindVertexArray(0);

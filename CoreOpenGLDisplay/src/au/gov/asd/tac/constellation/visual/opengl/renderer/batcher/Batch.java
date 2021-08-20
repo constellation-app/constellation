@@ -367,7 +367,7 @@ public final class Batch {
                     + "[size=" + size + ", limit=" + buffer.limit() + ", position=" + buffer.position() + "]");
         }
         gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, bufferName);
-        gl.glBufferData(GL3.GL_ARRAY_BUFFER, size * itemSize, buffer, GL3.GL_DYNAMIC_DRAW);
+        gl.glBufferData(GL3.GL_ARRAY_BUFFER, (long) size * itemSize, buffer, GL3.GL_DYNAMIC_DRAW);
     }
 
     private void bufferSubData(final GL3 gl, final int target, final int offset, final int sizeLimit, final int itemSize, final Buffer buffer) {
@@ -380,7 +380,7 @@ public final class Batch {
         }
         final int bufferName = getOrCreateBufferName(gl, target);
         gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, bufferName);
-        gl.glBufferSubData(GL3.GL_ARRAY_BUFFER, offset * itemSize, size * itemSize, buffer);
+        gl.glBufferSubData(GL3.GL_ARRAY_BUFFER, (long) offset * itemSize, (long) size * itemSize, buffer);
     }
 
     /**

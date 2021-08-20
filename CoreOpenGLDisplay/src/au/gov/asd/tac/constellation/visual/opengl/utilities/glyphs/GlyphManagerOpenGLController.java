@@ -104,7 +104,7 @@ public class GlyphManagerOpenGLController {
             final int size = glyphManager.getGlyphCount() * FLOATS_PER_GLYPH - offset;
             gl.glBindBuffer(GL3.GL_TEXTURE_BUFFER, coordinatesBufferName[0]);
             final FloatBuffer glyphsCoordinates = FloatBuffer.wrap(glyphManager.getGlyphTextureCoordinates(), offset, size);
-            gl.glBufferSubData(GL3.GL_TEXTURE_BUFFER, offset * BYTES_PER_FLOAT, size * BYTES_PER_FLOAT, glyphsCoordinates);
+            gl.glBufferSubData(GL3.GL_TEXTURE_BUFFER, (long) offset * BYTES_PER_FLOAT, (long) size * BYTES_PER_FLOAT, glyphsCoordinates);
             coordinatesBufferedGlyphs = glyphManager.getGlyphCount();
         }
     }

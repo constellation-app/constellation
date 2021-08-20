@@ -46,7 +46,7 @@ public abstract class TextureBuffer<BufferType extends Buffer> {
         // Bind the buffer.
         // Initialise the buffer's data store.
         gl.glBindBuffer(GL3.GL_TEXTURE_BUFFER, bufferName[0]);
-        gl.glBufferData(GL3.GL_TEXTURE_BUFFER, sizeOfType() * nItems, buffer, GL3.GL_DYNAMIC_DRAW);
+        gl.glBufferData(GL3.GL_TEXTURE_BUFFER, (long) sizeOfType() * nItems, buffer, GL3.GL_DYNAMIC_DRAW);
 
         // Generate a texture name.
         textureName = new int[1];
@@ -107,7 +107,7 @@ public abstract class TextureBuffer<BufferType extends Buffer> {
     public void update(final GL3 gl, final int offset, final int size) {
         buffer.position(sizeOfType() * offset);
         gl.glBindBuffer(GL3.GL_TEXTURE_BUFFER, bufferName[0]);
-        gl.glBufferSubData(GL3.GL_TEXTURE_BUFFER, sizeOfType() * offset, sizeOfType() * size, buffer);
+        gl.glBufferSubData(GL3.GL_TEXTURE_BUFFER, (long) sizeOfType() * offset, (long) sizeOfType() * size, buffer);
     }
 
     public void uniform(final GL3 gl, final int uniform, final int textureUnit) {
