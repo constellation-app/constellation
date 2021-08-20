@@ -574,14 +574,14 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
         }
 
         @Override
-        protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-            histogramStateAttribute = HistogramConcept.MetaAttribute.HISTOGRAM_STATE.ensure(graph);
-            graph.setObjectValue(histogramStateAttribute, 0, state);
+        public String getName() {
+            return "Histogram View: Update State";
         }
 
         @Override
-        public String getName() {
-            return "Histogram View: Update State";
+        protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+            histogramStateAttribute = HistogramConcept.MetaAttribute.HISTOGRAM_STATE.ensure(graph);
+            graph.setObjectValue(histogramStateAttribute, 0, state);
         }
     }
 
@@ -646,7 +646,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     /**
      * Plugin to invert bins.
      */
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
     private class InvertBins extends SimpleEditPlugin {
 
         private final int firstBin;
@@ -674,7 +674,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     /**
      * Plugin to complete bins.
      */
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
     private class CompleteBins extends SimpleEditPlugin {
 
         private final int firstBin;
@@ -702,7 +702,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     /**
      * Plugin to filter selection.
      */
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
     private class FilterSelection extends SimpleEditPlugin {
 
         @Override
