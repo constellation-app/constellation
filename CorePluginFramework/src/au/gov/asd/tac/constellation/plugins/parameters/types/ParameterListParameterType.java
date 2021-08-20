@@ -407,11 +407,11 @@ public class ParameterListParameterType extends PluginParameterType<ParameterLis
             for (PluginParameters pps : value.parametersList) {
                 strValBuilder.append("::");
                 for (Entry<String, PluginParameter<?>> pp : pps.getParameters().entrySet()) {
-                    strValBuilder.append(pp.getKey().replaceAll(SeparatorConstants.SEMICOLON, "\\;").replaceAll(SeparatorConstants.COLON, "\\:"));
+                    strValBuilder.append(pp.getKey().replace(SeparatorConstants.SEMICOLON, "\\;").replaceAll(SeparatorConstants.COLON, "\\:"));
                     strValBuilder.append(";;");
                     final String val = pp.getValue().getStringValue();
                     if (val != null) {
-                        strValBuilder.append(val.replaceAll(SeparatorConstants.SEMICOLON, "\\;").replaceAll(SeparatorConstants.COLON, "\\:"));
+                        strValBuilder.append(val.replace(SeparatorConstants.SEMICOLON, "\\;").replaceAll(SeparatorConstants.COLON, "\\:"));
                     }
                     strValBuilder.append(";;");
                 }
@@ -447,8 +447,8 @@ public class ParameterListParameterType extends PluginParameterType<ParameterLis
                 PluginParameters newParams = value.getNewItem();
                 String[] keyVals = args[i].split(";;");
                 for (int j = 0; j < keyVals.length; j += 2) {
-                    final String key = keyVals[j].replaceAll("\\;", SeparatorConstants.SEMICOLON).replaceAll("\\:", SeparatorConstants.COLON);
-                    final String val = keyVals[j + 1].replaceAll("\\;", SeparatorConstants.SEMICOLON).replaceAll("\\:", SeparatorConstants.COLON);
+                    final String key = keyVals[j].replace("\\;", SeparatorConstants.SEMICOLON).replace("\\:", SeparatorConstants.COLON);
+                    final String val = keyVals[j + 1].replace("\\;", SeparatorConstants.SEMICOLON).replace("\\:", SeparatorConstants.COLON);
                     newParams.getParameters().get(key).setStringValue(val);
                 }
                 final CountDownLatch panelCreated = new CountDownLatch(1);

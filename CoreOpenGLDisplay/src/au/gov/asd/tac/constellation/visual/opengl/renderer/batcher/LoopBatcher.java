@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.visual.opengl.renderer.TextureUnits;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
 import com.jogamp.common.nio.Buffers;
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import java.io.IOException;
 import java.nio.FloatBuffer;
@@ -66,7 +67,7 @@ public class LoopBatcher implements SceneBatcher {
     public LoopBatcher() {
 
         // create the batch
-        batch = new Batch(GL3.GL_POINTS);
+        batch = new Batch(GL.GL_POINTS);
         colorTarget = batch.newFloatBuffer(COLOR_BUFFER_WIDTH, false);
         loopInfoTarget = batch.newIntBuffer(LOOP_INFO_BUFFER_WIDTH, false);
     }
@@ -191,10 +192,10 @@ public class LoopBatcher implements SceneBatcher {
 
             // Uniform variables
             if (drawForHitTest) {
-                gl.glUniform1i(shaderLocDrawHitTest, GL3.GL_TRUE);
+                gl.glUniform1i(shaderLocDrawHitTest, GL.GL_TRUE);
                 drawForHitTest = false;
             } else {
-                gl.glUniform1i(shaderLocDrawHitTest, GL3.GL_FALSE);
+                gl.glUniform1i(shaderLocDrawHitTest, GL.GL_FALSE);
             }
             gl.glUniformMatrix4fv(shaderMVMatrix, 1, false, mvMatrix.a, 0);
             gl.glUniformMatrix4fv(shaderPMatrix, 1, false, pMatrix.a, 0);
