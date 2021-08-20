@@ -35,7 +35,7 @@ import java.util.BitSet;
 import org.openide.util.NbBundle.Messages;
 
 /**
- * select elements by rectangular area
+ * Select elements by rectangular area.
  *
  * @author sirius
  */
