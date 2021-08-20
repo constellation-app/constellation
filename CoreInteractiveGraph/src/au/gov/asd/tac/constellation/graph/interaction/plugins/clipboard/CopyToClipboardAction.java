@@ -21,7 +21,9 @@ import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import java.awt.event.ActionEvent;
@@ -54,13 +56,24 @@ public final class CopyToClipboardAction extends AbstractAction {
         final Graph graph = context.getGraph();
 
         // TODO: make this a SimpleReadPlugin.
-        PluginExecution.withPlugin(new SimplePlugin("Copy To Clipboard") {
-            @Override
-            protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                final Graph graph = graphs.getGraph();
-                PluginExecution.withPlugin(InteractiveGraphPluginRegistry.COPY).executeNow(graph);
+        PluginExecution.withPlugin(new CopyToClipboard()).executeLater(graph);
+    }
 
-            }
-        }).executeLater(graph);
+    /**
+     * Plugin to copy to the clipboard.
+     */
+    @PluginInfo(pluginType = PluginType.EXPORT, tags = {"EXPORT"})
+    private class CopyToClipboard extends SimplePlugin {
+
+        @Override
+        public String getName() {
+            return "Copy To Clipboard Action: Copy To Clipboard";
+        }
+
+        @Override
+        protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            final Graph graph = graphs.getGraph();
+            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.COPY).executeNow(graph);
+        }
     }
 }

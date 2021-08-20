@@ -43,8 +43,8 @@ import org.openide.util.lookup.ServiceProvider;
  * @author algol
  */
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(minLogInterval = 5000, pluginType = PluginType.DISPLAY, tags = {"LOW LEVEL"})
 @Messages("RotateCameraPlugin=Rotate Camera")
+@PluginInfo(minLogInterval = 5000, pluginType = PluginType.VIEW, tags = {"VIEW"})
 public final class RotateCameraPlugin extends SimpleEditPlugin {
 
     public static final String X_PARAMETER_ID = PluginParameter.buildId(RotateCameraPlugin.class, "x");

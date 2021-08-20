@@ -26,7 +26,9 @@ import au.gov.asd.tac.constellation.graph.file.save.AutosaveUtilities;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
@@ -55,8 +57,10 @@ import org.openide.windows.TopComponent;
 /**
  * A GraphOpener that opens a graph into a VisualTopComponent.
  * <p>
- * Note that if you don't have support for OpenGL then comment out the ServiceProvider annotation which will mean that
- * {@link au.gov.asd.tac.constellation.graph.node.gui.SimpleGraphTopComponent} is used instead.
+ * Note that if you don't have support for OpenGL then comment out the
+ * ServiceProvider annotation which will mean that
+ * {@link au.gov.asd.tac.constellation.graph.node.gui.SimpleGraphTopComponent}
+ * is used instead.
  *
  * @author algol
  */
@@ -75,8 +79,8 @@ public final class VisualGraphOpener extends GraphOpener {
     /**
      * Open a graph file into a VisualTopComponent.
      * <p>
-     * A check is done to see if the file to be opened is already open. If it is, that TopComponent is made active,
-     * rather than opening the file again.
+     * A check is done to see if the file to be opened is already open. If it
+     * is, that TopComponent is made active, rather than opening the file again.
      *
      * @param gdo The GraphDataObject to read from.
      */
@@ -217,12 +221,7 @@ public final class VisualGraphOpener extends GraphOpener {
                     ioProgressHandler.finish();
                 }
 
-                PluginExecution.withPlugin(new SimplePlugin("Open Graph File") {
-                    @Override
-                    protected void execute(PluginGraphs graphs, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
-                        ConstellationLoggerHelper.viewPropertyBuilder(this, graphFile, ConstellationLoggerHelper.SUCCESS);
-                    }
-                }).executeLater(null);
+                PluginExecution.withPlugin(new OpenGraphFile(graphFile)).executeLater(null);
             }
 
             return null;
@@ -264,6 +263,29 @@ public final class VisualGraphOpener extends GraphOpener {
             } else {
                 // Do nothing
             }
+        }
+    }
+
+    /**
+     * Plugin to open graph file.
+     */
+    @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
+    private static class OpenGraphFile extends SimplePlugin {
+
+        private final File graphFile;
+
+        public OpenGraphFile(final File graphFile) {
+            this.graphFile = graphFile;
+        }
+
+        @Override
+        public String getName() {
+            return "Visual Graph: Open Graph File";
+        }
+
+        @Override
+        protected void execute(PluginGraphs graphs, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+            ConstellationLoggerHelper.viewPropertyBuilder(this, graphFile, ConstellationLoggerHelper.SUCCESS);
         }
     }
 }

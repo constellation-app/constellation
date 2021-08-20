@@ -21,7 +21,9 @@ import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaPluginRegist
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import org.openide.util.NbBundle;
@@ -36,6 +38,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages("ExpandAllCompositesPlugin=Expand Composites")
+@PluginInfo(pluginType = PluginType.DISPLAY, tags = {"MODIFY"})
 public class ExpandAllCompositesPlugin extends SimpleEditPlugin {
 
     @Override

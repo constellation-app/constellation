@@ -38,7 +38,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author algol
  */
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(minLogInterval = 5000, pluginType = PluginType.DISPLAY, tags = {"LOW LEVEL"})
+@PluginInfo(minLogInterval = 5000, pluginType = PluginType.VIEW, tags = {"VIEW"})
 @Messages("SetCameraVisibilityRange=Set Camera Visibility Range")
 public final class SetCameraVisibilityRange extends SimpleEditPlugin {
 
