@@ -48,7 +48,7 @@ public class HeadingPane extends TitledPane implements PluginParametersPaneListe
     private static final Color GREY = Color.web("#e6e6e6").deriveColor(1, 1, 1, 0.3);
     private static final double SQUARE_SIZE = 14; // Smaller makes it obvious that they are not center aligned
 
-    protected final FlowPane boxes = new FlowPane();
+    private final FlowPane boxes = new FlowPane();
 
     /**
      * Primary constructor.
@@ -142,5 +142,9 @@ public class HeadingPane extends TitledPane implements PluginParametersPaneListe
         square.setStroke(border);
         square.setFill(gradient);
         return square;
+    }
+
+    protected FlowPane getBoxes() {
+        return boxes;
     }
 }

@@ -134,8 +134,7 @@ public class HeadingPaneNGTest {
         System.out.println("testHierarchicalUpdate_paneIsNotQueryEnabled");
         headingPane.hierarchicalUpdate();
         verify(top, times(1)).hierarchicalUpdate();
-        assertEquals(headingPane.boxes.getChildren().size(), 3);
-       
+        assertEquals(headingPane.getBoxes().getChildren().size(), 3);
     }
     
     /**
