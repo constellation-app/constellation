@@ -34,7 +34,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages("ToggleSelectionModePlugin=Toggle Selection Mode")
-@PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
+@PluginInfo(pluginType = PluginType.SELECTION, tags = {"LOW LEVEL"})
 public class ToggleSelectionModePlugin extends SimpleEditPlugin {
 
     @Override

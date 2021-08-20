@@ -35,7 +35,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages("ToggleDisplayModePlugin=Toggle Display Mode")
-@PluginInfo(pluginType = PluginType.DISPLAY, tags = {"MODIFY"})
+@PluginInfo(pluginType = PluginType.DISPLAY, tags = {"LOW LEVEL"})
 public class ToggleDisplayModePlugin extends SimpleEditPlugin {
 
     @Override

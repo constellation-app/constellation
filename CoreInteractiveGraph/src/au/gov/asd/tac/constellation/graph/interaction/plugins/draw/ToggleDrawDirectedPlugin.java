@@ -34,7 +34,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages("ToggleDrawDirectedPlugin=Toggle Draw Directed Transactions")
-@PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
+@PluginInfo(pluginType = PluginType.DISPLAY, tags = {"LOW LEVEL"})
 public class ToggleDrawDirectedPlugin extends SimpleEditPlugin {
 
     @Override

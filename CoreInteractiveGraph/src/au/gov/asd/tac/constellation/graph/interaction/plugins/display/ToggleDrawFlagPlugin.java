@@ -38,7 +38,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages("ToggleDrawFlagPlugin=Toggle Draw Flag")
-@PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
+@PluginInfo(pluginType = PluginType.DISPLAY, tags = {"LOW LEVEL"})
 public class ToggleDrawFlagPlugin extends SimpleEditPlugin {
 
     public static final String FLAG_PARAMETER_ID = PluginParameter.buildId(ToggleDrawFlagPlugin.class, "flag");
