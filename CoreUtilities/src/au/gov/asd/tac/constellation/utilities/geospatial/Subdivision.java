@@ -103,7 +103,7 @@ public enum Subdivision {
     AJMAN(Country.UNITED_ARAB_EMIRATES, "AJ", "Ajman"),
     FUJAIRAH(Country.UNITED_ARAB_EMIRATES, "FU", "Fujairah"),
     SHARJAH(Country.UNITED_ARAB_EMIRATES, "SH", "Sharjah"),
-    DUBAI(Country.UNITED_ARAB_EMIRATES, "DU", " 	Dubai"),
+    DUBAI(Country.UNITED_ARAB_EMIRATES, "DU", "Dubai"),
     RAS_AL_KHAIMAH(Country.UNITED_ARAB_EMIRATES, "RK", "Ras al-Khaimah"),
     UMM_AL_QUWAIN(Country.UNITED_ARAB_EMIRATES, "UQ", "Umm al-Quwain"),
     UNKNOWN_RESERVED_OR_PRIVATE(Country.UNKNOWN_RESERVED_OR_PRIVATE, "XX", "Unknown");

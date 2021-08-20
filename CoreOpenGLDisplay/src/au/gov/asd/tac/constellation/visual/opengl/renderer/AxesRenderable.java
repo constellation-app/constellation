@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.Batch;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.ShaderManager;
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
 import java.io.IOException;
@@ -71,7 +72,7 @@ public class AxesRenderable implements GLRenderable {
 
     public AxesRenderable(final GLVisualProcessor parent) {
         this.parent = parent;
-        axesBatch = new Batch(GL3.GL_LINES);
+        axesBatch = new Batch(GL.GL_LINES);
         colorTarget = axesBatch.newFloatBuffer(COLOR_BUFFER_WIDTH, true);
         vertexTarget = axesBatch.newFloatBuffer(VERTEX_BUFFER_WIDTH, true);
     }
@@ -234,7 +235,7 @@ public class AxesRenderable implements GLRenderable {
         axesMatrix.multiply(translationMatrix, srMatrix);
 
         // Disable depth so the axes are drawn over everything else.
-        gl.glDisable(GL3.GL_DEPTH_TEST);
+        gl.glDisable(GL.GL_DEPTH_TEST);
         gl.glDepthMask(false);
 
         // Draw.
@@ -244,7 +245,7 @@ public class AxesRenderable implements GLRenderable {
         axesBatch.draw(gl);
 
         // Reenable depth.
-        gl.glEnable(GL3.GL_DEPTH_TEST);
+        gl.glEnable(GL.GL_DEPTH_TEST);
         gl.glDepthMask(true);
     }
 

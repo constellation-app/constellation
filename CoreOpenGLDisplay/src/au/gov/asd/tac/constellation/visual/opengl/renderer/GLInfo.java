@@ -19,6 +19,8 @@ import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import au.gov.asd.tac.constellation.utilities.gui.InfoTextPanel;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2ES2;
+import com.jogamp.opengl.GL2ES3;
+import com.jogamp.opengl.GL2GL3;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
 import org.openide.DialogDisplayer;
@@ -63,16 +65,16 @@ public class GLInfo {
 
     public static void printGLCapabilities(final GL3 gl) {
         final int[] v = new int[10];
-        gl.glGetIntegerv(GL3.GL_MAX_RENDERBUFFER_SIZE, v, 0);
-        gl.glGetIntegerv(GL3.GL_MAX_VERTEX_ATTRIBS, v, 1);
-        gl.glGetIntegerv(GL3.GL_MAX_TEXTURE_SIZE, v, 2);
-        gl.glGetIntegerv(GL3.GL_MAX_RECTANGLE_TEXTURE_SIZE, v, 3);
-        gl.glGetIntegerv(GL3.GL_MAX_TEXTURE_BUFFER_SIZE, v, 4);
-        gl.glGetIntegerv(GL3.GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, v, 5);
-        gl.glGetIntegerv(GL3.GL_MAX_3D_TEXTURE_SIZE, v, 6);
-        gl.glGetIntegerv(GL3.GL_MAX_ARRAY_TEXTURE_LAYERS, v, 7);
-        gl.glGetIntegerv(GL3.GL_MAX_DRAW_BUFFERS, v, 8);
-        gl.glGetIntegerv(GL3.GL_MAX_COLOR_ATTACHMENTS, v, 9);
+        gl.glGetIntegerv(GL.GL_MAX_RENDERBUFFER_SIZE, v, 0);
+        gl.glGetIntegerv(GL2ES2.GL_MAX_VERTEX_ATTRIBS, v, 1);
+        gl.glGetIntegerv(GL.GL_MAX_TEXTURE_SIZE, v, 2);
+        gl.glGetIntegerv(GL2GL3.GL_MAX_RECTANGLE_TEXTURE_SIZE, v, 3);
+        gl.glGetIntegerv(GL2ES3.GL_MAX_TEXTURE_BUFFER_SIZE, v, 4);
+        gl.glGetIntegerv(GL2ES2.GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, v, 5);
+        gl.glGetIntegerv(GL2ES2.GL_MAX_3D_TEXTURE_SIZE, v, 6);
+        gl.glGetIntegerv(GL2ES3.GL_MAX_ARRAY_TEXTURE_LAYERS, v, 7);
+        gl.glGetIntegerv(GL2ES2.GL_MAX_DRAW_BUFFERS, v, 8);
+        gl.glGetIntegerv(GL2ES2.GL_MAX_COLOR_ATTACHMENTS, v, 9);
         final StringBuilder b = new StringBuilder();
         b.append(String.format("GL: MAX_RENDERBUFFER_SIZE %d%n", v[0]));
         b.append(String.format("GL: MAX_VERTEX_ATTRIBS %d%n", v[1]));

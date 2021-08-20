@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.visual.opengl.utilities;
 
 import com.jogamp.common.nio.Buffers;
+import com.jogamp.opengl.GL2ES3;
 import com.jogamp.opengl.GL3;
 import java.nio.ByteBuffer;
 
@@ -37,13 +38,13 @@ public class ByteTextureBuffer extends TextureBuffer<ByteBuffer> {
 
     @Override
     protected int internalFormat() {
-        return GL3.GL_R8I;
+        return GL2ES3.GL_R8I;
     }
 
     @Override
     public ByteBuffer connectBuffer(GL3 gl) {
-        gl.glBindBuffer(GL3.GL_TEXTURE_BUFFER, getBufferName());
-        return gl.glMapBuffer(GL3.GL_TEXTURE_BUFFER, GL3.GL_READ_WRITE);
+        gl.glBindBuffer(GL2ES3.GL_TEXTURE_BUFFER, getBufferName());
+        return gl.glMapBuffer(GL2ES3.GL_TEXTURE_BUFFER, GL2ES3.GL_READ_WRITE);
     }
 
 }

@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable.GLRenderableUpdateTask;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.TextureUnits;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import java.io.IOException;
 import java.nio.FloatBuffer;
@@ -68,7 +69,7 @@ public class BlazeBatcher implements SceneBatcher {
     public BlazeBatcher() {
 
         // Create the batch
-        batch = new Batch(GL3.GL_POINTS);
+        batch = new Batch(GL.GL_POINTS);
         colorTarget = batch.newFloatBuffer(COLOR_BUFFER_WIDTH, false);
         infoTarget = batch.newIntBuffer(INFO_BUFFER_WIDTH, false);
     }
@@ -174,9 +175,9 @@ public class BlazeBatcher implements SceneBatcher {
             gl.glUniform1f(shaderScale, blazeSize);
             gl.glUniform1f(shaderOpacity, blazeOpacity);
 
-            gl.glDisable(GL3.GL_DEPTH_TEST);
+            gl.glDisable(GL.GL_DEPTH_TEST);
             batch.draw(gl);
-            gl.glEnable(GL3.GL_DEPTH_TEST);
+            gl.glEnable(GL.GL_DEPTH_TEST);
         }
     }
 }

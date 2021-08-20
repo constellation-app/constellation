@@ -79,7 +79,7 @@ public class ConstellationPointMarker extends ConstellationAbstractMarker {
             templateImage.getRGB(0, 0, TEMPLATE_IMAGE.width, TEMPLATE_IMAGE.height, TEMPLATE_IMAGE.pixels, 0, TEMPLATE_IMAGE.width);
             TEMPLATE_IMAGE.updatePixels();
 
-            POINT_X_OFFSET = TEMPLATE_IMAGE.width / 2;
+            POINT_X_OFFSET = TEMPLATE_IMAGE.width / 2F;
             POINT_Y_OFFSET = TEMPLATE_IMAGE.height;
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);

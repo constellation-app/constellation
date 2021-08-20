@@ -84,6 +84,12 @@
             With the "Initialise With Schema" option enabled, new nodes and transactions added to the graph will follow the rules
             governed by the schema. If this is not enabled, nodes imported will not have attributes such as label and icon defined.
         </p>
+        <p>
+            With the "Files Include Headers" option enabled, the importer will treat the first row of the file as a header and it 
+            not be imported. The header row is then displayed as the column names in the preview. With the option disabled, the 
+            importer will import every row including the first row. The preview in this case will add some auto-generated column 
+            names (these won't affect the file or the import).
+        </p>
 
         <h2>Select the Destination Graph</h2>
         <p>
@@ -121,6 +127,11 @@
         <p>
             Once your configuration is finished, import the entire file with the format you have applied by clicking on the Import
             button located at the bottom right hand corner.
+        </p>
+        <p>
+            NOTE: The import window does not disappear after clicking import. This is so that you don't have to re-configure from 
+            the beginning. Once you are satisfied with the configuration, you have the ability to save your settings explained in 
+            the next section.
         </p>
 
         <h2>Save and Load Import Templates</h2>

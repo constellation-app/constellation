@@ -32,6 +32,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.BitSet;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -177,12 +178,12 @@ public final class HashmodAction implements ActionListener {
 
         if (createAllKeys) {
             numberSuccessful = 0;
-            for (String keyVal : keys.keySet()) {
-                if (keys.get(keyVal) == 0) {
+            for (final Entry<String, Integer> entry : keys.entrySet()) {
+                if (entry.getValue() == 0) {
                     int newVertex = wg.addVertex();
 
                     for (i = 0; i < attrCount; i++) {
-                        wg.setStringValue(attributeValues[i], newVertex, hashmod.getValueFromKey(keyVal, csvValues[i]));
+                        wg.setStringValue(attributeValues[i], newVertex, hashmod.getValueFromKey(entry.getKey(), csvValues[i]));
                     }
                     numberSuccessful++;
                 }
