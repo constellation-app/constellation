@@ -57,7 +57,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("AutosaveGraphPlugin=Autosave Graph")
-@PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
+@PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
 public final class AutosaveGraphPlugin extends SimplePlugin {
 
     private static final Logger LOGGER = Logger.getLogger(AutosaveGraphPlugin.class.getName());
