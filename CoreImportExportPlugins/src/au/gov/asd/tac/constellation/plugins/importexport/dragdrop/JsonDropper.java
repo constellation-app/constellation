@@ -86,7 +86,7 @@ public class JsonDropper implements GraphDropper {
         return null;
     }
 
-    @PluginInfo(pluginType = PluginType.IMPORT, tags = {"LOW LEVEL"})
+    @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
     public static class DragAndDropJSONPlugin extends SimpleEditPlugin {
 
         private final String data;

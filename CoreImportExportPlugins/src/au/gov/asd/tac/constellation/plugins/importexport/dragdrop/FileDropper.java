@@ -83,7 +83,7 @@ public class FileDropper implements GraphDropper {
         return null;
     }
 
-    @PluginInfo(pluginType = PluginType.IMPORT, tags = {"LOW LEVEL"})
+    @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
     public static class DragAndDropFilePlugin extends SimplePlugin {
 
         private final File file;
