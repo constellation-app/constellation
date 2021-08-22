@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2021 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -52,10 +52,11 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class TableViewPreferencesIOUtilitiesNGTest {
+
     private static MockedStatic<JsonIO> jsonIOStaticMock;
     private static MockedStatic<NbPreferences> nbPreferencesStaticMock;
     private static MockedStatic<ApplicationPreferenceKeys> applicationPrefKeysStaticMock;
-    
+
     public TableViewPreferencesIOUtilitiesNGTest() {
     }
 
@@ -83,68 +84,68 @@ public class TableViewPreferencesIOUtilitiesNGTest {
     @AfterMethod
     public void tearDownMethod() throws Exception {
     }
-    
+
     @Test
     public void getPreferencesMultiplePrefsPicksLast() throws IOException {
         final ObjectMapper objectMapper = new ObjectMapper();
         final JsonNode jsonNode = objectMapper.readTree(
                 new FileInputStream(getClass().getResource("resources/vertex-preferences.json").getPath())
         );
-        
+
         jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences("TableViewPreferences", "vertex-"))
                 .thenReturn(jsonNode);
-        
+
         final ThreeTuple<List<String>, Tuple<String, TableColumn.SortType>, Integer> preferences
                 = TableViewPreferencesIOUtilities.getPreferences(GraphElementType.VERTEX, 2);
-        
+
         final ThreeTuple<List<String>, Tuple<String, TableColumn.SortType>, Integer> expected = ThreeTuple.create(
                 List.of("ABC", "DEF", "ABC", "DEF"), // <- This seems wrong??
                 Tuple.create("DEF", TableColumn.SortType.DESCENDING),
                 2
         );
-        
+
         assertEquals(expected, preferences);
     }
-    
+
     @Test
     public void getPreferencesSinglePreference() throws IOException {
         final ObjectMapper objectMapper = new ObjectMapper();
         final JsonNode jsonNode = objectMapper.readTree(
                 new FileInputStream(getClass().getResource("resources/transaction-preferences.json").getPath())
         );
-        
+
         jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences("TableViewPreferences", "transaction-"))
                 .thenReturn(jsonNode);
-        
+
         final ThreeTuple<List<String>, Tuple<String, TableColumn.SortType>, Integer> preferences
                 = TableViewPreferencesIOUtilities.getPreferences(GraphElementType.TRANSACTION, 2);
-        
+
         final ThreeTuple<List<String>, Tuple<String, TableColumn.SortType>, Integer> expected = ThreeTuple.create(
                 List.of("ABC", "DEF"),
                 Tuple.create("DEF", TableColumn.SortType.ASCENDING),
                 5
         );
-        
+
         assertEquals(expected, preferences);
     }
-    
+
     @Test
-    public void getPreferencesNullPrefs() throws IOException {       
+    public void getPreferencesNullPrefs() throws IOException {
         jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences("TableViewPreferences", "vertex-"))
                 .thenReturn(null);
-        
+
         final ThreeTuple<List<String>, Tuple<String, TableColumn.SortType>, Integer> preferences
                 = TableViewPreferencesIOUtilities.getPreferences(GraphElementType.VERTEX, 2);
-        
+
         final ThreeTuple<List<String>, Tuple<String, TableColumn.SortType>, Integer> expected = ThreeTuple.create(
                 Collections.emptyList(),
                 Tuple.create("", TableColumn.SortType.ASCENDING),
                 500
         );
-        
+
         assertEquals(expected, preferences);
     }
-    
+
     @Test
     public void savePreferences() throws IOException {
         // TODO Find a better solution for this. Because of this limitation these tests
@@ -154,7 +155,7 @@ public class TableViewPreferencesIOUtilitiesNGTest {
             // so we need to instantiate the static mocks only once we know we will be running the
             // tests.
             new JFXPanel();
-        
+
             nbPreferencesStaticMock.when(() -> NbPreferences.forModule(ApplicationPreferenceKeys.class))
                     .thenReturn(null);
             applicationPrefKeysStaticMock.when(() -> ApplicationPreferenceKeys.getUserDir(null))

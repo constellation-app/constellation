@@ -76,7 +76,7 @@ public class TableViewUtilities {
 
     private TableViewUtilities() {
     }
-    
+
     /**
      * Retrieve data from the given table as comma-separated values.
      *

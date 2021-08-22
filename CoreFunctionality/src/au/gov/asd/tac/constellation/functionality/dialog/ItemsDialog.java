@@ -123,12 +123,12 @@ public class ItemsDialog<T> extends ConstellationDialog {
         final Button copyToClipboardButton = new Button("Copy Selection to Clipboard");
         copyToClipboardButton.setOnAction((ActionEvent event) -> {
             final StringBuilder sb = new StringBuilder();
-            
+
             final ObservableList<ItemsRow<T>> selectedRows = table.getSelectionModel().getSelectedItems();
             for (ItemsRow<?> r : selectedRows) {
                 sb.append(String.format("%s,%s\n", r.labelProperty().getValue(), r.descriptionProperty().getValue()));
             }
-            
+
             ClipboardUtilities.copyToClipboard(sb.toString());
         });
         buttonPane.getChildren().add(copyToClipboardButton);

@@ -92,7 +92,7 @@ public class DiceSimilarityPluginNGTest {
         PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
 
         int transactionCount = graph.getTransactionCount();
-        
+
         for (int transactionId = 0; transactionId < transactionCount; transactionId++) {
             int transaction = graph.getTransaction(transactionId);
             String identifier = graph.getStringValue(transactionIdentifier, transactionId);
@@ -130,9 +130,9 @@ public class DiceSimilarityPluginNGTest {
         parameters.setIntegerValue(DiceSimilarityPlugin.MINIMUM_COMMON_FEATURES_PARAMETER_ID, 1);
         parameters.setBooleanValue(DiceSimilarityPlugin.SELECTED_ONLY_PARAMETER_ID, false);
         PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
-        
+
         int transactionCount = graph.getTransactionCount();
-        
+
         for (int transactionId = 0; transactionId < transactionCount; transactionId++) {
             int transaction = graph.getTransaction(transactionId);
             String identifier = graph.getStringValue(transactionIdentifier, transactionId);
@@ -159,5 +159,5 @@ public class DiceSimilarityPluginNGTest {
             }
         }
     }
-    
+
 }

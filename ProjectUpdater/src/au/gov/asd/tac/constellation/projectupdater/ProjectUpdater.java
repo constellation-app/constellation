@@ -21,7 +21,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -245,7 +244,7 @@ public class ProjectUpdater extends Task {
         final Document document = builder.newDocument();
 
         // Read in the existing project.xml into the document
-        try ( FileInputStream in = new FileInputStream(xmlFile)) {
+        try (FileInputStream in = new FileInputStream(xmlFile)) {
             final Source loadSource = new StreamSource(in);
             final Result loadResult = new DOMResult(document);
             transformer.transform(loadSource, loadResult);
@@ -258,10 +257,10 @@ public class ProjectUpdater extends Task {
         final TransformerFactory transformerFactory = TransformerFactory.newInstance();
         transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
         // Ant's build.xml can not use this
-//        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, ""); 
+//        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
         final Transformer transformer = transformerFactory.newTransformer();
 
-        try ( FileOutputStream out = new FileOutputStream(xmlFile)) {
+        try (FileOutputStream out = new FileOutputStream(xmlFile)) {
             final Source saveSource = new DOMSource(document);
             final Result saveResult = new StreamResult(out);
             transformer.transform(saveSource, saveResult);

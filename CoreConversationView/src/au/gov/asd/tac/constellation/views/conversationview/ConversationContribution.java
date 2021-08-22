@@ -66,11 +66,11 @@ public abstract class ConversationContribution {
 
     /**
      * Get the text that this contribution is associated to.
-     * 
+     *
      * @return The text that this contribution is associated to.
      */
     protected abstract String getText();
-    
+
     /**
      * Gets the javafx Region that is used to display this Contribution inside a
      * bubble in the Conversation View. This method will create the region if it

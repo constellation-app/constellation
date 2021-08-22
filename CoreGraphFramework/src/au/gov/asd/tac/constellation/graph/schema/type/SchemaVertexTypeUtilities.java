@@ -33,7 +33,8 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 
 /**
- * A collection of utilities for interrogation of all available {@link SchemaVertexType} objects.
+ * A collection of utilities for interrogation of all available
+ * {@link SchemaVertexType} objects.
  *
  * @author cygnus_x-1
  */
@@ -63,9 +64,11 @@ public class SchemaVertexTypeUtilities {
     }
 
     /**
-     * Get all {@link SchemaVertexType} from the SchemaConcept of the specified {@link Class}.
+     * Get all {@link SchemaVertexType} from the SchemaConcept of the specified
+     * {@link Class}.
      *
-     * @param fromConcept The SchemaConcept from which to retrieve {@link SchemaVertexType} objects.
+     * @param fromConcept The SchemaConcept from which to retrieve
+     * {@link SchemaVertexType} objects.
      * @return A {@link List} of all discovered {@link SchemaVertexType}.
      */
     public static Collection<SchemaVertexType> getTypes(final Class<? extends SchemaConcept> fromConcept) {
@@ -81,11 +84,12 @@ public class SchemaVertexTypeUtilities {
     }
 
     /**
-     * Find all {@link SchemaVertexType} instances held by the specified List of SchemaConcept instances, removing any
-     * overridden types along the way.
+     * Find all {@link SchemaVertexType} instances held by the specified List of
+     * SchemaConcept instances, removing any overridden types along the way.
      *
-     * @param fromConcepts A {@link List} of {@link Class} objects for the set of SchemaConcept from which you want held
-     * {@link SchemaVertexType} objects.
+     * @param fromConcepts A {@link List} of {@link Class} objects for the set
+     * of SchemaConcept from which you want held {@link SchemaVertexType}
+     * objects.
      * @return A {@link Collection} of {@link SchemaVertexType}.
      */
     public static Collection<SchemaVertexType> getTypes(final Set<Class<? extends SchemaConcept>> fromConcepts) {
@@ -127,26 +131,32 @@ public class SchemaVertexTypeUtilities {
     }
 
     /**
-     * Get a {@link SchemaVertexType} held by a registered {@link SchemaConcept} by name. Note that if more than one
-     * type exists with the specified name, then one will be chosen arbitrarily.
+     * Get a {@link SchemaVertexType} held by a registered {@link SchemaConcept}
+     * by name. Note that if more than one type exists with the specified name,
+     * then one will be chosen arbitrarily.
      *
-     * @param name A {@link String} representing the name of the {@link SchemaVertexType} you wish to find.
-     * @return A {@link SchemaVertexType} with the specified name if it could be found, otherwise the default
-     * {@link SchemaVertexType} as returned by {@link SchemaConceptUtilities#getDefaultVertexType()}.
+     * @param name A {@link String} representing the name of the
+     * {@link SchemaVertexType} you wish to find.
+     * @return A {@link SchemaVertexType} with the specified name if it could be
+     * found, otherwise the default {@link SchemaVertexType} as returned by
+     * {@link SchemaConceptUtilities#getDefaultVertexType()}.
      */
     public static SchemaVertexType getType(final String name) {
         return getType(name, null);
     }
 
     /**
-     * Get a {@link SchemaVertexType} held by the {@link SchemaConcept} of the specified {@link Class} by name. Note
-     * that if more than one type exists in the specified concepts with the specified name, then one will be chosen
-     * arbitrarily.
+     * Get a {@link SchemaVertexType} held by the {@link SchemaConcept} of the
+     * specified {@link Class} by name. Note that if more than one type exists
+     * in the specified concepts with the specified name, then one will be
+     * chosen arbitrarily.
      *
-     * @param name A {@link String} representing the name of the {@link SchemaVertexType} you wish to find.
-     * @param fromConcept A {@link Class} object describing the {@link SchemaConcept} you wish to search against.
-     * @return A {@link SchemaVertexType} with the specified name if it could be found, otherwise the default
-     * {@link SchemaVertexType}.
+     * @param name A {@link String} representing the name of the
+     * {@link SchemaVertexType} you wish to find.
+     * @param fromConcept A {@link Class} object describing the
+     * {@link SchemaConcept} you wish to search against.
+     * @return A {@link SchemaVertexType} with the specified name if it could be
+     * found, otherwise the default {@link SchemaVertexType}.
      */
     public static SchemaVertexType getType(final String name, final Class<? extends SchemaConcept> fromConcept) {
         if (name == null) {
@@ -164,12 +174,15 @@ public class SchemaVertexTypeUtilities {
     }
 
     /**
-     * Get a {@link SchemaVertexType} held by a registered {@link SchemaConcept} by name if it exists or create a new
-     * type with it's name set to the given String and set the incomplete flag.
+     * Get a {@link SchemaVertexType} held by a registered {@link SchemaConcept}
+     * by name if it exists or create a new type with it's name set to the given
+     * String and set the incomplete flag.
      *
-     * @param name A {@link String} representing the name of the {@link SchemaVertexType} you wish to find.
-     * @return A {@link SchemaVertexType} with the specified name if it could be found, otherwise a new
-     * {@link SchemaVertexType} as returned with the name.
+     * @param name A {@link String} representing the name of the
+     * {@link SchemaVertexType} you wish to find.
+     * @return A {@link SchemaVertexType} with the specified name if it could be
+     * found, otherwise a new {@link SchemaVertexType} as returned with the
+     * name.
      */
     public static SchemaVertexType getTypeOrBuildNew(final String name) {
         final SchemaVertexType defaultType = SchemaVertexTypeUtilities.getDefaultType();
@@ -202,19 +215,22 @@ public class SchemaVertexTypeUtilities {
      * Checks if a type with a given name has been discovered by SchemaConcept.
      *
      * @param name The name of a type to look for.
-     * @return True if a {@link SchemaTransactionType} was found, false otherwise.
+     * @return True if a {@link SchemaTransactionType} was found, false
+     * otherwise.
      */
     public static boolean containsTypeName(final String name) {
         return getTypes().stream().anyMatch(t -> t.getName().equals(name));
     }
 
     /**
-     * Identifies any {@link SchemaVertexType} of those held by registered {@link SchemaConcept} instances detection
-     * regular expression matches the specified identifier. If more than one are found, then all matching types will be
-     * returned in the order they were discovered. If none are found, then null will be returned.
+     * Identifies any {@link SchemaVertexType} of those held by registered
+     * {@link SchemaConcept} instances detection regular expression matches the
+     * specified identifier. If more than one are found, then all matching types
+     * will be returned in the order they were discovered. If none are found,
+     * then null will be returned.
      *
-     * @param identifier A {@link String} representing an identifier you wish to match a {@link SchemaVertexType}
-     * against.
+     * @param identifier A {@link String} representing an identifier you wish to
+     * match a {@link SchemaVertexType} against.
      * @return A {@link List} of {@link SchemaVertexType} which matched.
      */
     public static List<SchemaVertexType> matchVertexTypes(final String identifier) {
@@ -222,13 +238,16 @@ public class SchemaVertexTypeUtilities {
     }
 
     /**
-     * Identifies any {@link SchemaVertexType} of those held by the {@link SchemaConcept} of the specified {@link Class}
-     * whose detection regular expression matches the specified identifier. If more than one are found, then all
-     * matching types will be returned in the order they were discovered. If none are found, then null will be returned.
+     * Identifies any {@link SchemaVertexType} of those held by the
+     * {@link SchemaConcept} of the specified {@link Class} whose detection
+     * regular expression matches the specified identifier. If more than one are
+     * found, then all matching types will be returned in the order they were
+     * discovered. If none are found, then null will be returned.
      *
-     * @param identifier A {@link String} representing an identifier you wish to match a {@link SchemaVertexType}
-     * against.
-     * @param fromConcept A {@link Class} object describing the {@link SchemaConcept} you wish to search against.
+     * @param identifier A {@link String} representing an identifier you wish to
+     * match a {@link SchemaVertexType} against.
+     * @param fromConcept A {@link Class} object describing the
+     * {@link SchemaConcept} you wish to search against.
      * @return A {@link List} of {@link SchemaVertexType} which matched.
      */
     public static List<SchemaVertexType> matchVertexTypes(final String identifier, final Class<? extends SchemaConcept> fromConcept) {
@@ -263,21 +282,26 @@ public class SchemaVertexTypeUtilities {
     }
 
     /**
-     * Given some text as a {@link String}, find any components of that text which match against the most specific
-     * detection regular expression of all {@link SchemaVertexType} for all registered {@link SchemaConcept}.
+     * Given some text as a {@link String}, find any components of that text
+     * which match against the most specific detection regular expression of all
+     * {@link SchemaVertexType} for all registered {@link SchemaConcept}.
      *
-     * @param text A {@link String} representing text from which to find {@link SchemaVertexType} matches.
-     * @return A {@link List} of {@link ExtractedVertexType} representing matched types in the text.
+     * @param text A {@link String} representing text from which to find
+     * {@link SchemaVertexType} matches.
+     * @return A {@link List} of {@link ExtractedVertexType} representing
+     * matched types in the text.
      */
     public static List<ExtractedVertexType> extractVertexTypes(final String text) {
         return extractVertexTypes(text, null);
     }
 
     /**
-     * Given some text as a {@link String}, find any components of that text which match against the most specific
-     * detection regular expression of all {@link SchemaVertexType} for all registered {@link SchemaConcept}.
+     * Given some text as a {@link String}, find any components of that text
+     * which match against the most specific detection regular expression of all
+     * {@link SchemaVertexType} for all registered {@link SchemaConcept}.
      *
-     * @param text A {@link String} representing text from which to find {@link SchemaVertexType} matches.
+     * @param text A {@link String} representing text from which to find
+     * {@link SchemaVertexType} matches.
      * @param previouslyExtracted A list {@link ExtractedVertexType> previously
      * extracted from this text.
      * @return A {@link List} of {@link ExtractedVertexType} representing
@@ -326,7 +350,8 @@ public class SchemaVertexTypeUtilities {
      * Add a custom type.
      *
      * @param type The new type.
-     * @param replace If a type with the same name exists, replace it with this type if true, else throw an exception.
+     * @param replace If a type with the same name exists, replace it with this
+     * type if true, else throw an exception.
      */
     public static void addCustomType(final SchemaVertexType type, final boolean replace) {
         final boolean exists = containsTypeName(type.getName());
@@ -351,8 +376,10 @@ public class SchemaVertexTypeUtilities {
     }
 
     /**
-     * A class which describes a {@link SchemaVertexType} whose detection regular expression was matched against some
-     * given text. This class has the ability to compare itself to other extracted schema types based on specificity.
+     * A class which describes a {@link SchemaVertexType} whose detection
+     * regular expression was matched against some given text. This class has
+     * the ability to compare itself to other extracted schema types based on
+     * specificity.
      */
     public static class ExtractedVertexType implements Comparable<ExtractedVertexType> {
 

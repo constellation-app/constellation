@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2021 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,9 +31,9 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class DataAccessStateNGTest {
-    
+
     private DataAccessState dataAccessState;
-    
+
     public DataAccessStateNGTest() {
     }
 
@@ -53,36 +53,36 @@ public class DataAccessStateNGTest {
     @AfterMethod
     public void tearDownMethod() throws Exception {
     }
-    
+
     @Test
     public void testConstructorEmptyList() {
         assertEquals(dataAccessState.getState(), Collections.emptyList());
     }
-    
+
     @Test
     public void testNewTabNewHashMap() {
         dataAccessState.newTab();
         assertEquals(dataAccessState.getState(), List.of(new HashMap<>()));
     }
-    
+
     @Test
     public void testAddPutsInLastTab() {
         final String key = "testKey";
         final String value = "testValue";
-        
+
         dataAccessState.newTab();
         dataAccessState.newTab();
         dataAccessState.add(key, value);
-        
+
         // Verify two tabs
         assertEquals(dataAccessState.getState().size(), 2);
-        
+
         // Verify first tab has no entries
         assertTrue(dataAccessState.getState().get(0).isEmpty());
-        
+
         // Verify the second tab has one entry and it is the expected key/value pair
         assertEquals(dataAccessState.getState().get(1).size(), 1);
         assertEquals(dataAccessState.getState().get(1).get(key), value);
-        
+
     }
 }

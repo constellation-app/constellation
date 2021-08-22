@@ -140,7 +140,7 @@ public class SplitNodesPluginNGTest {
     public void tearDownMethod() throws Exception {
         graph = null;
     }
-    
+
     /**
      * Test of createParameters method, of class SplitNodesPlugin.
      */
@@ -148,7 +148,7 @@ public class SplitNodesPluginNGTest {
     public void testCreateParameters() {
         final SplitNodesPlugin instance = new SplitNodesPlugin();
         final PluginParameters params = instance.createParameters();
-        
+
         assertEquals(params.getParameters().size(), 5);
         assertTrue(params.getParameters().containsKey(SplitNodesPlugin.SPLIT_PARAMETER_ID));
         assertTrue(params.getParameters().containsKey(SplitNodesPlugin.DUPLICATE_TRANSACTIONS_PARAMETER_ID));
@@ -156,7 +156,7 @@ public class SplitNodesPluginNGTest {
         assertTrue(params.getParameters().containsKey(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID));
         assertTrue(params.getParameters().containsKey(SplitNodesPlugin.COMPLETE_WITH_SCHEMA_OPTION_ID));
     }
-    
+
     /**
      * Test of createParameters method, of class SplitNodesPlugin.
      */
@@ -164,13 +164,13 @@ public class SplitNodesPluginNGTest {
     public void testUpdateParameters() {
         final SplitNodesPlugin instance = new SplitNodesPlugin();
         final PluginParameters params = instance.createParameters();
-        
+
         final PluginParameter<SingleChoiceParameterValue> transactionTypeParam = (PluginParameter<SingleChoiceParameterValue>) params.getParameters().get(SplitNodesPlugin.TRANSACTION_TYPE_PARAMETER_ID);
         assertTrue(SingleChoiceParameterType.getOptions(transactionTypeParam).isEmpty());
-        
+
         final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
         instance.updateParameters(new DualGraph(schema, graph), params);
-        
+
         // 9 is the number of transaction types in the analytic schema
         assertEquals(SingleChoiceParameterType.getOptions(transactionTypeParam).size(), 9);
     }

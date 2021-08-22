@@ -313,10 +313,12 @@ public final class ImportDelimitedIO {
     /**
      * Determine if the attribute should be saved to the configuration file.
      * <p>
-     * There are two cases when an attribute should be saved to the configuration file.
+     * There are two cases when an attribute should be saved to the
+     * configuration file.
      * <ul>
      * <li>If the attribute is assigned to a column</li>
-     * <li>If the attribute is not assigned to a column but has a default value or translations defined</li>
+     * <li>If the attribute is not assigned to a column but has a default value
+     * or translations defined</li>
      * </ul>
      *
      * @param iadef Attribute definition

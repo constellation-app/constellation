@@ -49,6 +49,7 @@ import org.testng.annotations.Test;
  * @author Auriga2
  */
 public class MergeNodesBySuffixNGTest {
+
     private int vertexIdentifierAttribute, vertexSelectedAttribute;
     private int vxId1, vxId2, vxId3, vxId4, vxId5, vxId6;
     private StoreGraph graph;
@@ -242,6 +243,7 @@ public class MergeNodesBySuffixNGTest {
         Map<Integer, Set<Integer>> result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
         assertEquals(result, expResult);
     }
+
     /**
      * Test of getNodesToMerge method, of class MergeNodesBySuffix, with Longest
      * LeadVertexChooser and SelectedOnly=true

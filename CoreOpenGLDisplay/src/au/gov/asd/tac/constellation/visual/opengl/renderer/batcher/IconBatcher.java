@@ -159,18 +159,18 @@ public class IconBatcher implements SceneBatcher {
         final String sWDecoratorName = access.getSWDecorator(pos);
         final String sEDecoratorName = access.getSEDecorator(pos);
         final String nEDecoratorName = access.getNEDecorator(pos);
-        
+
         // Set the icons for any corners for which a decorator name is set. The name will  be checked in the loaded icon set
         // and loaded if found. If not found the decorator will be blank.
-        final int nWDecoratorIndex = (nWDecoratorName != null && IconManager.iconExists(nWDecoratorName)) ? 
-                GLTools.LOADED_ICON_HELPER.addIcon(nWDecoratorName) : GLTools.TRANSPARENT_ICON_INDEX;
-        final int sWDecoratorIndex = (sWDecoratorName != null && IconManager.iconExists(sWDecoratorName)) ? 
-                GLTools.LOADED_ICON_HELPER.addIcon(sWDecoratorName) : GLTools.TRANSPARENT_ICON_INDEX;
-        final int sEDecoratorIndex = (sEDecoratorName != null && IconManager.iconExists(sEDecoratorName)) ? 
-                GLTools.LOADED_ICON_HELPER.addIcon(sEDecoratorName) : GLTools.TRANSPARENT_ICON_INDEX;
-        final int nEDecoratorIndex = (nEDecoratorName != null && IconManager.iconExists(nEDecoratorName)) ? 
-                GLTools.LOADED_ICON_HELPER.addIcon(nEDecoratorName) : GLTools.TRANSPARENT_ICON_INDEX;
- 
+        final int nWDecoratorIndex = (nWDecoratorName != null && IconManager.iconExists(nWDecoratorName))
+                ? GLTools.LOADED_ICON_HELPER.addIcon(nWDecoratorName) : GLTools.TRANSPARENT_ICON_INDEX;
+        final int sWDecoratorIndex = (sWDecoratorName != null && IconManager.iconExists(sWDecoratorName))
+                ? GLTools.LOADED_ICON_HELPER.addIcon(sWDecoratorName) : GLTools.TRANSPARENT_ICON_INDEX;
+        final int sEDecoratorIndex = (sEDecoratorName != null && IconManager.iconExists(sEDecoratorName))
+                ? GLTools.LOADED_ICON_HELPER.addIcon(sEDecoratorName) : GLTools.TRANSPARENT_ICON_INDEX;
+        final int nEDecoratorIndex = (nEDecoratorName != null && IconManager.iconExists(nEDecoratorName))
+                ? GLTools.LOADED_ICON_HELPER.addIcon(nEDecoratorName) : GLTools.TRANSPARENT_ICON_INDEX;
+
         if (nWDecoratorIndex > MAX_ICON_INDEX || sWDecoratorIndex > MAX_ICON_INDEX || sEDecoratorIndex > MAX_ICON_INDEX || nEDecoratorIndex > MAX_ICON_INDEX) {
             final String msg = "Decorator icon index is too large";
             throw new IllegalStateException(msg);

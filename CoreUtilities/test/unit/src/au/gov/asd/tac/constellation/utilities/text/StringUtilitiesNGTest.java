@@ -175,7 +175,7 @@ public class StringUtilitiesNGTest {
         expected.add(tuple);
         assertEquals(StringUtilities.searchRange(text, searchStr), expected);
     }
-    
+
     @Test
     public void splitLabelsWithEscapeCharacters() {
         final String text = "Label1|Label2,Label3\tLabel4\\,Label5\\\\,Label6";
@@ -187,16 +187,16 @@ public class StringUtilitiesNGTest {
                         "Label4\\,Label5\\\\", // This seems wrong!
                         "Label6"));
     }
-    
+
     @Test
     public void quoteAndDelimitString() {
         final List<String> items = List.of("Label1", "Label2", "Lab\\el3");
         final char delimiter = ',';
-        
+
         assertEquals(StringUtilities.quoteAndDelimitString(items, delimiter),
                 "\"Label1\",\"Label2\",\"Lab\\\\el3\",");
     }
-    
+
     @Test
     public void unescapeString() {
         final String escapedString = "This is a test \\\\t \\t \t";
@@ -205,7 +205,7 @@ public class StringUtilitiesNGTest {
                 "This is a test t t \t");
         assertEquals(StringUtilities.unescapeString(null, metaCharacters), null);
     }
-    
+
     @Test
     public void removeSquareBracketsFromString() {
         assertEquals(StringUtilities.removeSquareBracketsFromString("[ abc ]"), " abc ");
@@ -213,7 +213,7 @@ public class StringUtilitiesNGTest {
         assertEquals(StringUtilities.removeSquareBracketsFromString("abc ]"), "abc ");
         assertEquals(StringUtilities.removeSquareBracketsFromString("a[b]c"), "a[b]c");
     }
-    
+
     @Test
     public void removeSpecialCharacters() {
         assertEquals(StringUtilities.removeSpecialCharacters("[ abc *()4 N ]"), "abc4N");

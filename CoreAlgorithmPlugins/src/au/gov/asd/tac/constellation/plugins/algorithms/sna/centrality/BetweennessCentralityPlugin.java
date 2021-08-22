@@ -171,7 +171,7 @@ public class BetweennessCentralityPlugin extends SimpleEditPlugin {
             } else {
                 betweennessAttributeValue = betweennesses[vertexPosition];
             }
-            
+
             graph.setFloatValue(betweennessAttribute, vertexId, Float.isNaN(betweennessAttributeValue) ? 0 : betweennessAttributeValue);
         }
     }

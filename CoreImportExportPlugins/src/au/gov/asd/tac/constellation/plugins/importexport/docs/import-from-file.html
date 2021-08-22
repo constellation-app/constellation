@@ -20,7 +20,7 @@
                     Open Delimited File Importer
                 </td>
                 <td>
-                    
+
                 </td>
                 <td>
                     File -&gt; Import -&gt; From File...
@@ -30,7 +30,7 @@
                 </td>
             </tr>
         </table>
-        
+
         <h2>Introduction</h2>
         <p>
             The "Import From File" window allows you to import data from the following sources:
@@ -40,9 +40,9 @@
             <li>Tab-separated values (TSV)</li>
             <li>Excel</li>
             <li>XML</li>
-            <li>JSON</li>            
+            <li>JSON</li>
         </ul>
-        
+
         <div style="text-align: center">
             <img src="resources/DelimitedFileImporter.png" alt="Delimited File Importer">
         </div>
@@ -72,12 +72,12 @@
 
         <h2>Add and Remove Files to Import</h2>
         <p>
-            Add files to import using the <img src="resources/plus_coloured.png" alt="Add File Button"> and remove a file using the 
-            <img src="resources/minus_coloured.png" alt="Remove File Button">. Once a file has been selected, the full name will 
+            Add files to import using the <img src="resources/plus_coloured.png" alt="Add File Button"> and remove a file using the
+            <img src="resources/minus_coloured.png" alt="Remove File Button">. Once a file has been selected, the full name will
             appear. If the entire file location is not visible, extend the window to see the full name.
         </p>
         <p>
-            Once you add a file, the Configuration section will display the first 100 rows of the file as a preview. If you have 
+            Once you add a file, the Configuration section will display the first 100 rows of the file as a preview. If you have
             imported multiple files, selecting the file will update the preview.
         </p>
         <p>
@@ -85,15 +85,15 @@
             governed by the schema. If this is not enabled, nodes imported will not have attributes such as label and icon defined.
         </p>
         <p>
-            With the "Files Include Headers" option enabled, the importer will treat the first row of the file as a header and it 
-            not be imported. The header row is then displayed as the column names in the preview. With the option disabled, the 
-            importer will import every row including the first row. The preview in this case will add some auto-generated column 
+            With the "Files Include Headers" option enabled, the importer will treat the first row of the file as a header and it
+            not be imported. The header row is then displayed as the column names in the preview. With the option disabled, the
+            importer will import every row including the first row. The preview in this case will add some auto-generated column
             names (these won't affect the file or the import).
         </p>
 
         <h2>Select the Destination Graph</h2>
         <p>
-            Select the destination graph from the drop-down list. Once selected, the attributes in the configuration pane update 
+            Select the destination graph from the drop-down list. Once selected, the attributes in the configuration pane update
             depending on what attributes are supported by the schema of that graph.
         </p>
 
@@ -119,7 +119,7 @@
         <p>
             By default, transactions are created as directed. In the Transaction Attributes column there is a pseudo-attribute
             called "__directed__" (different from "directed") which can be used to create directed and undirected transactions
-            as required. The "__directed__" pseudo-attribute is a boolean that will cause a transaction to be directed when its 
+            as required. The "__directed__" pseudo-attribute is a boolean that will cause a transaction to be directed when its
             value is "true" (case insensitive), and undirected otherwise.
         </p>
 
@@ -129,8 +129,8 @@
             button located at the bottom right hand corner.
         </p>
         <p>
-            NOTE: The import window does not disappear after clicking import. This is so that you don't have to re-configure from 
-            the beginning. Once you are satisfied with the configuration, you have the ability to save your settings explained in 
+            NOTE: The import window does not disappear after clicking import. This is so that you don't have to re-configure from
+            the beginning. Once you are satisfied with the configuration, you have the ability to save your settings explained in
             the next section.
         </p>
 

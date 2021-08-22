@@ -26,8 +26,8 @@ import java.util.regex.Pattern;
 import org.apache.commons.collections4.CollectionUtils;
 
 /**
- * A text hashmod based on a supplied CSV file. Will modify attributes specified in the headers to be values based on
- * the first Key column.
+ * A text hashmod based on a supplied CSV file. Will modify attributes specified
+ * in the headers to be values based on the first Key column.
  *
  * @author CrucisGamma
  */

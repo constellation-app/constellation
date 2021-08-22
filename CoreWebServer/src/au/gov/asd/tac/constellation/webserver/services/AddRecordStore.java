@@ -208,14 +208,14 @@ public class AddRecordStore extends RestService {
             throw new RestServiceException(ex);
         }
     }
-    
+
     @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
     private static class ImportFromRestApiPlugin extends SimpleEditPlugin {
-        
+
         private final RecordStore recordStore;
         private final boolean completeWithSchema;
         private final String arrange;
-        
+
         public ImportFromRestApiPlugin(final RecordStore recordStore, final boolean completeWithSchema, final String arrange) {
             this.recordStore = recordStore;
             this.completeWithSchema = completeWithSchema;
@@ -226,34 +226,34 @@ public class AddRecordStore extends RestService {
         public String getName() {
             return "Import from REST API";
         }
-        
+
         @Override
         protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
             GraphRecordStoreUtilities.addRecordStoreToGraph(graph, recordStore, false, completeWithSchema, null);
 
-                // Do the optional arrangement inside this anonymous "addRecordStoreToGraph" plugin.
-                // This way, any extra nodes are added and arranged in one go.
-                // If the arrangement is done separately, not only does the "add + arrange" become two steps,
-                // but if enough extra vertices are drawn at (0, 0, 0), some graphics drivers will crash.
-                // It is still possible to do this (by manually setting x,y,z to 0,0,0 and specifying no arrangement),
-                // but then it becomes the malicious user's fault.
-                //
-                try {
-                    if (arrange == null) {
-                        PluginExecutor
-                                .startWith(ArrangementPluginRegistry.GRID_COMPOSITE)
-                                .followedBy(ArrangementPluginRegistry.PENDANTS)
-                                .followedBy(ArrangementPluginRegistry.UNCOLLIDE)
-                                .executeNow(graph);
-                    } else if (arrange.isEmpty() || arrange.equalsIgnoreCase("None")) {
-                        // Don't do anything.
-                    } else {
-                        PluginExecution.withPlugin(arrange).executeNow(graph);
-                    }
-                } catch (final PluginException ex) {
-                    Exceptions.printStackTrace(ex);
+            // Do the optional arrangement inside this anonymous "addRecordStoreToGraph" plugin.
+            // This way, any extra nodes are added and arranged in one go.
+            // If the arrangement is done separately, not only does the "add + arrange" become two steps,
+            // but if enough extra vertices are drawn at (0, 0, 0), some graphics drivers will crash.
+            // It is still possible to do this (by manually setting x,y,z to 0,0,0 and specifying no arrangement),
+            // but then it becomes the malicious user's fault.
+            //
+            try {
+                if (arrange == null) {
+                    PluginExecutor
+                            .startWith(ArrangementPluginRegistry.GRID_COMPOSITE)
+                            .followedBy(ArrangementPluginRegistry.PENDANTS)
+                            .followedBy(ArrangementPluginRegistry.UNCOLLIDE)
+                            .executeNow(graph);
+                } else if (arrange.isEmpty() || arrange.equalsIgnoreCase("None")) {
+                    // Don't do anything.
+                } else {
+                    PluginExecution.withPlugin(arrange).executeNow(graph);
                 }
+            } catch (final PluginException ex) {
+                Exceptions.printStackTrace(ex);
+            }
         }
-        
-    } 
+
+    }
 }
