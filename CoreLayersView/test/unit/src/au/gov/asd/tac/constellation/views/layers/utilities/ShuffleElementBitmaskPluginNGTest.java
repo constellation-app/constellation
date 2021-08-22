@@ -163,6 +163,7 @@ public class ShuffleElementBitmaskPluginNGTest {
      */
     @Test
     public void testEdit() throws InterruptedException, PluginException {
+        System.out.println("testEdit");
 
         setupGraph();
         // Check Vertex set correctly
@@ -211,6 +212,7 @@ public class ShuffleElementBitmaskPluginNGTest {
      */
     @Test
     public void testEditToggledLayer() throws InterruptedException, PluginException {
+        System.out.println("testEditToggledLayer");
 
         setupGraph();
 
@@ -271,6 +273,7 @@ public class ShuffleElementBitmaskPluginNGTest {
      */
     @Test
     public void testEditToggledLayerSelectedVx() throws InterruptedException, PluginException {
+        System.out.println("testEditToggledLayerSelectedVx");
         // Graph viewing layer 3
         // vx1 layer 1 invis unselect
         // vx2 layer 2 invis unselect
@@ -371,6 +374,7 @@ public class ShuffleElementBitmaskPluginNGTest {
 
     @Test
     public void testEditSevenLayersSevenVx() throws InterruptedException, PluginException {
+        System.out.println("testEditSevenLayersSevenVx");
         setupGraph7Vertices();
 
         // trigger shuffle of layer 4
