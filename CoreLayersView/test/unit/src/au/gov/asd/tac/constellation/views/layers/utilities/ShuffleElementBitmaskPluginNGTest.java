@@ -411,7 +411,7 @@ public class ShuffleElementBitmaskPluginNGTest {
      */
     @Test
     public void testIncrementBitmask() {
-        System.out.println("incrementBitmask");
+        System.out.println("incrementBitmask p1");
 
         // Shift into second layer position
         int currentIndex = 2;
@@ -420,12 +420,15 @@ public class ShuffleElementBitmaskPluginNGTest {
         long result = ShuffleElementBitmaskPlugin.incrementBitmask(currentIndex, currentBitmask);
         assertEquals(result, expResult);
 
+        System.out.println("incrementBitmask p2");
+
         // shift into first layer position
         currentIndex = 1;
         currentBitmask = 0b101;
         expResult = 0b11;
         result = ShuffleElementBitmaskPlugin.incrementBitmask(currentIndex, currentBitmask);
         assertEquals(result, expResult);
+        System.out.println("incrementBitmask p3");
 
         // shift into 19th layer position from layer 20
         currentIndex = 19;
@@ -433,5 +436,6 @@ public class ShuffleElementBitmaskPluginNGTest {
         expResult = 0b10000000000000000001;
         result = ShuffleElementBitmaskPlugin.incrementBitmask(currentIndex, currentBitmask);
         assertEquals(result, expResult);
+        System.out.println("incrementBitmask p4");
     }
 }
