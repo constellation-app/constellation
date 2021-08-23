@@ -66,13 +66,17 @@ public class TableViewUtilities {
 
     private static final String EXPORT_TO_DELIMITED_FILE_PLUGIN = "Table View: Export to Delimited File";
     private static final String EXPORT_TO_EXCEL_FILE_PLUGIN = "Table View: Export to Excel File";
-    public static final String SELECT_ON_GRAPH_PLUGIN = "Table View: Select on Graph";
     private static final String UPDATE_STATE_PLUGIN = "Table View: Update State";
     private static final String EXPORT_CSV = "Export To CSV";
     private static final String EXPORT_XLSX = "Export To XLSX";
     private static final String CSV_EXT = ".csv";
     private static final String XLSX_EXT = ".xlsx";
 
+    public static final String SELECT_ON_GRAPH_PLUGIN = "Table View: Select on Graph";
+    
+    // TODO find a better place for this. I don't like it being public
+    public static final Object TABLE_LOCK = new Object();
+    
     /**
      * Retrieve data from the given table as comma-separated values.
      *
