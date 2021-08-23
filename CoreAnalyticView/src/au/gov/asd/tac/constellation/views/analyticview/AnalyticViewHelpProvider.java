@@ -37,11 +37,11 @@ public class AnalyticViewHelpProvider extends HelpPageProvider {
         File dir = new File("./src/au/gov/asd/tac/constellation/views/analyticview");
         String[] extensions = new String[]{"md"};
         List<File> files = (List<File>) FileUtils.listFiles(dir, extensions, true);
-        List<String> fileNames = new ArrayList<>();
+        List<String> filePaths = new ArrayList<>();
         for (File file : files) {
-            fileNames.add(file.getName());
+            filePaths.add(file.getPath());
         }
 
-        return fileNames;
+        return filePaths;
     }
 }
