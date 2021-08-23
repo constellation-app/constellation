@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.views.layers.shortcut;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
@@ -30,14 +29,12 @@ import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewState;
 import au.gov.asd.tac.constellation.views.layers.utilities.LayersUtilities;
 import au.gov.asd.tac.constellation.views.layers.utilities.UpdateLayerSelectionPlugin;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
  * A plugin that deselects all layers in the layers view
  *
  * @author formalhaut69
  */
-@ServiceProvider(service = Plugin.class)
 @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
 public class DeselectAllLayersPlugin extends SimpleEditPlugin {
 
