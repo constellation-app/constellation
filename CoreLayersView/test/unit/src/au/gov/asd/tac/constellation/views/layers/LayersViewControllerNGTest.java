@@ -78,22 +78,6 @@ public class LayersViewControllerNGTest {
     }
 
     /**
-     * Test of init method, of class LayersViewController.
-     */
-    @Test
-    public void testInit() {
-        System.out.println("init");
-
-        final LayersViewController instance = LayersViewController.getDefault();
-        assertEquals(instance.getParent(), null);
-
-        final LayersViewTopComponent lvtc = new LayersViewTopComponent();
-
-        instance.init(lvtc);
-        assertEquals(instance.getParent(), lvtc);
-    }
-
-    /**
      * Verify that no elements are added to the graph when an empty graph is
      * used
      */
