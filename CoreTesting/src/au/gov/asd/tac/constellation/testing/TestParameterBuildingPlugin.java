@@ -62,7 +62,7 @@ public class TestParameterBuildingPlugin extends SimpleQueryPlugin {
     public static final String FLOAT_NAME = "Some Float";
     public static final String FLOAT_DESCRIPTION = "Enter some float between 0 and 1.";
     public static final String SOME_BOOLEAN_NAME = "Some Boolean";
-    public static final String SOME_BOOLEAN_DESCRIPTION = "If ture, it is so!";
+    public static final String SOME_BOOLEAN_DESCRIPTION = "If true, it is so!";
 
     private static final Logger LOGGER = Logger.getLogger(TestParameterBuildingPlugin.class.getName());
 
