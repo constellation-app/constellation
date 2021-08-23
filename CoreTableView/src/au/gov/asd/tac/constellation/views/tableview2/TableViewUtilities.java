@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.plugins.PluginGraphs;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
@@ -61,7 +62,7 @@ import org.openide.filesystems.FileChooserBuilder;
  * @author cygnus_x-1
  */
 public class TableViewUtilities {
-    
+
     private static final Logger LOGGER = Logger.getLogger(TableViewUtilities.class.getName());
 
     private static final String EXPORT_TO_DELIMITED_FILE_PLUGIN = "Table View: Export to Delimited File";
@@ -77,6 +78,9 @@ public class TableViewUtilities {
     // TODO find a better place for this. I don't like it being public
     public static final Object TABLE_LOCK = new Object();
     
+    private TableViewUtilities() {
+    }
+
     /**
      * Retrieve data from the given table as comma-separated values.
      *
@@ -115,7 +119,7 @@ public class TableViewUtilities {
                             .reduce((cell1, cell2) -> cell1 + SeparatorConstants.COMMA + cell2)
                             .get());
                     data.append(SeparatorConstants.NEWLINE);
-                });                                
+                });
             }
         } else {
             for (int i = 0; i < pagination.getPageCount(); i++) {
@@ -202,7 +206,7 @@ public class TableViewUtilities {
      * table will be included in the output file.
      * @param sheetName the name of the workbook sheet in the output file.
      */
-    public static void exportToExcel(final TableView<ObservableList<String>> table, final Pagination pagination, 
+    public static void exportToExcel(final TableView<ObservableList<String>> table, final Pagination pagination,
             final int rowsPerPage, final boolean selectedOnly, final String sheetName) {
         final FileChooserBuilder fChooser = new FileChooserBuilder(EXPORT_XLSX)
                 .setTitle(EXPORT_XLSX)
@@ -254,7 +258,11 @@ public class TableViewUtilities {
         PluginExecution.withPlugin(new SelectionToGraphPlugin(table, index, elementType)).executeLater(graph);
     }
 
-    private static class ExportToCsvFilePlugin extends SimplePlugin {
+    /**
+     * Plugin to export to CSV file.
+     */
+    @PluginInfo(pluginType = PluginType.EXPORT, tags = {"EXPORT"})
+    protected static class ExportToCsvFilePlugin extends SimplePlugin {
 
         private final File file;
         private final TableView<ObservableList<String>> table;
@@ -280,7 +288,7 @@ public class TableViewUtilities {
                     } catch (final IOException ex) {
                         interaction.notify(PluginNotificationLevel.ERROR, ex.getLocalizedMessage());
                     }
-                }                    
+                }
             };
             outputThread.start();
             outputThread.join();
@@ -292,7 +300,11 @@ public class TableViewUtilities {
         }
     }
 
-    private static class ExportToExcelFilePlugin extends SimplePlugin {
+    /**
+     * Plugin to export to Excel file.
+     */
+    @PluginInfo(pluginType = PluginType.EXPORT, tags = {"EXPORT"})
+    protected static class ExportToExcelFilePlugin extends SimplePlugin {
 
         private final File file;
         private final TableView<ObservableList<String>> table;
@@ -301,7 +313,7 @@ public class TableViewUtilities {
         private final boolean selectedOnly;
         private final String sheetName;
 
-        public ExportToExcelFilePlugin(final File file, final TableView<ObservableList<String>> table, final Pagination pagination, 
+        public ExportToExcelFilePlugin(final File file, final TableView<ObservableList<String>> table, final Pagination pagination,
                 final int rowsPerPage, final boolean selectedOnly, final String sheetName) {
             this.file = file;
             this.table = table;
@@ -337,12 +349,12 @@ public class TableViewUtilities {
                             @Override
                             public void run() {
                                 // get a copy of the table data so that users are continue working
-                                final List<ObservableList<String>> data = table.getSelectionModel().getSelectedItems();                               
+                                final List<ObservableList<String>> data = table.getSelectionModel().getSelectedItems();
                                 writeRecords(sheet, visibleIndices, data, startIndex);
-                            }                            
+                            }
                         };
                         writeSheetThread.start();
-                        writeSheetThread.join();                      
+                        writeSheetThread.join();
                     }
                 } else {
                     for (int i = 0; i < pagination.getPageCount(); i++) {
@@ -352,9 +364,9 @@ public class TableViewUtilities {
                             @Override
                             public void run() {
                                 // get a copy of the table data so that users are continue working
-                                final List<ObservableList<String>> data = table.getItems();                               
+                                final List<ObservableList<String>> data = table.getItems();
                                 writeRecords(sheet, visibleIndices, data, startIndex);
-                            }                            
+                            }
                         };
                         writeSheetThread.start();
                         writeSheetThread.join();
@@ -362,7 +374,7 @@ public class TableViewUtilities {
                 }
                 // Call the page factory function once more to go back to the original page index
                 pagination.getPageFactory().call(currentPage);
-                
+
                 final Thread outputThread = new Thread("Export to Excel File: Writing File") {
                     @Override
                     public void run() {
@@ -373,7 +385,7 @@ public class TableViewUtilities {
                             interaction.notify(PluginNotificationLevel.ERROR, ex.getLocalizedMessage());
                         }
                         workbook.dispose();
-                    }                   
+                    }
                 };
                 outputThread.start();
                 outputThread.join();
@@ -395,7 +407,7 @@ public class TableViewUtilities {
      * @param visibleIndices The visible columns
      * @param data The table data
      */
-    private static void writeRecords(final Sheet sheet, final List<Integer> visibleIndices, final List<ObservableList<String>> data, 
+    private static void writeRecords(final Sheet sheet, final List<Integer> visibleIndices, final List<ObservableList<String>> data,
             final int startIndex) {
         final int[] rowIndex = new int[1];
         rowIndex[0] = startIndex;
@@ -415,7 +427,8 @@ public class TableViewUtilities {
      * graph change event, we can check to see if it was this plugin that did
      * the changes. If it was, we don't have to change the table.
      */
-    private static class SelectionToGraphPlugin extends SimpleEditPlugin {
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
+    protected static class SelectionToGraphPlugin extends SimpleEditPlugin {
 
         private final TableView<ObservableList<String>> table;
         private final Map<ObservableList<String>, Integer> index;
@@ -450,7 +463,7 @@ public class TableViewUtilities {
     /**
      * Write the given TableViewState to the graph.
      */
-    @PluginInfo(tags = {"LOW LEVEL"})
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
     public static class UpdateStatePlugin extends SimpleEditPlugin {
 
         private final TableViewState tableViewState;

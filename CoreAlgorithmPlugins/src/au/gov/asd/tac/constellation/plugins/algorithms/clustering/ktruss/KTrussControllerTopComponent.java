@@ -23,7 +23,9 @@ import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusteringConcept;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
@@ -349,12 +351,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
     }//GEN-LAST:event_nestedTrussButtonActionPerformed
 
     private void reclusterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reclusterButtonActionPerformed
-        PluginExecution.withPlugin(new SimpleEditPlugin("K-Truss: Calculate") {
-            @Override
-            public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-                KTruss.run(graph, new KTruss.KTrussPluginResultHandler(graph, interactiveButton.isSelected()));
-            }
-        }).executeLater(graph);
+        PluginExecution.withPlugin(new KTrussCalculatePlugin(interactiveButton.isSelected())).executeLater(graph);
     }//GEN-LAST:event_reclusterButtonActionPerformed
 
     private void interactiveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_interactiveButtonActionPerformed
@@ -777,6 +774,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
         PluginExecution.withPlugin(select).interactively(true).executeLater(graph);
     }
 
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
     public static final class RemoveOverlayColors extends SimpleEditPlugin {
 
         @Override
@@ -797,6 +795,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
         }
     }
 
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
     public static final class ColorTrusses extends SimpleEditPlugin {
 
         private final KTrussState state;
@@ -846,6 +845,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
         }
     }
 
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"SELECT"})
     public static final class Select extends SimpleEditPlugin {
 
         private final KTrussState state;
@@ -895,6 +895,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
         }
     }
 
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
     public static final class Update extends SimpleEditPlugin {
 
         private final KTrussState state;
@@ -1008,5 +1009,26 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
 
     void readProperties(final java.util.Properties p) {
         // Required for @ConvertAsProperties, intentionally left blank
+    }
+
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+    public static class KTrussCalculatePlugin extends SimpleEditPlugin {
+
+        final boolean isInteractiveButtonSelected;
+
+        public KTrussCalculatePlugin(final boolean isInteractiveButtonSelected) {
+            this.isInteractiveButtonSelected = isInteractiveButtonSelected;
+        }
+
+        @Override
+        public String getName() {
+            return "K-Truss: Calculate";
+        }
+
+        @Override
+        public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+            KTruss.run(graph, new KTruss.KTrussPluginResultHandler(graph, isInteractiveButtonSelected));
+        }
+
     }
 }

@@ -293,7 +293,7 @@ public class FindRule {
      * @see Calendar
      */
     public Calendar getDateTimeFirstArg() {
-        return args != null ? (Calendar) args.get(DT_FIRST): null;
+        return args != null ? (Calendar) args.get(DT_FIRST) : null;
     }
 
     /**

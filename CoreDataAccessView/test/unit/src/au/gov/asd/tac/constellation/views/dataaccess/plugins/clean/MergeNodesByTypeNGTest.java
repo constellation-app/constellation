@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -56,7 +55,7 @@ public class MergeNodesByTypeNGTest {
     private int vxId1, vxId2, vxId3, vxId4, vxId5, vxId6;
     private int txId1, txId2, txId3, txId4, txId5;
     private StoreGraph graph;
-    
+
     public MergeNodesByTypeNGTest() {
     }
 
@@ -112,7 +111,7 @@ public class MergeNodesByTypeNGTest {
     @AfterMethod
     public void tearDownMethod() throws Exception {
     }
-    
+
     /**
      * Test of updateParameters method, of class MergeNodesByType.
      */
@@ -121,32 +120,32 @@ public class MergeNodesByTypeNGTest {
         System.out.println("testUpdateParameters");
 
         final MergeNodesByType instance = new MergeNodesByType();
-        
+
         final PluginParameters parameters = new PluginParameters();
 
         final PluginParameter<BooleanParameterType.BooleanParameterValue> mergeTypeParameter = BooleanParameterType.build(MERGE_TYPE_PARAMETER_ID);
         mergeTypeParameter.setBooleanValue(false);
         parameters.addParameter(mergeTypeParameter);
-        
+
         final PluginParameter<IntegerParameterType.IntegerParameterValue> thresholdParameter = IntegerParameterType.build(THRESHOLD_PARAMETER_ID);
         thresholdParameter.setIntegerValue(0);
         parameters.addParameter(thresholdParameter);
-        
+
         final PluginParameter<BooleanParameterType.BooleanParameterValue> mergeParameter = BooleanParameterType.build(MERGER_PARAMETER_ID);
         mergeParameter.setBooleanValue(false);
         parameters.addParameter(mergeParameter);
-        
+
         final PluginParameter<BooleanParameterType.BooleanParameterValue> leadParameter = BooleanParameterType.build(LEAD_PARAMETER_ID);
         leadParameter.setBooleanValue(false);
         parameters.addParameter(leadParameter);
-        
+
         final PluginParameter<BooleanParameterType.BooleanParameterValue> selectedParameter = BooleanParameterType.build(SELECTED_PARAMETER_ID);
         selectedParameter.setBooleanValue(false);
         parameters.addParameter(selectedParameter);
-     
-        final Map<String, PluginParameter<?>> parametersMap = parameters.getParameters();     
-            
-        instance.updateParameters(parametersMap);              
+
+        final Map<String, PluginParameter<?>> parametersMap = parameters.getParameters();
+
+        instance.updateParameters(parametersMap);
 
         assertEquals(parametersMap.size(), 5);
         assertTrue(parametersMap.get(MERGE_TYPE_PARAMETER_ID).isEnabled());
@@ -155,17 +154,17 @@ public class MergeNodesByTypeNGTest {
         assertFalse(parametersMap.get(LEAD_PARAMETER_ID).isEnabled());
         assertTrue(parametersMap.get(SELECTED_PARAMETER_ID).isEnabled());
     }
-    
+
     /**
-     * Test of getNodesToMerge method, of class MergeNodesByType, with
-     * no identifier Attribute
+     * Test of getNodesToMerge method, of class MergeNodesByType, with no
+     * identifier Attribute
      */
     @Test
     public void testGetNodesToMerge_NoIdentifierAttribute() throws Exception {
         System.out.println("testGetNodesToMerge_NoTypes");
         Comparator<String> leadVertexChooser = null;
         int threshold = 0;
-        boolean selectedOnly = false;       
+        boolean selectedOnly = false;
         MergeNodesByType instance = new MergeNodesByType();
         Map<Integer, Set<Integer>> expResult = new HashMap<>();
 
@@ -185,14 +184,14 @@ public class MergeNodesByTypeNGTest {
         graph.setStringValue(vertexTypeAttribute, vxId1, AnalyticConcept.VertexType.DOCUMENT.getName());
         graph.setStringValue(vertexTypeAttribute, vxId2, AnalyticConcept.VertexType.DOCUMENT.getName());
         graph.setStringValue(vertexTypeAttribute, vxId3, AnalyticConcept.VertexType.ONLINE_IDENTIFIER.getName());
-        
+
         Map<Integer, Set<Integer>> result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
         assertEquals(result, expResult);
     }
-     
+
     /**
-     * Test of getNodesToMerge method, of class MergeNodesByType, with
-     * no types Attribute
+     * Test of getNodesToMerge method, of class MergeNodesByType, with no types
+     * Attribute
      */
     @Test
     public void testGetNodesToMerge_NoTypeAttribute() throws Exception {
@@ -202,7 +201,7 @@ public class MergeNodesByTypeNGTest {
         boolean selectedOnly = false;
         MergeNodesByType instance = new MergeNodesByType();
         Map<Integer, Set<Integer>> expResult = new HashMap<>();
-        
+
         // create a new analytic graph
         final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
         StoreGraph graph = new StoreGraph(schema);
@@ -223,10 +222,9 @@ public class MergeNodesByTypeNGTest {
         Map<Integer, Set<Integer>> result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
         assertEquals(result, expResult);
     }
-    
+
     /**
-     * Test of getNodesToMerge method, of class MergeNodesByType, with
-     * no types
+     * Test of getNodesToMerge method, of class MergeNodesByType, with no types
      */
     @Test
     public void testGetNodesToMerge_NoTypes() throws Exception {
@@ -241,25 +239,24 @@ public class MergeNodesByTypeNGTest {
     }
 
     /**
-     * Test of getNodesToMerge method, of class MergeNodesByType, with
-     * types
+     * Test of getNodesToMerge method, of class MergeNodesByType, with types
      */
     @Test
     public void testGetNodesToMerge_WithTypes() {
-        System.out.println("getNodesToMerge");   
+        System.out.println("getNodesToMerge");
         Comparator<String> leadVertexChooser = null;
         int threshold = 0;
         boolean selectedOnly = false;
         MergeNodesByType instance = new MergeNodesByType();
-        
-        // set the vertex Type Attribute of each vertex 
-        graph.setStringValue(vertexTypeAttribute, vxId1,  AnalyticConcept.VertexType.DOCUMENT.getName());
-        graph.setStringValue(vertexTypeAttribute, vxId2,  AnalyticConcept.VertexType.DOCUMENT.getName());
-        graph.setStringValue(vertexTypeAttribute, vxId3,  AnalyticConcept.VertexType.ONLINE_IDENTIFIER.getName());
-        graph.setStringValue(vertexTypeAttribute, vxId4,  AnalyticConcept.VertexType.DOCUMENT.getName());
-        graph.setStringValue(vertexTypeAttribute, vxId5,  AnalyticConcept.VertexType.DOCUMENT.getName());
-        graph.setStringValue(vertexTypeAttribute, vxId6,  AnalyticConcept.VertexType.DOCUMENT.getName());
-        
+
+        // set the vertex Type Attribute of each vertex
+        graph.setStringValue(vertexTypeAttribute, vxId1, AnalyticConcept.VertexType.DOCUMENT.getName());
+        graph.setStringValue(vertexTypeAttribute, vxId2, AnalyticConcept.VertexType.DOCUMENT.getName());
+        graph.setStringValue(vertexTypeAttribute, vxId3, AnalyticConcept.VertexType.ONLINE_IDENTIFIER.getName());
+        graph.setStringValue(vertexTypeAttribute, vxId4, AnalyticConcept.VertexType.DOCUMENT.getName());
+        graph.setStringValue(vertexTypeAttribute, vxId5, AnalyticConcept.VertexType.DOCUMENT.getName());
+        graph.setStringValue(vertexTypeAttribute, vxId6, AnalyticConcept.VertexType.DOCUMENT.getName());
+
         Map<Integer, Set<Integer>> expResult = new HashMap<>();
         Set<Integer> cluster = new HashSet<>();
         cluster.addAll(Arrays.asList(1, 2));
@@ -268,29 +265,28 @@ public class MergeNodesByTypeNGTest {
         cluster2.addAll(Arrays.asList(3, 4));
         expResult.put(3, cluster2);
         Map<Integer, Set<Integer>> result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
-        assertEquals(result, expResult);      
+        assertEquals(result, expResult);
     }
-    
+
     /**
-     * Test of getNodesToMerge method, of class MergeNodesByType, with
-     * types
+     * Test of getNodesToMerge method, of class MergeNodesByType, with types
      */
     @Test
     public void testGetNodesToMerge_selectedOnly() {
-        System.out.println("getNodesToMerge");   
+        System.out.println("getNodesToMerge");
         Comparator<String> leadVertexChooser = null;
         int threshold = 0;
         boolean selectedOnly = true;
         MergeNodesByType instance = new MergeNodesByType();
-        
-        // set the vertex Type Attribute of each vertex 
+
+        // set the vertex Type Attribute of each vertex
         graph.setStringValue(vertexTypeAttribute, vxId1, AnalyticConcept.VertexType.ONLINE_IDENTIFIER.getName());
         graph.setStringValue(vertexTypeAttribute, vxId2, AnalyticConcept.VertexType.PERSON.getName());
         graph.setStringValue(vertexTypeAttribute, vxId3, AnalyticConcept.VertexType.PERSON.getName());
         graph.setStringValue(vertexTypeAttribute, vxId4, AnalyticConcept.VertexType.PERSON.getName());
         graph.setStringValue(vertexTypeAttribute, vxId5, AnalyticConcept.VertexType.PERSON.getName());
         graph.setStringValue(vertexTypeAttribute, vxId6, AnalyticConcept.VertexType.ONLINE_IDENTIFIER.getName());
-        
+
         // select some nodes
         graph.setBooleanValue(vertexSelectedAttribute, vxId1, true);
         graph.setBooleanValue(vertexSelectedAttribute, vxId2, false);
@@ -298,14 +294,14 @@ public class MergeNodesByTypeNGTest {
         graph.setBooleanValue(vertexSelectedAttribute, vxId4, true);
         graph.setBooleanValue(vertexSelectedAttribute, vxId5, true);
         graph.setBooleanValue(vertexSelectedAttribute, vxId6, false);
-        
+
         Map<Integer, Set<Integer>> expResult = new HashMap<>();
         Set<Integer> cluster = new HashSet<>();
         cluster.addAll(Arrays.asList(3, 4));
         expResult.put(3, cluster);
-        
-        Map<Integer, Set<Integer>>  result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
-        assertEquals(result, expResult);      
+
+        Map<Integer, Set<Integer>> result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
+        assertEquals(result, expResult);
     }
 
 }

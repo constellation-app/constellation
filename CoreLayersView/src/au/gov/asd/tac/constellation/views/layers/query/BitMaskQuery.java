@@ -33,9 +33,9 @@ public class BitMaskQuery {
 
     private Query query;
     private String description;
-    private final int bitIndex;
+    private int bitIndex;
     private boolean visible;
-    private final long mask;
+    private long mask;
     private BooleanReadable result;
 
     public BitMaskQuery(final Query query, final int bitIndex, final String description) {
@@ -105,5 +105,10 @@ public class BitMaskQuery {
         } else {
             return original & mask;
         }
+    }
+
+    protected void setIndex(final int i) {
+        this.bitIndex = i;
+        this.mask = 0xFFFFFFFFFFFFFFFFL ^ (1L << i + 1);
     }
 }

@@ -51,7 +51,7 @@ public class ShowInTableViewContextMenuProvider implements ContextMenuProvider {
     }
 
     @Override
-    public void selectItem(final String item, final Graph graph, final GraphElementType elementType, final int elementId, 
+    public void selectItem(final String item, final Graph graph, final GraphElementType elementType, final int elementId,
             final Vector3f unprojected) {
         SwingUtilities.invokeLater(() -> {
             final TopComponent tc = WindowManager.getDefault().findTopComponent("TableView2TopComponent");

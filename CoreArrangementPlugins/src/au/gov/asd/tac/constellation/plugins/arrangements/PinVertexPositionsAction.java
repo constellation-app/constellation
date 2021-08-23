@@ -27,9 +27,9 @@ import org.openide.util.NbBundle;
 
 /**
  * Wrapper around PinVertexPositionsPlugin which is responsible for setting
- * selected vertexes PINNED attributes to true to ensure the vertexes
- * are not moved when an arrangement plugin is run.
- * 
+ * selected vertexes PINNED attributes to true to ensure the vertexes are not
+ * moved when an arrangement plugin is run.
+ *
  * @author serpens24
  */
 @ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.plugins.arrangements.grid.PinVertexPositionsAction")
@@ -38,11 +38,10 @@ import org.openide.util.NbBundle;
         surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Arrange", position = 9998),
-    @ActionReference(path = "Toolbars/Arrange", position = 9998),
-})
+    @ActionReference(path = "Toolbars/Arrange", position = 9998)})
 @NbBundle.Messages("CTL_PinVertexPositionsAction=Pin Vertex Positions")
 public final class PinVertexPositionsAction extends AbstractAction {
-  
+
     private final GraphNode context;
 
     /**

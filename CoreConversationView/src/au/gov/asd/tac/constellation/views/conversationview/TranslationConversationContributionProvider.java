@@ -20,10 +20,11 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.ContentConcept;
-import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
@@ -207,8 +208,7 @@ public class TranslationConversationContributionProvider extends ConversationCon
 
                 if (graph != null) {
                     text = editTranslationTextArea.getText();
-                    final Plugin plugin = new SetTranslationPlugin(transactionId, text);
-                    PluginExecution.withPlugin(plugin).executeLater(graph);
+                    PluginExecution.withPlugin(new SetTranslationPlugin(transactionId, text)).executeLater(graph);
                 }
 
                 if (StringUtils.isBlank(text)) {
@@ -248,6 +248,10 @@ public class TranslationConversationContributionProvider extends ConversationCon
         }
     }
 
+    /**
+     * Plugin to set the translation.
+     */
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
     private class SetTranslationPlugin extends SimpleEditPlugin {
 
         private final int transactionId;
@@ -260,7 +264,7 @@ public class TranslationConversationContributionProvider extends ConversationCon
 
         @Override
         public String getName() {
-            return "Set Translation";
+            return "Conversation View: Set Translation";
         }
 
         @Override

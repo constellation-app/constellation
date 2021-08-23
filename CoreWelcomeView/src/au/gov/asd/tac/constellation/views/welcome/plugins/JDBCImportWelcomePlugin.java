@@ -54,7 +54,8 @@ public class JDBCImportWelcomePlugin implements WelcomePluginInterface {
     }
 
     /**
-     * This method describes what action should be taken when the link is clicked on the Welcome Page
+     * This method describes what action should be taken when the link is
+     * clicked on the Welcome Page
      *
      */
     @Override

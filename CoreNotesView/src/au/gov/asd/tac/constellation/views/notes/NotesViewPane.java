@@ -86,7 +86,8 @@ public class NotesViewPane extends BorderPane {
     private final List<NotesViewEntry> notesViewEntries;
 
     /**
-     * A cache of NotesViewEntry datetimes cache to quickly check if a note exists in notesViewEntries. This is a necessary optimisation.
+     * A cache of NotesViewEntry datetimes cache to quickly check if a note
+     * exists in notesViewEntries. This is a necessary optimisation.
      */
     private final Set<String> notesDateTimeCache;
 
@@ -146,7 +147,7 @@ public class NotesViewPane extends BorderPane {
 
         availableFilters = FXCollections.observableArrayList(USER_NOTES_FILTER, AUTO_NOTES_FILTER, SELECTED_FILTER);
         selectedFilters = new ArrayList<>();
-        selectedFilters.add(USER_NOTES_FILTER); // Only user notes are selected by default 
+        selectedFilters.add(USER_NOTES_FILTER); // Only user notes are selected by default
 
         // CheckComboBox to select and deselect various filters for note rendering.
         filterCheckComboBox = new CheckComboBox(availableFilters);
@@ -388,7 +389,8 @@ public class NotesViewPane extends BorderPane {
             updateTagsFiltersAvailable();
 
             /**
-             * Listener monitors changes to the plugin report as it executes and finishes. Affects the output of getMessage().
+             * Listener monitors changes to the plugin report as it executes and
+             * finishes. Affects the output of getMessage().
              */
             pluginReport.addPluginReportListener(note);
 
@@ -419,7 +421,8 @@ public class NotesViewPane extends BorderPane {
     /**
      * Sets notesViewEntries.
      *
-     * @param notesViewEntries A list of NotesViewEntry objects to add to notesViewEntries.
+     * @param notesViewEntries A list of NotesViewEntry objects to add to
+     * notesViewEntries.
      */
     protected void setNotes(final List<NotesViewEntry> notesViewEntries) {
         Platform.runLater(() -> {
@@ -492,7 +495,7 @@ public class NotesViewPane extends BorderPane {
                         }
 
                     } else if (selectedFilters.contains(SELECTED_FILTER) && entry.isUserCreated()) {
-                        // if no nodes or transactions are selected, show notes applied to the whole graph 
+                        // if no nodes or transactions are selected, show notes applied to the whole graph
                         if (entry.isGraphAttribute()) {
                             notesToRender.add(entry);
                         }
@@ -502,7 +505,7 @@ public class NotesViewPane extends BorderPane {
                                 notesToRender.add(entry);
                             }
                         }
-                        // Shows notes related to the selected transactions 
+                        // Shows notes related to the selected transactions
                         for (final int transaction : transactionsSelected) {
                             if (entry.getTransactionsSelected() != null && entry.getTransactionsSelected().contains(transaction)
                                     && !notesToRender.contains(entry)) {
@@ -556,7 +559,8 @@ public class NotesViewPane extends BorderPane {
     }
 
     /**
-     * A convenient method to add a note to the various lists that are used to track them.
+     * A convenient method to add a note to the various lists that are used to
+     * track them.
      *
      * @param note A new NoteViewEntry to be added
      */
@@ -566,7 +570,8 @@ public class NotesViewPane extends BorderPane {
     }
 
     /**
-     * Clears UI elements in the Notes View and clears the list of NoteEntry objects.
+     * Clears UI elements in the Notes View and clears the list of NoteEntry
+     * objects.
      */
     protected void clearAllNotes() {
         Platform.runLater(() -> {
@@ -590,7 +595,8 @@ public class NotesViewPane extends BorderPane {
     /**
      * Takes a NoteEntry object and creates the UI for it in the Notes View.
      *
-     * @param newNote NoteEntry object used to create a the note UI in the Notes View.
+     * @param newNote NoteEntry object used to create a the note UI in the Notes
+     * View.
      */
     private void createNote(final NotesViewEntry newNote) {
 
@@ -826,7 +832,8 @@ public class NotesViewPane extends BorderPane {
     }
 
     /**
-     * Convenience method to close the pop-up window for editing user created notes.
+     * Convenience method to close the pop-up window for editing user created
+     * notes.
      */
     protected void closeEdit() {
         Platform.runLater(() -> {
@@ -873,7 +880,8 @@ public class NotesViewPane extends BorderPane {
     }
 
     /**
-     * Add what is currently selected on the graph to the note's selected elements
+     * Add what is currently selected on the graph to the note's selected
+     * elements
      */
     public void addToSelectedElements(final NotesViewEntry noteToEdit) {
         updateSelectedElements();
@@ -906,7 +914,8 @@ public class NotesViewPane extends BorderPane {
     }
 
     /**
-     * Remove what is currently selected on the graph from the note's selected elements
+     * Remove what is currently selected on the graph from the note's selected
+     * elements
      */
     public void removeFromSelectedElements(final NotesViewEntry noteToEdit) {
         updateSelectedElements();
@@ -953,7 +962,6 @@ public class NotesViewPane extends BorderPane {
                 }
             }
         });
-
 
         tagsFiltersList = FXCollections.observableArrayList(tagsUpdater);
         autoFilterCheckComboBox.getItems().clear();

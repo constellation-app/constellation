@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2021 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,17 +25,17 @@ import java.util.Arrays;
 public class ShortValueStore implements ValueStore<ShortValue> {
 
     private static final int[] EMPTY_VALUES = new int[0];
-    
+
     private int[] values;
-    
+
     public ShortValueStore() {
         values = EMPTY_VALUES;
     }
-    
+
     public ShortValueStore(int[] values) {
         this.values = values;
     }
-    
+
     @Override
     public ShortValue createValue() {
         return new ShortValue();

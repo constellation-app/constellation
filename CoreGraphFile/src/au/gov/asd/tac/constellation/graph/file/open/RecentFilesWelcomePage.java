@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package au.gov.asd.tac.constellation.graph.file.open;
 
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
@@ -23,56 +22,54 @@ import java.util.List;
 import java.util.prefs.Preferences;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-
 import org.openide.util.NbPreferences;
 
 /**
- * Get the recent files for the welcome page 
- * 
+ * Get the recent files for the welcome page
+ *
  * @author Delphinus8821
  */
+public class RecentFilesWelcomePage {
 
-public class RecentFilesWelcomePage { 
-    
     static final List<RecentFiles.HistoryItem> files = RecentFiles.getRecentFiles();
     static final List<String> fileNames = new ArrayList<>();
-    
-    
+
     private static final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+
     private RecentFilesWelcomePage() {
     }
-    
+
     /**
      * Gets the names of the files that were recently saved
-     * 
+     *
      * @return list of recent file names
      */
-    public static List<String> getFileNames(){
-        RecentFiles.init(); 
-        for (int i = 0; i < files.size(); i++){
+    public static List<String> getFileNames() {
+        RecentFiles.init();
+        for (int i = 0; i < files.size(); i++) {
             final FileObject fo = RecentFiles.convertPath2File(files.get(i).getPath());
-            if (fo != null && !fileNames.contains(files.get(i).getFileName())){
-                fileNames.add(files.get(i).getFileName());  
-            }   
-        } 
+            if (fo != null && !fileNames.contains(files.get(i).getFileName())) {
+                fileNames.add(files.get(i).getFileName());
+            }
+        }
         return fileNames;
     }
-    
+
     /**
      * Opens the file that matches the name of the parameter
-     * 
-     * @param fileName 
+     *
+     * @param fileName
      */
-    public static void openGraph(final String fileName){
+    public static void openGraph(final String fileName) {
         int index = -1;
-        for (int i = 0; i < files.size(); i++){
-            if(fileName.equals(files.get(i).getFileName())){
+        for (int i = 0; i < files.size(); i++) {
+            if (fileName.equals(files.get(i).getFileName())) {
                 index = i;
             }
-        }  
-        if (index != -1){
+        }
+        if (index != -1) {
             final String path = files.get(index).getPath();
-        
+
             final File f = new File(path);
             final File nf = FileUtil.normalizeFile(f);
             OpenFile.open(FileUtil.toFileObject(nf), -1);

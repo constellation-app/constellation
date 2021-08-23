@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2021 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -44,15 +44,15 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class GraphVisualAccessNGTest {
-    
+
     DualGraph graph;
     StoreGraph sGraph;
-    
+
     int vxId1;
     int vxId2;
-    
+
     int tId1;
-    
+
     public GraphVisualAccessNGTest() {
     }
 
@@ -67,15 +67,15 @@ public class GraphVisualAccessNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
-        
+
         sGraph = new StoreGraph();
-        
+
         vxId1 = sGraph.addVertex();
         vxId2 = sGraph.addVertex();
-        
+
         tId1 = sGraph.addTransaction(vxId1, vxId2, true);
-        
-        graph = new DualGraph(schema, sGraph);       
+
+        graph = new DualGraph(schema, sGraph);
     }
 
     @AfterMethod
@@ -88,51 +88,55 @@ public class GraphVisualAccessNGTest {
     @Test
     public void testGetIndigenousChanges() {
         System.out.println("getIndigenousChanges");
-        
+
         final GraphVisualAccess instance = new GraphVisualAccess(graph);
-        
-        instance.beginUpdate();        
-        final List<VisualChange> changes = instance.getIndigenousChanges();       
+
+        instance.beginUpdate();
+        final List<VisualChange> changes = instance.getIndigenousChanges();
         instance.endUpdate();
 
         assertEquals(changes.size(), 37);
     }
-    
+
     /**
-     * Test of the following methods when the attributes are not found, of class GraphVisualAccess:
-     * getBackgroundColor, getHighlightColor, getBlazeSize, getBlazeOpacity, getConnectionOpacity
+     * Test of the following methods when the attributes are not found, of class
+     * GraphVisualAccess: getBackgroundColor, getHighlightColor, getBlazeSize,
+     * getBlazeOpacity, getConnectionOpacity
+     *
      * @throws InterruptedException
      */
     @Test
     public void testGetGraphAttributesOneLineFunctionsAttributesNotFound() throws InterruptedException {
         System.out.println("getGraphAttributesOneLineFunctionsAttributesNotFound");
-        
+
         final GraphVisualAccess instance = new GraphVisualAccess(graph);
-        
-        instance.beginUpdate();        
-        final ConstellationColor backgroundColour = instance.getBackgroundColor();       
-        final ConstellationColor highlightColour = instance.getHighlightColor();       
-        final float blazeSize = instance.getBlazeSize();       
-        final float blazeOpacity = instance.getBlazeOpacity();       
-        final float connectionOpacity = instance.getConnectionOpacity();       
+
+        instance.beginUpdate();
+        final ConstellationColor backgroundColour = instance.getBackgroundColor();
+        final ConstellationColor highlightColour = instance.getHighlightColor();
+        final float blazeSize = instance.getBlazeSize();
+        final float blazeOpacity = instance.getBlazeOpacity();
+        final float connectionOpacity = instance.getConnectionOpacity();
         instance.endUpdate();
-        
+
         assertEquals(backgroundColour, VisualGraphDefaults.DEFAULT_BACKGROUND_COLOR);
         assertEquals(highlightColour, VisualGraphDefaults.DEFAULT_HIGHLIGHT_COLOR);
         assertEquals(blazeSize, VisualGraphDefaults.DEFAULT_BLAZE_SIZE);
         assertEquals(blazeOpacity, VisualGraphDefaults.DEFAULT_BLAZE_OPACITY);
         assertEquals(connectionOpacity, VisualGraphDefaults.DEFAULT_CONNECTION_OPACITY);
     }
-    
+
     /**
-     * Test of the following methods when attributes are added, of class GraphVisualAccess:
-     * getBackgroundColor, getHighlightColor, getBlazeSize, getBlazeOpacity, getConnectionOpacity
+     * Test of the following methods when attributes are added, of class
+     * GraphVisualAccess: getBackgroundColor, getHighlightColor, getBlazeSize,
+     * getBlazeOpacity, getConnectionOpacity
+     *
      * @throws InterruptedException
      */
     @Test
     public void testGetGraphAttributesOneLineFunctionsAttributesAdded() throws InterruptedException {
         System.out.println("getGraphAttributesOneLineFunctionsAttributesAdded");
-               
+
         final WritableGraph wg = graph.getWritableGraph("Graph Visual Access", true);
         try {
             final int graphBackgroundColourAttribute = VisualConcept.GraphAttribute.BACKGROUND_COLOR.ensure(wg);
@@ -140,7 +144,7 @@ public class GraphVisualAccessNGTest {
             final int graphBlazeSizeAttribute = VisualConcept.GraphAttribute.BLAZE_SIZE.ensure(wg);
             final int graphBlazeOpacityAttribute = VisualConcept.GraphAttribute.BLAZE_OPACITY.ensure(wg);
             final int graphConnectionOpacityAttribute = VisualConcept.GraphAttribute.CONNECTION_OPACITY.ensure(wg);
-            
+
             wg.setObjectValue(graphBackgroundColourAttribute, 0, ConstellationColor.BANANA);
             wg.setObjectValue(graphHighlightColourAttribute, 0, ConstellationColor.CARROT);
             wg.setFloatValue(graphBlazeSizeAttribute, 0, 0.5f);
@@ -149,18 +153,18 @@ public class GraphVisualAccessNGTest {
         } finally {
             wg.commit();
         }
-        
+
         final GraphVisualAccess instance = new GraphVisualAccess(graph);
-        
+
         instance.beginUpdate();
         instance.updateInternally();
-        final ConstellationColor backgroundColour = instance.getBackgroundColor();       
-        final ConstellationColor highlightColour = instance.getHighlightColor();       
-        final float blazeSize = instance.getBlazeSize();       
-        final float blazeOpacity = instance.getBlazeOpacity();       
+        final ConstellationColor backgroundColour = instance.getBackgroundColor();
+        final ConstellationColor highlightColour = instance.getHighlightColor();
+        final float blazeSize = instance.getBlazeSize();
+        final float blazeOpacity = instance.getBlazeOpacity();
         final float connectionOpacity = instance.getConnectionOpacity();
         instance.endUpdate();
-        
+
         assertEquals(backgroundColour, ConstellationColor.BANANA);
         assertEquals(highlightColour, ConstellationColor.CARROT);
         assertEquals(blazeSize, 0.5f);
@@ -169,30 +173,34 @@ public class GraphVisualAccessNGTest {
     }
 
     /**
-     * Test of getDrawFlags method when attribute is not found, of class GraphVisualAccess.
+     * Test of getDrawFlags method when attribute is not found, of class
+     * GraphVisualAccess.
+     *
      * @throws InterruptedException
      */
     @Test
     public void testGetDrawFlagsAttributeNotFound() throws InterruptedException {
         System.out.println("getDrawFlagsAttributeNotFound");
-        
+
         final GraphVisualAccess instance = new GraphVisualAccess(graph);
-        
-        instance.beginUpdate();        
-        final DrawFlags flags = instance.getDrawFlags();       
+
+        instance.beginUpdate();
+        final DrawFlags flags = instance.getDrawFlags();
         instance.endUpdate();
-        
+
         assertEquals(flags, VisualGraphDefaults.DEFAULT_DRAW_FLAGS);
     }
-    
+
     /**
-     * Test of getDrawFlags method when attribute is added, of class GraphVisualAccess.
+     * Test of getDrawFlags method when attribute is added, of class
+     * GraphVisualAccess.
+     *
      * @throws InterruptedException
      */
     @Test
     public void testGetDrawFlagsAttributeAdded() throws InterruptedException {
         System.out.println("getDrawFlagsAttributeAdded");
-               
+
         final WritableGraph wg = graph.getWritableGraph("Graph Visual Access", true);
         try {
             final int graphDrawFlagsAttribute = VisualConcept.GraphAttribute.DRAW_FLAGS.ensure(wg);
@@ -200,42 +208,46 @@ public class GraphVisualAccessNGTest {
         } finally {
             wg.commit();
         }
-        
+
         final GraphVisualAccess instance = new GraphVisualAccess(graph);
         instance.beginUpdate();
         instance.updateInternally();
-        final DrawFlags flags = instance.getDrawFlags();                  
+        final DrawFlags flags = instance.getDrawFlags();
         instance.endUpdate();
-        
+
         assertEquals(flags.getFlags(), 4);
     }
 
     /**
-     * Test of getCamera method when attribute is not found, of class GraphVisualAccess.
+     * Test of getCamera method when attribute is not found, of class
+     * GraphVisualAccess.
+     *
      * @throws InterruptedException
      */
     @Test
     public void testGetCameraAttributeNotFound() throws InterruptedException {
         System.out.println("getCameraAttributeNotFound");
-        
+
         final GraphVisualAccess instance = new GraphVisualAccess(graph);
-        
-        instance.beginUpdate();        
-        final Camera camera = instance.getCamera();       
+
+        instance.beginUpdate();
+        final Camera camera = instance.getCamera();
         instance.endUpdate();
-        
+
         assertEquals(camera, VisualGraphDefaults.DEFAULT_CAMERA);
-        assertEquals(camera.getVisibilityHigh(), 1.0f);       
+        assertEquals(camera.getVisibilityHigh(), 1.0f);
     }
-    
+
     /**
-     * Test of getCamera method when attribute is added, of class GraphVisualAccess.
+     * Test of getCamera method when attribute is added, of class
+     * GraphVisualAccess.
+     *
      * @throws InterruptedException
      */
     @Test
     public void testGetCameraAttributeAdded() throws InterruptedException {
-        System.out.println("getCameraAttributeAdded");       
-        
+        System.out.println("getCameraAttributeAdded");
+
         final WritableGraph wg = graph.getWritableGraph("Graph Visual Access", true);
         try {
             final int graphCameraAttribute = VisualConcept.GraphAttribute.CAMERA.ensure(wg);
@@ -245,14 +257,14 @@ public class GraphVisualAccessNGTest {
         } finally {
             wg.commit();
         }
-        
-        final GraphVisualAccess instance = new GraphVisualAccess(graph);  
-        
+
+        final GraphVisualAccess instance = new GraphVisualAccess(graph);
+
         instance.beginUpdate();
         instance.updateInternally();
-        final Camera camera = instance.getCamera();                  
+        final Camera camera = instance.getCamera();
         instance.endUpdate();
-        
+
         assertEquals(camera.getVisibilityHigh(), 0.6f);
     }
 
@@ -265,98 +277,103 @@ public class GraphVisualAccessNGTest {
             wg.commit();
         }
     }
-    
+
     private void assertConnectionId(final GraphVisualAccess access) {
         access.beginUpdate();
         access.updateInternally();
-        final int id = access.getConnectionId(0);                 
+        final int id = access.getConnectionId(0);
         access.endUpdate();
-        
+
         //expected result could be transaction id, edge id, or link id
         assertEquals(id, 0);
     }
-    
+
     /**
      * Test of getConnectionId method, of class GraphVisualAccess.
+     *
      * @throws InterruptedException
      */
     @Test
     public void testGetConnectionId() throws InterruptedException {
         System.out.println("getConnectionId");
-        
+
         final GraphVisualAccess instance = new GraphVisualAccess(graph);
-        
+
         // Default connection mode is Edge
         assertConnectionId(instance);
-        
+
         changeConnectionMode(graph, ConnectionMode.TRANSACTION);
         assertConnectionId(instance);
-        
+
         changeConnectionMode(graph, ConnectionMode.LINK);
         assertConnectionId(instance);
     }
-    
+
     private void assertConnectionDirection(final GraphVisualAccess access, final int pos, final ConnectionDirection expResult) {
         access.beginUpdate();
         access.updateInternally();
-        final ConnectionDirection direction = access.getConnectionDirection(pos);                 
+        final ConnectionDirection direction = access.getConnectionDirection(pos);
         access.endUpdate();
-        
+
         assertEquals(direction, expResult);
     }
-    
+
     /**
      * Test of getConnectionDirection method, of class GraphVisualAccess.
+     *
      * @throws InterruptedException
      */
     @Test
     public void testGetConnectionDirection() throws InterruptedException {
         System.out.println("getConnectionDirection");
-        
+
         // TODO: add more test cases to cover function
-        
         final GraphVisualAccess instance = new GraphVisualAccess(graph);
-        
+
         assertConnectionDirection(instance, 0, ConnectionDirection.LOW_TO_HIGH);
-        
+
         changeConnectionMode(graph, ConnectionMode.TRANSACTION);
         assertConnectionDirection(instance, 0, ConnectionDirection.LOW_TO_HIGH);
-        
+
         changeConnectionMode(graph, ConnectionMode.LINK);
         assertConnectionDirection(instance, 0, ConnectionDirection.LOW_TO_HIGH);
     }
-    
+
     /**
-     * Test of getConnectionDirected method when attribute is not found, of class GraphVisualAccess.
+     * Test of getConnectionDirected method when attribute is not found, of
+     * class GraphVisualAccess.
+     *
      * @throws InterruptedException
      */
     @Test
     public void testGetConnectionDirectedAttributeNotFound() throws InterruptedException {
         System.out.println("getConnectionDirectedAttributeNotFound");
-        
+
         final GraphVisualAccess instance = new GraphVisualAccess(graph);
-        
+
         final boolean directed = instance.getConnectionDirected(0);
         assertEquals(directed, false);
     }
-    
+
     private void assertConnectionDirected(final GraphVisualAccess access) {
         access.beginUpdate();
         access.updateInternally();
-        final boolean directed = access.getConnectionDirected(0);                 
+        final boolean directed = access.getConnectionDirected(0);
         access.endUpdate();
-        
+
         assertEquals(directed, true);
     }
-    
+
     /**
-     * Test of getConnectionDirected method when attribute is added, of class GraphVisualAccess.
+     * Test of getConnectionDirected method when attribute is added, of class
+     * GraphVisualAccess.
+     *
      * @throws InterruptedException
      */
     @Test
     public void testGetConnectionDirectedAttributeAdded() throws InterruptedException {
         System.out.println("getConnectionDirectedAttributeAdded");
-        
+
         final WritableGraph wg = graph.getWritableGraph("Graph Visual Access", true);
         try {
             final int transactionDirectedAttribute = VisualConcept.TransactionAttribute.DIRECTED.ensure(wg);
@@ -365,79 +382,83 @@ public class GraphVisualAccessNGTest {
         } finally {
             wg.commit();
         }
-        
+
         final GraphVisualAccess instance = new GraphVisualAccess(graph);
-        
+
         assertConnectionDirected(instance);
-        
+
         changeConnectionMode(graph, ConnectionMode.TRANSACTION);
         assertConnectionDirected(instance);
-        
+
         changeConnectionMode(graph, ConnectionMode.LINK);
         assertConnectionDirected(instance);
     }
-    
+
     /**
-     * Test of the following methods when attributes are not found, of class GraphVisualAccess:
-     * getX, getY, getZ, getX2, getY2, getZ2, getBackgroundIcon, getForegroundIcon, getVertexSelected, getVertexDimmed, getRadius,
-     * getNWDecorator, getNEDecorator, getSEDecorator, getSWDecorator
+     * Test of the following methods when attributes are not found, of class
+     * GraphVisualAccess: getX, getY, getZ, getX2, getY2, getZ2,
+     * getBackgroundIcon, getForegroundIcon, getVertexSelected, getVertexDimmed,
+     * getRadius, getNWDecorator, getNEDecorator, getSEDecorator, getSWDecorator
+     *
      * @throws InterruptedException
      */
     @Test
     public void testGetVertexAttributesOneLineFunctionsAttributesNotFound() throws InterruptedException {
         System.out.println("getVertexAttributesOneLineFunctionsAttributesNotFound");
-        
+
         final GraphVisualAccess instance = new GraphVisualAccess(graph);
-        
-        instance.beginUpdate();        
-        final float x = instance.getX(0);       
-        final float y = instance.getY(0);       
-        final float z = instance.getZ(0);       
-        final float x2 = instance.getX2(0);       
-        final float y2 = instance.getY2(0);       
+
+        instance.beginUpdate();
+        final float x = instance.getX(0);
+        final float y = instance.getY(0);
+        final float z = instance.getZ(0);
+        final float x2 = instance.getX2(0);
+        final float y2 = instance.getY2(0);
         final float z2 = instance.getZ2(0);
-        
-        final String backgroundIcon = instance.getBackgroundIcon(0);       
-        final String foregroundIcon = instance.getForegroundIcon(0);       
-        final boolean vertexSelected = instance.getVertexSelected(0);       
-        final boolean vertexDimmed = instance.getVertexDimmed(0);       
-        final float radius = instance.getRadius(0); 
-        
+
+        final String backgroundIcon = instance.getBackgroundIcon(0);
+        final String foregroundIcon = instance.getForegroundIcon(0);
+        final boolean vertexSelected = instance.getVertexSelected(0);
+        final boolean vertexDimmed = instance.getVertexDimmed(0);
+        final float radius = instance.getRadius(0);
+
         final String nwDecorator = instance.getNWDecorator(0);
         final String neDecorator = instance.getNEDecorator(0);
         final String seDecorator = instance.getSEDecorator(0);
         final String swDecorator = instance.getSWDecorator(0);
         instance.endUpdate();
-        
+
         assertEquals(x, VisualGraphDefaults.getDefaultX(vxId1));
         assertEquals(y, VisualGraphDefaults.getDefaultY(vxId1));
         assertEquals(z, VisualGraphDefaults.getDefaultZ(vxId1));
         assertEquals(x2, VisualGraphDefaults.DEFAULT_VERTEX_X2);
         assertEquals(y2, VisualGraphDefaults.DEFAULT_VERTEX_Y2);
         assertEquals(z2, VisualGraphDefaults.DEFAULT_VERTEX_Z2);
-        
+
         assertEquals(backgroundIcon, VisualGraphDefaults.DEFAULT_VERTEX_BACKGROUND_ICON);
         assertEquals(foregroundIcon, VisualGraphDefaults.DEFAULT_VERTEX_FOREGROUND_ICON);
         assertEquals(vertexSelected, VisualGraphDefaults.DEFAULT_VERTEX_SELECTED);
         assertEquals(vertexDimmed, VisualGraphDefaults.DEFAULT_VERTEX_DIMMED);
         assertEquals(radius, VisualGraphDefaults.DEFAULT_VERTEX_RADIUS);
-        
+
         assertEquals(nwDecorator, null);
         assertEquals(neDecorator, null);
         assertEquals(seDecorator, null);
         assertEquals(swDecorator, null);
     }
-    
+
     /**
-     * Test of the following methods when attributes are added, of class GraphVisualAccess:
-     * getX, getY, getZ, getX2, getY2, getZ2, getBackgroundIcon, getForegroundIcon, getVertexSelected, getVertexDimmed, getRadius,
-     * getNWDecorator, getNEDecorator, getSEDecorator, getSWDecorator
+     * Test of the following methods when attributes are added, of class
+     * GraphVisualAccess: getX, getY, getZ, getX2, getY2, getZ2,
+     * getBackgroundIcon, getForegroundIcon, getVertexSelected, getVertexDimmed,
+     * getRadius, getNWDecorator, getNEDecorator, getSEDecorator, getSWDecorator
+     *
      * @throws InterruptedException
      */
     @Test
     public void testGetVertexAttributesOneLineFunctionsAttributesAdded() throws InterruptedException {
         System.out.println("getVertexAttributesOneLineFunctionsAttributesAdded");
- 
+
         final WritableGraph wg = graph.getWritableGraph("Graph Visual Access", true);
         try {
             final int vertexXAttribute = VisualConcept.VertexAttribute.X.ensure(wg);
@@ -446,74 +467,74 @@ public class GraphVisualAccessNGTest {
             final int vertexX2Attribute = VisualConcept.VertexAttribute.X2.ensure(wg);
             final int vertexY2Attribute = VisualConcept.VertexAttribute.Y2.ensure(wg);
             final int vertexZ2Attribute = VisualConcept.VertexAttribute.Z2.ensure(wg);
-            
+
             final int vertexBackgroundIconAttribute = VisualConcept.VertexAttribute.BACKGROUND_ICON.ensure(wg);
             final int vertexForegroundIconAttribute = VisualConcept.VertexAttribute.FOREGROUND_ICON.ensure(wg);
             final int vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.ensure(wg);
             final int vertexDimmedAttribute = VisualConcept.VertexAttribute.DIMMED.ensure(wg);
             final int vertexRadiusAttribute = VisualConcept.VertexAttribute.NODE_RADIUS.ensure(wg);
-            
+
             final int graphDecoratorsAttribute = VisualConcept.GraphAttribute.DECORATORS.ensure(wg);
-            
+
             wg.setFloatValue(vertexXAttribute, vxId1, 2.0f);
             wg.setFloatValue(vertexYAttribute, vxId1, 3.0f);
             wg.setFloatValue(vertexZAttribute, vxId1, 4.0f);
             wg.setFloatValue(vertexX2Attribute, vxId1, 5.0f);
             wg.setFloatValue(vertexY2Attribute, vxId1, 6.0f);
             wg.setFloatValue(vertexZ2Attribute, vxId1, 7.0f);
-            
+
             wg.setStringValue(vertexBackgroundIconAttribute, vxId1, "Background.Square");
             wg.setStringValue(vertexForegroundIconAttribute, vxId1, "Noise");
             wg.setBooleanValue(vertexSelectedAttribute, vxId1, true);
             wg.setBooleanValue(vertexDimmedAttribute, vxId1, true);
             wg.setFloatValue(vertexRadiusAttribute, vxId1, 1.5f);
-            
+
             final VertexDecorators decorators = new VertexDecorators(
-                    VisualConcept.VertexAttribute.BACKGROUND_ICON.getName(), 
-                    VisualConcept.VertexAttribute.FOREGROUND_ICON.getName(), 
-                    VisualConcept.VertexAttribute.SELECTED.getName(), 
+                    VisualConcept.VertexAttribute.BACKGROUND_ICON.getName(),
+                    VisualConcept.VertexAttribute.FOREGROUND_ICON.getName(),
+                    VisualConcept.VertexAttribute.SELECTED.getName(),
                     VisualConcept.VertexAttribute.DIMMED.getName());
             wg.setObjectValue(graphDecoratorsAttribute, 0, decorators);
         } finally {
             wg.commit();
         }
-        
+
         final GraphVisualAccess instance = new GraphVisualAccess(graph);
-        
+
         instance.beginUpdate();
         instance.updateInternally();
-        final float x = instance.getX(0);       
-        final float y = instance.getY(0);       
-        final float z = instance.getZ(0);       
-        final float x2 = instance.getX2(0);       
-        final float y2 = instance.getY2(0);       
+        final float x = instance.getX(0);
+        final float y = instance.getY(0);
+        final float z = instance.getZ(0);
+        final float x2 = instance.getX2(0);
+        final float y2 = instance.getY2(0);
         final float z2 = instance.getZ2(0);
-        
-        final String backgroundIcon = instance.getBackgroundIcon(0);       
-        final String foregroundIcon = instance.getForegroundIcon(0);       
-        final boolean vertexSelected = instance.getVertexSelected(0);       
-        final boolean vertexDimmed = instance.getVertexDimmed(0);       
-        final float radius = instance.getRadius(0); 
-        
+
+        final String backgroundIcon = instance.getBackgroundIcon(0);
+        final String foregroundIcon = instance.getForegroundIcon(0);
+        final boolean vertexSelected = instance.getVertexSelected(0);
+        final boolean vertexDimmed = instance.getVertexDimmed(0);
+        final float radius = instance.getRadius(0);
+
         final String nwDecorator = instance.getNWDecorator(0);
         final String neDecorator = instance.getNEDecorator(0);
         final String seDecorator = instance.getSEDecorator(0);
         final String swDecorator = instance.getSWDecorator(0);
         instance.endUpdate();
-        
+
         assertEquals(x, 2.0f);
         assertEquals(y, 3.0f);
         assertEquals(z, 4.0f);
         assertEquals(x2, 5.0f);
         assertEquals(y2, 6.0f);
         assertEquals(z2, 7.0f);
-        
+
         assertEquals(backgroundIcon, "Background.Square");
         assertEquals(foregroundIcon, "Noise");
         assertEquals(vertexSelected, true);
         assertEquals(vertexDimmed, true);
         assertEquals(radius, 1.5f);
-        
+
         assertEquals(nwDecorator, "Background.Square");
         assertEquals(neDecorator, "Noise");
         assertEquals(seDecorator, "true");
@@ -521,32 +542,36 @@ public class GraphVisualAccessNGTest {
     }
 
     /**
-     * Test of getVertexColor method when attributes are not found, of class GraphVisualAccess.
+     * Test of getVertexColor method when attributes are not found, of class
+     * GraphVisualAccess.
+     *
      * @throws InterruptedException
      */
     @Test
     public void testGetVertexColorAttributesNotFound() throws InterruptedException {
         System.out.println("getVertexColorAttributeNotFound");
-        
+
         final GraphVisualAccess instance = new GraphVisualAccess(graph);
-        
+
         instance.beginUpdate();
         final ConstellationColor colour1 = instance.getVertexColor(0);
         final ConstellationColor colour2 = instance.getVertexColor(1);
         instance.endUpdate();
-        
+
         assertEquals(colour1, VisualGraphDefaults.DEFAULT_VERTEX_COLOR);
         assertEquals(colour2, VisualGraphDefaults.DEFAULT_VERTEX_COLOR);
     }
-    
+
     /**
-     * Test of getVertexColor method when attributes are added, of class GraphVisualAccess.
+     * Test of getVertexColor method when attributes are added, of class
+     * GraphVisualAccess.
+     *
      * @throws InterruptedException
      */
     @Test
     public void testGetVertexColorAttributesAdded() throws InterruptedException {
-        System.out.println("getVertexColorAttributesAdded");       
-        
+        System.out.println("getVertexColorAttributesAdded");
+
         final WritableGraph wg = graph.getWritableGraph("Graph Visual Access", true);
         try {
             final int graphNodeColourReferenceAttribute = VisualConcept.GraphAttribute.NODE_COLOR_REFERENCE.ensure(wg);
@@ -557,46 +582,50 @@ public class GraphVisualAccessNGTest {
         } finally {
             wg.commit();
         }
-        
+
         final GraphVisualAccess instance = new GraphVisualAccess(graph);
-        
+
         instance.beginUpdate();
         instance.updateInternally();
         final ConstellationColor colour1 = instance.getVertexColor(0);
         final ConstellationColor colour2 = instance.getVertexColor(1);
         instance.endUpdate();
-        
+
         assertEquals(colour1, ConstellationColor.BANANA);
         assertEquals(colour2, ConstellationColor.CARROT);
     }
-    
+
     /**
-     * Test of getVertexVisibility method when attributes are not found, of class GraphVisualAccess.
+     * Test of getVertexVisibility method when attributes are not found, of
+     * class GraphVisualAccess.
+     *
      * @throws InterruptedException
      */
     @Test
     public void testGetVertexVisibilityAttributesNotFound() throws InterruptedException {
         System.out.println("getVertexVisibilityAttributesNotFound");
-        
+
         final GraphVisualAccess instance = new GraphVisualAccess(graph);
-        
+
         instance.beginUpdate();
         final float visibility1 = instance.getVertexVisibility(0);
         final float visibility2 = instance.getVertexVisibility(1);
         instance.endUpdate();
-        
+
         assertEquals(visibility1, VisualGraphDefaults.DEFAULT_VERTEX_VISIBILITY);
         assertEquals(visibility2, VisualGraphDefaults.DEFAULT_VERTEX_VISIBILITY);
     }
-    
+
     /**
-     * Test of getVertexVisibility method when attributes are added, of class GraphVisualAccess.
+     * Test of getVertexVisibility method when attributes are added, of class
+     * GraphVisualAccess.
+     *
      * @throws InterruptedException
      */
     @Test
     public void testGetVertexVisibilityAttributesAdded() throws InterruptedException {
-        System.out.println("getVertexVisibilityAttributesAdded");        
-        
+        System.out.println("getVertexVisibilityAttributesAdded");
+
         WritableGraph wg = graph.getWritableGraph("Graph Visual Access", true);
         try {
             final int vertexLayerVisibilityAttribute = LayersConcept.VertexAttribute.LAYER_VISIBILITY.ensure(wg);
@@ -605,17 +634,17 @@ public class GraphVisualAccessNGTest {
         } finally {
             wg.commit();
         }
-        
+
         final GraphVisualAccess instance = new GraphVisualAccess(graph);
         instance.beginUpdate();
         instance.updateInternally();
         float visibility1 = instance.getVertexVisibility(0);
         float visibility2 = instance.getVertexVisibility(1);
         instance.endUpdate();
-        
+
         assertEquals(visibility1, 0.4f);
         assertEquals(visibility2, 0.75f);
-        
+
         wg = graph.getWritableGraph("Graph Visual Access", true);
         try {
             final int vertexVisibilityAttribute = VisualConcept.VertexAttribute.VISIBILITY.ensure(wg);
@@ -624,13 +653,13 @@ public class GraphVisualAccessNGTest {
         } finally {
             wg.commit();
         }
-        
+
         instance.beginUpdate();
         instance.updateInternally();
         visibility1 = instance.getVertexVisibility(0);
         visibility2 = instance.getVertexVisibility(1);
         instance.endUpdate();
-        
+
         assertEquals(visibility1, 0.2f);
         assertEquals(visibility2, 0.15f);
     }
@@ -642,7 +671,6 @@ public class GraphVisualAccessNGTest {
 //    public void testGetBlazed() {
 //        System.out.println("getBlazed");
 //    }
-
     /**
      * Test of getBlazeAngle method, of class GraphVisualAccess.
      */
@@ -650,7 +678,6 @@ public class GraphVisualAccessNGTest {
 //    public void testGetBlazeAngle() {
 //        System.out.println("getBlazeAngle");
 //    }
-
     /**
      * Test of getBlazeColor method, of class GraphVisualAccess.
      */
@@ -658,7 +685,6 @@ public class GraphVisualAccessNGTest {
 //    public void testGetBlazeColor() {
 //        System.out.println("getBlazeColor");
 //    }
-
     /**
      * Test of getConnectionColor method, of class GraphVisualAccess.
      */
@@ -666,7 +692,6 @@ public class GraphVisualAccessNGTest {
 //    public void testGetConnectionColor() {
 //        System.out.println("getConnectionColor");
 //    }
-
     /**
      * Test of getConnectionSelected method, of class GraphVisualAccess.
      */
@@ -674,7 +699,6 @@ public class GraphVisualAccessNGTest {
 //    public void testGetConnectionSelected() {
 //        System.out.println("getConnectionSelected");
 //    }
-
     /**
      * Test of getConnectionVisibility method, of class GraphVisualAccess.
      */
@@ -682,7 +706,6 @@ public class GraphVisualAccessNGTest {
 //    public void testGetConnectionVisibility() {
 //        System.out.println("getConnectionVisibility");
 //    }
-
     /**
      * Test of getConnectionDimmed method, of class GraphVisualAccess.
      */
@@ -690,7 +713,6 @@ public class GraphVisualAccessNGTest {
 //    public void testGetConnectionDimmed() {
 //        System.out.println("getConnectionDimmed");
 //    }
-
     /**
      * Test of getConnectionLineStyle method, of class GraphVisualAccess.
      */
@@ -698,7 +720,6 @@ public class GraphVisualAccessNGTest {
 //    public void testGetConnectionLineStyle() {
 //        System.out.println("getConnectionLineStyle");
 //    }
-
     /**
      * Test of getConnectionWidth method, of class GraphVisualAccess.
      */
@@ -706,7 +727,6 @@ public class GraphVisualAccessNGTest {
 //    public void testGetConnectionWidth() {
 //        System.out.println("getConnectionWidth");
 //    }
-
     /**
      * Test of getConnectionLowVertex method, of class GraphVisualAccess.
      */
@@ -714,7 +734,6 @@ public class GraphVisualAccessNGTest {
 //    public void testGetConnectionLowVertex() {
 //        System.out.println("getConnectionLowVertex");
 //    }
-
     /**
      * Test of getConnectionHighVertex method, of class GraphVisualAccess.
      */
@@ -722,7 +741,6 @@ public class GraphVisualAccessNGTest {
 //    public void testGetConnectionHighVertex() {
 //        System.out.println("getConnectionHighVertex");
 //    }
-    
     /**
      * Test of getLinkLowVertex method, of class GraphVisualAccess.
      */
@@ -730,7 +748,6 @@ public class GraphVisualAccessNGTest {
 //    public void testGetLinkLowVertex() {
 //        System.out.println("getLinkLowVertex");
 //    }
-    
     /**
      * Test of getLinkHighVertex method, of class GraphVisualAccess.
      */
@@ -738,7 +755,6 @@ public class GraphVisualAccessNGTest {
 //    public void testGetLinkHighVertex() {
 //        System.out.println("getLinkHighVertex");
 //    }
-
     /**
      * Test of getLinkSource method, of class GraphVisualAccess.
      */
@@ -746,7 +762,6 @@ public class GraphVisualAccessNGTest {
 //    public void testGetLinkSource() {
 //        System.out.println("getLinkSource");
 //    }
-
     /**
      * Test of getLinkDestination method, of class GraphVisualAccess.
      */
@@ -754,7 +769,6 @@ public class GraphVisualAccessNGTest {
 //    public void testGetLinkDestination() {
 //        System.out.println("getLinkDestination");
 //    }
-
     /**
      * Test of getLinkConnectionCount method, of class GraphVisualAccess.
      */
@@ -762,7 +776,6 @@ public class GraphVisualAccessNGTest {
 //    public void testGetLinkConnectionCount() {
 //        System.out.println("getLinkConnectionCount");
 //    }
-    
     /**
      * Test of getVertexTopLabelText method, of class GraphVisualAccess.
      */
@@ -770,7 +783,6 @@ public class GraphVisualAccessNGTest {
 //    public void testGetVertexTopLabelText() {
 //        System.out.println("getVertexTopLabelText");
 //    }
-    
     /**
      * Test of getVertexBottomLabelText method, of class GraphVisualAccess.
      */
@@ -778,7 +790,6 @@ public class GraphVisualAccessNGTest {
 //    public void testGetVertexBottomLabelText() {
 //        System.out.println("getVertexBottomLabelText");
 //    }
-
     /**
      * Test of getConnectionLabelText method, of class GraphVisualAccess.
      */
@@ -786,12 +797,11 @@ public class GraphVisualAccessNGTest {
 //    public void testGetConnectionLabelText() {
 //        System.out.println("getConnectionLabelText");
 //    }
-
     /**
      * Test of updateModCounts method, of class GraphVisualAccess.
      */
 //    @Test
 //    public void testUpdateModCounts() {
 //        System.out.println("updateModCounts");
-//    }    
+//    }
 }

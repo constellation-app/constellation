@@ -73,13 +73,13 @@ public class ExportToShapefilePlugin extends AbstractGeoExportPlugin {
     @Override
     protected void exportGeo(final PluginParameters parameters, final String uuid, final Map<String, String> shapes, final Map<String, Map<String, Object>> attributes, final File output) throws IOException {
         final ParameterValue geometryTypePV = parameters.getSingleChoice(GEOMETRY_TYPE_PARAMETER_ID);
-        assert(geometryTypePV instanceof GeometryTypeParameterValue);
+        assert (geometryTypePV instanceof GeometryTypeParameterValue);
         final GeometryType geometryType = ((GeometryTypeParameterValue) geometryTypePV).getGeometryType();
-        
+
         final ParameterValue spatialReferencePV = parameters.getSingleChoice(SPATIAL_REFERENCE_PARAMETER_ID);
-        assert(spatialReferencePV instanceof SpatialReferenceParameterValue);
+        assert (spatialReferencePV instanceof SpatialReferenceParameterValue);
         final SpatialReference spatialReference = ((SpatialReferenceParameterValue) spatialReferencePV).getSpatialReference();
-        
+
         Shape.generateShapefile(uuid, geometryType, shapes, attributes, output, spatialReference);
     }
 
@@ -141,7 +141,6 @@ public class ExportToShapefilePlugin extends AbstractGeoExportPlugin {
         public GeometryType getGeometryType() {
             return geometryType;
         }
-        
 
         @Override
         protected final ParameterValue createCopy() {

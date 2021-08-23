@@ -51,10 +51,10 @@ public class MaxScoreAggregator implements AnalyticAggregator<ScoreResult> {
             aggregateScores.put(SCORE_NAME, value.getNamedScores().values().stream().reduce(Math::max).orElse(0.0f));
             aggregateResult.add(new ElementScore(key.getElementType(), key.getElementId(), key.getIdentifier(), false, aggregateScores));
         });
-        
+
         return aggregateResult;
     }
-  
+
     @Override
     public String getName() {
         return SCORE_NAME;

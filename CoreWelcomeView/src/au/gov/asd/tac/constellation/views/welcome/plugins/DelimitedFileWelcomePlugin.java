@@ -30,7 +30,6 @@ import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
-
 /**
  * The Open Delimited File plugin for the Welcome Page.
  *
@@ -39,13 +38,13 @@ import org.openide.windows.WindowManager;
 @PluginInfo(tags = {"WELCOME"})
 @NbBundle.Messages("DelimitedFileWelcomePlugin=Delimited File Welcome Plugin")
 public class DelimitedFileWelcomePlugin implements WelcomePluginInterface {
-    
+
     public static final String IMPORT = "resources/welcome_import.png";
     final ImageView importImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(IMPORT)));
     final Button importButton = new Button();
 
     /**
-     * Get a unique reference that is used to identify the plugin 
+     * Get a unique reference that is used to identify the plugin
      *
      * @return a unique reference
      */
@@ -53,10 +52,10 @@ public class DelimitedFileWelcomePlugin implements WelcomePluginInterface {
     public String getName() {
         return "Import File Welcome";
     }
-    
+
     /**
-     * This method describes what action should be taken when the 
-     * link is clicked on the Welcome Page
+     * This method describes what action should be taken when the link is
+     * clicked on the Welcome Page
      *
      */
     @Override
@@ -70,11 +69,11 @@ public class DelimitedFileWelcomePlugin implements WelcomePluginInterface {
                 stage.setEnabled(true);
                 stage.requestActive();
             }
-        });   
+        });
     }
 
     /**
-     * Determines whether this analytic appear on the Welcome Page 
+     * Determines whether this analytic appear on the Welcome Page
      *
      * @return true is this analytic should be visible, false otherwise.
      */
@@ -82,14 +81,14 @@ public class DelimitedFileWelcomePlugin implements WelcomePluginInterface {
     public boolean isVisible() {
         return true;
     }
-    
-     /**
+
+    /**
      * Creates the button object to represent this plugin
-     * 
+     *
      * @return the button object
      */
     @Override
-    public Button getButton(){
+    public Button getButton() {
         importImage.setFitHeight(75);
         importImage.setFitWidth(75);
         final Label imTitle = new Label("Import");

@@ -68,9 +68,10 @@ public class UpdateProviderManager {
     }
 
     /**
-     * Ensure that every provider for a given item has a to version strictly greater than its from version, and that
-     * there is another provider whose from version matches its to version, or its to version is the highest of all
-     * providers.
+     * Ensure that every provider for a given item has a to version strictly
+     * greater than its from version, and that there is another provider whose
+     * from version matches its to version, or its to version is the highest of
+     * all providers.
      */
     private static void validateUpdateProviders() {
         UPDATE_PROVIDER_REGISTRY.values().forEach(itemProviders -> {

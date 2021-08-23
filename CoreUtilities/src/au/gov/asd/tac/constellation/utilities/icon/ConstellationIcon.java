@@ -383,8 +383,9 @@ public class ConstellationIcon {
     /**
      * Used to clear cache images in the ConstellationIcon cache. This should be
      * called when closing the last open graph to release consumed resources.
-     * 
-     * Note: The cache's purpose is to prevent duplicates when multiple graphs are open.
+     *
+     * Note: The cache's purpose is to prevent duplicates when multiple graphs
+     * are open.
      */
     public static void clearCache() {
         BUFFERED_IMAGE_CACHE.clear();

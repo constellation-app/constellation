@@ -72,7 +72,7 @@ public class SelectableLabel extends Label {
         return Orientation.HORIZONTAL;
     }
 
-  /*  @Override
+    /*  @Override
     protected double computePrefWidth(double height) {
         if (cachedHeight != height) {
             if (skin == null) {
@@ -97,7 +97,6 @@ public class SelectableLabel extends Label {
 
         return cachedPrefHeight;
     } */
-
     public void setSelectableText(String text) {
         cachedHeight = cachedWidth = Double.MIN_VALUE;
         super.setText(text);
@@ -129,10 +128,9 @@ public class SelectableLabel extends Label {
             setStyle(style);
         }
 
-       /* if (tipsPane != null) {
+        /* if (tipsPane != null) {
             TooltipUtilities.activateTextInputControl(this, tipsPane);
         } */
-
         this.contextMenuItems = contextMenuItems;
     }
 

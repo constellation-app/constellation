@@ -17,11 +17,11 @@ free to propose changes to this document in a pull request.
 question!](#i-dont-want-to-read-this-whole-thing-i-just-have-a-question)
 
 [What should I know before I get
-started?](#what-should-i-know-before-i-get-started) 
+started?](#what-should-i-know-before-i-get-started)
 
 -   [Constellation Core](#constellation-core)
 
--   [Constellation Modules and 
+-   [Constellation Modules and
 Repositories](#constellation-modules-and-repositories)
 
 -   [Design Decisions](#design-decisions)
@@ -109,7 +109,7 @@ repository included in the catalog.
 When we make a significant decision in how we maintain the project and
 what we can or cannot support, we document the [design
 decisions](https://github.com/constellation-app/constellation/wiki/Decisions-Log).
-If you have a question about how we do things, check if it is documented there. 
+If you have a question about how we do things, check if it is documented there.
 If it is *not* documented there, please open an
 [issue](https://github.com/constellation-app/constellation/issues) and
 ask your question.
@@ -348,10 +348,8 @@ section in the [Readme](README.md).
 -   Complete the [check list](CHECKLIST.md)
 
 -   Include the copyright header
-    
--   In NetBeans click on Tools -&gt; Templates -&gt; Settings
 
-    <!-- -->
+-   In NetBeans click on Tools -&gt; Templates -&gt; Settings
 
         user=PUT_YOUR_USER_HERE
         licenseFirst=/*
@@ -360,8 +358,6 @@ section in the [Readme](README.md).
 
 -   In NetBeans click on Tools -&gt; Templates -&gt; Licenses -&gt;
         Default License -&gt; Open in Editor
-
-    <!-- -->
 
         <#if licenseFirst??>
         ${licenseFirst}
@@ -394,37 +390,37 @@ section in the [Readme](README.md).
 -   Reference issues and pull requests liberally after the first line
 
 -   Consider starting the commit message with an applicable emoji:
-    
+
 -   :art: `:art:` when improving the format/structure of the code
-    
+
 -   :racehorse: `:racehorse:` when improving performance
-    
+
 -   :non-potable\_water: `:non-potable_water:` when plugging memory
         leaks
-    
+
 -   :memo: `:memo:` when writing docs
-    
+
 -   :penguin: `:penguin:` when fixing something on Linux
-    
+
 -   :apple: `:apple:` when fixing something on macOS
-    
+
 -   :checkered\_flag: `:checkered_flag:` when fixing something on
         Windows
-    
+
 -   :bug: `:bug:` when fixing a bug
-    
+
 -   :fire: `:fire:` when removing code or files
-    
+
 -   :green\_heart: `:green_heart:` when fixing the CI build
-    
+
 -   :white\_check\_mark: `:white_check_mark:` when adding tests
-    
+
 -   :lock: `:lock:` when dealing with security
-    
+
 -   :arrow\_up: `:arrow_up:` when upgrading dependencies
-    
+
 -   :arrow\_down: `:arrow_down:` when downgrading dependencies
-    
+
 -   :shirt: `:shirt:` when removing linter warnings
 
 ## Test Requirements for Contributors

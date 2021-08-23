@@ -20,7 +20,9 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.LayersConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FloatParameterType;
@@ -30,12 +32,13 @@ import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * copy a node
+ * Copy a node.
  *
  * @author procyon
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("CreateVertexPlugin=Create Vertex")
+@PluginInfo(pluginType = PluginType.CREATE, tags = {"CREATE"})
 public final class CreateVertexPlugin extends SimpleEditPlugin {
 
     public static final String X_PARAMETER_ID = PluginParameter.buildId(CreateVertexPlugin.class, VisualConcept.VertexAttribute.X.getName());

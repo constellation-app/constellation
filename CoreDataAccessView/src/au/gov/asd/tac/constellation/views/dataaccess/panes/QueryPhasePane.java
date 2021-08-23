@@ -66,7 +66,7 @@ public class QueryPhasePane extends VBox {
     protected VBox getDataSourceList() {
         return dataSourceList;
     }
-    
+
     protected Set<MenuItem> getGraphDependentMenuItems() {
         return graphDependentMenuItems;
     }
@@ -74,7 +74,7 @@ public class QueryPhasePane extends VBox {
     protected Set<MenuItem> getPluginDependentMenuItems() {
         return pluginDependentMenuItems;
     }
-    
+
     public void enableGraphDependentMenuItems(final boolean enabled) {
         for (final MenuItem menuItem : graphDependentMenuItems) {
             menuItem.setDisable(!enabled);

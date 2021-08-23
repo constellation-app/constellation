@@ -18,7 +18,8 @@ package au.gov.asd.tac.constellation.graph;
 import java.util.Arrays;
 
 /**
- * A GraphKey represents the key values for a vertex or transaction in the graph.
+ * A GraphKey represents the key values for a vertex or transaction in the
+ * graph.
  *
  * @author sirius
  */
@@ -42,7 +43,8 @@ public class GraphKey {
      * Create a new graph key for a transaction in the graph.
      *
      * @param sourceKey the GraphKey for the transaction's source vertex.
-     * @param destinationKey the GraphKey for the transaction's destination vertex.
+     * @param destinationKey the GraphKey for the transaction's destination
+     * vertex.
      * @param undirected is the transaction undirected?
      * @param elements the values of the key attributes for this transaction.
      */

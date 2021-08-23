@@ -32,11 +32,11 @@ import java.util.Properties;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.any;
 import org.openide.util.HelpCtx;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
@@ -56,12 +56,12 @@ public class SaveResultsFileWriterNGTest {
     private MockedStatic<DataAccessPreferenceKeys> mockedDataAccessPreferenceKeys;
     private MockedStatic<RecordStoreUtilities> mockedRecordStoreUtilities;
     private MockedStatic<ConstellationLoggerHelper> mockedConstellationLoggerHelper;
-    
+
     // Flags capturing validity checks
     private boolean fileCreated = true;  // Was the file with requesated filename/path created (well, does it exist).
     private String constellationLoggerHelperStatus = "";  // Status string passed to exportPropertyBuilder.
     private boolean dataValid = true;  // Does the contents of the saved file match the expected contents.
-    
+
     @BeforeClass
     public static void setUpClass() throws Exception {
     }
@@ -88,7 +88,8 @@ public class SaveResultsFileWriterNGTest {
     }
 
     /**
-     * Test of generateFilename method. Ensure that generated filename is of the correct format yyyyMMddTHHmmssSSS.
+     * Test of generateFilename method. Ensure that generated filename is of the
+     * correct format yyyyMMddTHHmmssSSS.
      */
     @Test
     public void testGenerateFilename() {
@@ -98,27 +99,33 @@ public class SaveResultsFileWriterNGTest {
         Matcher matcher = pattern.matcher(filename);
         Assert.assertTrue(matcher.matches(), "Testing generated filename matches pattern - yyyyMMddTHHmmssSSS.");
     }
-        
+
     /**
-     * Test of writeRecordStore method for case when DataAccessPreferenceKeys.getDataAccessResultsDir() returns null.
-     * The expectation is that no attempted writes are made.
-     * This test executes a code path through SaveResultsFileWriter.writeRecordStore that does not throw an exception.
+     * Test of writeRecordStore method for case when
+     * DataAccessPreferenceKeys.getDataAccessResultsDir() returns null. The
+     * expectation is that no attempted writes are made. This test executes a
+     * code path through SaveResultsFileWriter.writeRecordStore that does not
+     * throw an exception.
+     *
      * @throws java.lang.Exception
      */
     @Test
     public void testWriteRecordStoreNoDataAccessResultsDir() throws Exception {
         Plugin plugin = new ExampleClass();
         TabularRecordStore tabularRecordStore = new TabularRecordStore();
-                
+
         mockedDataAccessPreferenceKeys.when(() -> DataAccessPreferenceKeys.getDataAccessResultsDir()).thenReturn(null);
         SaveResultsFileWriter.writeRecordStore(plugin, tabularRecordStore);
         Assert.assertTrue(true, "Testing writing record to non existant directory - code will do nothing.");
     }
-     
+
     /**
-     * Test of writeRecordStore method for case when DataAccessPreferenceKeys.getDataAccessResultsDir() returns an
-     * invalid directory. Because directory (and hence generated file path) is invalid, and exception will be thrown
-     * and ConstellationLoggerHelper.exportPropertyBuilder called with appropriate ERROR status.
+     * Test of writeRecordStore method for case when
+     * DataAccessPreferenceKeys.getDataAccessResultsDir() returns an invalid
+     * directory. Because directory (and hence generated file path) is invalid,
+     * and exception will be thrown and
+     * ConstellationLoggerHelper.exportPropertyBuilder called with appropriate
+     * ERROR status.
      */
     @Test
     public void testWriteRecordStoreInvalidDataAccessResultsDir() {
@@ -126,14 +133,16 @@ public class SaveResultsFileWriterNGTest {
         TabularRecordStore tabularRecordStore = new TabularRecordStore();
 
         mockedDataAccessPreferenceKeys.when(() -> DataAccessPreferenceKeys.getDataAccessResultsDir()).thenReturn(new File("/BADDIR/"));
-        mockedConstellationLoggerHelper.when(() -> ConstellationLoggerHelper.exportPropertyBuilder(any(), any(), any(), any())).thenAnswer(invocation -> { 
+        mockedConstellationLoggerHelper.when(() -> ConstellationLoggerHelper.exportPropertyBuilder(any(), any(), any(), any())).thenAnswer(invocation -> {
             Object[] args = invocation.getArguments();
-            File passedFile = (File)args[2];
-            constellationLoggerHelperStatus = (String)args[3];
+            File passedFile = (File) args[2];
+            constellationLoggerHelperStatus = (String) args[3];
 
             // Ensure the file was not created
             fileCreated = passedFile.exists();
-            if (fileCreated) passedFile.delete();
+            if (fileCreated) {
+                passedFile.delete();
+            }
 
             // Return properties (which are ignored)
             Properties properties = new Properties();
@@ -152,12 +161,16 @@ public class SaveResultsFileWriterNGTest {
                     "ConstellationLoggerHelper passed status = FAILURE.");
         }
     }
-   
+
     /**
-     * Test of writeRecordStore method for case when DataAccessPreferenceKeys.getDataAccessResultsDir() returns a
-     * valid directory. Confirm file is created with expected contents and that no exception is thrown. confirm
-     * ConstellationLoggerHelper.exportPropertyBuilder called with appropriate SUCCESS status.
-     * This test executes a code path through SaveResultsFileWriter.writeRecordStore that does not throw an exception.
+     * Test of writeRecordStore method for case when
+     * DataAccessPreferenceKeys.getDataAccessResultsDir() returns a valid
+     * directory. Confirm file is created with expected contents and that no
+     * exception is thrown. confirm
+     * ConstellationLoggerHelper.exportPropertyBuilder called with appropriate
+     * SUCCESS status. This test executes a code path through
+     * SaveResultsFileWriter.writeRecordStore that does not throw an exception.
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -172,10 +185,10 @@ public class SaveResultsFileWriterNGTest {
         // This test actually creates the output file in user.home directory, checks its contents, and then removes it.
         mockedDataAccessPreferenceKeys.when(DataAccessPreferenceKeys::getDataAccessResultsDir).thenReturn(new File(System.getProperty("user.home")));
         mockedRecordStoreUtilities.when(() -> RecordStoreUtilities.toCsv(Mockito.any(), Mockito.any())).thenCallRealMethod();
-        mockedConstellationLoggerHelper.when(() -> ConstellationLoggerHelper.exportPropertyBuilder(any(), any(), any(), any())).thenAnswer((var invocation) -> { 
+        mockedConstellationLoggerHelper.when(() -> ConstellationLoggerHelper.exportPropertyBuilder(any(), any(), any(), any())).thenAnswer((var invocation) -> {
             Object[] args = invocation.getArguments();
-            File passedFile = (File)args[2];
-            constellationLoggerHelperStatus = (String)args[3];
+            File passedFile = (File) args[2];
+            constellationLoggerHelperStatus = (String) args[3];
 
             // Ensure the file was created
             fileCreated = passedFile.exists();
@@ -196,7 +209,9 @@ public class SaveResultsFileWriterNGTest {
                         dataValid = false;
                     }
                 }
-                if (rows == 0) dataValid = false;
+                if (rows == 0) {
+                    dataValid = false;
+                }
                 passedFile.delete();
             }
 

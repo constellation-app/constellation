@@ -86,7 +86,8 @@ public class FileChooser extends JFileChooser {
         addChoosableFileFilters();
 
         /**
-         * Commented out by algol so the CONSTELLATION file filter has precedence (instead of "All Files").
+         * Commented out by algol so the CONSTELLATION file filter has
+         * precedence (instead of "All Files").
          */
 //        setFileFilter(currentFilter);
     }
