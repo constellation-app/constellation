@@ -32,4 +32,13 @@ public abstract class HelpPageProvider {
     public List<String> getHelpPages() {
         return null;
     }
+
+    /**
+     * Provides a list of all of the help resources in the module
+     *
+     * @return List of help resources
+     */
+    public List<String> getHelpResources() {
+        return null;
+    }
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.views.analyticview;
+package au.gov.asd.tac.constellation.views.layers;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
 import java.io.File;
@@ -24,17 +24,17 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Provider to get help pages for the analytic view
- *
+ * Provider to get help pages for the layers view
+ * *
  * @author Delphinus8821
  */
 @ServiceProvider(service = HelpPageProvider.class)
-@NbBundle.Messages("AnalyticViewHelpProvider=Analytic View Help Provider")
-public class AnalyticViewHelpProvider extends HelpPageProvider {
+@NbBundle.Messages("LayersViewHelpProvider=Layers View Help Provider")
+public class LayersViewHelpProvider extends HelpPageProvider {
 
     @Override
     public List<String> getHelpPages() {
-        File dir = new File("./src/au/gov/asd/tac/constellation/views/analyticview");
+        File dir = new File("./src/au/gov/asd/tac/constellation/views/layers");
         String[] extensions = new String[]{"md"};
         List<File> files = (List<File>) FileUtils.listFiles(dir, extensions, true);
         List<String> filePaths = new ArrayList<>();
@@ -46,7 +46,7 @@ public class AnalyticViewHelpProvider extends HelpPageProvider {
 
     @Override
     public List<String> getHelpResources() {
-        File dir = new File("./src/au/gov/asd/tac/constellation/views/analyticview");
+        File dir = new File("./src/au/gov/asd/tac/constellation/views/layers");
         String[] extensions = new String[]{"png"};
         List<File> files = (List<File>) FileUtils.listFiles(dir, extensions, true);
         List<String> filePaths = new ArrayList<>();
