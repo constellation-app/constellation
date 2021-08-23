@@ -1,7 +1,7 @@
 # Developer Preferences
 
-Developer preferences can be accessed via Setup -&gt; Options -&gt;
-CONSTELLATION -&gt; Developer.
+Developer preferences can be accessed via Setup -> Options ->
+CONSTELLATION -> Developer.
 
 ## Memory Usage
 
@@ -33,8 +33,8 @@ section to include debugging options:
     detected by the graphics card to the log file.
 -   *Display FPS Counter*: Have a frames per second counter visible on
     the bottom right corner showing you the frame rate for the
-    Constellation graph. If you run the Experimental -&gt; Animations
-    -&gt; Fly through then you can get a sense of the maximum frame rate
+    Constellation graph. If you run the Experimental -> Animations ->
+    Fly through then you can get a sense of the maximum frame rate
     possible with your graphics card.
 
 ## Master Reset Constellation

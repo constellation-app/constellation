@@ -52,17 +52,16 @@ in detail later on):
 5.  Right click an attribute for more options.
 6.  Click on the Import button to import the data to your destination
     graph.
-7.  Save your template using Options -&gt; Save.
+7.  Save your template using Options -> Save.
 8.  Share the template
 
 Hints:
 
--   See all supported attributes using Options -&gt; Show all schema
+-   See all supported attributes using Options -> Show all schema
     attributes
 -   Hover over the attribute name for a tooltip.
 -   Filter in the Configuration Pane by adding searches of the form
-    &lt;column\_name&gt; =="&lt;search text&gt;" E.g.
-    first\_name=="Nick".
+    \<column_name> =="\<search text>" E.g. first_name=="Nick".
 
 ## Add and Remove Files to Import
 
@@ -95,7 +94,7 @@ an attribute onto a column in the preview.
 By default, not all attributes available to the selected schema are
 visible because there can be an overwhelming number of attributes
 depending on the schema. To see all possible attributes you can apply to
-a graph go to Options -&gt; Show all schema attributes.
+a graph go to Options -> Show all schema attributes.
 
 If you have a specific format for example the DateTime, then you can
 right click on the DateTime attribute and select the format from the
@@ -129,10 +128,10 @@ later time, using the "Options" menu in the top left corner.
 When a template is saved, the import definition name is used to name the
 saved query. If a query of that name has already been saved, you will be
 asked if you want to overwrite it. Templates are saved in the directory
-"&lt;HOME\_DIRECTORY&gt;/.CONSTELLATION/ImportDelimited". (The name of
-the file in which the template is saved is encoded so it doesn't clash
-with file system limitations.) Files in this directory can be deleted
-using your favourite file management utility.
+"\<HOME_DIRECTORY>/.CONSTELLATION/ImportDelimited". (The name of the
+file in which the template is saved is encoded so it doesn't clash with
+file system limitations.) Files in this directory can be deleted using
+your favourite file management utility.
 
 Before loading a template, select the files you want to import. The
 loaded template then attempts to match the column names it knows with
@@ -147,7 +146,7 @@ loaded and will appear as it was when it was saved.
 
 To share the template do the following:
 
-1.  Click on Help -&gt; User Directory
+1.  Click on Help -> User Directory
 2.  Navigate to the folder called "ImportDelimited"
 3.  Give the appropriate .json file to a recipient
 4.  Upon receiving the file, they can follow these steps to save that

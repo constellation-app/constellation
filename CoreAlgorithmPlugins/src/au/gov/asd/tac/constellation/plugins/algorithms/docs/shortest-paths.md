@@ -58,7 +58,7 @@ After Shortest Paths is run:
 
 </div>
 
-After Directed Shortest Paths is run (Source Node is Vertex \#0):
+After Directed Shortest Paths is run (Source Node is Vertex #0):
 
 <div style="text-align: center">
 

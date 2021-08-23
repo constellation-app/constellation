@@ -32,7 +32,7 @@ information the next time you do an export/import. It is recommended
 that you save your session in case of errors.
 
 JDBC import/export sessions are saved in <span
-class="mono">*HOME\_DIRECTORY*/.CONSTELLATION/ImportExportJDBC</span>.
+class="mono">*HOME_DIRECTORY*/.CONSTELLATION/ImportExportJDBC</span>.
 Each file is saved JDBC session.
 
 Selecting Finish will cause the export/import to be done.

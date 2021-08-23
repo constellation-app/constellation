@@ -86,5 +86,5 @@ made as to which one to use.
 Included in the built-in icons are the ASCII characters 32 (space) to
 126 (tilde) in the <span class="mono">Char</span> category. These icons
 are white on a transparent background, so when they are used as values
-of the <span class="mono">background\_icon</span> attribute, their color
+of the <span class="mono">background_icon</span> attribute, their color
 can be changed using the <span class="mono">color</span> attribute.

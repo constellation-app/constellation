@@ -92,7 +92,7 @@ be displayed.
 ### Manual Layer
 
 A manual layer is a static layer only containing elements added via
-right click context menu (see above image) or manually set layer\_mask
+right click context menu (see above image) or manually set layer_mask
 Attribute.
 
 ### Query Layer
@@ -101,10 +101,10 @@ A query layer is a dynamic layer that shows the elements represented by
 the specified Vertex and Transaction queries. Query layers are
 dynamically recalculated upon changes to those attributes being queried.
 This is to ensure the accuracy of the shown layer. e.g. Layer 1 has a
-vertex query described as Label == 'Vertex \#0'. This will show the
-vertex with that label. If you then change Vertex \#0's label to
-something like 'V\#0', the query will note the change and recalculate
-for the whole graph.
+vertex query described as Label == 'Vertex #0'. This will show the
+vertex with that label. If you then change Vertex #0's label to
+something like 'V#0', the query will note the change and recalculate for
+the whole graph.
 
 NOTE: Layers View does not allow for the use of the assignment operator
 = or keyword assign.

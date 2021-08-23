@@ -8,11 +8,11 @@ database using a JDBC Connection.
 The following is a high level workflow an analyst can follow to get the
 most out of the import from database feature:
 
-1.  Add the relevant JDBC Driver via "Manage Connections" -&gt;
-    "Drivers" tab.
-2.  Add the Connection details in "Manage Connections" -&gt;
-    "Connections" tab. If the "Username" and "Password" are not
-    required, leave them blank.
+1.  Add the relevant JDBC Driver via "Manage Connections" -> "Drivers"
+    tab.
+2.  Add the Connection details in "Manage Connections" -> "Connections"
+    tab. If the "Username" and "Password" are not required, leave them
+    blank.
 3.  Select the connection from the "Connection" drop-down in the main
     Import window.
 4.  Enter the "Username" and "Password" if the connection requires them.
@@ -25,12 +25,11 @@ most out of the import from database feature:
 
 Some useful hints are:
 
--   See all supported attributes using Options -&gt; Show all schema
+-   See all supported attributes using Options -> Show all schema
     attributes
 -   Hover over the attribute name for a tooltip.
 -   Filter in the Configuration Pane by adding searches of the form
-    &lt;column\_name&gt; =="&lt;search text&gt;" E.g.
-    first\_name=="Nick".
+    \<column_name> =="\<search text>" E.g. first_name=="Nick".
 
 Once establish a connection, the **Configuration** section will display
 the first 100 rows as a preview. The limit of 100 rows is to make the
@@ -63,7 +62,7 @@ an attribute onto a column.
 By default, not all attributes available to the selected schema are
 visible because there can be an overwhelming number of attributes
 depending on the schema. To see all possible attributes you can apply to
-a graph go to Options -&gt; Show all schema attributes.
+a graph go to Options -> Show all schema attributes.
 
 If you have a specific format for example the DateTime, then you can
 right click on the DateTime attribute and select the format from the
@@ -102,7 +101,7 @@ window.
 When a template is saved, the import definition name is used to name the
 saved query. If a query of that name has already been saved, you will be
 asked if you want to overwrite it. Templates are saved in the directory
-<span class="mono">*HOME\_DIRECTORY*/.CONSTELLATION/ImportJDBC</span>.
+<span class="mono">*HOME_DIRECTORY*/.CONSTELLATION/ImportJDBC</span>.
 (The name of the file in which the template is saved is encoded so it
 doesn't clash with file system limitations.) Files in this directory can
 be deleted using your favourite file management utility.
@@ -120,7 +119,7 @@ loaded and will appear as it was when it was saved.
 
 To share the template do the following:
 
-1.  Click on Help -&gt; User Directory
+1.  Click on Help -> User Directory
 2.  Navigate to the folder called **ImportDelimited**
 3.  Give the appropriate .json file to a recipient
 4.  Upon receiving the file, they can follow these steps to save that

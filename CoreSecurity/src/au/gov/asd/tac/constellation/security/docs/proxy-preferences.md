@@ -1,7 +1,7 @@
 # Proxy Preferences
 
-Proxy preferences can be accessed via Setup -&gt; Options -&gt;
-CONSTELLATION -&gt; Proxy.
+Proxy preferences can be accessed via Setup -> Options -> CONSTELLATION
+-> Proxy.
 
 ## Defining Proxies
 

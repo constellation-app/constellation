@@ -40,7 +40,7 @@ nav:
             - 'Overlays':
                 - Overview : user-guide/views/map_view/overlays/index.md
         - 'Analytic View':
-            - Overview : user-guide/views/analytic_view/index.md
+            - Overview : help/html/analytic-view.md
             - 'Questions':
                 - Overview : user-guide/views/analytic_view/questions/index.md
             - 'Analytics':

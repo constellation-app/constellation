@@ -1,7 +1,7 @@
 # Label Fonts Preferences
 
-Label fonts preferences can be accessed via Setup -&gt; Options -&gt;
-CONSTELLATION -&gt; Label Fonts.
+Label fonts preferences can be accessed via Setup -> Options ->
+CONSTELLATION -> Label Fonts.
 
 ## Introduction
 
@@ -37,18 +37,17 @@ split into two runs: one for each font.
 ### Type Placement
 
 If there is more than one run, and the final run is left-to-right and
-ends with a type (that is, ends with "&lt;...&gt;"), the text of the
-type is moved to the beginning of the text.
+ends with a type (that is, ends with "\<...>"), the text of the type is
+moved to the beginning of the text.
 
 ## Font Selection
 
 Use the Label Fonts text area in preferences to specify fonts, one per
 line, with more specific fonts first. Blank lines and lines beginning
-with "\#" are ignored.The menus below the text area contain the
-available options. Fonts can be specified using either their font name,
-or the name of the file containing the font. OpenType font files (.otf)
-and some TrueType font files (.ttf) must be specified using the
-filename.
+with "#" are ignored.The menus below the text area contain the available
+options. Fonts can be specified using either their font name, or the
+name of the file containing the font. OpenType font files (.otf) and
+some TrueType font files (.ttf) must be specified using the filename.
 
 On Windows, if an OTF font file name such as "NotoSerifSC-Regular.otf"
 is specified, the file will first be looked for in the user's local
@@ -74,8 +73,8 @@ C:\\Users\\User1\\Downloads\\Fonts\\NotoSerifCJKtc-Regular.otf.
 ### Font Tags
 
 Fonts can be tagged with additional information. Adding one of the tags
-"BOLD", "ITALIC", or "BOLD\_ITALIC" will have the corresponding effect
-on the font.
+"BOLD", "ITALIC", or "BOLD_ITALIC" will have the corresponding effect on
+the font.
 
                 Courier New,BOLD
                 Noto Sans Arabic

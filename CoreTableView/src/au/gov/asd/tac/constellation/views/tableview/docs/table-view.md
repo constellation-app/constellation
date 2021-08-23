@@ -71,14 +71,14 @@ options to copy data from the clicked cell, row or column.
     visibility toolbar button will open a menu allowing you to customise
     which attributes are displayed in the table.
 -   *Selected Only* ![Selected Only Button
-    Unselected](resources/TableVisibilityAll.png) &lt;&gt; ![Selected
-    Only Button Selected](resources/TableVisibilitySelectedOnly.png) -
+    Unselected](resources/TableVisibilityAll.png) \<\> ![Selected Only
+    Button Selected](resources/TableVisibilitySelectedOnly.png) -
     Clicking the selected only toolbar button will hide any elements
     which are not selected on the graph. Note that while this option is
     enabled, selection in the table will not update selection on the
     graph.
 -   *Element Type* ![Transaction Element Type
-    Button](resources/TableElementTypeTransactions.png) &lt;&gt; ![Node
+    Button](resources/TableElementTypeTransactions.png) \<\> ![Node
     Element Type Button](resources/TableElementTypeNodes.png) - Clicking
     the element type toolbar button will switch between tabular views of
     transaction data (which includes the nodes at either end), or node

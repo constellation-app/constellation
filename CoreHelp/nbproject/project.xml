@@ -64,7 +64,9 @@
                     </run-dependency>
                 </dependency>
             </module-dependencies>
-            <public-packages/>
+            <public-packages>
+                <package>au.gov.asd.tac.constellation.help</package>
+            </public-packages>
         </data>
     </configuration>
 </project>

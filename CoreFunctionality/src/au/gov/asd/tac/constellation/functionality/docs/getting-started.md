@@ -6,14 +6,14 @@ If you're looking to have a quick play around with Constellation to see
 what it can do, follow these steps to get a randomly generated graph
 that you can immediately start playing with:
 
-1.  Select File -&gt; New Graph. This will open a new window containing
-    an empty graph.
-2.  Select Experimental -&gt; Build Graph -&gt; Sphere Graph Builder to
-    build a random spherical graph in the window.
+1.  Select File -> New Graph. This will open a new window containing an
+    empty graph.
+2.  Select Experimental -> Build Graph -> Sphere Graph Builder to build
+    a random spherical graph in the window.
 3.  Select OK in the dialog box to accept the default values for a small
     graph. The graph will be built in the active window.
-4.  Select Views -&gt; Attribute Editor. This displays the attribute
-    values of the current selection on the graph.
+4.  Select Views -> Attribute Editor. This displays the attribute values
+    of the current selection on the graph.
 5.  Go
     [here](/au/gov/asd/tac/constellation/functionality/docs/the-graph-window.html)
     to find out how navigate around the graph.

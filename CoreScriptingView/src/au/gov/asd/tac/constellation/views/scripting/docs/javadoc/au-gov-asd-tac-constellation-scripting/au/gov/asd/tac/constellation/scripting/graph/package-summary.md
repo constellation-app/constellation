@@ -56,6 +56,8 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 
 <div class="header">
 
+# Package au.gov.asd.tac.constellation.views.scripting.graph
+
 </div>
 
 <div class="contentContainer">

@@ -56,6 +56,8 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 
 <div class="header">
 
+# How This API Document Is Organized
+
 <div class="subTitle">
 
 This API (Application Programming Interface) document has pages

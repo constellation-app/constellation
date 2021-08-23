@@ -93,7 +93,7 @@ au.gov.asd.tac.constellation.views.scripting.graph.iterators
 <div class="description">
 
 -   All Implemented Interfaces:  
-    java.util.Iterator&lt;[STransaction](../../../../../../../../au/gov/asd/tac/constellation/scripting/graph/STransaction.html "class in au.gov.asd.tac.constellation.views.scripting.graph")&gt;
+    java.util.Iterator\<[STransaction](../../../../../../../../au/gov/asd/tac/constellation/scripting/graph/STransaction.html "class in au.gov.asd.tac.constellation.views.scripting.graph")\>
 
     ------------------------------------------------------------------------
 
@@ -111,7 +111,7 @@ au.gov.asd.tac.constellation.views.scripting.graph.iterators
     </div>
 
     <span class="simpleTagLabel">Author:</span>  
-    cygnus\_x-1
+    cygnus_x-1
 
 </div>
 

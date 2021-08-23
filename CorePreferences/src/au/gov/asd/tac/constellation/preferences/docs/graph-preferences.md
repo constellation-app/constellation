@@ -1,7 +1,7 @@
 # Graph Preferences
 
-Graph preferences can be accessed via Setup -&gt; Options -&gt;
-CONSTELLATION -&gt; Graph.
+Graph preferences can be accessed via Setup -> Options -> CONSTELLATION
+-> Graph.
 
 ## Default Blaze Settings
 

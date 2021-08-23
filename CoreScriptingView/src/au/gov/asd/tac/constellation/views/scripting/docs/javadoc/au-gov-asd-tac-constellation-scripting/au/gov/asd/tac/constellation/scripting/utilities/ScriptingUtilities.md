@@ -109,7 +109,7 @@ au.gov.asd.tac.constellation.views.scripting.utilities
     </div>
 
     <span class="simpleTagLabel">Author:</span>  
-    cygnus\_x-1
+    cygnus_x-1
 
 </div>
 

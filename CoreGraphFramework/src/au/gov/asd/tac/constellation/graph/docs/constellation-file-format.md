@@ -143,7 +143,7 @@ this round-tripping would work for other string formats such as CSV):
     -   isDisplayed - true or false indicating whether the blaze is
         displayed or not.
 
-    e.g. "45;LightBlue;Sphere\_48;true".
+    e.g. "45;LightBlue;Sphere_48;true".
 -   *color* - An RGBA colour. This value has two representations: a name
     ("red", "green", "blue", ...), or a comma-separated list of four
     floating-point numbers between 0 and 1 inclusive representing the
@@ -158,8 +158,8 @@ this round-tripping would work for other string formats such as CSV):
 -   *datetime* - A datetime. The representation is ISO 8601 format with
     'T' replaced by ' ': "YYYY-MMM-DD hh:mm:ss". Datetime values are
     always UTC, but are displayed to the user in a timezone defined by
-    the value of a graph attribute called "time\_zone" of type
-    "time\_zone" which defaults to "UTC".
+    the value of a graph attribute called "time_zone" of type
+    "time_zone" which defaults to "UTC".
 -   *float* - A floating point number. This is represented internally as
     a Java IEEE-754 32-bit float.
 -   *icon* - The name of an icon. Note that icon names need not be fully
@@ -169,7 +169,7 @@ this round-tripping would work for other string formats such as CSV):
     32-bit signed integer.
 -   *string* - A text string.
 -   *time* - A time. The representation is ISO 8601 format: "hh:mm:ss".
--   *time\_zone* - A time zone. The representation is a string accepted
+-   *time_zone* - A time zone. The representation is a string accepted
     by the Java TimeZone class. This is typically a string of the form
     "Canberra/Australia" or "GMT+10".
 
@@ -253,7 +253,7 @@ values assigned to their attributes.
 
 The vertices define values for a special attribute:
 
--   *vx\_id\_* - An integer that is used as a key for each vertex in the
+-   *vx_id\_* - An integer that is used as a key for each vertex in the
     file. The values need not be consecutive or ordered, but they must
     be unique.
 
@@ -298,18 +298,18 @@ A part of an example "transaction" section is shown below.
             
 
 Two transaction attributes are defined in the "attrs" section: "color"
-(type color), and "line\_style" (type line\_style).  
+(type color), and "line_style" (type line_style).  
 NOTE: "color" has no defined 'default' value, so transactions without an
 explicitly defined color will be null. Two transactions are defined in
 the 'data' section with specific values assigned to their attributes.
 
 The transactions define values for three special attributes:
 
--   *vx\_src\_* - The source vertex of the transaction. This must be one
-    of the vx\_id\_ integer values defined in the vertex section.
--   *vx\_dst\_* - The destination vertex of the transaction. This must
-    be one of the vx\_id\_ integer values defined in the vertex section.
--   *tx\_dir\_* - A boolean indicating whether the transaction is
+-   *vx_src\_* - The source vertex of the transaction. This must be one
+    of the vx_id\_ integer values defined in the vertex section.
+-   *vx_dst\_* - The destination vertex of the transaction. This must be
+    one of the vx_id\_ integer values defined in the vertex section.
+-   *tx_dir\_* - A boolean indicating whether the transaction is
     directed or undirected. If true, the transaction is directed.
 
 ## "meta" Section

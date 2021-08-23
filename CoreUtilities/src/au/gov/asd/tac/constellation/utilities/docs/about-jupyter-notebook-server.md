@@ -1,9 +1,9 @@
 # About The Jupyter Notebook Server
 
-Selecting Tools -&gt; Start Jupyter Notebook will start a Jupyter
-notebook server. This will in turn automatically open a new page in your
-default web browser. The HTTP REST server will be started automatically
-if it hasn't already been started.
+Selecting Tools -> Start Jupyter Notebook will start a Jupyter notebook
+server. This will in turn automatically open a new page in your default
+web browser. The HTTP REST server will be started automatically if it
+hasn't already been started.
 
 The command "jupyter-notebook" is used to start the server. This assumes
 that the command is on your command path. If this command doesn't work

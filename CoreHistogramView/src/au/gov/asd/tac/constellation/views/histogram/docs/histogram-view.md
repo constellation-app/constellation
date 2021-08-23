@@ -270,7 +270,7 @@ Histogram View.
 Pressing the Actions button will reveal two options: Save Bins To Graph
 and Save Bins To Clipboard
 
--   *Save Bins to Graph* - Will add a histogram\_bin attribute to the
+-   *Save Bins to Graph* - Will add a histogram_bin attribute to the
     graph, and the value of which corresponding to the Property Value of
     the node or transaction.
 -   *Save Bins to Clipboard* - Will copy the Property Values and Counts

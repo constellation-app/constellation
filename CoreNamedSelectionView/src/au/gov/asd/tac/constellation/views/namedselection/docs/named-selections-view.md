@@ -59,15 +59,14 @@ Window.
 To perform a union (binary OR) operation, select two or more selections
 from the Named Selections Window, and press the "Union" button. This
 will result in all elements from each Named Selection (and the graph if
-*&lt;Current Selection&gt;* has been selected) being selected on the
-graph.
+*\<Current Selection>* has been selected) being selected on the graph.
 
 ## Performing Intersections (AND)
 
 To perform an intersection (binary AND) operation, select two or more
 selections from the Named Selections Window, and press the
 "Intersection" button. This will result in all common elements from each
-Named Selection (and the graph if *&lt;Current Selection&gt;* has been
+Named Selection (and the graph if *\<Current Selection>* has been
 selected) being selected on the graph, and all other elements being
 unselected.
 

@@ -14,7 +14,7 @@ You can navigate the graph using the mouse and keyboard keys (refer
 [here](/au/gov/asd/tac/constellation/graph/interaction/docs/add-and-selection-modes.html)
 for the mouse controls). Menus can be used to manipulate the graph. Some
 menus have keys assigned to them by default, but you can change the key
-assignments using Tools -&gt; Options -&gt; Keymap.
+assignments using Tools -> Options -> Keymap.
 
 ## Graph Sidebar
 
@@ -120,6 +120,6 @@ than eight transactions between two nodes, they will be drawn as the
 corresponding edge.
 
 Text can be drawn above and below nodes: use the graph-level attributes
-"node\_labels\_bottom" and "node\_labels\_top" to determine what text is
+"node_labels_bottom" and "node_labels_top" to determine what text is
 drawn. Similarly for transactions using the attribute
-"transaction\_labels".
+"transaction_labels".

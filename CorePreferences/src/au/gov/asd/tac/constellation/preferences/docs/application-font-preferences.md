@@ -1,7 +1,7 @@
 # Application Font Preferences
 
-Application Font preferences can be accessed via Setup -&gt; Options
--&gt; CONSTELLATION -&gt; Application Font.
+Application Font preferences can be accessed via Setup -> Options ->
+CONSTELLATION -> Application Font.
 
 ## Application Default Font Preferences
 

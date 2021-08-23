@@ -34,7 +34,7 @@ When exporting, the node and transaction tables must already exist.
 (This is obviously the case when importing.) The "Display node SQL" and
 "Display transaction SQL" buttons will each display an SQL "CREATE
 TABLE" statement that can be used to create the tables. The SQL is not
-guaranteed to be correct: for instance, graph attributes "fg\_icon" and
+guaranteed to be correct: for instance, graph attributes "fg_icon" and
 "fg.icon" will both result in a column name of "fgicon". It is up to you
 to ensure that the SQL will work with your database.
 

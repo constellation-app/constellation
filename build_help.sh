@@ -8,7 +8,7 @@ find */src/ -name \*.md |
 find */src/ -name *.html | 
     while read x
     do 
-        ~/applications/pandoc-2.13/bin/pandoc -f html -t commonmark $x > "$x".md
+        ~/AppData/Local/Pandoc/pandoc -f html -t commonmark $x > "$x".md
     done
 
 find */src/ -name *.html.md | 

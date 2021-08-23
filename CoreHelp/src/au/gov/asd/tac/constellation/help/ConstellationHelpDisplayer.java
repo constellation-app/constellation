@@ -51,6 +51,7 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import org.openide.awt.NotificationDisplayer;
 import org.openide.util.HelpCtx;
+import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -136,7 +137,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
 
             LOGGER.log(Level.WARNING, "Could not find entry {0} in resource {1}", new Object[]{HELP_MAP, HELP_ZIP});
         } else {
-            throw new IOException(String.format("Help resource %s not found", HELP_ZIP));
+            throw new IOException(String.format("Help resource %s not found " + filepath, HELP_ZIP));
         }
     }
 
@@ -153,7 +154,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
     private static void copyFromZipFile(final String zipFile, final String filepath, final OutputStream out) throws IOException {
         // TODO: need to rework this so that the local version includes a custom header and footer
         if (filepath.endsWith(".md")) {
-            try (ZipFile zip = new ZipFile(zipFile)) {
+            try ( ZipFile zip = new ZipFile(zipFile)) {
                 final Enumeration<? extends ZipEntry> entries = zip.entries();
 
                 while (entries.hasMoreElements()) {
@@ -167,14 +168,14 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
             }
         } else {
             // TODO: perhaps move this to another method
-            final Path p = Paths.get(zipFile);
+            final Path p = Paths.get(filepath);
             try {
                 try (final FileSystem fs = FileSystems.newFileSystem(p, null)) {
                     final Path path = fs.getPath(filepath);
                     Files.copy(path, out);
                 }
             } catch (final FileSystemNotFoundException ex) {
-                throw new IOException(ex);
+                throw new IOException(String.format("Help resource %s not found " + filepath + zipFile, HELP_ZIP));
             }
         }
     }
@@ -227,9 +228,13 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         return reader.lines().collect(Collectors.toList());
     }
 
+    /**
+     *
+     * @return @throws IOException
+     */
     private static List<String> initHelp() throws IOException {
         helpSource = System.getProperty(CONSTELLATION_HELP);
-        LOGGER.log(Level.INFO, "Help source: {0}", helpSource);
+        LOGGER.log(Level.INFO, "Help source: {0}", HELP_ZIP);
 
         if (helpSource == null) {
             LOGGER.log(Level.INFO, "help_map file at zip resource {0}, {1}", new Object[]{HELP_ZIP, HELP_MAP});
@@ -300,9 +305,11 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         // If it doesn't exist (maybe because someone forgot to put the helpId
         // in their .rst file), go to the root page.
         //
-        final Map<String, String> helpMapCopy = getHelpMap();
-        if (!helpMapCopy.isEmpty()) {
-            final String part = helpMapCopy.containsKey(helpId) ? helpMapCopy.get(helpId) : "index.html";
+        List<String> helpPages = getHelpPages();
+        //  final Map<String, String> helpMapCopy = getHelpMap();
+        if (!helpPages.isEmpty()) {
+            final int index = helpPages.indexOf(helpId);
+            final String part = helpPages.contains(helpId) ? helpPages.get(index) : "analytic-view.md";
 
             // Send the user's browser to the correct page, depending on the help source.
             //
@@ -314,7 +321,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
                 // the file from the resource/file.
                 //
                 final int port = WebServer.start();
-                url = String.format("http://localhost:%d/help/html/%s", port, part);
+                url = String.format("http://localhost:8000/help/html/%s", part);
             } else if (helpSource.startsWith(OFFICIAL_GITHUB_REPOSITORY)) {
                 // If the helpSource points to github contellation-app/constellation then
                 // we are going to use read the docs to serve the help pages
@@ -356,5 +363,17 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         }
 
         return false;
+    }
+
+    /**
+     * Use a lookup to get all of the help pages
+     *
+     * @return help pages
+     */
+    public List<String> getHelpPages() {
+        final HelpPageProvider helpFiles = Lookup.getDefault().lookup(HelpPageProvider.class);
+
+        List<String> pages = helpFiles.getHelpPages();
+        return pages;
     }
 }

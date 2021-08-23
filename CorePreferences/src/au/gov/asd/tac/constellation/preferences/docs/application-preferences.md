@@ -1,19 +1,19 @@
 # Application Preferences
 
-Application preferences can be accessed via Setup -&gt; Options -&gt;
-CONSTELLATION -&gt; Application.
+Application preferences can be accessed via Setup -> Options ->
+CONSTELLATION -> Application.
 
 ## User Directory
 
 The user directory is where Constellation stores user-specific data such
 as auto-save files, icons, and templates. By default the user directory
-is "&lt;HomeDirectory&gt;/.CONSTELLATION". If you want to change your
-user directory, create the new directory first, copy any files you want
-from the current directory to the new one, then change the directory in
+is "\<HomeDirectory>/.CONSTELLATION". If you want to change your user
+directory, create the new directory first, copy any files you want from
+the current directory to the new one, then change the directory in
 preferences.
 
 You can open your user directory in your default file browser via Help
--&gt; User Directory.
+-> User Directory.
 
 ## Autosave
 
@@ -31,10 +31,9 @@ on the Welcome page via the "Show on Startup" tickbox option.
 
 Constellation has a built in Restful web service allowing you to
 programatically run plugins via web calls. The web service needs to be
-started manually from Tools -&gt; Start REST Service and it will by
-default listen to port 1517 on localhost. To reduce the risk of
-potential security vulnerabilities the web service is limited to
-localhost only.
+started manually from Tools -> Start REST Service and it will by default
+listen to port 1517 on localhost. To reduce the risk of potential
+security vulnerabilities the web service is limited to localhost only.
 
 You also have the ability make Restful calls via a file system. This can
 be handy if you have a shared folder that multiple VMs can access and
@@ -47,12 +46,12 @@ for plugins to run.
 The "Notebook directory" specifies the location where your Jupyter
 Notebooks are located and will launch the Jupyter Notebooks server from
 this directory. You can start the Jupyter Notebooks server from
-Constellation via Tools -&gt; Start Jupyter Notebook.
+Constellation via Tools -> Start Jupyter Notebook.
 
 Selecting to "Download Python REST client" means that when you start the
 Jupyter Notebook server, Constellation will download the
-constellation\_client.py file to your .ipython folder. The
-constellation\_client.py provides easy access to make Restful calls to
+constellation_client.py file to your .ipython folder. The
+constellation_client.py provides easy access to make Restful calls to
 Constellation.
 
 ## Save Location

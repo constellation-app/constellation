@@ -127,15 +127,15 @@ generally been designed for a specific attribute (usually the type has a
 similar name to the attribute it is for):
 
 -   blaze
--   composite\_node\_state
--   connection\_mode
--   draw\_flags
--   graph\_labels\_nodes
--   graph\_labels\_transactions
--   layer\_name
--   line\_style
+-   composite_node_state
+-   connection_mode
+-   draw_flags
+-   graph_labels_nodes
+-   graph_labels_transactions
+-   layer_name
+-   line_style
 -   raw
--   transaction\_attribute\_name
--   transaction\_type
--   vertex\_attribute\_name
--   vertex\_type
+-   transaction_attribute_name
+-   transaction_type
+-   vertex_attribute_name
+-   vertex_type

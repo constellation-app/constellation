@@ -334,7 +334,7 @@ Lookup a plugin by name and execute it with default parameter values.
 
 </div>
 
-<span class="memberNameLink">[executePlugin(SGraph, String, Map&lt;String, String&gt;)](au/gov/asd/tac/constellation/scripting/utilities/ScriptingUtilities.html#executePlugin-au.gov.asd.tac.constellation.views.scripting.graph.SGraph-java.lang.String-java.util.Map-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.utilities.[ScriptingUtilities](au/gov/asd/tac/constellation/scripting/utilities/ScriptingUtilities.html "class in au.gov.asd.tac.constellation.views.scripting.utilities")  
+<span class="memberNameLink">[executePlugin(SGraph, String, Map\<String, String>)](au/gov/asd/tac/constellation/scripting/utilities/ScriptingUtilities.html#executePlugin-au.gov.asd.tac.constellation.views.scripting.graph.SGraph-java.lang.String-java.util.Map-)</span> - Method in class au.gov.asd.tac.constellation.views.scripting.utilities.[ScriptingUtilities](au/gov/asd/tac/constellation/scripting/utilities/ScriptingUtilities.html "class in au.gov.asd.tac.constellation.views.scripting.utilities")  
 <div class="block">
 
 Lookup a plugin by name and execute it with custom parameter values.

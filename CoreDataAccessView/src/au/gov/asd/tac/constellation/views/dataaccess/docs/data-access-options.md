@@ -12,8 +12,8 @@ Data access preferences can be saved and loaded using the "Save" and
 When a preference is saved, you are prompted to name the preference. If
 a preference of that name has already been saved, you will be asked if
 you want to overwrite it. Preferences are saved by default in the
-directory HOME\_DIRECTORY/.CONSTELLATION/DataAccessView. (The name of
-the file in which the preference is saved is encoded so it doesn't clash
+directory HOME_DIRECTORY/.CONSTELLATION/DataAccessView. (The name of the
+file in which the preference is saved is encoded so it doesn't clash
 with file system limitations.) Files in this directory can be copied and
 deleted using your favourite file management utility.
 
