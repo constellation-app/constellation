@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import static au.gov.asd.tac.constellation.plugins.parameters.types.FloatParameterType.INSTANCE;
 import static au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.SHRINK_VAL;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotEquals;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -76,8 +75,8 @@ public class FloatParameterTypeNGTest {
         System.out.println("build");
 
         FloatParameterType.FloatParameterValue instance = new FloatParameterType.FloatParameterValue(2);
-        Float instanceValue = instance.get();
-        Float expResult = 2f;
+        float instanceValue = instance.get();
+        float expResult = 2f;
         assertEquals(instanceValue, expResult);
 
         instance = new FloatParameterType.FloatParameterValue(-5);
@@ -90,10 +89,6 @@ public class FloatParameterTypeNGTest {
         expResult = 0f;
         assertEquals(instanceValue, expResult);
 
-        instance = new FloatParameterType.FloatParameterValue(-5);
-        instanceValue = instance.get();
-        expResult = 0f;
-        assertNotEquals(instanceValue, expResult);
     }
 
     /**
@@ -108,17 +103,17 @@ public class FloatParameterTypeNGTest {
 
         // Check setting shrink to false
         boolean expected = false;
-        FloatParameterType.setShrinkInputWidth(parameter, expected);
+        FloatParameterType.setShrinkInputWidth(parameter, false);
         assertEquals(parameter.getProperty(SHRINK_VAL), expected);
 
         // Check setting shrink to the same value that it already is
         expected = false;
-        FloatParameterType.setShrinkInputWidth(parameter, expected);
+        FloatParameterType.setShrinkInputWidth(parameter, false);
         assertEquals(parameter.getProperty(SHRINK_VAL), expected);
 
         // Check setting shrink to true
         expected = true;
-        FloatParameterType.setShrinkInputWidth(parameter, expected);
+        FloatParameterType.setShrinkInputWidth(parameter, true);
         assertEquals(parameter.getProperty(SHRINK_VAL), expected);
     }
 

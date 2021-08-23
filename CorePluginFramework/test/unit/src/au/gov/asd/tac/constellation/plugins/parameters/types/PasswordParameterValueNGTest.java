@@ -174,7 +174,7 @@ public class PasswordParameterValueNGTest {
         // should return true
         instance = new PasswordParameterValue("Starting Value");
         expResult = null;
-        assertTrue(instance.setStringValue(expResult));
+        assertTrue(instance.setStringValue(null));
         assertEquals(instance.get(), expResult);
 
         // Checking a null value changing to another null
@@ -303,21 +303,21 @@ public class PasswordParameterValueNGTest {
         instance2 = new PasswordParameterValue();
         assertFalse(instance.equals(instance2));
 
-        // Test equals on one StringParameterValue variable and one Object \
+        // Test equals on one PasswordParameterValue variable and one Object \
         // with the same value
         // Should return true
         instance = new PasswordParameterValue("Test");
         Object objectInstance = new PasswordParameterValue("Test");
         assertTrue(instance.equals(objectInstance));
 
-        // Test equals on one StringParameterValue variable and one Object with
+        // Test equals on one PasswordParameterValue variable and one Object with
         // a different value
         // Should return false
         instance = new PasswordParameterValue();
         objectInstance = new PasswordParameterValue("Test");
         assertFalse(instance.equals(objectInstance));
 
-        // Test equals on one StringParameterValue variable and one Integer
+        // Test equals on one PasswordParameterValue variable and one Integer
         // Should return false
         instance = new PasswordParameterValue("Test");
         Integer integerInstance = 4;
