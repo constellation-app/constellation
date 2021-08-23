@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.layers.shortcut;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
@@ -24,12 +25,14 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewState;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  * A plugin that creates a new layer in the layers view
  *
  * @author formalhaut69
  */
+@ServiceProvider(service = Plugin.class)
 @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
 public class NewLayerPlugin extends SimpleEditPlugin {
 

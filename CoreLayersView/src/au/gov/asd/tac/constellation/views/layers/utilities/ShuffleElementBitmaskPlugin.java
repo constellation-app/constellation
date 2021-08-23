@@ -31,9 +31,8 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
 public final class ShuffleElementBitmaskPlugin extends SimpleEditPlugin {
 
-    private int startIndex;
+    private final int startIndex;
     private int currentIndex;
-    private int countIndex;
 
     public ShuffleElementBitmaskPlugin(final int startIndex) {
         this.startIndex = startIndex;
@@ -41,7 +40,7 @@ public final class ShuffleElementBitmaskPlugin extends SimpleEditPlugin {
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) {
-        countIndex = startIndex;
+        int countIndex = startIndex;
         currentIndex = startIndex;
         while (countIndex <= 64) {
             setVertices(graph);

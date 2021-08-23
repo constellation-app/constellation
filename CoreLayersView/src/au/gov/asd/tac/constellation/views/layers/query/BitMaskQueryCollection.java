@@ -223,7 +223,8 @@ public class BitMaskQueryCollection {
         int queryIndex = 0;
         for (final BitMaskQuery query : queries) {
             if (query != null) {
-                query.setIndex(queryIndex++);
+                query.setIndex(queryIndex);
+                queryIndex++;
             }
         }
     }

@@ -16,6 +16,8 @@
 package au.gov.asd.tac.constellation.views.layers.context;
 
 /**
+ * Context menu actions for interaction with layers. Allows Adding and Removing
+ * elements from layers. Used by Context menus
  *
  * @author aldebaran30701
  */
