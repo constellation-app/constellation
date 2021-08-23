@@ -17,13 +17,11 @@ package au.gov.asd.tac.constellation.views.layers.utilities;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.LayersConcept;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.views.layers.context.LayerAction;
 
 /**
  * Updates each selected element's bitmask for viewing them on different layers
@@ -31,58 +29,70 @@ import au.gov.asd.tac.constellation.views.layers.context.LayerAction;
  * @author aldebaran30701
  */
 @PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
-public final class UpdateElementBitmaskPlugin extends SimpleEditPlugin {
+public final class ShuffleElementBitmaskPlugin extends SimpleEditPlugin {
 
-    private final long targetMask;
-    private final LayerAction layerAction;
-    private final boolean selectedOnly;
+    private final int startIndex;
+    private int currentIndex;
 
-    public UpdateElementBitmaskPlugin(final int bitmask, final LayerAction layerAction, final boolean selectedOnly) {
-        this.targetMask = bitmask;
-        this.layerAction = layerAction;
-        this.selectedOnly = selectedOnly;
+    public ShuffleElementBitmaskPlugin(final int startIndex) {
+        this.startIndex = startIndex;
     }
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) {
-        setVertices(graph);
-        setTransactions(graph);
+        int countIndex = startIndex;
+        currentIndex = startIndex;
+        while (countIndex <= 64) {
+            setVertices(graph);
+            setTransactions(graph);
+            currentIndex++;
+            countIndex = (1 << currentIndex);
+        }
     }
 
     private void setVertices(final GraphWriteMethods graph) {
-        final int vertexSelectedAttributeId = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
         final int vertexBitmaskAttributeId = LayersConcept.VertexAttribute.LAYER_MASK.ensure(graph);
         final int vertexCount = graph.getVertexCount();
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
             final int vertexId = graph.getVertex(vertexPosition);
-            if (!selectedOnly || graph.getBooleanValue(vertexSelectedAttributeId, vertexId)) {
-                if (layerAction.equals(LayerAction.ADD)) {
-                    graph.setLongValue(vertexBitmaskAttributeId, vertexId, graph.getLongValue(vertexBitmaskAttributeId, vertexId) | (1 << targetMask));
-                } else if (layerAction.equals(LayerAction.REMOVE)) {
-                    graph.setLongValue(vertexBitmaskAttributeId, vertexId, graph.getLongValue(vertexBitmaskAttributeId, vertexId) & ~(1 << targetMask));
-                } else {
-                    // Do nothing
-                }
+
+            final long currentLong = graph.getLongValue(vertexBitmaskAttributeId, vertexId);
+            // If the next layer is a match, set that value to then match the current startIndex
+            if ((currentLong & (1 << currentIndex + 1)) != 0) {
+                graph.setLongValue(vertexBitmaskAttributeId, vertexId, incrementBitmask(currentIndex, currentLong));
             }
         }
     }
 
     private void setTransactions(final GraphWriteMethods graph) {
-        final int transactionSelectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
         final int transactionBitmaskAttributeId = LayersConcept.TransactionAttribute.LAYER_MASK.ensure(graph);
         final int transactionCount = graph.getTransactionCount();
         for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
             final int transactionId = graph.getTransaction(transactionPosition);
-            if (!selectedOnly || graph.getBooleanValue(transactionSelectedAttributeId, transactionId)) {
-                if (layerAction.equals(LayerAction.ADD)) {
-                    graph.setLongValue(transactionBitmaskAttributeId, transactionId, graph.getLongValue(transactionBitmaskAttributeId, transactionId) | (1 << targetMask));
-                } else if (layerAction.equals(LayerAction.REMOVE)) {
-                    graph.setLongValue(transactionBitmaskAttributeId, transactionId, graph.getLongValue(transactionBitmaskAttributeId, transactionId) & ~(1 << targetMask));
-                } else {
-                    // Do nothing
-                }
+
+            final long currentLong = graph.getLongValue(transactionBitmaskAttributeId, transactionId);
+            // If the next layer is a match, set that value to then match the current startIndex
+            if ((currentLong & (1 << currentIndex + 1)) != 0) {
+                graph.setLongValue(transactionBitmaskAttributeId, transactionId, incrementBitmask(currentIndex, currentLong));
             }
         }
+    }
+
+    /**
+     * Remove the next index above the current index from the current bitmask,
+     * and add the current index to the current bitmask.
+     *
+     * Effectively removing a vertex from a higher layer and adding it to a
+     * layer closer to 0.
+     *
+     * @param currentIndex The current layer (empty position) to move the layer
+     * to
+     * @param currentBitmask the current bitmask to increment.
+     * @return the new bitmask which has shifted up a position.
+     */
+    protected static long incrementBitmask(final int currentIndex, final long currentBitmask) {
+        final long bitmaskWithNextIndexRemoved = currentBitmask & ~(1 << (currentIndex + 1));
+        return bitmaskWithNextIndexRemoved | (1 << currentIndex);
     }
 
     @Override
@@ -92,6 +102,6 @@ public final class UpdateElementBitmaskPlugin extends SimpleEditPlugin {
 
     @Override
     public String getName() {
-        return "Layers View: Update Element Bitmask";
+        return "Layers View: Shuffle Element Bitmask";
     }
 }
