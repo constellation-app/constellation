@@ -1,92 +1,98 @@
-/*
- * Copyright 2010-2021 Australian Signals Directorate
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package au.gov.asd.tac.constellation.views.layers;
-
-import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.LayersConcept;
-import au.gov.asd.tac.constellation.graph.WritableGraph;
-import au.gov.asd.tac.constellation.graph.locking.DualGraph;
-import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
-import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import org.openide.util.Exceptions;
-import static org.testng.Assert.assertEquals;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
-/**
- *
- * @author aldebaran30701
- */
-public class LayersViewControllerNGTest {
-
-    private int layerMaskV, layerMaskT, layerVisibilityV, layerVisibilityT, selectedV, selectedT;
-    private int vxId1, vxId2, txId1, txId2;
-    private Graph graph;
-
-    public LayersViewControllerNGTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
-    @BeforeMethod
-    public void setUpMethod() throws Exception {
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
-    }
-
-    /**
-     * Test of getDefault method, of class LayersViewController.
-     */
-    @Test
-    public void testGetDefault() {
-        System.out.println("getDefault");
-
-        final LayersViewController instance1 = LayersViewController.getDefault();
-        final LayersViewController instance2 = LayersViewController.getDefault();
-        assertEquals(instance1, instance2);
-    }
-
-    /**
-     * Test of init method, of class LayersViewController.
-     */
-    @Test
-    public void testInit() {
-        System.out.println("init");
-
-        final LayersViewController instance = LayersViewController.getDefault();
-        assertEquals(instance.getParent(), null);
-
-        final LayersViewTopComponent lvtc = new LayersViewTopComponent();
-
-        instance.init(lvtc);
-        assertEquals(instance.getParent(), lvtc);
-    }
-
+///*
+// * Copyright 2010-2021 Australian Signals Directorate
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *     http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// */
+//package au.gov.asd.tac.constellation.views.layers;
+//
+//import au.gov.asd.tac.constellation.graph.Graph;
+//import au.gov.asd.tac.constellation.graph.LayersConcept;
+//import au.gov.asd.tac.constellation.graph.ReadableGraph;
+//import au.gov.asd.tac.constellation.graph.WritableGraph;
+//import au.gov.asd.tac.constellation.graph.locking.DualGraph;
+//import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+//import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
+//import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
+//import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+//import org.mockito.MockedStatic;
+//import org.mockito.Mockito;
+//import static org.mockito.Mockito.when;
+//import org.openide.util.Exceptions;
+//import static org.testng.Assert.assertEquals;
+//import static org.testng.Assert.assertFalse;
+//import org.testng.annotations.AfterClass;
+//import org.testng.annotations.AfterMethod;
+//import org.testng.annotations.BeforeClass;
+//import org.testng.annotations.BeforeMethod;
+//import org.testng.annotations.Test;
+//
+///**
+// *
+// * @author aldebaran30701
+// */
+//public class LayersViewControllerNGTest {
+//
+//    private int layerMaskV, layerMaskT, layerVisibilityV, layerVisibilityT, selectedV, selectedT;
+//    private int vxId1, vxId2, txId1, txId2;
+//    private Graph graph;
+//
+//    public LayersViewControllerNGTest() {
+//    }
+//
+//    @BeforeClass
+//    public static void setUpClass() throws Exception {
+//    }
+//
+//    @AfterClass
+//    public static void tearDownClass() throws Exception {
+//    }
+//
+//    @BeforeMethod
+//    public void setUpMethod() throws Exception {
+//    }
+//
+//    @AfterMethod
+//    public void tearDownMethod() throws Exception {
+//    }
+//
+//    /**
+//     * Test of getDefault method, of class LayersViewController.
+//     */
+//    @Test
+//    public void testGetDefault() {
+//        System.out.println("getDefault");
+//
+//        final LayersViewController instance1 = LayersViewController.getDefault();
+//        final LayersViewController instance2 = LayersViewController.getDefault();
+//        assertEquals(instance1, instance2);
+//    }
+//
+//    /**
+//     * Test of init method, of class LayersViewController.
+//     */
+//    @Test
+//    public void testInit() {
+//        System.out.println("init");
+//
+//        final LayersViewController instance = LayersViewController.getDefault();
+//        assertEquals(instance.getParent(), null);
+//
+//        final LayersViewTopComponent lvtc = new LayersViewTopComponent();
+//
+//        instance.init(lvtc);
+//        assertEquals(instance.getParent(), lvtc);
+//    }
+//
 //    /**
 //     * Verify that no elements are added to the graph when an empty graph is
 //     * used
@@ -244,59 +250,60 @@ public class LayersViewControllerNGTest {
 //            }
 //        }
 //    }
-    private void setupEmptyGraph() {
-        graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
-    }
-
-    /**
-     * Set up a graph with two vertices and two transactions on layer 1.
-     */
-    private void setupGraph() {
-        graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
-        try {
-
-            WritableGraph wg = graph.getWritableGraph("", true);
-
-            // Create LayerMask attributes
-            layerMaskV = LayersConcept.VertexAttribute.LAYER_MASK.ensure(wg);
-            layerMaskT = LayersConcept.TransactionAttribute.LAYER_MASK.ensure(wg);
-
-            // Create LayerVisilibity Attributes
-            layerVisibilityV = LayersConcept.VertexAttribute.LAYER_VISIBILITY.ensure(wg);
-            layerVisibilityT = LayersConcept.TransactionAttribute.LAYER_VISIBILITY.ensure(wg);
-
-            // Create Selected Attributes
-            selectedV = VisualConcept.VertexAttribute.SELECTED.ensure(wg);
-            selectedT = VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
-
-            // Adding 2 Vertices - not selected, layer 1, visible
-            vxId1 = wg.addVertex();
-            wg.setIntValue(layerMaskV, vxId1, 1);
-            wg.setFloatValue(layerVisibilityV, vxId1, 1.0f);
-            wg.setBooleanValue(selectedV, vxId1, false);
-
-            vxId2 = wg.addVertex();
-            wg.setIntValue(layerMaskV, vxId2, 1);
-            wg.setFloatValue(layerVisibilityV, vxId2, 1.0f);
-            wg.setBooleanValue(selectedV, vxId2, false);
-
-            // Adding 2 Transactions - not selected, layer 1, visible
-            txId1 = wg.addTransaction(vxId1, vxId2, true);
-            wg.setIntValue(layerMaskT, txId1, 1);
-            wg.setFloatValue(layerVisibilityT, txId1, 1.0f);
-            wg.setBooleanValue(selectedT, txId1, false);
-
-            txId2 = wg.addTransaction(vxId1, vxId2, false);
-            wg.setIntValue(layerMaskT, txId2, 1);
-            wg.setFloatValue(layerVisibilityT, vxId2, 1.0f);
-            wg.setBooleanValue(selectedT, vxId2, false);
-
-            wg.commit();
-
-        } catch (final InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
-            Thread.currentThread().interrupt();
-        }
-    }
-
-}
+//
+//    private void setupEmptyGraph() {
+//        graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
+//    }
+//
+//    /**
+//     * Set up a graph with two vertices and two transactions on layer 1.
+//     */
+//    private void setupGraph() {
+//        graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
+//        try {
+//
+//            WritableGraph wg = graph.getWritableGraph("", true);
+//
+//            // Create LayerMask attributes
+//            layerMaskV = LayersConcept.VertexAttribute.LAYER_MASK.ensure(wg);
+//            layerMaskT = LayersConcept.TransactionAttribute.LAYER_MASK.ensure(wg);
+//
+//            // Create LayerVisilibity Attributes
+//            layerVisibilityV = LayersConcept.VertexAttribute.LAYER_VISIBILITY.ensure(wg);
+//            layerVisibilityT = LayersConcept.TransactionAttribute.LAYER_VISIBILITY.ensure(wg);
+//
+//            // Create Selected Attributes
+//            selectedV = VisualConcept.VertexAttribute.SELECTED.ensure(wg);
+//            selectedT = VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
+//
+//            // Adding 2 Vertices - not selected, layer 1, visible
+//            vxId1 = wg.addVertex();
+//            wg.setIntValue(layerMaskV, vxId1, 1);
+//            wg.setFloatValue(layerVisibilityV, vxId1, 1.0f);
+//            wg.setBooleanValue(selectedV, vxId1, false);
+//
+//            vxId2 = wg.addVertex();
+//            wg.setIntValue(layerMaskV, vxId2, 1);
+//            wg.setFloatValue(layerVisibilityV, vxId2, 1.0f);
+//            wg.setBooleanValue(selectedV, vxId2, false);
+//
+//            // Adding 2 Transactions - not selected, layer 1, visible
+//            txId1 = wg.addTransaction(vxId1, vxId2, true);
+//            wg.setIntValue(layerMaskT, txId1, 1);
+//            wg.setFloatValue(layerVisibilityT, txId1, 1.0f);
+//            wg.setBooleanValue(selectedT, txId1, false);
+//
+//            txId2 = wg.addTransaction(vxId1, vxId2, false);
+//            wg.setIntValue(layerMaskT, txId2, 1);
+//            wg.setFloatValue(layerVisibilityT, vxId2, 1.0f);
+//            wg.setBooleanValue(selectedT, vxId2, false);
+//
+//            wg.commit();
+//
+//        } catch (final InterruptedException ex) {
+//            Exceptions.printStackTrace(ex);
+//            Thread.currentThread().interrupt();
+//        }
+//    }
+//
+//}
