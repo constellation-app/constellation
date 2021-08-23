@@ -44,7 +44,7 @@ import org.openide.windows.TopComponent;
         category = "Window",
         id = "au.gov.asd.tac.constellation.views.notes.NotesViewTopComponent")
 @ActionReferences({
-    @ActionReference(path = "Menu/Experimental/Views", position = 500),
+    @ActionReference(path = "Menu/Views", position = 900),
     @ActionReference(path = "Shortcuts", name = "CS-A")})
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_NotesViewAction",
