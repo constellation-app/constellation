@@ -46,7 +46,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages("SaveGraphPlugin=Save Graph")
-@PluginInfo(pluginType = PluginType.UPDATE, tags = {"MODIFY"})
+@PluginInfo(pluginType = PluginType.EXPORT, tags = {"EXPORT"})
 public class SaveGraphPlugin extends SimplePlugin {
 
     private static final Logger LOGGER = Logger.getLogger(SaveGraphPlugin.class.getName());
