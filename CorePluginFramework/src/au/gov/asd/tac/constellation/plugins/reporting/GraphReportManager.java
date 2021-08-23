@@ -34,7 +34,6 @@ public class GraphReportManager {
 
     private static final Map<String, GraphReport> GRAPH_REPORTS = Collections.synchronizedMap(new HashMap<>());
 
-
     static {
         GraphManager.getDefault().addGraphManagerListener(new GraphManagerListener() {
 

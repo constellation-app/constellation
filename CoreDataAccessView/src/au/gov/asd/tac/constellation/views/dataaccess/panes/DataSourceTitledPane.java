@@ -352,12 +352,13 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
     public void hierarchicalUpdate() {
         top.hierarchicalUpdate();
     }
-    
+
     /**
-     * Access to the parameter creator executor service. Primarily used for testing
-     * purposes.
+     * Access to the parameter creator executor service. Primarily used for
+     * testing purposes.
      *
-     * @return the static executor service that should be used when creating parameters
+     * @return the static executor service that should be used when creating
+     * parameters
      */
     public ExecutorService getParamCreator() {
         return PARAM_CREATOR;

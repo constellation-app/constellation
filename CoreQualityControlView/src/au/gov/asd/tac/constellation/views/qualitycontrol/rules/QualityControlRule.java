@@ -204,7 +204,7 @@ public abstract class QualityControlRule {
         final QualityControlRule other = (QualityControlRule) obj;
         return Objects.equals(this.results, other.results);
     }
-    
+
     /**
      * Get the QualityCategory which maps to the current score
      *

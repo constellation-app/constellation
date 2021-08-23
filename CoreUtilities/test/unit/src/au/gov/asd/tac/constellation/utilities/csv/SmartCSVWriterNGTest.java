@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2021 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,6 +29,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class SmartCSVWriterNGTest {
+
     public SmartCSVWriterNGTest() {
     }
 
@@ -47,7 +48,7 @@ public class SmartCSVWriterNGTest {
     @AfterMethod
     public void tearDownMethod() throws Exception {
     }
-    
+
     @Test
     public void writeNext() throws IOException {
         final StringWriter writer = new StringWriter();
@@ -59,12 +60,12 @@ public class SmartCSVWriterNGTest {
             row[2] = "Then what about the ,";
             row[3] = "Or a line \r feed";
             row[4] = "Or a new \n line";
-            
+
             smartCSVWriter.writeNext(row);
         }
-        
+
         assertEquals(writer.toString(),
                 "test,\"some \"\"wierd\"\" text\",\"Then what about the ,"
-                        + "\",\"Or a line \r feed\",\"Or a new \n line\"\n");
+                + "\",\"Or a line \r feed\",\"Or a new \n line\"\n");
     }
 }

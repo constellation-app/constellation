@@ -30,7 +30,7 @@ public abstract class AnalyticData {
         this.id = new IdentificationData(elementType, elementId, identifier);
         this.isNull = isNull;
     }
-    
+
     public IdentificationData getIdentificationData() {
         return id;
     }
@@ -72,5 +72,5 @@ public abstract class AnalyticData {
     public boolean isNull() {
         return isNull;
     }
-    
+
 }

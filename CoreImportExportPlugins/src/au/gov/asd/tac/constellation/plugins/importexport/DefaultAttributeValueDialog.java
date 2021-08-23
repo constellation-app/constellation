@@ -31,10 +31,12 @@ import javafx.stage.StageStyle;
 import javafx.stage.Window;
 
 /**
- * The DefaultAttributeValueDialog is a dialog that allows the user to specify a default (constant) value for a given
- * graph attribute. This attribute will be given a constant value for all graph elements rather than getting its
- * attribute values from the imported data. This is useful when it is known that all graph elements will have a constant
- * value for a given attribute but that information is not present in the data.
+ * The DefaultAttributeValueDialog is a dialog that allows the user to specify a
+ * default (constant) value for a given graph attribute. This attribute will be
+ * given a constant value for all graph elements rather than getting its
+ * attribute values from the imported data. This is useful when it is known that
+ * all graph elements will have a constant value for a given attribute but that
+ * information is not present in the data.
  *
  * @author sirius
  */

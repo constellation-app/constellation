@@ -68,7 +68,6 @@ public abstract class ImportController<D> {
     protected boolean showAllSchemaAttributes;
     protected PluginParameters currentParameters;
     protected String attributeFilter = "";
-    
 
     // Attributes that exist in the graph or schema.
     private final Map<String, Attribute> autoAddedVertexAttributes;
@@ -107,7 +106,8 @@ public abstract class ImportController<D> {
      *
      * @param header Text to place in header bar (immediately below title bar).
      * @param message Main message to display.
-     * @param alertType Type of alert being displayed, range from undefined, info through to warnings and errors.
+     * @param alertType Type of alert being displayed, range from undefined,
+     * info through to warnings and errors.
      */
     public void displayAlert(String header, String message, Alert.AlertType alertType) {
         final Alert dialog;
@@ -134,11 +134,14 @@ public abstract class ImportController<D> {
     }
 
     /**
-     * Whether the ImportController should clear the manually added attributes in setDestination().
+     * Whether the ImportController should clear the manually added attributes
+     * in setDestination().
      * <p>
-     * Defaults to true, but when attributes have been added manually by a loaded template, should be false.
+     * Defaults to true, but when attributes have been added manually by a
+     * loaded template, should be false.
      *
-     * @param b True to cause the manually added attributes to be cleared, false otherwise.
+     * @param b True to cause the manually added attributes to be cleared, false
+     * otherwise.
      */
     public void setClearManuallyAdded(final boolean b) {
         clearManuallyAdded = b;
@@ -175,7 +178,8 @@ public abstract class ImportController<D> {
      * Load all the schema attributes of the graph
      *
      * @param destination the destination for the imported data.
-     * @param showSchemaAttributes specifies whether schema attributes should be included.
+     * @param showSchemaAttributes specifies whether schema attributes should be
+     * included.
      */
     public void loadAllSchemaAttributes(final ImportDestination<?> destination, final boolean showSchemaAttributes) {
         final Graph graph = destination.getGraph();
@@ -234,7 +238,8 @@ public abstract class ImportController<D> {
     }
 
     /**
-     * Get the attributes that will automatically be added to the attribute list.
+     * Get the attributes that will automatically be added to the attribute
+     * list.
      *
      * @param elementType
      * @param attributes
@@ -361,9 +366,11 @@ public abstract class ImportController<D> {
     }
 
     /**
-     * A List&lt;ImportDefinition&gt; where each list element corresponds to a RunPane tab.
+     * A List&lt;ImportDefinition&gt; where each list element corresponds to a
+     * RunPane tab.
      *
-     * @return A List&lt;ImportDefinition&gt; where each list element corresponds to a RunPane tab.
+     * @return A List&lt;ImportDefinition&gt; where each list element
+     * corresponds to a RunPane tab.
      */
     public List<ImportDefinition> getDefinitions() {
         return configurationPane.createDefinitions();
@@ -403,8 +410,6 @@ public abstract class ImportController<D> {
     public void setAttributeFilter(final String attributeFilter) {
         this.attributeFilter = attributeFilter;
     }
-
-
 
     public String[] getCurrentColumns() {
         return currentColumns;

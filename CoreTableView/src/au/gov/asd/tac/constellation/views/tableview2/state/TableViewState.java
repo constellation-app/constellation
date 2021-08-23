@@ -126,7 +126,7 @@ public final class TableViewState {
                 .append(getTransactionColumnAttributes())
                 .toHashCode();
     }
-    
+
     @Override
     public String toString() {
         return new ToStringBuilder(this)

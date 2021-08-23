@@ -19,21 +19,21 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 
 /**
  * This class is designed to provide a 2D bounding box for a graph.
- * 
+ *
  * @author algol
  * @author Nova
  */
-class BoundingBox2D extends AbstractBoundingBox{ 
-    
+class BoundingBox2D extends AbstractBoundingBox {
+
     /**
      * Generate a 2D bounding box for the graph.
      * <p>
-     * This method creates a bounding box for the verticies of a given graph.
-     * It does this by finding the extremes of both the X and Y axis.
-     * These values are then made available as attributes of the class instance.
-     * 
-     * @param wg  the graph
-     * @return  instance of class BoundingBox2D based on input graph
+     * This method creates a bounding box for the verticies of a given graph. It
+     * does this by finding the extremes of both the X and Y axis. These values
+     * are then made available as attributes of the class instance.
+     *
+     * @param wg the graph
+     * @return instance of class BoundingBox2D based on input graph
      */
     BoundingBox2D(final GraphReadMethods wg) {
         super(wg);
@@ -45,37 +45,37 @@ class BoundingBox2D extends AbstractBoundingBox{
 
     /**
      * Gets BoundingBox2D of the top left quadrant of this BoundingBox2D
-     * 
-     * @return  BoundingBox2D
+     *
+     * @return BoundingBox2D
      */
     BoundingBox2D topLeftQuadrant() {
         return new BoundingBox2D(minX, midX, midY, maxY);
     }
-    
+
     /**
      * Gets BoundingBox2D of the top right quadrant of this BoundingBox2D
-     * 
-     * @return  BoundingBox2D
+     *
+     * @return BoundingBox2D
      */
     BoundingBox2D topRightQuadrant() {
         return new BoundingBox2D(midX, maxX, midY, maxY);
     }
-    
+
     /**
      * Gets BoundingBox2D of the bottom left quadrant of this BoundingBox2D
-     * 
-     * @return  BoundingBox2D
+     *
+     * @return BoundingBox2D
      */
     BoundingBox2D bottomLeftQuadrant() {
         return new BoundingBox2D(minX, midX, minY, midY);
     }
-    
+
     /**
      * Gets BoundingBox2D of the bottom right quadrant of this BoundingBox2D
-     * 
-     * @return  BoundingBox2D
+     *
+     * @return BoundingBox2D
      */
     BoundingBox2D bottomRightQuadrant() {
         return new BoundingBox2D(midX, maxX, minY, midY);
-    }  
+    }
 }

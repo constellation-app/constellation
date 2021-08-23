@@ -68,7 +68,7 @@ public final class ApplicationPreferenceKeys {
         return new File(System.getProperty("user.home"), ".CONSTELLATION").getPath();
     }
 
-    /** 
+    /**
      * User directory.
      */
     public static final String USER_DIR = "userDir";
@@ -87,7 +87,7 @@ public final class ApplicationPreferenceKeys {
      */
     public static final String TUTORIAL_ON_STARTUP = "tutorialMode";
     public static final boolean TUTORIAL_ON_STARTUP_DEFAULT = false;
- 
+
     /**
      * Welcome window.
      */

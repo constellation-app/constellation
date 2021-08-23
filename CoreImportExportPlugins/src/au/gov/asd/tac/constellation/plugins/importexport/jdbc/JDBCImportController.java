@@ -141,8 +141,8 @@ public class JDBCImportController extends ImportController {
             currentColumns = new String[0];
             currentData = new ArrayList<>();
         } else {
-            try (final Connection dbConnection = connection.getConnection(username, password); 
-                    final PreparedStatement ps = dbConnection.prepareStatement(queryCopy); 
+            try (final Connection dbConnection = connection.getConnection(username, password);
+                    final PreparedStatement ps = dbConnection.prepareStatement(queryCopy);
                     final ResultSet rs = ps.executeQuery()) {
                 final int columnCount = ps.getMetaData().getColumnCount();
                 // populate currentColumns

@@ -76,7 +76,8 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
     public static final String SELECTED_ONLY_PARAMETER_ID = PluginParameter.buildId(AbstractGeoExportPlugin.class, "selected_only");
 
     /**
-     * A {@link ExtensionFilter} specifying the file extension of the exported file.
+     * A {@link ExtensionFilter} specifying the file extension of the exported
+     * file.
      *
      * @return an {@link ExtensionFilter}
      */
@@ -94,7 +95,8 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
     protected abstract void exportGeo(final PluginParameters parameters, final String uuid, final Map<String, String> shapes, final Map<String, Map<String, Object>> attributes, final File output) throws IOException;
 
     /**
-     * Determines whether the spatial reference parameter is active for this plugin.
+     * Determines whether the spatial reference parameter is active for this
+     * plugin.
      *
      * @return true is spatial reference should be included, false otherwise
      */

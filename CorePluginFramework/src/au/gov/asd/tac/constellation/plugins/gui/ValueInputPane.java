@@ -46,12 +46,15 @@ import javafx.scene.layout.HBox;
 import org.controlsfx.control.textfield.TextFields;
 
 /**
- * A text box allowing entry of single line text, multiple line text, or passwords corresponding to a
- * {@link PluginParameter} of {@link au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType}.
+ * A text box allowing entry of single line text, multiple line text, or
+ * passwords corresponding to a {@link PluginParameter} of
+ * {@link au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType}.
  * <p>
- * Editing the value in the text box will set the string value for the underlying {@link PluginParameter}.
+ * Editing the value in the text box will set the string value for the
+ * underlying {@link PluginParameter}.
  *
- * @see au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType
+ * @see
+ * au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType
  *
  * @author ruby_crucis
  */

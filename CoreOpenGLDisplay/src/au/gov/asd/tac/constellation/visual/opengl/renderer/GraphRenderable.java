@@ -359,10 +359,10 @@ public final class GraphRenderable implements GLRenderable {
             connectionLabelBatcher.createShader(gl);
             iconBatcher.createShader(gl);
         } catch (final IOException | RenderException ex) {
-            // If we get here, a shader didn't compile. This obviously shouldn't happen in production; 
-            // our shaders are static and read from built-in resource files (it happens a lot in 
-            // development when we edit a shader, but that's OK). Since at least one shader is null, 
-            // there will be subsequent NullPointerExceptions, but there's nothing we can do about that. 
+            // If we get here, a shader didn't compile. This obviously shouldn't happen in production;
+            // our shaders are static and read from built-in resource files (it happens a lot in
+            // development when we edit a shader, but that's OK). Since at least one shader is null,
+            // there will be subsequent NullPointerExceptions, but there's nothing we can do about that.
             // Without shaders, we're dead in the water anyway.
             final String msg
                     = "This error may have occurred because your video card and/or driver is\n"
@@ -547,7 +547,7 @@ public final class GraphRenderable implements GLRenderable {
 
         // Get the graph displayer to render its contents to the screen
         graphDisplayer.display(drawable, pMatrix);
-        
+
     }
 
     /**

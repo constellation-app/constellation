@@ -72,7 +72,7 @@ import org.w3c.dom.events.EventTarget;
 public class WhatsNewViewPane extends BorderPane {
 
     private final BorderPane whatsNewViewPane;
-    
+
     public static final String MOUSE_IMAGE = "resources/mouse3.png";
     public static final String MENU_IMAGE = "resources/sidebar.png";
     public static final String ERROR_BUTTON_MESSAGE = String.format("%s Information", BrandingUtilities.APPLICATION_NAME);
@@ -95,14 +95,14 @@ public class WhatsNewViewPane extends BorderPane {
     private final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
     public WhatsNewViewPane() {
-        whatsNewViewPane = new BorderPane(); 
+        whatsNewViewPane = new BorderPane();
         ConstellationSecurityManager.startSecurityLaterFX(() -> {
             Platform.setImplicitExit(false);
 
             final SplitPane splitPane = new SplitPane();
             splitPane.setOrientation(Orientation.HORIZONTAL);
             whatsNewViewPane.setCenter(splitPane);
-            
+
             //Create left VBox to handle Browser and controls,
             //or error messages
             final VBox leftVBox = new VBox();
@@ -110,7 +110,7 @@ public class WhatsNewViewPane extends BorderPane {
 
             splitPane.setBackground(new Background(new BackgroundFill(Color.valueOf("#333333"), CornerRadii.EMPTY, Insets.EMPTY)));
             leftVBox.paddingProperty().set(new Insets(5, 5, 5, 5));
-            
+
             final WebView whatsNewView = new WebView();
             VBox.setVgrow(whatsNewView, Priority.ALWAYS);
             whatsNewView.getEngine().getLoadWorker().stateProperty().addListener((final ObservableValue<? extends Worker.State> observable, final Worker.State oldValue, final Worker.State newValue) -> {
@@ -155,7 +155,6 @@ public class WhatsNewViewPane extends BorderPane {
             }
             leftVBox.getChildren().add(whatsNewView);
 
-            
             //Create left VBox to handle "help" images of menu and mouse
             final VBox rightVBox = new VBox(10);
             splitPane.getItems().add(rightVBox);
@@ -163,8 +162,8 @@ public class WhatsNewViewPane extends BorderPane {
             rightVBox.setAlignment(Pos.TOP_CENTER);
             rightVBox.setMaxWidth(600);
             rightVBox.setMinWidth(400);
-            
-            // Create a checkbox to change users preference regarding showing the Tutorial Page on startup 
+
+            // Create a checkbox to change users preference regarding showing the Tutorial Page on startup
             final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
             final CheckBox showOnStartUpCheckBox = new CheckBox("Show on Startup");
             rightVBox.getChildren().add(showOnStartUpCheckBox);
@@ -175,9 +174,9 @@ public class WhatsNewViewPane extends BorderPane {
                 @Override
                 public void changed(ObservableValue<? extends Boolean> ov,
                         Boolean oldVal, Boolean newVal) {
-                    prefs.putBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, newVal);                     
+                    prefs.putBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, newVal);
                 }
-            });        
+            });
             showOnStartUpCheckBox.setSelected(prefs.getBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP_DEFAULT));
 
             // Create a preferenceListener in order to identify when user preference is changed
@@ -198,7 +197,7 @@ public class WhatsNewViewPane extends BorderPane {
             mouseImage.setFitWidth(300);
             mouseImage.setPreserveRatio(true);
             rightVBox.getChildren().add(mouseImage);
-            
+
             splitPane.getDividers().get(0).setPosition(SPLIT_POS);
             //Finally, insert the tutorialViewPane object into the BorderPane
             this.setCenter(whatsNewViewPane);

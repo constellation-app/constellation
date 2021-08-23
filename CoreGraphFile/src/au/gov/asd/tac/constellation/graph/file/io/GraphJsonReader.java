@@ -196,14 +196,16 @@ public final class GraphJsonReader {
     /**
      * Read a graph file into a graph.
      * <p>
-     * The GRAPH, VERTEX, TRANSACTION objects must be present in that order. Other objects (in particular META) are
-     * optional.
+     * The GRAPH, VERTEX, TRANSACTION objects must be present in that order.
+     * Other objects (in particular META) are optional.
      * <p>
-     * When the JSON file was written, the graph vertex id was used as the JSON id by {@link GraphJsonWriter}. Since
-     * these can be in any order (due to vertex deletes), it's very possible that the id of an newly added vertex won't
-     * match the JSON id. Therefore, a mapping of JSON id to graph vertex id must be maintained here, and used by any
-     * implementers of {@link au.gov.asd.tac.constellation.graph.io.providers.AbstractGraphIOProvider#readObject} that
-     * uses vertex ids.
+     * When the JSON file was written, the graph vertex id was used as the JSON
+     * id by {@link GraphJsonWriter}. Since these can be in any order (due to
+     * vertex deletes), it's very possible that the id of an newly added vertex
+     * won't match the JSON id. Therefore, a mapping of JSON id to graph vertex
+     * id must be maintained here, and used by any implementers of
+     * {@link au.gov.asd.tac.constellation.graph.io.providers.AbstractGraphIOProvider#readObject}
+     * that uses vertex ids.
      *
      * @param path The name of the file being read.
      * @param in The InputStream to read from.
@@ -474,9 +476,10 @@ public final class GraphJsonReader {
     /**
      * Parse an element type's attributes and data from a JSON file.
      *
-     * @param elementType The element type of the attributes and data being read.
-     * @param vertexPositions The mapping of Constants.ID to vertex id; written when vertices are parsed, read when
-     * transactions are parsed.
+     * @param elementType The element type of the attributes and data being
+     * read.
+     * @param vertexPositions The mapping of Constants.ID to vertex id; written
+     * when vertices are parsed, read when transactions are parsed.
      * @param ph Progress handle.
      * @param entrySize The size of the file being read; -1 if unknown.
      *

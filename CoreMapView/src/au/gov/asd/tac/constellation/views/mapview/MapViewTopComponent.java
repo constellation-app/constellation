@@ -527,7 +527,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
         super.handleComponentOpened();
         resetContent();
     }
-    
+
     @Override
     protected void handleNewGraph(final Graph graph) {
         if (needsUpdate() && renderer != null) {
@@ -584,7 +584,6 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
-
     @PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
     public static class SelectOnGraphPlugin extends SimpleEditPlugin {
 

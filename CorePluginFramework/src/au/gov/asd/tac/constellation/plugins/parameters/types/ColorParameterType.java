@@ -22,7 +22,8 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * The ColorParameterType defines {@link PluginParameter} objects that hold {@link ConstellationColor} values.
+ * The ColorParameterType defines {@link PluginParameter} objects that hold
+ * {@link ConstellationColor} values.
  *
  * @author sirius
  */
@@ -37,16 +38,19 @@ public class ColorParameterType extends PluginParameterType<ColorParameterValue>
     /**
      * Constructs a new instance of this type.
      * <p>
-     * Note: This constructor should not be called directly; it is public for the purposes of lookup (which may be
-     * removed for types in the future). To buildId parameters from the type, the static method {@link #build buildId()}
-     * should be used, or the singleton {@link #INSTANCE INSTANCE}.
+     * Note: This constructor should not be called directly; it is public for
+     * the purposes of lookup (which may be removed for types in the future). To
+     * buildId parameters from the type, the static method
+     * {@link #build buildId()} should be used, or the singleton
+     * {@link #INSTANCE INSTANCE}.
      */
     public ColorParameterType() {
         super(ID);
     }
 
     /**
-     * The singleton instance of the type that should be used to construct all parameters that have this type.
+     * The singleton instance of the type that should be used to construct all
+     * parameters that have this type.
      */
     public static final ColorParameterType INSTANCE = new ColorParameterType();
 
@@ -61,11 +65,12 @@ public class ColorParameterType extends PluginParameterType<ColorParameterValue>
     }
 
     /**
-     * Construct a new {@link PluginParameter} of this type with initial value represented by the given
-     * {@link ColorParameterValue}.
+     * Construct a new {@link PluginParameter} of this type with initial value
+     * represented by the given {@link ColorParameterValue}.
      *
      * @param id The String id of the parameter to construct.
-     * @param pv A {@link ColorParameterValue} describing the initial value of the parameter being constructed.
+     * @param pv A {@link ColorParameterValue} describing the initial value of
+     * the parameter being constructed.
      * @return A {@link PluginParameter} of ColorParameterType.
      */
     public static PluginParameter<ColorParameterValue> build(String id, final ColorParameterValue pv) {
@@ -73,8 +78,8 @@ public class ColorParameterType extends PluginParameterType<ColorParameterValue>
     }
 
     /**
-     * An implementation of {@link ParameterValue} corresponding to this type. It holds {@link ConstellationColor}
-     * values.
+     * An implementation of {@link ParameterValue} corresponding to this type.
+     * It holds {@link ConstellationColor} values.
      */
     public static class ColorParameterValue extends ParameterValue {
 
@@ -88,9 +93,11 @@ public class ColorParameterType extends PluginParameterType<ColorParameterValue>
         }
 
         /**
-         * Constructs a new ColorParameterValue holding the specified {@link ConstellationColor}.
+         * Constructs a new ColorParameterValue holding the specified
+         * {@link ConstellationColor}.
          *
-         * @param c The {@link ConstellationColor} that this parameter value should hold.
+         * @param c The {@link ConstellationColor} that this parameter value
+         * should hold.
          */
         public ColorParameterValue(final ConstellationColor c) {
             this.c = c;
@@ -99,7 +106,8 @@ public class ColorParameterType extends PluginParameterType<ColorParameterValue>
         /**
          * Get the current value from this parameter value.
          *
-         * @return The {@link ConstellationColor} that this parameter value is holding.
+         * @return The {@link ConstellationColor} that this parameter value is
+         * holding.
          */
         public ConstellationColor get() {
             return c;
@@ -108,8 +116,10 @@ public class ColorParameterType extends PluginParameterType<ColorParameterValue>
         /**
          * Set the current value
          *
-         * @param newc The {@link ConstellationColor} for this parameter value to hold.
-         * @return True if the new value was different to the current value, false otherwise.
+         * @param newc The {@link ConstellationColor} for this parameter value
+         * to hold.
+         * @return True if the new value was different to the current value,
+         * false otherwise.
          */
         public boolean set(final ConstellationColor newc) {
             if (newc != c) {

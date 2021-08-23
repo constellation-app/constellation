@@ -62,7 +62,8 @@ public class GridArranger implements Arranger {
      * Construct new ArrangeInGrid instance.
      *
      * @param params Parameters for the arrangement.
-     * @param forceEvenNumCols If true, ensure that there is an even number of columns in the grid.
+     * @param forceEvenNumCols If true, ensure that there is an even number of
+     * columns in the grid.
      */
     public GridArranger(final GridChoiceParameters params, final boolean forceEvenNumCols) {
         this.params = params;
@@ -79,7 +80,8 @@ public class GridArranger implements Arranger {
     /**
      * Specify whether there must be an even number of columns in the grid.
      *
-     * @param b If true, ensure that there is an even number of columns in the grid.
+     * @param b If true, ensure that there is an even number of columns in the
+     * grid.
      */
     public void setForceEvenNumCols(final boolean b) {
         forceEvenNumCols = b;
@@ -274,8 +276,9 @@ public class GridArranger implements Arranger {
     }
 
     /**
-     * Given the choice of grid (one of the GRID_CHOICE_xxx constants), return a setting from number of rows and number
-     * of columns. Zero means unconstrained.
+     * Given the choice of grid (one of the GRID_CHOICE_xxx constants), return a
+     * setting from number of rows and number of columns. Zero means
+     * unconstrained.
      *
      * @param gc The kind of grid to do the arrangement with.
      *

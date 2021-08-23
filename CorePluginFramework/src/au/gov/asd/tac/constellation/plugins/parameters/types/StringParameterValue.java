@@ -18,7 +18,8 @@ package au.gov.asd.tac.constellation.plugins.parameters.types;
 import java.util.Objects;
 
 /**
- * An implementation of {@link ParameterValue} corresponding to this type. It holds String values.
+ * An implementation of {@link ParameterValue} corresponding to this type. It
+ * holds String values.
  *
  * @author algol
  */
@@ -55,7 +56,8 @@ public class StringParameterValue extends ParameterValue {
      * Set the current value
      *
      * @param news The String for this parameter value to hold.
-     * @return True if the new value was different to the current value, false otherwise.
+     * @return True if the new value was different to the current value, false
+     * otherwise.
      */
     public boolean set(final String news) {
         if (!Objects.equals(s, news)) {

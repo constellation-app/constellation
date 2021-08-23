@@ -142,7 +142,7 @@ public final class GraphVisualAccess implements VisualAccess {
     private GraphElementType[] connectionElementTypes = new GraphElementType[0];
     private int[] connectionElementIds = new int[0];
     private int[] linkStartingPositions = new int[0];
-    
+
     public GraphVisualAccess(final Graph graph) {
         this.graph = graph;
     }
@@ -627,7 +627,6 @@ public final class GraphVisualAccess implements VisualAccess {
         vertexColor = referredAttr != Graph.NOT_FOUND && readGraph.getAttributeType(referredAttr).equals(ColorAttributeDescription.ATTRIBUTE_NAME) ? referredAttr : VisualConcept.VertexAttribute.COLOR.get(readGraph);
     }
 
-
     private void recalculateTransactionColorAttribute(final ReadableGraph readGraph) {
         int referredAttr = Graph.NOT_FOUND;
         if (graphTransactionColorRef != Graph.NOT_FOUND) {
@@ -672,7 +671,6 @@ public final class GraphVisualAccess implements VisualAccess {
             i++;
         }
     }
-
 
     private void recalculateConnectionLabels(final ReadableGraph readGraph) {
         final GraphLabels connectionLabels = graphConnectionLabels != Graph.NOT_FOUND ? readGraph.getObjectValue(graphConnectionLabels, 0) : VisualGraphDefaults.DEFAULT_CONNECTION_LABELS;
@@ -1032,20 +1030,18 @@ public final class GraphVisualAccess implements VisualAccess {
         // This is acheived in the following way:
         //   * The value string returned for boolean attributes is appended with the text .<attribute_name> to result
         //     in a value of the form <value>.<attribute_name>
-        //   * In a class overriding ConstellationIcon ensure an icon is added with a name, or an alias matching 
+        //   * In a class overriding ConstellationIcon ensure an icon is added with a name, or an alias matching
         //     the string <value>.<attribute_name>
         // The icon DefaultIconProvider.TRANSPARENT is able to be aliased to support NOT showing an icon. Ie to NOT
         // show an icon when a pinned attribute is set to false, add an alias to DefaultIconProvider.TRANSPARENT
         // with name "false.pinned"
-        if (decoratorAttrib != Graph.NOT_FOUND)
-        {
+        if (decoratorAttrib != Graph.NOT_FOUND) {
             final String value = accessGraph.getStringValue(decoratorAttrib, accessGraph.getVertex(decoratorVertex));
             // If the attribute is a boolean, construct a value string including the attribute name as well,
             // as per comments above.
-            if (accessGraph.getAttributeType(decoratorAttrib).equals(BooleanAttributeDescription.ATTRIBUTE_NAME))
-            {   
+            if (accessGraph.getAttributeType(decoratorAttrib).equals(BooleanAttributeDescription.ATTRIBUTE_NAME)) {
                 // Booleans will either have a value of true_<attributeName> or false_<attributeName>
-                // there are three cases to cater for: 
+                // there are three cases to cater for:
                 // 1. Both true_<attributeName> and false_<attributeName> are set as aliases for icons
                 //    --> In this case we use the supplied icon
                 // 2. Only one of true_<attributeName> or false_<attributeName> is set as an alias for an icon
@@ -1057,7 +1053,7 @@ public final class GraphVisualAccess implements VisualAccess {
                 final String attributeName = accessGraph.getAttributeName(decoratorAttrib);
                 final String valueStr = value.concat("_").concat(attributeName);
                 final String notValueStr = notValue.concat("_").concat(attributeName);
-                
+
                 // If an icon or alias doesn't exist for either the true or false value, then there are no
                 // overrides, use defaults
                 if (!IconManager.iconExists(valueStr) && !IconManager.iconExists(notValueStr)) {
@@ -1069,7 +1065,7 @@ public final class GraphVisualAccess implements VisualAccess {
         }
         return null;
     }
-    
+
     @Override
     public String getNWDecorator(final int vertex) {
         return getDecoratorStr(nwDecorator, vertex);
@@ -1401,18 +1397,18 @@ public final class GraphVisualAccess implements VisualAccess {
                 return "";
         }
     }
-    
+
     public void updateModCounts(final ReadableGraph readGraph) {
         recalculateVisualAttributes(readGraph);
         globalModCount = readGraph.getGlobalModificationCounter();
         structureModCount = readGraph.getStructureModificationCounter();
         attributeModCount = readGraph.getAttributeModificationCounter();
         long count;
-        
+
         count = graphConnectionMode == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(graphConnectionMode);
         modCounts.put(VisualConcept.GraphAttribute.CONNECTION_MODE, count);
         recalculateConnectionMode(readGraph);
-        
+
         count = graphMaxTransactions == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(graphMaxTransactions);
         modCounts.put(VisualConcept.GraphAttribute.MAX_TRANSACTIONS, count);
 
@@ -1442,7 +1438,7 @@ public final class GraphVisualAccess implements VisualAccess {
             count = attr == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(attr);
             topLabelModCounts[i] = count;
         }
-       
+
         count = graphBottomLabels == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(graphBottomLabels);
         recalculateBottomLabels(readGraph);
         modCounts.put(VisualConcept.GraphAttribute.BOTTOM_LABELS, count);
@@ -1476,24 +1472,24 @@ public final class GraphVisualAccess implements VisualAccess {
         modCounts.put(VisualConcept.GraphAttribute.TRANSACTION_COLOR_REFERENCE, count);
         count = transactionColor == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(transactionColor);
         modCounts.put(VisualConcept.TransactionAttribute.COLOR, count);
-        
+
         recalculateStructure(readGraph);
 
         count = graphBackgroundColor == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(graphBackgroundColor);
         modCounts.put(VisualConcept.GraphAttribute.BACKGROUND_COLOR, count);
-               
+
         count = graphHighlightColor == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(graphHighlightColor);
         modCounts.put(VisualConcept.GraphAttribute.HIGHLIGHT_COLOR, count);
-                
+
         count = graphBlazeOpacity == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(graphBlazeOpacity);
         modCounts.put(VisualConcept.GraphAttribute.BLAZE_OPACITY, count);
-                
+
         count = graphBlazeSize == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(graphBlazeSize);
         modCounts.put(VisualConcept.GraphAttribute.BLAZE_SIZE, count);
-                
+
         count = graphConnectionOpacity == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(graphConnectionOpacity);
         modCounts.put(VisualConcept.GraphAttribute.CONNECTION_OPACITY, count);
-               
+
         count = graphDrawFlags == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(graphDrawFlags);
         modCounts.put(VisualConcept.GraphAttribute.DRAW_FLAGS, count);
 
@@ -1505,16 +1501,16 @@ public final class GraphVisualAccess implements VisualAccess {
 
         count = graphVisibleAboveThreshold == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(graphVisibleAboveThreshold);
         modCounts.put(VisualConcept.GraphAttribute.VISIBLE_ABOVE_THRESHOLD, count);
-        
+
         count = graphVisibilityThreshold == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(graphVisibilityThreshold);
         modCounts.put(VisualConcept.GraphAttribute.VISIBILITY_THRESHOLD, count);
 
         count = vertexX == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(vertexX);
         modCounts.put(VisualConcept.VertexAttribute.X, count);
-                
+
         count = vertexY == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(vertexY);
         modCounts.put(VisualConcept.VertexAttribute.Y, count);
-        
+
         count = vertexZ == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(vertexZ);
         modCounts.put(VisualConcept.VertexAttribute.Z, count);
 
@@ -1523,37 +1519,37 @@ public final class GraphVisualAccess implements VisualAccess {
 
         count = vertexY2 == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(vertexY2);
         modCounts.put(VisualConcept.VertexAttribute.Y2, count);
-                
+
         count = vertexZ2 == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(vertexZ2);
         modCounts.put(VisualConcept.VertexAttribute.Z2, count);
-        
+
         count = vertexBackgroundIcon == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(vertexBackgroundIcon);
         modCounts.put(VisualConcept.VertexAttribute.BACKGROUND_ICON, count);
-                
+
         count = vertexForegroundIcon == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(vertexForegroundIcon);
         modCounts.put(VisualConcept.VertexAttribute.FOREGROUND_ICON, count);
-                
+
         count = vertexSelected == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(vertexSelected);
         modCounts.put(VisualConcept.VertexAttribute.SELECTED, count);
-                
+
         count = vertexVisibility == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(vertexVisibility);
         modCounts.put(VisualConcept.VertexAttribute.VISIBILITY, count);
 
         count = vertexLayerVisibility == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(vertexLayerVisibility);
         modCounts.put(LayersConcept.VertexAttribute.LAYER_VISIBILITY, count);
-        
+
         count = vertexDimmed == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(vertexDimmed);
         modCounts.put(VisualConcept.VertexAttribute.DIMMED, count);
-                
+
         count = vertexRadius == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(vertexRadius);
         modCounts.put(VisualConcept.VertexAttribute.NODE_RADIUS, count);
-                
+
         count = vertexBlaze == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(vertexBlaze);
         modCounts.put(VisualConcept.VertexAttribute.BLAZE, count);
 
         count = transactionSelected == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(transactionSelected);
         modCounts.put(VisualConcept.TransactionAttribute.SELECTED, count);
-                
+
         count = transactionDirected == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(transactionDirected);
         modCounts.put(VisualConcept.TransactionAttribute.DIRECTED, count);
 
@@ -1562,15 +1558,15 @@ public final class GraphVisualAccess implements VisualAccess {
 
         count = transactionLayerVisibility == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(transactionLayerVisibility);
         modCounts.put(LayersConcept.TransactionAttribute.LAYER_VISIBILITY, count);
-                
+
         count = transactionDimmed == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(transactionDimmed);
         modCounts.put(VisualConcept.TransactionAttribute.DIMMED, count);
-                
+
         count = transactionLineStyle == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(transactionLineStyle);
         modCounts.put(VisualConcept.TransactionAttribute.LINE_STYLE, count);
 
         count = transactionWidth == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(transactionWidth);
         modCounts.put(VisualConcept.TransactionAttribute.WIDTH, count);
-        
+
     }
 }

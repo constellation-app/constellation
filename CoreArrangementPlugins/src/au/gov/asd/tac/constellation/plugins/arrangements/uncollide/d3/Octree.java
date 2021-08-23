@@ -219,7 +219,8 @@ public class Octree {
      * Uncollide this orb from its colliding neighbors.
      *
      * @param orb The orb to be uncollided.
-     * @param padding The minimum orb between the orb's edge and the edges of each neighbor.
+     * @param padding The minimum orb between the orb's edge and the edges of
+     * each neighbor.
      * @return the number of collisions.
      */
     public int uncollide(final Orb3D orb, final float padding) {

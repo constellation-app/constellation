@@ -42,7 +42,7 @@ public class AppendScoreAggregator implements AnalyticAggregator<ScoreResult> {
                 .anyMatch(result -> result.getIgnoreNullResults()));
 
         results.forEach(scoreResult -> aggregateResult.combine(scoreResult));
-        
+
         return aggregateResult;
     }
 
