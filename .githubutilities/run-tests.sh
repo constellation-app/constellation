@@ -18,7 +18,7 @@ ant \
   -Dnbplatform.active.dir="${NETBEANS_HOME}" \
   -Dnbplatform.default.netbeans.dest.dir="${NETBEANS_HOME}" \
   -Dnbplatform.default.harness.dir="${NETBEANS_HOME}"/harness \
-  -Dtest.run.args=-javaagent:"${JACOCO_AGENT}" -Djava.awt.headless=true -Dtestfx.robot=glass -Dtestfx.headless=true -Dprism.order=sw -Dprism.text=t2k test
+  -Dtest.run.args='-javaagent:"${JACOCO_AGENT}" -Djava.awt.headless=true -Dtestfx.robot=glass -Dtestfx.headless=true -Dprism.order=sw -Dprism.text=t2k' test
 
 title "Run Jacoco Processing"
 
