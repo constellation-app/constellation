@@ -81,7 +81,11 @@
         <dependency org="org.python" name="jython-standalone" rev="2.7.2"/>
         <dependency org="org.swinglabs" name="swingx" rev="1.6.1"/>
         <dependency org="org.fxmisc.richtext" name="richtextfx" rev="0.10.6"/>
+        
+        <!-- Testing -->
         <dependency org="nl.jqno.equalsverifier" name="equalsverifier" rev="3.7"/>
+        <dependency org="org.testfx" name="openjfx-monocle" rev="jdk-11+26" transitive="false" />
+        <dependency org="org.testfx" name="testfx-core" rev="4.0.16-alpha" />
         
         <!-- Downloaded Manually -->
         <!--<dependency org="unfolding" name="unfolding" rev="0.9.6"/>-->
