@@ -44,7 +44,7 @@ public class ShowInTableViewContextMenuProvider implements ContextMenuProvider {
     @Override
     public List<String> getItems(final GraphReadMethods graph, final GraphElementType elementType, final int entity) {
         if (elementType == GraphElementType.VERTEX || elementType == GraphElementType.TRANSACTION) {
-            return Arrays.asList("Show in New Table View");
+            return Arrays.asList("Show in Table View");
         } else {
             return Collections.emptyList();
         }
