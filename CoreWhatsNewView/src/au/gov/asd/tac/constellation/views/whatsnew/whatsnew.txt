@@ -1,5 +1,5 @@
 == 3030-12-31 Getting Started
-<p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
+<p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
 == 2021-08-23 Moved Notes View to Views menu
 <p>The Notes View can now be found in the Views menu instead of in the Experimental > Views menu.</p>
@@ -26,7 +26,7 @@
 
 == 2021-07-26 Quality Control Category Changes
 <p>Quality Control category names and colours have been updated to match commonly seen category names and colours. The category names are now Minor, Medium, Major, Severe and Critical.</p>
-<p>A new category OK has been added for when a Quality Control rule has not been flagged.<p> 
+<p>A new category OK has been added for when a Quality Control rule has not been flagged.<p>
 
 == 2021-07-21 Conversation View
 <p>The Conversation View now has a search bar where a letter or passage can be searched for within the currently visible conversation.</p>
@@ -37,7 +37,7 @@
 
 == 2021-06-04 Select All Plugin
 <p>The Select All Plugin in the Data Access View now selects everything on the graph including transactions.</p>
-<p>Previously it only selected the vertices on the graph.</p> 
+<p>Previously it only selected the vertices on the graph.</p>
 
 == 2021-05-28 Freeze Graph View Removed
 <p>The freeze graph view option has been removed as the functionality has been replaced by pin/unpin nodes</p>
