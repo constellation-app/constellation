@@ -13,6 +13,7 @@ RUN apt-get -y update \
     wget \
     python3 \
     git \
+    libx11-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 

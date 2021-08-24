@@ -226,6 +226,7 @@
                 <package>com.microsoft.schemas.vml.impl</package>
                 <package>com.sun.activation.registries</package>
                 <package>com.sun.activation.viewers</package>
+                <package>com.sun.glass.ui.monocle</package>
                 <package>com.sun.istack</package>
                 <package>com.sun.istack.localization</package>
                 <package>com.sun.istack.logging</package>
@@ -3054,6 +3055,29 @@
                 <package>org.sqlite.jdbc3</package>
                 <package>org.sqlite.jdbc4</package>
                 <package>org.sqlite.util</package>
+                <package>org.testfx.api</package>
+                <package>org.testfx.assertions.api</package>
+                <package>org.testfx.assertions.impl</package>
+                <package>org.testfx.internal</package>
+                <package>org.testfx.matcher.base</package>
+                <package>org.testfx.matcher.control</package>
+                <package>org.testfx.osgi</package>
+                <package>org.testfx.osgi.service</package>
+                <package>org.testfx.robot</package>
+                <package>org.testfx.robot.impl</package>
+                <package>org.testfx.service.adapter</package>
+                <package>org.testfx.service.adapter.impl</package>
+                <package>org.testfx.service.finder</package>
+                <package>org.testfx.service.finder.impl</package>
+                <package>org.testfx.service.locator</package>
+                <package>org.testfx.service.locator.impl</package>
+                <package>org.testfx.service.query</package>
+                <package>org.testfx.service.query.impl</package>
+                <package>org.testfx.service.support</package>
+                <package>org.testfx.service.support.impl</package>
+                <package>org.testfx.toolkit</package>
+                <package>org.testfx.toolkit.impl</package>
+                <package>org.testfx.util</package>
                 <package>org.w3.x2000.x09.xmldsig</package>
                 <package>org.w3.x2000.x09.xmldsig.impl</package>
                 <package>org.w3.xlink</package>
@@ -3892,6 +3916,10 @@
                 <binary-origin>release/modules/ext/objenesis-3.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/openjfx-monocle-jdk-11+26.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/openjfx-monocle-jdk-11+26.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/org.eclipse.emf.common-2.15.0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/org.eclipse.emf.common-2.15.0.jar</binary-origin>
             </class-path-extension>
@@ -3982,6 +4010,10 @@
             <class-path-extension>
                 <runtime-relative-path>ext/systems-common-2.0.1.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/systems-common-2.0.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/testfx-core-4.0.16-alpha.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/testfx-core-4.0.16-alpha.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/txw2-2.4.0-b180830.0438.jar</runtime-relative-path>
