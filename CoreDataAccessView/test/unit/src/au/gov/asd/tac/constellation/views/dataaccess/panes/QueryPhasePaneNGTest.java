@@ -21,16 +21,15 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
-import java.awt.GraphicsEnvironment;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javafx.embed.swing.JFXPanel;
 import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
+import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
@@ -58,10 +57,13 @@ public class QueryPhasePaneNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        FxToolkit.registerPrimaryStage();
+        FxToolkit.showStage();
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        FxToolkit.hideStage();
     }
 
     @BeforeMethod
@@ -86,25 +88,17 @@ public class QueryPhasePaneNGTest {
     public void testEnableGraphDependentMenuItems() {
         System.out.println("enableGraphDependentMenuItems");
 
-        // TODO: Find a way to instantiate toolkit in a headless environment
-        // This unit test should pass locally but will hold up in a headless environment (e.g. CI)
-        // Putting it in this if loop is a temp fix for the hold up in CI but it does it by skipping the test
-        // (so CI won't actually tell you whether this is passing or not)
-        if (!GraphicsEnvironment.isHeadless()) {
-            new JFXPanel();
+        final QueryPhasePane instance = new QueryPhasePane(new HashMap<>(), null, null);
 
-            final QueryPhasePane instance = new QueryPhasePane(new HashMap<>(), null, null);
+        instance.addGraphDependentMenuItems(item1, item2);
+        instance.enableGraphDependentMenuItems(true);
+        for (final MenuItem item : instance.getGraphDependentMenuItems()) {
+            assertFalse(item.isDisable());
+        }
 
-            instance.addGraphDependentMenuItems(item1, item2);
-            instance.enableGraphDependentMenuItems(true);
-            for (final MenuItem item : instance.getGraphDependentMenuItems()) {
-                assertFalse(item.isDisable());
-            }
-
-            instance.enableGraphDependentMenuItems(false);
-            for (final MenuItem item : instance.getGraphDependentMenuItems()) {
-                assertTrue(item.isDisable());
-            }
+        instance.enableGraphDependentMenuItems(false);
+        for (final MenuItem item : instance.getGraphDependentMenuItems()) {
+            assertTrue(item.isDisable());
         }
     }
 
@@ -115,24 +109,16 @@ public class QueryPhasePaneNGTest {
     public void testAddGraphDependentMenuItems() {
         System.out.println("addGraphDependentMenuItems");
 
-        // TODO: Find a way to instantiate toolkit in a headless environment
-        // This unit test should pass locally but will hold up in a headless environment (e.g. CI)
-        // Putting it in this if loop is a temp fix for the hold up in CI but it does it by skipping the test
-        // (so CI won't actually tell you whether this is passing or not)
-        if (!GraphicsEnvironment.isHeadless()) {
-            new JFXPanel();
+        final QueryPhasePane instance = new QueryPhasePane(new HashMap<>(), null, null);
 
-            final QueryPhasePane instance = new QueryPhasePane(new HashMap<>(), null, null);
+        instance.addGraphDependentMenuItems(item1);
+        assertEquals(instance.getGraphDependentMenuItems().size(), 1);
 
-            instance.addGraphDependentMenuItems(item1);
-            assertEquals(instance.getGraphDependentMenuItems().size(), 1);
+        instance.addGraphDependentMenuItems(item2, item3);
+        assertEquals(instance.getGraphDependentMenuItems().size(), 3);
 
-            instance.addGraphDependentMenuItems(item2, item3);
-            assertEquals(instance.getGraphDependentMenuItems().size(), 3);
-
-            instance.addGraphDependentMenuItems(item2);
-            assertEquals(instance.getGraphDependentMenuItems().size(), 3);
-        }
+        instance.addGraphDependentMenuItems(item2);
+        assertEquals(instance.getGraphDependentMenuItems().size(), 3);
     }
 
     /**
@@ -142,25 +128,17 @@ public class QueryPhasePaneNGTest {
     public void testEnablePluginDependentMenuItems() {
         System.out.println("enablePluginDependentMenuItems");
 
-        // TODO: Find a way to instantiate toolkit in a headless environment
-        // This unit test should pass locally but will hold up in a headless environment (e.g. CI)
-        // Putting it in this if loop is a temp fix for the hold up in CI but it does it by skipping the test
-        // (so CI won't actually tell you whether this is passing or not)
-        if (!GraphicsEnvironment.isHeadless()) {
-            new JFXPanel();
+        final QueryPhasePane instance = new QueryPhasePane(new HashMap<>(), null, null);
 
-            final QueryPhasePane instance = new QueryPhasePane(new HashMap<>(), null, null);
+        instance.addPluginDependentMenuItems(item1, item2);
+        instance.enablePluginDependentMenuItems(true);
+        for (final MenuItem item : instance.getPluginDependentMenuItems()) {
+            assertFalse(item.isDisable());
+        }
 
-            instance.addPluginDependentMenuItems(item1, item2);
-            instance.enablePluginDependentMenuItems(true);
-            for (final MenuItem item : instance.getPluginDependentMenuItems()) {
-                assertFalse(item.isDisable());
-            }
-
-            instance.enablePluginDependentMenuItems(false);
-            for (final MenuItem item : instance.getPluginDependentMenuItems()) {
-                assertTrue(item.isDisable());
-            }
+        instance.enablePluginDependentMenuItems(false);
+        for (final MenuItem item : instance.getPluginDependentMenuItems()) {
+            assertTrue(item.isDisable());
         }
     }
 
@@ -171,24 +149,16 @@ public class QueryPhasePaneNGTest {
     public void testAddPluginDependentMenuItems() {
         System.out.println("addPluginDependentMenuItems");
 
-        // TODO: Find a way to instantiate toolkit in a headless environment
-        // This unit test should pass locally but will hold up in a headless environment (e.g. CI)
-        // Putting it in this if loop is a temp fix for the hold up in CI but it does it by skipping the test
-        // (so CI won't actually tell you whether this is passing or not)
-        if (!GraphicsEnvironment.isHeadless()) {
-            new JFXPanel();
+        final QueryPhasePane instance = new QueryPhasePane(new HashMap<>(), null, null);
 
-            final QueryPhasePane instance = new QueryPhasePane(new HashMap<>(), null, null);
+        instance.addPluginDependentMenuItems(item1);
+        assertEquals(instance.getPluginDependentMenuItems().size(), 1);
 
-            instance.addPluginDependentMenuItems(item1);
-            assertEquals(instance.getPluginDependentMenuItems().size(), 1);
+        instance.addPluginDependentMenuItems(item2, item3);
+        assertEquals(instance.getPluginDependentMenuItems().size(), 3);
 
-            instance.addPluginDependentMenuItems(item2, item3);
-            assertEquals(instance.getPluginDependentMenuItems().size(), 3);
-
-            instance.addPluginDependentMenuItems(item2);
-            assertEquals(instance.getPluginDependentMenuItems().size(), 3);
-        }
+        instance.addPluginDependentMenuItems(item2);
+        assertEquals(instance.getPluginDependentMenuItems().size(), 3);
     }
 
     /**
@@ -199,45 +169,37 @@ public class QueryPhasePaneNGTest {
     public void testSetHeadingsExpandedHeadOnly() {
         System.out.println("setHeadingsExpandedHeadOnly");
 
-        // TODO: Find a way to instantiate toolkit in a headless environment
-        // This unit test should pass locally but will hold up in a headless environment (e.g. CI)
-        // Putting it in this if loop is a temp fix for the hold up in CI but it does it by skipping the test
-        // (so CI won't actually tell you whether this is passing or not)
-        if (!GraphicsEnvironment.isHeadless()) {
-            new JFXPanel();
+        final QueryPhasePane instance = new QueryPhasePane(plugins, null, null);
+        for (final Node child : instance.getDataSourceList().getChildren()) {
+            final HeadingPane heading = (HeadingPane) child;
+            //default value for HeadingPane expansion is true
+            assertTrue(heading.isExpanded());
 
-            final QueryPhasePane instance = new QueryPhasePane(plugins, null, null);
-            for (final Node child : instance.getDataSourceList().getChildren()) {
-                final HeadingPane heading = (HeadingPane) child;
-                //default value for HeadingPane expansion is true
-                assertTrue(heading.isExpanded());
-
-                for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
-                    //default value for DataSourceTitledPane expansion is false
-                    assertFalse(dataSource.isExpanded());
-                }
+            for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
+                //default value for DataSourceTitledPane expansion is false
+                assertFalse(dataSource.isExpanded());
             }
+        }
 
-            instance.setHeadingsExpanded(false, false);
+        instance.setHeadingsExpanded(false, false);
 
-            for (final Node child : instance.getDataSourceList().getChildren()) {
-                final HeadingPane heading = (HeadingPane) child;
-                assertFalse(heading.isExpanded());
+        for (final Node child : instance.getDataSourceList().getChildren()) {
+            final HeadingPane heading = (HeadingPane) child;
+            assertFalse(heading.isExpanded());
 
-                for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
-                    assertFalse(dataSource.isExpanded());
-                }
+            for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
+                assertFalse(dataSource.isExpanded());
             }
+        }
 
-            instance.setHeadingsExpanded(true, false);
+        instance.setHeadingsExpanded(true, false);
 
-            for (final Node child : instance.getDataSourceList().getChildren()) {
-                final HeadingPane heading = (HeadingPane) child;
-                assertTrue(heading.isExpanded());
+        for (final Node child : instance.getDataSourceList().getChildren()) {
+            final HeadingPane heading = (HeadingPane) child;
+            assertTrue(heading.isExpanded());
 
-                for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
-                    assertFalse(dataSource.isExpanded());
-                }
+            for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
+                assertFalse(dataSource.isExpanded());
             }
         }
     }
@@ -250,45 +212,37 @@ public class QueryPhasePaneNGTest {
     public void testSetHeadingsExpandedHeadChild() {
         System.out.println("setHeadingsExpandedHeadChild");
 
-        // TODO: Find a way to instantiate toolkit in a headless environment
-        // This unit test should pass locally but will hold up in a headless environment (e.g. CI)
-        // Putting it in this if loop is a temp fix for the hold up in CI but it does it by skipping the test
-        // (so CI won't actually tell you whether this is passing or not)
-        if (!GraphicsEnvironment.isHeadless()) {
-            new JFXPanel();
+        final QueryPhasePane instance = new QueryPhasePane(plugins, null, null);
+        for (final Node child : instance.getDataSourceList().getChildren()) {
+            final HeadingPane heading = (HeadingPane) child;
+            //default value for HeadingPane expansion is true
+            assertTrue(heading.isExpanded());
 
-            final QueryPhasePane instance = new QueryPhasePane(plugins, null, null);
-            for (final Node child : instance.getDataSourceList().getChildren()) {
-                final HeadingPane heading = (HeadingPane) child;
-                //default value for HeadingPane expansion is true
-                assertTrue(heading.isExpanded());
-
-                for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
-                    //default value for DataSourceTitledPane expansion is false
-                    assertFalse(dataSource.isExpanded());
-                }
+            for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
+                //default value for DataSourceTitledPane expansion is false
+                assertFalse(dataSource.isExpanded());
             }
+        }
 
-            instance.setHeadingsExpanded(false, true);
+        instance.setHeadingsExpanded(false, true);
 
-            for (final Node child : instance.getDataSourceList().getChildren()) {
-                final HeadingPane heading = (HeadingPane) child;
-                assertFalse(heading.isExpanded());
+        for (final Node child : instance.getDataSourceList().getChildren()) {
+            final HeadingPane heading = (HeadingPane) child;
+            assertFalse(heading.isExpanded());
 
-                for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
-                    assertFalse(dataSource.isExpanded());
-                }
+            for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
+                assertFalse(dataSource.isExpanded());
             }
+        }
 
-            instance.setHeadingsExpanded(true, true);
+        instance.setHeadingsExpanded(true, true);
 
-            for (final Node child : instance.getDataSourceList().getChildren()) {
-                final HeadingPane heading = (HeadingPane) child;
-                assertTrue(heading.isExpanded());
+        for (final Node child : instance.getDataSourceList().getChildren()) {
+            final HeadingPane heading = (HeadingPane) child;
+            assertTrue(heading.isExpanded());
 
-                for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
-                    assertTrue(dataSource.isExpanded());
-                }
+            for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
+                assertTrue(dataSource.isExpanded());
             }
         }
     }
@@ -300,57 +254,49 @@ public class QueryPhasePaneNGTest {
     public void testExpandPlugin() {
         System.out.println("expandPlugin");
 
-        // TODO: Find a way to instantiate toolkit in a headless environment
-        // This unit test should pass locally but will hold up in a headless environment (e.g. CI)
-        // Putting it in this if loop is a temp fix for the hold up in CI but it does it by skipping the test
-        // (so CI won't actually tell you whether this is passing or not)
-        if (!GraphicsEnvironment.isHeadless()) {
-            new JFXPanel();
+        final QueryPhasePane instance = new QueryPhasePane(plugins, null, null);
+        for (final Node child : instance.getDataSourceList().getChildren()) {
+            final HeadingPane heading = (HeadingPane) child;
+            //default value for HeadingPane expansion is true
+            assertTrue(heading.isExpanded());
 
-            final QueryPhasePane instance = new QueryPhasePane(plugins, null, null);
-            for (final Node child : instance.getDataSourceList().getChildren()) {
-                final HeadingPane heading = (HeadingPane) child;
-                //default value for HeadingPane expansion is true
-                assertTrue(heading.isExpanded());
+            for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
+                //default value for DataSourceTitledPane expansion is false
+                assertFalse(dataSource.isExpanded());
+            }
+        }
 
-                for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
-                    //default value for DataSourceTitledPane expansion is false
+        // these are added purely to get the function working
+        final VBox parent = new VBox(instance);
+        final VBox grandparent = new VBox(parent);
+        new ExtendedScrollPane(grandparent);
+
+        instance.expandPlugin("Test Plugin");
+
+        for (final Node child : instance.getDataSourceList().getChildren()) {
+            final HeadingPane heading = (HeadingPane) child;
+
+            for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
+                if ("Test Plugin".equals(dataSource.getPlugin().getName())) {
+                    assertTrue(heading.isExpanded());
+                    assertTrue(dataSource.isExpanded());
+                } else {
                     assertFalse(dataSource.isExpanded());
                 }
             }
+        }
 
-            // these are added purely to get the function working
-            final VBox parent = new VBox(instance);
-            final VBox grandparent = new VBox(parent);
-            new ExtendedScrollPane(grandparent);
+        instance.expandPlugin("Another Test Plugin");
 
-            instance.expandPlugin("Test Plugin");
+        for (final Node child : instance.getDataSourceList().getChildren()) {
+            final HeadingPane heading = (HeadingPane) child;
 
-            for (final Node child : instance.getDataSourceList().getChildren()) {
-                final HeadingPane heading = (HeadingPane) child;
-
-                for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
-                    if ("Test Plugin".equals(dataSource.getPlugin().getName())) {
-                        assertTrue(heading.isExpanded());
-                        assertTrue(dataSource.isExpanded());
-                    } else {
-                        assertFalse(dataSource.isExpanded());
-                    }
-                }
-            }
-
-            instance.expandPlugin("Another Test Plugin");
-
-            for (final Node child : instance.getDataSourceList().getChildren()) {
-                final HeadingPane heading = (HeadingPane) child;
-
-                for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
-                    if ("Another Test Plugin".equals(dataSource.getPlugin().getName())) {
-                        assertTrue(heading.isExpanded());
-                        assertTrue(dataSource.isExpanded());
-                    } else {
-                        assertFalse(dataSource.isExpanded());
-                    }
+            for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
+                if ("Another Test Plugin".equals(dataSource.getPlugin().getName())) {
+                    assertTrue(heading.isExpanded());
+                    assertTrue(dataSource.isExpanded());
+                } else {
+                    assertFalse(dataSource.isExpanded());
                 }
             }
         }
@@ -364,30 +310,22 @@ public class QueryPhasePaneNGTest {
     public void testShowMatchingPluginsOneMatch() {
         System.out.println("showMatchingPluginsOneMatch");
 
-        // TODO: Find a way to instantiate toolkit in a headless environment
-        // This unit test should pass locally but will hold up in a headless environment (e.g. CI)
-        // Putting it in this if loop is a temp fix for the hold up in CI but it does it by skipping the test
-        // (so CI won't actually tell you whether this is passing or not)
-        if (!GraphicsEnvironment.isHeadless()) {
-            new JFXPanel();
+        plugins.put("test", Arrays.asList(new TestDataAccessPlugin()));
+        plugins.put("anothertest", Arrays.asList(new AnotherTestDataAccessPlugin()));
 
-            plugins.put("test", Arrays.asList(new TestDataAccessPlugin()));
-            plugins.put("anothertest", Arrays.asList(new AnotherTestDataAccessPlugin()));
+        final QueryPhasePane instance = new QueryPhasePane(plugins, null, null);
+        for (final Node child : instance.getDataSourceList().getChildren()) {
+            final HeadingPane heading = (HeadingPane) child;
+            //default value for HeadingPane expansion is true so setting to false
+            heading.setExpanded(false);
+        }
 
-            final QueryPhasePane instance = new QueryPhasePane(plugins, null, null);
-            for (final Node child : instance.getDataSourceList().getChildren()) {
-                final HeadingPane heading = (HeadingPane) child;
-                //default value for HeadingPane expansion is true so setting to false
-                heading.setExpanded(false);
-            }
+        instance.showMatchingPlugins("Another Test Plugin");
 
-            instance.showMatchingPlugins("Another Test Plugin");
+        for (final Node child : instance.getDataSourceList().getChildren()) {
+            final HeadingPane heading = (HeadingPane) child;
 
-            for (final Node child : instance.getDataSourceList().getChildren()) {
-                final HeadingPane heading = (HeadingPane) child;
-
-                assertEquals(heading.isExpanded(), "anothertest".equals(heading.getText()));
-            }
+            assertEquals(heading.isExpanded(), "anothertest".equals(heading.getText()));
         }
     }
 
@@ -399,30 +337,22 @@ public class QueryPhasePaneNGTest {
     public void testShowMatchingPluginsMultipleMatch() {
         System.out.println("showMatchingPluginsMultipleMatch");
 
-        // TODO: Find a way to instantiate toolkit in a headless environment
-        // This unit test should pass locally but will hold up in a headless environment (e.g. CI)
-        // Putting it in this if loop is a temp fix for the hold up in CI but it does it by skipping the test
-        // (so CI won't actually tell you whether this is passing or not)
-        if (!GraphicsEnvironment.isHeadless()) {
-            new JFXPanel();
+        plugins.put("test", Arrays.asList(new TestDataAccessPlugin()));
+        plugins.put("anothertest", Arrays.asList(new AnotherTestDataAccessPlugin()));
 
-            plugins.put("test", Arrays.asList(new TestDataAccessPlugin()));
-            plugins.put("anothertest", Arrays.asList(new AnotherTestDataAccessPlugin()));
+        final QueryPhasePane instance = new QueryPhasePane(plugins, null, null);
+        for (final Node child : instance.getDataSourceList().getChildren()) {
+            final HeadingPane heading = (HeadingPane) child;
+            //default value for HeadingPane expansion is true so setting to false
+            heading.setExpanded(false);
+        }
 
-            final QueryPhasePane instance = new QueryPhasePane(plugins, null, null);
-            for (final Node child : instance.getDataSourceList().getChildren()) {
-                final HeadingPane heading = (HeadingPane) child;
-                //default value for HeadingPane expansion is true so setting to false
-                heading.setExpanded(false);
-            }
+        instance.showMatchingPlugins("Test Plugin");
 
-            instance.showMatchingPlugins("Test Plugin");
+        for (final Node child : instance.getDataSourceList().getChildren()) {
+            final HeadingPane heading = (HeadingPane) child;
 
-            for (final Node child : instance.getDataSourceList().getChildren()) {
-                final HeadingPane heading = (HeadingPane) child;
-
-                assertTrue(heading.isExpanded());
-            }
+            assertTrue(heading.isExpanded());
         }
     }
 
