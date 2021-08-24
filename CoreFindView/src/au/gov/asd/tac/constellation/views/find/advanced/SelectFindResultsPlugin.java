@@ -34,7 +34,7 @@ import org.openide.util.NbBundle.Messages;
  * @author betelgeuse
  * @see SimpleEditPlugin
  */
-@PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECTION"})
+@PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
 @Messages("SelectFindResultsPlugin=Find: Update Selection")
 public class SelectFindResultsPlugin extends SimplePlugin {
 

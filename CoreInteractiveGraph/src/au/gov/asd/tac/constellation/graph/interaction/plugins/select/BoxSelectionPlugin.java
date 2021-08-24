@@ -40,7 +40,7 @@ import org.openide.util.NbBundle.Messages;
  * @author sirius
  */
 @Messages("BoxSelectionPlugin=Select in Box")
-@PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECTION"})
+@PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECT"})
 public final class BoxSelectionPlugin extends SimpleEditPlugin {
 
     private final boolean isAdd;
