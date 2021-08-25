@@ -45,8 +45,8 @@ public class ShowInTableViewContextMenuProviderNGTest {
     @Test
     public void getItems() {
         final ShowInTableViewContextMenuProvider provider = new ShowInTableViewContextMenuProvider();
-        assertEquals(provider.getItems(null, GraphElementType.VERTEX, -1), List.of("Show in New Table View"));
-        assertEquals(provider.getItems(null, GraphElementType.TRANSACTION, -1), List.of("Show in New Table View"));
+        assertEquals(provider.getItems(null, GraphElementType.VERTEX, -1), List.of("Show in Table View"));
+        assertEquals(provider.getItems(null, GraphElementType.TRANSACTION, -1), List.of("Show in Table View"));
         assertTrue(provider.getItems(null, GraphElementType.META, -1).isEmpty());
     }
 

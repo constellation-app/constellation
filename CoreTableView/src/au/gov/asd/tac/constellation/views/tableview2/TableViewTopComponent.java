@@ -60,7 +60,7 @@ import org.openide.windows.TopComponent;
         id = "au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent"
 )
 @ActionReferences({
-    @ActionReference(path = "Menu/Views", position = 1400),
+    @ActionReference(path = "Menu/Views", position = 1500),
     @ActionReference(path = "Shortcuts", name = "CS-Y")
 })
 @TopComponent.OpenActionRegistration(

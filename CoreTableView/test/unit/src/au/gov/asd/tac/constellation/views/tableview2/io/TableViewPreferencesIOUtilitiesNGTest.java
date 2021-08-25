@@ -41,6 +41,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import org.openide.util.NbPreferences;
 import static org.testng.AssertJUnit.assertEquals;
+import org.testfx.api.FxToolkit;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -62,6 +63,9 @@ public class TableViewPreferencesIOUtilitiesNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        FxToolkit.registerPrimaryStage();
+        FxToolkit.showStage();
+
         jsonIOStaticMock = Mockito.mockStatic(JsonIO.class);
         nbPreferencesStaticMock = Mockito.mockStatic(NbPreferences.class);
         applicationPrefKeysStaticMock = Mockito.mockStatic(ApplicationPreferenceKeys.class);
@@ -69,6 +73,7 @@ public class TableViewPreferencesIOUtilitiesNGTest {
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        FxToolkit.hideStage();
         jsonIOStaticMock.close();
         nbPreferencesStaticMock.close();
         applicationPrefKeysStaticMock.close();
@@ -146,54 +151,45 @@ public class TableViewPreferencesIOUtilitiesNGTest {
 
     @Test
     public void savePreferences() throws IOException {
-        // TODO Find a better solution for this. Because of this limitation these tests
-        //      will not be run on the CI server.
-        if (!GraphicsEnvironment.isHeadless()) {
-            // Interestingly once you throw the skip exception it doesn't call the tear down class
-            // so we need to instantiate the static mocks only once we know we will be running the
-            // tests.
-            new JFXPanel();
+        nbPreferencesStaticMock.when(() -> NbPreferences.forModule(ApplicationPreferenceKeys.class))
+                .thenReturn(null);
+        applicationPrefKeysStaticMock.when(() -> ApplicationPreferenceKeys.getUserDir(null))
+                .thenReturn(System.getProperty("java.io.tmpdir"));
 
-            nbPreferencesStaticMock.when(() -> NbPreferences.forModule(ApplicationPreferenceKeys.class))
-                    .thenReturn(null);
-            applicationPrefKeysStaticMock.when(() -> ApplicationPreferenceKeys.getUserDir(null))
-                    .thenReturn(System.getProperty("java.io.tmpdir"));
-            
-            final TableColumn<ObservableList<String>, ? extends Object> column1 = mock(TableColumn.class);
-            final TableColumn<ObservableList<String>, ? extends Object> column2 = mock(TableColumn.class);
-            final TableColumn<ObservableList<String>, ? extends Object> column3 = mock(TableColumn.class);
-            final TableColumn<ObservableList<String>, ? extends Object> column4 = mock(TableColumn.class);
+        final TableColumn<ObservableList<String>, ? extends Object> column1 = mock(TableColumn.class);
+        final TableColumn<ObservableList<String>, ? extends Object> column2 = mock(TableColumn.class);
+        final TableColumn<ObservableList<String>, ? extends Object> column3 = mock(TableColumn.class);
+        final TableColumn<ObservableList<String>, ? extends Object> column4 = mock(TableColumn.class);
 
-            when(column1.isVisible()).thenReturn(true);
-            when(column1.getText()).thenReturn("ABC");
+        when(column1.isVisible()).thenReturn(true);
+        when(column1.getText()).thenReturn("ABC");
 
-            when(column2.isVisible()).thenReturn(true);
-            when(column2.getText()).thenReturn("DEF");
-            when(column2.getSortType()).thenReturn(TableColumn.SortType.ASCENDING);
+        when(column2.isVisible()).thenReturn(true);
+        when(column2.getText()).thenReturn("DEF");
+        when(column2.getSortType()).thenReturn(TableColumn.SortType.ASCENDING);
 
-            when(column3.isVisible()).thenReturn(false);
-            when(column3.getText()).thenReturn("GHI");
+        when(column3.isVisible()).thenReturn(false);
+        when(column3.getText()).thenReturn("GHI");
 
-            when(column4.isVisible()).thenReturn(true);
-            when(column4.getText()).thenReturn("JKL");
+        when(column4.isVisible()).thenReturn(true);
+        when(column4.getText()).thenReturn("JKL");
 
-            final TableView<ObservableList<String>> tableView = mock(TableView.class);
-            when(tableView.getColumns()).thenReturn(FXCollections.observableList(List.of(column1, column2, column3, column4)));
-            when(tableView.getSortOrder()).thenReturn(FXCollections.observableList(List.of(column2)));
+        final TableView<ObservableList<String>> tableView = mock(TableView.class);
+        when(tableView.getColumns()).thenReturn(FXCollections.observableList(List.of(column1, column2, column3, column4)));
+        when(tableView.getSortOrder()).thenReturn(FXCollections.observableList(List.of(column2)));
 
-            TableViewPreferencesIOUtilities.savePreferences(GraphElementType.TRANSACTION, tableView, 5);
+        TableViewPreferencesIOUtilities.savePreferences(GraphElementType.TRANSACTION, tableView, 5);
 
-            final ObjectMapper objectMapper = new ObjectMapper();
-            final ArrayNode expectedJsonTree = (ArrayNode) objectMapper.readTree(
-                    new FileInputStream(getClass().getResource("resources/transaction-preferences.json").getPath())
-            );
+        final ObjectMapper objectMapper = new ObjectMapper();
+        final ArrayNode expectedJsonTree = (ArrayNode) objectMapper.readTree(
+                new FileInputStream(getClass().getResource("resources/transaction-preferences.json").getPath())
+        );
 
-            jsonIOStaticMock.verify(() -> JsonIO.saveJsonPreferences(
-                    eq("TableViewPreferences"),
-                    any(ObjectMapper.class),
-                    eq(expectedJsonTree),
-                    eq("transaction-")
-            ));
-        }
+        jsonIOStaticMock.verify(() -> JsonIO.saveJsonPreferences(
+                eq("TableViewPreferences"),
+                any(ObjectMapper.class),
+                eq(expectedJsonTree),
+                eq("transaction-")
+        ));
     }
 }
