@@ -63,15 +63,9 @@ public class DefaultQualityControlAutoButtonNGTest {
         // See AutosaveStartup for the Runnable.
         // My guess is that there is a test generating these files and not cleaning
         // up which is why this test is consistently failing when run on CI. Its that
-        // file cleanup that should be fixed.
+        // file cleanup that should be fixed!!!
         Arrays.stream(AutosaveUtilities.getAutosaves(AutosaveUtilities.AUTO_EXT))
                 .forEach(file -> file.delete());
-        
-//        System.setProperty("java.awt.headless", "true");
-//        System.setProperty("testfx.robot", "glass");
-//        System.setProperty("testfx.headless", "true");
-//        System.setProperty("prism.order", "sw");
-//        System.setProperty("prism.text", "t2k");
         
         FxToolkit.registerPrimaryStage();
         FxToolkit.showStage();
@@ -80,12 +74,6 @@ public class DefaultQualityControlAutoButtonNGTest {
     @AfterClass
     public static void tearDownClass() throws Exception {
         FxToolkit.hideStage();
-        
-//        System.clearProperty("java.awt.headless");
-//        System.clearProperty("testfx.robot");
-//        System.clearProperty("testfx.headless");
-//        System.clearProperty("prism.order");
-//        System.clearProperty("prism.text");
     }
 
     @BeforeMethod
