@@ -37,6 +37,8 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import org.openide.awt.ActionID;
+import org.openide.awt.ActionReference;
+import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
@@ -48,9 +50,9 @@ import org.openide.util.NbBundle.Messages;
  */
 @ActionID(category = "Experimental", id = "au.gov.asd.tac.constellation.testing.construction.GraphConstructionDemoAction")
 @ActionRegistration(displayName = "#CTL_GraphConstructionDemoAction", surviveFocusChange = true)
-//@ActionReferences({
-//    @ActionReference(path = "Menu/Experimental/Build Graph", position = 0)
-//})
+@ActionReferences({
+    @ActionReference(path = "Menu/Experimental/Build Graph", position = 0)
+})
 @Messages("CTL_GraphConstructionDemoAction=Construction Demo")
 public final class GraphConstructionDemoAction extends AbstractAction {
 
