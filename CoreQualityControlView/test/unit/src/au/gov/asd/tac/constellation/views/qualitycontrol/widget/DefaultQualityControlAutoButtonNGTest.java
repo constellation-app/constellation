@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.qualitycontrol.widget;
 
 import au.gov.asd.tac.constellation.graph.StoreGraph;
+import au.gov.asd.tac.constellation.graph.file.save.AutosaveUtilities;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
@@ -24,6 +25,7 @@ import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlEvent.Qua
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlState;
 import au.gov.asd.tac.constellation.views.qualitycontrol.rules.QualityControlRule;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javafx.scene.control.Tooltip;
 import static org.mockito.Mockito.mock;
@@ -37,7 +39,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 public class DefaultQualityControlAutoButtonNGTest {
-
     private StoreGraph graph;
     private List<QualityControlEvent> events;
     private List<QualityControlRule> rules;
@@ -76,6 +77,13 @@ public class DefaultQualityControlAutoButtonNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // This is a bit of dodgy hack (better way needed). Basically there is an auto save thread
+        // that is getting initialized and running in the background as the tests
+        // run. Sometimes it looks (and finds) files to perform UI auto save operations
+        // that cause issues in a headless environment. This deletes those files
+        // before the thread can find them. See AutosaveStartup for the Runnable
+        Arrays.stream(AutosaveUtilities.getAutosaves(AutosaveUtilities.AUTO_EXT))
+                .forEach(file -> file.delete());
     }
 
     /**
@@ -108,6 +116,7 @@ public class DefaultQualityControlAutoButtonNGTest {
     @Test
     public void testQualityControlChangedWithValidState() throws InterruptedException {
         System.out.println("qualityControlChanged");
+
         QualityControlState state = new QualityControlState(graph.getId(), events, rules);
 
         DefaultQualityControlAutoButton instance = new DefaultQualityControlAutoButton();
