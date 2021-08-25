@@ -7,8 +7,9 @@
     'NotesViewPane' to control the tags filters used in the check combo box 
     to update the Auto Notes filters.
 
--   Removed `ArrangeByGroupPlugin` and `ArrangeByGroupAction` as Arrange By 
-    Group is superseded by Arrange by Node Attribute.
+-   Removed `ArrangeByGroupPlugin`, `ArrangeByGroupAction`, 
+    `ArrangeByLayerPlugin`, and `ArrangeByLayerAction` as Arrange By 
+    Group and Arrange by Layer are superseded by Arrange by Node Attribute.
 
 -   Update 'setFilters' in 'NotesViewPane' to include the Auto Notes filters. 
 
