@@ -19,21 +19,19 @@ import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPane;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.GlobalParameters;
-import java.awt.GraphicsEnvironment;
 import java.util.Map;
 import java.util.Set;
-import javafx.embed.swing.JFXPanel;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
-import org.testng.SkipException;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -57,23 +55,17 @@ public class GlobalParametersPaneNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        // TODO Find a better solution for this. Because of this limitation these tests
-        //      will not be run on the CI server.
-        if (!GraphicsEnvironment.isHeadless()) {
-            // Interestingly once you throw the skip exception it doesn't call the tear down class
-            // so we need to instantiate the static mocks only once we know we will be running the
-            // tests.
-            pluginParametersPaneMockedStatic = Mockito.mockStatic(PluginParametersPane.class);
-            globalParametersMockedStatic = Mockito.mockStatic(GlobalParameters.class);
-
-            new JFXPanel();
-        } else {
-            throw new SkipException("This class requires the build to have a display present.");
-        }
+        FxToolkit.registerPrimaryStage();
+        FxToolkit.showStage();
+        
+        pluginParametersPaneMockedStatic = Mockito.mockStatic(PluginParametersPane.class);
+        globalParametersMockedStatic = Mockito.mockStatic(GlobalParameters.class);
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        FxToolkit.hideStage();
+        
         pluginParametersPaneMockedStatic.close();
         globalParametersMockedStatic.close();
     }

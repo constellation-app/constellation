@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
 import au.gov.asd.tac.constellation.plugins.Plugin;
-import java.awt.GraphicsEnvironment;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +23,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ModifiableObservableListBase;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
-import javafx.embed.swing.JFXPanel;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
@@ -42,7 +40,7 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import org.testng.SkipException;
+import org.testfx.api.FxToolkit;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -65,20 +63,13 @@ public class PluginFinderNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        // TODO Find a better solution for this. Because of this limitation these tests
-        //      will not be run on the CI server.
-        if (!GraphicsEnvironment.isHeadless()) {
-            // Interestingly once you throw the skip exception it doesn't call the tear down class
-            // so we need to instantiate the static mocks only once we know we will be running the
-            // tests.
-            new JFXPanel();
-        } else {
-            throw new SkipException("This class requires the build to have a display present.");
-        }
+        FxToolkit.registerPrimaryStage();
+        FxToolkit.showStage();
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        FxToolkit.hideStage();
     }
 
     @BeforeMethod

@@ -21,11 +21,10 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ActionParameterType;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
-import java.awt.GraphicsEnvironment;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
-import javafx.embed.swing.JFXPanel;
+import javafx.application.Platform;
 import javafx.scene.image.ImageView;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.MockedStatic;
@@ -39,10 +38,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
-import org.testng.SkipException;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -54,11 +53,13 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class DataSourceTitledPaneNGTest {
-
+    
     private static final String PLUGIN_NAME = "plugin name";
     private static final String GLOBAL_PARAM_1 = "global param 1";
     private static final String GLOBAL_PARAM_2 = "global param 2";
 
+    private static MockedStatic<Platform> platformMockedStatic;
+    
     private final DataAccessPlugin plugin = mock(DataAccessPlugin.class);
     private final ImageView dataSourceIcon = mock(ImageView.class);
     private final PluginParametersPaneListener top = mock(PluginParametersPaneListener.class);
@@ -72,26 +73,29 @@ public class DataSourceTitledPaneNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        // TODO Find a better solution for this. Because of this limitation these tests
-        //      will not be run on the CI server.
-        if (!GraphicsEnvironment.isHeadless()) {
-            // Interestingly once you throw the skip exception it doesn't call the tear down class
-            // so we need to instantiate the static mocks only once we know we will be running the
-            // tests.
-            new JFXPanel();
-        } else {
-            throw new SkipException("This class requires the build to have a display present.");
-        }
+        FxToolkit.registerPrimaryStage();
+        FxToolkit.showStage();
+        
+        // This prevents the runnable at the bottom of create params to run!!
+        // Create params is call by the constructor which is why this needs to be
+        // here.
+        platformMockedStatic = Mockito.mockStatic(Platform.class);
+        platformMockedStatic.when(() -> Platform.runLater(any(Runnable.class)))
+                .then(mockInvocation -> null);
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        platformMockedStatic.close();
+        
+        FxToolkit.hideStage();
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
         reset(plugin, dataSourceIcon, top);
-
+        platformMockedStatic.reset();
+        
         when(plugin.getName()).thenReturn(PLUGIN_NAME);
         when(dataSourceParameters.copy()).thenReturn(dataSourceParameters);
 
@@ -182,8 +186,6 @@ public class DataSourceTitledPaneNGTest {
 
         verify(nonActionPluginParameter).setStringValue(value);
         verify(actionPluginParameter, times(0)).setStringValue(value);
-
-        assertTrue(dataSourceTitledPane.isQueryEnabled());
     }
 
     @Test
