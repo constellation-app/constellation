@@ -24,17 +24,12 @@ import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlEvent;
 import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlEvent.QualityCategory;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlState;
 import au.gov.asd.tac.constellation.views.qualitycontrol.rules.QualityControlRule;
-import java.awt.GraphicsEnvironment;
-import java.io.File;
-import java.io.IOException;
-import static java.lang.System.clearProperty;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import javafx.application.Platform;
 import javafx.scene.control.Tooltip;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
@@ -46,10 +41,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 public class DefaultQualityControlAutoButtonNGTest {
-
-//    private static final File FILE;
-//    
-//    private static MockedStatic<AutosaveUtilities> autoSaveUtilsMockedStatic;
     
     private StoreGraph graph;
     private List<QualityControlEvent> events;
@@ -57,25 +48,17 @@ public class DefaultQualityControlAutoButtonNGTest {
 
     //Dependencies (will be mocked)
     private QualityControlEvent qualityControlEvent;
-
-//    static {
-//        try {
-//            FILE = Path.of(AutosaveUtilities.getAutosaveDir().getAbsolutePath(), "autoSaveProps" + AutosaveUtilities.AUTO_EXT).toFile();
-//            FILE.createNewFile();
-//        } catch (IOException ioe) {
-//            throw new RuntimeException("Tmp file creation failed");
-//        }
-//    }
     
     public DefaultQualityControlAutoButtonNGTest() {
     }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-//        autoSaveUtilsMockedStatic = Mockito.mockStatic(AutosaveUtilities.class);
-//        autoSaveUtilsMockedStatic.when(() -> AutosaveUtilities.getAutosaves(AutosaveUtilities.AUTO_EXT))
-//                .thenReturn(new File[]{FILE});
-
+        // This is a bit of dodgy hack (better way needed). Basically there is an auto save thread
+        // that is getting initialized and running in the background as the tests
+        // run. Sometimes it looks (and finds) files to perform UI auto save operations
+        // that cause issues in a headless environment. This deletes those files
+        // before the thread can find them. See AutosaveStartup for the Runnable.
         Arrays.stream(AutosaveUtilities.getAutosaves(AutosaveUtilities.AUTO_EXT))
                 .forEach(file -> file.delete());
         
@@ -92,9 +75,6 @@ public class DefaultQualityControlAutoButtonNGTest {
     @AfterClass
     public static void tearDownClass() throws Exception {
         FxToolkit.hideStage();
-
-//        autoSaveUtilsMockedStatic.close();
-//        FILE.delete();
         
 //        System.clearProperty("java.awt.headless");
 //        System.clearProperty("testfx.robot");
@@ -136,15 +116,24 @@ public class DefaultQualityControlAutoButtonNGTest {
         String expRiskText = "Quality Category: " + QualityCategory.OK.name();
         String expStyleText = instance.DEFAULT_TEXT_STYLE + instance.BUTTON_STYLE;
         String expTooltipText = null;
+
         instance.qualityControlChanged(null);
 
-        String resultRiskText = instance.getText();
-        String resultStyleText = instance.getStyle();
-        final Tooltip resultTooltipText = instance.getTooltip();
+        final CountDownLatch latch = new CountDownLatch(1);
+        
+        Platform.runLater(() ->{
+            String resultRiskText = instance.getText();
+            String resultStyleText = instance.getStyle();
+            final Tooltip resultTooltipText = instance.getTooltip();
 
-        assertEquals(resultRiskText, expRiskText);
-        assertEquals(resultStyleText, expStyleText);
-        assertEquals(resultTooltipText, expTooltipText);
+            assertEquals(resultRiskText, expRiskText);
+            assertEquals(resultStyleText, expStyleText);
+            assertEquals(resultTooltipText, expTooltipText);
+            
+            latch.countDown();
+        });
+                
+        latch.await();
     }
 
     /**
@@ -164,13 +153,22 @@ public class DefaultQualityControlAutoButtonNGTest {
         final String expTooltipText = "Reason 1, Reason2";
 
         instance.qualityControlChanged(state);
-        Thread.sleep(100);
-        final String resultRiskText = instance.getText();
-        final String resultStyleText = instance.getStyle();
-        final Tooltip resultTooltipText = instance.getTooltip();
+        
+        final CountDownLatch latch = new CountDownLatch(1);
+        
+        Platform.runLater(() ->{
+            final String resultRiskText = instance.getText();
+            final String resultStyleText = instance.getStyle();
+            final Tooltip resultTooltipText = instance.getTooltip();
 
-        assertEquals(resultRiskText, expRiskText);
-        assertEquals(resultStyleText, expStyleText);
-        assertEquals(resultTooltipText.getText(), expTooltipText);
+            assertEquals(resultRiskText, expRiskText);
+            assertEquals(resultStyleText, expStyleText);
+            assertEquals(resultTooltipText.getText(), expTooltipText);
+            
+            latch.countDown();
+        });
+        
+        latch.await();
+        
     }
 }
