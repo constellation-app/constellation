@@ -24,10 +24,17 @@ import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlEvent;
 import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlEvent.QualityCategory;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlState;
 import au.gov.asd.tac.constellation.views.qualitycontrol.rules.QualityControlRule;
+import java.awt.GraphicsEnvironment;
+import java.io.File;
+import java.io.IOException;
+import static java.lang.System.clearProperty;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javafx.scene.control.Tooltip;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
@@ -39,6 +46,11 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 public class DefaultQualityControlAutoButtonNGTest {
+
+//    private static final File FILE;
+//    
+//    private static MockedStatic<AutosaveUtilities> autoSaveUtilsMockedStatic;
+    
     private StoreGraph graph;
     private List<QualityControlEvent> events;
     private List<QualityControlRule> rules;
@@ -46,11 +58,33 @@ public class DefaultQualityControlAutoButtonNGTest {
     //Dependencies (will be mocked)
     private QualityControlEvent qualityControlEvent;
 
+//    static {
+//        try {
+//            FILE = Path.of(AutosaveUtilities.getAutosaveDir().getAbsolutePath(), "autoSaveProps" + AutosaveUtilities.AUTO_EXT).toFile();
+//            FILE.createNewFile();
+//        } catch (IOException ioe) {
+//            throw new RuntimeException("Tmp file creation failed");
+//        }
+//    }
+    
     public DefaultQualityControlAutoButtonNGTest() {
     }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+//        autoSaveUtilsMockedStatic = Mockito.mockStatic(AutosaveUtilities.class);
+//        autoSaveUtilsMockedStatic.when(() -> AutosaveUtilities.getAutosaves(AutosaveUtilities.AUTO_EXT))
+//                .thenReturn(new File[]{FILE});
+
+        Arrays.stream(AutosaveUtilities.getAutosaves(AutosaveUtilities.AUTO_EXT))
+                .forEach(file -> file.delete());
+        
+//        System.setProperty("java.awt.headless", "true");
+//        System.setProperty("testfx.robot", "glass");
+//        System.setProperty("testfx.headless", "true");
+//        System.setProperty("prism.order", "sw");
+//        System.setProperty("prism.text", "t2k");
+        
         FxToolkit.registerPrimaryStage();
         FxToolkit.showStage();
     }
@@ -58,6 +92,15 @@ public class DefaultQualityControlAutoButtonNGTest {
     @AfterClass
     public static void tearDownClass() throws Exception {
         FxToolkit.hideStage();
+
+//        autoSaveUtilsMockedStatic.close();
+//        FILE.delete();
+        
+//        System.clearProperty("java.awt.headless");
+//        System.clearProperty("testfx.robot");
+//        System.clearProperty("testfx.headless");
+//        System.clearProperty("prism.order");
+//        System.clearProperty("prism.text");
     }
 
     @BeforeMethod
@@ -77,11 +120,6 @@ public class DefaultQualityControlAutoButtonNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
-        // This is a bit of dodgy hack (better way needed). Basically there is an auto save thread
-        // that is getting initialized and running in the background as the tests
-        // run. Sometimes it looks (and finds) files to perform UI auto save operations
-        // that cause issues in a headless environment. This deletes those files
-        // before the thread can find them. See AutosaveStartup for the Runnable
         Arrays.stream(AutosaveUtilities.getAutosaves(AutosaveUtilities.AUTO_EXT))
                 .forEach(file -> file.delete());
     }
@@ -92,7 +130,7 @@ public class DefaultQualityControlAutoButtonNGTest {
      */
     @Test
     public void testQualityControlChangedWithNullState() throws InterruptedException {
-        System.out.println("qualityControlChanged");
+        System.out.println("qualityControlChanged1");
         DefaultQualityControlAutoButton instance = new DefaultQualityControlAutoButton();
 
         String expRiskText = "Quality Category: " + QualityCategory.OK.name();
@@ -115,8 +153,8 @@ public class DefaultQualityControlAutoButtonNGTest {
      */
     @Test
     public void testQualityControlChangedWithValidState() throws InterruptedException {
-        System.out.println("qualityControlChanged");
-
+        System.out.println("qualityControlChanged2");
+        
         QualityControlState state = new QualityControlState(graph.getId(), events, rules);
 
         DefaultQualityControlAutoButton instance = new DefaultQualityControlAutoButton();
