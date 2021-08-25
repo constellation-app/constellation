@@ -49,6 +49,6 @@ public final class FiveSecondWriteLockAction implements ActionListener {
 
     @Override
     public void actionPerformed(final ActionEvent e) {
-        PluginExecution.withPlugin(PluginRegistry.get(CoreTestingPluginRegistry.FIVE_SECOND_READ_LOCK)).executeLater(context.getGraph());
+        PluginExecution.withPlugin(PluginRegistry.get(CoreTestingPluginRegistry.FIVE_SECOND_WRITE_LOCK)).executeLater(context.getGraph());
     }
 }
