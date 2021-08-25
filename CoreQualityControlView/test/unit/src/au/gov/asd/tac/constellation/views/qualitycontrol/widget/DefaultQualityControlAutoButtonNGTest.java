@@ -100,8 +100,8 @@ public class DefaultQualityControlAutoButtonNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
-        Arrays.stream(AutosaveUtilities.getAutosaves(AutosaveUtilities.AUTO_EXT))
-                .forEach(file -> file.delete());
+//        Arrays.stream(AutosaveUtilities.getAutosaves(AutosaveUtilities.AUTO_EXT))
+//                .forEach(file -> file.delete());
     }
 
     /**
