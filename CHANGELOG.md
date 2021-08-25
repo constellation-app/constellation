@@ -7,6 +7,10 @@
     'NotesViewPane' to control the tags filters used in the check combo box 
     to update the Auto Notes filters.
 
+-   Removed `ArrangeByGroupPlugin`, `ArrangeByGroupAction`, 
+    `ArrangeByLayerPlugin`, and `ArrangeByLayerAction` as Arrange By 
+    Group and Arrange by Layer are superseded by Arrange by Node Attribute.
+
 -   Update 'setFilters' in 'NotesViewPane' to include the Auto Notes filters. 
 
 -   Update to 'readObject' and 'writeObject' in 'NotesViewStateIoProvider'
@@ -29,8 +33,8 @@
 
 ## Changes in June 2021
 
--  	Changed `ImportTableColumn.validate` and `importexport/RunPane.validate` 
-	functions return type from `void` to `boolean`.
+-   Changed `ImportTableColumn.validate` and `importexport/RunPane.validate` 
+    functions return type from `void` to `boolean`.
 
 -   Removed `PreferenceUtilites.isGraphViewFrozen()` and related files
     as this feature has been superseded by the Pin nodes feature.
