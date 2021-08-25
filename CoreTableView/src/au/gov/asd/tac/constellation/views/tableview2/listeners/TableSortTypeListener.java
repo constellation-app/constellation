@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.tableview2.listeners;
 
 import au.gov.asd.tac.constellation.views.tableview2.components.TableViewPane;
-import au.gov.asd.tac.constellation.views.tableview2.service.PreferenceService;
 import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -31,14 +30,11 @@ public class TableSortTypeListener implements ChangeListener<TableColumn.SortTyp
 
     private final TableViewPane tablePane;
     private final TableService tableService;
-    private final PreferenceService preferenceService;
     
     public TableSortTypeListener(final TableViewPane tablePane,
-                                 final TableService tableService,
-                                 final PreferenceService preferenceService) {
+                                 final TableService tableService) {
         this.tablePane = tablePane;
         this.tableService = tableService;
-        this.preferenceService = preferenceService;
     }
     
     @Override
@@ -47,7 +43,7 @@ public class TableSortTypeListener implements ChangeListener<TableColumn.SortTyp
                         final TableColumn.SortType newValue) {
         if (!tableService.isSortingListenerActive()) {
             tableService.setSortingListenerActive(true);
-            tableService.updatePagination(preferenceService.getMaxRowsPerPage());
+            tableService.updatePagination(tableService.getTablePreferences().getMaxRowsPerPage());
             Platform.runLater(() -> {
                 tablePane.setCenter(tableService.getPagination());
             });

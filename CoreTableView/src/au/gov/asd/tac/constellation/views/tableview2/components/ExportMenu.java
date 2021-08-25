@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.views.tableview2.components;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewUtilities;
-import au.gov.asd.tac.constellation.views.tableview2.service.PreferenceService;
+import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Side;
@@ -43,8 +43,7 @@ public class ExportMenu {
     
     private final TableViewTopComponent tableTopComponent;
     private final Table table;
-    private final Pagination pagination;
-    private final PreferenceService preferenceService;
+    private final TableService tableService;
     
     private MenuButton exportButton;
     private MenuItem exportCsvMenu;
@@ -54,27 +53,25 @@ public class ExportMenu {
     
     public ExportMenu(final TableViewTopComponent tableTopComponent,
                       final Table table,
-                      final Pagination pagination,
-                      final PreferenceService preferenceService) {
+                      final TableService tableService) {
         this.tableTopComponent = tableTopComponent;
         this.table = table;
-        this.pagination = pagination;
-        this.preferenceService = preferenceService;
+        this.tableService = tableService;
     }
     
     public void init() {
         exportButton = createMenuButton(EXPORT_ICON);
         exportCsvMenu = createExportMenuItem(EXPORT_CSV, ()
-                -> TableViewUtilities.exportToCsv(table.getTableView(), pagination, false));
+                -> TableViewUtilities.exportToCsv(table.getTableView(), tableService.getPagination(), false));
         exportCsvSelectionMenu = createExportMenuItem(EXPORT_CSV_SELECTION, ()
-                -> TableViewUtilities.exportToCsv(table.getTableView(), pagination, true));
+                -> TableViewUtilities.exportToCsv(table.getTableView(), tableService.getPagination(), true));
         exportExcelMenu = createExportMenuItem(EXPORT_XLSX, ()
-                -> TableViewUtilities.exportToExcel(table.getTableView(), pagination,
-                        preferenceService.getMaxRowsPerPage(), false,
+                -> TableViewUtilities.exportToExcel(table.getTableView(), tableService.getPagination(),
+                        tableService.getTablePreferences().getMaxRowsPerPage(), false,
                         tableTopComponent.getCurrentGraph().getId()));
         exportExcelSelectionMenu = createExportMenuItem(EXPORT_XLSX_SELECTION, ()
-                -> TableViewUtilities.exportToExcel(table.getTableView(), pagination,
-                        preferenceService.getMaxRowsPerPage(), true,
+                -> TableViewUtilities.exportToExcel(table.getTableView(), tableService.getPagination(),
+                        tableService.getTablePreferences().getMaxRowsPerPage(), true,
                         tableTopComponent.getCurrentGraph().getId()));
         exportButton.getItems().addAll(exportCsvMenu, exportCsvSelectionMenu,
                 exportExcelMenu, exportExcelSelectionMenu);

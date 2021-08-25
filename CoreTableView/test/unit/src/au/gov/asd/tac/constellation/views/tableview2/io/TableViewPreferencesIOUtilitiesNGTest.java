@@ -17,9 +17,8 @@ package au.gov.asd.tac.constellation.views.tableview2.io;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
-import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
-import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.genericjsonio.JsonIO;
+import au.gov.asd.tac.constellation.views.tableview2.state.TablePreferences;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -28,6 +27,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.control.TableColumn;
@@ -36,7 +37,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import org.openide.util.NbPreferences;
@@ -95,16 +95,15 @@ public class TableViewPreferencesIOUtilitiesNGTest {
         jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences("TableViewPreferences", "vertex-"))
                 .thenReturn(jsonNode);
 
-        final ThreeTuple<List<String>, Tuple<String, TableColumn.SortType>, Integer> preferences
+        final TablePreferences tablePreferences
                 = TableViewPreferencesIOUtilities.getPreferences(GraphElementType.VERTEX, 2);
 
-        final ThreeTuple<List<String>, Tuple<String, TableColumn.SortType>, Integer> expected = ThreeTuple.create(
-                List.of("ABC", "DEF", "ABC", "DEF"), // <- This seems wrong??
-                Tuple.create("DEF", TableColumn.SortType.DESCENDING),
-                2
-        );
+        final TablePreferences expected = new TablePreferences();
+        expected.setColumnOrder(List.of("ABC", "DEF"));
+        expected.setSortByColumn(Map.of("DEF", TableColumn.SortType.DESCENDING));
+        expected.setMaxRowsPerPage(2);
 
-        assertEquals(expected, preferences);
+        assertEquals(expected, tablePreferences);
     }
 
     @Test
@@ -117,16 +116,16 @@ public class TableViewPreferencesIOUtilitiesNGTest {
         jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences("TableViewPreferences", "transaction-"))
                 .thenReturn(jsonNode);
 
-        final ThreeTuple<List<String>, Tuple<String, TableColumn.SortType>, Integer> preferences
+        
+        final TablePreferences tablepreferences
                 = TableViewPreferencesIOUtilities.getPreferences(GraphElementType.TRANSACTION, 2);
 
-        final ThreeTuple<List<String>, Tuple<String, TableColumn.SortType>, Integer> expected = ThreeTuple.create(
-                List.of("ABC", "DEF"),
-                Tuple.create("DEF", TableColumn.SortType.ASCENDING),
-                5
-        );
+        final TablePreferences expected = new TablePreferences();
+        expected.setColumnOrder(List.of("ABC", "DEF", "JKL"));
+        expected.setSortByColumn(Map.of("DEF", TableColumn.SortType.ASCENDING));
+        expected.setMaxRowsPerPage(5);
 
-        assertEquals(expected, preferences);
+        assertEquals(expected, tablepreferences);
     }
 
     @Test
@@ -134,16 +133,15 @@ public class TableViewPreferencesIOUtilitiesNGTest {
         jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences("TableViewPreferences", "vertex-"))
                 .thenReturn(null);
 
-        final ThreeTuple<List<String>, Tuple<String, TableColumn.SortType>, Integer> preferences
+        final TablePreferences tablepreferences
                 = TableViewPreferencesIOUtilities.getPreferences(GraphElementType.VERTEX, 2);
 
-        final ThreeTuple<List<String>, Tuple<String, TableColumn.SortType>, Integer> expected = ThreeTuple.create(
-                Collections.emptyList(),
-                Tuple.create("", TableColumn.SortType.ASCENDING),
-                500
-        );
+        final TablePreferences expected = new TablePreferences();
+        expected.setColumnOrder(Collections.emptyList());
+        expected.setSortByColumn(Map.of("", TableColumn.SortType.ASCENDING));
+        expected.setMaxRowsPerPage(2);
 
-        assertEquals(expected, preferences);
+        assertEquals(expected, tablepreferences);
     }
 
     @Test
@@ -160,13 +158,7 @@ public class TableViewPreferencesIOUtilitiesNGTest {
                     .thenReturn(null);
             applicationPrefKeysStaticMock.when(() -> ApplicationPreferenceKeys.getUserDir(null))
                     .thenReturn(System.getProperty("java.io.tmpdir"));
-
-            final ObservableList<TableColumn<ObservableList<String>, ? extends Object>> columns = mock(ObservableList.class);
-            when(columns.size()).thenReturn(4);
-
-            final ObservableList<TableColumn<ObservableList<String>, ? extends Object>> sortOrder = mock(ObservableList.class);
-            when(sortOrder.isEmpty()).thenReturn(Boolean.FALSE);
-
+            
             final TableColumn<ObservableList<String>, ? extends Object> column1 = mock(TableColumn.class);
             final TableColumn<ObservableList<String>, ? extends Object> column2 = mock(TableColumn.class);
             final TableColumn<ObservableList<String>, ? extends Object> column3 = mock(TableColumn.class);
@@ -182,19 +174,12 @@ public class TableViewPreferencesIOUtilitiesNGTest {
             when(column3.isVisible()).thenReturn(false);
             when(column3.getText()).thenReturn("GHI");
 
-            when(column4.isVisible()).thenReturn(true); // <- This seem wrong. Its dropped.
+            when(column4.isVisible()).thenReturn(true);
             when(column4.getText()).thenReturn("JKL");
 
-            doReturn(column1).when(columns).get(0);
-            doReturn(column2).when(columns).get(1);
-            doReturn(column3).when(columns).get(2);
-            doReturn(column4).when(columns).get(3);
-
-            doReturn(column2).when(sortOrder).get(0);
-
             final TableView<ObservableList<String>> tableView = mock(TableView.class);
-            when(tableView.getColumns()).thenReturn(columns);
-            when(tableView.getSortOrder()).thenReturn(sortOrder);
+            when(tableView.getColumns()).thenReturn(FXCollections.observableList(List.of(column1, column2, column3, column4)));
+            when(tableView.getSortOrder()).thenReturn(FXCollections.observableList(List.of(column2)));
 
             TableViewPreferencesIOUtilities.savePreferences(GraphElementType.TRANSACTION, tableView, 5);
 

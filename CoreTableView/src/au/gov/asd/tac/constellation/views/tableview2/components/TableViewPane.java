@@ -17,17 +17,13 @@ package au.gov.asd.tac.constellation.views.tableview2.components;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
-import au.gov.asd.tac.constellation.views.tableview2.components.TableToolbar;
 import au.gov.asd.tac.constellation.views.tableview2.factory.TableViewPageFactory;
 import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
-import au.gov.asd.tac.constellation.views.tableview2.service.PreferenceService;
 import au.gov.asd.tac.constellation.views.tableview2.listeners.SelectedOnlySelectionListener;
 import au.gov.asd.tac.constellation.views.tableview2.listeners.TableComparatorListener;
 import au.gov.asd.tac.constellation.views.tableview2.listeners.TableSelectionListener;
 import au.gov.asd.tac.constellation.views.tableview2.listeners.TableSortTypeListener;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
-import au.gov.asd.tac.constellation.views.tableview2.components.ProgressBar;
-import au.gov.asd.tac.constellation.views.tableview2.components.Table;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -62,7 +58,6 @@ public final class TableViewPane extends BorderPane {
     private final ProgressBar progressBar;
 
     private final TableService tableService;
-    private final PreferenceService preferenceService;
     
     private final ChangeListener<ObservableList<String>> tableSelectionListener;
     private final ListChangeListener selectedOnlySelectionListener;
@@ -88,12 +83,10 @@ public final class TableViewPane extends BorderPane {
                 elementIdToRowIndex,
                 rowToElementIdIndex);
         
-        preferenceService = new PreferenceService();
-        
         progressBar = new ProgressBar();
         
         // Create table UI component
-        table = new Table(tableTopComponent, this, tableService, preferenceService);
+        table = new Table(tableTopComponent, this, tableService);
         
         tableService.getSortedRowList().comparatorProperty()
                 .bind(table.getTableView().comparatorProperty());
@@ -103,10 +96,8 @@ public final class TableViewPane extends BorderPane {
                 rowToElementIdIndex);
         this.selectedOnlySelectionListener = new SelectedOnlySelectionListener(tableTopComponent,
                 table.getTableView(), tableService.getSelectedOnlySelectedRows());
-        this.tableComparatorListener = new TableComparatorListener(this, tableService,
-                preferenceService);
-        this.tableSortTypeListener = new TableSortTypeListener(this, tableService,
-                preferenceService);
+        this.tableComparatorListener = new TableComparatorListener(this, tableService);
+        this.tableSortTypeListener = new TableSortTypeListener(this, tableService);
         
         table.getSelectedProperty().addListener(tableSelectionListener);
         table.getTableView().getSelectionModel().getSelectedItems()
@@ -127,12 +118,13 @@ public final class TableViewPane extends BorderPane {
         tableService.setPageFactory(pageFactory);
         
         // Setup the UI components
-        this.tableToolbar = new TableToolbar(tableTopComponent, this, table, tableService,
-                preferenceService);
+        this.tableToolbar = new TableToolbar(tableTopComponent, this, table, tableService);
+        this.tableToolbar.init();
+        
         setLeft(tableToolbar.getToolbar());
 
         // Initiate table update and initialisation
-        tableService.updatePagination(preferenceService.getMaxRowsPerPage());
+        tableService.updatePagination(tableService.getTablePreferences().getMaxRowsPerPage());
         Platform.runLater(() -> {
             setCenter(tableService.getPagination());
         });
@@ -198,9 +190,5 @@ public final class TableViewPane extends BorderPane {
 
     public TableService getTableService() {
         return tableService;
-    }
-
-    public PreferenceService getPreferenceService() {
-        return preferenceService;
     }
 }

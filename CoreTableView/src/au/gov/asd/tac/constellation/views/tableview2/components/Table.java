@@ -27,7 +27,6 @@ import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache
 import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import static au.gov.asd.tac.constellation.views.tableview2.TableViewUtilities.TABLE_LOCK;
-import au.gov.asd.tac.constellation.views.tableview2.service.PreferenceService;
 import au.gov.asd.tac.constellation.views.tableview2.factory.TableCellFactory;
 import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
 import au.gov.asd.tac.constellation.views.tableview2.tasks.UpdateColumnsTask;
@@ -55,6 +54,7 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javax.swing.SwingUtilities;
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  *
@@ -71,7 +71,6 @@ public class Table {
     private final TableView<ObservableList<String>> tableView;
     
     private final TableService tableService;
-    private final PreferenceService preferenceService;
     
     private final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> columnIndex;
     
@@ -85,12 +84,10 @@ public class Table {
     
     public Table(final TableViewTopComponent tableTopComponent,
                  final TableViewPane tablePane,
-                 final TableService tableService,
-                 final PreferenceService preferenceService) {
+                 final TableService tableService) {
         this.tableTopComponent = tableTopComponent;
         this.tablePane = tablePane;
         this.tableService = tableService;
-        this.preferenceService = preferenceService;
         
         this.tableView = new TableView<>();
         this.tableView.itemsProperty().addListener((v, o, n) -> tableView.refresh());
@@ -291,8 +288,7 @@ public class Table {
                 final CountDownLatch updateDataLatch = new CountDownLatch(1);
 
                 Platform.runLater(new UpdateDataTask(tablePane, this, rows, tableSelectionListener,
-                        selectedOnlySelectionListener, updateDataLatch, tableService,
-                        preferenceService));
+                        selectedOnlySelectionListener, updateDataLatch, tableService));
 
                 // Wait for the update data task to complete.
                 try {
@@ -361,10 +357,13 @@ public class Table {
      */
     public void updateSortOrder() {
         // Try to find column with name matching saved sort order/type details
-        if (!tableService.getSortByColumnName().isBlank()) {
+        final Pair<String, TableColumn.SortType> sortPreference
+                = tableService.getTablePreferences().getSort();
+        
+        if (sortPreference != null && !sortPreference.getLeft().isBlank()) {
             for (final TableColumn<ObservableList<String>, ?> column : tableView.getColumns()) {
-                if (column.getText().equals(tableService.getSortByColumnName())) {
-                    column.setSortType(tableService.getSortByType());
+                if (column.getText().equals(sortPreference.getLeft())) {
+                    column.setSortType(sortPreference.getRight());
                     tableView.getSortOrder().setAll(column);
                     return;
                 }

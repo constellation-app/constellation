@@ -23,7 +23,6 @@ import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import static au.gov.asd.tac.constellation.views.tableview2.TableViewUtilities.TABLE_LOCK;
 import au.gov.asd.tac.constellation.views.tableview2.io.TableViewPreferencesIOUtilities;
-import au.gov.asd.tac.constellation.views.tableview2.service.PreferenceService;
 import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
 import au.gov.asd.tac.constellation.views.tableview2.UpdateMethod;
 import au.gov.asd.tac.constellation.views.tableview2.state.TablePreferences;
@@ -46,6 +45,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.ImageView;
+import org.apache.commons.collections4.CollectionUtils;
 
 /**
  *
@@ -60,6 +60,8 @@ public class PreferencesMenu {
     
     private static final ImageView SETTINGS_ICON = new ImageView(UserInterfaceIconProvider.SETTINGS.buildImage(16));
     
+    private static final Integer DEFAULT_MAX_ROWS_PER_PAGE = 500;
+    
     private static final int WIDTH = 120;
     
     private final ToggleGroup pageSizeToggle = new ToggleGroup();
@@ -68,7 +70,6 @@ public class PreferencesMenu {
     private final TableViewPane tablePane;
     private final Table table;
     private final TableService tableService;
-    private final PreferenceService preferenceService;
     
     private MenuButton preferencesButton;
     private MenuItem savePreferencesMenu;
@@ -78,13 +79,11 @@ public class PreferencesMenu {
     public PreferencesMenu(final TableViewTopComponent tableTopComponent,
                            final TableViewPane tablePane,
                            final Table table,
-                           final TableService tableService,
-                           final PreferenceService preferenceService) {
+                           final TableService tableService) {
         this.tableTopComponent = tableTopComponent;
         this.tablePane = tablePane;
         this.table = table;
         this.tableService = tableService;
-        this.preferenceService = preferenceService;
         
     }
     
@@ -97,7 +96,7 @@ public class PreferencesMenu {
                     && (GraphManager.getDefault().getActiveGraph() != null)) {
                 TableViewPreferencesIOUtilities.savePreferences(
                         tableTopComponent.getCurrentState().getElementType(), table.getTableView(),
-                        preferenceService.getMaxRowsPerPage()
+                        tableService.getTablePreferences().getMaxRowsPerPage()
                 );
             }
             e.consume();
@@ -113,13 +112,15 @@ public class PreferencesMenu {
                     Thread.currentThread().interrupt();
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
-                tableService.updatePagination(preferenceService.getMaxRowsPerPage());
+                tableService.updatePagination(tableService.getTablePreferences().getMaxRowsPerPage());
                 Platform.runLater(() -> {
                     tablePane.setCenter(tableService.getPagination());
                 });
             }
             e.consume();
         });
+        
+        preferencesButton.getItems().addAll(pageSizeMenu, savePreferencesMenu, loadPreferencesMenu);
     }
     
     public MenuButton getPreferencesButton() {
@@ -147,15 +148,16 @@ public class PreferencesMenu {
                                     = new RadioMenuItem(Integer.toString(pageSize));
                             pageSizeOption.setToggleGroup(pageSizeToggle);
                             pageSizeOption.setOnAction(e -> {
-                                if (preferenceService.getMaxRowsPerPage() != pageSize) {
-                                    preferenceService.setMaxRowsPerPage(pageSize);
-                                    tableService.updatePagination(preferenceService.getMaxRowsPerPage());
+                                // TODO potential race condition with the setting of the preferences???
+                                if (tableService.getTablePreferences().getMaxRowsPerPage() != pageSize) {
+                                    tableService.getTablePreferences().setMaxRowsPerPage(pageSize);
+                                    tableService.updatePagination(tableService.getTablePreferences().getMaxRowsPerPage());
                                     Platform.runLater(() -> {
                                         tablePane.setCenter(tableService.getPagination());
                                     });
                                 }
                             });
-                            if (pageSize == TablePreferences.DEFAULT_MAX_ROWS_PER_PAGE) {
+                            if (pageSize == DEFAULT_MAX_ROWS_PER_PAGE) {
                                 pageSizeOption.setSelected(true); // initially set the default as selected
                             }
                             return pageSizeOption;
@@ -194,17 +196,18 @@ public class PreferencesMenu {
             if (tableTopComponent.getCurrentState() != null) {
 
                 final List<TableColumn<ObservableList<String>, ?>> newColumnOrder = new ArrayList<>();
-                final ThreeTuple<List<String>, Tuple<String, TableColumn.SortType>, Integer> tablePrefs
+                final TablePreferences tablePrefs
                         = TableViewPreferencesIOUtilities.getPreferences(
                                 tableTopComponent.getCurrentState().getElementType(),
-                                preferenceService.getMaxRowsPerPage());
+                                tableService.getTablePreferences().getMaxRowsPerPage() != null
+                                        ? tableService.getTablePreferences().getMaxRowsPerPage() : DEFAULT_MAX_ROWS_PER_PAGE);
 
                 // If no columns were found then the user abandoned load as saves cannot occur with 0 columns
-                if (tablePrefs.getFirst().isEmpty()) {
+                if (CollectionUtils.isEmpty(tablePrefs.getColumnOrder())) {
                     return;
                 }
 
-                tablePrefs.getFirst().forEach(columnName -> {
+                tablePrefs.getColumnOrder().forEach(columnName -> {
                     // Loop through column names found in prefs and add associated columns to newColumnOrder list all set to visible.
                     table.getTableView().getColumns().stream()
                             .filter(column -> column.getText().equals(columnName))
@@ -218,39 +221,39 @@ public class PreferencesMenu {
 
                 // Populate orderedColumns with full column ThreeTuples corresponding to entires in newVolumnOrder and call updateVisibleColumns
                 // to update table.
-                final List<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> orderedColumns
-                        = newColumnOrder.stream().map(c -> {
-                            for (final ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>> col : table.getColumnIndex()) {
-                                if (c.getText().equals(col.getThird().getText())) {
-                                    return col;
-                                }
-                            }
-                            // The following can only happen
-                            return table.getColumnIndex().get(newColumnOrder.indexOf(c));
-                        }).collect(Collectors.toList());
+                final List<Tuple<String, Attribute>> orderedColumns
+                        = newColumnOrder.stream()
+                                .map(c -> {
+                                    for (final ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>> col : table.getColumnIndex()) {
+                                        if (c.getText().equals(col.getThird().getText())) {
+                                            return col;
+                                        }
+                                    }
+                                    // The following can only happen
+                                    return table.getColumnIndex().get(newColumnOrder.indexOf(c));
+                                }).map(columnTuple -> Tuple.create(
+                                        columnTuple.getFirst(),
+                                        columnTuple.getSecond()
+                                ))
+                                .collect(Collectors.toList());
                 
                 tableService.saveSortDetails(
-                        tablePrefs.getSecond().getFirst(),
-                        tablePrefs.getSecond().getSecond()
+                        tablePrefs.getSortColumn(),
+                        tablePrefs.getSortDirection()
                 );
                 
                 tableService.updateVisibleColumns(
                         tableTopComponent.getCurrentGraph(),
                         tableTopComponent.getCurrentState(),
-                        orderedColumns.stream()
-                                .map(columnTuple -> Tuple.create(
-                                        columnTuple.getFirst(),
-                                        columnTuple.getSecond()
-                                ))
-                                .collect(Collectors.toList()),
+                        orderedColumns,
                         UpdateMethod.REPLACE
                 );
                 
                 for (final Toggle t : pageSizeToggle.getToggles()) {
                     final RadioMenuItem pageSizeOption = (RadioMenuItem) t;
-                    if (Integer.parseInt(pageSizeOption.getText()) == tablePrefs.getThird()) {
+                    if (Integer.parseInt(pageSizeOption.getText()) == tablePrefs.getMaxRowsPerPage()) {
                         pageSizeOption.setSelected(true);
-                        preferenceService.setMaxRowsPerPage(tablePrefs.getThird());
+                        tableService.getTablePreferences().setMaxRowsPerPage(tablePrefs.getMaxRowsPerPage());
                         break;
                     }
                 }

@@ -416,7 +416,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
     @Override
     protected void handleGraphClosed(final Graph graph) {
         pane.getTableService().updatePagination(
-                pane.getPreferenceService().getMaxRowsPerPage(), null);
+                pane.getTableService().getTablePreferences().getMaxRowsPerPage(), null);
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

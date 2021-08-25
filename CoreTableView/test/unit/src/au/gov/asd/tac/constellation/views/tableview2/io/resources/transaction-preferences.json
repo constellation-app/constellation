@@ -2,7 +2,8 @@
     {
         "ColumnOrder": [
             "ABC",
-            "DEF"
+            "DEF",
+            "JKL"
         ],
         "SortByColumn": {
             "DEF": "ASCENDING"

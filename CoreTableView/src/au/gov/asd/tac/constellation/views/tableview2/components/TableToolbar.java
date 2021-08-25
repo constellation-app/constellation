@@ -21,7 +21,6 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewUtilities;
-import au.gov.asd.tac.constellation.views.tableview2.service.PreferenceService;
 import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import javafx.application.Platform;
@@ -74,18 +73,15 @@ public class TableToolbar {
     private final Table table;
     
     private final TableService tableService;
-    private final PreferenceService preferenceService;
     
     public TableToolbar(final TableViewTopComponent tableTopComponent,
                         final TableViewPane tablePane,
                         final Table table,
-                        final TableService tableService,
-                        final PreferenceService preferenceService) {
+                        final TableService tableService) {
         this.tableTopComponent = tableTopComponent;
         this.tablePane = tablePane;
         this.table = table;
         this.tableService = tableService;
-        this.preferenceService = preferenceService;
     }
     
     public void init() {
@@ -142,13 +138,12 @@ public class TableToolbar {
         copyMenu.init();
         
         // Export Button Menu
-        exportMenu = new ExportMenu(tableTopComponent, table, tableService.getPagination(),
-                preferenceService);
+        exportMenu = new ExportMenu(tableTopComponent, table, tableService);
         exportMenu.init();
         
         // Preferences Button Menu
         preferencesMenu = new PreferencesMenu(tableTopComponent, tablePane, table,
-                tableService, preferenceService);
+                tableService);
         preferencesMenu.init();
         
         helpButton = createButton(HELP_ICON, HELP, e -> {

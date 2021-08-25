@@ -15,28 +15,11 @@
  */
 package au.gov.asd.tac.constellation.views.tableview2.service;
 
-import au.gov.asd.tac.constellation.views.tableview2.state.TablePreferences;
-
 /**
  *
  * @author formalhaunt
  */
-public class PreferenceService {
-    private final TablePreferences tablePreferences;
+public class PreferenceServiceNGTest {
     
-    public PreferenceService() {
-        tablePreferences = new TablePreferences();
-    }
     
-    public PreferenceService(final TablePreferences tablePreferences) {
-        this.tablePreferences = tablePreferences;
-    }
-
-    public int getMaxRowsPerPage() {
-        return tablePreferences.getMaxRowsPerPage();
-    }
-    
-    public void setMaxRowsPerPage(final int maxRowsPerPage) {
-        tablePreferences.setMaxRowsPerPage(maxRowsPerPage);
-    }
 }

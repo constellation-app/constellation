@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.tableview2.listeners;
 
 import au.gov.asd.tac.constellation.views.tableview2.components.TableViewPane;
-import au.gov.asd.tac.constellation.views.tableview2.service.PreferenceService;
 import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
 import java.util.Comparator;
 import javafx.application.Platform;
@@ -32,14 +31,11 @@ public class TableComparatorListener implements ChangeListener<Comparator<? supe
     
     private final TableViewPane tablePane;
     private final TableService tableService;
-    private final PreferenceService preferenceService;
     
     public TableComparatorListener(final TableViewPane tablePane,
-                                   final TableService tableService,
-                                   final PreferenceService preferenceService) {
+                                   final TableService tableService) {
         this.tablePane = tablePane;
         this.tableService = tableService;
-        this.preferenceService = preferenceService;
     }
     
     @Override
@@ -48,7 +44,7 @@ public class TableComparatorListener implements ChangeListener<Comparator<? supe
                         final Comparator<? super ObservableList<String>> newValue) {
         if (!tableService.isSortingListenerActive()) {
             tableService.setSortingListenerActive(true);
-            tableService.updatePagination(preferenceService.getMaxRowsPerPage());
+            tableService.updatePagination(tableService.getTablePreferences().getMaxRowsPerPage());
             Platform.runLater(() -> {
                 tablePane.setCenter(tableService.getPagination());
             });

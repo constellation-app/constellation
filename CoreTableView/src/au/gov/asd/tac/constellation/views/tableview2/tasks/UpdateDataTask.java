@@ -17,19 +17,16 @@ package au.gov.asd.tac.constellation.views.tableview2.tasks;
 
 import au.gov.asd.tac.constellation.views.tableview2.components.TableViewPane;
 import au.gov.asd.tac.constellation.views.tableview2.components.Table;
-import au.gov.asd.tac.constellation.views.tableview2.service.PreferenceService;
 import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import javafx.application.Platform;
-import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
-import javafx.scene.control.TableView;
 import org.controlsfx.control.table.TableFilter;
 
 /**
@@ -46,7 +43,6 @@ public class UpdateDataTask implements Runnable {
     private final CountDownLatch updateDataLatch;
     
     private final TableService tableService;
-    private final PreferenceService preferenceService;
     
     private final ChangeListener<ObservableList<String>> tableSelectionListener;
     private final ListChangeListener selectedOnlySelectionListener;
@@ -61,8 +57,7 @@ public class UpdateDataTask implements Runnable {
                           final ChangeListener<ObservableList<String>> tableSelectionListener,
                           final ListChangeListener selectedOnlySelectionListener,
                           final CountDownLatch updateDataLatch,
-                          final TableService tableService,
-                          final PreferenceService preferenceService) {
+                          final TableService tableService) {
         this.tablePane = tablePane;
         this.table = table;
         this.rows = rows;
@@ -70,7 +65,6 @@ public class UpdateDataTask implements Runnable {
         this.selectedOnlySelectionListener = selectedOnlySelectionListener;
         this.updateDataLatch = updateDataLatch;
         this.tableService = tableService;
-        this.preferenceService = preferenceService;
     }
     
     @Override
@@ -103,13 +97,13 @@ public class UpdateDataTask implements Runnable {
             tableService.setSortedRowList(new SortedList<>(
                     FXCollections.observableArrayList(filteredRowList)));
             
-            tableService.updatePagination(preferenceService.getMaxRowsPerPage(),
+            tableService.updatePagination(tableService.getTablePreferences().getMaxRowsPerPage(),
                     tableService.getSortedRowList());
             Platform.runLater(() -> {
                 tablePane.setCenter(tableService.getPagination());
             });
         });
-        tableService.updatePagination(preferenceService.getMaxRowsPerPage(),
+        tableService.updatePagination(tableService.getTablePreferences().getMaxRowsPerPage(),
                 tableService.getSortedRowList());
         Platform.runLater(() -> {
             tablePane.setCenter(tableService.getPagination());

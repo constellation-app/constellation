@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewUtilities;
+import au.gov.asd.tac.constellation.views.tableview2.state.TablePreferences;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -50,13 +51,10 @@ public class TableService {
     
     private Pagination pagination;
     
+    private TablePreferences tablePreferences = new TablePreferences();
+    
     // This flag is shared by several listeners and so needs to be thread safe
     private volatile boolean sortingListenerActive = false;
-    
-    // Store details of sort order changes made upon column order change or table
-    // preference loading - these are used to reinstate the sorting after data update
-    private volatile String sortByColumnName = "";
-    private volatile TableColumn.SortType sortByType = TableColumn.SortType.ASCENDING;
     
     public TableService(final SortedList<ObservableList<String>> sortedRowList,
                         final Map<Integer, ObservableList<String>> elementIdToRowIndex,
@@ -134,8 +132,7 @@ public class TableService {
      */
     public void saveSortDetails(final String columnName,
                                 final TableColumn.SortType sortType) {
-        setSortByColumnName(columnName);
-        setSortByType(sortType);
+        getTablePreferences().setSortByColumn(Map.of(columnName, sortType));
     }
     
     public Pagination getPagination() {
@@ -148,22 +145,6 @@ public class TableService {
 
     public void setSortingListenerActive(boolean sortingListenerActive) {
         this.sortingListenerActive = sortingListenerActive;
-    }
-
-    public String getSortByColumnName() {
-        return sortByColumnName;
-    }
-
-    public void setSortByColumnName(String sortByColumnName) {
-        this.sortByColumnName = sortByColumnName;
-    }
-
-    public TableColumn.SortType getSortByType() {
-        return sortByType;
-    }
-
-    public void setSortByType(TableColumn.SortType sortByType) {
-        this.sortByType = sortByType;
     }
 
     public Map<Integer, ObservableList<String>> getElementIdToRowIndex() {
@@ -192,5 +173,13 @@ public class TableService {
 
     public Set<ObservableList<String>> getSelectedOnlySelectedRows() {
         return selectedOnlySelectedRows;
+    }
+
+    public TablePreferences getTablePreferences() {
+        return tablePreferences;
+    }
+
+    public void setTablePreferences(TablePreferences tablePreferences) {
+        this.tablePreferences = tablePreferences;
     }
 }
