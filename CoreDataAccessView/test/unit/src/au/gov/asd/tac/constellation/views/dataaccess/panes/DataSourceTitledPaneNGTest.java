@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
+import javafx.application.Platform;
 import javafx.scene.image.ImageView;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.MockedStatic;
@@ -52,11 +53,13 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class DataSourceTitledPaneNGTest {
-
+    
     private static final String PLUGIN_NAME = "plugin name";
     private static final String GLOBAL_PARAM_1 = "global param 1";
     private static final String GLOBAL_PARAM_2 = "global param 2";
 
+    private static MockedStatic<Platform> platformMockedStatic;
+    
     private final DataAccessPlugin plugin = mock(DataAccessPlugin.class);
     private final ImageView dataSourceIcon = mock(ImageView.class);
     private final PluginParametersPaneListener top = mock(PluginParametersPaneListener.class);
@@ -72,17 +75,27 @@ public class DataSourceTitledPaneNGTest {
     public static void setUpClass() throws Exception {
         FxToolkit.registerPrimaryStage();
         FxToolkit.showStage();
+        
+        // This prevents the runnable at the bottom of create params to run!!
+        // Create params is call by the constructor which is why this needs to be
+        // here.
+        platformMockedStatic = Mockito.mockStatic(Platform.class);
+        platformMockedStatic.when(() -> Platform.runLater(any(Runnable.class)))
+                .then(mockInvocation -> null);
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        platformMockedStatic.close();
+        
         FxToolkit.hideStage();
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
         reset(plugin, dataSourceIcon, top);
-
+        platformMockedStatic.reset();
+        
         when(plugin.getName()).thenReturn(PLUGIN_NAME);
         when(dataSourceParameters.copy()).thenReturn(dataSourceParameters);
 
@@ -173,8 +186,6 @@ public class DataSourceTitledPaneNGTest {
 
         verify(nonActionPluginParameter).setStringValue(value);
         verify(actionPluginParameter, times(0)).setStringValue(value);
-
-        assertTrue(dataSourceTitledPane.isQueryEnabled());
     }
 
     @Test

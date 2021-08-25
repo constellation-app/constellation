@@ -56,9 +56,14 @@ public class DefaultQualityControlAutoButtonNGTest {
     public static void setUpClass() throws Exception {
         // This is a bit of dodgy hack (better way needed). Basically there is an auto save thread
         // that is getting initialized and running in the background as the tests
-        // run. Sometimes it looks (and finds) files to perform UI auto save operations
-        // that cause issues in a headless environment. This deletes those files
-        // before the thread can find them. See AutosaveStartup for the Runnable.
+        // run.
+        // Sometimes it looks (and finds) files to perform UI auto save operations
+        // that cause issues in a headless environment.
+        // This following deletes those files before the thread can find them.
+        // See AutosaveStartup for the Runnable.
+        // My guess is that there is a test generating these files and not cleaning
+        // up which is why this test is consistently failing when run on CI. Its that
+        // file cleanup that should be fixed.
         Arrays.stream(AutosaveUtilities.getAutosaves(AutosaveUtilities.AUTO_EXT))
                 .forEach(file -> file.delete());
         
@@ -100,8 +105,6 @@ public class DefaultQualityControlAutoButtonNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
-//        Arrays.stream(AutosaveUtilities.getAutosaves(AutosaveUtilities.AUTO_EXT))
-//                .forEach(file -> file.delete());
     }
 
     /**
