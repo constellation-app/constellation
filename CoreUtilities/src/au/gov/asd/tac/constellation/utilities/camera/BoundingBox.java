@@ -40,7 +40,9 @@ import java.io.Serializable;
  */
 public final class BoundingBox implements Serializable {
 
-    private static final float MINIMUM_SIZE = 5;
+    protected static final float MINIMUM_SIZE = 5;
+    protected static final float MINIMUM_CAMERA_DISTANCE = 6;
+    protected static final float EMPTYBOX_CAMERA_DISTANCE = -1000f;
 
     // The minimum and maximum (x, y, z) and (x2, y2, z2) values.
     protected Vector3f min;
@@ -281,7 +283,7 @@ public final class BoundingBox implements Serializable {
      */
     public float getCameraDistance(final float fov, final float mix) {
         if (isEmpty) {
-            return -1000f;
+            return EMPTYBOX_CAMERA_DISTANCE;
         }
 
         // Find out how far the camera should be from the centre of the bounding sphere.
@@ -294,7 +296,7 @@ public final class BoundingBox implements Serializable {
         // This zooms the node to fill the screen, which is a bit in-your-face, and we can't see the labels
         // or get a feel for the surrounding area.
         // Instead, we'll pull back a bit. The distance chosen is one that feels right, rather than anything mathematical.
-        cameraDistance = Math.max(cameraDistance, 6);
+        cameraDistance = Math.max(cameraDistance, MINIMUM_CAMERA_DISTANCE);
 
         return cameraDistance;
     }
