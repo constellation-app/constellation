@@ -31,10 +31,10 @@ import static au.gov.asd.tac.constellation.utilities.camera.BoundingBox.EMPTYBOX
  */
 public class BoundingBoxNGTest {
     
-    private static final Vector3f MIN = new Vector3f(1.1f, 1.2f, 1.3f);
-    private static final Vector3f MAX = new Vector3f(9.1f, 9.2f, 9.3f);
-    private static final Vector3f MIN2 = new Vector3f(2.1f, 2.2f, 2.3f);
-    private static final Vector3f MAX2 = new Vector3f(8.1f, 8.2f, 8.3f);
+    private static final Vector3f MIN = new Vector3f(1.1F, 1.2F, 1.3F);
+    private static final Vector3f MAX = new Vector3f(9.1F, 9.2F, 9.3F);
+    private static final Vector3f MIN2 = new Vector3f(2.1F, 2.2F, 2.3F);
+    private static final Vector3f MAX2 = new Vector3f(8.1F, 8.2F, 8.3F);
     
     /**
      * Can explicitly set the verticies in a BoundingBox.
@@ -71,7 +71,7 @@ public class BoundingBoxNGTest {
         assertEquals(bb2.getMax().toString(), MAX.toString());
         assertEquals(bb2.getMin2().toString(), MIN2.toString());
         assertEquals(bb2.getMax2().toString(), MAX2.toString());
-        assertFalse(bb2.isEmpty);
+        assertFalse(bb2.isEmpty());
     }
     
     /**
@@ -123,14 +123,14 @@ public class BoundingBoxNGTest {
         assertFalse(bb.isEmpty());
     }
     
-    public static final float BIGGER_FLOAT1 = 10.1f;
-    public static final float BIGGER_FLOAT2 = 10.2f;
-    public static final float BIGGER_FLOAT3 = 10.3f;
-    public static final float SMALLER_FLOAT1 = 0.1f;
-    public static final float SMALLER_FLOAT2 = 0.2f;
-    public static final float SMALLER_FLOAT3 = 0.3f;
-    public static final float BIGISH_FLOAT = 9.21f;
-    public static final float SMALLISH_FLOAT = 1.21f;
+    public static final float BIGGER_FLOAT1 = 10.1F;
+    public static final float BIGGER_FLOAT2 = 10.2F;
+    public static final float BIGGER_FLOAT3 = 10.3F;
+    public static final float SMALLER_FLOAT1 = 0.1F;
+    public static final float SMALLER_FLOAT2 = 0.2F;
+    public static final float SMALLER_FLOAT3 = 0.3F;
+    public static final float BIGISH_FLOAT = 9.21F;
+    public static final float SMALLISH_FLOAT = 1.21F;
     
     /**
      * Can add a vertex to a BoundingBox.
@@ -168,8 +168,8 @@ public class BoundingBoxNGTest {
         assertEquals(bb.getMax().toString(), MAX.toString());
     }
     
-    public static final float BIGISH_FLOAT2 = 8.21f;
-    public static final float SMALLISH_FLOAT2 = 2.21f;
+    public static final float BIGISH_FLOAT2 = 8.21F;
+    public static final float SMALLISH_FLOAT2 = 2.21F;
     
     /**
      * Can add a secondary vertex to a BoundingBox.
@@ -268,12 +268,12 @@ public class BoundingBoxNGTest {
     public static final Vector3f ALL_POINTS_SAME_VECTOR3F = 
         new Vector3f(BIGISH_FLOAT, BIGISH_FLOAT, BIGISH_FLOAT);
     
-    public static final float BIGGEST_FLOAT1 = 123.45f;
-    public static final float BIGGEST_FLOAT2 = 234.56f;
-    public static final float BIGGEST_FLOAT3 = 1345.67f;
-    public static final float BIGGEST_FLOAT4 = 2456.78f;
-    public static final float BIGGEST_FLOAT5 = 66567.89f;
-    public static final float BIGGEST_FLOAT6 = 99678.91f;
+    public static final float BIGGEST_FLOAT1 = 123.45F;
+    public static final float BIGGEST_FLOAT2 = 234.56F;
+    public static final float BIGGEST_FLOAT3 = 1345.67F;
+    public static final float BIGGEST_FLOAT4 = 2456.78F;
+    public static final float BIGGEST_FLOAT5 = 66567.89F;
+    public static final float BIGGEST_FLOAT6 = 99678.91F;
     
     /**
      * Cube radius of the BoundingBox is successfully calculated when x, y or z 
@@ -290,7 +290,7 @@ public class BoundingBoxNGTest {
         bigMaxX.setX(BIGGEST_FLOAT2);
         bb.set(new Vector3f(bigMinX), new Vector3f(bigMaxX), new Vector3f(ALL_POINTS_SAME_VECTOR3F), new Vector3f(ALL_POINTS_SAME_VECTOR3F));
         float f = bb.getCubeRadius();
-        assertEquals(f, 55.554993f);
+        assertEquals(f, 55.554993F);
 
         // y is the furthest point
         Vector3f bigMinY = new Vector3f(ALL_POINTS_SAME_VECTOR3F);
@@ -299,7 +299,7 @@ public class BoundingBoxNGTest {
         bigMaxY.setY(BIGGEST_FLOAT4);
         bb.set(new Vector3f(bigMinY), new Vector3f(bigMaxY), new Vector3f(ALL_POINTS_SAME_VECTOR3F), new Vector3f(ALL_POINTS_SAME_VECTOR3F));
         f = bb.getCubeRadius();
-        assertEquals(f, 555.55493f);
+        assertEquals(f, 555.55493F);
         
         // z is the furthest point
         Vector3f bigMinZ = new Vector3f(ALL_POINTS_SAME_VECTOR3F);
@@ -308,7 +308,7 @@ public class BoundingBoxNGTest {
         bigMaxZ.setZ(BIGGEST_FLOAT6);
         bb.set(new Vector3f(bigMinZ), new Vector3f(bigMaxZ), new Vector3f(ALL_POINTS_SAME_VECTOR3F), new Vector3f(ALL_POINTS_SAME_VECTOR3F));
         f = bb.getCubeRadius();
-        assertEquals(f, 16555.508f);
+        assertEquals(f, 16555.508F);
     }
     
     /**
@@ -330,11 +330,11 @@ public class BoundingBoxNGTest {
         
         // different verticies
         bb.set(new Vector3f(MIN), new Vector3f(MAX), new Vector3f(MIN2), new Vector3f(MAX2));
-        assertEquals(bb.getSphereRadius(14f), 17.320509f);        
+        assertEquals(bb.getSphereRadius(14F), 17.320509F);        
         
         // all verticies are at the same point
         bb.set(new Vector3f(MIN), new Vector3f(MIN), new Vector3f(MIN), new Vector3f(MIN));
-        assertEquals(bb.getSphereRadius(1f), 1f);
+        assertEquals(bb.getSphereRadius(1F), 1F);
     }
     
     /**
@@ -355,18 +355,18 @@ public class BoundingBoxNGTest {
         final BoundingBox bb = new BoundingBox();
         
         // empty box
-        assertEquals(bb.getCentre(14f).toString(), new Vector3f(0, 0, 0).toString());
+        assertEquals(bb.getCentre(14F).toString(), new Vector3f(0F, 0F, 0F).toString());
         
         // full box
         bb.set(new Vector3f(MIN), new Vector3f(MAX), new Vector3f(MIN2), new Vector3f(MAX2));
-        assertEquals(bb.getCentre(41f).toString(), 
-                new Vector3f(5.100006f, 5.199997f, 5.300003f).toString());
+        assertEquals(bb.getCentre(41F).toString(), 
+                new Vector3f(5.100006F, 5.199997F, 5.300003F).toString());
     }
     
-    Vector3f MIN_TINY = new Vector3f(0.000011f, 0.000012f, 0.000013f);
-    Vector3f MAX_TINY = new Vector3f(0.000091f, 0.000092f, 0.000093f);
-    Vector3f MIN2_TINY = new Vector3f(0.000021f, 0.000022f, 0.000023f);
-    Vector3f MAX2_TINY = new Vector3f(0.000081f, 0.000082f, 0.000083f);
+    Vector3f MIN_TINY = new Vector3f(0.000011F, 0.000012F, 0.000013F);
+    Vector3f MAX_TINY = new Vector3f(0.000091F, 0.000092F, 0.000093F);
+    Vector3f MIN2_TINY = new Vector3f(0.000021F, 0.000022F, 0.000023F);
+    Vector3f MAX2_TINY = new Vector3f(0.000081F, 0.000082F, 0.000083F);
     
     /**
      * Can get an appropriate camera distance for viewing the contents of the
@@ -378,16 +378,16 @@ public class BoundingBoxNGTest {
         final BoundingBox bb = new BoundingBox();
         
         // empty box
-        assertEquals(bb.getCameraDistance(1f, 2f), EMPTYBOX_CAMERA_DISTANCE);
+        assertEquals(bb.getCameraDistance(1F, 2F), EMPTYBOX_CAMERA_DISTANCE);
         
         // calculated distance is big enough
         bb.set(new Vector3f(MIN), new Vector3f(MAX), new Vector3f(MIN2), new Vector3f(MAX2));
-        assertEquals(bb.getCameraDistance(1f, 2f), 396.94675f);
+        assertEquals(bb.getCameraDistance(1F, 2F), 396.94675F);
         
         // calculated distance is too small
         bb.set(new Vector3f(MIN_TINY), new Vector3f(MAX_TINY), 
                 new Vector3f(MIN2_TINY), new Vector3f(MAX2_TINY));
-        assertEquals(bb.getCameraDistance(1f, 2f), MINIMUM_CAMERA_DISTANCE);
+        assertEquals(bb.getCameraDistance(1F, 2F), MINIMUM_CAMERA_DISTANCE);
     }
     
     /**
