@@ -301,6 +301,9 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         final String helpId = helpCtx.getHelpID();
         LOGGER.log(Level.INFO, "display {0} from {1}", new Object[]{helpId, helpSource});
 
+        FileStructureBuilder file = new FileStructureBuilder();
+        file.run();
+
         // Given the helpId, get the corresponding help page path.
         // If it doesn't exist (maybe because someone forgot to put the helpId
         // in their .rst file), go to the root page.
