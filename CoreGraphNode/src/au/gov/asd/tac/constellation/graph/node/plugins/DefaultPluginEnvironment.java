@@ -31,6 +31,8 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReport;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReportManager;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
+import co.elastic.apm.api.ElasticApm;
+import co.elastic.apm.api.Transaction;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -59,6 +61,9 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
 
     @Override
     public Future<?> executePluginLater(final Graph graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive, final List<Future<?>> async, final PluginSynchronizer synchronizer) {
+        final Transaction transaction = ElasticApm.startTransaction();
+        transaction.setName(plugin.getName());
+        transaction.setType(Transaction.TYPE_REQUEST);
 
         if (graph == null) {
             LOGGER.log(Level.FINE, GRAPH_NULL_WARNING_MESSAGE, plugin.getName());
@@ -98,6 +103,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             try {
                 ConstellationLogger.getDefault().pluginStarted(plugin, parameters, graph);
             } catch (Exception ex) {
+                transaction.captureException(ex);
             }
 
             PluginManager manager = new PluginManager(DefaultPluginEnvironment.this, plugin, graph, interactive, synchronizer);
@@ -142,6 +148,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
                 if (currentReport != null) {
                     currentReport.setError(ex);
                 }
+                transaction.captureException(ex);
             } catch (PluginException ex) {
                 auditPluginError(plugin, ex);
                 interaction.notify(ex.getNotificationLevel(), ex.getMessage());
@@ -149,6 +156,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
                 if (currentReport != null) {
                     currentReport.setError(ex);
                 }
+                transaction.captureException(ex);
             } catch (Exception ex) {
                 auditPluginError(plugin, ex);
                 final String msg = String.format("Unexpected non-plugin exception caught in %s.executePluginLater();%n", DefaultPluginEnvironment.class.getName());
@@ -156,6 +164,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
                 if (currentReport != null) {
                     currentReport.setError(ex);
                 }
+                transaction.captureException(ex);
             } finally {
                 if (currentReport != null) {
                     currentReport.stop();
@@ -166,15 +175,20 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
                 try {
                     ConstellationLogger.getDefault().pluginStopped(plugin, parameters);
                 } catch (Exception ex) {
+                    transaction.captureException(ex);
                 }
             }
 
+            transaction.end();
             return null;
         });
     }
 
     @Override
     public Object executePluginNow(final Graph graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive) throws InterruptedException, PluginException {
+        final Transaction transaction = ElasticApm.startTransaction();
+        transaction.setName(plugin.getName());
+        transaction.setType(Transaction.TYPE_REQUEST);
 
         if (graph == null) {
             LOGGER.log(Level.FINE, GRAPH_NULL_WARNING_MESSAGE, plugin.getName());
@@ -202,6 +216,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
         try {
             ConstellationLogger.getDefault().pluginStarted(plugin, parameters, graph);
         } catch (Exception ex) {
+            transaction.captureException(ex);
         }
 
         try {
@@ -224,6 +239,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             if (currentReport != null) {
                 currentReport.setError(ex);
             }
+            transaction.captureException(ex);
             throw ex;
         } finally {
             callingConstraints.setSilentCount(silentCount);
@@ -238,14 +254,19 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             try {
                 ConstellationLogger.getDefault().pluginStopped(plugin, parameters);
             } catch (Exception ex) {
+                transaction.captureException(ex);
             }
         }
 
+        transaction.end();
         return null;
     }
 
     @Override
     public Object executeEditPluginNow(final GraphWriteMethods graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive) throws InterruptedException, PluginException {
+        final Transaction transaction = ElasticApm.startTransaction();
+        transaction.setName(plugin.getName());
+        transaction.setType(Transaction.TYPE_REQUEST);
 
         if (graph == null) {
             LOGGER.log(Level.FINE, GRAPH_NULL_WARNING_MESSAGE, plugin.getName());
@@ -273,6 +294,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
         try {
             ConstellationLogger.getDefault().pluginStarted(plugin, parameters, GraphNode.getGraph(graph != null ? graph.getId() : null));
         } catch (Exception ex) {
+            transaction.captureException(ex);
         }
 
         try {
@@ -285,6 +307,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             if (currentReport != null) {
                 currentReport.setError(ex);
             }
+            transaction.captureException(ex);
             throw ex;
         } finally {
             callingConstraints.setSilentCount(silentCount);
@@ -299,14 +322,19 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             try {
                 ConstellationLogger.getDefault().pluginStopped(plugin, parameters);
             } catch (Exception ex) {
+                transaction.captureException(ex);
             }
 
         }
+        transaction.end();
         return null;
     }
 
     @Override
     public Object executeReadPluginNow(final GraphReadMethods graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive) throws InterruptedException, PluginException {
+        final Transaction transaction = ElasticApm.startTransaction();
+        transaction.setName(plugin.getName());
+        transaction.setType(Transaction.TYPE_REQUEST);
 
         if (graph == null) {
             LOGGER.log(Level.FINE, GRAPH_NULL_WARNING_MESSAGE, plugin.getName());
@@ -334,6 +362,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
         try {
             ConstellationLogger.getDefault().pluginStarted(plugin, parameters, GraphNode.getGraph(graph != null ? graph.getId() : null));
         } catch (Exception ex) {
+            transaction.captureException(ex);
         }
 
         try {
@@ -347,6 +376,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             if (currentReport != null) {
                 currentReport.setError(ex);
             }
+            transaction.captureException(ex);
             throw ex;
         } finally {
             callingConstraints.setSilentCount(silentCount);
@@ -361,8 +391,11 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             try {
                 ConstellationLogger.getDefault().pluginStopped(plugin, parameters);
             } catch (Exception ex) {
+                transaction.captureException(ex);
             }
+
         }
+        transaction.end();
         return null;
     }
 
