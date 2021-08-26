@@ -20,13 +20,13 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import org.mockito.MockedStatic;
 import org.testng.annotations.Test;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.mock;
@@ -42,10 +42,10 @@ import org.testng.annotations.AfterMethod;
  */
 public class GraphicsCardUtilitiesNGTest {
     
-    private static final String DXDIAG_FILENAME = System.getProperty("user.home") + "/dxdiag.txt";
+    private static final String DXDIAG_ABSOLUTE_PATH = System.getProperty("user.home") + "/dxdiag.txt";
     private static final String CARD_NAME = "testGraphicsCard";
     private static final String DRIVER_VERSION = "testDriverVersion";
-    private static final String DXDIAG = new StringBuilder()
+    private static final String DXDIAG_OUTPUT = new StringBuilder()
             .append("dummy line").append(SeparatorConstants.NEWLINE)
             .append("    Card name: ").append(CARD_NAME).append(SeparatorConstants.NEWLINE)
             .append("another line").append(SeparatorConstants.NEWLINE)
@@ -55,22 +55,25 @@ public class GraphicsCardUtilitiesNGTest {
     @AfterMethod
     private void tearDownMethod() {
         GraphicsCardUtilities.clear();
-        new File(DXDIAG_FILENAME).delete();
+        new File(DXDIAG_ABSOLUTE_PATH).delete();
     }
     
     /**
      * A mocked dxdiag call is dissected without errors and all getters retrieve
      * correct data.
+     * 
+     * @throws IOException if the test was unable to read to or write from the
+     * dxdiag file.
      */
     @Test
-    public void testLoadGraphicsCardInfo() {
+    public void testLoadGraphicsCardInfo() throws IOException {
         try (final MockedStatic<Runtime> runtimeMockedStatic = mockStatic(Runtime.class)) {
             // Mock the call to dxdiag by Runtime.exec() to create a dxdiag file
             final Runtime runtime = mock(Runtime.class);
             runtimeMockedStatic.when(() -> Runtime.getRuntime()).thenReturn(runtime);
             when(runtime.exec(anyString())).thenAnswer(invocation -> {
-                try (final BufferedWriter writer = new BufferedWriter(new FileWriter(DXDIAG_FILENAME))) {
-                    writer.write(DXDIAG);
+                try (final BufferedWriter writer = new BufferedWriter(new FileWriter(DXDIAG_ABSOLUTE_PATH))) {
+                    writer.write(DXDIAG_OUTPUT);
                 }
                 return null;
             });
@@ -81,24 +84,25 @@ public class GraphicsCardUtilitiesNGTest {
             assertNull(GraphicsCardUtilities.getError());
             
             // An extra newline is inserted by the code for some reason
-            final String expDxDiag = DXDIAG + SeparatorConstants.NEWLINE;
+            final String expDxDiag = DXDIAG_OUTPUT + SeparatorConstants.NEWLINE;
             assertEquals(GraphicsCardUtilities.getDxDiagInfo(), expDxDiag);
-        } catch (IOException e) {
-            fail("Test threw Exception: " + e.toString());
         }
     }
     
     /**
      * A mocked dxdiag call is run but returns nothing.
+     * 
+     * @throws IOException if the test was unable to read to or write from the
+     * dxdiag file.
      */
     @Test
-    public void testNoGraphicsCardInfo() {
+    public void testNoGraphicsCardInfo() throws IOException {
         try (final MockedStatic<Runtime> runtimeMockedStatic = mockStatic(Runtime.class)) {
             // Mock the call to dxdiag by Runtime.exec() to create a dxdiag file
             final Runtime runtime = mock(Runtime.class);
             runtimeMockedStatic.when(() -> Runtime.getRuntime()).thenReturn(runtime);
             when(runtime.exec(anyString())).thenAnswer(invocation -> {
-                new File(DXDIAG_FILENAME).createNewFile();
+                new File(DXDIAG_ABSOLUTE_PATH).createNewFile();
                 return null;
             });
             
@@ -107,16 +111,17 @@ public class GraphicsCardUtilitiesNGTest {
             assertNull(GraphicsCardUtilities.getGraphicsDriver());
             assertNull(GraphicsCardUtilities.getError());
             assertEquals(GraphicsCardUtilities.getDxDiagInfo(), "");
-        } catch (IOException e) {
-            fail("Test threw Exception: " + e.toString());
         }
     }
     
     /**
      * A mocked dxdiag call doesn't contain card name or driver name.
+     * 
+     * @throws IOException if the test was unable to read to or write from the
+     * dxdiag file.
      */
     @Test
-    public void testNoCardOrDriver() {
+    public void testNoCardOrDriver() throws IOException {
         final String dummyDxDiag = new StringBuilder()
                 .append("dummy line 1").append(SeparatorConstants.NEWLINE)
                 .append("dummy line 2").append(SeparatorConstants.NEWLINE)
@@ -127,7 +132,7 @@ public class GraphicsCardUtilitiesNGTest {
             final Runtime runtime = mock(Runtime.class);
             runtimeMockedStatic.when(() -> Runtime.getRuntime()).thenReturn(runtime);
             when(runtime.exec(anyString())).thenAnswer(invocation -> {
-                try (final BufferedWriter writer = new BufferedWriter(new FileWriter(DXDIAG_FILENAME))) {
+                try (final BufferedWriter writer = new BufferedWriter(new FileWriter(DXDIAG_ABSOLUTE_PATH))) {
                     writer.write(dummyDxDiag);
                 }
                 return null;
@@ -140,29 +145,25 @@ public class GraphicsCardUtilitiesNGTest {
             
             // Assert the whole dxdiag output is returned
             assertEquals(GraphicsCardUtilities.getDxDiagInfo(), dummyDxDiag);
-        } catch (IOException e) {
-            fail("Test threw Exception: " + e.toString());
         }
     }
     
     // Create and assert an existing dxdiag file
-    private File createDxDiagFile() {
-        final File dxDiagFile = new File(DXDIAG_FILENAME);
-        try {
-            dxDiagFile.createNewFile();
-        } catch (IOException e) {
-            fail("Test threw Exception: " + e.toString());
-        }
-        
+    private File createDxDiagFile() throws IOException {
+        final File dxDiagFile = new File(DXDIAG_ABSOLUTE_PATH);
+        dxDiagFile.createNewFile();        
         assertTrue(dxDiagFile.exists());
         return dxDiagFile;
     }
 
     /**
      * A dxdiag file already exists and must be removed.
+     * 
+     * @throws IOException if the test was unable to read to or write from the
+     * dxdiag file.
      */
     @Test
-    public void testFileExists() {
+    public void testFileExists() throws IOException {
         final File dxDiagFile = createDxDiagFile();
         
         try (final MockedStatic<Runtime> runtimeMockedStatic = mockStatic(Runtime.class)) {
@@ -174,14 +175,12 @@ public class GraphicsCardUtilitiesNGTest {
                 if (dxDiagFile.exists()) {
                     throw new IOException("Test Failure: dxDiagFile exists");
                 }
-                new File(DXDIAG_FILENAME).createNewFile();
+                new File(DXDIAG_ABSOLUTE_PATH).createNewFile();
                 return null;
             });
             
             // Assert that an IOException wasn't thrown and caught
             assertNull(GraphicsCardUtilities.getError());
-        } catch (IOException e) {
-            fail("Test threw Exception: " + e.toString());
         }
     }
     
@@ -194,9 +193,12 @@ public class GraphicsCardUtilitiesNGTest {
 
     /**
      * When an IOException is thrown and caught the getter exposes the error.
+     * 
+     * @throws IOException if the test was unable to read to or write from the
+     * dxdiag file.
      */
     @Test
-    public void testException() {
+    public void testException() throws IOException {
         final String err = "Test Failure: dxDiagFile exists";
         try (final MockedStatic<Runtime> runtimeMockedStatic = mockStatic(Runtime.class)) {
             // Mock the call to dxdiag by Runtime.exec() to throw an IOException
@@ -208,23 +210,24 @@ public class GraphicsCardUtilitiesNGTest {
             
             // Assert that an IOException was caught
             assertTrue(GraphicsCardUtilities.getError().toString().contains(err));
-        } catch (IOException e) {
-            fail("Test threw Exception: " + e.toString());
         }
     }
     
     /**
      * The code is only run once unless the clear() method is not run.
+     * 
+     * @throws IOException if the test was unable to read to or write from the
+     * dxdiag file.
      */
     @Test
-    public void testRunOnce() {        
+    public void testRunOnce() throws IOException {        
         try (final MockedStatic<Runtime> runtimeMockedStatic = mockStatic(Runtime.class)) {
             // Mock the call to dxdiag by Runtime.exec() to create a dxdiag file
             final Runtime runtime = mock(Runtime.class);
             runtimeMockedStatic.when(() -> Runtime.getRuntime()).thenReturn(runtime);
             when(runtime.exec(anyString())).thenAnswer(invocation -> {
-                try (final BufferedWriter writer = new BufferedWriter(new FileWriter(DXDIAG_FILENAME))) {
-                    writer.write(DXDIAG_FILENAME);
+                try (final BufferedWriter writer = new BufferedWriter(new FileWriter(DXDIAG_ABSOLUTE_PATH))) {
+                    writer.write(DXDIAG_ABSOLUTE_PATH);
                 }
                 return null;
             });
@@ -240,23 +243,24 @@ public class GraphicsCardUtilitiesNGTest {
             GraphicsCardUtilities.clear();
             GraphicsCardUtilities.getDxDiagInfo();
             verify(runtime, times(2)).exec(anyString());
-        } catch (IOException e) {
-            fail("Test threw Exception: " + e.toString());
         }
     }
     
     /**
      * dxdiag information can be cleared from the utils class
+     * 
+     * @throws IOException if the test was unable to read to or write from the
+     * dxdiag file.
      */
     @Test
-    public void testClear() {        
+    public void testClear() throws IOException {        
         try (final MockedStatic<Runtime> runtimeMockedStatic = mockStatic(Runtime.class)) {
             // Mock the call to dxdiag by Runtime.exec() to create a dxdiag file
             final Runtime runtime = mock(Runtime.class);
             runtimeMockedStatic.when(() -> Runtime.getRuntime()).thenReturn(runtime);
             when(runtime.exec(anyString())).thenAnswer(invocation -> {
-                try (final BufferedWriter writer = new BufferedWriter(new FileWriter(DXDIAG_FILENAME))) {
-                    writer.write(DXDIAG);
+                try (final BufferedWriter writer = new BufferedWriter(new FileWriter(DXDIAG_ABSOLUTE_PATH))) {
+                    writer.write(DXDIAG_OUTPUT);
                 }
                 return null;
             });
@@ -264,10 +268,8 @@ public class GraphicsCardUtilitiesNGTest {
             // Assert that data is present
             assertNotNull(GraphicsCardUtilities.getGraphicsCard());
             assertNotNull(GraphicsCardUtilities.getGraphicsDriver());
-            assertTrue(GraphicsCardUtilities.getDxDiagInfo().contains(DXDIAG));
+            assertTrue(GraphicsCardUtilities.getDxDiagInfo().contains(DXDIAG_OUTPUT));
             assertNull(GraphicsCardUtilities.getError());
-        } catch (IOException e) {
-            fail("Test threw Exception: " + e.toString());
         }
         
         GraphicsCardUtilities.clear();
@@ -277,7 +279,7 @@ public class GraphicsCardUtilitiesNGTest {
             final Runtime runtime = mock(Runtime.class);
             runtimeMockedStatic.when(() -> Runtime.getRuntime()).thenReturn(runtime);
             when(runtime.exec(anyString())).thenAnswer(invocation -> {
-                new File(DXDIAG_FILENAME).createNewFile();
+                new File(DXDIAG_ABSOLUTE_PATH).createNewFile();
                 return null;
             });
             
@@ -286,8 +288,6 @@ public class GraphicsCardUtilitiesNGTest {
             assertNull(GraphicsCardUtilities.getGraphicsDriver());
             assertEquals(GraphicsCardUtilities.getDxDiagInfo(), "");
             assertNull(GraphicsCardUtilities.getError());
-        } catch (IOException e) {
-            fail("Test threw Exception: " + e.toString());
         }
         
         GraphicsCardUtilities.clear();
@@ -305,8 +305,6 @@ public class GraphicsCardUtilitiesNGTest {
             assertNull(GraphicsCardUtilities.getGraphicsDriver());
             assertNull(GraphicsCardUtilities.getDxDiagInfo());
             assertNotNull(GraphicsCardUtilities.getError());
-        } catch (IOException e) {
-            fail("Test threw Exception: " + e.toString());
         }
     }    
     
