@@ -14,6 +14,8 @@ RUN apt-get -y update \
     python3 \
     git \
     libx11-dev \
+    fontconfig \
+    ttf-dejavu \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
