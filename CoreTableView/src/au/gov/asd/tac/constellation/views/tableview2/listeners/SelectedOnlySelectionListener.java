@@ -16,36 +16,60 @@
 package au.gov.asd.tac.constellation.views.tableview2.listeners;
 
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
+import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
 import java.util.Set;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
 
 /**
+ * Listens for table selection events and updates the {@link TableService#selectedOnlySelectedRows}
+ * set with the new selections. These events are only handled though if the table
+ * <b>IS</b> in "Selected Only" mode.
  *
  * @author formalhaunt
  */
 public class SelectedOnlySelectionListener implements ListChangeListener {
 
     private final TableViewTopComponent tableTopComponent;
-    private final TableView<ObservableList<String>> table;
+    private final TableView<ObservableList<String>> tableView;
     private final Set<ObservableList<String>> selectedOnlySelectedRows;
     
+    /**
+     * Creates a new selected only selection lister.
+     *
+     * @param tableTopComponent
+     * @param tableView
+     * @param selectedOnlySelectedRows 
+     */
     public SelectedOnlySelectionListener(final TableViewTopComponent tableTopComponent,
-                                         final TableView<ObservableList<String>> table,
+                                         final TableView<ObservableList<String>> tableView,
                                          final Set<ObservableList<String>> selectedOnlySelectedRows) {
         this.tableTopComponent = tableTopComponent;
-        this.table = table;
+        this.tableView = tableView;
         this.selectedOnlySelectedRows = selectedOnlySelectedRows;
     }
     
+    /**
+     * Updates the {@link TableService#selectedOnlySelectedRows} set with the currently
+     * selected rows in the table. This listener does not affect the selection in the
+     * graph.
+     * <p/>
+     * The listener is only active if the current table state is not null and the
+     * table <b>IS</b> in "Selected Only" mode. Selections on the table have no effect
+     * on the graph whilst in this mode.
+     * 
+     * @param change not used, can be null
+     * @see TableSelectionListener
+     * @see ListChangeListener#onChanged(javafx.collections.ListChangeListener.Change) 
+     */
     @Override
     public void onChanged(final Change change) {
         if (tableTopComponent.getCurrentState() != null
                 && tableTopComponent.getCurrentState().isSelectedOnly()) {
-            final ObservableList<ObservableList<String>> rows = table.getItems();
+            final ObservableList<ObservableList<String>> rows = tableView.getItems();
             rows.forEach(row -> {
-                if (table.getSelectionModel().getSelectedItems().contains(row)) {
+                if (tableView.getSelectionModel().getSelectedItems().contains(row)) {
                     selectedOnlySelectedRows.add(row);
                 } else if (selectedOnlySelectedRows.contains(row)) {
                     // remove the row from selected items as it's no longer selected in the table

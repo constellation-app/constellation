@@ -19,12 +19,16 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.BorderPane;
 
 /**
+ * Creates a progress bar that is used for long running tasks on the table.
  *
  * @author formalhaunt
  */
 public class ProgressBar {
     private final BorderPane progressPane;
     
+    /**
+     * Creates a new progress bar.
+     */
     public ProgressBar() {
         this.progressPane = new BorderPane();
         
@@ -34,6 +38,11 @@ public class ProgressBar {
         this.progressPane.setCenter(progressIndicator);
     }
 
+    /**
+     * Gets the progress bar UI component.
+     *
+     * @return the progress bar UI component
+     */
     public BorderPane getProgressPane() {
         return progressPane;
     }

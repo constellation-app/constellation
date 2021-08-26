@@ -23,6 +23,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TableColumn;
 
 /**
+ * Notified when a sort event happens causing the rows in the table to be re-ordered.
  *
  * @author formalhaunt
  */
@@ -31,12 +32,30 @@ public class TableSortTypeListener implements ChangeListener<TableColumn.SortTyp
     private final TableViewPane tablePane;
     private final TableService tableService;
     
+    /**
+     * Creates a new table sort type listener.
+     *
+     * @param tablePane the pane containing the table view
+     * @param tableService the table service for this table
+     */
     public TableSortTypeListener(final TableViewPane tablePane,
                                  final TableService tableService) {
         this.tablePane = tablePane;
         this.tableService = tableService;
     }
     
+    /**
+     * Updates the table pagination based on the new sort order. Uses the flag
+     * {@link TableService#sortingListenerActive} in order to prevent more than
+     * one pagination update from happening at any one time due to a multiple
+     * sort changes.
+     *
+     * @param observable not used, can be null
+     * @param oldValue not used, can be null 
+     * @param newValue not used, can be null
+     * @see TableComparatorListener
+     * @see ChangeListener#changed(javafx.beans.value.ObservableValue, java.lang.Object, java.lang.Object)
+     */
     @Override
     public void changed(final ObservableValue<? extends TableColumn.SortType> observable,
                         final TableColumn.SortType oldValue,

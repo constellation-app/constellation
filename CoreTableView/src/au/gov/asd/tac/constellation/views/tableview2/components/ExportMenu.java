@@ -24,10 +24,11 @@ import javafx.event.EventHandler;
 import javafx.geometry.Side;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.Pagination;
 import javafx.scene.image.ImageView;
 
 /**
+ * Creates export menu components that can be attached to the table view for the purposes
+ * of exporting table data in CSV or Excel formats.
  *
  * @author formalhaunt
  */
@@ -51,6 +52,13 @@ public class ExportMenu {
     private MenuItem exportExcelMenu;
     private MenuItem exportExcelSelectionMenu;
     
+    /**
+     * Creates a new export menu.
+     *
+     * @param tableTopComponent the top component that the table is embedded into
+     * @param table the table that the export menu will be attached to
+     * @param tableService the table service associated to the table
+     */
     public ExportMenu(final TableViewTopComponent tableTopComponent,
                       final Table table,
                       final TableService tableService) {
@@ -59,6 +67,10 @@ public class ExportMenu {
         this.tableService = tableService;
     }
     
+    /**
+     * Initializes the export menu. Until this method is called, all menu UI components
+     * will be null.
+     */
     public void init() {
         exportButton = createMenuButton(EXPORT_ICON);
         exportCsvMenu = createExportMenuItem(EXPORT_CSV, ()
@@ -77,26 +89,58 @@ public class ExportMenu {
                 exportExcelMenu, exportExcelSelectionMenu);
     }
     
+    /**
+     * Get the export button that the menu items have been added to.
+     *
+     * @return the export table data button
+     */
     public MenuButton getExportButton() {
         return exportButton;
     }
 
+    /**
+     * Get the menu item that will export all the table data in CSV format.
+     *
+     * @return the export all rows to CSV menu item
+     */
     public MenuItem getExportCsvMenu() {
         return exportCsvMenu;
     }
 
+    /**
+     * Get the menu item that will export only the selected rows in CSV format.
+     *
+     * @return the export selected rows only to CSV menu item
+     */
     public MenuItem getExportCsvSelectionMenu() {
         return exportCsvSelectionMenu;
     }
 
+    /**
+     * Get the menu item that will export all the table data in Excel format.
+     *
+     * @return the export all rows to Excel menu item 
+     */
     public MenuItem getExportExcelMenu() {
         return exportExcelMenu;
     }
 
+    /**
+     * Get the menu item that will export only the selected rows in Excel format.
+     *
+     * @return the export selected rows only to Excel menu item
+     */
     public MenuItem getExportExcelSelectionMenu() {
         return exportExcelSelectionMenu;
     }
     
+    /**
+     * Creates a menu button to store the export menu items under. Sets the icon
+     * and max width.
+     *
+     * @param icon the icon to display on the button
+     * @return the created menu button
+     */
     private MenuButton createMenuButton(final ImageView icon) {
         final MenuButton button = new MenuButton();
         
@@ -107,6 +151,15 @@ public class ExportMenu {
         return button;
     }
     
+    /**
+     * Creates a export {@link MenuItem}. Sets the title text and the action
+     * handler to a new {@link ExportMenuItemActionHandler}.
+     *
+     * @param menuTitle the title to put on the menu item
+     * @param runnable the {@link Runnable} that will be executed when the menu
+     *     item is selected. This will contain code to perform the export.
+     * @return the created menu item 
+     */
     private MenuItem createExportMenuItem(final String menuTitle,
                                           final Runnable runnable) {
         final MenuItem menuItem = new MenuItem(menuTitle);
@@ -116,13 +169,28 @@ public class ExportMenu {
         return menuItem;
     }
     
+    /**
+     * Action handler for menu items that will export table rows to either CSV or Excel.
+     */
     class ExportMenuItemActionHandler implements EventHandler<ActionEvent> {
         private final Runnable runnable;
         
+        /**
+         * Creates a new export menu item action handler.
+         *
+         * @param runnable the runnable to execute when this handler is activated
+         */
         public ExportMenuItemActionHandler(final Runnable runnable) {
             this.runnable = runnable;
         }
         
+        /**
+         * Executes the {@link Runnable} passed in during construction. The runnable
+         * will only be executed if the current graph is not null.
+         * 
+         * @param event the event that triggered this action
+         * @see EventHandler#handle(javafx.event.Event)
+         */
         @Override
         public void handle(ActionEvent event) {
             if (tableTopComponent.getCurrentGraph() != null) {

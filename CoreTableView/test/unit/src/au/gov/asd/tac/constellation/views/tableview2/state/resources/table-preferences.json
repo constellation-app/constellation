@@ -1,0 +1,10 @@
+{
+    "ColumnOrder": [
+        "ABC",
+        "DEF"
+    ],
+    "SortByColumn": {
+        "GHI": "ASCENDING"
+    },
+    "PageSize": 42
+}

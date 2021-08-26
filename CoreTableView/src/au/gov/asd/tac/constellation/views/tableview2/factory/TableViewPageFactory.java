@@ -124,11 +124,15 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
             sortedRowList.comparatorProperty().bind(table.getTableView().comparatorProperty());
             updateSelectionFromFXThread(tableTopComponent.getCurrentGraph(), tableTopComponent.getCurrentState());
 
-            if (tableTopComponent.getCurrentState() != null && tableTopComponent.getCurrentState().isSelectedOnly()) {
+            if (tableTopComponent.getCurrentState() != null 
+                    && tableTopComponent.getCurrentState().isSelectedOnly()) {
                 final int[] selectedIndices = selectedOnlySelectedRows.stream()
-                        .map(row -> table.getTableView().getItems().indexOf(row)).mapToInt(i -> i).toArray();
+                        .map(row -> table.getTableView().getItems().indexOf(row))
+                        .mapToInt(i -> i)
+                        .toArray();
                 if (!selectedOnlySelectedRows.isEmpty()) {
-                    table.getTableView().getSelectionModel().selectIndices(selectedIndices[0], selectedIndices);
+                    table.getTableView().getSelectionModel()
+                            .selectIndices(selectedIndices[0], selectedIndices);
                 }
             }
 

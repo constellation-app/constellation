@@ -488,5 +488,9 @@ public class TableViewUtilities {
         public String getName() {
             return UPDATE_STATE_PLUGIN;
         }
+        
+        public TableViewState getTableViewState() {
+            return tableViewState;
+        }
     }
 }

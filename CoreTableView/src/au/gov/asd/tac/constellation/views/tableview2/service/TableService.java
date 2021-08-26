@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewUtilities;
+import au.gov.asd.tac.constellation.views.tableview2.components.Table;
 import au.gov.asd.tac.constellation.views.tableview2.state.TablePreferences;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import java.util.ArrayList;
@@ -40,22 +41,52 @@ import javafx.scene.control.TableColumn;
  * @author formalhaunt
  */
 public class TableService {
+    /**
+     * Holds a map of graph element IDs to table rows.
+     */
     private final Map<Integer, ObservableList<String>> elementIdToRowIndex;
+    
+    /**
+     * Holds a map of table rows to graph element IDs.
+     */
     private final Map<ObservableList<String>, Integer> rowToElementIdIndex;
     
+    /**
+     * Holds a set of rows from the table that are currently selected. This set
+     * is only populated though when the "Selected Only" mode is active on the
+     * table.
+     */
     private final Set<ObservableList<String>> selectedOnlySelectedRows;
     
     private TableViewPageFactory pageFactory;
     
     private SortedList<ObservableList<String>> sortedRowList;
     
+    /**
+     * The current pagination for the table. This is used by the table to determine
+     * which rows to display on each page.
+     */
     private Pagination pagination;
     
+    /**
+     * Holds the current user preferences set for the table.
+     */
     private TablePreferences tablePreferences = new TablePreferences();
     
-    // This flag is shared by several listeners and so needs to be thread safe
+    /**
+     * This flag is shared by listeners that respond to sort change events on
+     * the table. This flag is to ensure that multiple pagination updates do not
+     * happen if multiple sort event occur in close succession.
+     */    
     private volatile boolean sortingListenerActive = false;
     
+    /**
+     * Create a new table service.
+     *
+     * @param sortedRowList
+     * @param elementIdToRowIndex a map of graph IDs to table rows
+     * @param rowToElementIdIndex a map of table rows to graph IDs
+     */
     public TableService(final SortedList<ObservableList<String>> sortedRowList,
                         final Map<Integer, ObservableList<String>> elementIdToRowIndex,
                         final Map<ObservableList<String>, Integer> rowToElementIdIndex) {
@@ -69,24 +100,58 @@ public class TableService {
         this.pagination = new Pagination();
     }
     
+    /**
+     * Updates the pagination object based on the max rows per page and the current
+     * row list.
+     *
+     * @param maxRowsPerPage the maximum number of rows per page that can be displayed
+     *     in the table
+     * @return the newly created {@link Pagination}
+     * @see #updatePagination(int, java.util.List)
+     */
     public Pagination updatePagination(final int maxRowsPerPage) {
         return updatePagination(maxRowsPerPage, sortedRowList);
     }
     
+    /**
+     * Updates the pagination object based on the max rows per page and the size
+     * of the new row list.
+     * </p>
+     * Determines how many pages will be needed to display all the passed rows. Creates
+     * a new {@link Pagination} with the calculated page count. Then updates the current
+     * {@link TableViewPageFactory} with this new information and passes it to 
+     * the newly created {@link Pagination}.
+     * <p/>
+     * This method cannot be called if the {@link #pageFactory} variable has not
+     * been set.
+     *
+     * @param maxRowsPerPage the maximum number of rows per page that can be displayed
+     *     in the table
+     * @param newRowList the rows to be displayed in the table
+     * @return the newly created {@link Pagination}
+     */
     public Pagination updatePagination(final int maxRowsPerPage,
                                        final List<ObservableList<String>> newRowList) {
         Objects.requireNonNull(getPageFactory(), "The page factory must be set before "
                 + "the pagination can be updated");
         
         final int numberOfPages = newRowList == null || newRowList.isEmpty()
-                ? 1 : (int) Math.ceil(sortedRowList.size() / (double) maxRowsPerPage);
+                ? 1 : (int) Math.ceil(newRowList.size() / (double) maxRowsPerPage);
         pagination = new Pagination(numberOfPages);
+        // TODO Should this create a copy of page factory first then update?
         pageFactory.update(newRowList, elementIdToRowIndex, maxRowsPerPage);
         pagination.setPageFactory(pageFactory);
         
         return pagination;
     }
     
+    /**
+     * 
+     * @param graph
+     * @param state
+     * @param columnAttributes
+     * @param updateState 
+     */
     public void updateVisibleColumns(final Graph graph,
                                      final TableViewState state,
                                      final List<Tuple<String, Attribute>> columnAttributes,
@@ -121,11 +186,14 @@ public class TableService {
     }
     
     /**
-     * Save current sort order details, i.e. sort column name and order for
-     * future reference. This required as the bespoke data loading in tables is
-     * causing sort ordering to be removed - ie when users update column order.
-     * By storing this sort information the values can be used to refresh the
-     * sort order within updateSortOrder().
+     * Save current sort order details, in the table preferences for
+     * future reference.
+     * <p/>
+     * This required as the bespoke data loading in tables is
+     * causing sort ordering to be removed - i.e. when users update column order.
+     * </p>
+     * By storing this sort information the values can be used to restore the
+     * sort order within {@link Table#updateSortOrder()}.
      *
      * @param columnName The name of the column sorting is being done on
      * @param sortType Direction of sorting

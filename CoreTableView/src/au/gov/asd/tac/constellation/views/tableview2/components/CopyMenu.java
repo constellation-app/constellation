@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.tableview2.components;
 
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
-import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewUtilities;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -27,6 +26,8 @@ import javafx.scene.control.Pagination;
 import javafx.scene.image.ImageView;
 
 /**
+ * Creates copy menu components that can be attached to the table view for the purposes
+ * of copying table data to the OS clipboard in CSV format.
  *
  * @author formalhaunt
  */
@@ -45,12 +46,22 @@ public class CopyMenu {
     private MenuItem copyTableMenu;
     private MenuItem copyTableSelectionMenu;
     
+    /**
+     * Creates a new copy menu.
+     *
+     * @param table the table that the copy menu will be attached to
+     * @param pagination the current pagination associated with the table
+     */
     public CopyMenu(final Table table,
                     final Pagination pagination) {
         this.table = table;
         this.pagination = pagination;
     }
-    
+
+    /**
+     * Initializes the copy menu. Until this method is called, all menu UI components
+     * will be null.
+     */
     public void init() {
         copyButton = createMenuButton(COPY_ICON);
         copyTableMenu = createCopyMenuItem(COPY_TABLE, false);
@@ -58,18 +69,42 @@ public class CopyMenu {
         copyButton.getItems().addAll(getCopyTableMenu(), getCopyTableSelectionMenu());
     }
     
+    /**
+     * Get the copy button that the menu items have been added to.
+     *
+     * @return the copy table data button
+     */
     public MenuButton getCopyButton() {
         return copyButton;
     }
 
+    /**
+     * Get the menu item that will copy all the table data to the OS
+     * clipboard in CSV format.
+     *
+     * @return the copy all rows menu item
+     */
     public MenuItem getCopyTableMenu() {
         return copyTableMenu;
     }
 
+    /**
+     * Get the menu item that will copy only the selected row to the OS
+     * clipboard in CSV format.
+     *
+     * @return the copy selected rows only menu item
+     */
     public MenuItem getCopyTableSelectionMenu() {
         return copyTableSelectionMenu;
     }
     
+    /**
+     * Creates a menu button to store the copy menu items under. Sets the icon
+     * and max width.
+     *
+     * @param icon the icon to display on the button
+     * @return the created menu button
+     */
     private MenuButton createMenuButton(final ImageView icon) {
         final MenuButton button = new MenuButton();
         
@@ -80,6 +115,15 @@ public class CopyMenu {
         return button;
     }
     
+    /**
+     * Creates a copy {@link MenuItem}. Sets the title text and the action
+     * handler to a new {@link CopyMenuItemActionHandler}.
+     * 
+     * @param menuTitle the title to put on the menu item
+     * @param selected true if clicking this menu item will only copy the selected
+     *     rows in the table, false otherwise
+     * @return the created menu item
+     */
     private MenuItem createCopyMenuItem(final String menuTitle,
                                         final boolean selected) {
         final MenuItem menuItem = new MenuItem(menuTitle);
@@ -89,13 +133,29 @@ public class CopyMenu {
         return menuItem;
     }
     
+    /**
+     * Action handler for menu items that will copy table rows to the OS clipboard.
+     */
     class CopyMenuItemActionHandler implements EventHandler<ActionEvent> {
         private final boolean selected;
         
+        /**
+         * Creates a new copy menu item action handler.
+         *
+         * @param selected if true, when this handler is activated only the rows
+         *     selected in the table will be copied.
+         */
         public CopyMenuItemActionHandler(final boolean selected) {
             this.selected = selected;
         }
         
+        /**
+         * Copies the table data in CSV format to the OS clipboard. If the variable
+         * {@link #selected} is true then only the selected table rows will be copied.
+         *
+         * @param event the event that triggered this action
+         * @see EventHandler#handle(javafx.event.Event) 
+         */
         @Override
         public void handle(ActionEvent event) {
             final String data = TableViewUtilities.getTableData(table.getTableView(),

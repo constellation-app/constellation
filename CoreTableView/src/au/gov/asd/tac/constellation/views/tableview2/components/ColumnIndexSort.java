@@ -25,6 +25,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 
 /**
+ * A {@link Comparator} for the {@link Table#columnIndex} sorted list.
  *
  * @author formalhaunt
  */
@@ -32,10 +33,40 @@ public class ColumnIndexSort implements Comparator<ThreeTuple<String, Attribute,
     
     private final TableViewState state;
     
+    /**
+     * Creates a new comparator for the column index list.
+     *
+     * @param state the current table state
+     */
     public ColumnIndexSort(final TableViewState state) {
         this.state = state;
     }
     
+    /**
+     * Compares two columns from the column index. Ordering is done as follows.
+     * <ul>
+     * <li>
+     * If both columns are in the state and known then they are ordered based on
+     * the states column order.
+     * </li>
+     * If one is known to the state and the other is not then the one that is
+     * know is placed before the one that is unknown.
+     * </li>
+     * <li>
+     * If neither are know to state then SOURCE columns are before TRANSACTION columns
+     * and TRANSACTION columns are before DESTINATION columns.
+     * </li>
+     * <li>
+     * If neither are known by state and at least one of the types is NOT SOURCE,
+     * TRANSACTION or DESTINATION, then they are ordered by the column name.
+     * </li>
+     * </ul>
+     *
+     * @param columnTuple1 the first column to be compared
+     * @param columnTuple2 the second column to be compared
+     * @return a negative integer, zero, or a positive integer as the first 
+     *     argument is less than, equal to, or greater than the second.
+     */
     @Override
     public int compare(final ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>> columnTuple1,
                        final ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>> columnTuple2) {
@@ -43,6 +74,7 @@ public class ColumnIndexSort implements Comparator<ThreeTuple<String, Attribute,
                         .indexOf(Tuple.create(columnTuple1.getFirst(), columnTuple1.getSecond()));
         final int c2Index = state.getColumnAttributes()
                 .indexOf(Tuple.create(columnTuple2.getFirst(), columnTuple2.getSecond()));
+        
         final String c1Type = columnTuple1.getFirst();
         final String c2Type = columnTuple2.getFirst();
 
