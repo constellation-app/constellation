@@ -123,14 +123,14 @@ public class BoundingBoxNGTest {
         assertFalse(bb.isEmpty());
     }
     
-    public static final float BIGGER_FLOAT1 = 10.1F;
-    public static final float BIGGER_FLOAT2 = 10.2F;
-    public static final float BIGGER_FLOAT3 = 10.3F;
-    public static final float SMALLER_FLOAT1 = 0.1F;
-    public static final float SMALLER_FLOAT2 = 0.2F;
-    public static final float SMALLER_FLOAT3 = 0.3F;
-    public static final float BIGISH_FLOAT = 9.21F;
-    public static final float SMALLISH_FLOAT = 1.21F;
+    private static final float BIGGER_FLOAT1 = 10.1F;
+    private static final float BIGGER_FLOAT2 = 10.2F;
+    private static final float BIGGER_FLOAT3 = 10.3F;
+    private static final float SMALLER_FLOAT1 = 0.1F;
+    private static final float SMALLER_FLOAT2 = 0.2F;
+    private static final float SMALLER_FLOAT3 = 0.3F;
+    private static final float BIGISH_FLOAT = 9.21F;
+    private static final float SMALLISH_FLOAT = 1.21F;
     
     /**
      * Can add a vertex to a BoundingBox.
@@ -168,8 +168,8 @@ public class BoundingBoxNGTest {
         assertEquals(bb.getMax().toString(), MAX.toString());
     }
     
-    public static final float BIGISH_FLOAT2 = 8.21F;
-    public static final float SMALLISH_FLOAT2 = 2.21F;
+    private static final float BIGISH_FLOAT2 = 8.21F;
+    private static final float SMALLISH_FLOAT2 = 2.21F;
     
     /**
      * Can add a secondary vertex to a BoundingBox.
@@ -268,12 +268,12 @@ public class BoundingBoxNGTest {
     public static final Vector3f ALL_POINTS_SAME_VECTOR3F = 
         new Vector3f(BIGISH_FLOAT, BIGISH_FLOAT, BIGISH_FLOAT);
     
-    public static final float BIGGEST_FLOAT1 = 123.45F;
-    public static final float BIGGEST_FLOAT2 = 234.56F;
-    public static final float BIGGEST_FLOAT3 = 1345.67F;
-    public static final float BIGGEST_FLOAT4 = 2456.78F;
-    public static final float BIGGEST_FLOAT5 = 66567.89F;
-    public static final float BIGGEST_FLOAT6 = 99678.91F;
+    private static final float BIGGEST_FLOAT1 = 123.45F;
+    private static final float BIGGEST_FLOAT2 = 234.56F;
+    private static final float BIGGEST_FLOAT3 = 1345.67F;
+    private static final float BIGGEST_FLOAT4 = 2456.78F;
+    private static final float BIGGEST_FLOAT5 = 66567.89F;
+    private static final float BIGGEST_FLOAT6 = 99678.91F;
     
     /**
      * Cube radius of the BoundingBox is successfully calculated when x, y or z 
@@ -343,7 +343,7 @@ public class BoundingBoxNGTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Bounding box is empty.")
     public void testSphereRadiusEmptyBox() {
-        new BoundingBox().getCubeRadius();
+        new BoundingBox().getSphereRadius(0F);
     }
     
     /**
