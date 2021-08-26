@@ -58,6 +58,15 @@ public class GraphicsCardUtilities {
         loadGraphicsCardInfo();
         return error;
     }
+    
+    public static void clear() {
+        loaded = false;
+        graphicsCard = null;
+        graphicsDriver = null;
+        dxDiagInfo = null;
+        error = null;
+        LOGGER.log(Level.INFO, "Cleared Graphics Card Info");
+    }
 
     private static void loadGraphicsCardInfo() {
         synchronized (LOCK) {
