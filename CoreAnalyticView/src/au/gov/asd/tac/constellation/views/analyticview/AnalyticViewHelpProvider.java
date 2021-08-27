@@ -18,7 +18,9 @@ package au.gov.asd.tac.constellation.views.analyticview;
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -54,5 +56,47 @@ public class AnalyticViewHelpProvider extends HelpPageProvider {
             filePaths.add(file.getPath());
         }
         return filePaths;
+    }
+
+    @Override
+    public Map<String, String> getHelpMap() {
+        Map<String, String> map = new HashMap<>();
+        map.put("au.gov.asd.tac.constellation.views.analyticview.AnalyticViewPane", "au.gov.asd.tac.constellation.views.analyticview.docs.analytic-view.md");
+        map.put("au.gov.asd.tac.constellation.views.analyticview.questions.BestConnectsNetworkQuestion", "au.gov.asd.tac.constellation.views.analyticview.docs.question-best-connects-network.md");
+        map.put("au.gov.asd.tac.constellation.views.analyticview.questions.HasClosestRelationshipQuestion", "au.gov.asd.tac.constellation.views.analyticview.docs.question-has-closest-relationship.md");
+        map.put("au.gov.asd.tac.constellation.views.analyticview.questions.MostCentralQuestion", "au.gov.asd.tac.constellation.views.analyticview.docs.question-most-central.md");
+        map.put("au.gov.asd.tac.constellation.views.analyticview.questions.MostCommunicantsQuestion", "au.gov.asd.tac.constellation.views.analyticview.docs.question-most-communicants.md");
+        map.put("au.gov.asd.tac.constellation.views.analyticview.questions.MostEasilyReachedQuestion", "au.gov.asd.tac.constellation.views.analyticview.docs.question-most-easily-reached.md");
+        map.put("au.gov.asd.tac.constellation.views.analyticview.questions.MostInfluentialQuestion", "au.gov.asd.tac.constellation.views.analyticview.docs.question-most-influential.md");
+        map.put("au.gov.asd.tac.constellation.views.analyticview.questions.MostLikelyCorrelatedQuestion", "au.gov.asd.tac.constellation.views.analyticview.docs.question-most-likely-correlated.md");
+        map.put("au.gov.asd.tac.constellation.views.analyticview.analytics.AdamicAdarIndexAnalytic", "au.gov.asd.tac.constellation.views.analyticview.docs.analytic-adamic-adar-index.md");
+        map.put("au.gov.asd.tac.constellation.views.analyticview.analytics.AverageDegreeAnalytic", "au.gov.asd.tac.constellation.views.analyticview.docs.analytic-average-degree.md");
+        map.put("au.gov.asd.tac.constellation.views.analyticview.analytics.BetweennessCentralityAnalytic", "au.gov.asd.tac.constellation.views.analyticview.docs.analytic-betweenness-centrality.md");
+        map.put("au.gov.asd.tac.constellation.views.analyticview.analytics.ClosenessCentralityAnalytic", "au.gov.asd.tac.constellation.views.analyticview.docs.analytic-closeness-centrality.md");
+        map.put("au.gov.asd.tac.constellation.views.analyticview.analytics.CommonNeighboursAnalytic", "au.gov.asd.tac.constellation.views.analyticview.docs.analytic-common-neighbours.md");
+        map.put("au.gov.asd.tac.constellation.views.analyticview.analytics.ComponentCountAnalytic", "au.gov.asd.tac.constellation.views.analyticview.docs.analytic-component-count.md");
+        map.put("au.gov.asd.tac.constellation.views.analyticview.analytics.ConnectivityDegreeAnalytic", "au.gov.asd.tac.constellation.views.analyticview.docs.analytic-connectivity-degree.md");
+        map.put("au.gov.asd.tac.constellation.views.analyticview.analytics.CosineSimilarityAnalytic", "au.gov.asd.tac.constellation.views.analyticview.docs.analytic-cosine-similarity.md");
+        map.put("au.gov.asd.tac.constellation.views.analyticview.analytics.DegreeCentralityAnalytic", "au.gov.asd.tac.constellation.views.analyticview.docs.analytic-degree-centrality.md");
+        map.put("au.gov.asd.tac.constellation.views.analyticview.analytics.DiceSimilarityAnalytic", "au.gov.asd.tac.constellation.views.analyticview.docs.analytic-dice-similarity.md");
+        map.put("au.gov.asd.tac.constellation.views.analyticview.analytics.EccentricityAnalytic", "au.gov.asd.tac.constellation.views.analyticview.docs.analytic-eccentricity.md");
+        map.put("au.gov.asd.tac.constellation.views.analyticview.analytics.EffectiveResistanceAnalytic", "au.gov.asd.tac.constellation.views.analyticview.docs.analytic-effective-resistance.md");
+        map.put("au.gov.asd.tac.constellation.views.analyticview.analytics.EigenvectorCentralityAnalytic", "au.gov.asd.tac.constellation.views.analyticview.docs.analytic-eigenvector-centrality.md");
+        map.put("au.gov.asd.tac.constellation.views.analyticview.analytics.GlobalClusteringCoefficientAnalytic", "au.gov.asd.tac.constellation.views.analyticview.docs.analytic-global-clustering-coefficient.md");
+        map.put("au.gov.asd.tac.constellation.views.analyticview.analyticsGraphDensityAnalytic", "au.gov.asd.tac.constellation.views.analyticview.docs.analytic-graph-density.md");
+        map.put("au.gov.asd.tac.constellation.views.analyticview.analytics.GraphDistanceAnalytic", "au.gov.asd.tac.constellation.views.analyticview.docs.analytic-graph-distance.md");
+        map.put("au.gov.asd.tac.constellation.views.analyticview.analytics.HitsCentralityAnalytic", "au.gov.asd.tac.constellation.views.analyticview.docs.analytic-hits-centrality.md");
+        map.put("au.gov.asd.tac.constellation.views.analyticview.analytics.JaccardIndexAnalytic", "au.gov.asd.tac.constellation.views.analyticview.docs.analytic-jaccard-index.md");
+        map.put("au.gov.asd.tac.constellation.views.analyticview.analytics.KatzCentralityAnalytic", "au.gov.asd.tac.constellation.views.analyticview.docs.analytic-katz-centrality.md");
+        map.put("au.gov.asd.tac.constellation.views.analyticview.analytics.LevenshteinDistanceAnalytic", "au.gov.asd.tac.constellation.views.analyticview.docs.analytic-levenshtein-distance.md");
+        map.put("au.gov.asd.tac.constellation.views.analyticview.analytics.LocalClusteringCoefficientAnalytic", "au.gov.asd.tac.constellation.views.analyticview.docs.analytic-local-clustering-coefficient.md");
+        map.put("au.gov.asd.tac.constellation.views.analyticview.analytics.MultiplexityAnalytic", "au.gov.asd.tac.constellation.views.analyticview.docs.analytic-multiplexity.md");
+        map.put("au.gov.asd.tac.constellation.views.analyticview.analytics.PagerankCentralityAnalytic", "au.gov.asd.tac.constellation.views.analyticview.docs.analytic-pagerank-centrality.md");
+        map.put("au.gov.asd.tac.constellation.views.analyticview.analytics.PreferentialAttachmentAnalytic", "au.gov.asd.tac.constellation.views.analyticview.docs.analytic-preferential-attachment.md");
+        map.put("au.gov.asd.tac.constellation.views.analyticview.analytics.RatioOfReciprocityAnalytic", "au.gov.asd.tac.constellation.views.analyticview.docs.analytic-ratio-of-reciprocity.md");
+        map.put("au.gov.asd.tac.constellation.views.analyticview.analytics.ResourceAllocationIndexAnalytic", "au.gov.asd.tac.constellation.views.analyticview.docs.analytic-resource-allocation-index.md");
+        map.put("au.gov.asd.tac.constellation.views.analyticview.analytics.WeightAnalytic", "au.gov.asd.tac.constellation.views.analyticview.docs.analytic-weight.md");
+
+        return map;
     }
 }
