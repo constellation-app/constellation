@@ -91,7 +91,7 @@ public class PreferencesMenu {
         preferencesButton = createMenuButton(SETTINGS_ICON);
         pageSizeMenu = createPageSizeMenu();
         
-        savePreferencesMenu = createPreferencesMenuItem(SAVE_PREFERENCES, e -> {
+        savePreferencesMenu = createPreferencesMenu(SAVE_PREFERENCES, e -> {
             if ((!table.getTableView().getColumns().isEmpty()) 
                     && (GraphManager.getDefault().getActiveGraph() != null)) {
                 TableViewPreferencesIOUtilities.savePreferences(
@@ -102,7 +102,7 @@ public class PreferencesMenu {
             e.consume();
         });
         
-        loadPreferencesMenu = createPreferencesMenuItem(LOAD_PREFERENCES, e -> {
+        loadPreferencesMenu = createPreferencesMenu(LOAD_PREFERENCES, e -> {
             if (GraphManager.getDefault().getActiveGraph() != null) {
                 loadPreferences();
                 //TODO: Replace need to sleep before paginating
@@ -177,8 +177,8 @@ public class PreferencesMenu {
         return button;
     }
     
-    private MenuItem createPreferencesMenuItem(final String menuTitle,
-                                               final EventHandler<ActionEvent> action) {
+    private MenuItem createPreferencesMenu(final String menuTitle,
+                                           final EventHandler<ActionEvent> action) {
         final MenuItem menuItem = new MenuItem(menuTitle);
         
         menuItem.setOnAction(action);

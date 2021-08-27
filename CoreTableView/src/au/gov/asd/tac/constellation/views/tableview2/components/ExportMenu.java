@@ -73,15 +73,15 @@ public class ExportMenu {
      */
     public void init() {
         exportButton = createMenuButton(EXPORT_ICON);
-        exportCsvMenu = createExportMenuItem(EXPORT_CSV, ()
+        exportCsvMenu = createExportMenu(EXPORT_CSV, ()
                 -> TableViewUtilities.exportToCsv(table.getTableView(), tableService.getPagination(), false));
-        exportCsvSelectionMenu = createExportMenuItem(EXPORT_CSV_SELECTION, ()
+        exportCsvSelectionMenu = createExportMenu(EXPORT_CSV_SELECTION, ()
                 -> TableViewUtilities.exportToCsv(table.getTableView(), tableService.getPagination(), true));
-        exportExcelMenu = createExportMenuItem(EXPORT_XLSX, ()
+        exportExcelMenu = createExportMenu(EXPORT_XLSX, ()
                 -> TableViewUtilities.exportToExcel(table.getTableView(), tableService.getPagination(),
                         tableService.getTablePreferences().getMaxRowsPerPage(), false,
                         tableTopComponent.getCurrentGraph().getId()));
-        exportExcelSelectionMenu = createExportMenuItem(EXPORT_XLSX_SELECTION, ()
+        exportExcelSelectionMenu = createExportMenu(EXPORT_XLSX_SELECTION, ()
                 -> TableViewUtilities.exportToExcel(table.getTableView(), tableService.getPagination(),
                         tableService.getTablePreferences().getMaxRowsPerPage(), true,
                         tableTopComponent.getCurrentGraph().getId()));
@@ -160,8 +160,8 @@ public class ExportMenu {
      *     item is selected. This will contain code to perform the export.
      * @return the created menu item 
      */
-    private MenuItem createExportMenuItem(final String menuTitle,
-                                          final Runnable runnable) {
+    private MenuItem createExportMenu(final String menuTitle,
+                                      final Runnable runnable) {
         final MenuItem menuItem = new MenuItem(menuTitle);
         
         menuItem.setOnAction(new ExportMenuItemActionHandler(runnable));

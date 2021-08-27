@@ -64,8 +64,8 @@ public class CopyMenu {
      */
     public void init() {
         copyButton = createMenuButton(COPY_ICON);
-        copyTableMenu = createCopyMenuItem(COPY_TABLE, false);
-        copyTableSelectionMenu = createCopyMenuItem(COPY_TABLE_SELECTION, true);
+        copyTableMenu = createCopyMenu(COPY_TABLE, false);
+        copyTableSelectionMenu = createCopyMenu(COPY_TABLE_SELECTION, true);
         copyButton.getItems().addAll(getCopyTableMenu(), getCopyTableSelectionMenu());
     }
     
@@ -124,8 +124,8 @@ public class CopyMenu {
      *     rows in the table, false otherwise
      * @return the created menu item
      */
-    private MenuItem createCopyMenuItem(final String menuTitle,
-                                        final boolean selected) {
+    private MenuItem createCopyMenu(final String menuTitle,
+                                    final boolean selected) {
         final MenuItem menuItem = new MenuItem(menuTitle);
         
         menuItem.setOnAction(new CopyMenuItemActionHandler(selected));
