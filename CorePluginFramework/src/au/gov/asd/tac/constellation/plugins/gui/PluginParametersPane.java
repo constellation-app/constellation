@@ -558,7 +558,7 @@ public final class PluginParametersPane extends GridPane {
                 while (child.getFormatter().nextElement(child)) {
                     final RowConstraints rowConstraints = new RowConstraints();
                     rowConstraints.setVgrow(Priority.NEVER);
-                    rowConstraints.setFillHeight(true);
+                    rowConstraints.setFillHeight(false);
                     paramGroupPane.getRowConstraints().addAll(rowConstraints);
 
                     final LabelDescriptionBox label = child.getFormatter().getParamLabel(child);
@@ -597,7 +597,6 @@ public final class PluginParametersPane extends GridPane {
             }
 
             descriptionWidth.bind(Bindings.max(50, maxLabelWidth));
-
             return paramGroupPane;
         }
 
@@ -693,6 +692,7 @@ public final class PluginParametersPane extends GridPane {
             this.label = label;
             this.description = description;
             getChildren().addAll(label, description);
+            this.setPadding(new Insets(5));
         }
 
         public void bindDescriptionToLabel() {
@@ -745,9 +745,11 @@ public final class PluginParametersPane extends GridPane {
             final Label description = new Label(parameter.getDescription());
             label.setMinWidth(145);
             label.setWrapText(true);
-            description.setId("smallInfoText");
-            description.getStyleClass().add("description-label");
+            label.setStyle("-fx-font-weight: bold"); // TODO: temporary fix until the main and dynamic style sheets are loaded
+            description.setId("smallInfoText"); // TODO: this is not being used because the style sheets are not loaded
+            description.getStyleClass().add("description-label"); // TODO: this is not being used because the style sheets are not loaded
             description.setWrapText(true);
+            description.setStyle("-fx-font-size: smaller"); // TODO: temporary fix until the main and dynamic style sheets are loaded
             final LabelDescriptionBox labels = new LabelDescriptionBox(label, description);
             labels.setVisible(parameter.isVisible());
             labels.setManaged(parameter.isVisible());

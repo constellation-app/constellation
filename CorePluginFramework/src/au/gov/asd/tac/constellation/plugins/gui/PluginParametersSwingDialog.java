@@ -123,6 +123,11 @@ public class PluginParametersSwingDialog {
             final PluginParametersPane parametersPane = PluginParametersPane.buildPane(parameters, null, excludedParameters);
             root.setCenter(parametersPane);
             final Scene scene = new Scene(root);
+
+            // TODO: the main stylesheet isn't loaded here and should be
+            // something like the following
+//            scene.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
+//            scene.getStylesheets().add(JavafxStyleManager.getDynamicStyleSheet());
             xp.setScene(scene);
             xp.setPreferredSize(new Dimension((int) scene.getWidth(), (int) scene.getHeight()));
             latch.countDown();
