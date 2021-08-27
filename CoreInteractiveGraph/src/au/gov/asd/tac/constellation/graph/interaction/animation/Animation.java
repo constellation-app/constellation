@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.graph.interaction.animation;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
@@ -81,16 +80,9 @@ public abstract class Animation {
      * @param graph The graph to run the animation on.
      */
     public static final synchronized void startAnimation(final Animation animation, final Graph graph) {
-        ReadableGraph rg = graph.getReadableGraph();
-        rg.getVertexCount();
         stopAnimation();
-
-        // only run the animation if there is at least 1 vertex
-        if (rg.getVertexCount() != 0) {
-            animation.run(graph);
-            RUNNING_ANIMATION = animation;
-        }
-        rg.close();
+        animation.run(graph);
+        RUNNING_ANIMATION = animation;
     }
 
     /**
