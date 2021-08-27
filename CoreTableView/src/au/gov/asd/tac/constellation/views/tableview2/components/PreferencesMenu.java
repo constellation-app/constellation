@@ -48,6 +48,8 @@ import javafx.scene.image.ImageView;
 import org.apache.commons.collections4.CollectionUtils;
 
 /**
+ * Creates a preferences menu that allows users to load, save and set different
+ * preferences like page size.
  *
  * @author formalhaunt
  */
@@ -76,6 +78,14 @@ public class PreferencesMenu {
     private MenuItem loadPreferencesMenu;
     private Menu pageSizeMenu;
     
+    /**
+     * Creates a new preferences menu.
+     *
+     * @param tableTopComponent
+     * @param tablePane
+     * @param table
+     * @param tableService 
+     */
     public PreferencesMenu(final TableViewTopComponent tableTopComponent,
                            final TableViewPane tablePane,
                            final Table table,
@@ -87,6 +97,10 @@ public class PreferencesMenu {
         
     }
     
+    /**
+     * Initializes the preferences menu. Until this method is called, all menu UI components
+     * will be null.
+     */
     public void init() {
         preferencesButton = createMenuButton(SETTINGS_ICON);
         pageSizeMenu = createPageSizeMenu();
@@ -123,22 +137,64 @@ public class PreferencesMenu {
         preferencesButton.getItems().addAll(pageSizeMenu, savePreferencesMenu, loadPreferencesMenu);
     }
     
+    /**
+     * Get the preferences button that the menu items have been added to.
+     *
+     * @return the table preferences button
+     */
     public MenuButton getPreferencesButton() {
         return preferencesButton;
     }
 
+    /**
+     * Get the save preferences menu which when clicked allows the user to save
+     * all their stored table preferences to JSON on disk, allowing them to be
+     * persisted.
+     *
+     * @return the save preferences menu
+     */
     public MenuItem getSavePreferencesMenu() {
         return savePreferencesMenu;
     }
 
+    /**
+     * Get the load preferences menu which when clicked will load a users table
+     * preferences from a JSON file stored on disk.
+     *
+     * @return the load preferences menu
+     */
     public MenuItem getLoadPreferencesMenu() {
         return loadPreferencesMenu;
     }
 
+    /**
+     * Gets the page size menu which allows the user to change the pagination
+     * size in the table.
+     *
+     * @return the page size menu
+     */
     public Menu getPageSizeMenu() {
         return pageSizeMenu;
     }
     
+    /**
+     * Get the page size toggle group. All page size menu items belong to this
+     * toggle group.
+     *
+     * @return the page size toggle group
+     */
+    public ToggleGroup getPageSizeToggle() {
+        return pageSizeToggle;
+    }
+    
+    /**
+     * Creates the page size menu that will be added to the preferences menu. This
+     * menu provides 4 options for page sizes. When one of the page size menu items
+     * is clicked, the table is refreshed and displays the date with the new pagination
+     * settings.
+     *
+     * @return the page size preference menu
+     */
     private Menu createPageSizeMenu() {
         final Menu menu = new Menu(PAGE_SIZE_PREFERENCES);
         menu.getItems().addAll(
@@ -167,6 +223,13 @@ public class PreferencesMenu {
         return menu;
     }
     
+    /**
+     * Creates a menu button to store the preferences menu items under. Sets the icon
+     * and max width.
+     *
+     * @param icon the icon to display on the button
+     * @return the created menu button
+     */
     private MenuButton createMenuButton(final ImageView icon) {
         final MenuButton button = new MenuButton();
         
@@ -177,6 +240,15 @@ public class PreferencesMenu {
         return button;
     }
     
+    /**
+     * Creates a preferences {@link MenuItem}. Sets the title text and the action
+     * handler to a new {@link EventHandler}.
+     *
+     * @param menuTitle the title to put on the menu item
+     * @param runnable the {@link Runnable} that will be executed when the menu
+     *     item is selected.
+     * @return the created menu item 
+     */
     private MenuItem createPreferencesMenu(final String menuTitle,
                                            final EventHandler<ActionEvent> action) {
         final MenuItem menuItem = new MenuItem(menuTitle);
@@ -260,6 +332,8 @@ public class PreferencesMenu {
             }
         }
     }
+
+    
 
     
 }
