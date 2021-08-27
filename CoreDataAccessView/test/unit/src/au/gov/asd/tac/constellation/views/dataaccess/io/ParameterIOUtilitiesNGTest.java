@@ -102,7 +102,6 @@ public class ParameterIOUtilitiesNGTest {
         expectedTab.newTab();
         expectedTab.add("someKey", "something");
 
-//
         // mock graph
         final Graph graph = mock(Graph.class);
         final WritableGraph wGraph = mock(WritableGraph.class);
@@ -112,9 +111,6 @@ public class ParameterIOUtilitiesNGTest {
 
         assertEquals(expectedTab.getState().size(), 1);
         verify(wGraph).setObjectValue(0, 0, expectedTab);
-
-//        final int dataAccessStateAttribute = DataAccessConcept.MetaAttribute.DATAACCESS_STATE.ensure(wGraph);
-//        verify(wGraph).setObjectValue(dataAccessStateAttribute, 0, expectedTab);
 
     }
 
