@@ -19,12 +19,16 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import javafx.scene.control.TableColumn;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.openide.util.Pair;
 import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertNull;
 import org.testng.annotations.Test;
 
 /**
@@ -59,6 +63,51 @@ public class TablePreferencesNGTest {
         EqualsVerifier.forClass(TablePreferences.class)
                 .suppress(Warning.NONFINAL_FIELDS)
                 .verify();
+    }
+    
+    @Test
+    public void getSortColumn() {
+        final TablePreferences tablePreferences = new TablePreferences();
+        tablePreferences.setSortByColumn(Map.of(
+                "ABC", TableColumn.SortType.ASCENDING,
+                "DEF", TableColumn.SortType.DESCENDING
+        ));
+        
+        assertEquals("DEF", tablePreferences.getSortColumn());
+        
+        tablePreferences.setSortByColumn(Collections.emptyMap());
+        
+        assertNull(tablePreferences.getSortColumn());
+    }
+    
+    @Test
+    public void getSortDirection() {
+        final TablePreferences tablePreferences = new TablePreferences();
+        tablePreferences.setSortByColumn(Map.of(
+                "ABC", TableColumn.SortType.ASCENDING,
+                "DEF", TableColumn.SortType.DESCENDING
+        ));
+        
+        assertEquals(TableColumn.SortType.DESCENDING, tablePreferences.getSortDirection());
+        
+        tablePreferences.setSortByColumn(Collections.emptyMap());
+        
+        assertNull(tablePreferences.getSortDirection());
+    }
+    
+    @Test
+    public void getSort() {
+        final TablePreferences tablePreferences = new TablePreferences();
+        tablePreferences.setSortByColumn(Map.of(
+                "ABC", TableColumn.SortType.ASCENDING,
+                "DEF", TableColumn.SortType.DESCENDING
+        ));
+        
+        assertEquals(ImmutablePair.of("DEF", TableColumn.SortType.DESCENDING), tablePreferences.getSort());
+        
+        tablePreferences.setSortByColumn(Collections.emptyMap());
+        
+        assertNull(tablePreferences.getSort());
     }
     
     private TablePreferences fixture() {

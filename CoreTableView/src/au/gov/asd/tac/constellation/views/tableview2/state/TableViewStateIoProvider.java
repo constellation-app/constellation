@@ -90,6 +90,7 @@ public class TableViewStateIoProvider extends AbstractGraphIOProvider {
             state.setElementType(elementType);
             state.setTransactionColumnAttributes(transactionColumnAttributes);
             state.setVertexColumnAttributes(vertexColumnAttributes);
+            
             graph.setObjectValue(attributeId, elementId, state);
         }
     }

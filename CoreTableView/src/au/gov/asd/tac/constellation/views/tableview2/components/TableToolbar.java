@@ -38,10 +38,13 @@ import javafx.scene.image.ImageView;
 import org.openide.util.HelpCtx;
 
 /**
+ * Creates the UI components that will be added to the table tool bar.
  *
  * @author formalhaunt
  */
 public class TableToolbar {
+    private static final String TABLE_TOP_COMPONENT_CLASS_NAME = TableViewTopComponent.class.getName();
+    
     private static final String COLUMN_VISIBILITY = "Column Visibility";
     private static final String ELEMENT_TYPE = "Element Type";
     private static final String SELECTED_ONLY = "Selected Only";
@@ -74,6 +77,14 @@ public class TableToolbar {
     
     private final TableService tableService;
     
+    /**
+     * Creates a new table tool bar.
+     *
+     * @param tableTopComponent the top component that the table is embedded into
+     * @param tablePane
+     * @param table the table that the tool bar will be attached to
+     * @param tableService the table service associated to the table
+     */
     public TableToolbar(final TableViewTopComponent tableTopComponent,
                         final TableViewPane tablePane,
                         final Table table,
@@ -84,46 +95,31 @@ public class TableToolbar {
         this.tableService = tableService;
     }
     
+    /**
+     * Initializes the export menu. Until this method is called, all menu UI components
+     * will be null.
+     */
     public void init() {
         columnVisibilityButton = createButton(COLUMNS_ICON, COLUMN_VISIBILITY, e -> {
             final ColumnVisibilityContextMenu columnVisibilityMenu
-                    = new ColumnVisibilityContextMenu(tableTopComponent, table, tableService);
-            columnVisibilityMenu.init();
+                    = createColumnVisibilityContextMenu();
             columnVisibilityMenu.getContextMenu()
                     .show(columnVisibilityButton, Side.RIGHT, 0, 0);
             
             e.consume();
         });
         
+        // TODO Initial icon here should be based on state if it exists??
         selectedOnlyButton = createToggleButton(ALL_VISIBLE_ICON, SELECTED_ONLY, e -> {
-            selectedOnlyButton.setGraphic(
-                    selectedOnlyButton.getGraphic().equals(SELECTED_VISIBLE_ICON) 
-                            ? ALL_VISIBLE_ICON : SELECTED_VISIBLE_ICON
-            );
             if (tableTopComponent.getCurrentState() != null) {
                 tableService.getSelectedOnlySelectedRows().clear();
                 
                 final TableViewState newState = new TableViewState(tableTopComponent.getCurrentState());
                 newState.setSelectedOnly(!tableTopComponent.getCurrentState().isSelectedOnly());
                 
-                PluginExecution.withPlugin(
-                        new TableViewUtilities.UpdateStatePlugin(newState)
-                ).executeLater(tableTopComponent.getCurrentGraph());
-            }
-            
-            e.consume();
-        });
-        
-        elementTypeButton = createButton(TRANSACTION_ICON, ELEMENT_TYPE, e -> {
-            elementTypeButton.setGraphic(
-                    elementTypeButton.getGraphic().equals(VERTEX_ICON) 
-                            ? TRANSACTION_ICON : VERTEX_ICON
-            );
-            
-            if (tableTopComponent.getCurrentState() != null) {
-                final TableViewState newState = new TableViewState(tableTopComponent.getCurrentState());
-                newState.setElementType(tableTopComponent.getCurrentState().getElementType() == GraphElementType.TRANSACTION
-                        ? GraphElementType.VERTEX : GraphElementType.TRANSACTION);
+                selectedOnlyButton.setGraphic(
+                        newState.isSelectedOnly() ? SELECTED_VISIBLE_ICON : ALL_VISIBLE_ICON 
+                );
                 
                 PluginExecution.withPlugin(
                         new TableViewUtilities.UpdateStatePlugin(newState)
@@ -133,21 +129,35 @@ public class TableToolbar {
             e.consume();
         });
         
-        // Copy Button Menu
-        copyMenu = new CopyMenu(table, tableService.getPagination());
-        copyMenu.init();
+        // TODO Initial icon here should be based on state if it exists??
+        elementTypeButton = createButton(TRANSACTION_ICON, ELEMENT_TYPE, e -> {
+            if (tableTopComponent.getCurrentState() != null) {
+                final TableViewState newState = new TableViewState(tableTopComponent.getCurrentState());
+                
+                newState.setElementType(tableTopComponent.getCurrentState().getElementType() == GraphElementType.TRANSACTION
+                        ? GraphElementType.VERTEX : GraphElementType.TRANSACTION);
+                
+                elementTypeButton.setGraphic(
+                        newState.getElementType() == GraphElementType.TRANSACTION
+                            ? TRANSACTION_ICON : VERTEX_ICON
+                );
+                
+                PluginExecution.withPlugin(
+                        new TableViewUtilities.UpdateStatePlugin(newState)
+                ).executeLater(tableTopComponent.getCurrentGraph());
+            }
+            
+            e.consume();
+        });
         
-        // Export Button Menu
-        exportMenu = new ExportMenu(tableTopComponent, table, tableService);
-        exportMenu.init();
-        
-        // Preferences Button Menu
-        preferencesMenu = new PreferencesMenu(tableTopComponent, tablePane, table,
-                tableService);
-        preferencesMenu.init();
+        copyMenu = createCopyMenu();
+        exportMenu = createExportMenu();
+        preferencesMenu = createPreferencesMenu();
         
         helpButton = createButton(HELP_ICON, HELP, e -> {
-            new HelpCtx(TableViewTopComponent.class.getName()).display();
+            getHelpContext().display();
+            
+            e.consume();
         });
         
         toolbar = new ToolBar(columnVisibilityButton, selectedOnlyButton,
@@ -162,52 +172,175 @@ public class TableToolbar {
     /**
      * Update the toolbar using the state.
      *
-     * @param state the current table view state.
+     * @param state the current table view state
      */
     public void updateToolbar(final TableViewState state) {
         Platform.runLater(() -> {
             if (state != null) {
-                selectedOnlyButton.setSelected(state.isSelectedOnly());
-                selectedOnlyButton.setGraphic(state.isSelectedOnly()
+                getSelectedOnlyButton().setSelected(state.isSelectedOnly());
+                getSelectedOnlyButton().setGraphic(state.isSelectedOnly()
                         ? SELECTED_VISIBLE_ICON : ALL_VISIBLE_ICON);
-                elementTypeButton.setGraphic(state.getElementType() == GraphElementType.TRANSACTION
+                getElementTypeButton().setGraphic(state.getElementType() == GraphElementType.TRANSACTION
                         ? TRANSACTION_ICON : VERTEX_ICON);
             }
         });
     }
     
+    /**
+     * Gets the tool bar UI component that will be added to the table and contains
+     * all the other UI buttons etc that are created and added to it.
+     *
+     * @return the table tool bar
+     */
     public ToolBar getToolbar() {
         return toolbar;
     }
 
+    /**
+     * Gets the column visibility button on the tool bar. This button will, when clicked
+     * generate a context menu with more options to select from.
+     *
+     * @return the column visibility button on the tool bar
+     * @see ColumnVisibilityContextMenu
+     */
     public Button getColumnVisibilityButton() {
         return columnVisibilityButton;
     }
 
+    /**
+     * Gets the "Element Type" button from the tool bar that toggles
+     * between the currently displayed element types.
+     * <p/>
+     * The table displays either nodes or edges. This button is what toggles
+     * between the two.
+     *
+     * @return the element type button on the tool bar
+     */
     public Button getElementTypeButton() {
         return elementTypeButton;
     }
 
+    /**
+     * Gets the help button on the tool bar.
+     *
+     * @return the help button on the tool bar
+     */
     public Button getHelpButton() {
         return helpButton;
     }
 
+    /**
+     * Gets the "Selected Only Mode" toggle button on the tool bar.
+     * <p/>
+     * When "Selected Only Mode" is <b>ON</b>, selection in the table does not effect
+     * selection in the graph and vice versa. When "Selected Only Mode" is <b>OFF</b>
+     * then selection in the table effects selection in the graph and vice versa.
+     *
+     * @return the "Selected Only Mode" toggle button
+     */
     public ToggleButton getSelectedOnlyButton() {
         return selectedOnlyButton;
     }
 
+    /**
+     * Gets the {@link ExportMenu} associated to the tool bar. The export menu
+     * will allow for the export of the table data into different formats.
+     *
+     * @return the export menu on the tool bar
+     * @see ExportMenu
+     */
     public ExportMenu getExportMenu() {
         return exportMenu;
     }
 
+    /**
+     * Gets the {@link CopyMenu} associated to the tool bar. The copy menu will
+     * allow for the loading of CSV table data into the OS clipboard.
+     *
+     * @return the copy menu on the tool bar
+     * @see CopyMenu
+     */
     public CopyMenu getCopyMenu() {
         return copyMenu;
     }
 
+    /**
+     * Gets the {@link PreferencesMenu} associated to the tool bar.
+     *
+     * @return the preference menu on the tool bar
+     * @see PreferencesMenu
+     */
     public PreferencesMenu getPreferencesMenu() {
         return preferencesMenu;
     }
     
+    /**
+     * Creates a new {@link CopyMenu} and initializes it.
+     *
+     * @return the new copy menu
+     */
+    protected CopyMenu createCopyMenu() {
+        final CopyMenu newCopyMenu = new CopyMenu(table, tableService.getPagination());
+        newCopyMenu.init();
+        
+        return newCopyMenu;
+    }
+    
+    /**
+     * Creates a new {@link ExportMenu} and initializes it.
+     *
+     * @return the new export menu
+     */
+    protected ExportMenu createExportMenu() {
+        final ExportMenu newExportMenu = new ExportMenu(tableTopComponent, table, tableService);
+        newExportMenu.init();
+        
+        return newExportMenu;
+    }
+    
+    /**
+     * Creates a new {@link PreferencesMenu} and initializes it.
+     *
+     * @return the new preferences menu
+     */
+    protected PreferencesMenu createPreferencesMenu() {
+        final PreferencesMenu newPreferencesMenu = new PreferencesMenu(tableTopComponent,
+                tablePane, table, tableService);
+        newPreferencesMenu.init();
+        
+        return newPreferencesMenu;
+    }
+    
+    /**
+     * Creates a new help context for the tool bar.
+     *
+     * @return the new help context
+     */
+    protected HelpCtx getHelpContext() {
+        return new HelpCtx(TABLE_TOP_COMPONENT_CLASS_NAME);
+    }
+    
+    /**
+     * Creates a new {@link ColumnVisibilityContextMenu} and initializes it.
+     *
+     * @return the new column visibility context menu
+     */
+    protected ColumnVisibilityContextMenu createColumnVisibilityContextMenu() {
+        final ColumnVisibilityContextMenu newColumnVisibilityMenu
+                    = new ColumnVisibilityContextMenu(tableTopComponent, table, tableService);
+        newColumnVisibilityMenu.init();
+        
+        return newColumnVisibilityMenu;
+    }
+    
+    /**
+     * Creates a button.
+     *
+     * @param icon the icon to place on the button
+     * @param tooltip the tool tip text to associate with the button
+     * @param eventHandler the action handler for when the button is pressed
+     * @return the created button
+     */
     private Button createButton(final ImageView icon,
                                 final String tooltip,
                                 final EventHandler<ActionEvent> eventHandler) {
@@ -222,6 +355,14 @@ public class TableToolbar {
         return button;
     }
     
+    /**
+     * Creates a toggle button.
+     *
+     * @param icon the icon to place on the button
+     * @param tooltip the tool tip text to associate with the button
+     * @param eventHandler the action handler for when the button is pressed
+     * @return the created toggle button
+     */
     private ToggleButton createToggleButton(final ImageView icon,
                                             final String tooltip,
                                             final EventHandler<ActionEvent> eventHandler) {
