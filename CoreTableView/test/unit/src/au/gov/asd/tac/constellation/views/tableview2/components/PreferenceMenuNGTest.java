@@ -41,7 +41,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.clearInvocations;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
@@ -91,7 +95,7 @@ public class PreferenceMenuNGTest {
         table = mock(Table.class);
         tableService = mock(TableService.class);
         
-        preferencesMenu = new PreferencesMenu(tableTopComponent, tablePane, table, tableService);
+        preferencesMenu = spy(new PreferencesMenu(tableTopComponent, tablePane, table, tableService));
     }
 
     @AfterMethod
@@ -159,7 +163,79 @@ public class PreferenceMenuNGTest {
         // Load Preferences
         assertEquals("Load Table Preferences...", preferencesMenu.getLoadPreferencesMenu().getText());
         
+        verifyLoadPreferencesAction(preferencesMenu.getLoadPreferencesMenu(), true);
+        verifyLoadPreferencesAction(preferencesMenu.getLoadPreferencesMenu(), false);
+        
+        
+        
+        
+        
+        
         // TODO Load Preferences Actions
+        // test load pref separately
+        // figure out why there is a sleep in there. looks like its there because of the execute later
+        // in update visible columns. it needs to wait for that to finish first
+        
+        // Also build failing for some reason!!
+    }
+    
+    /**
+     * Verifies that when the load preferences button is clicked, the load preferences
+     * method is called and the tables pagination is updated with any necessary
+     * changes. If the current active graph is null, then no preferences will be
+     * loaded.
+     *
+     * @param loadPreferencesMenu the load preferences menu
+     * @param isActiveGraphNull true if the active graph is null, false otherwise
+     * @throws InterruptedException if there is a an issue waiting for the JavaFX thread
+     *     work to complete
+     */
+    private void verifyLoadPreferencesAction(final MenuItem loadPreferencesMenu,
+                                             final boolean isActiveGraphNull) throws InterruptedException {
+        clearInvocations(preferencesMenu, tableService, tablePane);
+        
+        try (
+                final MockedStatic<GraphManager> graphManagerMockedStatic
+                        = Mockito.mockStatic(GraphManager.class);
+            ) {
+            
+            final GraphManager graphManager = mock(GraphManager.class);
+            graphManagerMockedStatic.when(GraphManager::getDefault).thenReturn(graphManager);
+            
+            final ActionEvent actionEvent = mock(ActionEvent.class);
+            
+            if (isActiveGraphNull) {
+                when(graphManager.getActiveGraph()).thenReturn(null);
+                
+                loadPreferencesMenu.getOnAction().handle(actionEvent);
+                
+                verify(preferencesMenu, times(0)).loadPreferences();
+            } else {
+                final TablePreferences tablePreferences = new TablePreferences();
+                tablePreferences.setMaxRowsPerPage(42);
+
+                final Graph graph = mock(Graph.class);
+                final Pagination pagination = mock(Pagination.class);
+
+                when(graphManager.getActiveGraph()).thenReturn(graph);
+
+                when(tableService.getTablePreferences()).thenReturn(tablePreferences);
+                when(tableService.getPagination()).thenReturn(pagination);
+
+                doNothing().when(preferencesMenu).loadPreferences();
+
+                loadPreferencesMenu.getOnAction().handle(actionEvent);
+
+                final CountDownLatch latch = new CountDownLatch(1);
+                Platform.runLater(() -> latch.countDown());
+                latch.await();
+
+                verify(tableService).updatePagination(42);
+                verify(preferencesMenu).loadPreferences();
+                verify(tablePane).setCenter(pagination);
+            }
+            verify(actionEvent).consume();
+        }
     }
     
     /**
@@ -272,6 +348,8 @@ public class PreferenceMenuNGTest {
      */
     private void verifyPageSizeAction(final MenuItem pageSizeMenuItem,
                                       final Integer pageSize) throws InterruptedException {
+        clearInvocations(tableService, tablePane);
+        
         final ActionEvent actionEvent = mock(ActionEvent.class);
         final Pagination pagination = mock(Pagination.class);
         

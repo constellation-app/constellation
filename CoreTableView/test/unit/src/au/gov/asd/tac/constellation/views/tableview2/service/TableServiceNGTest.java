@@ -35,6 +35,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.TableColumn;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.same;
@@ -98,14 +99,14 @@ public class TableServiceNGTest {
     @Test
     public void saveSortDetails() {
         assertEquals(
-                Map.of("", TableColumn.SortType.ASCENDING), 
+                ImmutablePair.of("", TableColumn.SortType.ASCENDING), 
                 tableService.getTablePreferences().getSortByColumn()
         );
         
         tableService.saveSortDetails("ABC", TableColumn.SortType.DESCENDING);
      
         assertEquals(
-                Map.of("ABC", TableColumn.SortType.DESCENDING), 
+                ImmutablePair.of("ABC", TableColumn.SortType.DESCENDING), 
                 tableService.getTablePreferences().getSortByColumn()
         );
     }

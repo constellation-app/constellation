@@ -20,8 +20,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
 import javafx.scene.control.TableColumn;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -42,8 +40,8 @@ public final class TablePreferences {
     private List<String> columnOrder = new ArrayList<>();
     
     @JsonProperty("SortByColumn")
-    private Map<String, TableColumn.SortType> sortByColumn
-            = Map.of("", TableColumn.SortType.ASCENDING);
+    private Map.Entry<String, TableColumn.SortType> sortByColumn
+            = Pair.of("", TableColumn.SortType.ASCENDING);
 
     public synchronized Integer getMaxRowsPerPage() {
         return maxRowsPerPage;
@@ -61,40 +59,35 @@ public final class TablePreferences {
         this.columnOrder = columnOrder;
     }
 
-    public synchronized Map<String, TableColumn.SortType> getSortByColumn() {
+    public synchronized Map.Entry<String, TableColumn.SortType> getSortByColumn() {
         return sortByColumn;
     }
 
-    public synchronized void setSortByColumn(Map<String, TableColumn.SortType> sortByColumn) {
+    public synchronized void setSortByColumn(Map.Entry<String, TableColumn.SortType> sortByColumn) {
         this.sortByColumn = sortByColumn;
     }
     
     @JsonIgnore
     public synchronized String getSortColumn() {
-        final Optional<Entry<String, TableColumn.SortType>> firstEntry = getSortByColumn()
-                .entrySet().stream().findFirst();
-        if (firstEntry.isPresent()) {
-            return firstEntry.get().getKey();
+        if (getSortByColumn() != null) {
+            return getSortByColumn().getKey();
         }
         return null;
     }
     
     @JsonIgnore
     public synchronized TableColumn.SortType getSortDirection() {
-        final Optional<Entry<String, TableColumn.SortType>> firstEntry = getSortByColumn()
-                .entrySet().stream().findFirst();
-        if (firstEntry.isPresent()) {
-            return firstEntry.get().getValue();
+        if (getSortByColumn() != null) {
+            return getSortByColumn().getValue();
         }
         return null;
     }
     
     @JsonIgnore
     public synchronized Pair<String, TableColumn.SortType> getSort() {
-        final Optional<Entry<String, TableColumn.SortType>> firstEntry = getSortByColumn()
-                .entrySet().stream().findFirst();
-        if (firstEntry.isPresent()) {
-            return ImmutablePair.of(firstEntry.get().getKey(), firstEntry.get().getValue());
+        if (getSortByColumn() != null) {
+            return ImmutablePair.of(getSortByColumn().getKey(),
+                    getSortByColumn().getValue());
         }
         return null;
     }

@@ -33,6 +33,7 @@ import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.openide.NotifyDescriptor;
 import org.openide.util.NbPreferences;
 
@@ -97,7 +98,7 @@ public class TableViewPreferencesIOUtilities {
         
         if (!table.getSortOrder().isEmpty()) {
             tablePreferences.setSortByColumn(
-                    Map.of(
+                    ImmutablePair.of(
                             table.getSortOrder().get(0).getText(),
                             table.getSortOrder().get(0).getSortType()
                     )

@@ -19,14 +19,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import javafx.scene.control.TableColumn;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.openide.util.Pair;
+import org.apache.commons.lang3.tuple.Pair;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertNull;
 import org.testng.annotations.Test;
@@ -60,22 +58,27 @@ public class TablePreferencesNGTest {
     
     @Test
     public void equality() {
+        final Pair<String, TableColumn.SortType> black
+                = ImmutablePair.of("BLACK", TableColumn.SortType.ASCENDING);
+        final Pair<String, TableColumn.SortType> red
+                = ImmutablePair.of("RED", TableColumn.SortType.ASCENDING);
+        
         EqualsVerifier.forClass(TablePreferences.class)
                 .suppress(Warning.NONFINAL_FIELDS)
+                .withPrefabValues(Pair.class, red, black)
                 .verify();
     }
     
     @Test
     public void getSortColumn() {
         final TablePreferences tablePreferences = new TablePreferences();
-        tablePreferences.setSortByColumn(Map.of(
-                "ABC", TableColumn.SortType.ASCENDING,
+        tablePreferences.setSortByColumn(ImmutablePair.of(
                 "DEF", TableColumn.SortType.DESCENDING
         ));
         
         assertEquals("DEF", tablePreferences.getSortColumn());
         
-        tablePreferences.setSortByColumn(Collections.emptyMap());
+        tablePreferences.setSortByColumn(null);
         
         assertNull(tablePreferences.getSortColumn());
     }
@@ -83,14 +86,13 @@ public class TablePreferencesNGTest {
     @Test
     public void getSortDirection() {
         final TablePreferences tablePreferences = new TablePreferences();
-        tablePreferences.setSortByColumn(Map.of(
-                "ABC", TableColumn.SortType.ASCENDING,
+        tablePreferences.setSortByColumn(ImmutablePair.of(
                 "DEF", TableColumn.SortType.DESCENDING
         ));
         
         assertEquals(TableColumn.SortType.DESCENDING, tablePreferences.getSortDirection());
         
-        tablePreferences.setSortByColumn(Collections.emptyMap());
+        tablePreferences.setSortByColumn(null);
         
         assertNull(tablePreferences.getSortDirection());
     }
@@ -98,14 +100,13 @@ public class TablePreferencesNGTest {
     @Test
     public void getSort() {
         final TablePreferences tablePreferences = new TablePreferences();
-        tablePreferences.setSortByColumn(Map.of(
-                "ABC", TableColumn.SortType.ASCENDING,
+        tablePreferences.setSortByColumn(ImmutablePair.of(
                 "DEF", TableColumn.SortType.DESCENDING
         ));
         
         assertEquals(ImmutablePair.of("DEF", TableColumn.SortType.DESCENDING), tablePreferences.getSort());
         
-        tablePreferences.setSortByColumn(Collections.emptyMap());
+        tablePreferences.setSortByColumn(null);
         
         assertNull(tablePreferences.getSort());
     }
@@ -115,7 +116,7 @@ public class TablePreferencesNGTest {
         
         tablePreferences.setColumnOrder(List.of("ABC", "DEF"));
         tablePreferences.setMaxRowsPerPage(42);
-        tablePreferences.setSortByColumn(Map.of("GHI", TableColumn.SortType.ASCENDING));
+        tablePreferences.setSortByColumn(ImmutablePair.of("GHI", TableColumn.SortType.ASCENDING));
         
         return tablePreferences;
     }

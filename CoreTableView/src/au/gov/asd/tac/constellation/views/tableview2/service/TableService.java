@@ -35,6 +35,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.TableColumn;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 
 /**
  *
@@ -200,7 +201,7 @@ public class TableService {
      */
     public void saveSortDetails(final String columnName,
                                 final TableColumn.SortType sortType) {
-        getTablePreferences().setSortByColumn(Map.of(columnName, sortType));
+        getTablePreferences().setSortByColumn(ImmutablePair.of(columnName, sortType));
     }
     
     public Pagination getPagination() {

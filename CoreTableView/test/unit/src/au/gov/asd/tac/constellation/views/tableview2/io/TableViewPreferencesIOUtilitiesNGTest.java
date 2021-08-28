@@ -31,6 +31,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.MockedStatic;
@@ -103,7 +104,7 @@ public class TableViewPreferencesIOUtilitiesNGTest {
 
         final TablePreferences expected = new TablePreferences();
         expected.setColumnOrder(List.of("ABC", "DEF"));
-        expected.setSortByColumn(Map.of("DEF", TableColumn.SortType.DESCENDING));
+        expected.setSortByColumn(ImmutablePair.of("DEF", TableColumn.SortType.DESCENDING));
         expected.setMaxRowsPerPage(2);
 
         assertEquals(expected, tablePreferences);
@@ -125,7 +126,7 @@ public class TableViewPreferencesIOUtilitiesNGTest {
 
         final TablePreferences expected = new TablePreferences();
         expected.setColumnOrder(List.of("ABC", "DEF", "JKL"));
-        expected.setSortByColumn(Map.of("DEF", TableColumn.SortType.ASCENDING));
+        expected.setSortByColumn(ImmutablePair.of("DEF", TableColumn.SortType.ASCENDING));
         expected.setMaxRowsPerPage(5);
 
         assertEquals(expected, tablepreferences);
@@ -141,7 +142,7 @@ public class TableViewPreferencesIOUtilitiesNGTest {
 
         final TablePreferences expected = new TablePreferences();
         expected.setColumnOrder(Collections.emptyList());
-        expected.setSortByColumn(Map.of("", TableColumn.SortType.ASCENDING));
+        expected.setSortByColumn(ImmutablePair.of("", TableColumn.SortType.ASCENDING));
         expected.setMaxRowsPerPage(2);
 
         assertEquals(expected, tablepreferences);

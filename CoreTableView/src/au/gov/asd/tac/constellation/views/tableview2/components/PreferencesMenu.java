@@ -263,7 +263,7 @@ public class PreferencesMenu {
      * (displayed column/column order and sort order) to match values found in
      * saved preferences file.
      */
-    private void loadPreferences() {
+    protected void loadPreferences() {
         synchronized (TABLE_LOCK) {
             if (tableTopComponent.getCurrentState() != null) {
 
