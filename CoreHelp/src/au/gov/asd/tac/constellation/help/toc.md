@@ -11,7 +11,6 @@
     * Compare Graph
 * Views
     * Analytic View
-        * Analytic View
         * Analytics
             * Centrality
                 * [Betweenness Centrality](.\CoreAnalyticView\src\au\gov\asd\tac\constellation\views\analyticview\docs\analytic-betweenness-centrality.md)

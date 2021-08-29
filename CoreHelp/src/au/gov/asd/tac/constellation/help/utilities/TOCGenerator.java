@@ -16,12 +16,12 @@
 package au.gov.asd.tac.constellation.help.utilities;
 
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import com.jogamp.common.os.Platform;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
@@ -36,9 +36,13 @@ public class TOCGenerator {
 
     private final File toc;
     private static final Logger LOGGER = Logger.getLogger(TOCGenerator.class.getName());
+    private static final String OPEN_RECTANGLE_BRACE = "[";
+    private static final String CLOSE_RECTANGLE_BRACE = "]";
+    private static final String OPEN_PARENTHESIS = "(";
+    private static final String CLOSE_PARENTHESIS = ")";
 
     /**
-     * Delete old TOC file and generate a new one
+     * Delete old TOC file and generate a new one at the specified path
      *
      * @param filePath
      */
@@ -57,31 +61,160 @@ public class TOCGenerator {
 
         // initialise file with path
         toc = new File(filePath);
+        LOGGER.log(Level.WARNING, "file path is: {0}", toc.getAbsolutePath());
         try {
             toc.createNewFile();
             LOGGER.log(Level.FINE, "Table of Contents file was created at: {0}", filePath);
 
         } catch (final IOException ex) {
-            Logger.getLogger(TOCGenerator.class.getName()).log(Level.SEVERE, "Unable to create table of contents file", ex);
+            LOGGER.log(Level.SEVERE, "Unable to create table of contents file", ex);
         }
     }
 
     /**
-     * Generate a table of contents from the mapping file
+     * // WARNING THIS IS HARDCODED TEST CODE FOR POC // Remove me once done
+     *
+     * @param xmlFromFile File of XML mappings
      */
-    public static void generateTableOfContents(final Map<String, String> items) {
+    public void convertXMLMappingsTEST() {
+        final FileWriter writer;
+        try {
+            writer = new FileWriter(toc);
+            convertXMLMappingsHARDCODED(writer);
+            writer.close();
+        } catch (IOException ex) {
+            LOGGER.log(Level.SEVERE, "Failed to write mappings to file", ex);
+        }
+    }
+
+    /**
+     * Writes the converted XML mappings to the toc file
+     *
+     * @param xmlFromFile File of XML mappings
+     */
+    public void convertXMLMappings(final File xmlFromFile) {
+        final FileWriter writer;
+        try {
+            writer = new FileWriter(toc);
+            convertXMLMappings(xmlFromFile, writer);
+        } catch (IOException ex) {
+            LOGGER.log(Level.SEVERE, "Failed to write mappings to file", ex);
+        }
+    }
+
+    /**
+     * Generate a table of contents from the XML mapping file
+     */
+    public static void convertXMLMappings(final File xmlFromFile, final FileWriter markdownOutput) {
+
+        // TODO: Implement this
+        // open the file
+        // parse using xml parser
+        // loop each entry
+        // if <tocitem> then check if text val exists
+        // if exists then set text to parent
+        // read more entries and place under child
+    }
+
+    /**
+     * WARNING THIS IS HARDCODED TEST CODE FOR POC
+     *
+     * @param markdownWriter
+     */
+    public static void convertXMLMappingsHARDCODED(final FileWriter markdownWriter) {
+        writeText(markdownWriter, "# Table of Contents");
+        writeText(markdownWriter, Platform.NEWLINE);
+        writeText(markdownWriter, Platform.NEWLINE);
+        writeItem(markdownWriter, "Overview", 0);
+        writeText(markdownWriter, Platform.NEWLINE);
+        writeItem(markdownWriter, generateLink("About Constellation", ".\\CoreFunctionality\\src\\au\\gov\\asd\\tac\\constellation\\functionality\\docs\\about-constellation.md"), 1);
+        writeText(markdownWriter, Platform.NEWLINE);
+        writeItem(markdownWriter, generateLink("Getting Started", ".\\CoreFunctionality\\src\\au\\gov\\asd\\tac\\constellation\\functionality\\docs\\getting-started.md"), 1);
+        writeText(markdownWriter, Platform.NEWLINE);
+        writeItem(markdownWriter, generateLink("The Graph Window", ".\\CoreFunctionality\\src\\au\\gov\\asd\\tac\\constellation\\functionality\\docs\\the-graph-window.md"), 1);
+        writeText(markdownWriter, Platform.NEWLINE);
+        writeItem(markdownWriter, "Tools", 0);
+        writeText(markdownWriter, Platform.NEWLINE);
+        writeItem(markdownWriter, "Cluster", 1);
+        writeText(markdownWriter, Platform.NEWLINE);
+        writeItem(markdownWriter, generateLink("Chinese Whispers", ".\\CoreAlgorithmPlugins\\src\\au\\gov\\asd\\tac\\constellation\\plugins\\algorithms\\docs\\chinese-whispers.md"), 2);
+        writeText(markdownWriter, Platform.NEWLINE);
+        writeItem(markdownWriter, generateLink("K-Truss", ".\\CoreAlgorithmPlugins\\src\\au\\gov\\asd\\tac\\constellation\\plugins\\algorithms\\docs\\k-truss.md"), 2);
+        writeText(markdownWriter, Platform.NEWLINE);
+        writeItem(markdownWriter, "Compare Graph", 1);
+        writeText(markdownWriter, Platform.NEWLINE);
+        writeItem(markdownWriter, "Views", 0);
+        writeText(markdownWriter, Platform.NEWLINE);
+        writeItem(markdownWriter, "Analytic View", 1);
+        writeText(markdownWriter, Platform.NEWLINE);
+        writeItem(markdownWriter, "Analytics", 2);
+        writeText(markdownWriter, Platform.NEWLINE);
+        writeItem(markdownWriter, "Centrality", 3);
+        writeText(markdownWriter, Platform.NEWLINE);
+        writeItem(markdownWriter, generateLink("Betweenness Centrality", ".\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\docs\\analytic-betweenness-centrality.md"), 4);
+        writeText(markdownWriter, Platform.NEWLINE);
+        writeItem(markdownWriter, "Global", 3);
+        writeText(markdownWriter, Platform.NEWLINE);
+        writeItem(markdownWriter, "Questions", 2);
+        writeText(markdownWriter, Platform.NEWLINE);
+        writeItem(markdownWriter, generateLink("Connects the Network Best?", ".\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\docs\\question-best-connects-network.md"), 3);
+        writeText(markdownWriter, Platform.NEWLINE);
+        writeItem(markdownWriter, "Layers View", 1);
+        writeText(markdownWriter, Platform.NEWLINE);
+        writeItem(markdownWriter, generateLink("Layers View", ".\\CoreLayersView\\src\\au\\gov\\asd\\tac\\constellation\\views\\layers\\docs\\layers-view.md"), 2);
+        writeText(markdownWriter, Platform.NEWLINE);
 
     }
 
-    public void addItem(final FileWriter writer, final String item, final int indentLevel) {
+    /**
+     * Generate a markdown style link from a title and a url
+     */
+    public static String generateLink(final String title, final String url) {
+        final StringBuilder sb = new StringBuilder();
+        sb.append(OPEN_RECTANGLE_BRACE);
+        sb.append(title);
+        sb.append(CLOSE_RECTANGLE_BRACE);
+        sb.append(OPEN_PARENTHESIS);
+        sb.append(url);
+        sb.append(CLOSE_PARENTHESIS);
+        return sb.toString();
+    }
+
+    /**
+     * Writes a String item using the given writer, at the given indentLevel. 0
+     * indent will leave no blankspace. Format:
+     * <indentLevel>* String item
+     *
+     * @param writer the FileWriter to use when writing
+     * @param item the String to write
+     * @param indentLevel the amount of indents to include
+     */
+    public static void writeItem(final FileWriter writer, final String item, final int indentLevel) {
+        final int spacesPerIndent = 4;
         try {
-            final String indent = StringUtils.repeat(SeparatorConstants.WHITESPACE, indentLevel);
+            final String indent = StringUtils.repeat(SeparatorConstants.BLANKSPACE, indentLevel * spacesPerIndent);
             final StringBuilder sb = new StringBuilder();
             sb.append(indent);
-            //sb.append(SeparatorConstants.);
+            sb.append(SeparatorConstants.ASTERISK);
+            sb.append(SeparatorConstants.BLANKSPACE);
+            sb.append(item);
+            writer.write(sb.toString());
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, "Failed to write to file", ex);
+        }
+    }
+
+    /**
+     * Write a string to file with no change of formatting.
+     *
+     * @param writer the FileWriter to use when writing
+     * @param item the String to write
+     */
+    public static void writeText(final FileWriter writer, final String item) {
+        try {
             writer.write(item);
         } catch (final IOException ex) {
-            Logger.getLogger(TOCGenerator.class.getName()).log(Level.SEVERE, "Failed to write to file", ex);
+            LOGGER.log(Level.SEVERE, "Failed to write to file", ex);
         }
     }
 

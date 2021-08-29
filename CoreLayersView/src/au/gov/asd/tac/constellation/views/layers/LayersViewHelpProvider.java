@@ -18,15 +18,15 @@ package au.gov.asd.tac.constellation.views.layers;
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Provider to get help pages for the layers view
- * *
- * @author Delphinus8821
+ * Provider to get help pages for the layers view * @author Delphinus8821
  */
 @ServiceProvider(service = HelpPageProvider.class)
 @NbBundle.Messages("LayersViewHelpProvider=Layers View Help Provider")
@@ -54,5 +54,11 @@ public class LayersViewHelpProvider extends HelpPageProvider {
             filePaths.add(file.getPath());
         }
         return filePaths;
+    }
+
+    @Override
+    public Map<String, String> getHelpMap() {
+        Map<String, String> map = new HashMap<>();
+        return map;
     }
 }

@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.help.utilities;
 
+import java.util.Map;
 import org.openide.windows.OnShowing;
 
 /**
@@ -25,17 +26,27 @@ import org.openide.windows.OnShowing;
 @OnShowing()
 public class Generator implements Runnable {
 
-    private static final String TOC_FILE_PATH = "./resources/toc.md";
+    private static final String TOC_FILE_PATH = "src\\au\\gov\\asd\\tac\\constellation\\help\\toc.md";
 
     @Override
     public void run() {
         // Get mappings of help pages
-        var mappings = HelpMapper.getMappings();
+        final Map<String, String> mappings = HelpMapper.getMappings();
 
-        // Generate TOC dymanically from mappings
+        // Create TOCGenerator with the location of the resources file
         final TOCGenerator tocGenerator = new TOCGenerator(TOC_FILE_PATH);
 
-        //generateTableOfContents(mappings);
+        // Generate .md file from hardcoded writes
+        // TODO: Remove this test code and uncomment below.
+        tocGenerator.convertXMLMappingsTEST();
+
+        // Uncomment this when implemented
+        // address must locate the *-toc.xml file for each module
+        // file must be of that address
+        // tocGenerator will read that file and generate a markdown represenation of it
+        //final String exampleXMLFileAddress = ".\\CoreAnalyticView\\src\\au\\gov\\asd\\tac\\constellation\\views\\analyticview\\docs\\analyticview-toc.xml";
+        //final File exampleXMLFile = new File(exampleXMLFileAddress);
+        //tocGenerator.convertXMLMappings(exampleXMLFile);
     }
 
 }
