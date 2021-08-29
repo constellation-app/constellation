@@ -33,13 +33,12 @@ import au.gov.asd.tac.constellation.views.qualitycontrol.rules.IdentifierInconsi
 import au.gov.asd.tac.constellation.views.qualitycontrol.rules.MissingTypeRule;
 import au.gov.asd.tac.constellation.views.qualitycontrol.rules.QualityControlRule;
 import au.gov.asd.tac.constellation.views.qualitycontrol.rules.UnknownTypeRule;
-import java.awt.GraphicsEnvironment;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import javafx.embed.swing.JFXPanel;
 import org.openide.util.Lookup;
+import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -72,10 +71,13 @@ public class QualityControlViewPaneNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        FxToolkit.registerPrimaryStage();
+        FxToolkit.showStage();
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        FxToolkit.hideStage();
     }
 
     @BeforeMethod
@@ -131,24 +133,15 @@ public class QualityControlViewPaneNGTest {
     public void testRefreshQualityControlViewNullState() throws InterruptedException {
         System.out.println("refreshQualityControlViewNullState");
 
-        // TODO: Find a way to instantiate toolkit in a headless environment
-        // This unit test should pass locally but will hold up in a headless environment (e.g. CI)
-        // Putting it in this if loop is a temp fix for the hold up in CI but it does it by skipping the test
-        // (so CI won't actually tell you whether this is passing or not)
-        if (!GraphicsEnvironment.isHeadless()) {
-            //needed to initialise the toolkit
-            new JFXPanel();
+        final QualityControlViewPane instance = new QualityControlViewPane();
 
-            final QualityControlViewPane instance = new QualityControlViewPane();
+        instance.refreshQualityControlView(null);
 
-            instance.refreshQualityControlView(null);
+        //not ideal but needed in order to allow the code running in JFX thread to complete
+        Thread.sleep(100);
 
-            //not ideal but needed in order to allow the code running in JFX thread to complete
-            Thread.sleep(100);
-
-            final int noOfItems = instance.getQualityTable().getItems().size();
-            assertEquals(noOfItems, 0);
-        }
+        final int noOfItems = instance.getQualityTable().getItems().size();
+        assertEquals(noOfItems, 0);
     }
 
     /**
@@ -160,25 +153,16 @@ public class QualityControlViewPaneNGTest {
     public void testRefreshQualityControlViewEmptyState() throws InterruptedException {
         System.out.println("refreshQualityControlViewEmptyState");
 
-        // TODO: Find a way to instantiate toolkit in a headless environment
-        // This unit test should pass locally but will hold up in a headless environment (e.g. CI)
-        // Putting it in this if loop is a temp fix for the hold up in CI but it does it by skipping the test
-        // (so CI won't actually tell you whether this is passing or not)
-        if (!GraphicsEnvironment.isHeadless()) {
-            //needed to initialise the toolkit
-            new JFXPanel();
+        final QualityControlViewPane instance = new QualityControlViewPane();
+        final QualityControlState state = new QualityControlState(graph.getId(), new ArrayList<>(), new ArrayList<>());
 
-            final QualityControlViewPane instance = new QualityControlViewPane();
-            final QualityControlState state = new QualityControlState(graph.getId(), new ArrayList<>(), new ArrayList<>());
+        instance.refreshQualityControlView(state);
 
-            instance.refreshQualityControlView(state);
+        //not ideal but needed in order to allow the code running in JFX thread to complete
+        Thread.sleep(100);
 
-            //not ideal but needed in order to allow the code running in JFX thread to complete
-            Thread.sleep(100);
-
-            final int noOfItems = instance.getQualityTable().getItems().size();
-            assertEquals(noOfItems, 0);
-        }
+        final int noOfItems = instance.getQualityTable().getItems().size();
+        assertEquals(noOfItems, 0);
     }
 
     /**
@@ -190,25 +174,16 @@ public class QualityControlViewPaneNGTest {
     public void testRefreshQualityControlView() throws InterruptedException {
         System.out.println("refreshQualityControlView");
 
-        // TODO: Find a way to instantiate toolkit in a headless environment
-        // This unit test should pass locally but will hold up in a headless environment (e.g. CI)
-        // Putting it in this if loop is a temp fix for the hold up in CI but it does it by skipping the test
-        // (so CI won't actually tell you whether this is passing or not)
-        if (!GraphicsEnvironment.isHeadless()) {
-            //needed to initialise the toolkit
-            new JFXPanel();
+        final QualityControlViewPane instance = new QualityControlViewPane();
+        final QualityControlState state = new QualityControlState(graph.getId(), events, rules);
 
-            final QualityControlViewPane instance = new QualityControlViewPane();
-            final QualityControlState state = new QualityControlState(graph.getId(), events, rules);
+        instance.refreshQualityControlView(state);
 
-            instance.refreshQualityControlView(state);
+        //not ideal but needed in order to allow the code running in JFX thread to complete
+        Thread.sleep(100);
 
-            //not ideal but needed in order to allow the code running in JFX thread to complete
-            Thread.sleep(100);
-
-            final int noOfItems = instance.getQualityTable().getItems().size();
-            assertEquals(noOfItems, 2);
-        }
+        final int noOfItems = instance.getQualityTable().getItems().size();
+        assertEquals(noOfItems, 2);
     }
 
     /**
