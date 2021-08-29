@@ -28,7 +28,7 @@ import au.gov.asd.tac.constellation.views.tableview2.UpdateMethod;
 import au.gov.asd.tac.constellation.views.tableview2.state.TablePreferences;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
+import java.util.concurrent.CountDownLatch;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -119,13 +119,19 @@ public class PreferencesMenu {
         loadPreferencesMenu = createPreferencesMenu(LOAD_PREFERENCES, e -> {
             if (GraphManager.getDefault().getActiveGraph() != null) {
                 loadPreferences();
-                //TODO: Replace need to sleep before paginating
+                
+                // Load preferences starts work on JavaFX thread. We cannot update
+                // the pagination until that work is complete.
+                final CountDownLatch latch = new CountDownLatch(1);
+                Platform.runLater(() -> latch.countDown());
+                
                 try {
-                    Thread.sleep(1000);
-                } catch (final InterruptedException ex) {
-                    Thread.currentThread().interrupt();
-                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+                    latch.await();
+                } catch (InterruptedException ex) {
+                    LOGGER.warning("Thread interrupted whilst waiting for JavaFX "
+                            + "thread work to complete.");
                 }
+                
                 tableService.updatePagination(tableService.getTablePreferences().getMaxRowsPerPage());
                 Platform.runLater(() -> {
                     tablePane.setCenter(tableService.getPagination());
@@ -259,40 +265,51 @@ public class PreferencesMenu {
     }
     
     /**
-     * Allow user to select saved preferences file and update table view format
-     * (displayed column/column order and sort order) to match values found in
-     * saved preferences file.
+     * Loads a saved table preferences JSON file and updates the table format
+     * (displayed column/column order and sort order) to match the values found.
+     * <p/>
+     * This method will place a lock on the table to prevent any updates to the
+     * preferences whilst this load is happening.
+     * <p/>
+     * This method will start work on the JavaFX thread to update certain parts
+     * of the table like column visibility. Once the method returns it is
+     * recommended that the current thread waits for that work to complete before
+     * initiating any other actions.
      */
     protected void loadPreferences() {
         synchronized (TABLE_LOCK) {
             if (tableTopComponent.getCurrentState() != null) {
 
-                final List<TableColumn<ObservableList<String>, ?>> newColumnOrder = new ArrayList<>();
+                // Load the local table preferences JSON file
                 final TablePreferences tablePrefs
                         = TableViewPreferencesIOUtilities.getPreferences(
                                 tableTopComponent.getCurrentState().getElementType(),
                                 tableService.getTablePreferences().getMaxRowsPerPage() != null
-                                        ? tableService.getTablePreferences().getMaxRowsPerPage() : DEFAULT_MAX_ROWS_PER_PAGE);
+                                        ? tableService.getTablePreferences().getMaxRowsPerPage()
+                                        : DEFAULT_MAX_ROWS_PER_PAGE);
 
-                // If no columns were found then the user abandoned load as saves cannot occur with 0 columns
+                // If no columns were found then the user abandoned the load as saves
+                // cannot occur with 0 columns
                 if (CollectionUtils.isEmpty(tablePrefs.getColumnOrder())) {
                     return;
                 }
 
+                final List<TableColumn<ObservableList<String>, ?>> newColumnOrder = new ArrayList<>();
+                
+                // Loop through column names in the loaded preferences and add the
+                // associated columns to newColumnOrder (if found). Also set the
+                // found columns to visible.
                 tablePrefs.getColumnOrder().forEach(columnName -> {
-                    // Loop through column names found in prefs and add associated columns to newColumnOrder list all set to visible.
                     table.getTableView().getColumns().stream()
                             .filter(column -> column.getText().equals(columnName))
                             .forEachOrdered(column -> {
-                                // TODO This is not a copy. Copy is the same ref. Pointless?? Is that an issue??
-                                final TableColumn<ObservableList<String>, ?> copy = column;
-                                copy.setVisible(true);
-                                newColumnOrder.add(copy);
+                                column.setVisible(true);
+                                newColumnOrder.add(column);
                             });
                 });
 
-                // Populate orderedColumns with full column ThreeTuples corresponding to entires in newVolumnOrder and call updateVisibleColumns
-                // to update table.
+                // Populate orderedColumns with entries from column index that match
+                // the names of the columns in the loaded preferences.
                 final List<Tuple<String, Attribute>> orderedColumns
                         = newColumnOrder.stream()
                                 .map(c -> {
@@ -301,7 +318,9 @@ public class PreferencesMenu {
                                             return col;
                                         }
                                     }
-                                    // The following can only happen
+                                    
+                                    // TODO This seems like a bad fallback. I think returning null
+                                    //      and adding a filter for nonNull objects would be better
                                     return table.getColumnIndex().get(newColumnOrder.indexOf(c));
                                 }).map(columnTuple -> Tuple.create(
                                         columnTuple.getFirst(),
@@ -309,11 +328,13 @@ public class PreferencesMenu {
                                 ))
                                 .collect(Collectors.toList());
                 
+                // Update the sort preferences
                 tableService.saveSortDetails(
                         tablePrefs.getSortColumn(),
                         tablePrefs.getSortDirection()
                 );
                 
+                // Update the visibile columns
                 tableService.updateVisibleColumns(
                         tableTopComponent.getCurrentGraph(),
                         tableTopComponent.getCurrentState(),
@@ -321,7 +342,8 @@ public class PreferencesMenu {
                         UpdateMethod.REPLACE
                 );
                 
-                for (final Toggle t : pageSizeToggle.getToggles()) {
+                // Update the page size menu selection and page size preferences
+                for (final Toggle t : getPageSizeToggle().getToggles()) {
                     final RadioMenuItem pageSizeOption = (RadioMenuItem) t;
                     if (Integer.parseInt(pageSizeOption.getText()) == tablePrefs.getMaxRowsPerPage()) {
                         pageSizeOption.setSelected(true);

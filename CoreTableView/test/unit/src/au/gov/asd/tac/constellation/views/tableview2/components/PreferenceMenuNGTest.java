@@ -15,17 +15,23 @@
  */
 package au.gov.asd.tac.constellation.views.tableview2.components;
 
+import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
+import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
+import au.gov.asd.tac.constellation.views.tableview2.UpdateMethod;
 import au.gov.asd.tac.constellation.views.tableview2.io.TableViewPreferencesIOUtilities;
 import au.gov.asd.tac.constellation.views.tableview2.service.TableService;
 import au.gov.asd.tac.constellation.views.tableview2.state.TablePreferences;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -37,8 +43,15 @@ import javafx.scene.control.Pagination;
 import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.same;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.clearInvocations;
@@ -167,16 +180,154 @@ public class PreferenceMenuNGTest {
         verifyLoadPreferencesAction(preferencesMenu.getLoadPreferencesMenu(), false);
         
         
-        
-        
-        
-        
         // TODO Load Preferences Actions
-        // test load pref separately
+        // Clean up code and comments in load prefs
         // figure out why there is a sleep in there. looks like its there because of the execute later
         // in update visible columns. it needs to wait for that to finish first
-        
-        // Also build failing for some reason!!
+    }
+    
+    @Test
+    public void loadPreferencesCurrentStateNull() {
+        try (
+                final MockedStatic<TableViewPreferencesIOUtilities> tablePrefIOUtilsMockedStatic
+                        = Mockito.mockStatic(TableViewPreferencesIOUtilities.class);
+            ) {
+            preferencesMenu.loadPreferences();
+
+            tablePrefIOUtilsMockedStatic.verifyNoInteractions();
+        }
+    }
+    
+    @Test
+    public void loadPreferencesColumnOrderIsEmpty() {
+        try (
+                final MockedStatic<TableViewPreferencesIOUtilities> tablePrefIOUtilsMockedStatic
+                        = Mockito.mockStatic(TableViewPreferencesIOUtilities.class);
+            ) {
+            final TableViewState tableViewState = new TableViewState();
+            tableViewState.setElementType(GraphElementType.VERTEX);
+            
+            when(tableTopComponent.getCurrentState()).thenReturn(tableViewState);
+            
+            final TablePreferences currentTablePreferences = new TablePreferences();
+            currentTablePreferences.setMaxRowsPerPage(42);
+            
+            when(tableService.getTablePreferences()).thenReturn(currentTablePreferences);
+            
+            final TablePreferences loadedTablePreferences = new TablePreferences();
+            loadedTablePreferences.setColumnOrder(Collections.emptyList());
+            
+            tablePrefIOUtilsMockedStatic.when(() -> TableViewPreferencesIOUtilities
+                    .getPreferences(GraphElementType.VERTEX, 42)).thenReturn(loadedTablePreferences);
+            
+            preferencesMenu.loadPreferences();
+
+            verify(tableService, times(0)).saveSortDetails(anyString(), any(TableColumn.SortType.class));
+            verify(tableService, times(0)).updateVisibleColumns(any(Graph.class), any(TableViewState.class),
+                    any(List.class), any(UpdateMethod.class));
+        }
+    }
+    
+    @Test
+    public void loadPreferences() {
+        try (
+                final MockedStatic<TableViewPreferencesIOUtilities> tablePrefIOUtilsMockedStatic
+                        = Mockito.mockStatic(TableViewPreferencesIOUtilities.class);
+            ) {
+            final TableViewState tableViewState = new TableViewState();
+            tableViewState.setElementType(GraphElementType.VERTEX);
+            
+            final Graph graph = mock(Graph.class);
+            
+            when(tableTopComponent.getCurrentState()).thenReturn(tableViewState);
+            when(tableTopComponent.getCurrentGraph()).thenReturn(graph);
+            
+            // These are the existing table preferences
+            final TablePreferences currentTablePreferences = new TablePreferences();
+            currentTablePreferences.setMaxRowsPerPage(42);
+            
+            // There are 4 columns in the table. Set them up and all required variables
+            // that describe them
+            when(tableService.getTablePreferences()).thenReturn(currentTablePreferences);
+            
+            final TableView<ObservableList<String>> tableView = mock(TableView.class);
+            
+            when(table.getTableView()).thenReturn(tableView);
+            
+            final TableColumn<ObservableList<String>, String> column1 = mock(TableColumn.class);
+            final TableColumn<ObservableList<String>, String> column2 = mock(TableColumn.class);
+            final TableColumn<ObservableList<String>, String> column3 = mock(TableColumn.class);
+            final TableColumn<ObservableList<String>, String> column4 = mock(TableColumn.class);
+            
+            when(column1.getText()).thenReturn("Column1");
+            when(column2.getText()).thenReturn("Column2");
+            when(column3.getText()).thenReturn("Column3");
+            when(column4.getText()).thenReturn("Column4");
+            
+            when(tableView.getColumns()).thenReturn(
+                    FXCollections.observableList(List.of(column1, column2, column3, column4)));
+            
+            final Attribute attribute1 = mock(Attribute.class);
+            final Attribute attribute2 = mock(Attribute.class);
+            final Attribute attribute3 = mock(Attribute.class);
+            final Attribute attribute4 = mock(Attribute.class);
+            
+            final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> columnIndex
+                = new CopyOnWriteArrayList<>();
+            columnIndex.add(ThreeTuple.create("type1", attribute1, column1));
+            columnIndex.add(ThreeTuple.create("type2", attribute2, column2));
+            columnIndex.add(ThreeTuple.create("type3", attribute3, column3));
+            columnIndex.add(ThreeTuple.create("type4", attribute4, column4));
+            
+            when(table.getColumnIndex()).thenReturn(columnIndex);
+            
+            // The loaded preferences specifies 3 of the 4 columns in the table
+            final TablePreferences loadedTablePreferences = new TablePreferences();
+            loadedTablePreferences.setColumnOrder(List.of("Column1", "Column2", "Column4"));
+            loadedTablePreferences.setSortByColumn(ImmutablePair.of("Column2", TableColumn.SortType.DESCENDING));
+            loadedTablePreferences.setMaxRowsPerPage(150);
+            
+            // Create page size option menu items, with one matching the pages size
+            // in the loaded prefs above
+            final ToggleGroup toggleGroup = mock(ToggleGroup.class);
+            
+            final RadioMenuItem pageSizeOption1 = mock(RadioMenuItem.class);
+            final RadioMenuItem pageSizeOption2 = mock(RadioMenuItem.class);
+            
+            when(pageSizeOption1.getText()).thenReturn("100");
+            when(pageSizeOption2.getText()).thenReturn("150");
+            
+            when(preferencesMenu.getPageSizeToggle()).thenReturn(toggleGroup);
+            when(toggleGroup.getToggles()).thenReturn(
+                    FXCollections.observableList(List.of(pageSizeOption1, pageSizeOption2)));
+            
+            // Return the loaded preferences when the load call is made
+            tablePrefIOUtilsMockedStatic.when(() -> TableViewPreferencesIOUtilities
+                    .getPreferences(GraphElementType.VERTEX, 42)).thenReturn(loadedTablePreferences);
+            
+            // Start the test
+            preferencesMenu.loadPreferences();
+
+            verify(column1).setVisible(true);
+            verify(column2).setVisible(true);
+            verify(column3, times(0)).setVisible(anyBoolean());
+            verify(column4).setVisible(true);
+            
+            verify(tableService).saveSortDetails("Column2", TableColumn.SortType.DESCENDING);
+            verify(tableService).updateVisibleColumns(
+                    same(graph),
+                    same(tableViewState),
+                    eq(List.of(
+                            Tuple.create("type1", attribute1),
+                            Tuple.create("type2", attribute2),
+                            Tuple.create("type4", attribute4)
+                    )),
+                    eq(UpdateMethod.REPLACE));
+            
+            verify(pageSizeOption1, times(0)).setSelected(true);
+            verify(pageSizeOption2, times(1)).setSelected(true);
+            assertEquals(Integer.valueOf(150), currentTablePreferences.getMaxRowsPerPage());
+        }
     }
     
     /**
