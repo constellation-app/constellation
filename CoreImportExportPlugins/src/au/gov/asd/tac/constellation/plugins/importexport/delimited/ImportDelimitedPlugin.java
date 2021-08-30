@@ -78,6 +78,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
     public static final String DEFINITIONS_PARAMETER_ID = PluginParameter.buildId(ImportDelimitedPlugin.class, "definitions");
     public static final String SCHEMA_PARAMETER_ID = PluginParameter.buildId(ImportDelimitedPlugin.class, "schema");
     public static final String PARSER_PARAMETER_IDS_PARAMETER_ID = PluginParameter.buildId(ImportDelimitedPlugin.class, "parser_parameters");
+    public static final String FILES_INCLUDE_HEADERS_PARAMETER_ID = PluginParameter.buildId(ImportDelimitedPlugin.class, "files_Include_Headers");
 
     @Override
     public PluginParameters createParameters() {
@@ -111,6 +112,12 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
         parserParameters.setName("Parser Parameters");
         parserParameters.setDescription("The PluginParameters used by the parser");
         params.addParameter(parserParameters);
+
+        final PluginParameter<BooleanParameterValue> filesIncludeHeadersParam = BooleanParameterType.build(FILES_INCLUDE_HEADERS_PARAMETER_ID);
+        filesIncludeHeadersParam.setName("files Include Headers");
+        filesIncludeHeadersParam.setDescription("True if the files include headers in the first row, default is True");
+        filesIncludeHeadersParam.setBooleanValue(true);
+        params.addParameter(filesIncludeHeadersParam);
 
         return params;
     }
@@ -176,11 +183,13 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
         final List<ImportDefinition> definitions = (List<ImportDefinition>) parameters.getParameters().get(DEFINITIONS_PARAMETER_ID).getObjectValue();
         final Boolean initialiseWithSchema = parameters.getParameters().get(SCHEMA_PARAMETER_ID).getBooleanValue();
         final PluginParameters parserParameters = (PluginParameters) parameters.getParameters().get(PARSER_PARAMETER_IDS_PARAMETER_ID).getObjectValue();
+        final Boolean filesIncludeHeaders = parameters.getParameters().get(FILES_INCLUDE_HEADERS_PARAMETER_ID).getBooleanValue();
         final List<Integer> newVertices = new ArrayList<>();
         boolean positionalAtrributesExist = false;
         final List<String> validFiles = new ArrayList<>();
         final List<String> invalidFiles = new ArrayList<>();
         int importRows = 0;
+        int dataSize = 0;
 
         for (final File file : files) {
             interaction.setProgress(0, 0, "Reading File: " + file.getName(), true);
@@ -188,9 +197,10 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
 
             try {
                 data = parser.parse(new InputSource(file), parserParameters);
-                importRows = importRows + data.size() - 1;
+                dataSize = filesIncludeHeaders ? data.size() - 1 : data.size();
+                importRows = importRows + dataSize;
                 validFiles.add(file.getPath());
-                LOGGER.log(Level.INFO, "Imported {0} rows of data from file {1}. {2} total rows imported", new Object[]{(data.size() - 1), file.getPath(), importRows});
+                LOGGER.log(Level.INFO, "Imported {0} rows of data from file {1}. {2} total rows imported", new Object[]{dataSize, file.getPath(), importRows});
             } catch (FileNotFoundException ex) {
                 final String errorMsg = file.getPath() + " could not be found. Ignoring file during import.";
                 LOGGER.log(Level.INFO, errorMsg);
