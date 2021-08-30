@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.help.HelpPageProvider;
 import java.io.File;
 import java.util.Map;
 import org.openide.util.Lookup;
+import org.openide.util.NbPreferences;
 import org.openide.windows.OnShowing;
 
 /**
