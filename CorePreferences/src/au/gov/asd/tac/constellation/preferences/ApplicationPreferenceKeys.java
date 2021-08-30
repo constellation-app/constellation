@@ -185,6 +185,12 @@ public final class ApplicationPreferenceKeys {
      */
     public static final String RULE_PRIORITIES = "customRules";
 
+    /**
+     * Online Offline Help
+     */
+    public static final String HELP_KEY = "onlineHelp";
+    public static final boolean ONLINE_HELP = false;
+
     private ApplicationPreferenceKeys() {
     }
 }

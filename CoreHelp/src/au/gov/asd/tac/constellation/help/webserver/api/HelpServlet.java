@@ -15,18 +15,6 @@
  */
 package au.gov.asd.tac.constellation.help.webserver.api;
 
-import au.gov.asd.tac.constellation.help.ConstellationHelpDisplayer;
-import au.gov.asd.tac.constellation.webserver.WebServer.ConstellationHttpServlet;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.openide.util.lookup.ServiceProvider;
-
 /**
  * A servlet that serves help files.
  * <p>
@@ -35,7 +23,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author algol
  */
-@ServiceProvider(service = ConstellationHttpServlet.class)
+/*@ServiceProvider(service = ConstellationHttpServlet.class)
 @WebServlet(
         name = "HelpServer",
         description = "HTML help server",
@@ -71,4 +59,4 @@ public class HelpServlet extends ConstellationHttpServlet {
             throw new ServletException(ex);
         }
     }
-}
+}*/

@@ -35,8 +35,10 @@ public class HelpMapper {
      * @return the location of the markdown file within the project structure
      */
     public static String getHelpAddress(final String className) {
-        final String address;
-        address = "";
+        String address = "";
+        if (mappings.containsKey(className)) {
+            address = mappings.get(className);
+        }
 
         return address;
     }

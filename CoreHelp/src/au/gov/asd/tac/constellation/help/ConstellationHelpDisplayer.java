@@ -15,13 +15,7 @@
  */
 package au.gov.asd.tac.constellation.help;
 
-import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.https.HttpsConnection;
-import au.gov.asd.tac.constellation.utilities.https.HttpsUtilities;
-import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
-import au.gov.asd.tac.constellation.webserver.WebServer;
 import com.github.rjeschke.txtmark.Processor;
-import java.awt.Desktop;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -29,9 +23,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystemNotFoundException;
@@ -49,7 +40,6 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
-import org.openide.awt.NotificationDisplayer;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
@@ -192,7 +182,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
      *
      * @throws IOException
      */
-    private static List<String> getHttpFile(final String url) throws IOException {
+    /*   private static List<String> getHttpFile(final String url) throws IOException {
         HttpURLConnection connection = null;
         try {
             connection = url.startsWith("https")
@@ -212,7 +202,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
                 connection.disconnect();
             }
         }
-    }
+    } */
 
     private static List<String> getZipFile(final String zipFile, final String filepath) throws IOException {
         final ByteArrayOutputStream buf = new ByteArrayOutputStream();
@@ -242,7 +232,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         } else if (helpSource.startsWith("http")) {
             final String url = String.format("%s/%s", helpSource, HELP_MAP);
             LOGGER.log(Level.INFO, "help_map file at {0}", url);
-            return getHttpFile(url);
+            return null;
         } else {
             LOGGER.log(Level.INFO, "help_map file at zip {0}, {1}", new Object[]{helpSource, HELP_MAP});
             return getZipFile(helpSource, HELP_MAP);
@@ -298,7 +288,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
 
     @Override
     public boolean display(final HelpCtx helpCtx) {
-        final String helpId = helpCtx.getHelpID();
+         /* final String helpId = helpCtx.getHelpID();
         LOGGER.log(Level.INFO, "display {0} from {1}", new Object[]{helpId, helpSource});
 
         FileStructureBuilder file = new FileStructureBuilder();
@@ -364,7 +354,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
                     null
             );
         }
-
+*/
         return false;
     }
 

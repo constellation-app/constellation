@@ -33,6 +33,9 @@ public class Generator implements Runnable {
 
     @Override
     public void run() {
+        var prefs = NbPreferences.forModule(Generator.class);
+        prefs.put("onlineHelp", "true");
+
         // Get mappings of help pages
         final Map<String, String> mappings = HelpMapper.getMappings();
 
