@@ -1,5 +1,10 @@
 # Constellation Changes
 
+## Changes in September 2021
+
+-   Removed unused `localized` parameter from the signature of the `locate()`
+    method in `ConstellationInstalledFileLocator`.
+
 ## Changes in August 2021
 
 -   Added 'updateTagsFiltersAvailable', 'updateSelectedTagsCombo', 
