@@ -36,11 +36,17 @@ public class AnalyticViewHelpProvider extends HelpPageProvider {
 
     @Override
     public List<String> getHelpPages() {
-        File dir = new File("./src/au/gov/asd/tac/constellation/views/analyticview");
-        String[] extensions = new String[]{"md"};
-        List<File> files = (List<File>) FileUtils.listFiles(dir, extensions, true);
-        List<String> filePaths = new ArrayList<>();
-        for (File file : files) {
+        // Get the current directory and make the file within the module.
+        final String userDir = System.getProperty("user.dir");
+        final String sep = File.separator;
+        final String analyticViewPath = userDir + sep + ".." + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep
+                + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "analyticview";
+
+        final File dir = new File(analyticViewPath);
+        final String[] extensions = new String[]{"md"};
+        final List<File> files = (List<File>) FileUtils.listFiles(dir, extensions, true);
+        final List<String> filePaths = new ArrayList<>();
+        for (final File file : files) {
             filePaths.add(file.getPath());
         }
         return filePaths;
@@ -48,11 +54,17 @@ public class AnalyticViewHelpProvider extends HelpPageProvider {
 
     @Override
     public List<String> getHelpResources() {
-        File dir = new File("./src/au/gov/asd/tac/constellation/views/analyticview");
-        String[] extensions = new String[]{"png"};
-        List<File> files = (List<File>) FileUtils.listFiles(dir, extensions, true);
-        List<String> filePaths = new ArrayList<>();
-        for (File file : files) {
+        // Get the current directory and make the file within the module.
+        final String userDir = System.getProperty("user.dir");
+        final String sep = File.separator;
+        final String analyticViewPath = userDir + sep + ".." + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep
+                + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "analyticview";
+
+        final File dir = new File(analyticViewPath);
+        final String[] extensions = new String[]{"png"};
+        final List<File> files = (List<File>) FileUtils.listFiles(dir, extensions, true);
+        final List<String> filePaths = new ArrayList<>();
+        for (final File file : files) {
             filePaths.add(file.getPath());
         }
         return filePaths;
@@ -60,7 +72,7 @@ public class AnalyticViewHelpProvider extends HelpPageProvider {
 
     @Override
     public Map<String, String> getHelpMap() {
-        Map<String, String> map = new HashMap<>();
+        final Map<String, String> map = new HashMap<>();
         map.put("au.gov.asd.tac.constellation.views.analyticview.AnalyticViewPane", "au.gov.asd.tac.constellation.views.analyticview.docs.analytic-view.md");
         map.put("au.gov.asd.tac.constellation.views.analyticview.questions.BestConnectsNetworkQuestion", "au.gov.asd.tac.constellation.views.analyticview.docs.question-best-connects-network.md");
         map.put("au.gov.asd.tac.constellation.views.analyticview.questions.HasClosestRelationshipQuestion", "au.gov.asd.tac.constellation.views.analyticview.docs.question-has-closest-relationship.md");
@@ -102,6 +114,10 @@ public class AnalyticViewHelpProvider extends HelpPageProvider {
 
     @Override
     public String getHelpTOC() {
-        return "./src/au/gov/asd/tac/constellation/views/analyticview/docs/analyticview-toc.xml";
+        final String userDir = System.getProperty("user.dir");
+        final String sep = File.separator;
+        final String analyticViewPath = userDir + sep + ".." + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep
+                + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "analyticview" + sep + "docs" + sep + "analyticview-toc.xml";
+        return analyticViewPath;
     }
 }

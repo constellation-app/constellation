@@ -34,11 +34,16 @@ public class LayersViewHelpProvider extends HelpPageProvider {
 
     @Override
     public List<String> getHelpPages() {
-        File dir = new File("./src/au/gov/asd/tac/constellation/views/layers");
-        String[] extensions = new String[]{"md"};
-        List<File> files = (List<File>) FileUtils.listFiles(dir, extensions, true);
-        List<String> filePaths = new ArrayList<>();
-        for (File file : files) {
+        final String userDir = System.getProperty("user.dir");
+        final String sep = File.separator;
+        final String layersViewPath = userDir + sep + ".." + sep + "CoreLayersView" + sep + "src" + sep + "au" + sep
+                + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "layers";
+
+        final File dir = new File(layersViewPath);
+        final String[] extensions = new String[]{"md"};
+        final List<File> files = (List<File>) FileUtils.listFiles(dir, extensions, true);
+        final List<String> filePaths = new ArrayList<>();
+        for (final File file : files) {
             filePaths.add(file.getPath());
         }
         return filePaths;
@@ -46,11 +51,16 @@ public class LayersViewHelpProvider extends HelpPageProvider {
 
     @Override
     public List<String> getHelpResources() {
-        File dir = new File("./src/au/gov/asd/tac/constellation/views/layers");
-        String[] extensions = new String[]{"png"};
-        List<File> files = (List<File>) FileUtils.listFiles(dir, extensions, true);
-        List<String> filePaths = new ArrayList<>();
-        for (File file : files) {
+        final String userDir = System.getProperty("user.dir");
+        final String sep = File.separator;
+        final String layersViewPath = userDir + sep + ".." + sep + "CoreLayersView" + sep + "src" + sep + "au" + sep
+                + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "layers";
+
+        final File dir = new File(layersViewPath);
+        final String[] extensions = new String[]{"png"};
+        final List<File> files = (List<File>) FileUtils.listFiles(dir, extensions, true);
+        final List<String> filePaths = new ArrayList<>();
+        for (final File file : files) {
             filePaths.add(file.getPath());
         }
         return filePaths;
@@ -58,12 +68,16 @@ public class LayersViewHelpProvider extends HelpPageProvider {
 
     @Override
     public Map<String, String> getHelpMap() {
-        Map<String, String> map = new HashMap<>();
+        final Map<String, String> map = new HashMap<>();
         return map;
     }
 
     @Override
     public String getHelpTOC() {
-        return "./src/au/gov/asd/tac/constellation/views/layers/docs/layers-toc.xml";
+        final String userDir = System.getProperty("user.dir");
+        final String sep = File.separator;
+        final String layersViewPath = userDir + sep + ".." + sep + "CoreLayersView" + sep + "src" + sep + "au" + sep
+                + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "views" + sep + "layers" + sep + "docs" + sep + "layers-toc.xml";
+        return layersViewPath;
     }
 }

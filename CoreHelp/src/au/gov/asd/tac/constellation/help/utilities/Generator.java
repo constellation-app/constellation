@@ -30,8 +30,6 @@ import org.openide.windows.OnShowing;
 @OnShowing()
 public class Generator implements Runnable {
 
-    private static final String TOC_FILE_PATH = "src\\au\\gov\\asd\\tac\\constellation\\help\\toc.md";
-
     @Override
     public void run() {
         var prefs = NbPreferences.forModule(Generator.class);
@@ -40,8 +38,14 @@ public class Generator implements Runnable {
         // Get mappings of help pages
         final Map<String, String> mappings = HelpMapper.getMappings();
 
+        // Get the current directory and make the file within the help module.
+        final String userDir = System.getProperty("user.dir");
+        final String sep = File.separator;
+        final String tocPath = userDir + sep + ".." + sep + "CoreHelp" + sep + "src" + sep + "au" + sep
+                + "gov" + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "help" + sep + "toc.md";
+
         // Create TOCGenerator with the location of the resources file
-        final TOCGenerator tocGenerator = new TOCGenerator(TOC_FILE_PATH);
+        final TOCGenerator tocGenerator = new TOCGenerator(tocPath);
 
         // Loop all providers and generate Application-wide TOC based on each modules TOC
         Lookup.getDefault().lookupAll(HelpPageProvider.class).forEach(provider -> {
