@@ -42,9 +42,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.layout.BorderPane;
 
 /**
- * Table View Pane.
- *
- * TODO: some javafx classes no are longer supported, fix it.
+ * This is the main pane that creates a CONSTELLATION table and adds it.
  *
  * @author elnath
  * @author cygnus_x-1
@@ -68,13 +66,18 @@ public final class TableViewPane extends BorderPane {
     private final ScheduledExecutorService scheduledExecutorService;
     private ScheduledFuture<?> scheduledFuture;
 
+    /**
+     * Creates a new pane with a Constellation Table initialized within it.
+     *
+     * @param tableTopComponent the top component for the table plugin
+     */
     public TableViewPane(final TableViewTopComponent tableTopComponent) {
         this.scheduledExecutorService = Executors.newScheduledThreadPool(1);
         
         final SortedList<ObservableList<String>> sortedRowList
                 = new SortedList<>(FXCollections.observableArrayList());
         
-        //
+        // Maps holding mappings graph IDs to table rows and vice versa
         final Map<ObservableList<String>, Integer> rowToElementIdIndex = new HashMap<>();
         final Map<Integer, ObservableList<String>> elementIdToRowIndex = new HashMap<>();
         
@@ -133,8 +136,8 @@ public final class TableViewPane extends BorderPane {
     /**
      * Update the whole table using the graph.
      *
-     * @param graph the graph to retrieve data from.
-     * @param state the current table view state.
+     * @param graph the graph to retrieve data from
+     * @param state the current table view state
      */
     public void updateTable(final Graph graph, final TableViewState state) {
         final Thread thread = new Thread("Table View: Update Table") {
@@ -145,7 +148,7 @@ public final class TableViewPane extends BorderPane {
                 }
 
                 scheduledFuture = scheduledExecutorService.schedule(() -> {
-                    tableToolbar.updateToolbar(state);
+                    getTableToolbar().updateToolbar(state);
                     if (graph != null) {
                         getTable().updateColumns(graph, state, getTableSelectionListener(), getSelectedOnlySelectionListener());
                         getTable().updateData(graph, state, getProgressBar(), getTableSelectionListener(), getSelectedOnlySelectionListener());
@@ -164,31 +167,95 @@ public final class TableViewPane extends BorderPane {
         thread.start();
     }
 
+    /**
+     * Gets a listener that listens for table selections and updates the selection
+     * in the graph if "Selected Only Mode" <b>IS NOT</b> active. Otherwise this listener
+     * does nothing.
+     *
+     * @return the table selection listener
+     * @see TableSelectionListener
+     */
     public ChangeListener<ObservableList<String>> getTableSelectionListener() {
         return tableSelectionListener;
     }
 
+    /**
+     * Gets a listener that listens for table selections and updates
+     * the {@link TableService#selectedOnlySelectedRows} list with the current
+     * selection. This listener only does this if the "Selected Only Mode" <b>IS</>
+     * active.
+     *
+     * @return the "Selected Only Mode" selection listener
+     * @see SelectedOnlySelectionListener
+     */
     public ListChangeListener getSelectedOnlySelectionListener() {
         return selectedOnlySelectionListener;
     }
 
+    /**
+     * Gets a listener that deals with sort order and sort column changes. The listener
+     * will update the table and cause it to refresh.
+     *
+     * @return the sort change listener
+     * @see TableComparatorListener
+     */
     public ChangeListener<? super Comparator<? super ObservableList<String>>> getTableComparatorListener() {
         return tableComparatorListener;
     }
 
+    /**
+     * Gets a listener that deals with sort order and sort column changes. The listener
+     * will update the table and cause it to refresh.
+     *
+     * @return the sort change listener
+     * @see TableSortTypeListener
+     */
     public ChangeListener<? super TableColumn.SortType> getTableSortTypeListener() {
         return tableSortTypeListener;
     }
 
+    /**
+     * Gets the table that has been created and added to this pane.
+     *
+     * @return the created table
+     */
     public Table getTable() {
         return table;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public ProgressBar getProgressBar() {
         return progressBar;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public TableService getTableService() {
         return tableService;
+    }
+
+    /**
+     * A scheduled future representing the future status of the table based on the
+     * latest call to {@link #updateTable(Graph, TableViewState)}. If the table has
+     * not yet been updated, then it will return null.
+     *
+     * @return the current future or null if the table has not been updated
+     */
+    public ScheduledFuture<?> getScheduledFuture() {
+        return scheduledFuture;
+    }
+
+    /**
+     * Get the tool bar that has been attached to this table.
+     *
+     * @return the table tool bar
+     */
+    public TableToolbar getTableToolbar() {
+        return tableToolbar;
     }
 }
