@@ -15,7 +15,10 @@
  */
 package au.gov.asd.tac.constellation.help.utilities;
 
+import au.gov.asd.tac.constellation.help.HelpPageProvider;
+import java.io.File;
 import java.util.Map;
+import org.openide.util.Lookup;
 import org.openide.windows.OnShowing;
 
 /**
@@ -36,10 +39,15 @@ public class Generator implements Runnable {
         // Create TOCGenerator with the location of the resources file
         final TOCGenerator tocGenerator = new TOCGenerator(TOC_FILE_PATH);
 
+        // Loop all providers and generate Application-wide TOC based on each modules TOC
+        Lookup.getDefault().lookupAll(HelpPageProvider.class).forEach(provider -> {
+            final File tocXMLFile = new File(provider.getHelpTOC());
+            tocGenerator.convertXMLMappings(tocXMLFile);
+        });
+
         // Generate .md file from hardcoded writes
         // TODO: Remove this test code and uncomment below.
-        tocGenerator.convertXMLMappingsTEST();
-
+        //tocGenerator.convertXMLMappingsTEST();
         // Uncomment this when implemented
         // address must locate the *-toc.xml file for each module
         // file must be of that address

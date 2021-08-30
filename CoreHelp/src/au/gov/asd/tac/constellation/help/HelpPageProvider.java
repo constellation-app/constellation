@@ -44,11 +44,21 @@ public abstract class HelpPageProvider {
     }
 
     /**
-     * Provides a map of all the help files Maps the file name to the md file name
+     * Provides a map of all the help files Maps the file name to the md file
+     * name
      *
      * @return Map of the file names vs md file names
      */
     public Map<String, String> getHelpMap() {
+        return null;
+    }
+
+    /**
+     * Provides a location as a string of the TOC xml file in the module
+     *
+     * @return List of help resources
+     */
+    public String getHelpTOC() {
         return null;
     }
 }

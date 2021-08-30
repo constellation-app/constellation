@@ -61,4 +61,9 @@ public class LayersViewHelpProvider extends HelpPageProvider {
         Map<String, String> map = new HashMap<>();
         return map;
     }
+
+    @Override
+    public String getHelpTOC() {
+        return "./src/au/gov/asd/tac/constellation/views/layers/docs/layers-toc.xml";
+    }
 }

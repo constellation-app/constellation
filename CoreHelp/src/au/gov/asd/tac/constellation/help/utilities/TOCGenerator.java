@@ -76,11 +76,11 @@ public class TOCGenerator {
      *
      * @param xmlFromFile File of XML mappings
      */
-    public void convertXMLMappingsTEST() {
+    public void convertXMLMappingsTEST(final File tocLocation) {
         final FileWriter writer;
         try {
             writer = new FileWriter(toc);
-            convertXMLMappingsHARDCODED(writer);
+            convertXMLMappingsHARDCODED(tocLocation, writer);
             writer.close();
         } catch (IOException ex) {
             LOGGER.log(Level.SEVERE, "Failed to write mappings to file", ex);
@@ -106,6 +106,7 @@ public class TOCGenerator {
      * Generate a table of contents from the XML mapping file
      */
     public static void convertXMLMappings(final File xmlFromFile, final FileWriter markdownOutput) {
+        //TOCParser.parse(xmlFromFile);
 
         // TODO: Implement this
         // open the file
@@ -121,7 +122,7 @@ public class TOCGenerator {
      *
      * @param markdownWriter
      */
-    public static void convertXMLMappingsHARDCODED(final FileWriter markdownWriter) {
+    public static void convertXMLMappingsHARDCODED(final File xmlFromFile, final FileWriter markdownWriter) {
         writeText(markdownWriter, "# Table of Contents");
         writeText(markdownWriter, Platform.NEWLINE);
         writeText(markdownWriter, Platform.NEWLINE);

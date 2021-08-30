@@ -99,4 +99,9 @@ public class AnalyticViewHelpProvider extends HelpPageProvider {
 
         return map;
     }
+
+    @Override
+    public String getHelpTOC() {
+        return "./src/au/gov/asd/tac/constellation/views/analyticview/docs/analyticview-toc.xml";
+    }
 }
