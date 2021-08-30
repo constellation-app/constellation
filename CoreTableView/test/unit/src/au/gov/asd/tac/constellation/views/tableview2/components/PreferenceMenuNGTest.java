@@ -178,12 +178,6 @@ public class PreferenceMenuNGTest {
         
         verifyLoadPreferencesAction(preferencesMenu.getLoadPreferencesMenu(), true);
         verifyLoadPreferencesAction(preferencesMenu.getLoadPreferencesMenu(), false);
-        
-        
-        // TODO Load Preferences Actions
-        // Clean up code and comments in load prefs
-        // figure out why there is a sleep in there. looks like its there because of the execute later
-        // in update visible columns. it needs to wait for that to finish first
     }
     
     @Test

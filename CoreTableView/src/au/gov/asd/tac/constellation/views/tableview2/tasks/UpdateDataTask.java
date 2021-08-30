@@ -30,6 +30,7 @@ import javafx.collections.transformation.SortedList;
 import org.controlsfx.control.table.TableFilter;
 
 /**
+ * A {@link Runnable} that updates the table with the new rows and triggers an update.
  *
  * @author formalhaunt
  */
@@ -51,6 +52,16 @@ public class UpdateDataTask implements Runnable {
     
     private List<ObservableList<String>> filteredRowList;
     
+    /**
+     * 
+     * @param tablePane
+     * @param table
+     * @param rows the new rows to update the table with
+     * @param tableSelectionListener
+     * @param selectedOnlySelectionListener
+     * @param updateDataLatch latch with a count of one that will track the status of the job
+     * @param tableService 
+     */
     public UpdateDataTask(final TableViewPane tablePane,
                           final Table table,
                           final List<ObservableList<String>> rows,
@@ -67,6 +78,9 @@ public class UpdateDataTask implements Runnable {
         this.tableService = tableService;
     }
     
+    /**
+     * 
+     */
     @Override
     public void run() {
         table.getSelectedProperty().removeListener(tableSelectionListener);
@@ -103,6 +117,7 @@ public class UpdateDataTask implements Runnable {
                 tablePane.setCenter(tableService.getPagination());
             });
         });
+        
         tableService.updatePagination(tableService.getTablePreferences().getMaxRowsPerPage(),
                 tableService.getSortedRowList());
         Platform.runLater(() -> {
@@ -115,5 +130,4 @@ public class UpdateDataTask implements Runnable {
                 .addListener(selectedOnlySelectionListener);
         table.getSelectedProperty().addListener(tableSelectionListener);
     }
-    
 }

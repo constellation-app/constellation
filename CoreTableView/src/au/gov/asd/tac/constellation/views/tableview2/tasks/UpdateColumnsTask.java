@@ -33,6 +33,10 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
 /**
+ * TODO Make this description better
+ * 
+ * A runnable that will update the table with the current column settings in
+ * the backing object structure.
  *
  * @author formalhaunt
  */
@@ -53,6 +57,13 @@ public class UpdateColumnsTask implements Runnable {
     
     private ListChangeListener.Change<? extends TableColumn<ObservableList<String>, ?>> lastChange;
     
+    /**
+     * 
+     * @param parent
+     * @param tableView
+     * @param columnIndex
+     * @param tableService 
+     */
     public UpdateColumnsTask(final TableViewTopComponent parent,
                              final TableView<ObservableList<String>> tableView,
                              final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> columnIndex,
@@ -63,6 +74,14 @@ public class UpdateColumnsTask implements Runnable {
         this.tableService = tableService;
     }
     
+    /**
+     * TODO Figure out a good description
+     * 
+     * @param columnReferenceMap TODO what is this??
+     * @param state the state that will be used to update the table columns
+     * @param tableSelectionListener
+     * @param selectedOnlySelectionListener 
+     */
     public void reset(final Map<String, TableColumn<ObservableList<String>, String>> columnReferenceMap,
                       final TableViewState state,
                       final ChangeListener<ObservableList<String>> tableSelectionListener,
@@ -75,6 +94,10 @@ public class UpdateColumnsTask implements Runnable {
     
     @Override
     public void run() {
+        if (columnReferenceMap == null) {
+            throw new RuntimeException("Update columns was started before reset was called.");
+        }
+        
         tableView.getSelectionModel().selectedItemProperty()
                 .removeListener(tableSelectionListener);
         tableView.getSelectionModel().getSelectedItems()
@@ -133,10 +156,13 @@ public class UpdateColumnsTask implements Runnable {
     }
     
     /**
-     * Extract any current table sort information and save this information. See
-     * other saveSortDetails for reason this is done.
+     * Extract any current table sort information and save it in the preferences. This
+     * will persist sort preferences in cases where an update causes them to be dropped
+     * from the UI.
+     * 
+     * @see TableService#saveSortDetails(java.lang.String, javafx.scene.control.TableColumn.SortType)
      */
-    private void saveSortDetails() {
+    protected void saveSortDetails() {
         if (tableView.getSortOrder() != null && tableView.getSortOrder().size() > 0) {
             // A column was selected to sort by, save its name and direction
             tableService.saveSortDetails(tableView.getSortOrder().get(0).getText(),
