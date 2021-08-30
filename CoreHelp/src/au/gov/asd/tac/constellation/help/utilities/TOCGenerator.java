@@ -39,6 +39,8 @@ public class TOCGenerator {
     private static final String CLOSE_RECTANGLE_BRACE = "]";
     private static final String OPEN_PARENTHESIS = "(";
     private static final String CLOSE_PARENTHESIS = ")";
+    private static final String BLANK_STRING = " ";
+    private static final String ASTERISK = "*";
 
     /**
      * Delete old TOC file and generate a new one at the specified path
@@ -192,11 +194,11 @@ public class TOCGenerator {
     public static void writeItem(final FileWriter writer, final String item, final int indentLevel) {
         final int spacesPerIndent = 4;
         try {
-            final String indent = StringUtils.repeat(" ", indentLevel * spacesPerIndent);
+            final String indent = StringUtils.repeat(BLANK_STRING, indentLevel * spacesPerIndent);
             final StringBuilder sb = new StringBuilder();
             sb.append(indent);
-            //  sb.append(SeparatorConstants.ASTERISK);
-            // sb.append(SeparatorConstants.BLANKSPACE);
+            sb.append(ASTERISK);
+            sb.append(BLANK_STRING);
             sb.append(item);
             writer.write(sb.toString());
         } catch (final IOException ex) {
