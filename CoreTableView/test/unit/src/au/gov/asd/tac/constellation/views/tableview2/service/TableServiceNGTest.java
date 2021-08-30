@@ -47,9 +47,9 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.testfx.api.FxRobot;
 import org.testfx.api.FxToolkit;
 import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertNotNull;
 import static org.testng.AssertJUnit.assertNotSame;
 import static org.testng.AssertJUnit.assertSame;
 import org.testng.annotations.AfterClass;
@@ -94,6 +94,14 @@ public class TableServiceNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+    }
+    
+    @Test
+    public void init() {
+        assertNotNull(tableService.getPagination());
+        assertNotNull(tableService.getSelectedOnlySelectedRows());
+        
+        assertEquals(Integer.valueOf(500), tableService.getTablePreferences().getMaxRowsPerPage());
     }
     
     @Test

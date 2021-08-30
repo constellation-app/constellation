@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.tableview2.components;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -29,6 +30,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Pagination;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToolBar;
@@ -40,6 +42,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
+import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertNotNull;
 import static org.testng.AssertJUnit.assertTrue;
 import static org.testng.AssertJUnit.fail;
@@ -74,12 +77,14 @@ public class TableViewPaneNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         tableTopComponent = mock(TableViewTopComponent.class);
-        
+
         tablePane = spy(new TableViewPane(tableTopComponent));
     }
     
     @Test
     public void init() throws InterruptedException {
+        //TableViewPane tablePane = new TableViewPane(tableTopComponent);
+        
         assertNotNull(tablePane.getTable());
         
         assertNotNull(tablePane.getTableSelectionListener());
@@ -98,7 +103,9 @@ public class TableViewPaneNGTest {
         Platform.runLater(() -> latch.countDown());
         latch.await();
         
-        verify(tablePane).setCenter(tablePane.getTableService().getPagination());
+        final Pagination pagination = tablePane.getTableService().getPagination();
+        
+        assertEquals(pagination, tablePane.getCenter());
     }
     
     @Test
@@ -155,11 +162,12 @@ public class TableViewPaneNGTest {
         
         final TableToolbar tableToolbar = mock(TableToolbar.class);
         
+        final List<TableColumn<ObservableList<String>, String>> tableColumns = new ArrayList<>();
+        tableColumns.add(mock(TableColumn.class));
+        tableColumns.add(mock(TableColumn.class));
+        
         final ObservableList<TableColumn<ObservableList<String>, String>> columns
-                = FXCollections.observableList(List.of(
-                        mock(TableColumn.class),
-                        mock(TableColumn.class)
-                ));
+                = FXCollections.observableList(tableColumns);
         
         when(tablePane.getTable()).thenReturn(table);
         when(table.getTableView()).thenReturn(tableView);

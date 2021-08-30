@@ -42,7 +42,7 @@ public final class TablePreferences {
     @JsonProperty("SortByColumn")
     private Map.Entry<String, TableColumn.SortType> sortByColumn
             = Pair.of("", TableColumn.SortType.ASCENDING);
-
+    
     public synchronized Integer getMaxRowsPerPage() {
         return maxRowsPerPage;
     }

@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewUtilities;
+import au.gov.asd.tac.constellation.views.tableview2.components.PreferencesMenu;
 import au.gov.asd.tac.constellation.views.tableview2.components.Table;
 import au.gov.asd.tac.constellation.views.tableview2.state.TablePreferences;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
@@ -72,7 +73,7 @@ public class TableService {
     /**
      * Holds the current user preferences set for the table.
      */
-    private TablePreferences tablePreferences = new TablePreferences();
+    private TablePreferences tablePreferences;
     
     /**
      * This flag is shared by listeners that respond to sort change events on
@@ -99,6 +100,9 @@ public class TableService {
         this.selectedOnlySelectedRows = new HashSet<>();
         
         this.pagination = new Pagination();
+        
+        this.tablePreferences = new TablePreferences();
+        this.tablePreferences.setMaxRowsPerPage(500);
     }
     
     /**

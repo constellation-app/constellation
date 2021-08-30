@@ -125,7 +125,7 @@ public final class TableViewPane extends BorderPane {
         this.tableToolbar.init();
         
         setLeft(tableToolbar.getToolbar());
-
+        
         // Initiate table update and initialisation
         tableService.updatePagination(tableService.getTablePreferences().getMaxRowsPerPage());
         Platform.runLater(() -> {
@@ -140,31 +140,25 @@ public final class TableViewPane extends BorderPane {
      * @param state the current table view state
      */
     public void updateTable(final Graph graph, final TableViewState state) {
-        final Thread thread = new Thread("Table View: Update Table") {
-            @Override
-            public void run() {
-                if (scheduledFuture != null) {
-                    scheduledFuture.cancel(true);
-                }
+        if (scheduledFuture != null) {
+            scheduledFuture.cancel(true);
+        }
 
-                scheduledFuture = scheduledExecutorService.schedule(() -> {
-                    getTableToolbar().updateToolbar(state);
-                    if (graph != null) {
-                        getTable().updateColumns(graph, state, getTableSelectionListener(), getSelectedOnlySelectionListener());
-                        getTable().updateData(graph, state, getProgressBar(), getTableSelectionListener(), getSelectedOnlySelectionListener());
-                        getTable().updateSelection(graph, state, getTableSelectionListener(), getSelectedOnlySelectionListener());
-                        Platform.runLater(() -> {
-                            getTable().updateSortOrder();
-                        });
-                    } else {
-                        Platform.runLater(() -> {
-                            getTable().getTableView().getColumns().clear();
-                        });
-                    }
-                }, 0, TimeUnit.MILLISECONDS);
+        scheduledFuture = scheduledExecutorService.schedule(() -> {
+            getTableToolbar().updateToolbar(state);
+            if (graph != null) {
+                getTable().updateColumns(graph, state, getTableSelectionListener(), getSelectedOnlySelectionListener());
+                getTable().updateData(graph, state, getProgressBar(), getTableSelectionListener(), getSelectedOnlySelectionListener());
+                getTable().updateSelection(graph, state, getTableSelectionListener(), getSelectedOnlySelectionListener());
+                Platform.runLater(() -> {
+                    getTable().updateSortOrder();
+                });
+            } else {
+                Platform.runLater(() -> {
+                    getTable().getTableView().getColumns().clear();
+                });
             }
-        };
-        thread.start();
+        }, 0, TimeUnit.MILLISECONDS);
     }
 
     /**

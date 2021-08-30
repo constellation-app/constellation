@@ -103,11 +103,19 @@ public class Table {
                 tableService);
     }
     
-    public TableView<ObservableList<String>> getTableView() {
+    /**
+     * 
+     * @return 
+     */
+    public final TableView<ObservableList<String>> getTableView() {
         return tableView;
     }
     
-    public ReadOnlyObjectProperty<ObservableList<String>> getSelectedProperty() {
+    /**
+     * 
+     * @return 
+     */
+    public final ReadOnlyObjectProperty<ObservableList<String>> getSelectedProperty() {
         return tableView.getSelectionModel().selectedItemProperty();
     }
     
@@ -140,7 +148,7 @@ public class Table {
 
                 // clear current columnIndex, but cache the column objects for reuse
                 final Map<String, TableColumn<ObservableList<String>, String>> columnReferenceMap =
-                        columnIndex.stream()
+                        getColumnIndex().stream()
                                 .collect(
                                         Collectors.toMap(
                                                 columnTuple -> columnTuple.getThird().getText(),
@@ -148,19 +156,19 @@ public class Table {
                                                 (e1, e2) -> e1
                                         )
                                 );
-                columnIndex.clear();
+                getColumnIndex().clear();
 
                 // update columnIndex based on graph attributes
                 final ReadableGraph readableGraph = graph.getReadableGraph();
                 try {
-                    stuff(readableGraph, GraphElementType.VERTEX,
-                            GraphRecordStoreUtilities.SOURCE, columnReferenceMap);
-                    
+                    getColumnIndex().addAll(populateColumnIndex(readableGraph, GraphElementType.VERTEX,
+                            GraphRecordStoreUtilities.SOURCE, columnReferenceMap));
+
                     if (state.getElementType() == GraphElementType.TRANSACTION) {
-                        stuff(readableGraph, GraphElementType.TRANSACTION,
-                                GraphRecordStoreUtilities.TRANSACTION, columnReferenceMap);
-                        stuff(readableGraph, GraphElementType.VERTEX,
-                                GraphRecordStoreUtilities.DESTINATION, columnReferenceMap);
+                        getColumnIndex().addAll(populateColumnIndex(readableGraph, GraphElementType.TRANSACTION,
+                                GraphRecordStoreUtilities.TRANSACTION, columnReferenceMap));
+                        getColumnIndex().addAll(populateColumnIndex(readableGraph, GraphElementType.VERTEX,
+                                GraphRecordStoreUtilities.DESTINATION, columnReferenceMap));
                     }
                 } finally {
                     readableGraph.release();
@@ -168,23 +176,15 @@ public class Table {
 
                 // if there are no visible columns specified, write the key columns to the state
                 if (state.getColumnAttributes() == null) {
-                    final ColumnVisibilityContextMenu columnVisibilityContextMenu
-                            = new ColumnVisibilityContextMenu(tableTopComponent, this,
-                                    tableService);
-                    columnVisibilityContextMenu.init();
-                    
-                    final MenuItem keyColumns = columnVisibilityContextMenu.getContextMenu()
-                            .getItems().get(2);
-                    keyColumns.fire();
-                    
+                    openColumnVisibilityMenu();
                     return;
                 }
 
                 // sort columns in columnIndex by state, prefix and attribute name
-                columnIndex.sort(new ColumnIndexSort(state));
+                getColumnIndex().sort(new ColumnIndexSort(state));
 
                 // style and format columns in columnIndex
-                columnIndex.forEach(columnTuple -> {
+                getColumnIndex().forEach(columnTuple -> {
                     final TableColumn<ObservableList<String>, String> column = columnTuple.getThird();
 
                     // assign cells to columns
@@ -302,10 +302,15 @@ public class Table {
     }
     
     /**
-     * Update the table selection using the graph and state.
-     * <p>
-     * The entire method is synchronized so it should be thread safe and keeps
-     * the locking logic simpler. Maybe this method could be broken out further.
+     * Update the table selection using the graph and state. The selection will
+     * only be updated if the graph and state are not null.
+     * <p/>
+     * The table selection will only be updated if it <b>IS NOT</b> in "Selected Only Mode".
+     * <p/>
+     * An illegal state will be created if this method is called by either the JavaFX
+     * or Swing Event threads.
+     * <p/>
+     * The entire method is synchronized to ensure thread safety.
      *
      * @param graph the graph to read selection from.
      * @param state the current table view state.
@@ -327,23 +332,21 @@ public class Table {
 
                 // get graph selection
                 if (!state.isSelectedOnly()) {
-                    final List<Integer> selectedIds = new ArrayList<>();
-                    final ReadableGraph readableGraph = graph.getReadableGraph();
-                    addToSelectedIds(selectedIds, readableGraph, state);
+                    final List<Integer> selectedIds = getSelectedIds(graph, state);
 
                     // update table selection
                     final int[] selectedIndices = selectedIds.stream()
                             .map(id-> tableService.getElementIdToRowIndex().get(id))
-                            .map(row -> tableView.getItems().indexOf(row)).mapToInt(i -> i).toArray();
+                            .map(row -> getTableView().getItems().indexOf(row)).mapToInt(i -> i).toArray();
 
                     Platform.runLater(() -> {
                         getSelectedProperty().removeListener(tableSelectionListener);
-                        tableView.getSelectionModel().getSelectedItems().removeListener(selectedOnlySelectionListener);
-                        tableView.getSelectionModel().clearSelection();
+                        getTableView().getSelectionModel().getSelectedItems().removeListener(selectedOnlySelectionListener);
+                        getTableView().getSelectionModel().clearSelection();
                         if (!selectedIds.isEmpty()) {
-                            tableView.getSelectionModel().selectIndices(selectedIndices[0], selectedIndices);
+                            getTableView().getSelectionModel().selectIndices(selectedIndices[0], selectedIndices);
                         }
-                        tableView.getSelectionModel().getSelectedItems().addListener(selectedOnlySelectionListener);
+                        getTableView().getSelectionModel().getSelectedItems().addListener(selectedOnlySelectionListener);
                         getSelectedProperty().addListener(tableSelectionListener);
                     });
                 }
@@ -352,19 +355,20 @@ public class Table {
     }
     
     /**
-     * If sort details have been stored, reapply this sorting to the tableview.
+     * If the sort has been saved in the currently loaded table preferences, then
+     * re-apply it to the table.
      *
      */
     public void updateSortOrder() {
-        // Try to find column with name matching saved sort order/type details
         final Pair<String, TableColumn.SortType> sortPreference
                 = tableService.getTablePreferences().getSort();
         
         if (sortPreference != null && !sortPreference.getLeft().isBlank()) {
-            for (final TableColumn<ObservableList<String>, ?> column : tableView.getColumns()) {
+            // Iterate through the table columns and find the one with a matching column name
+            for (final TableColumn<ObservableList<String>, ?> column : getTableView().getColumns()) {
                 if (column.getText().equals(sortPreference.getLeft())) {
                     column.setSortType(sortPreference.getRight());
-                    tableView.getSortOrder().setAll(column);
+                    getTableView().getSortOrder().setAll(column);
                     return;
                 }
             }
@@ -372,16 +376,16 @@ public class Table {
     }
     
     /**
-     * Adds vertex/transaction ids from a graph to a list of ids if the
-     * vertex/transaction is selected
+     * Based on the tables current element type (vertex or transaction) get all
+     * selected elements of that type in the graph and return their element IDs.
      *
-     * @param selectedIds the list that is being added to
-     * @param readableGraph the graph to read from
-     * @param state the current table view state
+     * @param graph the graph to read from
+     * @param state the current table state
      */
-    private void addToSelectedIds(final List<Integer> selectedIds,
-                                  final ReadableGraph readableGraph,
-                                  final TableViewState state) {
+    protected List<Integer> getSelectedIds(final Graph graph,
+                                           final TableViewState state) {
+        final List<Integer> selectedIds = new ArrayList<>();
+        final ReadableGraph readableGraph = graph.getReadableGraph();
         try {
             final boolean isVertex = state.getElementType() == GraphElementType.VERTEX;
             final int selectedAttributeId = isVertex
@@ -399,11 +403,18 @@ public class Table {
                     selectedIds.add(elementId);
                 }
             }
+            return selectedIds;
         } finally {
             readableGraph.release();
         }
     }
     
+    /**
+     * 
+     * @param readableGraph
+     * @param rows
+     * @param vertexId 
+     */
     public void extractOtherRowDataMaybe(final ReadableGraph readableGraph,
                                          final List<ObservableList<String>> rows,
                                          final int vertexId) {
@@ -428,6 +439,12 @@ public class Table {
         rows.add(rowData);
     }
     
+    /**
+     * 
+     * @param readableGraph
+     * @param rows
+     * @param transactionId 
+     */
     public void extractRowDataMaybe(final ReadableGraph readableGraph,
                                     final List<ObservableList<String>> rows,
                                     final int transactionId) {
@@ -466,30 +483,60 @@ public class Table {
         rows.add(rowData);
     }
     
-    public void stuff(final ReadableGraph readableGraph,
-                      final GraphElementType elementType,
-                      final String attributeNamePrefix,
-                      final Map<String, TableColumn<ObservableList<String>, String>> columnReferenceMap) {
+    /**
+     * 
+     * @param readableGraph
+     * @param elementType
+     * @param attributeNamePrefix
+     * @param columnReferenceMap 
+     */
+    protected CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> populateColumnIndex(final ReadableGraph readableGraph,
+                                                                                                                                   final GraphElementType elementType,
+                                                                                                                                   final String attributeNamePrefix,
+                                                                                                                                   final Map<String, TableColumn<ObservableList<String>, String>> columnReferenceMap) {
+        final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> tmpColumnIndex
+                = new CopyOnWriteArrayList<>();
+        
         final int attributeCount = readableGraph.getAttributeCount(elementType);
-                    
+
         IntStream.range(0, attributeCount).forEach(attributePosition -> {
             final int attributeId = readableGraph
                     .getAttribute(elementType, attributePosition);
             final String attributeName = attributeNamePrefix
                     + readableGraph.getAttributeName(attributeId);
             final TableColumn<ObservableList<String>, String> column = columnReferenceMap.containsKey(attributeName)
-                    ? columnReferenceMap.get(attributeName) : new TableColumn<>(attributeName);
+                    ? columnReferenceMap.get(attributeName) : createColumn(attributeName);
 
-            columnIndex.add(ThreeTuple.create(
-                    GraphRecordStoreUtilities.SOURCE,
+            tmpColumnIndex.add(ThreeTuple.create(
+                    attributeNamePrefix,
                     new GraphAttribute(readableGraph, attributeId),
                     column
             ));
 
         });
+
+        return tmpColumnIndex;
+    }
+    
+    protected TableColumn<ObservableList<String>, String> createColumn(final String attributeName) {
+        return new TableColumn<>(attributeName);
     }
 
-    public CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> getColumnIndex() {
+    /**
+     * 
+     * @return 
+     */
+    public final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> getColumnIndex() {
         return columnIndex;
+    }
+    
+    protected void openColumnVisibilityMenu() {
+        final ColumnVisibilityContextMenu columnVisibilityContextMenu
+                = new ColumnVisibilityContextMenu(tableTopComponent, this, tableService);
+        columnVisibilityContextMenu.init();
+                    
+        final MenuItem keyColumns = columnVisibilityContextMenu.getContextMenu()
+                .getItems().get(2);
+        keyColumns.fire();
     }
 }
