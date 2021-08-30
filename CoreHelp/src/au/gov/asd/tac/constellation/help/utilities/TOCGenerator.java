@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.help.utilities;
 
-import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import com.jogamp.common.os.Platform;
 import java.io.File;
 import java.io.FileWriter;
@@ -192,11 +191,11 @@ public class TOCGenerator {
     public static void writeItem(final FileWriter writer, final String item, final int indentLevel) {
         final int spacesPerIndent = 4;
         try {
-            final String indent = StringUtils.repeat(SeparatorConstants.BLANKSPACE, indentLevel * spacesPerIndent);
+            final String indent = StringUtils.repeat(" ", indentLevel * spacesPerIndent);
             final StringBuilder sb = new StringBuilder();
             sb.append(indent);
-            sb.append(SeparatorConstants.ASTERISK);
-            sb.append(SeparatorConstants.BLANKSPACE);
+            //  sb.append(SeparatorConstants.ASTERISK);
+            // sb.append(SeparatorConstants.BLANKSPACE);
             sb.append(item);
             writer.write(sb.toString());
         } catch (final IOException ex) {

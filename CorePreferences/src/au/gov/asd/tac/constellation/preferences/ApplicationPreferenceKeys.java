@@ -188,6 +188,7 @@ public final class ApplicationPreferenceKeys {
     /**
      * Online Offline Help
      */
+    public static final String HELP_KEY = "onlineHelp";
     public static final boolean ONLINE_HELP = false;
 
     private ApplicationPreferenceKeys() {
