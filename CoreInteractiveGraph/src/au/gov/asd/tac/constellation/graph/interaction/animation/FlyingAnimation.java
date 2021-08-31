@@ -49,7 +49,7 @@ public final class FlyingAnimation extends Animation {
 
     @Override
     public void initialise(GraphWriteMethods wg) {
-        // dont initilise the animation if there is less than 2 vertexs
+        // dont initilise the animation if there is less than 2 nodes
         if (wg.getVertexCount() <= 1) {
             stopAnimation();
         } else {
@@ -83,7 +83,7 @@ public final class FlyingAnimation extends Animation {
 
     @Override
     public List<VisualChange> animate(GraphWriteMethods wg) {
-        // dont animatite unless there is more than 1 vertex
+        // dont animate unless there is more than 1 node
         if (wg.getVertexCount() > 1) {
 
             if (step >= stepsPerLink) {
