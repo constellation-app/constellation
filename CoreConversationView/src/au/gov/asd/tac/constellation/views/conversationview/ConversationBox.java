@@ -38,11 +38,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.HPos;
@@ -95,8 +93,6 @@ import org.openide.util.Lookup;
  * @author sol695510
  */
 public final class ConversationBox extends StackPane {
-
-    private static final Logger LOGGER = Logger.getLogger(ConversationBox.class.getName());
 
     public static final double PADDING = 5;
 
@@ -245,10 +241,23 @@ public final class ConversationBox extends StackPane {
         bubbles.setItems(messages);
         conversation.setResultList(messages);
 
+        // When the list updates like during a selection, if there is any text
+        // in the search field then highlight the text after the bubbles show
+        // and update the found count label
+        messages.addListener((Change<? extends ConversationMessage> c) -> {
+            highlightRegions();
+            refreshCountUI(false);
+        });
+
         // Create controls to allow the user to search and highlight text within contributions.
         searchTextField.setPromptText("Type to search...");
         searchTextField.setStyle("-fx-prompt-text-fill: #868686;");
-        searchTextField.setOnKeyTyped(e -> highlightRegions());
+        searchTextField.setOnKeyTyped(e -> {
+            foundLabel.setText("searching...");
+            foundLabel.setStyle(FOUND_PASS_COLOUR);
+            highlightRegions();
+            refreshCountUI(false);
+        });
         foundLabel.setText(FOUND_TEXT + foundCount);
         foundLabel.setStyle(foundCount > 0 ? FOUND_PASS_COLOUR : FOUND_FAIL_COLOUR);
         foundLabel.setPadding(new Insets(4, 8, 4, 8));
@@ -269,10 +278,8 @@ public final class ConversationBox extends StackPane {
             foundCount = 0;
         }
 
-        Platform.runLater(() -> {
-            foundLabel.setText(FOUND_TEXT + foundCount);
-            foundLabel.setStyle(foundCount > 0 ? FOUND_PASS_COLOUR : FOUND_FAIL_COLOUR);
-        });
+        foundLabel.setText(FOUND_TEXT + foundCount);
+        foundLabel.setStyle(foundCount > 0 ? FOUND_PASS_COLOUR : FOUND_FAIL_COLOUR);
     }
 
     /**
@@ -292,21 +299,17 @@ public final class ConversationBox extends StackPane {
 
                 if (region instanceof EnhancedTextArea) {
                     foundCount += ((EnhancedTextArea) region).highlightText(searchTextField.getText());
-                    LOGGER.log(Level.WARNING, "FOUND = {0}", foundCount);
                 }
 
                 if (region instanceof GridPane) {
                     ((GridPane) region).getChildren().forEach(child -> {
                         if (child instanceof EnhancedTextArea) {
                             foundCount += ((EnhancedTextArea) child).highlightText(searchTextField.getText());
-                            LOGGER.log(Level.WARNING, "FOUND = {0}", foundCount);
                         }
                     });
                 }
             });
         });
-
-        refreshCountUI(false);
     }
 
     // A VBox to hold a bubble and a sender.
@@ -436,8 +439,6 @@ public final class ConversationBox extends StackPane {
                 setStyle("-fx-background-color: " + message.getBackgroundColor() + "; -fx-padding: 5 5 5 5;");
                 setGraphic(bubbleBox);
             }
-
-            highlightRegions();
         }
     }
 
